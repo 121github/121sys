@@ -4,3 +4,15 @@
 */cache/*
 */cache/!index.html
 */cache/!.htaccess
+
+/datafiles/*
+/upload/attachments/*
+/upload/templates/*
+
+# Files created by IDEs like Eclipse, Zend Studio, Netbeans, PHPStorm and TextMate2
+.buildpath
+.project
+.settings
+nbproject
+.idea
+.tm_properties
