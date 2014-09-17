@@ -72,7 +72,7 @@
 				<p>Body</p>
 				<textarea class="form-control" id="summernote" name="body"
 					title="Enter the template body" required 
-					value="<?php echo $template['template_body']; ?>	
+					value="<?php echo $template['template_body']; ?>"	
 				</textarea>
 			</div>
 			<div class="form-group input-group-sm">  
