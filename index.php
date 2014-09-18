@@ -1,6 +1,7 @@
 <?php
 //sets the expirey time of the cookie
 ini_set('session.gc_maxlifetime', 2*60*60);
+session_name('121sys');
 session_start();
 //git test
 /*
