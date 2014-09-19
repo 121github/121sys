@@ -2,7 +2,7 @@
 
 <project name="121Sys" default="build">
   <property name="workspace" value="${basedir}" />
-  <property name="sourcedir" value="${basedir}/aplication" />
+  <property name="sourcedir" value="${basedir}/application" />
   <property name="builddir" value="${workspace}/build" />
 
   <target name="build"
@@ -137,28 +137,5 @@
       <arg path="${builddir}/code-browser" />
     </exec>
   </target>
-
-  <!-- <target name="vendors" description="Update vendors">
-    <exec executable="composer" failonerror="true">
-        <arg value="update" />
-    	<arg value="--no-dev" />
-    </exec>
-  </target>
-
-  <target name="parameters" description="Copy parameters">
-    <exec executable="cp" failonerror="true">
-      <arg path="app/config/parameters.yml.dist" />
-      <arg path="app/config/parameters.yml" />
-    </exec>
-  </target>
-	
-  <target name="database_schema" description="Queries that you have to execute in order to update the Database">
-    <exec executable="php" failonerror="true">
-      <arg value="app/console" />
-      <arg value="doctrine:schema:update" />
-      <arg value="--dump-sql" />
-    </exec>
-  </target>
- -->
 
 </project>
