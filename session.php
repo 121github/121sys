@@ -1,4 +1,5 @@
 <?php
+session_name('121sys');
 session_start();
 
 if(isset($_GET['logout'])){

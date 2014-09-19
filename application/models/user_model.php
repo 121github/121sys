@@ -49,7 +49,11 @@ class User_model extends CI_Model
             $_SESSION['logtime'] = $result['logtime'];
             $_SESSION['email']   = $result['user_email'];
             $_SESSION['ext']     = $result['ext'];
-            
+			//get the permissions for the users role and store them in the session
+            $role_permissions = $this->db->query("select * from role_permissions left join permissions using(permission_id) where role_id = '".$result['role_id']."'")->result_array();
+			foreach($role_permissions as $row){
+			$_SESSION['permissions'][$row['permission_id']]=$row['permission_name'];
+			}
             //get the campaigns that this user has access to
             $user_campaigns                       = $this->db->query("select campaign_id from `users_to_campaigns` where user_id = '" . $result['user_id'] . "'")->result_array();
             $campaign_access                      = "'',";
