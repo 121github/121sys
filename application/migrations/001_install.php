@@ -7,6 +7,13 @@ class Migration_install extends CI_Migration
     
     public function up()
     {
+		
+		if(!$this->db->query("CREATE DATABASE IF NOT EXISTS `121sys` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci")){
+		echo "There was an error creating the database";	
+		}
+		
+		
+		
         $this->db->query("SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO'");
         $this->db->query("SET time_zone = '+00:00'");
         
