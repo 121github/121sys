@@ -1,10 +1,8 @@
 <?php
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
-
 class Admin_model extends CI_Model
 {
-    
     function __construct()
     {
         parent::__construct();
@@ -19,7 +17,6 @@ class Admin_model extends CI_Model
         $qry .= " order by campaign_id desc";
         return $this->db->query($qry)->result_array();
     }
-	
     public function add_new_campaign($form)
     {
         return $this->db->insert("campaigns", $form);
@@ -34,33 +31,43 @@ class Admin_model extends CI_Model
         $this->db->where("campaign_id", $id);
         return $this->db->delete("campaigns");
     }
-    public function add_campaign_access($camp,$user){
-		return $this->db->replace("users_to_campaigns",array("campaign_id"=>$camp,"user_id"=>$user));	
-	}
-	
-	    public function add_campaign_outcome($camp,$outcome){
-		return $this->db->replace("outcomes_to_campaigns",array("campaign_id"=>$camp,"outcome_id"=>$outcome));	
-	}
-	
-	public function revoke_campaign_access($camp,$user){
-		$this->db->where(array("campaign_id"=>$camp,"user_id"=>$user));
-		return $this->db->delete("users_to_campaigns");	
-	}
-	
-		public function remove_campaign_outcome($camp,$outcome){
-		$this->db->where(array("campaign_id"=>$camp,"outcome_id"=>$outcome));
-		return $this->db->delete("outcomes_to_campaigns");	
-	}
-	
+    public function add_campaign_access($camp, $user)
+    {
+        return $this->db->replace("users_to_campaigns", array(
+            "campaign_id" => $camp,
+            "user_id" => $user
+        ));
+    }
+    public function add_campaign_outcome($camp, $outcome)
+    {
+        return $this->db->replace("outcomes_to_campaigns", array(
+            "campaign_id" => $camp,
+            "outcome_id" => $outcome
+        ));
+    }
+    public function revoke_campaign_access($camp, $user)
+    {
+        $this->db->where(array(
+            "campaign_id" => $camp,
+            "user_id" => $user
+        ));
+        return $this->db->delete("users_to_campaigns");
+    }
+    public function remove_campaign_outcome($camp, $outcome)
+    {
+        $this->db->where(array(
+            "campaign_id" => $camp,
+            "outcome_id" => $outcome
+        ));
+        return $this->db->delete("outcomes_to_campaigns");
+    }
     public function add_client($client_name)
     {
         $this->db->insert("clients", array(
             "client_name" => $client_name
         ));
         return $this->db->insert_id();
-        
     }
-    
     public function save_campaign_features($form)
     {
         //first delete the old campaign features
@@ -75,16 +82,13 @@ class Admin_model extends CI_Model
                 ));
             }
         }
-        
     }
-    
     /* functions for the admin logs page */
     public function get_logs()
     {
         $qry = "select username,name,date_format(last_login,'%d/%m/%y %H:%i') last_login,failed_logins,date_format(last_failed_login,'%d/%m/%y %H:%i') last_failed_login from users  where last_login is not null order by last_login desc";
         return $this->db->query($qry)->result_array();
     }
-	
     /* functions for the admin users page */
     public function get_users()
     {
@@ -92,7 +96,6 @@ class Admin_model extends CI_Model
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
-    
     /* functions for the admin groups page */
     public function get_groups()
     {
@@ -100,43 +103,75 @@ class Admin_model extends CI_Model
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
-
     public function add_new_group($form)
     {
         return $this->db->insert("user_groups", $form);
     }
-	
-	
     public function update_group($form)
     {
         $this->db->where("group_id", $form['group_id']);
         return $this->db->update("user_groups", $form);
     }
-    
     public function delete_group($id)
     {
         $this->db->where("group_id", $id);
         return $this->db->delete("user_groups");
     }
-    
-        public function add_new_user($form)
+    public function add_new_user($form)
     {
         return $this->db->insert("users", $form);
     }
-	
-	    public function update_user($form)
+    public function update_user($form)
     {
         $this->db->where("user_id", $form['user_id']);
         return $this->db->update("users", $form);
     }
-    
     public function delete_user($id)
     {
         $this->db->where("user_id", $id);
         return $this->db->delete("users");
     }
-	
-	
-	
-    
+    //functions for roles page
+    public function get_roles()
+    {
+        $qry    = "select * from user_roles";
+        $result = $this->db->query($qry)->result_array();
+        return $result;
+    }
+    public function delete_role($id)
+    {
+        $this->db->where("role_id", $id);
+        return $this->db->delete("user_roles");
+    }
+    public function add_new_role($form)
+    {
+        return $this->db->insert("user_roles", $form);
+    }
+    public function role_permissions($id)
+    {
+        $this->db->where("role_id", $id);
+        return $this->db->get("role_permissions")->result_array();
+    }
+    public function update_role($form)
+    {
+        $this->db->where("role_id", $form['role_id']);
+        $this->db->update("user_roles", array(
+            "role_name" => $form['role_name']
+        ));
+        $this->db->where("role_id", $form['role_id']);
+        $this->db->delete("role_permissions");
+        foreach ($form['permission'] as $id => $val) {
+            $this->db->insert('role_permissions', array(
+                "role_id" => $form['role_id'],
+                "permission_id" => $id
+            ));
+        }
+    }
+    //functions for permissions page
+    public function get_permissions()
+    {
+        $qry    = "select * from permissions";
+        $result = $this->db->query($qry)->result_array();
+        return $result;
+    }
 }
