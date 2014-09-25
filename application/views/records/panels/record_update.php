@@ -13,7 +13,7 @@
           <input type="hidden" name="campaign_id" id="campaign_id" value="<?php echo $details['record']['campaign_id'] ?>"/>
           <div class="form-group">
             <label>Next action date</label>
-            <div class='input-group date datetimepicker'>
+             <div class='input-group datetime'>
               <input name="nextcall" id="nextcall" data-date-format="DD/MM/YYYY HH:mm" placeholder="Set the next action date here" type='text' class="form-control" value="<?php echo (!empty($details['record']['nextcall'])?$details['record']['nextcall']:"") ?>"/>
               <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span> </span> </div>
           </div>

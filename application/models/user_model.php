@@ -57,7 +57,7 @@ class User_model extends CI_Model
             //get the campaigns that this user has access to
             $user_campaigns                       = $this->db->query("select campaign_id from `users_to_campaigns` where user_id = '" . $result['user_id'] . "'")->result_array();
             $campaign_access                      = "'',";
-            $_SESSION['campaign_access']['array'] = array();
+            $_SESSION['campaign_access']['array'] = array('');
             foreach ($user_campaigns as $row) {
                 $campaign_access .= $row['campaign_id'] . ",";
                 $_SESSION['campaign_access']['array'][] = $row['campaign_id'];

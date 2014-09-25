@@ -62,7 +62,10 @@
                     <a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a>
                     </div>
                     <div class="accordion-inner">
-                      <a href="<?php echo base_url() ?>data" <?php echo @($admin=='data'?"class='active'":"") ?>>Import/Export</a>
+                      <a href="<?php echo base_url() ?>data" <?php echo @($admin=='data'?"class='active'":"") ?>>Import</a>
+                    </div>
+                     <div class="accordion-inner">
+                      <a href="<?php echo base_url() ?>exports" <?php echo @($admin=='export'?"class='active'":"") ?>>Export</a>
                     </div>
                      <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>data/management" <?php echo @($admin=='management'?"class='active'":"") ?>>Data Management</a>
