@@ -19,7 +19,7 @@ class Scripts extends CI_Controller
 	 */
 	public function index()
 	{
-		$campaigns = $this->Form_model->get_campaigns();
+		$campaigns = $this->Form_model->get_user_campaigns();
 		
 		$data = array(
 				'pageId' => 'Admin',

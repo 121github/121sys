@@ -5,7 +5,7 @@
 */cache/*
 */cache/!index.html
 */cache/!.htaccess
-
+[_]notes/
 /datafiles/*
 /upload/attachments/*
 /upload/templates/*

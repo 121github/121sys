@@ -91,7 +91,7 @@ class Survey_model extends CI_Model
     //function to return all the data relating to survey id. This is used on the edit survey page because it returns all the questions and the associated answers.
     public function get_existing_survey($survey)
     {
-        $qry = "select survey_name, question_cat_id, question_cat_name, surveys.survey_info_id, {$this->name_field} client_name,contact_id,user_id,date_format(completed_date,'%d/%m/%y') completed_date,date_format(surveys.date_created,'%d/%m/%y'), surveys.date_created, survey_id,surveys.urn,answer_id,question_id,answer,answer_notes.notes,question_name,other,question_script,question_guide,questions.sort,nps_question,multiple,option_name,question_options.option_id, answers_to_options.option_id as oid from surveys left join survey_info using(survey_info_id) left join survey_answers using(survey_id) left join questions using(question_id) left join questions_to_categories using(question_cat_id) left join question_options using(question_id) left join answers_to_options using(answer_id) left join answer_notes using(answer_id)   left join contacts using(contact_id) where survey_id = '$survey' and campaign_id in({$_SESSION['campaign_access']['list']}) order by questions.sort";
+        $qry = "select survey_name, question_cat_id, question_cat_name, surveys.survey_info_id, {$this->name_field} client_name,contact_id,user_id,date_format(completed_date,'%d/%m/%y') completed_date,date_format(surveys.date_created,'%d/%m/%y'), surveys.date_created, survey_id,surveys.urn,answer_id,question_id,answer,answer_notes.notes,question_name,other,question_script,question_guide,questions.sort,nps_question,multiple,option_name,question_options.option_id, answers_to_options.option_id as oid from surveys left join surveys_to_campaigns using(survey_info_id) left join survey_info using(survey_info_id) left join survey_answers using(survey_id) left join questions using(question_id) left join questions_to_categories using(question_cat_id) left join question_options using(question_id) left join answers_to_options using(answer_id) left join answer_notes using(answer_id)   left join contacts using(contact_id) where survey_id = '$survey' and campaign_id in({$_SESSION['campaign_access']['list']}) order by questions.sort";
         return $this->db->query($qry)->result_array();
     }
     
@@ -164,7 +164,7 @@ class Survey_model extends CI_Model
                 );
                 $this->db->insert("answer_notes", $notes);
             }
-            if (isset($answer_array['answer'])) {
+            if (isset($answer_array['answer'])&& !isset($answer_array['slider'])) {
                 foreach ($answer_array['answer'] as $answer) {
                     if (!empty($answer)) {
                         $answers = array(
@@ -176,36 +176,9 @@ class Survey_model extends CI_Model
                 }
             }
         }
-        
-        
-        
         return $id;
     }
     
-    //This function is now redundant. It was used to save the old style popup surveys. The new survey page uses the save_survey function.
-    public function edit_survey($post)
-    {
-        $survey = array(
-            "survey_updated" => date('Y-m-d H:i:s')
-        );
-        //update the survey
-        $this->db->where("survey_id", $post['survey_id']);
-        $this->db->update("surveys", $survey);
-        //update the answers
-        foreach ($post['answers'] as $question_id => $answer) {
-            $this->db->where(array(
-                "survey_id" => $post['survey_id'],
-                "question_id" => $question_id
-            ));
-            $answers = array(
-                "answer" => $answer['answer'],
-                "comments" => $answer['notes']
-            );
-            $this->db->update("survey_answers", $answers);
-        }
-        //$this->firephp->log($answers);
-        return $post['survey_id'];
-    }
     
     //sets a survey as completed
     public function complete_survey($id)

@@ -165,6 +165,12 @@ class Admin extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
+			if(isset($form['features'])){
+			$features['features'] =	$form['features'];
+			 } else {
+			$features = array();
+			 }
+			 unset($form['features']);
             if (empty($form['start_date'])) {
                 $form['start_date'] = NULL;
             } else {
@@ -180,20 +186,26 @@ class Admin extends CI_Controller
                 $form['client_id'] = $client_id;
             }
             unset($form['new_client']);
-            //if it's set as B2B then we add the company feature to the campaign
-            if ($form['campaign_type_id'] == "2") {
-                $form['features'][] = 2;
-            }
-            //all campaigns need the contact and update panel at a minimum
-            $form['features'][] = 1;
-            $form['features'][] = 3;
-            $response           = $this->Admin_model->save_campaign_features($form);
-            unset($form['features']);
+		   
             if (empty($form['campaign_id'])) {
                 $response = $this->Admin_model->add_new_campaign($form);
+				$features['campaign_id'] = $response ;
             } else {
+				$features['campaign_id'] = $form['campaign_id'];
                 $response = $this->Admin_model->update_campaign($form);
             }
+			 //if it's set as B2B then we add the company feature to the campaign
+            if ($form['campaign_type_id'] == "2") {
+                $features['features'][] = 2;
+            }
+            //all campaigns need the contact and update panel at a minimum
+			if(!in_array(1,$features['features'])){
+            $features['features'][] = 1;
+			}
+			if(!in_array(3,$features['features'])){
+            $features['features'][] = 3;
+			}
+            $response   = $this->Admin_model->save_campaign_features($features);
             echo json_encode(array(
                 "data" => $response
             ));

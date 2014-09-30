@@ -93,7 +93,7 @@ class Reports extends CI_Controller
     public function activity()
     {
         
-        $campaigns = $this->Form_model->get_campaigns();
+        $campaigns = $this->Form_model->get_user_campaigns();
         $surveys   = $this->Form_model->get_surveys();
 		$agents   = $this->Form_model->get_agents();
         

@@ -55,7 +55,14 @@ class User_model extends CI_Model
 			$_SESSION['permissions'][$row['permission_id']]=$row['permission_name'];
 			}
             //get the campaigns that this user has access to
-            $user_campaigns                       = $this->db->query("select campaign_id from `users_to_campaigns` where user_id = '" . $result['user_id'] . "'")->result_array();
+			if($_SESSION['role']==1){ 
+			//admin has all access
+			$qry = "select campaign_id from `campaigns`";
+			} else {
+			//other users can can only see what they have access to
+			$qry = "select campaign_id from `users_to_campaigns` where user_id = '" . $result['user_id'] . "'";	
+			}
+            $user_campaigns                       = $this->db->query($qry)->result_array();
             $campaign_access                      = "'',";
             $_SESSION['campaign_access']['array'] = array('');
             foreach ($user_campaigns as $row) {

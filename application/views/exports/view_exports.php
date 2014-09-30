@@ -18,11 +18,19 @@
             <div class="pull-right">
               <div class="btn-group">
                 <button class="daterange btn btn-default btn-xs" style="margin-right:5px"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button>
+               <?php if(count($campaigns)>0){ ?>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                  <?php foreach($campaigns as $row): ?>
+                  <li><a href="#" class="campaign" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                  <?php endforeach ?>
+                </ul>
+                <?php } ?>
               </div>
             </div>
           </div>
           <!-- /.panel-heading -->
           <div class="panel-body">
+           <?php if(count($campaigns)>0){ ?>
             <table class="table">
               <tr>
                 <td> Sample Export</td>
@@ -33,6 +41,9 @@
                   </form></td>
               <tr>
             </table>
+            <?php } else { ?>
+            <p>You do not have access to any campaigns</p>
+            <?php } ?>
           </div>
           <!-- /.panel-body --> 
         </div>

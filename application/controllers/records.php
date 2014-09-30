@@ -100,9 +100,11 @@ class Records extends CI_Controller
         $progress_options = $this->Form_model->get_progress_descriptions();
         $outcomes         = $this->Records_model->get_outcomes($campaign['campaign_id']);
         $xfers            = $this->Records_model->get_xfers($campaign['campaign_id']);
+		if(isset($details['contacts'])){
         foreach ($details['contacts'] as $contact_id => $contact_data) {
             $survey_options["contacts"][$contact_id] = $contact_data["name"]["fullname"];
         }
+		}
         $prev = false;
         $next = false;
         if (isset($_SESSION['navigation'])) {
@@ -358,7 +360,9 @@ class Records extends CI_Controller
                 }
                 //the survey_complete ID is 60 on this system
                 if ($update_array['outcome_id'] == 60) {
-                    $survey_outcome = true;
+                   
+					$survey_outcome = true;
+					 /*
                     if ($this->Survey_model->find_survey_updates($update_array['urn'])) {
                         //if a survey complete outcome already exists in the history table for today
                         echo json_encode(array(
@@ -368,8 +372,8 @@ class Records extends CI_Controller
                         exit;
                         
                     }
+					*/
                     $last_survey_id = $this->Survey_model->get_last_survey($update_array['urn']);
-                    $last_survey_id = 1;
                     if (!$last_survey_id) {
                         //if a survey has not been completed
                         echo json_encode(array(
@@ -378,7 +382,9 @@ class Records extends CI_Controller
                         ));
                         exit;
                     }
+					
                 }
+				
             }
             $this->Records_model->update_record($update_array);
             $hist = $update_array;
@@ -417,11 +423,10 @@ class Records extends CI_Controller
                 //then we loop through each answer in the last survey and if any scored below 6 on nps we email the managers
                 $slider_answers      = $this->Survey_model->get_slider_answers($last_survey_id);
                 $option_answers      = $this->Survey_model->get_option_answers($last_survey_id);
-                
+                //$this->survey_alert($last_survey_id, $survey_triggers);
                 $email = array();
-                
                 foreach ($slider_triggers as $q => $a) {
-                    if ($slider_answers[$q]['answer'] < $a && intval($slider_answers[$q]['answer']) > 0) {
+                    if ($slider_answers[$q]['answer'] <= $a && intval($slider_answers[$q]['answer']) > 0) {
                         $pending             = true;
                         $hist['progress_id'] = "1";
                         $send_email          = true;
@@ -443,11 +448,14 @@ class Records extends CI_Controller
                         );
                     }
                 }
+				$this->firephp->log($survey_triggers);
                 if (count($survey_triggers) > 0) {
-                    $this->Records_model->set_pending($update_array['urn']);
+					$this->Records_model->set_pending($update_array['urn']);
                     $this->survey_alert($last_survey_id, $survey_triggers);
                 }
             }
+			
+			
             //if a progress_id was sent we should add this to the history entry
             if ($this->input->post("progress_id")) {
                 $hist['progress_id'] = $this->input->post("progress_id");

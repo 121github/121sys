@@ -19,7 +19,7 @@ class Dashboard extends CI_Controller
     //this laods the user dashboard view  
     public function user_dash()
     {
-        $months  = $campaigns = $this->Form_model->get_campaigns();
+        $months  = $campaigns = $this->Form_model->get_user_campaigns();
         $surveys = $this->Form_model->get_surveys();
         
         $data = array(
@@ -47,7 +47,7 @@ class Dashboard extends CI_Controller
     //this is the controller loads the initial view for the activity dashboard
     public function agent()
     {
-        $campaigns = $this->Form_model->get_campaigns();
+        $campaigns = $this->Form_model->get_user_campaigns();
         $surveys   = $this->Form_model->get_surveys();
         
         $data = array(
@@ -70,7 +70,7 @@ class Dashboard extends CI_Controller
     //this is the controller loads the initial view for the client dashboard
     public function client()
     {
-        $campaigns = $this->Form_model->get_campaigns();
+        $campaigns = $this->Form_model->get_user_campaigns();
         $surveys   = $this->Form_model->get_surveys();
         
         $data = array(
@@ -94,7 +94,7 @@ class Dashboard extends CI_Controller
     //this is the controller loads the initial view for the management dashboard
     public function management()
     {
-        $campaigns = $this->Form_model->get_campaigns();
+        $campaigns = $this->Form_model->get_user_campaigns();
         $surveys   = $this->Form_model->get_surveys();
         
         $data = array(

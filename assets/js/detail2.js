@@ -730,21 +730,21 @@ var record = {
                     urn: urn
                 }
             }).done(function(response) {
-                $panel.find('.contacts-list').empty();
+                $panel.find('.company-list').empty();
                 $.each(response.data, function(key, val) {
                     var show = "";
                     var collapse = "collapsed"
                     if (key == id) {
                         show = "in";
-                        collapse = ""
+                        collapse = "";
                     }
                     var $company_detail_list_items = "",
                         $company_detail_telephone_items = "";
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function(dt, dd) {
-                        if (dd && dd != '' && dt != 'Address') {
-                            $contact_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
+                        if (dd && dd != '' && dt != 'Address' && dt != 'Company') {
+                            $company_detail_telephone_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function(key, val) {
                                 if (val.length) {
@@ -752,9 +752,9 @@ var record = {
                                     $postcode = dd.postcode;
                                 }
                             });
+							
                             $company_detail_list_items += "<dt>" + dt + "</dt><dd><a class='pull-right pointer' target='_blank' href='https://maps.google.com/maps?q=" + $postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>" + $address + "</dd>";
                         }
-
                     });
                     $.each(val.telephone, function(dt, tel) {
                         if (tel.tel_name) {
@@ -762,7 +762,7 @@ var record = {
                         }
                     });
                     $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
-                        .append($('<a/>').attr('href', '#com-collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.name.name).addClass(collapse))
+                        .append($('<a/>').attr('href', '#com-collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.visible['Company']).addClass(collapse))
                         .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-company-btn').attr('item-id', key).attr('data-target', '#model'))
                         .append($('<span/>').addClass('glyphicon glyphicon-pencil pull-right edit-company-btn').attr('item-id', key))
                         .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
@@ -946,13 +946,6 @@ var record = {
                 e.preventDefault();
                 record.email_panel.close_email($(this));
             });
-			$(document).on('change','.emailtemplatespicker',function(){
-				if($(this).val()==""){
-					$('.continue-email').prop('disabled',true);
-				} else {
-					$('.continue-email').prop('disabled',false);
-				}
-			});
             $(document).on('click', '.continue-email', function(e) {
                 e.preventDefault();
                 var template = $(this).closest('form').find('.emailtemplatespicker').val();

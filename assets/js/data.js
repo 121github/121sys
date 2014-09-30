@@ -95,8 +95,10 @@
 						var error = "You must add at least one type of contact telephone number for B2C";
 					}
 					if(ctype=="B2B"){
-						if(!cotel||!tel&&!name){
+						if(!cotel){
+							if(!tel&&!name){
 						var error = "You must add a company telephone number or a contact for a B2B campaign";
+							}
 						}
 					}
 					if(urn&&$('#urn-options').val()==1){
@@ -129,12 +131,14 @@
 								$('#import-progress').text("Preparing data...");
 								importer.show_progress();
 								}
-								if(response.progress>1&&response.progress<100){
+								else if(response.progress>0&&response.progress<100){
 								$('#import-progress').text("Importing to database..."+response.progress+"%");	
 								importer.show_progress();
 								} else if(response.progress==100){
-								$('#import-progress').text("Import completed");
+								$('#import-progress').html("<span class='green'>Import completed</span>");
 								flashalert.success("Import was completed");
+								} else {
+								$('#import-progress').html("<span class='red'>"+response.progress+"</span>");
 								}
 						});					 
 				},

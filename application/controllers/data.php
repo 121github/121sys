@@ -1,9 +1,7 @@
 <?php
 require('upload.php');
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
-
 class Data extends CI_Controller
 {
     public function __construct()
@@ -13,15 +11,12 @@ class Data extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Data_model');
     }
-    
     //this loads the data management view
     public function index()
     {
-        
         $campaigns = $this->Form_model->get_campaigns();
         $sources   = $this->Form_model->get_sources();
-        
-        $data = array(
+        $data      = array(
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => array(
@@ -38,19 +33,18 @@ class Data extends CI_Controller
             'css' => array(
                 'dashboard.css',
                 'plugins/jqfileupload/jquery.fileupload.css'
-                
             )
         );
         $this->template->load('default', 'data/data.php', $data);
     }
-    
     public function import_fields($echo = true)
     {
         $fields['records']           = array(
             "urn" => "urn",
             "client_ref" => "Client Reference",
             "nextcall" => "Next Call",
-            "urgent" => "Urgent"
+            "urgent" => "Urgent",
+			"client_ref"=> "Client Reference"
         );
         $fields['contacts']          = array(
             "fullname" => "Full name",
@@ -67,16 +61,14 @@ class Data extends CI_Controller
             "telephone_Fax" => "Contact Fax",
             "tps" => "TPS Status"
         );
-        
         if ($this->input->post('type') == "B2B") {
-            $fields['companies'] = array(
+            $fields['companies']         = array(
                 "name" => "Company Name",
                 "description" => "Description",
-                "company_number" => "Company Number",
+                "company_number" => "LTD CoNumber",
                 "turnover" => "Turnover",
                 "Employees" => "employees"
             );
-            
             $fields['company_addresses'] = array(
                 "c_add1" => "Address 1",
                 "c_add2" => "Address 2",
@@ -84,7 +76,6 @@ class Data extends CI_Controller
                 "c_county" => "County",
                 "c_postcode" => "Postcode"
             );
-            
             $fields['company_telephone'] = array(
                 "telephone_Tel" => "Company Telephone",
                 "ctps" => "CTPS Status"
@@ -98,7 +89,6 @@ class Data extends CI_Controller
                 "postcode" => "Postcode"
             );
         }
-        
         $custom = $this->Data_model->get_custom_fields($this->input->post('campaign'));
         foreach ($custom as $k => $v) {
             $fields['record_details'][$k] = $v;
@@ -113,8 +103,7 @@ class Data extends CI_Controller
     public function management()
     {
         $campaigns = $this->Form_model->get_campaigns();
-        
-        $data = array(
+        $data      = array(
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => array(
@@ -128,10 +117,8 @@ class Data extends CI_Controller
                 'data.js'
             )
         );
-        
         $this->template->load('default', 'data/data_management.php', $data);
     }
-    
     public function import()
     {
         $options               = array();
@@ -139,17 +126,14 @@ class Data extends CI_Controller
         $options['upload_url'] = base_url() . '/datafiles/';
         $upload_handler        = new Upload($options, true);
     }
-    
     public function get_sample()
     {
-        
         $file     = $this->input->post('file');
         $path     = dirname($_SERVER['SCRIPT_FILENAME']) . '/datafiles/';
         $fullpath = $path . $file;
         $result   = array();
         $i        = 0;
         if (($handle = fopen($fullpath, "r")) !== FALSE) {
-            
             while (($data = fgetcsv($handle)) !== FALSE) {
                 $i++;
                 $result[] = $data;
@@ -158,12 +142,10 @@ class Data extends CI_Controller
                 }
             }
             fclose($handle);
-            
         }
         $json = json_encode($result);
         echo $json;
     }
-    
     public function reassign_data()
     {
         if ($this->input->is_ajax_request()) {
@@ -192,14 +174,12 @@ class Data extends CI_Controller
             ));
         }
     }
-    
     public function get_user_data()
     {
         if ($this->input->is_ajax_request()) {
             $this->Data_model->get_user_data($this->input->post('campaign'), $this->input->post('state'));
         }
     }
-    
     public function start_import()
     {
         if ($this->input->is_ajax_request()) {
@@ -207,7 +187,6 @@ class Data extends CI_Controller
             session_write_close();
             //set the progress status
             file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0");
-            
             $filename      = $this->input->post('filename');
             $autoincrement = $this->input->post('autoincrement');
             $duplicates    = $this->input->post('duplicates');
@@ -230,18 +209,13 @@ class Data extends CI_Controller
             if (!empty($new_source)) {
                 $source = $this->Data_model->create_source($new_source);
             }
-            
-            
             $options = array(
                 "autoincrement" => $autoincrement,
                 "duplicates" => $duplicates,
                 "campaign" => $campaign,
                 "source" => $source
             );
-            
-            $row = 0;
-            
-            
+            $row     = 0;
             if (($handle = fopen("datafiles/" . $filename, "r")) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     $row++;
@@ -250,9 +224,7 @@ class Data extends CI_Controller
                     if ($header == "1" && $row == 1) {
                         continue;
                     }
-                    
                     foreach ($fields as $k => $v) {
-                        
                         $record[$k]   = $data[$v];
                         $import[$row] = $record;
                     }
@@ -264,16 +236,11 @@ class Data extends CI_Controller
             } else {
                 $rows = $row;
             }
-            
-            
             foreach ($import as $row => $details) {
                 $current++;
                 /* now we can insert into the database*/
-                
                 $progress = ceil($current / $rows * 100);
                 file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress);
-                
-                
                 /*format each row so the column names match the ones in the database and split the columns into the relevant tables*/
                 foreach ($details as $col => $val) {
                     $sqlformat = "";
@@ -296,14 +263,17 @@ class Data extends CI_Controller
                                     if ($format == "YY-MM-DD") {
                                         $dt = DateTime::createFromFormat('y-m-d', $val);
                                     }
+                                    if ($format == "YYYY-MM-DD") {
+                                        $dt = DateTime::createFromFormat('Y-m-d', $val);
+                                    }
                                     $dt_error = DateTime::getLastErrors();
                                     if ($dt_error['error_count'] > 0) {
-                                        $val = NULL;
+                                        file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Date format error on row $row");
+                                        exit;
                                     } else {
                                         $val = $dt->format($sqlformat);
                                     }
                                 }
-                                
                                 if (strpos($col, "telephone_") !== false) {
                                     $final[$table]["description"]      = str_replace("telephone_", "", $col);
                                     $final[$table]["telephone_number"] = $val;
@@ -315,23 +285,27 @@ class Data extends CI_Controller
                     }
                 }
                 /* end formatting */
-                
-                
                 $errors = $this->Data_model->import_record($final, $options);
-                
-                //$this->firephp->log(dirname($_SERVER['SCRIPT_FILENAME'])."datafiles/uploadprogress.txt");
-                $response['data'][$row]   = $final;
-                $response['errors'][$row] = $errors;
-                $final                    = array(
-                    "records" => array()
-                );
+                if (count($errors) > 0) {
+                    echo json_encode(array(
+                        "success" => false,
+                        "rows" => $row,
+                        "data" => $errors
+                    ));
+                    file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Import stopped on row $row. Error: " . $errors[0]);
+					 $this->firephp->log("Error adding row $row");
+                    exit;
+                } else {
+                    $this->firephp->log("$row was added ok");
+
+                }
+
             }
-            
-            echo json_encode(array(
-                "rows" => $row,
-                "data" => $response
-            ));
-            
+			                echo json_encode(array(
+                    "success" => true,
+                    "rows" => $row,
+                    "data" => "Import was successfull"
+                ));
         }
     }
     public function get_progress()

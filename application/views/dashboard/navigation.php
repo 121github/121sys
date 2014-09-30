@@ -65,13 +65,19 @@
                       <a href="<?php echo base_url() ?>data" <?php echo @($admin=='data'?"class='active'":"") ?>>Import</a>
                     </div>
                      <div class="accordion-inner">
-                      <a href="<?php echo base_url() ?>exports" <?php echo @($admin=='export'?"class='active'":"") ?>>Export</a>
+                      <a href="<?php echo base_url() ?>exports" <?php echo @($admin=='exports'?"class='active'":"") ?>>Export</a>
                     </div>
                      <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>data/management" <?php echo @($admin=='management'?"class='active'":"") ?>>Data Management</a>
                     </div>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>admin/users" <?php echo @($admin=='users'?"class='active'":"") ?>>Users</a>
+                    </div>
+                     <div class="accordion-inner">
+                       <a href="<?php echo base_url() ?>admin/roles" <?php echo @($admin=='roles'?"class='active'":"") ?>>Roles</a>
+                    </div>
+                       <div class="accordion-inner">
+                    <a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a>
                     </div>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>admin/logs" <?php echo @($admin=='logs'?"class='active'":"") ?>>Logs</a>

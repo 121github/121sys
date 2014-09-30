@@ -17,7 +17,7 @@ class Filter_model extends CI_Model
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
-        $this->firephp->log($qry);
+        //$this->firephp->log($qry);
         $count = $this->db->query($qry)->row('count');
         return $count;
     }
@@ -406,7 +406,7 @@ class Filter_model extends CI_Model
 		
 		if($table=="records"){
 		$table_columns = array("campaign_name","fullname","outcome","date_format(r.date_updated,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
-		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id";
+		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id";
 		$group_by =  " group by records.urn";
 		} else {
 			$join_records = " left join records on records.urn = history.urn ";
@@ -431,7 +431,7 @@ class Filter_model extends CI_Model
 		}	
 		}
 		//only join the survey tables if we need them
-		if(in_array("survey",$fields)||in_array("score",$fields)||in_array("question",$fields)){
+		if(in_array("survey",$fields)||in_array("score",$fields)||in_array("question",$fields)||in_array("survey-from",$fields)||in_array("survey-to",$fields)){
 		$qry .= " left join surveys on surveys.urn = records.urn ";
 		$qry .= " left join survey_info on surveys.survey_info_id = survey_info.survey_info_id ";
 		$qry .= " left join survey_answers on surveys.survey_id = survey_answers.survey_id ";
@@ -471,7 +471,8 @@ class Filter_model extends CI_Model
 		$qry .= " and ". $key ." <> '". $val . "'";
 			}
 		} 
-		} else {
+		}
+		if(empty($operator)){
 			if($val=="null"){
 		$qry .= " and ". $key ." is null ";
 			} else {
@@ -487,7 +488,6 @@ class Filter_model extends CI_Model
 		$qry .= " order by CASE WHEN ".$table_columns[$options['order'][0]['column']]." IS NULL THEN 1 ELSE 0 END,".$table_columns[$options['order'][0]['column']]." ".$options['order'][0]['dir'];
 		$count = $this->db->query($qry)->num_rows();
 		$qry .= " limit ".$options['length']." offset ". $options['start'];
-		$this->firephp->log($qry);
 		$data =  $this->db->query($qry)->result_array();
 		return array("count"=>$count,"data"=>$data);
 	}

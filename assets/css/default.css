@@ -55,7 +55,7 @@ display:none;
 }
 .tab-pane { padding:20px 20px 0 }
 .edit-contact-btn,.edit-phone-btn,.edit-address-btn,.contact-item-btn,.company-item-btn,.edit-survey-btn,.edit-company-btn { padding-right:4px; }
-.contact-detail-list { padding-top:15px }
+.contact-detail-list,.company-detail-list { padding-top:15px }
 .tab-alert { display: inline-block; font-size:.8em; padding:10px; }
 .tt { cursor:help }
 .padl { padding-left:5px }

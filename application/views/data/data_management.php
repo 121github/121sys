@@ -18,6 +18,7 @@
         <div class="panel panel-primary">
         <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Data Management
           <div class="pull-right">
+          <?php if(count($campaigns)>0){ ?>
             <select name="campaign" id="campaign">
               <?php  foreach($campaigns as $row){ ?>
               <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
@@ -28,6 +29,7 @@
               <option value="2">In Progress Data</option>
               <option value="3">Call backs</option>
             </select>
+            <?php } ?>
           </div>
         </div>
         <!-- /.panel-heading -->
@@ -35,7 +37,11 @@
           <div class="row">
             <div class="col-lg-6">
               <ul id="sliders">
+              <?php if(count($campaigns)>0){ ?>
                 Please select a campaign and the record status that you wish to reassign. All reassignments will be randomised between the selected users.
+                <?php } else { ?>
+                You do not have access to any campaigns
+                <?php } ?>
               </ul>
               <button type="button" class="btn btn-default" id="reassign-btn" style="display:none">Reassign data</button>
               <!-- /.panel-body --> 

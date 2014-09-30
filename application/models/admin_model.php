@@ -19,7 +19,8 @@ class Admin_model extends CI_Model
     }
     public function add_new_campaign($form)
     {
-        return $this->db->insert("campaigns", $form);
+		$this->db->insert("campaigns", $form);
+		return  $this->db->insert_id();
     }
     public function update_campaign($form)
     {
@@ -62,10 +63,10 @@ class Admin_model extends CI_Model
         return $this->db->delete("outcomes_to_campaigns");
     }
     public function add_client($client_name)
-    {
-        $this->db->insert("clients", array(
-            "client_name" => $client_name
-        ));
+    {	
+		$var = $this->db->escape($client_name);
+		$qry = "insert ignore into clients set client_name = $var";
+		$this->db->query($qry);
         return $this->db->insert_id();
     }
     public function save_campaign_features($form)
@@ -86,21 +87,25 @@ class Admin_model extends CI_Model
     /* functions for the admin logs page */
     public function get_logs()
     {
-        $qry = "select username,name,date_format(last_login,'%d/%m/%y %H:%i') last_login,failed_logins,date_format(last_failed_login,'%d/%m/%y %H:%i') last_failed_login from users  where last_login is not null order by last_login desc";
+        $qry = "select username,name,date_format(last_login,'%d/%m/%y %H:%i') last_login,failed_logins,date_format(last_failed_login,'%d/%m/%y %H:%i') last_failed_login from users  where last_login is not null and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) order by last_login desc";
         return $this->db->query($qry)->result_array();
     }
     /* functions for the admin users page */
     public function get_users()
     {
-        $qry    = "select user_id,name,username,group_name,role_name,IF(user_status = 1,'On','Off') status_text,user_status,group_id,role_id,user_email,user_telephone from users left join user_roles using(role_id) left join user_groups using(group_id) order by CASE WHEN user_status = 1 THEN 0 ELSE 1 END";
+        $qry    = "select user_id,name,username,group_name,role_name,IF(user_status = 1,'On','Off') status_text,user_status,group_id,role_id,user_email,user_telephone from users left join user_roles using(role_id) left join user_groups using(group_id) where user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) order by CASE WHEN user_status = 1 THEN 0 ELSE 1 END";
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
     /* functions for the admin groups page */
     public function get_groups()
     {
-        $qry    = "select * from user_groups";
-        $result = $this->db->query($qry)->result_array();
+		if($_SESSION['group']==1){ 
+		$qry    = "select * from user_groups";
+	 	$result = $this->db->query($qry)->result_array();
+        } else {
+		$result = array($_SESSION['group']);
+		}
         return $result;
     }
     public function add_new_group($form)

@@ -136,19 +136,6 @@
                             <!-- /.panel-body -->
                         </div>
 
-                        <div class="panel panel-primary">
-                            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Export Data
-                            </div>
-                            <!-- /.panel-heading -->
-                            <div class="panel-body target-data">
-                                <p>Export the database
-                                    <button class="btn btn-default pull-right">Export Now</button>
-                                    </li>
-                                </p>
-                            </div>
-                            <!-- /.panel-body -->
-                        </div>
-
                     </form>
                 </div>
 
