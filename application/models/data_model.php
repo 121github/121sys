@@ -115,9 +115,16 @@ class Data_model extends CI_Model
         $urn        = "";
         $company_id = "";
 		$client_ref = "";
+		$fullname = "";
         if (isset($row["contacts"])) {
-            $fullname = (!empty($row["contacts"]["fullname"]) ? $row["contacts"]["fullname"] : $row["contacts"]["title"] . " " . $row["contacts"]["firstname"] . " " . $row["contacts"]["lastname"]);
+            $fullname = (!empty($row["contacts"]["fullname"]) ? $row["contacts"]["fullname"] : ""); 
         }
+		if(empty($fullname)){
+			$fullname .= (isset($row["contacts"]["title"]) ? $row["contacts"]["title"] : "");
+			$fullname .= (isset($row["contacts"]["firstname"]) ? $row["contacts"]["firstname"] : "");
+			$fullname .= (isset($row["contacts"]["lastname"]) ? $row["contacts"]["lastname"] : "");
+		}
+
         if ($options["duplicates"] == "1" || $options["duplicates"] == "2") {
             if (isset($row["records"])) {
 								if(isset($row["records"]['client_ref'])){
@@ -127,6 +134,7 @@ class Data_model extends CI_Model
                 //insert the options into the records table data
                 $row["records"]['campaign_id'] = $options['campaign'];
                 $row["records"]['source_id']   = $options['source'];
+				$row["records"]['date_added']   = date('Y-m-d');
                 if ($options["duplicates"] == "1" || $options["autoincrement"] == 1) {
                     $this->db->insert("records", $row["records"]);
                     if ($this->db->_error_message()) {

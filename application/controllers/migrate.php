@@ -9,16 +9,17 @@ class Migrate extends CI_Controller
     {
 
 parent::__construct();
-
+ user_auth_check();
+$this->load->model('Database_model');	
 }
 
 public function index(){
 	$this->load->library('migration');
-if ( !$this->migration->current())
+if ( !$this->migration->latest())
 {
 	show_error($this->migration->error_string());
 } else {
-      echo "121Sys database was updated successfully...";	
+      echo json_encode(array("success"=>true,"version"=>$this->Database_model->get_version()));
 }	
 }
 

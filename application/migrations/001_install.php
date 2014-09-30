@@ -22,10 +22,9 @@ class Migration_install extends CI_Migration
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         // //Table structure for table `answers_to_options`
         $this->db->query("CREATE TABLE IF NOT EXISTS `answers_to_options` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `answer_id` int(11) NOT NULL,
   `option_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
+  UNIQUE KEY `answer_id2` (`answer_id`,`option_id`),
   KEY `answer_id` (`answer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         ////Table structure for table `answer_notes`
@@ -71,6 +70,12 @@ class Migration_install extends CI_Migration
   PRIMARY KEY (`campaign_id`),
   KEY `client_id` (`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
+
+//create sample campaign
+$this->db->query("INSERT INTO `campaigns` (`campaign_id`, `campaign_name`, `campaign_type_id`, `client_id`, `start_date`, `end_date`, `campaign_status`, `email_recipients`, `reassign_to`, `custom_panel_name`) VALUES
+(4, 'Sample B2C Campaign', '1', 5, '2014-09-30', NULL, 1, NULL, NULL, '')");
+
+
         ////Table structure for table `campaigns_to_features`
         $this->db->query("CREATE TABLE IF NOT EXISTS `campaigns_to_features` (
   `campaign_id` int(3) NOT NULL,
@@ -78,6 +83,14 @@ class Migration_install extends CI_Migration
   KEY `campaign_id` (`campaign_id`,`feature_id`),
   KEY `feature_id` (`feature_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
+
+//add sample campaign features
+$this->db->query("INSERT INTO `campaigns_to_features` (`campaign_id`, `feature_id`) VALUES
+(4, 1),
+(4, 3),
+(4, 4),
+(4, 5),
+(4, 7)");
         ////Table structure for table `campaign_features`
         $this->db->query("CREATE TABLE IF NOT EXISTS `campaign_features` (
   `feature_id` int(3) NOT NULL AUTO_INCREMENT,
@@ -113,10 +126,9 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
 
         //Table structure for table `campaign_xfers`
         $this->db->query("CREATE TABLE IF NOT EXISTS `campaign_xfers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `campaign_id` int(3) NOT NULL,
   `xfer_campaign` int(3) NOT NULL,
-  PRIMARY KEY (`id`)
+  UNIQUE `campxfer` (`campaign_id`,`xfer_campaign`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `clients`
         $this->db->query("CREATE TABLE IF NOT EXISTS `clients` (
@@ -124,12 +136,19 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `client_name` varchar(50) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`client_id`),
   UNIQUE KEY `client_name` (`client_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
+
+//dumping data sample into clients
+ $this->db->query("INSERT INTO `clients` (`client_id`, `client_name`) VALUES
+(1, '121'),
+(5, 'Sample Client')");
+
         //Table structure for table `client_refs`
         $this->db->query("CREATE TABLE IF NOT EXISTS `client_refs` (
   `urn` int(11) NOT NULL AUTO_INCREMENT,
   `client_ref` varchar(30) CHARACTER SET utf8 NOT NULL,
-  PRIMARY KEY (`urn`)
+  PRIMARY KEY (`urn`),
+  UNIQUE KEY `client_ref2` (`urn`,`client_ref`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `companies`
         $this->db->query("CREATE TABLE IF NOT EXISTS `companies` (
@@ -165,13 +184,12 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `company_subsectors`
         $this->db->query("CREATE TABLE IF NOT EXISTS `company_subsectors` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NOT NULL,
   `subsector_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
   UNIQUE KEY `company_id_2` (`company_id`,`subsector_id`),
-  KEY `company_id` (`company_id`,`subsector_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
+  KEY `company_id` (`company_id`),
+  KEY `subsector_id` (`subsector_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         //Table structure for table `company_telephone`
         $this->db->query("CREATE TABLE IF NOT EXISTS `company_telephone` (
   `telephone_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -212,6 +230,8 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   PRIMARY KEY (`contact_id`),
   KEY `urn` (`urn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
+
+
         //Table structure for table `contact_addresses`
         $this->db->query("CREATE TABLE IF NOT EXISTS `contact_addresses` (
   `address_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -226,7 +246,7 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `longitude` float DEFAULT NULL,
   `primary` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`address_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27305 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `contact_status`
         $this->db->query("CREATE TABLE IF NOT EXISTS `contact_status` (
   `contact_status_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -249,7 +269,7 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `tps` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`telephone_id`),
   KEY `contact_id` (`contact_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=55897 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `data_sources`
         $this->db->query("CREATE TABLE IF NOT EXISTS `data_sources` (
   `source_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -257,6 +277,10 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `cost_per_record` float DEFAULT NULL,
   PRIMARY KEY (`source_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
+
+$this->db->query("INSERT INTO `data_sources` (`source_id`, `source_name`, `cost_per_record`) VALUES
+(1, 'Dummy Data', NULL)");
+
         //Table structure for table `email_history`
         $this->db->query("CREATE TABLE IF NOT EXISTS `email_history` (
   `email_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -301,7 +325,7 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `template_password` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `template_encryption` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`template_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `email_template_attachments`
         $this->db->query("CREATE TABLE IF NOT EXISTS `email_template_attachments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -310,22 +334,19 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `path` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `template_id` (`template_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `email_template_to_campaigns`
         $this->db->query("CREATE TABLE IF NOT EXISTS `email_template_to_campaigns` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `template_id` int(11) DEFAULT NULL,
   `campaign_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  UNIQUE KEY `tempcamp` (`template_id`,`campaign_id`),
   KEY `template_id` (`template_id`),
   KEY `campanign_id` (`campaign_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `favorites`
         $this->db->query("CREATE TABLE IF NOT EXISTS `favorites` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `urn` int(11) NOT NULL,
   `user_id` tinyint(3) NOT NULL,
-  PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`,`urn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `history`
@@ -377,7 +398,7 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `Initial Advisor` varchar(18) CHARACTER SET utf8 DEFAULT NULL,
   `PFM` varchar(19) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`urn`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1341 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `mail_templates`
         $this->db->query("CREATE TABLE IF NOT EXISTS `mail_templates` (
   `template_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -394,11 +415,14 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `template_password` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `template_encryption` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`template_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `migrations`
         $this->db->query("CREATE TABLE IF NOT EXISTS `migrations` (
-  `version` int(3) NOT NULL
+  `version` int(3) NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
+
         //Table structure for table `outcomes`
         $this->db->query("CREATE TABLE IF NOT EXISTS `outcomes` (
   `outcome_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -452,13 +476,12 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
         //Table structure for table `ownership`
         $this->db->query("CREATE TABLE IF NOT EXISTS `ownership` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `urn` int(12) NOT NULL,
   `user_id` int(4) NOT NULL,
-  PRIMARY KEY (`id`),
+  UNIQUE KEY `urn_user` (`urn`,`user_id`),
   KEY `user_id` (`user_id`),
   KEY `urn` (`urn`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=20463 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `park_codes`
         $this->db->query("CREATE TABLE IF NOT EXISTS `park_codes` (
   `parked_code` int(11) NOT NULL AUTO_INCREMENT,
@@ -495,20 +518,20 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `survey_info_id` tinyint(3) DEFAULT NULL,
   PRIMARY KEY (`question_id`),
   KEY `survey_info_id` (`survey_info_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=36 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `questions_to_categories`
         $this->db->query("CREATE TABLE IF NOT EXISTS `questions_to_categories` (
   `question_cat_id` int(3) NOT NULL AUTO_INCREMENT,
   `question_cat_name` varchar(250) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`question_cat_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `question_options`
         $this->db->query("CREATE TABLE IF NOT EXISTS `question_options` (
   `option_id` int(11) NOT NULL AUTO_INCREMENT,
   `option_name` varchar(150) CHARACTER SET utf8 NOT NULL,
   `question_id` int(11) NOT NULL,
   PRIMARY KEY (`option_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=47 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `records`
         $this->db->query("CREATE TABLE IF NOT EXISTS `records` (
   `urn` int(11) NOT NULL AUTO_INCREMENT,
@@ -562,7 +585,7 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `is_select` int(1) DEFAULT NULL,
   `sort` int(3) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `record_details_options`
         $this->db->query("CREATE TABLE IF NOT EXISTS `record_details_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -571,7 +594,7 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   `option` varchar(50) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`),
   KEY `campaign_id` (`campaign_id`,`field`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ");
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `reminders`
         $this->db->query("CREATE TABLE IF NOT EXISTS `reminders` (
   `urn` int(11) NOT NULL,
@@ -590,10 +613,9 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         //Table structure for table `scripts_to_campaigns`
         $this->db->query("CREATE TABLE IF NOT EXISTS `scripts_to_campaigns` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `script_id` tinyint(4) NOT NULL,
   `campaign_id` tinyint(4) NOT NULL,
-  PRIMARY KEY (`id`),
+  UNIQUE KEY `script_id2` (`script_id`,`campaign_id`),
   KEY `script_id` (`script_id`),
   KEY `campaign_id` (`campaign_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
@@ -996,7 +1018,8 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
         //Dumpingdata for table `users`
         $this->db->query("INSERT INTO `users` (`user_id`, `role_id`, `group_id`, `team_id`, `username`, `password`, `name`, `user_status`, `login_mode`, `user_telephone`, `user_email`, `last_login`, `ext`, `token`, `pass_changed`, `failed_logins`, `last_failed_login`) VALUES
 (1, 1, 1, NULL, 'brad.foster', '32250170a0dca92d53ec9624f336ca24', 'Brad Foster', 1, NULL, NULL, '', '2014-09-19 10:16:23', NULL, NULL, NULL, 0, '2014-09-09 10:25:27'),
-(2, 3, 1, NULL, 'sarah.shannon', '32250170a0dca92d53ec9624f336ca24', 'Sarah Shannon', 1, NULL, NULL, NULL, '2014-08-12 12:02:55', 237, NULL, NULL, 0, '2014-08-12 12:02:48'),
+(2, 1, 1, NULL, 'doug.frost', '32250170a0dca92d53ec9624f336ca24', 'Doug Frost', 1, NULL, NULL, NULL, '2014-08-12 12:02:55', NULL, NULL, NULL, 0, '2014-08-12 12:02:48'),
+(126, 3, 1, NULL, 'demo', '32250170a0dca92d53ec9624f336ca24', 'Agent 492', 1, NULL, NULL, NULL, '2014-08-12 12:02:55', 237, NULL, NULL, 0, '2014-08-12 12:02:48'),
 (3, 1, 1, NULL, 'emma.greenfield', '32250170a0dca92d53ec9624f336ca24', 'Emma Greenfield', 1, NULL, NULL, NULL, '2014-08-12 10:05:48', NULL, NULL, NULL, 0, NULL),
 (4, 1, 1, NULL, 'david.kemp', '32250170a0dca92d53ec9624f336ca24', 'David Kemp', 1, NULL, NULL, NULL, '2014-08-12 08:29:31', NULL, NULL, NULL, 0, '2014-08-05 08:18:06'),
 (5, 1, 1, NULL, 'kirsty.prince', '32250170a0dca92d53ec9624f336ca24', 'Kirsty Princes', 1, NULL, '', '', '2014-08-12 09:08:57', NULL, NULL, NULL, 0, NULL)");
@@ -1070,23 +1093,11 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
 (5, 'Agent')");
         //create table role permissions
         $this->db->query("CREATE TABLE IF NOT EXISTS `role_permissions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) NOT NULL,
   `permission_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
   UNIQUE KEY `role_id` (`role_id`,`permission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
-        //create table companies to sectors tables
-        $this->db->query("CREATE TABLE IF NOT EXISTS `company_subsectors` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `company_id` int(11) NOT NULL,
-  `subsector_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `company_id_2` (`company_id`,`subsector_id`),
-  KEY `company_id` (`company_id`,`subsector_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-");
-        //Constraints for dumped tables
+
         //Constraints for table `role_permissions`
         $this->db->query("ALTER TABLE `role_permissions` ADD FOREIGN KEY (`role_id`) REFERENCES `121sys`.`permissions`(`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
         //Constraints for table `answers_to_options`
@@ -1101,8 +1112,8 @@ $this->db->query("INSERT INTO `campaign_types` (`campaign_type_id`, `campaign_ty
   ADD CONSTRAINT `appointment_attendees_ibfk_1` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`appointment_id`)");
         //Constraints for table `campaigns_to_features`
         $this->db->query("ALTER TABLE `campaigns_to_features`
-  ADD CONSTRAINT `campaigns_to_features_ibfk_2` FOREIGN KEY (`feature_id`) REFERENCES `campaign_features` (`feature_id`),
-  ADD CONSTRAINT `campaigns_to_features_ibfk_1` FOREIGN KEY (`campaign_id`) REFERENCES `campaigns` (`campaign_id`)");
+  ADD CONSTRAINT `campaigns_to_features_ibfk_2` FOREIGN KEY (`feature_id`) REFERENCES `campaign_features` (`feature_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `campaigns_to_features_ibfk_1` FOREIGN KEY (`campaign_id`) REFERENCES `campaigns` (`campaign_id`) ON DELETE CASCADE ON UPDATE CASCADE");
         //Constraints for table `client_refs`
         $this->db->query("ALTER TABLE `client_refs`
   ADD CONSTRAINT `client_refs_ibfk_1` FOREIGN KEY (`urn`) REFERENCES `records` (`urn`)");

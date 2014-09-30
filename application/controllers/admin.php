@@ -90,6 +90,16 @@ class Admin extends CI_Controller
             ));
         }
     }
+	    public function populate_clients()
+    {
+        if ($this->input->is_ajax_request()) {
+            $clients = $this->Form_model->get_clients();
+            echo json_encode(array(
+                "success" => true,
+                "data" => $clients
+            ));
+        }
+    }
     public function campaign_outcomes()
     {
         if ($this->input->is_ajax_request()) {
@@ -181,7 +191,7 @@ class Admin extends CI_Controller
             } else {
                 $form['end_date'] = to_mysql_datetime($form['end_date']);
             }
-            if (!empty($form['new_client']) && $form['client_id'] == "other") {
+            if (!empty($form['new_client']) && $form['client_id'] == "other"||!empty($form['new_client']) && empty($form['client_id'])) {
                 $client_id         = $this->Admin_model->add_client($form['new_client']);
                 $form['client_id'] = $client_id;
             }

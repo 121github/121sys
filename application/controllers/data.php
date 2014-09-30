@@ -50,7 +50,7 @@ class Data extends CI_Controller
             "fullname" => "Full name",
             "title" => "Title",
             "firstname" => "Firstname",
-            "lastjname" => "Lastname",
+            "lastname" => "Lastname",
             "position" => "Position/Job"
         );
         $fields['contact_telephone'] = array(

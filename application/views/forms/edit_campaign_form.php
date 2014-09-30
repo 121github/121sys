@@ -29,7 +29,7 @@
         </div>
                 <div class="form-group input-group-sm">
         <p>Please select the client</p>
-          <select name="client_id" class="selectpicker pull-left">
+          <select name="client_id" id="client-select" class="selectpicker pull-left">
           <option value="">Nothing selected</option>
             <?php foreach($clients as $row): ?>
             <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>

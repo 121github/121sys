@@ -19,7 +19,7 @@ class Admin_model extends CI_Model
     }
     public function add_new_campaign($form)
     {
-		$this->db->insert("campaigns", $form);
+		$this->db->insert("campaigns",$form);
 		return  $this->db->insert_id();
     }
     public function update_campaign($form)
