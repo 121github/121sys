@@ -192,7 +192,10 @@ class Admin extends CI_Controller
                 $form['end_date'] = to_mysql_datetime($form['end_date']);
             }
             if (!empty($form['new_client']) && $form['client_id'] == "other"||!empty($form['new_client']) && empty($form['client_id'])) {
+				$client_id = $this->Admin_model->find_client($form['new_client']);
+				if(!$client_id){
                 $client_id         = $this->Admin_model->add_client($form['new_client']);
+				}
                 $form['client_id'] = $client_id;
             }
             unset($form['new_client']);

@@ -69,6 +69,16 @@ class Admin_model extends CI_Model
 		$this->db->query($qry);
         return $this->db->insert_id();
     }
+	public function find_client($client_name)
+    {	 
+		$qry = "select client_id from clients where client_name = ".$this->db->escape($client_name);
+		$this->firephp->log($qry);
+		if($this->db->query($qry)->num_rows()>0){
+		return $this->db->query($qry)->row()->client_id;
+		} else {
+        return false;
+		}
+    }
     public function save_campaign_features($form)
     {
         //first delete the old campaign features

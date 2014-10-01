@@ -64,7 +64,7 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
-$db['121backup']['hostname'] = '192.168.1.50';
+$db['121backup']['hostname'] = '10.10.1.13';
 $db['121backup']['username'] = 'npsuser';
 $db['121backup']['password'] = 'npspass';
 $db['121backup']['database'] = 'recordings';
