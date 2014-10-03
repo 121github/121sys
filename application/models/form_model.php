@@ -71,7 +71,7 @@ class Form_model extends CI_Model
 	
     public function get_user_campaigns()
     {
-        $qry = "select campaign_id id,campaign_name name from campaigns left join users_to_campaigns using(campaign_id) where campaign_status = 1 and  user_id = '{$_SESSION['user_id']}' order by campaign_name";
+        $qry = "select campaign_id id,campaign_name name from campaigns left join users_to_campaigns using(campaign_id) where campaign_status = 1 and user_id = '{$_SESSION['user_id']}' group by campaign_id order by campaign_name";
         if (!$this->db->query($qry)->result_array()) {
             $qry = "select campaign_id id,campaign_name name from campaigns where campaign_status = 1 order by campaign_name";
         }
@@ -155,7 +155,7 @@ class Form_model extends CI_Model
     }
     public function get_groups()
     {
-        $qry = "select group_id id,group_name name from user_groups";
+        $qry = "select group_id id,group_name name,theme_folder as theme_folder from user_groups";
         return $this->db->query($qry)->result_array();
     }
 	    public function get_roles()
@@ -196,6 +196,21 @@ class Form_model extends CI_Model
     
     	return $this->db->get()->result_array();
     }
+    
+    /**
+     * Get The Team Managers
+     * 
+     */
+    public function get_team_managers()
+    {
+    	$qry = "select team_id id,team_name name from teams";    	
+    	return $this->db->query($qry)->result_array();
+    }
 
+    public function get_users_in_role($role_id) {
+		$this->db->select('user_id id,name');
+    	$this->db->where("role_id",$role_id);
+    	return $this->db->get('users')->result_array();
+    }
 
 }
