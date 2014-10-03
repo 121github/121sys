@@ -43,14 +43,14 @@
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>reports/activity" <?php echo @($reports=='activity'?"class='active'":"") ?>>Activity</a>
                     </div>
-                    <!-- Level 3 -->
+                    <!-- Campaign -->
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
-			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoInner">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoCampaign">
 			                    Campaign
 			                </a>
 			            </div>
-			            <div id="collapseTwoInner" class="accordion-body <?php echo @($reports=='campaign'?"":"collapse") ?>">
+			            <div id="collapseTwoCampaign" class="accordion-body <?php echo @($reports=='campaign'?"":"collapse") ?>">
 			                <div class="accordion-group">
 			                    <div class="accordion-inner" style="padding-left: 50px;">
 			                        <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>Campaign Transfer</a>
@@ -64,7 +64,7 @@
 			                </div>
 			            </div>
 			        </div>
-			        <!-- End Level 3 -->
+			        <!-- End Campaign 3 -->
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>reports/individual" <?php echo @($reports=='individual'?"class='active'":"") ?>>Individual</a>
                     </div>

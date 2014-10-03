@@ -167,7 +167,7 @@ class Reports extends CI_Controller
     
     	$data = array(
     			'pageId' => 'Reports',
-    			'title' => 'Reports | Campaign',
+    			'title' => 'Reports | Campaign Transfer',
     			'page'=> array('reports'=>'campaign', 'inner' => 'campaigntransfer'),
     			'javascript' => array(
     					'charts.js',
@@ -246,7 +246,7 @@ class Reports extends CI_Controller
     
     	$data = array(
     			'pageId' => 'Reports',
-    			'title' => 'Reports | Campaign',
+    			'title' => 'Reports | Campaign Appointment',
     			'page'=> array('reports'=>'campaign', 'inner' => 'campaignappointment'),
     			'javascript' => array(
     					'charts.js',
@@ -313,7 +313,7 @@ class Reports extends CI_Controller
     
     	$data = array(
     			'pageId' => 'Reports',
-    			'title' => 'Reports | Campaign',
+    			'title' => 'Reports | Campaign Survey',
     			'page'=> array('reports'=>'campaign', 'inner' => 'campaignsurvey'),
     			'javascript' => array(
     					'charts.js',
@@ -613,7 +613,7 @@ class Reports extends CI_Controller
     
     	$data = array(
     			'pageId' => 'Reports',
-    			'title' => 'Reports | Agent Dials',
+    			'title' => 'Reports | Campaign Dials',
     			'page'=> array('reports'=>'campaigndials'),
     			'javascript' => array(
     					'charts.js',
@@ -657,5 +657,4 @@ class Reports extends CI_Controller
     		));
     	}
     }
-
 }
