@@ -65,12 +65,13 @@ class Records_model extends CI_Model
         );
         
         $join = array();
-        $qry  = "select r.urn, outcome, fullname, {$this->name_field} client_name, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
+        $qry  = "select r.urn, outcome, if(com.name is null,fullname,com.name) fullname, {$this->name_field} client_name, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
         }
         //these joins are mandatory for sorting by name, outcome or campaign
+		$join['companies']  = " left join companies com on com.urn = r.urn ";
         $join['contacts']  = " left join contacts con on con.urn = r.urn ";
         $join['outcomes']  = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
@@ -231,7 +232,7 @@ class Records_model extends CI_Model
         }
         if (in_array(2, $features)) {
             $select .= ",com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,coma.latitude colatitude,coma.longitude colongitude";
-            $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join company_telephone comt using(company_id) left join company_sectors using(company_id)  left join subsectors using(subsector_id) left join sectors using(sector_id)";
+            $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join company_telephone comt using(company_id) left join company_subsectors using(company_id)  left join subsectors using(subsector_id) left join sectors using(sector_id)";
         }
         if (in_array(6, $features)) {
             $select .= " ,sc.script_name,sc.script_id,sc.expandable  ";

@@ -10,6 +10,7 @@ class Admin extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Admin_model');
+		$this->load->model('User_model');
     }
     //this controller loads the view for the user page
     public function users()
@@ -138,6 +139,7 @@ class Admin extends CI_Controller
             foreach ($this->input->post("users") as $user) {
                 $this->Admin_model->revoke_campaign_access($this->input->post("campaign"), $user);
             }
+			$this->User_model->flag_users_for_reload($this->input->post("users"));
             echo json_encode(array(
                 "success" => true
             ));
@@ -149,6 +151,7 @@ class Admin extends CI_Controller
             foreach ($this->input->post("users") as $user) {
                 $this->Admin_model->add_campaign_access($this->input->post("campaign"), $user);
             }
+			  $this->User_model->flag_users_for_reload($this->input->post("users"));
             echo json_encode(array(
                 "success" => true
             ));
@@ -192,7 +195,10 @@ class Admin extends CI_Controller
                 $form['end_date'] = to_mysql_datetime($form['end_date']);
             }
             if (!empty($form['new_client']) && $form['client_id'] == "other"||!empty($form['new_client']) && empty($form['client_id'])) {
+				$client_id = $this->Admin_model->find_client($form['new_client']);
+				if(!$client_id){
                 $client_id         = $this->Admin_model->add_client($form['new_client']);
+				}
                 $form['client_id'] = $client_id;
             }
             unset($form['new_client']);
@@ -203,6 +209,14 @@ class Admin extends CI_Controller
             } else {
 				$features['campaign_id'] = $form['campaign_id'];
                 $response = $this->Admin_model->update_campaign($form);
+				$access = $this->Form_model->get_campaign_access($form['campaign_id']);
+				//this part is to revoke/grant access to users that are already logged in
+				$user_array=array();
+				foreach($access as $user){
+					$user_array[] = $user['id'];
+					}
+				if($this->User_model->flag_users_for_reload($user_array));
+				
             }
 			 //if it's set as B2B then we add the company feature to the campaign
             if ($form['campaign_type_id'] == "2") {
@@ -298,6 +312,12 @@ class Admin extends CI_Controller
             $response = $this->Admin_model->add_new_role($form);
         } else {
             $response = $this->Admin_model->update_role($form);
+			$users_in_role = $this->Form_model->get_users_in_role($form['role_id']);
+			$users=array();
+			foreach($users_in_role as $row){
+			$users[] = $row['id'];
+			}
+			$this->User_model->flag_users_for_reload($users);
         }
         echo json_encode(array(
             "data" => $response
@@ -320,7 +340,6 @@ class Admin extends CI_Controller
     //this loads the groups view  
     public function groups()
     {
-        $groups = $this->Admin_model->get_groups();
         $data   = array(
             'pageId' => 'Admin',
             'title' => 'Admin',
@@ -330,7 +349,6 @@ class Admin extends CI_Controller
             'javascript' => array(
                 'admin.js'
             ),
-            'groups' => $groups,
             'css' => array(
                 'dashboard.css'
             )

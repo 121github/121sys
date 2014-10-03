@@ -178,7 +178,7 @@
             <div class="panel-body">
               <div class="form-group">
                 <label>Contact ID</label>
-                <input <?php if(@isset($_SESSION['filter']['values']['coname'])){ echo "value='".$_SESSION['filter']['values']['contact_id']."'"; } ?> name="contact_id" type="intextput" class="form-control" placeholder="Enter the contact ID">
+                <input <?php if(@isset($_SESSION['filter']['values']['contact_id'])){ echo "value='".$_SESSION['filter']['values']['contact_id']."'"; } ?> name="contact_id" type="intextput" class="form-control" placeholder="Enter the contact ID">
               </div>
               <div class="form-group">
                 <label>Name</label>
@@ -223,7 +223,7 @@
               Found: <span class="record-count"></span></div>
           </div>
         </div>
-        <!--
+        
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"> Company Filter Options </a> </h4>
@@ -280,7 +280,7 @@
               Found: <span class="record-count"></span> </div>
           </div>
         </div>
-        -->
+        
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"> Advanced Filter Options </a> </h4>

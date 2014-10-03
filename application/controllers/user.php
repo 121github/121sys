@@ -100,6 +100,10 @@ class User extends CI_Controller
     }
     
     
+	public function check_session(){
+		$this->User_model->check_session();
+	}
+	
     public function index()
     {
         //redirect('user/account');

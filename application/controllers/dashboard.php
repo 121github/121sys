@@ -19,7 +19,7 @@ class Dashboard extends CI_Controller
     //this laods the user dashboard view  
     public function user_dash()
     {
-        $months  = $campaigns = $this->Form_model->get_user_campaigns();
+        $campaigns = $this->Form_model->get_user_campaigns();
         $surveys = $this->Form_model->get_surveys();
         
         $data = array(
@@ -137,6 +137,7 @@ class Dashboard extends CI_Controller
     public function get_outcomes()
     {
         if ($this->input->is_ajax_request()) {
+			$data = array();
             $filter  = array(
                 "range" => $this->input->post('range'),
                 "campaign" => $this->input->post('campaign')

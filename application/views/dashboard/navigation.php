@@ -123,6 +123,28 @@
                     <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>scripts" <?php echo @($admin=='scripts'?"class='active'":"") ?>>Scripts</a>
                     </div>
+   
+                    <div class="accordion-group panel">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseThree" href="#collapseTwoinner">
+                    <i class="glyphicon glyphicon-file"></i> More
+                </a>
+            </div>
+            <div id="collapseTwoinner" class="accordion-body">
+                <div class="accordion-group">
+                    <div class="accordion-inner">
+                      <a href="<?php echo base_url() ?>reports/targets" <?php echo @($reports=='targets'?"class='active'":"") ?>>Targets</a>
+                    </div>
+                    <div class="accordion-inner">
+                     <a href="<?php echo base_url() ?>reports/answers" <?php echo @($reports=='answers'?"class='active'":"") ?>>Answers</a>
+                    </div>
+                    <div class="accordion-inner">
+                       <a href="<?php echo base_url() ?>reports/activity" <?php echo @($reports=='activity'?"class='active'":"") ?>>Activity</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+                    
                 </div>
             </div>
         </div>

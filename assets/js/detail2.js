@@ -1636,9 +1636,10 @@ var record = {
                 beforeSend: function() {
                     $panel.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
                 }
-            }).done(function(response) {
+            }).fail(function(){
+				$panel.html($('<p/>').text("Call recordings could not be found"));
+			}).done(function(response) {
                 $panel.empty();
-                $body = "";
                 if (response.data.length > 0) {
                     $.each(response.data, function(i, val) {
                         $body += '<tr><td>' + val.calldate + '</td><td>' + val.duration + '</td><td>' + val.servicename + '</td><td width="180"><a href="#" class="listen" data-id="' + val.call_id + '"><span class="speaker glyphicon glyphicon-play"></span> Listen</a> <span class="player-loading hidden">Please wait  <img src="' + helper.baseUrl + 'assets/img/ajax-load-black.gif"/></span></td></tr>';
