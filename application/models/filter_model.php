@@ -74,17 +74,17 @@ class Filter_model extends CI_Model
         $filter_options["coname"]           = array(
             "table" => "companies",
             "type" => "like",
-            "alias" => "com.coname"
+            "alias" => "com.name"
         );
         $filter_options["sector_id"]        = array(
-            "table" => "companies",
+            "table" => "subsectors",
             "type" => "id",
-            "alias" => "com.sector_id"
+            "alias" => "sec.sector_id"
         );
         $filter_options["subsector_id"]     = array(
-            "table" => "companies",
+            "table" => "company_subsectors",
             "type" => "id",
-            "alias" => "com.subsector_id"
+            "alias" => "subsec.subsector_id"
         );
         $filter_options["company_id"]       = array(
             "table" => "companies",
@@ -302,6 +302,9 @@ class Filter_model extends CI_Model
                 }
                 if ($filter_options[$field]['table'] == "companies") {
                     $join['companies'] = " left join companies com on com.urn = r.urn ";
+					$join['company_subsectors'] = " left join company_subsectors csubsec on csubsec.company_id = com.company_id ";
+					$join['subsectors'] = " left join subsectors subsec on subsec.subsector_id = csubsec.subsector_id ";
+					$join['sectors'] = " left join sectors sec on sec.sector_id = subsec.sector_id ";
                 }
                 if ($filter_options[$field]['table'] == "ownership") {
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
@@ -406,7 +409,7 @@ class Filter_model extends CI_Model
 		
 		if($table=="records"){
 		$table_columns = array("campaign_name","fullname","outcome","date_format(r.date_updated,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
-		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id";
+		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id";
 		$group_by =  " group by records.urn";
 		} else {
 			$join_records = " left join records on records.urn = history.urn ";

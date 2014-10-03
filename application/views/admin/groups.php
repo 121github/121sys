@@ -28,12 +28,13 @@
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
+                  <th>Theme Folder</th>
                   <th>Options</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="3"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
+                  <td colspan="4"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
                 </tr>
               </tbody>
             </table>

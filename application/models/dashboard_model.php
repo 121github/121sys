@@ -17,6 +17,7 @@ class Dashboard_model extends CI_Model
         if (!empty($filter)) {
             $qry .= " and campaign_id = '$filter'";
         }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " order by records.date_updated asc";
         return $this->db->query($qry)->result_array();
     }
@@ -27,6 +28,7 @@ class Dashboard_model extends CI_Model
         if (!empty($filter)) {
             $qry .= " and campaign_id = '$filter'";
         }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " order by records.date_updated asc";
         return $this->db->query($qry)->result_array();
     }
@@ -36,9 +38,11 @@ class Dashboard_model extends CI_Model
         $qry = "select contact, u.name, campaign_name, if(h.outcome_id is null,if(pd.description is null,'No Action Required',pd.description),outcome) as outcome, history_id, comments,urn from history h left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join campaigns using(campaign_id) left join users u using(user_id) where 1 ";
         //if a filter is selected then we just return history from that campaign, otehrwize get all the history
         if (!empty($filter)) {
-            $qry .= " and campaign_id = '$filter'";
+            $qry .= " and h.campaign_id = '$filter'";
         }
+		$qry .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " order by history_id desc limit 10";
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     
@@ -46,8 +50,9 @@ class Dashboard_model extends CI_Model
     {
         $qry = "select outcome,count(*) count from history left join outcomes using(outcome_id) left join records using(urn) where 1 and history.outcome_id is not null ";
         if (!empty($filter['campaign'])) {
-            $qry .= " and campaign_id = '" . intval($filter['campaign']) . "'";
+            $qry .= " and history.campaign_id = '" . intval($filter['campaign']) . "'";
         }
+		$qry .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by history.outcome_id order by count desc ";
         return $this->db->query($qry)->result_array();
     }
@@ -56,7 +61,7 @@ class Dashboard_model extends CI_Model
     
     public function system_stats($filter = "")
     {
-        $extra     = "";
+        $extra     = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $extra_url = "";
         if (!empty($filter)) {
             $extra     = " and campaign_id = '" . intval($filter) . "'";
@@ -118,17 +123,17 @@ class Dashboard_model extends CI_Model
     
     public function get_comments($comments)
     {
+		$extra = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $this->load->helper('date');
         if ($comments == 1) {
-            $qry = "select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys  using(survey_id) left join contacts using(urn) where char_length(an.notes) > 50 group by contacts.contact_id order by completed_date desc limit 10";
+            $qry = "select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys  using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 50 $extra group by contacts.contact_id order by completed_date desc limit 10";
         } else if ($comments == 2) {
-            $qry = "select urn,comments notes,contact `date`,fullname from history left join contacts using(urn) where char_length(comments) > 40 order by history_id desc  limit 10";
+            $qry = "select urn,comments notes,contact `date`,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $extra order by history_id desc  limit 10";
         } else if ($comments == 3) {
-            $qry = "select urn,note notes,s.date_updated `date`,fullname from sticky_notes s left join contacts using(urn) where char_length(note) > 40 order by s.date_updated desc  limit 10";
+            $qry = "select urn,note notes,s.date_updated `date`,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra order by s.date_updated desc  limit 10";
         } else {
-            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join contacts using(urn) where char_length(an.notes) > 40 group by contacts.contact_id union select urn,comments,contact,fullname from history left join contacts using(urn) where char_length(comments) > 40 union select urn,note,s.date_updated,fullname from sticky_notes s left join contacts using(urn) where char_length(note) > 40) t order by t.`date` desc limit 10";
+            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 40  $extra group by contacts.contact_id union select urn,comments,contact,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $extra union select urn,note,s.date_updated,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra) t order by t.`date` desc limit 10";
         }
-        
         $result = $this->db->query($qry)->result_array();
         $now    = time();
         if (count($result)) {
@@ -165,6 +170,7 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['user'])) {
             $qry .= " and user_id = " . intval($filter['user']);
         }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc limit 10";
         return $this->db->query($qry)->result_array();
     }
@@ -178,6 +184,7 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['user'])) {
             $qry .= " and user_id = " . intval($filter['user']);
         }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc limit 10";
         return $this->db->query($qry)->result_array();
     }
@@ -191,6 +198,7 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['user'])) {
             $qry .= " and user_id = " . intval($filter['user']);
         }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc limit 20";
         
         return $this->db->query($qry)->result_array();
@@ -202,7 +210,7 @@ class Dashboard_model extends CI_Model
         } else {
             $qry_filter = "";
         }
-        
+        $qry_filter .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry = "select urn, max(contact) as `when`, survey_date,outcome as outcome,`name`,campaign_name as campaign from history left join campaigns using(campaign_id) left join outcomes using(outcome_id) left join users u using(user_id) left join records using(urn)  left join (select user_id, max(contact) survey_date from history h left join records using(urn) where h.outcome_id = 60 $qry_filter group by user_id) ls on ls.user_id = history.user_id where history.role_id = 3 $qry_filter  group by u.user_id ";
         
         return $this->db->query($qry)->result_array();
@@ -215,7 +223,7 @@ class Dashboard_model extends CI_Model
         } else {
             $qry_filter = "";
         }
-        
+         $qry_filter .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry = "select `name`,count(*) dials,surveys,campaign_name as campaign from history h left join campaigns using(campaign_id)  left join records using(urn) left join (select user_id,count(*) surveys from history left join records using(urn) where 1 and history.outcome_id = 60 $qry_filter group by user_id) sv on sv.user_id = h.user_id  left join users on h.user_id = users.user_id where h.role_id = 3 $qry_filter group by h.user_id";
         return $this->db->query($qry)->result_array();
     }
@@ -227,7 +235,7 @@ class Dashboard_model extends CI_Model
         } else {
             $qry_filter = "";
         }
-        
+         $qry_filter .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry = "select `name`,count(*) total,virgin,in_progress,completed,campaign_name as campaign from records r  left join ownership o using(urn)  left join campaigns using(campaign_id) left join (select user_id,count(*) virgin from records left join ownership o using(urn) left join campaigns using(campaign_id) where outcome_id is null and record_status in(1,3) $qry_filter group by user_id) v on v.user_id = o.user_id  
 	 left join (select user_id,count(*) in_progress from records  left join ownership o using(urn) left join campaigns using(campaign_id) where record_status = 1 and outcome_id is not null $qry_filter group by user_id) ip on ip.user_id = o.user_id  
 	 left join (select user_id,count(*) completed from records  left join ownership o using(urn) left join campaigns using(campaign_id) where record_status = 3 $qry_filter group by user_id) c on c.user_id = o.user_id  

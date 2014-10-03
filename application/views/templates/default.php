@@ -7,7 +7,7 @@
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
 <!-- Optional theme -->
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-theme.css">
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/bootstrap-theme.css">
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/dataTables.bootstrap.css">
 <!-- Latest compiled and minified JavaScript -->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
@@ -22,7 +22,7 @@
 <link rel="stylesheet"  href="<?php echo base_url(); ?>assets/css/<?php echo $file ?>">
 <?php endforeach;
 		endif;  ?>
-<link rel="shortcut icon" href="<?php echo base_url(); ?>assets/img/logo.ico">
+<link rel="shortcut icon" href="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/icon.png">
 <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
 
 <!-- Only load these files when they are needed ??!! DONT FORGET ME -->
@@ -35,7 +35,7 @@
   <div class="container">
     <div class="navbar-header">
       <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle collapsed" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-      <a href="#" class="navbar-brand"><img style="margin-top:-10px;" src="<?php echo base_url(); ?>assets/img/logo.png"></a> </div>
+      <a href="#" class="navbar-brand"><img style="margin-top:-10px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/logo.png"></a> </div>
     <div class="navbar-collapse collapse pull-right">
       <ul class="nav navbar-nav">
         <?php if(isset($_SESSION['user_id'])): ?>
@@ -91,7 +91,9 @@
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
-<script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + ''; </script>
+<script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + ''; 
+$.get(helper.baseUrl+'user/check_session');
+</script>
 <?php  //load specific javascript files set in the controller
 		if(isset($javascript)): 
 		foreach($javascript as $file): ?>
