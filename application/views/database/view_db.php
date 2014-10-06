@@ -39,8 +39,8 @@
                 <button class="btn drop-tables btn-danger" style="width:130px">Drop tables</button>
                 Drop all tables in the database. This will destroy the current databse <img style="display:none" class="pull-right" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
               <li class="list-group-item">
-                <button class="btn create-tables btn-info" style="width:130px">Create tables</button>
-                Recreates all the tables with default configuration options<img class="pull-right" style="display:none" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
+                <button class="btn create-tables btn-info" style="width:130px">Update Database</button>
+                Updates the database to the latest version<img class="pull-right" style="display:none" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
               <li class="list-group-item">
                 <button class="btn btn-info add-data" style="width:130px">Load demo data</button>
                 Adds some dummy client data <img class="pull-right" style="display:none" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
