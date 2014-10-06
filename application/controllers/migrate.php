@@ -12,10 +12,10 @@ parent::__construct();
 $this->load->model('Database_model');	
 }
 
-public function update(){
+public function index(){
 	$this->load->library('migration');
 	
-if ( !$this->migration->latest())
+if ( !$this->migration->current())
 {
 	show_error($this->migration->error_string());
 } else {
@@ -25,7 +25,7 @@ if ( !$this->migration->latest())
 
 public function rollback(){
 	$this->load->library('migration');
-	$rollback = $this->Database_model->get_version() - 1;
+	$rollback = $this->Database_model->current();
 if ( !$this->migration->version($rollback))
 {
 	show_error($this->migration->error_string());
