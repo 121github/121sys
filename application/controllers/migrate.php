@@ -9,7 +9,6 @@ class Migrate extends CI_Controller
     {
 
 parent::__construct();
- user_auth_check();
 $this->load->model('Database_model');	
 }
 
