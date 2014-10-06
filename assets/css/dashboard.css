@@ -185,7 +185,7 @@
 
 #leftMenu .accordion-heading  a:hover{  
     color:#ccc     
-}U
+}
 
 #leftMenu .accordion-heading .active {
     width: 182px;
@@ -203,3 +203,6 @@
 	color:#fff }
 	#leftMenu .accordion-inner a {
 	color:#ddd }
+	
+#leftMenu .submenu .accordion-inner { background:#ccc; }
+#leftMenu .submenu .accordion-inner a { color:#666; }
