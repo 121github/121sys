@@ -1,9 +1,9 @@
 // JavaScript Document
 $(document).ready(function() {
-    activity.init()
+    campaignappointment.init()
 });
 
-var activity = {
+var campaignappointment = {
     init: function() {
         $('.daterange').daterangepicker({
                 opens: "left",
@@ -26,7 +26,7 @@ var activity = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                dashboard.activity_panel()
+                campaignappointment.campaignappointment_panel()
             });
         $(document).on("click", '.daterange', function(e) {
             e.preventDefault();
@@ -35,38 +35,57 @@ var activity = {
         $(document).on("click", ".campaign-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
-            activity.activity_panel()
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            campaignappointment.campaignappointment_panel()
         });
 
-        $(document).on("click", ".agent-filter", function(e) {
+        $(document).on("click", ".team-manager-filter", function(e) {
             e.preventDefault();
-            $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
-            activity.activity_panel()
+            $(this).closest('form').find('input[name="team-manager"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            campaignappointment.campaignappointment_panel()
         });
-        activity.activity_panel()
+        $(document).on("click", ".source-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            campaignappointment.campaignappointment_panel()
+        });
+        campaignappointment.campaignappointment_panel()
     },
-    activity_panel: function(campaign) {
+    campaignappointment_panel: function(campaignappointment) {
         $.ajax({
-            url: helper.baseUrl + 'reports/activity_data',
+            url: helper.baseUrl + 'reports/campaignappointment_data',
             type: "POST",
             dataType: "JSON",
-            data: $('.filter-form').serialize(),
-            beforeSend: function() {
-                $('.activity-panel').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
-            }
+            data: $('.filter-form').serialize()
         }).done(function(response) {
-            $('.activity-panel').empty();
             var $row = "";
+            $tbody = $('.campaignappointment-data .ajax-table').find('tbody');
+    		$tbody.empty();
             if (response.success) {
-                var $outcomes = "";
-                $('.activity-panel').append('<p>Total Dials:' + response.total + '</p>');
-                $.each(response.data, function(i, val) {
-
-                    $outcomes += '<a href="' + val.url + '" class="list-group-item"><i class="fa fa-comment fa-fw"></i>' + val.outcome + '<span class="pull-right text-muted small padl"><em>' + val.count + '</em></span><span class="padl pull-right small"><em>' + val.pc + '%</em></span></a>';
+            	$.each(response.data, function(i, val) {
+                    if (response.data.length) {
+						$tbody
+							.append("<tr><td class='date'>"
+									+ val.date
+								+ "</td><td class='appointments'>"
+									+ val.appointments
+								+ "</td><td class='template_cc' style='duration'>"
+									+ val.duration
+								+ "</td><td class='template_bcc' style='rate'>"
+									+ val.rate
+								+ "</td></tr>");
+                    }
                 });
-                $('.activity-panel').append('<div class="list-group">' + $outcomes + '</div>');
             } else {
-                $('.activity-panel').append('<p>' + response.msg + '</p>');
+            	$tbody
+				.append("<tr><td colspan='6'>"
+					+ response.msg
+					+ "</td></tr>");
             }
         });
     }

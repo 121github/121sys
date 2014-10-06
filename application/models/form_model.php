@@ -196,6 +196,16 @@ class Form_model extends CI_Model
     
     	return $this->db->get()->result_array();
     }
+    
+    /**
+     * Get The Team Managers
+     * 
+     */
+    public function get_team_managers()
+    {
+    	$qry = "select team_id id,team_name name from teams";    	
+    	return $this->db->query($qry)->result_array();
+    }
 
     public function get_users_in_role($role_id) {
 		$this->db->select('user_id id,name');

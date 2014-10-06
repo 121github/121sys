@@ -43,9 +43,44 @@
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>reports/activity" <?php echo @($reports=='activity'?"class='active'":"") ?>>Activity</a>
                     </div>
+                    <!-- Campaign -->
+                    <div class="accordion-group panel">
+			            <div class="accordion-inner">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoCampaign">
+			                    Campaign
+			                </a>
+			            </div>
+			            <div id="collapseTwoCampaign" class="accordion-body <?php echo @($reports=='campaign'?"":"collapse") ?>">
+			                <div class="accordion-group">
+			                    <div class="accordion-inner" style="padding-left: 50px;">
+			                        <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>Campaign Transfer</a>
+			                    </div>
+			                    <div class="accordion-inner" style="padding-left: 50px;">
+			                        <a href="<?php echo base_url() ?>reports/campaignappointment" <?php echo @($inner=='campaignappointment'?"class='active'":"") ?>>Campaign Appointment</a>
+			                    </div>
+			                    <div class="accordion-inner" style="padding-left: 50px;">
+			                        <a href="<?php echo base_url() ?>reports/campaignsurvey" <?php echo @($inner=='campaignsurvey'?"class='active'":"") ?>>Campaign Survey</a>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+			        <!-- End Campaign 3 -->
+                    <div class="accordion-inner">
+                       <a href="<?php echo base_url() ?>reports/individual" <?php echo @($reports=='individual'?"class='active'":"") ?>>Individual</a>
+                    </div>
+                    <div class="accordion-inner">
+                       <a href="<?php echo base_url() ?>reports/individualdaily" <?php echo @($reports=='individualdaily'?"class='active'":"") ?>>Individual Daily Comparison</a>
+                    </div>
+                    <div class="accordion-inner">
+                       <a href="<?php echo base_url() ?>reports/agentdials" <?php echo @($reports=='agentdials'?"class='active'":"") ?>>Agent Dials</a>
+                    </div>
+                    <div class="accordion-inner">
+                       <a href="<?php echo base_url() ?>reports/campaigndials" <?php echo @($reports=='campaigndials'?"class='active'":"") ?>>Campaign Dials</a>
+                    </div>
                 </div>
             </div>
         </div>
+
          		<?php if($_SESSION['group']=="1"){ ?>
         <div class="accordion-group panel">
             <div class="accordion-heading">
