@@ -111,6 +111,9 @@
                      <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>admin/roles" <?php echo @($admin=='roles'?"class='active'":"") ?>>Roles</a>
                     </div>
+                     <div class="accordion-inner">
+                       <a href="<?php echo base_url() ?>admin/teams" <?php echo @($admin=='teams'?"class='active'":"") ?>>Teams</a>
+                    </div>
                        <div class="accordion-inner">
                     <a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a>
                     </div>

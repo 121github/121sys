@@ -19,8 +19,8 @@ class Admin_model extends CI_Model
     }
     public function add_new_campaign($form)
     {
-		$this->db->insert("campaigns",$form);
-		return  $this->db->insert_id();
+        $this->db->insert("campaigns", $form);
+        return $this->db->insert_id();
     }
     public function update_campaign($form)
     {
@@ -63,21 +63,21 @@ class Admin_model extends CI_Model
         return $this->db->delete("outcomes_to_campaigns");
     }
     public function add_client($client_name)
-    {	
-		$var = $this->db->escape($client_name);
-		$qry = "insert ignore into clients set client_name = $var";
-		$this->db->query($qry);
+    {
+        $var = $this->db->escape($client_name);
+        $qry = "insert ignore into clients set client_name = $var";
+        $this->db->query($qry);
         return $this->db->insert_id();
     }
-	public function find_client($client_name)
-    {	 
-		$qry = "select client_id from clients where client_name = ".$this->db->escape($client_name);
-		$this->firephp->log($qry);
-		if($this->db->query($qry)->num_rows()>0){
-		return $this->db->query($qry)->row()->client_id;
-		} else {
-        return false;
-		}
+    public function find_client($client_name)
+    {
+        $qry = "select client_id from clients where client_name = " . $this->db->escape($client_name);
+        $this->firephp->log($qry);
+        if ($this->db->query($qry)->num_rows() > 0) {
+            return $this->db->query($qry)->row()->client_id;
+        } else {
+            return false;
+        }
     }
     public function save_campaign_features($form)
     {
@@ -103,19 +103,26 @@ class Admin_model extends CI_Model
     /* functions for the admin users page */
     public function get_users()
     {
-        $qry    = "select user_id,name,username,group_name,role_name,IF(user_status = 1,'On','Off') status_text,user_status,group_id,role_id,user_email,user_telephone from users left join user_roles using(role_id) left join user_groups using(group_id) where user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) order by CASE WHEN user_status = 1 THEN 0 ELSE 1 END";
+        if ($_SESSION['role'] == "1") {
+            $where = "";
+        } else {
+            $where = " and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
+        }
+        $qry    = "select user_id,name,username,group_name,role_name,IF(user_status = 1,'On','Off') status_text,user_status,group_id,role_id,user_email,user_telephone from users left join user_roles using(role_id) left join user_groups using(group_id) where 1 $where order by CASE WHEN user_status = 1 THEN 0 ELSE 1 END";
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
     /* functions for the admin groups page */
     public function get_groups()
     {
-		if($_SESSION['group']==1){ 
-		$qry    = "select * from user_groups";
-	 	$result = $this->db->query($qry)->result_array();
+        if ($_SESSION['group'] == 1) {
+            $qry    = "select * from user_groups";
+            $result = $this->db->query($qry)->result_array();
         } else {
-		$result = array($_SESSION['group']);
-		}
+            $result = array(
+                $_SESSION['group']
+            );
+        }
         return $result;
     }
     public function add_new_group($form)
@@ -132,6 +139,48 @@ class Admin_model extends CI_Model
         $this->db->where("group_id", $id);
         return $this->db->delete("user_groups");
     }
+    /* team admin functions */
+    public function get_teams()
+    {
+        $qry    = "select * from teams";
+        $result = $this->db->query($qry)->result_array();
+        return $result;
+    }
+    public function add_new_team($form)
+    {
+        $managers = $form['managers'];
+        unset($form['managers']);
+        $this->db->insert("teams", $form);
+        $id = $this->db->insert_id();
+        foreach ($managers as $manager) {
+            $this->db->insert("team_managers", array(
+                "team_id" => $id,
+                'user_id' => $manager
+            ));
+        }
+    }
+    public function update_team($form)
+    {
+        $this->db->where('team_id', $form['team_id']);
+        $this->db->delete('team_managers');
+        foreach ($form['managers'] as $manager) {
+            $this->db->insert("team_managers", array(
+                "team_id" => $form['team_id'],
+                'user_id' => $manager
+            ));
+        }
+        unset($form['managers']);
+        $this->db->where("team_id", $form['team_id']);
+        return $this->db->update("teams", $form);
+    }
+    public function delete_team($id)
+    {
+        $this->db->where("team_id", $id);
+        return $this->db->delete("team_managers");
+        $this->db->where("team_id", $id);
+        return $this->db->delete("teams");
+    }
+    /* end team admin functions */
     public function add_new_user($form)
     {
         return $this->db->insert("users", $form);

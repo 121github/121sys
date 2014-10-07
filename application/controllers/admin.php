@@ -10,7 +10,7 @@ class Admin extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Admin_model');
-		$this->load->model('User_model');
+        $this->load->model('User_model');
     }
     //this controller loads the view for the user page
     public function users()
@@ -25,7 +25,7 @@ class Admin extends CI_Controller
             ),
             'options' => $options,
             'javascript' => array(
-                'admin.js'
+                'admin/users.js'
             ),
             'css' => array(
                 'dashboard.css'
@@ -62,7 +62,7 @@ class Admin extends CI_Controller
             ),
             'javascript' => array(
                 'dashboard.js',
-                'admin.js'
+                'admin/campaigns.js'
             ),
             'options' => $options,
             'css' => array(
@@ -91,7 +91,7 @@ class Admin extends CI_Controller
             ));
         }
     }
-	    public function populate_clients()
+    public function populate_clients()
     {
         if ($this->input->is_ajax_request()) {
             $clients = $this->Form_model->get_clients();
@@ -139,7 +139,7 @@ class Admin extends CI_Controller
             foreach ($this->input->post("users") as $user) {
                 $this->Admin_model->revoke_campaign_access($this->input->post("campaign"), $user);
             }
-			$this->User_model->flag_users_for_reload($this->input->post("users"));
+            $this->User_model->flag_users_for_reload($this->input->post("users"));
             echo json_encode(array(
                 "success" => true
             ));
@@ -151,7 +151,7 @@ class Admin extends CI_Controller
             foreach ($this->input->post("users") as $user) {
                 $this->Admin_model->add_campaign_access($this->input->post("campaign"), $user);
             }
-			  $this->User_model->flag_users_for_reload($this->input->post("users"));
+            $this->User_model->flag_users_for_reload($this->input->post("users"));
             echo json_encode(array(
                 "success" => true
             ));
@@ -178,12 +178,12 @@ class Admin extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
-			if(isset($form['features'])){
-			$features['features'] =	$form['features'];
-			 } else {
-			$features = array();
-			 }
-			 unset($form['features']);
+            if (isset($form['features'])) {
+                $features['features'] = $form['features'];
+            } else {
+                $features = array();
+            }
+            unset($form['features']);
             if (empty($form['start_date'])) {
                 $form['start_date'] = NULL;
             } else {
@@ -194,42 +194,40 @@ class Admin extends CI_Controller
             } else {
                 $form['end_date'] = to_mysql_datetime($form['end_date']);
             }
-            if (!empty($form['new_client']) && $form['client_id'] == "other"||!empty($form['new_client']) && empty($form['client_id'])) {
-				$client_id = $this->Admin_model->find_client($form['new_client']);
-				if(!$client_id){
-                $client_id         = $this->Admin_model->add_client($form['new_client']);
-				}
+            if (!empty($form['new_client']) && $form['client_id'] == "other" || !empty($form['new_client']) && empty($form['client_id'])) {
+                $client_id = $this->Admin_model->find_client($form['new_client']);
+                if (!$client_id) {
+                    $client_id = $this->Admin_model->add_client($form['new_client']);
+                }
                 $form['client_id'] = $client_id;
             }
             unset($form['new_client']);
-		   
             if (empty($form['campaign_id'])) {
-                $response = $this->Admin_model->add_new_campaign($form);
-				$features['campaign_id'] = $response ;
+                $response                = $this->Admin_model->add_new_campaign($form);
+                $features['campaign_id'] = $response;
             } else {
-				$features['campaign_id'] = $form['campaign_id'];
-                $response = $this->Admin_model->update_campaign($form);
-				$access = $this->Form_model->get_campaign_access($form['campaign_id']);
-				//this part is to revoke/grant access to users that are already logged in
-				$user_array=array();
-				foreach($access as $user){
-					$user_array[] = $user['id'];
-					}
-				if($this->User_model->flag_users_for_reload($user_array));
-				
+                $features['campaign_id'] = $form['campaign_id'];
+                $response                = $this->Admin_model->update_campaign($form);
+                $access                  = $this->Form_model->get_campaign_access($form['campaign_id']);
+                //this part is to revoke/grant access to users that are already logged in
+                $user_array              = array();
+                foreach ($access as $user) {
+                    $user_array[] = $user['id'];
+                }
+                if ($this->User_model->flag_users_for_reload($user_array));
             }
-			 //if it's set as B2B then we add the company feature to the campaign
+            //if it's set as B2B then we add the company feature to the campaign
             if ($form['campaign_type_id'] == "2") {
                 $features['features'][] = 2;
             }
             //all campaigns need the contact and update panel at a minimum
-			if(!in_array(1,$features['features'])){
-            $features['features'][] = 1;
-			}
-			if(!in_array(3,$features['features'])){
-            $features['features'][] = 3;
-			}
-            $response   = $this->Admin_model->save_campaign_features($features);
+            if (!in_array(1, $features['features'])) {
+                $features['features'][] = 1;
+            }
+            if (!in_array(3, $features['features'])) {
+                $features['features'][] = 3;
+            }
+            $response = $this->Admin_model->save_campaign_features($features);
             echo json_encode(array(
                 "data" => $response
             ));
@@ -280,7 +278,7 @@ class Admin extends CI_Controller
                 'admin' => 'roles'
             ),
             'javascript' => array(
-                'admin.js'
+                'admin/roles.js'
             ),
             'roles' => $roles,
             'permissions' => $permissions,
@@ -311,13 +309,13 @@ class Admin extends CI_Controller
         if (empty($form['role_id'])) {
             $response = $this->Admin_model->add_new_role($form);
         } else {
-            $response = $this->Admin_model->update_role($form);
-			$users_in_role = $this->Form_model->get_users_in_role($form['role_id']);
-			$users=array();
-			foreach($users_in_role as $row){
-			$users[] = $row['id'];
-			}
-			$this->User_model->flag_users_for_reload($users);
+            $response      = $this->Admin_model->update_role($form);
+            $users_in_role = $this->Form_model->get_users_in_role($form['role_id']);
+            $users         = array();
+            foreach ($users_in_role as $row) {
+                $users[] = $row['id'];
+            }
+            $this->User_model->flag_users_for_reload($users);
         }
         echo json_encode(array(
             "data" => $response
@@ -340,14 +338,14 @@ class Admin extends CI_Controller
     //this loads the groups view  
     public function groups()
     {
-        $data   = array(
+        $data = array(
             'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => array(
                 'admin' => 'groups'
             ),
             'javascript' => array(
-                'admin.js'
+                'admin/groups.js'
             ),
             'css' => array(
                 'dashboard.css'
@@ -374,6 +372,62 @@ class Admin extends CI_Controller
             "data" => $response
         ));
     }
+    /* team page functions */
+    public function teams()
+    {
+        $groups   = $this->Form_model->get_groups();
+        $managers = $this->Form_model->get_managers();
+        $data     = array(
+            'pageId' => 'Admin',
+            'title' => 'Admin',
+            'page' => array(
+                'admin' => 'teams'
+            ),
+            'javascript' => array(
+                'admin/teams.js'
+            ),
+            'css' => array(
+                'dashboard.css'
+            ),
+            'options' => array(
+                'groups' => $groups,
+                'managers' => $managers
+            )
+        );
+        $this->template->load('default', 'admin/teams.php', $data);
+    }
+    public function get_team_managers()
+    {
+        $team     = intval($this->uri->segment(3));
+        $result   = $this->Form_model->get_team_managers($team);
+        $managers = array();
+        foreach ($result as $row) {
+            $managers[] = $row['id'];
+        }
+        echo json_encode(array(
+            "data" => $managers
+        ));
+    }
+    public function get_teams()
+    {
+        $teams = $this->Form_model->get_teams();
+        echo json_encode(array(
+            "data" => $teams
+        ));
+    }
+    public function save_team()
+    {
+        $form = $this->input->post();
+        if (empty($form['team_id'])) {
+            $response = $this->Admin_model->add_new_team($form);
+        } else {
+            $response = $this->Admin_model->update_team($form);
+        }
+        echo json_encode(array(
+            "data" => $response
+        ));
+    }
+    /* end team page functions */
     public function save_user()
     {
         $form = $this->input->post();
