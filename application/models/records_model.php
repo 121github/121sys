@@ -101,6 +101,12 @@ class Records_model extends CI_Model
         $qry .= " and record_status = 1 ";
         } */
         
+		/* users can only see records that have not been parked */
+		 if (!isset($_SESSION['filter']['values']['parked_code'])) {
+        $qry .= " and parked_code is null ";
+        }
+		
+		
         $qry .= " group by r.urn";
         //if any order has been set then we should apply it here
         //$this->firephp->log($qry);

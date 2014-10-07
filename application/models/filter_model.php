@@ -36,6 +36,11 @@ class Filter_model extends CI_Model
             "type" => "id",
             "alias" => "r.urn"
         );
+		$filter_options["parked_code"]              = array(
+            "table" => "records",
+            "type" => "multiple",
+            "alias" => "r.parked_code"
+        );
         $filter_options["nextcall"]         = array(
             "table" => "records",
             "type" => "range",

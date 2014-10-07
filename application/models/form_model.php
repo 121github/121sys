@@ -190,4 +190,10 @@ class Form_model extends CI_Model
         $this->db->where("role_id", $role_id);
         return $this->db->get('users')->result_array();
     }
+	
+	    public function get_parked_codes()
+    {
+        $this->db->select('parked_code id,park_reason name');
+        return $this->db->get('park_codes')->result_array();
+    }
 }

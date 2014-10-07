@@ -30,6 +30,7 @@ class Search extends CI_Controller
         $sectors        = $this->Form_model->get_sectors();
         $subsectors     = $this->Form_model->get_subsectors();
         $status         = $this->Form_model->get_status_list();
+		$parked_codes   = $this->Form_model->get_parked_codes();
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();
@@ -47,6 +48,7 @@ class Search extends CI_Controller
             'sectors' => $sectors,
             'subsectors' => $subsectors,
             'status' => $status,
+			'parked_codes' => $parked_codes,
             'groups' => $groups,
             'javascript' => array(
                 'filter.js'

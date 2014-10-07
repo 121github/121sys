@@ -93,6 +93,14 @@
                   <?php endforeach; ?>
                 </select>
               </div>
+               <div class="form-group">
+                <label>Parked Records</label>
+                <select  name="parked_code[]" class="selectpicker parked-code" data-width="100%" data-size="5" multiple>
+                  <?php foreach($parked_codes as $row): ?>
+                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['parked_code'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
               <div class="form-group">
                 <label>Group Ownership</label>
                 <select name="group_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
