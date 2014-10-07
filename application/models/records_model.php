@@ -484,7 +484,7 @@ class Records_model extends CI_Model
         $hist["user_id"]  = $_SESSION['user_id'];
         $hist["role_id"]  = $_SESSION['role'];
         $hist["group_id"] = $_SESSION['group'];
-        return $this->db->insert("history", elements(array(
+         $this->db->insert("history", elements(array(
             "urn",
             "campaign_id",
             "nextcall",
@@ -500,6 +500,7 @@ class Records_model extends CI_Model
             "progress_id",
             "last_survey"
         ), $hist, NULL));
+		return $this->db->insert_id();
     }
     
     
@@ -616,9 +617,9 @@ class Records_model extends CI_Model
         }
         if (!empty($post['detail_id'])) {
             $this->db->where("detail_id", $post['detail_id']);
-            $this->db->update("record_details", $post);
+            return $this->db->update("record_details", $post);
         } else {
-            $this->db->insert("record_details", $post);
+           return  $this->db->insert("record_details", $post);
         }
     }
     
@@ -720,5 +721,9 @@ class Records_model extends CI_Model
         return $managers;
     }
     
+	public function add_xfer($id,$campaign){
+	$this->db->insert('cross_transfers',array('history_id'=>$id,'campaign_id'=>$campaign));	
+	}
+	
 }
 ?>

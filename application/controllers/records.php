@@ -386,6 +386,10 @@ class Records extends CI_Controller
                 }
 				
             }
+			if(isset($update_array['xfer_campaign'])){
+			$xfer_campaign = $update_array['xfer_campaign'];
+			unset($update_array['xfer_campaign']);
+			}
             $this->Records_model->update_record($update_array);
             $hist = $update_array;
             
@@ -464,8 +468,8 @@ class Records extends CI_Controller
             $hist['description'] = "Record was updated";
             //if the outcome does not have a "no_history" flag we add the update to the history table
             if (!$no_history) {
-				
-                $this->Records_model->add_history($hist);
+                $id = $this->Records_model->add_history($hist);
+				$this->Records_model->add_xfer($id,$xfer_campaign);
             }
             
             //return success to page

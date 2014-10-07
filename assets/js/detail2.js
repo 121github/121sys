@@ -18,7 +18,6 @@ function equalizer() {
 }
 
 function balance($row, height) {
-    console.log(height)
     $.each($row.find('.col-md-6'), function() {
         $(this).find('.panel ul').css('height', height);
     });
@@ -120,7 +119,7 @@ var record = {
             $(document).on('click', '.set-xfer', function(e) {
                 e.preventDefault();
                 var xfer = $('select[name="campaign"]').find('option:selected').text()
-                $('input[name="campaign_id"]').val($('select[name="campaign"]').val());
+                $('#record-update-form').append($('<input name="xfer_campaign" type="hidden"/>').val($('select[name="campaign"]').val()));
                 $('div.outcomepicker').find('.filter-option').text('Cross Transer: ' + xfer);
                 record.update_panel.close_cross_transfer();
             });
@@ -129,9 +128,8 @@ var record = {
                 $val = $(this).val();
                 if ($val == 71) {
                     record.update_panel.cross_transfer();
-                }
-                if ($val == 70) {
-                    $('input[name="campaign_id"]').val(record.campaign)
+                } else {
+                    $('input[name="xfer_campaign"]').remove();
                 }
                 $delay = $('#outcomes').find("option[value='" + $val + "']").attr('delay');
                 //if the selected option has a delay attribute we disable the nextcall and set it as now+the amount of delay. This is for outcomes such as answer machine to give us more control over when agents should try again
@@ -949,7 +947,6 @@ var record = {
             $(document).on('click', '.continue-email', function(e) {
                 e.preventDefault();
                 var template = $(this).closest('form').find('.emailtemplatespicker').val();
-                console.log(template);
                 window.location.href = helper.baseUrl + 'email/create/' + template + '/' + record.urn;
             });
             $(document).on('click', '.del-email-btn', function(e) {
@@ -1329,11 +1326,11 @@ var record = {
             $form.empty();
             $form.append("<input type='hidden' name='urn' value='" + record.urn + "'/>");
 			$form.append("<input type='hidden' name='detail_id' value='" + id + "'/>");
-            var form;
+            var form = "";
             $.each(data, function(k, detail) {
 
                 $.each(detail, function(i, row) {
-                    var inputclass;
+                    var inputclass="";
                     if (row.options) {
                         $select = "<div class='form-group input-group-sm'>" + row.name;
                         $select += '<br><select name="' + row.code + '" class="selectpicker"><option value="">Please select</option>';
@@ -1344,7 +1341,7 @@ var record = {
                             $select += "<option " + selected + " value='" + option_val + "'>" + option_val + "</option>";
                         });
                         $select += "</select></div>";
-                        form = $select;
+                        form += $select;
                     } else {
                         if (row.type != "varchar" && row.type != "number") {
                             inputclass = row.type;
@@ -1661,7 +1658,6 @@ var record = {
             }).done(function(response) {
                 $btn.next('.player-loading').addClass("hidden");
                 if (response.success) {
-                    console.log(response);
                     modal.call_player(response.filename, response.filetype)
                 } else {
                     flashalert.danger("There was a problem loading the recording");
