@@ -11,7 +11,7 @@ class Migration_update_5 extends CI_Migration
   UNIQUE KEY `team_id_2` (`team_id`,`user_id`),
   KEY `team_id` (`team_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8_unicode_ci");
+) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 
 	$this->db->query("CREATE TABLE IF NOT EXISTS `cross_transfers` (
@@ -19,7 +19,7 @@ class Migration_update_5 extends CI_Migration
   `campaign_id` int(11) NOT NULL,
   UNIQUE KEY `history_id` (`history_id`,`campaign_id`),
   KEY `history_id_2` (`history_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8_unicode_ci");
+) ENGINE=InnoDB DEFAULT CHARSET=utf8");
     }
     public function down()
     {
