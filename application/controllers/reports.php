@@ -162,7 +162,7 @@ class Reports extends CI_Controller
     {
     
     	$campaigns = $this->Form_model->get_user_campaigns();
-    	$teamManagers   = $this->Form_model->get_team_managers();
+    	$teamManagers   = $this->Form_model->get_teams();
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
@@ -241,7 +241,7 @@ class Reports extends CI_Controller
     {
     
     	$campaigns = $this->Form_model->get_user_campaigns();
-    	$teamManagers   = $this->Form_model->get_team_managers();
+    	$teamManagers   = $this->Form_model->get_teams();
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
@@ -308,7 +308,7 @@ class Reports extends CI_Controller
     {
     
     	$campaigns = $this->Form_model->get_user_campaigns();
-    	$teamManagers   = $this->Form_model->get_team_managers();
+    	$teamManagers   = $this->Form_model->get_teams();
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
@@ -376,7 +376,7 @@ class Reports extends CI_Controller
     
     	$campaigns = $this->Form_model->get_user_campaigns();
     	$agents   = $this->Form_model->get_agents();
-    	$teamManagers   = $this->Form_model->get_team_managers();
+    	$teamManagers   = $this->Form_model->get_teams();
     
     	$data = array(
     			'pageId' => 'Reports',
@@ -457,7 +457,7 @@ class Reports extends CI_Controller
     {
     
     	$campaigns = $this->Form_model->get_user_campaigns();
-    	$teamManagers   = $this->Form_model->get_team_managers();
+    	$teamManagers   = $this->Form_model->get_teams();
     	$agents   = $this->Form_model->get_agents();
     	$sources = $this->Form_model->get_sources();
     
@@ -545,7 +545,7 @@ class Reports extends CI_Controller
     {
     
     	$campaigns = $this->Form_model->get_user_campaigns();
-    	$teamManagers   = $this->Form_model->get_team_managers();
+    	$teamManagers   = $this->Form_model->get_teams();
     	$agents   = $this->Form_model->get_agents();
     	$sources = $this->Form_model->get_sources();
     
@@ -607,7 +607,7 @@ class Reports extends CI_Controller
     {
     
     	$campaigns = $this->Form_model->get_user_campaigns();
-    	$teamManagers   = $this->Form_model->get_team_managers();
+    	$teamManagers   = $this->Form_model->get_teams();
     	$agents   = $this->Form_model->get_agents();
     	$sources = $this->Form_model->get_sources();
     
