@@ -115,9 +115,10 @@ $(document).ready(function(){
 	});
 	
 	$(document).on("click",".add-data",function(){
-		add_data($(this));
+		add_data_confirmation($(this),false);
 	});
-		 function drop_table_confirmation($btn) {
+
+	function drop_table_confirmation($btn) {
         $('.modal-title').text('Please confirm');
         $('#modal').modal({
             backdrop: 'static',
@@ -128,7 +129,20 @@ $(document).ready(function(){
             drop_tables($btn);
             $('#modal').modal('toggle');
         });
-		 }
+	}
+
+	function add_data_confirmation($btn) {
+        $('.modal-title').text('Please confirm');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').html('This action will truncate all the tables before add the sample data. Are you sure you want to continue?<br><b class="red">This will erase all the data in the system</b>');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+        	add_data($btn);
+            $('#modal').modal('toggle');
+        });
+	}
 		
 });
 </script> 
