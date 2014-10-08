@@ -54,7 +54,7 @@ var admin = {
                 if (response.success) {
                     $.each(response.data, function(i, val) {
                         if (response.data.length) {
-                            $tbody.append('<tr><td class="hidden user_email">' + val.user_email + '</td><td class="hidden user_telephone">' + val.user_telephone + '</td><td class="user_id">' + val.user_id + '</td><td class="name">' + val.name + '</td><td class="username">' + val.username + '</td><td><span class="hidden group_id">' + val.group_id + '</span>' + val.group_name + '</td><td><span class="hidden role_id">' + val.role_id + '</span>' + val.role_name + '</td><td><span class="hidden user_status">' + val.user_status + '</span>' + val.status_text + '</td><td><button class="btn btn-default btn-xs edit-btn">Edit</button> <button class="btn btn-default btn-xs del-btn" item-id="' + val.user_id + '">Delete</button></td></tr>');
+                            $tbody.append('<tr><td class="hidden user_email">' + val.user_email + '</td><td class="hidden user_telephone">' + val.user_telephone + '</td><td class="user_id">' + val.user_id + '</td><td class="name">' + val.name + '</td><td class="username">' + val.username + '</td>><td><span class="hidden group_id">' + val.group_id + '</span>' + val.group_name + '</td><td><span class="hidden team_id">' + val.team_id + '</span>' + val.team_name + '</td><td><span class="hidden role_id">' + val.role_id + '</span>' + val.role_name + '</td><td><span class="hidden user_status">' + val.user_status + '</span>' + val.status_text + '</td><td><button class="btn btn-default btn-xs edit-btn">Edit</button> <button class="btn btn-default btn-xs del-btn" item-id="' + val.user_id + '">Delete</button></td></tr>');
                         }
                     });
                 } else {
@@ -71,6 +71,7 @@ var admin = {
             $('form').find('select[name="group_id"]').selectpicker('val', row.find('.group_id').text());
             $('form').find('select[name="role_id"]').selectpicker('val', row.find('.role_id').text());
             $('form').find('select[name="user_status"]').selectpicker('val', row.find('.user_status').text());
+			$('form').find('select[name="team_id"]').selectpicker('val', row.find('.team_id').text());
             $('.ajax-table').fadeOut(1000, function() {
                 $('form').fadeIn();
             });

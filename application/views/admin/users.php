@@ -31,6 +31,7 @@
                   <th>Name</th>
                   <th>Username</th>
                   <th>Group</th>
+                  <th>Team</th>
                   <th>Role</th>
                   <th>Status</th>
                   <th>Options</th>

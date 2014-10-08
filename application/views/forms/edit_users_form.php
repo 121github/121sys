@@ -39,6 +39,14 @@
 <?php } ?>
 </select>
         </div>
+                                        <div class="form-group input-group-sm">
+          <p>Please set the user team if applicable</p>
+<select name="team_id" class="selectpicker">
+<?php foreach($teams as $row){ ?>
+<option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+<?php } ?>
+</select>
+        </div>
         <div class="form-actions pull-right">
          <button class="marl btn btn-default close-btn">Cancel</button>
          <button type="submit" class="marl btn btn-primary save-btn">Save</button>

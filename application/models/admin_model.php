@@ -108,7 +108,7 @@ class Admin_model extends CI_Model
         } else {
             $where = " and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
         }
-        $qry    = "select user_id,name,username,group_name,role_name,IF(user_status = 1,'On','Off') status_text,user_status,group_id,role_id,user_email,user_telephone from users left join user_roles using(role_id) left join user_groups using(group_id) where 1 $where order by CASE WHEN user_status = 1 THEN 0 ELSE 1 END";
+        $qry    = "select user_id,name,username,if(group_name is null,'-',group_name) group_name,team_id,if(team_name is null,'-',team_name) team_name,role_name,IF(user_status = 1,'On','Off') status_text,user_status,user_groups.group_id,role_id,user_email,user_telephone from users  left join user_roles using(role_id) left join user_groups using(group_id) left join teams using(team_id) where 1 $where order by CASE WHEN user_status = 1 THEN 0 ELSE 1 END";
         $result = $this->db->query($qry)->result_array();
         return $result;
     }

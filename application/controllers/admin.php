@@ -15,6 +15,7 @@ class Admin extends CI_Controller
     //this controller loads the view for the user page
     public function users()
     {
+		$options['teams']  = $this->Form_model->get_teams();
         $options['roles']  = $this->Form_model->get_roles();
         $options['groups'] = $this->Form_model->get_groups();
         $data              = array(
