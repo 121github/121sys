@@ -189,9 +189,10 @@ class Database_model extends CI_Model
 		(68, 'Changing next action date', NULL, NULL, NULL, 2, 1, NULL, NULL, 1),
 		(69, 'No Number', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 		(70, 'Transfer', 4, 1, 1, 1, 1, NULL, NULL, NULL),
-		(71, 'Cross Transfer', 4, 1, 1, 1, 1, NULL, NULL, NULL)");
+		(71, 'Cross Transfer', 4, 1, 1, 1, 1, NULL, NULL, NULL),
+		(72, 'Appointment', 4, 1, 1, 1, 1, NULL, NULL, NULL)");
 		
-		$this->db->query("ALTER TABLE `outcomes` AUTO_INCREMENT = 72");
+		$this->db->query("ALTER TABLE `outcomes` AUTO_INCREMENT = 73");
 		
 		if ($this->db->_error_message()) {
 			return "outcomes";
@@ -661,11 +662,13 @@ class Database_model extends CI_Model
 			
 			$days = rand(1, 90);
 			$time = time() - $days*24*3600;
+			$time_after = time() - $days*24*3660;
 			$date = date($datestring, $time);
+			$date_after = date($datestring, $time_after);
 			
 			//Contact
 			$this->db->query("INSERT INTO `contacts` (`urn`, `fullname`, `title`, `firstname`, `lastname`, `position`, `dob`, `fax`, `email`, `email_optout`, `website`, `linkedin`, `facebook`, `notes`, `date_created`, `date_updated`, `sort`) VALUES
-					(".$record->urn.", '".$name." ".$surname."', NULL, '".$name."', '".$surname."', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, '".$date."', NULL)");
+					(".$record->urn.", '".$name." ".$surname."', NULL, '".$name."', '".$surname."', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, '".$date_after."', NULL)");
 			
 			$contact_id = $this->db->insert_id();
 			
@@ -694,7 +697,7 @@ class Database_model extends CI_Model
             
             //History
             $this->db->query("INSERT INTO `history` (`campaign_id`, `urn`, `loaded`, `contact`, `description`, `outcome_id`, `comments`, `nextcall`, `user_id`, `role_id`, `group_id`, `contact_id`, `progress_id`, `last_survey`) VALUES
-            		($campaign->campaign_id, ".$record->urn.", NULL, '2014-07-10 14:49:00', 'Record was updated', ".$record->outcome_id.", 'Comment', '2014-07-10 14:49:48', ".$agent->user_id.", ".$agent->role_id.", ".$agent->group_id.", NULL, NULL, NULL)");
+            		($campaign->campaign_id, ".$record->urn.", NULL, '".$date."', 'Record was updated', ".$record->outcome_id.", 'Comment', '".$date."', ".$agent->user_id.", ".$agent->role_id.", ".$agent->group_id.", NULL, NULL, NULL)");
             
             if ($this->db->_error_message()) {
             	return "history";

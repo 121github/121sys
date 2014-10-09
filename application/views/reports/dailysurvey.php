@@ -7,7 +7,7 @@
   <div id="page-wrapper">
     <div class="row">
       <div class="col-lg-12">
-        <h1 class="page-header">Individual Report</h1>
+        <h1 class="page-header">Surveys Daily Comparison Report</h1>
       </div>
       <!-- /.col-lg-12 --> 
     </div>
@@ -15,7 +15,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Individual Report
+          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Surveys Daily Comparison Report
             <div class="pull-right">
             <form class="filter-form">
               <div class="btn-group">
@@ -24,6 +24,7 @@
                   <input type="hidden" name="campaign">
                   <input type="hidden" name="agent">
                   <input type="hidden" name="team-manager">
+                  <input type="hidden" name="source">
                   
                   <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button></div>
                   <div class="btn-group">
@@ -56,19 +57,27 @@
 	                    <li><a class="team-manager-filter" ref="#" style="color: green;">Show All</a> </li>
 	                  </ul>
                   </div>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Source</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($sources as $row): ?>
+	                    <li><a href="#" class="source-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="source-filter" ref="#" style="color: green;">Show All</a> </li>
+	                  </ul>
+                  </div>
                 </form>
             </div>
           </div>
           <!-- /.panel-heading -->
-          <div class="panel-body individual-data">
+          <div class="panel-body dailysurvey-data">
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th>Agent</th>
+						<th>Date</th>
 						<th>Name</th>
-						<th>Transfers</th>
-						<th>Cross Transfers</th>
-						<th>Total Transfers</th>
+						<th>Surveys</th>
 						<th>Duration</th>
 						<th>Rate</th>
 					</tr>

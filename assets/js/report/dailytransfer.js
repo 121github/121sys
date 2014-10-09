@@ -1,9 +1,9 @@
 // JavaScript Document
 $(document).ready(function() {
-    individualdaily.init()
+    dailytransfer.init()
 });
 
-var individualdaily = {
+var dailytransfer = {
     init: function() {
         $('.daterange').daterangepicker({
                 opens: "left",
@@ -26,7 +26,7 @@ var individualdaily = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                individualdaily.individualdaily_panel()
+                dailytransfer.dailytransfer_panel()
             });
         $(document).on("click", '.daterange', function(e) {
             e.preventDefault();
@@ -37,40 +37,40 @@ var individualdaily = {
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individualdaily.individualdaily_panel()
+            dailytransfer.dailytransfer_panel()
         });
         $(document).on("click", ".agent-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individualdaily.individualdaily_panel()
+            dailytransfer.dailytransfer_panel()
         });
         $(document).on("click", ".team-manager-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="team-manager"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individualdaily.individualdaily_panel()
+            dailytransfer.dailytransfer_panel()
         });
         $(document).on("click", ".source-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individualdaily.individualdaily_panel()
+            dailytransfer.dailytransfer_panel()
         });
-        individualdaily.individualdaily_panel()
+        dailytransfer.dailytransfer_panel()
     },
-    individualdaily_panel: function(individualdaily) {
+    dailytransfer_panel: function(dailytransfer) {
         $.ajax({
-            url: helper.baseUrl + 'reports/individualdaily_data',
+            url: helper.baseUrl + 'reports/dailytransfer_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function(response) {
             var $row = "";
-            $tbody = $('.individualdaily-data .ajax-table').find('tbody');
+            $tbody = $('.dailytransfer-data .ajax-table').find('tbody');
     		$tbody.empty();
             if (response.success) {
             	$.each(response.data, function(i, val) {

@@ -7,7 +7,7 @@
   <div id="page-wrapper">
     <div class="row">
       <div class="col-lg-12">
-        <h1 class="page-header">Campaign Transfer Report</h1>
+        <h1 class="page-header">Appointment Daily Comparison Report</h1>
       </div>
       <!-- /.col-lg-12 --> 
     </div>
@@ -15,13 +15,14 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Campiagn Transfer Report
+          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Appointments Daily Comparison Report
             <div class="pull-right">
             <form class="filter-form">
               <div class="btn-group">
                   <input type="hidden" name="date_from">
                   <input type="hidden" name="date_to">
                   <input type="hidden" name="campaign">
+                  <input type="hidden" name="agent">
                   <input type="hidden" name="team-manager">
                   <input type="hidden" name="source">
                   
@@ -34,6 +35,16 @@
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
 	                    <li><a class="campaign-filter" ref="#" style="color: green;">Show All</a> </li>
+	                  </ul>
+                  </div>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($agents as $row): ?>
+	                    <li><a href="#" class="agent-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="agent-filter" ref="#" style="color: green;">Show All</a> </li>
 	                  </ul>
                   </div>
                   <div class="btn-group">
@@ -60,15 +71,13 @@
             </div>
           </div>
           <!-- /.panel-heading -->
-          <div class="panel-body campaigntransfer-data">
+          <div class="panel-body dailyappointment-data">
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th>Agent</th>
+						<th>Date</th>
 						<th>Name</th>
-						<th>Transfers</th>
-						<th>Cross Transfers</th>
-						<th>Total Transfers</th>
+						<th>Appointments</th>
 						<th>Duration</th>
 						<th>Rate</th>
 					</tr>

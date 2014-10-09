@@ -1,9 +1,9 @@
 // JavaScript Document
 $(document).ready(function() {
-    individual.init()
+    agentappointment.init()
 });
 
-var individual = {
+var agentappointment = {
     init: function() {
         $('.daterange').daterangepicker({
                 opens: "left",
@@ -26,7 +26,7 @@ var individual = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                individual.individual_panel()
+                agentappointment.agentappointment_panel()
             });
         $(document).on("click", '.daterange', function(e) {
             e.preventDefault();
@@ -37,7 +37,7 @@ var individual = {
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individual.individual_panel()
+            agentappointment.agentappointment_panel()
         });
 
         $(document).on("click", ".agent-filter", function(e) {
@@ -45,26 +45,26 @@ var individual = {
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individual.individual_panel()
+            agentappointment.agentappointment_panel()
         });
         $(document).on("click", ".team-manager-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="team-manager"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individual.individual_panel()
+            agentappointment.agentappointment_panel()
         });
-        individual.individual_panel()
+        agentappointment.agentappointment_panel()
     },
-    individual_panel: function(individual) {
+    agentappointment_panel: function(agentappointment) {
         $.ajax({
-            url: helper.baseUrl + 'reports/individual_data',
+            url: helper.baseUrl + 'reports/agentappointment_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function(response) {
             var $row = "";
-            $tbody = $('.individual-data .ajax-table').find('tbody');
+            $tbody = $('.agentappointment-data .ajax-table').find('tbody');
     		$tbody.empty();
             if (response.success) {
             	$.each(response.data, function(i, val) {
@@ -74,12 +74,8 @@ var individual = {
 									+ val.agent
 								+ "</td><td class='name'>"
 									+ val.name
-								+ "</td><td class='transfers'>"
-									+ val.transfers
-								+ "</td><td class='cross_transfers'>"
-									+ val.cross_transfers
-								+ "</td><td class='total transfers'>"
-									+ val.total_transfers
+								+ "</td><td class='appointments'>"
+									+ val.appointments
 								+ "</td><td class='template_cc' style='duration'>"
 									+ val.duration
 								+ "</td><td class='template_bcc' style='rate'>"

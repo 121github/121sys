@@ -1,9 +1,9 @@
 // JavaScript Document
 $(document).ready(function() {
-    campaignappointment.init()
+    agentsurvey.init()
 });
 
-var campaignappointment = {
+var agentsurvey = {
     init: function() {
         $('.daterange').daterangepicker({
                 opens: "left",
@@ -26,7 +26,7 @@ var campaignappointment = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                campaignappointment.campaignappointment_panel()
+                agentsurvey.agentsurvey_panel()
             });
         $(document).on("click", '.daterange', function(e) {
             e.preventDefault();
@@ -37,45 +37,45 @@ var campaignappointment = {
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            agentsurvey.agentsurvey_panel()
         });
 
+        $(document).on("click", ".agent-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            agentsurvey.agentsurvey_panel()
+        });
         $(document).on("click", ".team-manager-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="team-manager"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            agentsurvey.agentsurvey_panel()
         });
-        $(document).on("click", ".source-filter", function(e) {
-            e.preventDefault();
-            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
-            $(this).closest('ul').find('a').css("color","black");
-            $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
-        });
-        campaignappointment.campaignappointment_panel()
+        agentsurvey.agentsurvey_panel()
     },
-    campaignappointment_panel: function(campaignappointment) {
+    agentsurvey_panel: function(agentsurvey) {
         $.ajax({
-            url: helper.baseUrl + 'reports/campaignappointment_data',
+            url: helper.baseUrl + 'reports/agentsurvey_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function(response) {
             var $row = "";
-            $tbody = $('.campaignappointment-data .ajax-table').find('tbody');
+            $tbody = $('.agentsurvey-data .ajax-table').find('tbody');
     		$tbody.empty();
             if (response.success) {
             	$.each(response.data, function(i, val) {
                     if (response.data.length) {
 						$tbody
-						.append("<tr><td class='campaign'>"
-									+ val.campaign
+							.append("<tr><td class='agent'>"
+									+ val.agent
 								+ "</td><td class='name'>"
 									+ val.name
-								+ "</td><td class='appointments'>"
-									+ val.appointments
+								+ "</td><td class='surveys'>"
+									+ val.surveys
 								+ "</td><td class='template_cc' style='duration'>"
 									+ val.duration
 								+ "</td><td class='template_bcc' style='rate'>"
