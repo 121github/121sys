@@ -191,6 +191,8 @@ class Database_model extends CI_Model
 		(70, 'Transfer', 4, 1, 1, 1, 1, NULL, NULL, NULL),
 		(71, 'Cross Transfer', 4, 1, 1, 1, 1, NULL, NULL, NULL)");
 		
+		$this->db->query("ALTER TABLE `outcomes` AUTO_INCREMENT = 72");
+		
 		if ($this->db->_error_message()) {
 			return "outcomes";
 		}
