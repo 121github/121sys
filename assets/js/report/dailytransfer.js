@@ -75,8 +75,14 @@ var dailytransfer = {
             if (response.success) {
             	$.each(response.data, function(i, val) {
                     if (response.data.length) {
+                    	if (val.total_transfers>0) {
+                    		success = "success";
+                    	}
+                    	else {
+                    		success = "warning";
+                    	}
 						$tbody
-							.append("<tr><td class='date'>"
+							.append("<tr class='"+success+"'><td class='date'>"
 									+ val.date
 								+ "</td><td class='name'>"
 									+ val.name
@@ -86,6 +92,8 @@ var dailytransfer = {
 									+ val.cross_transfers
 								+ "</td><td class='total transfers'>"
 									+ val.total_transfers
+								+ "</td><td class='total_dials'>"
+									+ val.total_dials
 								+ "</td><td class='template_cc' style='duration'>"
 									+ val.duration
 								+ "</td><td class='template_bcc' style='rate'>"

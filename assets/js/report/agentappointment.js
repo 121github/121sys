@@ -76,6 +76,8 @@ var agentappointment = {
 									+ val.name
 								+ "</td><td class='appointments'>"
 									+ val.appointments
+								+ "</td><td class='total_dials'>"
+									+ val.total_dials
 								+ "</td><td class='template_cc' style='duration'>"
 									+ val.duration
 								+ "</td><td class='template_bcc' style='rate'>"

@@ -67,15 +67,13 @@ class Report_model extends CI_Model
     }
     
     
-    public function get_campaign_report_by_outcome($options, $outcomesList)
+    public function get_campaign_report_by_outcome($options)
     {
     	$date_from = $options['date_from'];
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
     	$team_manager = $options['team-manager'];
     	$source = $options['source'];
-    	
-    	$outcomes = implode("','", $outcomesList);
     	
     	$where = "";
     	
@@ -101,11 +99,11 @@ class Report_model extends CI_Model
     			inner join campaigns c ON (c.campaign_id = h.campaign_id)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
 				inner join users u ON (u.user_id = h.user_id)
-				where (o.outcome IN ('$outcomes'))"
+				where 1"
     	;
     	$qry .= $where;
     
-    	$qry .= "group by h.outcome_id, campaign order by name asc";
+    	$qry .= " group by h.outcome_id, campaign order by name asc";
     	
     	return $this->db->query($qry)->result_array();
     }
@@ -153,7 +151,7 @@ class Report_model extends CI_Model
     			return $this->db->query($qry)->result_array();
     }
     
-    public function get_agent_report_by_outcome($options, $outcomesList)
+    public function get_agent_report_by_outcome($options)
     {
     	$date_from = $options['date_from'];
     	$date_to = $options['date_to'];
@@ -161,7 +159,6 @@ class Report_model extends CI_Model
     	$agent = $options['agent'];
     	$team_manager = $options['team-manager'];
     	 
-    	$outcomes = implode("','", $outcomesList);
     	
     	$where = "";
     	 
@@ -186,11 +183,11 @@ class Report_model extends CI_Model
     			inner join records r ON (r.urn = h.urn)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
 				inner join users u ON (u.user_id = h.user_id)
-    			where (o.outcome IN ('$outcomes'))"
+				where 1"
     			;
     			$qry .= $where;
     
-    			$qry .= "group by h.outcome_id, agent order by name asc";
+    			$qry .= " group by h.outcome_id, agent order by name asc";
     			 
     			return $this->db->query($qry)->result_array();
     }
@@ -238,7 +235,7 @@ class Report_model extends CI_Model
     			return $this->db->query($qry)->result_array();
     }
     
-    public function get_daily_report_by_outcome($options, $outcomesList)
+    public function get_daily_report_by_outcome($options)
     {
     	$date_from = $options['date_from'];
     	$date_to = $options['date_to'];
@@ -247,8 +244,6 @@ class Report_model extends CI_Model
     	$team_manager = $options['team-manager'];
     	$source = $options['source'];
     	 
-    	$outcomes = implode("','", $outcomesList);
-    	
     	$where = "";
     	 
     	if (!empty($date_from)) {
@@ -275,11 +270,11 @@ class Report_model extends CI_Model
     			inner join records r ON (r.urn = h.urn)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
 				inner join users u ON (u.user_id = h.user_id)
-				where (o.outcome IN ('$outcomes'))"
+				where 1"
     			;
     			$qry .= $where;
     
-    			$qry .= "group by h.outcome_id, SUBSTRING(h.contact, 1, 10) order by date desc";
+    			$qry .= " group by h.outcome_id, date order by date desc";
     			 
     			return $this->db->query($qry)->result_array();
     }

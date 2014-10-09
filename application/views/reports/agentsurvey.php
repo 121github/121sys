@@ -66,7 +66,10 @@
 					<tr>
 						<th>Agent</th>
 						<th>Name</th>
-						<th>Surveys</th>
+						<th>Complete Surveys</th>
+						<th>Refused Surveys</th>
+						<th>Total Surveys</th>
+						<th>Total Dials</th>
 						<th>Duration</th>
 						<th>Rate</th>
 					</tr>

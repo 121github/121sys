@@ -80,6 +80,8 @@ var campaigntransfer = {
 									+ val.cross_transfers
 								+ "</td><td class='total transfers'>"
 									+ val.total_transfers
+								+ "</td><td class='total_dials'>"
+									+ val.total_dials
 								+ "</td><td class='template_cc' style='duration'>"
 									+ val.duration
 								+ "</td><td class='template_bcc' style='rate'>"

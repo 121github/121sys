@@ -78,6 +78,7 @@
 						<th>Date</th>
 						<th>Name</th>
 						<th>Appointments</th>
+						<th>Total Dials</th>
 						<th>Duration</th>
 						<th>Rate</th>
 					</tr>

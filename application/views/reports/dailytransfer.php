@@ -80,6 +80,7 @@
 						<th>Transfers</th>
 						<th>Cross Transfers</th>
 						<th>Total Transfers</th>
+						<th>Total Dials</th>
 						<th>Duration</th>
 						<th>Rate</th>
 					</tr>
