@@ -707,6 +707,23 @@ class Database_model extends CI_Model
             $i++;
 		}
 		
+		//Dumping the cross_transfers
+		$cross_transfer = $this->db->get_where('outcomes', array('outcome' => 'Cross Transfer'))->result();
+		foreach ($this->db->get_where('history', array('outcome_id' => $cross_transfer[0]->outcome_id))->result() as $history) {
+		
+			$campaign = $campaignList[array_rand($campaignList)];
+			while ($campaign->campaign_id == $history->campaign_id) {
+				$campaign = $campaignList[array_rand($campaignList)];
+			}
+		
+			$this->db->query("INSERT INTO `cross_transfers` (`history_id`, `campaign_id`) VALUES
+					($history->history_id, $campaign->campaign_id)");
+		
+			if ($this->db->_error_message()) {
+				return "cross_transfers";
+			}
+		}
+		
 		
 		//Dumping the users_to_campaigns
 		$campaign = $campaignList[array_rand($campaignList)];
@@ -729,6 +746,28 @@ class Database_model extends CI_Model
 				
 				if ($this->db->_error_message()) {
 					return "ownership";
+				}
+			}
+		}
+		
+		
+		//If the hours table exist, dumping sample data
+		$role = $this->db->get_where('user_roles', array('role_name' => 'Agent'))->result();$role = $this->db->get_where('user_roles', array('role_name' => 'Agent'))->result();
+		if ($this->db->table_exists('hours')) {
+			$agentList = $this->db->get_where('users', array('role_id' => $role[0]->role_id))->result();
+			foreach ($agentList as $agent) {
+				$campaign = $campaignList[array_rand($campaignList)];
+				for ($i=0;$i<=60;$i++) {
+					$time = time() - $i*24*3600;
+					$date = date($datestring, $time);
+					$duration = rand(3600, 14400);
+					
+					$this->db->query("INSERT INTO `hours` (`user_id`, `campaign_id`, `duration`, `date`, `updated_id`, `updated_date`) VALUES
+							($agent->user_id, $campaign->campaign_id, $duration, '".$date."', NULL, NULL)");
+						
+					if ($this->db->_error_message()) {
+						return "ownership";
+					}
 				}
 			}
 		}

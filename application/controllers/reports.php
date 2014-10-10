@@ -13,6 +13,7 @@ class Reports extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Report_model');
+        $this->_campaigns = campaign_access_dropdown();
     }
     //this controller loads the view for the targets page on the dashboard
     public function targets()
@@ -206,24 +207,34 @@ class Reports extends CI_Controller
             $data    = array();
             $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post());
             
+            $campaign_search  = $this->input->post("campaign");
+            
             $aux = array();
             
             foreach ($results as $row) {
-                $aux[$row['campaign']]['name'] = $row['name'];
                 if ($row['outcome'] == 'Transfer') {
+                	$aux[$row['campaign']]['name'] = $row['name'];
                     $aux[$row['campaign']]['transfers'] = $row['count'];
+                    $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
                 } elseif ($row['outcome'] == 'Cross Transfer') {
-                    $aux[$row['campaign']]['cross_transfers'] = $row['count'];
+                	$campaign_transfer = $this->Report_model->get_campaign_by_id($row['campaign_id']);
+                	$aux[$row['campaign_id']]['name'] = $campaign_transfer[0]['campaign_name'];
+                    $aux[$row['campaign_id']]['cross_transfers'] = $row['count'];
+                    $aux[$row['campaign_id']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
                 }
-                $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
+                else {
+                	$aux[$row['campaign']]['name'] = $row['name'];
+                	$aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
+                }
+                
             }
             
             $totalTransfers      = 0;
             $totalCrossTransfers = 0;
             $totalDials          = 0;
             foreach ($aux as $campaign => $row) {
-                $transfers      = (array_key_exists('transfers', $row)) ? $row['transfers'] : 0;
-                $crossTransfers = (array_key_exists('cross_transfers', $row)) ? $row['cross_transfers'] : 0;
+            	$transfers      = (array_key_exists('transfers', $row)) ? $row['transfers'] : 0;
+	            $crossTransfers = (array_key_exists('cross_transfers', $row)) ? $row['cross_transfers'] : 0;
                 $data[]         = array(
                     "campaign" => $campaign,
                     "name" => $row['name'],
@@ -304,11 +315,15 @@ class Reports extends CI_Controller
             $aux = array();
             
             foreach ($results as $row) {
-                $aux[$row['campaign']]['name'] = $row['name'];
                 if ($row['outcome'] == 'Appointment') {
+                	$aux[$row['campaign']]['name'] = $row['name'];
                     $aux[$row['campaign']]['appointments'] = $row['count'];
+                    $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
                 }
-                $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
+                elseif ($row['outcome'] != 'Cross Transfer') {
+                	$aux[$row['campaign']]['name'] = $row['name'];
+                	$aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
+                }
             }
             
             $totalAppointments = 0;
@@ -389,13 +404,20 @@ class Reports extends CI_Controller
             $aux = array();
             
             foreach ($results as $row) {
-                $aux[$row['campaign']]['name'] = $row['name'];
                 if ($row['outcome'] == 'Survey Complete') {
+                	$aux[$row['campaign']]['name'] = $row['name'];
                     $aux[$row['campaign']]['complete_surveys'] = $row['count'];
+                    $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
                 } elseif ($row['outcome'] == 'Survey Refused') {
+                	$aux[$row['campaign']]['name'] = $row['name'];
                     $aux[$row['campaign']]['refused_surveys'] = $row['count'];
+                    $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
                 }
-                $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
+                elseif ($row['outcome'] != 'Cross Transfer') {
+                	$aux[$row['campaign']]['name'] = $row['name'];
+                	$aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
+                }
+                
             }
             
             $totalCompleteSurveys = 0;
@@ -555,7 +577,7 @@ class Reports extends CI_Controller
             
             $totalTransfers      = 0;
             $totalCrossTransfers = 0;
-            $totalDials          = 0;
+            $totalDials          = (count($aux) == 0)?1:0; 
             foreach ($aux as $agent => $row) {
                 $transfers      = (array_key_exists('transfers', $row)) ? $row['transfers'] : 0;
                 $crossTransfers = (array_key_exists('cross_transfers', $row)) ? $row['cross_transfers'] : 0;
@@ -584,7 +606,7 @@ class Reports extends CI_Controller
                 "transfers" => $totalTransfers . " (" . $totalTransfersPercent . ")",
                 "cross_transfers" => $totalCrossTransfers . " (" . $totalCrossTransfersPercent . ")",
                 "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . ")",
-                "total_dials" => $totalDials,
+                "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => 0,
                 "rate" => 0
             ));
@@ -639,22 +661,27 @@ class Reports extends CI_Controller
             $aux = array();
             
             foreach ($results as $row) {
-                $aux[$row['agent']]['name'] = $row['name'];
                 if ($row['outcome'] == 'Appointment') {
+                	$aux[$row['agent']]['name'] = $row['name'];
                     $aux[$row['agent']]['appointments'] = $row['count'];
+                    $aux[$row['agent']]['total_dials'] = (isset($aux[$row['agent']]['total_dials'])) ? $aux[$row['agent']]['total_dials'] + $row['count'] : $row['count'];
                 }
-                $aux[$row['agent']]['total_dials'] = (isset($aux[$row['agent']]['total_dials'])) ? $aux[$row['agent']]['total_dials'] + $row['count'] : $row['count'];
+                elseif ($row['outcome'] != 'Cross Transfer') {
+                	$aux[$row['agent']]['name'] = $row['name'];
+                	$aux[$row['agent']]['total_dials'] = (isset($aux[$row['agent']]['total_dials'])) ? $aux[$row['agent']]['total_dials'] + $row['count'] : $row['count'];
+                }
+                
             }
             
             $totalAppointments = 0;
-            $totalDials        = 0;
+            $totalDials          = (count($aux) == 0)?1:0; 
             foreach ($aux as $agent => $row) {
                 $appointments = (array_key_exists('appointments', $row)) ? $row['appointments'] : 0;
                 $data[]       = array(
                     "agent" => $agent,
                     "name" => $row['name'],
                     "appointments" => $appointments,
-                    "total_dials" => $row['total_dials'],
+                	"total_dials" => $row['total_dials'],
                     "duration" => 0,
                     "rate" => 0
                 );
@@ -668,7 +695,7 @@ class Reports extends CI_Controller
                 "agent" => "TOTAL",
                 "name" => "",
                 "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
-                "total_dials" => $totalDials,
+                "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => 0,
                 "rate" => 0
             ));
@@ -734,7 +761,7 @@ class Reports extends CI_Controller
             
             $totalCompleteSurveys = 0;
             $totalRefusedSurveys  = 0;
-            $totalDials           = 0;
+            $totalDials          = (count($aux) == 0)?1:0;
             foreach ($aux as $agent => $row) {
                 $completeSurveys = (array_key_exists('complete_surveys', $row)) ? $row['complete_surveys'] : 0;
                 $refusedSurveys  = (array_key_exists('refused_surveys', $row)) ? $row['refused_surveys'] : 0;
@@ -763,7 +790,7 @@ class Reports extends CI_Controller
                 "complete_surveys" => $totalCompleteSurveys . " (" . $totalCompleteSurveysPercent . ")",
                 "refused_surveys" => $totalRefusedSurveys . " (" . $totalRefusedSurveysPercent . ")",
                 "total_surveys" => ($totalCompleteSurveys + $totalRefusedSurveys) . " (" . $totalSurveysPercent . ")",
-                "total_dials" => $totalDials,
+                "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => 0,
                 "rate" => 0
             ));
@@ -905,7 +932,7 @@ class Reports extends CI_Controller
             
             $totalTransfers      = 0;
             $totalCrossTransfers = 0;
-            $totalDials          = 0;
+            $totalDials          = (count($aux) == 0)?1:0;
             foreach ($aux as $date => $row) {
                 $transfers      = (array_key_exists('transfers', $row)) ? $row['transfers'] : 0;
                 $crossTransfers = (array_key_exists('cross_transfers', $row)) ? $row['cross_transfers'] : 0;
@@ -934,7 +961,7 @@ class Reports extends CI_Controller
                 "transfers" => $totalTransfers . " (" . $totalTransfersPercent . ")",
                 "cross_transfers" => $totalCrossTransfers . " (" . $totalCrossTransfersPercent . ")",
                 "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . ")",
-                "total_dials" => $totalDials,
+                "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => 0,
                 "rate" => 0
             ));
@@ -1003,7 +1030,7 @@ class Reports extends CI_Controller
             }
             
             $totalAppointments = 0;
-            $totalDials        = 0;
+            $totalDials          = (count($aux) == 0)?1:0;
             foreach ($aux as $date => $row) {
                 $appointments = (array_key_exists('appointments', $row)) ? $row['appointments'] : 0;
                 $data[]       = array(
@@ -1024,7 +1051,7 @@ class Reports extends CI_Controller
                 "date" => "TOTAL",
                 "name" => "",
                 "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
-                "total_dials" => $totalDials,
+                "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => 0,
                 "rate" => 0
             ));
@@ -1096,7 +1123,7 @@ class Reports extends CI_Controller
             
             $totalCompleteSurveys = 0;
             $totalRefusedSurveys  = 0;
-            $totalDials           = 0;
+            $totalDials          = (count($aux) == 0)?1:0;
             foreach ($aux as $date => $row) {
                 $completeSurveys = (array_key_exists('complete_surveys', $row)) ? $row['complete_surveys'] : 0;
                 $refusedSurveys  = (array_key_exists('refused_surveys', $row)) ? $row['refused_surveys'] : 0;
@@ -1125,7 +1152,7 @@ class Reports extends CI_Controller
                 "complete_surveys" => $totalCompleteSurveys . " (" . $totalCompleteSurveysPercent . ")",
                 "refused_surveys" => $totalRefusedSurveys . " (" . $totalRefusedSurveysPercent . ")",
                 "total_surveys" => ($totalCompleteSurveys + $totalRefusedSurveys) . " (" . $totalSurveysPercent . ")",
-                "total_dials" => $totalDials,
+                "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => 0,
                 "rate" => 0
             ));

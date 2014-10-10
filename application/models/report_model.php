@@ -67,6 +67,14 @@ class Report_model extends CI_Model
     }
     
     
+    public function get_campaign_by_id($campaign_id) {
+    	$qry = "Select *
+    	from campaigns
+    	where campaign_id =  '$campaign_id'";
+    	 
+    	return $this->db->query($qry)->result_array();
+    }
+    
     public function get_campaign_report_by_outcome($options)
     {
     	$date_from = $options['date_from'];
@@ -84,7 +92,7 @@ class Report_model extends CI_Model
     		$where .= " and date(contact) <= '$date_to' ";
     	}
     	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign' ";
+    		$where .= " and ((h.outcome_id <> '71' and h.campaign_id = '$campaign') OR (h.outcome_id = '71' and ct.campaign_id = '$campaign')) ";
     	}
     	if (!empty($team_manager)) {
     		$where .= " and u.team_id = '$team_manager' ";
@@ -93,12 +101,13 @@ class Report_model extends CI_Model
     		$where .= " and r.source_id = '$source' ";
     	}
     
-    	$qry = "select c.campaign_id as campaign, c.campaign_name as name, count(*) as count, o.outcome as outcome 
+    	$qry = "select c.campaign_id as campaign, c.campaign_name as name, count(*) as count, o.outcome as outcome, ct.campaign_id
     			from history h
     			inner join records r ON (r.urn = h.urn)
     			inner join campaigns c ON (c.campaign_id = h.campaign_id)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
 				inner join users u ON (u.user_id = h.user_id)
+    			left  join cross_transfers ct ON (ct.history_id = h.history_id)
 				where 1"
     	;
     	$qry .= $where;
@@ -169,7 +178,7 @@ class Report_model extends CI_Model
     		$where .= " and date(contact) <= '$date_to' ";
     	}
     	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign' ";
+    		$where .= " and ((h.outcome_id <> '71' and h.campaign_id = '$campaign') OR (h.outcome_id = '71' and ct.campaign_id = '$campaign')) ";
     	}
     	if (!empty($agent)) {
     		$where .= " and u.user_id = '$agent' ";
@@ -183,6 +192,7 @@ class Report_model extends CI_Model
     			inner join records r ON (r.urn = h.urn)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
 				inner join users u ON (u.user_id = h.user_id)
+    			left  join cross_transfers ct ON (ct.history_id = h.history_id)
 				where 1"
     			;
     			$qry .= $where;
@@ -253,7 +263,7 @@ class Report_model extends CI_Model
     		$where .= " and date(contact) <= '$date_to' ";
     	}
     	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign' ";
+    		$where .= " and ((h.outcome_id <> '71' and h.campaign_id = '$campaign') OR (h.outcome_id = '71' and ct.campaign_id = '$campaign')) ";
     	}
     	if (!empty($agent)) {
     		$where .= " and u.user_id = '$agent' ";
@@ -270,6 +280,7 @@ class Report_model extends CI_Model
     			inner join records r ON (r.urn = h.urn)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
 				inner join users u ON (u.user_id = h.user_id)
+    			left  join cross_transfers ct ON (ct.history_id = h.history_id)
 				where 1"
     			;
     			$qry .= $where;
