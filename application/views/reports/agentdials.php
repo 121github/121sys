@@ -77,7 +77,7 @@
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th>Advisor</th>
+						<th>Agent</th>
 						<th>Name</th>
 						<th>Total</th>
 					</tr>

@@ -1,9 +1,9 @@
 // JavaScript Document
 $(document).ready(function() {
-    individual.init()
+    dailyappointment.init()
 });
 
-var individual = {
+var dailyappointment = {
     init: function() {
         $('.daterange').daterangepicker({
                 opens: "left",
@@ -26,7 +26,7 @@ var individual = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                individual.individual_panel()
+                dailyappointment.dailyappointment_panel()
             });
         $(document).on("click", '.daterange', function(e) {
             e.preventDefault();
@@ -37,49 +37,59 @@ var individual = {
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individual.individual_panel()
+            dailyappointment.dailyappointment_panel()
         });
-
         $(document).on("click", ".agent-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individual.individual_panel()
+            dailyappointment.dailyappointment_panel()
         });
         $(document).on("click", ".team-manager-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="team-manager"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            individual.individual_panel()
+            dailyappointment.dailyappointment_panel()
         });
-        individual.individual_panel()
+        $(document).on("click", ".source-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            dailyappointment.dailyappointment_panel()
+        });
+        dailyappointment.dailyappointment_panel()
     },
-    individual_panel: function(individual) {
+    dailyappointment_panel: function(dailyappointment) {
         $.ajax({
-            url: helper.baseUrl + 'reports/individual_data',
+            url: helper.baseUrl + 'reports/dailyappointment_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function(response) {
             var $row = "";
-            $tbody = $('.individual-data .ajax-table').find('tbody');
+            $tbody = $('.dailyappointment-data .ajax-table').find('tbody');
     		$tbody.empty();
             if (response.success) {
             	$.each(response.data, function(i, val) {
                     if (response.data.length) {
+                    	if (val.appointments>0) {
+                    		success = "success";
+                    	}
+                    	else {
+                    		success = "warning";
+                    	}
 						$tbody
-							.append("<tr><td class='agent'>"
-									+ val.agent
+							.append("<tr class='"+success+"'><td class='date'>"
+									+ val.date
 								+ "</td><td class='name'>"
 									+ val.name
-								+ "</td><td class='transfers'>"
-									+ val.transfers
-								+ "</td><td class='cross_transfers'>"
-									+ val.cross_transfers
-								+ "</td><td class='total transfers'>"
-									+ val.total_transfers
+								+ "</td><td class='appointments'>"
+									+ val.appointments
+								+ "</td><td class='total_dials'>"
+									+ val.total_dials
 								+ "</td><td class='template_cc' style='duration'>"
 									+ val.duration
 								+ "</td><td class='template_bcc' style='rate'>"

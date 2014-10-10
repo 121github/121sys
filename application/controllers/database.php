@@ -17,7 +17,18 @@ $this->_campaigns = campaign_access_dropdown();
 
     public function index()
     {
+    	//get current version
+    	$currentVersion = $this->Database_model->get_version();
+    	
+    	//Update the schema
 		$this->load->library('migration');
+
+		//If the version before update the schema did not exist, dump the init data
+		if ($currentVersion == "Unknown") {
+			$this->Database_model->init_data();
+		} 
+		
+		//Get the version after update the schema
 		$version = $this->Database_model->get_version();
 		        $data = array(
           	'page'=> array('admin'=>'Database'),
@@ -44,7 +55,7 @@ $this->_campaigns = campaign_access_dropdown();
 
 	}
 	
-	    public function add_data()
+	public function add_data()
     {
 		$status = $this->Database_model->demo_data();
 		if($status=="success"){
@@ -53,6 +64,18 @@ $this->_campaigns = campaign_access_dropdown();
 		echo json_encode(array("success"=>false,"msg"=>"Sample data could not be added. Failed on $status table"));	
 		}
 
+	}
+	
+	public function reset_data()
+	{
+		$status = $this->Database_model->init_data();
+		
+		if($status=="success"){
+			echo json_encode(array("success"=>true,"msg"=>"The default data was restored"));
+		} else {
+			echo json_encode(array("success"=>false,"msg"=>"Error restoring the default data. Failed on $status table"));
+		}
+	
 	}
 	
 }

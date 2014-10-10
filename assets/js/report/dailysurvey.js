@@ -1,9 +1,9 @@
 // JavaScript Document
 $(document).ready(function() {
-    campaignappointment.init()
+    dailysurvey.init()
 });
 
-var campaignappointment = {
+var dailysurvey = {
     init: function() {
         $('.daterange').daterangepicker({
                 opens: "left",
@@ -26,7 +26,7 @@ var campaignappointment = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                campaignappointment.campaignappointment_panel()
+                dailysurvey.dailysurvey_panel()
             });
         $(document).on("click", '.daterange', function(e) {
             e.preventDefault();
@@ -37,45 +37,61 @@ var campaignappointment = {
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            dailysurvey.dailysurvey_panel()
         });
-
+        $(document).on("click", ".agent-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            dailysurvey.dailysurvey_panel()
+        });
         $(document).on("click", ".team-manager-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="team-manager"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            dailysurvey.dailysurvey_panel()
         });
         $(document).on("click", ".source-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            dailysurvey.dailysurvey_panel()
         });
-        campaignappointment.campaignappointment_panel()
+        dailysurvey.dailysurvey_panel()
     },
-    campaignappointment_panel: function(campaignappointment) {
+    dailysurvey_panel: function(dailysurvey) {
         $.ajax({
-            url: helper.baseUrl + 'reports/campaignappointment_data',
+            url: helper.baseUrl + 'reports/dailysurvey_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function(response) {
             var $row = "";
-            $tbody = $('.campaignappointment-data .ajax-table').find('tbody');
+            $tbody = $('.dailysurvey-data .ajax-table').find('tbody');
     		$tbody.empty();
             if (response.success) {
             	$.each(response.data, function(i, val) {
                     if (response.data.length) {
+                    	if (val.total_surveys>0) {
+                    		success = "success";
+                    	}
+                    	else {
+                    		success = "warning";
+                    	}
 						$tbody
-						.append("<tr><td class='campaign'>"
-									+ val.campaign
+							.append("<tr class='"+success+"'><td class='date'>"
+									+ val.date
 								+ "</td><td class='name'>"
 									+ val.name
-								+ "</td><td class='appointments'>"
-									+ val.appointments
+								+ "</td><td class='complete_surveys'>"
+									+ val.complete_surveys
+								+ "</td><td class='refused_surveys'>"
+									+ val.refused_surveys
+								+ "</td><td class='total_surveys'>"
+									+ val.total_surveys
 								+ "</td><td class='total_dials'>"
 									+ val.total_dials
 								+ "</td><td class='template_cc' style='duration'>"

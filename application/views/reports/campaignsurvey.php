@@ -7,7 +7,7 @@
   <div id="page-wrapper">
     <div class="row">
       <div class="col-lg-12">
-        <h1 class="page-header">Campiagn Appointment Report</h1>
+        <h1 class="page-header">Campaign Survey Report</h1>
       </div>
       <!-- /.col-lg-12 --> 
     </div>
@@ -64,8 +64,12 @@
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th>Date</th>
-						<th>Surveys</th>
+						<th>Agent</th>
+						<th>Name</th>
+						<th>Complete Surveys</th>
+						<th>Refused Surveys</th>
+						<th>Total Surveys</th>
+						<th>Total Dials</th>
 						<th>Duration</th>
 						<th>Rate</th>
 					</tr>

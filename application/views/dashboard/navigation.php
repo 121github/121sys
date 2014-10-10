@@ -53,30 +53,70 @@
 			            <div id="collapseTwoCampaign" class="accordion-body <?php echo @($reports=='campaign'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                        <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>Campaign Transfer</a>
+			                        <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>Transfers</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                        <a href="<?php echo base_url() ?>reports/campaignappointment" <?php echo @($inner=='campaignappointment'?"class='active'":"") ?>>Campaign Appointment</a>
+			                        <a href="<?php echo base_url() ?>reports/campaignappointment" <?php echo @($inner=='campaignappointment'?"class='active'":"") ?>>Appointments</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                        <a href="<?php echo base_url() ?>reports/campaignsurvey" <?php echo @($inner=='campaignsurvey'?"class='active'":"") ?>>Campaign Survey</a>
+			                        <a href="<?php echo base_url() ?>reports/campaignsurvey" <?php echo @($inner=='campaignsurvey'?"class='active'":"") ?>>Surveys</a>
+			                    </div>
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>reports/campaigndials" <?php echo @($inner=='campaigndials'?"class='active'":"") ?>>Dials</a>
 			                    </div>
 			                </div>
 			            </div>
 			        </div>
 			        <!-- End Campaign 3 -->
-                    <div class="accordion-inner">
-                       <a href="<?php echo base_url() ?>reports/individual" <?php echo @($reports=='individual'?"class='active'":"") ?>>Individual</a>
-                    </div>
-                    <div class="accordion-inner">
-                       <a href="<?php echo base_url() ?>reports/individualdaily" <?php echo @($reports=='individualdaily'?"class='active'":"") ?>>Individual Daily Comparison</a>
-                    </div>
-                    <div class="accordion-inner">
-                       <a href="<?php echo base_url() ?>reports/agentdials" <?php echo @($reports=='agentdials'?"class='active'":"") ?>>Agent Dials</a>
-                    </div>
-                    <div class="accordion-inner">
-                       <a href="<?php echo base_url() ?>reports/campaigndials" <?php echo @($reports=='campaigndials'?"class='active'":"") ?>>Campaign Dials</a>
-                    </div>
+			        
+			        <!-- Agent -->
+                    <div class="accordion-group panel">
+			            <div class="accordion-inner">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoAgent">
+			                    Agent
+			                </a>
+			            </div>
+			            <div id="collapseTwoAgent" class="accordion-body <?php echo @($reports=='agent'?"":"collapse") ?>">
+			                <div class="accordion-group submenu">
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>reports/agenttransfer" <?php echo @($inner=='agenttransfer'?"class='active'":"") ?>>Transfers</a>
+			                    </div>
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>reports/agentappointment" <?php echo @($inner=='agentappointment'?"class='active'":"") ?>>Appointments</a>
+			                    </div>
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>reports/agentsurvey" <?php echo @($inner=='agentsurvey'?"class='active'":"") ?>>Surveys</a>
+			                    </div>
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>reports/agentdials" <?php echo @($inner=='agentdials'?"class='active'":"") ?>>Dials</a>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+			        <!-- End Agent 3 -->
+			        
+                    <!-- Daily Comparison -->
+                    <div class="accordion-group panel">
+			            <div class="accordion-inner">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoDaily">
+			                    Daily Comparison
+			                </a>
+			            </div>
+			            <div id="collapseTwoDaily" class="accordion-body <?php echo @($reports=='daily'?"":"collapse") ?>">
+			                <div class="accordion-group submenu">
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($reports=='dailytransfer'?"class='active'":"") ?>>Transfers</a>
+			                    </div>
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>reports/dailyappointment" <?php echo @($reports=='dailyappointment'?"class='active'":"") ?>>Appointments</a>
+			                    </div>
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>reports/dailysurvey" <?php echo @($reports=='dailysurvey'?"class='active'":"") ?>>Surveys</a>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+			        <!-- End Daily Comparison 3 -->
                 </div>
             </div>
         </div>

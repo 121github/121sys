@@ -7,7 +7,7 @@
   <div id="page-wrapper">
     <div class="row">
       <div class="col-lg-12">
-        <h1 class="page-header">Individual Report</h1>
+        <h1 class="page-header">Agent Appointment Report</h1>
       </div>
       <!-- /.col-lg-12 --> 
     </div>
@@ -15,7 +15,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Individual Report
+          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Transfer Report
             <div class="pull-right">
             <form class="filter-form">
               <div class="btn-group">
@@ -60,15 +60,14 @@
             </div>
           </div>
           <!-- /.panel-heading -->
-          <div class="panel-body individual-data">
+          <div class="panel-body agentappointment-data">
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
 						<th>Agent</th>
 						<th>Name</th>
-						<th>Transfers</th>
-						<th>Cross Transfers</th>
-						<th>Total Transfers</th>
+						<th>Appointments</th>
+						<th>Total Dials</th>
 						<th>Duration</th>
 						<th>Rate</th>
 					</tr>

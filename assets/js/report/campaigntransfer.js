@@ -70,14 +70,18 @@ var campaigntransfer = {
             	$.each(response.data, function(i, val) {
                     if (response.data.length) {
 						$tbody
-							.append("<tr><td class='date'>"
-									+ val.date
+						.append("<tr><td class='campaign'>"
+									+ val.campaign
+								+ "</td><td class='name'>"
+									+ val.name
 								+ "</td><td class='transfers'>"
 									+ val.transfers
 								+ "</td><td class='cross_transfers'>"
 									+ val.cross_transfers
 								+ "</td><td class='total transfers'>"
 									+ val.total_transfers
+								+ "</td><td class='total_dials'>"
+									+ val.total_dials
 								+ "</td><td class='template_cc' style='duration'>"
 									+ val.duration
 								+ "</td><td class='template_bcc' style='rate'>"

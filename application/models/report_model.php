@@ -67,15 +67,13 @@ class Report_model extends CI_Model
     }
     
     
-    public function get_campaign_report_by_outcome($options, $outcomesList)
+    public function get_campaign_report_by_outcome($options)
     {
     	$date_from = $options['date_from'];
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
     	$team_manager = $options['team-manager'];
     	$source = $options['source'];
-    	
-    	$outcomes = implode("','", $outcomesList);
     	
     	$where = "";
     	
@@ -95,145 +93,19 @@ class Report_model extends CI_Model
     		$where .= " and r.source_id = '$source' ";
     	}
     
-    	$qry = "select SUBSTRING(h.contact, 1, 10) as date, count(*) as count, o.outcome as outcome 
+    	$qry = "select c.campaign_id as campaign, c.campaign_name as name, count(*) as count, o.outcome as outcome 
     			from history h
     			inner join records r ON (r.urn = h.urn)
+    			inner join campaigns c ON (c.campaign_id = h.campaign_id)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
 				inner join users u ON (u.user_id = h.user_id)
-				where (o.outcome IN ('$outcomes'))"
+				where 1"
     	;
     	$qry .= $where;
     
-    	$qry .= "group by h.outcome_id, SUBSTRING(h.contact, 1, 10) order by date desc";
+    	$qry .= " group by h.outcome_id, campaign order by name asc";
     	
     	return $this->db->query($qry)->result_array();
-    }
-    
-    public function get_individual_report($options)
-    {
-    	$date_from = $options['date_from'];
-    	$date_to = $options['date_to'];
-    	$campaign = $options['campaign'];
-    	$agent = $options['agent'];
-    	$team_manager = $options['team-manager'];
-    	 
-    	$where = "";
-    	 
-    	if (!empty($date_from)) {
-    		$where .= " and date(contact) >= '$date_from' ";
-    	}
-    	if (!empty($date_to)) {
-    		$where .= " and date(contact) <= '$date_to' ";
-    	}
-    	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign' ";
-    	}
-    	if (!empty($agent)) {
-    		$where .= " and u.user_id = '$agent' ";
-    	}
-    	if (!empty($team_manager)) {
-    		$where .= " and u.team_id = '$team_manager' ";
-    	}
-    
-    	$qry = "select u.user_id as agent, u.name as name, count(*) as count, o.outcome as outcome
-    			from history h
-    			inner join records r ON (r.urn = h.urn)
-				inner join outcomes o ON (o.outcome_id = h.outcome_id)
-				inner join users u ON (u.user_id = h.user_id)
-				where (o.outcome IN ('Transfer', 'Cross Transfer'))"
-    			;
-    			$qry .= $where;
-    
-    			$qry .= "group by h.outcome_id, agent order by name desc";
-    			 
-    			return $this->db->query($qry)->result_array();
-    }
-    
-    public function get_individualdaily_report($options)
-    {
-    	$date_from = $options['date_from'];
-    	$date_to = $options['date_to'];
-    	$campaign = $options['campaign'];
-    	$agent = $options['agent'];
-    	$team_manager = $options['team-manager'];
-    	$source = $options['source'];
-    	
-    	$where = "";
-    	
-    	if (!empty($date_from)) {
-    		$where .= " and date(contact) >= '$date_from' ";
-    	}
-    	if (!empty($date_to)) {
-    		$where .= " and date(contact) <= '$date_to' ";
-    	}
-    	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign' ";
-    	}
-    	if (!empty($agent)) {
-    		$where .= " and u.user_id = '$agent' ";
-    	}
-    	if (!empty($team_manager)) {
-    		$where .= " and u.team_id = '$team_manager' ";
-    	}
-    	if (!empty($source)) {
-    		$where .= " and r.source_id = '$source' ";
-    	}
-    
-    	$qry = "select SUBSTRING(h.contact, 1, 10) as date, u.name as name, count(*) as count, o.outcome as outcome 
-    			from history h
-    			inner join records r ON (r.urn = h.urn)
-				inner join outcomes o ON (o.outcome_id = h.outcome_id)
-				inner join users u ON (u.user_id = h.user_id)
-				where (o.outcome IN ('Transfer', 'Cross Transfer'))"
-    	;
-    	$qry .= $where;
-    
-    	$qry .= "group by h.outcome_id, SUBSTRING(h.contact, 1, 10) order by date desc";
-    	
-    	return $this->db->query($qry)->result_array();
-    }
-    
-    public function get_agentdials_report($options)
-    {
-    	$date_from = $options['date_from'];
-    	$date_to = $options['date_to'];
-    	$campaign = $options['campaign'];
-    	$agent = $options['agent'];
-    	$team_manager = $options['team-manager'];
-    	$source = $options['source'];
-    	 
-    	$where = "";
-    	 
-    	if (!empty($date_from)) {
-    		$where .= " and date(contact) >= '$date_from' ";
-    	}
-    	if (!empty($date_to)) {
-    		$where .= " and date(contact) <= '$date_to' ";
-    	}
-    	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign' ";
-    	}
-    	if (!empty($agent)) {
-    		$where .= " and u.user_id = '$agent' ";
-    	}
-    	if (!empty($team_manager)) {
-    		$where .= " and u.team_id = '$team_manager' ";
-    	}
-    	if (!empty($source)) {
-    		$where .= " and r.source_id = '$source' ";
-    	}
-    
-    	$qry = "select u.ext as advisor, u.name as name, count(*) as count
-    			from history h
-    			inner join records r ON (r.urn = h.urn)
-				inner join campaigns c ON (c.campaign_id = h.campaign_id)
-				inner join users u ON (u.user_id = h.user_id)"
-    			;
-    			$qry .= $where;
-    
-    			$qry .= "group by advisor order by advisor desc";
-    			 
-    			return $this->db->query($qry)->result_array();
     }
     
     public function get_campaigndials_report($options)
@@ -274,8 +146,136 @@ class Report_model extends CI_Model
     			;
     			$qry .= $where;
     
-    			$qry .= "group by c.campaign_id order by c.campaign_id desc";
+    			$qry .= "group by c.campaign_id order by c.campaign_id asc";
     
+    			return $this->db->query($qry)->result_array();
+    }
+    
+    public function get_agent_report_by_outcome($options)
+    {
+    	$date_from = $options['date_from'];
+    	$date_to = $options['date_to'];
+    	$campaign = $options['campaign'];
+    	$agent = $options['agent'];
+    	$team_manager = $options['team-manager'];
+    	 
+    	
+    	$where = "";
+    	 
+    	if (!empty($date_from)) {
+    		$where .= " and date(contact) >= '$date_from' ";
+    	}
+    	if (!empty($date_to)) {
+    		$where .= " and date(contact) <= '$date_to' ";
+    	}
+    	if (!empty($campaign)) {
+    		$where .= " and h.campaign_id = '$campaign' ";
+    	}
+    	if (!empty($agent)) {
+    		$where .= " and u.user_id = '$agent' ";
+    	}
+    	if (!empty($team_manager)) {
+    		$where .= " and u.team_id = '$team_manager' ";
+    	}
+    
+    	$qry = "select u.user_id as agent, u.name as name, count(*) as count, o.outcome as outcome
+    			from history h
+    			inner join records r ON (r.urn = h.urn)
+				inner join outcomes o ON (o.outcome_id = h.outcome_id)
+				inner join users u ON (u.user_id = h.user_id)
+				where 1"
+    			;
+    			$qry .= $where;
+    
+    			$qry .= " group by h.outcome_id, agent order by name asc";
+    			 
+    			return $this->db->query($qry)->result_array();
+    }
+    
+    public function get_agentdials_report($options)
+    {
+    	$date_from = $options['date_from'];
+    	$date_to = $options['date_to'];
+    	$campaign = $options['campaign'];
+    	$agent = $options['agent'];
+    	$team_manager = $options['team-manager'];
+    	$source = $options['source'];
+    	 
+    	$where = "";
+    	 
+    	if (!empty($date_from)) {
+    		$where .= " and date(contact) >= '$date_from' ";
+    	}
+    	if (!empty($date_to)) {
+    		$where .= " and date(contact) <= '$date_to' ";
+    	}
+    	if (!empty($campaign)) {
+    		$where .= " and h.campaign_id = '$campaign' ";
+    	}
+    	if (!empty($agent)) {
+    		$where .= " and u.user_id = '$agent' ";
+    	}
+    	if (!empty($team_manager)) {
+    		$where .= " and u.team_id = '$team_manager' ";
+    	}
+    	if (!empty($source)) {
+    		$where .= " and r.source_id = '$source' ";
+    	}
+    
+    	$qry = "select u.ext as advisor, u.name as name, count(*) as count
+    			from history h
+    			inner join records r ON (r.urn = h.urn)
+				inner join campaigns c ON (c.campaign_id = h.campaign_id)
+				inner join users u ON (u.user_id = h.user_id)"
+    			;
+    			$qry .= $where;
+    
+    			$qry .= "group by advisor order by advisor asc";
+    			 
+    			return $this->db->query($qry)->result_array();
+    }
+    
+    public function get_daily_report_by_outcome($options)
+    {
+    	$date_from = $options['date_from'];
+    	$date_to = $options['date_to'];
+    	$campaign = $options['campaign'];
+    	$agent = $options['agent'];
+    	$team_manager = $options['team-manager'];
+    	$source = $options['source'];
+    	 
+    	$where = "";
+    	 
+    	if (!empty($date_from)) {
+    		$where .= " and date(contact) >= '$date_from' ";
+    	}
+    	if (!empty($date_to)) {
+    		$where .= " and date(contact) <= '$date_to' ";
+    	}
+    	if (!empty($campaign)) {
+    		$where .= " and h.campaign_id = '$campaign' ";
+    	}
+    	if (!empty($agent)) {
+    		$where .= " and u.user_id = '$agent' ";
+    	}
+    	if (!empty($team_manager)) {
+    		$where .= " and u.team_id = '$team_manager' ";
+    	}
+    	if (!empty($source)) {
+    		$where .= " and r.source_id = '$source' ";
+    	}
+    
+    	$qry = "select SUBSTRING(h.contact, 1, 10) as date, u.name as name, count(*) as count, o.outcome as outcome
+    			from history h
+    			inner join records r ON (r.urn = h.urn)
+				inner join outcomes o ON (o.outcome_id = h.outcome_id)
+				inner join users u ON (u.user_id = h.user_id)
+				where 1"
+    			;
+    			$qry .= $where;
+    
+    			$qry .= " group by h.outcome_id, date order by date desc";
+    			 
     			return $this->db->query($qry)->result_array();
     }
 }

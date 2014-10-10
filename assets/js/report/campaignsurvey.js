@@ -70,10 +70,18 @@ var campaignsurvey = {
             	$.each(response.data, function(i, val) {
                     if (response.data.length) {
 						$tbody
-							.append("<tr><td class='date'>"
-									+ val.date
-								+ "</td><td class='surveys'>"
-									+ val.surveys
+						.append("<tr><td class='campaign'>"
+									+ val.campaign
+								+ "</td><td class='name'>"
+									+ val.name
+								+ "</td><td class='complete_surveys'>"
+									+ val.complete_surveys
+								+ "</td><td class='refused_surveys'>"
+									+ val.refused_surveys
+								+ "</td><td class='total_surveys'>"
+									+ val.total_surveys
+								+ "</td><td class='total_dials'>"
+									+ val.total_dials
 								+ "</td><td class='template_cc' style='duration'>"
 									+ val.duration
 								+ "</td><td class='template_bcc' style='rate'>"
