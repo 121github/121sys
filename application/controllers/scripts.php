@@ -9,6 +9,7 @@ class Scripts extends CI_Controller
 	{
 		parent::__construct();
 		user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
 		$this->load->model('Script_model');
 		$this->load->model('Form_model');
 		
@@ -22,7 +23,8 @@ class Scripts extends CI_Controller
 		$campaigns = $this->Form_model->get_user_campaigns();
 		
 		$data = array(
-				'pageId' => 'Admin',
+				'campaign_access' => $this->_campaigns,
+'pageId' => 'Admin',
 				'title' => 'Admin',
 				'page'=> array('admin'=>'scripts'),
 				'css' => array(

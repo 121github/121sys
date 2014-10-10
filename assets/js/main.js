@@ -26,9 +26,9 @@ $('.dob').datetimepicker({
 		        $(document).on('click', '.clear-input', function (e) {
             $(this).closest('.input-group').find('input').val('');
         });
-}
- 
+} 
 renew_js();
+
 Date.prototype.addHours = function(h) {    
    this.setTime(this.getTime() + (h*60*60*1000)); 
    return this;   
@@ -102,4 +102,27 @@ var flashalert = {
   
 	
 
-  
+   function get_elapsed_time_string(total_seconds) {
+  function pretty_time_string(num) {
+    return ( num < 10 ? "0" : "" ) + num;
+  }
+
+  var hours = Math.floor(total_seconds / 3600);
+  total_seconds = total_seconds % 3600;
+
+  var minutes = Math.floor(total_seconds / 60);
+  total_seconds = total_seconds % 60;
+
+  var seconds = Math.floor(total_seconds);
+
+  // Pad the minutes and seconds with leading zeros, if required
+  hours = pretty_time_string(hours);
+  minutes = pretty_time_string(minutes);
+  seconds = pretty_time_string(seconds);
+
+  // Compose the string for display
+  var currentTimeString = hours + ":" + minutes + ":" + seconds;
+
+  return currentTimeString;
+}
+

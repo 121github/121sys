@@ -10,6 +10,7 @@ class Survey extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Survey_model');
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
@@ -98,7 +99,8 @@ class Survey extends CI_Controller
         
         $data = array(
             'urn' => $urn,
-            'pageId' => 'Create-survey',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Create-survey',
             'title' => 'Create new survey',
             'campaign' => $campaign,
             "contact_id" => $contact_id,
@@ -152,7 +154,8 @@ class Survey extends CI_Controller
         }
         
         $data = array(
-            'pageId' => 'Edit-survey',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Edit-survey',
             'title' => 'Edit survey',
             'urn' => $urn,
             'survey_id' => $survey,
@@ -214,7 +217,8 @@ class Survey extends CI_Controller
         
         
         $data = array(
-            'pageId' => 'List-survey',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'List-survey',
             'title' => 'List Surveys',
             'columns' => $visible_columns,
             'javascript' => array(

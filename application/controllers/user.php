@@ -10,6 +10,7 @@ class User extends CI_Controller
     {
         parent::__construct();
         $this->load->model('User_model');
+		 $this->load->model('Form_model');
     }
     
     public function login()
@@ -28,9 +29,19 @@ class User extends CI_Controller
                     
                     $redirect = $this->input->post('redirect');
                     if ($redirect) {
-                        redirect(base_url().base64_decode($redirect));
+                        redirect(str_replace("121sys/","",base64_decode($redirect)));
                     } else {
-                        redirect('records/view/1');
+						if($_SESSION['role']==5||$_SESSION['role']==3){
+						redirect('dashboard/agent');
+						}
+						if($_SESSION['role']==2){
+						redirect('dashboard/management');
+						}
+						if($_SESSION['role']==4){
+						redirect('dashboard/client');
+						} else {
+                        redirect('dashboard');
+						}
                     }
                 }
                 $this->session->set_flashdata('error', 'Invalid username or password.');
@@ -42,7 +53,7 @@ class User extends CI_Controller
         
         $redirect = ($this->uri->segment(3) ? $this->uri->segment(3) : false);
         $data = array(
-            'pageId' => 'login',
+'pageId' => 'login',
             'pageClass' => 'login',
             'title' => 'NPS Login',
             'redirect' => $redirect
@@ -52,6 +63,7 @@ class User extends CI_Controller
     
     public function logout()
     {
+		session_destroy();
         redirect('user/login');
     }
     
@@ -92,16 +104,31 @@ class User extends CI_Controller
         }
         
         $data = array(
-            'pageId' => 'my-account',
+'pageId' => 'my-account',
             'pageClass' => 'my-account',
             'title' => 'My Account'
         );
         $this->template->load('default', 'user/account', $data);
     }
     
-    
+    /* at the bottom of default.php template: this function is ran every time a page is loaded and it checks whether user permissions/access have been changed or not so they can be reapplied without needing to log out */
 	public function check_session(){
 		$this->User_model->check_session();
+		echo $this->User_model->update_hours_log();
+	}
+	
+	/* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
+	public function current_campaign(){
+		$campaign=intval($this->uri->segment(3));
+			if(in_array($campaign,$_SESSION['campaign_access']['array'])){
+				        $campaign_features = $this->Form_model->get_campaign_features($campaign);
+        				$features  = array();
+        foreach ($campaign_features as $row) {
+            $features[]         = $row['name'];
+        }
+				$_SESSION['campaign_features']=$features;
+				$_SESSION['current_campaign']=$campaign;
+		}
 	}
 	
     public function index()

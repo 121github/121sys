@@ -11,6 +11,7 @@ class Templates extends CI_Controller
 	{
 		parent::__construct();
 		user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
 		$this->load->model('Email_model');
 		$this->load->model('Form_model');
 		
@@ -24,7 +25,8 @@ class Templates extends CI_Controller
 		$campaigns = $this->Form_model->get_user_campaigns();
 		
 		$data = array(
-				'pageId' => 'Dashboard',
+				'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
 				'title' => 'Dashboard',
 				'page'=> array('admin'=>'templates'),
 				'css' => array(

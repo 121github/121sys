@@ -135,6 +135,7 @@ class Data_model extends CI_Model
                 $row["records"]['campaign_id'] = $options['campaign'];
                 $row["records"]['source_id']   = $options['source'];
 				$row["records"]['date_added']   = date('Y-m-d');
+				$row["records"]['dials']   = "0";
                 if ($options["duplicates"] == "1" || $options["autoincrement"] == 1) {
                     $this->db->insert("records", $row["records"]);
                     if ($this->db->_error_message()) {

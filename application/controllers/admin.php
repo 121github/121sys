@@ -7,6 +7,7 @@ class Admin extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+		$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Admin_model');
@@ -19,7 +20,8 @@ class Admin extends CI_Controller
         $options['roles']  = $this->Form_model->get_roles();
         $options['groups'] = $this->Form_model->get_groups();
         $data              = array(
-            'pageId' => 'Admin',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => array(
                 'admin' => 'users'
@@ -56,7 +58,8 @@ class Admin extends CI_Controller
         $options['groups']    = $this->Form_model->get_groups();
         $options['campaigns'] = $this->Form_model->get_campaigns();
         $data                 = array(
-            'pageId' => 'Admin',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => array(
                 'admin' => 'campaign'
@@ -252,7 +255,8 @@ class Admin extends CI_Controller
     {
         $logs = $this->Admin_model->get_logs();
         $data = array(
-            'pageId' => 'Admin',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => array(
                 'admin' => 'logs'
@@ -273,7 +277,8 @@ class Admin extends CI_Controller
             $permissions[$row['permission_group']][$row['permission_id']] = $row['permission_name'];
         }
         $data = array(
-            'pageId' => 'Admin',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => array(
                 'admin' => 'roles'
@@ -340,7 +345,8 @@ class Admin extends CI_Controller
     public function groups()
     {
         $data = array(
-            'pageId' => 'Admin',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => array(
                 'admin' => 'groups'
@@ -379,7 +385,8 @@ class Admin extends CI_Controller
         $groups   = $this->Form_model->get_groups();
         $managers = $this->Form_model->get_managers();
         $data     = array(
-            'pageId' => 'Admin',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => array(
                 'admin' => 'teams'
@@ -436,7 +443,9 @@ class Admin extends CI_Controller
             $response = $this->Admin_model->add_new_user($form);
         } else {
             $response = $this->Admin_model->update_user($form);
+			$this->User_model->flag_users_for_reload(array($form['user_id']));
         }
+		
         echo json_encode(array(
             "data" => $response
         ));

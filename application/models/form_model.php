@@ -7,8 +7,10 @@ class Form_model extends CI_Model
     function __construct()
     {
         parent::__construct();
+		if(isset($_SESSION['user_id'])){
         $this->role_id = $_SESSION['role'];
         $this->user_id = $_SESSION['user_id'];
+		}
     }
     public function users_in_group($group_id, $campaign)
     {

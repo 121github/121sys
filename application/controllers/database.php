@@ -10,6 +10,7 @@ class Database extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Database_model');		
     }
     
@@ -20,7 +21,8 @@ class Database extends CI_Controller
 		$version = $this->Database_model->get_version();
 		        $data = array(
           	'page'=> array('admin'=>'Database'),
-            'pageId' => 'Database-management',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Database-management',
 			'version'=>$version,
             'title' => 'Database management',
 			            'css' => array(

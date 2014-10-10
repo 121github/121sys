@@ -10,11 +10,13 @@ class Records extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+		$this->_campaigns = campaign_access_dropdown();
         $this->load->model('User_model');
         $this->load->model('Records_model');
         $this->load->model('Survey_model');
         $this->load->model('Form_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
+		$this->_campaign = $_SESSION['current_campaign'];
     }
     
     //list the records in the callpot
@@ -48,7 +50,8 @@ class Records extends CI_Controller
         );
         
         $data = array(
-            'pageId' => 'list-records',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'list-records',
             'title' => 'List Records',
             'columns' => $visible_columns,
             'javascript' => array(
@@ -82,24 +85,36 @@ class Records extends CI_Controller
     
     public function detail()
     {
+		if(!in_array('search',$_SESSION['campaign_features'])&&!in_array("search page",$_SESSION['permissions'])){
+		//if the campaign does not have search enable and the user does not have search permissions then they are given a record
+		$urn = $this->Records_model->get_record();
+		$automatic = true;
+		//unsetting navigation array because it's not needed when users are using the automated method
+		if(isset($_SESSION['nav'])){
+		unset($_SESSION['nav']);
+		}
+		} else {
+		//a record can be selected using a crafted url /records/detail/[urn]
+		$automatic = false;
         $urn = intval($this->uri->segment(3));
-        $this->User_model->campaign_access_check($urn);
+		}
+        //$this->User_model->campaign_access_check($urn);
         
-        //get the campaign for the urn
-        $campaign          = $this->Records_model->get_campaign($urn);
         //get the features for the campaign and put the ID's into an array
-        $campaign_features = $this->Form_model->get_campaign_features($campaign['campaign_id']);
+        $campaign_features = $this->Form_model->get_campaign_features($this->_campaign);
         $features          = array();
         foreach ($campaign_features as $row) {
             $features[]         = $row['id'];
+			if(!empty($row['path'])){
             $panels[$row['id']] = $row['path'];
+			}
         }
         
         //get the details of the record for the specified features
         $details          = $this->Records_model->get_details($urn, $features);
         $progress_options = $this->Form_model->get_progress_descriptions();
-        $outcomes         = $this->Records_model->get_outcomes($campaign['campaign_id']);
-        $xfers            = $this->Records_model->get_xfers($campaign['campaign_id']);
+        $outcomes         = $this->Records_model->get_outcomes($this->_campaign);
+        $xfers            = $this->Records_model->get_xfers($this->_campaign);
 		if(isset($details['contacts'])){
         foreach ($details['contacts'] as $contact_id => $contact_data) {
             $survey_options["contacts"][$contact_id] = $contact_data["name"]["fullname"];
@@ -118,7 +133,8 @@ class Records extends CI_Controller
         
         
         $data = array(
-            'pageId' => 'list-records',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'list-records',
             'title' => 'Record Details',
             'details' => $details,
             'outcomes' => $outcomes,
@@ -126,6 +142,7 @@ class Records extends CI_Controller
             "panels" => $panels,
             "xfer_campaigns" => $xfers,
             "progress_options" => $progress_options,
+			"automatic"=>$automatic,
             "javascript" => array(
                 "detail2.js"
             ),
@@ -142,7 +159,7 @@ class Records extends CI_Controller
         }
         //get surveys if this feature is turned on
         if (in_array(11, $features)) {
-            $available_surveys         = $this->Form_model->get_surveys($campaign['campaign_id']);
+            $available_surveys         = $this->Form_model->get_surveys($this->_campaign);
             $survey_options["surveys"] = $available_surveys;
             $data['survey_options']    = $survey_options;
         }
@@ -150,7 +167,7 @@ class Records extends CI_Controller
         //get templates for Emails if this feature is turned on
         if (in_array(9, $features)) {
             $email_options              = array();
-            $templates                  = $this->Form_model->get_templates_by_campaign_id($campaign['campaign_id']);
+            $templates                  = $this->Form_model->get_templates_by_campaign_id($this->_campaign);
             $email_options["templates"] = $templates;
             $data['email_options']      = $email_options;
         }
@@ -279,11 +296,11 @@ class Records extends CI_Controller
         return $triggers;
     }
     
-    public function check_email_triggers($outcome_id = "", $campaign_id = "")
+    public function check_email_triggers($outcome_id = "")
     {
         $this->db->where(array(
             "outcome_id" => $outcome_id,
-            "campaign_id" => $campaign_id
+            "campaign_id" => $this->_campaign
         ));
         if ($this->db->get("email_triggers")->num_rows() > 0) {
             return true;
@@ -321,8 +338,6 @@ class Records extends CI_Controller
             $triggers        = array();
             $survey_triggers = array();
             $last_survey_id  = false;
-            $campaign        = $this->Records_model->get_campaign($update_array['urn']);
-            $campaign_id     = $campaign['campaign_id'];
             //by default we add an entry to the history table unless the outcome has a no_history flag in the outcomes table, in which case we dont want to add an entry
             $no_history      = false;
             if (!$this->input->post('pending_manager')) {
@@ -351,6 +366,10 @@ class Records extends CI_Controller
                     $this->Records_model->set_status($update_array['urn'], $triggers["set_status"]);
                 }
                 if (intval($triggers["delay_hours"]) > 0) {
+					if($_SESSION['permissions']<>"keep records"){
+						//delete all owners so it can get called back by anyone (answer machines etc)
+						$this->Records_model->save_ownership($update_array['urn'],array());
+					}
                     $delay                    = $triggers['delay_hours'];
                     $update_array['nextcall'] = date('Y-m-d H:i', strtotime("+$delay hours"));
                 }
@@ -390,19 +409,20 @@ class Records extends CI_Controller
 			$xfer_campaign = $update_array['xfer_campaign'];
 			unset($update_array['xfer_campaign']);
 			}
+			
             $this->Records_model->update_record($update_array);
             $hist = $update_array;
-            
+            $hist['campaign_id'] = $this->_campaign;
 
             //if the pending_manager requires attention we assign the record to the campaign managers
             if ($update_array['pending_manager'] > 0 || $survey_outcome || $this->input->post('outcome_id')) {
 				//check if the outcome triggers an ownership update
-				$outcome_owners = $this->Records_model->get_owners_for_outcome($campaign_id,$update_array['outcome_id']);
+				$outcome_owners = $this->Records_model->get_owners_for_outcome($this->_campaign,$update_array['outcome_id']);
 				
 				if(count($outcome_owners)>0){
 					$this->Records_model->save_ownership(intval($this->input->post('urn')), $outcome_owners);
 				} else {
-				$owners = $this->Records_model->get_campaign_managers($campaign_id);
+				$owners = $this->Records_model->get_campaign_managers($this->_campaign);
                 if (count($owners) > 0) {
                     $this->Records_model->save_ownership(intval($this->input->post('urn')), $owners);
                 }
@@ -410,6 +430,7 @@ class Records extends CI_Controller
             } 
 			else {
                 //check ownership and if nobody has this record assign it to the person that just updated it
+				if($_SESSION['permissions']=="keep records"){
                 $owners = $this->Records_model->get_ownership(intval($this->input->post('urn')));
                 if (!count($owners)) {
                     $owner = array(
@@ -417,6 +438,7 @@ class Records extends CI_Controller
                     );
                     $this->Records_model->save_ownership(intval($this->input->post('urn')), $owner);
                 }
+				}
             }
             
             if ($survey_outcome) {
@@ -469,7 +491,9 @@ class Records extends CI_Controller
             //if the outcome does not have a "no_history" flag we add the update to the history table
             if (!$no_history) {
                 $id = $this->Records_model->add_history($hist);
+				if(isset($xfer_campaign)){
 				$this->Records_model->add_xfer($id,$xfer_campaign);
+				}
             }
             
             //return success to page
@@ -542,7 +566,7 @@ class Records extends CI_Controller
         foreach ($data as $row) {
             if ($row['nps_question'] == 1) {
                 $urn         = $row['urn'];
-                $campaign_id = $row['campaign_id'];
+                $this->_campaign = $row['campaign_id'];
                 $nps         = $row['answer'];
                 $contact_id  = $row['contact_id'];
                 $survey_name = $row['survey_name'];
@@ -551,7 +575,7 @@ class Records extends CI_Controller
             }
         }
         $outcome_id   = 60; //the survey outcome_id
-        $recipients   = $this->Email_model->get_recipients($campaign_id, $outcome_id);
+        $recipients   = $this->Email_model->get_recipients($this->_campaign, $outcome_id);
         $contact      = $this->Contacts_model->get_contact($contact_id);
         $contact_name = $contact['general']['fullname'];
         $comments     = $this->Records_model->get_last_comment($urn);

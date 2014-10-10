@@ -9,7 +9,8 @@ class Email extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        user_auth_check();;
+        user_auth_check();
+$this->_campaigns = campaign_access_dropdown();;
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
         $this->load->model('Email_model');
@@ -55,7 +56,8 @@ class Email extends CI_Controller
     	
     	$data = array(
     			'urn' => $urn,
-    			'pageId' => 'Create-survey',
+    			'campaign_access' => $this->_campaigns,
+'pageId' => 'Create-survey',
     			'title' => 'Send new email',
     			'record_urn' => $urn,
     			'template_id' => $template_id,

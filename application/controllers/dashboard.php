@@ -10,6 +10,7 @@ class Dashboard extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Dashboard_model');
@@ -23,7 +24,8 @@ class Dashboard extends CI_Controller
         $surveys = $this->Form_model->get_surveys();
         
         $data = array(
-            'pageId' => 'Dashboard',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
             'title' => 'Dashboard',
 			'page'=> array('dashboard'=>'overview'),
             'javascript' => array(
@@ -51,7 +53,8 @@ class Dashboard extends CI_Controller
         $surveys   = $this->Form_model->get_surveys();
         
         $data = array(
-            'pageId' => 'Dashboard',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
             'title' => 'Dashboard',
 			'page'=> array('dashboard'=>'agent'),
             'javascript' => array(
@@ -74,7 +77,8 @@ class Dashboard extends CI_Controller
         $surveys   = $this->Form_model->get_surveys();
         
         $data = array(
-            'pageId' => 'Dashboard',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
             'title' => 'Dashboard',
 			'page'=> array('dashboard'=>'client'),
             'javascript' => array(
@@ -98,7 +102,8 @@ class Dashboard extends CI_Controller
         $surveys   = $this->Form_model->get_surveys();
         
         $data = array(
-            'pageId' => 'Dashboard',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
             'title' => 'Dashboard',
 			'page'=> array('dashboard'=>'management'),
             'javascript' => array(

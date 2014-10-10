@@ -36,13 +36,8 @@ class User_model extends CI_Model
             $_SESSION['config']  = $config;
             $result              = $result[0];
             $_SESSION['user_id'] = $result['user_id'];
-            $_SESSION['name']    = $result['name'];
-            $_SESSION['role']    = $result['role_id'];
-            $_SESSION['group']   = $result['group_id'];
-            $_SESSION['logdate'] = $result['logdate'];
+			$_SESSION['logdate'] = $result['logdate'];
             $_SESSION['logtime'] = $result['logtime'];
-            $_SESSION['email']   = $result['user_email'];
-            $_SESSION['ext']     = $result['ext'];
             //get the permissions for the users role and store them in the session
             $this->load_user_session();
             $this->db->where("user_id", $result['user_id']);
@@ -97,13 +92,26 @@ class User_model extends CI_Model
 				unset($_SESSION['campaign_access']);
 				unset($_SESSION['navigation']);
 				unset($_SESSION['permissions']);
+				unset($_SESSION['role']);
                 $this->load_user_session();
+				if(!in_array($_SESSION['current_campaign'],$_SESSION['campaign_access']['array'])){
+					unset($_SESSION['current_campaign']);
+				}
 				echo "Session reloaded";
             }
         }
     }
     public function load_user_session()
     {
+			$result = $this->db->query("select * from users where user_id = ".$_SESSION['user_id'])->row_array(0);
+			$this->firephp->log($result);
+			//load all user details into the session
+            $_SESSION['name']    = $result['name'];
+            $_SESSION['role']    = $result['role_id'];
+            $_SESSION['group']   = $result['group_id'];
+            $_SESSION['email']   = $result['user_email'];
+            $_SESSION['ext']     = $result['ext'];
+		
 		$theme_folder = $this->db->query("select theme_folder from user_groups where group_id = '".$_SESSION['group']."'")->row()->theme_folder;
 		if(!empty($theme_folder)){
 		$_SESSION['theme_folder'] = $theme_folder;
@@ -145,4 +153,19 @@ class User_model extends CI_Model
             "password" => $password
         ));
     }
+	
+
+	public function update_hours_log(){
+		$user_id = $_SESSION['user_id'];
+		if(isset($_SESSION['current_campaign'])){
+		$campaign = $_SESSION['current_campaign'];
+		$qry = "update hours_logged set end_time = now() where user_id = '$user_id' and end_time is null";
+		$this->db->query($qry);
+		$qry = "insert into hours_logged set user_id = '$user_id',campaign_id = '$campaign',start_time=now()";
+		$this->db->query($qry);
+		$qry = "SELECT sum(TIME_TO_SEC(TIMEDIFF(end_time,start_time))) as secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
+		return $this->db->query($qry)->row()->secs;
+		}
+	}
+	
 }

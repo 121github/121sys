@@ -7,6 +7,7 @@ class Exports extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Export_model');
 		$this->load->model('Form_model');
     }
@@ -16,7 +17,8 @@ class Exports extends CI_Controller
 		$campaigns = $this->Form_model->get_user_campaigns();
 
         $data = array(
-            'pageId' => 'export',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'export',
             'title' => 'Exporter',
             'javascript' => array(
                 'lib/moment.js',

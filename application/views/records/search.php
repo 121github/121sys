@@ -5,6 +5,7 @@
   <div class="col-md-12 col-sm-12">
     <div class="panel-group" id="accordion">
       <form id="filter-form">
+      <?php if(in_array("campaign search",$_SESSION['permissions'])){ ?>
         <div class="panel panel-primary visible">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"> Campaign Filter Options </a> </h4>
@@ -53,6 +54,7 @@
               Found: <span class="record-count"></span> </div>
           </div>
         </div>
+        <?php } ?>
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> Record Filter Options</a> </h4>

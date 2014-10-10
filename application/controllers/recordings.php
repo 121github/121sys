@@ -10,11 +10,13 @@ class Recordings extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
 		$this->load->model('Contacts_model');
 		$this->load->model('Records_model');
     }
 
 public function find_calls(){
+	session_write_close();
 	$this->load->helper('date');
 	//connect to 121backup which has the database of call recordings in a db named "recordings"
 //the urn we will be searching for - posted via ajax

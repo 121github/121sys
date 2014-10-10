@@ -10,6 +10,7 @@ class Reports extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
 		$this->load->model('Report_model');
@@ -19,7 +20,8 @@ class Reports extends CI_Controller
     {
        
         $data = array(
-            'pageId' => 'Reports',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
             'title' => 'Reports | Targets',
 			'page'=> array('reports'=>'targets'),
             'javascript' => array(
@@ -50,7 +52,8 @@ class Reports extends CI_Controller
         $surveys = $this->Form_model->get_surveys();
         $results = $this->Report_model->all_answers_data();
         $data = array(
-            'pageId' => 'Reports',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
             'title' => 'Reports | Answers',
 			'page'=> array('reports'=>'answers'),
             'javascript' => array(
@@ -98,7 +101,8 @@ class Reports extends CI_Controller
 		$agents   = $this->Form_model->get_agents();
         
         $data = array(
-            'pageId' => 'Reports',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
             'title' => 'Reports | Activity',
 			'page'=> array('reports'=>'activity'),
             'javascript' => array(
@@ -166,7 +170,8 @@ class Reports extends CI_Controller
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
-    			'pageId' => 'Reports',
+    			'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
     			'title' => 'Reports | Campaign Transfer',
     			'page'=> array('reports'=>'campaign', 'inner' => 'campaigntransfer'),
     			'javascript' => array(
@@ -245,7 +250,8 @@ class Reports extends CI_Controller
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
-    			'pageId' => 'Reports',
+    			'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
     			'title' => 'Reports | Campaign Appointment',
     			'page'=> array('reports'=>'campaign', 'inner' => 'campaignappointment'),
     			'javascript' => array(
@@ -312,7 +318,8 @@ class Reports extends CI_Controller
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
-    			'pageId' => 'Reports',
+    			'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
     			'title' => 'Reports | Campaign Survey',
     			'page'=> array('reports'=>'campaign', 'inner' => 'campaignsurvey'),
     			'javascript' => array(
@@ -379,7 +386,8 @@ class Reports extends CI_Controller
     	$teamManagers   = $this->Form_model->get_teams();
     
     	$data = array(
-    			'pageId' => 'Reports',
+    			'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
     			'title' => 'Reports | Individual',
     			'page'=> array('reports'=>'individual'),
     			'javascript' => array(
@@ -462,7 +470,8 @@ class Reports extends CI_Controller
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
-    			'pageId' => 'Reports',
+    			'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
     			'title' => 'Reports | Individual Daily Comparison',
     			'page'=> array('reports'=>'individualdaily'),
     			'javascript' => array(
@@ -550,7 +559,8 @@ class Reports extends CI_Controller
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
-    			'pageId' => 'Reports',
+    			'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
     			'title' => 'Reports | Agent Dials',
     			'page'=> array('reports'=>'agentdials'),
     			'javascript' => array(
@@ -612,7 +622,8 @@ class Reports extends CI_Controller
     	$sources = $this->Form_model->get_sources();
     
     	$data = array(
-    			'pageId' => 'Reports',
+    			'campaign_access' => $this->_campaigns,
+'pageId' => 'Reports',
     			'title' => 'Reports | Campaign Dials',
     			'page'=> array('reports'=>'campaigndials'),
     			'javascript' => array(

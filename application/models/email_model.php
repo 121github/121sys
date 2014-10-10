@@ -204,14 +204,14 @@ class Email_model extends CI_Model
     /**
      * Get emails history
      */
-    public function get_emails($record_id, $limit, $offset)
+    public function get_emails($urn, $limit, $offset)
     {
         
         $this->db->select("e.*, u.*, t.*");
         $this->db->from("email_history e");
         $this->db->join('users u', 'u.user_id = e.user_id');
         $this->db->join('email_templates t', 't.template_id = e.template_id');
-        $this->db->where('record_urn', $record_id);
+        $this->db->where('urn', $urn);
         $this->db->order_by('e.sent_date', 'desc');
         $this->db->limit($limit);
         $this->db->offset($offset);

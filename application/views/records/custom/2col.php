@@ -10,21 +10,28 @@ There was a problem while finding the selected record details. Maybe it does not
     <?php if(!empty($nav['next'])): ?>
     <a type="button" class="btn btn-default btn-lg" href="<?php echo $nav['next'] ?>">Next</a>
     <?php endif ?>
+    <?php if($automatic): ?>
+    <a type="button" class="btn btn-default btn-lg" href="<?php echo base_url()."records/detail/0" ?>">Next</a>
+    <?php endif ?>
     </span></h2>
 </div>
 
 <div class="row">
   <div class="col-md-6 col-sm-12"> 
      <?php foreach($features as $k=>$v){
+		 if(array_key_exists($v,$panels)){
 		if($k%2==1){
      $this->view('records/panels/'.$panels[$v],$details);
+		}
 		}
  } ?>
 </div>
   <div class="col-md-6 col-sm-12"> 
        <?php foreach($features as $k=>$v){
+		   if(array_key_exists($v,$panels)){
 		if($k%2==0){
      $this->view('records/panels/'.$panels[$v],$details);
+		}
 		}
  } ?>
   </div>

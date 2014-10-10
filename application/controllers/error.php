@@ -14,7 +14,7 @@ class Error extends CI_Controller
 	
 	public function access(){
 		        $data = array(
-            'pageId' => 'list-records',
+'pageId' => 'list-records',
             'title' => 'Access Error');
 			 $this->template->load('default', 'errors/access.php', $data);
 		

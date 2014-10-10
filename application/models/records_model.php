@@ -16,6 +16,18 @@ class Records_model extends CI_Model
         }
         
     }
+	
+	public function get_record(){
+		$campaign = $_SESSION['current_campaign'];
+		$user_id = $_SESSION['user_id'];
+		if(intval($campaign)){
+		$qry = "select urn from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and (outcome_id is null or nextcall < now()) and (user_id is null or user_id = '$user_id') limit 1";
+		$urn = $this->db->query($qry)->row(0)->urn;
+		//$this->db->replace("ownership",array("user_id"=>$user_id,"urn"=>$urn));
+		return $urn;
+		}
+	}
+	
     //sets the manager progress status as 1=pending so they know that something needs looking at on this record
     public function set_pending($urn)
     {
@@ -227,9 +239,10 @@ class Records_model extends CI_Model
     
     public function get_details($urn, $features)
     {
-        $select = "select r.urn,c.contact_id,`{$this->name_field}` fullname,title,firstname,lastname,c.email,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,a.latitude,a.longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date ";
+        $select = "select r.urn,c.contact_id,`{$this->name_field}` fullname,title,firstname,lastname,c.email,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,a.latitude,a.longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
         $from   = " from records r ";
         $from .= "  left join outcomes o using(outcome_id) left join progress_description pd using(progress_id) ";
+		$from .= "  left join park_codes pc using(parked_code) ";
         $from .= "left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join campaigns camp using(campaign_id) ";
         
         if (in_array(4, $features)) {
@@ -350,6 +363,7 @@ class Records_model extends CI_Model
             //put the record details into the array
                 $data['record'] = array(
                     "urn" => $result['urn'],
+					"park_reason" => $result['park_reason'],
                     "nextcall" => $result['nextcall'],
                     "outcome" => $result['outcome'],
                     "outcome_id" => $result['outcome_id'],
@@ -428,7 +442,6 @@ class Records_model extends CI_Model
         if (empty($post['nextcall']) || !isset($post['nextcall'])) {
             $post['nextcall'] = date('Y-m-d H:i:s');
         } else {
-            $post['nextcall'] = to_mysql_datetime($post['nextcall']);
             //if the time set is less than now then we set it as now because nextcall dates should not be in the past
             if (strtotime($post["nextcall"]) < strtotime('now')) {
                 $post["nextcall"] = date('Y-m-d H:i:s');
@@ -469,6 +482,7 @@ class Records_model extends CI_Model
             }
         }
         $this->db->where("urn", $post['urn']);
+		$this->firephp->log($post);
         $this->db->update("records", elements($update_array, $post));
     }
     

@@ -8,6 +8,7 @@ class Data extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Data_model');
     }
@@ -17,7 +18,8 @@ class Data extends CI_Controller
         $campaigns = $this->Form_model->get_campaigns();
         $sources   = $this->Form_model->get_sources();
         $data      = array(
-            'pageId' => 'Dashboard',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => array(
                 'admin' => 'data'
@@ -104,7 +106,8 @@ class Data extends CI_Controller
     {
         $campaigns = $this->Form_model->get_campaigns();
         $data      = array(
-            'pageId' => 'Dashboard',
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => array(
                 'admin' => 'management'
