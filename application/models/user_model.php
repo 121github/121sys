@@ -118,6 +118,7 @@ class User_model extends CI_Model
 		}
 		
         $role_permissions = $this->db->query("select * from role_permissions left join permissions using(permission_id) where role_id = '" . $_SESSION['role'] . "'")->result_array();
+		$_SESSION['permissions'] = array();
         foreach ($role_permissions as $row) {
             $_SESSION['permissions'][$row['permission_id']] = $row['permission_name'];
         }

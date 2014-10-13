@@ -750,6 +750,12 @@ class Database_model extends CI_Model
 			}
 		}
 		
+		//dumping campaign xfers
+		$this->db->query("INSERT INTO `121sys`.`campaign_xfers` (`campaign_id`, `xfer_campaign`) VALUES ('1', '2'), ('2', '1')");
+		if ($this->db->_error_message()) {
+					return "campaign_xfers";
+				}
+		
 		
 		//If the hours table exist, dumping sample data
 		$role = $this->db->get_where('user_roles', array('role_name' => 'Agent'))->result();$role = $this->db->get_where('user_roles', array('role_name' => 'Agent'))->result();

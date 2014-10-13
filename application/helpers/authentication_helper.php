@@ -2,8 +2,12 @@
 
 if ( !function_exists('user_auth_check') )
 {
-    function user_auth_check()
+    function user_auth_check($force_campaign=true)
     {
+		
+		if(!isset($_SESSION['current_campaign'])&&$force_campaign){
+			redirect(base_url());	
+			}
         //unset($_SESSION['login']);
         if (!isset($_SESSION['user_id'])) 
         { 
@@ -12,7 +16,7 @@ if ( !function_exists('user_auth_check') )
                 exit;
             }
 			$url = base64_encode($_SERVER['REQUEST_URI']);
-            redirect(base_url() . "index.php/user/login/$url");
+            redirect(base_url() . "user/login/$url");
         }
         return true;
     }   
