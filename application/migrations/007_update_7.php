@@ -10,6 +10,7 @@ class Migration_update_7 extends CI_Migration
 			`user_id` int(5) NOT NULL COMMENT 'The Agent',
 			`campaign_id` int(5) NOT NULL,
 			`duration` int(20) NOT NULL COMMENT 'in seconds',
+    		`exception` int(20) NOT NULL COMMENT 'in minutes',
 			`date` datetime NOT NULL,
 			`updated_id` int(5),
 			`updated_date` datetime,

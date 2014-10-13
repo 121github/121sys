@@ -165,6 +165,9 @@
                     </div>
                     <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>scripts" <?php echo @($admin=='scripts'?"class='active'":"") ?>>Scripts</a>
+                    </div>
+                    <div class="accordion-inner">
+                      <a href="<?php echo base_url() ?>admin/hours" <?php echo @($admin=='hours'?"class='active'":"") ?>>Hours</a>
                     </div>       
                 </div>
             </div>

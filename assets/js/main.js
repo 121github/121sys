@@ -9,6 +9,11 @@ $('.date').datetimepicker({
             format: 'DD/MM/YYYY',
 			pickTime: false,
         });
+$('.date2').datetimepicker({
+    format: 'YYYY-MM-DD',
+	pickTime: false,
+	maxDate: moment(),
+});
 $('.dob').datetimepicker({
 			pickTime: false,
             viewMode:'years',

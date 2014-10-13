@@ -492,4 +492,63 @@ class Admin extends CI_Controller
             ));
         }
     }
+    
+    
+    /* hours page functions */
+    public function hours()
+    {
+    	$campaigns = $this->Form_model->get_campaigns();
+    	$agents = $this->Form_model->get_agents();
+    	
+    	$data     = array(
+    			'campaign_access' => $this->_campaigns,
+    			'pageId' => 'Admin',
+    			'title' => 'Admin | Hours',
+    			'page' => array(
+    					'admin' => 'hours'
+    			),
+    			'javascript' => array(
+    					'admin/hours.js',
+    					'lib/moment.js',
+    					'lib/daterangepicker.js',
+    					'lib/bootstrap-datetimepicker.js'
+    			),
+    			'css' => array(
+    					'dashboard.css',
+                		'daterangepicker-bs3.css'
+    			),
+    			'campaigns' => $campaigns,
+          		 'agents' => $agents,
+    	);
+    	$this->template->load('default', 'admin/hours.php', $data);
+    }
+    
+    public function get_hours_data()
+    {
+    	if ($this->input->is_ajax_request()) {
+    		$hours = $this->Admin_model->get_hours($this->input->post());
+    		
+    		echo json_encode(array(
+    				"success" => true,
+    				"data" => $hours,
+    				"msg" => "Nothing found"
+    		));
+    		exit;
+    	}
+    }
+    public function save_hour()
+    {
+    	$form = $this->input->post();
+    	$form['updated_date'] = date('Y-m-d H:i:s');
+    	$form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+    	
+    	if (empty($form['hours_id'])) {
+    		$response = $this->Admin_model->add_new_hour($form);
+    	} else {
+    		$response = $this->Admin_model->update_hour($form);
+    	}
+    	echo json_encode(array(
+    			"data" => $response
+    	));
+    }
 }

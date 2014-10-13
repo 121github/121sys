@@ -238,4 +238,68 @@ class Admin_model extends CI_Model
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
+    
+    
+    public function get_hours($options)
+    {
+    	$date_from = $options['date_from'];
+    	$date_to = $options['date_to'];
+    	$campaign = $options['campaign'];
+    	$agent = $options['agent'];
+    	
+    	$where = "";
+    	
+    	if (!empty($date_from)) {
+    		$where .= " and h.date >= '$date_from' ";
+    	}
+    	if (!empty($date_to)) {
+    		$where .= " and h.date <= '$date_to' ";
+    	}
+    	if (!empty($campaign)) {
+    		$where .= " and h.campaign_id = '$campaign'";
+    	}
+    	if (!empty($agent)) {
+    		$where .= " and h.user_id = '$agent' ";
+    	}
+    	
+    	$qry = "select h.hours_id, u.name as user_name, h.campaign_id, c.campaign_name, h.duration, h.exception, DATE_FORMAT(h.date,'%Y-%m-%d') date, if(m.name is not null,m.name,'-') as updated_name, if(h.updated_date is not null,h.updated_date,'-') as updated_date
+    			from hours h
+    			inner join users u ON (u.user_id = h.user_id)
+    			inner join campaigns c ON (c.campaign_id = h.campaign_id)
+    			left join users m ON (m.user_id = h.updated_id)
+    			where 1 ";
+    	
+    	$qry .= $where;
+    	
+    	$qry .= "order by date desc";
+    	
+    	return $this->db->query($qry)->result_array();
+    }
+    
+	/**
+     * Add a new hour
+     *
+     * @param Form $form
+     */
+    public function add_new_hour($form)
+    {
+        $this->db->insert("hours", $form);
+        
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        
+        return $insert_id;
+        
+    }
+    
+    /**
+     * Update a hour
+     *
+     * @param Form $form
+     */
+    public function update_hour($form)
+    {
+        $this->db->where("hours_id", $form['hours_id']);
+        return $this->db->update("hours", $form);
+    }
 }

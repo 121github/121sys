@@ -762,8 +762,10 @@ class Database_model extends CI_Model
 					$date = date($datestring, $time);
 					$duration = rand(3600, 14400);
 					
-					$this->db->query("INSERT INTO `hours` (`user_id`, `campaign_id`, `duration`, `date`, `updated_id`, `updated_date`) VALUES
-							($agent->user_id, $campaign->campaign_id, $duration, '".$date."', NULL, NULL)");
+					$exception = ($duration*60)%60;
+					
+					$this->db->query("INSERT INTO `hours` (`user_id`, `campaign_id`, `duration`, `exception`, `date`, `updated_id`, `updated_date`) VALUES
+							($agent->user_id, $campaign->campaign_id, $duration, $exception, '".$date."', NULL, NULL)");
 						
 					if ($this->db->_error_message()) {
 						return "ownership";
