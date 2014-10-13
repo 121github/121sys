@@ -1,10 +1,10 @@
+ <form id="filter-form">
 <div class="page-header">
-  <h2>Search Records<small class="pull-right"><button class="btn btn-default clear-filter">Clear Filter</button> Found: <span class="record-count"></span></small></h2>
+  <h2>Search Records<small class="pull-right"><button type="submit" class="btn btn-default submit-filter">View Records</button> <button class="btn btn-default clear-filter">Clear Filter</button> Found: <span class="record-count"></span></small></h2>
 </div>
 <div class="row">
   <div class="col-md-12 col-sm-12">
     <div class="panel-group" id="accordion">
-      <form id="filter-form">
       <?php if(in_array("campaign search",$_SESSION['permissions'])){ ?>
         <div class="panel panel-primary visible">
           <div class="panel-heading">
@@ -353,10 +353,11 @@
               Found: <span class="record-count"></span> </div>
           </div>
         </div>
-      </form>
+     
     </div>
   </div>
 </div>
+ </form>
 <script>
 $(document).ready(function(){
 	$('.selectpicker').selectpicker();

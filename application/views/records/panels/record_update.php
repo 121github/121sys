@@ -9,6 +9,7 @@
       <div class="panel-body">
         <p class="last-updated">Last Updated: <?php echo (!empty($details['record']['last_update'])?$details['record']['last_update']:"Never") ?></p>
         <form id="record-update-form">
+        <input type="hidden" name="campaign_id" id="campaign_id" value="<?php echo $details['record']['campaign_id'] ?>"/>
           <input type="hidden" name="urn" id="urn" value="<?php echo $details['record']['urn'] ?>"/>
           <div class="form-group">
             <label>Next action date</label>
@@ -17,15 +18,17 @@
               <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span> </span> </div>
           </div>
           <div class="form-group input-group">
-            <?php if(in_array("set call outcomes",$_SESSION['permissions'])){ 
-			$deadtext = ". Only an administrator can unlock this record."; 
-			$parktext = "This record has been parked and cannot not be dialed. ";
+            <?php 
 			if(in_array("park records",$_SESSION['permissions'])){
-			$parktext .= "Click the unpark button below to allow dialing";
+			$parktext = "Click the unpark button below to allow dialing.";
 			}
 			if(in_array("reset records",$_SESSION['permissions'])&&$details['record']['record_status']=="3"){
-			$deadtext = " Click the reset button below to bring it back for calling. Remember to change the ownership back if you need to";	
+			$deadtext = " Click the reset button below to bring it back for calling. Remember to change the ownership back if you need to.";	
+			} else {
+			$deadtext = " Only an administrator can bring it back for dialling.";		
 			}
+			if(in_array("set call outcomes",$_SESSION['permissions'])){  
+
 			?>
             <select <?php if($details['record']['record_status']=="3"||$details['record']['record_status']=="4"){ echo "disabled"; } ?> name="outcome_id" id="outcomes" class="selectpicker outcomepicker">
               <option value="">--Select a call outcome--</option>
@@ -52,9 +55,9 @@
 		  $color = "green";
 		  $text = "This record has been completed with an outcome of ".$details['record']['outcome']. $deadtext; 
 		   }
-		   if($details['record']['park_reason']){
+		   if(!empty($details['record']['park_reason'])){
 		  $color =  "red"; 
-		  $text = $parktext;   
+		  $text = "This record has been parked and cannot not be dialed. \r\nReason for parking: ".$details['record']['park_reason']."\r\n".$parktext;   
 		   }
 		   ?>
             <textarea name="comments" class="form-control <?php echo $color ?>" rows="3" placeholder="Enter the call notes here"><?php echo $text ?>
@@ -74,10 +77,15 @@
               <option data-icon="red glyphicon-flag" value="2">Requires Urgent Attention</option>
             </select>
             <?php } ?>
-            <?php if($details['record']['record_status']=="3"){ ?>
-            <button type="button" class="btn btn-default pull-right reset-record" <?php if($_SESSION['role']==3){ echo "disabled"; } ?>>Reset Record</button>
-            <?php } else { ?>
-            <button type="button" class="btn btn-default pull-right update-record" <?php if($_SESSION['role']==3){ echo "disabled"; } ?>>Update Record</button>
+            <?php if(!empty($details['record']['park_reason'])&&in_array("park records",$_SESSION['permissions'])){ ?>
+            <!-- need to add js to get this button working and set park code to null in record table -->
+            <button type="button" class="btn btn-default pull-right unpark-record marl">Unpark Record</button>
+			<?php } ?>
+            <?php if($details['record']['record_status']=="3"&&in_array("reset records",$_SESSION['permissions'])){ ?>
+            <button type="button" class="btn btn-default pull-right reset-record marl">Reset Record</button>
+            <?php } ?>
+            <?php if($details['record']['record_status']=="1"&&empty($details['record']['park_reason'])){ ?>
+            <button type="button" class="btn btn-default pull-right update-record">Update Record</button>
             <?php } ?>
           </div>
         </form>

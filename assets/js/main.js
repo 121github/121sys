@@ -48,6 +48,9 @@ $( document ).ajaxComplete(function(event, xhr, settings) {
   if (xhr.responseText === 'Timeout') {
     location.reload(); //if the user is not logged in, simply refresh the page which will then redirect them to the login page
   }
+    if (xhr.responseText === 'Redirect') {
+    window.location=helper.baseUrl; //if the user is not logged in, simply refresh the page which will then redirect them to the login page
+  }
    if (xhr.responseText === 'Denied') {
    flashalert.danger("You do not have permission to do this"); //if the user is does not have access to perform an ajax request flash a permission denied alert
   }

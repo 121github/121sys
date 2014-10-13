@@ -120,14 +120,23 @@ class User extends CI_Controller
 	/* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
 	public function current_campaign(){
 		$campaign=intval($this->uri->segment(3));
+		if(intval($campaign)>0){
 			if(in_array($campaign,$_SESSION['campaign_access']['array'])){
 				        $campaign_features = $this->Form_model->get_campaign_features($campaign);
         				$features  = array();
         foreach ($campaign_features as $row) {
             $features[]         = $row['name'];
         }
+				unset($_SESSION['filter']);
 				$_SESSION['campaign_features']=$features;
 				$_SESSION['current_campaign']=$campaign;
+		}
+		} else {
+		if(!in_array("campaign search",$_SESSION['permissions'])){	
+			unset($_SESSION['current_campaign']);
+			unset($_SESSION['campaign_features']);
+			echo "Redirect";
+			}
 		}
 	}
 	

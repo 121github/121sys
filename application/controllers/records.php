@@ -66,6 +66,10 @@ class Records extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             
+			if(!isset($_SESSION['filter'])){
+				$_SESSION['filter']['where'] = " and r.campaign_id in(".$_SESSION['campaign_access']['list'].") and r.campaign_id = '".$_SESSION['current_campaign']."' and r.record_status = 1";
+			}
+			
             $records = $this->Records_model->get_records($this->input->post());
             $nav     = $this->Records_model->get_nav($this->input->post());
             
@@ -85,7 +89,7 @@ class Records extends CI_Controller
     
     public function detail()
     {
-		if(!in_array('search',$_SESSION['campaign_features'])&&!in_array("search page",$_SESSION['permissions'])){
+		if(!in_array('search',$_SESSION['campaign_features'])&&!in_array("search page",$_SESSION['permissions'])||!intval($this->uri->segment(3))){
 		//if the campaign does not have search enable and the user does not have search permissions then they are given a record
 		$urn = $this->Records_model->get_record();
 		$automatic = true;
@@ -99,6 +103,7 @@ class Records extends CI_Controller
         $urn = intval($this->uri->segment(3));
 		}
         //$this->User_model->campaign_access_check($urn);
+		
         
         //get the features for the campaign and put the ID's into an array
         $campaign_features = $this->Form_model->get_campaign_features($this->_campaign);

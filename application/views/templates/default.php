@@ -55,11 +55,11 @@
       <ul class="nav navbar-nav">
         <?php if(isset($_SESSION['user_id'])): ?>
         <li <?php if($this->uri->segment(1)=="dashboard"){ echo "class='active'"; } ?>><a  href="<?php echo base_url(); ?>dashboard">Dashboard</a></li>
-         <?php if(isset($_SESSION['permissions'])&&in_array("search page",$_SESSION['permissions'])){ ?>
+         <?php if(isset($_SESSION['permissions'])&&in_array("search page",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){ ?>
          <li <?php if($this->uri->segment(1)=="records"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" class="hreflink">List Records</a></li>
         <li><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
         <?php } ?>
-         <?php if(isset($_SESSION['current_campaign'])){  ?>
+         <?php if(isset($_SESSION['current_campaign'])&&!in_array("search page",$_SESSION['permissions'])){  ?>
            <li><a href="<?php echo base_url(); ?>records/detail" class="hreflink">Start Calling</a></li>
         <?php } ?>
         <?php if(isset($_SESSION['campaign_features'])&&in_array('Surveys',$_SESSION['campaign_features'])){ ?>
@@ -139,7 +139,11 @@ setInterval(function() {
 $(document).on('change','#campaign-select',function(){
 	$('#campaign-loading-icon').show();
 	$.get(helper.baseUrl+'user/current_campaign/'+$(this).val(),function(response){
-	location.reload();
+		if(response=="Redirect"){
+			window.location = helper.baseUrl;
+		} else {
+			location.reload();
+		}
 	});
 });
 <?php } ?>

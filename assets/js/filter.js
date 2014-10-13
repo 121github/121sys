@@ -10,7 +10,7 @@ var filter = {
 			$(document).on('click','input[type="checkbox"]',function(){
 				filter.count_records();
 			});
-			$(document).on('change','select',function(e){
+			$(document).on('change','select:not(#campaign-select)',function(e){
 				filter.count_records();
 			});
 			$(document).on('click','.submit-filter',function(e){
@@ -26,8 +26,8 @@ var filter = {
 			$(document).on('click','.clear-filter',function(e){
 				e.preventDefault()
 			$(document).off('change', 'select');
-			$('input[type="text"], input[type="select"]:not(.record-status)').val('');
-			$('.selectpicker:not(.record-status)').selectpicker('deselectAll');
+			$('input[type="text"], input[type="select"]:not(.record-status,#campaign-select)').val('');
+			$('.selectpicker:not(.record-status,#campaign-select)').selectpicker('deselectAll');
 			$('.record-status').selectpicker('val',1);
 			$('input[type="checkbox"]').prop('checked',false);
 			filter.count_records(true);

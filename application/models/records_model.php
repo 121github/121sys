@@ -269,7 +269,6 @@ class Records_model extends CI_Model
         $fav      = "select urn from favorites where urn = '$urn' and user_id = '{$_SESSION['user_id']}'";
         $favorite = $this->db->query($fav)->num_rows();
         //put the contact details into array
-        // $this->firephp->log($qry);
         $data     = array();
         if (count($results)) {
             foreach ($results as $result):

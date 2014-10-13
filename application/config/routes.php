@@ -38,7 +38,7 @@
 |
 */
 
-$route['default_controller'] = "user/login";
+$route['default_controller'] = "dashboard/user_dash";
 $route['search'] = "search/search_form";
 $route['dashboard'] = "dashboard/user_dash";
 $route['data'] = "data";
