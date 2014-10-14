@@ -10,7 +10,7 @@ class Templates extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		user_auth_check();
+		user_auth_check(false);
 $this->_campaigns = campaign_access_dropdown();
 		$this->load->model('Email_model');
 		$this->load->model('Form_model');
