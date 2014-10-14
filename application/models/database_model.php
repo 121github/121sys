@@ -527,6 +527,12 @@ class Database_model extends CI_Model
 		('management dash','Dashboards'),
 		('view reports','Reports'),
 		('campaign search','Search'),
+		('log hours','System'),
+		('Edit Scripts','Admin'),
+		('Edit Templates','Admin'),
+		('Reassign Data','Admin'),
+		('View Logs','Admin'),
+		('View Hours','Admin'),
 		('show footer', 'System')");
 		
 		if ($this->db->_error_message()) {

@@ -115,7 +115,9 @@ class User extends CI_Controller
     /* at the bottom of default.php template: this function is ran every time a page is loaded and it checks whether user permissions/access have been changed or not so they can be reapplied without needing to log out */
 	public function check_session(){
 		$this->User_model->check_session();
+		if(in_array("show footer",$_SESSION['permissions'])){
 		echo $this->User_model->update_hours_log();
+		}
 	}
 	
 	/* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */

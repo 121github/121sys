@@ -94,8 +94,9 @@ class User_model extends CI_Model
 				unset($_SESSION['navigation']);
 				unset($_SESSION['permissions']);
 				unset($_SESSION['role']);
+				unset($_SESSION['filter']);
                 $this->load_user_session();
-				if(!in_array($_SESSION['current_campaign'],$_SESSION['campaign_access']['array'])){
+				if(isset($_SESSION['current_campaign'])&&!in_array($_SESSION['current_campaign'],$_SESSION['campaign_access']['array'])){
 					unset($_SESSION['current_campaign']);
 				}
 				echo "Session reloaded";
