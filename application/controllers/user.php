@@ -24,7 +24,7 @@ class User extends CI_Controller
             $this->form_validation->set_rules('password', 'Password', 'trim|required|strtolower|md5');
             
             if ($this->form_validation->run()) {
-                
+                $username = $this->input->post('username');
                 if ($this->User_model->validate_login($this->input->post('username'), $this->input->post('password'))) {
                     
                     $redirect = $this->input->post('redirect');
@@ -45,6 +45,7 @@ class User extends CI_Controller
                     }
                 }
                 $this->session->set_flashdata('error', 'Invalid username or password.');
+				$this->session->set_flashdata('username', $username);
                 redirect('user/login'); //Need to redirect to show the flash error.
             }
         }

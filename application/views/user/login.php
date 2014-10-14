@@ -12,10 +12,10 @@
     <input type="hidden" name="redirect" value="<?php echo $redirect; ?>">
     <?php endif; ?>          <h2 class="form-signin-heading">Please sign in</h2>
      <div class="form-group">
-        <input type="text" name="username" class="form-control" placeholder="Username" required autofocus value="<?php echo set_value('username') ?>">
+        <input type="text" name="username" class="form-control" placeholder="Username" required <?php echo (!$this->session->flashdata('username')?"autofocus":"") ?> value="<?php echo $this->session->flashdata('username'); ?>">
         </div>
          <div class="form-group">
-        <input type="password" name="password" class="form-control" placeholder="Password" required>
+        <input type="password" name="password" class="form-control" placeholder="Password" <?php echo ($this->session->flashdata('username')?"autofocus":"") ?> required>
         </div>
         <label class="checkbox">
           <input type="checkbox" value="remember-me"> Remember me
