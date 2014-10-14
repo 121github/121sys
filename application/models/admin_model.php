@@ -252,10 +252,10 @@ class Admin_model extends CI_Model
     	$where = "";
     	
     	if (!empty($date_from)) {
-    		$where .= " and h.date >= '$date_from' ";
+    		$where .= " and h.date >= '$date_from 00:00:00' ";
     	}
     	if (!empty($date_to)) {
-    		$where .= " and h.date <= '$date_to' ";
+    		$where .= " and h.date <= '$date_to 23:59:59' ";
     	}
     	if (!empty($campaign)) {
     		$where .= " and h.campaign_id = '$campaign'";
