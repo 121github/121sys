@@ -25,6 +25,7 @@
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>dashboard/management" <?php echo @($dashboard=='management'?"class='active'":"") ?>>Management Dash</a>
                     </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
