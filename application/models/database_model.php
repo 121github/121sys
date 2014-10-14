@@ -603,6 +603,7 @@ class Database_model extends CI_Model
 		('client dash','Dashboards'),
 		('management dash','Dashboards'),
 		('view reports','Reports'),
+		('campaign search','Search')
 		('show footer', 'System')");
 		
 		if ($this->db->_error_message()) {
