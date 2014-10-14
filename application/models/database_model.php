@@ -567,6 +567,17 @@ class Database_model extends CI_Model
 		(1, 26),
 		(1, 27),
 		(1, 28),
+		(1, 29),
+		(1, 30),
+		(1, 31),
+		(1, 32),
+		(1, 33),
+		(1, 35),
+		(1, 36),
+		(1, 37),
+		(1, 38),
+		(1, 39),
+		(1, 40),
 		(2, 2),
 		(2, 3),
 		(2, 4),
@@ -695,6 +706,19 @@ class Database_model extends CI_Model
 		
 			if ($this->db->_error_message()) {
 				return "campaigns";
+			}
+			
+			$campaign_id = $this->db->insert_id();
+			
+			//Dump the outcomes to each campaign
+			foreach ($this->db->get('outcomes')->result() as $outcome) {
+				
+				$this->db->query("INSERT INTO `outcomes_to_campaigns` (`outcome_id`, `campaign_id`) VALUES
+				(".$outcome->outcome_id.", ".$campaign_id.")");
+			
+				if ($this->db->_error_message()) {
+					return "outcomes_to_campaigns";
+				}
 			}
 		}
 		
@@ -915,8 +939,13 @@ class Database_model extends CI_Model
 					
 					$exception = ($duration*60)%60;
 					
-					$this->db->query("INSERT INTO `hours` (`user_id`, `campaign_id`, `duration`, `exception`, `date`, `updated_id`, `updated_date`) VALUES
-							($agent->user_id, $campaign->campaign_id, $duration, $exception, '".$date."', NULL, NULL)");
+					$comment = "";
+					if (rand(0,1)) {
+						$comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+					}
+					
+					$this->db->query("INSERT INTO `hours` (`user_id`, `campaign_id`, `duration`, `exception`, `date`, `comment`, `updated_id`, `updated_date`) VALUES
+							($agent->user_id, $campaign->campaign_id, $duration, $exception, '".$date."', '".$comment."', NULL, NULL)");
 						
 					if ($this->db->_error_message()) {
 						return "ownership";
