@@ -13,6 +13,15 @@
           <div id="collapseFive" class="panel-collapse collapse in">
             <div class="panel-body">
             <div class="form-group">
+             <?php if(count($campaigns)>1){ ?>
+                <label>Campaign</label>
+                <br>
+                <select  name="campaign_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                  <?php foreach($campaigns as $row): ?>
+                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['campaign_id'])){ echo "selected"; } else { echo (isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <?php endforeach; ?>
+                </select>
+                 <?php } ?>
             <?php if(count($clients)>1){ ?>
                 <label>Client</label>
                 <br>
@@ -31,15 +40,6 @@
                   <?php endforeach; ?>
                 </select>
                     <?php } ?>
-                     <?php if(count($campaigns)>1){ ?>
-                <label>Campaign</label>
-                <br>
-                <select  name="campaign_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
-                  <?php foreach($campaigns as $row): ?>
-                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['campaign_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
-                  <?php endforeach; ?>
-                </select>
-                 <?php } ?>
                   <?php if(count($sources)>1){ ?>
                 <label>Data Source</label>
                 <br>
