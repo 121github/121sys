@@ -176,13 +176,11 @@ class User_model extends CI_Model
 	public function get_worked($campaign,$user_id){
 
 		$qry= "select count(distinct urn) dialed from history where campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
-		$this->firephp->log($qry);
 		return $this->db->query($qry)->row()->dialed;
 	}
 	
 	public function get_transfers($campaign,$user_id){
 		$qry= "select count(distinct urn) transfers from history where outcome_id in(70,71) and campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
-		$this->firephp->log($qry);
 		return $this->db->query($qry)->row()->transfers;
 	}
 	

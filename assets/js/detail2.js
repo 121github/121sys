@@ -179,6 +179,7 @@ var record = {
                     $('.last-update').text('Last Updated: Just Now');
                     record.history_panel.load_panel();
                     record.ownership_panel.load_panel();
+					check_session();	
                     flashalert.success(response.msg);
                 } else {
                     flashalert.warning(response.msg);

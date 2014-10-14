@@ -129,13 +129,15 @@
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + ''; 
 <?php if(isset($_SESSION['user_id'])){ ?>
+check_session();	
+function check_session(){
 $.getJSON(helper.baseUrl+'user/check_session',function(response){
 	<?php if($show_footer&&isset($_SESSION['current_campaign'])){ ?>
 	$('#transfers_box').text(response.transfers);
 	$('#worked_box').text(response.worked);
 	$('#rate_box').text(response.rate+ ' per hour');
-	
-	
+
+
 var start = new Date;
 
 setInterval(function() {
@@ -145,7 +147,7 @@ setInterval(function() {
 	$('#time_box').fadeIn(800);
 	<?php } ?>
 });	
-
+	}
 $(document).on('change','#campaign-select',function(){
 	$('#campaign-loading-icon').show();
 	$.get(helper.baseUrl+'user/current_campaign/'+$(this).val(),function(response){
