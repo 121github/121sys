@@ -19,14 +19,14 @@
 						<div class="panel-heading">
 							<i class="fa fa-bar-chart-o fa-fw"></i>Hours list
 							<div class="pull-right">
-								<form class="filter-form">
-					              <div class="btn-group">
-					                  <input type="hidden" name="date_from">
-					                  <input type="hidden" name="date_to">
-					                  <input type="hidden" name="campaign">
-					                  <input type="hidden" name="agent">
-					                  
-					                  <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "Last 7 days"; ?> </span></button></div>
+								<form class="filter-form" id="filter">
+					                  <div class="btn-group"> 
+						                <input type="hidden" name="date_from">
+						                <input type="hidden" name="date_to">
+						                <input type="hidden" name="campaign">
+						                <input type="hidden" name="agent">
+					              	  	<button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "Last 7 days"; ?> </span></button>
+					              	  </div>
 					                  <div class="btn-group">
 						                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
 						                  <ul class="dropdown-menu pull-right" role="menu">
@@ -47,7 +47,7 @@
 						                    <li><a class="agent-filter" ref="#" style="color: green;">Show All</a> </li>
 						                  </ul>
 					                  </div>
-					                </form>
+					            </form>
 							</div>
 						</div>
 						<!-- /.panel-heading -->
@@ -62,6 +62,7 @@
 										<th>Campaign</th>
 										<th>Updated</th>
 										<th>Updated Date</th>
+										<th>Comments</th>
 										<th>Options</th>
 									</tr>
 								</thead>

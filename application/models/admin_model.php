@@ -264,7 +264,7 @@ class Admin_model extends CI_Model
     		$where .= " and h.user_id = '$agent' ";
     	}
     	
-    	$qry = "select h.hours_id, u.name as user_name, h.campaign_id, c.campaign_name, h.duration, h.exception, DATE_FORMAT(h.date,'%Y-%m-%d') date, if(m.name is not null,m.name,'-') as updated_name, if(h.updated_date is not null,h.updated_date,'-') as updated_date
+    	$qry = "select h.hours_id, u.name as user_name, h.campaign_id, c.campaign_name, h.duration, h.exception, DATE_FORMAT(h.date,'%Y-%m-%d') date, h.comment, if(m.name is not null,m.name,'-') as updated_name, if(h.updated_date is not null,h.updated_date,'-') as updated_date
     			from hours h
     			inner join users u ON (u.user_id = h.user_id)
     			inner join campaigns c ON (c.campaign_id = h.campaign_id)

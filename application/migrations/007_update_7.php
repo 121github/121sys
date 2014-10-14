@@ -12,6 +12,7 @@ class Migration_update_7 extends CI_Migration
 			`duration` int(20) NOT NULL COMMENT 'in seconds',
     		`exception` int(20) NOT NULL COMMENT 'in minutes',
 			`date` datetime NOT NULL,
+    		`comment` text,
 			`updated_id` int(5),
 			`updated_date` datetime,
 			PRIMARY KEY (`hours_id`)

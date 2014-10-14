@@ -93,6 +93,12 @@ var hours = {
                         var duration    = hours+' h '+minutes+' m '+seconds+' s';
                 	}
                 	
+                	if (val.comment.length) {
+                		comment = "<a href='#'><span class='glyphicon glyphicon-comment tt pointer' data-placement='left' data-toggle='tooltip' title='"+val.comment+"'></span></a>"
+                	}
+                	else {
+                		comment = "<span class='glyphicon glyphicon-comment' style='opacity: 0.4; filter: alpha(opacity=40);'></span>"
+                	}
                     
                     $tbody.append("<tr>" +
                     			"<td class='hours_id hidden'>" + val.hours_id +
@@ -102,9 +108,12 @@ var hours = {
 	                    		"<td class='campaign_name'><span class='hidden campaign_id'>"+val.campaign_id+"</span>" + val.campaign_name +
 	                    		"</td><td class='updated_name'>"+val.updated_name+
 	                    		"</td><td class='updated_date'>"+val.updated_date+
+	                    		"</td><td class='comment hidden'>" + val.comment +
+	                    		"</td><td>"+comment+"</td>" +
 	                    		"</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button></td>" +
                     		"</tr>");
                 }
+                $('.tt').tooltip();
             });
         });
     },
@@ -118,9 +127,10 @@ var hours = {
     //edit an hour
     edit: function($btn) {
     	var row = $btn.closest('tr');
-        $('#edit_hours_form').find('input[name="hours_id"]').val(row.find('.hours_id').text());
+    	$('#edit_hours_form').find('input[name="hours_id"]').val(row.find('.hours_id').text());
         $('#edit_hours_form').find('input[name="duration"]').val(row.find('.duration').text());
         $('#edit_hours_form').find('input[name="exception"]').val(row.find('.exception').text());
+        $('#edit_hours_form').find('textarea[name="comment"]').val(row.find('.comment').text());
 		$('#edit_hours_form').find('select[name="campaign_id"]').selectpicker('val',row.find('.campaign_id').text());
 		$('#edit_hours_form').find('input[name="date"]').data('DateTimePicker').setDate(row.find('.date').text());
 		
