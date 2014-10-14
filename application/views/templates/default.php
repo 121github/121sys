@@ -69,9 +69,13 @@
           </ul>
         </li>
         <?php } ?>
-        <li><a href="<?php echo base_url(); ?>user/account" class="hreflink">My Account</a></li>
-        <li><a href="<?php echo base_url(); ?>user/logout" class="hreflink">Logout</a></li>
-        <?php endif; ?>
+       
+			<li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" style="color:#fff">Hello, <?php echo $_SESSION['name'] ?> <b class="caret"></b></a>
+             <ul class="dropdown-menu">
+            <li><a href="<?php echo base_url(); ?>user/account" class="hreflink">My Account</a></li>
+            <li><a href="<?php echo base_url(); ?>user/logout" class="hreflink">Logout</a></li>
+          </ul></li>
+			 <?php endif; ?>
       </ul>
     </div>
     <!--/.nav-collapse --> 
