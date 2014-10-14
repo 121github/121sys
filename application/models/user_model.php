@@ -30,6 +30,7 @@ class User_model extends CI_Model
             $username,
             $password
         ))->result_array();
+		
         if (!empty($result)) {
             $config_query        = "SELECT * from configuration";
             $config              = $this->db->query($config_query)->row_array(0);
@@ -104,7 +105,6 @@ class User_model extends CI_Model
     public function load_user_session()
     {
 			$result = $this->db->query("select * from users where user_id = ".$_SESSION['user_id'])->row_array(0);
-			$this->firephp->log($result);
 			//load all user details into the session
             $_SESSION['name']    = $result['name'];
             $_SESSION['role']    = $result['role_id'];
@@ -127,9 +127,15 @@ class User_model extends CI_Model
             $qry = "select campaign_id from `campaigns` where campaign_status = 1";
         } else {
             //other users can can only see what they have access to
-            $qry = "select campaign_id from campaigns left join `users_to_campaigns` where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";
+            $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";
         }
         $user_campaigns                       = $this->db->query($qry)->result_array();
+		
+		if(count($user_campaigns)<1){
+			session_destroy();
+			$this->session->set_flashdata('error', 'You do not have access to any campaigns.');
+			redirect('user/login');
+		}
         $campaign_access                      = "0";
         $_SESSION['campaign_access']['array'] = array(
             '0'

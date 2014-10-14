@@ -56,7 +56,7 @@ class User extends CI_Controller
         $data = array(
 'pageId' => 'login',
             'pageClass' => 'login',
-            'title' => 'NPS Login',
+            'title' => '121 Calling System',
             'redirect' => $redirect
         );
         $this->template->load('default', 'user/login', $data);
