@@ -11,21 +11,24 @@
                     <div class="accordion-inner">
                         <a href="<?php echo base_url() ?>dashboard/" <?php echo @($dashboard=='overview'?"class='active'":"") ?>>Overview</a>
                     </div>
-                    
+                    <?php if(!in_array("client dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                    <a href="<?php echo base_url() ?>dashboard/client" <?php echo @($dashboard=='client'?"class='active'":"") ?>>Client Dash</a>
                     </div>
-                    <?php if($_SESSION['group']=="1"){ ?>
+                    <?php } ?>
+                    <?php if(!in_array("agent dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                    <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Advisor Dash</a>
                     </div>
                     <?php } ?>
+                    <?php if(!in_array("management dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>dashboard/management" <?php echo @($dashboard=='management'?"class='active'":"") ?>>Management Dash</a>
                     </div>
                 </div>
             </div>
         </div>
+        <?php if(!in_array("view reports",$_SESSION['permissions'])){ ?>
         <div class="accordion-group panel">
             <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#leftMenu" href="#collapseTwo">
@@ -120,8 +123,8 @@
                 </div>
             </div>
         </div>
-
-         		<?php if($_SESSION['group']=="1"){ ?>
+<?php } ?>
+         		<?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
         <div class="accordion-group panel">
             <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#leftMenu" href="#collapseThree">
