@@ -224,11 +224,13 @@ class Admin_model extends CI_Model
         ));
         $this->db->where("role_id", $form['role_id']);
         $this->db->delete("role_permissions");
-        foreach ($form['permission'] as $id => $val) {
-            $this->db->insert('role_permissions', array(
-                "role_id" => $form['role_id'],
-                "permission_id" => $id
-            ));
+        if (isset($form['permission'])) {
+	        foreach ($form['permission'] as $id => $val) {
+	            $this->db->insert('role_permissions', array(
+	                "role_id" => $form['role_id'],
+	                "permission_id" => $id
+	            ));
+	        }
         }
     }
     //functions for permissions page

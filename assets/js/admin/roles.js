@@ -61,6 +61,7 @@ var admin = {
         //edit a role
         edit: function($btn) {
             var row = $btn.closest('tr');
+            $('form').trigger('reset');
             $('form').find('input[name="role_id"]').val(row.find('.role_id').text());
             $('form').find('input[name="role_name"]').val(row.find('.role_name').text());
             $.ajax({
