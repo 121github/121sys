@@ -127,7 +127,7 @@ class User_model extends CI_Model
             $qry = "select campaign_id from `campaigns` where campaign_status = 1";
         } else {
             //other users can can only see what they have access to
-            $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";
+            $qry = "select campaign_id from campaigns left join `users_to_campaigns` where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";
         }
         $user_campaigns                       = $this->db->query($qry)->result_array();
         $campaign_access                      = "0";
