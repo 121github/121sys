@@ -163,17 +163,27 @@ class User_model extends CI_Model
     }
 	
 
-	public function update_hours_log(){
-		$user_id = $_SESSION['user_id'];
-		if(isset($_SESSION['current_campaign'])){
-		$campaign = $_SESSION['current_campaign'];
+	public function update_hours_log($campaign,$user_id){
+
 		$qry = "update hours_logged set end_time = now() where user_id = '$user_id' and end_time is null";
 		$this->db->query($qry);
 		$qry = "insert into hours_logged set user_id = '$user_id',campaign_id = '$campaign',start_time=now()";
 		$this->db->query($qry);
-		$qry = "SELECT sum(TIME_TO_SEC(TIMEDIFF(end_time,start_time))) as secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
+		$qry = "SELECT (sum(TIME_TO_SEC(TIMEDIFF(end_time,start_time)))-(select if(exception is null,'0',exception*60) from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) as secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
 		return $this->db->query($qry)->row()->secs;
-		}
+	}
+	
+	public function get_worked($campaign,$user_id){
+
+		$qry= "select count(distinct urn) dialed from history where campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
+		$this->firephp->log($qry);
+		return $this->db->query($qry)->row()->dialed;
+	}
+	
+	public function get_transfers($campaign,$user_id){
+		$qry= "select count(distinct urn) transfers from history where outcome_id in(70,71) and campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
+		$this->firephp->log($qry);
+		return $this->db->query($qry)->row()->transfers;
 	}
 	
 }

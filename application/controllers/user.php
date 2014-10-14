@@ -115,8 +115,14 @@ class User extends CI_Controller
     /* at the bottom of default.php template: this function is ran every time a page is loaded and it checks whether user permissions/access have been changed or not so they can be reapplied without needing to log out */
 	public function check_session(){
 		$this->User_model->check_session();
-		if(in_array("show footer",$_SESSION['permissions'])){
-		echo $this->User_model->update_hours_log();
+		if(in_array("show footer",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){	
+		$user_id = $_SESSION['user_id'];
+		$campaign = $_SESSION['current_campaign'];
+		$duration = $this->User_model->update_hours_log($campaign,$user_id);
+		$worked = $this->User_model->get_worked($campaign,$user_id);
+		$transfers = $this->User_model->get_transfers($campaign,$user_id);
+		$rate = number_format($transfers/($duration/60/60),2);
+		echo json_encode(array("duration"=>$duration,"worked"=>$worked,"transfers"=>$transfers,"rate"=>$rate));
 		}
 	}
 	
