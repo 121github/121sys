@@ -528,11 +528,11 @@ class Database_model extends CI_Model
 		('view reports','Reports'),
 		('campaign search','Search'),
 		('log hours','System'),
-		('Edit Scripts','Admin'),
-		('Edit Templates','Admin'),
-		('Reassign Data','Admin'),
-		('View Logs','Admin'),
-		('View Hours','Admin'),
+		('edit scripts','Admin'),
+		('edit templates','Admin'),
+		('reassign data','Admin'),
+		('view logs','Admin'),
+		('view hours','Admin'),
 		('show footer', 'System')");
 		
 		if ($this->db->_error_message()) {

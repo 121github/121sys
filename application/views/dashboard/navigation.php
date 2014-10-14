@@ -125,7 +125,7 @@
             </div>
         </div>
 <?php } ?>
-         		<?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
+         	
         <div class="accordion-group panel">
             <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#leftMenu" href="#collapseThree">
@@ -134,6 +134,7 @@
             </div>
             <div id="collapseThree" class="accordion-body collapse <?php echo (!empty($admin)?"in":"") ?>">
                 <div class="accordion-group">
+                	<?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
                     <div class="accordion-inner">
                      <a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($admin=='campaign'?"class='active'":"") ?>>Campaigns</a>
                     </div>
@@ -145,9 +146,6 @@
                     </div>
                      <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>exports" <?php echo @($admin=='exports'?"class='active'":"") ?>>Export</a>
-                    </div>
-                     <div class="accordion-inner">
-                      <a href="<?php echo base_url() ?>data/management" <?php echo @($admin=='management'?"class='active'":"") ?>>Data Management</a>
                     </div>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>admin/users" <?php echo @($admin=='users'?"class='active'":"") ?>>Users</a>
@@ -161,21 +159,35 @@
                        <div class="accordion-inner">
                     <a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a>
                     </div>
+                     <?php } ?>
+                     <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>
+                     <div class="accordion-inner">
+                     <a href="<?php echo base_url() ?>data/management" <?php echo @($admin=='management'?"class='active'":"") ?>>Data Management</a>
+                    </div>
+                    <?php } ?>
+                    <?php if(in_array("view logs",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>admin/logs" <?php echo @($admin=='logs'?"class='active'":"") ?>>Logs</a>
                     </div>
+                    <?php } ?> 
+                    <?php if(in_array("edit templates",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>templates" <?php echo @($admin=='templates'?"class='active'":"") ?>>Templates</a>
                     </div>
+                    <?php } ?> 
+                    <?php if(in_array("edit scripts",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>scripts" <?php echo @($admin=='scripts'?"class='active'":"") ?>>Scripts</a>
                     </div>
+                    <?php } ?> 
+                    <?php if(in_array("view hours",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>admin/hours" <?php echo @($admin=='hours'?"class='active'":"") ?>>Hours</a>
-                    </div>       
+                    </div>   
+                    <?php } ?>    
                 </div>
             </div>
         </div>
-<?php } ?>
+
     </div>
 </div>
