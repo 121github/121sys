@@ -117,6 +117,32 @@ var dashboard = {
         });
     },
 	/* the function for the missed call backs panel on the agent dashboard */
+    timely_callbacks_panel: function (agent, campaign) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/timely_callbacks',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                campaign: campaign,
+                user: agent
+            },
+			beforeSend: function(){
+			            $('.missed-callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
+			}
+        }).done(function (response) {
+            $('.timely-callbacks').empty();
+            var $row = "";
+            if (response.data.length > 0) {
+                $.each(response.data, function (i, val) {
+                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="/records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                });
+                $('.timely-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+            } else {
+                $('.timely-callbacks').append('<p>' + response.msg + '</p>');
+            }
+        });
+    },
+	/* the function for the missed call backs panel on the agent dashboard */
     missed_callbacks_panel: function (agent, campaign) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/missed_callbacks',

@@ -342,7 +342,27 @@ $this->_campaigns = campaign_access_dropdown();
         }
     }
     
-    
+     //this controller displays the timely callback data in JSON format. It gets called by the javascript function "timely_callbacks_panel" 
+    public function timely_callbacks()
+    {
+        if ($this->input->is_ajax_request()) {
+            $filter  = array(
+                "campaign" => intval($this->input->post('campaign')),
+                "user" => intval($this->input->post('user'))
+            );
+            $results = $this->Dashboard_model->timely_callbacks($filter);
+            foreach ($results as $k => $row) {
+                $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
+                $results[$k]['date'] = date('jS M', strtotime($row['nextcall']));
+            }
+            echo json_encode(array(
+                "success" => true,
+                "data" => $results,
+                "msg" => "No callbacks found"
+            ));
+        }
+        
+    }
     
     
 }

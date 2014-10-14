@@ -21,6 +21,27 @@
             </div>
         </div>
         
+         <div class="panel panel-primary">
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Callbacks at around <?php echo date('g:i a'); ?>
+              <div class="pull-right">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                    <?php foreach($campaigns as $row): ?>
+                    <li><a href="#" class="tc-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                    <?php endforeach ?>
+                    <li class="divider"></li>
+                    <li><a class="tc-filter" ref="#">Show All</a> </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body timely-callbacks">
+             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
+            </div>
+            <!-- /.panel-body --> 
+          </div>
         
          <div class="panel panel-primary">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Missed Callbacks
@@ -89,6 +110,12 @@
 		dashboard.favorites_panel();
 		dashboard.missed_callbacks_panel(<?php echo ($_SESSION['role']>1?$_SESSION['user_id']:"false") ?>);
 		dashboard.upcoming_callbacks_panel(<?php echo ($_SESSION['role']>1?$_SESSION['user_id']:"false") ?>);
+		dashboard.timely_callbacks_panel(<?php echo ($_SESSION['role']>1?$_SESSION['user_id']:"false") ?>);
+			
+			$(document).on("click",".tc-filter",function(e){
+			e.preventDefault();
+			dashboard.timely_callbacks_panel(<?php echo ($_SESSION['role']>1?$_SESSION['user_id']:"false") ?>,$(this).attr('id'))
+		});
 			$(document).on("click",".uc-filter",function(e){
 			e.preventDefault();
 			dashboard.upcoming_callbacks_panel(<?php echo ($_SESSION['role']>1?$_SESSION['user_id']:"false") ?>,$(this).attr('id'))

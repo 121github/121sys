@@ -161,6 +161,19 @@ class Dashboard_model extends CI_Model
         return $data;
     }
     
+	public function timely_callbacks($filter)
+    {
+        $qry = "select urn,fullname as contact,nextcall,campaign_name as campaign,name from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
+        if (!empty($filter['campaign'])) {
+            $qry .= " and campaign_id = " . intval($filter['campaign']);
+        }
+        if (!empty($filter['user'])) {
+            $qry .= " and user_id = " . intval($filter['user']);
+        }
+        $qry .= " group by urn order by nextcall asc limit 10";
+        return $this->db->query($qry)->result_array();
+    }
+	
     public function missed_callbacks($filter)
     {
         $qry = "select urn,fullname as contact,nextcall,campaign_name as campaign,name from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall < now() ";
