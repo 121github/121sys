@@ -612,6 +612,17 @@ class Database_model extends CI_Model
 			return "permissions";
 		}
 		
+		//Dump the role administrator to Permissions
+		$adminRole = $this->db->get_where('user_roles', array('role_name' => 'Administrator'))->result();
+		foreach ($this->db->get('permissions')->result() as $permission) {
+			$this->db->query("INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES
+				(".$adminRole[0]->role_id.", ".$permission->permission_id.")");
+		
+			if ($this->db->_error_message()) {
+				return "role_permissions";
+			}
+		}
+		
 		return "success";
 	}
 	
@@ -743,30 +754,6 @@ class Database_model extends CI_Model
 			
 			if ($this->db->_error_message()) {
 				return "user campaign restrictions";
-			}
-		}
-		
-		//Dump the administrators to all the campaings
-		$adminRole = $this->db->get_where('user_roles', array('role_name' => 'Administrator'))->result();
-		$adminList = $this->db->get_where('users', array('role_id' => $adminRole[0]->role_id))->result();
-		foreach ($campaignList as $campaign) {
-			foreach ($adminList as $admin) {
-				$this->db->query("INSERT INTO `users_to_campaigns` (`user_id`, `campaign_id`) VALUES
-				(".$admin->user_id.", ".$campaign->campaign_id.")");
-					
-				if ($this->db->_error_message()) {
-					return "users_to_campaigns";
-				}
-			}
-		}
-		
-		//Dump the role administrator to Permissions
-		foreach ($this->db->get('permissions')->result() as $permission) {
-			$this->db->query("INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES
-				(".$adminRole[0]->role_id.", ".$permission->permission_id.")");
-				
-			if ($this->db->_error_message()) {
-				return "role_permissions";
 			}
 		}
 		
