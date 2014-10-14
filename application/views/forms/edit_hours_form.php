@@ -44,7 +44,7 @@
 			</div>
 		</div>
 		<div class="form-actions pull-right">
-			<button type="submit" class="marl btn btn-primary save-btn">Save</button>
+   		    <button type="submit" class="marl btn btn-primary save-btn">Save</button>
    		    <button class="marl btn btn-default close-btn">Cancel</button>
 	  	</div>
 	</form>
