@@ -605,7 +605,6 @@ class Database_model extends CI_Model
 		('view reports','Reports'),
 		('client dash','Dashboards'),
 		('management dash','Dashboards'),
-		('all campaigns','System'),
 		('show footer', 'System')");
 		
 		if ($this->db->_error_message()) {
