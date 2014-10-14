@@ -122,7 +122,7 @@ class User_model extends CI_Model
         foreach ($role_permissions as $row) {
             $_SESSION['permissions'][$row['permission_id']] = $row['permission_name'];
         }
-        if ($_SESSION['role'] == 1) {
+        if (in_array("all campaigns",$_SESSION['permissions'])) {
             //admin has all access
             $qry = "select campaign_id from `campaigns` where campaign_status = 1";
         } else {

@@ -24,13 +24,20 @@ if ( !function_exists('user_auth_check') )
 	function campaign_access_dropdown(){
 		$CI =& get_instance();
 		$user = $_SESSION['user_id'];
-		$qry = "select campaign_id id,campaign_name name,client_name client,campaign_type_desc type from users_to_campaigns left join campaigns using(campaign_id) left join clients using(client_id) left join campaign_types using(campaign_type_id) where user_id = '$user' and campaign_status = 1 and campaign_id in (" .$_SESSION['campaign_access']['list'].")";
+	if(in_array("all campaigns",$_SESSION['permissions'])){
+		$qry = "select campaign_id id,campaign_name name,client_name client,campaign_type_desc type from campaigns using(campaign_id) left join clients using(client_id) left join campaign_types using(campaign_type_id) where campaign_status = 1 group by campaign_id";
+	} else {
+		$qry = "select campaign_id id,campaign_name name,client_name client,campaign_type_desc type from users_to_campaigns left join campaigns using(campaign_id) left join clients using(client_id) left join campaign_types using(campaign_type_id) where user_id = '$user' and campaign_status = 1 and campaign_id in (" .$_SESSION['campaign_access']['list'].") group by campaign_id";
+	}
+		$query = $CI->db->query($qry);
+
 		$result = $CI->db->query($qry)->result_array();
 		$campaigns = array();
 		foreach($result as $row){
 			$campaigns[$row['client']][] = array("id"=>$row['id'],"name"=>$row['name'],"type"=>$row['type'],"client"=>$row['client']);
 		}
 		return $campaigns;
+
 	}
 	
 }
