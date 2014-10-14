@@ -125,7 +125,7 @@
             </div>
         </div>
 <?php } ?>
-         	
+<?php if(in_array("admin nav",$_SESSION['permissions'])){ ?>
         <div class="accordion-group panel">
             <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#leftMenu" href="#collapseThree">
@@ -188,6 +188,6 @@
                 </div>
             </div>
         </div>
-
+  <?php } ?>  
     </div>
 </div>

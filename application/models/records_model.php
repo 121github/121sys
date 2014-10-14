@@ -744,5 +744,22 @@ class Records_model extends CI_Model
 	$this->db->insert('cross_transfers',array('history_id'=>$id,'campaign_id'=>$campaign));	
 	}
 	
+	public function get_positive_for_footer($campaign){
+	$qry = "select outcome_id from outcomes_to_campaigns left join outcomes using(outcome_id) where campaign_id = '$campaign' group by outcome_id";
+	$result = $this->db->query($qry)->result_array();
+	$outcome = "";
+		foreach($result as $row){
+			if($row['outcome_id']==70){
+			$outcome = "Transfers";	
+			}
+			if($row['outcome_id']==60&&$outcome<>"Transfers"){
+			$outcome = "Surveys";
+			}
+			if($row['outcome_id']==72&&$outcome<>"Transfers"&&$outcome<>"Surveys"){
+			$outcome = "Appointments";
+			}
+	}
+	return $outcome;
+	}
 }
 ?>

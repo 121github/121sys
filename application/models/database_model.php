@@ -533,7 +533,8 @@ class Database_model extends CI_Model
 		('reassign data','Admin'),
 		('view logs','Admin'),
 		('view hours','Admin'),
-		('show footer', 'System')");
+		('show footer', 'System'),
+		('admin nav','Admin')");
 		
 		if ($this->db->_error_message()) {
 			return "permissions";
@@ -724,6 +725,7 @@ class Database_model extends CI_Model
 		
 		//Dumping sample into campaign features
 		foreach ($this->db->get('campaigns')->result() as $campaign) {
+			$this->db->where('feature_name not in ("Company","Survey","Custom Info","Appointment Setting")');
 			foreach ($this->db->get('campaign_features')->result() as $campaign_feature)
 			{
 				$this->db->query("INSERT INTO `campaigns_to_features` (`campaign_id`, `feature_id`) VALUES (".$campaign->campaign_id.", ".$campaign_feature->feature_id.")");

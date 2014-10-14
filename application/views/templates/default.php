@@ -85,7 +85,7 @@
 <?php if($show_footer){ ?>
 <div class="navbar-inverse footer-stats">
 <div>Current Rate: <span id="rate_box">0</span></div>
-<div>Transfers: <span id="transfers_box">0</span></div>
+<div><span id="positive_outcome_name">Transfers</span>: <span id="transfers_box">0</span></div>
 <div>Records worked: <span id="worked_box">0</span></div>
 <div>Time on this campaign: <span id="time_box">00:00:00</span></div>
 </div>
@@ -133,11 +133,12 @@ check_session();
 function check_session(){
 $.getJSON(helper.baseUrl+'user/check_session',function(response){
 	<?php if($show_footer&&isset($_SESSION['current_campaign'])){ ?>
-	$('#transfers_box').text(response.transfers);
+	if(response.positive_outcome.length>0){
+	$('#transfers_box').text(response.positive_count);
 	$('#worked_box').text(response.worked);
 	$('#rate_box').text(response.rate+ ' per hour');
-
-
+	$('#positive_outcome_name').text(response.positive_outcome);
+	}
 var start = new Date;
 
 setInterval(function() {

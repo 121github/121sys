@@ -118,11 +118,14 @@ class User extends CI_Controller
 		if(in_array("show footer",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){	
 		$user_id = $_SESSION['user_id'];
 		$campaign = $_SESSION['current_campaign'];
+		$this->load->model('Records_model');
+		$positive_outcome = $this->Records_model->get_positive_for_footer($campaign);
+		
 		$duration = $this->User_model->update_hours_log($campaign,$user_id);
 		$worked = $this->User_model->get_worked($campaign,$user_id);
-		$transfers = $this->User_model->get_transfers($campaign,$user_id);
-		$rate = number_format($transfers/($duration/60/60),2);
-		echo json_encode(array("duration"=>$duration,"worked"=>$worked,"transfers"=>$transfers,"rate"=>$rate));
+		$positive_count = $this->User_model->get_positive($campaign,$user_id);
+		$rate = number_format($positive_count/($duration/60/60),2);
+		echo json_encode(array("duration"=>$duration,"worked"=>$worked,"positive_count"=>$positive_count,"rate"=>$rate,"positive_outcome"=>$positive_outcome));
 		}
 	}
 	

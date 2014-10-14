@@ -179,8 +179,15 @@ class User_model extends CI_Model
 		return $this->db->query($qry)->row()->dialed;
 	}
 	
-	public function get_transfers($campaign,$user_id){
-		$qry= "select count(distinct urn) transfers from history where outcome_id in(70,71) and campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
+	public function get_positive($campaign,$user_id,$positive=0){
+		if($positive=="Transfers"){
+		$outcome_id = "70,71";	
+		} else if($positive=="Surveys"){
+		$outcome_id = "60";	
+		} else if($positive=="Appointments"){
+		$outcome_id = "72";	
+		}
+		$qry= "select count(distinct urn) transfers from history where outcome_id in($outcome_id) and campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
 		return $this->db->query($qry)->row()->transfers;
 	}
 	
