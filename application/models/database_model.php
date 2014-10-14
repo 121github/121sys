@@ -598,6 +598,7 @@ class Database_model extends CI_Model
 		('search records', 'Search'),
 		('send email', 'Email'),
 		('view email', 'Email'),
+		('all campaigns','System'),
 		('show footer', 'System')");
 		
 		if ($this->db->_error_message()) {

@@ -39,7 +39,7 @@
       <?php if(!isset($_SESSION['user_id'])||count($_SESSION['campaign_access']['array'])<2){ ?>
       <a href="#" class="navbar-brand"><img style="margin-top:-10px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/logo.png"></a>
       <?php } else { ?>
-      <span style="position:absolute;top:8px"><img style="margin-top:-10px; margin-right:5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/small-logo.png"> <select class="selectpicker" id="campaign-select"><option value="">Select a campaign</option>
+      <span style="position:absolute;top:8px"><img style="margin-top:-10px; margin-right:5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/small-logo.png"> <select class="selectpicker" id="campaign-select"><option value="">Select a campaign to begin</option>
       <?php foreach($campaign_access as $client => $camp_array){ ?>
       <optgroup label="<?php echo $client ?>">
       <?php foreach($camp_array as $camp){ ?>
