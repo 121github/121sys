@@ -102,13 +102,8 @@ class Form_model extends CI_Model
     }
     public function get_agents()
     {
-    	$role = $this->db->get_where('user_roles', array('role_name' => 'Agent'))->result();
-    	
-        if ($_SESSION['role'] == 1) {
-            $qry = "select user_id id,name from users where role_id = ".$role[0]->role_id." ";
-        } else {
-            $qry = "select user_id id,name from users_to_campaigns left join users using(user_id) where role_id = ".$role[0]->role_id." and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id";
-        }
+		$qry = "select user_id id,name from users left join role_permissions using(role_id) left join permissions using(permission_id) left join users_to_campaigns using(user_id) where permission_name = 'log hours' and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id";
+
         return $this->db->query($qry)->result_array();
     }
     public function get_sources()

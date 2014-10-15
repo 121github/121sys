@@ -30,14 +30,14 @@ class User_model extends CI_Model
             $username,
             $password
         ))->result_array();
-		
+        
         if (!empty($result)) {
             $config_query        = "SELECT * from configuration";
             $config              = $this->db->query($config_query)->row_array(0);
             $_SESSION['config']  = $config;
             $result              = $result[0];
             $_SESSION['user_id'] = $result['user_id'];
-			$_SESSION['logdate'] = $result['logdate'];
+            $_SESSION['logdate'] = $result['logdate'];
             $_SESSION['logtime'] = $result['logtime'];
             //get the permissions for the users role and store them in the session
             $this->load_user_session();
@@ -89,66 +89,66 @@ class User_model extends CI_Model
         //this function is called from main.js on every page load. if the user has a session and the reload_session flag in the user table is set then it will reload permissions and access for the user
         if (isset($_SESSION['user_id'])) {
             $this->db->where('user_id', $_SESSION['user_id']);
-			$query = $this->db->get('users');
+            $query = $this->db->get('users');
             if ($query->row()->reload_session == "1") {
-				unset($_SESSION['campaign_access']);
-				unset($_SESSION['navigation']);
-				unset($_SESSION['permissions']);
-				unset($_SESSION['role']);
-				unset($_SESSION['filter']);
+                unset($_SESSION['campaign_access']);
+                unset($_SESSION['navigation']);
+                unset($_SESSION['permissions']);
+                unset($_SESSION['role']);
+                unset($_SESSION['filter']);
                 $this->load_user_session();
-				if(isset($_SESSION['current_campaign'])&&!in_array($_SESSION['current_campaign'],$_SESSION['campaign_access']['array'])){
-					unset($_SESSION['current_campaign']);
-				}
-				echo "Session reloaded";
+                if (isset($_SESSION['current_campaign']) && !in_array($_SESSION['current_campaign'], $_SESSION['campaign_access']['array'])) {
+                    unset($_SESSION['current_campaign']);
+                }
+                echo "Session reloaded";
             }
         }
     }
     public function load_user_session()
     {
-			$result = $this->db->query("select * from users where user_id = ".$_SESSION['user_id'])->row_array(0);
-			//load all user details into the session
-            $_SESSION['name']    = $result['name'];
-            $_SESSION['role']    = $result['role_id'];
-            $_SESSION['group']   = $result['group_id'];
-            $_SESSION['email']   = $result['user_email'];
-            $_SESSION['ext']     = $result['ext'];
-		
-		$theme_folder = $this->db->query("select theme_folder from user_groups where group_id = '".$_SESSION['group']."'")->row()->theme_folder;
-		if(!empty($theme_folder)){
-		$_SESSION['theme_folder'] = $theme_folder;
-		}
-		
-        $role_permissions = $this->db->query("select * from role_permissions left join permissions using(permission_id) where role_id = '" . $_SESSION['role'] . "'")->result_array();
-		$_SESSION['permissions'] = array();
+        $result            = $this->db->query("select * from users where user_id = " . $_SESSION['user_id'])->row_array(0);
+        //load all user details into the session
+        $_SESSION['name']  = $result['name'];
+        $_SESSION['role']  = $result['role_id'];
+        $_SESSION['group'] = $result['group_id'];
+        $_SESSION['email'] = $result['user_email'];
+        $_SESSION['ext']   = $result['ext'];
+        
+        $theme_folder = $this->db->query("select theme_folder from user_groups where group_id = '" . $_SESSION['group'] . "'")->row()->theme_folder;
+        if (!empty($theme_folder)) {
+            $_SESSION['theme_folder'] = $theme_folder;
+        }
+        
+        $role_permissions        = $this->db->query("select * from role_permissions left join permissions using(permission_id) where role_id = '" . $_SESSION['role'] . "'")->result_array();
+        $_SESSION['permissions'] = array();
         foreach ($role_permissions as $row) {
             $_SESSION['permissions'][$row['permission_id']] = $row['permission_name'];
         }
-        if (in_array("all campaigns",$_SESSION['permissions'])) {
+        if (in_array("all campaigns", $_SESSION['permissions'])) {
             //admin has all access
             $qry = "select campaign_id from `campaigns` where campaign_status = 1";
         } else {
             //other users can can only see what they have access to
             $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $_SESSION['user_id'] . "' group by campaign_id";
         }
-        $user_campaigns                       = $this->db->query($qry)->result_array();
-		
-		if(count($user_campaigns)<1&&$_SESSION['role']<>1){
-			session_destroy();
-			$this->session->set_flashdata('error', 'You do not have access to any campaigns.');
-			redirect('user/login');
-		}
+        $user_campaigns = $this->db->query($qry)->result_array();
+        
+        if (count($user_campaigns) < 1 && $_SESSION['role'] <> 1) {
+            session_destroy();
+            $this->session->set_flashdata('error', 'You do not have access to any campaigns.');
+            redirect('user/login');
+        }
         $campaign_access                      = "0";
         $_SESSION['campaign_access']['array'] = array(
             '0'
         );
         foreach ($user_campaigns as $row) {
-            $campaign_access .= ",".$row['campaign_id'];
+            $campaign_access .= "," . $row['campaign_id'];
             $_SESSION['campaign_access']['array'][] = $row['campaign_id'];
         }
         //save the campaign access into a list format so we can use it in all the queries. eg "where campaign_id in({$_SESSION['campaign_access']})"
-         $_SESSION['campaign_access']['list'] = $campaign_access;
-        //finally we unflag the update session	
+        $_SESSION['campaign_access']['list'] = $campaign_access;
+        //finally we unflag the update session    
         $this->db->where('user_id', $_SESSION['user_id']);
         $this->db->update('users', array(
             'reload_session' => '0'
@@ -162,43 +162,52 @@ class User_model extends CI_Model
             "password" => $password
         ));
     }
-	
-
-	public function update_hours_log($campaign,$user_id){
-
-		$qry = "update hours_logged set end_time = now() where user_id = '$user_id' and end_time is null";
-		$this->db->query($qry);
-		$qry = "insert into hours_logged set user_id = '$user_id',campaign_id = '$campaign',start_time=now()";
-		$this->db->query($qry);
-		$qry = "SELECT (sum(TIME_TO_SEC(TIMEDIFF(end_time,start_time)))-(select if(exception is null,'0',exception*60) from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) as secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
-				$query = $this->db->query($qry);
-		if($query->num_rows()){
-		return $query->row()->secs;
-		} else { return "0"; }
-	}
-	
-	public function get_worked($campaign,$user_id){
-
-		$qry= "select count(distinct urn) dialed from history where campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
-				$query = $this->db->query($qry);
-		if($query->num_rows()){
-		return $query->row()->dialed;
-		} else { return "0"; }
-	}
-	
-	public function get_positive($campaign,$user_id,$positive=0){
-		if($positive=="Transfers"){
-		$outcome_id = "70,71";	
-		} else if($positive=="Surveys"){
-		$outcome_id = "60";	
-		} else if($positive=="Appointments"){
-		$outcome_id = "72";	
-		}
-		$qry= "select count(distinct urn) transfers from history where outcome_id in($outcome_id) and campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
-		$query = $this->db->query($qry);
-		if($query->num_rows()){
-		return $query->row()->transfers;
-		} else { return "0"; }
-	}
-	
+    
+    
+    public function update_hours_log($campaign, $user_id)
+    {
+        
+        $qry = "update hours_logged set end_time = now() where user_id = '$user_id' and end_time is null";
+        $this->db->query($qry);
+        $qry = "insert into hours_logged set user_id = '$user_id',campaign_id = '$campaign',start_time=now()";
+        $this->db->query($qry);
+        $qry   = "SELECT (sum(TIME_TO_SEC(TIMEDIFF(end_time,start_time)))-(select if(exception is null,'0',exception*60) from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) as secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
+        $query = $this->db->query($qry);
+        if ($query->num_rows()) {
+            return $query->row()->secs;
+        } else {
+            return "0";
+        }
+    }
+    
+    public function get_worked($campaign, $user_id)
+    {
+        
+        $qry   = "select count(distinct urn) dialed from history where campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
+        $query = $this->db->query($qry);
+        if ($query->num_rows()) {
+            return $query->row()->dialed;
+        } else {
+            return "0";
+        }
+    }
+    
+    public function get_positive($campaign, $user_id, $positive = 0)
+    {
+        if ($positive == "Transfers") {
+            $outcome_id = "70,71";
+        } else if ($positive == "Surveys") {
+            $outcome_id = "60";
+        } else if ($positive == "Appointments") {
+            $outcome_id = "72";
+        }
+        $qry   = "select count(distinct urn) transfers from history where outcome_id in($outcome_id) and campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
+        $query = $this->db->query($qry);
+        if ($query->num_rows()) {
+            return $query->row()->transfers;
+        } else {
+            return "0";
+        }
+    }
+    
 }

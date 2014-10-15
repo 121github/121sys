@@ -497,9 +497,11 @@ class Admin extends CI_Controller
     /* hours page functions */
     public function hours()
     {
+		$this->load->model('Cron_model');
+		
     	$campaigns = $this->Form_model->get_campaigns();
     	$agents = $this->Form_model->get_agents();
-    	
+    	$this->Cron_model->update_hours($agents);
     	$data     = array(
     			'campaign_access' => $this->_campaigns,
     			'pageId' => 'Admin',
