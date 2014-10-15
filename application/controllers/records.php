@@ -102,19 +102,22 @@ class Records extends CI_Controller
 		$automatic = false;
         $urn = intval($this->uri->segment(3));
 		}
-        //$this->User_model->campaign_access_check($urn);
-		
+		if($urn==0){
+        redirect(base_url() . "error/data");
+		} else {
+		$this->User_model->campaign_access_check($urn);
+		}
         
         //get the features for the campaign and put the ID's into an array
         $campaign_features = $this->Form_model->get_campaign_features($this->_campaign);
         $features          = array();
+		$panels = array();
         foreach ($campaign_features as $row) {
             $features[]         = $row['id'];
 			if(!empty($row['path'])){
             $panels[$row['id']] = $row['path'];
 			}
         }
-        
         //get the details of the record for the specified features
         $details          = $this->Records_model->get_details($urn, $features);
         $progress_options = $this->Form_model->get_progress_descriptions();

@@ -579,6 +579,8 @@ class Database_model extends CI_Model
 		(1, 38),
 		(1, 39),
 		(1, 40),
+		(1, 42),
+		(1, 43),
 		(2, 2),
 		(2, 3),
 		(2, 4),

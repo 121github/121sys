@@ -22,7 +22,10 @@ class Records_model extends CI_Model
 		$user_id = $_SESSION['user_id'];
 		if(intval($campaign)){
 		$qry = "select urn from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and (outcome_id is null or nextcall < now()) and (user_id is null or user_id = '$user_id') limit 1";
+		$urn = 0;
+		if($this->db->query($qry)->num_rows()){
 		$urn = $this->db->query($qry)->row(0)->urn;
+		}
 		//$this->db->replace("ownership",array("user_id"=>$user_id,"urn"=>$urn));
 		return $urn;
 		}

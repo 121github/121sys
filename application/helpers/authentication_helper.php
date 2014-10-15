@@ -32,11 +32,15 @@ if ( !function_exists('user_auth_check') )
 		$query = $CI->db->query($qry);
 
 		$result = $CI->db->query($qry)->result_array();
+		if($CI->db->query($qry)->num_rows()){
 		$campaigns = array();
 		foreach($result as $row){
 			$campaigns[$row['client']][] = array("id"=>$row['id'],"name"=>$row['name'],"type"=>$row['type'],"client"=>$row['client']);
 		}
 		return $campaigns;
+		} else {
+		unset($_SESSION['current_campaign']);
+		}
 
 	}
 	

@@ -9,14 +9,26 @@ class Error extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
+		$this->_campaigns = campaign_access_dropdown();
     }
 	
 	public function access(){
 		        $data = array(
-'pageId' => 'list-records',
-            'title' => 'Access Error');
-			 $this->template->load('default', 'errors/access.php', $data);
+			'pageId' => 'error-page',
+ 			'campaign_access' => $this->_campaigns,
+            'title' => 'Permission Denied',
+			'msg'=>'Please contact your system administrator if you believe you should have access to this record');
+			 $this->template->load('default', 'errors/display.php', $data);
+		
+	}
+	
+		public function data(){
+		        $data = array(
+			'pageId' => 'error-page',
+			'campaign_access' => $this->_campaigns,
+            'title' => 'Data error',
+			'msg'=>'A suitable record could not be found for calling. Please try another campaign or contact your administrator');
+			 $this->template->load('default', 'errors/display.php', $data);
 		
 	}
 	
