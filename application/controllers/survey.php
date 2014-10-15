@@ -233,6 +233,7 @@ $this->_campaigns = campaign_access_dropdown();
     public function process_view()
     {
 		 if ($this->input->is_ajax_request()) {
+			 			
             $surveys = $this->Survey_model->get_all_surveys($this->input->post());
             foreach ($surveys['data'] as $k => $v) {
                 $surveys['data'][$k]["options"] = '<a href="edit/' . $v['survey_id'] . '"><span class="glyphicon glyphicon-eye-open view-survey"></span></a> <a href="'.base_url().'records/detail/' . $v['urn'] . '"><span class="glyphicon glyphicon glyphicon-play padl"></span></a>';

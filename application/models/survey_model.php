@@ -262,7 +262,15 @@ class Survey_model extends CI_Model
             "rand()"
         );
         
-        $qry = "select s.urn,campaign_name, survey_id,date_format(s.date_created,'%d/%m/%y %H:%i') date_created,IF(s.completed_date is NULL,'Incomplete',date_format(s.completed_date,'%d/%m/%y %H:%i')) completed_date,IF(s.completed = 1,'Complete','Incomplete') is_completed,fullname,if(urgent=1,'Yes','No') urgent, u.name,survey_name, progress_id,progress_color,IF(pd.description IS NULL, 'Not Required', pd.description) progress, answer, completed,s.user_id from surveys s left join survey_answers using(survey_id) left join survey_info using(survey_info_id) left join questions using(question_id)  left join records using(urn) left join campaigns using(campaign_id) left join progress_description pd using(progress_id) left join contacts using(contact_id) left join users u on s.user_id = u.user_id where 1 and survey_id is not null and nps_question = 1 and campaign_id in({$_SESSION['campaign_access']['list']})";
+        $qry = "select s.urn,campaign_name, survey_id,date_format(s.date_created,'%d/%m/%y %H:%i') date_created,IF(s.completed_date is NULL,'Incomplete',date_format(s.completed_date,'%d/%m/%y %H:%i')) completed_date,IF(s.completed = 1,'Complete','Incomplete') is_completed,fullname,if(urgent=1,'Yes','No') urgent, u.name,survey_name, progress_id,progress_color,IF(pd.description IS NULL, 'Not Required', pd.description) progress, answer, completed,s.user_id from surveys s left join survey_answers using(survey_id) left join survey_info using(survey_info_id) left join questions using(question_id)  left join records using(urn) left join campaigns using(campaign_id) left join progress_description pd using(progress_id) left join contacts using(contact_id) left join users u on s.user_id = u.user_id where 1 and survey_id is not null and nps_question = 1 ";
+		
+				$where = " and campaigns.campaign_id in(".$_SESSION['campaign_access']['list'].") ";
+				if(isset($_SESSION['current_campaign'])){
+				$where .= " and campaigns.campaign_id = '".$_SESSION['current_campaign']."'";
+				}
+				
+			$qry .= $where;
+		
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause

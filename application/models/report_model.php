@@ -289,4 +289,7 @@ class Report_model extends CI_Model
     			 
     			return $this->db->query($qry)->result_array();
     }
+	
+
+	
 }

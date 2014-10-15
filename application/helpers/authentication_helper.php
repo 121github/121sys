@@ -6,7 +6,7 @@ if ( !function_exists('user_auth_check') )
     {
 		
 		if(!isset($_SESSION['current_campaign'])&&$force_campaign){
-			redirect(base_url());	
+			//redirect(base_url());	
 			}
         //unset($_SESSION['login']);
         if (!isset($_SESSION['user_id'])) 

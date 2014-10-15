@@ -5,7 +5,7 @@
 <div class="row">
   <div class="col-md-12 col-sm-12">
     <div class="panel-group" id="accordion">
-      <?php if(in_array("campaign search",$_SESSION['permissions'])){ ?>
+      <?php if(in_array("search campaigns",$_SESSION['permissions'])){ ?>
         <div class="panel panel-primary visible">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"> Campaign Filter Options </a> </h4>
@@ -18,8 +18,10 @@
                 <br>
                 <select  name="campaign_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
                   <?php foreach($campaigns as $row): ?>
+                  <?php if(in_array($row['id'],$_SESSION['campaign_access']['array'])):  ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['campaign_id'])){ echo "selected"; } else { echo (isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
-                  <?php endforeach; ?>
+                  <?php endif ?>
+				  <?php endforeach; ?>
                 </select>
                  <?php } ?>
             <?php if(count($clients)>1){ ?>

@@ -55,15 +55,15 @@
       <ul class="nav navbar-nav">
         <?php if(isset($_SESSION['user_id'])): ?>
         <li <?php if($this->uri->segment(1)=="dashboard"){ echo "class='active'"; } ?>><a  href="<?php echo base_url(); ?>dashboard">Dashboard</a></li>
-         <?php if(in_array("search records",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){ ?>
-         <li <?php if($this->uri->segment(1)=="records"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" class="hreflink">List Records</a></li>
-        <li><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
+         <?php if(in_array("search records",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])||in_array("search campaigns",$_SESSION['permissions'])){ ?>
+         <li <?php if($this->uri->segment(1)=="records"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" >List Records</a></li>
+        <li <?php if($this->uri->segment(1)=="search"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
         <?php } ?>
-         <?php if(isset($_SESSION['current_campaign'])&&!in_array("search records",$_SESSION['permissions'])){  ?>
-           <li><a href="<?php echo base_url(); ?>records/detail" class="hreflink">Start Calling</a></li>
+         <?php if(isset($_SESSION['current_campaign'])&&!in_array("search records",$_SESSION['permissions'])||in_array("search campaigns",$_SESSION['permissions'])){  ?>
+           <li <?php if($this->uri->segment(2)=="detail"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/detail" >Start Calling</a></li>
         <?php } ?>
-        <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Surveys',$_SESSION['campaign_features'])){ ?>
-        <li class="dropdown"> <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Surveys <b class="caret"></b></a>
+        <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Surveys',$_SESSION['campaign_features'])&&in_array("search surveys",$_SESSION['permissions'])){ ?>
+        <li class="dropdown <?php if($this->uri->segment(1)=="survey"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Surveys <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="<?php echo base_url(); ?>survey/view">View Surveys</a></li>
           </ul>
@@ -155,7 +155,11 @@ $(document).on('change','#campaign-select',function(){
 		if(response=="Redirect"){
 			window.location = helper.baseUrl;
 		} else {
+			<?php if($this->uri->segment(2)=="detail"){ ?>
+			window.location = helper.baseUrl+'records/detail';
+			<?php } else { ?>
 			location.reload();
+			<?php } ?>
 		}
 	});
 });

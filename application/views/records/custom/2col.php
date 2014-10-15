@@ -4,10 +4,10 @@ There was a problem while finding the selected record details. Maybe it does not
 <?php else: ?>
 <div class="page-header">
   <h2>View Details <small>URN: <?php echo $details['record']['urn'] ?> <?php echo (!empty($details['record']['campaign'])?" [". $details['record']['campaign']."]":"") ?></small><span class="pull-right">
-    <?php if(!empty($nav['prev'])): ?>
+    <?php if(!empty($nav['prev'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>
     <a type="button" class="btn btn-default btn-lg" href="<?php echo $nav['prev'] ?>">Previous</a>
     <?php endif ?>
-    <?php if(!empty($nav['next'])): ?>
+    <?php if(!empty($nav['next'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>
     <a type="button" class="btn btn-default btn-lg" href="<?php echo $nav['next'] ?>">Next</a>
     <?php endif ?>
     <?php if($automatic): ?>

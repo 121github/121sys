@@ -64,7 +64,7 @@ $this->_campaigns = campaign_access_dropdown();
         if ($this->input->is_ajax_request()) {
 			$filter = $this->input->post();
 			
-			if(!in_array("campaign search",$_SESSION['permissions'])){ 
+			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
             $count   = $this->Filter_model->count_records($filter);
@@ -81,7 +81,7 @@ $this->_campaigns = campaign_access_dropdown();
         if ($this->input->is_ajax_request()) {
 			$filter = $this->input->post();
 			
-			if(!in_array("campaign search",$_SESSION['permissions'])){ 
+			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
             $count = $this->Filter_model->apply_filter($filter);

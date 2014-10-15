@@ -17,6 +17,18 @@ class Records_model extends CI_Model
         
     }
 	
+		public function get_campaign_from_urn($urn){
+	$this->db->select('campaign_id');
+	$this->db->where('urn',$urn);
+	$query = $this->db->get('records');
+	if($query->num_rows()){
+	return $query->row()->campaign_id;
+	} else {
+	return false;	
+	}
+
+	}
+	
 	public function get_record(){
 		$campaign = $_SESSION['current_campaign'];
 		$user_id = $_SESSION['user_id'];

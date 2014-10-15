@@ -89,7 +89,8 @@ class User_model extends CI_Model
         //this function is called from main.js on every page load. if the user has a session and the reload_session flag in the user table is set then it will reload permissions and access for the user
         if (isset($_SESSION['user_id'])) {
             $this->db->where('user_id', $_SESSION['user_id']);
-            if ($this->db->get('users')->row()->reload_session == "1") {
+			$query = $this->db->get('users');
+            if ($query->row()->reload_session == "1") {
 				unset($_SESSION['campaign_access']);
 				unset($_SESSION['navigation']);
 				unset($_SESSION['permissions']);
@@ -170,13 +171,19 @@ class User_model extends CI_Model
 		$qry = "insert into hours_logged set user_id = '$user_id',campaign_id = '$campaign',start_time=now()";
 		$this->db->query($qry);
 		$qry = "SELECT (sum(TIME_TO_SEC(TIMEDIFF(end_time,start_time)))-(select if(exception is null,'0',exception*60) from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) as secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
-		return $this->db->query($qry)->row()->secs;
+				$query = $this->db->query($qry);
+		if($query->num_rows()){
+		return $query->row()->secs;
+		} else { return "0"; }
 	}
 	
 	public function get_worked($campaign,$user_id){
 
 		$qry= "select count(distinct urn) dialed from history where campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
-		return $this->db->query($qry)->row()->dialed;
+				$query = $this->db->query($qry);
+		if($query->num_rows()){
+		return $query->row()->dialed;
+		} else { return "0"; }
 	}
 	
 	public function get_positive($campaign,$user_id,$positive=0){
@@ -188,7 +195,10 @@ class User_model extends CI_Model
 		$outcome_id = "72";	
 		}
 		$qry= "select count(distinct urn) transfers from history where outcome_id in($outcome_id) and campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
-		return $this->db->query($qry)->row()->transfers;
+		$query = $this->db->query($qry);
+		if($query->num_rows()){
+		return $query->row()->transfers;
+		} else { return "0"; }
 	}
 	
 }

@@ -61,10 +61,7 @@ class Form_model extends CI_Model
     }
     public function get_user_campaigns()
     {
-        $qry = "select campaign_id id,campaign_name name from campaigns left join users_to_campaigns using(campaign_id) where campaign_status = 1 and user_id = '{$_SESSION['user_id']}' group by campaign_id order by campaign_name";
-        if (!$this->db->query($qry)->result_array()) {
-            $qry = "select campaign_id id,campaign_name name from campaigns where campaign_status = 1 order by campaign_name";
-        }
+        $qry = "select campaign_id id,campaign_name name from campaigns where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 group by campaign_id order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
     public function get_clients()

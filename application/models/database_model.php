@@ -642,7 +642,6 @@ class Database_model extends CI_Model
 		(3, 23),
 		(3, 24),
 		(3, 25),
-		(3, 26),
 		(3, 27),
 		(3, 28),
 		(3, 30),
@@ -693,7 +692,6 @@ class Database_model extends CI_Model
 		(5, 19),
 		(5, 21),
 		(5, 23),
-		(5, 26),
 		(5, 27),
 		(5, 28),
 		(5, 30),
@@ -895,7 +893,8 @@ class Database_model extends CI_Model
             //History
             $this->db->query("INSERT INTO `history` (`campaign_id`, `urn`, `loaded`, `contact`, `description`, `outcome_id`, `comments`, `nextcall`, `user_id`, `role_id`, `group_id`, `contact_id`, `progress_id`, `last_survey`) VALUES
             		($campaign->campaign_id, ".$record->urn.", NULL, '".$date."', 'Record was updated', ".$record->outcome_id.", 'Comment', '".$date."', ".$agent->user_id.", ".$agent->role_id.", ".$agent->group_id.", NULL, NULL, NULL)");
-            
+					//update history campaigns to match the record campaigns
+            $this->db->query("update history left join records using(urn) set history.campaign_id = records.campaign_id");
             if ($this->db->_error_message()) {
             	return "history";
             }

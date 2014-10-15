@@ -72,9 +72,9 @@ class Admin_model extends CI_Model
     public function find_client($client_name)
     {
         $qry = "select client_id from clients where client_name = " . $this->db->escape($client_name);
-        $this->firephp->log($qry);
-        if ($this->db->query($qry)->num_rows() > 0) {
-            return $this->db->query($qry)->row()->client_id;
+		$query = $this->db->query($qry);
+        if ($query->num_rows() > 0) {
+            return $query->row()->client_id;
         } else {
             return false;
         }

@@ -124,7 +124,9 @@ class User extends CI_Controller
 		$duration = $this->User_model->update_hours_log($campaign,$user_id);
 		$worked = $this->User_model->get_worked($campaign,$user_id);
 		$positive_count = $this->User_model->get_positive($campaign,$user_id);
+		if($duration>0){
 		$rate = number_format($positive_count/($duration/60/60),2);
+		} else { $rate = 0; }
 		echo json_encode(array("duration"=>$duration,"worked"=>$worked,"positive_count"=>$positive_count,"rate"=>$rate,"positive_outcome"=>$positive_outcome));
 		}
 	}
@@ -132,7 +134,7 @@ class User extends CI_Controller
 	/* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
 	public function current_campaign(){
 		$campaign=intval($this->uri->segment(3));
-		if(intval($campaign)>0){
+		if($campaign>"0"){
 			if(in_array($campaign,$_SESSION['campaign_access']['array'])){
 				        $campaign_features = $this->Form_model->get_campaign_features($campaign);
         				$features  = array();
@@ -144,7 +146,7 @@ class User extends CI_Controller
 				$_SESSION['current_campaign']=$campaign;
 		}
 		} else {
-		if(!in_array("campaign search",$_SESSION['permissions'])){	
+		if(!in_array("search campaigns",$_SESSION['permissions'])){	
 			unset($_SESSION['current_campaign']);
 			unset($_SESSION['campaign_features']);
 			echo "Redirect";
