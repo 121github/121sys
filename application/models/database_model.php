@@ -725,23 +725,25 @@ class Database_model extends CI_Model
 		//create sample campaign
 		$i = 1;
 		foreach ($this->db->get('clients')->result() as $client) {
-			$this->db->query("INSERT INTO `campaigns` (`campaign_name`, `campaign_type_id`, `client_id`, `start_date`, `end_date`, `campaign_status`, `email_recipients`, `reassign_to`, `custom_panel_name`) VALUES
-			('Sample B2C Campaign_".$i++."', '1', ".$client->client_id.", '2014-09-30', NULL, 1, NULL, NULL, '')");
-		
-			if ($this->db->_error_message()) {
-				return "campaigns";
-			}
-			
-			$campaign_id = $this->db->insert_id();
-			
-			//Dump the outcomes to each campaign
-			foreach ($this->db->get('outcomes')->result() as $outcome) {
-				
-				$this->db->query("INSERT INTO `outcomes_to_campaigns` (`outcome_id`, `campaign_id`) VALUES
-				(".$outcome->outcome_id.", ".$campaign_id.")");
+			foreach ($this->db->get('campaign_types')->result() as $campaign_type) {
+				$this->db->query("INSERT INTO `campaigns` (`campaign_name`, `campaign_type_id`, `client_id`, `start_date`, `end_date`, `campaign_status`, `email_recipients`, `reassign_to`, `custom_panel_name`) VALUES
+				('Sample ".$campaign_type->campaign_type_desc." Campaign_".$i++."', '".$campaign_type->campaign_type_id."', ".$client->client_id.", '2014-09-30', NULL, 1, NULL, NULL, '')");
 			
 				if ($this->db->_error_message()) {
-					return "outcomes_to_campaigns";
+					return "campaigns";
+				}
+				
+				$campaign_id = $this->db->insert_id();
+				
+				//Dump the outcomes to each campaign
+				foreach ($this->db->get('outcomes')->result() as $outcome) {
+					
+					$this->db->query("INSERT INTO `outcomes_to_campaigns` (`outcome_id`, `campaign_id`) VALUES
+					(".$outcome->outcome_id.", ".$campaign_id.")");
+				
+					if ($this->db->_error_message()) {
+						return "outcomes_to_campaigns";
+					}
 				}
 			}
 		}
