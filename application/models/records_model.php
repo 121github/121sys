@@ -496,7 +496,6 @@ class Records_model extends CI_Model
             }
         }
         $this->db->where("urn", $post['urn']);
-		$this->firephp->log($post);
         $this->db->update("records", elements($update_array, $post));
     }
     

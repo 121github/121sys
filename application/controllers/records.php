@@ -94,6 +94,9 @@ class Records extends CI_Controller
     public function detail()
     {
 		if(!intval($this->uri->segment(3))){
+		if(!isset($_SESSION['current_campaign'])){
+			redirect('error/campaign');
+		}
 		//if the campaign does not have search enable and the user does not have search permissions then they are given a record
 		$urn = $this->Records_model->get_record();
 		$automatic = true;

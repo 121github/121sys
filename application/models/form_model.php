@@ -49,7 +49,26 @@ class Form_model extends CI_Model
     }
     public function get_campaign_features($campaign = false)
     {
-        $qry = "select feature_id id,feature_name name,panel_path path from campaign_features left join campaigns_to_features using(feature_id) where 1 ";
+		//before we get features in this campaign we need to check the user has permissions on these features
+		if(!in_array("view recordings",$_SESSION['permissions'])){
+		$exclude = " and feature_name <> 'Recordings'";	
+		}
+		if(!in_array("view appointments",$_SESSION['permissions'])){
+		$exclude = " and feature_name <> 'Appointment Setting'";	
+		}
+		if(!in_array("view history",$_SESSION['permissions'])){
+		$exclude = " and feature_name <> 'History'";	
+		}
+		if(!in_array("view ownership",$_SESSION['permissions'])){
+		$exclude = " and feature_name <> 'Ownership Changer'";	
+		}
+		if(!in_array("view surveys",$_SESSION['permissions'])){
+		$exclude = " and feature_name <> 'Surveys'";	
+		}
+		if(!in_array("view email",$_SESSION['permissions'])){
+		$exclude = " and feature_name <> 'Emails'";	
+		}
+        $qry = "select feature_id id,feature_name name,panel_path path from campaign_features left join campaigns_to_features using(feature_id) where 1 $exclude ";
         $qry .= ($campaign ? " and campaign_id = $campaign " : "");
         $qry .= " group by feature_id order by feature_id";
         return $this->db->query($qry)->result_array();

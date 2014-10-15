@@ -210,7 +210,7 @@ class Filter_model extends CI_Model
         $special                            = "";
         $multiple                           = "";
         $join                               = array();
-        $where                              = " and r.campaign_id in ({$_SESSION['campaign_access']['list']}) ";
+		$where                              = " and r.campaign_id in ({$_SESSION['campaign_access']['list']}) ";
         $order                              = "";
         if (!empty($filter)) {
             //if the filter field is a specific id
@@ -385,10 +385,11 @@ class Filter_model extends CI_Model
         if (!empty($where)) {
             $qry .= " where 1 " . $where;
         }
-		if(isset($_SESSION['filter']['values']['campaign_id'])){
-		if(count($_SESSION['filter']['values']['campaign_id'])=="1"){
-			$_SESSION['current_campaign'] = $_SESSION['filter']['values']['campaign_id'][0];
-		} else if(count($_SESSION['filter']['values']['campaign_id'])>1){
+
+		if(isset($filter['campaign_id'])){		
+		if(count($filter['campaign_id'])=="1"){
+			$_SESSION['current_campaign'] = $filter['campaign_id'][0];
+		} else if(count($filter['campaign_id'])>"1"){
 			unset($_SESSION['current_campaign']);
 		}
 		}

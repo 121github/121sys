@@ -155,7 +155,7 @@ $(document).on('change','#campaign-select',function(){
 		if(response=="Redirect"){
 			window.location = helper.baseUrl;
 		} else {
-			<?php if($this->uri->segment(2)=="detail"){ ?>
+			<?php if($this->uri->segment(2)=="detail"||$this->uri->segment(1)=="error"){ ?>
 			window.location = helper.baseUrl+'records/detail';
 			<?php } else { ?>
 			location.reload();
