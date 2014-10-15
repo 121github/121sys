@@ -103,6 +103,4 @@ class Company_model extends CI_Model
 	$qry = "select telephone_number from company_telephone left join companies using(company_id) where urn = '$urn'";	
 	return $this->db->query($qry)->result_array();	
 	}
-	
-	
 }

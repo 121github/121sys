@@ -21,13 +21,17 @@ public function find_calls(){
 	//connect to 121backup which has the database of call recordings in a db named "recordings"
 //the urn we will be searching for - posted via ajax
 $urn = $this->input->post('urn');
-$numbers =  $this->Contacts_model->get_numbers($urn);
+$contact_numbers =  $this->Contacts_model->get_numbers($urn);
+$company_numbers =  $this->Company_model->get_numbers($urn);
 $calls =  $this->Records_model->get_calls($urn);
 $number_list = "''";
 $recordings = array();
 $recording = array();
 
-foreach($numbers as $row){
+foreach($contact_numbers as $row){
+	$number_list .= '"'.$row['telephone_number'].'",';	
+}
+foreach($company_numbers as $row){
 	$number_list .= '"'.$row['telephone_number'].'",';	
 }
 

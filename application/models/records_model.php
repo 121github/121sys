@@ -568,7 +568,8 @@ class Records_model extends CI_Model
     public function get_calls($urn)
     {
         $qry = "select contact from history where urn = '$urn' and `group_id` = 1";
-        return $this->db->query($qry)->result_array();
+		$query = $this->db->query($qry);
+        return $query->result_array();
     }
     
     //find all dates that a record has been contacted on
