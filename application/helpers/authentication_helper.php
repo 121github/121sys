@@ -4,20 +4,32 @@ if ( !function_exists('user_auth_check') )
 {
     function user_auth_check($force_campaign=true)
     {
-		
-		if(!isset($_SESSION['current_campaign'])&&$force_campaign){
-			//redirect(base_url());	
-			}
-        //unset($_SESSION['login']);
+		$inactivity = false;
+		//check last action time in session, if > 15 minutes destroy the session to log the user out
+			if (isset($_SESSION['last_action'])&&$_SESSION['last_action'] + 900 < time()) {
+			session_destroy();
+			session_start(); //start the session again just so we can add an error message
+			$inactivity = true;
+		 }
         if (!isset($_SESSION['user_id'])) 
         { 
+				//set the error message for the login page
+				if($inactivity){
+				$_SESSION['logout_message'] = 'You have been logged out due to inactivy';	
+				} else {
+				$_SESSION['logout_message'] = 'You are not logged in';		
+				}
+		
             if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-                echo 'Timeout';
+                echo 'Logout';
                 exit;
             }
+			
 			$url = base64_encode($_SERVER['REQUEST_URI']);
             redirect(base_url() . "user/login/$url");
-        }
+        } 
+		
+		$_SESSION['last_action'] = time();
         return true;
     }   
 	

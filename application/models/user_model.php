@@ -37,8 +37,7 @@ class User_model extends CI_Model
             $_SESSION['config']  = $config;
             $result              = $result[0];
             $_SESSION['user_id'] = $result['user_id'];
-            $_SESSION['logdate'] = $result['logdate'];
-            $_SESSION['logtime'] = $result['logtime'];
+			$_SESSION['last_action'] = time();
             //get the permissions for the users role and store them in the session
             $this->load_user_session();
             $this->db->where("user_id", $result['user_id']);
@@ -210,4 +209,9 @@ class User_model extends CI_Model
         }
     }
     
+	public function close_hours(){
+	$qry = "update hours_logged set end_time = now() where end_time is null and user_id = '{$_SESSION['user_id']}'";
+	$this->db->query($qry);
+	}
+	
 }

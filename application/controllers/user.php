@@ -64,6 +64,9 @@ class User extends CI_Controller
     
     public function logout()
     {
+		if(in_array("log_hours",$_SESSION['permissions'])){
+		$this->User_model->close_hours();
+		}
 		session_destroy();
         redirect('user/login');
     }
@@ -149,7 +152,7 @@ class User extends CI_Controller
 		if(!in_array("search campaigns",$_SESSION['permissions'])){	
 			unset($_SESSION['current_campaign']);
 			unset($_SESSION['campaign_features']);
-			echo "Redirect";
+			echo "logout";
 			}
 		}
 	}

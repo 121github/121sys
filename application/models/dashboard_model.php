@@ -42,7 +42,6 @@ class Dashboard_model extends CI_Model
         }
 		$qry .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " order by history_id desc limit 10";
-		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     

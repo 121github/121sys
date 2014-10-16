@@ -45,11 +45,8 @@ var helper = {};
 
 /* AJAX GLOBAL EVENT - This happens after ajax request. We check if the response is timeout then it redirects the user to the login page */
 $( document ).ajaxComplete(function(event, xhr, settings) {
-  if (xhr.responseText === 'Timeout') {
-    location.reload(); //if the user is not logged in, simply refresh the page which will then redirect them to the login page
-  }
-    if (xhr.responseText === 'Redirect') {
-    window.location=helper.baseUrl; //if the user is not logged in, simply refresh the page which will then redirect them to the login page
+  if (xhr.responseText === 'Logout') {
+    window.location=helper.baseUrl+'user/login'; //if the user is not logged in, simply refresh the page which will then redirect them to the login page
   }
    if (xhr.responseText === 'Denied') {
    flashalert.danger("You do not have permission to do this"); //if the user is does not have access to perform an ajax request flash a permission denied alert
