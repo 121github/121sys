@@ -8,7 +8,7 @@
 	</div>
 	<div class="form-group input-group-sm">
 		<p>Campaigns</p>	
-		<select  name="campaign_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+		<select  name="campaign_id[]" class="selectpicker" id="campaigns_select" data-width="100%" data-size="5" multiple>
            <?php foreach($campaigns as $row): ?>
         	   	<option value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
            <?php endforeach; ?>

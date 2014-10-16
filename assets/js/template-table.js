@@ -112,7 +112,7 @@ var template = {
             data: data,
             success: function(data){
     
-                    $('.selectpicker').selectpicker('val',data["data"]).selectpicker('render');
+                    $('#campaigns_select').selectpicker('val',data["data"]).selectpicker('render');
        
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -138,7 +138,7 @@ var template = {
             	$("button[type=submit]").attr('disabled',false);
                 $('form').trigger('reset');
                 $('#summernote').code('');
-                $('.selectpicker').selectpicker('val',[]).selectpicker('render');
+                $('#campaigns_select').selectpicker('val',[]).selectpicker('render');
                 $('form').find('input[type="hidden"]').val('');
                 template.empty_attachment_table();
             },
