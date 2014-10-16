@@ -119,5 +119,21 @@ class Contacts_model extends CI_Model
 	return $this->db->query($qry)->result_array();	
 	}
 	
+	public function get_contact_addresses_without_coords() {
+	
+		$qry = "select *
+    			from contact_addresses
+    			where postcode IS NOT NULL
+    			and latitude IS NULL
+    			and longitude IS NULL ";
+			
+		return $this->db->query($qry)->result_array();
+	}
+	
+	public function update_contact_address($data) {
+		$this->db->where("address_id", $data['address_id']);
+		return $this->db->update("contact_addresses", $data);
+	}
+	
 	
 }

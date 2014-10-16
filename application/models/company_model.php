@@ -103,4 +103,23 @@ class Company_model extends CI_Model
 	$qry = "select telephone_number from company_telephone left join companies using(company_id) where urn = '$urn'";	
 	return $this->db->query($qry)->result_array();	
 	}
+	
+	
+	public function get_company_addresses_without_coords() {
+		
+		$qry = "select *
+    			from company_addresses
+    			where postcode IS NOT NULL
+    			and latitude IS NULL
+    			and longitude IS NULL ";
+		 
+		return $this->db->query($qry)->result_array();
+	}
+	
+	public function update_company_address($data) {
+	
+		$this->db->where("address_id", $data['address_id']);
+		return $this->db->update("company_addresses", $data);
+	}
+	
 }

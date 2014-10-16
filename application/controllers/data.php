@@ -11,6 +11,8 @@ class Data extends CI_Controller
 $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Data_model');
+        $this->load->model('Company_model');
+        $this->load->model('Contacts_model');
     }
     //this loads the data management view
     public function index()
@@ -239,6 +241,7 @@ $this->_campaigns = campaign_access_dropdown();
             } else {
                 $rows = $row;
             }
+            
             foreach ($import as $row => $details) {
                 $current++;
                 /* now we can insert into the database*/
@@ -304,23 +307,149 @@ $this->_campaigns = campaign_access_dropdown();
                 }
 
             }
-			                echo json_encode(array(
-                    "success" => true,
-                    "rows" => $row,
-                    "data" => "Import was successfull"
-                ));
+            
+            //If a company_postcode is added, run the script to calculate the longitude and latitude
+            foreach ($import as $data) {
+            	if (array_key_exists('c_postcode', $data) && array_key_exists("company_addresses", $tables)) {
+            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", 12);
+            		$errors = $this->check_company_postcodes();
+            		if (count($errors) > 0) {
+            			echo json_encode(array(
+            					"success" => false,
+            					"rows" => $row,
+            					"data" => $errors
+            			));
+            			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Error importing the coords for some postcodes in the company address. Error: " . $errors[0]);
+            			$this->firephp->log("Error importing the coords for some postcode in the company address");
+            			exit;
+            		} else {
+            			$this->firephp->log("Coords added");
+            		
+            		}
+            		break;
+            	}
+            }
+            
+            //If a contact_postcode is added, run the script to calculate the longitude and latitude
+            foreach ($import as $data) {
+            	if (array_key_exists('postcode', $data) && array_key_exists("contact_addresses", $tables)) {
+            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", 12);
+            		$errors = $this->check_contact_postcodes();
+            		if (count($errors) > 0) {
+            			echo json_encode(array(
+            					"success" => false,
+            					"rows" => $row,
+            					"data" => $errors
+            			));
+            			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Error importing the coords for some postcodes  in the contact address. Error: " . $errors[0]);
+            			$this->firephp->log("Error importing the coords for some postcode in the contact address");
+            			exit;
+            		} else {
+            			$this->firephp->log("Coords added");
+            
+            		}
+            		break;
+            	}
+            }
+            
+            if (count($errors) <= 0) {
+            	file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "success");
+            }
+            
+			echo json_encode(array(
+                "success" => true,
+                "rows" => $row,
+                "data" => "Import was successfull"
+            ));
         }
     }
     public function get_progress()
     {
-        if ($this->input->post('first')) {
+    	if ($this->input->post('first')) {
             file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0");
             $progress = 0;
         } else {
-            $progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
+        	$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
         }
-        echo json_encode(array(
-            "progress" => $progress
-        ));
+        
+        $array =array(
+            "progress" => $progress,	 
+        );
+        if ($this->input->post('locations')) {
+        	$array['locations'] = true;
+        }
+        
+        
+        $content = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
+        
+        if ($content == "success"){
+        	$array['success'] = true;
+        }
+        
+        if ($content == "error"){
+        	$array['error'] = true;
+        }
+        
+        echo json_encode($array);
+    }
+    
+    public function check_company_postcodes() {
+    	
+    	//Get the companyAddresses without Coords
+    	$compAddrWithoutCoords = $this->Company_model->get_company_addresses_without_coords();
+    	$errors     = array();
+    	$current = 0;
+    	$rows = count($compAddrWithoutCoords);
+    	foreach ($compAddrWithoutCoords as $compAddr) {
+    		$current++;
+    		$progress = ceil($current / $rows * 100);
+    		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress);
+    		$coords = postcode_to_coords($compAddr['postcode']);
+    		if ($coords['lat'] && $coords['lng']) {
+    			$compAddr['latitude'] = $coords['lat'];
+    			$compAddr['longitude'] = $coords['lng'];
+    			$this->Company_model->update_company_address($compAddr);
+    			if ($this->db->_error_message()) {
+    				$errors[] = $this->db->_error_message();
+    			}
+    		}
+    		else {
+    			$errors[] = "Error getting the coords from google";
+    		}
+    	}
+    	return $errors;
+    }
+    
+    
+    public function check_contact_postcodes() {
+    	 
+    	//Get the contactAddresses without Coords
+    	$contactAddrWithoutCoords = $this->Contacts_model->get_contact_addresses_without_coords();
+    	$errors     = array();
+    	$current = 0;
+    	$rows = count($contactAddrWithoutCoords);
+    	if (count($contactAddrWithoutCoords) > 0) {
+    		foreach ($contactAddrWithoutCoords as $contactAddr) {
+    			$current++;
+    			$progress = ceil($current / $rows * 100);
+    			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress);
+    			$coords = postcode_to_coords($contactAddr['postcode']);
+    			if ($coords['lat'] && $coords['lng']) {
+    				$contactAddr['latitude'] = $coords['lat'];
+    				$contactAddr['longitude'] = $coords['lng'];
+    				$this->Contacts_model->update_contact_address($contactAddr);
+    				if ($this->db->_error_message()) {
+    					$errors[] = $this->db->_error_message();
+    				}
+    			}
+    			else {
+    				$errors[] = "Error getting the coords from google";
+    			}
+    		}	
+    	}
+    	else {
+    		$errors[] = "There is no contact addresses without coords";
+    	}
+    	return $errors;
     }
 }
