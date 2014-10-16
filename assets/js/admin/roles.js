@@ -1,14 +1,6 @@
 var admin = {
     //initialize all the generic javascript datapickers etc for this page
     init: function() {
-        $(document).on('change', '.selectpicker', function(e) {
-            if ($(this).val() == "other") {
-                $(this).closest('.form-group').find('input[type="text"]').show()
-            } else {
-                $(this).closest('.form-group').find('input[type="text"]').val('').hide()
-            }
-        });
-
         $(document).on('click', '.close-btn', function(e) {
             e.preventDefault();
             admin.hide_edit_form();
