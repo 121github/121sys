@@ -1,6 +1,6 @@
  <div class="panel panel-primary contact-panel">
       <div class="panel-heading">
-        <h4 class="panel-title"> Contact Details<?php if(in_array("add contatcs",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pull-right add-contact-btn"></span><?php } ?></h4>
+        <h4 class="panel-title"> Contact Details<?php if(in_array("add contacts",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pull-right add-contact-btn"></span><?php } ?></h4>
       </div>
       <div class="form-container">
         <?php $this->view('forms/edit_contact_form.php',array("urn"=>$details['record']["urn"])) ?>
