@@ -24,6 +24,7 @@
 				  <?php endforeach; ?>
                 </select>
                  <?php } ?>
+                 <!--
             <?php if(count($clients)>1){ ?>
                 <label>Client</label>
                 <br>
@@ -51,7 +52,9 @@
                   <?php endforeach; ?>
                 </select>
                  <?php } ?>
+                  -->
               </div>
+             
               <button type="submit" class="btn btn-default pull-right submit-filter">View Records</button>
               Found: <span class="record-count"></span> </div>
           </div>

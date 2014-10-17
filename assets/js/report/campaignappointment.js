@@ -40,9 +40,9 @@ var campaignappointment = {
             campaignappointment.campaignappointment_panel()
         });
 
-        $(document).on("click", ".team-manager-filter", function(e) {
+        $(document).on("click", ".team-filter", function(e) {
             e.preventDefault();
-            $(this).closest('form').find('input[name="team-manager"]').val($(this).attr('id'));
+            $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
             campaignappointment.campaignappointment_panel()

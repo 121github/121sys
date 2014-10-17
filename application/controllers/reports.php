@@ -99,11 +99,11 @@ class Reports extends CI_Controller
     //this is the controller loads the initial view for the activity dashboard
     public function activity()
     {
-        
-        $campaigns = $this->Form_model->get_user_campaigns();
-        $surveys   = $this->Form_model->get_surveys();
-        $agents    = $this->Form_model->get_agents();
-        
+        $campaigns    = $this->Form_model->get_user_campaigns();
+        $agents       = $this->Form_model->get_agents();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources      = $this->Form_model->get_sources();
+		
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
@@ -118,8 +118,9 @@ class Reports extends CI_Controller
                 'lib/daterangepicker.js'
             ),
             'campaigns' => $campaigns,
-            'surveys' => $surveys,
+            'team_managers' => $teamManagers,
             'agents' => $agents,
+			'sources' => $sources,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
@@ -141,6 +142,8 @@ class Reports extends CI_Controller
             $date_to   = $this->input->post("date_to");
             $user      = $this->input->post("agent");
             $campaign  = $this->input->post("campaign");
+			$team  = $this->input->post("team");
+			$source  = $this->input->post("source");
             
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/history";
@@ -148,6 +151,8 @@ class Reports extends CI_Controller
                 $url .= (!empty($user) ? "/user/$user" : "");
                 $url .= (!empty($date_from) ? "/contact/$date_from:emore" : "");
                 $url .= (!empty($date_to) ? "/contact/$date_to:eless" : "");
+			    $url .= (!empty($team) ? "/team/$team" : "");
+                $url .= (!empty($source) ? "/source/$source" : "");
                 
                 $total  = $row['total'];
                 $pc     = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");

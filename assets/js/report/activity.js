@@ -43,6 +43,16 @@ var activity = {
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
             activity.activity_panel()
         });
+		$(document).on("click", ".team-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
+            activity.activity_panel()
+        });
+		$(document).on("click", ".source-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
+            activity.activity_panel()
+        });
         activity.activity_panel()
     },
     activity_panel: function(campaign) {

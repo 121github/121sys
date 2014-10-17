@@ -14,6 +14,7 @@ class Dashboard extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Dashboard_model');
+		unset($_SESSION['navigation']);
     }
     
    

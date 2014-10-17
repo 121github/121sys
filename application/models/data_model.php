@@ -33,14 +33,14 @@ class Data_model extends CI_Model
             $where .= " and outcome_id in(1,2) ";
         }
         $total_count = 0;
-        $parked_qry  = "select count(*) count from records left join outcomes using(outcome_id) where record_status = 2 and campaign_id = '$campaign' and progress_id is null $where ";
+        $parked_qry  = "select count(*) count from records left join outcomes using(outcome_id) where parked_code is not null and campaign_id = '$campaign' and progress_id is null $where ";
         $parked      = intval($this->db->query($parked_qry)->row('count'));
         $where .= "  and progress_id is null and record_status = 1 ";
         $all_data = "select count(*) count from records left join outcomes using(outcome_id) where campaign_id = '$campaign' $where group by campaign_id";
         $all      = intval($this->db->query($all_data)->row('count'));
         //$this->firephp->log($all_data);
         if ($all > 0) {
-            $qry    = "select * from users_to_campaigns left join users using(user_id) where campaign_id = '$campaign' and role_id = 3 and group_id = 1";
+            $qry    = "select * from users_to_campaigns left join users using(user_id) left join role_permissions using(role_id) left join permissions using(permission_id) where campaign_id = '$campaign' and group_id = 1 and permission_name = 'set call outcomes'";
             $result = $this->db->query($qry)->result_array();
             foreach ($result as $row) {
                 $count                          = 0;

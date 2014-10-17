@@ -423,28 +423,34 @@ class Filter_model extends CI_Model
 		
 		if($table=="records"){
 		$table_columns = array("campaign_name","fullname","outcome","date_format(r.date_updated,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
-		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id";
+		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join ownership on records.urn = ownership.urn left join users on users.user_id = ownership.user_id left join teams on history.team_id = teams.team_id left join data_sources on data_sources.source_id = records.source_id";
 		$group_by =  " group by records.urn";
 		} else {
-			$join_records = " left join records on records.urn = history.urn ";
+		$join_records = " left join records on records.urn = history.urn ";
 		$table_columns = array("campaign_name","fullname","outcome","date_format(contact,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
-		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id";
+		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
 		$group_by = "";	
 		}
 		
 		//only join the status table if we need it
+		if(in_array("source",$fields)){
+		$qry .= " left join data_sources on data_sources.source_id = records.source_id ";
+		}
 		if(in_array("status",$fields)){
 		$qry .= " left join status_list on records.record_status = status_list.record_status_id ";
 		}
 		if($table=="records"){
 		//only join the user tables if we need them
-		if(in_array("user",$fields)||in_array("group_id",$fields)){
+		if(in_array("user",$fields)||in_array("group_id",$fields)||in_array("team",$fields)){
 		$qry .= " left join ownership on records.urn = ownership.urn ";
 		$qry .= " left join users on users.user_id = ownership.user_id ";
+		$qry .= " left join teams on users.team_id = teams.team_id ";
 		}
 		} else {
-		if(in_array("user",$fields)||in_array("group_id",$fields)){
+		if(in_array("user",$fields)||in_array("group_id",$fields)||in_array("team",$fields)){
 		$qry .= " left join users on history.user_id = users.user_id ";
+		$qry .= " left join teams on users.team_id = teams.team_id ";
+		
 		}	
 		}
 		//only join the survey tables if we need them
@@ -499,7 +505,7 @@ class Filter_model extends CI_Model
 		}
 		
 		$qry .= $group_by; 
-		//$this->firephp->log($qry);
+		$this->firephp->log($qry);
 		$start    = $options['start'];
 		$length    = $options['length'];
 		$qry .= " order by CASE WHEN ".$table_columns[$options['order'][0]['column']]." IS NULL THEN 1 ELSE 0 END,".$table_columns[$options['order'][0]['column']]." ".$options['order'][0]['dir'];

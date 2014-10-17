@@ -111,7 +111,9 @@ $this->_campaigns = campaign_access_dropdown();
             "contact" => "contact",
             "question" => "question_id",
             "dials" => "dials",
-            "progress" => "progress_id"
+            "progress" => "progress_id",
+			"team" => "teams.team_id",
+			"source" => "records.source_id"
         );
         
         $search_fields_2 = array(
@@ -121,7 +123,9 @@ $this->_campaigns = campaign_access_dropdown();
             "user" => "users.name",
             "status" => "status_name",
             "nextcall" => "nextcall",
-            "progress" => "description"
+            "progress" => "description",
+			"team" => "team_name",
+			"source" => "source_name"
         );
         $fields          = array();
         $array           = array();
@@ -172,7 +176,7 @@ $this->_campaigns = campaign_access_dropdown();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
-'pageId' => 'Search',
+			'pageId' => 'Search',
             'title' => 'Search',
             'columns' => $visible_columns
         );

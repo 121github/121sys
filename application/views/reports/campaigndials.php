@@ -22,7 +22,7 @@
             	  <input type="hidden" name="date_from">
                   <input type="hidden" name="date_to">
                   <input type="hidden" name="campaign">
-                  <input type="hidden" name="team-manager">
+                  <input type="hidden" name="team">
                   <input type="hidden" name="agent">
                   <input type="hidden" name="source">
 			      
@@ -50,13 +50,13 @@
 	                  </ul>
                   </div>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Team Manager</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($team_managers as $row): ?>
-	                    <li><a href="#" class="team-manager-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+	                    <li><a href="#" class="team-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
-	                    <li><a class="team-manager-filter" ref="#" style="color: green;">Show All</a> </li>
+	                    <li><a class="team-filter" ref="#" style="color: green;">Show All</a> </li>
 	                  </ul>
                   </div>
                   <div class="btn-group">

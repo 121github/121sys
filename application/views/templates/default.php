@@ -36,7 +36,7 @@
   <div class="container">
     <div class="navbar-header">
       <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle collapsed" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-      <?php if(!isset($_SESSION['user_id'])||count($_SESSION['campaign_access']['array'])<2){ ?>
+      <?php if(!isset($_SESSION['permissions'])||count($_SESSION['campaign_access']['array'])<2||in_array("search campaigns",$_SESSION['permissions'])){ ?>
       <a href="#" class="navbar-brand"><img style="margin-top:-10px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/logo.png"></a>
       <?php } else { ?>
       <span style="position:absolute;top:8px"><img style="margin-top:-10px; margin-right:5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/small-logo.png"> <select class="selectpicker" id="campaign-select"><option value="">Select a campaign to begin</option>
@@ -59,7 +59,7 @@
          <li <?php if($this->uri->segment(1)=="records"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" >List Records</a></li>
         <li <?php if($this->uri->segment(1)=="search"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
         <?php } ?>
-         <?php if(isset($_SESSION['current_campaign'])&&!in_array("search records",$_SESSION['permissions'])||in_array("search campaigns",$_SESSION['permissions'])){  ?>
+         <?php if(isset($_SESSION['current_campaign'])&&in_array("set call outcomes",$_SESSION['permissions'])){  ?>
            <li <?php if($this->uri->segment(2)=="detail"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/detail" >Start Calling</a></li>
         <?php } ?>
         <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Surveys',$_SESSION['campaign_features'])&&in_array("search surveys",$_SESSION['permissions'])){ ?>

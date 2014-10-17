@@ -42,6 +42,9 @@ class Report_model extends CI_Model
 		$date_to = $options['date_to'];
 		$campaign = $options['campaign'];
 		$user = $options['agent'];
+		$team = $options['team'];
+		$source = $options['source'];
+		
 		$where = "";
 		if (!empty($date_from)) {
         $where .= " and date(contact) >= '$date_from' ";
@@ -55,14 +58,21 @@ class Report_model extends CI_Model
 				if (!empty($user)) {
         $where .= " and user_id = '$user' ";
         }
+						if (!empty($team)) {
+        $where .= " and teams.team_id = '$team' ";
+        }
+						if (!empty($source)) {
+        $where .= " and source_id = '$source' ";
+        }
 		
-        $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join (select count(*) total,history.outcome_id from history left join records using(urn) where 1 and history.outcome_id is not null ";
+        $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and history.outcome_id is not null ";
 		$qry .= $where;
         
         $qry .= " ) t on history.outcome_id = outcomes.outcome_id where 1 and history.outcome_id is not null ";
         
 		$qry .= $where;
         $qry .= " group by history.outcome_id order by count desc ";
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     

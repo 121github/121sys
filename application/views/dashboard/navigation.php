@@ -38,11 +38,13 @@
             </div>
             <div id="collapseTwo" class="accordion-body collapse <?php echo @(!empty($reports)?"in":"") ?>">
                 <div class="accordion-group">
+                <!--
                     <div class="accordion-inner">
                       <a href="<?php echo base_url() ?>reports/targets" <?php echo @($reports=='targets'?"class='active'":"") ?>>Targets</a>
                     </div>
+                    -->
                     <div class="accordion-inner">
-                     <a href="<?php echo base_url() ?>reports/answers" <?php echo @($reports=='answers'?"class='active'":"") ?>>Answers</a>
+                     <a href="<?php echo base_url() ?>reports/answers" <?php echo @($reports=='answers'?"class='active'":"") ?>>Survey Answers</a>
                     </div>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>reports/activity" <?php echo @($reports=='activity'?"class='active'":"") ?>>Activity</a>

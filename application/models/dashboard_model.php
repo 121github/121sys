@@ -76,7 +76,7 @@ class Dashboard_model extends CI_Model
         $dead_qry              = "select count(*) data from records where record_status = 3 $extra";
         $data['dead']          = $this->db->query($dead_qry)->row()->data;
         $data['dead_url']      = base_url() . "search/custom/records/status/dead" . $extra_url;
-        $parked_qry            = "select count(*) data from records where record_status = 2 $extra";
+        $parked_qry            = "select count(*) data from records where parked_code is not null $extra";
         $data['parked']        = $this->db->query($parked_qry)->row()->data;
         $data['parked_url']    = base_url() . "search/custom/records/status/parked" . $extra_url;
         $pending_qry           = "select count(*) data from records where progress_id = 1 and record_status=1 $extra ";
