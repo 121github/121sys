@@ -191,7 +191,7 @@ $this->_campaigns = campaign_access_dropdown();
             /*we have to close the session file to allow the progress requests to work due to some php limitations  */
             session_write_close();
             //set the progress status
-            file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0");
+            file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
             $filename      = $this->input->post('filename');
             $autoincrement = $this->input->post('autoincrement');
             $duplicates    = $this->input->post('duplicates');
@@ -246,7 +246,7 @@ $this->_campaigns = campaign_access_dropdown();
                 $current++;
                 /* now we can insert into the database*/
                 $progress = ceil($current / $rows * 100);
-                file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress);
+                file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress."\n",FILE_APPEND);
                 /*format each row so the column names match the ones in the database and split the columns into the relevant tables*/
                 foreach ($details as $col => $val) {
                     $sqlformat = "";
@@ -274,7 +274,7 @@ $this->_campaigns = campaign_access_dropdown();
                                     }
                                     $dt_error = DateTime::getLastErrors();
                                     if ($dt_error['error_count'] > 0) {
-                                        file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Date format error on row $row");
+                                        file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Date format error on row $row"."\n",FILE_APPEND);
                                         exit;
                                     } else {
                                         $val = $dt->format($sqlformat);
@@ -298,7 +298,7 @@ $this->_campaigns = campaign_access_dropdown();
                         "rows" => $row,
                         "data" => $errors
                     ));
-                    file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Import stopped on row $row. Error: " . $errors[0]);
+                    file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Import stopped on row $row. Error: " . $errors[0]."\n",FILE_APPEND);
 					 $this->firephp->log("Error adding row $row");
                     exit;
                 } else {
@@ -311,7 +311,7 @@ $this->_campaigns = campaign_access_dropdown();
             //If a company_postcode is added, run the script to calculate the longitude and latitude
             foreach ($import as $data) {
             	if (array_key_exists('c_postcode', $data) && array_key_exists("company_addresses", $tables)) {
-            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", 12);
+            		//file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
             		$errors = $this->check_company_postcodes();
             		if (count($errors) > 0) {
             			echo json_encode(array(
@@ -319,7 +319,7 @@ $this->_campaigns = campaign_access_dropdown();
             					"rows" => $row,
             					"data" => $errors
             			));
-            			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Error importing the coords for some postcodes in the company address. Error: " . $errors[0]);
+            			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Error importing the coords for some postcodes in the company address. Error: " . $errors[0]."\n",FILE_APPEND);
             			$this->firephp->log("Error importing the coords for some postcode in the company address");
             			exit;
             		} else {
@@ -333,7 +333,7 @@ $this->_campaigns = campaign_access_dropdown();
             //If a contact_postcode is added, run the script to calculate the longitude and latitude
             foreach ($import as $data) {
             	if (array_key_exists('postcode', $data) && array_key_exists("contact_addresses", $tables)) {
-            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", 12);
+            		//file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
             		$errors = $this->check_contact_postcodes();
             		if (count($errors) > 0) {
             			echo json_encode(array(
@@ -341,7 +341,7 @@ $this->_campaigns = campaign_access_dropdown();
             					"rows" => $row,
             					"data" => $errors
             			));
-            			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Error importing the coords for some postcodes  in the contact address. Error: " . $errors[0]);
+            			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Error importing the coords for some postcodes  in the contact address. Error: " . $errors[0]."\n",FILE_APPEND);
             			$this->firephp->log("Error importing the coords for some postcode in the contact address");
             			exit;
             		} else {
@@ -353,7 +353,7 @@ $this->_campaigns = campaign_access_dropdown();
             }
             
             if (count($errors) <= 0) {
-            	file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "success");
+            	file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "success"."\n",FILE_APPEND);
             }
             
 			echo json_encode(array(
@@ -365,11 +365,19 @@ $this->_campaigns = campaign_access_dropdown();
     }
     public function get_progress()
     {
-    	if ($this->input->post('first')) {
-            file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0");
+    	if ($this->input->post('first') && !$this->input->post('locations')) {
+            //file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
             $progress = 0;
-        } else {
-        	$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
+        }
+        elseif ($this->input->post('first') && $this->input->post('locations')) { 
+        	//file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "1"."\n",FILE_APPEND);
+        	$progress = 1;
+        }
+        else {
+        	//$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
+        	$file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt";
+        	$data = file($file);
+        	$progress = $data[count($data)-1];
         }
         
         $array =array(
@@ -386,10 +394,6 @@ $this->_campaigns = campaign_access_dropdown();
         	$array['success'] = true;
         }
         
-        if ($content == "error"){
-        	$array['error'] = true;
-        }
-        
         echo json_encode($array);
     }
     
@@ -403,7 +407,7 @@ $this->_campaigns = campaign_access_dropdown();
     	foreach ($compAddrWithoutCoords as $compAddr) {
     		$current++;
     		$progress = ceil($current / $rows * 100);
-    		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress);
+    		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress."\n",FILE_APPEND);
     		$coords = postcode_to_coords($compAddr['postcode']);
     		if ($coords['lat'] && $coords['lng']) {
     			$compAddr['latitude'] = $coords['lat'];
@@ -432,7 +436,7 @@ $this->_campaigns = campaign_access_dropdown();
     		foreach ($contactAddrWithoutCoords as $contactAddr) {
     			$current++;
     			$progress = ceil($current / $rows * 100);
-    			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress);
+    			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress."\n",FILE_APPEND);
     			$coords = postcode_to_coords($contactAddr['postcode']);
     			if ($coords['lat'] && $coords['lng']) {
     				$contactAddr['latitude'] = $coords['lat'];

@@ -9,6 +9,7 @@
 */cache/!.htaccess
 [_]notes/
 /datafiles/*
+!/datafiles/uploadprogress.txt
 /upload/attachments/*
 /upload/templates/*
 
