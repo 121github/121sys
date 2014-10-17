@@ -374,7 +374,10 @@ $this->_campaigns = campaign_access_dropdown();
         	$progress = 1;
         }
         else {
-        	$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
+        	//$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
+        	$file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt";
+        	$data = file($file);
+        	$progress = $data[count($data)-1];
         }
         
         $array =array(
