@@ -67,7 +67,7 @@ var dashboard = {
         }).done(function (response) {
             $('.chat').empty();
             $.each(response.data, function (i, val) {
-                $('.chat').append('<li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font"><a href="/records/detail/' + val.urn + '">' + val.name + '</a></strong><small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>' + val.date + '</small></div><p>' + val.comment + '</p></div></li>');
+                $('.chat').append('<li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font"><a href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.name + '</a></strong><small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>' + val.date + '</small></div><p>' + val.comment + '</p></div></li>');
             });
         });
     },
@@ -85,7 +85,7 @@ var dashboard = {
             var $urgents = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $urgents += '<li><a class="red tt pointer" data-toggle="tooltip" data-placement="left" title="'+val.last_comment+'"" href="/records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Last Updated on ' + val.date_updated + '</span></li>';
+                    $urgents += '<li><a class="red tt pointer" data-toggle="tooltip" data-placement="left" title="'+val.last_comment+'"" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Last Updated on ' + val.date_updated + '</span></li>';
                 });
                 $('.urgent-panel').append('<ul>' + $urgents + '</ul>');
 				$('.tt').tooltip();
@@ -108,7 +108,7 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<li><a href="/records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Last Updated on ' + val.date_updated + '</span></li>';
+                    $row += '<li><a href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Last Updated on ' + val.date_updated + '</span></li>';
                 });
                 $('.favorites-panel').append('<ul>' + $row + '</ul>');
             } else {
@@ -134,7 +134,7 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="/records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
                 $('.timely-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
             } else {
@@ -160,7 +160,7 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="/records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
                 $('.missed-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
             } else {
@@ -186,7 +186,7 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="/records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
                 $('.upcoming-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
             } else {
@@ -216,7 +216,7 @@ var dashboard = {
                     if (val.urgent == "1") {
                         $urgent = "class='red'";
                     }
-                    $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td ' + $urgent + '>' + val.status + '</td><td><a href="/records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td ' + $urgent + '>' + val.status + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
                 $('.progress-panel').append('<table class="table table-striped table-responsive"><thead><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>Status</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
             } else {
@@ -241,7 +241,7 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.outcome + '</td><td>' + val.when + '</td><td>' + val.survey_date + '</td><td><a href="/records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.outcome + '</td><td>' + val.when + '</td><td>' + val.survey_date + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
                 $('.agent-activity').append('<table class="table table-striped table-responsive"><thead><th>Name</th><th>Campaign</th><th>Last Outcome</th><th>Last Update</th><th>Last Survey</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
             } else {
