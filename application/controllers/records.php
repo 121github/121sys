@@ -381,7 +381,7 @@ class Records extends CI_Controller
                     $this->Records_model->set_status($update_array['urn'], $triggers["set_status"]);
                 }
                 if (intval($triggers["delay_hours"]) > 0) {
-					if($_SESSION['permissions']<>"keep records"){
+					if(!in_array("keep records",$_SESSION['permissions'])){
 						//delete all owners so it can get called back by anyone (answer machines etc)
 						$this->Records_model->save_ownership($update_array['urn'],array());
 					}

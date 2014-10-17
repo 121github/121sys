@@ -684,9 +684,7 @@ class Database_model extends CI_Model
 		(5, 11),
 		(5, 12),
 		(5, 13),
-		(5, 14),
 		(5, 15),
-		(5, 16),
 		(5, 17),
 		(5, 18),
 		(5, 19),
@@ -696,6 +694,7 @@ class Database_model extends CI_Model
 		(5, 28),
 		(5, 30),
 		(5, 35),
+		(5, 41),
 		(5, 43)");
 		
 		

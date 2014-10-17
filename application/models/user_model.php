@@ -6,6 +6,7 @@ class User_model extends CI_Model
     function __construct()
     {
         parent::__construct();
+		
     }
     /**
      * Check the username & password provied and that they are an active user.
@@ -162,15 +163,25 @@ class User_model extends CI_Model
         ));
     }
     
-    
-    public function update_hours_log($campaign, $user_id)
-    {
-        
-        $qry = "update hours_logged set end_time = now() where user_id = '$user_id' and end_time is null";
+	public function update_hours_log($campaign, $user_id){
+		//check if their is an entry in the hours table and if no put one in
+		$qry = "select hours_id from hours where user_id = '$user_id' and date(`date`) = curdate() and hours.campaign_id = '$campaign'";
+		if(!$this->db->query($qry)->num_rows()){
+			$this->firephp->log($qry);
+			$qry = "insert into hours set user_id = '$user_id',duration=0,exception=0,`date`=now(),campaign_id = '$campaign'";	
+			$this->db->query($qry);
+		}
+		//then start counting using the hours_logged table. We have a cron which updates the hours table every 10 mins
+	    $qry = "update hours_logged set end_time = now() where user_id = '$user_id' and end_time is null";
         $this->db->query($qry);
         $qry = "insert into hours_logged set user_id = '$user_id',campaign_id = '$campaign',start_time=now()";
-        $this->db->query($qry);
-        $qry   = "SELECT (sum(TIME_TO_SEC(TIMEDIFF(end_time,start_time)))-(select if(exception is null,'0',exception*60) from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) as secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
+        $this->db->query($qry);	
+	}
+    
+    public function get_duration($campaign, $user_id)
+    {
+       $qry   = "SELECT (sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time)))-(select if(exception is null,'0',exception*60) secs from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
+	   $this->firephp->log($qry);
         $query = $this->db->query($qry);
         if ($query->num_rows()) {
             return $query->row()->secs;
@@ -213,5 +224,6 @@ class User_model extends CI_Model
 	$qry = "update hours_logged set end_time = now() where end_time is null and user_id = '{$_SESSION['user_id']}'";
 	$this->db->query($qry);
 	}
+
 	
 }

@@ -122,9 +122,8 @@ class User extends CI_Controller
 		$user_id = $_SESSION['user_id'];
 		$campaign = $_SESSION['current_campaign'];
 		$this->load->model('Records_model');
+		$duration = $this->User_model->get_duration($campaign,$user_id);
 		$positive_outcome = $this->Records_model->get_positive_for_footer($campaign);
-		
-		$duration = $this->User_model->update_hours_log($campaign,$user_id);
 		$worked = $this->User_model->get_worked($campaign,$user_id);
 		$positive_count = $this->User_model->get_positive($campaign,$user_id);
 		if($duration>0){
@@ -137,8 +136,13 @@ class User extends CI_Controller
 	/* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
 	public function current_campaign(){
 		$campaign=intval($this->uri->segment(3));
+		$user_id=$_SESSION['user_id'];
 		if($campaign>"0"){
 			if(in_array($campaign,$_SESSION['campaign_access']['array'])){
+				if(in_array("log hours",$_SESSION['permissions'])){
+				//start logging the duration on the selected campaign
+						$this->User_model->update_hours_log($campaign,$user_id);
+				}
 				        $campaign_features = $this->Form_model->get_campaign_features($campaign);
         				$features  = array();
         foreach ($campaign_features as $row) {
