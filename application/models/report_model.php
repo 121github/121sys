@@ -90,7 +90,7 @@ class Report_model extends CI_Model
     	$date_from = $options['date_from'];
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
-    	$team_manager = $options['team-manager'];
+    	$team_manager = $options['team'];
     	$source = $options['source'];
     	
     	$where = "";
@@ -133,7 +133,7 @@ class Report_model extends CI_Model
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
     	$agent = $options['agent'];
-    	$team_manager = $options['team-manager'];
+    	$team_manager = $options['team'];
     	$source = $options['source'];
     
     	$where = "";
@@ -176,7 +176,7 @@ class Report_model extends CI_Model
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
     	$agent = $options['agent'];
-    	$team_manager = $options['team-manager'];
+    	$team_manager = $options['team'];
     	 
     	
     	$where = "";
@@ -218,7 +218,7 @@ class Report_model extends CI_Model
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
     	$agent = $options['agent'];
-    	$team_manager = $options['team-manager'];
+    	$team_manager = $options['team'];
     	$source = $options['source'];
     	 
     	$where = "";
@@ -261,7 +261,7 @@ class Report_model extends CI_Model
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
     	$agent = $options['agent'];
-    	$team_manager = $options['team-manager'];
+    	$team_manager = $options['team'];
     	$source = $options['source'];
     	 
     	$where = "";
