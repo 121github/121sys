@@ -311,7 +311,7 @@ $this->_campaigns = campaign_access_dropdown();
             //If a company_postcode is added, run the script to calculate the longitude and latitude
             foreach ($import as $data) {
             	if (array_key_exists('c_postcode', $data) && array_key_exists("company_addresses", $tables)) {
-            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", 12);
+            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0");
             		$errors = $this->check_company_postcodes();
             		if (count($errors) > 0) {
             			echo json_encode(array(
@@ -333,7 +333,7 @@ $this->_campaigns = campaign_access_dropdown();
             //If a contact_postcode is added, run the script to calculate the longitude and latitude
             foreach ($import as $data) {
             	if (array_key_exists('postcode', $data) && array_key_exists("contact_addresses", $tables)) {
-            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", 12);
+            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0");
             		$errors = $this->check_contact_postcodes();
             		if (count($errors) > 0) {
             			echo json_encode(array(
@@ -365,10 +365,15 @@ $this->_campaigns = campaign_access_dropdown();
     }
     public function get_progress()
     {
-    	if ($this->input->post('first')) {
+    	if ($this->input->post('first') && !$this->input->post('locations')) {
             file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0");
             $progress = 0;
-        } else {
+        }
+        elseif ($this->input->post('first') && $this->input->post('locations')) { 
+        	file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "1");
+        	$progress = 1;
+        }
+        else {
         	$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
         }
         
@@ -384,10 +389,6 @@ $this->_campaigns = campaign_access_dropdown();
         
         if ($content == "success"){
         	$array['success'] = true;
-        }
-        
-        if ($content == "error"){
-        	$array['error'] = true;
         }
         
         echo json_encode($array);
