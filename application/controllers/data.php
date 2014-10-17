@@ -310,7 +310,7 @@ $this->_campaigns = campaign_access_dropdown();
 
             }
             
-            sleep(1);
+            sleep(2);
             
             //If a company_postcode is added, run the script to calculate the longitude and latitude
             foreach ($import as $data) {
@@ -357,7 +357,7 @@ $this->_campaigns = campaign_access_dropdown();
             }
             
             if (count($errors) <= 0) {
-            	file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "success"."\n",FILE_APPEND);
+            	file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "success",FILE_APPEND);
             }
             
 			echo json_encode(array(
