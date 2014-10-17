@@ -69,6 +69,16 @@ var campaignsurvey = {
             if (response.success) {
             	$.each(response.data, function(i, val) {
                     if (response.data.length) {
+                    	var hours   = Math.floor(val.duration / 3600);
+                        var minutes = Math.floor((val.duration - (hours * 3600)) / 60);
+                        var seconds = val.duration - (hours * 3600) - (minutes * 60);
+
+                        if (hours   < 10) {hours   = "0"+hours;}
+                        if (minutes < 10) {minutes = "0"+minutes;}
+                        if (seconds < 10) {seconds = "0"+seconds;}
+                        
+                        var duration    = hours+' h '+minutes+' m '+seconds+' s';
+                        
 						$tbody
 						.append("<tr><td class='campaign'>"
 									+ val.campaign
@@ -82,8 +92,8 @@ var campaignsurvey = {
 									+ val.total_surveys
 								+ "</td><td class='total_dials'>"
 									+ val.total_dials
-								+ "</td><td class='template_cc' style='duration'>"
-									+ val.duration
+									+ "</td><td class='template_cc' style='duration'>"
+									+ duration
 								+ "</td><td class='template_bcc' style='rate'>"
 									+ val.rate
 								+ "</td></tr>");

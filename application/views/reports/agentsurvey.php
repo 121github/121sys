@@ -71,7 +71,7 @@
 						<th>Total Surveys</th>
 						<th>Total Dials</th>
 						<th>Duration</th>
-						<th>Rate</th>
+						<th>Rate (per hour)</th>
 					</tr>
 				</thead>
 				<tbody>

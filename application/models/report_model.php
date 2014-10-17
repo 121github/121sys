@@ -111,7 +111,7 @@ class Report_model extends CI_Model
     		$where .= " and r.source_id = '$source' ";
     	}
     
-    	$qry = "select c.campaign_id as campaign, c.campaign_name as name, count(*) as count, o.outcome as outcome, ct.campaign_id
+    	$qry = "select c.campaign_id as campaign, c.campaign_name as name, count(*) as count, o.outcome as outcome, ct.campaign_id, (select sum(hr.duration) from hours hr where c.campaign_id=hr.campaign_id) as duration
     			from history h
     			inner join records r ON (r.urn = h.urn)
     			inner join campaigns c ON (c.campaign_id = h.campaign_id)
@@ -197,7 +197,7 @@ class Report_model extends CI_Model
     		$where .= " and u.team_id = '$team_manager' ";
     	}
     
-    	$qry = "select u.user_id as agent, u.name as name, count(*) as count, o.outcome as outcome
+    	$qry = "select u.user_id as agent, u.name as name, count(*) as count, o.outcome as outcome, (select sum(hr.duration) from hours hr where u.user_id=hr.user_id) as duration
     			from history h
     			inner join records r ON (r.urn = h.urn)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
@@ -285,7 +285,7 @@ class Report_model extends CI_Model
     		$where .= " and r.source_id = '$source' ";
     	}
     
-    	$qry = "select SUBSTRING(h.contact, 1, 10) as date, u.name as name, count(*) as count, o.outcome as outcome
+    	$qry = "select SUBSTRING(h.contact, 1, 10) as date, u.name as name, count(*) as count, o.outcome as outcome, (select sum(hr.duration) from hours hr where SUBSTRING(h.contact, 1, 10)=SUBSTRING(hr.date, 1, 10)) as duration
     			from history h
     			inner join records r ON (r.urn = h.urn)
 				inner join outcomes o ON (o.outcome_id = h.outcome_id)
