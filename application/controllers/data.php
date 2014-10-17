@@ -190,6 +190,8 @@ $this->_campaigns = campaign_access_dropdown();
         if ($this->input->is_ajax_request()) {
             /*we have to close the session file to allow the progress requests to work due to some php limitations  */
             session_write_close();
+            //Empty the uploadprogress.txt
+            file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Starting...");
             //set the progress status
             file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
             $filename      = $this->input->post('filename');
@@ -308,10 +310,12 @@ $this->_campaigns = campaign_access_dropdown();
 
             }
             
+            sleep(1);
+            
             //If a company_postcode is added, run the script to calculate the longitude and latitude
             foreach ($import as $data) {
             	if (array_key_exists('c_postcode', $data) && array_key_exists("company_addresses", $tables)) {
-            		//file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
+            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
             		$errors = $this->check_company_postcodes();
             		if (count($errors) > 0) {
             			echo json_encode(array(
@@ -333,7 +337,7 @@ $this->_campaigns = campaign_access_dropdown();
             //If a contact_postcode is added, run the script to calculate the longitude and latitude
             foreach ($import as $data) {
             	if (array_key_exists('postcode', $data) && array_key_exists("contact_addresses", $tables)) {
-            		//file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
+            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
             		$errors = $this->check_contact_postcodes();
             		if (count($errors) > 0) {
             			echo json_encode(array(
@@ -366,12 +370,7 @@ $this->_campaigns = campaign_access_dropdown();
     public function get_progress()
     {
     	if ($this->input->post('first') && !$this->input->post('locations')) {
-            //file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
             $progress = 0;
-        }
-        elseif ($this->input->post('first') && $this->input->post('locations')) { 
-        	//file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "1"."\n",FILE_APPEND);
-        	$progress = 1;
         }
         else {
         	//$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");

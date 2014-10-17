@@ -151,8 +151,9 @@
 											importer.show_progress(1,1);
 										}
 										else {
-											$('#import-progress').html("<span class='green'>Import was completed</span>");
-											flashalert.success("Import was completed");
+											//$('#import-progress').html("<span class='green'>Import was completed</span>");
+											//flashalert.success("Import was completed");
+											importer.show_progress();
 										}
 									} else {
 										$('#import-progress').html("<span class='red'>"+response.progress+"</span>");
