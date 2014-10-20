@@ -127,6 +127,7 @@
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + ''; 
 <?php if(isset($_SESSION['user_id'])){ ?>
 check_session();	

@@ -17,6 +17,8 @@ class Filter_model extends CI_Model
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
+        
+        
         //$this->firephp->log($qry);
         $count = $this->db->query($qry)->row('count');
         return $count;
@@ -206,6 +208,36 @@ class Filter_model extends CI_Model
             "type" => "",
             "alias" => ""
         );
+        $filter_options["order_direction"]  = array(
+        		"table" => "",
+        		"type" => "",
+        		"alias" => ""
+        );
+        $filter_options["order_direction"]  = array(
+        		"table" => "",
+        		"type" => "",
+        		"alias" => ""
+        );
+        $filter_options["postcode"]           = array(
+        		"table" => "address",
+        		"type" => "",
+        		"alias" => ""
+        );
+        $filter_options["distance"]           = array(
+        		"table" => "",
+        		"type" => "",
+        		"alias" => ""
+        );
+        $filter_options["lat"]           = array(
+        		"table" => "",
+        		"type" => "",
+        		"alias" => ""
+        );
+        $filter_options["lng"]           = array(
+        		"table" => "",
+        		"type" => "",
+        		"alias" => ""
+        );
         $qry                                = "";
         $special                            = "";
         $multiple                           = "";
@@ -303,7 +335,7 @@ class Filter_model extends CI_Model
                 }
                 if ($filter_options[$field]['table'] == "contact_addresses") {
                     $join['contacts']          = " left join contacts  con on con.urn = r.urn ";
-                    $join['contact_addresses'] = " left join contact_addresses con_add on con.contact_id = con_add.contact_addresses ";
+                    $join['contact_addresses'] = " left join contact_addresses con_add on con.contact_id = con_add.contact_id ";
                 }
                 if ($filter_options[$field]['table'] == "companies") {
                     $join['companies'] = " left join companies com on com.urn = r.urn ";
@@ -318,6 +350,21 @@ class Filter_model extends CI_Model
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
                     $join['users']     = " left join users u on u.user_id = ow.user_id";
                 }
+                if ($filter_options[$field]['table'] == "address") {
+                	if (!isset($join['companies'])) {
+                		$join['companies'] = " left join companies com on com.urn = r.urn ";
+                	}
+                	if (!isset($join['company_addresses'])) {
+                		$join['company_addresses'] = " left join company_addresses com_add on com_add.company_id = com.company_id ";
+                	}
+                	if (!isset($join['contacts'])) {
+                		$join['contacts']          = " left join contacts  con on con.urn = r.urn ";
+                	}
+                	if (!isset($join['contact_addresses'])) {
+                		$join['contact_addresses'] = " left join contact_addresses con_add on con.contact_id = con_add.contact_id ";
+                	}
+                }
+                
                 //if the filter field has a type of 'id' then it requires an exact match
                 if ($filter_options[$field]['type'] == "id" && !empty($data)) {
                     $where .= " and {$filter_options[$field]['alias']} = '$data' ";
@@ -368,6 +415,39 @@ class Filter_model extends CI_Model
                     } else if (!isset($data[0]) && isset($data[1])) {
                         $where .= " and {$filter_options[$field]['alias']} < '{$data[1]}'and {$filter_options[$field]['alias']} is not null  ";
                     }
+                }
+                
+                if ($field == 'postcode' && count($filter[$field])) {
+                	$distance = ($filter['distance'])?$filter['distance']:0;
+                	
+                	if (isset($filter['lat']) && isset($filter['lng'])) {
+
+                		$where .= " and ( ";
+                		//Distance from the company
+                		$where .= " (";
+                		$where .= $filter['lat']." BETWEEN (com_add.latitude-".$distance.") AND (com_add.latitude+".$distance.")";
+	                	$where .= " and ".$filter['lng']." BETWEEN (com_add.longitude-".$distance.") AND (com_add.longitude+".$distance.")";
+	                	$where .= " and ((((
+							ACOS(
+								SIN(".$filter['lat']."*PI()/180) * SIN(com_add.latitude*PI()/180) +
+								COS(".$filter['lat']."*PI()/180) * COS(com_add.latitude*PI()/180) * COS(((".$filter['lng']." - com_add.longitude)*PI()/180)
+							)
+						)*180/PI())*160*0.621371192)) <= ".$distance.")";
+	                	
+	                	$where .= " ) or (";
+	                	
+	                	$where .= $filter['lat']." BETWEEN (con_add.latitude-".$distance.") AND (con_add.latitude+".$distance.")";
+	                	$where .= " and ".$filter['lng']." BETWEEN (con_add.longitude-".$distance.") AND (con_add.longitude+".$distance.")";
+	                	$where .= " and ((((
+							ACOS(
+								SIN(".$filter['lat']."*PI()/180) * SIN(con_add.latitude*PI()/180) +
+								COS(".$filter['lat']."*PI()/180) * COS(con_add.latitude*PI()/180) * COS(((".$filter['lng']." - con_add.longitude)*PI()/180)
+							)
+						)*180/PI())*160*0.621371192)) <= ".$distance.")";
+	                	
+	                	$where .= " ))";
+                	}
+                	
                 }
                 
             }
@@ -505,7 +585,6 @@ class Filter_model extends CI_Model
 		}
 		
 		$qry .= $group_by; 
-		$this->firephp->log($qry);
 		$start    = $options['start'];
 		$length    = $options['length'];
 		$qry .= " order by CASE WHEN ".$table_columns[$options['order'][0]['column']]." IS NULL THEN 1 ELSE 0 END,".$table_columns[$options['order'][0]['column']]." ".$options['order'][0]['dir'];

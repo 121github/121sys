@@ -36,10 +36,17 @@ if (!function_exists('postcode_to_coords')) {
 			return array("error"=>$json->error_message);
 		}
 		
-        return array(
-            'lat' => $json->results[0]->geometry->location->lat,
-            'lng' => $json->results[0]->geometry->location->lng
-        );
+		else if (isset($json->results[0])) {
+			return array(
+					'lat' => $json->results[0]->geometry->location->lat,
+					'lng' => $json->results[0]->geometry->location->lng
+			);
+		}
+		else {
+			return array(
+					'error' => $json->status,
+			);
+		}
     }
 
 }
