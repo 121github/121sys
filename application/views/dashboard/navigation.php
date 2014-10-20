@@ -138,9 +138,6 @@
                 <div class="accordion-group">
                 	<?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
                     <div class="accordion-inner">
-                     <a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($admin=='campaign'?"class='active'":"") ?>>Campaigns</a>
-                    </div>
-                    <div class="accordion-inner">
                     <a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a>
                     </div>
                     <div class="accordion-inner">
@@ -160,6 +157,11 @@
                     </div>
                        <div class="accordion-inner">
                     <a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a>
+                    </div>
+                     <?php } ?>
+                     <?php if(in_array("campaign access",$_SESSION['permissions'])){ ?>
+                                         <div class="accordion-inner">
+                     <a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($admin=='campaign'?"class='active'":"") ?>>Campaigns</a>
                     </div>
                      <?php } ?>
                      <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>

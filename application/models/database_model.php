@@ -535,7 +535,8 @@ class Database_model extends CI_Model
 		('view logs','Admin'),
 		('view hours','Admin'),
 		('show footer', 'System'),
-		('admin nav','Admin')");
+		('admin nav','Admin'),
+		('campaign_access','Admin')");
 		
 		if ($this->db->_error_message()) {
 			return "permissions";
@@ -582,6 +583,7 @@ class Database_model extends CI_Model
 (1, 40),
 (1, 41),
 (1, 43),
+(1, 44),
 (2, 2),
 (2, 3),
 (2, 4),
@@ -618,6 +620,7 @@ class Database_model extends CI_Model
 (2, 40),
 (2, 41),
 (2, 43),
+(2, 44),
 (3, 1),
 (3, 3),
 (3, 4),
