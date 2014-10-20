@@ -295,7 +295,7 @@
             },
             load_html: function(response) {
                 $('#sliders').empty();
-                if (response.n > 1) {
+                if (response.n > 0) {
                     $.each(response.data, function(k, row) {
                         $slider = '<li><input type="text" name="user[' + k + ']" value="' + row.count + '" /><div class="slider" value="' + row.pc + '"/>' + row.name + ': <span class="value"></span>% <span class="pull-right">' + row.count + ' records</span></li>';
                         $('#sliders').append($slider);
