@@ -84,10 +84,13 @@ var dailysurvey = {
                         if (minutes < 10) {minutes = "0"+minutes;}
                         if (seconds < 10) {seconds = "0"+seconds;}
                         
-                        var duration    = hours+' h '+minutes+' m '+seconds+' s';
+                        var duration    = hours+' h '+minutes+' m';
                         
-                    	if (val.total_surveys>0) {
+                    	if (val.total_surveys>0 && val.duration>0) {
                     		success = "success";
+                    	}
+                    	else if ((val.total_surveys>0) && (val.duration==0)) {
+                    		success = "danger";
                     	}
                     	else {
                     		success = "warning";

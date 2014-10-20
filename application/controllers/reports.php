@@ -251,8 +251,8 @@ class Reports extends CI_Controller
                     "cross_transfers" => $crossTransfers,
                     "total_transfers" => $transfers + $crossTransfers,
                     "total_dials" => $row['total_dials'],
-                    "duration" => $row['duration'],
-                    "rate" => round(($transfers + $crossTransfers)/($row['duration']/3600),3)
+	            	"duration" => ($row['duration'])?$row['duration']:0,
+	            	"rate" => ($row['duration']>0)?round(($transfers + $crossTransfers)/($row['duration']/3600),3):0
                 );
                 $totalTransfers += $transfers;
                 $totalCrossTransfers += $crossTransfers;
@@ -272,7 +272,7 @@ class Reports extends CI_Controller
                 "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . ")",
                 "total_dials" => $totalDials,
                 "duration" => $totalDuration,
-                "rate" => round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3)
+                "rate" => ($row['duration']>0)?round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -348,8 +348,8 @@ class Reports extends CI_Controller
                     "name" => $row['name'],
                     "appointments" => $appointments,
                     "total_dials" => $row['total_dials'],
-                    "duration" => $row['duration'],
-                    "rate" => round($appointments/($row['duration']/3600),3)
+                	"duration" => ($row['duration'])?$row['duration']:0,
+                	"rate" => ($row['duration']>0)?round($appointments/($row['duration']/3600),3):0
                 );
                 $totalAppointments += $appointments;
                 $totalDials += $row['total_dials'];
@@ -364,7 +364,7 @@ class Reports extends CI_Controller
                 "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
                 "total_dials" => $totalDials,
                 "duration" => $totalDuration,
-                "rate" => round($totalAppointments/($totalDuration/3600),3)
+                "rate" => ($row['duration']>0)?round($totalAppointments/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -451,8 +451,8 @@ class Reports extends CI_Controller
                     "refused_surveys" => $refusedSurveys,
                     "total_surveys" => $completeSurveys + $refusedSurveys,
                     "total_dials" => $row['total_dials'],
-                    "duration" => $row['duration'],
-                    "rate" => round(($completeSurveys + $refusedSurveys)/($row['duration']/3600),3)
+                	"duration" => ($row['duration'])?$row['duration']:0,
+                	"rate" => ($row['duration']>0)?round(($completeSurveys + $refusedSurveys)/($row['duration']/3600),3):0
                 );
                 $totalCompleteSurveys += $completeSurveys;
                 $totalRefusedSurveys += $refusedSurveys;
@@ -472,7 +472,7 @@ class Reports extends CI_Controller
                 "total_surveys" => ($totalCompleteSurveys + $totalRefusedSurveys) . " (" . $totalSurveysPercent . ")",
                 "total_dials" => $totalDials,
                 "duration" => $totalDuration,
-                "rate" => round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3)
+                "rate" => ($row['duration']>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -609,8 +609,8 @@ class Reports extends CI_Controller
                     "cross_transfers" => $crossTransfers,
                     "total_transfers" => $transfers + $crossTransfers,
                     "total_dials" => $row['total_dials'],
-                    "duration" => $row['duration'],
-                    "rate" => round(($transfers + $crossTransfers)/($row['duration']/3600),3)
+                	"duration" => ($row['duration'])?$row['duration']:0,
+                	"rate" => ($row['duration']>0)?round(($transfers + $crossTransfers)/($row['duration']/3600),3):0
                 );
                 $totalTransfers += $transfers;
                 $totalCrossTransfers += $crossTransfers;
@@ -706,8 +706,8 @@ class Reports extends CI_Controller
                     "name" => $row['name'],
                     "appointments" => $appointments,
                 	"total_dials" => $row['total_dials'],
-                    "duration" => $row['duration'],
-                    "rate" => round($appointments/($row['duration']/3600),3)
+                	"duration" => ($row['duration'])?$row['duration']:0,
+                	"rate" => ($row['duration']>0)?round($appointments/($row['duration']/3600),3):0
                 );
                 $totalAppointments += $appointments;
                 $totalDials += $row['total_dials'];
@@ -722,7 +722,7 @@ class Reports extends CI_Controller
                 "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => round($totalAppointments/($totalDuration/3600),3)
+                "rate" => ($row['duration']>0)?round($totalAppointments/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -799,8 +799,8 @@ class Reports extends CI_Controller
                     "refused_surveys" => $refusedSurveys,
                     "total_surveys" => $completeSurveys + $refusedSurveys,
                     "total_dials" => $row['total_dials'],
-                    "duration" => $row['duration'],
-                    "rate" => round(($completeSurveys + $refusedSurveys)/($row['duration']/3600),3)
+                	"duration" => ($row['duration'])?$row['duration']:0,
+                	"rate" => ($row['duration']>0)?round(($completeSurveys + $refusedSurveys)/($row['duration']/3600),3):0
                 );
                 $totalCompleteSurveys += $completeSurveys;
                 $totalRefusedSurveys += $refusedSurveys;
@@ -820,7 +820,7 @@ class Reports extends CI_Controller
                 "total_surveys" => ($totalCompleteSurveys + $totalRefusedSurveys) . " (" . $totalSurveysPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3)
+                "rate" => ($row['duration']>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -994,7 +994,7 @@ class Reports extends CI_Controller
                 "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3)
+                "rate" => ($row['duration']>0)?round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -1191,7 +1191,7 @@ class Reports extends CI_Controller
                 "total_surveys" => ($totalCompleteSurveys + $totalRefusedSurveys) . " (" . $totalSurveysPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3)
+                "rate" => ($row['duration']>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
