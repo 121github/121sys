@@ -13,6 +13,7 @@ var filter = {
 		                data: postcode
 		            }).done(function(response) {
 						if(!response.success){
+							$('form').find('input[name="postcode"]').val('')
 							flashalert.danger("The postcode does not exist or the connection with Google Maps fails: "+response.error);
 						}
 						else {
