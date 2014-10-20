@@ -147,7 +147,10 @@ $this->_campaigns = campaign_access_dropdown();
                 }
             }
             fclose($handle);
-        }
+        } else {
+		echo json_encode(array("success"=>false));
+		exit;	
+		}
         $json = json_encode($result);
         echo $json;
     }
@@ -161,10 +164,12 @@ $this->_campaigns = campaign_access_dropdown();
                     "user" => $k
                 );
             }
+			/*
             usort($array, function($a, $b)
             {
                 return $b['count'] - $a['count'];
             });
+			*/
             $i = 0;
             foreach ($array as $user) {
                 if ($i > 0) {
@@ -190,10 +195,7 @@ $this->_campaigns = campaign_access_dropdown();
         if ($this->input->is_ajax_request()) {
             /*we have to close the session file to allow the progress requests to work due to some php limitations  */
             session_write_close();
-            //Empty the uploadprogress.txt
-            file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Starting...");
-            //set the progress status
-            file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
+			$errors = array();
             $filename      = $this->input->post('filename');
             $autoincrement = $this->input->post('autoincrement');
             $duplicates    = $this->input->post('duplicates');
@@ -248,7 +250,7 @@ $this->_campaigns = campaign_access_dropdown();
                 $current++;
                 /* now we can insert into the database*/
                 $progress = ceil($current / $rows * 100);
-                file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress."\n",FILE_APPEND);
+                file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Importing data...".$progress."% [row $current]");
                 /*format each row so the column names match the ones in the database and split the columns into the relevant tables*/
                 foreach ($details as $col => $val) {
                     $sqlformat = "";
@@ -276,7 +278,7 @@ $this->_campaigns = campaign_access_dropdown();
                                     }
                                     $dt_error = DateTime::getLastErrors();
                                     if ($dt_error['error_count'] > 0) {
-                                        file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Date format error on row $row"."\n",FILE_APPEND);
+                                        file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploaderrors.txt", "Date format error on row $row");
                                         exit;
                                     } else {
                                         $val = $dt->format($sqlformat);
@@ -298,129 +300,86 @@ $this->_campaigns = campaign_access_dropdown();
                     echo json_encode(array(
                         "success" => false,
                         "rows" => $row,
-                        "data" => $errors
+                        "error" => $errors
                     ));
-                    file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Import stopped on row $row. Error: " . $errors[0]."\n",FILE_APPEND);
+                    file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploaderrors.txt", "Import stopped on row $row. Error: " . $errors[0]);
 					 $this->firephp->log("Error adding row $row");
                     exit;
-                } else {
-                    $this->firephp->log("$row was added ok");
-
                 }
 
-            }
-            
-            sleep(2);
-            
-            //If a company_postcode is added, run the script to calculate the longitude and latitude
-            foreach ($import as $data) {
-            	if (array_key_exists('c_postcode', $data) && array_key_exists("company_addresses", $tables)) {
-            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
-            		$errors = $this->check_company_postcodes();
-            		if (count($errors) > 0) {
-            			echo json_encode(array(
-            					"success" => false,
-            					"rows" => $row,
-            					"data" => $errors
-            			));
-            			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Error importing the coords for some postcodes in the company address. Error: " . $errors[0]."\n",FILE_APPEND);
-            			$this->firephp->log("Error importing the coords for some postcode in the company address");
-            			exit;
-            		} else {
-            			$this->firephp->log("Coords added");
-            		
-            		}
-            		break;
-            	}
-            }
-            
-            //If a contact_postcode is added, run the script to calculate the longitude and latitude
-            foreach ($import as $data) {
-            	if (array_key_exists('postcode', $data) && array_key_exists("contact_addresses", $tables)) {
-            		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "0"."\n",FILE_APPEND);
-            		$errors = $this->check_contact_postcodes();
-            		if (count($errors) > 0) {
-            			echo json_encode(array(
-            					"success" => false,
-            					"rows" => $row,
-            					"data" => $errors
-            			));
-            			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Error importing the coords for some postcodes  in the contact address. Error: " . $errors[0]."\n",FILE_APPEND);
-            			$this->firephp->log("Error importing the coords for some postcode in the contact address");
-            			exit;
-            		} else {
-            			$this->firephp->log("Coords added");
-            
-            		}
-            		break;
-            	}
-            }
-            
+			}
+                       
             if (count($errors) <= 0) {
-            	file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "success",FILE_APPEND);
+            	$company_locations = $this->check_company_postcodes();
+				$contact_locations = $this->check_contact_postcodes();
+				file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Locations updated");
             }
             
 			echo json_encode(array(
                 "success" => true,
                 "rows" => $row,
-                "data" => "Import was successfull"
+				"company_locations"=>$company_locations,
+				"contact_locations"=>$contact_locations,
+                "data" => "Import was successful"
             ));
         }
     }
+	
     public function get_progress()
     {
-    	if ($this->input->post('first') && !$this->input->post('locations')) {
-            $progress = 0;
-        }
-        else {
-        	//$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
-        	$file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt";
+    	if ($this->input->post('first')=="1") {
+			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploaderrors.txt","");
+			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt","Importing data...0%");
+			$progress = "0";
+        } else {
+			$progress = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
+		}
+        	/*
+			$file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt";
         	$data = file($file);
         	$progress = $data[count($data)-1];
-        }
+			*/
+        
         
         $array =array(
-            "progress" => $progress,	 
+            "progress" => $progress, 
         );
-        if ($this->input->post('locations')) {
-        	$array['locations'] = true;
-        }
-        
-        
-        $content = file_get_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt");
-        
-        if ($content == "success"){
+        if ($progress=="Locations updated") {
         	$array['success'] = true;
-        }
-        
+		}
         echo json_encode($array);
     }
     
     public function check_company_postcodes() {
-    	
-    	//Get the companyAddresses without Coords
-    	$compAddrWithoutCoords = $this->Company_model->get_company_addresses_without_coords();
+    	 
+    	//Get the contactAddresses without Coords
+    	$contactAddrWithoutCoords = $this->Company_model->get_company_addresses_without_coords();
+		
     	$errors     = array();
     	$current = 0;
-    	$rows = count($compAddrWithoutCoords);
-    	foreach ($compAddrWithoutCoords as $compAddr) {
-    		$current++;
-    		$progress = ceil($current / $rows * 100);
-    		file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress."\n",FILE_APPEND);
-    		$coords = postcode_to_coords($compAddr['postcode']);
-    		if ($coords['lat'] && $coords['lng']) {
-    			$compAddr['latitude'] = $coords['lat'];
-    			$compAddr['longitude'] = $coords['lng'];
-    			$this->Company_model->update_company_address($compAddr);
-    			if ($this->db->_error_message()) {
-    				$errors[] = $this->db->_error_message();
+    	$rows = count($companyAddrWithoutCoords);
+		if($rows>2500){ $rows = 2500; }
+    	if (count($companyAddrWithoutCoords) > 0) {
+    		foreach ($companyAddrWithoutCoords as $companyAddr) {
+    			$current++;
+    			$progress = ceil($current / $rows * 100);
+    			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Updating contact locations...".$progress."%");
+				if(!empty($companyAddr['postcode'])){
+    			$coords = postcode_to_coords($contactAddr['postcode']);
+				if(array_key_exists("error",$coords)){
+					file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploaderrors.txt", $coords['error']);
+					return $coords;
+				}
+    			if ($coords['lat'] && $coords['lng']) {
+    				$contactAddr['latitude'] = $coords['lat'];
+    				$contactAddr['longitude'] = $coords['lng'];
+    				$this->Company_model->update_company_address($contactAddr);
     			}
-    		}
-    		else {
-    			$errors[] = "Error getting the coords from google";
-    		}
+    			
+				}
+    		}	
     	}
-    	return $errors;
+		return true;
     }
     
     
@@ -428,31 +387,31 @@ $this->_campaigns = campaign_access_dropdown();
     	 
     	//Get the contactAddresses without Coords
     	$contactAddrWithoutCoords = $this->Contacts_model->get_contact_addresses_without_coords();
+		
     	$errors     = array();
     	$current = 0;
     	$rows = count($contactAddrWithoutCoords);
+		if($rows>2500){ $rows = 2500; }
     	if (count($contactAddrWithoutCoords) > 0) {
     		foreach ($contactAddrWithoutCoords as $contactAddr) {
     			$current++;
     			$progress = ceil($current / $rows * 100);
-    			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", $progress."\n",FILE_APPEND);
+    			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Updating contact locations...".$progress."%");
+				if(!empty($contactAddr['postcode'])){
     			$coords = postcode_to_coords($contactAddr['postcode']);
+				if(array_key_exists("error",$coords)){
+					file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploaderrors.txt", $coords['error']);
+					return $coords;
+				}
     			if ($coords['lat'] && $coords['lng']) {
     				$contactAddr['latitude'] = $coords['lat'];
     				$contactAddr['longitude'] = $coords['lng'];
     				$this->Contacts_model->update_contact_address($contactAddr);
-    				if ($this->db->_error_message()) {
-    					$errors[] = $this->db->_error_message();
-    				}
     			}
-    			else {
-    				$errors[] = "Error getting the coords from google";
-    			}
+    			
+				}
     		}	
     	}
-    	else {
-    		$errors[] = "There is no contact addresses without coords";
-    	}
-    	return $errors;
+		return true;
     }
 }

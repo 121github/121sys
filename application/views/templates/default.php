@@ -81,7 +81,7 @@
     <!--/.nav-collapse --> 
   </div>
 </div>
-
+</div>
 <?php if($show_footer){ ?>
 <div class="navbar-inverse footer-stats">
 <div>Current Rate: <span id="rate_box">0</span></div>

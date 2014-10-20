@@ -120,52 +120,24 @@
 						}
 					
 				},
-				show_progress:function(first,locations){
+				show_progress:function(first){
 						$.ajax({
-                                url: helper.baseUrl + 'data/get_progress/'+locations,
+                                url: helper.baseUrl + 'data/get_progress',
                                 type: "POST",
                                 dataType: "JSON",
-								data:{first:first,locations:locations}
+								data:{first:first}
                             }).done(function(response) {
-                            	if (!response.success) {
-	                            	if(response.progress==0){
-										$('#import-progress').text("Preparing data...");
-										if (response.locations) {
-											importer.show_progress(0,1);
-										}
-										else {
-											importer.show_progress();
-										}
-									}
-									else if(response.progress>0&&response.progress<100){
-										if(response.locations){
-											$('#import-progress').text("Updating locations..."+response.progress+"%");
-											importer.show_progress(0,1);
-										} else {
-											$('#import-progress').text("Importing to database..."+response.progress+"%");
-											importer.show_progress();
-										}
-									} else if(response.progress==100){
-										if (!response.locations) {
-											$('#import-progress').html("Updating locations...");
-											importer.show_progress(1,1);
-										}
-										else {
-											//$('#import-progress').html("<span class='green'>Import was completed</span>");
-											//flashalert.success("Import was completed");
-											importer.show_progress();
-										}
-									} else {
-										$('#import-progress').html("<span class='red'>"+response.progress+"</span>");
-									}
-                            	}
-                            	else {
-                            		$('#import-progress').html("<span class='green'>Import was completed</span>");
+                            	if (!response.success&&$('#import').text()!="Stop") {
+								$('#import-progress').text(response.progress);
+								importer.show_progress();
+								} else {
+								$('#import-progress').html("<span class='green'>Import was completed</span>");
 									flashalert.success("Import was completed");
-                            	}
-						});					 
+								}
+						});				
 				},
 				start_import:function(){
+					$('#import-progress').text("Preparing data...");
 					importer.show_progress(1);
 					 $.ajax({
                                 url: helper.baseUrl + 'data/start_import',
@@ -173,7 +145,6 @@
                                 dataType: "JSON",
                                 data:  $('#data-form').serialize()+'&filename='+encodeURIComponent($('#filename').text())+'&campaign='+$('#campaign').val()+'&source='+$('#source').val()+'&type='+$('#campaign option:selected').attr('ctype')
                             }).done(function() {
-                            	return false;
 							});
 				},
                 show_campaign_type: function() {
