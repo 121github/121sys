@@ -84,10 +84,13 @@ var dailyappointment = {
                         if (minutes < 10) {minutes = "0"+minutes;}
                         if (seconds < 10) {seconds = "0"+seconds;}
                         
-                        var duration    = hours+' h '+minutes+' m '+seconds+' s';
+                        var duration    = hours+' h '+minutes+' m';
                         
-                    	if (val.appointments>0) {
+                        if (val.appointments>0 && val.duration>0) {
                     		success = "success";
+                    	}
+                    	else if ((val.appointments>0) && (val.duration==0)) {
+                    		success = "danger";
                     	}
                     	else {
                     		success = "warning";

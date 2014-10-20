@@ -77,7 +77,7 @@ var campaignsurvey = {
                         if (minutes < 10) {minutes = "0"+minutes;}
                         if (seconds < 10) {seconds = "0"+seconds;}
                         
-                        var duration    = hours+' h '+minutes+' m '+seconds+' s';
+                        var duration    = hours+' h '+minutes+' m';
                         
 						$tbody
 						.append("<tr><td class='campaign'>"
