@@ -19,6 +19,7 @@ class Data_model extends CI_Model
     }
     public function get_user_data($campaign, $states)
     {
+		$data = array();
         $where = "";
         if ($states == "1") {
             //virgin record only	
@@ -40,7 +41,7 @@ class Data_model extends CI_Model
         $all      = intval($this->db->query($all_data)->row('count'));
         //$this->firephp->log($all_data);
         if ($all > 0) {
-            $qry    = "select * from users_to_campaigns left join users using(user_id) left join role_permissions using(role_id) left join permissions using(permission_id) where campaign_id = '$campaign' and group_id = 1 and permission_name = 'set call outcomes'";
+            $qry    = "select * from users_to_campaigns left join users using(user_id) left join role_permissions using(role_id) left join permissions using(permission_id) where campaign_id = '$campaign' and group_id = 1 and permission_name = 'set call outcomes' and team_id = '{$_SESSION['team']}'";
             $result = $this->db->query($qry)->result_array();
             foreach ($result as $row) {
                 $count                          = 0;

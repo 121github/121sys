@@ -24,12 +24,15 @@
               <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
               <?php } ?>
             </select>
+
             <select name="state" id="state-select">
               <option value="1">Virgin Data</option>
               <option value="2">In Progress Data</option>
               <option value="3">Call backs</option>
             </select>
             <?php } ?>
+            
+
           </div>
         </div>
         <!-- /.panel-heading -->
@@ -61,8 +64,9 @@
             </div>
           </div>
         </div>
-      </form>
+       
       </div>
+      </form>
       <!-- /.row --> 
     </div>
     <!-- /#page-wrapper --></div>

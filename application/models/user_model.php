@@ -113,7 +113,7 @@ class User_model extends CI_Model
         $_SESSION['group'] = $result['group_id'];
         $_SESSION['email'] = $result['user_email'];
         $_SESSION['ext']   = $result['ext'];
-        
+        $_SESSION['team']   = $result['team_id'];
         $theme_folder = $this->db->query("select theme_folder from user_groups where group_id = '" . $_SESSION['group'] . "'")->row()->theme_folder;
         if (!empty($theme_folder)) {
             $_SESSION['theme_folder'] = $theme_folder;
