@@ -53,10 +53,33 @@ $this->_campaigns = campaign_access_dropdown();
 			'parked_codes' => $parked_codes,
             'groups' => $groups,
             'javascript' => array(
-                'filter.js'
+                'filter.js',
+            	'location.js'
             )
         );
         $this->template->load('default', 'records/search.php', $data);
+    }
+    
+    public function get_coords()
+    {
+    	if ($this->input->is_ajax_request()) {
+    		$postcode = $this->input->post();
+    			
+    		$coords = postcode_to_coords($postcode);
+    		
+    		if (isset($coords['lat']) && isset($coords['lng'])) {
+    			echo json_encode(array(
+    					"success" => true,
+    					"data" => $coords
+    			));
+    		}
+    		else {
+    			echo json_encode(array(
+    					"success" => false,
+    					"error" => $coords['error']
+    			));
+    		}
+    	}
     }
     
     public function count_records()

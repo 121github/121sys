@@ -60,6 +60,10 @@
           </div>
         </div>
         <?php } ?>
+        
+        <!-------------------->
+        <!--  RECORD FILTER -->
+        <!-------------------->
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> Record Filter Options</a> </h4>
@@ -185,6 +189,10 @@
               Found: <span class="record-count"></span> </div>
           </div>
         </div>
+        
+        <!--------------------->
+        <!--  CONTACT FILTER -->
+        <!--------------------->
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"> Contact Filter Options </a> </h4>
@@ -239,6 +247,9 @@
           </div>
         </div>
         
+        <!--------------------->
+        <!--  COMPANY FILTER -->
+        <!--------------------->
         <div class="panel panel-primary">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"> Company Filter Options </a> </h4>
@@ -296,11 +307,44 @@
           </div>
         </div>
         
+        <!------------------------------->
+        <!--  POSTCODE DISTANCE FILTER -->
+        <!------------------------------->
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"> Advanced Filter Options </a> </h4>
+            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"> Postcode Distance Filter Options </a> </h4>
           </div>
           <div id="collapseFour" class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="form-group">
+                <label>
+                	Postcode
+                	<span>
+                		<a id="use-my-location" href="#" class="locate-postcode" type="button" data-icon="location" data-iconpos="right">Find my location</a>
+            			<div class="error geolocation-error"></div>
+            		</span>
+            	</label>
+                <input <?php if(@isset($_SESSION['filter']['values']['postcode'])){ echo "value='".$_SESSION['filter']['values']['postcode']."'"; } ?> name="postcode" type="text" class="form-control current_postcode_input" placeholder="Enter the Postcode">
+                <input <?php if(@isset($_SESSION['filter']['values']['lat'])){ echo "value='".$_SESSION['filter']['values']['lat']."'"; } ?> name="lat" type="hidden">
+                <input <?php if(@isset($_SESSION['filter']['values']['lng'])){ echo "value='".$_SESSION['filter']['values']['lng']."'"; } ?> name="lng" type="hidden">
+              </div>
+              <div class="form-group">
+                <label>Distance <span class="distance"> 0</span></label>
+                <input <?php if(@isset($_SESSION['filter']['values']['distance'])){ echo "value='".$_SESSION['filter']['values']['distance']."'"; } ?> name="distance" type="text" class="form-control slider" data-slider-min="0" data-slider-max="300" data-slider-step="5" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="before" data-slider-formater="zerona">
+              </div>
+              <button type="submit" class="btn btn-default pull-right">View Records</button>
+              Found: <span class="record-count"></span> </div>
+          </div>
+        </div>
+        
+        <!---------------------->
+        <!--  ADVANCED FILTER -->
+        <!---------------------->
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"> Advanced Filter Options </a> </h4>
+          </div>
+          <div id="collapseFive" class="panel-collapse collapse">
             <div class="panel-body">
                           <div class="checkbox">
                 <label>New records only (Not yet called)</label>
@@ -367,5 +411,35 @@
 $(document).ready(function(){
 	$('.selectpicker').selectpicker();
 	filter.init();
+
+	$('.slider').slider();
+	$('.slider').on('slide', function (ev){
+		var newval = ev.value;	
+		if(ev.value=="0"){
+		newval="na";	
+		}
+		$(this).closest('td').next('td').find('.slider-value').val(newval);
+        if (ev.value < 99) {
+            $(this).find('.slider-selection').css('background', '#428041');
+        }
+        if (ev.value >=100 && ev.value <= 200) {
+            $(this).find('.slider-selection').css('background', '#FF9900');
+        }
+        if (ev.value > 200) {
+            $(this).find('.slider-selection').css('background', '#FF8282');
+        }
+    });	
+
+	$('.slider').on('slideStart', function(ev){
+	    originalVal = ev.value;
+	});
+
+	$('.slider').on('slideStop', function(ev){
+	    var newVal = ev.value;
+	    $( ".distance" ).text(newVal);
+	    if(originalVal != newVal) {
+	        filter.count_records();
+	    }
+	});
 });
 </script> 

@@ -4,7 +4,36 @@ var filter = {
 		 	filter.count_records();
 
 			$(document).on('blur','input[type="text"]',function(){
-				filter.count_records();
+				var postcode = $('form').find('input[name="postcode"]').val();
+				if (postcode.length) {
+					$.ajax({
+		                url: helper.baseUrl + 'search/get_coords',
+		                type: "POST",
+		                dataType: "JSON",
+		                data: postcode
+		            }).done(function(response) {
+						if(!response.success){
+							$('form').find('input[name="postcode"]').val('')
+							flashalert.danger("The postcode does not exist or the connection with Google Maps fails: "+response.error);
+						}
+						else {
+							$('form').find('input[name="lat"]').val(response.coords.lat);
+							$('form').find('input[name="lng"]').val(response.coords.lng);
+							filter.count_records();
+						}
+					});
+				}
+				else {
+					filter.count_records();
+				}
+			});
+			
+			$(document).on('click','input[name="distance"]',function(){
+				var lat = $('form').find('input[name="lat"]').val();
+				var lng = $('form').find('input[name="lng"]').val();
+				if (lat.length && lng.length) {
+					filter.count_records();
+				}
 			});
 
 			$(document).on('click','input[type="checkbox"]',function(){
