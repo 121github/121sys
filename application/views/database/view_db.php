@@ -45,6 +45,10 @@
                 <button class="btn btn-info add-data" style="width:130px">Load demo data</button>
                 Adds some dummy client data <img class="pull-right" style="display:none" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
               <li class="list-group-item">
+              <li class="list-group-item">
+                <button class="btn btn-warning add-real-data" style="width:130px">Load real data</button>
+                Adds real data (Agents) <img class="pull-right" style="display:none" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
+              <li class="list-group-item">
                 <button class="btn reset-data btn-warning" style="width:130px">Reset default data</button>
                 Reset the data to the default version. This will destroy the current data <img style="display:none" class="pull-right" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
             </ul>
@@ -70,6 +74,10 @@ $(document).ready(function(){
 	
 	$(document).on("click",".add-data",function(){
 		add_data_confirmation($(this),false);
+	});
+
+	$(document).on("click",".add-real-data",function(){
+		add_real_data($(this));
 	});
 
 	$(document).on("click",".reset-data",function(){
@@ -119,6 +127,24 @@ $(document).ready(function(){
 			if(response.success){
 			$('.current-version').text(response.version);
 			flashalert.success("Sample data was added");
+			} else {
+			flashalert.warning(response);
+			}
+		});
+		
+	}
+
+	function add_real_data($btn){
+		$.ajax({url:helper.baseUrl+'database/add_real_data',
+		dataType:"JSON",
+		beforeSend: function(){
+		$btn.parent().find('img').show();	
+		}
+		}).done(function(response){
+			$btn.parent().find('img').hide();
+			if(response.success){
+			$('.current-version').text(response.version);
+			flashalert.success("Real data was added");
 			} else {
 			flashalert.warning(response);
 			}

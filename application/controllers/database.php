@@ -66,6 +66,17 @@ class Database extends CI_Controller
 
 	}
 	
+	public function add_real_data()
+	{
+		$status = $this->Database_model->real_data();
+		if($status=="success"){
+			echo json_encode(array("success"=>true,"msg"=>"Real data was added"));
+		} else {
+			echo json_encode(array("success"=>false,"msg"=>"Real data could not be added. Failed on $status table"));
+		}
+	
+	}
+	
 	public function reset_data()
 	{
 		$status = $this->Database_model->init_data();
