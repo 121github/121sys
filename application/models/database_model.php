@@ -758,7 +758,7 @@ class Database_model extends CI_Model
 		
 		//Dumping sample into campaign features
 		foreach ($this->db->get('campaigns')->result() as $campaign) {
-			$this->db->where('feature_name not in ("Company","Survey","Custom Info","Appointment Setting")');
+			$this->db->where('feature_name not in ("Company","Survey","Appointment Setting")');
 			foreach ($this->db->get('campaign_features')->result() as $campaign_feature)
 			{
 				$this->db->query("INSERT INTO `campaigns_to_features` (`campaign_id`, `feature_id`) VALUES (".$campaign->campaign_id.", ".$campaign_feature->feature_id.")");

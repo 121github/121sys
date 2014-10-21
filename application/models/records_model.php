@@ -616,7 +616,6 @@ class Records_model extends CI_Model
             $qry = "select $select from record_details where detail_id='$id'";
         }
         $result = $this->db->query($qry)->result_array();
-		 $this->firephp->log($qry);
         $info   = array();
         foreach ($result as $id => $detail) {
             foreach ($detail as $k => $v) {
