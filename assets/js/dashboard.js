@@ -34,10 +34,14 @@ var dashboard = {
         }).done(function (response) {
             $('.outcome-stats').empty();
             var $outcomes = "";
+			if(response.data.length>0){
             $.each(response.data, function (i, val) {
                 $outcomes += '<a href="'+helper.baseUrl+'search/custom/history/outcome/'+val.outcome+'" class="list-group-item"><i class="fa fa-comment fa-fw"></i>' + val.outcome + '<span class="pull-right text-muted small"><em>' + val.count + '</em></span></a>';
             });
             $('.outcome-stats').append('<div class="list-group">' + $outcomes + '</div>');
+			} else {
+			$('.outcome-stats').append('<div class="list-group">No calls made today</div>');	
+			}
         });
     },
 		/* the function for the stats panel on the main dashboard */
@@ -51,7 +55,10 @@ var dashboard = {
             }
         }).done(function (response) {
             $('.timeline').empty();
-            $timeline = '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">one2one Stats</h4></div><div class="timeline-body"><p><a href="'+response.data.virgin_url+'">' + response.data.virgin + '</a> records have yet to be called.<br><a href="'+response.data.active_url+'">' + response.data.active + '</a> records are in progress<br><a href="'+response.data.parked_url+'">' + response.data.parked + '</a> records have been parked<br><a href="'+response.data.dead_url+'">' + response.data.dead + '</a> records are dead</p></div></div></li><li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Client Stats</h4></div><div class="timeline-body"><p><a href="'+response.data.pending_url+'">' + response.data.pending + '</a> records are pending.<br><a href="'+response.data.in_progress_url+'">' + response.data.in_progress + '</a> records are in progress<br><a href="'+response.data.completed_url+'">' + response.data.completed + '</a> records have been completed<br><a href="'+response.data.no_action_url+'">' + response.data.no_action + '</a> required no action</p></div></div></li><li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Survey Stats</h4></div><div class="timeline-body"><p>' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.target + ' is the target number of surveys<br>' + response.data.target_pc + '% of the target has been reached<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div></div></li>';
+            $timeline = '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">one2one Stats</h4></div><div class="timeline-body"><p><a href="'+response.data.virgin_url+'">' + response.data.virgin + '</a> records have yet to be called.<br><a href="'+response.data.active_url+'">' + response.data.active + '</a> records are in progress<br><a href="'+response.data.parked_url+'">' + response.data.parked + '</a> records have been parked<br><a href="'+response.data.dead_url+'">' + response.data.dead + '</a> records are dead</p></div></div></li><li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Client Stats</h4></div><div class="timeline-body"><p><a href="'+response.data.pending_url+'">' + response.data.pending + '</a> records are pending.<br><a href="'+response.data.in_progress_url+'">' + response.data.in_progress + '</a> records are in progress<br><a href="'+response.data.completed_url+'">' + response.data.completed + '</a> records have been completed</div></div></li>';
+			if(response.data.surveys>0){
+			$timeline += '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Survey Stats</h4></div><div class="timeline-body"><p>' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div></div></li>';
+			}
             $('.timeline').append($timeline);
         });
     },

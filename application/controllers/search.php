@@ -136,7 +136,8 @@ $this->_campaigns = campaign_access_dropdown();
             "dials" => "dials",
             "progress" => "progress_id",
 			"team" => "teams.team_id",
-			"source" => "records.source_id"
+			"source" => "records.source_id",
+			"parked" => "parked_code"
         );
         
         $search_fields_2 = array(
@@ -148,7 +149,8 @@ $this->_campaigns = campaign_access_dropdown();
             "nextcall" => "nextcall",
             "progress" => "description",
 			"team" => "team_name",
-			"source" => "source_name"
+			"source" => "source_name",
+			"parked" => "parked_code"
         );
         $fields          = array();
         $array           = array();

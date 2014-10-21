@@ -40,6 +40,9 @@ class Dashboard_model extends CI_Model
         if (!empty($filter)) {
             $qry .= " and h.campaign_id = '$filter'";
         }
+		if (in_array("set call outcomes",$_SESSION['permissions'])) {
+            $qry .= " and h.user_id = '".$_SESSION['user_id']."'";
+        }
 		$qry .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " order by history_id desc limit 10";
         return $this->db->query($qry)->result_array();
@@ -51,6 +54,9 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['campaign'])) {
             $qry .= " and history.campaign_id = '" . intval($filter['campaign']) . "'";
         }
+		if (in_array("set call outcomes",$_SESSION['permissions'])) {
+			  $qry .= " and history.user_id = '" . $_SESSION['user_id'] . "' and date(contact)=curdate()";
+		}
 		$qry .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by history.outcome_id order by count desc ";
         return $this->db->query($qry)->result_array();
@@ -78,13 +84,10 @@ class Dashboard_model extends CI_Model
         $data['dead_url']      = base_url() . "search/custom/records/status/dead" . $extra_url;
         $parked_qry            = "select count(*) data from records where parked_code is not null $extra";
         $data['parked']        = $this->db->query($parked_qry)->row()->data;
-        $data['parked_url']    = base_url() . "search/custom/records/status/parked" . $extra_url;
+        $data['parked_url']    = base_url() . "search/custom/records/parked/null:not" . $extra_url;
         $pending_qry           = "select count(*) data from records where progress_id = 1 and record_status=1 $extra ";
         $data['pending']       = $this->db->query($pending_qry)->row()->data;
         $data['pending_url']   = base_url() . "search/custom/records/progress/pending/status/live" . $extra_url;
-        $no_action_qry         = "select count(*) data from records where record_status = 1 and outcome_id = 60 and progress_id is null $extra ";
-        $data['no_action']     = $this->db->query($no_action_qry)->row()->data;
-        $data['no_action_url'] = base_url() . "search/custom/records/progress/null/outcome/survey complete/status/live" . $extra_url;
         
         $in_progress_qry         = "select count(*) data from records where progress_id = 2  and record_status=1 $extra";
         $data['in_progress']     = $this->db->query($in_progress_qry)->row()->data;
@@ -123,15 +126,24 @@ class Dashboard_model extends CI_Model
     public function get_comments($comments)
     {
 		$extra = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		$survey_extra = "";
+		$notes_extra = "";
+		$comments_extra = "";
+		if (in_array("set call outcomes",$_SESSION['permissions'])) {
+            $survey_extra = " and surveys.user_id = '".$_SESSION['user_id']."' ";
+			$notes_extra = " and s.updated_by = '".$_SESSION['user_id']."' ";
+			$comments_extra = " and history.user_id = '".$_SESSION['user_id']."' ";
+			
+        }
         $this->load->helper('date');
         if ($comments == 1) {
-            $qry = "select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys  using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 50 $extra group by contacts.contact_id order by completed_date desc limit 10";
+            $qry = "select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys  using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 50 $extra $survey_extra group by contacts.contact_id order by completed_date desc limit 10";
         } else if ($comments == 2) {
-            $qry = "select urn,comments notes,contact `date`,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $extra order by history_id desc  limit 10";
+            $qry = "select urn,comments notes,contact `date`,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $comments_extra $extra order by history_id desc  limit 10";
         } else if ($comments == 3) {
-            $qry = "select urn,note notes,s.date_updated `date`,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra order by s.date_updated desc  limit 10";
+            $qry = "select urn,note notes,s.date_updated `date`,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra $notes_extra order by s.date_updated desc  limit 10";
         } else {
-            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 40  $extra group by contacts.contact_id union select urn,comments,contact,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $extra union select urn,note,s.date_updated,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra) t order by t.`date` desc limit 10";
+            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 40   $survey_extra $extra group by contacts.contact_id union select urn,comments,contact,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $extra $comments_extra union select urn,note,s.date_updated,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra $notes_extra) t order by t.`date` desc limit 10";
         }
         $result = $this->db->query($qry)->result_array();
         $now    = time();
