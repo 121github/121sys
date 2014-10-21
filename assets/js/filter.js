@@ -49,17 +49,19 @@ var filter = {
 			});
 	},
 	check_postcode:function(postcode){
+		var data = {postcode :  postcode};
 		$.ajax({
             url: helper.baseUrl + 'search/get_coords',
             type: "POST",
             dataType: "JSON",
-            data: postcode
+            data: data
         }).done(function(response) {
 			if(!response.success){
 				$('form').find('input[name="postcode"]').val('')
 				flashalert.danger("The postcode does not exist or the connection with Google Maps fails: "+response.error);
 			}
 			else {
+				console.log(response);
 				$('form').find('input[name="lat"]').val(response.coords.lat);
 				$('form').find('input[name="lng"]').val(response.coords.lng);
 				filter.count_records();
