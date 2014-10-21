@@ -179,6 +179,7 @@ class Reports extends CI_Controller
         $campaigns    = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
         $sources      = $this->Form_model->get_sources();
+		$agents       = $this->Form_model->get_agents();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -197,6 +198,7 @@ class Reports extends CI_Controller
             'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
+			'agents' => $agents,
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
@@ -210,7 +212,7 @@ class Reports extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $data    = array();
-            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post());
+            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post(),"transfers");
             
             $campaign_search  = $this->input->post("campaign");
             
@@ -289,6 +291,7 @@ class Reports extends CI_Controller
         $campaigns    = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
         $sources      = $this->Form_model->get_sources();
+		$agents       = $this->Form_model->get_agents();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -307,6 +310,7 @@ class Reports extends CI_Controller
             'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
+			'agents' => $agents,
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
@@ -320,7 +324,7 @@ class Reports extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $data    = array();
-            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post());
+            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post(),"appointments");
             
             $aux = array();
             
@@ -356,7 +360,7 @@ class Reports extends CI_Controller
                 $totalDuration += $row['duration'];
             }
             
-            $totalAppointmentsPercent = number_format(($totalAppointments * 100) / $totalDials, 2) . '%';
+            $totalAppointmentsPercent = ($totalDials>0)?number_format(($totalAppointments * 100) / $totalDials, 2) . '%':0;
             
             array_push($data, array(
                 "campaign" => "TOTAL",
@@ -364,7 +368,7 @@ class Reports extends CI_Controller
                 "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
                 "total_dials" => $totalDials,
                 "duration" => $totalDuration,
-                "rate" => ($row['duration']>0)?round($totalAppointments/($totalDuration/3600),3):0
+                "rate" => ($totalDuration>0)?round($totalAppointments/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -382,7 +386,7 @@ class Reports extends CI_Controller
         $campaigns    = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
         $sources      = $this->Form_model->get_sources();
-        
+        $agents       = $this->Form_model->get_agents();
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
@@ -400,6 +404,7 @@ class Reports extends CI_Controller
             'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
+			'agents' => $agents,
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
@@ -413,7 +418,7 @@ class Reports extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $data    = array();
-            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post());
+            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post(),"surveys");
             
             $aux = array();
             
@@ -423,18 +428,7 @@ class Reports extends CI_Controller
                 	$aux[$row['campaign']]['duration'] = $row['duration'];
                     $aux[$row['campaign']]['complete_surveys'] = $row['count'];
                     $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
-                } elseif ($row['outcome'] == 'Survey Refused') {
-                	$aux[$row['campaign']]['name'] = $row['name'];
-                	$aux[$row['campaign']]['duration'] = $row['duration'];
-                    $aux[$row['campaign']]['refused_surveys'] = $row['count'];
-                    $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
-                }
-                elseif ($row['outcome'] != 'Cross Transfer') {
-                	$aux[$row['campaign']]['name'] = $row['name'];
-                	$aux[$row['campaign']]['duration'] = $row['duration'];
-                	$aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
-                }
-                
+                } 
             }
             
             $totalCompleteSurveys = 0;
@@ -443,36 +437,28 @@ class Reports extends CI_Controller
             $totalDuration		 = 0;
             foreach ($aux as $campaign => $row) {
                 $completeSurveys = (array_key_exists('complete_surveys', $row)) ? $row['complete_surveys'] : 0;
-                $refusedSurveys  = (array_key_exists('refused_surveys', $row)) ? $row['refused_surveys'] : 0;
                 $data[]          = array(
                     "campaign" => $campaign,
                     "name" => $row['name'],
                     "complete_surveys" => $completeSurveys,
-                    "refused_surveys" => $refusedSurveys,
-                    "total_surveys" => $completeSurveys + $refusedSurveys,
                     "total_dials" => $row['total_dials'],
                 	"duration" => ($row['duration'])?$row['duration']:0,
-                	"rate" => ($row['duration']>0)?round(($completeSurveys + $refusedSurveys)/($row['duration']/3600),3):0
+                	"rate" => ($row['duration']>0)?round(($completeSurveys)/($row['duration']/3600),3):0
                 );
                 $totalCompleteSurveys += $completeSurveys;
-                $totalRefusedSurveys += $refusedSurveys;
                 $totalDials += $row['total_dials'];
                 $totalDuration += $row['duration'];
             }
             
-            $totalCompleteSurveysPercent = number_format(($totalCompleteSurveys * 100) / $totalDials, 2) . '%';
-            $totalRefusedSurveysPercent  = number_format(($totalRefusedSurveys * 100) / $totalDials, 2) . '%';
-            $totalSurveysPercent         = number_format((($totalCompleteSurveys + $totalRefusedSurveys) * 100) / $totalDials, 2) . '%';
+            $totalCompleteSurveysPercent = ($totalDials>0)?number_format(($totalCompleteSurveys * 100) / $totalDials, 2) . '%':0;
             
             array_push($data, array(
                 "campaign" => "TOTAL",
                 "name" => "",
                 "complete_surveys" => $totalCompleteSurveys . " (" . $totalCompleteSurveysPercent . ")",
-                "refused_surveys" => $totalRefusedSurveys . " (" . $totalRefusedSurveysPercent . ")",
-                "total_surveys" => ($totalCompleteSurveys + $totalRefusedSurveys) . " (" . $totalSurveysPercent . ")",
                 "total_dials" => $totalDials,
                 "duration" => $totalDuration,
-                "rate" => ($row['duration']>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
+                "rate" => ($totalDuration>0)?round(($totalCompleteSurveys)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(

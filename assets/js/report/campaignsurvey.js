@@ -39,10 +39,18 @@ var campaignsurvey = {
             $(this).css("color","green");
             campaignsurvey.campaignsurvey_panel()
         });
-
+        $(document).on("click", ".agent-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
+			$(this).closest('form').find('input[name="team"]').val('');
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            campaignsurvey.campaignsurvey_panel()
+        });
         $(document).on("click", ".team-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
+			$(this).closest('form').find('input[name="agent"]').val('');
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
             campaignsurvey.campaignsurvey_panel()
@@ -86,10 +94,6 @@ var campaignsurvey = {
 									+ val.name
 								+ "</td><td class='complete_surveys'>"
 									+ val.complete_surveys
-								+ "</td><td class='refused_surveys'>"
-									+ val.refused_surveys
-								+ "</td><td class='total_surveys'>"
-									+ val.total_surveys
 								+ "</td><td class='total_dials'>"
 									+ val.total_dials
 									+ "</td><td class='template_cc' style='duration'>"

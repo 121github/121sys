@@ -85,16 +85,23 @@ class Report_model extends CI_Model
     	return $this->db->query($qry)->result_array();
     }
     
-    public function get_campaign_report_by_outcome($options)
+    public function get_campaign_report_by_outcome($options,$report)
     {
     	$date_from = $options['date_from'];
+		$agent = $options['agent'];
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
     	$team_manager = $options['team'];
     	$source = $options['source'];
-    	
+    	if($report=="transfers"){
+		$where = " and h.outcome_id in(70,71) ";	
+		} else if ($report=="surveys"){
+		$where = " and h.outcome_id = 60 ";	
+		} else if($report=="appointments"){
+		$where = " and h.outcome_id = 72 ";		
+		} else {
     	$where = "";
-    	
+		}
     	if (!empty($date_from)) {
     		$where .= " and date(contact) >= '$date_from' ";
     	}
@@ -106,6 +113,9 @@ class Report_model extends CI_Model
     	}
     	if (!empty($team_manager)) {
     		$where .= " and u.team_id = '$team_manager' ";
+    	}
+		if (!empty($agent)) {
+    		$where .= " and h.user_id = '$agent' ";
     	}
     	if (!empty($source)) {
     		$where .= " and r.source_id = '$source' ";
@@ -123,7 +133,6 @@ class Report_model extends CI_Model
     	$qry .= $where;
     
     	$qry .= " group by h.outcome_id, campaign order by name asc";
-    	
     	return $this->db->query($qry)->result_array();
     }
     

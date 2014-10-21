@@ -303,7 +303,7 @@ var dashboard = {
                 });
                 $('.agent-data').append('<table class="table table-striped table-responsive"><thead><th>Name</th><th>Campaign</th><th>Total</th><th>New</th><th>In Progress</th><th>Completed</th><th>% New</th><th>% In Progress</th><th>% Completed</th></thead><tbody>' + $row + '</tbody></table>');
             } else {
-                $('.agent-success').append('<p>' + response.msg + '</p>');
+                $('.agent-data').append('<p>' + response.msg + '</p>');
             }
         });
     }

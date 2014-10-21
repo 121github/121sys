@@ -23,6 +23,7 @@
                   <input type="hidden" name="date_to">
                   <input type="hidden" name="campaign">
                   <input type="hidden" name="team">
+                   <input type="hidden" name="agent">
                   <input type="hidden" name="source">
                   
                   <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button></div>
@@ -46,6 +47,16 @@
 	                    <li><a class="team-filter" ref="#" style="color: green;">Show All</a> </li>
 	                  </ul>
                   </div>
+                                   <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($agents as $row): ?>
+	                    <li><a href="#" class="agent-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="agent-filter" ref="#" style="color: green;">Show All</a> </li>
+	                  </ul>
+                  </div>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Source</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -67,8 +78,6 @@
 						<th>Agent</th>
 						<th>Name</th>
 						<th>Complete Surveys</th>
-						<th>Refused Surveys</th>
-						<th>Total Surveys</th>
 						<th>Total Dials</th>
 						<th>Duration</th>
 						<th>Rate (per hour)</th>
