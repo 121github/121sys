@@ -732,6 +732,11 @@ class Database_model extends CI_Model
 				$this->db->query("INSERT INTO `campaigns` (`campaign_name`, `campaign_type_id`, `client_id`, `start_date`, `end_date`, `campaign_status`, `email_recipients`, `reassign_to`, `custom_panel_name`) VALUES
 				('Sample ".$campaign_type->campaign_type_desc." Campaign_".$i++."', '".$campaign_type->campaign_type_id."', ".$client->client_id.", '2014-09-30', NULL, 1, NULL, NULL, '')");
 			
+				$this->db->query("INSERT INTO `record_details_fields` (`campaign_id`, `field`, `field_name`) VALUES
+				($i,'c1','Product')");
+				$this->db->query("INSERT INTO `record_details_fields` (`campaign_id`, `field`, `field_name`) VALUES
+				($i,'d1','Renewal Date')");
+			
 				if ($this->db->_error_message()) {
 					return "campaigns";
 				}
@@ -844,7 +849,7 @@ class Database_model extends CI_Model
 		$agentList = $this->db->get_where('users', array('role_id' => $agentRole[0]->role_id))->result();
 		
 		//Dumping the records
-		for($i=0;$i<=300;$i++){
+		for($i=1;$i<=300;$i++){
 			
 			$days = rand(1, 90);
 			$time = time() - $days*24*3600;
@@ -857,6 +862,8 @@ class Database_model extends CI_Model
 			
 			$this->db->query("INSERT INTO `records` (`campaign_id`, `outcome_id`, `team_id`, `nextcall`, `dials`, `record_status`, `parked_code`, `progress_id`, `urgent`, `date_added`, `date_updated`, `reset_date`, `last_survey_id`, `source_id`) VALUES
 					(".$campaign->campaign_id.", ".$outcome->outcome_id.", ".$team->team_id.", '".$date."', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ".$source->source_id.")");
+			
+			$this->db->query("insert into record_details set urn=$i,c1 = 'Insurance',d1='$date'");
 			
 			if ($this->db->_error_message()) {
 				return "records";
