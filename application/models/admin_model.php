@@ -303,4 +303,29 @@ class Admin_model extends CI_Model
         $this->db->where("hours_id", $form['hours_id']);
         return $this->db->update("hours", $form);
     }
+	
+	public function get_custom_fields($campaign){
+		$this->db->select("record_details_fields.id,record_details_fields.field,field_name,is_select,sort");
+		$this->db->where("record_details_fields.campaign_id",intval($campaign));
+		$this->db->join("record_details_options",'record_details_options.id=record_details_fields.id','LEFT');
+		$query = $this->db->get("record_details_fields");
+		return $query->result_array();
+	}
+	
+	public function save_custom_fields($post){
+		$campaign = $post['campaign'];
+		unset($post['campaign']);
+		
+		$this->db->where('campaign_id',$campaign);
+		$this->db->delete('record_details_fields');
+			
+		foreach($post as $k=>$v){
+		if(!empty($v)){
+			$insert = array("campaign_id"=>$campaign,"field"=>$k,"field_name"=>$v,"is_select"=>"0");
+			$this->db->insert("record_details_fields",$insert);
+		}
+			
+		}
+	}
+	
 }

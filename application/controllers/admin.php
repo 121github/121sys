@@ -553,4 +553,39 @@ class Admin extends CI_Controller
     			"data" => $response
     	));
     }
+	
+	
+	 /* hours page functions */
+    public function campaign_fields()
+    {
+	
+    	$campaigns = $this->Form_model->get_campaigns();
+    	$data     = array(
+    			'campaign_access' => $this->_campaigns,
+    			'pageId' => 'Admin',
+    			'title' => 'Campaign custom fields',
+    			'page' => array(
+    					'admin' => 'custom_fields'
+    			),
+    			'javascript' => array(
+    					'admin/customfields.js'
+    			),
+    			'css' => array(
+    					'dashboard.css'
+    			),
+    			'campaigns' => $campaigns
+    	);
+    	$this->template->load('default', 'admin/custom_fields.php', $data);
+    }
+	
+	public function get_custom_fields(){
+		$fields = $this->Admin_model-> get_custom_fields($this->input->post('campaign'));
+		echo json_encode($fields);
+	}
+	
+		public function save_custom_fields(){
+		$fields = $this->Admin_model-> save_custom_fields($this->input->post());
+		echo json_encode(array("success"=>true));
+	}
+	
 }
