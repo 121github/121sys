@@ -47,7 +47,7 @@
               <li class="list-group-item">
               <li class="list-group-item">
                 <button class="btn btn-warning add-real-data" style="width:130px">Load real data</button>
-                Adds real data (Agents) <img class="pull-right" style="display:none" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
+                Adds real data (Users) <img class="pull-right" style="display:none" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
               <li class="list-group-item">
                 <button class="btn reset-data btn-warning" style="width:130px">Reset default data</button>
                 Reset the data to the default version. This will destroy the current data <img style="display:none" class="pull-right" src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></li>
