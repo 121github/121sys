@@ -1,3 +1,7 @@
+<div class="page-header">
+  <h2>Change Password</h2>
+</div>
+
     <div class="panel panel-primary">
     <div class="panel-heading"><h4 class="panel-title">Change Password</h4></div>
       <div class="panel-body">
