@@ -18,8 +18,6 @@ class Filter_model extends CI_Model
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
         
-        
-        //$this->firephp->log($qry);
         $count = $this->db->query($qry)->row('count');
         return $count;
     }
@@ -423,7 +421,7 @@ class Filter_model extends CI_Model
                 	if (isset($filter['lat']) && isset($filter['lng'])) {
 
                 		$where .= " and ( ";
-                		//Distance from the company
+                		//Distance from the company or the contacts addresses
                 		$where .= " (";
                 		$where .= $filter['lat']." BETWEEN (com_add.latitude-".$distance.") AND (com_add.latitude+".$distance.")";
 	                	$where .= " and ".$filter['lng']." BETWEEN (com_add.longitude-".$distance.") AND (com_add.longitude+".$distance.")";

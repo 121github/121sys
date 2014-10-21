@@ -353,7 +353,7 @@ $this->_campaigns = campaign_access_dropdown();
     public function check_company_postcodes() {
     	 
     	//Get the contactAddresses without Coords
-    	$contactAddrWithoutCoords = $this->Company_model->get_company_addresses_without_coords();
+    	$companyAddrWithoutCoords = $this->Company_model->get_company_addresses_without_coords();
 		
     	$errors     = array();
     	$current = 0;
@@ -365,15 +365,15 @@ $this->_campaigns = campaign_access_dropdown();
     			$progress = ceil($current / $rows * 100);
     			file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploadprogress.txt", "Updating contact locations...".$progress."%");
 				if(!empty($companyAddr['postcode'])){
-    			$coords = postcode_to_coords($contactAddr['postcode']);
+    			$coords = postcode_to_coords($companyAddr['postcode']);
 				if(array_key_exists("error",$coords)){
 					file_put_contents(dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/uploaderrors.txt", $coords['error']);
 					return $coords;
 				}
     			if ($coords['lat'] && $coords['lng']) {
-    				$contactAddr['latitude'] = $coords['lat'];
-    				$contactAddr['longitude'] = $coords['lng'];
-    				$this->Company_model->update_company_address($contactAddr);
+    				$companyAddr['latitude'] = $coords['lat'];
+    				$companyAddr['longitude'] = $coords['lng'];
+    				$this->Company_model->update_company_address($companyAddr);
     			}
     			
 				}
