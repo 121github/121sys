@@ -167,7 +167,6 @@ class User_model extends CI_Model
 		//check if their is an entry in the hours table and if no put one in
 		$qry = "select hours_id from hours where user_id = '$user_id' and date(`date`) = curdate() and hours.campaign_id = '$campaign'";
 		if(!$this->db->query($qry)->num_rows()){
-			$this->firephp->log($qry);
 			$qry = "insert into hours set user_id = '$user_id',duration=0,exception=0,`date`=now(),campaign_id = '$campaign'";	
 			$this->db->query($qry);
 		}
@@ -181,7 +180,6 @@ class User_model extends CI_Model
     public function get_duration($campaign, $user_id)
     {
        $qry   = "SELECT (sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time)))-(select if(exception is null,'0',exception*60) secs from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id'";
-	   $this->firephp->log($qry);
         $query = $this->db->query($qry);
         if ($query->num_rows()) {
             return $query->row()->secs;
