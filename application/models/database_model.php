@@ -477,7 +477,8 @@ class Database_model extends CI_Model
 		(2, 'Team Leader'),
 		(3, 'Team Senior'),
 		(4, 'Client'),
-		(5, 'Agent')");
+		(5, 'Agent'),
+		(6, 'Client Services')");
 		
 		if ($this->db->_error_message()) {
 			return "user_roles";
@@ -1006,5 +1007,100 @@ class Database_model extends CI_Model
 		
 		return "success";
 
+	}
+	
+	/**
+	 * Load real data
+	 *
+	 * @return string
+	 */
+	public function real_data() {
+	
+		$teamsList = $this->db->get('teams')->result();
+	
+		$agents = array();
+	
+		foreach ($teamsList as $team) {
+			$agents[$team->team_name]['team_id'] = $team->team_id;
+			$agents[$team->team_name]['agents'] = array();
+		}
+	
+		array_push($agents['Craig Williams']['agents'], array('name' => 'Neyef Abed', 'pass' =>'34bbc3086d259088ff5b50afeb3a87a9', 'ext' =>'270'));
+		array_push($agents['Craig Williams']['agents'], array('name' => 'Connor Moore', 'pass' =>'fe4d1e909ec91fd0faa2740f1a2dbb35', 'ext' =>'273'));
+		array_push($agents['Craig Williams']['agents'], array('name' => 'Jamie Aldred', 'pass' =>'b7016a5aae4c97c304a635831cfc24ef', 'ext' =>'571'));
+		array_push($agents['Craig Williams']['agents'], array('name' => 'Umar Mahmood', 'pass' =>'27a63f8090673fed2a55d2ad63037890', 'ext' =>'580'));
+		array_push($agents['Craig Williams']['agents'], array('name' => 'Bethany Rogers', 'pass' =>'xxx', 'ext' =>'586'));
+		array_push($agents['Craig Williams']['agents'], array('name' => 'Chereen Collins', 'pass' =>'xxx', 'ext' =>'587'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Sinead Oliver', 'pass' =>'71c61e2e5ebd3e96ce36aedebc59f70e', 'ext' =>'265'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Chantelle Taylor', 'pass' =>'6784c4e53289ef17e50c01ddcfde6e7f', 'ext' =>'415'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Krystian Fouracre', 'pass' =>'ee137a9d7311a1f9052e531715c52816', 'ext' =>'483'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Jaswant Singh', 'pass' =>'20a65f42cf715cc78b9d1968d740db88', 'ext' =>'484'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Paul Singh', 'pass' =>'5090bb216ffb35348712b7b3b0d08927', 'ext' =>'490'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Hugh Blackwood', 'pass' =>'680399f00de8b033cb308c77a01a8729', 'ext' =>'524'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Adam Cross', 'pass' =>'f561aaf6ef0bf14d4208bb46a4ccb3ad', 'ext' =>'544'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Paul Spencer', 'pass' =>'3b3fedb08cca1b338381280e2ce5b5c4', 'ext' =>'565'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Romone Morgan', 'pass' =>'860c84f47cdd9aa067183ebf8cdb8fa0', 'ext' =>'576'));
+		array_push($agents['David Kemp']['agents'], array('name' => 'Matthew Maddock', 'pass' =>'9b7a94bc2eaf908538a2d486d2d86b18', 'ext' =>'585'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'Chantel Sweeney', 'pass' =>'64449a99383ce737f807b44683184072', 'ext' =>'258'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'Paul Stoddard', 'pass' =>'4427d49496d14c4649765ef78727786e', 'ext' =>'413'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'James Kemp', 'pass' =>'12de9e5db31fd6cbd04020acf463bc2a', 'ext' =>'429'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'Halle White', 'pass' =>'8bdb97c4b7682d62992c6381bd433a02', 'ext' =>'445'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'Carl Sweeney', 'pass' =>'37b4e2d82900d5e94b8da524fbeb33c0', 'ext' =>'448'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'Sohail Arif', 'pass' =>'81dc9bdb52d04dc20036dbd8313ed055', 'ext' =>'450'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'Gurmohan Singh', 'pass' =>'f2a995bf4805c2c9d426960e75b2887b', 'ext' =>'485'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'Kevin Farrell', 'pass' =>'2419c459e9ad2d94f4a5c887b3ca18cb', 'ext' =>'570'));
+		array_push($agents['Dean Hibbert']['agents'], array('name' => 'Aimee Armsden', 'pass' =>'b246a03527858e8608a27f886ad14ef9', 'ext' =>'579'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Yasir Iqbal', 'pass' =>'5f4dcc3b5aa765d61d8327deb882cf99', 'ext' =>'235'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Danny Gale', 'pass' =>'b8c5068a1d849579fea0a0b35c4c9da0', 'ext' =>'292'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Antonia Winward', 'pass' =>'82e4010701956651c3f653309879aec4', 'ext' =>'400'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Aaron Jackson', 'pass' =>'19aef1fabfb1187d5d9755813de4746e', 'ext' =>'470'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Waqar Hassan', 'pass' =>'a40cf1cb0c65e56016954db8104a841e', 'ext' =>'494'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Andre Bygrave', 'pass' =>'203ba4eaa9c46f0825f3f6d8bb72eb32', 'ext' =>'498'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Mohammed Rashid', 'pass' =>'214beeecb2eee659f521c273a192afec', 'ext' =>'522'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Rahman Aftab', 'pass' =>'831c02f1c2862bdc3d0caf79a55d3263', 'ext' =>'529'));
+		array_push($agents['Jon Surrey']['agents'], array('name' => 'Shahnawaz Kaleem', 'pass' =>'681570416eb952eac59c3a9d6476d28d', 'ext' =>'582'));
+		array_push($agents['Stacy Armitt']['agents'], array('name' => 'Marcel McKenzie', 'pass' =>'73829030e312a5804492202b9a61c527', 'ext' =>'277'));
+		array_push($agents['Stacy Armitt']['agents'], array('name' => 'Amitava Ghosh', 'pass' =>'44608134cbc1138fc0d0f562f0f84cf9', 'ext' =>'410'));
+		array_push($agents['Stacy Armitt']['agents'], array('name' => 'Akin Raheem', 'pass' =>'5d554bc5f3d2cd182cdd0952b1fb87ca', 'ext' =>'432'));
+		array_push($agents['Stacy Armitt']['agents'], array('name' => 'James Johnson', 'pass' =>'3db1a73a245aa55c61204c56c8d99f6d', 'ext' =>'472'));
+		array_push($agents['Stacy Armitt']['agents'], array('name' => 'Mohammed Ali', 'pass' =>'2ec199f1e2de31576869a57488e919ad', 'ext' =>'481'));
+		array_push($agents['Stacy Armitt']['agents'], array('name' => 'Ben McDougall', 'pass' =>'705a09da923ab9f47fbf539013f3065a', 'ext' =>'547'));
+		array_push($agents['Stacy Armitt']['agents'], array('name' => 'Alexander Jones', 'pass' =>'8129b2301c4921e9bc63120feab1e8ac', 'ext' =>'554'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Sarah Shannon', 'pass' =>'d579ba0fe35141ae95b0e380673be804', 'ext' =>'237'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Aron James', 'pass' =>'2c49ad8a57c62dcd1db2ad20be8fe02c', 'ext' =>'489'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Osma Akhtar', 'pass' =>'72d957b76f3b236c523d1d5e39397532', 'ext' =>'492'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Liam McDowell', 'pass' =>'4c8dac669c3d3f0e71b19883d76ac022', 'ext' =>'535'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Gemma McGawley', 'pass' =>'404fdd3c9ad06cb1f6ee3a6d8bd20120', 'ext' =>'555'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Jack Bowcock', 'pass' =>'2ea8e833c127b995e38265827d86ee8a', 'ext' =>'561'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Amir Garizi', 'pass' =>'7cb7b2d842355e5e2b7ecdc7cc9c5211', 'ext' =>'562'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Jennifer Juwah', 'pass' =>'5fe8d2bb4abd76ebcf6aaeedc0476595', 'ext' =>'575'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Samuel Hardy', 'pass' =>'b13eb0f3726605825dd104feddcfbd1e', 'ext' =>'583'));
+		array_push($agents['Wayne Brosnan']['agents'], array('name' => 'Warren Rimmer ', 'pass' =>'80e5346badf46bb9be9f396765638c76', 'ext' =>'584'));
+	
+	
+	
+		//Add agents
+		foreach ($agents as $teamAgents) {
+			$group = $this->db->get_where('user_groups', array('group_name' => '121'))->result();
+			$agentRole = $this->db->get_where('user_roles', array('role_name' => 'Agent'))->result();
+			$team_id = $teamAgents['team_id'];
+				
+			foreach ($teamAgents['agents'] as $agent) {
+				$name = $agent['name'];
+				$username = strtolower(str_replace(' ', '.', $agent['name']));
+				$pass = $agent['pass'];
+				$ext = $agent['ext'];
+					
+				$this->db->query("INSERT INTO `users` (`role_id`, `group_id`, `team_id`, `username`, `password`, `name`, `user_status`, `login_mode`, `user_telephone`, `user_email`, `last_login`, `ext`, `token`, `pass_changed`, `failed_logins`, `last_failed_login`) VALUES
+				(".$agentRole[0]->role_id.", ".$group[0]->group_id.", ".$team_id.", '".$username."', '".$pass."', '".$name."', 1, NULL, NULL, NULL, '2014-08-12 12:02:55', ".$ext.", NULL, NULL, 0, '2014-08-12 12:02:48')");
+	
+					
+				if ($this->db->_error_message()) {
+					return "users";
+				}
+			}
+		}
+	
+		return "success";
 	}
 }
