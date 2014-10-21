@@ -61,7 +61,6 @@ var filter = {
 				flashalert.danger("The postcode does not exist or the connection with Google Maps fails: "+response.error);
 			}
 			else {
-				console.log(response);
 				$('form').find('input[name="lat"]').val(response.coords.lat);
 				$('form').find('input[name="lng"]').val(response.coords.lng);
 				filter.count_records();

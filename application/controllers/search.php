@@ -63,7 +63,6 @@ $this->_campaigns = campaign_access_dropdown();
     public function get_coords()
     {
     	if ($this->input->is_ajax_request()) {
-    		$this->firephp->log($this->input->post('postcode'));
     		$postcode = $this->input->post('postcode');
     			
     		$coords = postcode_to_coords($postcode);
