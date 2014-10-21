@@ -100,7 +100,11 @@ var record = {
             /*initialize the save notes button*/
             $(document).on('click', '.update-record', function(e) {
                 e.preventDefault();
+				if($('.outcomepicker').val().length>0){
                 record.update_panel.save($(this));
+				} else {
+				flashalert.danger("You must select a call outcome first");
+				}
             });
             $(document).on('click', '.reset-record', function(e) {
                 e.preventDefault();

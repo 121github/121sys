@@ -75,5 +75,5 @@ div.tooltip-inner {
     font-size: 14px;
 }
 .dt-filter { width:100% !important }
-.footer-stats { height:50px; z-index:9999999;position:fixed; bottom:0px; width:100%; padding:10px }
+.footer-stats { height:50px; z-index:9998;position:fixed; bottom:0px; width:100%; padding:10px }
 .footer-stats > div { color:#fff; display:inline; margin-left:20px; float:right }
