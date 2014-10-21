@@ -175,7 +175,7 @@ class Dashboard_model extends CI_Model
 	
     public function missed_callbacks($filter)
     {
-        $qry = "select urn,fullname as contact,nextcall,campaign_name as campaign,name from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall < now() ";
+        $qry = "select urn,fullname as contact,nextcall,campaign_name as campaign,if(name is null,'-',name) name from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall < now() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
@@ -222,8 +222,13 @@ class Dashboard_model extends CI_Model
         } else {
             $qry_filter = "";
         }
-        $qry_filter .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry = "select urn, max(contact) as `when`, survey_date,outcome as outcome,`name`,campaign_name as campaign from history left join campaigns using(campaign_id) left join outcomes using(outcome_id) left join users u using(user_id) left join records using(urn)  left join (select user_id, max(contact) survey_date from history h left join records using(urn) where h.outcome_id = 60 $qry_filter group by user_id) ls on ls.user_id = history.user_id where history.role_id = 3 $qry_filter  group by u.user_id ";
+		
+		if(!empty($_SESSION['team_id'])){
+			$qry_filter = " and team_id = ". $_SESSION['team'];
+		}
+		
+        $qry_filter .= " and campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry = "select urn, max(contact) as `when`, contact as outcome_date,outcome as outcome,`name`,campaign_name as campaign from history left join campaigns using(campaign_id) left join outcomes using(outcome_id) left join users u using(user_id) left join records using(urn)  left join (select user_id, max(contact) survey_date from history h left join campaigns using(campaign_id)  left join records using(urn) where h.outcome_id in (70,71) $qry_filter group by user_id) ls on ls.user_id = history.user_id where u.team_id is not null $qry_filter  group by u.user_id ";
         
         return $this->db->query($qry)->result_array();
     }
@@ -235,8 +240,11 @@ class Dashboard_model extends CI_Model
         } else {
             $qry_filter = "";
         }
-         $qry_filter .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry = "select `name`,count(*) dials,surveys,campaign_name as campaign from history h left join campaigns using(campaign_id)  left join records using(urn) left join (select user_id,count(*) surveys from history left join records using(urn) where 1 and history.outcome_id = 60 $qry_filter group by user_id) sv on sv.user_id = h.user_id  left join users on h.user_id = users.user_id where h.role_id = 3 $qry_filter group by h.user_id";
+			if(!empty($_SESSION['team_id'])){
+			$qry_filter = " and team_id = ". $_SESSION['team'];
+		}
+         $qry_filter .= " and campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry = "select `name`,count(*) dials,if(transfers is null,'0',transfers) transfers,campaign_name as campaign from history h left join campaigns using(campaign_id)  left join records using(urn) left join (select user_id,count(*) transfers from history left join campaigns using(campaign_id) left join records using(urn) where 1 and history.outcome_id in(70,71) $qry_filter group by user_id) sv on sv.user_id = h.user_id  left join users on h.user_id = users.user_id where users.team_id is not null $qry_filter group by h.user_id";
         return $this->db->query($qry)->result_array();
     }
     
@@ -248,10 +256,10 @@ class Dashboard_model extends CI_Model
             $qry_filter = "";
         }
          $qry_filter .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry = "select `name`,count(*) total,virgin,in_progress,completed,campaign_name as campaign from records r  left join ownership o using(urn)  left join campaigns using(campaign_id) left join (select user_id,count(*) virgin from records left join ownership o using(urn) left join campaigns using(campaign_id) where outcome_id is null and record_status in(1,3) $qry_filter group by user_id) v on v.user_id = o.user_id  
+        $qry = "select `name`,count(*) total,virgin,in_progress,completed,campaign_name as campaign from records r  left join ownership o using(urn)  left join campaigns using(campaign_id) left join (select user_id,count(*) virgin from records left join ownership o using(urn) left join campaigns using(campaign_id) where outcome_id is null and record_status = 1 $qry_filter group by user_id) v on v.user_id = o.user_id  
 	 left join (select user_id,count(*) in_progress from records  left join ownership o using(urn) left join campaigns using(campaign_id) where record_status = 1 and outcome_id is not null $qry_filter group by user_id) ip on ip.user_id = o.user_id  
 	 left join (select user_id,count(*) completed from records  left join ownership o using(urn) left join campaigns using(campaign_id) where record_status = 3 $qry_filter group by user_id) c on c.user_id = o.user_id  
-	left join users on o.user_id = users.user_id where role_id = 3 $qry_filter group by o.user_id";
+	left join users on o.user_id = users.user_id where users.team_id is not null $qry_filter group by o.user_id";
         return $this->db->query($qry)->result_array();
     }  
     

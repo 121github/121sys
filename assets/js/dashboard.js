@@ -241,9 +241,9 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.outcome + '</td><td>' + val.when + '</td><td>' + val.survey_date + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.outcome + '</td><td>' + val.when + '</td><td>' + val.outcome_date + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
-                $('.agent-activity').append('<table class="table table-striped table-responsive"><thead><th>Name</th><th>Campaign</th><th>Last Outcome</th><th>Last Update</th><th>Last Survey</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.agent-activity').append('<table class="table table-striped table-responsive"><thead><th>Name</th><th>Campaign</th><th>Last Outcome</th><th>Last Update</th><th>Last Transfer</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
             } else {
                 $('.agent-activity').append('<p>' + response.msg + '</p>');
             }
@@ -270,9 +270,9 @@ var dashboard = {
 					if(campaign){
 					 $row += "<td>" + val.campaign + "</td>	";
 					} else {  $row += "<td>All</td>	"; }
-					$row += '<td>' + val.dials + '</td><td>' + val.surveys + '</td><td>' + val.rate + '</td></tr>';
+					$row += '<td>' + val.dials + '</td><td>' + val.transfers + '</td><td>' + val.rate + '</td></tr>';
                 });
-                $('.agent-success').append('<table class="table table-striped table-responsive"><thead><th>Name</th><th>Campaign</th><th>Dials</th><th>Surveys</th><th>Success Rate</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.agent-success').append('<table class="table table-striped table-responsive"><thead><th>Name</th><th>Campaign</th><th>Dials</th><th>Transfers</th><th>Success Rate</th></thead><tbody>' + $row + '</tbody></table>');
             } else {
                 $('.agent-success').append('<p>' + response.msg + '</p>');
             }

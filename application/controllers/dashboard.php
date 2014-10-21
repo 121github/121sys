@@ -294,7 +294,7 @@ class Dashboard extends CI_Controller
             $now      = time();
             foreach ($results as $k => $row) {
                 $results[$k]['when']        = timespan(strtotime($row['when']), $now) . " ago";
-                $results[$k]['survey_date'] = timespan(strtotime($row['survey_date']), $now) . " ago";
+                $results[$k]['outcome_date'] = timespan(strtotime($row['outcome_date']), $now) . " ago";
             }
             echo json_encode(array(
                 "success" => true,
@@ -313,7 +313,7 @@ class Dashboard extends CI_Controller
             $results  = $this->Dashboard_model->agent_success($campaign);
             $now      = time();
             foreach ($results as $k => $row) {
-                $results[$k]['rate'] = number_format(($results[$k]['surveys'] / $results[$k]['dials']) * 100, 1) . "%";
+                $results[$k]['rate'] = number_format(($results[$k]['transfers'] / $results[$k]['dials']) * 100, 1) . "%";
             }
             echo json_encode(array(
                 "success" => true,
