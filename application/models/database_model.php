@@ -537,7 +537,7 @@ class Database_model extends CI_Model
 		('view hours','Admin'),
 		('show footer', 'System'),
 		('admin nav','Admin'),
-		('campaign_access','Admin')");
+		('campaign access','Admin')");
 		
 		if ($this->db->_error_message()) {
 			return "permissions";

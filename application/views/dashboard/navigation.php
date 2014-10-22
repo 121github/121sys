@@ -111,13 +111,13 @@
 			            <div id="collapseTwoDaily" class="accordion-body <?php echo @($reports=='daily'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($reports=='dailytransfer'?"class='active'":"") ?>>Transfers</a>
+			                       <a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>Transfers</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/dailyappointment" <?php echo @($reports=='dailyappointment'?"class='active'":"") ?>>Appointments</a>
+			                       <a href="<?php echo base_url() ?>reports/dailyappointment" <?php echo @($inner=='dailyappointment'?"class='active'":"") ?>>Appointments</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/dailysurvey" <?php echo @($reports=='dailysurvey'?"class='active'":"") ?>>Surveys</a>
+			                       <a href="<?php echo base_url() ?>reports/dailysurvey" <?php echo @($inner=='dailysurvey'?"class='active'":"") ?>>Surveys</a>
 			                    </div>
 			                </div>
 			            </div>
@@ -135,25 +135,65 @@
                 </a>
             </div>
             <div id="collapseThree" class="accordion-body collapse <?php echo (!empty($admin)?"in":"") ?>">
+            
+            
+             <div class="accordion-group panel">
+			            <div class="accordion-inner">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThreeData">
+			                    Data
+			                </a>
+			            </div>
+			            <div id="collapseThreeData" class="accordion-body <?php echo @($admin=='data'?"":"collapse") ?>">
+			                <div class="accordion-group submenu">
+			                    <div class="accordion-inner">
+			                        <a href="<?php echo base_url() ?>data" <?php echo @($inner==''?"class='active'":"") ?>>Import</a>
+			                    </div>
+			                    <div class="accordion-inner">
+			                       <a href="<?php echo base_url() ?>exports" <?php echo @($inner==''?"class='active'":"") ?>>Export</a>
+			                    </div>
+                                   <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>
+			                    <div class="accordion-inner">
+			                         <a href="<?php echo base_url() ?>data/management" <?php echo @($inner==''?"class='active'":"") ?>>Data Management</a>
+			                    </div>
+                                <?php } ?>
+			                </div>
+			            </div>
+			        </div>
+            
+             <div class="accordion-group panel">
+			            <div class="accordion-inner">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThreeCampaigns">
+			                    Campaigns
+			                </a>
+			            </div>
+			            <div id="collapseThreeCampaigns" class="accordion-body <?php echo @($admin=='campaign'?"":"collapse") ?>">
+			                <div class="accordion-group submenu">
+                                      <?php if(in_array("campaign access",$_SESSION['permissions'])){ ?>
+			                    <div class="accordion-inner">          
+			                      <a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($inner=='campaign'?"class='active'":"") ?>>Campaign Setup</a>
+			                    </div>
+                                <?php } ?>
+			                    <div class="accordion-inner">
+			                          <a href="<?php echo base_url() ?>admin/campaign_fields" <?php echo @($inner=='custom_fields'?"class='active'":"") ?>>Campaign Fields</a>
+			                    </div>
+                                   <?php if(in_array("edit templates",$_SESSION['permissions'])){ ?>
+			                    <div class="accordion-inner">
+			                            <a href="<?php echo base_url() ?>templates" <?php echo @($inner=='templates'?"class='active'":"") ?>>Templates</a>
+			                    </div>
+                                <?php } ?>
+                                                    <?php if(in_array("edit scripts",$_SESSION['permissions'])){ ?>
+			                    <div class="accordion-inner">
+			                                   <a href="<?php echo base_url() ?>scripts" <?php echo @($inner=='scripts'?"class='active'":"") ?>>Scripts</a>
+			                    </div>
+                                <?php } ?>
+			                </div>
+			            </div>
+			        </div>
+            
+            
+            
                 <div class="accordion-group">
-                     <?php if(in_array("campaign access",$_SESSION['permissions'])){ ?>
-                                         <div class="accordion-inner">
-                     <a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($admin=='campaign'?"class='active'":"") ?>>Campaigns</a>
-                    </div>
-                     <?php } ?>
                 	<?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
-                      <div class="accordion-inner">
-                    <a href="<?php echo base_url() ?>admin/campaign_fields" <?php echo @($admin=='custom_fields'?"class='active'":"") ?>>Campaign Fields</a>
-                    </div>
-                    <div class="accordion-inner">
-                    <a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a>
-                    </div>
-                    <div class="accordion-inner">
-                      <a href="<?php echo base_url() ?>data" <?php echo @($admin=='data'?"class='active'":"") ?>>Import</a>
-                    </div>
-                     <div class="accordion-inner">
-                      <a href="<?php echo base_url() ?>exports" <?php echo @($admin=='exports'?"class='active'":"") ?>>Export</a>
-                    </div>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>admin/users" <?php echo @($admin=='users'?"class='active'":"") ?>>Users</a>
                     </div>
@@ -167,24 +207,9 @@
                     <a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a>
                     </div>
                      <?php } ?>
-                     <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>
-                     <div class="accordion-inner">
-                     <a href="<?php echo base_url() ?>data/management" <?php echo @($admin=='management'?"class='active'":"") ?>>Data Management</a>
-                    </div>
-                    <?php } ?>
                     <?php if(in_array("view logs",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>admin/logs" <?php echo @($admin=='logs'?"class='active'":"") ?>>Logs</a>
-                    </div>
-                    <?php } ?> 
-                    <?php if(in_array("edit templates",$_SESSION['permissions'])){ ?>
-                    <div class="accordion-inner">
-                      <a href="<?php echo base_url() ?>templates" <?php echo @($admin=='templates'?"class='active'":"") ?>>Templates</a>
-                    </div>
-                    <?php } ?> 
-                    <?php if(in_array("edit scripts",$_SESSION['permissions'])){ ?>
-                    <div class="accordion-inner">
-                      <a href="<?php echo base_url() ?>scripts" <?php echo @($admin=='scripts'?"class='active'":"") ?>>Scripts</a>
                     </div>
                     <?php } ?> 
                     <?php if(in_array("view hours",$_SESSION['permissions'])){ ?>
