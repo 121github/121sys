@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = '121sys_accpet';
+$db['default']['username'] = '121sys_accept';
 $db['default']['password'] = 'B8Y2UwUa7f2pEhxm';
-$db['default']['database'] = '121sys_accpet';
+$db['default']['database'] = '121sys_accept';
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
