@@ -85,7 +85,9 @@
         </div>
       </div>
       <!-- /.col-lg-8 -->
+    
       <div class="col-lg-4">
+        <?php if(!in_array("set call outcomes",$_SESSION['permissions'])){ ?>
         <div class="panel panel-primary">
           <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> System Statistics
             <div class="pull-right">
@@ -107,8 +109,10 @@
               <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </ul>
           </div>
-          <!-- /.panel-body --> 
+          <!-- /.panel-body -->
+           
         </div>
+       <?php } ?> 
         <div class="panel panel-primary">
           <div class="panel-heading"> <i class="fa fa-bell fa-fw"></i> Outcome History
             <div class="pull-right">

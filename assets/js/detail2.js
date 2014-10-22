@@ -138,7 +138,13 @@ var record = {
                 $delay = $('#outcomes').find("option[value='" + $val + "']").attr('delay');
                 //if the selected option has a delay attribute we disable the nextcall and set it as now+the amount of delay. This is for outcomes such as answer machine to give us more control over when agents should try again
                 if ($delay > 0) {
+					var today = new Date();
                     var nextcall = new Date().addHours($delay);
+					var hour = nextcall.getHours();
+					if(hour>12){
+					var nextcall = moment(today).add(1, 'days').toDate();
+					}
+					
                     $('#nextcall').val(timestamp_to_uk(nextcall, true));
                     $('#nextcall').datetimepicker({
                         format: 'DD/MM/YYYY HH:mm'

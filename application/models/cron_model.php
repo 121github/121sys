@@ -17,7 +17,7 @@ class Cron_model extends CI_Model
     public function update_hours($agents)
     {
         foreach ($agents as $agent) {
-            $qry   = "select sum(TIME_TO_SEC(TIMEDIFF(end_time,start_time))) duration,campaign_id from hours_logged where user_id = '{$agent['id']}' and date(`start_time`)=curdate()  group by campaign_id having duration > 1";
+            $qry   = "select sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time))) duration,campaign_id from hours_logged where user_id = '{$agent['id']}' and date(`start_time`)=curdate()  group by campaign_id having duration > 1";
             $query = $this->db->query($qry);
             if ($query->num_rows()) {
                 
