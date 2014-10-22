@@ -677,6 +677,7 @@ class Reports extends CI_Controller
                 }
                 elseif ($row['outcome'] != 'Cross Transfer') {
                 	$aux[$row['agent']]['name'] = $row['name'];
+                	$aux[$row['agent']]['duration'] = $row['duration'];
                 	$aux[$row['agent']]['total_dials'] = (isset($aux[$row['agent']]['total_dials'])) ? $aux[$row['agent']]['total_dials'] + $row['count'] : $row['count'];
                 }
                 
