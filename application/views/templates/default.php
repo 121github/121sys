@@ -104,7 +104,8 @@
       </div>
       <div class="modal-body"> </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default close-modal" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default close-modal pull-left" data-dismiss="modal">Close</button>
+        <button type="button" style="display: none;" class="btn btn-danger discard-modal">No</button>
         <button type="button" class="btn btn-primary confirm-modal">Confirm</button>
       </div>
     </div>

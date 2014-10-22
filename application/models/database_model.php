@@ -713,9 +713,6 @@ class Database_model extends CI_Model
 	 */
 	public function demo_data() {
 
-		//Dumpt the init Data
-		$this->init_data();
-		
 		//dumping data sample into clients
 		$this->db->query("INSERT INTO `clients` (`client_name`) VALUES
 		('121'),
@@ -954,7 +951,7 @@ class Database_model extends CI_Model
 		}
 		
 		//dumping campaign xfers
-		$this->db->query("INSERT INTO `121sys`.`campaign_xfers` (`campaign_id`, `xfer_campaign`) VALUES ('1', '2'), ('2', '1')");
+		$this->db->query("INSERT INTO `campaign_xfers` (`campaign_id`, `xfer_campaign`) VALUES ('1', '2'), ('2', '1')");
 		if ($this->db->_error_message()) {
 					return "campaign_xfers";
 				}

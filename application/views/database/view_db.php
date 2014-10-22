@@ -25,6 +25,7 @@
                 <tr>
                   <th>Date</th>
                   <th>Current Version</th>
+                  <th class="db_operation" style="width: 25%;"></th>
                 </tr>
               </thead>
               <tbody>
@@ -75,11 +76,11 @@ $(document).ready(function(){
 	});
 	
 	$(document).on("click",".add-data",function(){
-		add_data_confirmation($(this),false);
+		add_demo_data_confirmation($(this),false);
 	});
 
 	$(document).on("click",".add-real-data",function(){
-		add_real_data($(this));
+		add_real_data_confirmation($(this),false);
 	});
 
 	$(document).on("click",".reset-data",function(){
@@ -109,52 +110,94 @@ $(document).ready(function(){
 		}).done(function(response){
 			$btn.parent().find('img').hide();
 			if(response.success){
-			$('.current-version').text(response.version);
-			flashalert.success("The tables have been created");
+				$('.current-version').text(response.version);
+				flashalert.success("The tables have been created");
 			} else {
-			flashalert.warning(response);
+				flashalert.warning(response);
 			}
 		});
 		
 	}
 	
-	function add_data($btn){
-		$.ajax({url:helper.baseUrl+'database/add_data',
-		dataType:"JSON",
-		beforeSend: function(){
-		$btn.parent().find('img').show();	
+	function add_demo_data($btn, $reset){
+		if ($reset) {
+			$(".db_operation").html("<span class='red'>Resetting the default data...</span>");
+			$.ajax({url:helper.baseUrl+'database/reset_data',
+				dataType:"JSON",
+				beforeSend: function(){
+				$btn.parent().find('img').show();	
+				}
+				}).done(function(response){
+					$btn.parent().find('img').hide();
+					if(response.success){
+						flashalert.success("The default data was restored");
+						add_demo_data($btn, false);
+					} else {
+						flashalert.warning(response);
+					}
+				});
 		}
-		}).done(function(response){
-			$btn.parent().find('img').hide();
-			if(response.success){
-			$('.current-version').text(response.version);
-			flashalert.success("Sample data was added");
-			} else {
-			flashalert.warning(response);
-			}
-		});
+		else {
+			$(".db_operation").html("<span class='red'>Loading the demo data...</span>");
+			$.ajax({url:helper.baseUrl+'database/add_data',
+				dataType:"JSON",
+				beforeSend: function(){
+				$btn.parent().find('img').show();	
+				}
+				}).done(function(response){
+					$btn.parent().find('img').hide();
+					if(response.success){
+						flashalert.success("Sample data was added");
+						$(".db_operation").html("<span class='green'>Demo data loaded successfully!</span>");
+					} else {
+						flashalert.warning(response);
+					}
+				});
+		}
+		
 		
 	}
 
-	function add_real_data($btn){
-		$.ajax({url:helper.baseUrl+'database/add_real_data',
-		dataType:"JSON",
-		beforeSend: function(){
-		$btn.parent().find('img').show();	
-		}
-		}).done(function(response){
-			$btn.parent().find('img').hide();
-			if(response.success){
-			$('.current-version').text(response.version);
-			flashalert.success("Real data was added");
-			} else {
-			flashalert.warning(response);
+	function add_real_data($btn, $sample){
+		if ($sample) {
+			$(".db_operation").html("<span class='red'>Loading the real data...</span>");
+			$.ajax({url:helper.baseUrl+'database/add_real_data',
+			dataType:"JSON",
+			beforeSend: function(){
+			$btn.parent().find('img').show();	
 			}
-		});
+			}).done(function(response){
+				$btn.parent().find('img').hide();
+				if(response.success){
+					flashalert.success("Real data was added");
+					$(".db_operation").html("<span class='green'>Real data loaded successfully!</span>");
+					add_demo_data($btn, false);
+				} else {
+					flashalert.warning(response);
+				}
+			});
+		}
+		else {
+			$.ajax({url:helper.baseUrl+'database/add_real_data',
+				dataType:"JSON",
+				beforeSend: function(){
+				$btn.parent().find('img').show();	
+				}
+				}).done(function(response){
+					$btn.parent().find('img').hide();
+					if(response.success){
+						flashalert.success("Real data was added");
+						$(".db_operation").html("<span class='green'>Real data loaded successfully!</span>");
+					} else {
+						flashalert.warning(response);
+					}
+				});
+		}
 		
 	}
 
 	function reset_data($btn){
+		$(".db_operation").html("<span class='red'>Resetting the default data...</span>");
 		$.ajax({url:helper.baseUrl+'database/reset_data',
 		dataType:"JSON",
 		beforeSend: function(){
@@ -163,13 +206,12 @@ $(document).ready(function(){
 		}).done(function(response){
 			$btn.parent().find('img').hide();
 			if(response.success){
-			$('.current-version').text(response.version);
-			flashalert.success("The default data was restored");
+				flashalert.success("The default data was restored");
+				$(".db_operation").html("<span class='green'>Default data loaded successfully!</span>");
 			} else {
-			flashalert.warning(response);
+				flashalert.warning(response);
 			}
 		});
-		
 	}
 
 	function drop_table_confirmation($btn) {
@@ -185,16 +227,49 @@ $(document).ready(function(){
         });
 	}
 
-	function add_data_confirmation($btn) {
+	function add_demo_data_confirmation($btn) {
         $('.modal-title').text('Please confirm');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').html('This action will truncate all the tables before add the sample data. Are you sure you want to continue?<br><b class="red">This will erase all the data in the system</b>');
+        }).find('.modal-body').html('This action will truncate all the tables before add the sample data. Are you sure you want to continue?<br><b class="red">This will erase all the data in the system (Press NO if you want to load the demo data and mantain the default data)</b>');
+        $(".discard-modal").off('click').show();
+        $('.discard-modal').on('click', function(e) {
+        	add_demo_data($btn,false);
+        	$('#modal').modal('toggle');
+        	$('.discard-modal').hide();
+        });
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
-        	add_data($btn);
+        	add_demo_data($btn,true);
             $('#modal').modal('toggle');
+            $('.discard-modal').hide();
+        });
+        $('.close-modal').on('click', function(e) {
+        	$('.discard-modal').hide();
+        });
+	}
+
+	function add_real_data_confirmation($btn) {
+        $('.modal-title').text('Please confirm');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').html('Do you want to add some sample data after the real data?<br><b class="red">Press NO if you want to load the real data without sample data</b>');
+        $(".discard-modal").off('click').show();
+        $('.discard-modal').on('click', function(e) {
+        	add_real_data($btn,false);
+        	$('#modal').modal('toggle');
+        	$('.discard-modal').hide();
+        });
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+        	add_real_data($btn,true);
+            $('#modal').modal('toggle');
+            $('.discard-modal').hide();
+        });
+        $('.close-modal').on('click', function(e) {
+        	$('.discard-modal').hide();
         });
 	}
 

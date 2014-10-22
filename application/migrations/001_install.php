@@ -10,7 +10,7 @@ class Migration_install extends CI_Migration
 	
     public function up()
     {
-    	if (!$this->db->query("CREATE DATABASE IF NOT EXISTS `121sys` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci")) {
+    	if (!$this->db->query("CREATE DATABASE IF NOT EXISTS `".$this->db->database."` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci")) {
             echo "There was an error creating the database";
         }
         $this->db->query("SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO'");
@@ -745,7 +745,7 @@ class Migration_install extends CI_Migration
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         
         //Constraints for table `role_permissions`
-        $this->db->query("ALTER TABLE `role_permissions` ADD FOREIGN KEY (`role_id`) REFERENCES `121sys`.`permissions`(`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
+        $this->db->query("ALTER TABLE `role_permissions` ADD FOREIGN KEY (`role_id`) REFERENCES `permissions`(`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
         
         //Constraints for table `answers_to_options`
         $this->db->query("ALTER TABLE `answers_to_options`
