@@ -87,8 +87,18 @@ var campaignappointment = {
                         
                         var duration    = hours+' h '+minutes+' m';
                         
+                        if (val.appointments>0 && val.duration>0) {
+                    		success = "success";
+                    	}
+                    	else if ((val.appointments>0) && (val.duration==0)) {
+                    		success = "danger";
+                    	}
+                    	else {
+                    		success = "warning";
+                    	}
+                        
 						$tbody
-						.append("<tr><td class='campaign'>"
+						.append("<tr class='"+success+"'><td class='campaign'>"
 									+ val.campaign
 								+ "</td><td class='name'>"
 									+ val.name

@@ -80,8 +80,18 @@ var agentappointment = {
                         
                         var duration    = hours+' h '+minutes+' m';
                         
+                        if (val.appointments>0 && val.duration>0) {
+                    		success = "success";
+                    	}
+                    	else if ((val.appointments>0) && (val.duration==0)) {
+                    		success = "danger";
+                    	}
+                    	else {
+                    		success = "warning";
+                    	}
+                        
 						$tbody
-							.append("<tr><td class='agent'>"
+							.append("<tr class='"+success+"'><td class='agent'>"
 									+ val.agent
 								+ "</td><td class='name'>"
 									+ val.name
