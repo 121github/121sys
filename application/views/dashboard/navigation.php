@@ -146,14 +146,17 @@
 			            <div id="collapseThreeData" class="accordion-body <?php echo @($admin=='data'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                        <a href="<?php echo base_url() ?>data" <?php echo @($inner==''?"class='active'":"") ?>>Import</a>
+			                        <a href="<?php echo base_url() ?>data" <?php echo @($inner=='import'?"class='active'":"") ?>>Import</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>exports" <?php echo @($inner==''?"class='active'":"") ?>>Export</a>
+			                       <a href="<?php echo base_url() ?>exports" <?php echo @($inner=='export'?"class='active'":"") ?>>Export</a>
 			                    </div>
                                    <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>
 			                    <div class="accordion-inner">
-			                         <a href="<?php echo base_url() ?>data/management" <?php echo @($inner==''?"class='active'":"") ?>>Data Management</a>
+			                         <a href="<?php echo base_url() ?>data/management" <?php echo @($inner=='management'?"class='active'":"") ?>>Data Management</a>
+			                    </div>
+			                    <div class="accordion-inner">
+			                         <a href="<?php echo base_url() ?>data/add_record" <?php echo @($inner=='add_record'?"class='active'":"") ?>>Add Record</a>
 			                    </div>
                                 <?php } ?>
 			                </div>

@@ -18,14 +18,15 @@ $this->_campaigns = campaign_access_dropdown();
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'pageId' => 'export',
-            'title' => 'Exporter',
+			'pageId' => 'export',
+            'title' => 'Admin | Exporter',
             'javascript' => array(
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
             'page' => array(
-                'admin' => 'exports'
+                'admin' => 'data',
+            	'inner' => 'export'
             ),
             'css' => array(
                 'dashboard.css',

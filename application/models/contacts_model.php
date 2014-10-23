@@ -134,6 +134,14 @@ class Contacts_model extends CI_Model
 		$this->db->where("address_id", $data['address_id']);
 		return $this->db->update("contact_addresses", $data);
 	}
+
+	public function save_contact ($form) {
+		$this->db->insert("contacts", $form);
 	
+		$insert_id = $this->db->insert_id();
+		$this->db->trans_complete();
+	
+		return $insert_id;
+	}
 	
 }
