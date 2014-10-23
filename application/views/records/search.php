@@ -8,9 +8,9 @@
       <?php if(in_array("search campaigns",$_SESSION['permissions'])){ ?>
         <div class="panel panel-primary visible">
           <div class="panel-heading">
-            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"> Campaign Filter Options </a> </h4>
+            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseZero"> Campaign Filter Options </a> </h4>
           </div>
-          <div id="collapseFive" class="panel-collapse collapse in">
+          <div id="collapseZero" class="panel-collapse collapse in">
             <div class="panel-body">
             <div class="form-group">
              <?php if(count($campaigns)>1){ ?>
