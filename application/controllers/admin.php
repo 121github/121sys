@@ -498,7 +498,7 @@ class Admin extends CI_Controller
     public function hours()
     {
 		$this->load->model('Cron_model');
-		
+		$teams = $this->Form_model->get_teams();
     	$campaigns = $this->Form_model->get_campaigns();
     	$agents = $this->Form_model->get_agents();
     	$this->Cron_model->update_hours($agents);
@@ -521,6 +521,7 @@ class Admin extends CI_Controller
     			),
     			'campaigns' => $campaigns,
           		 'agents' => $agents,
+				 'team_managers'=>$teams
     	);
     	$this->template->load('default', 'admin/hours.php', $data);
     }

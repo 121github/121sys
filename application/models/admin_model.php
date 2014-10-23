@@ -248,7 +248,7 @@ class Admin_model extends CI_Model
     	$date_to = $options['date_to'];
     	$campaign = $options['campaign'];
     	$agent = $options['agent'];
-    	
+    	$team = $options['team'];
     	$where = "";
     	
     	if (!empty($date_from)) {
@@ -263,7 +263,9 @@ class Admin_model extends CI_Model
     	if (!empty($agent)) {
     		$where .= " and h.user_id = '$agent' ";
     	}
-    	
+    	    	if (!empty($team)) {
+    		$where .= " and u.team_id = '$team' ";
+    	}
     	$qry = "select h.hours_id, u.name as user_name, h.campaign_id, c.campaign_name, h.duration, h.exception, DATE_FORMAT(h.date,'%Y-%m-%d') date, if(h.comment is null,'',h.comment) comment, if(m.name is not null,m.name,'-') as updated_name, if(h.updated_date is not null,h.updated_date,'-') as updated_date
     			from hours h
     			inner join users u ON (u.user_id = h.user_id)

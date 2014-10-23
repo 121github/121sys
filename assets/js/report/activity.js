@@ -41,11 +41,15 @@ var activity = {
         $(document).on("click", ".agent-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
+			$(this).closest('form').find('input[name="colname"]').val($(this).text());
+			$(this).closest('form').find('input[name="team"]').val('');
             activity.activity_panel()
         });
 		$(document).on("click", ".team-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
+			$(this).closest('form').find('input[name="colname"]').val($(this).text());
+			$(this).closest('form').find('input[name="agent"]').val('');
             activity.activity_panel()
         });
 		$(document).on("click", ".source-filter", function(e) {
@@ -69,12 +73,24 @@ var activity = {
             var $row = "";
             if (response.success) {
                 var $outcomes = "";
+				var $header ="";
+				var $header_extra = "";
                 $('.activity-panel').append('<p>Total Dials:' + response.total + '</p>');
+				$header += '<table class="table actvity-table"><thead><tr><th>Outcome</th><th>Count</th>';
+				var $colname = '<th>Call center %</th>';
                 $.each(response.data, function(i, val) {
-
-                    $outcomes += '<a href="' + val.url + '" class="list-group-item"><i class="fa fa-comment fa-fw"></i>' + val.outcome + '<span class="pull-right text-muted small padl"><em>' + val.count + '</em></span><span class="padl pull-right small"><em>' + val.pc + '%</em></span></a>';
+					$outcomes += '<tr><td>' + val.outcome + '</td><td><em><a href="' + val.url + '">' + val.count + '</a></td><td> ' + val.pc + '%</em></td>';
+					if(val.overall){
+					$header_extra = '<th>Call center %</th>';
+					$outcomes += '<td> ' + val.overall + '%</td>';
+					$colname = '<th>'+ val.colname + '</th>';
+					}
+                    $outcomes+= '</tr>';
                 });
-                $('.activity-panel').append('<div class="list-group">' + $outcomes + '</div>');
+				console.log($header_extra);
+				$header += $colname+$header_extra+'</tr></thead>';
+				$outcomes += '</table>';
+                $('.activity-panel').append('<div class="list-group">' + $header+$outcomes + '</div>');
             } else {
                 $('.activity-panel').append('<p>' + response.msg + '</p>');
             }

@@ -41,8 +41,8 @@ class Report_model extends CI_Model
 		$date_from = $options['date_from'];
 		$date_to = $options['date_to'];
 		$campaign = $options['campaign'];
-		$user = $options['agent'];
-		$team = $options['team'];
+		$user = isset($options['agent'])?$options['agent']:"";
+		$team = isset($options['team'])?$options['team']:"";
 		$source = $options['source'];
 		
 		$where = "";
@@ -72,7 +72,7 @@ class Report_model extends CI_Model
         
 		$qry .= $where;
         $qry .= " group by history.outcome_id order by count desc ";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     

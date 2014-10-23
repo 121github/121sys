@@ -508,6 +508,11 @@ class Filter_model extends CI_Model
 		$table_columns = array("campaign_name","fullname","outcome","date_format(contact,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
 		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
 		$group_by = "";	
+		$agent = "";
+		//if agent they can only see todays
+		if(in_array("set call outcomes",$_SESSION['permissions'])){
+			$agent .= " and date(contact) = curdate() ";
+		}
 		}
 		
 		//only join the status table if we need it
@@ -538,7 +543,7 @@ class Filter_model extends CI_Model
 		$qry .= " left join survey_answers on surveys.survey_id = survey_answers.survey_id ";
 		}
 		
-		$qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		$qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent";
 		
 		        //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
@@ -583,6 +588,9 @@ class Filter_model extends CI_Model
 		}
 		
 		$qry .= $group_by; 
+		
+		$this->firephp->log($qry);
+		
 		$start    = $options['start'];
 		$length    = $options['length'];
 		$qry .= " order by CASE WHEN ".$table_columns[$options['order'][0]['column']]." IS NULL THEN 1 ELSE 0 END,".$table_columns[$options['order'][0]['column']]." ".$options['order'][0]['dir'];

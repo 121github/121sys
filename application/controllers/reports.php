@@ -135,9 +135,9 @@ class Reports extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $data    = array();
+			$data_array = array();
             $total   = 0;
             $results = $this->Report_model->get_activity($this->input->post());
-            
             $date_from = $this->input->post("date_from");
             $date_to   = $this->input->post("date_to");
             $user      = $this->input->post("agent");
@@ -145,6 +145,22 @@ class Reports extends CI_Controller
 			$team  = $this->input->post("team");
 			$source  = $this->input->post("source");
             
+			
+			
+			$overall_array = array();
+			$post = $this->input->post();
+			if($this->input->post('team')||$this->input->post('agent')){
+			$colname = $this->input->post('colname');
+			unset($post['team']);
+			unset($post['agent']);
+			$overall = $this->Report_model->get_activity($post);
+			$overall_array = array();
+			foreach ($overall as $k => $row) {
+			$overall_array[$row['outcome']]["overall_total"]  = $row['total'];
+			$overall_array[$row['outcome']]["overall"]  = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
+			}
+			}
+			
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/history";
                 $url .= (!empty($campaign) ? "/campaign/$campaign" : "");
@@ -153,19 +169,25 @@ class Reports extends CI_Controller
                 $url .= (!empty($date_to) ? "/contact/$date_to:eless" : "");
 			    $url .= (!empty($team) ? "/team/$team" : "");
                 $url .= (!empty($source) ? "/source/$source" : "");
-                
+                $url .= (!empty($user) ? "/user/$user" : "");
+				
                 $total  = $row['total'];
                 $pc     = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
-                $data[] = array(
+                $data = array(
                     "outcome" => $row['outcome'],
                     "count" => $row['count'],
                     "pc" => $pc,
                     "url" => $url . "/outcome/" . $row['outcome']
                 );
+				if(isset($overall_array[$row['outcome']]["overall"])){
+					$data["overall"] = $overall_array[$row['outcome']]["overall"];
+					$data["colname"] = $colname;
+				}
+				$data_array[] = $data;
             }
             echo json_encode(array(
                 "success" => true,
-                "data" => $data,
+                "data" => $data_array,
                 "total" => $total
             ));
         }

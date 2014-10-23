@@ -35,10 +35,18 @@ var hours = {
 	        $(this).css("color","green");
 	        hours.load_hours()
 	    });
-	
+		    $(document).on("click", ".team-filter", function(e) {
+	        e.preventDefault();
+	        $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
+			 $(this).closest('form').find('input[name="agent"]').val('');
+	        $(this).closest('ul').find('a').css("color","black");
+	        $(this).css("color","green");
+	        hours.load_hours()
+	    });
 	    $(document).on("click", ".agent-filter", function(e) {
 	        e.preventDefault();
 	        $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
+			$(this).closest('form').find('input[name="team"]').val('');
 	        $(this).closest('ul').find('a').css("color","black");
 	        $(this).css("color","green");
 	        hours.load_hours()

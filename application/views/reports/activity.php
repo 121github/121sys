@@ -25,7 +25,7 @@
                   <input type="hidden" name="team">
                   <input type="hidden" name="agent">
                   <input type="hidden" name="source">
-			      
+			      <input type="hidden" name="colname">
 			      
 			      <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button></div>
 			      
