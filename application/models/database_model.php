@@ -703,6 +703,15 @@ class Database_model extends CI_Model
 (5, 42)");
 		
 		
+		//Dumpingdata for table `data_sources` for Manual
+		$this->db->query("INSERT INTO `data_sources` (`source_name`, `cost_per_record`) VALUES
+		('Manual', NULL)");
+		
+		if ($this->db->_error_message()) {
+			return "data_sources";
+		}
+		
+		
 		return "success";
 	}
 	

@@ -122,4 +122,13 @@ class Company_model extends CI_Model
 		return $this->db->update("company_addresses", $data);
 	}
 	
+	public function save_company ($form) {
+		$this->db->insert("companies", $form);
+	
+		$insert_id = $this->db->insert_id();
+		$this->db->trans_complete();
+	
+		return $insert_id;
+	}
+	
 }

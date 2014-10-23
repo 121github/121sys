@@ -372,3 +372,51 @@
                 });
 				}
             }
+	
+	/*the class below is for the add_record page. It gets initialized by the add_record.php view*/
+    var add_record = {
+            init: function() {
+            	$(document).on('change', '#campaign', function() {
+            		add_record.show_campaign_type();
+                });
+            	$(document).on("click", ".save-btn", function(e) {
+            		e.preventDefault();
+            		add_record.save($(this));
+    			});
+            },
+            show_campaign_type: function() {
+            	var ctype = $('#campaign option:selected').attr('ctype');
+            	$('#ctype-text').text("This is a " + ctype + " campaign.").show();
+                
+                if (ctype == 'B2B') {
+                	$('#company').show();
+                	$('#contact').hide();
+                }
+                else if (ctype == 'B2C') {
+                	$('#contact').show();
+                	$('#company').hide();
+                }
+            },
+            //save a record
+            save: function($btn) {
+            	
+            	$("button[type=submit]").attr('disabled','disabled');
+            	$.ajax({
+                    url: helper.baseUrl + 'data/save_record',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: $('form').serialize()
+                }).done(function(response) {
+                	if (response.success) {
+                		//Redirect to the record panel
+                		window.location.href = '../records/detail/'+response.record_id;
+                        flashalert.success("Record saved");
+                	}
+                	else {
+                		$("button[type=submit]").attr('disabled',false);
+                		flashalert.danger("Error saving the record");
+                	}
+                	
+                });
+            }
+	}   

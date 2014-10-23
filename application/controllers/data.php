@@ -13,6 +13,7 @@ $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Data_model');
         $this->load->model('Company_model');
         $this->load->model('Contacts_model');
+        $this->load->model('Records_model');
     }
     //this loads the data management view
     public function index()
@@ -21,10 +22,12 @@ $this->_campaigns = campaign_access_dropdown();
         $sources   = $this->Form_model->get_sources();
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
+			'pageId' => 'Admin',
+            'title' => 'Admin | Import',
             'page' => array(
-                'admin' => 'data'
+                'admin' => 'data',
+            	'inner' => 'import'
+            		
             ),
             'javascript' => array(
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
@@ -109,10 +112,11 @@ $this->_campaigns = campaign_access_dropdown();
         $campaigns = $this->Form_model->get_campaigns();
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
+			'pageId' => 'Admin',
+            'title' => 'Admin | Data Management',
             'page' => array(
-                'admin' => 'management'
+                'admin' => 'data',
+            	'inner' => 'management'
             ),
             'campaigns' => $campaigns,
             'css' => array(
@@ -413,5 +417,100 @@ $this->_campaigns = campaign_access_dropdown();
     		}	
     	}
 		return true;
+    }
+    
+    
+    
+    
+    
+    //Add record
+    public function add_record()
+    {
+    	$campaigns = $this->Form_model->get_campaigns();
+    	
+    	$data = array(
+    			'campaign_access' => $this->_campaigns,
+    			'pageId' => 'Admin',
+    			'title' => 'Admin | Add Record',
+    			'page' => array(
+    					'admin' => 'data',
+    					'inner' => 'add_record'
+    			),
+    			'campaigns' => $campaigns,
+    			'css' => array(
+    					'dashboard.css'
+    			),
+    			'javascript' => array(
+    					'data.js'
+    			)
+    	);
+    	$this->template->load('default', 'data/add_record.php', $data);
+    }
+    
+    /**
+     * Insert a record
+     */
+    public function save_record()
+    {
+    	$form = $this->input->post();
+    	$status = $this->Records_model->get_status_by_name("Live");
+    	$source = $this->Records_model->get_source_by_name("Manual");
+    	$form['record_status'] = $status->record_status_id;
+    	$form['source_id'] = $source->source_id;
+    	
+    	$company = array();
+    	$contact = array();
+    	
+    	if (!empty($form['company_name'])) {
+    		$company['name'] = $form['company_name'];
+    		$response = true;
+    	}
+    	
+    	else if (!empty($form['contact_name'])) {
+    		$contact['fullname'] = $form['contact_name'];
+    		$name = explode(' ', $form['contact_name'], 2);
+    		$contact['firstname'] = $name[0];
+    		$contact['lastname'] = $name[1];
+    		$response = true;
+    	}
+    	else {
+    		$response = false;
+    	}
+    	
+    	if ($response) {
+    		unset($form['company_name']);
+    		unset($form['contact_name']);
+    		 
+    		$this->firephp->log($form['campaign_id']);
+    		$this->firephp->log($company);
+    		$this->firephp->log($contact);
+    		 
+    		if (!empty($form['campaign_id'])) {
+    			$this->firephp->log($form);
+    			$record_id = $this->Records_model->save_record($form);
+    			if ($record_id) {
+    				if (!empty($company)) {
+    					$company['urn'] = $record_id;
+    					$insert_id = $this->Company_model->save_company($company);
+    					$response = ($insert_id)?true:false;
+    				}
+    				elseif (!empty($contact)) {
+    					$contact['urn'] = $record_id;
+    					$insert_id = $this->Contacts_model->save_contact($contact);
+    					$response = ($insert_id)?true:false;
+    				}
+    			}
+    			else {
+    				$response = false;
+    			}
+    			 
+    		} else {
+    			$response = false;
+    		}
+    	} 
+    	
+    	
+    	echo json_encode(array("success"=>$response, "record_id" => (isset($record_id))?$record_id:false));
+    
     }
 }

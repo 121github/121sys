@@ -779,5 +779,26 @@ class Records_model extends CI_Model
 	}
 	return $outcome;
 	}
+	
+	public function get_status_by_name ($name) {
+		$status = $this->db->get_where('status_list', array('status_name' => $name))->result();
+		
+		return $status[0];
+	}
+	
+	public function get_source_by_name ($name) {
+		$source = $this->db->get_where('data_sources', array('source_name' => $name))->result();
+	
+		return $source[0];
+	}
+	
+	public function save_record ($form) {
+		$this->db->insert("records", $form);
+		
+		$insert_id = $this->db->insert_id();
+		$this->db->trans_complete();
+		
+		return $insert_id;
+	}
 }
 ?>
