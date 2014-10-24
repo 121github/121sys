@@ -163,7 +163,7 @@
 			            <div id="collapseThreeData" class="accordion-body <?php echo @($admin=='data'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                        <a href="<?php echo base_url() ?>data" <?php echo @($inner=='import'?"class='active'":"") ?>>Import</a>
+			                        <a href="<?php echo base_url() ?>import" <?php echo @($inner=='import'?"class='active'":"") ?>>Import</a>
 			                    </div>
 			                    <div class="accordion-inner">
 			                       <a href="<?php echo base_url() ?>exports" <?php echo @($inner=='export'?"class='active'":"") ?>>Export</a>

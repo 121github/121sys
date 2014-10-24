@@ -8,6 +8,21 @@ class Import_model extends CI_Model
         parent::__construct();
     }
 	
+		public function get_selected_fields(){
+	$fields = array();
+	$result = $this->db->query("SHOW COLUMNS FROM `importcsv`")->result_array();	
+	foreach($result as $row){
+	$fields[] = $row['Field'];	
+	}
+	return $fields;
+	}
+	
+			public function get_sample(){
+	$result = array();
+	$result = $this->db->query("select * FROM `importcsv` limit 6")->result_array();
+	return $result;
+	}
+	
 	public function drop_importcsv(){
 	$this->db->query("drop table importcsv");	
 	}
@@ -84,5 +99,23 @@ class Import_model extends CI_Model
 		
 	}
 	
+	    public function get_custom_fields($campaign)
+    {
+        $this->db->where("campaign_id", $campaign);
+        $result = $this->db->get("record_details_fields")->result_array();
+        $array  = array();
+        foreach ($result as $row) {
+            $array[$row['field']] = $row['field_name'];
+        }
+        return $array;
+    }
 	
+	public function get_import_fields(){
+		$fields=array();
+	$results =  $this->db->query("SHOW COLUMNS FROM `importcsv`")->result_array();	
+	foreach($results as $row){
+	$fields[] = $row['Field'];	
+	}
+	return $fields;
+	}
 }
