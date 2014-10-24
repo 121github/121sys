@@ -86,28 +86,34 @@ var dailytransfer = {
                         
                         var duration    = hours+' h '+minutes+' m';
                         
+                        var style = "";
+                        var success = "";
                         if (val.total_transfers>0 && val.duration>0) {
                     		success = "success";
                     	}
                     	else if ((val.total_transfers>0) && (val.duration==0)) {
                     		success = "danger";
                     	}
+                    	else if (val.date == "TOTAL") {
+                    		style = "font-weight:bold;";
+                    	}
                     	else {
                     		success = "warning";
                     	}
+                        
 						$tbody
-							.append("<tr class='"+success+"'><td class='date'>"
+						.append("<tr class='"+success+"' style='"+style+"'><td class='date'>"
 									+ val.date
 								+ "</td><td class='name'>"
 									+ val.name
-								+ "</td><td class='name'>"
-									+ val.transfers
+								+ "</td><td class='transfers'>"
+								+ 	"<a href='" + val.transfers_url + "'>" + val.transfers + "</a>"
 								+ "</td><td class='cross_transfers'>"
-									+ val.cross_transfers
+								+ 	"<a href='" + val.cross_transfers_url + "'>" + val.cross_transfers + "</a>"
 								+ "</td><td class='total transfers'>"
-									+ val.total_transfers
+								+ 	"<a href='" + val.total_transfers_url + "'>" + val.total_transfers + "</a>"
 								+ "</td><td class='total_dials'>"
-									+ val.total_dials
+								+ 	"<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
 								+ "</td><td class='template_cc' style='duration'>"
 									+ duration
 								+ "</td><td class='template_bcc' style='rate'>"
