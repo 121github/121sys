@@ -186,6 +186,7 @@ class Report_model extends CI_Model
     	$campaign = $options['campaign'];
     	$agent = $options['agent'];
     	$team_manager = $options['team'];
+    	$source = $options['source'];
     	 
     	
     	$where = "";
@@ -204,6 +205,9 @@ class Report_model extends CI_Model
     	}
     	if (!empty($team_manager)) {
     		$where .= " and u.team_id = '$team_manager' ";
+    	}
+    	if (!empty($source)) {
+    		$where .= " and r.source_id = '$source' ";
     	}
     
     	$qry = "select u.user_id as agent, u.name as name, count(*) as count, o.outcome as outcome, (select sum(hr.duration) from hours hr where u.user_id=hr.user_id) as duration

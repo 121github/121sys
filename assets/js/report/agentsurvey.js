@@ -54,6 +54,14 @@ var agentsurvey = {
             $(this).css("color","green");
             agentsurvey.agentsurvey_panel()
         });
+        $(document).on("click", ".source-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            agentsurvey.agentsurvey_panel()
+        });
+        
         agentsurvey.agentsurvey_panel()
     },
     agentsurvey_panel: function(agentsurvey) {

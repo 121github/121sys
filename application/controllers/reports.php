@@ -296,7 +296,7 @@ class Reports extends CI_Controller
                 "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . ")",
                 "total_dials" => $totalDials,
                 "duration" => $totalDuration,
-                "rate" => ($row['duration']>0)?round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3):0
+                "rate" => ($totalDuration>0)?round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -557,6 +557,7 @@ class Reports extends CI_Controller
         $campaigns    = $this->Form_model->get_user_campaigns();
         $agents       = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
+        $sources      = $this->Form_model->get_sources();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -575,6 +576,7 @@ class Reports extends CI_Controller
             'campaigns' => $campaigns,
             'agents' => $agents,
             'team_managers' => $teamManagers,
+        	'sources' => $sources,
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
@@ -638,7 +640,7 @@ class Reports extends CI_Controller
                 "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3)
+                "rate" => ($totalDuration>0)?round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -655,6 +657,7 @@ class Reports extends CI_Controller
         $campaigns    = $this->Form_model->get_user_campaigns();
         $agents       = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
+        $sources      = $this->Form_model->get_sources();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -673,6 +676,7 @@ class Reports extends CI_Controller
             'campaigns' => $campaigns,
             'agents' => $agents,
             'team_managers' => $teamManagers,
+        	'sources' => $sources,
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
@@ -731,7 +735,7 @@ class Reports extends CI_Controller
                 "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => ($row['duration']>0)?round($totalAppointments/($totalDuration/3600),3):0
+                "rate" => ($totalDuration>0)?round($totalAppointments/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -748,6 +752,7 @@ class Reports extends CI_Controller
         $campaigns    = $this->Form_model->get_user_campaigns();
         $agents       = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
+        $sources      = $this->Form_model->get_sources();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -766,6 +771,7 @@ class Reports extends CI_Controller
             'campaigns' => $campaigns,
             'agents' => $agents,
             'team_managers' => $teamManagers,
+        	'sources' => $sources,
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
@@ -829,7 +835,7 @@ class Reports extends CI_Controller
                 "total_surveys" => ($totalCompleteSurveys + $totalRefusedSurveys) . " (" . $totalSurveysPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => ($row['duration']>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
+                "rate" => ($totalDuration>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -1003,7 +1009,7 @@ class Reports extends CI_Controller
                 "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => ($row['duration']>0)?round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3):0
+                "rate" => ($totalDuration>0)?round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -1096,7 +1102,7 @@ class Reports extends CI_Controller
                 "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => round($totalAppointments/($totalDuration/3600),3)
+                "rate" => ($totalDuration>0)?round($totalAppointments/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
@@ -1200,7 +1206,7 @@ class Reports extends CI_Controller
                 "total_surveys" => ($totalCompleteSurveys + $totalRefusedSurveys) . " (" . $totalSurveysPercent . ")",
                 "total_dials" => (count($results) > 0)?$totalDials:0,
                 "duration" => $totalDuration,
-                "rate" => ($row['duration']>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
+                "rate" => ($totalDuration>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(

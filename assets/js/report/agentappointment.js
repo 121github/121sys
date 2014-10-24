@@ -54,6 +54,14 @@ var agentappointment = {
             $(this).css("color","green");
             agentappointment.agentappointment_panel()
         });
+        $(document).on("click", ".source-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            agentappointment.agentappointment_panel()
+        });
+        
         agentappointment.agentappointment_panel()
     },
     agentappointment_panel: function(agentappointment) {
