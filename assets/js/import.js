@@ -41,9 +41,9 @@
                                     },
                                     always: function(e, data) {
                                         $('#files').find('#file-status').text("File uploaded").removeClass('text-danger').addClass('text-success');
-                                        $('.goto-step-3').show();
                                     }
                                 }).on('fileuploaddone', function(e, data) {
+									importer.importcsv();
                                     var file = data.result.files[0];
                                     $('#files').find('#filename').text(file.name);
                                     $('#files').find('#file-status').text('');
@@ -57,6 +57,20 @@
 
 
 				},
+				importcsv:function(){
+					 $.ajax({
+                                url: helper.baseUrl + 'import/import_csv',
+                                type: "POST",
+                                dataType: "JSON"
+                            }).done(function(response) {
+					 		if(response.success){
+					 $('.goto-step-3').show();
+							} else {
+					flashalert.danger('There was a problem with the bash script');
+							}
+							});
+				},
+				
 				check_import:function(){
 					var ctype = $('#campaign option:selected').attr('ctype');
 					var error,urn,coname,tel,cotel,name;

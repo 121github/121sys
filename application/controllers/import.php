@@ -9,7 +9,11 @@ class Import extends CI_Controller
     {
         parent::__construct();
         user_auth_check(false);
+		$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Import_model');
+		$this->load->model('Form_model');
+        $this->load->model('Company_model');
+        $this->load->model('Contacts_model');
     }
     
     public function upload_file()
@@ -44,7 +48,7 @@ class Import extends CI_Controller
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
                 'plugins/jqfileupload/jquery.fileupload.js',
-                'data.js'
+                'import.js'
             ),
             'campaigns' => $campaigns,
             'sources' => $sources,
@@ -67,9 +71,14 @@ class Import extends CI_Controller
 		if($this->Import_model->check_import()){
         //if csv imports successfully
         echo json_encode(array(
-            "success" => true,
-            "output" => $output
+            "success" => true
         ));
+		}
+		else {
+		 echo json_encode(array(
+            "output" => $output	
+        ));	
+		
 		}
     }
     
