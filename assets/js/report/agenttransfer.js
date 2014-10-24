@@ -54,6 +54,13 @@ var agenttransfer = {
             $(this).css("color","green");
             agenttransfer.agenttransfer_panel()
         });
+        $(document).on("click", ".source-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            agenttransfer.agenttransfer_panel()
+        });
         agenttransfer.agenttransfer_panel()
     },
     agenttransfer_panel: function(agenttransfer) {
@@ -80,29 +87,34 @@ var agenttransfer = {
                         
                         var duration    = hours+' h '+minutes+' m';
 
+                        var style = "";
+                        var success = "";
                         if (val.total_transfers>0 && val.duration>0) {
                     		success = "success";
                     	}
                     	else if ((val.total_transfers>0) && (val.duration==0)) {
                     		success = "danger";
                     	}
+                    	else if (val.agent == "TOTAL") {
+                    		style = "font-weight:bold;";
+                    	}
                     	else {
                     		success = "warning";
                     	}
                         
 						$tbody
-							.append("<tr class='"+success+"'><td class='agent'>"
+						.append("<tr class='"+success+"' style='"+style+"'><td class='agent'>"
 									+ val.agent
 								+ "</td><td class='name'>"
 									+ val.name
 								+ "</td><td class='transfers'>"
-									+ val.transfers
+								+ 	"<a href='" + val.transfers_url + "'>" + val.transfers + "</a>"
 								+ "</td><td class='cross_transfers'>"
-									+ val.cross_transfers
+								+ 	"<a href='" + val.cross_transfers_url + "'>" + val.cross_transfers + "</a>"
 								+ "</td><td class='total transfers'>"
-									+ val.total_transfers
+								+ 	"<a href='" + val.total_transfers_url + "'>" + val.total_transfers + "</a>"
 								+ "</td><td class='total_dials'>"
-									+ val.total_dials
+								+ 	"<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
 								+ "</td><td class='template_cc' style='duration'>"
 									+ duration
 								+ "</td><td class='template_bcc' style='rate'>"

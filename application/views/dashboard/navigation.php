@@ -21,11 +21,28 @@
                    <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Advisor Dash</a>
                     </div>
                     <?php } ?>
+                    <!-- Management Dash -->
                     <?php if(in_array("management dash",$_SESSION['permissions'])){ ?>
-                    <div class="accordion-inner">
-                       <a href="<?php echo base_url() ?>dashboard/management" <?php echo @($dashboard=='management'?"class='active'":"") ?>>Management Dash</a>
-                    </div>
+                    <div class="accordion-group panel">
+			            <div class="accordion-inner">
+			                <a href="<?php echo base_url() ?>dashboard/management" <?php echo @($dashboard=='management'?"class='active'":"") ?>>Management Dash</a>
+			            </div>
+			            <div id="collapseTwoManagementDash" class="accordion-body <?php echo @($dashboard=='management'?"":"collapse") ?>">
+			                <div class="accordion-group submenu">
+			                    <div class="accordion-inner">
+			                    	<span id="agent_activity">Agent Activity</span>
+			                    </div>
+			                    <div class="accordion-inner">
+			                        <span id="agent_success_rate">Agent Success Rates</span>
+			                    </div>
+			                    <div class="accordion-inner">
+			                        <span id="agent_data">Agent Data</span>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
                     <?php } ?>
+                    <!-- End Campaign 3 -->
                 </div>
             </div>
         </div>

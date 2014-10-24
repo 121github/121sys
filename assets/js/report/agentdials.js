@@ -84,7 +84,7 @@ var agentdials = {
             	
             	$thead
             		.append("<tr>"
-            				+"<th>Agent</th>"
+            				+"<th>#</th>"
             				+"<th>Name</th>"
             				+"<th>"+totalHead+"</th>"
             				+"</tr>");

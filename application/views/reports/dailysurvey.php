@@ -79,7 +79,6 @@
 						<th>Name</th>
 						<th>Complete Surveys</th>
 						<th>Refused Surveys</th>
-						<th>Total Surveys</th>
 						<th>Total Dials</th>
 						<th>Duration</th>
 						<th>Rate (per hour)</th>

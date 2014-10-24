@@ -54,6 +54,14 @@ var agentsurvey = {
             $(this).css("color","green");
             agentsurvey.agentsurvey_panel()
         });
+        $(document).on("click", ".source-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            agentsurvey.agentsurvey_panel()
+        });
+        
         agentsurvey.agentsurvey_panel()
     },
     agentsurvey_panel: function(agentsurvey) {
@@ -80,30 +88,33 @@ var agentsurvey = {
                         
                         var duration    = hours+' h '+minutes+' m';
                         
-                        if (val.total_surveys>0 && val.duration>0) {
+                        var style = "";
+                        var success = "";
+                        if (val.complete_surveys>0 && val.duration>0) {
                     		success = "success";
                     	}
-                    	else if ((val.total_surveys>0) && (val.duration==0)) {
+                    	else if ((val.complete_surveys>0) && (val.duration==0)) {
                     		success = "danger";
+                    	}
+                    	else if (val.agent == "TOTAL") {
+                    		style = "font-weight:bold;";
                     	}
                     	else {
                     		success = "warning";
                     	}
                         
 						$tbody
-							.append("<tr class='"+success+"'><td class='agent'>"
+						.append("<tr class='"+success+"' style='"+style+"'><td class='agent'>"
 									+ val.agent
 								+ "</td><td class='name'>"
 									+ val.name
 								+ "</td><td class='complete_surveys'>"
-									+ val.complete_surveys
+									+ 	"<a href='" + val.complete_surveys_url + "'>" + val.complete_surveys + "</a>"
 								+ "</td><td class='refused_surveys'>"
-									+ val.refused_surveys
-								+ "</td><td class='total_surveys'>"
-									+ val.total_surveys
+									+ 	"<a href='" + val.refused_surveys_url + "'>" + val.refused_surveys + "</a>"
 								+ "</td><td class='total_dials'>"
-									+ val.total_dials
-								+ "</td><td class='template_cc' style='duration'>"
+									+ 	"<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
+									+ "</td><td class='template_cc' style='duration'>"
 									+ duration
 								+ "</td><td class='template_bcc' style='rate'>"
 									+ val.rate

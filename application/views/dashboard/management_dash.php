@@ -14,7 +14,7 @@
       <!-- /.row -->
       <div class="row">
         <div class="col-lg-12">
-         <div class="panel panel-primary">
+         <div class="panel panel-primary" id="a_activity">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Activity
               <div class="pull-right">
                 <div class="btn-group">
@@ -36,7 +36,7 @@
             <!-- /.panel-body --> 
           </div>
           
-           <div class="panel panel-primary">
+           <div class="panel panel-primary" id="a_success">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Success Rates
               <div class="pull-right">
                 <div class="btn-group">
@@ -59,7 +59,7 @@
           </div>
           
 
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" id="a_data">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent  Data
              <div class="pull-right">
                 <div class="btn-group">
@@ -107,6 +107,25 @@
 		$(document).on("click",".agent-data-filter",function(e){
 			e.preventDefault();
 			dashboard.agent_data($(this).attr('id'));
+		});
+
+		$("#agent_activity").on("click", function(){
+			$("html,body").animate(
+					{ scrollTop : $("#a_activity").offset().top  },
+					1500 
+			);
+		});
+		$("#agent_success_rate").on("click", function(){
+			$("html,body").animate(
+					{ scrollTop : $("#a_success").offset().top  },
+					1500 
+			);
+		});
+		$("#agent_data").on("click", function(){
+			$("html,body").animate(
+					{ scrollTop : $("#a_data").offset().top  },
+					1500 
+			);
 		});
 	});
 	</script> 

@@ -85,7 +85,7 @@ class Report_model extends CI_Model
     	return $this->db->query($qry)->result_array();
     }
     
-    public function get_campaign_report_by_outcome($options,$report)
+    public function get_campaign_report_by_outcome($options)
     {
     	$date_from = $options['date_from'];
 		$agent = $options['agent'];
@@ -93,15 +93,9 @@ class Report_model extends CI_Model
     	$campaign = $options['campaign'];
     	$team_manager = $options['team'];
     	$source = $options['source'];
-    	if($report=="transfers"){
-		$where = " and h.outcome_id in(70,71) ";	
-		} else if ($report=="surveys"){
-		$where = " and h.outcome_id = 60 ";	
-		} else if($report=="appointments"){
-		$where = " and h.outcome_id = 72 ";		
-		} else {
+    	
     	$where = "";
-		}
+    	
     	if (!empty($date_from)) {
     		$where .= " and date(contact) >= '$date_from' ";
     	}
@@ -186,6 +180,7 @@ class Report_model extends CI_Model
     	$campaign = $options['campaign'];
     	$agent = $options['agent'];
     	$team_manager = $options['team'];
+    	$source = $options['source'];
     	 
     	
     	$where = "";
@@ -204,6 +199,9 @@ class Report_model extends CI_Model
     	}
     	if (!empty($team_manager)) {
     		$where .= " and u.team_id = '$team_manager' ";
+    	}
+    	if (!empty($source)) {
+    		$where .= " and r.source_id = '$source' ";
     	}
     
     	$qry = "select u.user_id as agent, u.name as name, count(*) as count, o.outcome as outcome, (select sum(hr.duration) from hours hr where u.user_id=hr.user_id) as duration

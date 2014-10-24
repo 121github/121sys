@@ -86,10 +86,10 @@ var dailysurvey = {
                         
                         var duration    = hours+' h '+minutes+' m';
                         
-                    	if (val.total_surveys>0 && val.duration>0) {
+                    	if (val.complete_surveys>0 && val.duration>0) {
                     		success = "success";
                     	}
-                    	else if ((val.total_surveys>0) && (val.duration==0)) {
+                    	else if ((val.complete_surveys>0) && (val.duration==0)) {
                     		success = "danger";
                     	}
                     	else {
@@ -104,8 +104,6 @@ var dailysurvey = {
 									+ val.complete_surveys
 								+ "</td><td class='refused_surveys'>"
 									+ val.refused_surveys
-								+ "</td><td class='total_surveys'>"
-									+ val.total_surveys
 								+ "</td><td class='total_dials'>"
 									+ val.total_dials
 								+ "</td><td class='template_cc' style='duration'>"

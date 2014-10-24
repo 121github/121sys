@@ -75,9 +75,10 @@
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th>Agent</th>
+						<th>#</th>
 						<th>Name</th>
-						<th>Complete Surveys</th>
+						<th>Completed Surveys</th>
+						<th>Refused Surveys</th>
 						<th>Total Dials</th>
 						<th>Duration</th>
 						<th>Rate (per hour)</th>
