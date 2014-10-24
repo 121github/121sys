@@ -69,6 +69,7 @@ var importer = {
             if (response.success) {
                 $('.goto-step-3').show();
             } else {
+				$('#import-progress').html("<span class='red'>There was a problem creating the temperary table</span>");
                 flashalert.danger('There was a problem creating the temperary table');
             }
         });
@@ -85,6 +86,7 @@ var importer = {
             if (response.success) {
                 importer.check_import();
             } else {
+				$('#import-progress').html("<span class='red'>"+response.msg+"</span>");
                 flashalert.danger(response.msg);
             }
         });
@@ -100,6 +102,7 @@ var importer = {
             if (response.success) {
                 importer.start_import();
             } else {
+				$('#import-progress').html("<span class='red'>"+response.msg+"</span>");
                 flashalert.danger(response.msg);
             }
         });
@@ -114,6 +117,7 @@ var importer = {
             if (response.success) {
                 importer.format_data();
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while generating new keys</span>");
                 flashalert.danger("Import failed while generating new keys");
             }
         });
@@ -128,6 +132,7 @@ var importer = {
             if (response.success) {
                 importer.create_records();
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while formatting the data</span>");
                 flashalert.danger("Import failed while formatting the data");
             }
         });
@@ -147,6 +152,7 @@ var importer = {
             if (response.success) {
                 importer.create_record_details();
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while creating the records</span>");
                 flashalert.danger("Import failed while creating the records");
             }
         });
@@ -161,6 +167,7 @@ var importer = {
             if (response.success) {
                 importer.create_contacts();
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while adding the custom fields</span>");
                 flashalert.danger("Import failed while adding the custom fields");
             }
         });
@@ -175,6 +182,7 @@ var importer = {
             if (response.success) {
                 importer.create_contact_telephones();
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while adding the contacts</span>");
                 flashalert.danger("Import failed while adding the contacts");
             }
         });
@@ -188,6 +196,7 @@ var importer = {
         }).done(function(response) {
             if (response.success) {
                 importer.create_contact_addresses();
+				$('#import-progress').html("<span class='red'>Import failed while adding the contact telephone numbers</span>");
             } else {
                 flashalert.danger("Import failed while adding the contact telephone numbers");
             }
@@ -203,6 +212,7 @@ var importer = {
             if (response.success) {
                 importer.create_companies();
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while adding the contact addresses</span>");
                 flashalert.danger("Import failed while adding the contact addresses");
             }
         });
@@ -217,6 +227,7 @@ var importer = {
             if (response.success) {
                 importer.create_company_telephones();
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while adding companies</span>");
                 flashalert.danger("Import failed while adding companies");
             }
         });
@@ -231,6 +242,7 @@ var importer = {
             if (response.success) {
                 importer.create_company_addresses();
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while adding the company telephone numbers</span>");
                 flashalert.danger("Import failed while adding the company telephone numbers");
             }
         });
@@ -244,7 +256,9 @@ var importer = {
         }).done(function(response) {
             if (response.success) {
                 flashalert.success("The import was successful");
+				$('#import-progress').html("<span class='green'>Import was completed</span>");
             } else {
+				$('#import-progress').html("<span class='red'>Import failed while adding the company addresses</span>");
                 flashalert.danger("Import failed while adding the company addresses");
             }
         });
