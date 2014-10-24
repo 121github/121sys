@@ -75,7 +75,7 @@
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th>Agent</th>
+						<th>#</th>
 						<th>Name</th>
 						<th>Appointments</th>
 						<th>Total Dials</th>

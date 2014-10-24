@@ -87,25 +87,30 @@ var campaignappointment = {
                         
                         var duration    = hours+' h '+minutes+' m';
                         
+                        var style = "";
+                        var success = "";
                         if (val.appointments>0 && val.duration>0) {
                     		success = "success";
                     	}
                     	else if ((val.appointments>0) && (val.duration==0)) {
                     		success = "danger";
                     	}
+                    	else if (val.campaign == "TOTAL") {
+                    		style = "font-weight:bold;";
+                    	}
                     	else {
                     		success = "warning";
                     	}
                         
 						$tbody
-						.append("<tr class='"+success+"'><td class='campaign'>"
+						.append("<tr class='"+success+"' style='"+style+"'><td class='campaign'>"
 									+ val.campaign
 								+ "</td><td class='name'>"
 									+ val.name
 								+ "</td><td class='appointments'>"
-									+ val.appointments
+								+ 	"<a href='" + val.appointments_url + "'>" + val.appointments + "</a>"
 								+ "</td><td class='total_dials'>"
-									+ val.total_dials
+								+ 	"<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
 									+ "</td><td class='template_cc' style='duration'>"
 									+ duration
 								+ "</td><td class='template_bcc' style='rate'>"

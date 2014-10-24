@@ -82,32 +82,33 @@ var agentappointment = {
                         var minutes = Math.floor((val.duration - (hours * 3600)) / 60);
                         var seconds = val.duration - (hours * 3600) - (minutes * 60);
 
-                        if (hours   < 10) {hours   = "0"+hours;}
-                        if (minutes < 10) {minutes = "0"+minutes;}
-                        if (seconds < 10) {seconds = "0"+seconds;}
-                        
                         var duration    = hours+' h '+minutes+' m';
                         
+                        var style = "";
+                        var success = "";
                         if (val.appointments>0 && val.duration>0) {
                     		success = "success";
                     	}
                     	else if ((val.appointments>0) && (val.duration==0)) {
                     		success = "danger";
                     	}
+                    	else if (val.agent == "TOTAL") {
+                    		style = "font-weight:bold;";
+                    	}
                     	else {
                     		success = "warning";
                     	}
                         
 						$tbody
-							.append("<tr class='"+success+"'><td class='agent'>"
+						.append("<tr class='"+success+"' style='"+style+"'><td class='agent'>"
 									+ val.agent
 								+ "</td><td class='name'>"
 									+ val.name
 								+ "</td><td class='appointments'>"
-									+ val.appointments
+								+ 	"<a href='" + val.appointments_url + "'>" + val.appointments + "</a>"
 								+ "</td><td class='total_dials'>"
-									+ val.total_dials
-								+ "</td><td class='template_cc' style='duration'>"
+								+ 	"<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
+									+ "</td><td class='template_cc' style='duration'>"
 									+ duration
 								+ "</td><td class='template_bcc' style='rate'>"
 									+ val.rate

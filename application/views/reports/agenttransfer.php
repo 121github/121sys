@@ -75,7 +75,7 @@
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th>Agent</th>
+						<th>#</th>
 						<th>Name</th>
 						<th>Transfers</th>
 						<th>Cross Transfers</th>
