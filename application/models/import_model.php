@@ -12,6 +12,14 @@ class Import_model extends CI_Model
 	$this->db->query("drop table importcsv");	
 	}
 	
+	public function check_import(){
+	$query = $this->db->query("select * from importcsv");
+	if($query->num_rows()>0){
+	return true;	
+	}
+	}
+	
+	
  public function get_fields($table_name,$prefix='')
     {
 		if(empty($prefix)){
@@ -26,15 +34,18 @@ class Import_model extends CI_Model
 		foreach($table_fields_result as $row){
 		$table_fields[] = 	$prefix."_".$row['Field'];
 		}
-;
+;			$prefix .= "_";
 		//check which of the record fields are in the import table
 		foreach($import_fields_result as $row){
-		$import_field = $prefix."_".$row['Field'];
+		$import_field = $prefix.$row['Field'];
 		if(in_array($import_field,$table_fields)){
-			$this->firephp->log($import_field);
-		$this->firephp->log($table_fields);
-				$qry_fields .= ",".str_replace($prefix.'_','',$import_field);
-				$import_fields .= ",".str_replace($prefix.'_','',$import_field);
+				$qry_fields .= ",".preg_replace("/$prefix/",'',$import_field);
+				$import_fields .= ",".preg_replace("/$prefix/",'',$import_field,1);
+		}
+		
+				if(in_array($row['Field'],$table_fields)){
+				$qry_fields .= ",".preg_replace("/$prefix/",'',$import_field);
+				$import_fields .= ",".preg_replace("/$prefix/",'',$import_field,1);
 		}
 		}
 		return array("table_fields"=>$qry_fields,"import_fields"=>$import_fields);

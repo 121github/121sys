@@ -20,15 +20,61 @@ class Import extends CI_Controller
         ));
     }
     
-    
+    public function check_fields(){
+		
+		//if all fields are ok
+        echo json_encode(array(
+            "success" => true
+        ));
+	}
+	
+	  //this loads the data management view
+    public function index()
+    {
+        $campaigns = $this->Form_model->get_campaigns();
+        $sources   = $this->Form_model->get_sources();
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+			'pageId' => 'Dashboard',
+            'title' => 'Dashboard',
+            'page' => array(
+                'admin' => 'data'
+            ),
+            'javascript' => array(
+                'plugins/jqfileupload/vendor/jquery.ui.widget.js',
+                'plugins/jqfileupload/jquery.iframe-transport.js',
+                'plugins/jqfileupload/jquery.fileupload.js',
+                'data.js'
+            ),
+            'campaigns' => $campaigns,
+            'sources' => $sources,
+            'css' => array(
+                'dashboard.css',
+                'plugins/jqfileupload/jquery.fileupload.css'
+            )
+        );
+        $this->template->load('default', 'data/import.php', $data);
+    }
+	
+	
     public function import_csv()
     {
         $table    = "importcsv";
-        $csv_file = "sample_big.csv";
+        $csv_file = "import_sample.csv";
         $output   = array();
-		//$this->Import_model->drop_importcsv();
-        exec('bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table, $output);
-		$this->firephp->log($output);
+		
+        exec('bash importcsv.sh "' . $csv_file . '" ' . $table, $output);
+		if($this->Import_model->check_import()){
+        //if csv imports successfully
+        echo json_encode(array(
+            "success" => true,
+            "output" => $output
+        ));
+		}
+    }
+    
+	public function start_import(){
+		$this->import_csv();
 		$this->add_urns();
         $this->format_data();
         $this->create_records();
@@ -38,15 +84,9 @@ class Import extends CI_Controller
 		$this->create_contact_addresses();
         $this->create_companies();
         $this->create_company_telephones();
-		$this->create_company_addresses();
-		
-        //if csv imports successfully
-        echo json_encode(array(
-            "success" => true,
-            "output" => $output
-        ));
-    }
-    
+		$this->create_company_addresses();	
+	}
+	
     public function add_urns()
     {
         $query = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` = 'urn'");
@@ -61,7 +101,7 @@ class Import extends CI_Controller
         }
         $this->firephp->log($urn);
         echo json_encode(array(
-            "success" => true
+            "success" => true,"action"=>"configure unique keys"
         ));
     }
     
@@ -87,7 +127,7 @@ class Import extends CI_Controller
         }
         
         //format UK dates as SQL
-        $fields = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` in('custom_d1','custom_d2','custom_d3','custom_dt1','custom_dt2','custom_dt3','dob','lastcall','nextcall') ")->result_array();
+        $fields = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` in('d1','d2','d3','dt1','dt2','dt3','dob','lastcall','nextcall') ")->result_array();
         if ($fields > 0) {
             foreach ($fields as $row) {
                 $field = $row['Field'];
@@ -97,7 +137,7 @@ class Import extends CI_Controller
         
         //if data formats successfully
         echo json_encode(array(
-            "success" => true
+            "success" => true,"action"=>"format data"
         ));
     }
     
@@ -229,5 +269,73 @@ class Import extends CI_Controller
         
     }
     
+ 
+  public function import_fields($echo = true)
+    {
+        $fields['records']           = array(
+            "urn" => "urn",
+            "records_nextcall" => "Next Call",
+			"records_lastcall" => "Last call",
+            "records_urgent" => "Urgent",
+			"client_refs_client_ref"=> "Client Reference"
+        );
+        $fields['contacts']          = array(
+            "contact_fullname" => "Full name",
+            "contact_title" => "Title",
+            "contact_firstname" => "Firstname",
+            "contact_lastname" => "Lastname",
+			"contact_dob" => "Date of birth",
+            "contact_position" => "Position/Job",
+			"contact_email" => "Email",
+			"contact_website" => "Website",
+			"contact_facebook" => "Facebook",
+			"contact_linkedin" => "Linkedin"
+        );
+        $fields['contact_telephone'] = array(
+            "contact_tel_Telephone" => "Contact Telephone",
+            "contact_tel_Landline" => "Contact Landline",
+            "contact_te_Mobile" => "Contact Mobile",
+            "contact_tel_Work" => "Contact Work",
+            "contact_tel_Fax" => "Contact Fax"
+        );
+        if ($this->input->post('type') == "B2B") {
+            $fields['companies']         = array(
+                "company_name" => "Company Name",
+                "company_description" => "Description",
+				"company_website" => "Website",
+                "company_company_number" => "Company House Number",
+                "company_turnover" => "Turnover",
+                "company_employees" => "employees"
+            );
+            $fields['company_addresses'] = array(
+                "company_add1" => "Address 1",
+                "company_add2" => "Address 2",
+                "company_add3" => "Address 3",
+                "company_county" => "County",
+                "company_postcode" => "Postcode"
+            );
+            $fields['company_telephone'] = array(
+                "company_tel_Telephone" => "Company Telephone"
+            );
+        } else {
+            $fields['contact_addresses'] = array(
+                "contact_add1" => "Address 1",
+                "contact_add2" => "Address 2",
+                "contact_add3" => "Address 3",
+                "contact_county" => "County",
+                "contact_postcode" => "Postcode"
+            );
+        }
+        $custom = $this->Data_model->get_custom_fields($this->input->post('campaign'));
+        foreach ($custom as $k => $v) {
+            $fields['record_details'][$k] = $v;
+        }
+        if ($echo) {
+            echo json_encode($fields);
+        } else {
+            return $fields;
+        }
+    }
+ 
     
 }
