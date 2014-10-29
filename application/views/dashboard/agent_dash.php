@@ -14,14 +14,14 @@
       <!-- /.row -->
       <div class="row">
         <div class="col-lg-12">
-                <div class="panel panel-primary">
+                <div class="panel panel-primary" id="a_favorites">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites</div>
               <div class="panel-body favorites-panel">
              <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
         </div>
         
-         <div class="panel panel-primary">
+         <div class="panel panel-primary" id="a_callbacks">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Callbacks at around <?php echo date('g:i a'); ?>
               <div class="pull-right">
                 <div class="btn-group">
@@ -43,7 +43,7 @@
             <!-- /.panel-body --> 
           </div>
         
-         <div class="panel panel-primary">
+         <div class="panel panel-primary" id="a_missed_callbacks">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Missed Callbacks
               <div class="pull-right">
                 <div class="btn-group">
@@ -66,7 +66,7 @@
           </div>
           
           
-            <div class="panel panel-primary">
+            <div class="panel panel-primary" id="a_upcoming_callbacks">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Upcoming Callbacks
               <div class="pull-right">
                 <div class="btn-group">
@@ -125,4 +125,30 @@
 			dashboard.missed_callbacks_panel(<?php echo ($_SESSION['role']>1?$_SESSION['user_id']:"false") ?>,$(this).attr('id'))
 		});
 	});
+
+	$("#my_favorites").on("click", function(){
+		$("html,body").animate(
+				{ scrollTop : $("#a_favorites").offset().top  },
+				1500 
+		);
+	});
+	$("#callbacks").on("click", function(){
+		$("html,body").animate(
+				{ scrollTop : $("#a_callbacks").offset().top  },
+				1500 
+		);
+	});
+	$("#missed_callbacks").on("click", function(){
+		$("html,body").animate(
+				{ scrollTop : $("#a_missed_callbacks").offset().top  },
+				1500 
+		);
+	});
+	$("#upcoming_callbacks").on("click", function(){
+		$("html,body").animate(
+				{ scrollTop : $("#a_upcoming_callbacks").offset().top  },
+				1500 
+		);
+	});
+	
 	</script> 

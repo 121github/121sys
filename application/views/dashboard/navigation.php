@@ -16,11 +16,31 @@
                    <a href="<?php echo base_url() ?>dashboard/client" <?php echo @($dashboard=='client'?"class='active'":"") ?>>Client Dash</a>
                     </div>
                     <?php } ?>
+                    <!-- Advisor Dash -->
                     <?php if(in_array("agent dash",$_SESSION['permissions'])){ ?>
-                    <div class="accordion-inner">
-                   <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Advisor Dash</a>
-                    </div>
+                    <div class="accordion-group panel">
+			            <div class="accordion-inner">
+			                <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Advisor Dash</a>
+			            </div>
+			            <div id="collapseTwoManagementDash" class="accordion-body <?php echo @($dashboard=='agent'?"":"collapse") ?>">
+			                <div class="accordion-group submenu">
+			                    <div class="accordion-inner">
+			                    	<span id="my_favorites">My Favorites</span>
+			                    </div>
+			                    <div class="accordion-inner">
+			                        <span id="callbacks">Callbacks</span>
+			                    </div>
+			                    <div class="accordion-inner">
+			                        <span id="missed_callbacks">Missed Callbacks</span>
+			                    </div>
+			                    <div class="accordion-inner">
+			                        <span id="upcoming_callbacks">Upcoming Callbacks</span>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
                     <?php } ?>
+                    <!-- End Advisor -->
                     <!-- Management Dash -->
                     <?php if(in_array("management dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-group panel">
@@ -38,11 +58,14 @@
 			                    <div class="accordion-inner">
 			                        <span id="agent_data">Agent Data</span>
 			                    </div>
+			                    <div class="accordion-inner">
+			                        <span id="agent_current_hours">Agent Current Hours</span>
+			                    </div>
 			                </div>
 			            </div>
 			        </div>
                     <?php } ?>
-                    <!-- End Campaign 3 -->
+                    <!-- End Management -->
                 </div>
             </div>
         </div>

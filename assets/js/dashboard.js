@@ -313,6 +313,37 @@ var dashboard = {
                 $('.agent-data').append('<p>' + response.msg + '</p>');
             }
         });
+    },
+    /* the function for the agent current hours on the management dashboard */
+    agent_current_hours: function (campaign) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/agent_current_hours',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                campaign: campaign
+            },
+			beforeSend: function(){
+			            $('.agent-current-hours').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
+			}
+        }).done(function (response) {
+			 $('.agent-current-hours').empty();
+            var $row = "";
+            if (response.success) {
+            	var start = new Date;
+	            $.each(response.data, function (agent, campaigns) {
+	            	$row += '<tr id="duration"><td>' + agent + '</td>';
+	            	$.each(campaigns, function (campaign, duration) {
+	            		elapsed_seconds = ((new Date - start)/1000)+Number(duration);
+	            		$row += "<td>" + campaign + "</td>	";
+	            		$row += '<td id="time_box_date_'+agent+'">' + get_elapsed_time_string(elapsed_seconds) + '</td><td style="display:none;" id=time_box_seconds_'+agent+'">'+duration+'</td></tr>';
+	            	});
+	            });
+	            $('.agent-current-hours').append('<table class="table table-striped table-responsive"><thead><th>Agent</th><th>Campaign</th><th>Time on this campaign</th><th style="display:none;"></th></thead><tbody>' + $row + '</tbody></table>');
+            } else {
+                $('.agent-current-hours').append('<p>' + response.msg + '</p>');
+            }
+        });
     }
 
 }

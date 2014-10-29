@@ -79,8 +79,30 @@
               <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
 
-      <!-- /.row --> 
-    </div>
+      	<!-- /.row --> 
+    	</div>
+    	
+    	<div class="panel panel-primary" id="a_current">
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Current Hours
+              <div class="pull-right">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                    <?php foreach($campaigns as $row): ?>
+                    <li><a href="#" class="agent-current-hours-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                    <?php endforeach ?>
+                    <li class="divider"></li>
+                    <li><a class="agent-current-hours-filter" ref="#">Show All</a> </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body agent-current-hours">
+              <div id="progress"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+            </div>
+            <!-- /.panel-body --> 
+          </div>
     <!-- /#page-wrapper --></div>
 </div>
 <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
@@ -94,8 +116,9 @@
 <script>
 	$(document).ready(function(){
 		dashboard.agent_activity();
-		dashboard.agent_success()
-		dashboard.agent_data()
+		dashboard.agent_success();
+		dashboard.agent_data();
+		dashboard.agent_current_hours();
 		$(document).on("click",".agent-activity-filter",function(e){
 			e.preventDefault();
 			dashboard.agent_activity($(this).attr('id'));
@@ -108,7 +131,10 @@
 			e.preventDefault();
 			dashboard.agent_data($(this).attr('id'));
 		});
-
+		$(document).on("click",".agent-current-hours-filter",function(e){
+			e.preventDefault();
+			dashboard.agent_current_hours($(this).attr('id'));
+		});
 		$("#agent_activity").on("click", function(){
 			$("html,body").animate(
 					{ scrollTop : $("#a_activity").offset().top  },
@@ -127,5 +153,23 @@
 					1500 
 			);
 		});
+		$("#agent_current_hours").on("click", function(){
+			$("html,body").animate(
+					{ scrollTop : $("#a_current").offset().top  },
+					1500 
+			);
+		});
+		
+		var start = new Date;
+		setInterval(function() {
+			groups = $('[id $= duration]'); 
+	
+			$.each(groups, function(key, group) {
+			    inputs_seconds = $(group).children('[id^=time_box_seconds]');
+			    inputs_date = $(group).children('[id^=time_box_date]');
+			    elapsed_seconds = ((new Date - start)/1000)+Number(inputs_seconds.text());
+				inputs_date.text(get_elapsed_time_string(elapsed_seconds));
+			});
+		}, 1000);
 	});
 	</script> 
