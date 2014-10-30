@@ -769,7 +769,7 @@ class Database_model extends CI_Model
 			if($campaign->campaign_type_id=="1"){
 				$where .= ' and feature_name <> "Company"';
 			}
-			$this->db->where('feature_name not in ("Surveys","Appointment Setting","Emails") $where');
+			$this->db->where('feature_name not in ("Surveys","Appointment Setting","Emails")'.$where);
 			foreach ($this->db->get('campaign_features')->result() as $campaign_feature)
 			{
 				$this->db->query("INSERT INTO `campaigns_to_features` (`campaign_id`, `feature_id`) VALUES (".$campaign->campaign_id.", ".$campaign_feature->feature_id.")");

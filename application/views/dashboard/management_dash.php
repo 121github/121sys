@@ -83,7 +83,7 @@
     	</div>
     	
     	<div class="panel panel-primary" id="a_current">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Current Hours
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Current Hours (Today)
               <div class="pull-right">
                 <div class="btn-group">
                   <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
@@ -167,8 +167,14 @@
 			$.each(groups, function(key, group) {
 			    inputs_seconds = $(group).children('[id^=time_box_seconds]');
 			    inputs_date = $(group).children('[id^=time_box_date]');
+			    inputs_rate = $(group).children('[id^=rate_box_]');
+			    inputs_transfers = $(group).children('[id^=transfers_box_]');
+
 			    elapsed_seconds = ((new Date - start)/1000)+Number(inputs_seconds.text());
 				inputs_date.text(get_elapsed_time_string(elapsed_seconds));
+
+				rate = inputs_transfers.text()/(elapsed_seconds/60/60);
+				inputs_rate.text(rate.toFixed(2)+ ' per hour');
 			});
 		}, 1000);
 	});

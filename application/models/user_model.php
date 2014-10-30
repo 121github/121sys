@@ -191,10 +191,10 @@ class User_model extends CI_Model
     //Get the duration if the user is working in this campaign at this moment
     public function get_duration_working($campaign, $user_id)
     {
-    	$qry   = "SELECT MAX(id) as id,(sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time)))-(select if(exception is null,'0',exception*60) secs from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id' GROUP BY user_id having id in(select id from hours_logged where end_time is null)";
+    	$qry   = "SELECT campaign_name, MAX(id) as id,(sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time)))-(select if(exception is null,'0',exception*60) secs from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) secs FROM `hours_logged` inner join campaigns using (campaign_id) WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id' GROUP BY user_id having id in(select id from hours_logged where end_time is null)";
     	$query = $this->db->query($qry);
     	if ($query->num_rows()) {
-    		return $query->row()->secs;
+    		return $query->row();
     	} else {
     		return "0";
     	}
@@ -214,9 +214,9 @@ class User_model extends CI_Model
     public function get_positive($campaign, $user_id, $positive = 0)
     {
         if ($positive == "Transfers") {
-            $outcome_id = "70,71";
+            $outcome_id = "70";
         } else if ($positive == "Surveys") {
-            $outcome_id = "60";
+          	$outcome_id = "60";
         } else if ($positive == "Appointments") {
             $outcome_id = "72";
         }
@@ -224,6 +224,17 @@ class User_model extends CI_Model
         $query = $this->db->query($qry);
         if ($query->num_rows()) {
             return $query->row()->transfers;
+        } else {
+            return "0";
+        }
+    }
+    
+    public function get_cross_transfers_by_campaign_destination($campaign, $user_id)
+    {
+    	$qry   = "select count(*) as cross_transfers from cross_transfers ct inner join history using (history_id) where ct.campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
+    	$query = $this->db->query($qry);
+        if ($query->num_rows()) {
+            return $query->row()->cross_transfers;
         } else {
             return "0";
         }
