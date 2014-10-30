@@ -85,7 +85,7 @@
 <?php if($show_footer){ ?>
 <div class="navbar-inverse footer-stats">
 <div>Current Rate: <span id="rate_box">0</span></div>
-<div><span id="positive_outcome_name">Transfers</span>: <span id="transfers_box">0</span></div>
+<div><span id="transfers">Transfers</span>: <span id="transfers_box">0</span></div>
 <div>Records worked: <span id="worked_box">0</span></div>
 <div>Time on this campaign: <span id="time_box">00:00:00</span></div>
 </div>
@@ -132,22 +132,29 @@
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + ''; 
 <?php if(isset($_SESSION['user_id'])){ ?>
 check_session();	
+var refreshIntervalId;
 function check_session(){
+	if (refreshIntervalId) {
+		clearInterval(refreshIntervalId);	
+	}
 $.getJSON(helper.baseUrl+'user/check_session',function(response){
 	<?php if($show_footer&&isset($_SESSION['current_campaign'])){ ?>
-	if(response.positive_outcome.length>0){
-	$('#transfers_box').text(response.positive_count);
-	$('#worked_box').text(response.worked);
-	$('#rate_box').text(response.rate+ ' per hour');
-	$('#positive_outcome_name').text(response.positive_outcome);
-	}
-var start = new Date;
-
-setInterval(function() {
-  elapsed_seconds = ((new Date - start)/1000)+Number(response.duration)
-  $('#time_box').text(get_elapsed_time_string(elapsed_seconds));
-}, 1000);
-	$('#time_box').fadeIn(800);
+		if(response.positive_outcome.length>0){
+		$('#transfers_box').text(response.transfers);
+		$('#worked_box').text(response.worked);
+		$('#rate_box').text(response.rate+ ' per hour');
+		}
+		var start = new Date;
+	
+		refreshIntervalId = setInterval(function() {
+		  elapsed_seconds = ((new Date - start)/1000)+Number(response.duration)
+		  $('#time_box').text(get_elapsed_time_string(elapsed_seconds));
+		  rate = response.transfers/(elapsed_seconds/60/60);
+		  $('#rate_box').text(rate.toFixed(2)+ ' per hour');
+		}, 1000);
+		
+		$('#time_box').fadeIn(800);
+		$('#rate_box').fadeIn(800);
 	<?php } ?>
 });	
 	}

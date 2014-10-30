@@ -380,14 +380,36 @@ class Dashboard extends CI_Controller
 	    			foreach ($campaigns as $campaign) {
 	    				$duration = $this->User_model->get_duration_working($campaign['id'],$agent['id']);
 	    				if ($duration) {
-	    					$results[$agent['name']][$campaign['name']] = $duration;
+	    					$results[$agent['name']]['duration'] = $duration->secs;
+	    					$results[$agent['name']]['campaign'] = $duration->campaign_name;
+	    					
+	    					$worked = $this->User_model->get_worked($campaign['id'],$agent['id']);
+	    					$results[$agent['name']]['worked'] = $worked;
+	    					
+	    					$transfers = $this->User_model->get_positive($campaign['id'],$agent['id'], "Transfers");
+	    					$cross_transfers = $this->User_model->get_cross_transfers_by_campaign_destination($campaign['id'],$agent['id']);
+	    					$results[$agent['name']]['transfers'] = $transfers+$cross_transfers;
+	    					
+	    					$rate = ($duration->secs > 0)?number_format(($transfers+$cross_transfers)/($duration->secs/60/60),2):0;
+	    					$results[$agent['name']]['rate'] = $rate;
 	    				}
 	    			}
     			}
     			else {
-    				$duration = $this->User_model->get_duration($campaign_form,$agent['id']);
+    				$duration = $this->User_model->get_duration_working($campaign_form,$agent['id']);
     				if ($duration) {
-    					$results[$agent['name']][$campaign_form] = $duration;
+    					$results[$agent['name']]['duration'] = $duration->secs;
+    					$results[$agent['name']]['campaign'] = $duration->campaign_name;
+    					
+    					$worked = $this->User_model->get_worked($campaign_form,$agent['id']);
+    					$results[$agent['name']]['worked'] = $worked;
+    					
+    					$transfers = $this->User_model->get_positive($campaign_form,$agent['id'], "Transfers");
+    					$cross_transfers = $this->User_model->get_cross_transfers_by_campaign_destination($campaign_form,$agent['id']);
+    					$results[$agent['name']]['transfers'] = $transfers+$cross_transfers;
+    					
+    					$rate = ($duration->secs > 0)?number_format(($transfers+$cross_transfers)/($duration->secs/60/60),2):0;
+    					$results[$agent['name']]['rate'] = $rate;
     				}
     			}
     		}

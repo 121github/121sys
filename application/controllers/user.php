@@ -125,11 +125,12 @@ class User extends CI_Controller
 		$duration = $this->User_model->get_duration($campaign,$user_id);
 		$positive_outcome = $this->Records_model->get_positive_for_footer($campaign);
 		$worked = $this->User_model->get_worked($campaign,$user_id);
-		$positive_count = $this->User_model->get_positive($campaign,$user_id);
+		$transfers = $this->User_model->get_positive($campaign,$user_id, "Transfers");
+		$cross_transfers = $this->User_model->get_cross_transfers_by_campaign_destination($campaign,$user_id);
 		if($duration>0){
-		$rate = number_format($positive_count/($duration/60/60),2);
+		$rate = number_format(($transfers + $cross_transfers)/($duration/60/60),2);
 		} else { $rate = 0; }
-		echo json_encode(array("duration"=>$duration,"worked"=>$worked,"positive_count"=>$positive_count,"rate"=>$rate,"positive_outcome"=>$positive_outcome));
+		echo json_encode(array("duration"=>$duration,"worked"=>$worked,"transfers"=>$transfers+$cross_transfers,"rate"=>$rate,"positive_outcome"=>$positive_outcome));
 		}
 	}
 	

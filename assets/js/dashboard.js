@@ -331,15 +331,19 @@ var dashboard = {
             var $row = "";
             if (response.success) {
             	var start = new Date;
-	            $.each(response.data, function (agent, campaigns) {
+	            $.each(response.data, function (agent, campaign) {
 	            	$row += '<tr id="duration"><td>' + agent + '</td>';
-	            	$.each(campaigns, function (campaign, duration) {
-	            		elapsed_seconds = ((new Date - start)/1000)+Number(duration);
-	            		$row += "<td>" + campaign + "</td>	";
-	            		$row += '<td id="time_box_date_'+agent+'">' + get_elapsed_time_string(elapsed_seconds) + '</td><td style="display:none;" id=time_box_seconds_'+agent+'">'+duration+'</td></tr>';
-	            	});
+	            	//$.each(campaigns, function (campaign, duration) {
+	            		elapsed_seconds = ((new Date - start)/1000)+Number(campaign['duration']);
+	            		$row += "<td>" + campaign['campaign'] + "</td>	";
+	            		$row += '<td style="font-weight:bold;" id="time_box_date_'+agent+'">' + get_elapsed_time_string(elapsed_seconds) + '</td><td style="display:none;" id=time_box_seconds_'+agent+'">'+campaign['duration']+'</td>';
+	            		$row += "<td>" + campaign['worked'] + "</td>";
+	            		$row += '<td id="transfers_box_'+agent+'">' + campaign['transfers'] + '</td>';
+	            		$row += '<td id="rate_box_'+agent+'">' + campaign['rate']+ ' per hour' + '</td>';
+	            		$row += "</tr>";
+	            	//});
 	            });
-	            $('.agent-current-hours').append('<table class="table table-striped table-responsive"><thead><th>Agent</th><th>Campaign</th><th>Time on this campaign</th><th style="display:none;"></th></thead><tbody>' + $row + '</tbody></table>');
+	            $('.agent-current-hours').append('<table class="table table-striped table-responsive"><thead><th>Agent</th><th>Campaign</th><th>Time on this campaign</th><th>Records worked</th><th>Transfers</th><th>Current Rate</th><th style="display:none;"></th></thead><tbody>' + $row + '</tbody></table>');
             } else {
                 $('.agent-current-hours').append('<p>' + response.msg + '</p>');
             }
