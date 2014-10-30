@@ -78,6 +78,18 @@ class Form_model extends CI_Model
         $qry = "select campaign_id id,campaign_name name,campaign_type_desc type from campaigns left join campaign_types using(campaign_type_id) order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
+    
+    public function get_campaigns_by_user($user_id)
+    {
+    	$qry = "select campaign_id id,campaign_name name,campaign_type_desc type 
+    			from campaigns 
+    			left join campaign_types using(campaign_type_id)
+    			inner join users_to_campaigns using (campaign_id)
+    			where user_id = $user_id
+    			order by campaign_name";
+    	return $this->db->query($qry)->result_array();
+    }
+    
     public function get_user_campaigns()
     {
         $qry = "select campaign_id id,campaign_name name from campaigns where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 group by campaign_id order by campaign_name";

@@ -1,8 +1,4 @@
 <?php
-//sets the expirey time of the cookie
-ini_set('session.gc_maxlifetime', 2*60*60);
-session_name('121sys');
-session_start();
 //git test
 /*
  *---------------------------------------------------------------
@@ -22,7 +18,38 @@ session_start();
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	define('ENVIRONMENT', 'development');
+	//define('ENVIRONMENT', 'development');
+	
+$domain = explode('121sys', $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])[0];
+switch ($domain) {
+	case '121webhost/':
+		define('ENVIRONMENT', 'production');
+		$session_name = '121sys';
+		break;
+
+	case '121webhost/test_env/':
+		define('ENVIRONMENT', 'testing');
+		$session_name = '121sys_test';
+		break;
+
+	case '121webhost/accept_env/':
+		define('ENVIRONMENT', 'acceptance');
+		$session_name = '121sys_accept';
+		break;
+
+	default:
+		define('ENVIRONMENT', 'development');
+		$session_name = '121sys_dev';
+		break;
+}
+
+//sets the expirey time of the cookie
+ini_set('session.gc_maxlifetime', 2*60*60);
+session_name($session_name);
+session_start();
+$_SESSION['session_name'] = session_name();
+$_SESSION['environment'] = ENVIRONMENT;
+	
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

@@ -273,6 +273,21 @@ class Dashboard_model extends CI_Model
 	 left join (select user_id,count(*) completed from records  left join ownership o using(urn) left join campaigns using(campaign_id) where record_status = 3 $qry_filter group by user_id) c on c.user_id = o.user_id  
 	left join users on o.user_id = users.user_id where users.team_id is not null $qry_filter group by o.user_id";
         return $this->db->query($qry)->result_array();
-    }  
+    }
+
+    public function agent_current_hours($campaign)
+    {
+    	if (!empty($campaign)) {
+    		$qry_filter = " and campaigns.campaign_id = " . intval($campaign);
+    	} else {
+    		$qry_filter = "";
+    	}
+    	if(!empty($_SESSION['team_id'])){
+    		$qry_filter = " and team_id = ". $_SESSION['team'];
+    	}
+    	$qry_filter .= " and campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+    	$qry = "select `name`,count(*) dials,if(transfers is null,'0',transfers) transfers,campaign_name as campaign from history h left join campaigns using(campaign_id)  left join records using(urn) left join (select user_id,count(*) transfers from history left join campaigns using(campaign_id) left join records using(urn) where 1 and history.outcome_id in(70,71) $qry_filter group by user_id) sv on sv.user_id = h.user_id  left join users on h.user_id = users.user_id where users.team_id is not null $qry_filter group by h.user_id";
+    	return $this->db->query($qry)->result_array();
+    }
     
 }

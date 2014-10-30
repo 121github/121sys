@@ -188,6 +188,17 @@ class User_model extends CI_Model
         }
     }
     
+    //Get the duration if the user is working in this campaign at this moment
+    public function get_duration_working($campaign, $user_id)
+    {
+    	$qry   = "SELECT MAX(id) as id,(sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time)))-(select if(exception is null,'0',exception*60) secs from hours where date(`date`) = curdate() and hours.user_id = '$user_id' and hours.campaign_id = '$campaign')) secs FROM `hours_logged` WHERE date(start_time) = curdate() and campaign_id = '$campaign' and user_id = '$user_id' GROUP BY user_id having id in(select id from hours_logged where end_time is null)";
+    	$query = $this->db->query($qry);
+    	if ($query->num_rows()) {
+    		return $query->row()->secs;
+    	} else {
+    		return "0";
+    	}
+    }
     public function get_worked($campaign, $user_id)
     {
         

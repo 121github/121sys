@@ -14,6 +14,7 @@ class Dashboard extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Dashboard_model');
+        $this->load->model('User_model');
 		unset($_SESSION['navigation']);
     }
     
@@ -362,7 +363,42 @@ class Dashboard extends CI_Controller
                 "msg" => "No callbacks found"
             ));
         }
-        
+    }
+    
+    //this controller displays the current hours data in JSON format. It gets called by the javascript function "agent_current_hours"
+    public function agent_current_hours()
+    {
+    	$results = array();
+    	
+    	if ($this->input->is_ajax_request()) {
+    		$campaign_form = intval($this->input->post('campaign'));
+    		$agents = $this->Form_model->get_agents();
+    		
+    		foreach ($agents as $agent) {
+    			if (empty($campaign_form)) {
+	    			$campaigns = $this->Form_model->get_campaigns_by_user($agent['id']);
+	    			foreach ($campaigns as $campaign) {
+	    				$duration = $this->User_model->get_duration_working($campaign['id'],$agent['id']);
+	    				if ($duration) {
+	    					$results[$agent['name']][$campaign['name']] = $duration;
+	    				}
+	    			}
+    			}
+    			else {
+    				$duration = $this->User_model->get_duration($campaign_form,$agent['id']);
+    				if ($duration) {
+    					$results[$agent['name']][$campaign_form] = $duration;
+    				}
+    			}
+    		}
+    		
+    		echo json_encode(array(
+    				"success" => (count($results) > 0),
+    				"data" => $results,
+    				"msg" => "Nothing found"
+    		));
+    	}
+    
     }
     
     
