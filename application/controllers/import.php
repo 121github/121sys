@@ -15,22 +15,7 @@ class Import extends CI_Controller
         $this->load->model('Company_model');
         $this->load->model('Contacts_model');
     }
-    
-    public function upload_file()
-    {
-        //if file upload successfully
-        echo json_encode(array(
-            "success" => true
-        ));
-    }
-    
-    public function check_fields(){
-		
-		//if all fields are ok
-        echo json_encode(array(
-            "success" => true
-        ));
-	}
+
 	
 	  //this loads the data management view
     public function index()
