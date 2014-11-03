@@ -498,17 +498,21 @@ class Filter_model extends CI_Model
 		$table = $_SESSION['custom_view']['table'];
 		$fields = $_SESSION['custom_view']['fields'];
 		$array = $_SESSION['custom_view']['array'];
+		$group_by = "";	
+		$agent = "";
+		$outcome_selection = "if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome) outcome";
 		
 		if($table=="records"){
-		$table_columns = array("campaign_name","fullname","outcome","date_format(r.date_updated,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
-		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join ownership on records.urn = ownership.urn left join users on users.user_id = ownership.user_id left join data_sources on data_sources.source_id = records.source_id";
+		$table_columns = array("campaigns.campaign_name","fullname","outcome","date_format(r.date_updated,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
+		$qry = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join ownership on records.urn = ownership.urn left join users on users.user_id = ownership.user_id left join data_sources on data_sources.source_id = records.source_id";
 		$group_by =  " group by records.urn";
 		} else {
 		$join_records = " left join records on records.urn = history.urn ";
-		$table_columns = array("campaign_name","fullname","outcome","date_format(contact,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
-		$qry = "select campaign_name,$table.urn,fullname,outcome,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
-		$group_by = "";	
-		$agent = "";
+		$table_columns = array("campaigns.campaign_name","fullname","outcome","date_format(contact,'%d/%m/%y %H:%i')","date_format(records.nextcall,'%d/%m/%y %H:%i')","rand()");
+		$qry = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
+
+
+
 		//if agent they can only see todays
 		if(in_array("set call outcomes",$_SESSION['permissions'])){
 			$agent .= " and date(contact) = curdate() ";
@@ -523,6 +527,10 @@ class Filter_model extends CI_Model
 		$qry .= " left join status_list on records.record_status = status_list.record_status_id ";
 		}
 		if($table=="records"){
+		//join the cross transfer table
+		$qry .= " left join history on records.urn = history.urn and history.contact = records.date_updated";
+		$qry .= " left join cross_transfers on cross_transfers.history_id = history.history_id ";
+		$qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id ";
 		//only join the user tables if we need them
 		if(in_array("user",$fields)||in_array("group_id",$fields)||in_array("team",$fields)){
 		$qry .= " left join ownership on records.urn = ownership.urn ";
@@ -530,10 +538,13 @@ class Filter_model extends CI_Model
 		$qry .= " left join teams on users.team_id = teams.team_id ";
 		}
 		} else {
+		//join the cross transfer table
+		$qry .= " left join cross_transfers on cross_transfers.history_id = history.history_id ";
+		$qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id ";	
+			
 		if(in_array("user",$fields)||in_array("group_id",$fields)||in_array("team",$fields)){
 		$qry .= " left join users on history.user_id = users.user_id ";
 		$qry .= " left join teams on users.team_id = teams.team_id ";
-		
 		}	
 		}
 		//only join the survey tables if we need them
@@ -542,8 +553,26 @@ class Filter_model extends CI_Model
 		$qry .= " left join survey_info on surveys.survey_info_id = survey_info.survey_info_id ";
 		$qry .= " left join survey_answers on surveys.survey_id = survey_answers.survey_id ";
 		}
+			
+		//this gets ALL transfers including cross transfers
+		$all_transfer = "";
+		$all_dials = "";
+		if(in_array("transfers",$fields)){
+		$all_transfer = " and  (campaigns.campaign_id = '".$array['transfers']."' and outcomes.outcome_id=70 or cc.campaign_id = ".$array['transfers']." and outcomes.outcome_id='71')";
+		unset($array['outcome']);
+		unset($array['cross']);
+		unset($array['transfers']);
+		unset($array['campaigns.campaign_id']);
+		}		
+		if(in_array("alldials",$fields)){
+		$all_dials = " and  (campaigns.campaign_id = '".$array['alldials']."' and outcomes.outcome_id<>71 or cc.campaign_id = ".$array['alldials']." and outcomes.outcome_id = 71) ";
+		unset($array['outcome']);
+		unset($array['cross']);
+		unset($array['alldials']);
+		unset($array['campaigns.campaign_id']);
+		}
 		
-		$qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent";
+		$qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent $all_transfer $all_dials";
 		
 		        //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
@@ -589,7 +618,7 @@ class Filter_model extends CI_Model
 		
 		$qry .= $group_by; 
 		
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
 		
 		$start    = $options['start'];
 		$length    = $options['length'];

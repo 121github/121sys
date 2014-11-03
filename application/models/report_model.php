@@ -85,7 +85,7 @@ class Report_model extends CI_Model
     	return $this->db->query($qry)->result_array();
     }
     
-    public function get_campaign_report_by_outcome($options)
+    public function get_transfers_data($options)
     {
     	$date_from = $options['date_from'];
 		$agent = $options['agent'];
@@ -95,7 +95,7 @@ class Report_model extends CI_Model
     	$source = $options['source'];
     	
     	$where = "";
-    	
+    	$crosswhere = "";
     	if (!empty($date_from)) {
     		$where .= " and date(contact) >= '$date_from' ";
     	}
@@ -103,7 +103,8 @@ class Report_model extends CI_Model
     		$where .= " and date(contact) <= '$date_to' ";
     	}
     	if (!empty($campaign)) {
-    		$where .= " and ((h.outcome_id <> '71' and h.campaign_id = '$campaign') OR (h.outcome_id = '71' and ct.campaign_id = '$campaign')) ";
+    		$where .= " and h.campaign_id = '$campaign' ";
+			$crosswhere .= " and ct.campaign_id = '$campaign' ";
     	}
     	if (!empty($team_manager)) {
     		$where .= " and u.team_id = '$team_manager' ";
@@ -114,19 +115,13 @@ class Report_model extends CI_Model
     	if (!empty($source)) {
     		$where .= " and r.source_id = '$source' ";
     	}
-    
-    	$qry = "select c.campaign_id as campaign, c.campaign_name as name, count(*) as count, o.outcome as outcome, ct.campaign_id, (select sum(hr.duration) from hours hr where c.campaign_id=hr.campaign_id) as duration
-    			from history h
-    			inner join records r ON (r.urn = h.urn)
-    			inner join campaigns c ON (c.campaign_id = h.campaign_id)
-				inner join outcomes o ON (o.outcome_id = h.outcome_id)
-				inner join users u ON (u.user_id = h.user_id)
-    			left  join cross_transfers ct ON (ct.history_id = h.history_id)
-				where 1"
+    $joins = " left join users u using(user_id) left join records r using(urn) ";
+    	$qry = "select c.campaign_id,campaign_name,if(transfer_count is null,0,transfer_count) transfer_count,if(cross_count is null,0,cross_count) cross_count,d.dials+cross_count as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h left join campaigns c using(campaign_id)  left join 
+		(select count(*) transfer_count,h.campaign_id from history h $joins where h.outcome_id = 70 $where group by campaign_id) transfers on transfers.campaign_id = h.campaign_id left join 
+		(select count(*) cross_count,ct.campaign_id from history h $joins left join cross_transfers ct using(history_id) where h.outcome_id = 71 $crosswhere group by ct.campaign_id) crosstrans on crosstrans.campaign_id = h.campaign_id left join 
+		(select count(*) dials,h.campaign_id from history h $joins where h.outcome_id <> 71 $where group by campaign_id) d on d.campaign_id = h.campaign_id group by h.campaign_id "
     	;
-    	$qry .= $where;
-    
-    	$qry .= " group by h.outcome_id, campaign order by name asc";
+		$this->firephp->log($qry);
     	return $this->db->query($qry)->result_array();
     }
     
