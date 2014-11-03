@@ -974,7 +974,7 @@ class Database_model extends CI_Model
 		$agentRole = $this->db->get_where('user_roles', array('role_name' => 'Agent'))->result();
 		if ($this->db->table_exists('hours')) {
 			//Dumping data for table `campaign_features`
-			$this->db->query("INSERT INTO `hours_exception_type` (`exception_name`, `paied`) VALUES
+			$this->db->query("INSERT INTO `hours_exception_type` (`exception_name`, `paid`) VALUES
 				('Launch', 0),
 				('Break', 1),
 				('Training', 1)");
