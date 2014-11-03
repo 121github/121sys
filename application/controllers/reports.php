@@ -234,7 +234,7 @@ class Reports extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $data    = array();
-            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post());
+            $results = $this->Report_model->get_transfers_data($this->input->post());
             
             $date_from_search = $this->input->post("date_from");
             $date_to_search   = $this->input->post("date_to");
@@ -245,26 +245,15 @@ class Reports extends CI_Controller
             
             $aux = array();
             foreach ($results as $row) {
-                if ($row['outcome'] == 'Transfer') {
-                	$aux[$row['campaign']]['name'] = $row['name'];
-                	$aux[$row['campaign']]['duration'] = $row['duration'];
-                    $aux[$row['campaign']]['transfers'] = $row['count'];
-                    $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
-                } elseif ($row['outcome'] == 'Cross Transfer') {
-                	$campaign_transfer = $this->Report_model->get_campaign_by_id($row['campaign_id']);
-                	$aux[$row['campaign_id']]['name'] = $campaign_transfer[0]['campaign_name'];
-                	$aux[$row['campaign_id']]['duration'] = $row['duration'];
-                    $aux[$row['campaign_id']]['cross_transfers'] = $row['count'];
-                    $aux[$row['campaign_id']]['total_dials'] = (isset($aux[$row['campaign_id']]['total_dials'])) ? $aux[$row['campaign_id']]['total_dials'] + $row['count'] : $row['count'];
-                }
-                else {
-                	$aux[$row['campaign']]['name'] = $row['name'];
-                	$aux[$row['campaign']]['duration'] = $row['duration'];
-                	$aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];	
-                }
+				if($row['total_dials']){
+				$aux[$row['campaign_id']]['name'] = $row['campaign_name'];
+				$aux[$row['campaign_id']]['duration'] = $row['duration'];
+				$aux[$row['campaign_id']]['transfers'] = $row['transfer_count'];
+				$aux[$row['campaign_id']]['cross_transfers'] = $row['cross_count'];
+				$aux[$row['campaign_id']]['total_dials'] = $row['total_dials'];
+				}
             }
-            
-            
+
             $totalTransfers      = 0;
             $totalCrossTransfers = 0;
             $totalDials          = 0;
@@ -283,9 +272,10 @@ class Reports extends CI_Controller
 	            
 	            $urlCampaign = $url."/campaign/".$campaign;
 	            $transfersUrl = $urlCampaign."/outcome/Transfer";
-	            $crossTransfersUrl = $urlCampaign."/outcome/Cross Transfer";
-	            $totalTransfersUrl = $urlCampaign."/outcome/Transfer"."/outcome/Cross Transfer";
-	            
+	            $crossTransfersUrl = $url."/cross/".$campaign;
+	            $totalTransfersUrl = $url."/transfers/".$campaign;
+	            $allDialsUrl = $url."/alldials/".$campaign;
+				
 	            $data[]         = array(
                     "campaign" => $campaign,
                     "name" => $row['name'],
@@ -296,7 +286,7 @@ class Reports extends CI_Controller
                     "total_transfers" => $transfers + $crossTransfers,
 	            	"total_transfers_url" => $totalTransfersUrl,
                     "total_dials" => $row['total_dials'],
-	            	"total_dials_url" => $urlCampaign,
+	            	"total_dials_url" => $allDialsUrl,
 	            	"duration" => ($row['duration'])?$row['duration']:0,
 	            	"rate" => ($row['duration']>0)?round(($transfers + $crossTransfers)/($row['duration']/3600),3):0
                 );
