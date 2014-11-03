@@ -973,26 +973,48 @@ class Database_model extends CI_Model
 		//If the hours table exist, dumping sample data
 		$agentRole = $this->db->get_where('user_roles', array('role_name' => 'Agent'))->result();
 		if ($this->db->table_exists('hours')) {
+			//Dumping data for table `campaign_features`
+			$this->db->query("INSERT INTO `hours_exception_type` (`exception_name`, `paied`) VALUES
+				('Launch', 0),
+				('Break', 1),
+				('Training', 1)");
+			
+			if ($this->db->_error_message()) {
+				return "hours_exception_type";
+			}
+			
+			$hourExceptionTypes = $this->db->get('hours_exception_type')->result();
+			
 			$agentList = $this->db->get_where('users', array('role_id' => $agentRole[0]->role_id))->result();
 			foreach ($agentList as $agent) {
-				$campaign = $campaignList[array_rand($campaignList)];
+				$userCampaignList = $this->db->get_where('users_to_campaigns', array('user_id' => $agent->user_id))->result();
+				$campaign = $userCampaignList[array_rand($userCampaignList)];
 				for ($i=0;$i<=60;$i++) {
 					$time = time() - $i*24*3600;
 					$date = date($datestring, $time);
 					$duration = rand(3600, 14400);
-					
-					$exception = ($duration*60)%60;
 					
 					$comment = "";
 					if (rand(0,1)) {
 						$comment = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 					}
 					
-					$this->db->query("INSERT INTO `hours` (`user_id`, `campaign_id`, `duration`, `exception`, `date`, `comment`, `updated_id`, `updated_date`) VALUES
-							($agent->user_id, $campaign->campaign_id, $duration, $exception, '".$date."', '".$comment."', NULL, NULL)");
+					$this->db->query("INSERT INTO `hours` (`user_id`, `campaign_id`, `duration`, `date`, `comment`, `updated_id`, `updated_date`) VALUES
+							($agent->user_id, $campaign->campaign_id, $duration, '".$date."', '".$comment."', NULL, NULL)");
 						
 					if ($this->db->_error_message()) {
 						return "ownership";
+					}
+					
+					$hours_id = $this->db->insert_id();
+					$exception_type = $hourExceptionTypes[array_rand($hourExceptionTypes)];
+					
+					//Dump the exception hours
+					$this->db->query("INSERT INTO `hours_exception` (`hours_id`, `exception_type_id`) VALUES
+							($hours_id, $exception_type->exception_type_id)");
+					
+					if ($this->db->_error_message()) {
+						return "hours_exception";
 					}
 				}
 			}

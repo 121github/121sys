@@ -251,31 +251,30 @@ class Admin_model extends CI_Model
     	$team = $options['team'];
     	$where = "";
     	
-    	if (!empty($date_from)) {
-    		$where .= " and h.date >= '$date_from 00:00:00' ";
-    	}
-    	if (!empty($date_to)) {
-    		$where .= " and h.date <= '$date_to 23:59:59' ";
-    	}
     	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign'";
+    		$where .= " and c.campaign_id = '$campaign'";
     	}
     	if (!empty($agent)) {
-    		$where .= " and h.user_id = '$agent' ";
+    		$where .= " and u.user_id = '$agent' ";
     	}
     	    	if (!empty($team)) {
     		$where .= " and u.team_id = '$team' ";
     	}
-    	$qry = "select h.hours_id, u.name as user_name, h.campaign_id, c.campaign_name, h.duration, h.exception, DATE_FORMAT(h.date,'%Y-%m-%d') date, if(h.comment is null,'',h.comment) comment, if(m.name is not null,m.name,'-') as updated_name, if(h.updated_date is not null,h.updated_date,'-') as updated_date
-    			from hours h
-    			inner join users u ON (u.user_id = h.user_id)
-    			inner join campaigns c ON (c.campaign_id = h.campaign_id)
-    			left join users m ON (m.user_id = h.updated_id)
-    			where 1 ";
+
+    	$qry = "select DATE_FORMAT(h.date,'%d/%m/%Y') date, h.hours_id, u.name as user_name, u.user_id, c.campaign_id, c.campaign_name, h.duration, h.time_logged, if(h.comment is null,'',h.comment) comment, if(m.name is not null,m.name,'-') as updated_name, if(h.updated_date is not null,h.updated_date,'-') as updated_date
+		    	from users u
+		    	inner join users_to_campaigns uc ON (uc.user_id = u.user_id)
+		    	inner join campaigns c ON (c.campaign_id = uc.campaign_id)
+		    	left join hours h ON (h.user_id = u.user_id and h.campaign_id = uc.campaign_id and h.date >= '$date_from 00:00:00' and h.date <= '$date_to 23:59:59')
+		    	left join users m ON (m.user_id = h.updated_id)
+		    	where 1 ";
     	
     	$qry .= $where;
     	
     	$qry .= "order by date desc";
+
+        $this->firephp->log($qry);
+
     	return $this->db->query($qry)->result_array();
     }
     
