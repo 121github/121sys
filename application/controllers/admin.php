@@ -529,11 +529,25 @@ class Admin extends CI_Controller
     public function get_hours_data()
     {
     	if ($this->input->is_ajax_request()) {
-    		$hours = $this->Admin_model->get_hours($this->input->post());
+            $post = $this->input->post();
+            $date_from = $post['date_from'];
+            $date_to = $post['date_to'];
+            $result = array();
+            if ($date_from && $date_to) {
+                $totalDays = floor(((strtotime($date_to) - strtotime($date_from)) / (60 * 60 * 24)));
+                for ($i = 0; $i <= $totalDays; $i++) {
+                    $date = date('Y-m-d',strtotime($date_to." - ".$i." DAYS"));
+                    $post['date_from'] = $date;
+                    $post['date_to'] = $date;
+                    $hours = $this->Admin_model->get_hours($post);
+                    $date_ = date('d/m/Y',strtotime($date));
+                    $result[$date_] = $hours;
+                }
+            }
     		
     		echo json_encode(array(
     				"success" => true,
-    				"data" => $hours,
+    				"data" => $result,
     				"msg" => "Nothing found"
     		));
     		exit;

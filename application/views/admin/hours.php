@@ -26,7 +26,7 @@
 						                <input type="hidden" name="campaign">
 						                <input type="hidden" name="agent">
                                          <input type="hidden" name="team">
-					              	  	<button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "Last 7 days"; ?> </span></button>
+					              	  	<button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "Today"; ?> </span></button>
 					              	  </div>
 					                  <div class="btn-group">
 						                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
@@ -70,6 +70,7 @@
 										<th>Date</th>
 										<th>Name</th>
 										<th>Duration</th>
+										<th>Time Logged</th>
 										<th>Campaign</th>
 										<th>Updated</th>
 										<th>Updated Date</th>
