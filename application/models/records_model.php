@@ -407,7 +407,8 @@ class Records_model extends CI_Model
     
     public function get_history($urn)
     {
-        $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null,if(pd.description is null,'No Action Required',pd.description),outcome) as outcome, history_id, comments from history left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join users u using(user_id) where urn = '$urn' order by history_id desc";
+        $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null,if(pd.description is null,'No Action Required',pd.description),if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome)) as outcome, history.history_id, comments from history left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join users u using(user_id) left join cross_transfers on cross_transfers.history_id = history.history_id ";
+		$qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id where urn = '$urn' order by history_id desc";
         return $this->db->query($qry)->result_array();
     }
     
@@ -520,6 +521,7 @@ class Records_model extends CI_Model
         $hist["user_id"]  = $_SESSION['user_id'];
         $hist["role_id"]  = $_SESSION['role'];
         $hist["group_id"] = $_SESSION['group'];
+		$hist["team_id"] = (!empty($_SESSION['team'])?$_SESSION['team']:NULL);
          $this->db->insert("history", elements(array(
             "urn",
             "campaign_id",
@@ -531,6 +533,7 @@ class Records_model extends CI_Model
             "nextcall",
             "user_id",
             "role_id",
+			"team_id",
             "group_id",
             "contact_id",
             "progress_id",

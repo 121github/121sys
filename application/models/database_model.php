@@ -918,6 +918,8 @@ class Database_model extends CI_Model
             $i++;
 		}
 		
+		$this->db->query("update history set team_id = (select team_id from users where user_id = history.user_id)");
+		
 		//Dumping the cross_transfers
 		$cross_transfer = $this->db->get_where('outcomes', array('outcome' => 'Cross Transfer'))->result();
 		foreach ($this->db->get_where('history', array('outcome_id' => $cross_transfer[0]->outcome_id))->result() as $history) {
@@ -962,7 +964,7 @@ class Database_model extends CI_Model
 		}
 		
 		//dumping campaign xfers
-		$this->db->query("INSERT INTO `campaign_xfers` (`campaign_id`, `xfer_campaign`) VALUES ('1', '2'), ('2', '1')");
+		$this->db->query("INSERT INTO `campaign_xfers` (`campaign_id`, `xfer_campaign`) VALUES ('1', '2'), ('2', '1'),('1', '3'), ('2', '4'),('4', '1'), ('4', '2')");
 		if ($this->db->_error_message()) {
 					return "campaign_xfers";
 				}

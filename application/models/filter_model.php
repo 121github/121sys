@@ -500,6 +500,7 @@ class Filter_model extends CI_Model
 		$array = $_SESSION['custom_view']['array'];
 		$group_by = "";	
 		$agent = "";
+		$or = array();
 		$outcome_selection = "if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome) outcome";
 		
 		if($table=="records"){
@@ -557,6 +558,15 @@ class Filter_model extends CI_Model
 		//this gets ALL transfers including cross transfers
 		$all_transfer = "";
 		$all_dials = "";
+		$contact_qry = "";
+		if(in_array("contact-from",$fields)){
+			$contact_qry .= " and date(contact) >= '".$array['contact-from']."'";
+			unset($array['contact-from']);
+		}
+		if(in_array("contact-to",$fields)){
+			$contact_qry .= " and date(contact) <= '".$array['contact-to']."'";
+			unset($array['contact-to']);
+		}
 		if(in_array("transfers",$fields)){
 		$all_transfer = " and  (campaigns.campaign_id = '".$array['transfers']."' and outcomes.outcome_id=70 or cc.campaign_id = ".$array['transfers']." and outcomes.outcome_id='71')";
 		unset($array['outcome']);
@@ -565,15 +575,18 @@ class Filter_model extends CI_Model
 		unset($array['campaigns.campaign_id']);
 		}		
 		if(in_array("alldials",$fields)){
+			if(intval($array['alldials'])){
 		$all_dials = " and  (campaigns.campaign_id = '".$array['alldials']."' and outcomes.outcome_id<>71 or cc.campaign_id = ".$array['alldials']." and outcomes.outcome_id = 71) ";
+		} else {
+		$all_dials = " and  (outcomes.outcome_id<>71 or cc.campaign_id is not null) ";	
+		}
 		unset($array['outcome']);
 		unset($array['cross']);
 		unset($array['alldials']);
 		unset($array['campaigns.campaign_id']);
 		}
 		
-		$qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent $all_transfer $all_dials";
-		
+		$qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent $all_transfer $all_dials $contact_qry";
 		        //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause
@@ -581,45 +594,64 @@ class Filter_model extends CI_Model
                 $qry .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
             }
         }
-		
+		$where_array = array();
 		foreach($array as $key => $val){
+		$keysplit = explode(":",$key);
+		$key = $keysplit[0];
 		$split = explode(":",$val);
 		if(isset($split[1])){
 		$val = $split[0];
 		$operator = $split[1];
 		if($operator=="less"){
-			$qry .= " and ". $key ." < '". $val . "'";		
+			$where_array[$key] = " and ". $key ." < '". $val . "'";		
 		}
 		if($operator=="more"){
-			$qry .= " and ". $key ." > '". $val . "'";		
+			$where_array[$key] = " and ". $key ." > '". $val . "'";		
 		}
 		if($operator=="eless"){
-			$qry .= " and ". $key ." <= '". $val . "'";		
+			$where_array[$key] = " and ". $key ." <= '". $val . "'";		
 		}
 		if($operator=="emore"){
-			$qry .= " and ". $key ." >= '". $val . "'";		
+			$where_array[$key] = " and ". $key ." >= '". $val . "'";		
 		}
 		if($operator=="not"){
 			if($val=="null"){
-		$qry .= " and ". $key ." is not null ";		
+		$where_array[$key] = " and ". $key ." is not null ";		
 			} else {
-		$qry .= " and ". $key ." <> '". $val . "'";
+		$where_array[$key] = " and ". $key ." <> '". $val . "'";
 			}
 		} 
 		}
 		if(empty($operator)){
 			if($val=="null"){
-		$qry .= " and ". $key ." is null ";
+		$where_array[$key] = " and ". $key ." is null ";
 			} else {
-		$qry .= " and ". $key ." = '". $val . "'";		
+		$where_array[$key] = " and ". $key ." = '". $val . "'";		
 			}
 		}
+		if(isset($keysplit[1])){
+			if(isset($or[$key])){
+			$or[$key] .= str_replace("and","or",$where_array[$key]);
+			} else {
+			$or[$key] = str_replace("and","or",$where_array[$key]);	
+			}
+			unset($where_array[$key]);
 		}
 		
+		}
+		
+		foreach($or as $key => $or_clause){
+			if(!empty($or_clause)){
+		$where_array[$key] = " and (".substr($or_clause,3).") ";
+			}
+		}
+	
+		foreach($where_array as $where_clause){
+		$qry .= $where_clause;
+		}
+		
+		
 		$qry .= $group_by; 
-		
-		//$this->firephp->log($qry);
-		
 		$start    = $options['start'];
 		$length    = $options['length'];
 		$qry .= " order by CASE WHEN ".$table_columns[$options['order'][0]['column']]." IS NULL THEN 1 ELSE 0 END,".$table_columns[$options['order'][0]['column']]." ".$options['order'][0]['dir'];

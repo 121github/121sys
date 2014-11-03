@@ -39,6 +39,13 @@ var dailytransfer = {
             $(this).css("color","green");
             dailytransfer.dailytransfer_panel()
         });
+		   $(document).on("click", ".view-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="view"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            dailytransfer.dailytransfer_panel()
+        });
         $(document).on("click", ".agent-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
@@ -100,7 +107,8 @@ var dailytransfer = {
                     	else {
                     		success = "warning";
                     	}
-                        
+                       	
+						
 						$tbody
 						.append("<tr class='"+success+"' style='"+style+"'><td class='date'>"
 									+ val.date

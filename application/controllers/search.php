@@ -122,7 +122,7 @@ $this->_campaigns = campaign_access_dropdown();
         $uri   = $this->uri->uri_to_assoc(4);
         //this gets the table we want to look at - typically the records table or the history table
         $table = $this->uri->segment(3);
-        
+
         $search_fields_1 = array(
             "outcome" => "outcome_id",
             "survey" => "surveys.survey_info_id",
@@ -131,7 +131,9 @@ $this->_campaigns = campaign_access_dropdown();
             "status" => "record_status",
             "nextcall" => "nextcall",
             "score" => "answer",
-            "contact" => "contact",
+            "contact-from" => "contact-from",
+			"contact-to" => "contact-to",
+			"contact" => "date(contact)",
             "question" => "question_id",
             "dials" => "dials",
             "progress" => "progress_id",
@@ -151,14 +153,33 @@ $this->_campaigns = campaign_access_dropdown();
             "status" => "status_name",
             "nextcall" => "nextcall",
             "progress" => "description",
+			"contact-from" => "date(contact)",
+			"contact-to" => "date(contact)",
+			"contact" => "date(contact)",
 			"team" => "team_name",
 			"source" => "source_name",
-			"parked" => "parked_code"
+			"parked" => "parked_code",
+			"alldials" => "alldials",
+			"transfers" => "transfers"
         );
         $fields          = array();
         $array           = array();
         //loop through the array and change the field names for the database column names. Unset any values that we havent included in the search fields array above. 
         foreach ($uri as $k => $v) {
+			$keysplit = explode("_",$k);
+			if(isset($keysplit[1])){
+			$k = $keysplit[0];
+			  if (array_key_exists($k, $search_fields_1)) {
+                //if the value is a number then we look for the ID, if not we look for the text
+                if (intval($v)) {
+                    $array[$search_fields_1[$k].":".$keysplit[1]] = urldecode($v);
+                } else {
+                    $array[$search_fields_2[$k].":".$keysplit[1]]= urldecode($v);
+                }
+                //end if
+                $fields[] = $k;
+            }
+			} else {
             if (array_key_exists($k, $search_fields_1)) {
                 //if the value is a number then we look for the ID, if not we look for the text
                 if (intval($v)) {
@@ -169,6 +190,7 @@ $this->_campaigns = campaign_access_dropdown();
                 //end if
                 $fields[] = $k;
             }
+			}
         }
         
         //Now we can just stick the new array into an active record query to find the matching records!
