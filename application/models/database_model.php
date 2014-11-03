@@ -655,7 +655,6 @@ class Database_model extends CI_Model
 (3, 36),
 (3, 40),
 (3, 41),
-(3, 42),
 (3, 43),
 (4, 2),
 (4, 3),
@@ -699,8 +698,7 @@ class Database_model extends CI_Model
 (5, 28),
 (5, 30),
 (5, 35),
-(5, 36),
-(5, 42)");
+(5, 36)");
 		
 		
 		//Dumpingdata for table `data_sources` for Manual
