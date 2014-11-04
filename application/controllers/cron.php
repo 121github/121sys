@@ -33,14 +33,20 @@ class Cron extends CI_Controller
 		foreach($missing as $row){
 		$response = postcode_to_coords($row['postcode']);
 				if(!isset($response['error'])){
-		$this->Cron_model->update_missing($row['postcode'],$response);	
+		$this->Cron_model->update_missing($row['postcode'],$response);
+		echo $row['postcode']. " updated!<br>";	
+		} else {
+		echo $response['error']."<br>";
 		}
 		}
 		$missing = $this->Cron_model->get_missing_contact_postcodes();
 		foreach($missing as $row){
 		$response = postcode_to_coords($row['postcode']);
 		if(!isset($response['error'])){
-		$this->Cron_model->update_missing($row['postcode'],$response);	
+		$this->Cron_model->update_missing($row['postcode'],$response);
+		echo $row['postcode']. " updated!<br>";		
+		} else {
+		echo $response['error']."<br>";
 		}
 		}
 	}

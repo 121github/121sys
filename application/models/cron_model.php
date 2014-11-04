@@ -16,7 +16,7 @@ class Cron_model extends CI_Model
     }
     public function get_missing_company_postcodes()
     {
-        return $this->db->query("select postcode,contact_id id from contact_addresses left join uk_postcodes using(postcode) where uk_postcodes.lat is null")->result_array();
+        return $this->db->query("select postcode,company_id id from company_addresses left join uk_postcodes using(postcode) where uk_postcodes.lat is null")->result_array();
     }
     public function update_missing($postcode, $location)
     {
