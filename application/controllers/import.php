@@ -55,6 +55,7 @@ class Import extends CI_Controller
 		$csv_file = "import_sample.csv";	
 		}
         $output   = array();
+		//run the bash script
 		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table . ' ' . $database;
 		$this->firephp->log($command);
         exec($command,$output);
