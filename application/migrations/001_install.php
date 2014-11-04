@@ -160,7 +160,8 @@ class Migration_install extends CI_Migration
 		  `postcode` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
 		  `primary` tinyint(1) DEFAULT NULL,
 		  PRIMARY KEY (`address_id`),
-		  KEY `company_id` (`company_id`)
+		  KEY `company_id` (`company_id`),
+		  KEY `postcode` (`postcode`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         
         //Table structure for table `company_subsectors`
@@ -224,7 +225,9 @@ class Migration_install extends CI_Migration
 		  `country` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
 		  `postcode` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
 		  `primary` tinyint(1) DEFAULT NULL,
-		  PRIMARY KEY (`address_id`)
+		  PRIMARY KEY (`address_id`),
+		  KEY `contact_id` (`contact_id`),
+		  KEY `postcode` (`postcode`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
 
         //Table structure for table `contact_status`
