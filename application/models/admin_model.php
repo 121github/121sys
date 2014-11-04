@@ -241,7 +241,9 @@ class Admin_model extends CI_Model
         return $result;
     }
     
-    
+    /**
+     * Get the Hours in a particular date range
+     */
     public function get_hours($options)
     {
     	$date_from = $options['date_from'];
@@ -271,24 +273,32 @@ class Admin_model extends CI_Model
     	
     	$qry .= $where;
     	
-    	$qry .= "order by date desc";
+    	$qry .= "order by user_name asc";
 
     	return $this->db->query($qry)->result_array();
     }
     
-    
+    /**
+     * Add a new Hour Exception
+     */
     public function add_hour_exception($form)
     {
     	$this->db->insert("hours_exception", $form);
     	return $this->db->insert_id();
     }
     
+    /**
+     * Remove an Hour Exception
+     */
     public function delete_hour_exception($id)
     {
     	$this->db->where("exception_id", $id);
     	return $this->db->delete("hours_exception");
     }
     
+    /**
+     * Get the Hour Exceptions for a particular hour
+     */
     public function get_hour_exception($hours_id)
     {
     	$qry    = "select * 

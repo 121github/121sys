@@ -529,6 +529,12 @@ class Admin extends CI_Controller
     	$this->template->load('default', 'admin/hours.php', $data);
     }
     
+    /**
+     * Get the hours in a date range
+     * 
+     * POST
+     * 
+     */
     public function get_hours_data()
     {
     	if ($this->input->is_ajax_request()) {
@@ -556,15 +562,30 @@ class Admin extends CI_Controller
     	}
     }
     
+    /**
+     * Add a new Hour Exception
+     */
     public function add_hour_exception() {
     	$form = $this->input->post();
     	
    		$exception_id = $this->Admin_model->add_hour_exception($form);
         if ($exception_id) {
-            echo json_encode(array(
-                "success" => true,
-                "exception_id" => $exception_id
-            ));
+        	$hours_form = array();
+        	$hours_form['hours_id'] = $form['hours_id'];
+        	$hours_form['updated_date'] = date('Y-m-d H:i:s');
+        	$hours_form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+        	 
+        	$response = $this->Admin_model->update_hour($hours_form);
+        	if ($response) {
+        		echo json_encode(array(
+        				"success" => true,
+        				"exception_id" => $exception_id
+        		));
+        	} else {
+        		echo json_encode(array(
+        				"success" => false
+        		));
+        	}
         } else {
             echo json_encode(array(
                 "success" => false
@@ -572,15 +593,30 @@ class Admin extends CI_Controller
         }
     }
     
+    /**
+     * Remove an Hour Exception
+     */
     public function remove_hour_exception() {
     	$form = $this->input->post();
     	 
     	$response = $this->Admin_model->delete_hour_exception($form['exception_id']);
     	if ($response) {
-    		echo json_encode(array(
-    				"success" => true,
-    				"data" => $response
-    		));
+    		$hours_form = array();
+    		$hours_form['hours_id'] = $form['hours_id'];
+    		$hours_form['updated_date'] = date('Y-m-d H:i:s');
+    		$hours_form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+    		
+    		$response_hours = $this->Admin_model->update_hour($hours_form);
+    		if ($response_hours) {
+	    		echo json_encode(array(
+	    				"success" => true,
+	    				"data" => $response
+	    		));
+    		} else {
+	    		echo json_encode(array(
+	    				"success" => false
+	    		));
+	    	}
     	} else {
     		echo json_encode(array(
     				"success" => false
@@ -588,6 +624,9 @@ class Admin extends CI_Controller
     	}
     }
     
+    /**
+     * Get the Hour Exceptions for a particular Hour
+     */
     public function get_hour_exception() {
     	$form = $this->input->post();
     
@@ -599,14 +638,36 @@ class Admin extends CI_Controller
     		));
     	} else {
     		echo json_encode(array(
-    				"success" => false
+    				"success" => false,
+    				"message" => "No results"
     		));
     	}
     }
     
+    /**
+     * Save an Hour for an agent and campaing in a particular date
+     */
     public function save_hour()
     {
     	$form = $this->input->post();
+    	
+    	if (isset($form['date'])) {
+    		$date = explode('-', $form['date']);
+    		$day = $date[0];
+    		$month = $date[1];
+    		$year = $date[2];
+    		
+    		$form['date'] = $year.'-'.$month.'-'.$day;
+    	}
+    	
+    	if (isset($form['exception_id'])) {
+    		unset($form['exception_id']);
+    	}
+    	if (isset($form['exception-duration'])) {
+    		unset($form['exception-duration']);
+    	}
+    	
+    	$form['duration'] = $form['duration']*60;
     	$form['updated_date'] = date('Y-m-d H:i:s');
     	$form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
     	
