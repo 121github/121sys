@@ -38,16 +38,16 @@
 						                    <li><a class="campaign-filter" ref="#" style="color: green;">Show All</a> </li>
 						                  </ul>
 					                  </div>
-                                                        <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
-	                  <ul class="dropdown-menu pull-right" role="menu">
-	                    <?php foreach($team_managers as $row): ?>
-	                    <li><a href="#" class="team-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-	                    <?php endforeach ?>
-	                    <li class="divider"></li>
-	                    <li><a class="team-filter" ref="#" style="color: green;">Show All</a> </li>
-	                  </ul>
-                  </div>
+					                  <div class="btn-group">
+						                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+						                  <ul class="dropdown-menu pull-right" role="menu">
+						                    <?php foreach($team_managers as $row): ?>
+						                    <li><a href="#" class="team-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+						                    <?php endforeach ?>
+						                    <li class="divider"></li>
+						                    <li><a class="team-filter" ref="#" style="color: green;">Show All</a> </li>
+						                  </ul>
+					                  </div>
 					                  <div class="btn-group">
 						                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Agent</button>
 						                  <ul class="dropdown-menu pull-right" role="menu">
@@ -78,7 +78,7 @@
 										<th>Options</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody class="hours-body">
 									<tr>
 										<td colspan="3"><img
 											src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>

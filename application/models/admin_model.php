@@ -273,8 +273,6 @@ class Admin_model extends CI_Model
     	
     	$qry .= "order by date desc";
 
-        $this->firephp->log($qry);
-
     	return $this->db->query($qry)->result_array();
     }
     

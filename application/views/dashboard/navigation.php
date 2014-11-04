@@ -203,7 +203,7 @@
 			            </div>
 			        </div>
             
-             <div class="accordion-group panel">
+             		<div class="accordion-group panel">
 			            <div class="accordion-inner">
 			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThreeCampaigns">
 			                    Campaigns
@@ -256,10 +256,25 @@
                     </div>
                     <?php } ?> 
                     <?php if(in_array("view hours",$_SESSION['permissions'])){ ?>
-                    <div class="accordion-inner">
-                      <a href="<?php echo base_url() ?>admin/hours" <?php echo @($admin=='hours'?"class='active'":"") ?>>Hours</a>
-                    </div>   
-                    <?php } ?>    
+                   	<div class="accordion-group panel">
+                    	<div class="accordion-inner">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThreeHours">
+			                    Hours
+			                </a>
+			            </div>
+			            <div id="collapseThreeHours" class="accordion-body <?php echo @($admin=='hours'?"":"collapse") ?>">
+			                <div class="accordion-group submenu">
+			                	<div class="accordion-inner">          
+				                	<a href="<?php echo base_url() ?>admin/hours_settings" <?php echo @($inner=='hours_settings'?"class='active'":"") ?>>Settings</a>
+								</div>
+                                <div class="accordion-inner">          
+				                	<a href="<?php echo base_url() ?>admin/hours" <?php echo @($inner=='hours'?"class='active'":"") ?>>Agent hours</a>
+								</div>
+			                </div>
+			            </div>
+			        </div>
+                    <?php } ?>
+                      
                 </div>
             </div>
         </div>

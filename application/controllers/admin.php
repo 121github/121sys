@@ -493,7 +493,6 @@ class Admin extends CI_Controller
         }
     }
     
-    
     /* hours page functions */
     public function hours()
     {
@@ -501,13 +500,15 @@ class Admin extends CI_Controller
 		$teams = $this->Form_model->get_teams();
     	$campaigns = $this->Form_model->get_campaigns();
     	$agents = $this->Form_model->get_agents();
+    	$exception_types = $this->Form_model->get_hours_exception_type();
     	$this->Cron_model->update_hours($agents);
     	$data     = array(
     			'campaign_access' => $this->_campaigns,
     			'pageId' => 'Admin',
     			'title' => 'Admin | Hours',
     			'page' => array(
-    					'admin' => 'hours'
+    					'admin' => 'hours',
+    					'inner' => 'hours',
     			),
     			'javascript' => array(
     					'admin/hours.js',
@@ -520,8 +521,9 @@ class Admin extends CI_Controller
                 		'daterangepicker-bs3.css'
     			),
     			'campaigns' => $campaigns,
-          		 'agents' => $agents,
-				 'team_managers'=>$teams
+          		'agents' => $agents,
+				'team_managers'=>$teams,
+    			'exception_types'=>$exception_types
     	);
     	$this->template->load('default', 'admin/hours.php', $data);
     }
@@ -534,7 +536,7 @@ class Admin extends CI_Controller
             $date_to = $post['date_to'];
             $result = array();
             if ($date_from && $date_to) {
-                $totalDays = floor(((strtotime($date_to) - strtotime($date_from)) / (60 * 60 * 24)));
+            	$totalDays = floor(((strtotime($date_to) - strtotime($date_from)) / (60 * 60 * 24)));
                 for ($i = 0; $i <= $totalDays; $i++) {
                     $date = date('Y-m-d',strtotime($date_to." - ".$i." DAYS"));
                     $post['date_from'] = $date;
