@@ -10,6 +10,19 @@ class Cron_model extends CI_Model
         
     }
     
+	public function get_unformatted_company_postcodes(){
+		return $this->db->query("select postcode,company_id id from company_addresses where postcode not like '% %' and postcode is not null")->result_array();	
+	}
+	public function get_unformatted_contact_postcodes(){
+		return $this->db->query("select postcode,contact_id id from contact_addresses where postcode not like '% %' and postcode is not null")->result_array();	
+	}
+	public function format_company_postcode($postcode,$id){
+		return $this->db->query("update company_addresses set postcode = '$postcode' where company_id = '$id'");	
+	}
+	public function format_contact_postcode($postcode,$id){
+		return $this->db->query("update contact_addresses set postcode = '$postcode' where contact_id = '$id'");	
+	}
+	
 	public function clear_hours(){
 	$this->db->query("truncate table hours_logged");	
 	}

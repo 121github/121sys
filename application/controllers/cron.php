@@ -13,6 +13,21 @@ class Cron extends CI_Controller
 		$this->load->model('Cron_model');
     }
     
+	public function format_postcodes(){
+		$unformatted = $this->Cron_model->get_unformatted_contact_postcodes();
+		foreach($unformatted as $row){
+		$formatted_postcode = postcodeFormat($row['postcode'],$row['id']);
+		$this->Cron_model->format_contact_postcode($formatted_postcode);
+		echo "updated postcode ".$row['postcode']." to ".$formatted_postcode." on contact_id ".$row['id']."<br>";
+		}
+		$unformatted = $this->Cron_model->get_unformatted_company_postcodes();
+		foreach($unformatted as $row){
+		$formatted_postcode = postcodeFormat($row['postcode']);
+		$this->Cron_model->format_company_postcode($formatted_postcode,$row['id']);
+		echo "updated postcode ".$row['postcode']." to ".$formatted_postcode." on company_id ".$row['id']."<br>";
+		}
+	}
+	
     public function update_hours()
     {
         $agents = $this->Form_model->get_agents();
