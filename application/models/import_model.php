@@ -8,6 +8,19 @@ class Import_model extends CI_Model
         parent::__construct();
     }
 	
+	public function undo_changes(){
+		$this->db->query("delete from records where urn in (select urn from importcsv)");
+		$this->db->query("delete from record_details where urn in (select urn from importcsv)");
+		$this->db->query("delete from contacts where urn in (select urn from importcsv)");
+		$this->db->query("delete from companies where urn in (select urn from importcsv)");
+		$this->db->query("delete from client_refs where urn in (select urn from importcsv)");
+		$this->db->query("delete from company_telephone where company_id not in (select company_id from companies)");
+		$this->db->query("delete from contact_telephone where contact_id not in (select contact_id from contacts)");
+		$this->db->query("delete from company_address where company_id not in (select company_id from companies)");
+		$this->db->query("delete from contact_address where contact_id not in (select contact_id from contacts)");
+		return true;
+	}
+	
 		public function get_selected_fields(){
 	$fields = array();
 	$result = $this->db->query("SHOW COLUMNS FROM `importcsv`")->result_array();	

@@ -16,6 +16,12 @@ class Import extends CI_Controller
         $this->load->model('Contacts_model');
     }
 
+//clean up database if the import fails
+public function undo_changes(){
+if($this->db->Import_model->undo_changes()){
+echo json_encode(array("success"=>true));	
+}
+}
 	
 	  //this loads the data management view
     public function index()

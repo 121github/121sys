@@ -154,6 +154,7 @@ var importer = {
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while creating the records</span>");
                 flashalert.danger("Import failed while creating the records");
+				importer.undo_changes();
             }
         });
     },
@@ -169,6 +170,7 @@ var importer = {
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while adding the custom fields</span>");
                 flashalert.danger("Import failed while adding the custom fields");
+				importer.undo_changes();
             }
         });
     },
@@ -184,6 +186,7 @@ var importer = {
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while adding the contacts</span>");
                 flashalert.danger("Import failed while adding the contacts");
+				importer.undo_changes();
             }
         });
     },
@@ -197,6 +200,7 @@ var importer = {
             if (response.success) {
                 importer.create_contact_addresses();
             } else {
+				importer.undo_changes();
                 flashalert.danger("Import failed while adding the contact telephone numbers");
             }
         });
@@ -212,6 +216,7 @@ var importer = {
                 importer.create_companies();
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while adding the contact addresses</span>");
+				importer.undo_changes();
                 flashalert.danger("Import failed while adding the contact addresses");
             }
         });
@@ -227,7 +232,9 @@ var importer = {
                 importer.create_company_telephones();
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while adding companies</span>");
+				importer.undo_changes();
                 flashalert.danger("Import failed while adding companies");
+				importer.undo_changes();
             }
         });
     },
@@ -241,6 +248,7 @@ var importer = {
             if (response.success) {
                 importer.create_company_addresses();
             } else {
+				importer.undo_changes();
 				$('#import-progress').html("<span class='red'>Import failed while adding the company telephone numbers</span>");
                 flashalert.danger("Import failed while adding the company telephone numbers");
             }
@@ -259,9 +267,20 @@ var importer = {
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while adding the company addresses</span>");
                 flashalert.danger("Import failed while adding the company addresses");
+				importer.undo_changes();
             }
         });
     },
+	undo_changes: function(){
+        $('#import-progress').text($('#import-progress').text()+' ..Undoing changes');
+        $.ajax({
+            url: helper.baseUrl + 'import/undo_changes',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+			$('#import-progress').html("Import failed");
+		})
+	},
     show_campaign_type: function() {
         var ctype = $('#campaign option:selected').attr('ctype');
         $('#ctype-text').text("This is a " + ctype + " campaign.").show();
