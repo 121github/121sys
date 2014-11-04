@@ -980,7 +980,7 @@ class Database_model extends CI_Model
 		if ($this->db->table_exists('hours')) {
 			//Dumping data for table `campaign_features`
 			$this->db->query("INSERT INTO `hours_exception_type` (`exception_name`, `paid`) VALUES
-				('Launch', 0),
+				('Lunch', 0),
 				('Break', 1),
 				('Training', 1)");
 			

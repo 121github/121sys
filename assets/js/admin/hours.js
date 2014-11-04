@@ -63,6 +63,15 @@ var hours = {
         	hours.cancel();
         });
         
+        $(document).on('click', '.add-exception-btn', function(e) {
+        	e.preventDefault();
+        	hours.add_exception($(this));
+        });
+        $(document).on('click', '.remove-exception-btn', function(e) {
+        	e.preventDefault();
+        	hours.remove_exception($(this));
+        });
+        
         //start the function to load the hours into the table
         if ($('form').find('input[name="date_from"]').val() == '') {
         	$('form').find('input[name="date_from"]').val(moment().format('YYYY-MM-DD'));
@@ -159,11 +168,100 @@ var hours = {
 		$('#edit_hours_form').find('select[name="campaign_id"]').selectpicker('val',row.find('.campaign_id').text());
 		$('#edit_hours_form').find('input[name="date"]').val(row.find('.date').text());
 		
+		$('#edit_hours_form').find('input[name="duration"]').numeric();
+		$('#edit_hours_form').find('input[name="exception-duration"]').numeric();
+
+		hours.load_exceptions();
+		
         $('.ajax-table').fadeOut(1000, function() {
             $('#edit_hours_form').fadeIn();
         });
         
         $('.filter-form').fadeOut(1000, function() {
+            
+        });
+    },
+    //add exception
+    add_exception: function($btn) {
+    	var exception_type_id = $("#exception-select option:selected").val();
+    	var exception_name = $("#exception-select option:selected").text();
+    	var exception_duration = $('#edit_hours_form').find('input[name="exception-duration"]').val();
+    	
+    	
+    	if ((exception_type_id != 0) && (exception_duration > 0)) {
+    		$.ajax({
+                url: helper.baseUrl + 'admin/add_hour_exception',
+                type: "POST",
+                dataType: "JSON",
+                data: {'exception_type_id':exception_type_id, 'hours_id' : $('#edit_hours_form').find('input[name="hours_id"]').val(), 'duration' : exception_duration}
+            }).done(function(response) {
+                if (response.success) {
+                	var exception = {'exception_id':response.exception_id, 'exception_type_id':exception_type_id, 'exception_name' : exception_name, 'duration' : exception_duration}
+                	hours.append_exception(exception);
+                	$('#edit_hours_form').find('input[name="exception-duration"]').val("");
+        			$('#edit_hours_form').find('select[name="exception_id"]').selectpicker('val',0);
+        			
+                	flashalert.success("Exception addded");
+                }
+                else {
+                	flashalert.success("ERROR: Exception NOT added");
+                }
+                
+            });
+    	}
+    },
+    //append an exception
+    append_exception: function(exception){
+    	var $tbody = "<tr>" +
+        "<td><span class='hidden exception_id'>" +exception.exception_id + "</span>" + exception.exception_name +
+        "<td>" + exception.duration +
+        "</td><td><button class='btn btn-danger btn-xs remove-exception-btn'>Remove</button></td>" +
+        "</tr>";
+
+		$('.exceptions-body').append($tbody);
+    },
+    //remove exception from the list
+    remove_exception: function($btn) {
+    	var row = $btn.closest('tr');
+    	var exception_id = row.find('.exception_id').text();
+    	
+    	if (exception_id != 0) {
+    		$.ajax({
+                url: helper.baseUrl + 'admin/remove_hour_exception',
+                type: "POST",
+                dataType: "JSON",
+                data: {'exception_id':exception_id}
+            }).done(function(response) {
+                if (response.success) {
+                	row.remove();
+                	flashalert.success("Exception removed");
+                }
+                else {
+                	flashalert.success("ERROR: Exception NOT removed");
+                }
+                
+            });
+    	}
+    },
+    //load exceptions for this hour
+    load_exceptions: function() {
+    	var $tbody = $('.exceptions-body');
+    	$tbody.empty();
+    	
+    	$.ajax({
+            url: helper.baseUrl + 'admin/get_hour_exception',
+            type: "POST",
+            dataType: "JSON",
+            data: {'hours_id' : $('#edit_hours_form').find('input[name="hours_id"]').val()}
+        }).done(function(response) {
+            if (response) {
+            	$.each(response.data, function(key,val) {
+            		hours.append_exception(val);
+            	});
+            }
+            else {
+            	flashalert.success("ERROR: Error loading the exceptions for this hour");
+            }
             
         });
     },

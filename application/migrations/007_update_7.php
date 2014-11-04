@@ -36,6 +36,7 @@ class Migration_update_7 extends CI_Migration
     			`exception_id` int(11) NOT NULL AUTO_INCREMENT,
     			`hours_id` int(5) NOT NULL,
     			`exception_type_id` int(5) NOT NULL,
+    			`duration` int(20) NOT NULL DEFAULT '0' COMMENT 'in minutes',
     			PRIMARY KEY (`exception_id`)
     	) COMMENT 'Exception by campaign and agent'
     	ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");

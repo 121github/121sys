@@ -38,19 +38,29 @@
 	</div>
 	<h3>Exceptions</h3>
 	<div class="form-group input-hour-sm">
-	    <select name="campaign_id" class="selectpicker" id="group-select">
-	      <option value="Select an exception"></option>
-	      <?php foreach($exception_types as $exception_type){ ?>
-	      <option value="<?php echo $exception_type['id'] ?>"><?php echo $exception_type['name']." - "; echo ($exception_type['paid'])?"paid":"unpaid" ?></option>
-	      <?php } ?>
-	    </select>
-	    <button type="button" class="marl btn btn-success btn-xs add-btn">Add</button>
+		<div class="row">
+			<div class="col-xs-2">
+			    <select name="exception_id" class="selectpicker" id="exception-select">
+			      <option value=0>Select an exception</option>
+			      <?php foreach($exception_types as $exception_type){ ?>
+			      <option value="<?php echo $exception_type['id'] ?>"><?php echo $exception_type['name']." - "; echo ($exception_type['paid'])?"paid":"unpaid" ?></option>
+			      <?php } ?>
+			    </select>
+			</div>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-1">
+	    		<input type="integer" class="form-control" name="exception-duration" title="Enter the exception duration in minutes" required/>
+	    	</div>
+	    	<div class="col-xs-1">
+	    		<button type="button" class="marl btn btn-success btn-xs add-exception-btn">Add</button>
+	    	</div>
+	    </div>
 	</div>
 	<div class="panel panel-primary exceptions-panel" style="border: 0px solid black;">
 		<div class="panel-body hours-panel">
 			<div class="row">
-				<div class="col-xs-3">
-					<table class="exceptions">
+				<div class="col-xs-5">
+					<table class="table exceptions">
 						<tbody class="exceptions-body"></tbody>
 					</table>
 				</div>

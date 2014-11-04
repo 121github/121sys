@@ -276,6 +276,29 @@ class Admin_model extends CI_Model
     	return $this->db->query($qry)->result_array();
     }
     
+    
+    public function add_hour_exception($form)
+    {
+    	$this->db->insert("hours_exception", $form);
+    	return $this->db->insert_id();
+    }
+    
+    public function delete_hour_exception($id)
+    {
+    	$this->db->where("exception_id", $id);
+    	return $this->db->delete("hours_exception");
+    }
+    
+    public function get_hour_exception($hours_id)
+    {
+    	$qry    = "select * 
+    			from hours_exception
+    			inner join hours_exception_type using(exception_type_id)
+    			where hours_id = ".$hours_id;
+    	
+    	return $this->db->query($qry)->result_array();
+    }
+    
 	/**
      * Add a new hour
      *
