@@ -257,19 +257,19 @@ class Records_model extends CI_Model
     
     public function get_details($urn, $features)
     {
-        $select = "select r.urn,c.contact_id,`{$this->name_field}` fullname,title,firstname,lastname,c.email,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,a.latitude,a.longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
+        $select = "select r.urn,c.contact_id,`{$this->name_field}` fullname,title,firstname,lastname,c.email,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
         $from   = " from records r ";
         $from .= "  left join outcomes o using(outcome_id) left join progress_description pd using(progress_id) ";
 		$from .= "  left join park_codes pc using(parked_code) ";
-        $from .= "left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join campaigns camp using(campaign_id) ";
+        $from .= "left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join uk_postcodes con_pc on a.postcode = con_pc.postcode left join campaigns camp using(campaign_id) ";
         
         if (in_array(4, $features)) {
             $select .= " ,sticky.note as sticky_note ";
             $from .= " left join sticky_notes sticky using(urn) ";
         }
         if (in_array(2, $features)) {
-            $select .= ",com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,coma.latitude colatitude,coma.longitude colongitude";
-            $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join company_telephone comt using(company_id) left join company_subsectors using(company_id)  left join subsectors using(subsector_id) left join sectors using(sector_id)";
+            $select .= ",com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,com_pc.latitude colatitude,com_pc.longitude colongitude";
+            $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join uk_postcodes compc on compc.postcode = coma.postcode left join company_telephone comt using(company_id) left join company_subsectors using(company_id)  left join subsectors using(subsector_id) left join sectors using(sector_id)";
         }
         if (in_array(6, $features)) {
             $select .= " ,sc.script_name,sc.script_id,sc.expandable  ";

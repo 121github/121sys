@@ -74,7 +74,7 @@ class Contacts_model extends CI_Model
     public function get_contacts($urn)
     {
         
-        $qry     = "select c.urn,c.contact_id,`{$this->name_field}` fullname,title,firstname,a.primary is_primary,lastname,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,county,country,postcode,latitude,longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id)  where urn = '$urn' order by c.sort,c.contact_id";
+        $qry     = "select c.urn,c.contact_id,`{$this->name_field}` fullname,title,firstname,a.primary is_primary,lastname,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join uk_postcodes using(postcode) where urn = '$urn' order by c.sort,c.contact_id";
         $results = $this->db->query($qry)->result_array();
         //put the contact details into array
         // $this->firephp->log($qry);
@@ -122,10 +122,10 @@ class Contacts_model extends CI_Model
 	public function get_contact_addresses_without_coords() {
 	
 		$qry = "select *
-    			from contact_addresses
-    			where postcode IS NOT NULL
-    			and latitude IS NULL
-    			and longitude IS NULL ";
+    			from contact_addresses left join uk_postcodes using(postcode)
+    			where contact_addresses.postcode IS NOT NULL
+    			and lat IS NULL
+    			and lng e IS NULL ";
 			
 		return $this->db->query($qry)->result_array();
 	}

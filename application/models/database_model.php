@@ -894,7 +894,7 @@ class Database_model extends CI_Model
 			
 			//Address
 			$this->db->query("INSERT INTO `contact_addresses` (`contact_id`, `add1`, `add2`, `add3`, `county`, `country`, `postcode`, `primary`) VALUES
-					($contact_id, '".$address."', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1)");
+					($contact_id, '".$address."', NULL, NULL, NULL, NULL, NULL, 1)");
 			
 			if ($this->db->_error_message()) {
 				return "contact addresses";
