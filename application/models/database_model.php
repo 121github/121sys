@@ -737,16 +737,21 @@ class Database_model extends CI_Model
 				$this->db->query("INSERT INTO `campaigns` (`campaign_name`, `campaign_type_id`, `client_id`, `start_date`, `end_date`, `campaign_status`, `email_recipients`, `reassign_to`, `custom_panel_name`) VALUES
 				('Sample ".$campaign_type->campaign_type_desc." Campaign_".$i++."', '".$campaign_type->campaign_type_id."', ".$client->client_id.", '2014-09-30', NULL, 1, NULL, NULL, '')");
 			
+
+				
+				$campaign_id = $this->db->insert_id();
+				
 				$this->db->query("INSERT INTO `record_details_fields` (`campaign_id`, `field`, `field_name`) VALUES
-				($i,'c1','Product')");
-				$this->db->query("INSERT INTO `record_details_fields` (`campaign_id`, `field`, `field_name`) VALUES
-				($i,'d1','Renewal Date')");
-			
+				($campaign_id,'c1','Product'),
+				($campaign_id,'d1','Renewal Date'),
+				($campaign_id,'n1','Premium'),
+				($campaign_id,'c2','Notes'),
+				($campaign_id,'c3','Other')
+				");
+
 				if ($this->db->_error_message()) {
 					return "campaigns";
 				}
-				
-				$campaign_id = $this->db->insert_id();
 				
 				//Dump the outcomes to each campaign
 				foreach ($this->db->get('outcomes')->result() as $outcome) {

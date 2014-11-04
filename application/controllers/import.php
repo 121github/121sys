@@ -306,7 +306,8 @@ class Import extends CI_Controller
         $fields['contact_telephone'] = array(
             "contact_tel_Telephone" => "Contact Telephone",
             "contact_tel_Landline" => "Contact Landline",
-            "contact_te_Mobile" => "Contact Mobile",
+			"contact_tel_Home" => "Contact Home",
+            "contact_tel_Mobile" => "Contact Mobile",
             "contact_tel_Work" => "Contact Work",
             "contact_tel_Fax" => "Contact Fax"
         );
