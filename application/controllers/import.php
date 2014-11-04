@@ -54,6 +54,7 @@ echo json_encode(array("success"=>true));
 	
     public function import_csv()
     {
+	
 		$database = $this->db->database;
         $table    = "importcsv";
         $csv_file = $this->input->post('filename');
@@ -213,6 +214,7 @@ echo json_encode(array("success"=>true));
             $this->db->query($insert_query);
 			$this->db->query($update_import_table);
 			$this->db->query($insert_contact_ids);
+			$this->db->query($fix_contact_names);
         }
         echo json_encode(array(
             "success" => true
@@ -223,11 +225,13 @@ echo json_encode(array("success"=>true));
     public function create_contact_telephones()
     {
         $number_descriptions = $this->Import_model->get_telephone_numbers("contact");
+		if(!empty($number_descriptions)){
         foreach ($number_descriptions as $description) {
             $insert_query = "insert into contact_telephone (telephone_id,contact_id,description,telephone_number) select '',contact_id,'$description',contact_tel_" . $description . " from importcsv ";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
         }
+		}
         echo json_encode(array(
             "success" => true
         ));

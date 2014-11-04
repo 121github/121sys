@@ -76,8 +76,9 @@ class Import_model extends CI_Model
 				$import_fields .= ",".preg_replace("/$prefix/",'',$import_field,1);
 		}
 		}
+		if(!empty($qry_fields)){
 		return array("table_fields"=>$qry_fields,"import_fields"=>$import_fields);
-		
+		}
 	}
 	
 	
