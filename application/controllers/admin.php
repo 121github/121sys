@@ -513,6 +513,7 @@ class Admin extends CI_Controller
     			'javascript' => array(
     					'admin/hours.js',
     					'lib/moment.js',
+    					'lib/jquery.numeric.min.js',
     					'lib/daterangepicker.js',
     					'lib/bootstrap-datetimepicker.js'
     			),
@@ -552,9 +553,57 @@ class Admin extends CI_Controller
     				"data" => $result,
     				"msg" => "Nothing found"
     		));
-    		exit;
     	}
     }
+    
+    public function add_hour_exception() {
+    	$form = $this->input->post();
+    	
+   		$exception_id = $this->Admin_model->add_hour_exception($form);
+        if ($exception_id) {
+            echo json_encode(array(
+                "success" => true,
+                "exception_id" => $exception_id
+            ));
+        } else {
+            echo json_encode(array(
+                "success" => false
+            ));
+        }
+    }
+    
+    public function remove_hour_exception() {
+    	$form = $this->input->post();
+    	 
+    	$response = $this->Admin_model->delete_hour_exception($form['exception_id']);
+    	if ($response) {
+    		echo json_encode(array(
+    				"success" => true,
+    				"data" => $response
+    		));
+    	} else {
+    		echo json_encode(array(
+    				"success" => false
+    		));
+    	}
+    }
+    
+    public function get_hour_exception() {
+    	$form = $this->input->post();
+    
+    	$response = $this->Admin_model->get_hour_exception($form['hours_id']);
+    	if ($response) {
+    		echo json_encode(array(
+    				"success" => true,
+    				"data" => $response
+    		));
+    	} else {
+    		echo json_encode(array(
+    				"success" => false
+    		));
+    	}
+    }
+    
     public function save_hour()
     {
     	$form = $this->input->post();
