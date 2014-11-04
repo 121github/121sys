@@ -80,9 +80,10 @@ class Database extends CI_Controller
 	public function reset_data()
 	{
 		$status = $this->Database_model->init_data();
-		
+		$db = $this->db->database;
 		if($status=="success"){
-			echo json_encode(array("success"=>true,"msg"=>"The default data was restored"));
+			exec("mysql -u root -p12183c -h localhost $db < /var/www/uk_postcodes.sql",$output);
+			echo json_encode(array("success"=>true,"msg"=>"The default data was restored","postcode_status"=>$output));
 		} else {
 			echo json_encode(array("success"=>false,"msg"=>"Error restoring the default data. Failed on $status table"));
 		}
