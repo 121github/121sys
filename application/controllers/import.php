@@ -139,7 +139,7 @@ echo json_encode(array("success"=>true));
         }
         
         //format UK dates as SQL
-        $fields = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` in('d1','d2','d3','dt1','dt2','dt3','dob','lastcall','nextcall') ")->result_array();
+        $fields = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` in('d1','d2','d3','dt1','dt2','dt3','contact_dob','records_lastcall','records_nextcall') ")->result_array();
         if ($fields > 0) {
             foreach ($fields as $row) {
                 $field = $row['Field'];
@@ -208,7 +208,7 @@ echo json_encode(array("success"=>true));
             $insert_query        = "insert into contacts (contact_id " .  $qry_fields['table_fields'] . ") select '' " . $qry_fields['import_fields'] . " from importcsv";
             $update_import_table = "ALTER TABLE `importcsv` ADD `contact_id` INT NULL ,ADD INDEX ( `contact_id` )";
             $insert_contact_ids  = "update importcsv i left join contacts c using(urn) set i.contact_id = c.contact_id";
-            
+            $fix_contact_names = "update contacts set fullname = concat(title,' ',firstname,' ',lastname)";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
 			$this->db->query($update_import_table);
@@ -224,7 +224,7 @@ echo json_encode(array("success"=>true));
     {
         $number_descriptions = $this->Import_model->get_telephone_numbers("contact");
         foreach ($number_descriptions as $description) {
-            $insert_query = "insert into contact_telephone (telephone_id,contact_id,description,telephone_number) select '',contact_id,contact_tel_" . $description . ",'$description' from importcsv ";
+            $insert_query = "insert into contact_telephone (telephone_id,contact_id,description,telephone_number) select '',contact_id,'$description',contact_tel_" . $description . " from importcsv ";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
         }
