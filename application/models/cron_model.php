@@ -9,24 +9,43 @@ class Cron_model extends CI_Model
         parent::__construct();
         
     }
+    //functions to update missing postcodes from google api
+    public function get_missing_contact_postcodes()
+    {
+        return $this->db->query("select postcode,contact_id id from contact_addresses left join uk_postcodes using(postcode) where uk_postcodes.lat is null")->result_array();
+    }
+    public function get_missing_company_postcodes()
+    {
+        return $this->db->query("select postcode,contact_id id from contact_addresses left join uk_postcodes using(postcode) where uk_postcodes.lat is null")->result_array();
+    }
+    public function update_missing($postcode, $location)
+    {
+        return $this->db->query("insert into uk_postcodes set postcode = '$postcode',lat='" . $location['lat'] . "',lng='" . $location['lng'] . "'");
+        
+    }
+    //functions to format postcodes without spaces
+    public function get_unformatted_company_postcodes()
+    {
+        return $this->db->query("select postcode,company_id id from company_addresses where postcode not like '% %' and postcode is not null")->result_array();
+    }
+    public function get_unformatted_contact_postcodes()
+    {
+        return $this->db->query("select postcode,contact_id id from contact_addresses where postcode not like '% %' and postcode is not null")->result_array();
+    }
+    public function format_company_postcode($postcode, $id)
+    {
+        return $this->db->query("update company_addresses set postcode = '$postcode' where company_id = '$id'");
+    }
+    public function format_contact_postcode($postcode, $id)
+    {
+        return $this->db->query("update contact_addresses set postcode = '$postcode' where contact_id = '$id'");
+    }
     
-	public function get_unformatted_company_postcodes(){
-		return $this->db->query("select postcode,company_id id from company_addresses where postcode not like '% %' and postcode is not null")->result_array();	
-	}
-	public function get_unformatted_contact_postcodes(){
-		return $this->db->query("select postcode,contact_id id from contact_addresses where postcode not like '% %' and postcode is not null")->result_array();	
-	}
-	public function format_company_postcode($postcode,$id){
-		return $this->db->query("update company_addresses set postcode = '$postcode' where company_id = '$id'");	
-	}
-	public function format_contact_postcode($postcode,$id){
-		return $this->db->query("update contact_addresses set postcode = '$postcode' where contact_id = '$id'");	
-	}
-	
-	public function clear_hours(){
-	$this->db->query("truncate table hours_logged");	
-	}
-	
+    public function clear_hours()
+    {
+        $this->db->query("truncate table hours_logged");
+    }
+    
     public function update_hours($agents)
     {
         foreach ($agents as $agent) {

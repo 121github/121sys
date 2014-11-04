@@ -28,6 +28,23 @@ class Cron extends CI_Controller
 		}
 	}
 	
+		public function add_missing_postcodes(){
+		$missing = $this->Cron_model->get_missing_company_postcodes();
+		foreach($missing as $row){
+		$response = postcode_to_coords($row['postcode']);
+				if(!isset($response['error'])){
+		$this->Cron_model->update_missing($row['postcode'],$response);	
+		}
+		}
+		$missing = $this->Cron_model->get_missing_contact_postcodes();
+		foreach($missing as $row){
+		$response = postcode_to_coords($row['postcode']);
+		if(!isset($response['error'])){
+		$this->Cron_model->update_missing($row['postcode'],$response);	
+		}
+		}
+	}
+	
     public function update_hours()
     {
         $agents = $this->Form_model->get_agents();
