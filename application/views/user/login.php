@@ -1,7 +1,7 @@
 <?php echo validation_errors(); ?>
 
 <?php if($this->session->flashdata('error')||isset($_SESSION['logout_message'])): ?>
-    <div class="alert alert-danger alert-dismissable">  
+    <div class="alert alert-danger alert-dismissable" style="margin-top:10px">  
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>  
   <?php echo ($this->session->flashdata('error')?$this->session->flashdata('error'):$_SESSION['logout_message']); ?>  
 	</div>  

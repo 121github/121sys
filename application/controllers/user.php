@@ -29,7 +29,7 @@ class User extends CI_Controller
                     
                     $redirect = $this->input->post('redirect');
                     if ($redirect) {
-                        redirect(str_replace("121sys/","",base64_decode($redirect)));
+                        redirect(base64_decode($redirect));
                     } else {
 						if($_SESSION['role']==5||$_SESSION['role']==3){
 						redirect('dashboard/agent');
