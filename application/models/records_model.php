@@ -610,7 +610,7 @@ class Records_model extends CI_Model
                 $sqlfield = $row['field'];
             }
             
-            $fields .= $sqlfield . " as `" . $row['field_name'] . "`,";
+            $fields .= "if(`$sqlfield` is null,'-',`$sqlfield`)" . " as `" . $row['field_name'] . "`,";
         }
         
         $select = $fields . "detail_id ";
