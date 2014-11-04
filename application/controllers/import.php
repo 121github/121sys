@@ -48,13 +48,14 @@ class Import extends CI_Controller
 	
     public function import_csv()
     {
+		$database = $this->db->database;
         $table    = "importcsv";
         $csv_file = $this->input->post('filename');
 		if(empty($csv_file)){
 		$csv_file = "import_sample.csv";	
 		}
         $output   = array();
-		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table;
+		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table . ' ' . $database;
 		$this->firephp->log($command);
         exec($command,$output);
 		if($this->Import_model->check_import()){
