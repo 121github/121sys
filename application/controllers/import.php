@@ -141,6 +141,15 @@ class Import extends CI_Controller
             }
         }
         
+		        //format phone numebrs - append leading zero
+        $fields = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` like '%_tel_%' ")->result_array();
+        if ($fields > 0) {
+            foreach ($fields as $row) {
+                $field = $row['Field'];
+                $this->db->query("update importcsv set `$field` = concat('0',`$field`) where `$field` not like '0%' and `$field` not like '+%'");
+            }
+        }
+		
         //if data formats successfully
         echo json_encode(array(
             "success" => true,"action"=>"format data"
@@ -298,6 +307,7 @@ class Import extends CI_Controller
             "contact_title" => "Title",
             "contact_firstname" => "Firstname",
             "contact_lastname" => "Lastname",
+			"contact_gender" => "Gender",
 			"contact_dob" => "Date of birth",
             "contact_position" => "Position/Job",
 			"contact_email" => "Email",

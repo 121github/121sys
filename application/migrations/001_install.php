@@ -198,6 +198,7 @@ class Migration_install extends CI_Migration
 		  `title` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
 		  `firstname` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
 		  `lastname` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+		  `gender` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
 		  `position` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
 		  `dob` date DEFAULT NULL,
 		  `fax` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
