@@ -196,7 +196,6 @@ var importer = {
         }).done(function(response) {
             if (response.success) {
                 importer.create_contact_addresses();
-				$('#import-progress').html("<span class='red'>Import failed while adding the contact telephone numbers</span>");
             } else {
                 flashalert.danger("Import failed while adding the contact telephone numbers");
             }

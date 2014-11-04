@@ -88,7 +88,7 @@ class Import_model extends CI_Model
     {
 		$import_fields = "";
 		$qry_fields = "";
-		$import_fields_result = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` like '".$prefix."_add%' or `Field` = '".$prefix."_county' or `Field` = '".$prefix."_country' or `Field` = '".$prefix."_postcode'")->result_array();
+		$import_fields_result = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` like '".$prefix."_add1' or `Field` like '".$prefix."_add2' or `Field` like '".$prefix."_add3' or `Field` = '".$prefix."_county' or `Field` = '".$prefix."_country' or `Field` = '".$prefix."_postcode'")->result_array();
 		if(count($import_fields_result)>0){
 		foreach($import_fields_result as $row){
 			$qry_fields .= ",".str_replace($prefix.'_','',$row['Field']);

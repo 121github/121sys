@@ -98,7 +98,7 @@
                                             <option value="3">Update (update the selected fields)</option>
                                         </select>
                                     </div>
-                                    <div class="form-group input-group-sm pull-left marl">
+                                    <!--<div class="form-group input-group-sm pull-left marl">
                                         <p>Header options</p>
                                         <select name="header" class="selectpicker" id="more-options" data-width="150px">
                                             <option value="1">Ignore first row</option>
@@ -113,7 +113,7 @@
                                             <option value="YYYY-MM-DD">YYYY-MM-DD</option>
                                             <option value="YY-MM-DD">YY-MM-DD</option>
                                         </select>
-                                    </div>
+                                    </div>-->
                                     <div class="form-group input-group-sm pull-left">
                                         <p id='import-progress'>&nbsp;</p>
                                         <button class="btn btn-success pull-right pull-left marl" id="import">Import</button> <button class="btn btn-default pull-left goto-step-2 marl">Back</button>
