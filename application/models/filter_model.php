@@ -206,16 +206,6 @@ class Filter_model extends CI_Model
             "type" => "",
             "alias" => ""
         );
-        $filter_options["order_direction"]  = array(
-        		"table" => "",
-        		"type" => "",
-        		"alias" => ""
-        );
-        $filter_options["order_direction"]  = array(
-        		"table" => "",
-        		"type" => "",
-        		"alias" => ""
-        );
         $filter_options["postcode"]           = array(
         		"table" => "address",
         		"type" => "",
@@ -353,13 +343,13 @@ class Filter_model extends CI_Model
                 		$join['companies'] = " left join companies com on com.urn = r.urn ";
                 	}
                 	if (!isset($join['company_addresses'])) {
-                		$join['company_addresses'] = " left join company_addresses com_add on com_add.company_id = com.company_id ";
+                		$join['company_addresses'] = " left join company_addresses com_add on com_add.company_id = com.company_id left join uk_postcodes com_pc on comm_add.postcode = uk_postcodes.postcode ";
                 	}
                 	if (!isset($join['contacts'])) {
                 		$join['contacts']          = " left join contacts  con on con.urn = r.urn ";
                 	}
                 	if (!isset($join['contact_addresses'])) {
-                		$join['contact_addresses'] = " left join contact_addresses con_add on con.contact_id = con_add.contact_id ";
+                		$join['contact_addresses'] = " left join contact_addresses con_add on con.contact_id = con_add.contact_id left join uk_postcodes con_pc on comm_add.postcode = uk_postcodes.postcode";
                 	}
                 }
                 
@@ -423,23 +413,23 @@ class Filter_model extends CI_Model
                 		$where .= " and ( ";
                 		//Distance from the company or the contacts addresses
                 		$where .= " (";
-                		$where .= $filter['lat']." BETWEEN (com_add.latitude-".$distance.") AND (com_add.latitude+".$distance.")";
-	                	$where .= " and ".$filter['lng']." BETWEEN (com_add.longitude-".$distance.") AND (com_add.longitude+".$distance.")";
+                		$where .= $filter['lat']." BETWEEN (com_pc.lat-".$distance.") AND (com_pc.lat+".$distance.")";
+	                	$where .= " and ".$filter['lng']." BETWEEN (com_pc.lng-".$distance.") AND (com_pc.lng+".$distance.")";
 	                	$where .= " and ((((
 							ACOS(
-								SIN(".$filter['lat']."*PI()/180) * SIN(com_add.latitude*PI()/180) +
-								COS(".$filter['lat']."*PI()/180) * COS(com_add.latitude*PI()/180) * COS(((".$filter['lng']." - com_add.longitude)*PI()/180)
+								SIN(".$filter['lat']."*PI()/180) * SIN(com_pc.lat*PI()/180) +
+								COS(".$filter['lat']."*PI()/180) * COS(com_pc.lat*PI()/180) * COS(((".$filter['lng']." - com_pc.lng)*PI()/180)
 							)
 						)*180/PI())*160*0.621371192)) <= ".$distance.")";
 	                	
 	                	$where .= " ) or (";
 	                	
-	                	$where .= $filter['lat']." BETWEEN (con_add.latitude-".$distance.") AND (con_add.latitude+".$distance.")";
-	                	$where .= " and ".$filter['lng']." BETWEEN (con_add.longitude-".$distance.") AND (con_add.longitude+".$distance.")";
+	                	$where .= $filter['lat']." BETWEEN (con_pc.lat-".$distance.") AND (con_pc.lat+".$distance.")";
+	                	$where .= " and ".$filter['lng']." BETWEEN (con_pc.lng-".$distance.") AND (con_pc.lng+".$distance.")";
 	                	$where .= " and ((((
 							ACOS(
-								SIN(".$filter['lat']."*PI()/180) * SIN(con_add.latitude*PI()/180) +
-								COS(".$filter['lat']."*PI()/180) * COS(con_add.latitude*PI()/180) * COS(((".$filter['lng']." - con_add.longitude)*PI()/180)
+								SIN(".$filter['lat']."*PI()/180) * SIN(con_pc.lat*PI()/180) +
+								COS(".$filter['lat']."*PI()/180) * COS(con_pc.lat*PI()/180) * COS(((".$filter['lng']." - con_pc.lng)*PI()/180)
 							)
 						)*180/PI())*160*0.621371192)) <= ".$distance.")";
 	                	

@@ -158,8 +158,6 @@ class Migration_install extends CI_Migration
 		  `county` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
 		  `country` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
 		  `postcode` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
-		  `latitude` DECIMAL(18,12) NULL DEFAULT NULL,
-		  `longitude` DECIMAL(18,12) NULL DEFAULT NULL,
 		  `primary` tinyint(1) DEFAULT NULL,
 		  PRIMARY KEY (`address_id`),
 		  KEY `company_id` (`company_id`)
@@ -225,8 +223,6 @@ class Migration_install extends CI_Migration
 		  `county` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
 		  `country` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
 		  `postcode` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
-		  `latitude` DECIMAL(18,12) NULL DEFAULT NULL,
-		  `longitude` DECIMAL(18,12) NULL DEFAULT NULL,
 		  `primary` tinyint(1) DEFAULT NULL,
 		  PRIMARY KEY (`address_id`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
