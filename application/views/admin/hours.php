@@ -69,8 +69,7 @@
 									<tr>
 										<th>Date</th>
 										<th>Name</th>
-										<th>Duration</th>
-										<th>Time Logged</th>
+										<th>Duration (minutes)</th>
 										<th>Campaign</th>
 										<th>Updated</th>
 										<th>Updated Date</th>

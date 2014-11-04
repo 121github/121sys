@@ -94,9 +94,12 @@ var hours = {
             $.each(response.data, function(date, hours) {
                 if (hours.length) {
                     $.each(hours, function(i, val) {
-                        var hours = Math.floor(val.duration / 3600);
-                        var minutes = Math.floor((val.duration - (hours * 3600)) / 60);
-                        var seconds = val.duration - (hours * 3600) - (minutes * 60);
+                    	
+                    	var duration = (val.duration)?val.duration:'';
+                    	
+                        var hours = Math.floor(duration / 3600);
+                        var minutes = Math.floor((duration - (hours * 3600)) / 60);
+                        var seconds = duration - (hours * 3600) - (minutes * 60);
 
                         if (hours < 10) {
                             hours = "0" + hours;
@@ -108,7 +111,7 @@ var hours = {
                             seconds = "0" + seconds;
                         }
 
-                        var duration = hours + ' h ' + minutes + ' m ';
+                        var duration_time = hours + 'h ' + minutes + 'm ';
 
                         var hours = Math.floor(val.time_logged / 3600);
                         var minutes = Math.floor((val.time_logged - (hours * 3600)) / 60);
@@ -124,7 +127,7 @@ var hours = {
                             seconds = "0" + seconds;
                         }
 
-                        var time_logged = hours + ' h ' + minutes + ' m ';
+                        var time_logged = hours + 'h ' + minutes + 'm ';
 
                         if (val.comment.length) {
                             comment = "<a href='#'><span class='glyphicon glyphicon-comment tt pointer' data-placement='left' data-toggle='tooltip' title='" + val.comment + "'></span></a>";
@@ -132,20 +135,32 @@ var hours = {
                         else {
                             comment = "<span class='glyphicon glyphicon-comment' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
                         }
+                        
+                        if (duration) {
+                        	time = "<a href='#'><span class='glyphicon glyphicon-time tt pointer' data-placement='right' data-toggle='tooltip' title='" + duration_time + "'></span></a>";
+	                    }
+	                    else {
+	                    	time = "<span class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
+	                    }	
+                        
+                        var edit_button = (val.hours_id)?"<button type='button' class='btn btn-default btn-xs edit-btn'>Edit</button>":"";
 
                         $tbody.append("<tr>" +
                         "<td class='hours_id hidden'>" + val.hours_id +
                         "<td class='date'>" + date +
                         "</td><td class='user_name'>" + val.user_name +
-                        "</td><td><span class='hidden duration'>" + val.duration + "</span>" + duration +
-                        "</td><td>" + time_logged +
+                        "</td><td>" +
+	                        "<input type='text' size='4px' id='"+date.replace(/\//g, '-')+"_"+val.user_id+"_"+val.campaign_id+"' value='"+((duration)?Math.floor(duration/60):'')+"' onblur='hours.save_duration("+val.hours_id+", \""+date.replace(/\//g, '-')+"\", "+val.user_id+", "+val.campaign_id+", "+Math.floor(val.duration/60)+")' />" +
+	                        "<span class='hidden duration'>" + duration + "</span>" + time +
                         "<td class='campaign_name'><span class='hidden campaign_id'>" + val.campaign_id + "</span>" + val.campaign_name +
                         "</td><td class='updated_name'>" + val.updated_name +
                         "</td><td class='updated_date'>" + val.updated_date +
                         "</td><td class='comment hidden'>" + val.comment +
                         "</td><td>" + comment + "</td>" +
-                        "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button></td>" +
+                        "</td><td>"+edit_button+"</td>" +
                         "</tr>");
+                        
+                        $("#"+date.replace(/\//g, '-')+"_"+val.user_id+"_"+val.campaign_id).numeric();
                     });
                 }
                 $('.tt').tooltip();
@@ -162,8 +177,9 @@ var hours = {
     //edit an hour
     edit: function($btn) {
     	var row = $btn.closest('tr');
+    	var duration = row.find('.duration').text();
     	$('#edit_hours_form').find('input[name="hours_id"]').val(row.find('.hours_id').text());
-        $('#edit_hours_form').find('input[name="duration"]').val(row.find('.duration').text());
+        $('#edit_hours_form').find('input[name="duration"]').val((duration>0)?Math.floor(duration/60):0);
         $('#edit_hours_form').find('textarea[name="comment"]').val(row.find('.comment').text());
 		$('#edit_hours_form').find('select[name="campaign_id"]').selectpicker('val',row.find('.campaign_id').text());
 		$('#edit_hours_form').find('input[name="date"]').val(row.find('.date').text());
@@ -186,28 +202,33 @@ var hours = {
     	var exception_type_id = $("#exception-select option:selected").val();
     	var exception_name = $("#exception-select option:selected").text();
     	var exception_duration = $('#edit_hours_form').find('input[name="exception-duration"]').val();
+    	var hours_id = $('#edit_hours_form').find('input[name="hours_id"]').val();
     	
-    	
-    	if ((exception_type_id != 0) && (exception_duration > 0)) {
-    		$.ajax({
-                url: helper.baseUrl + 'admin/add_hour_exception',
-                type: "POST",
-                dataType: "JSON",
-                data: {'exception_type_id':exception_type_id, 'hours_id' : $('#edit_hours_form').find('input[name="hours_id"]').val(), 'duration' : exception_duration}
-            }).done(function(response) {
-                if (response.success) {
-                	var exception = {'exception_id':response.exception_id, 'exception_type_id':exception_type_id, 'exception_name' : exception_name, 'duration' : exception_duration}
-                	hours.append_exception(exception);
-                	$('#edit_hours_form').find('input[name="exception-duration"]').val("");
-        			$('#edit_hours_form').find('select[name="exception_id"]').selectpicker('val',0);
-        			
-                	flashalert.success("Exception addded");
-                }
-                else {
-                	flashalert.success("ERROR: Exception NOT added");
-                }
-                
-            });
+    	if (hours_id > 0) {
+	    	if ((exception_type_id != 0) && (exception_duration > 0)) {
+	    		$.ajax({
+	                url: helper.baseUrl + 'admin/add_hour_exception',
+	                type: "POST",
+	                dataType: "JSON",
+	                data: {'exception_type_id':exception_type_id, 'hours_id' : hours_id, 'duration' : exception_duration}
+	            }).done(function(response) {
+	                if (response.success) {
+	                	var exception = {'exception_id':response.exception_id, 'exception_type_id':exception_type_id, 'exception_name' : exception_name, 'duration' : exception_duration}
+	                	hours.append_exception(exception);
+	                	$('#edit_hours_form').find('input[name="exception-duration"]').val("");
+	        			$('#edit_hours_form').find('select[name="exception_id"]').selectpicker('val',0);
+	        			
+	                	flashalert.success("Exception addded");
+	                }
+	                else {
+	                	flashalert.danger("ERROR: Exception NOT added");
+	                }
+	                
+	            });
+	    	}
+    	}
+    	else {
+    		flashalert.danger("You need to set the duration before");
     	}
     },
     //append an exception
@@ -230,14 +251,14 @@ var hours = {
                 url: helper.baseUrl + 'admin/remove_hour_exception',
                 type: "POST",
                 dataType: "JSON",
-                data: {'exception_id':exception_id}
+                data: {'exception_id':exception_id, 'hours_id' : $('#edit_hours_form').find('input[name="hours_id"]').val()}
             }).done(function(response) {
                 if (response.success) {
                 	row.remove();
                 	flashalert.success("Exception removed");
                 }
                 else {
-                	flashalert.success("ERROR: Exception NOT removed");
+                	flashalert.danger("ERROR: Exception NOT removed");
                 }
                 
             });
@@ -262,31 +283,48 @@ var hours = {
             else {
             	flashalert.success("ERROR: Error loading the exceptions for this hour");
             }
-            
         });
     },
     //save a team
     save: function($btn) {
-    	if (parseInt($('#edit_hours_form').find('input[name="duration"]').val()) - parseInt($('#edit_hours_form').find('input[name="exception"]').val()) <= 0) {
-    		flashalert.danger("ERROR: hour NOT saved. The (duration - exception) can not be < 0");
-    	}
-    	else {
-    		$.ajax({
-                url: helper.baseUrl + 'admin/save_hour',
-                type: "POST",
-                dataType: "JSON",
-                data: $btn.closest('form').serialize()
-            }).done(function(response) {
-                hours.load_hours();
-                hours.hide_edit_form();
-                if (response) {
-                	flashalert.success("hour saved");
-                }
-                else {
-                	flashalert.success("ERROR: hour NOT saved");
-                }
-                
-            });
+		$.ajax({
+            url: helper.baseUrl + 'admin/save_hour',
+            type: "POST",
+            dataType: "JSON",
+            data: $btn.closest('form').serialize()
+        }).done(function(response) {
+            hours.load_hours();
+            hours.hide_edit_form();
+            if (response) {
+            	flashalert.success("Hour saved");
+            }
+            else {
+            	flashalert.success("ERROR: Hour NOT saved");
+            }
+            
+        });
+    },
+    save_duration: function(hours_id, date, user_id, campaign_id, old_duration) {
+    	var duration = $("#"+date+"_"+user_id+"_"+campaign_id).val();
+    	var data = {'hours_id':hours_id, 'date':date, 'user_id':user_id, 'campaign_id':campaign_id, 'duration': duration};
+    	
+    	if (duration && (duration != old_duration)) {
+	    	$.ajax({
+	            url: helper.baseUrl + 'admin/save_hour',
+	            type: "POST",
+	            dataType: "JSON",
+	            data: data
+	        }).done(function(response) {
+	            hours.load_hours();
+	            hours.hide_edit_form();
+	            if (response) {
+	            	flashalert.success("Hour saved");
+	            }
+	            else {
+	            	flashalert.success("ERROR: Hour NOT saved");
+	            }
+	            
+	        });
     	}
     },
     //Hide edit form

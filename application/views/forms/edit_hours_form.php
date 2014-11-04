@@ -36,14 +36,22 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="row">
+		<div class="form-actions pull-right">
+   		    <button type="submit" class="marl btn btn-primary save-btn">Save</button>
+   		    <button class="marl btn btn-default close-btn">Cancel</button>
+	  	</div>
+	</div>
+	
 	<h3>Exceptions</h3>
 	<div class="form-group input-hour-sm">
 		<div class="row">
 			<div class="col-xs-2">
 			    <select name="exception_id" class="selectpicker" id="exception-select">
-			      <option value=0>Select an exception</option>
+			      <option value=0>Add an exception</option>
 			      <?php foreach($exception_types as $exception_type){ ?>
-			      <option value="<?php echo $exception_type['id'] ?>"><?php echo $exception_type['name']." - "; echo ($exception_type['paid'])?"paid":"unpaid" ?></option>
+			      <option value="<?php echo $exception_type['id'] ?>"><?php echo $exception_type['name'] ?></option>
 			      <?php } ?>
 			    </select>
 			</div>
@@ -66,11 +74,5 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="form-actions pull-right">
-   		    <button type="submit" class="marl btn btn-primary save-btn">Save</button>
-   		    <button class="marl btn btn-default close-btn">Cancel</button>
-	  	</div>
 	</div>
 </form>
