@@ -1,7 +1,7 @@
 #!/bin/sh
 
 MYSQL_ARGS="--defaults-file=/etc/mysql/debian.cnf"
-DB="121sys"
+DB="$3"
 DELIM=","
 
 CSV="$1"
