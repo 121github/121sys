@@ -272,6 +272,21 @@
 								</div>
 			                </div>
 			            </div>
+                        <div class="accordion-inner">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThreeTime">
+                                Time
+                            </a>
+                        </div>
+                        <div id="collapseThreeTime" class="accordion-body <?php echo @($admin=='time'?"":"collapse") ?>">
+                            <div class="accordion-group submenu">
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>admin/time_settings" <?php echo @($inner=='hours_settings'?"class='active'":"") ?>>Settings</a>
+                                </div>
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>admin/time" <?php echo @($inner=='time'?"class='active'":"") ?>>Agent time</a>
+                                </div>
+                            </div>
+                        </div>
 			        </div>
                     <?php } ?>
                       

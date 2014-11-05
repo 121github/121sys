@@ -245,5 +245,16 @@ class User_model extends CI_Model
 	$this->db->query($qry);
 	}
 
+    public function get_team_managers($user_id)
+    {
+        $qry   = "SELECT *
+                  FROM team_managers
+                  where user_id = $user_id";
+
+        $query = $this->db->query($qry);
+
+        return $this->db->query($qry)->result_array();
+    }
+
 	
 }

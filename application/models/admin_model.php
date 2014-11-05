@@ -260,7 +260,7 @@ class Admin_model extends CI_Model
     		$where .= " and u.user_id = '$agent' ";
     	}
     	    	if (!empty($team)) {
-    		$where .= " and u.team_id = '$team' ";
+    		$where .= " and u.team_id IN ($team) ";
     	}
 
     	$qry = "select DATE_FORMAT(h.date,'%d/%m/%Y') date,
@@ -285,6 +285,8 @@ class Admin_model extends CI_Model
     	$qry .= $where;
 
     	$qry .= "order by user_name asc";
+
+        $this->firephp->log($qry);
 
     	return $this->db->query($qry)->result_array();
     }

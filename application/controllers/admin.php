@@ -541,6 +541,7 @@ class Admin extends CI_Controller
             $post = $this->input->post();
             $date_from = $post['date_from'];
             $date_to = $post['date_to'];
+
             $result = array();
             if ($date_from && $date_to) {
             	$totalDays = floor(((strtotime($date_to) - strtotime($date_from)) / (60 * 60 * 24)));
@@ -548,6 +549,19 @@ class Admin extends CI_Controller
                     $date = date('Y-m-d',strtotime($date_to." - ".$i." DAYS"));
                     $post['date_from'] = $date;
                     $post['date_to'] = $date;
+                    $user_logged = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+                    if (!($post['team'])) {
+                        $team_managers = $this->User_model->get_team_managers($user_logged);
+                        if (!empty($team_managers)) {
+                            $teams = '';
+                            foreach($team_managers as $team_manager) {
+                                $teams .= $team_manager['team_id'].",";
+                            }
+                            $teams = substr($teams,0,strlen($teams)-1);
+                            $post['team'] = $teams;
+                        }
+
+                    }
                     $hours = $this->Admin_model->get_hours($post);
                     $date_ = date('d/m/Y',strtotime($date));
                     $result[$date_] = $hours;
