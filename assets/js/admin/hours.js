@@ -127,10 +127,26 @@ var hours = {
                             seconds = "0" + seconds;
                         }
 
-                        var time_logged = hours + 'h ' + minutes + 'm ';
+                        var exception_time = hours + 'h ' + minutes + 'm ';
+
+                        var hours = Math.floor(val.exceptions / 60);
+                        var minutes = Math.floor((val.exceptions - (hours * 60)));
+                        var seconds = val.exceptions - (hours * 60) - (minutes);
+
+                        if (hours < 10) {
+                            hours = "0" + hours;
+                        }
+                        if (minutes < 10) {
+                            minutes = "0" + minutes;
+                        }
+                        if (seconds < 10) {
+                            seconds = "0" + seconds;
+                        }
+
+                        var exception_time = hours + 'h ' + minutes + 'm ';
 
                         if (val.comment.length) {
-                            comment = "<a href='#'><span class='glyphicon glyphicon-comment tt pointer' data-placement='left' data-toggle='tooltip' title='" + val.comment + "'></span></a>";
+                            comment = "<a href='#'><span class='glyphicon glyphicon-comment tt pointer' data-placement='left' data-toggle='tooltip' title='Comment: " + val.comment + "'></span></a>";
                         }
                         else {
                             comment = "<span class='glyphicon glyphicon-comment' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
@@ -141,21 +157,30 @@ var hours = {
 	                    }
 	                    else {
 	                    	time = "<span class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
-	                    }	
+	                    }
+
+                        if(val.exceptions) {
+                            exceptions_time = "<a href='#'><span class='glyphicon glyphicon-eye-close tt pointer red' data-placement='left' data-toggle='tooltip' title='Exceptions time: " + exception_time + "'></span></a>";
+                        }
+                        else {
+                            exceptions_time = "<span class='glyphicon glyphicon-eye-close' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
+                        }
                         
                         var edit_button = (val.hours_id)?"<button type='button' class='btn btn-default btn-xs edit-btn'>Edit</button>":"";
 
                         $tbody.append("<tr>" +
                         "<td class='hours_id hidden'>" + val.hours_id +
                         "<td class='date'>" + date +
+                        "<td class='user_id hidden'>" + val.user_id +
                         "</td><td class='user_name'>" + val.user_name +
                         "</td><td>" +
 	                        "<input type='text' size='4px' id='"+date.replace(/\//g, '-')+"_"+val.user_id+"_"+val.campaign_id+"' value='"+((duration)?Math.floor(duration/60):'')+"' onblur='hours.save_duration("+val.hours_id+", \""+date.replace(/\//g, '-')+"\", "+val.user_id+", "+val.campaign_id+", "+Math.floor(val.duration/60)+")' />" +
 	                        "<span class='hidden duration'>" + duration + "</span>" + time +
-                        "<td class='campaign_name'><span class='hidden campaign_id'>" + val.campaign_id + "</span>" + val.campaign_name +
+                        "<td class='campaign_name'>" + val.campaign_name + "<span class='hidden campaign_id'>" + val.campaign_id + "</span>" +
                         "</td><td class='updated_name'>" + val.updated_name +
                         "</td><td class='updated_date'>" + val.updated_date +
                         "</td><td class='comment hidden'>" + val.comment +
+                        "</td><td>" + exceptions_time + "</td>" +
                         "</td><td>" + comment + "</td>" +
                         "</td><td>"+edit_button+"</td>" +
                         "</tr>");
@@ -179,10 +204,14 @@ var hours = {
     	var row = $btn.closest('tr');
     	var duration = row.find('.duration').text();
     	$('#edit_hours_form').find('input[name="hours_id"]').val(row.find('.hours_id').text());
+        $('#edit_hours_form').find('input[name="user_id"]').val(row.find('.user_id').text());
         $('#edit_hours_form').find('input[name="duration"]').val((duration>0)?Math.floor(duration/60):0);
         $('#edit_hours_form').find('textarea[name="comment"]').val(row.find('.comment').text());
 		$('#edit_hours_form').find('select[name="campaign_id"]').selectpicker('val',row.find('.campaign_id').text());
-		$('#edit_hours_form').find('input[name="date"]').val(row.find('.date').text());
+		$('#edit_hours_form').find('input[name="date"]').val(row.find('.date').text().replace(/\//g, '-'));
+
+        $('#campaign_name').text(row.find('.campaign_name').text());
+        $('#date').text(row.find('.date').text());
 		
 		$('#edit_hours_form').find('input[name="duration"]').numeric();
 		$('#edit_hours_form').find('input[name="exception-duration"]').numeric();
@@ -293,13 +322,13 @@ var hours = {
             dataType: "JSON",
             data: $btn.closest('form').serialize()
         }).done(function(response) {
-            hours.load_hours();
-            hours.hide_edit_form();
-            if (response) {
-            	flashalert.success("Hour saved");
+            if (response.success) {
+                hours.load_hours();
+                hours.hide_edit_form();
+            	flashalert.success(response.message);
             }
             else {
-            	flashalert.success("ERROR: Hour NOT saved");
+            	flashalert.danger(response.message);
             }
             
         });
@@ -317,12 +346,14 @@ var hours = {
 	        }).done(function(response) {
 	            hours.load_hours();
 	            hours.hide_edit_form();
-	            if (response) {
-	            	flashalert.success("Hour saved");
-	            }
-	            else {
-	            	flashalert.success("ERROR: Hour NOT saved");
-	            }
+                if (response.success) {
+                    hours.load_hours();
+                    hours.hide_edit_form();
+                    flashalert.success(response.message);
+                }
+                else {
+                    flashalert.danger(response.message);
+                }
 	            
 	        });
     	}

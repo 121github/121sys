@@ -73,8 +73,7 @@
 										<th>Campaign</th>
 										<th>Updated</th>
 										<th>Updated Date</th>
-										<th>Comments</th>
-										<th>Options</th>
+										<th colspan="2">Options</th>
 									</tr>
 								</thead>
 								<tbody class="hours-body">

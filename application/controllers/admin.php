@@ -659,28 +659,77 @@ class Admin extends CI_Controller
     		
     		$form['date'] = $year.'-'.$month.'-'.$day;
     	}
-    	
-    	if (isset($form['exception_id'])) {
-    		unset($form['exception_id']);
-    	}
-    	if (isset($form['exception-duration'])) {
-    		unset($form['exception-duration']);
-    	}
-    	
-    	$form['duration'] = $form['duration']*60;
-    	$form['updated_date'] = date('Y-m-d H:i:s');
-    	$form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
-    	
-    	if (empty($form['hours_id'])) {
-    		$response = $this->Admin_model->add_new_hour($form);
-    	} else {
-    		$response = $this->Admin_model->update_hour($form);
-    	}
-    	echo json_encode(array(
-    			"data" => $response
-    	));
+
+        //Check if the agent exceeded the 7 hours today
+        $isExceeded = $this->isDurationExceeded($form['date'], $form['user_id'], $form['duration'],$form['campaign_id']);
+
+        if (!$isExceeded) {
+            if (isset($form['exception_id'])) {
+                unset($form['exception_id']);
+            }
+            if (isset($form['exception-duration'])) {
+                unset($form['exception-duration']);
+            }
+
+            $form['duration'] = $form['duration']*60;
+            $form['updated_date'] = date('Y-m-d H:i:s');
+            $form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+
+            if (empty($form['hours_id'])) {
+                $response = $this->Admin_model->add_new_hour($form);
+            } else {
+                $response = $this->Admin_model->update_hour($form);
+            }
+
+            if ($response) {
+                echo json_encode(array(
+                    "success" => true,
+                    "data" => $response,
+                    "message" => "Hour saved"
+                ));
+            }
+            else {
+                echo json_encode(array(
+                    "success" => false,
+                    "message" => "ERROR: Hour NOT saved"
+                ));
+            }
+        }
+        else {
+            echo json_encode(array(
+                "success" => false,
+                "message" => "ERROR: This agent exceeded the total hours in a day"
+            ));
+        }
+
     }
-	
+
+    private function isDurationExceeded($date, $user_id, $new_duration, $campaign_id){
+        $options = array();
+        $options['date_from'] = $date;
+        $options['date_to'] = $date;
+        $options['agent'] = $user_id;
+        $options['campaign'] = NULL;
+        $options['team'] = NULL;
+
+        $current_duration = 0;
+
+        $hours = $this->Admin_model->get_hours($options);
+
+        foreach ($hours as $hour) {
+            if ($hour['campaign_id'] != $campaign_id) {
+                $duration = ($hour['duration'])?$hour['duration']:0;
+                $current_duration += $duration;
+            }
+        }
+
+        if ($current_duration/3600 + $new_duration/60 > 7) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 	
 	 /* hours page functions */
     public function campaign_fields()
