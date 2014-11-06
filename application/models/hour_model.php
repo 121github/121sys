@@ -158,7 +158,7 @@ class Hour_model extends CI_Model
 
         $qry .= $where;
 
-        $qry .= "order by user_name asc";
+        $qry .= "order by user_name asc, c.campaign_name";
 
 
         return $this->db->query($qry)->result_array();
