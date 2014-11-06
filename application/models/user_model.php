@@ -167,7 +167,7 @@ class User_model extends CI_Model
 		//check if their is an entry in the hours table and if no put one in
 		$qry = "select hours_id from hours where user_id = '$user_id' and date(`date`) = curdate() and hours.campaign_id = '$campaign'";
 		if(!$this->db->query($qry)->num_rows()){
-			$qry = "insert into hours set user_id = '$user_id',duration=0,exception=0,`date`=now(),campaign_id = '$campaign'";	
+			$qry = "insert into hours set user_id = '$user_id',duration=0,`date`=now(),campaign_id = '$campaign'";	
 			$this->db->query($qry);
 		}
 		//then start counting using the hours_logged table. We have a cron which updates the hours table every 10 mins

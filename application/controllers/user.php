@@ -118,20 +118,25 @@ class User extends CI_Controller
     /* at the bottom of default.php template: this function is ran every time a page is loaded and it checks whether user permissions/access have been changed or not so they can be reapplied without needing to log out */
 	public function check_session(){
 		$this->User_model->check_session();
+		/* no longer showing footer 
 		if(in_array("show footer",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){	
 		$user_id = $_SESSION['user_id'];
 		$campaign = $_SESSION['current_campaign'];
+		
 		$this->load->model('Records_model');
 		$duration = $this->User_model->get_duration($campaign,$user_id);
 		$positive_outcome = $this->Records_model->get_positive_for_footer($campaign);
 		$worked = $this->User_model->get_worked($campaign,$user_id);
 		$transfers = $this->User_model->get_positive($campaign,$user_id, "Transfers");
 		$cross_transfers = $this->User_model->get_cross_transfers_by_campaign_destination($campaign,$user_id);
+		
 		if($duration>0){
 		$rate = number_format(($transfers + $cross_transfers)/($duration/60/60),2);
 		} else { $rate = 0; }
 		echo json_encode(array("duration"=>$duration,"worked"=>$worked,"transfers"=>$transfers+$cross_transfers,"rate"=>$rate,"positive_outcome"=>$positive_outcome));
+		
 		}
+		*/
 	}
 	
 	/* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
@@ -140,10 +145,12 @@ class User extends CI_Controller
 		$user_id=$_SESSION['user_id'];
 		if($campaign>"0"){
 			if(in_array($campaign,$_SESSION['campaign_access']['array'])){
+				/* no longer logging in realtime  
 				if(in_array("log hours",$_SESSION['permissions'])){
 				//start logging the duration on the selected campaign
 						$this->User_model->update_hours_log($campaign,$user_id);
 				}
+				*/
 				        $campaign_features = $this->Form_model->get_campaign_features($campaign);
         				$features  = array();
         foreach ($campaign_features as $row) {
@@ -157,7 +164,9 @@ class User extends CI_Controller
 		if(!in_array("search campaigns",$_SESSION['permissions'])){	
 			unset($_SESSION['current_campaign']);
 			unset($_SESSION['campaign_features']);
+			/* no longer logging in realtime 
 			$this->User_model->close_hours();
+			*/
 			echo "no campaign selected";
 			}
 		}
