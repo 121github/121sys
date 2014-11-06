@@ -941,7 +941,67 @@ class Database_model extends CI_Model
 				return "cross_transfers";
 			}
 		}
+		//dumping sample questionnaires
 		
+		$this->db->query("INSERT INTO `questions` (`question_id`, `question_name`, `question_script`, `question_guide`, `other`, `question_cat_id`, `sort`, `nps_question`, `multiple`, `survey_info_id`) VALUES
+(1, 'Sign up process', 'How easy did you find the sign up process?', '10 Being very easy<br>10 Being very difficult', '', NULL, 1, NULL, NULL, 1),
+(2, 'Where did you hear about us?', 'Where did you hear about us?', '', NULL, NULL, 5, NULL, 0, 1),
+(3, 'Why did you choose us?', 'Why did you choose us?', '', NULL, NULL, 5, NULL, NULL, 1),
+(4, 'How appealing did you find the website?', '', '10 Being very appealing<br>\n1 Being not appealing at all', NULL, NULL, 5, NULL, NULL, 1),
+(5, 'How competitive are our prices?', 'How competitive are our prices?', '10 Being very competitive <br>\r\n1 Being not competitive at all', NULL, NULL, 5, NULL, NULL, 1),
+(6, 'NPS Score', 'How likely would you be to recommend our services to a friend?', '10 being very likely<br>\r\n1 being never', NULL, NULL, 30, 1, NULL, 1),
+(7, 'Current service', 'How do you rate the service you have recieved so far?', '10 being very good<br>\r\n1 being poor', NULL, NULL, 5, NULL, NULL, 2),
+(8, 'Previous issues', 'Have you ever experienced any issues with the service in the past?', '', NULL, NULL, 10, NULL, NULL, 2),
+(9, 'Current service', 'Do you have any current issues with the service?', '', NULL, NULL, 15, NULL, NULL, 2),
+(10, 'Future useage', 'How likely are you to continue using our service in the future?', '1 being certain\r\n10 being definately not', NULL, NULL, 20, NULL, NULL, 2),
+(11, 'NPS Score', 'How likely would you be to recommend our services to a friend?', '10 being very likely<br>1 being never', NULL, NULL, 50, 1, NULL, 2),
+(12, 'Service recieved', 'How would you rate the service you recieved?', '10 being fantastic<br>\r\n1 being poor', NULL, NULL, 5, NULL, NULL, 3),
+(13, 'Reason for stopping', 'What are the main reason you stopped using the service?', '', NULL, NULL, 17, NULL, NULL, 3),
+(14, 'Future usage', 'How likely is it you would use us again in the future?', '10 being definately<br>\r\n1 being unlikely', NULL, NULL, 20, NULL, NULL, 3),
+(15, 'Improving the service', 'Are there any areas you feel could improve?', '', NULL, NULL, 5, NULL, 1, 3),
+(16, 'NPS Score', 'How likely would you be to recommend our services to a friend?', '10 being very likely<br>1 being never', NULL, NULL, 5, 1, NULL, 3)");
+
+
+$this->db->query("INSERT INTO `question_options` (`option_id`, `option_name`, `question_id`) VALUES
+(1, 'TV', 2),
+(2, 'Radio', 2),
+(3, 'Internet', 2),
+(4, 'Magazine', 2),
+(5, 'Other', 2),
+(6, 'Didn''t shop around', 3),
+(7, 'Good prices', 3),
+(8, 'I don''t know', 3),
+(9, 'Other', 3),
+(10, 'Good reviews', 3),
+(11, 'Yes', 8),
+(12, 'No', 8),
+(13, 'Problem with service', 13),
+(14, 'Pricing', 13),
+(15, 'No longer needed', 13),
+(16, 'Not used enough', 13),
+(17, 'Found better alternative', 13)");
+
+$this->db->query("INSERT INTO `surveys_to_campaigns` (`id`, `survey_info_id`, `campaign_id`, `default`) VALUES
+(1, 1, 1, NULL),
+(2, 1, 2, NULL),
+(3, 1, 3, NULL),
+(4, 2, 1, NULL),
+(5, 2, 2, NULL),
+(6, 2, 3, NULL),
+(7, 3, 1, NULL),
+(8, 3, 2, NULL),
+(9, 3, 3, NULL),
+(10, 3, 4, NULL),
+(11, 4, 1, NULL),
+(12, 4, 2, NULL),
+(13, 4, 3, NULL),
+(14, 4, 4, NULL)");
+
+
+$this->db->query("INSERT INTO `survey_info` (`survey_info_id`, `survey_name`, `survey_status`) VALUES
+(1, 'New Customer Survey', 1),
+(2, 'Review Survey', 1),
+(3, 'Cancellation Survey', 1)");
 		
 		//Dumping the users_to_campaigns
 		$campaign = $campaignList[array_rand($campaignList)];

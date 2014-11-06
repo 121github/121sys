@@ -268,8 +268,8 @@ class Records_model extends CI_Model
             $from .= " left join sticky_notes sticky using(urn) ";
         }
         if (in_array(2, $features)) {
-            $select .= ",com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,com_pc.latitude colatitude,com_pc.longitude colongitude";
-            $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join uk_postcodes compc on compc.postcode = coma.postcode left join company_telephone comt using(company_id) left join company_subsectors using(company_id)  left join subsectors using(subsector_id) left join sectors using(sector_id)";
+            $select .= ",com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,com_pc.lat colatitude,com_pc.lng colongitude";
+            $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join uk_postcodes com_pc on com_pc.postcode = coma.postcode left join company_telephone comt using(company_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id)";
         }
         if (in_array(6, $features)) {
             $select .= " ,sc.script_name,sc.script_id,sc.expandable  ";
