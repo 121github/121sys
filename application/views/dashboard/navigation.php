@@ -265,13 +265,28 @@
 			            <div id="collapseThreeHours" class="accordion-body <?php echo @($admin=='hours'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                	<div class="accordion-inner">          
-				                	<a href="<?php echo base_url() ?>admin/hours_settings" <?php echo @($inner=='hours_settings'?"class='active'":"") ?>>Settings</a>
+				                	<a href="<?php echo base_url() ?>admin/default_hours" <?php echo @($inner=='default_hours'?"class='active'":"") ?>>Default Hours</a>
 								</div>
                                 <div class="accordion-inner">          
-				                	<a href="<?php echo base_url() ?>admin/hours" <?php echo @($inner=='hours'?"class='active'":"") ?>>Agent hours</a>
+				                	<a href="<?php echo base_url() ?>admin/hours" <?php echo @($inner=='hours'?"class='active'":"") ?>>Agent Hours</a>
 								</div>
 			                </div>
 			            </div>
+                        <div class="accordion-inner">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThreeTime">
+                                Time
+                            </a>
+                        </div>
+                        <div id="collapseThreeTime" class="accordion-body <?php echo @($admin=='time'?"":"collapse") ?>">
+                            <div class="accordion-group submenu">
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>admin/default_time" <?php echo @($inner=='default_time'?"class='active'":"") ?>>Default Time</a>
+                                </div>
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>admin/time" <?php echo @($inner=='time'?"class='active'":"") ?>>Agent Time</a>
+                                </div>
+                            </div>
+                        </div>
 			        </div>
                     <?php } ?>
                       

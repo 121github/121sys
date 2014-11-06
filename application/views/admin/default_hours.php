@@ -7,7 +7,7 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Hours</h1>
+					<h1 class="page-header">Hours Settings</h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
@@ -21,12 +21,9 @@
 							<div class="pull-right">
 								<form class="filter-form" id="filter">
 					                  <div class="btn-group"> 
-						                <input type="hidden" name="date_from">
-						                <input type="hidden" name="date_to">
 						                <input type="hidden" name="campaign">
 						                <input type="hidden" name="agent">
                                          <input type="hidden" name="team">
-					              	  	<button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "Today"; ?> </span></button>
 					              	  </div>
 					                  <div class="btn-group">
 						                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
@@ -63,20 +60,15 @@
 						</div>
 						<!-- /.panel-heading -->
 						<div class="panel-body hours-panel">
-							 <?php $this->view('forms/edit_hours_form.php'); ?>
 							 <table class="table ajax-table">
 								<thead>
 									<tr>
-										<th>Date</th>
 										<th>Name</th>
-										<th>Duration (minutes)</th>
 										<th>Campaign</th>
-										<th>Updated</th>
-										<th>Updated Date</th>
-										<th colspan="2">Options</th>
+                                        <th colspan="2">Default Duration (minutes)</th>
 									</tr>
 								</thead>
-								<tbody class="hours-body">
+								<tbody class="default-hours-body">
 									<tr>
 										<td colspan="3"><img
 											src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
@@ -95,7 +87,6 @@
 	</div>
 <script>
 	$(document).ready(function(){
-		$('.selectpicker').selectpicker();
-		hours.init()
+		hours_settings.init()
 	});
 </script>

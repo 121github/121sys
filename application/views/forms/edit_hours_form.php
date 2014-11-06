@@ -2,6 +2,7 @@
 	<div class="row">
 		<div class="col-xs-2">
 			  <input type="hidden" name="hours_id">
+              <input type="hidden" name="user_id">
 			  <div class="form-group input-duration-sm">
 			    <p>Duration (minutes)</p>
 			    <input type="integer" class="form-control" name="duration" title="Enter the duration in minutes" required/>
@@ -9,23 +10,25 @@
 		</div>
 		<div class="col-xs-4"></div>
 		<div class="col-xs-3">
-			<div class="form-group input-campaign-sm">
-			    <p>Please select the Campaign</p>
-			    <select disabled name="campaign_id" class="selectpicker" id="group-select">
+            <p>Campaign</p>
+			<div class="form-group input-campaign-sm" style="display: none;">
+			    <select name="campaign_id" class="selectpicker" id="group-select">
 			      <?php foreach($campaigns as $campaign){ ?>
 			      <option value="<?php echo $campaign['id'] ?>"><?php echo $campaign['name'] ?></option>
 			      <?php } ?>
 			    </select>
 			</div>
+            <div id="campaign_name"></div>
 		</div>
 		<div class="col-xs-1"></div>
 		<div class="col-xs-2">
-			<div class="form-group input-date-sm">
-			    <p>Please set the day</p>
-				<div class="input-group">
-			    	<input  disabled name="date" type="text" readonly="readonly" class="form-control date2" style="" placeholder="Date">
+            <p>Date</p>
+			<div class="form-group input-date-sm" style="display: none;">
+			    <div class="input-group">
+			    	<input name="date" type="text" readonly="readonly" class="form-control date2" style="" placeholder="Date">
 			 	</div>
-			  </div>
+            </div>
+            <div id="date"></div>
 		</div>
 	</div>
 	<div class="row">

@@ -1095,8 +1095,8 @@ $this->db->query("INSERT INTO `survey_info` (`survey_info_id`, `survey_name`, `s
 	 * @return string
 	 */
 	public function real_data() {
-	
-		$group = $this->db->get_where('user_groups', array('group_name' => '121'))->result();
+
+        $group = $this->db->get_where('user_groups', array('group_name' => '121'))->result();
 	
 		//Dumpingdata for table `teams`
 		$this->db->query("INSERT INTO `teams` (`team_name`) VALUES
@@ -1227,6 +1227,19 @@ $this->db->query("INSERT INTO `survey_info` (`survey_info_id`, `survey_name`, `s
 		if ($this->db->_error_message()) {
 			return "users";
 		}
+
+        //Add the team_leaders to the team_managers
+        $teamLeaders = $this->db->get_where('users', array('role_id' => $teamLeaderRole[0]->role_id))->result();
+        foreach($teamLeaders as $teamLeader) {
+            if ($teamLeader->team_id) {
+                $this->db->query("INSERT INTO `team_managers` (`team_id`, `user_id`) VALUES
+                (".$teamLeader->team_id.", ".$teamLeader->user_id.")");
+
+                if ($this->db->_error_message()) {
+                    return "team_managers";
+                }
+            }
+        }
 		
 		//Add Client Services
 		$clientServicesRole = $this->db->get_where('user_roles', array('role_name' => 'Client Services'))->result();
