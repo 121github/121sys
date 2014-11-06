@@ -718,6 +718,27 @@ class Admin extends CI_Controller
 
     }
 
+    /**
+     * Remove an Hour
+     */
+    public function remove_hour() {
+        $form = $this->input->post();
+
+        $response = $this->Admin_model->delete_hour($form['hours_id']);
+        if ($response) {
+            echo json_encode(array(
+                "success" => true,
+                "data" => $response,
+                "message" => "Hour removed"
+            ));
+        } else {
+            echo json_encode(array(
+                "success" => false,
+                "message" => "ERROR: Hour NOT removed"
+            ));
+        }
+    }
+
     private function isDurationExceeded($date, $user_id, $new_duration, $campaign_id){
         $options = array();
         $options['date_from'] = $date;
@@ -744,8 +765,121 @@ class Admin extends CI_Controller
             return false;
         }
     }
-	
-	 /* hours page functions */
+
+    /* default hours page functions */
+    public function default_hours()
+    {
+        $teams = $this->Form_model->get_teams();
+        $campaigns = $this->Form_model->get_campaigns();
+        $agents = $this->Form_model->get_agents();
+        $data     = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Hours',
+            'page' => array(
+                'admin' => 'hours',
+                'inner' => 'hours',
+            ),
+            'javascript' => array(
+                'admin/hours.js',
+                'lib/moment.js',
+                'lib/jquery.numeric.min.js',
+            ),
+            'css' => array(
+                'dashboard.css',
+            ),
+            'campaigns' => $campaigns,
+            'agents' => $agents,
+            'team_managers'=>$teams
+        );
+        $this->template->load('default', 'admin/default_hours.php', $data);
+    }
+
+    /**
+     * Get the hours in a date range
+     *
+     * POST
+     *
+     */
+    public function get_default_hours_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $post = $this->input->post();
+
+            $default_hours = $this->Admin_model->get_default_hours($post);
+
+            echo json_encode(array(
+                "success" => true,
+                "data" => $default_hours,
+                "msg" => "Nothing found"
+            ));
+        }
+    }
+
+    /**
+     * Save a Default Hour for an agent and campaing in a particular date
+     */
+    public function save_default_hour()
+    {
+        $form = $this->input->post();
+
+        //Check if the agent exceeded the maximum hours defined in the default time of an agent
+        //$isExceeded = $this->isDurationExceeded($form['user_id'], $form['duration'],$form['campaign_id']);
+        $isExceeded = false;
+
+        if (!$isExceeded) {
+            $form['duration'] = $form['duration']*60;
+
+            if (empty($form['default_hours_id'])) {
+                $response = $this->Admin_model->add_new_default_hour($form);
+            } else {
+                $response = $this->Admin_model->update_default_hour($form);
+            }
+
+            if ($response) {
+                echo json_encode(array(
+                    "success" => true,
+                    "data" => $response,
+                    "message" => "Default Hour saved"
+                ));
+            }
+            else {
+                echo json_encode(array(
+                    "success" => false,
+                    "message" => "ERROR: Default Hour NOT saved"
+                ));
+            }
+        }
+        else {
+            echo json_encode(array(
+                "success" => false,
+                "message" => "ERROR: This agent exceeded the total hours in a day. Check the default time set for this agent"
+            ));
+        }
+    }
+
+    /**
+     * Remove an Default Hour
+     */
+    public function remove_default_hour() {
+        $form = $this->input->post();
+
+        $response = $this->Admin_model->delete_default_hour($form['default_hours_id']);
+        if ($response) {
+            echo json_encode(array(
+                "success" => true,
+                "data" => $response,
+                "message" => "Default hour removed"
+            ));
+        } else {
+            echo json_encode(array(
+                "success" => false,
+                "message" => "ERROR: Default Hour NOT removed"
+            ));
+        }
+    }
+
+	 /* campaign fields page functions */
     public function campaign_fields()
     {
 	

@@ -55,6 +55,10 @@ var hours = {
             e.preventDefault();
             hours.save($(this));
         });
+        $(document).on('click', '.set-default-hour-btn', function(e) {
+            e.preventDefault();
+            hours.set_default_hour($(this));
+        });
         $(document).on('click', '.edit-btn', function() {
             hours.edit($(this));
         });
@@ -94,9 +98,13 @@ var hours = {
             $.each(response.data, function(date, hours) {
                 if (hours.length) {
                     $.each(hours, function(i, val) {
-                    	
-                    	var duration = (val.duration)?val.duration:'';
-                    	
+
+                        //Default Hours
+                        var default_hours = (val.default_hours)?val.default_hours:'';
+
+                        //Duration if exists
+                    	var duration = (val.duration)?val.duration:(default_hours)?default_hours:'';
+
                         var hours = Math.floor(duration / 3600);
                         var minutes = Math.floor((duration - (hours * 3600)) / 60);
                         var seconds = duration - (hours * 3600) - (minutes * 60);
@@ -113,6 +121,7 @@ var hours = {
 
                         var duration_time = hours + 'h ' + minutes + 'm ';
 
+                        //Time logged if exists
                         var hours = Math.floor(val.time_logged / 3600);
                         var minutes = Math.floor((val.time_logged - (hours * 3600)) / 60);
                         var seconds = val.time_logged - (hours * 3600) - (minutes * 60);
@@ -129,6 +138,7 @@ var hours = {
 
                         var exception_time = hours + 'h ' + minutes + 'm ';
 
+                        //Exceotion time if exists
                         var hours = Math.floor(val.exceptions / 60);
                         var minutes = Math.floor((val.exceptions - (hours * 60)));
                         var seconds = val.exceptions - (hours * 60) - (minutes);
@@ -145,20 +155,29 @@ var hours = {
 
                         var exception_time = hours + 'h ' + minutes + 'm ';
 
+                        //Comment icon and content
                         if (val.comment.length) {
                             comment = "<a href='#'><span class='glyphicon glyphicon-comment tt pointer' data-placement='left' data-toggle='tooltip' title='Comment: " + val.comment + "'></span></a>";
                         }
                         else {
                             comment = "<span class='glyphicon glyphicon-comment' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
                         }
-                        
-                        if (duration) {
-                        	time = "<a href='#'><span class='glyphicon glyphicon-time tt pointer' data-placement='right' data-toggle='tooltip' title='" + duration_time + "'></span></a>";
+
+                        //Comment Duration and default hours icon and content
+                        if (!val.hours_id && default_hours) {
+                            time = "<a href='#' class='set-default-hour-btn'><span class='glyphicon glyphicon-time tt pointer red' data-placement='right' data-toggle='tooltip' title='Click to set the default hour " + duration_time + "'></span></a>";
+                            input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
+                        }
+                        else if (duration) {
+                        	time = "<a href='#'><span class='glyphicon glyphicon-time tt pointer' data-placement='right' data-toggle='tooltip' title='Duration " + duration_time + "'></span></a>";
+                            input_style = "";
 	                    }
 	                    else {
 	                    	time = "<span class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
+                            input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
 	                    }
 
+                        //Exception time icon and content
                         if(val.exceptions) {
                             exceptions_time = "<a href='#'><span class='glyphicon glyphicon-eye-close tt pointer red' data-placement='left' data-toggle='tooltip' title='Exceptions time: " + exception_time + "'></span></a>";
                         }
@@ -174,7 +193,7 @@ var hours = {
                         "<td class='user_id hidden'>" + val.user_id +
                         "</td><td class='user_name'>" + val.user_name +
                         "</td><td>" +
-	                        "<input type='text' size='4px' id='"+date.replace(/\//g, '-')+"_"+val.user_id+"_"+val.campaign_id+"' value='"+((duration)?Math.floor(duration/60):'')+"' onblur='hours.save_duration("+val.hours_id+", \""+date.replace(/\//g, '-')+"\", "+val.user_id+", "+val.campaign_id+", "+Math.floor(val.duration/60)+")' />" +
+	                        "<input type='text' style='"+input_style+"' size='4px' id='"+date.replace(/\//g, '-')+"_"+val.user_id+"_"+val.campaign_id+"' value='"+((duration)?Math.floor(duration/60):'')+"' onblur='hours.set_duration("+val.hours_id+", \""+date.replace(/\//g, '-')+"\", "+val.user_id+", "+val.campaign_id+", "+Math.floor(val.duration/60)+")' />" +
 	                        "<span class='hidden duration'>" + duration + "</span>" + time +
                         "<td class='campaign_name'>" + val.campaign_name + "<span class='hidden campaign_id'>" + val.campaign_id + "</span>" +
                         "</td><td class='updated_name'>" + val.updated_name +
@@ -314,7 +333,7 @@ var hours = {
             }
         });
     },
-    //save a team
+    //save an hour
     save: function($btn) {
 		$.ajax({
             url: helper.baseUrl + 'admin/save_hour',
@@ -333,30 +352,71 @@ var hours = {
             
         });
     },
-    save_duration: function(hours_id, date, user_id, campaign_id, old_duration) {
-    	var duration = $("#"+date+"_"+user_id+"_"+campaign_id).val();
-    	var data = {'hours_id':hours_id, 'date':date, 'user_id':user_id, 'campaign_id':campaign_id, 'duration': duration};
-    	
-    	if (duration && (duration != old_duration)) {
-	    	$.ajax({
-	            url: helper.baseUrl + 'admin/save_hour',
-	            type: "POST",
-	            dataType: "JSON",
-	            data: data
-	        }).done(function(response) {
-	            hours.load_hours();
-	            hours.hide_edit_form();
-                if (response.success) {
-                    hours.load_hours();
-                    hours.hide_edit_form();
-                    flashalert.success(response.message);
-                }
-                else {
-                    flashalert.danger(response.message);
-                }
-	            
-	        });
-    	}
+    set_duration: function(hours_id, date, user_id, campaign_id, old_duration) {
+        var duration = $("#"+date+"_"+user_id+"_"+campaign_id).val();
+
+        if (duration && (duration != old_duration)) {
+            if (duration != 0) {
+                hours.save_duration(hours_id, date, user_id, campaign_id, duration, old_duration);
+            }
+            else {
+                //Remove default hour
+                hours.remove_duration(hours_id);
+            }
+        }
+        else if(!duration.length && old_duration > 0) {
+            //Remove default hour
+            hours.remove_duration(hours_id);
+        }
+    },
+    set_default_hour: function($btn) {
+        var row = $btn.closest('tr');
+        var duration = row.find('.duration').text()/60;
+        var date = row.find('.date').text().replace(/\//g, '-');
+        var campaign_id = row.find('.campaign_id').text();
+        var user_id = row.find('.user_id').text();
+
+        hours.save_duration(null, date, user_id, campaign_id, duration);
+
+    },
+    save_duration: function(hours_id, date, user_id, campaign_id, duration) {
+        var data = {'hours_id':hours_id, 'date':date, 'user_id':user_id, 'campaign_id':campaign_id, 'duration': duration};
+        //Add or update default hour
+        $.ajax({
+            url: helper.baseUrl + 'admin/save_hour',
+            type: "POST",
+            dataType: "JSON",
+            data: data
+        }).done(function(response) {
+            if (response.success) {
+                hours.load_hours();
+                hours.hide_edit_form();
+                flashalert.success(response.message);
+            }
+            else {
+                flashalert.danger(response.message);
+            }
+
+        });
+    },
+    remove_duration: function(hours_id) {
+        var data = {'hours_id':hours_id};
+        //Remove default hour
+        $.ajax({
+            url: helper.baseUrl + 'admin/remove_hour',
+            type: "POST",
+            dataType: "JSON",
+            data: data
+        }).done(function(response) {
+            if (response.success) {
+                hours.load_hours();
+                flashalert.success(response.message);
+            }
+            else {
+                flashalert.danger(response.message);
+            }
+
+        });
     },
     //Hide edit form
     hide_edit_form: function() {
@@ -365,6 +425,139 @@ var hours = {
         });
         $('.filter-form').fadeIn(1000, function() {
             
+        });
+    }
+}
+
+var hours_settings = {
+    //initalize the team specific buttons
+    init: function() {
+        $(document).on("click", ".campaign-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            hours_settings.load_default_hours();
+        });
+        $(document).on("click", ".team-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
+            $(this).closest('form').find('input[name="agent"]').val('');
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            hours_settings.load_default_hours();
+        });
+        $(document).on("click", ".agent-filter", function(e) {
+            e.preventDefault();
+            $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
+            $(this).closest('form').find('input[name="team"]').val('');
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            hours_settings.load_default_hours();
+        });
+
+        hours_settings.load_default_hours();
+    },
+    //this function reloads the hours_settings into the table body
+    load_default_hours: function() {
+        $.ajax({
+            url: helper.baseUrl + 'admin/get_default_hours_data',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function(response) {
+            $tbody = $('.default-hours-body');
+            $tbody.empty();
+            if (response.data.length) {
+                $.each(response.data, function(i, val) {
+
+                    var duration = (val.duration)?val.duration:'';
+
+                    var hours = Math.floor(duration / 3600);
+                    var minutes = Math.floor((duration - (hours * 3600)) / 60);
+                    var seconds = duration - (hours * 3600) - (minutes * 60);
+
+                    if (hours < 10) {
+                        hours = "0" + hours;
+                    }
+                    if (minutes < 10) {
+                        minutes = "0" + minutes;
+                    }
+                    if (seconds < 10) {
+                        seconds = "0" + seconds;
+                    }
+
+                    var duration_time = (duration)?(hours + 'h ' + minutes + 'm '):'';
+
+                    $tbody.append("<tr>" +
+                    "<td class='hours_id hidden'>" + val.default_hours_id +
+                    "<td class='user_id hidden'>" + val.user_id +
+                    "</td><td class='user_name'>" + val.user_name +
+                    "<td class='campaign_name'>" + val.campaign_name + "<span class='hidden campaign_id'>" + val.campaign_id + "</span>" +
+                    "</td><td><input type='text' size='4px' id='"+val.user_id+"_"+val.campaign_id+"' value='"+((duration)?Math.floor(duration/60):'')+"' onblur='hours_settings.set_duration("+val.default_hours_id+", "+val.user_id+", "+val.campaign_id+", "+Math.floor(val.duration/60)+")' />" +
+                    "</td><td><span class='hidden duration'>" + duration + "</span>" + duration_time +
+                    "</td>" +
+                    "</tr>");
+
+                    $("#"+val.user_id+"_"+val.campaign_id).numeric();
+                });
+            }
+            $('.tt').tooltip();
+        });
+    },
+    set_duration: function(default_hours_id, user_id, campaign_id, old_duration) {
+        var duration = $("#"+user_id+"_"+campaign_id).val();
+
+        if (duration && (duration != old_duration)) {
+            if (duration != 0) {
+                hours_settings.save_duration(default_hours_id, user_id, campaign_id, duration, old_duration);
+            }
+            else {
+                //Remove default hour
+                hours_settings.remove_duration(default_hours_id);
+            }
+        }
+        else if(!duration.length && old_duration > 0) {
+            //Remove default hour
+            hours_settings.remove_duration(default_hours_id);
+        }
+    },
+    save_duration: function(default_hours_id, user_id, campaign_id, duration) {
+        var data = {'default_hours_id':default_hours_id, 'user_id':user_id, 'campaign_id':campaign_id, 'duration': duration};
+        //Add or update default hour
+        $.ajax({
+            url: helper.baseUrl + 'admin/save_default_hour',
+            type: "POST",
+            dataType: "JSON",
+            data: data
+        }).done(function(response) {
+            if (response.success) {
+                hours_settings.load_default_hours();
+                flashalert.success(response.message);
+            }
+            else {
+                flashalert.danger(response.message);
+            }
+
+        });
+    },
+    remove_duration: function(default_hours_id) {
+        var data = {'default_hours_id':default_hours_id};
+        //Remove default hour
+        $.ajax({
+            url: helper.baseUrl + 'admin/remove_default_hour',
+            type: "POST",
+            dataType: "JSON",
+            data: data
+        }).done(function(response) {
+            if (response.success) {
+                hours_settings.load_default_hours();
+                flashalert.success(response.message);
+            }
+            else {
+                flashalert.danger(response.message);
+            }
+
         });
     }
 }
