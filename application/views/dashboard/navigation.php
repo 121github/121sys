@@ -265,10 +265,10 @@
 			            <div id="collapseThreeHours" class="accordion-body <?php echo @($admin=='hours'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                	<div class="accordion-inner">          
-				                	<a href="<?php echo base_url() ?>admin/default_hours" <?php echo @($inner=='default_hours'?"class='active'":"") ?>>Default Hours</a>
+				                	<a href="<?php echo base_url() ?>hour/default_hours" <?php echo @($inner=='default_hours'?"class='active'":"") ?>>Default Hours</a>
 								</div>
                                 <div class="accordion-inner">          
-				                	<a href="<?php echo base_url() ?>admin/hours" <?php echo @($inner=='hours'?"class='active'":"") ?>>Agent Hours</a>
+				                	<a href="<?php echo base_url() ?>hour/hours" <?php echo @($inner=='hours'?"class='active'":"") ?>>Agent Hours</a>
 								</div>
 			                </div>
 			            </div>
