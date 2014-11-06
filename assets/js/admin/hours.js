@@ -57,6 +57,7 @@ var hours = {
         });
         $(document).on('click', '.set-default-hour-btn', function(e) {
             e.preventDefault();
+            $(this).hide();
             hours.set_default_hour($(this));
         });
         $(document).on('click', '.edit-btn', function() {
@@ -88,7 +89,7 @@ var hours = {
     //this function reloads the hours into the table body
     load_hours: function() {
         $.ajax({
-            url: helper.baseUrl + 'admin/get_hours_data',
+            url: helper.baseUrl + 'hour/get_hours_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize()
@@ -157,19 +158,19 @@ var hours = {
 
                         //Comment icon and content
                         if (val.comment.length) {
-                            comment = "<a href='#'><span class='glyphicon glyphicon-comment tt pointer' data-placement='left' data-toggle='tooltip' title='Comment: " + val.comment + "'></span></a>";
+                            comment = "<span class='glyphicon glyphicon-comment tt pointer' data-placement='left' data-toggle='tooltip' title='Comment: " + val.comment + "'></span>";
                         }
                         else {
                             comment = "<span class='glyphicon glyphicon-comment' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
                         }
 
-                        //Comment Duration and default hours icon and content
+                        //Duration and default hours icon and content
                         if (!val.hours_id && default_hours) {
                             time = "<a href='#' class='set-default-hour-btn'><span class='glyphicon glyphicon-time tt pointer red' data-placement='right' data-toggle='tooltip' title='Click to set the default hour " + duration_time + "'></span></a>";
                             input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
                         }
                         else if (duration) {
-                        	time = "<a href='#'><span class='glyphicon glyphicon-time tt pointer' data-placement='right' data-toggle='tooltip' title='Duration " + duration_time + "'></span></a>";
+                        	time = "<span class='glyphicon glyphicon-time tt pointer green' data-placement='right' data-toggle='tooltip' title='Duration " + duration_time + "'></span>";
                             input_style = "";
 	                    }
 	                    else {
@@ -179,7 +180,7 @@ var hours = {
 
                         //Exception time icon and content
                         if(val.exceptions) {
-                            exceptions_time = "<a href='#'><span class='glyphicon glyphicon-eye-close tt pointer red' data-placement='left' data-toggle='tooltip' title='Exceptions time: " + exception_time + "'></span></a>";
+                            exceptions_time = "<span class='glyphicon glyphicon-eye-close tt pointer' data-placement='left' data-toggle='tooltip' title='Exceptions time: " + exception_time + "'></span>";
                         }
                         else {
                             exceptions_time = "<span class='glyphicon glyphicon-eye-close' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
@@ -193,7 +194,7 @@ var hours = {
                         "<td class='user_id hidden'>" + val.user_id +
                         "</td><td class='user_name'>" + val.user_name +
                         "</td><td>" +
-	                        "<input type='text' style='"+input_style+"' size='4px' id='"+date.replace(/\//g, '-')+"_"+val.user_id+"_"+val.campaign_id+"' value='"+((duration)?Math.floor(duration/60):'')+"' onblur='hours.set_duration("+val.hours_id+", \""+date.replace(/\//g, '-')+"\", "+val.user_id+", "+val.campaign_id+", "+Math.floor(val.duration/60)+")' />" +
+	                        "<input type='text' style='"+input_style+"' size='4px' id='"+date.replace(/\//g, '-')+"_"+val.user_id+"_"+val.campaign_id+"' value='"+((duration)?Math.floor(duration/60):'')+"' onblur='hours.set_duration("+val.hours_id+", \""+date.replace(/\//g, '-')+"\", "+val.user_id+", "+val.campaign_id+", "+Math.floor(val.duration/60)+")' onfocus='hours.hide_default_btn($(this))' />" +
 	                        "<span class='hidden duration'>" + duration + "</span>" + time +
                         "<td class='campaign_name'>" + val.campaign_name + "<span class='hidden campaign_id'>" + val.campaign_id + "</span>" +
                         "</td><td class='updated_name'>" + val.updated_name +
@@ -255,7 +256,7 @@ var hours = {
     	if (hours_id > 0) {
 	    	if ((exception_type_id != 0) && (exception_duration > 0)) {
 	    		$.ajax({
-	                url: helper.baseUrl + 'admin/add_hour_exception',
+	                url: helper.baseUrl + 'hour/add_hour_exception',
 	                type: "POST",
 	                dataType: "JSON",
 	                data: {'exception_type_id':exception_type_id, 'hours_id' : hours_id, 'duration' : exception_duration}
@@ -296,7 +297,7 @@ var hours = {
     	
     	if (exception_id != 0) {
     		$.ajax({
-                url: helper.baseUrl + 'admin/remove_hour_exception',
+                url: helper.baseUrl + 'hour/remove_hour_exception',
                 type: "POST",
                 dataType: "JSON",
                 data: {'exception_id':exception_id, 'hours_id' : $('#edit_hours_form').find('input[name="hours_id"]').val()}
@@ -318,7 +319,7 @@ var hours = {
     	$tbody.empty();
     	
     	$.ajax({
-            url: helper.baseUrl + 'admin/get_hour_exception',
+            url: helper.baseUrl + 'hour/get_hour_exception',
             type: "POST",
             dataType: "JSON",
             data: {'hours_id' : $('#edit_hours_form').find('input[name="hours_id"]').val()}
@@ -336,7 +337,7 @@ var hours = {
     //save an hour
     save: function($btn) {
 		$.ajax({
-            url: helper.baseUrl + 'admin/save_hour',
+            url: helper.baseUrl + 'hour/save_hour',
             type: "POST",
             dataType: "JSON",
             data: $btn.closest('form').serialize()
@@ -383,7 +384,7 @@ var hours = {
         var data = {'hours_id':hours_id, 'date':date, 'user_id':user_id, 'campaign_id':campaign_id, 'duration': duration};
         //Add or update default hour
         $.ajax({
-            url: helper.baseUrl + 'admin/save_hour',
+            url: helper.baseUrl + 'hour/save_hour',
             type: "POST",
             dataType: "JSON",
             data: data
@@ -403,7 +404,7 @@ var hours = {
         var data = {'hours_id':hours_id};
         //Remove default hour
         $.ajax({
-            url: helper.baseUrl + 'admin/remove_hour',
+            url: helper.baseUrl + 'hour/remove_hour',
             type: "POST",
             dataType: "JSON",
             data: data
@@ -426,6 +427,12 @@ var hours = {
         $('.filter-form').fadeIn(1000, function() {
             
         });
+    },
+    //Hide default button
+    hide_default_btn: function($btn) {
+        var row = $btn.closest('tr');
+        var default_btn = row.find('.set-default-hour-btn');
+        $(default_btn).hide();
     }
 }
 
@@ -461,7 +468,7 @@ var hours_settings = {
     //this function reloads the hours_settings into the table body
     load_default_hours: function() {
         $.ajax({
-            url: helper.baseUrl + 'admin/get_default_hours_data',
+            url: helper.baseUrl + 'hour/get_default_hours_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize()
@@ -526,7 +533,7 @@ var hours_settings = {
         var data = {'default_hours_id':default_hours_id, 'user_id':user_id, 'campaign_id':campaign_id, 'duration': duration};
         //Add or update default hour
         $.ajax({
-            url: helper.baseUrl + 'admin/save_default_hour',
+            url: helper.baseUrl + 'hour/save_default_hour',
             type: "POST",
             dataType: "JSON",
             data: data
@@ -545,7 +552,7 @@ var hours_settings = {
         var data = {'default_hours_id':default_hours_id};
         //Remove default hour
         $.ajax({
-            url: helper.baseUrl + 'admin/remove_default_hour',
+            url: helper.baseUrl + 'hour/remove_default_hour',
             type: "POST",
             dataType: "JSON",
             data: data

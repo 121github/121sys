@@ -1015,8 +1015,9 @@ class Database_model extends CI_Model
 					$exception_type = $hourExceptionTypes[array_rand($hourExceptionTypes)];
 					
 					//Dump the exception hours
-					$this->db->query("INSERT INTO `hours_exception` (`hours_id`, `exception_type_id`) VALUES
-							($hours_id, $exception_type->exception_type_id)");
+                    $duration = rand(5,60);
+					$this->db->query("INSERT INTO `hours_exception` (`hours_id`, `exception_type_id`, `duration`) VALUES
+							($hours_id, $exception_type->exception_type_id, $duration)");
 					
 					if ($this->db->_error_message()) {
 						return "hours_exception";
