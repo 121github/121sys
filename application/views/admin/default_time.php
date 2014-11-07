@@ -1,4 +1,3 @@
-
 <div id="wrapper">
 	<div id="sidebar-wrapper">
  <?php  $this->view('dashboard/navigation.php',$page) ?>
@@ -7,7 +6,7 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Default Hours</h1>
+					<h1 class="page-header">Default Time</h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
@@ -17,11 +16,10 @@
 
 					<div class="panel panel-primary groups-panel">
 						<div class="panel-heading">
-							<i class="fa fa-bar-chart-o fa-fw"></i>Default Hours
+							<i class="fa fa-bar-chart-o fa-fw"></i>Default Time
 							<div class="pull-right">
 								<form class="filter-form" id="filter">
-					                  <div class="btn-group"> 
-						                <input type="hidden" name="campaign">
+					                  <div class="btn-group">
 						                <input type="hidden" name="agent">
                                          <input type="hidden" name="team">
 					              	  </div>
@@ -59,16 +57,18 @@
 							</div>
 						</div>
 						<!-- /.panel-heading -->
-						<div class="panel-body hours-panel">
+						<div class="panel-body time-panel">
 							 <table class="table ajax-table">
 								<thead>
 									<tr>
 										<th>Name</th>
-										<th>Campaign</th>
-                                        <th colspan="2">Default Duration (minutes)</th>
+                                        <th>Default Start Time</th>
+                                        <th></th>
+                                        <th>Default End Time</th>
+                                        <th></th>
 									</tr>
 								</thead>
-								<tbody class="default-hours-body">
+								<tbody class="default-time-body">
 									<tr>
 										<td colspan="3"><img
 											src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
@@ -87,6 +87,6 @@
 	</div>
 <script>
 	$(document).ready(function(){
-		hours_settings.init()
+        default_time.init()
 	});
 </script>
