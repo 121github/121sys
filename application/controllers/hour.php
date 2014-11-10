@@ -11,6 +11,7 @@ class Hour extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Hour_model');
+        $this->load->model('Time_model');
         $this->load->model('User_model');
     }
 
@@ -21,7 +22,6 @@ class Hour extends CI_Controller
 		$teams = $this->Form_model->get_teams();
     	$campaigns = $this->Form_model->get_campaigns();
     	$agents = $this->Form_model->get_agents();
-    	$exception_types = $this->Form_model->get_hours_exception_type();
     	$this->Cron_model->update_hours($agents);
     	$data     = array(
     			'campaign_access' => $this->_campaigns,
@@ -44,8 +44,7 @@ class Hour extends CI_Controller
     			),
     			'campaigns' => $campaigns,
           		'agents' => $agents,
-				'team_managers'=>$teams,
-    			'exception_types'=>$exception_types
+				'team_managers'=>$teams
     	);
     	$this->template->load('default', 'admin/hours.php', $data);
     }
@@ -98,88 +97,6 @@ class Hour extends CI_Controller
     }
     
     /**
-     * Add a new Hour Exception
-     */
-    public function add_hour_exception() {
-    	$form = $this->input->post();
-    	
-   		$exception_id = $this->Hour_model->add_hour_exception($form);
-        if ($exception_id) {
-        	$hours_form = array();
-        	$hours_form['hours_id'] = $form['hours_id'];
-        	$hours_form['updated_date'] = date('Y-m-d H:i:s');
-        	$hours_form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
-        	 
-        	$response = $this->Hour_model->update_hour($hours_form);
-        	if ($response) {
-        		echo json_encode(array(
-        				"success" => true,
-        				"exception_id" => $exception_id
-        		));
-        	} else {
-        		echo json_encode(array(
-        				"success" => false
-        		));
-        	}
-        } else {
-            echo json_encode(array(
-                "success" => false
-            ));
-        }
-    }
-    
-    /**
-     * Remove an Hour Exception
-     */
-    public function remove_hour_exception() {
-    	$form = $this->input->post();
-    	 
-    	$response = $this->Hour_model->delete_hour_exception($form['exception_id']);
-    	if ($response) {
-    		$hours_form = array();
-    		$hours_form['hours_id'] = $form['hours_id'];
-    		$hours_form['updated_date'] = date('Y-m-d H:i:s');
-    		$hours_form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
-    		
-    		$response_hours = $this->Hour_model->update_hour($hours_form);
-    		if ($response_hours) {
-	    		echo json_encode(array(
-	    				"success" => true,
-	    				"data" => $response
-	    		));
-    		} else {
-	    		echo json_encode(array(
-	    				"success" => false
-	    		));
-	    	}
-    	} else {
-    		echo json_encode(array(
-    				"success" => false
-    		));
-    	}
-    }
-    
-    /**
-     * Get the Hour Exceptions for a particular Hour
-     */
-    public function get_hour_exception() {
-    	$form = $this->input->post();
-    
-    	$response = $this->Hour_model->get_hour_exception($form['hours_id']);
-    	if ($response) {
-    		echo json_encode(array(
-    				"success" => true,
-    				"data" => $response
-    		));
-    	} else {
-    		echo json_encode(array(
-    				"success" => false,
-    				"message" => "No results"
-    		));
-    	}
-    }
-    
-    /**
      * Save an Hour for an agent and campaing in a particular date
      */
     public function save_hour()
@@ -198,14 +115,7 @@ class Hour extends CI_Controller
         //Check if the agent exceeded the 7 hours today
         $isExceeded = $this->isDurationExceeded($form['date'], $form['user_id'], $form['duration'],$form['campaign_id']);
 
-        if (!$isExceeded) {
-            if (isset($form['exception_id'])) {
-                unset($form['exception_id']);
-            }
-            if (isset($form['exception-duration'])) {
-                unset($form['exception-duration']);
-            }
-
+        if (!$isExceeded['success']) {
             $form['duration'] = $form['duration']*60;
             $form['updated_date'] = date('Y-m-d H:i:s');
             $form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
@@ -233,7 +143,7 @@ class Hour extends CI_Controller
         else {
             echo json_encode(array(
                 "success" => false,
-                "message" => "ERROR: This agent exceeded the total hours in a day"
+                "message" => "ERROR: ".$isExceeded['message']
             ));
         }
 
@@ -257,33 +167,6 @@ class Hour extends CI_Controller
                 "success" => false,
                 "message" => "ERROR: Hour NOT removed"
             ));
-        }
-    }
-
-    private function isDurationExceeded($date, $user_id, $new_duration, $campaign_id){
-        $options = array();
-        $options['date_from'] = $date;
-        $options['date_to'] = $date;
-        $options['agent'] = $user_id;
-        $options['campaign'] = NULL;
-        $options['team'] = NULL;
-
-        $current_duration = 0;
-
-        $hours = $this->Hour_model->get_hours($options);
-
-        foreach ($hours as $hour) {
-            if ($hour['campaign_id'] != $campaign_id) {
-                $duration = ($hour['duration'])?$hour['duration']:0;
-                $current_duration += $duration;
-            }
-        }
-
-        if ($current_duration/3600 + $new_duration/60 > 7) {
-            return true;
-        }
-        else {
-            return false;
         }
     }
 
@@ -345,10 +228,9 @@ class Hour extends CI_Controller
         $form = $this->input->post();
 
         //Check if the agent exceeded the maximum hours defined in the default time of an agent
-        //$isExceeded = $this->isDurationExceeded($form['user_id'], $form['duration'],$form['campaign_id']);
-        $isExceeded = false;
+        $isExceeded = $this->isDefaultDurationExceeded($form['user_id'], $form['duration'],$form['campaign_id']);
 
-        if (!$isExceeded) {
+        if (!$isExceeded['success']) {
             $form['duration'] = $form['duration']*60;
 
             if (empty($form['default_hours_id'])) {
@@ -374,7 +256,7 @@ class Hour extends CI_Controller
         else {
             echo json_encode(array(
                 "success" => false,
-                "message" => "ERROR: This agent exceeded the total hours in a day. Check the default time set for this agent"
+                "message" => "ERROR: ".$isExceeded['message']
             ));
         }
     }
@@ -398,5 +280,118 @@ class Hour extends CI_Controller
                 "message" => "ERROR: Default Hour NOT removed"
             ));
         }
+    }
+
+    //Check if the duration is exceeded
+    private function isDurationExceeded($date, $user_id, $new_duration, $campaign_id){
+        $response = array();
+
+        $hour_options = array();
+        $hour_options['date_from'] = $date;
+        $hour_options['date_to'] = $date;
+        $hour_options['agent'] = $user_id;
+        $hour_options['campaign'] = NULL;
+        $hour_options['team'] = NULL;
+
+        $current_duration = 0;
+        $hours = $this->Hour_model->get_hours($hour_options);
+
+
+        $time_options = array();
+        $time_options['date_from'] = $date;
+        $time_options['date_to'] = $date;
+        $time_options['agent'] = $user_id;
+        $time_options['campaign'] = NULL;
+        $time_options['team'] = NULL;
+
+        $max_agent_time = NULL;
+        $agent_time = $this->Time_model->get_time($time_options);
+        if (!empty($agent_time)) {
+            if ($agent_time[0]['start_time'] && $agent_time[0]['end_time']) {
+                $max_agent_time = (strtotime($agent_time[0]['end_time']) - strtotime($agent_time[0]['start_time']))/3600;
+            }
+            else {
+                if ($agent_time[0]['default_start_time'] && $agent_time[0]['default_end_time']) {
+                    $max_agent_time = (strtotime($agent_time[0]['default_end_time']) - strtotime($agent_time[0]['default_start_time']))/3600;
+                }
+            }
+        }
+
+        if ($max_agent_time) {
+            foreach ($hours as $hour) {
+                if ($hour['campaign_id'] != $campaign_id) {
+                    $duration = ($hour['duration'])?$hour['duration']:0;
+                    $current_duration += $duration;
+                }
+            }
+
+            if ($current_duration/3600 + $new_duration/60 <= $max_agent_time) {
+                $response['success'] = false;
+                $response['message'] = '';
+            }
+            else {
+                $response['success'] = true;
+                $response['message'] = 'This agent exceeded the total hours in a day. Check the default time set for this agent';
+            }
+        }
+        else {
+            $response['success'] = true;
+            $response['message'] = 'No default time founded for this agent. Please, check if the default time is set for this agent';
+        }
+
+
+        return $response;
+    }
+
+    //Check if the default duration is exceeded
+    private function isDefaultDurationExceeded($user_id, $new_duration, $campaign_id){
+        $response = array();
+
+        $hour_options = array();
+        $hour_options['agent'] = $user_id;
+        $hour_options['campaign'] = NULL;
+        $hour_options['team'] = NULL;
+
+        $current_duration = 0;
+        $hours = $this->Hour_model->get_default_hours($hour_options);
+
+
+        $time_options = array();
+        $time_options['agent'] = $user_id;
+        $time_options['campaign'] = NULL;
+        $time_options['team'] = NULL;
+
+        $max_agent_time = NULL;
+        $agent_time = $this->Time_model->get_default_time($time_options);
+        if (!empty($agent_time)) {
+            if ($agent_time[0]['start_time'] && $agent_time[0]['end_time']) {
+                $max_agent_time = (strtotime($agent_time[0]['end_time']) - strtotime($agent_time[0]['start_time']))/3600;
+            }
+        }
+
+        if ($max_agent_time) {
+            foreach ($hours as $hour) {
+                if ($hour['campaign_id'] != $campaign_id) {
+                    $duration = ($hour['duration'])?$hour['duration']:0;
+                    $current_duration += $duration;
+                }
+            }
+
+            if ($current_duration/3600 + $new_duration/60 <= $max_agent_time) {
+                $response['success'] = false;
+                $response['message'] = '';
+            }
+            else {
+                $response['success'] = true;
+                $response['message'] = 'This agent exceeded the total hours in a day. Check the default time set for this agent';
+            }
+        }
+        else {
+            $response['success'] = true;
+            $response['message'] = 'No default time founded for this agent. Please, check if the default time is set for this agent';
+        }
+
+
+        return $response;
     }
 }

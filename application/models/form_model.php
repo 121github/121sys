@@ -226,11 +226,6 @@ class Form_model extends CI_Model
         return $this->db->get('park_codes')->result_array();
     }
     
-    public function get_hours_exception_type()
-    {
-    	$this->db->select('exception_type_id id,exception_name  name, paid');
-    	return $this->db->get('hours_exception_type')->result_array();
-    }
 
     public function get_time_exception_type()
     {

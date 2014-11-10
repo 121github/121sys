@@ -40,7 +40,6 @@ class Hour_model extends CI_Model
                       if(h.comment is null,'',h.comment) comment,
                       if(m.name is not null,m.name,'-') as updated_name,
                       if(h.updated_date is not null,h.updated_date,'-') as updated_date,
-                      (select sum(he.duration) from hours_exception he where h.hours_id = he.hours_id) as exceptions,
                       dh.duration as default_hours
 		    	from users u
 		    	inner join users_to_campaigns uc ON (uc.user_id = u.user_id)
@@ -58,37 +57,6 @@ class Hour_model extends CI_Model
     }
     
     /**
-     * Add a new Hour Exception
-     */
-    public function add_hour_exception($form)
-    {
-    	$this->db->insert("hours_exception", $form);
-    	return $this->db->insert_id();
-    }
-    
-    /**
-     * Remove an Hour Exception
-     */
-    public function delete_hour_exception($id)
-    {
-    	$this->db->where("exception_id", $id);
-    	return $this->db->delete("hours_exception");
-    }
-    
-    /**
-     * Get the Hour Exceptions for a particular hour
-     */
-    public function get_hour_exception($hours_id)
-    {
-    	$qry    = "select * 
-    			from hours_exception
-    			inner join hours_exception_type using(exception_type_id)
-    			where hours_id = ".$hours_id;
-    	
-    	return $this->db->query($qry)->result_array();
-    }
-    
-	/**
      * Add a new hour
      *
      * @param Form $form

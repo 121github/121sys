@@ -68,15 +68,6 @@ var hours = {
         	hours.cancel();
         });
         
-        $(document).on('click', '.add-exception-btn', function(e) {
-        	e.preventDefault();
-        	hours.add_exception($(this));
-        });
-        $(document).on('click', '.remove-exception-btn', function(e) {
-        	e.preventDefault();
-        	hours.remove_exception($(this));
-        });
-        
         //start the function to load the hours into the table
         if ($('form').find('input[name="date_from"]').val() == '') {
         	$('form').find('input[name="date_from"]').val(moment().format('YYYY-MM-DD'));
@@ -137,25 +128,6 @@ var hours = {
                             seconds = "0" + seconds;
                         }
 
-                        var exception_time = hours + 'h ' + minutes + 'm ';
-
-                        //Exceotion time if exists
-                        var hours = Math.floor(val.exceptions / 60);
-                        var minutes = Math.floor((val.exceptions - (hours * 60)));
-                        var seconds = val.exceptions - (hours * 60) - (minutes);
-
-                        if (hours < 10) {
-                            hours = "0" + hours;
-                        }
-                        if (minutes < 10) {
-                            minutes = "0" + minutes;
-                        }
-                        if (seconds < 10) {
-                            seconds = "0" + seconds;
-                        }
-
-                        var exception_time = hours + 'h ' + minutes + 'm ';
-
                         //Comment icon and content
                         if (val.comment.length) {
                             comment = "<span class='glyphicon glyphicon-comment tt pointer' data-placement='left' data-toggle='tooltip' title='Comment: " + val.comment + "'></span>";
@@ -178,14 +150,6 @@ var hours = {
                             input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
 	                    }
 
-                        //Exception time icon and content
-                        if(val.exceptions) {
-                            exceptions_time = "<span class='glyphicon glyphicon-eye-close tt pointer' data-placement='left' data-toggle='tooltip' title='Exceptions time: " + exception_time + "'></span>";
-                        }
-                        else {
-                            exceptions_time = "<span class='glyphicon glyphicon-eye-close' style='opacity: 0.4; filter: alpha(opacity=40);'></span>";
-                        }
-                        
                         var edit_button = (val.hours_id)?"<button type='button' class='btn btn-default btn-xs edit-btn'>Edit</button>":"";
 
                         $tbody.append("<tr>" +
@@ -200,7 +164,6 @@ var hours = {
                         "</td><td class='updated_name'>" + val.updated_name +
                         "</td><td class='updated_date'>" + val.updated_date +
                         "</td><td class='comment hidden'>" + val.comment +
-                        "</td><td>" + exceptions_time + "</td>" +
                         "</td><td>" + comment + "</td>" +
                         "</td><td>"+edit_button+"</td>" +
                         "</tr>");
@@ -234,104 +197,13 @@ var hours = {
         $('#date').text(row.find('.date').text());
 		
 		$('#edit_hours_form').find('input[name="duration"]').numeric();
-		$('#edit_hours_form').find('input[name="exception-duration"]').numeric();
 
-		hours.load_exceptions();
-		
-        $('.ajax-table').fadeOut(1000, function() {
+		$('.ajax-table').fadeOut(1000, function() {
             $('#edit_hours_form').fadeIn();
         });
         
         $('.filter-form').fadeOut(1000, function() {
             
-        });
-    },
-    //add exception
-    add_exception: function($btn) {
-    	var exception_type_id = $("#exception-select option:selected").val();
-    	var exception_name = $("#exception-select option:selected").text();
-    	var exception_duration = $('#edit_hours_form').find('input[name="exception-duration"]').val();
-    	var hours_id = $('#edit_hours_form').find('input[name="hours_id"]').val();
-    	
-    	if (hours_id > 0) {
-	    	if ((exception_type_id != 0) && (exception_duration > 0)) {
-	    		$.ajax({
-	                url: helper.baseUrl + 'hour/add_hour_exception',
-	                type: "POST",
-	                dataType: "JSON",
-	                data: {'exception_type_id':exception_type_id, 'hours_id' : hours_id, 'duration' : exception_duration}
-	            }).done(function(response) {
-	                if (response.success) {
-	                	var exception = {'exception_id':response.exception_id, 'exception_type_id':exception_type_id, 'exception_name' : exception_name, 'duration' : exception_duration}
-	                	hours.append_exception(exception);
-	                	$('#edit_hours_form').find('input[name="exception-duration"]').val("");
-	        			$('#edit_hours_form').find('select[name="exception_id"]').selectpicker('val',0);
-	        			
-	                	flashalert.success("Exception addded");
-	                }
-	                else {
-	                	flashalert.danger("ERROR: Exception NOT added");
-	                }
-	                
-	            });
-	    	}
-    	}
-    	else {
-    		flashalert.danger("You need to set the duration before");
-    	}
-    },
-    //append an exception
-    append_exception: function(exception){
-    	var $tbody = "<tr>" +
-        "<td><span class='hidden exception_id'>" +exception.exception_id + "</span>" + exception.exception_name +
-        "<td>" + exception.duration +
-        "</td><td><button class='btn btn-danger btn-xs remove-exception-btn'>Remove</button></td>" +
-        "</tr>";
-
-		$('.exceptions-body').append($tbody);
-    },
-    //remove exception from the list
-    remove_exception: function($btn) {
-    	var row = $btn.closest('tr');
-    	var exception_id = row.find('.exception_id').text();
-    	
-    	if (exception_id != 0) {
-    		$.ajax({
-                url: helper.baseUrl + 'hour/remove_hour_exception',
-                type: "POST",
-                dataType: "JSON",
-                data: {'exception_id':exception_id, 'hours_id' : $('#edit_hours_form').find('input[name="hours_id"]').val()}
-            }).done(function(response) {
-                if (response.success) {
-                	row.remove();
-                	flashalert.success("Exception removed");
-                }
-                else {
-                	flashalert.danger("ERROR: Exception NOT removed");
-                }
-                
-            });
-    	}
-    },
-    //load exceptions for this hour
-    load_exceptions: function() {
-    	var $tbody = $('.exceptions-body');
-    	$tbody.empty();
-    	
-    	$.ajax({
-            url: helper.baseUrl + 'hour/get_hour_exception',
-            type: "POST",
-            dataType: "JSON",
-            data: {'hours_id' : $('#edit_hours_form').find('input[name="hours_id"]').val()}
-        }).done(function(response) {
-            if (response) {
-            	$.each(response.data, function(key,val) {
-            		hours.append_exception(val);
-            	});
-            }
-            else {
-            	flashalert.success("ERROR: Error loading the exceptions for this hour");
-            }
         });
     },
     //save an hour
@@ -369,6 +241,10 @@ var hours = {
             //Remove default hour
             hours.remove_duration(hours_id);
         }
+        else {
+            hours.load_hours();
+            flashalert.danger("You can not remove this hour because it is unset");
+        }
     },
     set_default_hour: function($btn) {
         var row = $btn.closest('tr');
@@ -395,6 +271,7 @@ var hours = {
                 flashalert.success(response.message);
             }
             else {
+                hours.load_hours();
                 flashalert.danger(response.message);
             }
 
@@ -539,12 +416,12 @@ var hours_settings = {
             data: data
         }).done(function(response) {
             if (response.success) {
-                hours_settings.load_default_hours();
                 flashalert.success(response.message);
             }
             else {
                 flashalert.danger(response.message);
             }
+            hours_settings.load_default_hours();
 
         });
     },

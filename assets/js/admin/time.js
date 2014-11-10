@@ -397,8 +397,8 @@ var time = {
         datetimepicker.datetimepicker({
             pickDate: false
         });
-
-        datetimepicker.on("dp.hide",function (e) {
+        datetimepicker.off("dp.hide");
+        datetimepicker.one("dp.hide",function (e) {
             start_time = (row.find('input[name="start_time"]').val())?row.find('input[name="start_time"]').val()+':00':'';
             end_time = (row.find('input[name="end_time"]').val())?row.find('input[name="end_time"]').val()+':00':'';
             user_id = row.find('.user_id').text();
@@ -479,7 +479,7 @@ var default_time = {
                         end_time_input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
                     }
 
-                    remove_btn = (val.default_time_id)?"<span class='glyphicon glyphicon-remove red' onclick='default_time.remove_default_time($(this))'></span>":"";
+                    remove_btn = (val.default_time_id)?"<span class='glyphicon glyphicon-remove red' onclick='default_time.remove_default_time("+val.default_time_id+")'></span>":"";
 
                     $tbody.append("<tr>" +
                     "<td class='default_time_id hidden'>" + val.default_time_id +
@@ -524,10 +524,7 @@ var default_time = {
 
         });
     },
-    remove_default_time: function($btn) {
-        var row = $btn.closest('tr');
-        var default_time_id = row.find('.default_time_id');
-
+    remove_default_time: function(default_time_id) {
         var data = {'default_time_id':default_time_id};
         //Remove default time
         $.ajax({
@@ -554,8 +551,8 @@ var default_time = {
         datetimepicker.datetimepicker({
             pickDate: false
         });
-
-        datetimepicker.on("dp.hide",function (e) {
+        datetimepicker.off("dp.hide");
+        datetimepicker.one("dp.hide",function (e) {
             start_time = (row.find('input[name="start_time"]').val())?row.find('input[name="start_time"]').val()+':00':'';
             end_time = (row.find('input[name="end_time"]').val())?row.find('input[name="end_time"]').val()+':00':'';
             user_id = row.find('.user_id').text();
