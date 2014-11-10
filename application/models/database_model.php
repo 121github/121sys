@@ -708,8 +708,13 @@ class Database_model extends CI_Model
 		if ($this->db->_error_message()) {
 			return "data_sources";
 		}
-		
-		
+
+        //Dumping the uk postcodes
+        $db = $this->db->database;
+        $username = $this->db->username;
+        $password = $this->db->password;
+        exec("mysql -u ".$username." -p".$password." -h localhost $db < ".$_SERVER['DOCUMENT_ROOT']."/uk_postcodes.sql",$output);
+
 		return "success";
 	}
 	
@@ -719,7 +724,7 @@ class Database_model extends CI_Model
 	 * @return string
 	 */
 	public function demo_data() {
-       //dumping data sample into clients
+        //dumping data sample into clients
 		$this->db->query("INSERT INTO `clients` (`client_name`) VALUES
 		('121'),
 		('Sample Client')");

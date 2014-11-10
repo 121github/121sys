@@ -82,8 +82,7 @@ class Database extends CI_Controller
 		$status = $this->Database_model->init_data();
 		$db = $this->db->database;
 		if($status=="success"){
-			exec("mysql -u root -p12183c -h localhost $db < /var/www/uk_postcodes.sql",$output);
-			echo json_encode(array("success"=>true,"msg"=>"The default data was restored","postcode_status"=>$output));
+			echo json_encode(array("success"=>true,"msg"=>"The default data was restored"));
 		} else {
 			echo json_encode(array("success"=>false,"msg"=>"Error restoring the default data. Failed on $status table"));
 		}
