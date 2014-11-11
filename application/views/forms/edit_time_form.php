@@ -10,16 +10,17 @@
                     <span class='input-group-addon'><span class='glyphicon glyphicon-time'></span></span>
                 </div>
 			  </div>
-              <div class="form-group input-duration-sm">
-                <p>End Time</p>
-               <div class='input-group time datetimepicker' style='width: 9em;'>
-                  <input name='end_time' data-date-format='HH:mm' type='text' class='form-control' />
-                  <span class='input-group-addon'><span class='glyphicon glyphicon-time'></span></span>
-               </div>
-              </div>
 		</div>
-		<div class="col-xs-4"></div>
-		<div class="col-xs-1"></div>
+		<div class="col-xs-2">
+            <div class="form-group input-duration-sm">
+                <p>End Time</p>
+                <div class='input-group time datetimepicker' style='width: 9em;'>
+                    <input name='end_time' data-date-format='HH:mm' type='text' class='form-control' />
+                    <span class='input-group-addon'><span class='glyphicon glyphicon-time'></span></span>
+                </div>
+            </div>
+		</div>
+		<div class="col-xs-3"></div>
 		<div class="col-xs-2">
             <p>Date</p>
 			<div class="form-group input-date-sm" style="display: none;">

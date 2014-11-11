@@ -102,15 +102,15 @@ var time = {
 
                         //Duration and default time icon and content
                         if (!val.time_id && default_start_time) {
-                            start_time_btn = "<span class='input-group-addon tt' data-placement='right' data-toggle='tooltip' title='Click to set the default hour'><span class='glyphicon glyphicon-time pointer red' onclick='time.set_datetimepicker($(this))'></span></span>";
+                            start_time_btn = "<span class='input-group-addon tt' data-placement='right' data-toggle='tooltip' title='Click to set the default hour'><span class='glyphicon glyphicon-time pointer red' onclick='time.set_datetimepicker($(this),\"start_time\")'></span></span>";
                             start_tipe_input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
                         }
                         else if (start_time) {
-                            start_time_btn = "<span class='input-group-addon'><span class='glyphicon glyphicon-time' onclick='time.set_datetimepicker($(this))'></span></span>";
+                            start_time_btn = "<span class='input-group-addon'><span class='glyphicon glyphicon-time' onclick='time.set_datetimepicker($(this),\"start_time\")'></span></span>";
                             start_tipe_input_style = "";
                         }
                         else {
-                            start_time_btn = "<span class='input-group-addon'><span class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);' onclick='time.set_datetimepicker($(this))'></span></span>";
+                            start_time_btn = "<span class='input-group-addon'><span class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);' onclick='time.set_datetimepicker($(this),\"start_time\")'></span></span>";
                             start_tipe_input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
                         }
 
@@ -122,15 +122,15 @@ var time = {
 
                         //Duration and default time icon and content
                         if (!val.time_id && default_end_time) {
-                            end_time_btn = "<span class='input-group-addon tt' data-placement='right' data-toggle='tooltip' title='Click to set the default hour'><span class='glyphicon glyphicon-time pointer red' onclick='time.set_datetimepicker($(this))'></span></span>";
+                            end_time_btn = "<span class='input-group-addon tt' data-placement='right' data-toggle='tooltip' title='Click to set the default hour'><span class='glyphicon glyphicon-time pointer red' onclick='time.set_datetimepicker($(this),\"end_time\")'></span></span>";
                             end_tipe_input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
                         }
                         else if (end_time) {
-                            end_time_btn = "<span class='input-group-addon'><span class='glyphicon glyphicon-time' onclick='time.set_datetimepicker($(this))'></span></span>";
+                            end_time_btn = "<span class='input-group-addon'><span class='glyphicon glyphicon-time' onclick='time.set_datetimepicker($(this),\"end_time\")'></span></span>";
                             end_tipe_input_style = "";
                         }
                         else {
-                            end_time_btn = "<span class='input-group-addon'><span class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);' onclick='time.set_datetimepicker($(this))'></span></span>";
+                            end_time_btn = "<span class='input-group-addon'><span class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);' onclick='time.set_datetimepicker($(this),\"end_time\")'></span></span>";
                             end_tipe_input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
                         }
 
@@ -174,11 +174,11 @@ var time = {
                         "<td class='date'>" + date +
                         "<td class='user_id hidden'>" + val.user_id +
                         "</td><td class='user_name'>" + val.user_name +
-                        "</td><td class='input-group date datetimepicker' style='width: 9em;'>" +
+                        "</td><td class='input-group date datetimepicker start_time' style='width: 9em;'>" +
                             "<input style='"+start_tipe_input_style+"' name='start_time' id='start_time_"+date.replace(/\//g, '-')+"_"+val.user_id+"' data-date-format='HH:mm' type='text' class='form-control' value='"+start_time.substr(0,5)+"' />" +
                             start_time_btn +
                         "</td><td>" +
-                        "</td><td class='input-group date datetimepicker' style='width: 9em;'>" +
+                        "</td><td class='input-group date datetimepicker end_time' style='width: 9em;'>" +
                             "<input style='"+end_tipe_input_style+"' name='end_time' id='end_time_"+date.replace(/\//g, '-')+"_"+val.user_id+"' data-date-format='HH:mm' type='text' class='form-control' value='"+end_time.substr(0,5)+"' />" +
                             end_time_btn +
                         "</td><td class='updated_name'>" + val.updated_name +
@@ -216,6 +216,9 @@ var time = {
 		
 		$('#edit_time_form').find('input[name="duration"]').numeric();
 		$('#edit_time_form').find('input[name="exception-duration"]').numeric();
+
+        $('#edit_time_form').find('input[name="end_time"]').css("color","black");
+        $('#edit_time_form').find('input[name="start_time"]').css("color","black");
 
 		time.load_exceptions();
 		
@@ -317,22 +320,40 @@ var time = {
     },
     //save an time
     save: function($btn) {
-		$.ajax({
-            url: helper.baseUrl + 'time/save_time',
-            type: "POST",
-            dataType: "JSON",
-            data: $btn.closest('form').serialize()
-        }).done(function(response) {
-            if (response.success) {
-                time.load_time();
-                time.hide_edit_form();
-            	flashalert.success(response.message);
-            }
-            else {
-            	flashalert.danger(response.message);
-            }
-            
-        });
+
+        start_time = ($('#edit_time_form').find('input[name="start_time"]').val())?$('form').find('input[name="start_time"]').val()+':00':'';
+        end_time = ($('#edit_time_form').find('input[name="end_time"]').val())?$('form').find('input[name="end_time"]').val()+':00':'';
+
+        var date_start = new Date();
+        var start_time_ar = start_time.split(':');
+        date_start.setHours(start_time_ar[0],start_time_ar[1],start_time_ar[2]);
+        var date_end = new Date();
+        var end_time_ar = end_time.split(':');
+        date_end.setHours(end_time_ar[0],end_time_ar[1],end_time_ar[2]);
+
+        if (date_end < date_start) {
+            flashalert.danger("The start time must be less than the end time");
+            $('#edit_time_form').find('input[name="end_time"]').css("color","red");
+            $('#edit_time_form').find('input[name="start_time"]').css("color","red");
+        }
+        else {
+            $.ajax({
+                url: helper.baseUrl + 'time/save_time',
+                type: "POST",
+                dataType: "JSON",
+                data: $btn.closest('form').serialize()
+            }).done(function(response) {
+                if (response.success) {
+                    time.load_time();
+                    time.hide_edit_form();
+                    flashalert.success(response.message);
+                }
+                else {
+                    flashalert.danger(response.message);
+                }
+
+            });
+        }
     },
     save_time: function(time_id, date, user_id, start_time, end_time) {
         var data = {'time_id':time_id, 'date':date, 'user_id':user_id, 'start_time': start_time, 'end_time': end_time};
@@ -390,9 +411,9 @@ var time = {
     },
 
     //Set datetimepicker
-    set_datetimepicker: function($btn) {
+    set_datetimepicker: function($btn, class_type) {
         var row = $btn.closest('tr');
-        var datetimepicker = row.find('.datetimepicker');
+        var datetimepicker = row.find('.datetimepicker.'+class_type);
 
         datetimepicker.datetimepicker({
             pickDate: false
@@ -405,7 +426,33 @@ var time = {
             time_id = (row.find('.time_id').text() != 'null')?row.find('.time_id').text():'';
             date = row.find('.date').text().replace(/\//g, '-');
 
-            time.save_time(time_id, date, user_id, start_time, end_time);
+            var date_start = new Date();
+            var start_time_ar = start_time.split(':');
+            date_start.setHours(start_time_ar[0],start_time_ar[1],start_time_ar[2]);
+            var date_end = new Date();
+            var end_time_ar = end_time.split(':');
+            date_end.setHours(end_time_ar[0],end_time_ar[1],end_time_ar[2]);
+
+            if (end_time.length == 0) {
+                date_end = date_start;
+                date_end.setHours(date_start.getHours()+8);
+                end_time = date_end.toLocaleTimeString();
+                time.save_time(time_id, date, user_id, start_time, end_time);
+            }
+            else if (start_time.length == 0) {
+                date_start = date_end;
+                date_start.setHours(date_end.getHours()-8);
+                start_time = date_start.toLocaleTimeString();
+                time.save_time(time_id, date, user_id, start_time, end_time);
+            }
+            else if (date_end < date_start) {
+                flashalert.danger("The start time must be less than the end time");
+                row.find('input[name="end_time"]').css("color","red");
+                row.find('input[name="start_time"]').css("color","red");
+            }
+            else {
+                time.save_time(time_id, date, user_id, start_time, end_time);
+            }
 
         });
     }
@@ -458,11 +505,11 @@ var default_time = {
 
                     //Duration and default start time icon and content
                     if (start_time) {
-                        start_time_btn = "<span class='input-group-addon'><span id='time_btn' class='glyphicon glyphicon-time' onclick='default_time.set_datetimepicker($(this))'></span></span>";
+                        start_time_btn = "<span class='input-group-addon'><span id='time_btn' class='glyphicon glyphicon-time' onclick='default_time.set_datetimepicker($(this),\"start_time\")'></span></span>";
                         start_time_input_style = "";
                     }
                     else {
-                        start_time_btn = "<span class='input-group-addon'><span id='time_btn' class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);' onclick='default_time.set_datetimepicker($(this))'></span></span>";
+                        start_time_btn = "<span class='input-group-addon'><span id='time_btn' class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);' onclick='default_time.set_datetimepicker($(this),\"start_time\")'></span></span>";
                         start_time_input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
                     }
 
@@ -471,11 +518,11 @@ var default_time = {
 
                     //Duration and default end time icon and content
                     if (end_time) {
-                        end_time_btn = "<span class='input-group-addon'><span id='time_btn' class='glyphicon glyphicon-time' onclick='default_time.set_datetimepicker($(this))'></span></span>";
+                        end_time_btn = "<span class='input-group-addon'><span id='time_btn' class='glyphicon glyphicon-time' onclick='default_time.set_datetimepicker($(this),\"end_time\")'></span></span>";
                         end_time_input_style = "";
                     }
                     else {
-                        end_time_btn = "<span class='input-group-addon'><span id='time_btn' class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);' onclick='default_time.set_datetimepicker($(this))'></span></span>";
+                        end_time_btn = "<span class='input-group-addon'><span id='time_btn' class='glyphicon glyphicon-time' style='opacity: 0.4; filter: alpha(opacity=40);' onclick='default_time.set_datetimepicker($(this),\"end_time\")'></span></span>";
                         end_time_input_style = "opacity: 0.6;filter: alpha(opacity=60); background: rgb(197, 191, 191);";
                     }
 
@@ -485,11 +532,11 @@ var default_time = {
                     "<td class='default_time_id hidden'>" + val.default_time_id +
                     "<td class='user_id hidden'>" + val.user_id +
                     "</td><td class='user_name'>" + val.user_name +
-                    "</td><td class='input-group date datetimepicker' style='width: 9em;'>" +
+                    "</td><td class='input-group date datetimepicker start_time' style='width: 9em;'>" +
                         "<input style='"+start_time_input_style+"' name='start_time' data-date-format='HH:mm' type='text' class='form-control' value='"+start_time.substr(0,5)+"' />" +
                         start_time_btn +
                     "</td><td>" +
-                    "</td><td class='input-group date datetimepicker' style='width: 9em;'>" +
+                    "</td><td class='input-group date datetimepicker end_time' style='width: 9em;'>" +
                         "<input style='"+end_time_input_style+"' name='end_time' data-date-format='HH:mm' type='text' class='form-control' value='"+end_time.substr(0,5)+"' />" +
                         end_time_btn +
                     "</td><td>" +
@@ -544,13 +591,19 @@ var default_time = {
         });
     },
     //Set datetimepicker
-    set_datetimepicker: function($btn) {
+    set_datetimepicker: function($btn, class_type) {
         var row = $btn.closest('tr');
-        var datetimepicker = row.find('.datetimepicker');
+        var datetimepicker = row.find('.datetimepicker.'+class_type);
 
         datetimepicker.datetimepicker({
             pickDate: false
         });
+
+        datetimepicker.off("dp.show");
+        datetimepicker.one("dp.show",function (e) {
+
+        });
+
         datetimepicker.off("dp.hide");
         datetimepicker.one("dp.hide",function (e) {
             start_time = (row.find('input[name="start_time"]').val())?row.find('input[name="start_time"]').val()+':00':'';
@@ -558,7 +611,34 @@ var default_time = {
             user_id = row.find('.user_id').text();
             default_time_id = (row.find('.default_time_id').text() != 'null')?row.find('.default_time_id').text():'';
 
-            default_time.save_default_time(default_time_id, user_id, start_time, end_time);
+            var date_start = new Date();
+            var start_time_ar = start_time.split(':');
+            date_start.setHours(start_time_ar[0],start_time_ar[1],start_time_ar[2]);
+            var date_end = new Date();
+            var end_time_ar = end_time.split(':');
+            date_end.setHours(end_time_ar[0],end_time_ar[1],end_time_ar[2]);
+
+
+            if (end_time.length == 0) {
+                date_end = date_start;
+                date_end.setHours(date_start.getHours()+8);
+                end_time = date_end.toLocaleTimeString();
+                default_time.save_default_time(default_time_id, user_id, start_time, end_time);
+            }
+            else if (start_time.length == 0) {
+                date_start = date_end;
+                date_start.setHours(date_end.getHours()-8);
+                start_time = date_start.toLocaleTimeString();
+                default_time.save_default_time(default_time_id, user_id, start_time, end_time);
+            }
+            else if (date_end < date_start) {
+                flashalert.danger("The start time must be less than the end time");
+                row.find('input[name="end_time"]').css("color","red");
+                row.find('input[name="start_time"]').css("color","red");
+            }
+            else {
+                default_time.save_default_time(default_time_id, user_id, start_time, end_time);
+            }
 
         });
 
