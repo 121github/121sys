@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Migration_update_7 extends CI_Migration
+class Migration_update_8 extends CI_Migration
 {
     public function up()
     {
