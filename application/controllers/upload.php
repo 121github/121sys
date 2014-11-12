@@ -507,6 +507,7 @@ class Upload extends CI_Controller
 
     protected function handle_form_data($file, $index) {
         // Handle form data, e.g. $_REQUEST['description'][$index]
+        $file->name =  uniqid(rand(),true).".".substr($file->name, strripos($file->name, '.')+1, strlen($file->name));
     }
 
     protected function get_scaled_image_file_paths($file_name, $version) {

@@ -79,7 +79,8 @@ class Database_model extends CI_Model
 		('Emails', 'emails.php'),
 		('Appointment Setting', 'appointments.php'),
 		('Surveys', 'survey.php'),
-		('Recordings', 'recordings.php')");
+		('Recordings', 'recordings.php'),
+		('Attachments', 'attachments.php')");
 		
 		if ($this->db->_error_message()) {
 			return "campaign_features";
@@ -537,7 +538,9 @@ class Database_model extends CI_Model
 		('view hours','Admin'),
 		('show footer', 'System'),
 		('admin nav','Admin'),
-		('campaign access','Admin')");
+		('campaign access','Admin'),
+		('view attachments', 'Attachments'),
+		('add attachment', 'Attachments')");
 		
 		if ($this->db->_error_message()) {
 			return "permissions";

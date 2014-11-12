@@ -66,7 +66,7 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
 <!-- end email popup -->
 
 <script type="text/javascript">
-    $(document).ready(function () {   
+    $(document).ready(function () {
         var urn = '<?php echo $details['record']['urn'] ?>';
 		var campaign = '<?php echo $details['record']['campaign_id'] ?>';
 		var role_id = '<?php echo $_SESSION['role'] ?>';
@@ -105,6 +105,9 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
 		<?php if(in_array(12,$features)){ ?>
 		record.recordings_panel.init();
 		<?php } ?>
+        <?php if(in_array(13,$features)){ ?>
+        record.attachment_panel.init();
+        <?php } ?>
 
     });
 </script>
