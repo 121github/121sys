@@ -162,8 +162,7 @@ class Records extends CI_Controller
                 "detail2.js",
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
 				'plugins/jqfileupload/jquery.iframe-transport.js',
-				'plugins/jqfileupload/jquery.fileupload.js',
-                'lib//jquery.md5.js'
+				'plugins/jqfileupload/jquery.fileupload.js'
             ),
             'css' => array(
                 'plugins/jqfileupload/jquery.fileupload.css'
