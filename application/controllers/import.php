@@ -39,6 +39,8 @@ echo json_encode(array("success"=>true));
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
                 'plugins/jqfileupload/jquery.fileupload.js',
+                'plugins/jqfileupload/jquery.fileupload-process.js',
+                'plugins/jqfileupload/jquery.fileupload-validate.js',
                 'import.js'
             ),
             'campaigns' => $campaigns,

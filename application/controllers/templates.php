@@ -42,6 +42,8 @@ $this->_campaigns = campaign_access_dropdown();
 						'plugins/jqfileupload/vendor/jquery.ui.widget.js',
 						'plugins/jqfileupload/jquery.iframe-transport.js',
 						'plugins/jqfileupload/jquery.fileupload.js',
+                        'plugins/jqfileupload/jquery.fileupload-process.js',
+                        'plugins/jqfileupload/jquery.fileupload-validate.js'
 				),
 				'campaigns' => $campaigns,
 		);
@@ -136,8 +138,9 @@ $this->_campaigns = campaign_access_dropdown();
 			$attachmentsForm = explode(",", $attachmentsForm);
 			$aux = array();
 			foreach ($attachmentsForm as $attachment) {
-				$name = substr($attachment, strripos($attachment, "/") + 1);
-				$element = array("name" => $name, "path" => $attachment);
+				$name = substr($attachment, strripos($attachment, "?") + 1);
+                $path = substr($attachment, 0, strripos($attachment, "?"));
+				$element = array("name" => $name, "path" => $path);
 				array_push($aux, $element);
 			}
 			$attachmentsForm = $aux;
@@ -261,7 +264,7 @@ $this->_campaigns = campaign_access_dropdown();
 	 */
 	public function set_attached_files() {
 		$data = $this->input->post();
-		
+
 		$files_ar = (strlen($data['newFiles']) > 0)?explode(",", $data['newFiles']):array();
 		$aux = array();
 		foreach ($files_ar as $file) {
@@ -269,7 +272,7 @@ $this->_campaigns = campaign_access_dropdown();
 		}
 		$files_ar = $aux;
 		
-		$files_ar[$data["filename"]] = $data['path'];
+		$files_ar[substr($data['path']."?".$data["filename"], strripos($data['path']."?".$data["filename"], "?") + 1)] = $data['path']."?".$data["filename"];
 		
 		$response = $files_ar;
 		echo json_encode(array("success"=>true,"data"=>implode(",", $response), "data_array" => $response));
@@ -314,6 +317,9 @@ $this->_campaigns = campaign_access_dropdown();
 			$attachment_list = array($data['path']);
 			//Delete the files from the server folder
 			foreach ($attachment_list as $path) {
+                if (strripos($path, "?")) {
+                    $path = substr($path,0,  strripos($path, "?"));
+                }
 				if (!unlink(strstr('./'.$path, 'upload'))) {
 					$response = false;
 				}
@@ -326,6 +332,9 @@ $this->_campaigns = campaign_access_dropdown();
 	public function delete_old_attachments($attachment_list) {
 		$response = true;
 		foreach ($attachment_list as $attachment) {
+            if (strripos($attachment['path'], "?")) {
+                $attachment['path'] = substr($attachment['path'],0,  strripos($attachment['path'], "?"));
+            }
 			if (!unlink(strstr('./'.$attachment['path'], 'upload'))) {
 				$response = false;
 			}
@@ -346,6 +355,9 @@ $this->_campaigns = campaign_access_dropdown();
 			
 			//Delete the files from the server folder
 			foreach ($attachment_list as $path) {
+                if (strripos($path, "?")) {
+                    $path = substr($path,0,  strripos($path, "?"));
+                }
 				if (!unlink(strstr('./'.$path, 'upload'))) {
 					$response = false;
 				}	

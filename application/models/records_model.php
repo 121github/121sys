@@ -838,6 +838,7 @@ class Records_model extends CI_Model
 		    	from attachments a
 		    	inner join users u ON (u.user_id = a.user_id)
 		    	where urn = ".$urn."
+		    	order by a.date desc
 		    	limit ".$offset.",".$limit;
 
         return $this->db->query($qry)->result_array();
