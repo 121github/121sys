@@ -834,6 +834,24 @@ class Migration_install extends CI_Migration
   KEY `exception_type_id` (`exception_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Exception time' AUTO_INCREMENT=1");
         
+        //create attachments table
+        $this->db->query("CREATE TABLE IF NOT EXISTS `attachments`
+(
+`attachment_id` int PRIMARY KEY NOT NULL,
+`urn` int NOT NULL,
+`name` VARCHAR(50) NOT NULL,
+`type` VARCHAR(50) NOT NULL,
+`path` VARCHAR(255) NOT NULL,
+`date` DATETIME NOT NULL,
+`user_id` int NOT NULL,
+KEY `FK_urn` (`urn`),
+CONSTRAINT `FK_urn` FOREIGN KEY (`urn`) REFERENCES `records` (`urn`) ON DELETE CASCADE ON UPDATE CASCADE,
+KEY `FK_users` (`user_id`),
+CONSTRAINT `FK_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) COMMENT 'Record attachments'
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1
+;");
+        
         //Constraints for table `role_permissions`
         $this->db->query("ALTER TABLE `role_permissions` ADD FOREIGN KEY (`role_id`) REFERENCES `permissions`(`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
         
