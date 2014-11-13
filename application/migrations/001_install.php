@@ -2,15 +2,15 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Migration_install extends CI_Migration
 {
-	
-	public function __construct()
-	{
-		$this->load->model('Database_model');
-	}
-	
+    
+    public function __construct()
+    {
+        $this->load->model('Database_model');
+    }
+    
     public function up()
     {
-    	if (!$this->db->query("CREATE DATABASE IF NOT EXISTS `".$this->db->database."` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci")) {
+        if (!$this->db->query("CREATE DATABASE IF NOT EXISTS `" . $this->db->database . "` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci")) {
             echo "There was an error creating the database";
         }
         $this->db->query("SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO'");
@@ -82,7 +82,7 @@ class Migration_install extends CI_Migration
 		  PRIMARY KEY (`campaign_id`),
 		  KEY `client_id` (`client_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
-
+        
         //Table structure for table `campaigns_to_features`
         $this->db->query("CREATE TABLE IF NOT EXISTS `campaigns_to_features` (
 		  `campaign_id` int(3) NOT NULL,
@@ -90,24 +90,26 @@ class Migration_install extends CI_Migration
 		  KEY `campaign_id` (`campaign_id`,`feature_id`),
 		  KEY `feature_id` (`feature_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
-
-
+        
+        
         //Table structure for table `campaign_features`
         $this->db->query("CREATE TABLE IF NOT EXISTS `campaign_features` (
-		  `feature_id` int(3) NOT NULL AUTO_INCREMENT,
-		  `feature_name` varchar(30) CHARACTER SET utf8 NOT NULL,
-		  `panel_path` varchar(50) CHARACTER SET utf8 NOT NULL,
-		  PRIMARY KEY (`feature_id`)
-		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
+  `feature_id` int(3) NOT NULL AUTO_INCREMENT,
+  `feature_name` varchar(30) CHARACTER SET utf8 NOT NULL,
+  `panel_path` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `permission_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`feature_id`),
+  KEY `permission_id` (`permission_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         
-
+        
         //Table structure for table `campaign_types`
         $this->db->query("CREATE TABLE IF NOT EXISTS `campaign_types` (
 		  `campaign_type_id` tinyint(3) NOT NULL AUTO_INCREMENT,
 		  `campaign_type_desc` varchar(100) CHARACTER SET utf8 NOT NULL,
 		  PRIMARY KEY (`campaign_type_id`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
-
+        
         //Table structure for table `campaign_xfers`
         $this->db->query("CREATE TABLE IF NOT EXISTS `campaign_xfers` (
 		  `campaign_id` int(3) NOT NULL,
@@ -122,7 +124,7 @@ class Migration_install extends CI_Migration
 		  PRIMARY KEY (`client_id`),
 		  UNIQUE KEY `client_name` (`client_name`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
-
+        
         //Table structure for table `client_refs`
         $this->db->query("CREATE TABLE IF NOT EXISTS `client_refs` (
 		  `urn` int(11) NOT NULL AUTO_INCREMENT,
@@ -213,7 +215,7 @@ class Migration_install extends CI_Migration
 		  PRIMARY KEY (`contact_id`),
 		  KEY `urn` (`urn`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
-
+        
         //Table structure for table `contact_addresses`
         $this->db->query("CREATE TABLE IF NOT EXISTS `contact_addresses` (
 		  `address_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -229,7 +231,7 @@ class Migration_install extends CI_Migration
 		  KEY `contact_id` (`contact_id`),
 		  KEY `postcode` (`postcode`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
-
+        
         //Table structure for table `contact_status`
         $this->db->query("CREATE TABLE IF NOT EXISTS `contact_status` (
 		  `contact_status_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -257,7 +259,7 @@ class Migration_install extends CI_Migration
 		  `cost_per_record` float DEFAULT NULL,
 		  PRIMARY KEY (`source_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
-
+        
         //Table structure for table `email_history`
         $this->db->query("CREATE TABLE IF NOT EXISTS `email_history` (
 		  `email_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -410,7 +412,7 @@ class Migration_install extends CI_Migration
 		  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		  PRIMARY KEY (`version`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
-
+        
         //Table structure for table `outcomes`
         $this->db->query("CREATE TABLE IF NOT EXISTS `outcomes` (
 		  `outcome_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -503,7 +505,7 @@ class Migration_install extends CI_Migration
 		  `outcome_id` int(3) DEFAULT NULL,
 		  `team_id` int(11) DEFAULT NULL,
 		  `nextcall` datetime DEFAULT NULL,
-		  `dials` int(2) DEFAULT NULL,
+		  `dials` int(2) DEFAULT '0',
 		  `record_status` tinyint(1) NOT NULL DEFAULT '1',
 		  `parked_code` int(11) DEFAULT NULL,
 		  `progress_id` tinyint(1) DEFAULT NULL,
@@ -603,7 +605,7 @@ class Migration_install extends CI_Migration
 		  `status_name` varchar(20) CHARACTER SET utf8 NOT NULL,
 		  PRIMARY KEY (`record_status_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
-
+        
         //Table structure for table `sticky_notes`
         $this->db->query("CREATE TABLE IF NOT EXISTS `sticky_notes` (
 		  `urn` int(11) NOT NULL,
@@ -676,35 +678,47 @@ class Migration_install extends CI_Migration
         
         //Table structure for table `teams`
         $this->db->query("CREATE TABLE IF NOT EXISTS `teams` (
-		  `team_id` int(11) NOT NULL AUTO_INCREMENT,
-		  `team_name` varchar(30) CHARACTER SET utf8 NOT NULL,
-		  PRIMARY KEY (`team_id`)
-		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
+  `team_id` int(11) NOT NULL AUTO_INCREMENT,
+  `team_name` varchar(30) CHARACTER SET utf8 NOT NULL,
+  `group_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`team_id`),
+  KEY `group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         
         //Table structure for table `users`
         $this->db->query("CREATE TABLE IF NOT EXISTS `users` (
-		  `user_id` int(2) NOT NULL AUTO_INCREMENT,
-		  `role_id` int(2) NOT NULL,
-		  `group_id` int(2) NOT NULL DEFAULT '1',
-		  `team_id` int(11) DEFAULT NULL,
-		  `username` varchar(255) CHARACTER SET utf8 NOT NULL,
-		  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
-		  `name` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
-		  `user_status` tinyint(1) DEFAULT NULL,
-		  `login_mode` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
-		  `user_telephone` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
-		  `user_email` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
-		  `last_login` datetime DEFAULT NULL,
-		  `ext` int(3) DEFAULT NULL,
-		  `token` varchar(250) CHARACTER SET utf8 DEFAULT NULL,
-		  `pass_changed` datetime DEFAULT NULL,
-		  `failed_logins` tinyint(4) NOT NULL,
-		  `last_failed_login` datetime DEFAULT NULL,
-		  PRIMARY KEY (`user_id`),
-		  UNIQUE KEY `username` (`username`),
-		  KEY `group_id` (`role_id`),
-		  KEY `repgroup_id` (`group_id`)
-		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
+  `user_id` int(2) NOT NULL AUTO_INCREMENT,
+  `role_id` int(2) NOT NULL,
+  `group_id` int(2) NOT NULL DEFAULT '1',
+  `team_id` int(11) DEFAULT NULL,
+  `username` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `name` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `user_status` tinyint(1) DEFAULT NULL,
+  `login_mode` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `user_telephone` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
+  `user_email` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `last_login` datetime DEFAULT NULL,
+  `ext` int(3) DEFAULT NULL,
+  `token` varchar(250) CHARACTER SET utf8 DEFAULT NULL,
+  `pass_changed` datetime DEFAULT NULL,
+  `failed_logins` tinyint(4) NOT NULL,
+  `last_failed_login` datetime DEFAULT NULL,
+  `reload_session` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`),
+  KEY `group_id` (`role_id`),
+  KEY `repgroup_id` (`group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
+        
+        //table structure for team managers
+        $this->db->query("CREATE TABLE IF NOT EXISTS `team_managers` (
+  `team_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  UNIQUE KEY `team_id_2` (`team_id`,`user_id`),
+  KEY `team_id` (`team_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         
         //Table structure for table `users_to_campaigns`
         $this->db->query("CREATE TABLE IF NOT EXISTS `users_to_campaigns` (
@@ -717,11 +731,12 @@ class Migration_install extends CI_Migration
         
         //Table structure for table `user_groups`
         $this->db->query("CREATE TABLE IF NOT EXISTS `user_groups` (
-		  `group_id` int(3) NOT NULL AUTO_INCREMENT,
-		  `group_name` varchar(30) CHARACTER SET utf8 DEFAULT NULL,
-		  PRIMARY KEY (`group_id`),
-		  UNIQUE KEY `group_name` (`group_name`)
-		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
+  `group_id` int(3) NOT NULL AUTO_INCREMENT,
+  `group_name` varchar(30) CHARACTER SET utf8 DEFAULT NULL,
+  `theme_folder` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`group_id`),
+  UNIQUE KEY `group_name` (`group_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         
         //creating table permissions
         $this->db->query("CREATE TABLE IF NOT EXISTS `permissions` (
@@ -744,6 +759,98 @@ class Migration_install extends CI_Migration
 		  `permission_id` int(11) NOT NULL,
 		  UNIQUE KEY `role_id` (`role_id`,`permission_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
+        
+        //table cross transfer
+        $this->db->query("CREATE TABLE IF NOT EXISTS `cross_transfers` (
+  `history_id` int(11) NOT NULL,
+  `campaign_id` int(11) NOT NULL,
+  UNIQUE KEY `history_id` (`history_id`,`campaign_id`),
+  KEY `history_id_2` (`history_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+        
+        //table hours logged
+        $this->db->query("CREATE TABLE IF NOT EXISTS `hours_logged` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `campaign_id` int(11) NOT NULL,
+  `start_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `end_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
+        
+        //hours structure
+        
+        $this->db->query("CREATE TABLE IF NOT EXISTS `hours` (
+  `hours_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(5) NOT NULL COMMENT 'The Agent',
+  `campaign_id` int(5) NOT NULL,
+  `duration` int(20) NOT NULL COMMENT 'in seconds',
+  `time_logged` int(20) NOT NULL COMMENT 'in seconds',
+  `date` datetime NOT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `updated_id` int(5) DEFAULT NULL,
+  `updated_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`hours_id`),
+  KEY `user_id` (`user_id`),
+  KEY `campaign_id` (`campaign_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Agent duration by campaign and day' AUTO_INCREMENT=1");
+        
+        //Dumping structure for table 121sys.default_hours
+        $this->db->query("CREATE TABLE IF NOT EXISTS `default_hours` (
+    			`default_hours_id` int(5) NOT NULL AUTO_INCREMENT,
+    			`user_id` int(5) NOT NULL DEFAULT '0',
+    			`campaign_id` int(5) NOT NULL DEFAULT '0',
+    			`duration` int(20) NOT NULL DEFAULT '0' COMMENT 'in minutes',
+    			PRIMARY KEY (`default_hours_id`),
+    			KEY `FK_default_hours_users` (`user_id`),
+    			KEY `FK_default_hours_campaigns_` (`campaign_id`),
+    			CONSTRAINT `FK_default_hours_campaigns_` FOREIGN KEY (`campaign_id`) REFERENCES `campaigns` (`campaign_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    			CONSTRAINT `FK_default_hours_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Default working time by agent for a particular campaign'");
+        
+        
+        $this->db->query("CREATE TABLE IF NOT EXISTS `time` (
+  `time_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(5) NOT NULL COMMENT 'The Agent',
+  `start_time` time NOT NULL DEFAULT '00:00:00',
+  `end_time` time NOT NULL DEFAULT '230:59:59',
+  `date` datetime NOT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `updated_id` int(5) DEFAULT NULL,
+  `updated_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`time_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Agent time by campaign and day' AUTO_INCREMENT=1");
+        
+        //Dumping structure for table 121sys.default_time
+        $this->db->query("CREATE TABLE IF NOT EXISTS `default_time` (
+    			`default_time_id` int(5) NOT NULL AUTO_INCREMENT,
+    			`user_id` int(5) NOT NULL DEFAULT '0',
+    			`start_time` time NOT NULL DEFAULT '00:00:00',
+    			`end_time` time NOT NULL DEFAULT '230:59:59',
+    			PRIMARY KEY (`default_time_id`),
+    			KEY `FK__users` (`user_id`),
+    			CONSTRAINT `FK__users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Default time defined for an agent'");
+        
+        
+        //Dumping structure for table time_exception_type
+        $this->db->query("CREATE TABLE IF NOT EXISTS `time_exception_type` (
+    			`exception_type_id` int(11) NOT NULL AUTO_INCREMENT,
+    			`exception_name` varchar(50) CHARACTER SET utf8 NOT NULL,
+    			`paid` tinyint(1) NOT NULL,
+    			PRIMARY KEY (`exception_type_id`)
+    	) COMMENT 'Exception types'
+    	ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
+        
+        $this->db->query("CREATE TABLE IF NOT EXISTS `time_exception` (
+  `exception_id` int(11) NOT NULL AUTO_INCREMENT,
+  `time_id` int(5) NOT NULL,
+  `exception_type_id` int(5) NOT NULL,
+  `duration` int(20) NOT NULL DEFAULT '0' COMMENT 'in minutes',
+  PRIMARY KEY (`exception_id`),
+  KEY `time_id` (`time_id`),
+  KEY `exception_type_id` (`exception_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Exception time' AUTO_INCREMENT=1");
         
         //Constraints for table `role_permissions`
         $this->db->query("ALTER TABLE `role_permissions` ADD FOREIGN KEY (`role_id`) REFERENCES `permissions`(`permission_id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
@@ -850,8 +957,8 @@ class Migration_install extends CI_Migration
 		  PRIMARY KEY (`trigger_id`)
 		) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         
-//         $this->db->query("INSERT INTO `email_triggers` (`trigger_id`, `campaign_id`, `outcome_id`) VALUES
-// 		(1, 6, 60)");
+        //         $this->db->query("INSERT INTO `email_triggers` (`trigger_id`, `campaign_id`, `outcome_id`) VALUES
+        // 		(1, 6, 60)");
         
         $this->db->query("CREATE TABLE IF NOT EXISTS `email_trigger_recipients` (
 		  `trigger_id` int(11) NOT NULL,
@@ -859,8 +966,8 @@ class Migration_install extends CI_Migration
 		  UNIQUE KEY `trigger_id` (`trigger_id`,`user_id`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
         
-//         $this->db->query("INSERT INTO `email_trigger_recipients` (`trigger_id`, `user_id`) VALUES
-// 		(1, 127)");
+        //         $this->db->query("INSERT INTO `email_trigger_recipients` (`trigger_id`, `user_id`) VALUES
+        // 		(1, 127)");
         
         $this->db->query("CREATE TABLE IF NOT EXISTS `ownership_triggers` (
 		  `trigger_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -870,26 +977,26 @@ class Migration_install extends CI_Migration
 		  UNIQUE KEY `trigger_id2` (`campaign_id`,`outcome_id`)
 		) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
         
-//         $this->db->query("INSERT INTO `ownership_triggers` (`trigger_id`, `campaign_id`, `outcome_id`) VALUES
-// 		(1, 6, 60)");
-
+        //         $this->db->query("INSERT INTO `ownership_triggers` (`trigger_id`, `campaign_id`, `outcome_id`) VALUES
+        // 		(1, 6, 60)");
+        
         $this->db->query("CREATE TABLE IF NOT EXISTS `ownership_trigger_users` (
 		  `trigger_id` int(11) NOT NULL,
 		  `user_id` int(11) NOT NULL,
 		  UNIQUE KEY `trigger_id` (`trigger_id`,`user_id`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
         
-//         $this->db->query("INSERT INTO `ownership_trigger_users` (`trigger_id`, `user_id`) VALUES
-// 		(1, 127)");
-
-		//insert uk_postcode table
-		$this->db->query("CREATE TABLE IF NOT EXISTS `uk_postcodes` (
+        //         $this->db->query("INSERT INTO `ownership_trigger_users` (`trigger_id`, `user_id`) VALUES
+        // 		(1, 127)");
+        
+        //insert uk_postcode table
+        $this->db->query("CREATE TABLE IF NOT EXISTS `uk_postcodes` (
   `postcode` varchar(8) NOT NULL,
   `lat` varchar(10) NOT NULL,
   `lng` varchar(10) NOT NULL,
   PRIMARY KEY (`postcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-
+        
         //Dump the init data
         $this->Database_model->init_data();
     }
