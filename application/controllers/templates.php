@@ -214,8 +214,8 @@ $this->_campaigns = campaign_access_dropdown();
 	 */
 	public function upload_template_attach() {
 		$options = array();
-		$options['upload_dir'] = dirname ( $_SERVER['SCRIPT_FILENAME'] )  . '/upload/attachments/';
-		$options['upload_url'] = base_url().'upload/attachments/';
+		$options['upload_dir'] = dirname ( $_SERVER['SCRIPT_FILENAME'] )  . '/upload/templates/attachments/';
+		$options['upload_url'] = base_url().'upload/templates/attachments/';
 		$options['image_versions'] = array();
 		$upload_handler = new Upload($options, true);
 	}
@@ -225,7 +225,7 @@ $this->_campaigns = campaign_access_dropdown();
 	 */
 	public function get_attachment_file_path () {
 		$file = $this->input->post('file');
-		$path = base_url().'upload/attachments/';
+		$path = base_url().'upload/templates/attachments/';
 		$fullpath = $path.$file;
 	
 		$result = array(

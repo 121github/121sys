@@ -818,5 +818,49 @@ class Records_model extends CI_Model
 		
 		return $insert_id;
 	}
+
+
+    public function save_attachment ($form) {
+        $this->db->insert("attachments", $form);
+
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+
+        return $insert_id;
+    }
+
+    /**
+     * Get attachments
+     */
+    public function get_attachments($urn, $limit, $offset)
+    {
+        $qry = "select a.attachment_id, a.name, a.type, a.path, DATE_FORMAT(a.date,'%d/%m/%Y %H:%i:%s') as date, u.name as user
+		    	from attachments a
+		    	inner join users u ON (u.user_id = a.user_id)
+		    	where urn = ".$urn."
+		    	limit ".$offset.",".$limit;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Get attachments
+     */
+    public function get_attachment_by_id($id)
+    {
+
+        $this->db->select("a.*");
+        $this->db->from("attachments a");
+        $this->db->where('attachment_id', $id);
+
+        $result = $this->db->get()->result_array();
+        return $result[0];
+    }
+
+    public function delete_attachment($id)
+    {
+        $this->db->where("attachment_id", $id);
+        $this->db->delete("attachments");
+    }
 }
 ?>

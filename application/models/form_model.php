@@ -75,6 +75,9 @@ class Form_model extends CI_Model
             if(!in_array("view email",$_SESSION['permissions'])){
                 $exclude = " and feature_name <> 'Emails'";
             }
+            if(!in_array("view attachment",$_SESSION['permissions'])){
+                $exclude = " and feature_name <> 'Attachments'";
+            }
 		}
         else {
             $exclude = '';

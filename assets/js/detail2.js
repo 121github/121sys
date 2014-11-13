@@ -258,7 +258,7 @@ var record = {
     contact_panel: {
         init: function() {
             this.config = {
-                panel: '.contact-panel',
+                panel: '.contact-panel'
             };
             /*initialize the add contact button*/
             $(document).on('click', '.add-contact-btn', function(e) {
@@ -601,7 +601,7 @@ var record = {
     company_panel: {
         init: function() {
             this.config = {
-                panel: '.company-panel',
+                panel: '.company-panel'
             };
             /*initialize the add company button*/
             $(document).on('click', '.add-company-btn', function(e) {
@@ -940,11 +940,11 @@ var record = {
         }
 
     },
-  //emails panel functions
+    //emails panel functions
     email_panel: {
         init: function() {
             this.config = {
-                panel: '.email-panel',
+                panel: '.email-panel'
             };
             record.email_panel.load_panel();
             $(document).on('click', '.new-email-btn', function(e) {
@@ -1096,7 +1096,7 @@ var record = {
     surveys_panel: {
         init: function() {
             this.config = {
-                panel: '.surveys-panel',
+                panel: '.surveys-panel'
             };
             record.surveys_panel.load_panel();
             $(document).on('click', '.new-survey', function(e) {
@@ -1680,6 +1680,92 @@ var record = {
                 }
             });
         }
+    },
+    //attachment_panel_functions
+    attachment_panel: {
+        init: function() {
+            this.config = {
+                panel: '.attachment-panel'
+            };
+            record.attachment_panel.load_panel();
+
+            /* initialize the delete attachment buttons */
+            $(document).on('click', '.del-attachment-btn', function(e) {
+                e.preventDefault();
+                modal.delete_attachment($(this).attr('item-id'));
+            });
+        },
+        load_panel: function(attachment_id) {
+            var $panel = $(record.attachment_panel.config.panel);
+            $.ajax({
+                url: helper.baseUrl + 'records/get_attachments',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: record.urn
+                }
+            }).done(function(response) {
+                $panel.find('.attachment-list').empty();
+                var body = '';
+                if (response.data.length) {
+                    $.each(response.data, function (key, val) {
+                        var remove_btn = '<span class="glyphicon glyphicon-remove del-attachment-btn" item-id="'+val.attachment_id+'"></span>';
+                        var download_btn = '<a style="color:black;" href="'+val.path+'"><span class="glyphicon glyphicon-download-alt"></span></a>';
+                        body +=  '<tr class="'+val.attachment_id+'">' +
+                            '<td>' + val.name +
+                            '</td><td>' + val.date +
+                            '</td><td>' + val.user +
+                            '</td><td>' + remove_btn +
+                            '</td><td>' + download_btn +
+                            '</td></tr>' ;
+                    });
+                    $('.attachment-list').append('<table class="table table-striped table-responsive"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table>');
+
+                    if (attachment_id) {
+                        $panel.find('.attachment-list').find('.'+attachment_id).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);
+                    }
+                }
+                else {
+                    $panel.find('.attachment-list').append('<p>This record has no attachments</p>');
+                }
+            });
+        },
+        delete_attachment: function(id) {
+            $.ajax({
+                url: helper.baseUrl + 'records/delete_attachment',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    attachment_id: id
+                }
+            }).done(function(response) {
+                if (response.success) {
+                    flashalert.warning("Attachment was deleted");
+                    record.attachment_panel.load_panel();
+                };
+            });
+        },
+        save_attachment: function(name, type, path) {
+            $.ajax({
+                url: helper.baseUrl + 'records/save_attachment',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    name: name,
+                    type: type,
+                    path: path,
+                    urn: record.urn
+                }
+            }).done(function(response) {
+                if (response.success) {
+                    record.attachment_panel.load_panel(response.attachment_id);
+                    flashalert.success("Attachment was saved");
+                }
+                else {
+                    flashalert.danger("ERROR: The attachment was NOT saved");
+                }
+            });
+        }
     }
 }
 
@@ -1733,6 +1819,18 @@ var modal = {
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
             record.email_panel.remove_email(email_id);
+            $('#modal').modal('toggle');
+        });
+    },
+    delete_attachment: function(attachment_id) {
+        $('.modal-title').text('Confirm Delete');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to delete this attachment?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            record.attachment_panel.delete_attachment(attachment_id);
             $('#modal').modal('toggle');
         });
     },

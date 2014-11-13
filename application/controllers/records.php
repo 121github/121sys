@@ -1,4 +1,5 @@
 <?php
+require('upload.php');
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -158,7 +159,13 @@ class Records extends CI_Controller
             "progress_options" => $progress_options,
 			"automatic"=>$automatic,
             "javascript" => array(
-                "detail2.js"
+                "detail2.js",
+                'plugins/jqfileupload/vendor/jquery.ui.widget.js',
+				'plugins/jqfileupload/jquery.iframe-transport.js',
+				'plugins/jqfileupload/jquery.fileupload.js'
+            ),
+            'css' => array(
+                'plugins/jqfileupload/jquery.fileupload.css'
             ),
             'nav' => array(
                 'prev' => $prev,
@@ -651,7 +658,99 @@ class Records extends CI_Controller
         
         
     }
-    
-    
+
+    /**
+     * Get the attachments
+     */
+    public function get_attachments () {
+
+        if ($this->input->is_ajax_request()) {
+            $record_urn = intval($this->input->post('urn'));
+
+            $attachments = $this->Records_model->get_attachments($record_urn,5,0);
+
+            echo json_encode(array(
+                "success" => true,
+                "data" => $attachments
+            ));
+        }
+    }
+
+    /**
+     * Upload new attachments
+     */
+    public function upload_attach() {
+        $options = array();
+        $options['upload_dir'] = dirname ( md5($_SERVER['SCRIPT_FILENAME']) )  . '/upload/attachments/';
+        $options['upload_url'] = base_url().'upload/attachments/';
+        $options['image_versions'] = array();
+        $upload_handler = new Upload($options, true);
+    }
+
+    /**
+     * Get the upload attachment folder path
+     */
+    public function get_attachment_file_path () {
+        $file = $this->input->post('file');
+        $path = base_url().'upload/attachments/';
+        $fullpath = $path.$file;
+
+        $result = array(
+            "path" => $fullpath,
+        );
+
+        $json = json_encode($result);
+        echo $json;
+    }
+
+
+    /**
+     * Save the upload attachment folder path
+     */
+    public function save_attachment () {
+        $data = $this->input->post();
+
+        if ($this->input->is_ajax_request()) {
+            $data['date'] = date('Y-m-d H:i:s');
+            $data['user_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+
+            $attachment_id = $this->Records_model->save_attachment($data);
+
+            //return success to page
+            echo json_encode(array(
+                "success" => true,
+                "attachment_id" => $attachment_id
+            ));
+        } else {
+            echo json_encode(array(
+                "success" => false
+            ));
+        }
+    }
+
+    public function delete_attachment()
+    {
+        $attachment = $this->Records_model->get_attachment_by_id($this->input->post('attachment_id'));
+        if ($this->input->is_ajax_request()) {
+            $this->Records_model->delete_attachment($this->input->post('attachment_id'));
+
+            //Delete the file from the server folder
+            if (unlink(strstr('./'.$attachment['path'], 'upload'))) {
+                //return success to page
+                echo json_encode(array(
+                    "success" => true
+                ));
+            }
+            else {
+                echo json_encode(array(
+                    "success" => false
+                ));
+            }
+        } else {
+            echo json_encode(array(
+                "success" => false
+            ));
+        }
+    }
 }
 ?>
