@@ -386,24 +386,6 @@ class Migration_install extends CI_Migration
 		  PRIMARY KEY (`urn`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         
-        //Table structure for table `mail_templates`
-        $this->db->query("CREATE TABLE IF NOT EXISTS `mail_templates` (
-		  `template_id` int(11) NOT NULL AUTO_INCREMENT,
-		  `template_name` varchar(50) CHARACTER SET utf8 NOT NULL,
-		  `template_subject` varchar(100) CHARACTER SET utf8 NOT NULL,
-		  `template_body` mediumtext CHARACTER SET utf8 NOT NULL,
-		  `template_from` varchar(255) CHARACTER SET utf8 NOT NULL,
-		  `template_to` varchar(255) CHARACTER SET utf8 NOT NULL,
-		  `template_cc` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-		  `template_bcc` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-		  `template_hostname` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
-		  `template_port` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
-		  `template_username` varchar(40) CHARACTER SET utf8 DEFAULT NULL,
-		  `template_password` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
-		  `template_encryption` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
-		  PRIMARY KEY (`template_id`)
-		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
-        
         //Table structure for table `migrations`
         $this->db->query("CREATE TABLE IF NOT EXISTS `migrations` (
 		  `version` int(3) NOT NULL,
@@ -798,12 +780,12 @@ class Migration_install extends CI_Migration
         
         //Constraints for table `email_template_attachments`
         $this->db->query("ALTER TABLE `email_template_attachments`
-  		ADD CONSTRAINT `FK_template_attachment` FOREIGN KEY (`template_id`) REFERENCES `mail_templates` (`template_id`) ON DELETE CASCADE ON UPDATE CASCADE");
+  		ADD CONSTRAINT `FK_template_attachment` FOREIGN KEY (`template_id`) REFERENCES `email_templates` (`template_id`) ON DELETE CASCADE ON UPDATE CASCADE");
         
         //Constraints for table `email_template_to_campaigns`
         $this->db->query("ALTER TABLE `email_template_to_campaigns`
   		ADD CONSTRAINT `FK_campaign` FOREIGN KEY (`campaign_id`) REFERENCES `campaigns` (`campaign_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  		ADD CONSTRAINT `FK_template` FOREIGN KEY (`template_id`) REFERENCES `mail_templates` (`template_id`) ON DELETE CASCADE ON UPDATE CASCADE");
+  		ADD CONSTRAINT `FK_template` FOREIGN KEY (`template_id`) REFERENCES `email_templates` (`template_id`) ON DELETE CASCADE ON UPDATE CASCADE");
         
         //Constraints for table `history`
         $this->db->query("ALTER TABLE `history`

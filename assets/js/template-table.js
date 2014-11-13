@@ -290,7 +290,6 @@ var template = {
          		$('#attachments').fadeIn();
             },
             error: function(jqXHR, textStatus, errorThrown) {
-             console.log(textStatus+" "+errorThrown);
            }
         });
         
@@ -301,7 +300,7 @@ var template = {
   //Load the new attachments table
     load_new_attachments: function(data) {
     	var thead,tbody;
-    	
+
     	$('#upload-status').fadeIn();
         
     	$tbody = $('.template-data .new_attach_table').find('tbody');
@@ -315,13 +314,32 @@ var template = {
         }
 		$.each(data,function(key,val){
 			tbody += "<tr>"
-				tbody += "<td><a target='_blank' href='"+val+"'>"+key+"</a></td><td><button item-path='"+val+"' class='marl btn btn-danger delete-attach-btn'>Remove</button></td>";
+				tbody += "<td><a target='_blank' href='"+val.substring(0, template.stripos(val,'?'))+"'>"+val.substring(template.stripos(val,'?')+1)+"</a></td><td><button item-path='"+val+"' class='marl btn btn-danger delete-attach-btn'>Remove</button></td>";
 		});
 		$('#attachments').find('.new_attach_table thead').append(thead);
 		$('#attachments').find('.new_attach_table tbody').append(tbody);
 		$('#attachments').fadeIn();
 		 $('#upload-status').fadeOut(1000);
+    },
+    stripos: function(f_haystack, f_needle, f_offset) {
+        //  discuss at: http://phpjs.org/functions/stripos/
+        // original by: Martijn Wieringa
+        //  revised by: Onno Marsman
+        //   example 1: stripos('ABC', 'a');
+        //   returns 1: 0
+
+        var haystack = (f_haystack + '')
+            .toLowerCase();
+        var needle = (f_needle + '')
+            .toLowerCase();
+        var index = 0;
+
+        if ((index = haystack.indexOf(needle, f_offset)) !== -1) {
+            return index;
+        }
+        return false;
     }
+
 }
 
 /* ==========================================================================

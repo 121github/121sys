@@ -99,11 +99,20 @@
 
 	$(function () {
 	    'use strict';
+
+        var name;
 	
 	    $('#fileupload').fileupload({
-			maxNumberOfFiles: 2,
-	        dataType: 'json',
-			acceptFileTypes: /(\.|\/)(jpg)$/i,
+            // The regular expression for allowed file types, matches
+            // against either file type or file name:
+            acceptFileTypes: /(\.|\/)(gif|jpe?g|png|csv|pdf|docx?|txt|xml|eml|wav|mp3|ogg|mp4|avi|mpe?g|wmv|mov)$/i,
+            // The maximum allowed file size in bytes:
+            maxFileSize: 10000000, // 10 MB
+            // The minimum allowed file size in bytes:
+            minFileSize: undefined, // No minimal file size
+            // The limit of files to be uploaded:
+            maxNumberOfFiles: 1,
+            dataType: 'json',
 	        progressall: function (e, data) {
 	            var progress = parseInt(data.loaded / data.total * 100, 10);
 	            $('#progress .progress-bar').css(
@@ -116,6 +125,8 @@
 			}
 	    }).on('fileuploadadd', function (e, data) {
 	    		var file = data.files[0];
+                name = file.name;
+
 	       		$('#files').find('#filename').text(file.name);
 			    $('#files').find('#file-status').text('');
 			    
@@ -130,13 +141,18 @@
 		    	data: { file: file.name }
 		    	}).done(function(response){
 		    		path = response.path;
-		    		template.attach_new_file(file.name, path);
+		    		template.attach_new_file(name, path);
 		    	});
         }).on('fileuploadprocessalways', function (e, data) {
-            var file = data.files[0];
-        	if (file.error) {
-            	$('#files').find('#file-status').text(file.error).removeClass('text-success').addClass('text-danger');
-        	}
+            var currentFile = data.files[data.index];
+
+            if (data.files.error && currentFile.error) {
+                // there was an error, do something about it
+                flashalert.danger("ERROR: "+currentFile.error);
+                $('#files').fadeIn();
+                $('#files').find('#file-status').text(currentFile.error).removeClass('text-success').addClass('text-danger');
+                $('#files').fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).fadeOut(500);
+            }
 		}).prop('disabled', !$.support.fileInput)
        	.parent().addClass($.support.fileInput ? undefined : 'disabled');
 	});

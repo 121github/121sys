@@ -5,13 +5,15 @@
                     <!-- The file input field used as target for the file upload widget -->
                     <input id="fileupload" type="file" name="files"  data-url="<?php echo base_url()."records/upload_attach"; ?>">
                 </span>
-                <div id="upload-status" style="display: none;">
-                    <!-- The global progress bar -->
-                    <div id="progress" class="progress">
-                        <div class="progress-bar progress-bar-success"></div>
-                    </div>
+                <!-- The global progress bar -->
+                <div id="progress-files" class="progress pull-right" style="display: none; width: 200px; margin-right: 10px;">
+                    <div class="progress-bar progress-bar-success"></div>
                 </div>
-            <?php } ?></h4>
+                <!-- The container for the uploaded files -->
+                <div id="files" class="files pull-right" style="display: none; margin-right: 10px;">
+                    <span id="file-status">sd</span>
+                </div>
+        <?php } ?></h4>
       </div>
 
       <div class="attachment-list panel-body">
@@ -34,26 +36,34 @@
          var path;
 
          $('#fileupload').fileupload({
+             // The regular expression for allowed file types, matches
+             // against either file type or file name:
+             acceptFileTypes: /(\.|\/)(gif|jpe?g|png|csv|pdf|docx?|txt|xml|eml|wav|mp3|ogg|mp4|avi|mpe?g|wmv|mov)$/i,
+             // The maximum allowed file size in bytes:
+             maxFileSize: 10000000, // 10 MB
+             // The minimum allowed file size in bytes:
+             minFileSize: undefined, // No minimal file size
+             // The limit of files to be uploaded:
              maxNumberOfFiles: 1,
              dataType: 'json',
-             //acceptFileTypes: /(\.|\/)(jpg)$/i,
              progressall: function (e, data) {
-                 $('#upload-status').fadeIn();
+                 $('#progress-files').fadeIn();
                  var progress = parseInt(data.loaded / data.total * 100, 10);
-                 $('#progress .progress-bar').css(
+                 $('#progress-files .progress-bar').css(
                      'width',
                      progress + '%'
                  );
-                 $('#upload-status').fadeOut(4000);
+                 $('#progress-files').fadeOut(4000);
              },
              always:function(e,data){
+                 $('#files').fadeIn();
                  $('#files').find('#file-status').text("File uploaded").removeClass('text-danger').addClass('text-success');
+                 $('#files').fadeOut(4000);
              }
          }).on('fileuploadadd', function (e, data) {
              file = data.files[0];
              name = file.name;
              type = file.type;
-
          }).on('fileuploaddone', function (e, data) {
 
              file = data.result.files[0];
@@ -69,9 +79,14 @@
              });
 
          }).on('fileuploadprocessalways', function (e, data) {
-             var file = data.files[0];
-             if (file.error) {
-                 $('#files').find('#file-status').text(file.error).removeClass('text-success').addClass('text-danger');
+             var currentFile = data.files[data.index];
+
+             if (data.files.error && currentFile.error) {
+                 // there was an error, do something about it
+                 flashalert.danger("ERROR: "+currentFile.error);
+                 $('#files').fadeIn();
+                 $('#files').find('#file-status').text(currentFile.error).removeClass('text-success').addClass('text-danger');
+                 $('#files').fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).fadeOut(500);
              }
          }).prop('disabled', !$.support.fileInput)
              .parent().addClass($.support.fileInput ? undefined : 'disabled');
