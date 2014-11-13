@@ -882,6 +882,14 @@ class Migration_install extends CI_Migration
 //         $this->db->query("INSERT INTO `ownership_trigger_users` (`trigger_id`, `user_id`) VALUES
 // 		(1, 127)");
 
+		//insert uk_postcode table
+		$this->db->query("CREATE TABLE IF NOT EXISTS `uk_postcodes` (
+  `postcode` varchar(8) NOT NULL,
+  `lat` varchar(10) NOT NULL,
+  `lng` varchar(10) NOT NULL,
+  PRIMARY KEY (`postcode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+
         //Dump the init data
         $this->Database_model->init_data();
     }

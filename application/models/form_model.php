@@ -22,11 +22,17 @@ class Form_model extends CI_Model
         $this->db->order_by("name");
         return $this->db->get("users")->result_array();
     }
-    public function get_campaign_access($id)
+    public function get_campaign_access($id,$array=false)
     {
         $this->db->select("users.user_id id,name");
         $this->db->join("users", "users.user_id = users_to_campaigns.user_id", "left");
+		if(!empty($id)){
         $this->db->where("campaign_id", $id);
+		}
+		if(!empty($array)){
+		$campaigns = implode(",",$array);
+        $this->db->where("campaign_id in($campaigns)");
+		}
         $this->db->order_by("name");
         return $this->db->get("users_to_campaigns")->result_array();
     }

@@ -57,6 +57,7 @@ class Database extends CI_Controller
 	
 	public function add_data()
     {
+		session_write_close();
 		$status = $this->Database_model->demo_data();
 		if($status=="success"){
 		echo json_encode(array("success"=>true,"msg"=>"Sample data was added"));
@@ -68,6 +69,7 @@ class Database extends CI_Controller
 	
 	public function add_real_data()
 	{
+		session_write_close();
 		$status = $this->Database_model->real_data();
 		if($status=="success"){
 			echo json_encode(array("success"=>true,"msg"=>"Real data was added"));
@@ -79,6 +81,7 @@ class Database extends CI_Controller
 	
 	public function reset_data()
 	{
+		session_write_close();
 		$status = $this->Database_model->init_data();
 		$db = $this->db->database;
 		if($status=="success"){

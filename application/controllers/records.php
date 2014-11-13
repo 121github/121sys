@@ -166,9 +166,15 @@ class Records extends CI_Controller
             )
         );
         
+		        //if appointment setting is on we need the available addresses
+        if (in_array(10, $features)) {
+            $addresses         = $this->Records_model->get_addresses($urn);
+            $data['addresses'] = $addresses;
+        }
+		
         //get the users if we need the ownership feature is on
         if (in_array(5, $features)) {
-            $users         = $this->Records_model->get_users();
+            $users         = $this->Records_model->get_users(false,$campaign_id);
             $data['users'] = $users;
         }
         //get surveys if this feature is turned on

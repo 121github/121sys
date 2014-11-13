@@ -1501,6 +1501,11 @@ var record = {
             e.preventDefault();
             record.appointment_panel.hide_edit_form();
         });
+			$(document).on('change','.addresspicker',function(){
+				if($(this).val().length>0){
+				$(this).closest('form').find('input[name="postcode"]').val($(this).val());
+				}
+			});
 		//this function automatically sets the end date for the appointment 1 hour ahead of the start date
 		$(".startpicker").on("dp.hide",function (e) {
 			var m = moment(e.date, "DD\MM\YYYY H:m");

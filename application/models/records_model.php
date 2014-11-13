@@ -419,17 +419,29 @@ class Records_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
     
-    public function get_users($urn = "")
+    public function get_users($urn = "",$campaign_id="")
     {
         if (empty($urn)):
             $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
-        else:
+        elseif(empty($campaign_id)):
+		   $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and user_id in(select user_id from users_to_campaigns where campaign_id = '$campaign_id') ";
+		else:
             $qry = "select user_id,name,user_email,user_telephone from ownership left join users using(user_id) where user_status = 1 and urn = '$urn' and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']}))";
         endif;
         return $this->db->query($qry)->result_array();
     }
     
-    
+    public function get_addresses($urn=""){
+	  $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,county,postcode from contacts left join contact_addresses using(contact_id) where urn = '$urn'";
+	  $addresses = $this->db->query($qry)->result_array();
+	  $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,county,postcode from companies left join company_addresses using(company_id) where urn = '$urn'";	
+	  $companies = $this->db->query($qry)->result_array();
+	  foreach($companies as $row){
+		  $addresses[] = $row;
+	  }
+	  return $addresses;
+	}
+	
     public function save_ownership($urn, $owners)
     {
         //first remove the old owners for the urn
@@ -699,7 +711,7 @@ class Records_model extends CI_Model
         unset($post['attendees']);
         $post['start'] = to_mysql_datetime($post['start']);
         $post['end']   = to_mysql_datetime($post['end']);
-        
+      
         if (!empty($post['appointment_id'])) {
             $this->db->where("appointment_id", $post['appointment_id']);
             $this->db->delete("appointment_attendees");
@@ -711,10 +723,13 @@ class Records_model extends CI_Model
             }
             
             
-            $this->db->where(array(
-                "appointment_id" => $post['appointment_id'],
-                "urn" => $post['appointment_id']
-            ));
+            $this->db->where(
+                "appointment_id",$post['appointment_id']
+            );
+			  $this->db->where(
+                "urn",$post['urn']
+            );
+			 
             $post['date_updated'] = date('Y-m-d H:i:s');
             $this->db->update("appointments", $post);
         } else {

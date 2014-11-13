@@ -30,7 +30,7 @@ Questions<span class="glyphicon glyphicon-question-sign pull-right tt" data-togg
         <span class="padl pull-right glyphicon glyphicon-info-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="<?php echo ($question['guide']?$question['guide']."<br>":"");  echo ($question['other']?"<span style='color:red'>".$question['other']."</span>":"") ?>"></span>
         <?php } ?>
         <?php if(!empty($question['script'])){ ?>
-    <span class="padl pull-right glyphicon glyphicon glyphicon-comment tt" data-html="true" data-toggle="tooltip" data-html="true" data-placement="top" title="<?php echo $question['script']; ?>"></span>  
+    <span class="padl pull-right glyphicon glyphicon glyphicon-comment tt" data-html="true" data-toggle="tooltip" data-placement="top" title="<?php echo $question['script']; ?>"></span>  
     <?php } ?>
           <labeL><?php echo $question['question'] ?></labeL><br>
     <?php if(count($question['options'])>1){ ?>

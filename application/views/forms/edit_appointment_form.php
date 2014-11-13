@@ -19,15 +19,31 @@
         </div>
                 <div class="form-group input-group-sm">
           <p>Please add the attendees</p>
-<select name="attendees[]" class="selectpicker attendeepicker" multiple title="Choose the attendees">
+<select name="attendees[]" class="selectpicker attendeepicker" title="Choose the attendees" data-width="100%">
  <?php foreach($users as $user): ?>
  <option value="<?php echo $user['user_id'] ?>"><?php echo $user['name'] ?></option>
  <?php endforeach; ?>
 </select>
         </div>
+        
+                                <div class="form-group input-group-sm">
+          <p>Please select the address the appointment will take place</p>
+<select class="selectpicker addresspicker" title="Choose the address" required data-width="100%">
+ <?php foreach($addresses as $address): 
+ $add = $address['name'];
+ $add .= (!empty($address['add1'])?", ".$address['add1']:"");
+  $add .= (!empty($address['postcode'])?", ".$address['postcode']:" - This address has no postcode!");
+ ?>
+ <option value="<?php echo $address['postcode'] ?>"><?php echo $add ?></option>
+  <option value="">Other</option>
+ <?php endforeach; ?>
+</select>
+        </div>
+        
                         <div class="form-group input-group-sm">
-          <p>Please set the postcode location</p>
-<input type="text" class="form-control" name="postcode" placeholder="Postcode of the appointment location" required/>
+          <p>Or enter the postcode manually</p>
+          <?php $postcode = ""; if(count($addresses)=="1"){$postcode = $addresses[0]['postcode']; } ?>
+<input type="text" class="form-control" name="postcode" placeholder="Postcode of the appointment location" required value="<?php echo $postcode ?>"/>
         </div>
                                
         <div class="form-actions pull-right">
