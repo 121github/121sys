@@ -556,7 +556,8 @@ class Database_model extends CI_Model
 		('admin nav','Admin'),
 		('campaign access','Admin'),
 		('view attachments', 'Attachments'),
-		('add attachment', 'Attachments')");
+		('add attachment', 'Attachments'),
+		('View Calendar', 'Appointments')");
 		
 		if ($this->db->_error_message()) {
 			return "permissions";
