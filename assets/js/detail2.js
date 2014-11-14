@@ -1093,11 +1093,9 @@ var record = {
                 var $body = "";
                 if (response.data.length > 0) {
                     $.each(response.data, function(key, val) {
-                    	if (val.send_to.length > 30) {
-                    		val.send_to = val.send_to.substring(0, 30)+'...';
-                    	}
+                    	var send_to = (val.send_to.length > 20)?val.send_to.substring(0, 20)+'...':val.send_to;
                     	$options = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" ></span><span class="glyphicon glyphicon-eye-open pull-right view-email-btn pointer"  item-id="' + val.email_id + '"></span>';
-                        $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td>' + val.send_to + '</td><td>' + val.subject + '</td><td>' + $options + '</td></tr>';
+                        $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td>' + val.subject + '</td><td>' + $options + '</td></tr>';
                     });
                     $('.email-panel').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th></tr></thead><tbody>' + $body + '</tbody></table>');
                 } else {
