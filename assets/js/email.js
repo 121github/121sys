@@ -42,7 +42,7 @@ var email = {
             }).done(function (response) {
                 if (response.success) {
                     flashalert.success("Email sent successfully");
-                    //window.history.back();
+                    window.history.back();
                 }
                 else {
                 	$("button[type=submit]").attr('disabled',false);
