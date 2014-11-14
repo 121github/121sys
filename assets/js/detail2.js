@@ -982,6 +982,15 @@ var record = {
                 top: '10%'
             }, 1000);
             $('.emailtemplatespicker').selectpicker();
+            $('.emailtemplatespicker').on('change', function(){
+                var selected = $('.emailtemplatespicker option:selected').val();
+                if (selected) {
+                    $('.continue-email').prop('disabled', false);
+                }
+                else {
+                    $('.continue-email').prop('disabled', true);
+                }
+            });
         },
         close_email: function() {
             $('.modal-backdrop').fadeOut();
@@ -1028,42 +1037,47 @@ var record = {
              }).done(function(response) {
                  var $tbody = $('.email-view-table').find('tbody');
                  $tbody.empty();
+                 body = "<tr>" +
+                         "<th>Sent Date</th>" +
+                         "<td class='sent_date'>" + response.data.sent_date + "</td>" +
+                         "</tr>" +
+                         "<tr>" +
+                         "<th>From</th>" +
+                         "<td class='from'>" + response.data.send_from + "</td>" +
+                         "</tr>" +
+                         "<tr>" +
+                         "<th>To</th>" +
+                         "<td class='to'>" + response.data.send_to + "</td>" +
+                         "</tr>" +
+                         "<tr>" +
+                         "<th>CC</th>" +
+                         "<td class='cc'>" + response.data.cc + "</td>" +
+                         "</tr>" +
+                         "<tr>" +
+                         "<th>BCC</th>" +
+                         "<td class='bcc'>" + response.data.bcc + "</td>" +
+                         "</tr>" +
+                         "<tr>" +
+                         "<th>Subject</th>" +
+                         "<td class='subject'>" + response.data.subject + "</td>" +
+                         "</tr>" +
+                         "<tr>" +
+                         "<th colspan=2>Body</th>" +
+                         "</tr>" +
+                         "<td colspan=2 class='body'>" + response.data.body + "</td>" +
+                         "</tr>"
+                 if (response.attachments.length>0) {
+                     body += "<tr>" +
+                     "<th colspan=2>Attachments</th>" +
+                     "</tr>";
+                     $.each(response.attachments, function (key, val) {
+                         body += "<tr>" +
+                         "<td colspan='2' class='attachments'><a target='_blank' href='" + val.path + "'>" + val.name + "</td>" +
+                         "</tr>";
+                     });
+                 }
                  $tbody
-					.append(
-							"<tr>" +
-								"<th>Id</th>" +
-								"<td class='email_id'>" + response.data.email_id + "</td>" +
-							"</tr>" +
-							"<tr>" +
-								"<th>Sent Date</th>" +
-								"<td class='sent_date'>" + response.data.sent_date + "</td>" +
-							"</tr>" +
-							"<tr>" +
-								"<th>From</th>" +
-								"<td class='from'>" + response.data.from + "</td>" +
-							"</tr>" +
-							"<tr>" +
-								"<th>To</th>" +
-								"<td class='to'>" + response.data.to + "</td>" +
-							"</tr>" +
-							"<tr>" +
-								"<th>CC</th>" +
-								"<td class='cc'>" + response.data.cc + "</td>" +
-							"</tr>" +
-							"<tr>" +
-								"<th>BCC</th>" +
-								"<td class='bcc'>" + response.data.bcc + "</td>" +
-							"</tr>" +
-							"<tr>" +
-								"<th>Subject</th>" +
-								"<td class='subject'>" + response.data.subject + "</td>" +
-							"</tr>" +
-							"<tr>" +
-								"<th colspan=2>Body</th>" +
-							"</tr>" +
-								"<td colspan=2 class='body'>" + response.data.body + "</td>" +
-							"</tr>"
-					);
+					.append(body);
              });
         },
         load_panel: function() {
@@ -1072,18 +1086,18 @@ var record = {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                	record_urn: record.urn
+                	urn: record.urn
                 }
             }).done(function(response) {
                 $('.email-panel').empty();
                 var $body = "";
                 if (response.data.length > 0) {
                     $.each(response.data, function(key, val) {
-                    	if (val.to.length > 30) {
-                    		val.to = val.to.substring(0, 30)+'...';
+                    	if (val.send_to.length > 30) {
+                    		val.send_to = val.send_to.substring(0, 30)+'...';
                     	}
                     	$options = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" ></span><span class="glyphicon glyphicon-eye-open pull-right view-email-btn pointer"  item-id="' + val.email_id + '"></span>';
-                        $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td>' + val.to + '</td><td>' + val.subject + '</td><td>' + $options + '</td></tr>';
+                        $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td>' + val.send_to + '</td><td>' + val.subject + '</td><td>' + $options + '</td></tr>';
                     });
                     $('.email-panel').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th></tr></thead><tbody>' + $body + '</tbody></table>');
                 } else {

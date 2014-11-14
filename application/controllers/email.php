@@ -20,9 +20,9 @@ $this->_campaigns = campaign_access_dropdown();;
     public function get_emails()
     {
     	if ($this->input->is_ajax_request()) {
-    		$record_urn = intval($this->input->post('record_urn'));
+    		$urn = intval($this->input->post('urn'));
     		
-    		$emails = $this->Email_model->get_emails($record_urn,5,0);
+    		$emails = $this->Email_model->get_emails($urn,5,0);
     		
     		echo json_encode(array(
     			"success" => true,
@@ -38,10 +38,12 @@ $this->_campaigns = campaign_access_dropdown();;
     		$email_id = intval($this->input->post('email_id'));
     
     		$email = $this->Email_model->get_email_by_id($email_id);
+            $attachments = $this->Email_model->get_attachments_by_email_id($email_id);
     
     		echo json_encode(array(
     				"success" => true,
-    				"data" => $email
+    				"data" => $email,
+                    "attachments" => $attachments
     		));
     	}
     }
@@ -53,13 +55,14 @@ $this->_campaigns = campaign_access_dropdown();;
     	$template_id     = intval($this->uri->segment(3));
     	
     	$template = $this->Email_model->get_template($template_id);
-    	
+
+
     	$data = array(
     			'urn' => $urn,
     			'campaign_access' => $this->_campaigns,
-'pageId' => 'Create-survey',
+                'pageId' => 'Create-survey',
     			'title' => 'Send new email',
-    			'record_urn' => $urn,
+    			'urn' => $urn,
     			'template_id' => $template_id,
     			'template' => $template,
     			'css' => array(
@@ -74,6 +77,8 @@ $this->_campaigns = campaign_access_dropdown();;
     					'plugins/jqfileupload/vendor/jquery.ui.widget.js',
     					'plugins/jqfileupload/jquery.iframe-transport.js',
     					'plugins/jqfileupload/jquery.fileupload.js',
+                        'plugins/jqfileupload/jquery.fileupload-process.js',
+                        'plugins/jqfileupload/jquery.fileupload-validate.js'
     			),
     	);
     
@@ -110,45 +115,57 @@ $this->_campaigns = campaign_access_dropdown();;
     	$form['body'] = base64_decode($this->input->post('body'));
     	
     	//Delete duplicates email addresses
-    	$from = array_unique(explode(",", $form['from']));
-    	$form['from'] = implode(",", $from);
-    	$to = array_unique(explode(",", $form['to']));
-    	$form['to'] = implode(",", $to);
+    	$from = array_unique(explode(",", $form['send_from']));
+    	$form['send_from'] = implode(",", $from);
+    	$to = array_unique(explode(",", $form['send_to']));
+    	$form['send_to'] = implode(",", $to);
     	$cc = array_unique(explode(",", $form['cc']));
     	$form['cc'] = implode(",", $cc);
     	$bcc = array_unique(explode(",", $form['bcc']));
     	$form['bcc'] = implode(",", $bcc);
+        //Attachments
+        $attachmentsForm = array();
+        if (!empty($form['template_attachments'])) {
+            $attachmentsForm = $form['template_attachments'];
+            $attachmentsForm = explode(",", $attachmentsForm);
+            $aux = array();
+            foreach ($attachmentsForm as $attachment) {
+                if (strripos($attachment, "?")) {
+                    $name = substr($attachment, strripos($attachment, "?") + 1);
+                    $path = substr($attachment, 0, strripos($attachment, "?"));
+                    $element = array("name" => $name, "path" => $path);
+                }
+                else {
+                    $name = substr($attachment, strripos($attachment, "/") + 1);
+                    $element = array("name" => $name, "path" => $attachment);
+                }
+                array_push($aux, $element);
+            }
+            $attachmentsForm = $aux;
+        }
+        //Add the template attachments to the list
+        if ($templateAttachList = $this->Email_model->get_attachments_by_template_id($form['template_id'])) {
+            foreach ($templateAttachList as $attach) {
+                array_push($attachmentsForm, $attach);
+            }
+        }
+
+        if (!empty($attachmentsForm)) {
+            //Add the attachments to the form
+            $form['template_attachments'] = $attachmentsForm;
+        }
+
     	
     	//Send the email
     	$email_sent = $this->send($form);
-    	//$email_sent = true;
+        unset($form['template_attachments']);
     	
     	//Save the email in the Email History table
     	if ($email_sent) {
-    		//Check if the user selected any attachment for this template
-    		$attachmentsForm = array();
-    		if (!empty($form['template_attachments'])) {
-    			$attachmentsForm = $form['template_attachments'];
-    			$attachmentsForm = explode(",", $attachmentsForm);
-    			$aux = array();
-    			foreach ($attachmentsForm as $attachment) {
-    				$name = substr($attachment, strripos($attachment, "/") + 1);
-    				$element = array("name" => $name, "path" => $attachment);
-    				array_push($aux, $element);
-    			}
-    			$attachmentsForm = $aux;
-    		}
-    		unset($form['template_attachments']);
-    		//Add the template attachments to the list
-    		if ($templateAttachList = $this->Email_model->get_attachments_by_template_id($form['template_id'])) {
-    			foreach ($templateAttachList as $attach) {
-    				array_push($attachmentsForm, $attach);
-    			}
-    		}
     		
     		$insert_id = $this->Email_model->add_new_email_history($form);
     		$response = ($insert_id)?true:false;
-    		
+
     		if ($response && !empty($attachmentsForm)) {
     			//Save the new attachments in the email_history table
     			$response = $this->save_attachment_by_email($attachmentsForm, $insert_id);
@@ -179,12 +196,18 @@ $this->_campaigns = campaign_access_dropdown();;
     	
     	$this->email->initialize($config);
     	
-    	$this->email->from($form['from']);
-    	$this->email->to($form['to']);
+    	$this->email->from($form['send_from']);
+    	$this->email->to($form['send_to']);
     	$this->email->cc($form['cc']);
     	$this->email->bcc($form['bcc']);
     	$this->email->subject($form['subject']);
     	$this->email->message($form['body']);
+
+        foreach ($form['template_attachments'] as $attachment) {
+            if (strlen($attachment['path'])>0) {
+                $this->email->attach($attachment['path']);
+            }
+        }
 
     	$result = $this->email->send();
     	//$this->email->print_debugger();

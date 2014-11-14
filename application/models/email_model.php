@@ -80,6 +80,17 @@ class Email_model extends CI_Model
         $this->db->where("a.template_id", $id);
         return $this->db->get()->result_array();
     }
+
+    /**
+     * Get the attachments by email_id
+     */
+    public function get_attachments_by_email_id($id)
+    {
+        $this->db->select("a.*");
+        $this->db->from("email_history_attachments a");
+        $this->db->where("a.email_id", $id);
+        return $this->db->get()->result_array();
+    }
     
     /**
      * Add a new template
@@ -206,17 +217,29 @@ class Email_model extends CI_Model
      */
     public function get_emails($urn, $limit, $offset)
     {
-        
-        $this->db->select("e.*, u.*, t.*");
-        $this->db->from("email_history e");
-        $this->db->join('users u', 'u.user_id = e.user_id');
-        $this->db->join('email_templates t', 't.template_id = e.template_id');
-        $this->db->where('urn', $urn);
-        $this->db->order_by('e.sent_date', 'desc');
-        $this->db->limit($limit);
-        $this->db->offset($offset);
-        
-        return $this->db->get()->result_array();
+
+        $qry = "select e.email_id,
+                      DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                      e.subject,
+                      e.body,
+                      e.send_from,
+                      e.send_to,
+                      e.cc,
+                      e.bcc,
+                      e.user_id,
+                      e.urn,
+                      e.template_id,
+                      e.read_confirmed,
+                      u.*,
+                      t.*
+		    	from email_history e
+		    	inner join users u ON (u.user_id = e.user_id)
+		    	inner join email_templates t ON (t.template_id = e.template_id)
+		    	where e.urn = " . $urn."
+		    	order by e.sent_date desc
+		    	limit ".$offset.",".$limit;
+
+        return $this->db->query($qry)->result_array();
     }
     
     /**
@@ -224,14 +247,26 @@ class Email_model extends CI_Model
      */
     public function get_email_by_id($email_id)
     {
-        
-        $this->db->select("e.*, u.*, t.*");
-        $this->db->from("email_history e");
-        $this->db->join('users u', 'u.user_id = e.user_id');
-        $this->db->join('email_templates t', 't.template_id = e.template_id');
-        $this->db->where('e.email_id = ' . $email_id);
-        
-        $results = $this->db->get()->result_array();
+        $qry = "select e.email_id,
+                      DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                      e.subject,
+                      e.body,
+                      e.send_from,
+                      e.send_to,
+                      e.cc,
+                      e.bcc,
+                      e.user_id,
+                      e.urn,
+                      e.template_id,
+                      e.read_confirmed,
+                      u.*,
+                      t.*
+		    	from email_history e
+		    	inner join users u ON (u.user_id = e.user_id)
+		    	inner join email_templates t ON (t.template_id = e.template_id)
+		    	where e.email_id = " . $email_id;
+
+        $results =  $this->db->query($qry)->result_array();
         
         return $results[0];
     }

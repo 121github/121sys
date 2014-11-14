@@ -55,130 +55,147 @@ var email = {
     	$('form').find('input[name='+option+']').val(content+', '+email);
     	$('.'+id+option).text("Added");
     },
-  //add a new attached file to the list of the new attachments
+    //add a new attached file to the list of the new attachments
     attach_new_file: function(filename, path) {
-    	var data = {filename : filename, path : path, newFiles :  $('form').find('input[name="template_attachments"]').val()};
-    	
-    	$.ajax({
+        var data = {filename : filename, path : path, newFiles :  $('form').find('input[name="template_attachments"]').val()};
+
+        $.ajax({
             url: helper.baseUrl + 'templates/set_attached_files',
             type: "POST",
             dataType: "JSON",
             data: data
         }).done(function(response) {
-        	$('form').find('input[name="template_attachments"]').val(response.data);
-        	//Reload the new attachments table
-        	email.load_new_attachments(response.data_array);
+            $('form').find('input[name="template_attachments"]').val(response.data);
+            //Reload the new attachments table
+            email.load_new_attachments(response.data_array);
         });
     },
     //Remove an attachment from the list of new attachments
     remove_new_attach: function(path) {
-    	//If the path exist as a new attachment, remove from the list
-    	var data = {path : path, newFiles :  $('form').find('input[name="template_attachments"]').val()};
-    	
-    	$.ajax({
+        //If the path exist as a new attachment, remove from the list
+        var data = {path : path, newFiles :  $('form').find('input[name="template_attachments"]').val()};
+
+        $.ajax({
             url: helper.baseUrl + 'templates/unset_attached_files',
             type: "POST",
             dataType: "JSON",
             data: data
         }).done(function(response) {
-        	$('form').find('input[name="template_attachments"]').val(response.data);
-        	//Reload the new attachments table
-        	email.load_new_attachments(response.data_array);
+            $('form').find('input[name="template_attachments"]').val(response.data);
+            //Reload the new attachments table
+            email.load_new_attachments(response.data_array);
         });
     },
     //Delete action for the remove button
     delete_attachment: function($btn) {
-    	var id = $btn.attr('item-id');
-    	var path = $btn.attr('item-path');
-    	
-    	//Delte attachments file uploaded without save
-    	var data = {id : id, path: path};
-    	$.ajax({
+        var id = $btn.attr('item-id');
+        var path = $btn.attr('item-path');
+
+        //Delte attachments file uploaded without save
+        var data = {id : id, path: path};
+        $.ajax({
             url: helper.baseUrl + "templates/delete_attachment_by_id",
             type: 'POST',
             dataType: "JSON",
             data: data,
             success: function(data){
-            	email.load_attachments();
-            	email.remove_new_attach(path);
-            	$('#files').find('#file-status').text("File removed").removeClass('text-success').addClass('text-danger');
+                //email.load_attachments();
+                email.remove_new_attach(path);
+                flashalert.warning("Attachment removed");
             }
         });
     },
     //Empty attachment table
     empty_attachment_table: function() {
-    	//Empty attachment table
+        //Empty attachment table
     	$tbody = $('.new_attach_table').find('tbody');
     	$thead = $('.new_attach_table').find('thead');
         $tbody.empty();
         $thead.empty();
         $tbody = $('.attach_table').find('tbody');
-    	$thead = $('.attach_table').find('thead');
+        $thead = $('.attach_table').find('thead');
         $tbody.empty();
         $thead.empty();
-        
-    	//Set progress-bar 0%
-    	$('form').find('input[name="template_attachments"]').val("");
-    	$('#progress .progress-bar').css(
-             'width',
-             0 + '%'
+
+        //Set progress-bar 0%
+        $('form').find('input[name="template_attachments"]').val("");
+        $('#progress .progress-bar').css(
+            'width',
+            0 + '%'
         );
-    	$('#files').find('#filename').empty();
-     	$('#files').find('#file-status').empty();
+        $('#files').find('#filename').empty();
+        $('#files').find('#file-status').empty();
     },
     //Load attachments from the database for a particular template
     load_attachments: function() {
-    	var data = {id : $('form').find('input[name="template_id"]').val()};
-    	$.ajax({
+        var data = {id : $('form').find('input[name="template_id"]').val()};
+        $.ajax({
             url: helper.baseUrl + "templates/get_attachments_by_template_id",
             type: 'POST',
             dataType: "JSON",
             data: data,
             success: function(data){
-            	var thead,tbody;
-            	$tbody = $('.attach_table').find('tbody');
-            	$tbody.empty();
-            	$.each(data['data'],function(key,val){
-         			tbody += "<tr>"
-         			thead += "<th></th>";
-         			tbody += "<td><a target='_blank' href='"+val['path']+"'>"+val['name']+"</a></td>";
-         		});
-         		$('#attachments').find('.attach_table thead').append(thead);
-         		$('#attachments').find('.attach_table tbody').append(tbody);
-         		$('#attachments').fadeIn();
+                var thead,tbody;
+                $tbody = $('.attach_table').find('tbody');
+                $tbody.empty();
+                $.each(data['data'],function(key,val){
+                    tbody += "<tr>"
+                    thead += "<th></th>";
+                    tbody += "<td><a target='_blank' href='"+val['path']+"'>"+val['name']+"</a></td>";
+                });
+                $('#attachments').find('.attach_table thead').append(thead);
+                $('#attachments').find('.attach_table tbody').append(tbody);
+                $('#attachments').fadeIn();
             },
             error: function(jqXHR, textStatus, errorThrown) {
-             console.log(textStatus+" "+errorThrown);
-           }
+            }
         });
-        
+
         $('.ajax-table').fadeOut(1000, function() {
             $('form').fadeIn();
         });
     },
-  //Load the new attachments table
+    //Load the new attachments table
     load_new_attachments: function(data) {
-    	var thead,tbody;
-    	
-    	$('#upload-status').fadeIn();
-        
+        var thead,tbody;
+
+        $('#upload-status').fadeIn();
+
     	$tbody = $('.new_attach_table').find('tbody');
     	$thead = $('.new_attach_table').find('thead');
         $tbody.empty();
         $thead.empty();
         if (data.length == 0) {
-        	thead += "<th></th>";
+            thead += "<th></th>";
         } else {
-        	thead += "<th>New Attachments</th>";
+            thead += "<th>New Attachments</th>";
         }
-		$.each(data,function(key,val){
-			tbody += "<tr>"
-				tbody += "<td><a target='_blank' href='"+val+"'>"+key+"</a></td><td><button item-path='"+val+"' class='marl btn btn-danger delete-attach-btn'>Remove</button></td>";
-		});
-		$('#attachments').find('.new_attach_table thead').append(thead);
-		$('#attachments').find('.new_attach_table tbody').append(tbody);
-		$('#attachments').fadeIn();
-		 $('#upload-status').fadeOut(1000);
+        $.each(data,function(key,val){
+            tbody += "<tr>"
+            tbody += "<td><a target='_blank' href='"+val.substring(0, email.stripos(val,'?'))+"'>"+val.substring(email.stripos(val,'?')+1)+"</a></td><td><button item-path='"+val+"' class='marl btn btn-danger delete-attach-btn'>Remove</button></td>";
+        });
+        $('#attachments').find('.new_attach_table thead').append(thead);
+        $('#attachments').find('.new_attach_table tbody').append(tbody);
+        $('#attachments').fadeIn();
+        $('#upload-status').fadeOut(1000);
+    },
+    stripos: function(f_haystack, f_needle, f_offset) {
+        //  discuss at: http://phpjs.org/functions/stripos/
+        // original by: Martijn Wieringa
+        //  revised by: Onno Marsman
+        //   example 1: stripos('ABC', 'a');
+        //   returns 1: 0
+
+        var haystack = (f_haystack + '')
+            .toLowerCase();
+        var needle = (f_needle + '')
+            .toLowerCase();
+        var index = 0;
+
+        if ((index = haystack.indexOf(needle, f_offset)) !== -1) {
+            return index;
+        }
+        return false;
     }
 }
 
@@ -190,7 +207,7 @@ var modal = {
     add_contact: function(option) {
         $('.modal-title').text('Add Contact');
         //Get the contacts
-        var urn = $('form').find('input[name="record_urn"]').val();
+        var urn = $('form').find('input[name="urn"]').val();
         var contacts;
     	$.ajax({
             url: helper.baseUrl + "email/get_contacts",
