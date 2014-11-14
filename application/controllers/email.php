@@ -146,7 +146,11 @@ $this->_campaigns = campaign_access_dropdown();;
         //Add the template attachments to the list
         if ($templateAttachList = $this->Email_model->get_attachments_by_template_id($form['template_id'])) {
             foreach ($templateAttachList as $attach) {
-                array_push($attachmentsForm, $attach);
+                //If the attachment is checked we add it to the form
+                if(isset($form[$attach['id']])){
+                    array_push($attachmentsForm, $attach);
+                    unset($form[$attach['id']]);
+                }
             }
         }
 

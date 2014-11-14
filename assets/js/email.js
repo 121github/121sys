@@ -141,7 +141,7 @@ var email = {
                 $.each(data['data'],function(key,val){
                     tbody += "<tr>"
                     thead += "<th></th>";
-                    tbody += "<td><a target='_blank' href='"+val['path']+"'>"+val['name']+"</a></td>";
+                    tbody += "<td><input type='checkbox' checked name='"+key+"' value='checked'> <a target='_blank' href='"+val['path']+"'>"+val['name']+"</a></td>";
                 });
                 $('#attachments').find('.attach_table thead').append(thead);
                 $('#attachments').find('.attach_table tbody').append(tbody);
@@ -235,5 +235,5 @@ var modal = {
         $('.confirm-modal').on('click', function(e) {
             $('#modal').modal('toggle');
         });
-    },
+    }
 }
