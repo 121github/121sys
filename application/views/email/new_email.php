@@ -14,7 +14,7 @@
 	</div>
 	<div class="panel-body">
 		<form role="form" role="form">
-			<input type="hidden" name="record_urn" value="<?php echo $urn ?>" />
+			<input type="hidden" name="urn" value="<?php echo $urn ?>" />
 			<input type="hidden" name="template_id" value="<?php echo $template_id ?>" />
 			<input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id'] ?>" />
 			
@@ -23,7 +23,7 @@
 					<span class="glyphicon glyphicon-question-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="Add more than one address separated by comas"></span>
 					From
 				</p>
-				<input type="text" class="form-control" name="from"
+				<input type="text" class="form-control" name="send_from"
 					title="Enter the sender" required 
 					value="<?php echo $template['template_from']; ?>"				
 				/>
@@ -34,7 +34,7 @@
 					To
 					<span class="glyphicon glyphicon-plus pull-right add-contact" option='to' data-toggle="tooltip" data-html="true" data-placement="top"></span>
 				</p>
-				<input type="text" class="form-control" name="to"
+				<input type="text" class="form-control" name="send_to"
 					title="Enter the destination" required 
 					value="<?php echo $template['template_to']; ?>"
 				/>
@@ -68,11 +68,13 @@
 					value="<?php echo $template['template_subject']; ?>"
 				/>
 			</div>
-			<textarea class="form-control" id="summernote" name="body"
-					title="Enter the template body" required 
-					value="<?php echo $template['template_body']; ?>"	
-				</textarea>
-			<div class="form-group input-group-sm">  
+			<div class="form-group input-group-sm">
+                <textarea class="form-control" id="summernote" name="body"
+                          title="Enter the template body" required
+                          ><?php echo $template['template_body']; ?>
+                </textarea>
+            </div>
+			<div class="form-group input-group-sm">
 				<!-- ATTACHMENTS -->
 				<input type="text" class="form-control" name="template_attachments" style="display: none"/>
 				 <div class="form-actions pull-left">
@@ -82,7 +84,7 @@
 				        <!-- The file input field used as target for the file upload widget -->
 				        <input id="fileupload" type="file" name="files[]"  data-url="<?php echo base_url()."templates/upload_template_attach"; ?>">
 				    </span>
-				    
+
 				    <br /><br />
 				    <div style="display:none" id="attachments">
 						<table class="table attach_table">
@@ -91,7 +93,7 @@
 							<tbody>
 							</tbody>
 						</table>
-						
+
 						<table class="table new_attach_table">
 							<thead>
 							</thead>
@@ -99,21 +101,7 @@
 							</tbody>
 						</table>
 					</div>
-				</div>	
-				<div class="form-actions" id="upload-status" style="display: none;">
-					<!-- The global progress bar -->
-				    <div id="progress" class="progress">
-				        <div class="progress-bar progress-bar-success"></div>
-				    </div>
-				    <div class="form-actions pull-right">
-					    <!-- The container for the uploaded files -->
-					    <div id="files" class="files pull-left">
-						    <span id="filename"></span><br>
-						    <span id="file-status"></span>
-					    </div>
-					</div>
-				 </div>
-				 		
+				</div>
 			</div>
 			<div class="form-actions pull-right">
 				<button class="marl btn btn-default close-email">Back</button>
@@ -133,44 +121,50 @@
 
 	$(function () {
 	    'use strict';
-	
+
+        var name;
+
 	    $('#fileupload').fileupload({
-			maxNumberOfFiles: 2,
-	        dataType: 'json',
-			acceptFileTypes: /(\.|\/)(jpg)$/i,
+            // The regular expression for allowed file types, matches
+            // against either file type or file name:
+            acceptFileTypes: /(\.|\/)(gif|jpe?g|png|csv|pdf|docx?|txt|xml|eml|wav|mp3|ogg|mp4|avi|mpe?g|wmv|mov)$/i,
+            // The maximum allowed file size in bytes:
+            maxFileSize: 10000000, // 10 MB
+            // The minimum allowed file size in bytes:
+            minFileSize: undefined, // No minimal file size
+            // The limit of files to be uploaded:
+            maxNumberOfFiles: 1,
+            dataType: 'json',
 	        progressall: function (e, data) {
-	            var progress = parseInt(data.loaded / data.total * 100, 10);
-	            $('#progress .progress-bar').css(
-	                'width',
-	                progress + '%'
-	            );
+                flashalert.success("File attached");
 	        },
 			always:function(e,data){
-				$('#files').find('#file-status').text("File uploaded").removeClass('text-danger').addClass('text-success');
+                //flashalert.success("File uploaded");
 			}
 	    }).on('fileuploadadd', function (e, data) {
 	    		var file = data.files[0];
-	       		$('#files').find('#filename').text(file.name);
-			    $('#files').find('#file-status').text('');
-			    
+                name = file.name;
+
 	    }).on('fileuploaddone', function (e, data) {
 
 	    	var file = data.result.files[0];
        		var path = "";
-       		
+
 	    	$.ajax({ url:helper.baseUrl+'templates/get_attachment_file_path',
 		    	type:"POST",
 		    	dataType:"JSON",
 		    	data: { file: file.name }
 		    	}).done(function(response){
 		    		path = response.path;
-		    		email.attach_new_file(file.name, path);
+		    		email.attach_new_file(name, path);
 		    	});
         }).on('fileuploadprocessalways', function (e, data) {
-            var file = data.files[0];
-        	if (file.error) {
-            	$('#files').find('#file-status').text(file.error).removeClass('text-success').addClass('text-danger');
-        	}
+            var currentFile = data.files[data.index];
+
+            if (data.files.error && currentFile.error) {
+                // there was an error, do something about it
+                flashalert.danger("ERROR: "+currentFile.error);
+            }
 		}).prop('disabled', !$.support.fileInput)
        	.parent().addClass($.support.fileInput ? undefined : 'disabled');
 	});

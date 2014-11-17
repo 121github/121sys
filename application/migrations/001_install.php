@@ -839,7 +839,7 @@ class Migration_install extends CI_Migration
         //create attachments table
         $this->db->query("CREATE TABLE IF NOT EXISTS `attachments`
 (
-`attachment_id` int PRIMARY KEY NOT NULL,
+`attachment_id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
 `urn` int NOT NULL,
 `name` VARCHAR(50) NOT NULL,
 `type` VARCHAR(50) NOT NULL,

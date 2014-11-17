@@ -1,5 +1,4 @@
 // JavaScript Document
-
 var template = {
     //initalize the group specific buttons 
     init: function() {
@@ -290,6 +289,7 @@ var template = {
          		$('#attachments').fadeIn();
             },
             error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus+" "+errorThrown);
            }
         });
         
@@ -314,12 +314,12 @@ var template = {
         }
 		$.each(data,function(key,val){
 			tbody += "<tr>"
-				tbody += "<td><a target='_blank' href='"+val.substring(0, template.stripos(val,'?'))+"'>"+val.substring(template.stripos(val,'?')+1)+"</a></td><td><button item-path='"+val+"' class='marl btn btn-danger delete-attach-btn'>Remove</button></td>";
+			tbody += "<td><a target='_blank' href='"+val.substring(0, template.stripos(val,'?'))+"'>"+val.substring(template.stripos(val,'?')+1)+"</a></td><td><button item-path='"+val+"' class='marl btn btn-danger delete-attach-btn'>Remove</button></td>";
 		});
 		$('#attachments').find('.new_attach_table thead').append(thead);
 		$('#attachments').find('.new_attach_table tbody').append(tbody);
 		$('#attachments').fadeIn();
-		 $('#upload-status').fadeOut(1000);
+		$('#upload-status').fadeOut(1000);
     },
     stripos: function(f_haystack, f_needle, f_offset) {
         //  discuss at: http://phpjs.org/functions/stripos/

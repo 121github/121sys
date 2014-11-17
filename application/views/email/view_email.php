@@ -1,5 +1,5 @@
  <div class="panel-heading">Send Email <span class="glyphicon glyphicon-remove pull-right close-email"></span></div>
- <div class="panel-body">
+ <div class="panel-body" style="overflow: scroll; height: 500px;">
 	<div class="edit-panel">
 		<div class="email-view-content">
 	    	<table class="table table-striped table-responsive email-view-table">

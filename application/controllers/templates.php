@@ -394,7 +394,7 @@ $this->_campaigns = campaign_access_dropdown();
 			$ext = explode('.',$_FILES['file']['name']);
 			$filename = $name.'.'.$ext[1];
 			$location =  $_FILES["file"]["tmp_name"];
-			$destination = './upload/templates/'.$filename;			
+			$destination = './upload/templates/'.$filename;
 			
 			if(move_uploaded_file($location, $destination)){
 				$tmp = base_url().'/upload/templates/'.$filename;
