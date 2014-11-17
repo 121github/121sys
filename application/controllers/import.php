@@ -445,6 +445,17 @@ echo json_encode(array("success"=>true));
 		}
 		
 	}
-	
+	public function move_contacts(){
+	$qry = "select * from client_refs left join records usign(urn) left join contacts using(urn) group by client_ref having count(client_ref) > 1	";
+	$array = $this->db->query($qry)->result_array();
+	foreach($array as $row){
+		$dupes[$row['client_ref']][]=array("urn"=>$row['urn'],"contact"=>$row['contact_id']);
+	}
+	foreach($dupes as $ref => $contacts){
+	$update = "update contacts left join records using(urn) left join client_refs using(urn) set urn = {$contacts['urn']} where client_ref = '$ref'";
+	echo $update.";<br>";
+	//$this->db->query($update);
+	}
+	}
 	
 }

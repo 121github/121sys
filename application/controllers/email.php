@@ -112,8 +112,19 @@ $this->_campaigns = campaign_access_dropdown();;
     //Send an email
     public function send_email() {
     	$form = $this->input->post();
+
+		
     	$form['body'] = base64_decode($this->input->post('body'));
     	
+		
+				
+		$urn = intval($this->input->post('urn'));
+		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
+		if(count($placeholder_data)){
+		foreach($placeholder_data[0] as $key => $val){
+			$body = str_replace("[$key]",$val,$form['body']);
+					}
+		}
     	//Delete duplicates email addresses
     	$from = array_unique(explode(",", $form['send_from']));
     	$form['send_from'] = implode(",", $from);

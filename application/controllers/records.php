@@ -587,7 +587,7 @@ class Records extends CI_Controller
     }
     
     
-    //this function is triggered during the update if the question trigger is below the answer or if an option on a multiple choise is set as a trigger. It sends the email with a list of all teh answers that triggered it. The email is sent to the recipients in the trigger_recipients table for the trigger with the survey outcome. If it does not exit then it does not get sent.
+    //this function is triggered during the update if the question trigger is below the answer or if an option on a multiple choise is set as a trigger. It sends the email with a list of all teh answers that triggered it. The email is sent to the recipients in the trigger_recipients table for the trigger with the survey outcome. If it does not exist then it does not get sent.
     public function survey_alert($survey, $survey_triggers)
     {
         $this->load->model('Contacts_model');
