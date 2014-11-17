@@ -163,8 +163,8 @@ $this->_campaigns = campaign_access_dropdown();;
     	//Send the email
     	$email_sent = $this->send($form);
         unset($form['template_attachments']);
-    	
-    	//Save the email in the Email History table
+
+        //Save the email in the Email History table
     	if ($email_sent) {
     		
     		$insert_id = $this->Email_model->add_new_email_history($form);
@@ -175,6 +175,10 @@ $this->_campaigns = campaign_access_dropdown();;
     			$response = $this->save_attachment_by_email($attachmentsForm, $insert_id);
     		}
     	}
+
+        else {
+            $response = false;
+        }
     	
     	echo json_encode(array(
     			"success" => $response,
@@ -222,6 +226,7 @@ $this->_campaigns = campaign_access_dropdown();;
 
                 if (!copy($file_path,$tmp_path.$attachment['name'])) {
                     echo "failed to copy file...";
+                    return false;
                 }
                 else {
                     $this->email->attach($tmp_path.$attachment['name']);
