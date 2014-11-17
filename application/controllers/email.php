@@ -209,7 +209,7 @@ $this->_campaigns = campaign_access_dropdown();;
 
         foreach ($form['template_attachments'] as $attachment) {
             if (strlen($attachment['path'])>0) {
-                $this->email->attach($attachment['path']);
+                $this->email->attach(strstr('./'.$attachment['path'], 'upload'));
             }
         }
 
