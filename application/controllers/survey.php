@@ -133,7 +133,7 @@ $this->_campaigns = campaign_access_dropdown();
             $completed_date = $row['completed_date'];
             $urn            = $row['urn'];
             //administrators can edit any survey. USers can only edit their own surveys
-            if ($user_id == $_SESSION['user_id'] || $_SESSION['role'] == "1") {
+            if ($user_id == $_SESSION['user_id'] || $_SESSION['role'] == "1" || in_array("edit surveys",$_SESSION['permissions'])) {
                 $locked = false;
             } else {
                 $locked = true;

@@ -460,7 +460,8 @@ class Migration_install extends CI_Migration
 		  `sort` int(2) NOT NULL DEFAULT '5',
 		  `nps_question` tinyint(1) DEFAULT NULL,
 		  `multiple` tinyint(1) DEFAULT NULL,
-		  `survey_info_id` tinyint(3) DEFAULT NULL,
+		  `survey_info_id` tinyint(1) DEFAULT NULL,
+		  `trigger_score` tinyint(1) DEFAULT NULL,
 		  PRIMARY KEY (`question_id`),
 		  KEY `survey_info_id` (`survey_info_id`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
@@ -477,6 +478,7 @@ class Migration_install extends CI_Migration
 		  `option_id` int(11) NOT NULL AUTO_INCREMENT,
 		  `option_name` varchar(150) CHARACTER SET utf8 NOT NULL,
 		  `question_id` int(11) NOT NULL,
+		  `trigger_email` INT(11) DEFAULT NULL,
 		  PRIMARY KEY (`option_id`)
 		) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ");
         

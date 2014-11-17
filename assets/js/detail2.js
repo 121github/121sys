@@ -24,7 +24,7 @@ function balance($row, height) {
 }
 
 var record = {
-    init: function(urn, role, campaign) {
+    init: function(urn, role, campaign, permissions) {
         /* Initialize all the jquery widgets */
         $(".close-alert").click(function() {
             $(this).closest('.alert').addClass('hidden');
@@ -34,7 +34,7 @@ var record = {
         this.urn = urn;
         this.role = role;
         this.campaign = campaign;
-
+		this.permissions = permissions;
     },
     sticky_note: {
         init: function() {
@@ -1199,11 +1199,17 @@ var record = {
                 if (response.data) {
                     $.each(response.data, function(key, val) {
                         var $delete = "";
-                        if (!val.locked) {
+						var $options = "";
+
+							if(record.permissions['delete surveys']>0){
                             $options = '<span class="glyphicon glyphicon-trash pull-right del-survey-btn" data-target="#modal" item-id="' + key + '" ></span><span class="glyphicon glyphicon-pencil pull-right edit-survey-btn"  item-id="' + key + '"></span>';
-                        } else {
-                            $options = '<span class="glyphicon glyphicon-eye-open pull-right edit-survey-btn pointer"  item-id="' + key + '"></span>';
-                        }
+							}
+                        	if(record.permissions['edit surveys']>0||!val.locked){
+                            $options = '<span class="glyphicon glyphicon-edit pull-right edit-survey-btn pointer"  item-id="' + key + '"></span>';
+							}
+						if($options==""){
+						 $options = '<span class="glyphicon glyphicon-eye-open pull-right eye-survey-btn pointer"  item-id="' + key + '"></span>';	
+						}
 
                         $body += '<tr><td>' + val.date_created + '</td><td>' + val.contact_name + '</td><td>' + val.client_name + '</td><td>' + val.answer + '</td><td>' + val.is_completed + '</td><td>' + $options + '</td></tr>';
                     });

@@ -70,7 +70,8 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
         var urn = '<?php echo $details['record']['urn'] ?>';
 		var campaign = '<?php echo $details['record']['campaign_id'] ?>';
 		var role_id = '<?php echo $_SESSION['role'] ?>';
-        record.init(urn,role_id,campaign);
+		var permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
+        record.init(urn,role_id,campaign,permissions);
 		//initializing the generic panels
 		record.contact_panel.init();
 		record.update_panel.init();

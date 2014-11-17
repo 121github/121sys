@@ -64,7 +64,7 @@
 </textarea>
           </div>
           <div class="form-group">
-            <?php if(in_array("set call outcomes",$_SESSION['permissions'])){ ?>
+            <?php if(!in_array("set call outcomes",$_SESSION['permissions'])){ ?>
             <?php if($details['record']['urgent']){ ?>
             <span class="urgent-btn" action="remove"><span class="red glyphicon glyphicon-flag"></span> Unflag as urgent</span>
             <?php } else { ?>
@@ -74,7 +74,7 @@
             <select class="selectpicker" name="pending_manager">
               <option value="">--Additional Options--</option>
               <option data-icon="glyphicon glyphicon-flag" value="1">Requires Attention</option>
-              <option data-icon="red glyphicon-flag" value="2">Requires Urgent Attention</option>
+              <option <?php if($details['record']['urgent']){ ?> selected <?php } ?> data-icon="red glyphicon-flag" value="2">Requires Urgent Attention</option>
             </select>
             <?php } ?>
             <?php if(!empty($details['record']['park_reason'])&&in_array("park records",$_SESSION['permissions'])){ ?>
