@@ -207,19 +207,51 @@ $this->_campaigns = campaign_access_dropdown();;
     	$this->email->subject($form['subject']);
     	$this->email->message($form['body']);
 
+        $tmp_path = '';
+        $user_id = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+
         foreach ($form['template_attachments'] as $attachment) {
             if (strlen($attachment['path'])>0) {
-                $this->email->attach(strstr('./'.$attachment['path'], 'upload'));
+                $tmp_path = substr($attachment['path'], 0, strripos($attachment['path'], "/")+1)."tmp_".$user_id."/";
+                $tmp_path = strstr('./'.$tmp_path, 'upload');
+                $file_path = strstr('./'.$attachment['path'], 'upload');
+                //Create tmp dir if it does not exist
+                if (!file_exists($tmp_path)) {
+                    mkdir($tmp_path, 0777, true);
+                }
+
+                if (!copy($file_path,$tmp_path.$attachment['name'])) {
+                    echo "failed to copy file...";
+                }
+                else {
+                    $this->email->attach($tmp_path.$attachment['name']);
+                }
             }
         }
 
-    	$result = $this->email->send();
+        $result = $this->email->send();
     	//$this->email->print_debugger();
     	$this->email->clear();
-    	
+
+        //Remove tmp dir
+        if (file_exists($tmp_path)) {
+            $this->removeDirectory($tmp_path);
+        }
+
     	return $result;
     }
-    
+
+    private function removeDirectory($path) {
+
+        $files = glob($path . '/*');
+        foreach ($files as $file) {
+            is_dir($file) ? $this->removeDirectory($file) : unlink($file);
+        }
+        rmdir($path);
+
+        return;
+    }
+
     /**
      * Insert new attachments for a email history
      *
