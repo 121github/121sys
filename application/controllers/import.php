@@ -189,6 +189,15 @@ echo json_encode(array("success"=>true));
         ));
     }
     
+	  //create record details 
+    public function create_client_refs()
+    {
+		 $qry_fields  = $this->Import_model->get_fields("client_refs");
+		 $this->firephp->log($qry_fields);
+		 $insert_query = "insert into client_refs (client_ref,urn) select " .ltrim($qry_fields['import_fields'],",") . " from importcsv";
+		 $this->db->query($insert_query);
+	}
+	
 	    //create record details 
     public function create_record_details()
     {
@@ -445,14 +454,15 @@ echo json_encode(array("success"=>true));
 		}
 		
 	}
-	public function move_contacts(){
-	$qry = "select * from client_refs left join records usign(urn) left join contacts using(urn) group by client_ref having count(client_ref) > 1	";
+	public function merge_contacts_by_clientref(){
+	$qry = "select * from client_refs left join records using(urn) left join contacts using(urn) group by client_ref having count(client_ref) > 1	";
 	$array = $this->db->query($qry)->result_array();
+	$dupes = array();
 	foreach($array as $row){
-		$dupes[$row['client_ref']][]=array("urn"=>$row['urn'],"contact"=>$row['contact_id']);
+		$dupes[$row['client_ref']]=$row['urn'];
 	}
-	foreach($dupes as $ref => $contacts){
-	$update = "update contacts left join records using(urn) left join client_refs using(urn) set urn = {$contacts['urn']} where client_ref = '$ref'";
+	foreach($dupes as $ref => $urn){
+	$update = "update contacts left join client_refs using(urn) set urn = {$urn} where client_ref = '$ref'";
 	echo $update.";<br>";
 	//$this->db->query($update);
 	}

@@ -56,7 +56,14 @@ $this->_campaigns = campaign_access_dropdown();;
     	
     	$template = $this->Email_model->get_template($template_id);
 
-
+			$placeholder_data = $this->Email_model->get_placeholder_data($urn);
+			$this->firephp->log($placeholder_data);
+		if(count($placeholder_data)){
+		foreach($placeholder_data[0] as $key => $val){
+			$template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
+					}
+		}
+	
     	$data = array(
     			'urn' => $urn,
     			'campaign_access' => $this->_campaigns,

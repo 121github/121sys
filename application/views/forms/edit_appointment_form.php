@@ -35,8 +35,8 @@
   $add .= (!empty($address['postcode'])?", ".$address['postcode']:" - This address has no postcode!");
  ?>
  <option value="<?php echo $address['postcode'] ?>"><?php echo $add ?></option>
-  <option value="">Other</option>
  <?php endforeach; ?>
+   <option value="">Other</option>
 </select>
         </div>
         

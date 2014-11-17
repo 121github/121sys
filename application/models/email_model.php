@@ -13,7 +13,13 @@ class Email_model extends CI_Model
     }
     
 	public function get_placeholder_data($urn=NULL){
-		$qry = "select records.urn,date_format(nextcall,'%d/%m/%Y %H:%i') nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,companies.name company,companies.description,companies.website,companies.company_number,contacts.fullname,contacts.gender,contacts.position,contacts.dob,contacts.email,a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added` from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join contacts using(urn) left join record_details using(urn) left join (select urn,max(appointment_id) max_id from appointments where urn='$urn') a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id  left join appointment_attendees using(appointment_id) left join users on appointment_attendees.user_id = users.user_id where records.urn = '$urn'";
+		$user_qry="";
+		if(isset($_SESSION['user_id'])){
+		$user_qry = " ,(select name as user from users where user_id = '{$_SESSION['user_id']}') user ";	
+			
+		}
+		$qry = "select records.urn,date_format(nextcall,'%d/%m/%Y %H:%i') nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,companies.name company,companies.description,companies.website,companies.company_number,contacts.fullname,contacts.gender,contacts.position,contacts.dob,contacts.email,a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added` $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join contacts using(urn) left join record_details using(urn) left join (select urn,max(appointment_id) max_id from appointments where urn='$urn') a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id  left join appointment_attendees using(appointment_id) left join users on appointment_attendees.user_id = users.user_id where records.urn = '$urn'";
+		$this->firephp->log($qry);
 		return $this->db->query($qry)->result_array();
 		
 	}
