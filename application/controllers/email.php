@@ -225,7 +225,6 @@ $this->_campaigns = campaign_access_dropdown();;
                 }
 
                 if (!copy($file_path,$tmp_path.$attachment['name'])) {
-                    echo "failed to copy file...";
                     return false;
                 }
                 else {
