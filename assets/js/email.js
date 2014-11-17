@@ -46,7 +46,7 @@ var email = {
                 }
                 else {
                 	$("button[type=submit]").attr('disabled',false);
-                	flashalert.danger("Email has not be sent");
+                	flashalert.danger("ERROR: Email has not be sent. Check that the attached are still in the server");
                 }
             });
     },
