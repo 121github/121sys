@@ -120,8 +120,12 @@ $this->_campaigns = campaign_access_dropdown();;
     public function send_email() {
     	$form = $this->input->post();
 
-    	$form['body'] = base64_decode($this->input->post('body'));
 		
+    	$form['body'] = base64_decode($this->input->post('body'));
+
+        //Status false by default, before sent the email
+        $form['status'] = false;
+				
 		$urn = intval($this->input->post('urn'));
 		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
 		if(count($placeholder_data)){
@@ -169,6 +173,16 @@ $this->_campaigns = campaign_access_dropdown();;
             }
         }
 
+    	//Save the email in the history table
+        unset($form['template_attachments']);
+        $email_id = $this->Email_model->add_new_email_history($form);
+        $response = ($email_id)?true:false;
+
+        if ($response && !empty($attachmentsForm)) {
+            //Save the new attachments in the email_history table
+            $response = $this->save_attachment_by_email($attachmentsForm, $email_id);
+        }
+
         if (!empty($attachmentsForm)) {
             //Add the attachments to the form
             $form['template_attachments'] = $attachmentsForm;
@@ -179,18 +193,13 @@ $this->_campaigns = campaign_access_dropdown();;
     	$email_sent = $this->send($form);
         unset($form['template_attachments']);
 
-        //Save the email in the Email History table
-    	if ($email_sent) {
-    		
-    		$insert_id = $this->Email_model->add_new_email_history($form);
-    		$response = ($insert_id)?true:false;
-
-    		if ($response && !empty($attachmentsForm)) {
-    			//Save the new attachments in the email_history table
-    			$response = $this->save_attachment_by_email($attachmentsForm, $insert_id);
-    		}
-    	}
-
+        //Update the status in the Email History table
+        if ($email_sent) {
+            $form['email_id'] = $email_id;
+            $form['status'] = true;
+            $this->Email_model->update_email_history($form);
+            $response = true;
+        }
         else {
             $response = false;
         }
@@ -229,7 +238,6 @@ $this->_campaigns = campaign_access_dropdown();;
     	
     	$config = array();
     	
-		
     	//Get the server conf if exist
     	if ($template = $this->Email_model->get_template($form['template_id'])) {
     		if($template['template_hostname']) {$config['smtp_host'] =  $template['template_hostname']; }
@@ -273,7 +281,7 @@ $this->_campaigns = campaign_access_dropdown();;
         }
 
         $result = $this->email->send();
-    	$this->email->print_debugger();
+    	//$this->email->print_debugger();
     	$this->email->clear();
 
         //Remove tmp dir
@@ -325,5 +333,29 @@ $this->_campaigns = campaign_access_dropdown();;
     				"success" => $result
     		));
     	}
+    }
+
+    //Check if the email was received and opened
+    public function image()
+    {
+        if(isset($_GET['src'])){
+            header("Content-type: image/png");
+            $src = $_GET['src'];
+            echo file_get_contents($src);
+        }
+        if(isset($_GET['id'])) {
+            //save to database
+
+        }
+        $data = array(
+            'pageId' => 'Email',
+            'title' => 'Email',
+            'css' => array(
+                'dashboard.css'
+            )
+        );
+
+        $this->template->load('default', 'email/image.php', $data);
+
     }
 }

@@ -259,6 +259,7 @@ class Email_model extends CI_Model
                       e.urn,
                       e.template_id,
                       e.read_confirmed,
+                      e.status,
                       u.*,
                       t.*
 		    	from email_history e
@@ -288,6 +289,7 @@ class Email_model extends CI_Model
                       e.urn,
                       e.template_id,
                       e.read_confirmed,
+                      e.status,
                       u.*,
                       t.*
 		    	from email_history e
@@ -314,6 +316,17 @@ class Email_model extends CI_Model
         
         return $insert_id;
         
+    }
+
+    /**
+     * Update the status of an email from the email history
+     *
+     * @param Form $form
+     */
+    public function update_email_history($form)
+    {
+        $this->db->where("email_id", $form['email_id']);
+        return $this->db->update("email_history", $form);
     }
     
     /**
