@@ -188,7 +188,10 @@ $this->_campaigns = campaign_access_dropdown();;
             $form['template_attachments'] = $attachmentsForm;
         }
 
-    	
+    	//Add the tracking image to know if the email is read
+        $source = base_url()."assets/css/plugins/dataTables/images/favicon.ico";
+        $form['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?src=".$source."&id=".$email_id."'";
+
     	//Send the email
     	$email_sent = $this->send($form);
         unset($form['template_attachments']);
@@ -345,7 +348,17 @@ $this->_campaigns = campaign_access_dropdown();;
         }
         if(isset($_GET['id'])) {
             //save to database
-
+            $email_id = $_GET['id'];
+            $email = $this->Email_model->get_email_by_id($email_id);
+            if (!$email['read_confirmed']) {
+                $form = array();
+                $form['email_id'] = $email_id;
+                $form['read_confirmed'] = 1;
+                $datestring = "Y-m-d H:i:s";
+                $time = time();
+                $form['read_confirmed_date'] = date($datestring, $time);
+                $result = $this->Email_model->update_email_history($form);
+            }
         }
         $data = array(
             'pageId' => 'Email',
