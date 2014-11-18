@@ -70,12 +70,16 @@
             <?php } else { ?>
             <span class="urgent-btn" action="add"><span class="glyphicon glyphicon-flag"></span> Flag as urgent</span>
             <?php } ?>
-            <?php } else  { ?>
+            <?php } else  { 
+			if(in_array("set urgent",$_SESSION['permissions'])){ ?>
             <select class="selectpicker" name="pending_manager">
               <option value="">--Additional Options--</option>
               <option data-icon="glyphicon glyphicon-flag" value="1">Requires Attention</option>
               <option <?php if($details['record']['urgent']){ ?> selected <?php } ?> data-icon="red glyphicon-flag" value="2">Requires Urgent Attention</option>
             </select>
+            <?php } else { ?>
+            <input name="pending_manager" type="hidden" value=""> 
+            <?php } ?>
             <?php } ?>
             <?php if(!empty($details['record']['park_reason'])&&in_array("park records",$_SESSION['permissions'])){ ?>
             <!-- need to add js to get this button working and set park code to null in record table -->

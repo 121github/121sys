@@ -179,6 +179,8 @@ class Records extends CI_Controller
         if (in_array(10, $features)) {
             $addresses         = $this->Records_model->get_addresses($urn);
             $data['addresses'] = $addresses;
+			$attendees         = $this->Records_model->get_attendees(false,$campaign_id);
+            $data['attendees'] = $attendees;
         }
 		
         //get the users if we need the ownership feature is on

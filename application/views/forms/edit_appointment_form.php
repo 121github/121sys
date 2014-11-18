@@ -20,8 +20,8 @@
                 <div class="form-group input-group-sm">
           <p>Please add the attendees</p>
 <select name="attendees[]" class="selectpicker attendeepicker" title="Choose the attendees" data-width="100%">
- <?php foreach($users as $user): ?>
- <option value="<?php echo $user['user_id'] ?>"><?php echo $user['name'] ?></option>
+ <?php foreach($attendees as $attendee): ?>
+ <option value="<?php echo $attendee['user_id'] ?>"><?php echo $attendee['name'] ?></option>
  <?php endforeach; ?>
 </select>
         </div>

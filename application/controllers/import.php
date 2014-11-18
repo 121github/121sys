@@ -220,7 +220,7 @@ echo json_encode(array("success"=>true));
             $insert_query        = "insert into contacts (contact_id " .  $qry_fields['table_fields'] . ") select '' " . $qry_fields['import_fields'] . " from importcsv";
             $update_import_table = "ALTER TABLE `importcsv` ADD `contact_id` INT NULL ,ADD INDEX ( `contact_id` )";
             $insert_contact_ids  = "update importcsv i left join contacts c using(urn) set i.contact_id = c.contact_id";
-            $fix_contact_names = "update contacts set fullname = concat(title,' ',firstname,' ',lastname)";
+			$fix_contact_names = "update contacts set fullname = trim(concat(if(title is null,'',title),' ',if(firstname is null,'',firstname),' ',if(lastname is null,'',lastname)))  where fullname is null";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
 			$this->db->query($update_import_table);
@@ -239,8 +239,10 @@ echo json_encode(array("success"=>true));
 		if(!empty($number_descriptions)){
         foreach ($number_descriptions as $description) {
             $insert_query = "insert into contact_telephone (telephone_id,contact_id,description,telephone_number) select '',contact_id,'$description',contact_tel_" . $description . " from importcsv ";
+				$fix_telephone_numbers = "delete from company_telephone where trim(telephone_number) = '' or telephone_number is null";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
+			$this->db->query($fix_telephone_numbers);
         }
 		}
         echo json_encode(array(
@@ -254,8 +256,10 @@ echo json_encode(array("success"=>true));
         $qry_fields = $this->Import_model->get_addresses("contact");
         if (!empty($qry_fields)) {
 			$insert_query = "insert into contact_addresses (address_id,contact_id " .$qry_fields['table_fields'].",`primary`) select '',contact_id " . $qry_fields['import_fields'] . ",'1' from importcsv";
+			$fix_addresses = "delete from contact_addresses where add1 is null and add2 is null and add3 is null and county is null and postcode is null";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
+			 $this->db->query($fix_addresses);
         }
         echo json_encode(array(
             "success" => true
@@ -271,11 +275,13 @@ echo json_encode(array("success"=>true));
             $insert_query        = "insert into companies (company_id " . $qry_fields['table_fields'] . ") select '' " . $qry_fields['import_fields']. " from importcsv";
             $update_import_table = "ALTER TABLE `importcsv` ADD `company_id` INT NULL ,ADD INDEX ( `company_id` )";
             $insert_company_ids  = "update importcsv i left join companies c using(urn) set i.company_id = c.company_id";
-            			
+            $fix_companies = "update `companies` set website =  null WHERE trim(website) < '' or website = ''";
+						
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
 			$this->db->query($update_import_table);
 			$this->db->query($insert_company_ids);
+			$this->db->query($fix_companies);
         }
         echo json_encode(array(
             "success" => true
@@ -289,8 +295,11 @@ echo json_encode(array("success"=>true));
         $number_descriptions = $this->Import_model->get_telephone_numbers("company");
         foreach ($number_descriptions as $description) {
             $insert_query = "insert into company_telephone (telephone_id,company_id,description,telephone_number) select '',company_id,'$description',company_tel_" . $description . " from importcsv";
+			$fix_telephone_numbers = "delete from company_telephone where trim(telephone_number) = '' or telephone_number is null";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
+			 $this->db->query($fix_telephone_numbers);
+			
         }
         echo json_encode(array(
             "success" => true
@@ -304,8 +313,11 @@ echo json_encode(array("success"=>true));
         $qry_fields = $this->Import_model->get_addresses("company");
         if (!empty($qry_fields)) {
 			$insert_query = "insert into company_addresses (address_id,company_id " .$qry_fields['table_fields'] .",`primary`) select '',company_id " . $qry_fields['import_fields'] . ",'1' from importcsv";
+			$fix_addresses = "delete from company_addresses where add1 is null and add2 is null and add3 is null and county is null and postcode is null";
+			
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
+			$this->db->query($fix_addresses);
         }
         echo json_encode(array(
             "success" => true
