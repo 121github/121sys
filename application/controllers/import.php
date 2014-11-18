@@ -288,7 +288,7 @@ echo json_encode(array("success"=>true));
     {
         $number_descriptions = $this->Import_model->get_telephone_numbers("company");
         foreach ($number_descriptions as $description) {
-            $insert_query = "insert into company_telephone (telephone_id,company_id,description,telephone_number) select '',company_id,company_tel_" . $description . ",'$description' from importcsv";
+            $insert_query = "insert into company_telephone (telephone_id,company_id,description,telephone_number) select '',company_id,'$description',company_tel_" . $description . " from importcsv";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
         }

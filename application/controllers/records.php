@@ -312,6 +312,8 @@ class Records extends CI_Controller
         }
     }
     
+
+	
     public function get_triggers($outcome_id = "")
     {
         $this->db->where("outcome_id", $outcome_id);
@@ -325,6 +327,7 @@ class Records extends CI_Controller
         return $triggers;
     }
     
+	/*
     public function check_email_triggers($outcome_id = "",$campaign_id = "")
     {
         $this->db->where(array(
@@ -335,7 +338,7 @@ class Records extends CI_Controller
             return true;
         }
     }
-    
+    */
     //this will reset a record - outcomes, progress and nextcall will be set to null and the status will be set to live again
     public function reset_record()
     {
@@ -376,6 +379,9 @@ class Records extends CI_Controller
             
             //check the outcome and execute any triggers
             if ($this->input->post('outcome_id')) {
+				//check if an email should be sent for this outcome	
+				$email_triggers = $this->Records_model->get_email_triggers($campaign_id,intval($this->input->post('outcome_id')));
+				//get the outcome triggers
                 $triggers = $this->get_triggers(intval($this->input->post('outcome_id')));
                 if ($triggers["force_comment"] == "1" && trim($update_array['comments']) == "") {
                     echo json_encode(array(
@@ -527,16 +533,25 @@ class Records extends CI_Controller
             }
             
             //return success to page
-            echo json_encode(array(
+            $response = array(
                 "success" => true,
                 "msg" => "Record was updated"
-            ));
+            );
+			if(count($email_triggers)){
+				 $response['email_trigger'] = true;
+			}
+			 echo json_encode($response);
+			
         } else {
             echo "Denied";
             exit;
         }
     }
     
+	
+	
+	
+	
     public function load_appointments()
     {
         if ($this->input->is_ajax_request() && $this->_access) {

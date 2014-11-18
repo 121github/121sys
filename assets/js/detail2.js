@@ -191,6 +191,12 @@ var record = {
                     record.ownership_panel.load_panel();
 					check_session();	
                     flashalert.success(response.msg);
+					if(response.email_trigger){
+					$.ajax({url:helper.baseUrl+'email/trigger_email',
+					type:"POST",
+					data:{urn:record.urn}
+					});	
+					}
                 } else {
                     flashalert.warning(response.msg);
                 }

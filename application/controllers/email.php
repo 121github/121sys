@@ -120,11 +120,8 @@ $this->_campaigns = campaign_access_dropdown();;
     public function send_email() {
     	$form = $this->input->post();
 
-		
     	$form['body'] = base64_decode($this->input->post('body'));
-    	
 		
-				
 		$urn = intval($this->input->post('urn'));
 		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
 		if(count($placeholder_data)){
@@ -203,12 +200,36 @@ $this->_campaigns = campaign_access_dropdown();;
     	));
     }
     
+	public function trigger_email(){
+		if(isset($_SESSION['email_triggers'])){
+			$urn = intval($this->input->post('urn'));
+		
+		foreach($_SESSION['email_triggers'] as $template_id => $recipients){
+			foreach($recipients as $details){
+			//create the form structure to pass to the send function
+			$form = $this->Email_model->template_to_form($template_id);
+			$form['send_to'] = $details['email'];
+		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
+		$placeholder_data['recipient_name'] = $details['name'];
+		if(count($placeholder_data)){
+		foreach($placeholder_data[0] as $key => $val){
+			$form['body'] = str_replace("[$key]",$val,$form['body']);
+			}
+		}
+			$this->send($form);
+		}	
+		}
+		}
+		unset($_SESSION['email_triggers']);
+	}
+	
     private function send ($form) {
     	
     	$this->load->library('email');
     	
     	$config = array();
     	
+		
     	//Get the server conf if exist
     	if ($template = $this->Email_model->get_template($form['template_id'])) {
     		if($template['template_hostname']) {$config['smtp_host'] =  $template['template_hostname']; }
@@ -252,7 +273,7 @@ $this->_campaigns = campaign_access_dropdown();;
         }
 
         $result = $this->email->send();
-    	//$this->email->print_debugger();
+    	$this->email->print_debugger();
     	$this->email->clear();
 
         //Remove tmp dir

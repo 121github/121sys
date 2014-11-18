@@ -748,6 +748,25 @@ class Records_model extends CI_Model
         
         
     }
+	
+	
+	//when a record is update this function is ran to see if an email should be sent to anyone
+		 public function get_email_triggers($campaign_id,$outcome_id){
+		 $this->db->join("email_trigger_recipients", "email_triggers.trigger_id = email_trigger_recipients.trigger_id","left");
+		 $this->db->join("users", "users.user_id = email_trigger_recipients.user_id","left");
+		 $this->db->where("outcome_id", $outcome_id);
+		 $this->db->where("campaign_id", $campaign_id);
+        $result  = $this->db->get("email_triggers")->result_array();
+		$email_triggers = array();
+		foreach($result as $row){
+			if(!empty($row['user_email'])){
+		$email_triggers[$row['template_id']][] = array("name"=>$row['name'],"email"=>$row['user_email']);
+			}
+		}
+		$_SESSION['email_triggers'] = $email_triggers;
+		return $email_triggers;
+	 }
+	
     
 	/*get all the new owners for a specific outcome*/
 	public function get_owners_for_outcome($campaign_id,$outcome_id){
