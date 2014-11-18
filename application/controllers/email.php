@@ -189,11 +189,11 @@ $this->_campaigns = campaign_access_dropdown();;
         }
 
     	//Add the tracking image to know if the email is read
-        $source = base_url()."assets/css/plugins/dataTables/images/favicon.ico";
-        $form['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?src=".$source."&id=".$email_id."'";
+        $form_to_send = $form;
+        $form_to_send['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?id=".$email_id."'>";
 
-    	//Send the email
-    	$email_sent = $this->send($form);
+        //Send the email
+        $email_sent = $this->send($form_to_send);
         unset($form['template_attachments']);
 
         //Update the status in the Email History table
@@ -341,11 +341,10 @@ $this->_campaigns = campaign_access_dropdown();;
     //Check if the email was received and opened
     public function image()
     {
-        if(isset($_GET['src'])){
-            header("Content-type: image/png");
-            $src = $_GET['src'];
-            echo file_get_contents($src);
-        }
+        $src = base_url()."assets/css/plugins/dataTables/images/back_enabled_hover.png";
+        header("Content-type: image/png");
+        echo file_get_contents($src);
+
         if(isset($_GET['id'])) {
             //save to database
             $email_id = $_GET['id'];
