@@ -302,7 +302,7 @@
                   </div>
                 </div>
               </div>
-              <button type="submit" class="btn btn-default pull-right">View Records</button>
+              <button type="submit" class="btn btn-default pull-right  submit-filter">View Records</button>
               Found: <span class="record-count"></span> </div>
           </div>
         </div>

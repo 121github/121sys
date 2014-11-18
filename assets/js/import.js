@@ -150,10 +150,31 @@ var importer = {
             }
         }).done(function(response) {
             if (response.success) {
-                importer.create_record_details();
+                importer.create_client_refs();
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while creating the records</span>");
                 flashalert.danger("Import failed while creating the records");
+				importer.undo_changes();
+            }
+        });
+    },
+	    create_client_refs: function() {
+        $('#import-progress').text("Creating client refs...");
+        $.ajax({
+            url: helper.baseUrl + 'import/create_client_refs',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                campaign: $('#campaign').val(),
+                source: $('#source').val(),
+                type: $('#campaign option:selected').attr('ctype')
+            }
+        }).done(function(response) {
+            if (response.success) {
+                importer.create_record_details();
+            } else {
+				$('#import-progress').html("<span class='red'>Import failed while creating the client references</span>");
+                flashalert.danger("Import failed while creating the references");
 				importer.undo_changes();
             }
         });

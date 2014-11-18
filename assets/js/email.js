@@ -6,7 +6,11 @@ var email = {
 			$('.tt').tooltip();
             $(document).on('click', '.send-email', function (e) {
                 e.preventDefault();
+				if($('input[name="send_to"]').val()!==''&&$('input[name="send_from"]').val()!==''){
                 email.send_email($(this));
+				} else {
+				flashalert.danger("Please ensure both <b>from</b> and <b>to</b> fields are populated");	
+				}
             });
 			$(document).on('click', '.close-email', function (e) {
                 e.preventDefault();

@@ -196,6 +196,9 @@ echo json_encode(array("success"=>true));
 		 $this->firephp->log($qry_fields);
 		 $insert_query = "insert into client_refs (client_ref,urn) select " .ltrim($qry_fields['import_fields'],",") . " from importcsv";
 		 $this->db->query($insert_query);
+		 echo json_encode(array(
+            "success" => true
+        ));
 	}
 	
 	    //create record details 
@@ -467,16 +470,17 @@ echo json_encode(array("success"=>true));
 		
 	}
 	public function merge_contacts_by_clientref(){
-	$qry = "select * from client_refs left join records using(urn) left join contacts using(urn) group by client_ref having count(client_ref) > 1	";
+	$qry = "select name,urn,concat(companies.website,add1,postcode) as dupe from companies left join records using(urn) left join contacts using(urn) left join company_addresses using(company_id) group by concat(companies.website,add1,postcode) having count(concat(companies.website,add1,postcode)) > 1";
 	$array = $this->db->query($qry)->result_array();
 	$dupes = array();
 	foreach($array as $row){
-		$dupes[$row['client_ref']]=$row['urn'];
+		$dupes[$row['dupe']]=array("name"=>$row['name'],"urn"=>$row['urn']);
 	}
-	foreach($dupes as $ref => $urn){
-	$update = "update contacts left join client_refs using(urn) set urn = {$urn} where client_ref = '$ref'";
-	echo $update.";<br>";
-	//$this->db->query($update);
+	foreach($dupes as $ref => $array){
+	$update = "update contacts left join companies using(urn) left join company_addresses using(company_id) set contacts.urn = {$array['urn']} where concat(companies.website,add1,postcode) = '$ref'";
+	//echo $update.";<br>";
+	echo $array['name'] .": ". $ref.";<br>";
+//$this->db->query($update);
 	}
 	}
 	
