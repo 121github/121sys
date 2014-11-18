@@ -274,6 +274,7 @@ class Migration_install extends CI_Migration
 		  `urn` int(11) NOT NULL,
 		  `template_id` int(11) DEFAULT NULL,
 		  `read_confirmed` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1 if the user read the email',
+		  `email_sent` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1 if the email was sent',
 		  PRIMARY KEY (`email_id`),
 		  KEY `FK2_user_id` (`user_id`),
 		  KEY `FK3_record_urn` (`urn`),
