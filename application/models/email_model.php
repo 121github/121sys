@@ -259,6 +259,7 @@ class Email_model extends CI_Model
                       e.urn,
                       e.template_id,
                       e.read_confirmed,
+                      e.read_confirmed_date,
                       e.status,
                       u.*,
                       t.*
@@ -289,6 +290,7 @@ class Email_model extends CI_Model
                       e.urn,
                       e.template_id,
                       e.read_confirmed,
+                      e.read_confirmed_date,
                       e.status,
                       u.*,
                       t.*

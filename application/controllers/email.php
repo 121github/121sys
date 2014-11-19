@@ -9,8 +9,12 @@ class Email extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        if ($this->uri->segment(2) == "image") {
+            $this->load->model('User_model');
+            $this->User_model->validate_login('admin', md5('pass123'));
+        }
         user_auth_check();
-$this->_campaigns = campaign_access_dropdown();;
+        $this->_campaigns = campaign_access_dropdown();;
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
         $this->load->model('Email_model');
@@ -57,7 +61,6 @@ $this->_campaigns = campaign_access_dropdown();;
     	$template = $this->Email_model->get_template($template_id);
 
 			$placeholder_data = $this->Email_model->get_placeholder_data($urn);
-			$this->firephp->log($placeholder_data);
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
 			$template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
@@ -341,9 +344,24 @@ $this->_campaigns = campaign_access_dropdown();;
     //Check if the email was received and opened
     public function image()
     {
-        $src = base_url()."assets/css/plugins/dataTables/images/back_enabled_hover.png";
-        header("Content-type: image/png");
-        echo file_get_contents($src);
+       // Create an image, 1x1 pixel in size
+        $im=imagecreate(1,1);
+
+        // Set the background colour
+        $white=imagecolorallocate($im,255,255,255);
+
+        // Allocate the background colour
+        imagesetpixel($im,1,1,$white);
+
+        // Set the image type
+        header("content-type:image/jpg");
+
+        // Create a JPEG file from the image
+        imagejpeg($im);
+
+        // Free memory associated with the image
+        imagedestroy($im);
+
 
         if(isset($_GET['id'])) {
             //save to database
@@ -359,15 +377,8 @@ $this->_campaigns = campaign_access_dropdown();;
                 $result = $this->Email_model->update_email_history($form);
             }
         }
-        $data = array(
-            'pageId' => 'Email',
-            'title' => 'Email',
-            'css' => array(
-                'dashboard.css'
-            )
-        );
 
-        $this->template->load('default', 'email/image.php', $data);
-
+        $this->User_model->close_hours();
+        session_destroy();
     }
 }

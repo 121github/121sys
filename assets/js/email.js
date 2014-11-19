@@ -56,7 +56,10 @@ var email = {
     },
     add_contact_option: function(id, email, option) {
     	content = $('form').find('input[name='+option+']').val();
-    	$('form').find('input[name='+option+']').val(content+', '+email);
+        if (content.length) {
+            content = content+', ';
+        }
+        $('form').find('input[name='+option+']').val(content+email);
     	$('.'+id+option).text("Added");
     },
     //add a new attached file to the list of the new attachments
