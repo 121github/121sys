@@ -2,6 +2,10 @@
 body { overflow-y:scroll;
  }
 
+.container-fluid {
+    margin-top: 50px !important;
+}
+
 .form-signin {
   max-width: 330px;
   padding: 15px;
