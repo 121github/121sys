@@ -275,7 +275,6 @@ class Reports extends CI_Controller
 	            $crossTransfersUrl = $url."/cross/".$campaign;
 	            $totalTransfersUrl = $url."/transfers/".$campaign;
 	            $allDialsUrl = $url."/alldials/".$campaign;
-				
 	            $data[]         = array(
                     "campaign" => $campaign,
                     "name" => $row['name'],
@@ -292,8 +291,8 @@ class Reports extends CI_Controller
                 );
                 $totalTransfers += $transfers;
                 $totalCrossTransfers += $crossTransfers;
-                $totalDials += $row['total_dials'];
-                $totalDuration += $row['duration'];
+                $totalDials += ($row['total_dials']?$row['total_dials']:"0");
+                $totalDuration += ($row['duration']?$row['duration']:"0");
             }
             
             $totalTransfersPercent      = ($totalDials)?number_format(($totalTransfers * 100) / $totalDials, 2):0;
@@ -332,21 +331,21 @@ class Reports extends CI_Controller
         $teamManagers = $this->Form_model->get_teams();
         $sources      = $this->Form_model->get_sources();
 		$agents       = $this->Form_model->get_agents();
-        
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
-            'title' => 'Reports | Campaign Appointment',
+            'title' => 'Reports | Campaign Outcme',
             'page' => array(
                 'reports' => 'campaign',
                 'inner' => 'campaignappointment'
             ),
             'javascript' => array(
                 'charts.js',
-                'report/campaignappointment.js',
+                'report/campaignoutcomes.js',
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
+			'outcome_id'=>72,
             'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
@@ -356,94 +355,95 @@ class Reports extends CI_Controller
                 'daterangepicker-bs3.css'
             )
         );
-        $this->template->load('default', 'reports/campaignappointment.php', $data);
+        $this->template->load('default', 'reports/campaignoutcomes.php', $data);
     }
     
     //this controller sends the campaign appointment report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function campaignappointment_data()
+    public function campaignoutcome_data()
     {
-        if ($this->input->is_ajax_request()) {
+     if ($this->input->is_ajax_request()) {
             $data    = array();
-            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post());
-            
+            $results = $this->Report_model->get_other_data($this->input->post());
+			
             $date_from_search = $this->input->post("date_from");
             $date_to_search   = $this->input->post("date_to");
             $agent_search      = $this->input->post("agent");
             $campaign_search  = $this->input->post("campaign");
             $team_search  = $this->input->post("team");
             $source_search  = $this->input->post("source");
-            
+			$outcome_id  = $this->input->post("outcome");
+			
+			$this->db->where("outcome_id",$outcome_id);
+			$query = $this->db->get("outcomes");
+			if($query->num_rows()>0){
+				$outcome = $query->row()->outcome;
+			}
+		
+		
             $aux = array();
-            
             foreach ($results as $row) {
-                if ($row['outcome'] == 'Appointment') {
-                	$aux[$row['campaign']]['name'] = $row['name'];
-                	$aux[$row['campaign']]['duration'] = $row['duration'];
-                    $aux[$row['campaign']]['appointments'] = $row['count'];
-                    $aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
-                }
-                elseif ($row['outcome'] == 'Cross Transfer') {
-                	$aux[$row['campaign_id']]['total_dials'] = (isset($aux[$row['campaign_id']]['total_dials'])) ? $aux[$row['campaign_id']]['total_dials'] + $row['count'] : $row['count'];
-                }
-                else {
-                	$aux[$row['campaign']]['name'] = $row['name'];
-                	$aux[$row['campaign']]['duration'] = $row['duration'];
-                	$aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
-                }
+				if($row['total_dials']){
+				$aux[$row['campaign_id']]['name'] = $row['campaign_name'];
+				$aux[$row['campaign_id']]['duration'] = $row['duration'];
+				$aux[$row['campaign_id']]['outcomes'] = $row['outcome_count'];
+				$aux[$row['campaign_id']]['total_dials'] = $row['total_dials'];
+				}
             }
-            
-            $totalAppointments = 0;
-            $totalDials        = 0;
-            $totalDuration		 = 0;
 
+            $totalOutcomes      = 0;
+            $totalDials          = 0;
+            $totalDuration		 = 0;
+            $url = base_url()."search/custom/history";
             $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
 			$url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($date_from_search) ? "/contact/$date_from_search:emore" : "");
-            $url .= (!empty($date_to_search) ? "/contact/$date_to_search:eless" : "");
+            $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
+            $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
             $url .= (!empty($source_search) ? "/source/$source_search" : "");
             
             foreach ($aux as $campaign => $row) {
-                $appointments = (array_key_exists('appointments', $row)) ? $row['appointments'] : 0;
-                
-                $urlCampaign = $url."/campaign/".$campaign;
-                $appointmentsUrl = $urlCampaign."/outcome/Appointment";
-                
-                $data[]       = array(
+            	$outcomes      = (array_key_exists('outcomes', $row)) ? $row['outcomes'] : 0;
+	            
+	            $urlCampaign = $url."/campaign/".$campaign;
+	            $outcomesUrl = $urlCampaign."/outcome/".$this->input->post('outcome');
+	            $allDialsUrl = $url."/alldials/".$campaign;
+	            $data[]         = array(
                     "campaign" => $campaign,
                     "name" => $row['name'],
-                    "appointments" => $appointments,
-                	"appointments_url" => $appointmentsUrl,
+                    "outcomes" => $outcomes,
+	            	"outcomes_url" => $outcomesUrl,
                     "total_dials" => $row['total_dials'],
-                	"total_dials_url" => $urlCampaign,
-                	"duration" => ($row['duration'])?$row['duration']:0,
-                	"rate" => ($row['duration']>0)?round($appointments/($row['duration']/3600),3):0
+	            	"total_dials_url" => $allDialsUrl,
+	            	"duration" => ($row['duration'])?$row['duration']:0,
+	            	"rate" => ($row['duration']>0)?round(($outcomes)/($row['duration']/3600),3):0
                 );
-                $totalAppointments += $appointments;
-                $totalDials += $row['total_dials'];
-                $totalDuration += $row['duration'];
+                $totalOutcomes += $outcomes;
+                $totalDials += ($row['total_dials']?$row['total_dials']:"0");
+                $totalDuration += ($row['duration']?$row['duration']:"0");
             }
             
-            $totalAppointmentsPercent = ($totalDials>0)?number_format(($totalAppointments * 100) / $totalDials, 2) . '%':0;
+            $totalOutcomesPercent      = ($totalDials)?number_format(($totalOutcomes * 100) / $totalDials, 2):0;
+       
+            $totalPercent               = ($totalDials)?number_format((($totalOutcomes) * 100) / $totalDials, 2):0;
             
             $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
             
             array_push($data, array(
                 "campaign" => "TOTAL",
                 "name" => "",
-                "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
-                "appointments_url" => $url."/outcome/Appointment",
+                "outcomes" => $totalOutcomes . " (" . $totalOutcomesPercent . "%)",
+                "outcomes_url" => $url."/outcome/$outcome",
                 "total_dials" => $totalDials,
                 "total_dials_url" => $url,
                 "duration" => $totalDuration,
-                "rate" => ($totalDuration>0)?round($totalAppointments/($totalDuration/3600),3):0
+                "rate" => ($totalDuration>0)?round(($totalOutcomes)/($totalDuration/3600),3):0
             ));
             
             echo json_encode(array(
                 "success" => true,
+				"outcome"=>$outcome,
                 "data" => $data
             ));
-            
         }
     }
     

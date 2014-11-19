@@ -190,6 +190,7 @@ var record = {
                     record.history_panel.load_panel();
                     record.ownership_panel.load_panel();
 					check_session();	
+					$(document).off('click','.nav-btn');
                     flashalert.success(response.msg);
 					if(response.email_trigger){
 					$.ajax({url:helper.baseUrl+'email/trigger_email',
@@ -1640,6 +1641,7 @@ var record = {
             }).done(function(response) {
                record.appointment_panel.load_appointments();
                 record.appointment_panel.hide_edit_form();
+				$('.record-panel').find('.outcomepicker').find('li.disabled').each(function(){ $(this).removeClass('disabled'); });;
                 flashalert.success("Appointment saved");
             });
         },
@@ -1805,11 +1807,27 @@ var record = {
     }
 }
 
+$(document).on('click','.nav-btn',function(e){
+	e.preventDefault();
+	//modal.confirm_move($(this).attr('href'));
+	flashalert.danger("You must update the record first");
+})
 /* ==========================================================================
 MODALS ON THIS PAGE
  ========================================================================== */
 var modal = {
-
+confirm_move:function(moveUrl){
+	   $('.modal-title').text('Are you sure?');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('You have not updated the record. Do you really want to continue?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            window.location.href=moveUrl
+            $('#modal').modal('toggle');
+        });
+},
     delete_contact: function(id) {
         $('.modal-title').text('Confirm Delete');
         $('#modal').modal({

@@ -416,7 +416,7 @@ class Records_model extends CI_Model
     public function get_outcomes($campaign)
     {
         $user_role = $_SESSION['role'];
-        $qry       = "select outcome_id,outcome,delay_hours from outcomes left join outcomes_to_campaigns using(outcome_id) where campaign_id = '$campaign' and enable_select = 1 order by outcome";
+        $qry       = "select outcome_id,outcome,delay_hours,`disabled` from outcomes left join outcomes_to_campaigns using(outcome_id) where campaign_id = '$campaign' and enable_select = 1 order by outcome";
         return $this->db->query($qry)->result_array();
     }
     

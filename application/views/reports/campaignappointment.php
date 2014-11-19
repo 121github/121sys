@@ -25,7 +25,7 @@
                   <input type="hidden" name="team">
                    <input type="hidden" name="agent">
                   <input type="hidden" name="source">
-                  
+                  <input type="hidden" name="outcome" value="72">
                   <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button></div>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>

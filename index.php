@@ -20,7 +20,8 @@
  */
 	//define('ENVIRONMENT', 'development');
 	
-$domain = explode('121sys', $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])[0];
+$full_url = explode('121sys', $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+$domain = $full_url[0];
 switch ($domain) {
 	case '121webhost/':
 		define('ENVIRONMENT', 'production');

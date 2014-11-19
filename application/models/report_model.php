@@ -125,6 +125,46 @@ class Report_model extends CI_Model
     	return $this->db->query($qry)->result_array();
     }
     
+	 public function get_other_data($options)
+    {
+		$outcome_id = $options['outcome'];
+    	$date_from = $options['date_from'];
+		$agent = $options['agent'];
+    	$date_to = $options['date_to'];
+    	$campaign = $options['campaign'];
+    	$team_manager = $options['team'];
+    	$source = $options['source'];
+    	
+    	$where = "";
+    	$crosswhere = "";
+    	if (!empty($date_from)) {
+    		$where .= " and date(contact) >= '$date_from' ";
+    	}
+    	if (!empty($date_to)) {
+    		$where .= " and date(contact) <= '$date_to' ";
+    	}
+    	if (!empty($campaign)) {
+    		$where .= " and h.campaign_id = '$campaign' ";
+			$crosswhere .= " and ct.campaign_id = '$campaign' ";
+    	}
+    	if (!empty($team_manager)) {
+    		$where .= " and u.team_id = '$team_manager' ";
+    	}
+		if (!empty($agent)) {
+    		$where .= " and h.user_id = '$agent' ";
+    	}
+    	if (!empty($source)) {
+    		$where .= " and r.source_id = '$source' ";
+    	}
+    $joins = " left join users u using(user_id) left join records r using(urn) ";
+    	$qry = "select c.campaign_id,campaign_name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h left join campaigns c using(campaign_id)  left join 
+		(select count(*) outcome_count,h.campaign_id from history h $joins where h.outcome_id = $outcome_id $where group by campaign_id) oc on oc.campaign_id = h.campaign_id left join 
+		(select count(*) dials,h.campaign_id from history h $joins where h.outcome_id <> $outcome_id $where group by campaign_id) d on d.campaign_id = h.campaign_id group by h.campaign_id "
+    	;
+    	return $this->db->query($qry)->result_array();
+    }
+	
+	
     public function get_campaigndials_report($options)
     {
     	$date_from = $options['date_from'];
