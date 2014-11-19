@@ -419,7 +419,7 @@ var record = {
                             $contact_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function(key, val) {
-                                if (val.length) {
+                                if (val) {
                                     $address += val + "</br>";
                                     $postcode = dd.postcode;
                                 }
@@ -1043,7 +1043,6 @@ var record = {
              }).done(function(response) {
                  var message = (response.data.status == true)?"<th colspan='2' style='color:green'>This email was sent successfuly</th>":"<th colspan='2' style='color:red'>This email was not sent</th>"
                  var status = (response.data.status == true)?"Yes":"No";
-                 var read_confirmed = (response.data.read_confirmed == 1)?"Yes":"No";
                  var $tbody = $('.email-view-table').find('tbody');
                  $tbody.empty();
                  body = "<tr>" +
@@ -1111,9 +1110,9 @@ var record = {
                 if (response.data.length > 0) {
                     $.each(response.data, function(key, val) {
                         var status = (val.status != true)?"red":((val.read_confirmed == 1)?"green":"");
-                        var message = (val.status != true)?"Email no sent":((val.read_confirmed == 1)?"Email read confirmed":"Waiting email read confirmation");
+                        var message = (val.status != true)?"Email no sent":((val.read_confirmed == 1)?"Email read confirmed "+" ("+val.read_confirmed_date+")":"Waiting email read confirmation");
                     	var send_to = (val.send_to.length > 20)?val.send_to.substring(0, 20)+'...':val.send_to;
-                    	$options = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" ></span><span class="glyphicon glyphicon-eye-open '+status+' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="'+message+'"></span>';
+                    	$options = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" title="Delete email" ></span><span class="glyphicon glyphicon-eye-open '+status+' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="'+message+'"></span>';
                         $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td>' + val.subject + '</td><td>' + $options + '</td></tr>';
                     });
                     $('.email-panel').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th></tr></thead><tbody>' + $body + '</tbody></table>');

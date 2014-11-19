@@ -32,7 +32,7 @@
 				<p>
 					<span class="glyphicon glyphicon-question-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="Add more than one address separated by comas"></span>
 					To
-					<span class="glyphicon glyphicon-plus pull-right add-contact" option='to' data-toggle="tooltip" data-html="true" data-placement="top"></span>
+					<span class="glyphicon glyphicon-plus pull-right add-contact" option='send_to' data-toggle="tooltip" data-html="true" data-placement="top"></span>
 				</p>
 				<input type="text" class="form-control" name="send_to"
 					title="Enter the destination" required 
