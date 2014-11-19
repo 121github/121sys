@@ -485,6 +485,7 @@ class Records_model extends CI_Model
         if (empty($post['nextcall']) || !isset($post['nextcall'])) {
             $post['nextcall'] = date('Y-m-d H:i:s');
         } else {
+			$post["nextcall"] = to_mysql_datetime($post["nextcall"]);
             //if the time set is less than now then we set it as now because nextcall dates should not be in the past
             if (strtotime($post["nextcall"]) < strtotime('now')) {
                 $post["nextcall"] = date('Y-m-d H:i:s');

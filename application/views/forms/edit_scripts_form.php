@@ -26,7 +26,7 @@
 				</select>
 			</div>
 			<div class="col-xs-2 form-inline">
-				Sort <input type="text" class="form-control" style="width: 45px;" class="" name="sort" title="Enter the sort" required />
+				Sort <input type="text" class="form-control" style="width: 45px;" name="sort" title="Enter the sort" required />
 			</div>
 		</div>
 	</div>
@@ -35,7 +35,7 @@
 			<p class="col-xs-1" for="inputPassword1">Script</p>
       		<div class="col-xs-11">
 				<textarea class="form-control" id="script" name="script"
-					title="Enter the script" required ></textarea>
+					title="Enter the script" required rows="20"></textarea>
 			</div>
 		</div>
 	</div>

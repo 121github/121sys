@@ -119,13 +119,13 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <ul class="dropdown-menu">
               <li><a href="<?php echo base_url(); ?>dashboard">Overview</a></li>
               <?php if(in_array("client dash",$_SESSION['permissions'])){ ?>
-              <li><a href="<?php echo base_url(); ?>dashboard">Client Dash</a></li>
+              <li><a href="<?php echo base_url(); ?>dashboard/client">Client Dash</a></li>
               <?php } ?>
-              <?php if(in_array("advisor dash",$_SESSION['permissions'])){ ?>
-              <li><a href="<?php echo base_url(); ?>dashboard">Agent Dash</a></li>
+              <?php if(in_array("agent dash",$_SESSION['permissions'])){ ?>
+              <li><a href="<?php echo base_url(); ?>dashboard/agent">Agent Dash</a></li>
               <?php } ?>
               <?php if(in_array("management dash",$_SESSION['permissions'])){ ?>
-              <li><a href="<?php echo base_url(); ?>dashboard">Management Dash</a></li>
+              <li><a href="<?php echo base_url(); ?>dashboard/management">Management Dash</a></li>
               <?php } ?>
             </ul>
           </li>

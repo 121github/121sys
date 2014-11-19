@@ -67,7 +67,7 @@ var script = {
         $('form').find('input[name="script_name"]').val(row.find('.script_name').text());
         $('form').find('input[name="sort"]').val(row.find('.script_sort').text());
         
-        document.getElementById("script").value = row.find('.script_text').text();
+        document.getElementById("script").value = row.find('.script_text').html();
         
         if (row.find('.script_expandable').text() == 1)
         	document.getElementById("expandable").checked = true;
