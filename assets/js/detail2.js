@@ -1043,6 +1043,7 @@ var record = {
              }).done(function(response) {
                  var message = (response.data.status == true)?"<th colspan='2' style='color:green'>This email was sent successfuly</th>":"<th colspan='2' style='color:red'>This email was not sent</th>"
                  var status = (response.data.status == true)?"Yes":"No";
+                 var read_confirmed = (response.data.read_confirmed == 1)?"Yes "+" ("+response.data.read_confirmed_date+")":"No";
                  var $tbody = $('.email-view-table').find('tbody');
                  $tbody.empty();
                  body = "<tr>" +
