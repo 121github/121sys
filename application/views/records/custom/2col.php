@@ -61,9 +61,29 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
 	</div>
 	<div class="panel panel-primary email-view-container">
 		<?php $this->view('email/view_email.php'); ?>
+     </div>
+     <div class="panel panel-primary email-all-container">
+        <?php $this->view('email/show_all_email.php'); ?>
 	</div>
 <?php } ?>
 <!-- end email popup -->
+
+<!-- start attachment popup -->
+<?php if(in_array(13,$features)){ ?>
+    <div class="panel panel-primary attachment-all-container">
+        <?php $this->view('records/show_all_attachments.php'); ?>
+    </div>
+<?php } ?>
+<!-- end attachment popup -->
+
+<!-- start history popup -->
+<?php if(in_array(13,$features)){ ?>
+    <div class="panel panel-primary history-all-container">
+        <?php $this->view('records/show_all_history.php'); ?>
+    </div>
+<?php } ?>
+<!-- end history popup -->
+
 
 <script type="text/javascript">
     $(document).ready(function () {

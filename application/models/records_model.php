@@ -406,10 +406,12 @@ class Records_model extends CI_Model
         return $data;
     }
     
-    public function get_history($urn)
+    public function get_history($urn, $limit, $offset)
     {
+        $limit_ = ($limit)?"limit ".$offset.",".$limit:'';
+
         $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null,if(pd.description is null,'No Action Required',pd.description),if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome)) as outcome, history.history_id, comments from history left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join users u using(user_id) left join cross_transfers on cross_transfers.history_id = history.history_id ";
-		$qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id where urn = '$urn' order by history_id desc";
+		$qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id where urn = '$urn' order by history_id desc ".$limit_;
         return $this->db->query($qry)->result_array();
     }
     
@@ -867,12 +869,14 @@ class Records_model extends CI_Model
      */
     public function get_attachments($urn, $limit, $offset)
     {
+        $limit_ = ($limit)?"limit ".$offset.",".$limit:'';
+
         $qry = "select a.attachment_id, a.name, a.type, a.path, DATE_FORMAT(a.date,'%d/%m/%Y %H:%i:%s') as date, u.name as user
 		    	from attachments a
 		    	inner join users u ON (u.user_id = a.user_id)
 		    	where urn = ".$urn."
 		    	order by a.date desc
-		    	limit ".$offset.",".$limit;
+		    	".$limit_;
 
         return $this->db->query($qry)->result_array();
     }

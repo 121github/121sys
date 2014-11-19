@@ -246,6 +246,7 @@ class Email_model extends CI_Model
      */
     public function get_emails($urn, $limit, $offset)
     {
+        $limit_ = ($limit)?"limit ".$offset.",".$limit:'';
 
         $qry = "select e.email_id,
                       DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
@@ -268,7 +269,7 @@ class Email_model extends CI_Model
 		    	inner join email_templates t ON (t.template_id = e.template_id)
 		    	where e.urn = " . $urn."
 		    	order by e.sent_date desc
-		    	limit ".$offset.",".$limit;
+		    	".$limit_;
 
         return $this->db->query($qry)->result_array();
     }

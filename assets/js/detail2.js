@@ -35,6 +35,7 @@ var record = {
         this.role = role;
         this.campaign = campaign;
 		this.permissions = permissions;
+        this.limit = 6;
     },
     sticky_note: {
         init: function() {
@@ -68,6 +69,15 @@ var record = {
     history_panel: {
         init: function() {
             record.history_panel.load_panel();
+
+            $(document).on('click', '.show-all-history-btn', function(e) {
+                e.preventDefault();
+                record.history_panel.show_all_history($(this));
+            });
+            $(document).on('click', '.close-history-all', function(e) {
+                e.preventDefault();
+                record.history_panel.close_all_history($(this));
+            });
         },
         load_panel: function() {
             $.ajax({
@@ -75,16 +85,25 @@ var record = {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    urn: record.urn
+                    urn: record.urn,
+                    limit: record.limit
                 }
             }).done(function(response) {
                 if (response.success) {
                     $('.history-panel').empty();
                     var $body = "";
                     if (response.data.length) {
+                        //Use the k var only to know if there are more than x records
+                        var k = 0;
                         $.each(response.data, function(i, val) {
-                            $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td></tr>';
+                            if (k <= record.limit-1) {
+                                $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td></tr>';
+                            }
+                            k++;
                         });
+                        if (k > record.limit-1) {
+                            $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-history-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
+                        }
                         $('.history-panel').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th></tr></thead><tbody>' + $body + '</tbody></table>');
 
                     } else {
@@ -92,7 +111,57 @@ var record = {
                     }
                 }
             });
-        }
+        },
+        show_all_history: function(btn) {
+            var pagewidth = $(window).width() / 2;
+            var moveto = pagewidth - 250;
+            $('<div class="modal-backdrop all-history in"></div>').appendTo(document.body).hide().fadeIn();
+            $('.history-all-container').find('.attachment-all-panel').show();
+            $('.history-all-content').show();
+            $('.history-all-container').fadeIn()
+            $('.history-all-container').animate({
+                width: '600px',
+                left: moveto,
+                top: '10%'
+            }, 1000);
+            //Get attachment data
+            $.ajax({
+                url: helper.baseUrl + "ajax/get_history",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: record.urn
+                }
+            }).done(function(response) {
+                var $thead = $('.history-all-table').find('thead');
+                $thead.empty();
+
+                var $tbody = $('.history-all-table').find('tbody');
+                $tbody.empty();
+                var $body = "";
+
+                if (response.data.length > 0) {
+                    $.each(response.data, function(i, val) {
+                        $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td></tr>';
+                    });
+                    $thead.append('<tr><th>Name</th><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th></tr>');
+                    $tbody.append($body);
+                } else {
+                    $tbody.append('<p>This record has no history information yet</p>');
+                }
+            });
+        },
+        close_all_history: function() {
+            $('.modal-backdrop.all-history').fadeOut();
+            $('.history-container').fadeOut(500, function() {
+                $('.history-content').show();
+                $('.history-select-form')[0].reset();
+                $('.alert').addClass('hidden');
+            });
+            $('.history-all-container').fadeOut(500, function() {
+                $('.history-all-content').show();
+            });
+        },
     },
     //update panel functions
     update_panel: {
@@ -961,6 +1030,10 @@ var record = {
                 e.preventDefault();
                 record.email_panel.close_email($(this));
             });
+            $(document).on('click', '.close-emails-all', function(e) {
+                e.preventDefault();
+                record.email_panel.close_all_email($(this));
+            });
             $(document).on('click', '.continue-email', function(e) {
                 e.preventDefault();
                 var template = $(this).closest('form').find('.emailtemplatespicker').val();
@@ -969,6 +1042,10 @@ var record = {
             $(document).on('click', '.del-email-btn', function(e) {
                 e.preventDefault();
                 modal.delete_email($(this).attr('item-id'));
+            });
+            $(document).on('click', '.show-all-email-btn', function(e) {
+                e.preventDefault();
+                record.email_panel.show_all_email($(this));
             });
             $(document).on('click', '.view-email-btn', function(e) {
                 e.preventDefault();
@@ -999,7 +1076,7 @@ var record = {
             });
         },
         close_email: function() {
-            $('.modal-backdrop').fadeOut();
+            $('.modal-backdrop.email').fadeOut();
             $('.email-container').fadeOut(500, function() {
                 $('.email-content').show();
                 $('.email-select-form')[0].reset();
@@ -1007,6 +1084,17 @@ var record = {
             });
             $('.email-view-container').fadeOut(500, function() {
                 $('.email-view-content').show();
+            });
+        },
+        close_all_email: function() {
+            $('.modal-backdrop.all-email').fadeOut();
+            $('.email-container').fadeOut(500, function() {
+                $('.email-content').show();
+                $('.email-select-form')[0].reset();
+                $('.alert').addClass('hidden');
+            });
+            $('.email-all-container').fadeOut(500, function() {
+                $('.email-all-content').show();
             });
         },
         remove_email: function(email_id) {
@@ -1018,6 +1106,8 @@ var record = {
             }).done(function(response) {
                 if (response.success) {
                     record.email_panel.load_panel();
+                    record.email_panel.close_all_email();
+                    record.email_panel.show_all_email();
                     flashalert.success("Email was deleted from the history");
                 };
             });
@@ -1025,7 +1115,7 @@ var record = {
         view_email: function(email_id) {
         	 var pagewidth = $(window).width() / 2;
              var moveto = pagewidth - 250;
-             $('<div class="modal-backdrop in"></div>').appendTo(document.body).hide().fadeIn();
+             $('<div class="modal-backdrop email in"></div>').appendTo(document.body).hide().fadeIn();
              $('.email-view-container').find('.edit-panel').show();
              $('.email-view-content').show();
              $('.email-view-container').fadeIn()
@@ -1097,27 +1187,81 @@ var record = {
 					.append(body);
              });
         },
+        show_all_email: function(btn) {
+            var pagewidth = $(window).width() / 2;
+            var moveto = pagewidth - 250;
+            $('<div class="modal-backdrop all-email in"></div>').appendTo(document.body).hide().fadeIn();
+            $('.email-all-container').find('.email-all-panel').show();
+            $('.email-all-content').show();
+            $('.email-all-container').fadeIn()
+            $('.email-all-container').animate({
+                width: '600px',
+                left: moveto,
+                top: '10%'
+            }, 1000);
+            //Get emails data
+            $.ajax({
+                url: helper.baseUrl + "email/get_emails",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: record.urn
+                }
+            }).done(function(response) {
+                var $thead = $('.email-all-table').find('thead');
+                $thead.empty();
+
+                var $tbody = $('.email-all-table').find('tbody');
+                $tbody.empty();
+                var body = "";
+
+                if (response.data.length > 0) {
+                    $.each(response.data, function(key, val) {
+                        var status = (val.status != true)?"red":((val.read_confirmed == 1)?"green":"");
+                        var message = (val.status != true)?"Email no sent":((val.read_confirmed == 1)?"Email read confirmed "+" ("+val.read_confirmed_date+")":"Waiting email read confirmation");
+                        var send_to = (val.send_to.length > 15)?val.send_to.substring(0, 15)+'...':val.send_to;
+                        var subject = (val.subject.length > 20)?val.subject.substring(0, 20)+'...':val.subject;
+                        $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" title="Delete email" ></span>';
+                        $view_option = '<span class="glyphicon glyphicon-eye-open '+status+' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="'+message+'"></span>';
+                        body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td title="'+val.subject+'" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+                    });
+                    $thead.append('<tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr>');
+                    $tbody.append(body);
+                } else {
+                    $tbody.append('<p>No emails have been sent for this record</p>');
+                }
+            });
+        },
         load_panel: function() {
             $.ajax({
                 url: helper.baseUrl + "email/get_emails",
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                	urn: record.urn
+                	urn: record.urn,
+                    limit: record.limit
                 }
             }).done(function(response) {
                 $('.email-panel').empty();
                 var $body = "";
                 if (response.data.length > 0) {
+                    //Use the k var only to know if there are more than x records
+                    var k = 0;
                     $.each(response.data, function(key, val) {
-                        var status = (val.status != true)?"red":((val.read_confirmed == 1)?"green":"");
-                        var message = (val.status != true)?"Email no sent":((val.read_confirmed == 1)?"Email read confirmed "+" ("+val.read_confirmed_date+")":"Waiting email read confirmation");
-                    	var send_to = (val.send_to.length > 15)?val.send_to.substring(0, 15)+'...':val.send_to;
-                        var subject = (val.subject.length > 20)?val.subject.substring(0, 20)+'...':val.subject;
-                    	$delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" title="Delete email" ></span>';
-                        $view_option = '<span class="glyphicon glyphicon-eye-open '+status+' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="'+message+'"></span>';
-                        $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td title="'+val.subject+'" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+                        if (k <= record.limit-1) {
+                            var status = (val.status != true)?"red":((val.read_confirmed == 1)?"green":"");
+                            var message = (val.status != true)?"Email no sent":((val.read_confirmed == 1)?"Email read confirmed "+" ("+val.read_confirmed_date+")":"Waiting email read confirmation");
+                            var send_to = (val.send_to.length > 15)?val.send_to.substring(0, 15)+'...':val.send_to;
+                            var subject = (val.subject.length > 20)?val.subject.substring(0, 20)+'...':val.subject;
+                            $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" title="Delete email" ></span>';
+                            $view_option = '<span class="glyphicon glyphicon-eye-open '+status+' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="'+message+'"></span>';
+                            $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td title="'+val.subject+'" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+                        }
+                        k++;
                     });
+                    if (k > record.limit-1) {
+                        $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-email-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
+                    }
                     $('.email-panel').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table>');
                 } else {
                     $('.email-panel').append('<p>No emails have been sent for this record</p>');
@@ -1733,6 +1877,15 @@ var record = {
                 e.preventDefault();
                 modal.delete_attachment($(this).attr('item-id'));
             });
+
+            $(document).on('click', '.show-all-attachments-btn', function(e) {
+                e.preventDefault();
+                record.attachment_panel.show_all_attachments($(this));
+            });
+            $(document).on('click', '.close-attachment-all', function(e) {
+                e.preventDefault();
+                record.attachment_panel.close_all_attachments($(this));
+            });
         },
         load_panel: function(attachment_id) {
             var $panel = $(record.attachment_panel.config.panel);
@@ -1741,23 +1894,32 @@ var record = {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    urn: record.urn
+                    urn: record.urn,
+                    limit: record.limit
                 }
             }).done(function(response) {
                 $panel.find('.attachment-list').empty();
                 var body = '';
                 if (response.data.length) {
+                    //Use the k var only to know if there are more than x records
+                    var k = 0;
                     $.each(response.data, function (key, val) {
-                        var remove_btn = '<span class="glyphicon glyphicon-remove del-attachment-btn" item-id="'+val.attachment_id+'"></span>';
-                        var download_btn = '<a style="color:black;" href="'+val.path+'"><span class="glyphicon glyphicon-download-alt"></span></a>';
-                        body +=  '<tr class="'+val.attachment_id+'">' +
+                        if (k <= record.limit-1) {
+                            var remove_btn = '<span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="'+val.attachment_id+'" title="Delete attachment"></span>';
+                            var download_btn = '<a style="color:black;" href="'+val.path+'"><span class="glyphicon glyphicon-download-alt"></span></a>';
+                            body +=  '<tr class="'+val.attachment_id+'">' +
                             '<td>' + val.name +
                             '</td><td>' + val.date +
                             '</td><td>' + val.user +
-                            '</td><td>' + remove_btn +
                             '</td><td>' + download_btn +
+                            '</td><td>' + remove_btn +
                             '</td></tr>' ;
+                        }
+                        k++;
                     });
+                    if (k > record.limit-1) {
+                        body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-attachments-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
+                    }
                     $('.attachment-list').append('<table class="table table-striped table-responsive"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table>');
 
                     if (attachment_id) {
@@ -1767,6 +1929,64 @@ var record = {
                 else {
                     $panel.find('.attachment-list').append('<p>This record has no attachments</p>');
                 }
+            });
+        },
+        show_all_attachments: function(btn) {
+            var pagewidth = $(window).width() / 2;
+            var moveto = pagewidth - 250;
+            $('<div class="modal-backdrop all-attachments in"></div>').appendTo(document.body).hide().fadeIn();
+            $('.attachment-all-container').find('.attachment-all-panel').show();
+            $('.attachment-all-content').show();
+            $('.attachment-all-container').fadeIn()
+            $('.attachment-all-container').animate({
+                width: '600px',
+                left: moveto,
+                top: '10%'
+            }, 1000);
+            //Get attachment data
+            $.ajax({
+                url: helper.baseUrl + "records/get_attachments",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: record.urn
+                }
+            }).done(function(response) {
+                var $thead = $('.attachment-all-table').find('thead');
+                $thead.empty();
+
+                var $tbody = $('.attachment-all-table').find('tbody');
+                $tbody.empty();
+                var body = "";
+
+                if (response.data.length > 0) {
+                    $.each(response.data, function (key, val) {
+                        var remove_btn = '<span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="'+val.attachment_id+'" title="Delete attachment"></span>';
+                        var download_btn = '<a style="color:black;" href="'+val.path+'"><span class="glyphicon glyphicon-download-alt"></span></a>';
+                        body +=  '<tr class="'+val.attachment_id+'">' +
+                        '<td>' + val.name +
+                        '</td><td>' + val.date +
+                        '</td><td>' + val.user +
+                        '</td><td>' + download_btn +
+                        '</td><td>' + remove_btn +
+                        '</td></tr>' ;
+                    });
+                    $thead.append('<tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr>');
+                    $tbody.append(body);
+                } else {
+                    $tbody.append('<p>This record has no attachments</p>');
+                }
+            });
+        },
+        close_all_attachments: function() {
+            $('.modal-backdrop.all-attachments').fadeOut();
+            $('.attachment-container').fadeOut(500, function() {
+                $('.attachment-content').show();
+                $('.attachment-select-form')[0].reset();
+                $('.alert').addClass('hidden');
+            });
+            $('.attachment-all-container').fadeOut(500, function() {
+                $('.attachment-all-content').show();
             });
         },
         delete_attachment: function(id) {
@@ -1779,8 +1999,10 @@ var record = {
                 }
             }).done(function(response) {
                 if (response.success) {
-                    flashalert.warning("Attachment was deleted");
+                    record.attachment_panel.close_all_attachments();
+                    record.attachment_panel.show_all_attachments();
                     record.attachment_panel.load_panel();
+                    flashalert.warning("Attachment was deleted");
                 };
             });
         },
