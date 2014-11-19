@@ -42,6 +42,7 @@
                                         <div class="form-group input-group-sm">
           <p>Please set the user team if applicable</p>
 <select name="team_id" class="selectpicker">
+<option value="">No team</option>
 <?php foreach($teams as $row){ ?>
 <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
 <?php } ?>

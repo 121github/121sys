@@ -183,10 +183,16 @@ class Admin_model extends CI_Model
     /* end team admin functions */
     public function add_new_user($form)
     {
+		if(empty($form['team_id'])){
+		$form['team_id'] = NULL;
+		}
         return $this->db->insert("users", $form);
     }
     public function update_user($form)
     {
+		if(empty($form['team_id'])){
+		$form['team_id'] = NULL;
+		}
         $this->db->where("user_id", $form['user_id']);
         return $this->db->update("users", $form);
     }
@@ -209,7 +215,9 @@ class Admin_model extends CI_Model
     }
     public function add_new_role($form)
     {
-        return $this->db->insert("user_roles", $form);
+		unset($form['permission']);
+       $this->db->insert("user_roles", $form);
+	    return $this->db->insert_id();
     }
     public function role_permissions($id)
     {

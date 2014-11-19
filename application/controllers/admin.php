@@ -314,6 +314,8 @@ class Admin extends CI_Controller
         $form = $this->input->post();
         if (empty($form['role_id'])) {
             $response = $this->Admin_model->add_new_role($form);
+			$form['role_id'] = $response;
+			$this->Admin_model->update_role($form);
         } else {
             $response      = $this->Admin_model->update_role($form);
             $users_in_role = $this->Form_model->get_users_in_role($form['role_id']);
