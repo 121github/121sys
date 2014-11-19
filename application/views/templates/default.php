@@ -35,7 +35,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 </head>
 <body>
 <div id="<?php echo $pageId; ?>" class="page">
-  <div class="navbar navbar-inverse">
+  <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
         <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle collapsed" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
