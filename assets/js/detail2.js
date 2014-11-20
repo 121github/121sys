@@ -1788,7 +1788,8 @@ var record = {
             }).done(function(response) {
                record.appointment_panel.load_appointments();
                 record.appointment_panel.hide_edit_form();
-				$('.record-panel').find('.outcomepicker').find('li.disabled').each(function(){ $(this).removeClass('disabled'); });;
+				$('.record-panel').find('.outcomepicker').find('li.disabled').each(function(){ $(this).removeClass('disabled'); });
+				$('.record-panel').find('.outcomepicker').find('option:disabled').each(function(){ $(this).prop('disabled',false); });
                 flashalert.success("Appointment saved");
             });
         },

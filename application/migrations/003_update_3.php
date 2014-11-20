@@ -16,9 +16,9 @@ class Migration_update_3 extends CI_Migration
 `permission_group`
 )
 VALUES (
-NULL , 'Full calendar', 'Calendar'
+NULL , 'full calendar', 'Calendar'
 ), (
-NULL , 'Mini Calendar', 'Calendar'
+NULL , 'mini Calendar', 'Calendar'
 )");
 
 
