@@ -25,8 +25,9 @@ class Email extends CI_Controller
     {
     	if ($this->input->is_ajax_request()) {
     		$urn = intval($this->input->post('urn'));
+            $limit = (intval($this->input->post('limit')))?intval($this->input->post('limit')):NULL;
     		
-    		$emails = $this->Email_model->get_emails($urn,5,0);
+    		$emails = $this->Email_model->get_emails($urn,$limit,0);
     		
     		echo json_encode(array(
     			"success" => true,

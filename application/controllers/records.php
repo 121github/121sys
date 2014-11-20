@@ -539,6 +539,7 @@ class Records extends CI_Controller
                 "success" => true,
                 "msg" => "Record was updated"
             );
+
 			if(isset($email_triggers)&& count($email_triggers)>0){
 				 $response['email_trigger'] = true;
 			}
@@ -685,8 +686,9 @@ class Records extends CI_Controller
 
         if ($this->input->is_ajax_request()) {
             $record_urn = intval($this->input->post('urn'));
+            $limit = (intval($this->input->post('limit')))?intval($this->input->post('limit')):NULL;
 
-            $attachments = $this->Records_model->get_attachments($record_urn,5,0);
+            $attachments = $this->Records_model->get_attachments($record_urn,$limit,0);
 
             echo json_encode(array(
                 "success" => true,

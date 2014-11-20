@@ -536,7 +536,10 @@ $this->_campaigns = campaign_access_dropdown();
     public function get_history()
     {
         if ($this->input->is_ajax_request()) {
-            $history = $this->Records_model->get_history(intval($this->input->post("urn")));
+            $record_urn = intval($this->input->post('urn'));
+            $limit = (intval($this->input->post('limit')))?intval($this->input->post('limit')):NULL;
+
+            $history = $this->Records_model->get_history($record_urn,$limit,0);
             echo json_encode(array(
                 "success" => true,
                 "data" => $history
