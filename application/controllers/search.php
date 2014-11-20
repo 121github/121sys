@@ -124,7 +124,7 @@ $this->_campaigns = campaign_access_dropdown();
         $table = $this->uri->segment(3);
 
         $search_fields_1 = array(
-            "outcome" => "outcome_id",
+            "outcome" => "outcomes.outcome_id",
             "survey" => "surveys.survey_info_id",
             "campaign" => "records.campaign_id",
             "user" => "users.user_id",

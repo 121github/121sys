@@ -74,7 +74,7 @@ class Filter_model extends CI_Model
         $filter_options["outcome_id"]       = array(
             "table" => "records",
             "type" => "multiple",
-            "alias" => "r.outcome_id"
+            "alias" => "outcomes.outcome_id"
         );
         $filter_options["coname"]           = array(
             "table" => "companies",
@@ -522,7 +522,7 @@ class Filter_model extends CI_Model
                 "date_format(records.nextcall,'%d/%m/%y %H:%i')",
                 "rand()"
             );
-            $qry           = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
+            $qry  = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
             
             
             
@@ -664,6 +664,7 @@ class Filter_model extends CI_Model
         
         
         $qry .= $group_by;
+		$this->firephp->log($qry);
         $start  = $options['start'];
         $length = $options['length'];
         $qry .= " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];

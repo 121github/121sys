@@ -89,80 +89,51 @@
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>reports/activity" <?php echo @($reports=='activity'?"class='active'":"") ?>>Activity</a>
                     </div>
-                    <!-- Campaign -->
+                    <!-- Transfers -->
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
 			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoCampaign">
-			                    Campaign
+			                    Transfers
 			                </a>
 			            </div>
-			            <div id="collapseTwoCampaign" class="accordion-body <?php echo @($reports=='campaign'?"":"collapse") ?>">
+			            <div id="collapseTwoCampaign" class="accordion-body <?php echo @($reports=='transfers'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                        <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>Transfers</a>
+			                        <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>By Campaign</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                        <a href="<?php echo base_url() ?>reports/campaignappointment" <?php echo @($inner=='campaignappointment'?"class='active'":"") ?>>Appointments</a>
+			                        <a href="<?php echo base_url() ?>reports/agenttransfer" <?php echo @($inner=='agenttransfer'?"class='active'":"") ?>>By Agent</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                        <a href="<?php echo base_url() ?>reports/campaignsurvey" <?php echo @($inner=='campaignsurvey'?"class='active'":"") ?>>Surveys</a>
+			                        <a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>By Date</a>
 			                    </div>
-			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/campaigndials" <?php echo @($inner=='campaigndials'?"class='active'":"") ?>>Dials</a>
-			                    </div>
+
 			                </div>
 			            </div>
 			        </div>
-			        <!-- End Campaign 3 -->
-			        
-			        <!-- Agent -->
+			        <!-- End transfers -->
+			        <!-- Outcomes -->
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
 			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoAgent">
-			                    Agent
+			                    Outcomes
 			                </a>
 			            </div>
-			            <div id="collapseTwoAgent" class="accordion-body <?php echo @($reports=='agent'?"":"collapse") ?>">
+			            <div id="collapseTwoAgent" class="accordion-body <?php echo @($reports=='outcome'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/agenttransfer" <?php echo @($inner=='agenttransfer'?"class='active'":"") ?>>Transfers</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/agentappointment" <?php echo @($inner=='agentappointment'?"class='active'":"") ?>>Appointments</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/agentsurvey" <?php echo @($inner=='agentsurvey'?"class='active'":"") ?>>Surveys</a>
-			                    </div>
-			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/agentdials" <?php echo @($inner=='agentdials'?"class='active'":"") ?>>Dials</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
 			                    </div>
 			                </div>
 			            </div>
 			        </div>
 			        <!-- End Agent 3 -->
-			        
-                    <!-- Daily Comparison -->
-                    <div class="accordion-group panel">
-			            <div class="accordion-inner">
-			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoDaily">
-			                    Daily Comparison
-			                </a>
-			            </div>
-			            <div id="collapseTwoDaily" class="accordion-body <?php echo @($reports=='daily'?"":"collapse") ?>">
-			                <div class="accordion-group submenu">
-			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>Transfers</a>
-			                    </div>
-			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/dailyappointment" <?php echo @($inner=='dailyappointment'?"class='active'":"") ?>>Appointments</a>
-			                    </div>
-			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/dailysurvey" <?php echo @($inner=='dailysurvey'?"class='active'":"") ?>>Surveys</a>
-			                    </div>
-			                </div>
-			            </div>
-			        </div>
-			        <!-- End Daily Comparison 3 -->
                 </div>
             </div>
         </div>

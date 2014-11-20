@@ -1,9 +1,11 @@
 // JavaScript Document
+
+// JavaScript Document
 $(document).ready(function() {
-    campaignappointment.init()
+    outcome.init()
 });
 
-var campaignappointment = {
+var outcome = {
     init: function() {
         $('.daterange').daterangepicker({
                 opens: "left",
@@ -26,7 +28,7 @@ var campaignappointment = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                campaignappointment.campaignappointment_panel()
+                outcome.outcome_panel()
             });
         $(document).on("click", '.daterange', function(e) {
             e.preventDefault();
@@ -35,46 +37,64 @@ var campaignappointment = {
         $(document).on("click", ".campaign-filter", function(e) {
             e.preventDefault();
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
+			$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            outcome.outcome_panel()
+        });
+		        $(document).on("click", ".outcome-filter", function(e) {
+            e.preventDefault();
+			$icon = $(this).closest('ul').siblings('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $(this).closest('form').find('input[name="outcome"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            outcome.outcome_panel()
         });
         $(document).on("click", ".agent-filter", function(e) {
             e.preventDefault();
+			$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
 			$(this).closest('form').find('input[name="team"]').val('');
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            outcome.outcome_panel()
         });
         $(document).on("click", ".team-filter", function(e) {
             e.preventDefault();
+			$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
 			$(this).closest('form').find('input[name="agent"]').val('');
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            outcome.outcome_panel()
         });
         $(document).on("click", ".source-filter", function(e) {
             e.preventDefault();
+			$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
-            campaignappointment.campaignappointment_panel()
+            outcome.outcome_panel()
         });
-        campaignappointment.campaignappointment_panel()
+        outcome.outcome_panel()
     },
-    campaignappointment_panel: function(campaignappointment) {
+    outcome_panel: function(outcome) {
         $.ajax({
-            url: helper.baseUrl + 'reports/campaignappointment_data',
+            url: helper.baseUrl + 'reports/outcome_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function(response) {
             var $row = "";
-            $tbody = $('.campaignappointment-data .ajax-table').find('tbody');
+            $tbody = $('.outcome-data .ajax-table').find('tbody');
     		$tbody.empty();
             if (response.success) {
+				$('#outcome-name').text(response.outcome);
             	$.each(response.data, function(i, val) {
                     if (response.data.length) {
                     	var hours   = Math.floor(val.duration / 3600);
@@ -89,10 +109,10 @@ var campaignappointment = {
                         
                         var style = "";
                         var success = "";
-                        if (val.appointments>0 && val.duration>0) {
+                        if (val.outcomes>0 && val.duration>0) {
                     		success = "success";
                     	}
-                    	else if ((val.appointments>0) && (val.duration==0)) {
+                    	else if ((val.outcomes>0) && (val.duration==0)) {
                     		success = "danger";
                     	}
                     	else if (val.campaign == "TOTAL") {
@@ -104,11 +124,11 @@ var campaignappointment = {
                         
 						$tbody
 						.append("<tr class='"+success+"' style='"+style+"'><td class='campaign'>"
-									+ val.campaign
+									+ val.id
 								+ "</td><td class='name'>"
 									+ val.name
-								+ "</td><td class='appointments'>"
-								+ 	"<a href='" + val.appointments_url + "'>" + val.appointments + "</a>"
+								+ "</td><td class='outcomes'>"
+								+ 	"<a href='" + val.outcomes_url + "'>" + val.outcomes + "</a>"
 								+ "</td><td class='total_dials'>"
 								+ 	"<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
 									+ "</td><td class='template_cc' style='duration'>"

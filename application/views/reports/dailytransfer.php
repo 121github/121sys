@@ -36,7 +36,7 @@
                         <li><a href="#" class="view-filter" id="campaign_id">Campaign</a> </li>
                         <li><a href="#" class="view-filter" id="source_id">Source</a> </li>
 	                    <li class="divider"></li>
-	                    <li><a class="view-filter" ref="#" style="color: green;">Show All</a> </li>
+	                    <li><a class="view-filter" ref="#" style="color: green;">Date Only</a> </li>
 	                  </ul>
                   </div>
                   <div class="btn-group">
@@ -46,7 +46,7 @@
 	                    <li><a href="#" class="campaign-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
-	                    <li><a class="campaign-filter" ref="#" style="color: green;">Show All</a> </li>
+	                    <li><a class="campaign-filter" ref="#" style="color: green;">All Campaigns</a> </li>
 	                  </ul>
                   </div>
                   <div class="btn-group">
@@ -56,7 +56,7 @@
 	                    <li><a href="#" class="agent-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
-	                    <li><a class="agent-filter" ref="#" style="color: green;">Show All</a> </li>
+	                    <li><a class="agent-filter" ref="#" style="color: green;">All Agents</a> </li>
 	                  </ul>
                   </div>
                   <div class="btn-group">
@@ -66,7 +66,7 @@
 	                    <li><a href="#" class="team-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
-	                    <li><a class="team-filter" ref="#" style="color: green;">Show All</a> </li>
+	                    <li><a class="team-filter" ref="#" style="color: green;">All Teams</a> </li>
 	                  </ul>
                   </div>
                   <div class="btn-group">
@@ -76,7 +76,7 @@
 	                    <li><a href="#" class="source-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
-	                    <li><a class="source-filter" ref="#" style="color: green;">Show All</a> </li>
+	                    <li><a class="source-filter" ref="#" style="color: green;">All Sources</a> </li>
 	                  </ul>
                   </div>
                 </form>

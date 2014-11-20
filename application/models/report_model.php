@@ -125,19 +125,19 @@ class Report_model extends CI_Model
     	return $this->db->query($qry)->result_array();
     }
     
-	 public function get_other_data($options)
+	 public function get_outcome_data($options)
     {
 		if($options['group']=="agent"){
-			$group_by = " h.user_id ";
+			$group_by = "h.user_id";
 			$id = "h.user_id";
 			$name = "u.name";
 			$joins = " left join users u using(user_id) left join records r using(urn) ";
 		}else if($options['group']=="date"){
-			$group_by = " h.date(contact) ";
-			$id = "h.contact";
-			$name = "h.contact";
+			$group_by = "date(contact)";
+			$id = "date(h.contact) `sql`,date_format(h.contact,'%d/%m/%y')";
+			$name = "'All'";
 		} else {
-			$group_by = " h.campaign_id ";
+			$group_by = "h.campaign_id";
 			$id = "c.campaign_id";
 			$name = "campaign_name";
 		}
@@ -173,57 +173,15 @@ class Report_model extends CI_Model
     	}
     $joins = " left join users u using(user_id) left join records r using(urn) ";
     	$qry = "select $id id,$name name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h left join campaigns c using(campaign_id)  $joins left join 
-		(select count(*) outcome_count,h.campaign_id from history h $joins where h.outcome_id = $outcome_id $where group by $group_by) oc on oc.campaign_id = h.campaign_id left join 
-		(select count(*) dials,h.campaign_id from history h $joins where h.outcome_id <> $outcome_id $where group by $group_by) d on d.campaign_id = h.campaign_id group by $group_by "
+		(select count(*) outcome_count,$group_by gb from history h $joins where h.outcome_id = $outcome_id $where group by $group_by) oc on oc.gb = $group_by left join 
+		(select count(*) dials,$group_by dd from history h $joins where h.outcome_id <> 71 $where group by $group_by) d on d.dd = $group_by group by $group_by "
     	;
 		$this->firephp->log($qry);
     	return $this->db->query($qry)->result_array();
     }
 	
 	
-    public function get_campaigndials_report($options)
-    {
-    	$date_from = $options['date_from'];
-    	$date_to = $options['date_to'];
-    	$campaign = $options['campaign'];
-    	$agent = $options['agent'];
-    	$team_manager = $options['team'];
-    	$source = $options['source'];
-    
-    	$where = "";
-    
-    	if (!empty($date_from)) {
-    		$where .= " and date(contact) >= '$date_from' ";
-    	}
-    	if (!empty($date_to)) {
-    		$where .= " and date(contact) <= '$date_to' ";
-    	}
-    	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign' ";
-    	}
-    	if (!empty($agent)) {
-    		$where .= " and u.user_id = '$agent' ";
-    	}
-    	if (!empty($team_manager)) {
-    		$where .= " and u.team_id = '$team_manager' ";
-    	}
-    	if (!empty($source)) {
-    		$where .= " and r.source_id = '$source' ";
-    	}
-    
-    	$qry = "select c.campaign_name as name, count(*) as count
-    			from history h
-    			inner join records r ON (r.urn = h.urn)
-				inner join campaigns c ON (c.campaign_id = h.campaign_id)
-				inner join users u ON (u.user_id = h.user_id)"
-    			;
-    			$qry .= $where;
-    
-    			$qry .= "group by c.campaign_id order by c.campaign_id asc";
-    
-    			return $this->db->query($qry)->result_array();
-    }
-    
+   
     public function get_agent_transfer_data($options)
     {
     	$date_from = $options['date_from'];
@@ -264,48 +222,7 @@ class Report_model extends CI_Model
     			return $this->db->query($qry)->result_array();
     }
     
-    public function get_agentdials_report($options)
-    {
-    	$date_from = $options['date_from'];
-    	$date_to = $options['date_to'];
-    	$campaign = $options['campaign'];
-    	$agent = $options['agent'];
-    	$team_manager = $options['team'];
-    	$source = $options['source'];
-    	 
-    	$where = "";
-    	 
-    	if (!empty($date_from)) {
-    		$where .= " and date(contact) >= '$date_from' ";
-    	}
-    	if (!empty($date_to)) {
-    		$where .= " and date(contact) <= '$date_to' ";
-    	}
-    	if (!empty($campaign)) {
-    		$where .= " and h.campaign_id = '$campaign' ";
-    	}
-    	if (!empty($agent)) {
-    		$where .= " and u.user_id = '$agent' ";
-    	}
-    	if (!empty($team_manager)) {
-    		$where .= " and u.team_id = '$team_manager' ";
-    	}
-    	if (!empty($source)) {
-    		$where .= " and r.source_id = '$source' ";
-    	}
-    
-    	$qry = "select u.ext as advisor, u.name as name, count(*) as count
-    			from history h
-    			inner join records r ON (r.urn = h.urn)
-				inner join campaigns c ON (c.campaign_id = h.campaign_id)
-				inner join users u ON (u.user_id = h.user_id)"
-    			;
-    			$qry .= $where;
-    
-    			$qry .= "group by advisor order by advisor asc";
-    			 
-    			return $this->db->query($qry)->result_array();
-    }
+  
     
     public function get_daily_transfer_data($options)
     {

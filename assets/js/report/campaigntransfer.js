@@ -34,6 +34,8 @@ var campaigntransfer = {
 
         $(document).on("click", ".campaign-filter", function(e) {
             e.preventDefault();
+						$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
@@ -41,6 +43,8 @@ var campaigntransfer = {
         });
         $(document).on("click", ".agent-filter", function(e) {
             e.preventDefault();
+						$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
 			$(this).closest('form').find('input[name="team"]').val('');
             $(this).closest('ul').find('a').css("color","black");
@@ -49,6 +53,8 @@ var campaigntransfer = {
         });
         $(document).on("click", ".team-filter", function(e) {
             e.preventDefault();
+						$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
 			 $(this).closest('form').find('input[name="agent"]').val('');
             $(this).closest('ul').find('a').css("color","black");
@@ -57,6 +63,8 @@ var campaigntransfer = {
         });
         $(document).on("click", ".source-filter", function(e) {
             e.preventDefault();
+						$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");

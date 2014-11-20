@@ -193,9 +193,10 @@ echo json_encode(array("success"=>true));
     public function create_client_refs()
     {
 		 $qry_fields  = $this->Import_model->get_fields("client_refs");
-		 $this->firephp->log($qry_fields);
+		 if(!empty($qry_fields)){
 		 $insert_query = "insert into client_refs (client_ref,urn) select " .ltrim($qry_fields['import_fields'],",") . " from importcsv";
 		 $this->db->query($insert_query);
+		 }
 		 echo json_encode(array(
             "success" => true
         ));

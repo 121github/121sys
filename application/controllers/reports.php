@@ -202,13 +202,14 @@ class Reports extends CI_Controller
         $teamManagers = $this->Form_model->get_teams();
         $sources      = $this->Form_model->get_sources();
 		$agents       = $this->Form_model->get_agents();
-        
+		$outcomes       = $this->Form_model->get_outcomes();
+		        
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Campaign Transfer',
             'page' => array(
-                'reports' => 'campaign',
+                'reports' => 'transfers',
                 'inner' => 'campaigntransfer'
             ),
             'javascript' => array(
@@ -217,6 +218,7 @@ class Reports extends CI_Controller
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
+			'outcomes' => $outcomes,
             'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
@@ -345,22 +347,25 @@ class Reports extends CI_Controller
         $teamManagers = $this->Form_model->get_teams();
         $sources      = $this->Form_model->get_sources();
 		$agents       = $this->Form_model->get_agents();
+		$outcomes       = $this->Form_model->get_outcomes();
+		
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Campaign Outcme',
             'page' => array(
-                'reports' => 'campaign',
-                'inner' => 'campaignappointment'
+                'reports' => 'outcomes',
+                'inner' => $group
             ),
             'javascript' => array(
                 'charts.js',
-                'report/campaignoutcomes.js',
+                'report/outcomes.js',
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
 			'group' => $group,
 			'outcome_id'=>$outcome_id,
+			'outcomes' => $outcomes,
             'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
@@ -370,16 +375,16 @@ class Reports extends CI_Controller
                 'daterangepicker-bs3.css'
             )
         );
-        $this->template->load('default', 'reports/campaignoutcomes.php', $data);
+        $this->template->load('default', 'reports/outcomes.php', $data);
     }
     
     //this controller sends the campaign appointment report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function campaignoutcome_data()
+    public function outcome_data()
     {
      if ($this->input->is_ajax_request()) {
             $data    = array();
 			
-            $results = $this->Report_model->get_other_data($this->input->post());
+            $results = $this->Report_model->get_outcome_data($this->input->post());
 			
             $date_from_search = $this->input->post("date_from");
             $date_to_search   = $this->input->post("date_to");
@@ -388,6 +393,7 @@ class Reports extends CI_Controller
             $team_search  = $this->input->post("team");
             $source_search  = $this->input->post("source");
 			$outcome_id  = $this->input->post("outcome");
+			$group  =  $this->input->post("group");
 			
 			$this->db->where("outcome_id",$outcome_id);
 			$query = $this->db->get("outcomes");
@@ -399,6 +405,8 @@ class Reports extends CI_Controller
             $aux = array();
             foreach ($results as $row) {
 				if($row['total_dials']){
+				if($group=="date"){ 
+				$aux[$row['id']]['sql']= $row['sql']; }
 				$aux[$row['id']]['name'] = $row['name'];
 				$aux[$row['id']]['duration'] = $row['duration'];
 				$aux[$row['id']]['outcomes'] = $row['outcome_count'];
@@ -416,15 +424,25 @@ class Reports extends CI_Controller
             $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
             $url .= (!empty($source_search) ? "/source/$source_search" : "");
-            
+             if($group=="date"){ $group="contact"; }
             foreach ($aux as $id => $row) {
-            	$outcomes      = (array_key_exists('outcomes', $row)) ? $row['outcomes'] : 0;
-	            
-	            $urlCampaign = $url."/campaign/".$campaign;
-	            $outcomesUrl = $urlCampaign."/outcome/".$this->input->post('outcome');
-	            $allDialsUrl = $url."/alldials/".$campaign;
+				$outcomes      = (array_key_exists('outcomes', $row)) ? $row['outcomes'] : 0;
+				//create the click through hyperlinks
+	             if($group=="contact"){ 
+				 $allDialsUrl = $url."/contact/".$row['sql'];
+				 $outcomesUrl = $allDialsUrl."/outcome/".$this->input->post('outcome');
+				 } 
+				 else if( $group == "agent") {
+				 $allDialsUrl = $url."/user/".$id;
+				 $outcomesUrl = $allDialsUrl."/outcome/".$this->input->post('outcome');	 
+					  }
+				 else {  
+				  $allDialsUrl = $url."/alldials/".$id;
+				 $outcomesUrl =$url."/campaign/".$id."/outcome/".$this->input->post('outcome');	 
+				 }
+				
 	            $data[]         = array(
-                    "id" => $row['id'],
+                    "id" => $id,
                     "name" => $row['name'],
                     "outcomes" => $outcomes,
 	            	"outcomes_url" => $outcomesUrl,
@@ -477,7 +495,7 @@ class Reports extends CI_Controller
             'pageId' => 'Reports',
             'title' => 'Reports | Agent Transfers',
             'page' => array(
-                'reports' => 'agent',
+                'reports' => 'transfers',
                 'inner' => 'agenttransfer'
             ),
             'javascript' => array(
@@ -607,322 +625,7 @@ class Reports extends CI_Controller
             ));
         }
     }
-    
-    //this is the controller loads the initial view for the agentappointment report dashboard
-    public function agentappointment()
-    {
-        
-        $campaigns    = $this->Form_model->get_user_campaigns();
-        $agents       = $this->Form_model->get_agents();
-        $teamManagers = $this->Form_model->get_teams();
-        $sources      = $this->Form_model->get_sources();
-        
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-            'pageId' => 'Reports',
-            'title' => 'Reports | Agent Appointments',
-            'page' => array(
-                'reports' => 'agent',
-                'inner' => 'agenttransfer'
-            ),
-            'javascript' => array(
-                'charts.js',
-                'report/agentappointment.js',
-                'lib/moment.js',
-                'lib/daterangepicker.js'
-            ),
-            'campaigns' => $campaigns,
-            'agents' => $agents,
-            'team_managers' => $teamManagers,
-        	'sources' => $sources,
-            'css' => array(
-                'dashboard.css',
-                'daterangepicker-bs3.css'
-            )
-        );
-        $this->template->load('default', 'reports/agentappointment.php', $data);
-    }
-    
-    //this controller sends the agentappointment report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function agentappointment_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data    = array();
-            $results = $this->Report_model->get_agent_report_by_outcome($this->input->post());
-            
-            $date_from_search = $this->input->post("date_from");
-            $date_to_search   = $this->input->post("date_to");
-            $agent_search      = $this->input->post("agent");
-            $campaign_search  = $this->input->post("campaign");
-            $team_search  = $this->input->post("team");
-            $source_search  = $this->input->post("source");
-            
-            $aux = array();
-            
-            foreach ($results as $row) {
-                if ($row['outcome'] == 'Appointment') {
-                	$aux[$row['agent']]['name'] = $row['name'];
-                	$aux[$row['agent']]['duration'] = $row['duration'];
-                    $aux[$row['agent']]['appointments'] = $row['count'];
-                    $aux[$row['agent']]['total_dials'] = (isset($aux[$row['agent']]['total_dials'])) ? $aux[$row['agent']]['total_dials'] + $row['count'] : $row['count'];
-                }
-                elseif ($row['outcome'] != 'Cross Transfer') {
-                	$aux[$row['agent']]['name'] = $row['name'];
-                	$aux[$row['agent']]['duration'] = $row['duration'];
-                	$aux[$row['agent']]['total_dials'] = (isset($aux[$row['agent']]['total_dials'])) ? $aux[$row['agent']]['total_dials'] + $row['count'] : $row['count'];
-                }
-                
-            }
-            
-            $totalAppointments = 0;
-            $totalDials          = (count($aux) == 0)?1:0; 
-            $totalDuration		 = 0;
-            
-            $url = base_url() . "search/custom/history";
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($date_from_search) ? "/contact/$date_from_search:emore" : "");
-            $url .= (!empty($date_to_search) ? "/contact/$date_to_search:eless" : "");
-            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/source/$source_search" : "");
-            
-            foreach ($aux as $agent => $row) {
-                $appointments = (array_key_exists('appointments', $row)) ? $row['appointments'] : 0;
-                
-                $urlAgent = $url."/user/".$agent;
-                $appointmentsUrl = $urlAgent."/outcome/Appointment";
-                
-                $data[]       = array(
-                    "agent" => $agent,
-                    "name" => $row['name'],
-                    "appointments" => $appointments,
-                	"appointments_url" => $appointmentsUrl,
-                    "total_dials" => $row['total_dials'],
-                	"total_dials_url" => $urlAgent,
-                	"duration" => ($row['duration'])?$row['duration']:0,
-                	"rate" => ($row['duration']>0)?round($appointments/($row['duration']/3600),3):0
-                );
-                $totalAppointments += $appointments;
-                $totalDials += $row['total_dials'];
-                $totalDuration += $row['duration'];
-            }
-            
-            $totalAppointmentsPercent = number_format(($totalAppointments * 100) / $totalDials, 2) . '%';
-            
-            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-            
-            array_push($data, array(
-                "agent" => "TOTAL",
-                "name" => "",
-                "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
-                "appointments_url" => $url."/outcome/Appointment",
-                "total_dials" => $totalDials,
-                "total_dials_url" => $url,
-                "duration" => $totalDuration,
-                "rate" => ($totalDuration>0)?round($totalAppointments/($totalDuration/3600),3):0
-            ));
-            
-            echo json_encode(array(
-                "success" => true,
-                "data" => $data
-            ));
-        }
-    }
-    
-    //this is the controller loads the initial view for the agentsurvey report dashboard
-    public function agentsurvey()
-    {
-        
-        $campaigns    = $this->Form_model->get_user_campaigns();
-        $agents       = $this->Form_model->get_agents();
-        $teamManagers = $this->Form_model->get_teams();
-        $sources      = $this->Form_model->get_sources();
-        
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-            'pageId' => 'Reports',
-            'title' => 'Reports | Agent Surveys',
-            'page' => array(
-                'reports' => 'agent',
-                'inner' => 'agenttransfer'
-            ),
-            'javascript' => array(
-                'charts.js',
-                'report/agentsurvey.js',
-                'lib/moment.js',
-                'lib/daterangepicker.js'
-            ),
-            'campaigns' => $campaigns,
-            'agents' => $agents,
-            'team_managers' => $teamManagers,
-        	'sources' => $sources,
-            'css' => array(
-                'dashboard.css',
-                'daterangepicker-bs3.css'
-            )
-        );
-        $this->template->load('default', 'reports/agentsurvey.php', $data);
-    }
-    
-    //this controller sends the agentsurvey report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function agentsurvey_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data    = array();
-            $results = $this->Report_model->get_agent_report_by_outcome($this->input->post());
-            
-            $date_from_search = $this->input->post("date_from");
-            $date_to_search   = $this->input->post("date_to");
-            $agent_search      = $this->input->post("agent");
-            $campaign_search  = $this->input->post("campaign");
-            $team_search  = $this->input->post("team");
-            $source_search  = $this->input->post("source");
-            
-            $aux = array();
-            
-            foreach ($results as $row) {
-                $aux[$row['agent']]['name'] = $row['name'];
-                $aux[$row['agent']]['duration'] = $row['duration'];
-                if ($row['outcome'] == 'Survey Complete') {
-                    $aux[$row['agent']]['complete_surveys'] = $row['count'];
-                } elseif ($row['outcome'] == 'Survey Refused') {
-                    $aux[$row['agent']]['refused_surveys'] = $row['count'];
-                }
-                $aux[$row['agent']]['total_dials'] = (isset($aux[$row['agent']]['total_dials'])) ? $aux[$row['agent']]['total_dials'] + $row['count'] : $row['count'];
-            }
-            
-            $totalCompleteSurveys = 0;
-            $totalRefusedSurveys  = 0;
-            $totalDials          = (count($aux) == 0)?1:0;
-            $totalDuration		 = 0;
-            
-            $url = base_url() . "search/custom/history";
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($date_from_search) ? "/contact/$date_from_search:emore" : "");
-            $url .= (!empty($date_to_search) ? "/contact/$date_to_search:eless" : "");
-            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/source/$source_search" : "");
-            
-            foreach ($aux as $agent => $row) {
-                $completeSurveys = (array_key_exists('complete_surveys', $row)) ? $row['complete_surveys'] : 0;
-                $refusedSurveys  = (array_key_exists('refused_surveys', $row)) ? $row['refused_surveys'] : 0;
-                
-                $urlAgent = $url."/user/".$agent;
-                $completeSurveysUrl = $urlAgent."/outcome/Survey Complete";
-                $refusedSurveysUrl = $urlAgent."/outcome/Survey Refused";
-                
-                $data[]          = array(
-                    "agent" => $agent,
-                    "name" => $row['name'],
-                    "complete_surveys" => $completeSurveys,
-                	"complete_surveys_url" => $completeSurveysUrl,
-                	"refused_surveys" => $refusedSurveys,
-                	"refused_surveys_url" => $refusedSurveysUrl,
-                    "total_dials" => $row['total_dials'],
-                	"total_dials_url" => $urlAgent,
-                	"duration" => ($row['duration'])?$row['duration']:0,
-                	"rate" => ($row['duration']>0)?round(($completeSurveys + $refusedSurveys)/($row['duration']/3600),3):0
-                );
-                $totalCompleteSurveys += $completeSurveys;
-                $totalRefusedSurveys += $refusedSurveys;
-                $totalDials += $row['total_dials'];
-                $totalDuration += $row['duration'];
-            }
-            
-            $totalCompleteSurveysPercent = number_format(($totalCompleteSurveys * 100) / $totalDials, 2) . '%';
-            $totalRefusedSurveysPercent  = number_format(($totalRefusedSurveys * 100) / $totalDials, 2) . '%';
-            
-            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-            
-            array_push($data, array(
-                "agent" => "TOTAL",
-                "name" => "",
-                "complete_surveys" => $totalCompleteSurveys . " (" . $totalCompleteSurveysPercent . ")",
-                "complete_surveys_url" => $url."/outcome/Survey Complete",
-                "refused_surveys" => $totalRefusedSurveys . " (" . $totalRefusedSurveysPercent . ")",
-                "refused_surveys_url" => $url."/outcome/Survey Refused",
-                "total_dials" => $totalDials,
-                "total_dials_url" => $url,
-                "duration" => $totalDuration,
-                "rate" => ($totalDuration>0)?round(($totalCompleteSurveys + $totalRefusedSurveys)/($totalDuration/3600),3):0
-            ));
-            
-            echo json_encode(array(
-                "success" => true,
-                "data" => $data
-            ));
-        }
-    }
-    
-    //this is the controller loads the initial view for the agent dials report dashboard
-    public function agentdials()
-    {
-        
-        $campaigns    = $this->Form_model->get_user_campaigns();
-        $teamManagers = $this->Form_model->get_teams();
-        $agents       = $this->Form_model->get_agents();
-        $sources      = $this->Form_model->get_sources();
-        
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-            'pageId' => 'Reports',
-            'title' => 'Reports | Agent Dials',
-            'page' => array(
-                'reports' => 'agent',
-                'inner' => 'agentdials'
-            ),
-            'javascript' => array(
-                'charts.js',
-                'report/agentdials.js',
-                'lib/moment.js',
-                'lib/daterangepicker.js'
-            ),
-            'campaigns' => $campaigns,
-            'sources' => $sources,
-            'team_managers' => $teamManagers,
-            'agents' => $agents,
-            'css' => array(
-                'dashboard.css',
-                'daterangepicker-bs3.css'
-            )
-        );
-        $this->template->load('default', 'reports/agentdials.php', $data);
-    }
-    
-    //this controller sends the agent dials report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function agentdials_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data    = array();
-            $results = $this->Report_model->get_agentdials_report($this->input->post(), array(
-                "Transfer",
-                "Cross Transfer"
-            ));
-            
-            
-            $aux = array();
-            
-            foreach ($results as $row) {
-                
-                $aux[$row['advisor']]['name']  = $row['name'];
-                $aux[$row['advisor']]['total'] = $row['count'];
-            }
-            
-            foreach ($aux as $advisor => $row) {
-                $data[] = array(
-                    "advisor" => $advisor,
-                    "name" => $row['name'],
-                    "total" => $row['total']
-                );
-            }
-            
-            echo json_encode(array(
-                "success" => true,
-                "data" => $data
-            ));
-        }
-    }
-    
-    
+
     //this is the controller loads the initial view for the transfer daily comparision report dashboard
     public function dailytransfer()
     {
@@ -937,7 +640,7 @@ class Reports extends CI_Controller
             'pageId' => 'Reports',
             'title' => 'Reports | Individual Daily Comparison',
             'page' => array(
-                'reports' => 'daily',
+                'reports' => 'transfers',
                 'inner' => 'dailytransfer'
             ),
             'javascript' => array(
@@ -1081,250 +784,4 @@ class Reports extends CI_Controller
         }
     }
     
-    //this is the controller loads the initial view for the appointment daily comparision report dashboard
-    public function dailyappointment()
-    {
-        
-        $campaigns    = $this->Form_model->get_user_campaigns();
-        $teamManagers = $this->Form_model->get_teams();
-        $agents       = $this->Form_model->get_agents();
-        $sources      = $this->Form_model->get_sources();
-        
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-            'pageId' => 'Reports',
-            'title' => 'Reports | Individual Daily Comparison',
-            'page' => array(
-                'reports' => 'daily',
-                'inner' => 'dailyappointment'
-            ),
-            'javascript' => array(
-                'charts.js',
-                'report/dailyappointment.js',
-                'lib/moment.js',
-                'lib/daterangepicker.js'
-            ),
-            'campaigns' => $campaigns,
-            'sources' => $sources,
-            'agents' => $agents,
-            'team_managers' => $teamManagers,
-            'css' => array(
-                'dashboard.css',
-                'daterangepicker-bs3.css'
-            )
-        );
-        $this->template->load('default', 'reports/dailyappointment.php', $data);
-    }
-    
-    //this controller sends the appointment daily comparision report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function dailyappointment_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data    = array();
-            $results = $this->Report_model->get_daily_report_by_outcome($this->input->post());
-            
-            $date_from_search = $this->input->post("date_from");
-            $date_to_search   = $this->input->post("date_to");
-            $agent_search      = $this->input->post("agent");
-            $campaign_search  = $this->input->post("campaign");
-            $team_search  = $this->input->post("team");
-            $source_search  = $this->input->post("source");
-            
-            $agent = $this->input->post("agent");
-            $name  = "All Users";
-            
-            $aux = array();
-            foreach ($results as $row) {
-                if (!empty($agent)) {
-                    $name = $row['name'];
-                }
-                if ($row['outcome'] == 'Appointment') {
-                    $aux[$row['date']]['appointments'] = $row['count'];
-                }
-                $aux[$row['date']]['total_dials'] = (isset($aux[$row['date']]['total_dials'])) ? $aux[$row['date']]['total_dials'] + $row['count'] : $row['count'];
-                $aux[$row['date']]['duration'] = $row['duration'];
-            }
-            
-            $totalAppointments = 0;
-            $totalDials          = (count($aux) == 0)?1:0;
-            $totalDuration		 = 0;
-            
-            $url = base_url() . "search/custom/history";
-            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/source/$source_search" : "");
-            
-            foreach ($aux as $date => $row) {
-                $appointments = (array_key_exists('appointments', $row)) ? $row['appointments'] : 0;
-                
-                $urlDate = $url."/contact/".$date.":emore/contact/".$date.":eless";
-                $appointmentsUrl = $urlDate."/outcome/Appointment";
-                
-                $data[]       = array(
-                    "date" => $date,
-                    "name" => $name,
-                    "appointments" => $appointments,
-                	"appointments_url" => $appointmentsUrl,
-                    "total_dials" => $row['total_dials'],
-                	"total_dials_url" => $urlDate,
-                	"duration" => ($row['duration'])?$row['duration']:0,
-                	"rate" => ($row['duration']>0)?round($appointments/($row['duration']/3600),3):0
-                );
-                $totalAppointments += $appointments;
-                $totalDials += $row['total_dials'];
-                $totalDuration += $row['duration'];
-            }
-            
-            $totalAppointmentsPercent = number_format(($totalAppointments * 100) / $totalDials, 2) . '%';
-            
-            $url .= (!empty($date_from_search) ? "/contact/$date_from_search:emore" : "");
-            $url .= (!empty($date_to_search) ? "/contact/$date_to_search:eless" : "");
-            
-            array_push($data, array(
-                "date" => "TOTAL",
-                "name" => "",
-                "appointments" => $totalAppointments . " (" . $totalAppointmentsPercent . ")",
-                "appointments_url" => $url."/outcome/Appointment",
-                "total_dials" => $totalDials,
-                "total_dials_url" => $url,
-                "duration" => $totalDuration,
-                "rate" => ($totalDuration>0)?round($totalAppointments/($totalDuration/3600),3):0
-            ));
-            
-            echo json_encode(array(
-                "success" => true,
-                "data" => $data
-            ));
-        }
-    }
-    
-    //this is the controller loads the initial view for the surveys daily comparision report dashboard
-    public function dailysurvey()
-    {
-        
-        $campaigns    = $this->Form_model->get_user_campaigns();
-        $teamManagers = $this->Form_model->get_teams();
-        $agents       = $this->Form_model->get_agents();
-        $sources      = $this->Form_model->get_sources();
-        
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-            'pageId' => 'Reports',
-            'title' => 'Reports | Individual Daily Comparison',
-            'page' => array(
-                'reports' => 'daily',
-                'inner' => 'dailysurvey'
-            ),
-            'javascript' => array(
-                'charts.js',
-                'report/dailysurvey.js',
-                'lib/moment.js',
-                'lib/daterangepicker.js'
-            ),
-            'campaigns' => $campaigns,
-            'sources' => $sources,
-            'agents' => $agents,
-            'team_managers' => $teamManagers,
-            'css' => array(
-                'dashboard.css',
-                'daterangepicker-bs3.css'
-            )
-        );
-        $this->template->load('default', 'reports/dailysurvey.php', $data);
-    }
-    
-    //this controller sends the appointment daily comparision report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function dailysurvey_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data    = array();
-            $results = $this->Report_model->get_daily_report_by_outcome($this->input->post());
-            
-            $date_from_search = $this->input->post("date_from");
-            $date_to_search   = $this->input->post("date_to");
-            $agent_search      = $this->input->post("agent");
-            $campaign_search  = $this->input->post("campaign");
-            $team_search  = $this->input->post("team");
-            $source_search  = $this->input->post("source");
-            
-            $agent = $this->input->post("agent");
-            $name  = "All Users";
-            
-            $aux = array();
-            foreach ($results as $row) {
-                if (!empty($agent)) {
-                    $name = $row['name'];
-                }
-                if ($row['outcome'] == 'Survey Complete') {
-                    $aux[$row['date']]['complete_surveys'] = $row['count'];
-                } elseif ($row['outcome'] == 'Survey Refused') {
-                    $aux[$row['date']]['refused_surveys'] = $row['count'];
-                }
-                $aux[$row['date']]['total_dials'] = (isset($aux[$row['date']]['total_dials'])) ? $aux[$row['date']]['total_dials'] + $row['count'] : $row['count'];
-                $aux[$row['date']]['duration'] = $row['duration'];
-            }
-            
-            $totalCompleteSurveys = 0;
-            $totalRefusedSurveys  = 0;
-            $totalDials          = (count($aux) == 0)?1:0;
-            $totalDuration		 = 0;
-            
-            $url = base_url() . "search/custom/history";
-            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/source/$source_search" : "");
-            
-            foreach ($aux as $date => $row) {
-                $completeSurveys = (array_key_exists('complete_surveys', $row)) ? $row['complete_surveys'] : 0;
-                $refusedSurveys  = (array_key_exists('refused_surveys', $row)) ? $row['refused_surveys'] : 0;
-                
-                $urlDate = $url."/contact/".$date.":emore/contact/".$date.":eless";
-                $completeSurveysUrl = $urlDate."/outcome/Survey Complete";
-                $refusedSurveysUrl = $urlDate."/outcome/Survey Refused";
-                
-                $data[]          = array(
-                    "date" => $date,
-                    "name" => $name,
-                    "complete_surveys" => $completeSurveys,
-                	"complete_surveys_url" => $completeSurveysUrl,
-                	"refused_surveys" => $refusedSurveys,
-                	"refused_surveys_url" => $refusedSurveysUrl,
-                    "total_dials" => $row['total_dials'],
-                	"total_dials_url" => $urlDate,
-                	"duration" => ($row['duration'])?$row['duration']:0,
-                	"rate" => ($row['duration']>0)?round($completeSurveys/($row['duration']/3600),3):0
-                );
-                $totalCompleteSurveys += $completeSurveys;
-                $totalRefusedSurveys += $refusedSurveys;
-                $totalDials += $row['total_dials'];
-                $totalDuration += $row['duration'];
-            }
-            
-            $totalCompleteSurveysPercent = number_format(($totalCompleteSurveys * 100) / $totalDials, 2) . '%';
-            $totalRefusedSurveysPercent  = number_format(($totalRefusedSurveys * 100) / $totalDials, 2) . '%';
-            
-            $url .= (!empty($date_from_search) ? "/contact/$date_from_search:emore" : "");
-            $url .= (!empty($date_to_search) ? "/contact/$date_to_search:eless" : "");
-            
-            array_push($data, array(
-                "date" => "TOTAL",
-                "name" => "",
-                "complete_surveys" => $totalCompleteSurveys . " (" . $totalCompleteSurveysPercent . ")",
-                "complete_surveys_url" => $url."/outcome/Survey Complete",
-                "refused_surveys" => $totalRefusedSurveys . " (" . $totalRefusedSurveysPercent . ")",
-                "refused_surveys_url" => $url."/outcome/Survey Refused",
-                "total_dials" => $totalDials,
-                "total_dials_url" => $url,
-                "duration" => $totalDuration,
-                "rate" => ($totalDuration>0)?round($totalCompleteSurveys/($totalDuration/3600),3):0
-            ));
-            
-            echo json_encode(array(
-                "success" => true,
-                "data" => $data
-            ));
-        }
-    }
 }

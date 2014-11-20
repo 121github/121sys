@@ -25,7 +25,7 @@
                     <li><a href="#" id="answers-filter" data-id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
                     <?php endforeach ?>
                     <li class="divider"></li>
-                    <li><a id="answers-filter" ref="#">Show All</a> </li>
+                    <li><a id="answers-filter" ref="#">All Surveys</a> </li>
                   </ul>
                 </div>
               </div>
