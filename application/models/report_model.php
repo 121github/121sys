@@ -127,6 +127,21 @@ class Report_model extends CI_Model
     
 	 public function get_other_data($options)
     {
+		if($options['group']=="agent"){
+			$group_by = " h.user_id ";
+			$id = "h.user_id";
+			$name = "u.name";
+			$joins = " left join users u using(user_id) left join records r using(urn) ";
+		}else if($options['group']=="date"){
+			$group_by = " h.date(contact) ";
+			$id = "h.contact";
+			$name = "h.contact";
+		} else {
+			$group_by = " h.campaign_id ";
+			$id = "c.campaign_id";
+			$name = "campaign_name";
+		}
+		
 		$outcome_id = $options['outcome'];
     	$date_from = $options['date_from'];
 		$agent = $options['agent'];
@@ -134,7 +149,7 @@ class Report_model extends CI_Model
     	$campaign = $options['campaign'];
     	$team_manager = $options['team'];
     	$source = $options['source'];
-    	
+		
     	$where = "";
     	$crosswhere = "";
     	if (!empty($date_from)) {
@@ -157,10 +172,11 @@ class Report_model extends CI_Model
     		$where .= " and r.source_id = '$source' ";
     	}
     $joins = " left join users u using(user_id) left join records r using(urn) ";
-    	$qry = "select c.campaign_id,campaign_name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h left join campaigns c using(campaign_id)  left join 
-		(select count(*) outcome_count,h.campaign_id from history h $joins where h.outcome_id = $outcome_id $where group by campaign_id) oc on oc.campaign_id = h.campaign_id left join 
-		(select count(*) dials,h.campaign_id from history h $joins where h.outcome_id <> $outcome_id $where group by campaign_id) d on d.campaign_id = h.campaign_id group by h.campaign_id "
+    	$qry = "select $id id,$name name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h left join campaigns c using(campaign_id)  $joins left join 
+		(select count(*) outcome_count,h.campaign_id from history h $joins where h.outcome_id = $outcome_id $where group by $group_by) oc on oc.campaign_id = h.campaign_id left join 
+		(select count(*) dials,h.campaign_id from history h $joins where h.outcome_id <> $outcome_id $where group by $group_by) d on d.campaign_id = h.campaign_id group by $group_by "
     	;
+		$this->firephp->log($qry);
     	return $this->db->query($qry)->result_array();
     }
 	

@@ -324,9 +324,23 @@ class Reports extends CI_Controller
     }
     
     //this is the controller loads the initial view for the campaign appointment report dashboard
-    public function campaignappointment()
+    public function outcomes()
     {
-        
+		if($this->uri->segment(3)=="campaign"){
+			$group = "campaign";
+		} else if($this->uri->segment(3)=="agent"){
+			$group = "agent";
+		} else if($this->uri->segment(3)=="date"){
+			$group = "date";
+		} else {
+			$group = "campaign";
+		}
+		
+		if(intval($this->uri->segment(4))){
+        $outcome_id = $this->uri->segment(4);
+		} else {
+		$outcome_id = "72";	
+		}
         $campaigns    = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
         $sources      = $this->Form_model->get_sources();
@@ -345,7 +359,8 @@ class Reports extends CI_Controller
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
-			'outcome_id'=>72,
+			'group' => $group,
+			'outcome_id'=>$outcome_id,
             'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
@@ -363,6 +378,7 @@ class Reports extends CI_Controller
     {
      if ($this->input->is_ajax_request()) {
             $data    = array();
+			
             $results = $this->Report_model->get_other_data($this->input->post());
 			
             $date_from_search = $this->input->post("date_from");
@@ -383,10 +399,10 @@ class Reports extends CI_Controller
             $aux = array();
             foreach ($results as $row) {
 				if($row['total_dials']){
-				$aux[$row['campaign_id']]['name'] = $row['campaign_name'];
-				$aux[$row['campaign_id']]['duration'] = $row['duration'];
-				$aux[$row['campaign_id']]['outcomes'] = $row['outcome_count'];
-				$aux[$row['campaign_id']]['total_dials'] = $row['total_dials'];
+				$aux[$row['id']]['name'] = $row['name'];
+				$aux[$row['id']]['duration'] = $row['duration'];
+				$aux[$row['id']]['outcomes'] = $row['outcome_count'];
+				$aux[$row['id']]['total_dials'] = $row['total_dials'];
 				}
             }
 
@@ -401,14 +417,14 @@ class Reports extends CI_Controller
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
             $url .= (!empty($source_search) ? "/source/$source_search" : "");
             
-            foreach ($aux as $campaign => $row) {
+            foreach ($aux as $id => $row) {
             	$outcomes      = (array_key_exists('outcomes', $row)) ? $row['outcomes'] : 0;
 	            
 	            $urlCampaign = $url."/campaign/".$campaign;
 	            $outcomesUrl = $urlCampaign."/outcome/".$this->input->post('outcome');
 	            $allDialsUrl = $url."/alldials/".$campaign;
 	            $data[]         = array(
-                    "campaign" => $campaign,
+                    "id" => $row['id'],
                     "name" => $row['name'],
                     "outcomes" => $outcomes,
 	            	"outcomes_url" => $outcomesUrl,
@@ -442,197 +458,6 @@ class Reports extends CI_Controller
             echo json_encode(array(
                 "success" => true,
 				"outcome"=>$outcome,
-                "data" => $data
-            ));
-        }
-    }
-    
-    //this is the controller loads the initial view for the campaign survey report dashboard
-    public function campaignsurvey()
-    {
-        
-        $campaigns    = $this->Form_model->get_user_campaigns();
-        $teamManagers = $this->Form_model->get_teams();
-        $sources      = $this->Form_model->get_sources();
-        $agents       = $this->Form_model->get_agents();
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-            'pageId' => 'Reports',
-            'title' => 'Reports | Campaign Survey',
-            'page' => array(
-                'reports' => 'campaign',
-                'inner' => 'campaignsurvey'
-            ),
-            'javascript' => array(
-                'charts.js',
-                'report/campaignsurvey.js',
-                'lib/moment.js',
-                'lib/daterangepicker.js'
-            ),
-            'campaigns' => $campaigns,
-            'sources' => $sources,
-            'team_managers' => $teamManagers,
-			'agents' => $agents,
-            'css' => array(
-                'dashboard.css',
-                'daterangepicker-bs3.css'
-            )
-        );
-        $this->template->load('default', 'reports/campaignsurvey.php', $data);
-    }
-    
-    //this controller sends the campaign survey report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function campaignsurvey_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data    = array();
-            $results = $this->Report_model->get_campaign_report_by_outcome($this->input->post());
-            
-            $date_from_search = $this->input->post("date_from");
-            $date_to_search   = $this->input->post("date_to");
-            $agent_search      = $this->input->post("agent");
-            $campaign_search  = $this->input->post("campaign");
-            $team_search  = $this->input->post("team");
-            $source_search  = $this->input->post("source");
-            
-            $aux = array();
-            
-            foreach ($results as $row) {
-            	if ($row['outcome'] == 'Survey Complete') {
-            		$aux[$row['campaign']]['complete_surveys'] = $row['count'];
-            	} elseif ($row['outcome'] == 'Survey Refused') {
-            		$aux[$row['campaign']]['refused_surveys'] = $row['count'];
-            	}
-            	
-            	if ($row['outcome'] == 'Cross Transfer') {
-            		$aux[$row['campaign_id']]['total_dials'] = (isset($aux[$row['campaign_id']]['total_dials'])) ? $aux[$row['campaign_id']]['total_dials'] + $row['count'] : $row['count'];
-            	}
-            	else {
-            		$aux[$row['campaign']]['name'] = $row['name'];
-            		$aux[$row['campaign']]['duration'] = $row['duration'];
-            		$aux[$row['campaign']]['total_dials'] = (isset($aux[$row['campaign']]['total_dials'])) ? $aux[$row['campaign']]['total_dials'] + $row['count'] : $row['count'];
-            	} 
-            }
-            
-            $totalCompleteSurveys = 0;
-            $totalRefusedSurveys  = 0;
-            $totalDials           = 0;
-            $totalDuration		 = 0;
-            
-            $url = base_url() . "search/custom/history";
-            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-			$url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($date_from_search) ? "/contact/$date_from_search:emore" : "");
-            $url .= (!empty($date_to_search) ? "/contact/$date_to_search:eless" : "");
-            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/source/$source_search" : "");
-            
-            foreach ($aux as $campaign => $row) {
-                $completeSurveys = (array_key_exists('complete_surveys', $row)) ? $row['complete_surveys'] : 0;
-                $refusedSurveys = (array_key_exists('refused_surveys', $row)) ? $row['refused_surveys'] : 0;
-                
-                $urlCampaign = $url."/campaign/".$campaign;
-                $completeSurveysUrl = $urlCampaign."/outcome/Survey Complete";
-                $refusedSurveysUrl = $urlCampaign."/outcome/Survey Refused";
-                
-                $data[]          = array(
-                    "campaign" => $campaign,
-                    "name" => $row['name'],
-                    "complete_surveys" => $completeSurveys,
-                	"complete_surveys_url" => $completeSurveysUrl,
-                	"refused_surveys" => $refusedSurveys,
-                	"refused_surveys_url" => $refusedSurveysUrl,
-                    "total_dials" => $row['total_dials'],
-                	"total_dials_url" => $urlCampaign,
-                	"duration" => ($row['duration'])?$row['duration']:0,
-                	"rate" => ($row['duration']>0)?round(($completeSurveys)/($row['duration']/3600),3):0
-                );
-                $totalCompleteSurveys += $completeSurveys;
-                $totalRefusedSurveys += $refusedSurveys;
-                $totalDials += $row['total_dials'];
-                $totalDuration += $row['duration'];
-            }
-            
-            $totalCompleteSurveysPercent = (($totalDials>0)?number_format(($totalCompleteSurveys * 100) / $totalDials, 2):0) . '%';
-            $totalRefusedSurveysPercent  = (($totalDials>0)?number_format(($totalRefusedSurveys * 100) / $totalDials, 2):0) . '%';
-            
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            
-            array_push($data, array(
-                "campaign" => "TOTAL",
-                "name" => "",
-                "complete_surveys" => $totalCompleteSurveys . " (" . $totalCompleteSurveysPercent . ")",
-                "complete_surveys_url" => $url."/outcome/Survey Complete",
-                "refused_surveys" => $totalRefusedSurveys . " (" . $totalRefusedSurveysPercent . ")",
-                "refused_surveys_url" => $url."/outcome/Survey Refused",
-                "total_dials" => $totalDials,
-                "total_dials_url" => $url,
-                "duration" => $totalDuration,
-                "rate" => ($totalDuration>0)?round(($totalCompleteSurveys)/($totalDuration/3600),3):0
-            ));
-            
-            echo json_encode(array(
-                "success" => true,
-                "data" => $data
-            ));
-        }
-    }
-    
-    //this is the controller loads the initial view for the campaign dials report dashboard
-    public function campaigndials()
-    {
-        
-        $campaigns    = $this->Form_model->get_user_campaigns();
-        $teamManagers = $this->Form_model->get_teams();
-        $agents       = $this->Form_model->get_agents();
-        $sources      = $this->Form_model->get_sources();
-        
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-            'pageId' => 'Reports',
-            'title' => 'Reports | Campaign Dials',
-            'page' => array(
-                'reports' => 'campaign',
-                'inner' => 'campaigndials'
-            ),
-            'javascript' => array(
-                'charts.js',
-                'report/campaigndials.js',
-                'lib/moment.js',
-                'lib/daterangepicker.js'
-            ),
-            'campaigns' => $campaigns,
-            'sources' => $sources,
-            'team_managers' => $teamManagers,
-            'agents' => $agents,
-            'css' => array(
-                'dashboard.css',
-                'daterangepicker-bs3.css'
-            )
-        );
-        $this->template->load('default', 'reports/campaigndials.php', $data);
-    }
-    
-    //this controller sends the campaign dials report data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function campaigndials_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data    = array();
-            $results = $this->Report_model->get_campaigndials_report($this->input->post());
-            
-            
-            $aux = array();
-            
-            foreach ($results as $row) {
-                $data[] = array(
-                    "name" => $row['name'],
-                    "total" => $row['count']
-                );
-            }
-            
-            
-            echo json_encode(array(
-                "success" => true,
                 "data" => $data
             ));
         }

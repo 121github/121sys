@@ -539,7 +539,7 @@ class Records extends CI_Controller
                 "success" => true,
                 "msg" => "Record was updated"
             );
-			if(count($email_triggers)){
+			if(isset($email_triggers)&& count($email_triggers)>0){
 				 $response['email_trigger'] = true;
 			}
 			 echo json_encode($response);

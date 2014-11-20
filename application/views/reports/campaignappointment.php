@@ -19,6 +19,7 @@
             <div class="pull-right">
             <form class="filter-form">
               <div class="btn-group">
+              <input type="hidden" name="group" value="<?php echo $group ?>">
                   <input type="hidden" name="date_from">
                   <input type="hidden" name="date_to">
                   <input type="hidden" name="campaign">
