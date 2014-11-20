@@ -10,7 +10,7 @@ class Migration_update_3 extends CI_Migration
     
     public function up()
     {
-		$this->db->query("INSERT INTO `121sys`.`permissions` (
+		$this->db->query("INSERT INTO `permissions` (
 `permission_id` ,
 `permission_name` ,
 `permission_group`
