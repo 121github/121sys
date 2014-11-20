@@ -664,7 +664,7 @@ class Filter_model extends CI_Model
         
         
         $qry .= $group_by;
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         $start  = $options['start'];
         $length = $options['length'];
 		$qry .= $group_by;

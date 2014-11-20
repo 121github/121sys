@@ -132,14 +132,17 @@ class Report_model extends CI_Model
 			$id = "h.user_id";
 			$name = "u.name";
 			$joins = " left join users u using(user_id) left join records r using(urn) ";
+			$hours = "hr.`user_id` = h.user_id ";
 		}else if($options['group']=="date"){
 			$group_by = "date(contact)";
 			$id = "date(h.contact) `sql`,date_format(h.contact,'%d/%m/%y')";
 			$name = "'All'";
+			$hours = "hr.`date` = date(h.contact)";
 		} else {
 			$group_by = "h.campaign_id";
 			$id = "c.campaign_id";
 			$name = "campaign_name";
+			$hours = "hr.`campaign_id` = h.campaign_id";
 		}
 		
 		$outcome_id = $options['outcome'];
@@ -149,18 +152,21 @@ class Report_model extends CI_Model
     	$campaign = $options['campaign'];
     	$team_manager = $options['team'];
     	$source = $options['source'];
-		
+		$hours_where = "";
     	$where = "";
     	$crosswhere = "";
     	if (!empty($date_from)) {
     		$where .= " and date(contact) >= '$date_from' ";
+			$hours_where .= " and `date` >= '$date_from' ";
     	}
     	if (!empty($date_to)) {
     		$where .= " and date(contact) <= '$date_to' ";
+			$hours_where .= " and `date` >= '$date_to' ";
     	}
     	if (!empty($campaign)) {
     		$where .= " and h.campaign_id = '$campaign' ";
 			$crosswhere .= " and ct.campaign_id = '$campaign' ";
+			$hours_where .= " and hr.campaign_id = '$campaign' ";
     	}
     	if (!empty($team_manager)) {
     		$where .= " and u.team_id = '$team_manager' ";
@@ -172,7 +178,8 @@ class Report_model extends CI_Model
     		$where .= " and r.source_id = '$source' ";
     	}
     $joins = " left join users u using(user_id) left join records r using(urn) ";
-    	$qry = "select $id id,$name name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h left join campaigns c using(campaign_id)  $joins left join 
+    	$qry = "select $id id,$name name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration)
+		 from hours hr where $hours $hours_where) as duration from history h left join campaigns c using(campaign_id)  $joins left join 
 		(select count(*) outcome_count,$group_by gb from history h $joins where h.outcome_id = $outcome_id $where group by $group_by) oc on oc.gb = $group_by left join 
 		(select count(*) dials,$group_by dd from history h $joins where h.outcome_id <> 71 $where group by $group_by) d on d.dd = $group_by group by $group_by "
     	;
