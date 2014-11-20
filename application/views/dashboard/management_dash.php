@@ -82,7 +82,7 @@
       	<!-- /.row --> 
     	</div>
     	
-    	<div class="panel panel-primary" id="a_current">
+    	<div class="panel panel-primary" id="a_current" style="display: none">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Current Hours (Today)
               <div class="pull-right">
                 <div class="btn-group">
@@ -118,7 +118,7 @@
 		dashboard.agent_activity();
 		dashboard.agent_success();
 		dashboard.agent_data();
-		dashboard.agent_current_hours();
+		//dashboard.agent_current_hours();
 		$(document).on("click",".agent-activity-filter",function(e){
 			e.preventDefault();
 			dashboard.agent_activity($(this).attr('id'));

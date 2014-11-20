@@ -58,7 +58,7 @@
 			                    <div class="accordion-inner">
 			                        <span id="agent_data">Agent Data</span>
 			                    </div>
-			                    <div class="accordion-inner">
+			                    <div class="accordion-inner" style="display: none">
 			                        <span id="agent_current_hours">Agent Current Hours</span>
 			                    </div>
 			                </div>
