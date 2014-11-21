@@ -38,11 +38,12 @@ class Time_model extends CI_Model
                       dt.start_time as default_start_time,
                       dt.end_time as default_end_time
 		    	from users u
-		    	inner join user_roles ur ON (ur.role_id = u.role_id)
+		    	inner join role_permissions rp ON (rp.role_id = u.role_id)
+		    	inner join permissions p ON (rp.permission_id = p.permission_id)
 		    	left join time t ON (t.user_id = u.user_id and t.date >= '$date_from 00:00:00' and t.date <= '$date_to 23:59:59')
 		    	left join users m ON (m.user_id = t.updated_id)
 		    	left join default_time dt ON (u.user_id = dt.user_id)
-		    	where ur.role_name = 'Agent' ";
+		    	where p.permission_name = 'log hours' ";
 
     	$qry .= $where;
 
@@ -140,9 +141,10 @@ class Time_model extends CI_Model
                       t.start_time,
                       t.end_time
 		    	from users u
-		    	inner join user_roles ur ON (ur.role_id = u.role_id)
+		    	inner join role_permissions rp ON (rp.role_id = u.role_id)
+		    	inner join permissions p ON (rp.permission_id = p.permission_id)
 		    	left join default_time t ON (t.user_id = u.user_id)
-		    	where ur.role_name = 'Agent' ";
+		    	where p.permission_name = 'log hours' ";
 
         $qry .= $where;
 
