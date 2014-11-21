@@ -161,7 +161,7 @@ var record = {
             $('.history-all-container').fadeOut(500, function() {
                 $('.history-all-content').show();
             });
-        },
+        }
     },
     //update panel functions
     update_panel: {
