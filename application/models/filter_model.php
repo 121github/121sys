@@ -608,8 +608,14 @@ class Filter_model extends CI_Model
         }
         $where_array = array();
         foreach ($array as $key => $val) {
+			//reset the variables
+			$split = array();
+			$keysplit = array();
+			$operator = "";
+			//split the key to see if it woll use "or" or "and"
             $keysplit = explode(":", $key);
             $key      = $keysplit[0];
+			//split the value to see which operator it will use
             $split    = explode(":", $val);
             if (isset($split[1])) {
                 $val      = $split[0];
@@ -664,7 +670,7 @@ class Filter_model extends CI_Model
         
         
         $qry .= $group_by;
-		//$this->firephp->log($qry);
+		$this->firephp->log($qry);
         $start  = $options['start'];
         $length = $options['length'];
         $qry .= " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
