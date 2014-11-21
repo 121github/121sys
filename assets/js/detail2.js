@@ -166,6 +166,12 @@ var record = {
     //update panel functions
     update_panel: {
         init: function() {
+            $(document).off('click', '.update-record');
+            $(document).off('click', '.reset-record');
+            $(document).off('click', '.favorite-btn');
+            $(document).off('click', '.urgent-btn');
+            $(document).off('click', '.close-xfer');
+            $(document).off('click', '.set-xfer');
             /*initialize the save notes button*/
             $(document).on('click', '.update-record', function(e) {
                 e.preventDefault();
