@@ -123,7 +123,7 @@ var outcome = {
                     	}
                         
 						$tbody
-						.append("<tr class='"+success+"' style='"+style+"'><td class='campaign'>"
+						.append("<tr class='"+success+"' style='"+style+"'><td class='outcome'>"
 									+ val.id
 								+ "</td><td class='name'>"
 									+ val.name

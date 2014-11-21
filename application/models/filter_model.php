@@ -667,7 +667,6 @@ class Filter_model extends CI_Model
 		//$this->firephp->log($qry);
         $start  = $options['start'];
         $length = $options['length'];
-		$qry .= $group_by;
         $qry .= " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];

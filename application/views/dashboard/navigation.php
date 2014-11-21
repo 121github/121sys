@@ -122,13 +122,13 @@
 			            <div id="collapseTwoAgent" class="accordion-body <?php echo @($reports=='outcome'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/outcomes/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/campaign/1" <?php echo @($group=='campaign'?"class='active'":"") ?>>By Campaign</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/outcomes/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/agent/1" <?php echo @($group=='agent'?"class='active'":"") ?>>By Agent</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/outcomes/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/date/1" <?php echo @($group=='date'?"class='active'":"") ?>>By Date</a>
 			                    </div>
 			                </div>
 			            </div>

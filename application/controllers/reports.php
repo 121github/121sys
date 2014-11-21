@@ -463,7 +463,7 @@ class Reports extends CI_Controller
             $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
             
             array_push($data, array(
-                "campaign" => "TOTAL",
+                "id" => "TOTAL",
                 "name" => "",
                 "outcomes" => $totalOutcomes . " (" . $totalOutcomesPercent . "%)",
                 "outcomes_url" => $url."/outcome/$outcome",
