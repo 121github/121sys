@@ -523,7 +523,7 @@ class Filter_model extends CI_Model
                 "rand()"
             );
             $qry  = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
-            $group_by = " group by history_id ";
+            $group_by = " group by history.history_id ";
             
             
             //if agent they can only see todays
