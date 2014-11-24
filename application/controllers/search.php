@@ -143,7 +143,13 @@ $this->_campaigns = campaign_access_dropdown();
 			"cross" => "cross_transfers.campaign_id",
 			"alldials" => "alldials", //this gets all dials to a specific campaign including cross transfers
 			"transfers" => "transfers", //this gets the transfers + cross transfers
-            "time" => "hour(contact)"
+            "time" => "hour(contact)",
+            "emails" => "emails",
+            "sent-email-from" => "sent-email-from",
+            "sent-email-to" => "sent-email-to",
+            "sent-email-date" => "date(email_history.sent_date)",
+            "sent-time" => "hour(email_history.sent_date)"
+
         );
         
         $search_fields_2 = array(
@@ -161,38 +167,40 @@ $this->_campaigns = campaign_access_dropdown();
 			"source" => "source_name",
 			"parked" => "parked_code",
 			"alldials" => "alldials",
-			"transfers" => "transfers"
+			"transfers" => "transfers",
+            "emails" => "emails",
         );
         $fields          = array();
         $array           = array();
         //loop through the array and change the field names for the database column names. Unset any values that we havent included in the search fields array above. 
         foreach ($uri as $k => $v) {
 			$keysplit = explode("_",$k);
-			if(isset($keysplit[1])){
-			$k = $keysplit[0];
-			  if (array_key_exists($k, $search_fields_1)) {
-                //if the value is a number then we look for the ID, if not we look for the text
-                if (intval($v)) {
-                    $array[$search_fields_1[$k].":".$keysplit[1]] = urldecode($v);
-                } else {
-                    $array[$search_fields_2[$k].":".$keysplit[1]]= urldecode($v);
+            if(isset($keysplit[1])){
+                $k = $keysplit[0];
+                if (array_key_exists($k, $search_fields_1)) {
+                    //if the value is a number then we look for the ID, if not we look for the text
+                    if (intval($v)) {
+                        $array[$search_fields_1[$k].":".$keysplit[1]] = urldecode($v);
+                    } else {
+                        $array[$search_fields_2[$k].":".$keysplit[1]]= urldecode($v);
+                    }
+                    //end if
+                    $fields[] = $k;
                 }
-                //end if
-                $fields[] = $k;
-            }
 			} else {
-            if (array_key_exists($k, $search_fields_1)) {
-                //if the value is a number then we look for the ID, if not we look for the text
-                if (intval($v)) {
-                    $array[$search_fields_1[$k]] = urldecode($v);
-                } else {
-                    $array[$search_fields_2[$k]] = urldecode($v);
+                if (array_key_exists($k, $search_fields_1)) {
+                    //if the value is a number then we look for the ID, if not we look for the text
+                    if (intval($v)) {
+                        $array[$search_fields_1[$k]] = urldecode($v);
+                    } else {
+                        $array[$search_fields_2[$k]] = urldecode($v);
+                    }
+                    //end if
+                    $fields[] = $k;
                 }
-                //end if
-                $fields[] = $k;
-            }
 			}
         }
+        $this->firephp->log($array);
         
         //Now we can just stick the new array into an active record query to find the matching records!
         $_SESSION['custom_view']['array']  = $array;

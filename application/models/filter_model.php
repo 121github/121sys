@@ -566,7 +566,27 @@ class Filter_model extends CI_Model
             $qry .= " left join survey_info on surveys.survey_info_id = survey_info.survey_info_id ";
             $qry .= " left join survey_answers on surveys.survey_id = survey_answers.survey_id ";
         }
-        
+
+        //only join the email tables if we need them
+        $email_qry = "";
+        if (in_array("emails", $fields)) {
+            $qry .= " left join email_history on email_history.urn = records.urn ";
+            if ($array['emails'] == "read") {
+                $email_qry = " and email_history.read_confirmed = 1";
+            }
+            unset($array['emails']);
+        }
+
+        $sent_date_qry  = "";
+        if (in_array("sent-email-from", $fields)) {
+            $sent_date_qry .= " and date(email_history.sent_date) >= '" . $array['sent-email-from'] . "'";
+            unset($array['sent-email-from']);
+        }
+        if (in_array("sent-email-to", $fields)) {
+            $sent_date_qry .= " and date(email_history.sent_date) <= '" . $array['sent-email-to'] . "'";
+            unset($array['sent-email-to']);
+        }
+
         //this gets ALL transfers including cross transfers
         $all_transfer = "";
         $all_dials    = "";
@@ -598,7 +618,7 @@ class Filter_model extends CI_Model
             unset($array['campaigns.campaign_id']);
         }
         
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent $all_transfer $all_dials $contact_qry";
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry";
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause
