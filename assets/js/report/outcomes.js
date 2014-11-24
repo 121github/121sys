@@ -106,7 +106,7 @@ var outcome = {
                         if (seconds < 10) {seconds = "0"+seconds;}
                         
                         var duration    = hours+' h '+minutes+' m';
-                        
+
                         var style = "";
                         var success = "";
                         if (val.outcomes>0 && val.duration>0) {
@@ -131,10 +131,10 @@ var outcome = {
 								+ 	"<a href='" + val.outcomes_url + "'>" + val.outcomes + "</a>"
 								+ "</td><td class='total_dials'>"
 								+ 	"<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
-									+ "</td><td class='template_cc' style='duration'>"
-									+ duration
-								+ "</td><td class='template_bcc' style='rate'>"
-									+ val.rate
+									+ "</td><td class='duration' style='duration'>"
+									+ ((val.group != "time")?duration:"-")
+								+ "</td><td class='rate' style='rate'>"
+									+ ((val.group != "time")?val.rate:"-")
 								+ "</td></tr>");
                     }
                 });

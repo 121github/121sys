@@ -130,6 +130,9 @@
 			                    <div class="accordion-inner">
 			                       <a href="<?php echo base_url() ?>reports/outcomes/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
 			                    </div>
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>reports/outcomes/time/1" <?php echo @($inner=='time'?"class='active'":"") ?>>By Time</a>
+                                </div>
 			                </div>
 			            </div>
 			        </div>
