@@ -49,6 +49,16 @@ class Webforms extends CI_Controller
 		$form = intval($this->uri->segment(5));
 		$path = $this->Webform_model->get_path($form);
 		if(intval($campaign_id)&&intval($urn)&&intval($form)){
+			
+			
+		if($this->input->post('save')=="1"){
+			$data['answers'] = $this->input->post('answer');
+			$data['urn'] = $urn;
+			$data['id'] = $form;
+			$this->Webform_model->save_answer($data);
+			exit;
+		}
+			
 			$all_data = $this->Webform_model->get_all_data($urn,$campaign_id,$form);
 			//$this->firephp->log($all_data);
 				//if the customer is viewing the form we can make some fields read only
