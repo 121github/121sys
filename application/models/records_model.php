@@ -34,7 +34,7 @@ class Records_model extends CI_Model
 		$user_id = $_SESSION['user_id'];
 		if(intval($campaign)){
 			//changed query so that it brings in nextcalls due in the next 10 mins
-		$qry = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and (outcome_id is null or nextcall < now() and nextcall < adddate(now() interval 10 MINUTE)) and (user_id is null or user_id = '$user_id') order by CASE WHEN nextcall is null THEN 2 ELSE 1 END,
+		$qry = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and (outcome_id is null or nextcall < now() and nextcall < adddate(now(), interval 10 MINUTE)) order by CASE WHEN nextcall is null THEN 2 ELSE 1 END,
          nextcall limit 1";
 		$urn = 0;
 		if($this->db->query($qry)->num_rows()){
