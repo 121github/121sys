@@ -3104,7 +3104,7 @@ ul
    <w:data>FFFFFFFF80003C0014000000000000000000090055005000500045005200430041005300450000007100540068006900730020006E0075006D006200650072002000690073002000670065006E0065007200610074006500640020006200790020007400680065002000410054004500580020004100440020004F005200440045005200200045004E005400520059002000730079007300740065006D002E00200049006E0073006500720074002000610073002000700061007200740020006F0066002000410054004500580020006400610074006100200065006E007400720079002E0020004D004100580049004D0055004D002000360020006E0075006D0062006500720073002E000000000000000000000000000000</w:data>
   </xml><![endif]--></span></b><!--[if supportFields]><b style='mso-bidi-font-weight:
   normal'><span style='font-size:8.0pt'><span style='mso-element:field-end'></span></span></b><![endif]--><span
-  style='font-size:7.0pt'><input name="answer[a9]" style="cursor:pointer;border:none" type="text" value=""><o:p></o:p></span></p>
+  style='font-size:7.0pt'><input name="answer[a9]" style="cursor:pointer;border:none" type="text" value="<?php echo (empty($values['a9'])?"":$values['a9']) ?>"><o:p></o:p></span></p>
   </td>
  </tr>
  <tr style='mso-yfti-irow:8;page-break-inside:avoid;height:13.5pt'>
@@ -3152,7 +3152,7 @@ ul
    <w:data>FFFFFFFF80003C0014000000000000000000090055005000500045005200430041005300450000007100540068006900730020006E0075006D006200650072002000690073002000670065006E0065007200610074006500640020006200790020007400680065002000410054004500580020004100440020004F005200440045005200200045004E005400520059002000730079007300740065006D002E00200049006E0073006500720074002000610073002000700061007200740020006F0066002000410054004500580020006400610074006100200065006E007400720079002E0020004D004100580049004D0055004D002000360020006E0075006D0062006500720073002E000000000000000000000000000000</w:data>
   </xml><![endif]--></span></b><!--[if supportFields]><b style='mso-bidi-font-weight:
   normal'><span style='font-size:8.0pt'><span style='mso-element:field-end'></span></span></b><![endif]--><span
-  style='font-size:7.0pt'><input name="answer[a11]" style="cursor:pointer;border:none" type="text" value=""><o:p></o:p></span></p>
+  style='font-size:7.0pt'><input name="answer[a11]" style="cursor:pointer;border:none" type="text" value="<?php echo (empty($values['a11'])?"":$values['a11']) ?>"><o:p></o:p></span></p>
   </td>
  </tr>
  <tr style='mso-yfti-irow:9;page-break-inside:avoid;height:14.45pt'>
@@ -3200,7 +3200,7 @@ ul
    <w:data>FFFFFFFF80003C0014000000000000000000090055005000500045005200430041005300450000007100540068006900730020006E0075006D006200650072002000690073002000670065006E0065007200610074006500640020006200790020007400680065002000410054004500580020004100440020004F005200440045005200200045004E005400520059002000730079007300740065006D002E00200049006E0073006500720074002000610073002000700061007200740020006F0066002000410054004500580020006400610074006100200065006E007400720079002E0020004D004100580049004D0055004D002000360020006E0075006D0062006500720073002E000000000000000000000000000000</w:data>
   </xml><![endif]--></span></b><!--[if supportFields]><b style='mso-bidi-font-weight:
   normal'><span style='font-size:8.0pt'><span style='mso-element:field-end'></span></span></b><![endif]--><span
-  style='font-size:7.0pt'><input name="answer[a12]" style="cursor:pointer;border:none" type="text" value=""><o:p></o:p></span></p>
+  style='font-size:7.0pt'><input name="answer[a12]" style="cursor:pointer;border:none" type="text" value="<?php echo (empty($values['a12'])?"":$values['a12']) ?>"><o:p></o:p></span></p>
   </td>
  </tr>
  <tr style='mso-yfti-irow:10;page-break-inside:avoid;height:13.25pt'>
@@ -3227,7 +3227,7 @@ ul
    <w:data>FFFFFFFF8000190014000000000000000000000000007100540068006900730020006E0075006D006200650072002000690073002000670065006E0065007200610074006500640020006200790020007400680065002000410054004500580020004100440020004F005200440045005200200045004E005400520059002000730079007300740065006D002E00200049006E0073006500720074002000610073002000700061007200740020006F0066002000410054004500580020006400610074006100200065006E007400720079002E0020004D004100580049004D0055004D002000360020006E0075006D0062006500720073002E000000000000000000000000000000</w:data>
   </xml><![endif]--></span></b><!--[if supportFields]><b style='mso-bidi-font-weight:
   normal'><span style='font-size:8.0pt'><span style='mso-element:field-end'></span></span></b><![endif]--><b
-  style='mso-bidi-font-weight:normal'><span style='font-size:7.0pt'><input name="answer[a13]" style="cursor:pointer;border:none" type="text" value=""><o:p></o:p></span></b></p>
+  style='mso-bidi-font-weight:normal'><span style='font-size:7.0pt'><input name="answer[a13]" style="cursor:pointer;border:none" type="text" value="<?php echo (empty($values['a13'])?"":$values['a13']) ?>"><o:p></o:p></span></b></p>
   </td>
   <td width=113 colspan=3 style='width:3.0cm;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
@@ -3249,7 +3249,7 @@ ul
    <w:data>FFFFFFFF80003C0014000000000000000000090055005000500045005200430041005300450000007100540068006900730020006E0075006D006200650072002000690073002000670065006E0065007200610074006500640020006200790020007400680065002000410054004500580020004100440020004F005200440045005200200045004E005400520059002000730079007300740065006D002E00200049006E0073006500720074002000610073002000700061007200740020006F0066002000410054004500580020006400610074006100200065006E007400720079002E0020004D004100580049004D0055004D002000360020006E0075006D0062006500720073002E000000000000000000000000000000</w:data>
   </xml><![endif]--></span></b><!--[if supportFields]><b style='mso-bidi-font-weight:
   normal'><span style='font-size:8.0pt'><span style='mso-element:field-end'></span></span></b><![endif]--><b
-  style='mso-bidi-font-weight:normal'><span style='font-size:7.0pt'><input name="answer[a30]" style="cursor:pointer;border:none" type="text" value=""><?php echo (empty($values['30'])?$company['county']:$values['30']) ?><o:p></o:p></span></b></p>
+  style='mso-bidi-font-weight:normal'><span style='font-size:7.0pt'><input name="answer[a30]" style="cursor:pointer;border:none" type="text" value="<?php echo (empty($values['30'])?$company['county']:$values['30']) ?>"><o:p></o:p></span></b></p>
   </td>
  </tr>
  <tr style='mso-yfti-irow:11;page-break-inside:avoid;height:13.45pt'>
