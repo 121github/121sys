@@ -161,11 +161,17 @@ var record = {
             $('.history-all-container').fadeOut(500, function() {
                 $('.history-all-content').show();
             });
-        },
+        }
     },
     //update panel functions
     update_panel: {
         init: function() {
+            $(document).off('click', '.update-record');
+            $(document).off('click', '.reset-record');
+            $(document).off('click', '.favorite-btn');
+            $(document).off('click', '.urgent-btn');
+            $(document).off('click', '.close-xfer');
+            $(document).off('click', '.set-xfer');
             /*initialize the save notes button*/
             $(document).on('click', '.update-record', function(e) {
                 e.preventDefault();
@@ -196,6 +202,8 @@ var record = {
                 $('div.outcomepicker').find('.filter-option').text('Cross Transer: ' + xfer);
                 record.update_panel.close_cross_transfer();
             });
+            var old_outcome = $('.outcomepicker option:selected').val();
+            var current_outcome = old_outcome;
             $(document).on('change', '.outcomepicker', function(e) {
                 e.preventDefault();
                 $val = $(this).val();
@@ -213,19 +221,58 @@ var record = {
 					if(hour>12){
 					var nextcall = moment(today).add(1, 'days').toDate();
 					}
-					
+
                     $('#nextcall').val(timestamp_to_uk(nextcall, true));
                     $('#nextcall').datetimepicker({
                         format: 'DD/MM/YYYY HH:mm'
                     });
+                    $('input[name="nextcall"]').fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);
                     //$('#nextcall').data("DateTimePicker").setDate(timestamp_to_uk(nextcall,true));
                 }
-                if ($val == "" && record.role == 3 || $('select[name="campaign_id"]').val() == "") {
-                    $('.update-record').prop('disabled', true);
-                } else {
-                    $('.update-record').prop('disabled', false);
+                //If the previous outcome had delay, set the date to the old_nextcall
+                else if ($('#outcomes').find("option[value='" + current_outcome + "']").attr('delay')){
+                    nextcall = old_nextcall;
+                    $('#nextcall').val(nextcall);
+                    $('#nextcall').datetimepicker({
+                        format: 'DD/MM/YYYY HH:mm'
+                    });
+                    $('input[name="nextcall"]').fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);
                 }
+
+                //Set the new outcome
+                current_outcome = $('.outcomepicker option:selected').val();
+
+                var outcome = $('.outcomepicker option:selected').val();
+                var new_nextcall = $('input[name="nextcall"]').val();
+                var comments = $('textarea[name="comments"]').val();
+                record.update_panel.disabled_btn(old_outcome, outcome,old_nextcall,new_nextcall,old_comments,comments);
             });
+
+            var old_nextcall = $('input[name="nextcall"]').val();
+            var datetimepicker = $('.datetime');
+            datetimepicker.off("dp.hide");
+            datetimepicker.on("dp.hide",function (e) {
+                var new_nextcall = $('input[name="nextcall"]').val();
+                var outcome = $('.outcomepicker option:selected').val();
+                var comments = $('textarea[name="comments"]').val();
+                record.update_panel.disabled_btn(old_outcome, outcome,old_nextcall,new_nextcall,old_comments,comments);
+            });
+
+            var old_comments = $('textarea[name="comments"]').val();
+            $('textarea[name="comments"]').bind('input propertychange', function() {
+                var new_nextcall = $('input[name="nextcall"]').val();
+                var outcome = $('.outcomepicker option:selected').val();
+                var comments = $('textarea[name="comments"]').val();
+                record.update_panel.disabled_btn(old_outcome, outcome,old_nextcall,new_nextcall,old_comments,comments);
+            });
+        },
+        disabled_btn: function(old_outcome,outcome, old_nextcall, nextcall, old_comments, comments) {
+            if (((outcome.length != 0)&&(outcome != old_outcome)) || ((nextcall.length != 0)&&(nextcall != old_nextcall)) || ((comments.length != 0)&&(comments != old_comments))) {
+                $('.update-record').prop('disabled', false);
+            }
+            else {
+                $('.update-record').prop('disabled', true);
+            }
         },
         cross_transfer: function() {
             var pagewidth = $(window).width() / 2;
@@ -262,11 +309,13 @@ var record = {
 					$(document).off('click','.nav-btn');
                     flashalert.success(response.msg);
 					if(response.email_trigger){
-					$.ajax({url:helper.baseUrl+'email/trigger_email',
-					type:"POST",
-					data:{urn:record.urn}
-					});	
+                        $.ajax({url:helper.baseUrl+'email/trigger_email',
+                        type:"POST",
+                        data:{urn:record.urn}
+                        });
 					}
+                    record.update_panel.init();
+                    $('.update-record').prop('disabled', true);
                 } else {
                     flashalert.warning(response.msg);
                 }

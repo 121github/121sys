@@ -42,12 +42,14 @@ class Hour_model extends CI_Model
                       if(h.updated_date is not null,h.updated_date,'-') as updated_date,
                       dh.duration as default_hours
 		    	from users u
+		    	inner join role_permissions rp ON (rp.role_id = u.role_id)
+		    	inner join permissions p ON (rp.permission_id = p.permission_id)
 		    	inner join users_to_campaigns uc ON (uc.user_id = u.user_id)
 		    	inner join campaigns c ON (c.campaign_id = uc.campaign_id)
 		    	left join hours h ON (h.user_id = u.user_id and h.campaign_id = uc.campaign_id and h.date >= '$date_from 00:00:00' and h.date <= '$date_to 23:59:59')
 		    	left join users m ON (m.user_id = h.updated_id)
 		    	left join default_hours dh ON (u.user_id = dh.user_id and c.campaign_id = dh.campaign_id)
-		    	where m.team_id is not null and m.group_id = 1 ";
+		    	where p.permission_name = 'log hours' ";
 
     	$qry .= $where;
 
@@ -119,10 +121,12 @@ class Hour_model extends CI_Model
                       c.campaign_name,
                       h.duration
 		    	from users u
+		    	inner join role_permissions rp ON (rp.role_id = u.role_id)
+		    	inner join permissions p ON (rp.permission_id = p.permission_id)
 		    	inner join users_to_campaigns uc ON (uc.user_id = u.user_id)
 		    	inner join campaigns c ON (c.campaign_id = uc.campaign_id)
 		    	left join default_hours h ON (h.user_id = u.user_id and h.campaign_id = uc.campaign_id)
-		    	where 1 ";
+		    	where p.permission_name = 'log hours' ";
 
         $qry .= $where;
 
