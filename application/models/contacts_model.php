@@ -115,8 +115,17 @@ class Contacts_model extends CI_Model
     }
 	
 	public function get_numbers($urn){
-	$qry = "select telephone_number from contact_telephone left join contacts using(contact_id) where urn = '$urn'";	
-	return $this->db->query($qry)->result_array();	
+	$qry = "select replace(telephone_number,' ','') as telephone_number from contact_telephone left join contacts using(contact_id) where urn = '$urn'";	
+	$result =  $this->db->query($qry)->result_array();	
+	foreach($result as $row){
+	$numbers[] = $row['telephone_number'];	
+	}
+	$qry = "select replace(telephone_number,' ','') as telephone_number from company_telephone left join companies using(company_id) where urn = '$urn'";	
+	$result =  $this->db->query($qry)->result_array();	
+		foreach($result as $row){
+	$numbers[] = $row['telephone_number'];	
+	}
+	return $numbers;
 	}
 	
 	public function get_contact_addresses_without_coords() {

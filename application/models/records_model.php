@@ -33,7 +33,8 @@ class Records_model extends CI_Model
 		$campaign = $_SESSION['current_campaign'];
 		$user_id = $_SESSION['user_id'];
 		if(intval($campaign)){
-		$qry = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and (outcome_id is null or nextcall < now()) and (user_id is null or user_id = '$user_id') order by CASE WHEN nextcall is null THEN 1 ELSE 2 END,
+			//changed query so that it brings in nextcalls due in the next 10 mins
+		$qry = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and (outcome_id is null or nextcall < now() and nextcall < adddate(now() interval 10 MINUTE)) and (user_id is null or user_id = '$user_id') order by CASE WHEN nextcall is null THEN 2 ELSE 1 END,
          nextcall limit 1";
 		$urn = 0;
 		if($this->db->query($qry)->num_rows()){
@@ -899,6 +900,13 @@ class Records_model extends CI_Model
     {
         $this->db->where("attachment_id", $id);
         $this->db->delete("attachments");
+    }
+	
+	    public function get_webforms($id)
+    {
+        $this->db->where("campaign_id", $id);
+		$this->db->join("webforms_to_campaigns", "webforms.webform_id = webforms_to_campaigns.webform_id","LEFT");
+        return $this->db->get("webforms")->result_array();
     }
 }
 ?>

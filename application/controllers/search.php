@@ -142,7 +142,8 @@ $this->_campaigns = campaign_access_dropdown();
 			"parked" => "parked_code",
 			"cross" => "cross_transfers.campaign_id",
 			"alldials" => "alldials", //this gets all dials to a specific campaign including cross transfers
-			"transfers" => "transfers" //this gets the transfers + cross transfers
+			"transfers" => "transfers", //this gets the transfers + cross transfers
+			"time" => "hour(contact)"
         );
         
         $search_fields_2 = array(

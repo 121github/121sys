@@ -18,7 +18,7 @@ class Import extends CI_Controller
 
 //clean up database if the import fails
 public function undo_changes(){
-if($this->db->Import_model->undo_changes()){
+if($this->Import_model->undo_changes()){
 echo json_encode(array("success"=>true));	
 }
 }

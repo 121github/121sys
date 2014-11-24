@@ -21,7 +21,7 @@ public function find_calls(){
 	//connect to 121backup which has the database of call recordings in a db named "recordings"
 //the urn we will be searching for - posted via ajax
 $urn = $this->input->post('urn');
-$numbers =  $this->Contacts_model->get_numbers($urn);
+$numbers =  $this->Recordings_model->get_numbers($urn);
 $calls =  $this->Records_model->get_calls($urn);
 $number_list = "''";
 $qry = "";
@@ -40,7 +40,7 @@ $number_list = rtrim($number_list,",");
 $db2 = $this->load->database('121backup',true);
 foreach($calls as $row){
 $calltime = $row['contact'];
-$qry .= "select call_id,servicename,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls left join parties on calls.id=parties.call_id where name <> '' and replace(servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and date(starttime) = date('$calltime') group by call_id union ";
+$qry .= "select call_id,servicename,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls left join parties on calls.id=parties.call_id where name <> '' and replace(servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by call_id union ";
 }
 $qry = rtrim($qry,"union ");
 $array = $db2->query($qry)->result_array();
@@ -69,7 +69,7 @@ else
 $path = "http://www.121leads.co.uk:8034/";		
 }
 //unit34 path
-$conversion_path = $path."file_convert.aspx?filename=$file&id=$id";
+$conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
 $response = file_get_contents($conversion_path);
 $this->firephp->log($response);
 $u_agent = $_SERVER['HTTP_USER_AGENT'];

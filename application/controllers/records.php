@@ -130,6 +130,7 @@ class Records extends CI_Controller
         $progress_options = $this->Form_model->get_progress_descriptions();
         $outcomes         = $this->Records_model->get_outcomes($campaign_id);
         $xfers            = $this->Records_model->get_xfers($campaign_id);
+
 		if(isset($details['contacts'])){
         foreach ($details['contacts'] as $contact_id => $contact_data) {
             $survey_options["contacts"][$contact_id] = $contact_data["name"]["fullname"];
@@ -175,6 +176,12 @@ class Records extends CI_Controller
             )
         );
         
+				        //if appointment setting is on we need the available addresses
+        if (in_array(14, $features)) {
+            $webforms= $this->Records_model->get_webforms($campaign_id);
+            $data['webforms'] = $webforms;
+        }
+		
 		        //if appointment setting is on we need the available addresses
         if (in_array(10, $features)) {
             $addresses         = $this->Records_model->get_addresses($urn);
