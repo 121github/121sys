@@ -107,7 +107,9 @@
 			                    <div class="accordion-inner">
 			                        <a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>By Date</a>
 			                    </div>
-
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>reports/timetransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>By Time</a>
+                                </div>
 			                </div>
 			            </div>
 			        </div>

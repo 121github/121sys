@@ -687,15 +687,178 @@ class Reports extends CI_Controller
     //this controller sends the transfer daily comparision report data back the page in JSON format. It ran when the page loads and any time the filter is changed
     public function dailytransfer_data()
     {
-         if ($this->input->is_ajax_request()) {
+        if ($this->input->is_ajax_request()) {
+            $data = array();
+
+            $form = $this->input->post();
+            $form["date_from"] = ($this->input->post("date_from")) ? $this->input->post("date_from") : date('Y-m-d', strtotime("2014-07-02"));
+            $form["date_to"] = ($this->input->post("date_to")) ? $this->input->post("date_to") : date('Y-m-d');
+
+            $results = $this->Report_model->get_daily_transfer_data($form);
+
+            $date_from_search = $form["date_from"];
+            $date_to_search = $form["date_to"];
+            $agent_search = $form["agent"];
+            $campaign_search = $form["campaign"];
+            $team_search = $form["team"];
+            $source_search = $form["source"];
+            $group_by_field = $form["view"];
+
+            $group_by_details["user_id"] = array("name" => "name", "field" => "h.user_id", "url" => "user");
+            $group_by_details["team_id"] = array("name" => "team_name", "field" => "h.team_id", "url" => "team");
+            $group_by_details["source_id"] = array("name" => "source_name", "field" => "r.source_id", "url" => "source");
+            $group_by_details["campaign_id"] = array("name" => "campaign_name", "field" => "h.campaign_id", "url" => "campaign");
+
+            $aux = array();
+            foreach ($results as $row) {
+                if ($row['total_dials']) {
+                    $aux[$row['date']]['name'] = "All";
+                    $aux[$row['date']]['duration'] = $row['duration'];
+                    $aux[$row['date']]['transfers'] = $row['transfer_count'];
+                    $aux[$row['date']]['cross_transfers'] = $row['cross_count'];
+                    $aux[$row['date']]['total_dials'] = $row['total_dials'];
+                    $aux[$row['date']]['url'] = "";
+
+                    if (!empty($group_by_field)) {
+                        $aux[$row['date']]['name'] = $row['name'];
+                        $aux[$row['date']]['id'] = $row['id'];
+                        $aux[$row['date']]['url'] = "/" . $group_by_details[$group_by_field]['url'] . "/" . $row['id'];
+                    }
+                }
+            }
+
+            $totalTransfers = 0;
+            $totalCrossTransfers = 0;
+            $totalDials = 0;
+            $totalDuration = 0;
+
+            $url = base_url() . "search/custom/history";
+            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
+            $url .= (!empty($team_search) ? "/team/$team_search" : "");
+            $url .= (!empty($source_search) ? "/source/$source_search" : "");
+
+            foreach ($aux as $date => $row) {
+                $transfers = (array_key_exists('transfers', $row)) ? $row['transfers'] : 0;
+                $crossTransfers = (array_key_exists('cross_transfers', $row)) ? $row['cross_transfers'] : 0;
+
+                $urlDate = $url . "/contact/" . $date . $row['url'];
+                if (empty($campaign_search)) {
+                    $transfersUrl = $urlDate . "/outcome/Transfer";
+                } else {
+                    $transfersUrl = $urlDate . "/outcome/Transfer/campaign/$campaign_search";
+                }
+                if (empty($campaign_search)) {
+                    $crossTransfersUrl = $urlDate . "/outcome/Cross Transfer";
+                } else {
+                    $crossTransfersUrl = $urlDate . "/cross/$campaign_search";
+                }
+                if (empty($campaign_search)) {
+                    $totalTransfersUrl = $urlDate . "/outcome_1/Transfer/outcome_2/Cross Transfer";
+                } else {
+                    $totalTransfersUrl = $urlDate . "/transfers/$campaign_search";
+                }
+                if (empty($campaign_search)) {
+                    $allDialsUrl = $urlDate . "/alldials/all";
+                } else {
+                    $allDialsUrl = $urlDate . "/alldials/$campaign_search";
+                }
+
+
+                $data[] = array(
+                    "date" => $date,
+                    "name" => $row['name'],
+                    "transfers" => $transfers,
+                    "transfers_url" => $transfersUrl,
+                    "cross_transfers" => $crossTransfers,
+                    "cross_transfers_url" => $crossTransfersUrl,
+                    "total_transfers" => $transfers + $crossTransfers,
+                    "total_transfers_url" => $totalTransfersUrl,
+                    "total_dials" => $row['total_dials'],
+                    "total_dials_url" => $urlDate,
+                    "duration" => ($row['duration']) ? $row['duration'] : 0,
+                    "rate" => ($row['duration'] > 0) ? round(($transfers + $crossTransfers) / ($row['duration'] / 3600), 3) : 0
+                );
+
+
+                $totalTransfers += $transfers;
+                $totalCrossTransfers += $crossTransfers;
+                $totalDials += $row['total_dials'];
+                $totalDuration += $row['duration'];
+            }
+
+            $totalTransfersPercent = number_format(($totalTransfers * 100) / $totalDials, 2) . '%';
+            $totalCrossTransfersPercent = number_format(($totalCrossTransfers * 100) / $totalDials, 2) . '%';
+            $totalPercent = number_format((($totalTransfers + $totalCrossTransfers) * 100) / $totalDials, 2) . '%';
+
+            array_push($data, array(
+                "date" => "TOTAL",
+                "name" => "",
+                "transfers" => $totalTransfers . " (" . $totalTransfersPercent . "%)",
+                "transfers_url" => $url . "/outcome/Transfer",
+                "cross_transfers" => $totalCrossTransfers . " (" . $totalCrossTransfersPercent . "%)",
+                "cross_transfers_url" => $url . "/outcome/Cross Transfer",
+                "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . "%)",
+                "total_transfers_url" => $url . "/outcome/Transfer" . "/outcome/Cross Transfer",
+                "total_dials" => $totalDials,
+                "total_dials_url" => $url,
+                "duration" => $totalDuration,
+                "rate" => ($totalDuration > 0) ? round(($totalTransfers + $totalCrossTransfers) / ($totalDuration / 3600), 3) : 0
+            ));
+
+            echo json_encode(array(
+                "success" => true,
+                "data" => $data
+            ));
+        }
+    }
+
+    //this is the controller loads the initial view for the transfer time comparision report dashboard
+    public function timetransfer()
+    {
+
+        $campaigns    = $this->Form_model->get_user_campaigns();
+        $teamManagers = $this->Form_model->get_teams();
+        $agents       = $this->Form_model->get_agents();
+        $sources      = $this->Form_model->get_sources();
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Reports',
+            'title' => 'Reports | Individual Time Comparison',
+            'page' => array(
+                'reports' => 'transfers',
+                'inner' => 'timetransfer'
+            ),
+            'javascript' => array(
+                'charts.js',
+                'report/timetransfer.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'campaigns' => $campaigns,
+            'sources' => $sources,
+            'agents' => $agents,
+            'team_managers' => $teamManagers,
+            'css' => array(
+                'dashboard.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/timetransfer.php', $data);
+    }
+
+    //this controller sends the transfer time comparision report data back the page in JSON format. It ran when the page loads and any time the filter is changed
+    public function timetransfer_data()
+    {
+        if ($this->input->is_ajax_request()) {
             $data    = array();
 
             $form = $this->input->post();
             $form["date_from"] = ($this->input->post("date_from"))?$this->input->post("date_from"):date('Y-m-d',strtotime("2014-07-02"));
             $form["date_to"] = ($this->input->post("date_to"))?$this->input->post("date_to"):date('Y-m-d');
 
-            $results = $this->Report_model->get_daily_transfer_data($form);
-            
+            $results = $this->Report_model->get_time_transfer_data($form);
+
             $date_from_search = $form["date_from"];
             $date_to_search   = $form["date_to"];
             $agent_search      = $form["agent"];
@@ -703,95 +866,94 @@ class Reports extends CI_Controller
             $team_search  = $form["team"];
             $source_search  = $form["source"];
             $group_by_field  = $form["view"];
-			
+
             $group_by_details["user_id"] = array("name"=>"name","field"=>"h.user_id","url"=>"user");
             $group_by_details["team_id"] = array("name"=>"team_name","field"=>"h.team_id","url"=>"team");
             $group_by_details["source_id"] = array("name"=>"source_name","field"=>"r.source_id","url"=>"source");
             $group_by_details["campaign_id"] = array("name"=>"campaign_name","field"=>"h.campaign_id","url"=>"campaign");
-			
+
             $aux = array();
             foreach ($results as $row) {
-				if($row['total_dials']){
-				$aux[$row['date']]['name'] = "All";
-				$aux[$row['date']]['duration'] = $row['duration'];
-				$aux[$row['date']]['transfers'] = $row['transfer_count'];
-				$aux[$row['date']]['cross_transfers'] = $row['cross_count'];
-				$aux[$row['date']]['total_dials'] = $row['total_dials'];
-				$aux[$row['date']]['url']  = "";
-				
-				if(!empty($group_by_field)){
-				$aux[$row['date']]['name'] = $row['name'];
-				$aux[$row['date']]['id'] = $row['id'];
-				$aux[$row['date']]['url'] = "/".$group_by_details[$group_by_field]['url']."/".$row['id'];
-				}
-				}
+                if($row['total_dials']){
+                    $aux[$row['time']]['name'] = "All";
+                    $aux[$row['time']]['transfers'] = $row['transfer_count'];
+                    $aux[$row['time']]['cross_transfers'] = $row['cross_count'];
+                    $aux[$row['time']]['total_dials'] = $row['total_dials'];
+                    $aux[$row['time']]['url']  = "";
+
+                    if(!empty($group_by_field)){
+                        $aux[$row['time']]['name'] = $row['name'];
+                        $aux[$row['time']]['id'] = $row['id'];
+                        $aux[$row['time']]['url'] = "/".$group_by_details[$group_by_field]['url']."/".$row['id'];
+                    }
+                }
             }
-				
+
             $totalTransfers      = 0;
             $totalCrossTransfers = 0;
             $totalDials          = 0;
             $totalDuration		 = 0;
-            
+
             $url = base_url() . "search/custom/history";
             $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
+            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+            $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
+            $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
             $url .= (!empty($source_search) ? "/source/$source_search" : "");
-            
-            foreach ($aux as $date => $row) {
-            	$transfers      = (array_key_exists('transfers', $row)) ? $row['transfers'] : 0;
-	            $crossTransfers = (array_key_exists('cross_transfers', $row)) ? $row['cross_transfers'] : 0;
-	            
-	            $urlDate = $url."/contact/".$date.$row['url'];
-				if(empty($campaign_search)){
-				$transfersUrl = $urlDate."/outcome/Transfer";	
-				} else {
-	            $transfersUrl = $urlDate."/outcome/Transfer/campaign/$campaign_search";
-				}
-				if(empty($campaign_search)){
-	            $crossTransfersUrl = $urlDate."/outcome/Cross Transfer";
-				} else {
-				$crossTransfersUrl = $urlDate."/cross/$campaign_search";	
-				}
-				if(empty($campaign_search)){
-	            $totalTransfersUrl = $urlDate."/outcome_1/Transfer/outcome_2/Cross Transfer";
-				} else {
-				$totalTransfersUrl = $urlDate."/transfers/$campaign_search";	
-				}
-				if(empty($campaign_search)){
-	            $allDialsUrl = $urlDate."/alldials/all";
-				} else {
-				$allDialsUrl = $urlDate."/alldials/$campaign_search";	
-				}
 
-                
+            foreach ($aux as $time => $row) {
+                $transfers      = (array_key_exists('transfers', $row)) ? $row['transfers'] : 0;
+                $crossTransfers = (array_key_exists('cross_transfers', $row)) ? $row['cross_transfers'] : 0;
+
+                $urlTime = $url."/time/".$time.$row['url'];
+                if(empty($campaign_search)){
+                    $transfersUrl = $urlTime."/outcome/Transfer";
+                } else {
+                    $transfersUrl = $urlTime."/outcome/Transfer/campaign/$campaign_search";
+                }
+                if(empty($campaign_search)){
+                    $crossTransfersUrl = $urlTime."/outcome/Cross Transfer";
+                } else {
+                    $crossTransfersUrl = $urlTime."/cross/$campaign_search";
+                }
+                if(empty($campaign_search)){
+                    $totalTransfersUrl = $urlTime."/outcome_1/Transfer/outcome_2/Cross Transfer";
+                } else {
+                    $totalTransfersUrl = $urlTime."/transfers/$campaign_search";
+                }
+                if(empty($campaign_search)){
+                    $allDialsUrl = $urlTime."/alldials/all";
+                } else {
+                    $allDialsUrl = $urlTime."/alldials/$campaign_search";
+                }
+
+
                 $data[]         = array(
-                    "date" => $date,
+                    "time" => $time.":00:00",
                     "name" => $row['name'],
                     "transfers" => $transfers,
-	            	"transfers_url" => $transfersUrl,
+                    "transfers_url" => $transfersUrl,
                     "cross_transfers" => $crossTransfers,
-	            	"cross_transfers_url" => $crossTransfersUrl,
+                    "cross_transfers_url" => $crossTransfersUrl,
                     "total_transfers" => $transfers + $crossTransfers,
-	            	"total_transfers_url" => $totalTransfersUrl,
+                    "total_transfers_url" => $totalTransfersUrl,
                     "total_dials" => $row['total_dials'],
-	            	"total_dials_url" => $urlDate,
-                    "duration" => ($row['duration'])?$row['duration']:0,
-                    "rate" => ($row['duration']>0)?round(($transfers + $crossTransfers)/($row['duration']/3600),3):0
+                    "total_dials_url" => $urlTime
                 );
-				
+
 
                 $totalTransfers += $transfers;
                 $totalCrossTransfers += $crossTransfers;
                 $totalDials += $row['total_dials'];
-                $totalDuration += $row['duration'];
             }
-            
-           $totalTransfersPercent      = number_format(($totalTransfers * 100) / $totalDials, 2) . '%';
-           $totalCrossTransfersPercent = number_format(($totalCrossTransfers * 100) / $totalDials, 2) . '%';
-           $totalPercent               = number_format((($totalTransfers + $totalCrossTransfers) * 100) / $totalDials, 2) . '%';
+
+            $totalTransfersPercent      = number_format(($totalTransfers * 100) / $totalDials, 2) . '%';
+            $totalCrossTransfersPercent = number_format(($totalCrossTransfers * 100) / $totalDials, 2) . '%';
+            $totalPercent               = number_format((($totalTransfers + $totalCrossTransfers) * 100) / $totalDials, 2) . '%';
 
             array_push($data, array(
-                "date" => "TOTAL",
+                "time" => "TOTAL",
                 "name" => "",
                 "transfers" => $totalTransfers . " (" . $totalTransfersPercent . "%)",
                 "transfers_url" => $url."/outcome/Transfer",
@@ -800,11 +962,9 @@ class Reports extends CI_Controller
                 "total_transfers" => ($totalTransfers + $totalCrossTransfers) . " (" . $totalPercent . "%)",
                 "total_transfers_url" => $url."/outcome/Transfer"."/outcome/Cross Transfer",
                 "total_dials" => $totalDials,
-                "total_dials_url" => $url,
-                "duration" => $totalDuration,
-                "rate" => ($totalDuration>0)?round(($totalTransfers + $totalCrossTransfers)/($totalDuration/3600),3):0
+                "total_dials_url" => $url
             ));
-            
+
             echo json_encode(array(
                 "success" => true,
                 "data" => $data
