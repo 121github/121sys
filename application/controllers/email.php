@@ -193,14 +193,16 @@ class Email extends CI_Controller
         }
 
 		
-		$webform = $this->Email_model->get_webform_id();
-		//if a webform placeholder is in the email create the link
-		$url = base_url()."webform/".$placeholder_data[0]['campaign_id']."/".$urn."/".$webform."/".$email_id;
-		$form_to_send['body'] = str_replace("[webform]",$url,$form_to_send['body']);
+		
 		
     	//Add the tracking image to know if the email is read
         $form_to_send = $form;
         $form_to_send['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?id=".$email_id."'>";
+
+		$webform = $this->Email_model->get_webform_id($placeholder_data[0]['campaign_id']);
+		//if a webform placeholder is in the email create the link
+		$url = "http://www.121leads.co.uk/121sys/webforms/remote/".$placeholder_data[0]['campaign_id']."/".$urn."/".$webform."/".$email_id;
+		$form_to_send['body'] = str_replace("[webform]",$url,$form_to_send['body']);
 
         //Send the email
         $email_sent = $this->send($form_to_send);

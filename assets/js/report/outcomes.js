@@ -131,6 +131,8 @@ var outcome = {
 								+ 	"<a href='" + val.outcomes_url + "'>" + val.outcomes + "</a>"
 								+ "</td><td class='total_dials'>"
 								+ 	"<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
+									+ "</td><td>"+
+										Math.round((val.outcomes/val.total_dials)*100)+'%'
 									+ "</td><td class='duration' style='duration'>"
 									+ ((val.group != "time")?duration:"-")
 								+ "</td><td class='rate' style='rate'>"

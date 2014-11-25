@@ -93,6 +93,7 @@
 						<th>Name</th>
 						<th id="outcome-name"></th>
 						<th>Total Dials</th>
+                        <th>%</th>
 						<th>Duration</th>
 						<th>Rate (per hour)</th>
 					</tr>
