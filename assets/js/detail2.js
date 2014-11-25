@@ -1107,7 +1107,7 @@ var record = {
         create: function() {
             var pagewidth = $(window).width() / 2;
             var moveto = pagewidth - 250;
-            $('<div class="modal-backdrop in"></div>').appendTo(document.body).hide().fadeIn();
+            $('<div class="modal-backdrop email in"></div>').appendTo(document.body).hide().fadeIn();
             $('.email-container').find('.edit-panel').show();
             $('.email-content').show();
             $('.email-container').fadeIn()
