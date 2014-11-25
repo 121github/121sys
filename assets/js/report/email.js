@@ -129,7 +129,7 @@ var email = {
 
 						$tbody
 						.append("<tr class='"+success+"' style='"+style+"'><td class='id'>"
-									+ val.id
+									+ val.id + "<span class='sql' style='display:none'>" + val.sql + "</span>"
 								+ "</td><td class='name'>"
 									+ val.name
 								+ "</td><td class='emails_sent'>"
@@ -184,7 +184,7 @@ var email = {
             url: helper.baseUrl + "email/get_emails_by_filter",
             type: "POST",
             dataType: "JSON",
-            data: $('.filter-form').serialize()+'&id='+btn.closest('tr').find('.id').text()+'&sent='+sent+'&read='+read
+            data: $('.filter-form').serialize()+'&id='+btn.closest('tr').find('.sql').text()+'&sent='+sent+'&read='+read
         }).done(function(response) {
             var $thead = $('.email-all-table').find('thead');
             $thead.empty();

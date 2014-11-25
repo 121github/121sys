@@ -72,7 +72,7 @@ class Report_model extends CI_Model
         
 		$qry .= $where;
         $qry .= " group by history.outcome_id order by count desc ";
-		//$this->firephp->log($qry);
+
         return $this->db->query($qry)->result_array();
     }
     
@@ -125,8 +125,8 @@ class Report_model extends CI_Model
 		(select count(*) cross_count,ct.campaign_id from history h $joins left join cross_transfers ct using(history_id) where h.outcome_id = 71 $crosswhere group by ct.campaign_id) crosstrans on crosstrans.campaign_id = h.campaign_id left join 
 		(select count(*) dials,h.campaign_id from history h $joins where h.outcome_id <> 71 $where group by campaign_id) d on d.campaign_id = h.campaign_id group by h.campaign_id "
     	;
-		$this->firephp->log($qry);
-    	return $this->db->query($qry)->result_array();
+
+        return $this->db->query($qry)->result_array();
     }
     
 	public function get_outcome_data($options)
@@ -196,7 +196,7 @@ class Report_model extends CI_Model
         where 1 $where
 		group by $group_by "
     	;
-		$this->firephp->log($qry);
+
     	return $this->db->query($qry)->result_array();
     }
 	
@@ -292,15 +292,16 @@ class Report_model extends CI_Model
     	if (!empty($source)) {
     		$where .= " and r.source_id = '$source' ";
     	}
-    $joins = " left join users u using(user_id) left join teams on h.team_id = teams.team_id left join records r using(urn) left join data_sources using(source_id) left join campaigns c on c.campaign_id = h.campaign_id ";
+
+        $joins = " left join users u using(user_id) left join teams on h.team_id = teams.team_id left join records r using(urn) left join data_sources using(source_id) left join campaigns c on c.campaign_id = h.campaign_id ";
 	
     	$qry = "select date(contact) `date` $select,if(transfer_count is null,0,transfer_count) transfer_count,if(cross_count is null,0,cross_count) cross_count,d.dials+if(cross_count is null,'0',cross_count) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h $joins left join 
 		(select count(*) transfer_count,date(contact) `date` $select from history h $joins where h.outcome_id = 70 $where group by date(contact) $group_by) transfers on transfers.`date` = date(h.contact) $transfer_join left join 
 		(select count(*) cross_count,date(contact) `date` $select from history h $joins left join cross_transfers ct using(history_id) where h.outcome_id = 71 $crosswhere group by date(contact) $group_by) crosstrans on crosstrans.`date` = date(h.contact) $cross_transfers_join left join 
 		(select count(*) dials,date(contact) `date` $select from history h $joins where h.outcome_id <> 71 $where group by date(contact) $group_by) d on d.`date` = date(h.contact) $all_dials_join group by date(h.contact) $group_by having total_dials is not null"
     	;
-    			//$this->firephp->log($qry); 
-    			return $this->db->query($qry)->result_array();
+
+        return $this->db->query($qry)->result_array();
     }
 
     public function get_time_transfer_data($options)
@@ -358,7 +359,7 @@ class Report_model extends CI_Model
 		(select count(*) cross_count,hour(contact) `time` $select from history h $joins left join cross_transfers ct using(history_id) where h.outcome_id = 71 $crosswhere group by hour(contact) $group_by) crosstrans on crosstrans.`time` = hour(h.contact) $cross_transfers_join left join
 		(select count(*) dials,hour(contact) `time` $select from history h $joins where h.outcome_id <> 71 $where group by hour(contact) $group_by) d on d.`time` = hour(h.contact) $all_dials_join group by hour(h.contact) $group_by having total_dials is not null"
         ;
-        //$this->firephp->log($qry);
+
         return $this->db->query($qry)->result_array();
     }
 
@@ -366,7 +367,7 @@ class Report_model extends CI_Model
     {
         if($options['group']=="agent"){
             $group_by = "eh.user_id";
-            $id = "eh.user_id";
+            $id = "eh.user_id `sql`, eh.user_id";
             $name = "u.name";
         }else if($options['group']=="date"){
             $group_by = "date(eh.sent_date)";
@@ -378,7 +379,7 @@ class Report_model extends CI_Model
             $name = "'All'";
         } else {
             $group_by = "c.campaign_id";
-            $id = "c.campaign_id";
+            $id = "c.campaign_id `sql`, c.campaign_id";
             $name = "campaign_name";
         }
 
@@ -415,9 +416,10 @@ class Report_model extends CI_Model
         }
 
         $joins = "
-          left join campaigns c ON (c.campaign_id IN (select h.campaign_id from history h where h.urn = eh.urn))
-          left join users u ON (u.user_id = eh.user_id)
-          left join records r ON (r.urn = eh.urn) ";
+          inner join history h ON (h.urn = eh.urn)
+          inner join campaigns c ON (c.campaign_id = h.campaign_id)
+          inner join users u ON (u.user_id = eh.user_id)
+          inner join records r ON (r.urn = eh.urn)  ";
 
         $qry = "select $id id,
                 $name name,

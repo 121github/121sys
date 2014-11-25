@@ -59,100 +59,135 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       <div class="navbar-collapse collapse pull-right">
         <ul class="nav navbar-nav">
           <?php if(isset($_SESSION['user_id'])): ?>
-          <?php if(in_array("admin nav",$_SESSION['permissions'])){ ?>
-          <li class="dropdown <?php if($this->uri->segment(1)=="admin"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Admin <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a class="trigger right-caret">Data</a>
-                    <ul class="dropdown-menu sub-menu">
-                        <li> <a href="<?php echo base_url() ?>import" <?php echo @($inner=='import'?"class='active'":"") ?>>Import</a></li>
-                        <li><a href="<?php echo base_url() ?>exports" <?php echo @($inner=='export'?"class='active'":"") ?>>Export</a></li>
-                        <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>
-                            <li><a href="<?php echo base_url() ?>data/management" <?php echo @($inner=='management'?"class='active'":"") ?>>Data Management</a></li>
+              <?php if(in_array("admin nav",$_SESSION['permissions'])){ ?>
+                  <li class="dropdown <?php if($this->uri->segment(1)=="admin"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Admin <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="trigger right-caret">Data</a>
+                            <ul class="dropdown-menu sub-menu">
+                                <li> <a href="<?php echo base_url() ?>import" <?php echo @($inner=='import'?"class='active'":"") ?>>Import</a></li>
+                                <li><a href="<?php echo base_url() ?>exports" <?php echo @($inner=='export'?"class='active'":"") ?>>Export</a></li>
+                                <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>
+                                    <li><a href="<?php echo base_url() ?>data/management" <?php echo @($inner=='management'?"class='active'":"") ?>>Data Management</a></li>
+                                <?php } ?>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="trigger right-caret">Campaigns</a>
+                            <ul class="dropdown-menu sub-menu">
+                                <?php if(in_array("campaign access",$_SESSION['permissions'])){ ?>
+                                    <li><a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($inner=='campaign'?"class='active'":"") ?>>Campaign Setup</a></li>
+                                <?php } ?>
+                                <li><a href="<?php echo base_url() ?>admin/campaign_fields" <?php echo @($inner=='custom_fields'?"class='active'":"") ?>>Campaign Fields</a></li>
+                                <?php if(in_array("edit templates",$_SESSION['permissions'])){ ?>
+                                    <li><a href="<?php echo base_url() ?>templates" <?php echo @($inner=='templates'?"class='active'":"") ?>>Templates</a></li>
+                                <?php } ?>
+                                <?php if(in_array("edit scripts",$_SESSION['permissions'])){ ?>
+                                    <li><a href="<?php echo base_url() ?>scripts" <?php echo @($inner=='scripts'?"class='active'":"") ?>>Scripts</a></li>
+                                <?php } ?>
+                            </ul>
+                        </li>
+                        <?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
+                            <li><a href="<?php echo base_url() ?>admin/users" <?php echo @($admin=='users'?"class='active'":"") ?>>Users</a></li>
+                            <li><a href="<?php echo base_url() ?>admin/roles" <?php echo @($admin=='roles'?"class='active'":"") ?>>Roles</a></li>
+                            <li><a href="<?php echo base_url() ?>admin/teams" <?php echo @($admin=='teams'?"class='active'":"") ?>>Teams</a></li>
+                            <li><a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a></li>
                         <?php } ?>
+                        <?php if(in_array("view logs",$_SESSION['permissions'])){ ?>
+                            <li><a href="<?php echo base_url() ?>admin/logs" <?php echo @($admin=='logs'?"class='active'":"") ?>>Logs</a></li>
+                        <?php } ?>
+                        <li>
+                            <a class="trigger right-caret">Hours</a>
+                            <ul class="dropdown-menu sub-menu">
+                                <?php if(in_array("view hours",$_SESSION['permissions'])){ ?>
+                                <li><a href="<?php echo base_url() ?>hour/default_hours" <?php echo @($inner=='default_hours'?"class='active'":"") ?>>Default Hours</a></li>
+                                <li><a href="<?php echo base_url() ?>hour/hours" <?php echo @($inner=='hours'?"class='active'":"") ?>>Agent Hours</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="trigger right-caret">Time</a>
+                            <ul class="dropdown-menu sub-menu">
+                                <li><a href="<?php echo base_url() ?>time/default_time" <?php echo @($inner=='default_time'?"class='active'":"") ?>>Default Time</a></li>
+                                <li><a href="<?php echo base_url() ?>time/agent_time" <?php echo @($inner=='agent_time'?"class='active'":"") ?>>Agent Time</a></li>
+                                <?php } ?>
+                            </ul>
+                        </li>
                     </ul>
-                </li>
-                <li>
-                    <a class="trigger right-caret">Campaigns</a>
-                    <ul class="dropdown-menu sub-menu">
-                        <?php if(in_array("campaign access",$_SESSION['permissions'])){ ?>
-                            <li><a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($inner=='campaign'?"class='active'":"") ?>>Campaign Setup</a></li>
-                        <?php } ?>
-                        <li><a href="<?php echo base_url() ?>admin/campaign_fields" <?php echo @($inner=='custom_fields'?"class='active'":"") ?>>Campaign Fields</a></li>
-                        <?php if(in_array("edit templates",$_SESSION['permissions'])){ ?>
-                            <li><a href="<?php echo base_url() ?>templates" <?php echo @($inner=='templates'?"class='active'":"") ?>>Templates</a></li>
-                        <?php } ?>
-                        <?php if(in_array("edit scripts",$_SESSION['permissions'])){ ?>
-                            <li><a href="<?php echo base_url() ?>scripts" <?php echo @($inner=='scripts'?"class='active'":"") ?>>Scripts</a></li>
-                        <?php } ?>
-                    </ul>
-                </li>
-                <?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
-                    <li><a href="<?php echo base_url() ?>admin/users" <?php echo @($admin=='users'?"class='active'":"") ?>>Users</a></li>
-                    <li><a href="<?php echo base_url() ?>admin/roles" <?php echo @($admin=='roles'?"class='active'":"") ?>>Roles</a></li>
-                    <li><a href="<?php echo base_url() ?>admin/teams" <?php echo @($admin=='teams'?"class='active'":"") ?>>Teams</a></li>
-                    <li><a href="<?php echo base_url() ?>admin/groups" <?php echo @($admin=='groups'?"class='active'":"") ?>>Groups</a></li>
-                <?php } ?>
-                <?php if(in_array("view logs",$_SESSION['permissions'])){ ?>
-                    <li><a href="<?php echo base_url() ?>admin/logs" <?php echo @($admin=='logs'?"class='active'":"") ?>>Logs</a></li>
-                <?php } ?>
-                <li>
-                    <a class="trigger right-caret">Hours</a>
-                    <ul class="dropdown-menu sub-menu">
-                        <?php if(in_array("view hours",$_SESSION['permissions'])){ ?>
-                        <li><a href="<?php echo base_url() ?>hour/default_hours" <?php echo @($inner=='default_hours'?"class='active'":"") ?>>Default Hours</a></li>
-                        <li><a href="<?php echo base_url() ?>hour/hours" <?php echo @($inner=='hours'?"class='active'":"") ?>>Agent Hours</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="trigger right-caret">Time</a>
-                    <ul class="dropdown-menu sub-menu">
-                        <li><a href="<?php echo base_url() ?>time/default_time" <?php echo @($inner=='default_time'?"class='active'":"") ?>>Default Time</a></li>
-                        <li><a href="<?php echo base_url() ?>time/agent_time" <?php echo @($inner=='agent_time'?"class='active'":"") ?>>Agent Time</a></li>
-                        <?php } ?>
-                    </ul>
-                </li>
-            </ul>
-          </li>
-          <?php } ?>
-          <li class="dropdown <?php if($this->uri->segment(1)=="dashboard"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Dashboard <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="<?php echo base_url(); ?>dashboard">Overview</a></li>
-              <?php if(in_array("client dash",$_SESSION['permissions'])){ ?>
-              <li><a href="<?php echo base_url(); ?>dashboard/client">Client Dash</a></li>
+                  </li>
               <?php } ?>
-              <?php if(in_array("agent dash",$_SESSION['permissions'])){ ?>
-              <li><a href="<?php echo base_url(); ?>dashboard/agent">Agent Dash</a></li>
+              <?php if(in_array("view reports",$_SESSION['permissions'])){ ?>
+                  <li class="dropdown <?php if($this->uri->segment(1)=="report"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Reports <b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                          <li><a href="<?php echo base_url() ?>reports/answers" <?php echo @($reports=='answers'?"class='active'":"") ?>>Survey Answers</a></li>
+                          <li><a href="<?php echo base_url() ?>reports/activity" <?php echo @($reports=='activity'?"class='active'":"") ?>>Activity</a></li>
+                          <li>
+                              <a class="trigger right-caret">Transfers</a>
+                              <ul class="dropdown-menu sub-menu">
+                                  <li> <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>By Campaign</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/agenttransfer" <?php echo @($inner=='agenttransfer'?"class='active'":"") ?>>By Agent</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>By Date</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/timetransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>By Time</a></li>
+                              </ul>
+                          </li>
+                          <li>
+                              <a class="trigger right-caret">Outcomes</a>
+                              <ul class="dropdown-menu sub-menu">
+                                  <li><a href="<?php echo base_url() ?>reports/outcomes/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/outcomes/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/outcomes/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/outcomes/time/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Time</a></li>
+                              </ul>
+                          </li>
+                          <li>
+                              <a class="trigger right-caret">Emails</a>
+                              <ul class="dropdown-menu sub-menu">
+                                  <li> <a href="<?php echo base_url() ?>reports/email/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/email/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/email/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a></li>
+                                  <li><a href="<?php echo base_url() ?>reports/email/time/1" <?php echo @($inner=='time'?"class='active'":"") ?>>By Time</a></li>
+                              </ul>
+                          </li>
+                      </ul>
+                  </li>
               <?php } ?>
-              <?php if(in_array("management dash",$_SESSION['permissions'])){ ?>
-              <li><a href="<?php echo base_url(); ?>dashboard/management">Management Dash</a></li>
+              <li class="dropdown <?php if($this->uri->segment(1)=="dashboard"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Dashboard <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo base_url(); ?>dashboard">Overview</a></li>
+                  <?php if(in_array("client dash",$_SESSION['permissions'])){ ?>
+                  <li><a href="<?php echo base_url(); ?>dashboard/client">Client Dash</a></li>
+                  <?php } ?>
+                  <?php if(in_array("agent dash",$_SESSION['permissions'])){ ?>
+                  <li><a href="<?php echo base_url(); ?>dashboard/agent">Agent Dash</a></li>
+                  <?php } ?>
+                  <?php if(in_array("management dash",$_SESSION['permissions'])){ ?>
+                  <li><a href="<?php echo base_url(); ?>dashboard/management">Management Dash</a></li>
+                  <?php } ?>
+                </ul>
+              </li>
+              <?php if(in_array("search records",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])||in_array("search campaigns",$_SESSION['permissions'])){ ?>
+              <li <?php if($this->uri->segment(1)=="records"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" >List Records</a></li>
+              <li <?php if($this->uri->segment(1)=="search"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
               <?php } ?>
-            </ul>
-          </li>
-          <?php if(in_array("search records",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])||in_array("search campaigns",$_SESSION['permissions'])){ ?>
-          <li <?php if($this->uri->segment(1)=="records"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" >List Records</a></li>
-          <li <?php if($this->uri->segment(1)=="search"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
-          <?php } ?>
-          <?php if(isset($_SESSION['current_campaign'])&&in_array("set call outcomes",$_SESSION['permissions'])){  ?>
-          <li <?php if($this->uri->segment(2)=="detail"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/detail" >Start Calling</a></li>
-          <?php } ?>
-          <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Appointments',$_SESSION['campaign_features'])&&in_array("full calendar",$_SESSION['permissions'])){ ?>
-          <li <?php if($this->uri->segment(1)=="calendar"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>calendar" >Calendar</a></li>
-          <?php } ?>
-          <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Surveys',$_SESSION['campaign_features'])&&in_array("search surveys",$_SESSION['permissions'])){ ?>
-          <li class="dropdown <?php if($this->uri->segment(1)=="survey"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Surveys <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="<?php echo base_url(); ?>survey/view">View Surveys</a></li>
-            </ul>
-          </li>
-          <?php } ?>
-          
-          <li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" style="color:#fff">Hello, <?php echo $_SESSION['name'] ?> <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="<?php echo base_url(); ?>user/account" class="hreflink">My Account</a></li>
-              <li><a href="<?php echo base_url(); ?>user/logout" class="hreflink">Logout</a></li>
-            </ul>
-          </li>
+              <?php if(isset($_SESSION['current_campaign'])&&in_array("set call outcomes",$_SESSION['permissions'])){  ?>
+              <li <?php if($this->uri->segment(2)=="detail"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/detail" >Start Calling</a></li>
+              <?php } ?>
+              <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Appointments',$_SESSION['campaign_features'])&&in_array("full calendar",$_SESSION['permissions'])){ ?>
+              <li <?php if($this->uri->segment(1)=="calendar"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>calendar" >Calendar</a></li>
+              <?php } ?>
+              <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Surveys',$_SESSION['campaign_features'])&&in_array("search surveys",$_SESSION['permissions'])){ ?>
+              <li class="dropdown <?php if($this->uri->segment(1)=="survey"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Surveys <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo base_url(); ?>survey/view">View Surveys</a></li>
+                </ul>
+              </li>
+              <?php } ?>
+
+              <li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" style="color:#fff">Hello, <?php echo $_SESSION['name'] ?> <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo base_url(); ?>user/account" class="hreflink">My Account</a></li>
+                  <li><a href="<?php echo base_url(); ?>user/logout" class="hreflink">Logout</a></li>
+                </ul>
+              </li>
           <?php endif; ?>
         </ul>
       </div>

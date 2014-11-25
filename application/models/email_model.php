@@ -24,8 +24,8 @@ class Email_model extends CI_Model
 			
 		}
 		$qry = "select records.urn,date_format(nextcall,'%d/%m/%Y %H:%i') nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,if(campaign_type_id = 1,fullname,companies.name) contact, companies.name  company,records.campaign_id,companies.description,companies.website,companies.company_number,contacts.fullname,contacts.gender,contacts.position,contacts.dob,contacts.email,if(contact_telephone.telephone_number is null,company_telephone.telephone_number,contact_telephone.telephone_number) telephone, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,if(attendees.name is null,'Sir/Madam',attendees.name) attendee $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join contacts using(urn) left join contact_telephone using(contact_id) left join company_telephone using(company_id) left join record_details using(urn) left join (select urn,max(appointment_id) max_id from appointments where urn='$urn') a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id  left join appointment_attendees using(appointment_id) left join users attendees on appointment_attendees.user_id = attendees.user_id where records.urn = '$urn'";
-		//$this->firephp->log($qry);
-		return $this->db->query($qry)->result_array();
+
+        return $this->db->query($qry)->result_array();
 		
 	}
 	
@@ -338,7 +338,6 @@ class Email_model extends CI_Model
         if (!empty($source)) {
             $where .= " and r.source_id = '$source' ";
         }
-        $this->firephp->log($sent);
         if ($sent == 0 || $sent == 1) {
             $where .= " and eh.status = '$sent' ";
         }
@@ -347,29 +346,28 @@ class Email_model extends CI_Model
         }
 
         $qry = "select eh.email_id,
-                      DATE_FORMAT(eh.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
-                      eh.subject,
-                      eh.body,
-                      eh.send_from,
-                      eh.send_to,
-                      eh.cc,
-                      eh.bcc,
-                      eh.user_id,
-                      eh.urn,
-                      eh.template_id,
-                      eh.read_confirmed,
-                      eh.read_confirmed_date,
-                      eh.status,
-                      u.*,
-                      t.*
-		    	from email_history eh
-		    	inner join users u ON (u.user_id = eh.user_id)
-		    	inner join campaigns c ON (c.campaign_id IN (select h.campaign_id from history h where h.urn = eh.urn))
-		    	inner join email_templates t ON (t.template_id = eh.template_id)
-		    	where 1 $where
-		    	order by eh.sent_date desc";
-
-        $this->firephp->log($qry);
+                  DATE_FORMAT(eh.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                  eh.subject,
+                  eh.body,
+                  eh.send_from,
+                  eh.send_to,
+                  eh.cc,
+                  eh.bcc,
+                  eh.user_id,
+                  eh.urn,
+                  eh.template_id,
+                  eh.read_confirmed,
+                  eh.read_confirmed_date,
+                  eh.status,
+                  u.*,
+                  t.*
+            from email_history eh
+            inner join users u ON (u.user_id = eh.user_id)
+            inner join history h ON (h.urn = eh.urn)
+            inner join campaigns c ON (c.campaign_id = h.campaign_id)
+            inner join email_templates t ON (t.template_id = eh.template_id)
+            where 1 $where
+            order by eh.sent_date desc";
 
         return $this->db->query($qry)->result_array();
     }
