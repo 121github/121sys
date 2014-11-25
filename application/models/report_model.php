@@ -421,12 +421,14 @@ class Report_model extends CI_Model
 
         $qry = "select $id id,
                 $name name,
-                count(*) as total_emails,
-                if(email_read_count is null,0,email_read_count) email_read_count
+                count(*) as email_sent_count,
+                if(email_read_count is null,0,email_read_count) email_read_count,
+                if(email_unsent_count is null,0,email_unsent_count) email_unsent_count
         from email_history eh
           $joins
           left join (select count(*) email_read_count,$group_by gb from email_history eh $joins where eh.read_confirmed = 1 $where group by $group_by) erc on erc.gb = $group_by
-        where 1 $where
+          left join (select count(*) email_unsent_count,$group_by gb_2 from email_history eh $joins where eh.status = 0 $where group by $group_by) euc on euc.gb_2 = $group_by
+        where eh.status=1 $where
 		group by $group_by "
         ;
 

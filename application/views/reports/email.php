@@ -27,6 +27,7 @@
                   <input type="hidden" name="team">
                    <input type="hidden" name="agent">
                   <input type="hidden" name="source">
+                  <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button></div>
                   <div class="btn-group">
                       <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Template</button>
                       <ul class="dropdown-menu pull-right" role="menu">
@@ -79,18 +80,20 @@
                   </div>
                 </form>
             </div>
-          </div>
         </div>
           <!-- /.panel-heading -->
           <div class="panel-body email-data">
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th>#</th>
-						<th>Name</th>
-						<th>Emails Read</th>
-						<th>Emails Sent</th>
-						<th>Percent</th>
+						<th class="success">#</th>
+						<th class="success">Name</th>
+                        <th class="success">Emails Sent</th>
+						<th class="success">Emails Read</th>
+                        <th class="success">Percent Read</th>
+                        <th class="danger">Emails Unsent</th>
+                        <th class="danger">Percent Unsent</th>
+
 					</tr>
 				</thead>
 				<tbody>
@@ -106,6 +109,9 @@
       </div>
       <div class="panel panel-primary email-all-container">
           <?php $this->view('email/show_all_email.php'); ?>
+      </div>
+      <div class="panel panel-primary email-view-container">
+          <?php $this->view('email/view_email.php'); ?>
       </div>
       
       <!-- /.row --> 

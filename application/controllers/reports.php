@@ -1045,19 +1045,21 @@ class Reports extends CI_Controller
 
             $aux = array();
             foreach ($results as $row) {
-                if($row['total_emails']){
+                if($row['email_sent_count']){
                     if (($group=="date")||($group=="time")){
                         $aux[$row['id']]['sql']= $row['sql'];
                     }
                     $aux[$row['id']]['name'] = $row['name'];
                     $aux[$row['id']]['emails_read'] = $row['email_read_count'];
-                    $aux[$row['id']]['total_emails'] = $row['total_emails'];
+                    $aux[$row['id']]['emails_unsent'] = $row['email_unsent_count'];
+                    $aux[$row['id']]['emails_sent'] = $row['email_sent_count'];
                 }
             }
 
-            $totalEmailsRead      = 0;
-            $totalEmails          = 0;
-            $emails_read          = 0;
+            $totalEmailsRead    = 0;
+            $totalEmailUnsent  = 0;
+            $totalEmailSent    = 0;
+            $emails_read        = 0;
             $url = base_url()."search/custom/records";
             $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
             $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
@@ -1071,6 +1073,7 @@ class Reports extends CI_Controller
             }
             foreach ($aux as $id => $row) {
                 $emails_read      = (array_key_exists('emails_read', $row)) ? $row['emails_read'] : 0;
+                $emails_unsent      = (array_key_exists('emails_unsent', $row)) ? $row['emails_unsent'] : 0;
                 //create the click through hyperlinks
                 if($group=="contact"){
                     $emailUrl = $url."/sent-email-date/".$row['sql'];
@@ -1090,16 +1093,21 @@ class Reports extends CI_Controller
                     "name" => $row['name'],
                     "emails_read" => $emails_read,
                     "emails_read_url" => $emailUrl."/emails/read",
-                    "total_emails" => $row['total_emails'],
-                    "total_emails_url" => $emailUrl."/emails/all",
-                    "percent" => (($row['total_emails']>0)?number_format(($emails_read*100)/($row['total_emails']),2):0)."%",
+                    "emails_unsent" => $emails_unsent,
+                    "emails_unsent_url" => $emailUrl."/emails/unsent",
+                    "emails_sent" => $row['emails_sent'],
+                    "emails_sent_url" => $emailUrl."/emails/sent",
+                    "percent_read" => (($row['emails_sent']>0)?number_format(($emails_read*100)/($row['emails_sent']),2):0)."%",
+                    "percent_unsent" => (($row['emails_sent']>0)?number_format(($emails_unsent*100)/($row['emails_sent']),2):0)."%",
                     "group" => $group
                 );
                 $totalEmailsRead += $emails_read;
-                $totalEmails += ($row['total_emails']?$row['total_emails']:"0");
+                $totalEmailUnsent += $emails_unsent;
+                $totalEmailSent += ($row['emails_sent']?$row['emails_sent']:"0");
             }
 
-            $totalEmailsReadPercent      = ($totalEmails)?number_format(($totalEmailsRead * 100) / $totalEmails, 2):0;
+            $totalEmailsReadPercent      = ($totalEmailSent)?number_format(($totalEmailsRead * 100) / $totalEmailSent, 2):0;
+            $totalEmailsUnsentPercent      = ($totalEmailSent)?number_format(($totalEmailUnsent * 100) / $totalEmailSent, 2):0;
 
 
             $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
@@ -1109,9 +1117,12 @@ class Reports extends CI_Controller
                 "name" => "",
                 "emails_read" => $totalEmailsRead,
                 "emails_read_url" => $url."/emails/read",
-                "total_emails" => $totalEmails,
-                "total_emails_url" => $url."/emails/all",
-                "percent" => $totalEmailsReadPercent . "%",
+                "emails_unsent" => $totalEmailUnsent,
+                "emails_unsent_url" => $url."/emails/unsent",
+                "emails_sent" => $totalEmailSent,
+                "emails_sent_url" => $url."/emails/sent",
+                "percent_read" => $totalEmailsReadPercent . "%",
+                "percent_unsent" => $totalEmailsUnsentPercent . "%",
                 "group" => $group
             ));
 

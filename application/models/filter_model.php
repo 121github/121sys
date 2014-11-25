@@ -574,6 +574,12 @@ class Filter_model extends CI_Model
             if ($array['emails'] == "read") {
                 $email_qry = " and email_history.read_confirmed = 1";
             }
+            else if ($array['emails'] == "sent") {
+                $email_qry = " and email_history.status = 1";
+            }
+            else if ($array['emails'] == "unsent") {
+                $email_qry = " and email_history.status = 0";
+            }
             unset($array['emails']);
         }
 

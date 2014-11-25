@@ -84,11 +84,19 @@ var email = {
         });
         $(document).on('click', '.show-emails-btn', function(e) {
             e.preventDefault();
-            email.show_emails($(this));
+            email.show_emails($(this),$(this).attr('email-sent'),$(this).attr('email-read'));
         });
         $(document).on('click', '.close-emails-all', function(e) {
             e.preventDefault();
             email.close_all_email($(this));
+        });
+        $(document).on('click', '.view-email-btn', function(e) {
+            e.preventDefault();
+            email.view_email($(this).attr('item-id'));
+        });
+        $(document).on('click', '.close-email', function(e) {
+            e.preventDefault();
+            email.close_email($(this));
         });
         email.email_panel()
     },
@@ -120,18 +128,23 @@ var email = {
                     	}
 
 						$tbody
-						.append("<tr class='"+success+"' style='"+style+"'><td class='email'>"
+						.append("<tr class='"+success+"' style='"+style+"'><td class='id'>"
 									+ val.id
 								+ "</td><td class='name'>"
 									+ val.name
-								+ "</td><td class='emails_read'>"
-								+ 	"<a href='#' class='show-emails-btn'>"+ val.emails_read + "</a>" +
-                                    "<a href='" + val.emails_read_url + "' style='font-size:10px;'> (See records...)</a>"
-								+ "</td><td class='total_emails'>"
-                                + 	"<a href='#' class='show-emails-btn'>"+ val.total_emails + "</a>" +
-                                 	"<a href='" + val.total_emails_url + "' style='font-size:10px;'> (See records...)</a>"
-								+ "</td><td class='percent' style='percent'>"
-									+ val.percent
+								+ "</td><td class='emails_sent'>"
+                                + 	"<a href='#' class='show-emails-btn' email-read='0' email-sent='1' style='font-weight: bold; font-size: 19px;'>"+ val.emails_sent + "</a>" +
+                                 	"<a href='" + val.emails_sent_url + "' style='font-size:10px;color:black'> (See records...)</a>"
+                                + "</td><td class='emails_read'>"
+                                + 	"<a href='#' class='show-emails-btn' email-read='1' email-sent='1' style='color:green; font-weight: bold;'>"+ val.emails_read + "</a>" +
+                                "<a href='" + val.emails_read_url + "' style='font-size:10px;color:black;'> (See records...)</a>"
+                                + "</td><td class='percent_read' style='color:green;'>"
+                                + val.percent_read
+                                + "</td><td class='emails_unsent'>"
+                                + 	"<a href='#' class='show-emails-btn' email-sent='0' style='color: red; font-weight: bold;'>"+ val.emails_unsent + "</a>" +
+                                "<a href='" + val.emails_unsent_url + "' style='font-size:10px; color:black;'> (See records...)</a>"
+								+ "</td><td class='percent_unsent' style='color:red;'>"
+									+ val.percent_unsent
 								+ "</td></tr>");
                     }
                 });
@@ -154,7 +167,7 @@ var email = {
             $('.email-all-content').show();
         });
     },
-    show_emails: function(btn) {
+    show_emails: function(btn, sent, read) {
         var pagewidth = $(window).width() / 2;
         var moveto = pagewidth - 250;
         $('<div class="modal-backdrop all-email in"></div>').appendTo(document.body).hide().fadeIn();
@@ -168,12 +181,10 @@ var email = {
         }, 1000);
         //Get emails data
         $.ajax({
-            url: helper.baseUrl + "email/get_emails",
+            url: helper.baseUrl + "email/get_emails_by_filter",
             type: "POST",
             dataType: "JSON",
-            data: {
-                urn: 1
-            }
+            data: $('.filter-form').serialize()+'&id='+btn.closest('tr').find('.id').text()+'&sent='+sent+'&read='+read
         }).done(function(response) {
             var $thead = $('.email-all-table').find('thead');
             $thead.empty();
@@ -188,15 +199,105 @@ var email = {
                     var message = (val.status != true)?"Email no sent":((val.read_confirmed == 1)?"Email read confirmed "+" ("+val.read_confirmed_date+")":"Waiting email read confirmation");
                     var send_to = (val.send_to.length > 15)?val.send_to.substring(0, 15)+'...':val.send_to;
                     var subject = (val.subject.length > 20)?val.subject.substring(0, 20)+'...':val.subject;
-                    $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" title="Delete email" ></span>';
+                    $record_option = '<a href="'+helper.baseUrl + "records/detail/"+val.urn+'"><span class="glyphicon glyphicon-chevron-right pull-right pointer" title="View the record" ></span></a>';
                     $view_option = '<span class="glyphicon glyphicon-eye-open '+status+' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="'+message+'"></span>';
-                    body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td title="'+val.subject+'" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+                    body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td title="'+val.subject+'" >' + subject + '</td><td>' + $view_option + '</td><td>' + $record_option + '</td></tr>';
                 });
                 $thead.append('<tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr>');
                 $tbody.append(body);
-            } else {
-                $tbody.append('<p>No emails have been sent for this record</p>');
+            } else if((read == '1')&&(sent == '1')) {
+                $tbody.append('<p>No emails read</p>');
+            } else if((read == '0')&&(sent == '1')) {
+                $tbody.append('<p>No emails sent</p>');
+            } else if(sent == '0') {
+                $tbody.append('<p>No emails unsent</p>');
             }
+        });
+    },
+    view_email: function(email_id) {
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+        $('<div class="modal-backdrop email in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.email-view-container').find('.edit-panel').show();
+        $('.email-view-content').show();
+        $('.email-view-container').fadeIn()
+        $('.email-view-container').animate({
+            width: '600px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+        //Get template data
+        $.ajax({
+            url: helper.baseUrl + 'email/get_email',
+            type: "POST",
+            dataType: "JSON",
+            data: {email_id : email_id}
+        }).done(function(response) {
+            var message = (response.data.status == true)?"<th colspan='2' style='color:green'>This email was sent successfuly</th>":"<th colspan='2' style='color:red'>This email was not sent</th>"
+            var status = (response.data.status == true)?"Yes":"No";
+            var read_confirmed = (response.data.read_confirmed == 1)?"Yes "+" ("+response.data.read_confirmed_date+")":"No";
+            var $tbody = $('.email-view-table').find('tbody');
+            $tbody.empty();
+            body = "<tr>" +
+            message +
+            "</tr>" +
+            "<th>Sent Date</th>" +
+            "<td class='sent_date'>" + response.data.sent_date + "</td>" +
+            "</tr>" +
+            "<tr>" +
+            "<th>From</th>" +
+            "<td class='from'>" + response.data.send_from + "</td>" +
+            "</tr>" +
+            "<tr>" +
+            "<th>To</th>" +
+            "<td class='to'>" + response.data.send_to + "</td>" +
+            "</tr>" +
+            "<tr>" +
+            "<th>CC</th>" +
+            "<td class='cc'>" + response.data.cc + "</td>" +
+            "</tr>" +
+            "<tr>" +
+            "<th>BCC</th>" +
+            "<td class='bcc'>" + response.data.bcc + "</td>" +
+            "</tr>" +
+            "<tr>" +
+            "<th>Subject</th>" +
+            "<td class='subject'>" + response.data.subject + "</td>" +
+            "</tr>" +
+            "<tr>" +
+            "<th colspan=2>Body</th>" +
+            "</tr>" +
+            "<td colspan=2 class='body'>" + response.data.body + "</td>" +
+            "</tr>" +
+            "<th>Sent</th>" +
+            "<td class='status'>" + status + "</td>" +
+            "</tr>" +
+            "<th>Read Confirmed</th>" +
+            "<td class='read_confirmed'>" + read_confirmed + "</td>" +
+            "</tr>"
+            if (response.attachments.length>0) {
+                body += "<tr>" +
+                "<th colspan=2>Attachments</th>" +
+                "</tr>";
+                $.each(response.attachments, function (key, val) {
+                    body += "<tr>" +
+                    "<td colspan='2' class='attachments'><a target='_blank' href='" + val.path + "'>" + val.name + "</td>" +
+                    "</tr>";
+                });
+            }
+            $tbody
+                .append(body);
+        });
+    },
+    close_email: function() {
+        $('.modal-backdrop.email').fadeOut();
+        $('.email-container').fadeOut(500, function() {
+            $('.email-content').show();
+            $('.email-select-form')[0].reset();
+            $('.alert').addClass('hidden');
+        });
+        $('.email-view-container').fadeOut(500, function() {
+            $('.email-view-content').show();
         });
     }
 }

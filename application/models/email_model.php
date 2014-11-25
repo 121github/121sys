@@ -278,6 +278,101 @@ class Email_model extends CI_Model
 
         return $this->db->query($qry)->result_array();
     }
+
+    /**
+     * Get emails history by filter data
+     */
+    public function get_emails_by_filter($options)
+    {
+
+        $date_from = $options['date_from'];
+        $agent = $options['agent'];
+        $date_to = $options['date_to'];
+        $template = $options['template'];
+        $campaign = $options['campaign'];
+        $team_manager = $options['team'];
+        $source = $options['source'];
+        $id = $options['id'];
+        $group = $options['group'];
+        $sent = $options['sent'];
+        $read = $options['read'];
+
+        if ($id!="TOTAL"){
+            if($group=="agent"){
+                $agent = $options['id'];
+            }else if($group=="date"){
+                $date = $options['id'];
+            }else if($group=="time"){
+                $hour = $options['id'];
+            } else if($group=="campaign"){
+                $campaign = $options['id'];
+            }
+        }
+
+        $where = "";
+        if (!empty($date_from)) {
+            $where .= " and date(eh.sent_date) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(eh.sent_date) <= '$date_to' ";
+        }
+        if (isset($date)) {
+            $where .= " and date(eh.sent_date) = '$date' ";
+        }
+        if (isset($hour)) {
+            $where .= " and hour(eh.sent_date) = '$hour' ";
+        }
+        if (!empty($template)) {
+            $where .= " and eh.template_id = '$template' ";
+        }
+        if (!empty($campaign)) {
+            $where .= " and c.campaign_id = '$campaign' ";
+        }
+        if (!empty($team_manager)) {
+            $where .= " and u.team_id = '$team_manager' ";
+        }
+        if (!empty($agent)) {
+            $where .= " and eh.user_id = '$agent' ";
+            $name = "u.name";
+        }
+        if (!empty($source)) {
+            $where .= " and r.source_id = '$source' ";
+        }
+        $this->firephp->log($sent);
+        if ($sent == 0 || $sent == 1) {
+            $where .= " and eh.status = '$sent' ";
+        }
+        if (!empty($read) && ($sent == 1)) {
+            $where .= " and eh.read_confirmed = '$read' ";
+        }
+
+        $qry = "select eh.email_id,
+                      DATE_FORMAT(eh.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                      eh.subject,
+                      eh.body,
+                      eh.send_from,
+                      eh.send_to,
+                      eh.cc,
+                      eh.bcc,
+                      eh.user_id,
+                      eh.urn,
+                      eh.template_id,
+                      eh.read_confirmed,
+                      eh.read_confirmed_date,
+                      eh.status,
+                      u.*,
+                      t.*
+		    	from email_history eh
+		    	inner join users u ON (u.user_id = eh.user_id)
+		    	inner join campaigns c ON (c.campaign_id IN (select h.campaign_id from history h where h.urn = eh.urn))
+		    	inner join email_templates t ON (t.template_id = eh.template_id)
+		    	where 1 $where
+		    	order by eh.sent_date desc";
+
+        $this->firephp->log($qry);
+
+        return $this->db->query($qry)->result_array();
+    }
     
     /**
      * Get email history by id
