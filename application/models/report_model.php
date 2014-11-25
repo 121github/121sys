@@ -416,9 +416,10 @@ class Report_model extends CI_Model
         }
 
         $joins = "
-          left join campaigns c ON (c.campaign_id IN (select h.campaign_id from history h where h.urn = eh.urn))
-          left join users u ON (u.user_id = eh.user_id)
-          left join records r ON (r.urn = eh.urn) ";
+          inner join history h ON (h.urn = eh.urn)
+          inner join campaigns c ON (c.campaign_id = h.campaign_id)
+          inner join users u ON (u.user_id = eh.user_id)
+          inner join records r ON (r.urn = eh.urn)  ";
 
         $qry = "select $id id,
                 $name name,
@@ -432,6 +433,8 @@ class Report_model extends CI_Model
         where eh.status=1 $where
 		group by $group_by "
         ;
+
+        $this->firephp->log($qry);
 
         return $this->db->query($qry)->result_array();
     }
