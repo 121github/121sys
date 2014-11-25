@@ -14,7 +14,9 @@
 | path to your installation.
 |
 */
+$_SESSION['sn']=$_SERVER['SERVER_NAME'];
 if($_SERVER['SERVER_NAME']=="121system.com"){
+
 $config['base_url'] = 	$_SERVER['HTTP_HOST'];
 } else {
 $config['base_url'] = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '')
