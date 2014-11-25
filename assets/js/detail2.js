@@ -36,6 +36,8 @@ var record = {
         this.campaign = campaign;
 		this.permissions = permissions;
         this.limit = 6;
+		var data = [];
+		window.history.pushState(data, "Record Details-"+record.urn, 'detail/'+record.urn);
     },
     sticky_note: {
         init: function() {
