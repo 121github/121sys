@@ -369,8 +369,6 @@ class Email_model extends CI_Model
             where 1 $where
             order by eh.sent_date desc";
 
-        $this->firephp->log($qry);
-
         return $this->db->query($qry)->result_array();
     }
     
