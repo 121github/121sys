@@ -971,5 +971,166 @@ class Reports extends CI_Controller
             ));
         }
     }
+
+
+    //this is the controller loads the initial view for the email reports
+    public function email()
+    {
+        if($this->uri->segment(3)=="campaign"){
+            $group = "campaign";
+        } else if($this->uri->segment(3)=="agent"){
+            $group = "agent";
+        } else if($this->uri->segment(3)=="date"){
+            $group = "date";
+        } else if($this->uri->segment(3)=="time"){
+            $group = "time";
+        } else {
+            $group = "campaign";
+        }
+
+        $templates    = $this->Form_model->get_templates();
+        $campaigns    = $this->Form_model->get_user_campaigns();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources      = $this->Form_model->get_sources();
+        $agents       = $this->Form_model->get_agents();
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Reports',
+            'title' => 'Reports | Email',
+            'page' => array(
+                'reports' => 'email',
+                'inner' => $group
+            ),
+            'javascript' => array(
+                'charts.js',
+                'report/email.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'group' => $group,
+            'templates' => $templates,
+            'campaigns' => $campaigns,
+            'sources' => $sources,
+            'team_managers' => $teamManagers,
+            'agents' => $agents,
+            'css' => array(
+                'dashboard.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/email.php', $data);
+    }
+
+    //this controller sends the campaign appointment report data back the page in JSON format. It ran when the page loads and any time the filter is changed
+    public function email_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $data    = array();
+
+            $form = $this->input->post();
+            $form["date_from"] = ($this->input->post("date_from"))?$this->input->post("date_from"):date('Y-m-d',strtotime("2014-07-02"));
+            $form["date_to"] = ($this->input->post("date_to"))?$this->input->post("date_to"):date('Y-m-d');
+            $results = $this->Report_model->get_email_data($form);
+
+            $date_from_search = $form["date_from"];
+            $date_to_search   = $form["date_to"];
+            $agent_search      = $form["agent"];
+            $campaign_search  = $form["campaign"];
+            $template_search  = $form["template"];
+            $team_search  = $form["team"];
+            $source_search  = $form["source"];
+            $group  =  $form["group"];
+
+
+            $aux = array();
+            foreach ($results as $row) {
+                if($row['email_sent_count']){
+                    if (($group=="date")||($group=="time")){
+                        $aux[$row['id']]['sql']= $row['sql'];
+                    }
+                    $aux[$row['id']]['name'] = $row['name'];
+                    $aux[$row['id']]['emails_read'] = $row['email_read_count'];
+                    $aux[$row['id']]['emails_unsent'] = $row['email_unsent_count'];
+                    $aux[$row['id']]['emails_sent'] = $row['email_sent_count'];
+                }
+            }
+
+            $totalEmailsRead    = 0;
+            $totalEmailUnsent  = 0;
+            $totalEmailSent    = 0;
+            $emails_read        = 0;
+            $url = base_url()."search/custom/records";
+            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
+            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+            $url .= (!empty($template_search) ? "/template/$template_search" : "");
+            $url .= (!empty($date_from_search) ? "/sent-email-from/$date_from_search" : "");
+            $url .= (!empty($date_to_search) ? "/sent-email-to/$date_to_search" : "");
+            $url .= (!empty($team_search) ? "/team/$team_search" : "");
+            $url .= (!empty($source_search) ? "/source/$source_search" : "");
+            if($group=="date"){
+                $group="contact";
+            }
+            foreach ($aux as $id => $row) {
+                $emails_read      = (array_key_exists('emails_read', $row)) ? $row['emails_read'] : 0;
+                $emails_unsent      = (array_key_exists('emails_unsent', $row)) ? $row['emails_unsent'] : 0;
+                //create the click through hyperlinks
+                if($group=="contact"){
+                    $emailUrl = $url."/sent-email-date/".$row['sql'];
+                }
+                else if($group=="time"){
+                    $emailUrl = $url."/sent-email-time/".$row['sql'];
+                }
+                else if( $group == "agent") {
+                    $emailUrl = $url."/user/".$id;
+                }
+                else {
+                    $emailUrl = $url."/allemails/".$id;
+                }
+
+                $data[]         = array(
+                    "id" => $id,
+                    "name" => $row['name'],
+                    "emails_read" => $emails_read,
+                    "emails_read_url" => $emailUrl."/emails/read",
+                    "emails_unsent" => $emails_unsent,
+                    "emails_unsent_url" => $emailUrl."/emails/unsent",
+                    "emails_sent" => $row['emails_sent'],
+                    "emails_sent_url" => $emailUrl."/emails/sent",
+                    "percent_read" => (($row['emails_sent']>0)?number_format(($emails_read*100)/($row['emails_sent']),2):0)."%",
+                    "percent_unsent" => (($row['emails_sent']>0)?number_format(($emails_unsent*100)/($row['emails_sent']),2):0)."%",
+                    "group" => $group
+                );
+                $totalEmailsRead += $emails_read;
+                $totalEmailUnsent += $emails_unsent;
+                $totalEmailSent += ($row['emails_sent']?$row['emails_sent']:"0");
+            }
+
+            $totalEmailsReadPercent      = ($totalEmailSent)?number_format(($totalEmailsRead * 100) / $totalEmailSent, 2):0;
+            $totalEmailsUnsentPercent      = ($totalEmailSent)?number_format(($totalEmailUnsent * 100) / $totalEmailSent, 2):0;
+
+
+            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+
+            array_push($data, array(
+                "id" => "TOTAL",
+                "name" => "",
+                "emails_read" => $totalEmailsRead,
+                "emails_read_url" => $url."/emails/read",
+                "emails_unsent" => $totalEmailUnsent,
+                "emails_unsent_url" => $url."/emails/unsent",
+                "emails_sent" => $totalEmailSent,
+                "emails_sent_url" => $url."/emails/sent",
+                "percent_read" => $totalEmailsReadPercent . "%",
+                "percent_unsent" => $totalEmailsUnsentPercent . "%",
+                "group" => $group
+            ));
+
+            echo json_encode(array(
+                "success" => true,
+                "data" => $data
+            ));
+        }
+    }
     
 }

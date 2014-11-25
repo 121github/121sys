@@ -129,7 +129,7 @@ class Report_model extends CI_Model
     	return $this->db->query($qry)->result_array();
     }
     
-	 public function get_outcome_data($options)
+	public function get_outcome_data($options)
     {
 		if($options['group']=="agent"){
 			$group_by = "h.user_id";
@@ -361,7 +361,77 @@ class Report_model extends CI_Model
         //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
-	
 
-	
+    public function get_email_data($options)
+    {
+        if($options['group']=="agent"){
+            $group_by = "eh.user_id";
+            $id = "eh.user_id";
+            $name = "u.name";
+        }else if($options['group']=="date"){
+            $group_by = "date(eh.sent_date)";
+            $id = "date(eh.sent_date) `sql`,date_format(eh.sent_date,'%d/%m/%y')";
+            $name = "'All'";
+        }else if($options['group']=="time"){
+            $group_by = "hour(eh.sent_date)";
+            $id = "hour(eh.sent_date) `sql`,date_format(eh.sent_date,'%H:00:00')";
+            $name = "'All'";
+        } else {
+            $group_by = "c.campaign_id";
+            $id = "c.campaign_id";
+            $name = "campaign_name";
+        }
+
+        $date_from = $options['date_from'];
+        $agent = $options['agent'];
+        $date_to = $options['date_to'];
+        $template = $options['template'];
+        $campaign = $options['campaign'];
+        $team_manager = $options['team'];
+        $source = $options['source'];
+        $hours_where = "";
+        $where = "";
+        if (!empty($date_from)) {
+            $where .= " and date(eh.sent_date) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(eh.sent_date) <= '$date_to' ";
+        }
+        if (!empty($template)) {
+            $where .= " and eh.template_id = '$template' ";
+        }
+        if (!empty($campaign)) {
+            $where .= " and c.campaign_id = '$campaign' ";
+        }
+        if (!empty($team_manager)) {
+            $where .= " and u.team_id = '$team_manager' ";
+        }
+        if (!empty($agent)) {
+            $where .= " and eh.user_id = '$agent' ";
+            $name = "u.name";
+        }
+        if (!empty($source)) {
+            $where .= " and r.source_id = '$source' ";
+        }
+
+        $joins = "
+          left join campaigns c ON (c.campaign_id IN (select h.campaign_id from history h where h.urn = eh.urn))
+          left join users u ON (u.user_id = eh.user_id)
+          left join records r ON (r.urn = eh.urn) ";
+
+        $qry = "select $id id,
+                $name name,
+                count(*) as email_sent_count,
+                if(email_read_count is null,0,email_read_count) email_read_count,
+                if(email_unsent_count is null,0,email_unsent_count) email_unsent_count
+        from email_history eh
+          $joins
+          left join (select count(*) email_read_count,$group_by gb from email_history eh $joins where eh.read_confirmed = 1 $where group by $group_by) erc on erc.gb = $group_by
+          left join (select count(*) email_unsent_count,$group_by gb_2 from email_history eh $joins where eh.status = 0 $where group by $group_by) euc on euc.gb_2 = $group_by
+        where eh.status=1 $where
+		group by $group_by "
+        ;
+
+        return $this->db->query($qry)->result_array();
+    }
 }

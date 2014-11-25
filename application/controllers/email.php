@@ -35,6 +35,20 @@ class Email extends CI_Controller
     		));
     	}
     }
+
+    //this function returns a json array of email data for a given filter parameters
+    public function get_emails_by_filter()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $emails = $this->Email_model->get_emails_by_filter($form);
+
+            echo json_encode(array(
+                "success" => true,
+                "data" => $emails
+            ));
+        }
+    }
     
     //this function returns a json array of email data for a given record id
     public function get_email()

@@ -92,11 +92,11 @@
                     <!-- Transfers -->
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
-			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoCampaign">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoTransfersReport">
 			                    Transfers
 			                </a>
 			            </div>
-			            <div id="collapseTwoCampaign" class="accordion-body <?php echo @($reports=='transfers'?"":"collapse") ?>">
+			            <div id="collapseTwoTransfersReport" class="accordion-body <?php echo @($reports=='transfers'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
 			                        <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>By Campaign</a>
@@ -117,11 +117,11 @@
 			        <!-- Outcomes -->
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
-			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoAgent">
+			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoOutcomesReport">
 			                    Outcomes
 			                </a>
 			            </div>
-			            <div id="collapseTwoAgent" class="accordion-body <?php echo @($reports=='outcomes'?"":"collapse") ?>">
+			            <div id="collapseTwoOutcomesReport" class="accordion-body <?php echo @($reports=='outcomes'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
 			                       <a href="<?php echo base_url() ?>reports/outcomes/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
@@ -138,7 +138,32 @@
 			                </div>
 			            </div>
 			        </div>
-			        <!-- End Agent 3 -->
+			        <!-- End Outcomes -->
+                    <!-- Emails -->
+                    <div class="accordion-group panel">
+                        <div class="accordion-inner">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoEmailReport">
+                                Emails
+                            </a>
+                        </div>
+                        <div id="collapseTwoEmailReport" class="accordion-body <?php echo @($reports=='email'?"":"collapse") ?>">
+                            <div class="accordion-group submenu">
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>reports/email/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
+                                </div>
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>reports/email/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a>
+                                </div>
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>reports/email/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
+                                </div>
+                                <div class="accordion-inner">
+                                    <a href="<?php echo base_url() ?>reports/email/time/1" <?php echo @($inner=='time'?"class='active'":"") ?>>By Time</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Emails -->
                 </div>
             </div>
         </div>
