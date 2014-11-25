@@ -50,7 +50,7 @@ class Dashboard_model extends CI_Model
     
     public function get_outcomes($filter = array())
     {
-        $qry = "select outcome,count(*) count from history left join outcomes using(outcome_id) left join records using(urn) where 1 and history.outcome_id is not null ";
+        $qry = "select outcome,count(*) count from history left join outcomes using(outcome_id) left join records using(urn) where 1 and history.outcome_id is not null and date(contact) = curdate() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and history.campaign_id = '" . intval($filter['campaign']) . "'";
         }
@@ -290,4 +290,23 @@ class Dashboard_model extends CI_Model
     	return $this->db->query($qry)->result_array();
     }
     
+	public function get_email_stats($campaign=""){
+		$where ="";
+		if(!empty($campaign)){
+		$where = " and campaign_id = $campaign ";	
+		}
+			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) $where";	
+			$all = $this->db->query($qry_all)->row()->num;
+			
+			$qry_read = "select count(distinct urn) num from email_history left join records using(urn) where read_confirmed = 1 $where";	
+			$read = $this->db->query($qry_read)->row()->num;
+			
+			$qry_unread = "select count(distinct urn) num from email_history left join records using(urn) where read_confirmed = 0 $where";	
+			$unsent = $this->db->query($qry_unread)->row()->num;
+			
+			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
+			$new = $this->db->query($qry_new)->row()->num;
+			
+			return array("new"=>$new,"all"=>$all,"read"=>$read,"unsent"=>$unsent);
+	}
 }

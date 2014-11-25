@@ -22,6 +22,19 @@ var dashboard = {
             });
         });
     },
+	    emails_panel: function (filter) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_email_stats',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                filter: filter,
+            }
+        }).done(function (response) {
+            $('.email-stats').html("<ul><li>"+response.data.read+" records with an email read confirmed "
+			+"</li><li>"+response.data.new+" records with new read confirmation</li><li>"+response.data.all+" records with emails sent</li><li>"+response.data.unsent+" record with failed emails</li></ul>");
+        });
+    },
 	/* the function for the outcomes panel on the main dashboard */
     outcomes_panel: function (campaign_id) {
         $.ajax({

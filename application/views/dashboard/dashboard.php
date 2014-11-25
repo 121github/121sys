@@ -113,8 +113,35 @@
            
         </div>
        <?php } ?> 
+       
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-bell fa-fw"></i> Outcome History
+          <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> Email Statistics
+            <div class="pull-right">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>  Filter</button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                  <?php foreach($email_campaigns as $row): ?>
+                  <li><a href="#" class="email-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                  <?php endforeach ?>
+                  <li class="divider"></li>
+                  <li><a class="email-filter" ref="#">Show All</a> </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- /.panel-heading -->
+          <div class="panel-body">
+            <div class="email-stats">
+              <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
+            </div>
+          </div>
+          <!-- /.panel-body -->
+           
+        </div>
+       
+       
+        <div class="panel panel-primary">
+          <div class="panel-heading"> <i class="fa fa-bell fa-fw"></i> Todays Outcomes
             <div class="pull-right">
               <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>  Filter</button>
@@ -161,6 +188,7 @@
 		dashboard.outcomes_panel();
 		dashboard.system_stats();
 		dashboard.comments_panel();
+		dashboard.emails_panel();
 		
 		/* initialize any click listeners - mainly the filters on the panels*/
 		$(document).on("click",".history-filter",function(e){
@@ -178,6 +206,10 @@
 		$(document).on("click",".comment-filter",function(e){
 			e.preventDefault();
 			dashboard.comments_panel($(this).attr('id'))
+		});
+		$(document).on("click",".email-filter",function(e){
+			e.preventDefault();
+			dashboard.emails_panel($(this).attr('id'))
 		});
 
 	});

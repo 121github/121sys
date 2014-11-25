@@ -37,7 +37,7 @@ var record = {
 		this.permissions = permissions;
         this.limit = 6;
 		var data = [];
-		window.history.pushState(data, "Record Details-"+record.urn, 'detail/'+record.urn);
+		window.history.pushState(data, "Record Details-"+record.urn, helper.baseUrl+'records/detail/'+record.urn);
     },
     sticky_note: {
         init: function() {
@@ -174,6 +174,7 @@ var record = {
             $(document).off('click', '.urgent-btn');
             $(document).off('click', '.close-xfer');
             $(document).off('click', '.set-xfer');
+			
             /*initialize the save notes button*/
             $(document).on('click', '.update-record', function(e) {
                 e.preventDefault();
@@ -317,6 +318,7 @@ var record = {
                         });
 					}
                     record.update_panel.init();
+					$('textarea[name="comments"]').val('');
                     $('.update-record').prop('disabled', true);
                 } else {
                     flashalert.warning(response.msg);

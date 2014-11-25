@@ -1,7 +1,7 @@
 
 <div id="wrapper">
   <div id="sidebar-wrapper">
- <?php  $this->view('dashboard/navigation.php',$page) ?>
+    <?php  $this->view('dashboard/navigation.php',$page) ?>
   </div>
   <div id="page-content-wrapper">
     <div id="page-wrapper">
@@ -14,87 +14,86 @@
       <!-- /.row -->
       <div class="row">
         <div class="col-lg-12">
-                <div class="panel panel-primary" id="a_favorites">
+          <div class="panel panel-primary" id="a_favorites">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites</div>
-              <div class="panel-body favorites-panel">
-             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
+            <div class="panel-body favorites-panel"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+          </div>
+        </div>
+        <!--
+        <div class="col-lg-6">
+          <div class="panel panel-primary" id="a_favorites">
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites</div>
+            <div class="panel-body favorites-panel"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+          </div>
+        </div>
+        -->
         </div>
         
-         <div class="panel panel-primary" id="a_callbacks">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Callbacks at around <?php echo date('g:i a'); ?>
-              <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($campaigns as $row): ?>
-                    <li><a href="#" class="tc-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a class="tc-filter" ref="#">Show All</a> </li>
-                  </ul>
-                </div>
+          <div class="row">
+            <div class="col-lg-12">
+        <div class="panel panel-primary" id="a_callbacks">
+          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Callbacks at around <?php echo date('g:i a'); ?>
+            <div class="pull-right">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                  <?php foreach($campaigns as $row): ?>
+                  <li><a href="#" class="tc-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                  <?php endforeach ?>
+                  <li class="divider"></li>
+                  <li><a class="tc-filter" ref="#">Show All</a> </li>
+                </ul>
               </div>
             </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body timely-callbacks">
-             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
-            <!-- /.panel-body --> 
           </div>
-        
-         <div class="panel panel-primary" id="a_missed_callbacks">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Missed Callbacks
-              <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($campaigns as $row): ?>
-                    <li><a href="#" class="mc-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a class="mc-filter" ref="#">Show All</a> </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body missed-callbacks">
-             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
-            <!-- /.panel-body --> 
-          </div>
-          
-          
-            <div class="panel panel-primary" id="a_upcoming_callbacks">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Upcoming Callbacks
-              <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($campaigns as $row): ?>
-                    <li><a href="#" class="uc-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a class="uc-filter" ref="#">Show All</a> </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body upcoming-callbacks">
-             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
-            <!-- /.panel-body --> 
-          </div>
-          
+          <!-- /.panel-heading -->
+          <div class="panel-body timely-callbacks"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+          <!-- /.panel-body --> 
         </div>
-       
-               
+        <div class="panel panel-primary" id="a_missed_callbacks">
+          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Missed Callbacks
+            <div class="pull-right">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                  <?php foreach($campaigns as $row): ?>
+                  <li><a href="#" class="mc-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                  <?php endforeach ?>
+                  <li class="divider"></li>
+                  <li><a class="mc-filter" ref="#">Show All</a> </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- /.panel-heading -->
+          <div class="panel-body missed-callbacks"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+          <!-- /.panel-body --> 
+        </div>
+        <div class="panel panel-primary" id="a_upcoming_callbacks">
+          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Upcoming Callbacks
+            <div class="pull-right">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                  <?php foreach($campaigns as $row): ?>
+                  <li><a href="#" class="uc-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                  <?php endforeach ?>
+                  <li class="divider"></li>
+                  <li><a class="uc-filter" ref="#">Show All</a> </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- /.panel-heading -->
+          <div class="panel-body upcoming-callbacks"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+          <!-- /.panel-body --> 
+        </div>
+      </div>
+      
       <!-- /.row --> 
     </div>
-    <!-- /#page-wrapper -->
-    </div>
+    <!-- /#page-wrapper --> 
+  </div>
 </div>
 <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
 

@@ -23,6 +23,7 @@ class Dashboard extends CI_Controller
     public function user_dash()
     {
         $campaigns = $this->Form_model->get_user_campaigns();
+		$email_campaigns = $this->Form_model->get_user_email_campaigns();
         $surveys = $this->Form_model->get_surveys();
         
         $data = array(
@@ -36,6 +37,7 @@ class Dashboard extends CI_Controller
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
+			'email_campaigns' => $email_campaigns,
             'campaigns' => $campaigns,
             'surveys' => $surveys,
             'css' => array(
@@ -422,6 +424,13 @@ class Dashboard extends CI_Controller
     	}
     
     }
-    
+    public function get_email_stats(){
+		if ($this->input->is_ajax_request()) {
+    		$campaign_form = intval($this->input->post('campaign'));
+			$stats = $this->Dashboard_model->get_email_stats($campaign_form);
+			echo json_encode(array("success"=>true,"data"=>$stats));
+			exit;
+		}
+	}
     
 }
