@@ -346,27 +346,30 @@ class Email_model extends CI_Model
         }
 
         $qry = "select eh.email_id,
-                      DATE_FORMAT(eh.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
-                      eh.subject,
-                      eh.body,
-                      eh.send_from,
-                      eh.send_to,
-                      eh.cc,
-                      eh.bcc,
-                      eh.user_id,
-                      eh.urn,
-                      eh.template_id,
-                      eh.read_confirmed,
-                      eh.read_confirmed_date,
-                      eh.status,
-                      u.*,
-                      t.*
-		    	from email_history eh
-		    	inner join users u ON (u.user_id = eh.user_id)
-		    	inner join campaigns c ON (c.campaign_id IN (select h.campaign_id from history h where h.urn = eh.urn))
-		    	inner join email_templates t ON (t.template_id = eh.template_id)
-		    	where 1 $where
-		    	order by eh.sent_date desc";
+                  DATE_FORMAT(eh.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                  eh.subject,
+                  eh.body,
+                  eh.send_from,
+                  eh.send_to,
+                  eh.cc,
+                  eh.bcc,
+                  eh.user_id,
+                  eh.urn,
+                  eh.template_id,
+                  eh.read_confirmed,
+                  eh.read_confirmed_date,
+                  eh.status,
+                  u.*,
+                  t.*
+            from email_history eh
+            inner join users u ON (u.user_id = eh.user_id)
+            inner join history h ON (h.urn = eh.urn)
+            inner join campaigns c ON (c.campaign_id = h.campaign_id)
+            inner join email_templates t ON (t.template_id = eh.template_id)
+            where 1 $where
+            order by eh.sent_date desc";
+
+        $this->firephp->log($qry);
 
         return $this->db->query($qry)->result_array();
     }

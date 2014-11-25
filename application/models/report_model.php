@@ -434,8 +434,6 @@ class Report_model extends CI_Model
 		group by $group_by "
         ;
 
-        $this->firephp->log($qry);
-
         return $this->db->query($qry)->result_array();
     }
 }
