@@ -1046,9 +1046,7 @@ class Reports extends CI_Controller
             $aux = array();
             foreach ($results as $row) {
                 if($row['email_sent_count']){
-                    if (($group=="date")||($group=="time")){
-                        $aux[$row['id']]['sql']= $row['sql'];
-                    }
+                    $aux[$row['id']]['sql']= $row['sql'];
                     $aux[$row['id']]['name'] = $row['name'];
                     $aux[$row['id']]['emails_read'] = $row['email_read_count'];
                     $aux[$row['id']]['emails_unsent'] = $row['email_unsent_count'];
@@ -1090,6 +1088,7 @@ class Reports extends CI_Controller
 
                 $data[]         = array(
                     "id" => $id,
+                    "sql" => $row['sql'],
                     "name" => $row['name'],
                     "emails_read" => $emails_read,
                     "emails_read_url" => $emailUrl."/emails/read",
@@ -1114,6 +1113,7 @@ class Reports extends CI_Controller
 
             array_push($data, array(
                 "id" => "TOTAL",
+                "sql" => "TOTAL",
                 "name" => "",
                 "emails_read" => $totalEmailsRead,
                 "emails_read_url" => $url."/emails/read",
