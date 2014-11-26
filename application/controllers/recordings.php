@@ -58,19 +58,22 @@ echo json_encode(array("success"=>true,"data"=>$recordings,"msg"=>"No recordings
 }
 
 public function listen(){
+session_write_close();
 $id = intval($this->uri->segment('3'));
 $filename = base64_decode($this->uri->segment('4'));
 $file = urlencode(str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/34recordings/","",$filename))));
 
-$path = "http://84.19.44.186:8034/";
+$path = "http://recordings.121leads.co.uk:8034/";
 
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
+//$this->firephp->log($conversion_path);
 //the old way was a bit slow
 //$context = stream_context_create(array('http' => array('header'=>'Connection: close')));
 //file_get_contents($conversion_path,false,$context);
 $this->load->helper('remotefile');
 loadFile($conversion_path);
+
 $u_agent = $_SERVER['HTTP_USER_AGENT'];
 $filetype ="mp3";
 if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
@@ -94,7 +97,7 @@ $filetype="ogg";
  $filetype="ogg";
     }
 
-$path = "http://84.19.44.186:8034/";
+$path = "http://recordings.121leads.co.uk:8034/";
 
 echo json_encode(array("success"=>true,"filename"=>$path."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
 
