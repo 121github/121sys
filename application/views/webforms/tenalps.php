@@ -3249,7 +3249,7 @@ ul
    <w:data>FFFFFFFF80003C0014000000000000000000090055005000500045005200430041005300450000007100540068006900730020006E0075006D006200650072002000690073002000670065006E0065007200610074006500640020006200790020007400680065002000410054004500580020004100440020004F005200440045005200200045004E005400520059002000730079007300740065006D002E00200049006E0073006500720074002000610073002000700061007200740020006F0066002000410054004500580020006400610074006100200065006E007400720079002E0020004D004100580049004D0055004D002000360020006E0075006D0062006500720073002E000000000000000000000000000000</w:data>
   </xml><![endif]--></span></b><!--[if supportFields]><b style='mso-bidi-font-weight:
   normal'><span style='font-size:8.0pt'><span style='mso-element:field-end'></span></span></b><![endif]--><b
-  style='mso-bidi-font-weight:normal'><span style='font-size:7.0pt'><input name="answer[a30]" style="cursor:pointer;border:none" type="text" value="<?php echo (empty($values['30'])?$company['county']:$values['30']) ?>"><o:p></o:p></span></b></p>
+  style='mso-bidi-font-weight:normal'><span style='font-size:7.0pt'><input name="answer[a30]" style="cursor:pointer;border:none" type="text" value="<?php echo (empty($values['30'])?"":$values['30']) ?>"><o:p></o:p></span></b></p>
   </td>
  </tr>
  <tr style='mso-yfti-irow:11;page-break-inside:avoid;height:13.45pt'>

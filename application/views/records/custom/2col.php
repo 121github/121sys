@@ -10,7 +10,7 @@ There was a problem while finding the selected record details. Maybe it does not
     <?php if(!empty($nav['next'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>
     <a type="button" class="btn btn-default btn-lg nav-btn" href="<?php echo $nav['next'] ?>">Next</a>
     <?php endif ?>
-    <?php if($automatic): ?>
+    <?php if($automatic||empty($nav['next'])&&in_array("set call outcomes",$_SESSION['permissions'])): ?>
     <a type="button" class="btn btn-default btn-lg nav-btn" href="<?php echo base_url()."records/detail/0" ?>">Next</a>
     <?php endif ?>
     </span></h2>
