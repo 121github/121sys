@@ -416,10 +416,9 @@ class Report_model extends CI_Model
         }
 
         $joins = "
-          inner join history h ON (h.urn = eh.urn)
-          inner join campaigns c ON (c.campaign_id = h.campaign_id)
-          inner join users u ON (u.user_id = eh.user_id)
-          inner join records r ON (r.urn = eh.urn)  ";
+          inner join records r ON (r.urn = eh.urn)
+          inner join campaigns c ON (c.campaign_id = r.campaign_id)
+          inner join users u ON (u.user_id = eh.user_id)";
 
         $qry = "select $id id,
                 $name name,
