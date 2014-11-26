@@ -11,7 +11,10 @@ There was a problem while finding the selected record details. Maybe it does not
     <a type="button" class="btn btn-default btn-lg nav-btn" href="<?php echo $nav['next'] ?>">Next</a>
     <?php endif ?>
     <?php if($automatic||empty($nav['next'])&&in_array("set call outcomes",$_SESSION['permissions'])): ?>
-    <a type="button" class="btn btn-default btn-lg nav-btn" href="<?php echo base_url()."records/detail/0" ?>">Next</a>
+    <?php if(isset($_SESSION['previous'])&&!empty($_SESSION['previous'])): ?>
+    <a type="button" class="btn btn-default btn-lg" href="<?php echo base_url()."records/detail/".$_SESSION['previous'] ?>">Previous</a>
+    <?php endif ?>  
+    <a type="button" class="btn btn-default btn-lg <?php if(!isset($_SESSION['next'])||empty($_SESSION['next'])){ echo "nav-btn"; } ?>" href="<?php echo base_url()."records/detail/".(isset($_SESSION['next'])?$_SESSION['next']:"0") ?>">Next</a>
     <?php endif ?>
     </span></h2>
 </div>

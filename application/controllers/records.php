@@ -110,6 +110,29 @@ class Records extends CI_Controller
 		$automatic = false;
         $urn = $this->uri->segment(3);
 		}
+		$previous = (!isset($_SESSION['previous'])?"":$_SESSION['previous']);
+		$current = (!isset($_SESSION['current'])||empty($_SESSION['current'])?$urn:$_SESSION['current']);
+		$next = (!isset($_SESSION['next'])?"":$_SESSION['next']);
+		
+		if($urn==$previous){
+			$_SESSION['current'] = $previous;
+			$_SESSION['next'] = $current;
+			unset($_SESSION['previous']);
+		}
+		if($urn==$current){
+			$_SESSION['current'] = $current;
+		}
+		if($urn==$next){
+		 	$_SESSION['previous'] = $current;
+			$_SESSION['current'] = $next;
+			unset($_SESSION['next']);
+		}
+		if(!isset($_SESSION['next'])&&empty($_SESSION['next'])){
+		 	$_SESSION['previous'] = $current;
+			$_SESSION['current'] = $urn;
+		}
+		
+		
 		$this->User_model->campaign_access_check($urn);
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
 
