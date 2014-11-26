@@ -59,9 +59,6 @@ echo json_encode(array("success"=>true,"data"=>$recordings,"msg"=>"No recordings
 
 public function listen(){
 $id = intval($this->uri->segment('3'));
-//$qry = "select * from calls where id='$id'";
-//$db2 = $this->load->database('121backup',true);
-//$filename = $db2->query($qry)->row()->filepath;
 $filename = base64_decode($this->uri->segment('4'));
 $file = urlencode(str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/34recordings/","",$filename))));
 
@@ -69,9 +66,10 @@ $path = "http://84.19.44.186:8034/";
 
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
-
-$context = stream_context_create(array('http' => array('header'=>'Connection: close\r\n')));
-file_get_contents($conversion_path,false,$context);
+//the old way was a bit slow
+//$context = stream_context_create(array('http' => array('header'=>'Connection: close')));
+//file_get_contents($conversion_path,false,$context);
+$this->load->loadFile($conversion_path);
 $u_agent = $_SERVER['HTTP_USER_AGENT'];
 $filetype ="mp3";
 if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
