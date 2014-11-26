@@ -230,13 +230,13 @@ class Dashboard_model extends CI_Model
     public function agent_activity($campaign)
     {
         if (!empty($campaign)) {
-            $qry_filter = " and campaign_id = " . intval($campaign);
+            $qry_filter = " and history.campaign_id = " . intval($campaign);
         } else {
             $qry_filter = "";
         }
 		
 		if(!empty($_SESSION['team_id'])){
-			$qry_filter = " and team_id = ". $_SESSION['team'];
+			$qry_filter = " and history.team_id = ". $_SESSION['team'];
 		}
 		
         $qry_filter .= " and campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) ";

@@ -115,7 +115,7 @@
        <?php } ?> 
        
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> Email Statistics
+          <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> Today's email stats
             <div class="pull-right">
               <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>  Filter</button>
