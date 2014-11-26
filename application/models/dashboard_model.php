@@ -291,11 +291,11 @@ class Dashboard_model extends CI_Model
     }
     
 	public function get_email_stats($campaign=""){
-		$where ="";
+		$where =" and email_history.user_id = '{$_SESSION['user_id']}' and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		if(!empty($campaign)){
-		$where = " and campaign_id = $campaign ";	
+		$where = " and records.campaign_id = $campaign ";	
 		}
-			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) $where";	
+			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) where 1 $where";	
 			$all = $this->db->query($qry_all)->row()->num;
 			
 			$qry_read = "select count(distinct urn) num from email_history left join records using(urn) where read_confirmed = 1 $where";	

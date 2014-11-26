@@ -426,8 +426,8 @@ class Dashboard extends CI_Controller
     }
     public function get_email_stats(){
 		if ($this->input->is_ajax_request()) {
-    		$campaign_form = intval($this->input->post('filter'));
-			$stats = $this->Dashboard_model->get_email_stats($campaign_form);
+    		$campaign = intval($this->input->post('filter'));
+			$stats = $this->Dashboard_model->get_email_stats($campaign);
 			echo json_encode(array("success"=>true,"data"=>$stats));
 			exit;
 		}
