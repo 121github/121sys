@@ -316,6 +316,6 @@ class Dashboard_model extends CI_Model
 			$new = $this->db->query($qry_new)->row()->num;
 			$new_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/new'.$camp_url;
 			
-			return array("new"=>$new,"all"=>$all,"read"=>$read,"unsent"=>$unsent);
+			return array("new"=>$new,"new_url"=>$new_url,"all"=>$all,"all_url"=>$all_url,"read"=>$read,"read_url"=>$read_url,"unsent"=>$unsent,"unsent_url"=>$unsent_url);
 	}
 }
