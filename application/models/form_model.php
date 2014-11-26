@@ -78,6 +78,9 @@ class Form_model extends CI_Model
             if(!in_array("view attachment",$_SESSION['permissions'])){
                 $exclude = " and feature_name <> 'Attachments'";
             }
+			if(!in_array("view call recordings",$_SESSION['permissions'])){
+                $exclude = " and feature_name <> 'Recordings'";
+            }
 		}
         else {
             $exclude = '';
@@ -118,8 +121,9 @@ class Form_model extends CI_Model
 	
     public function get_clients()
     {
-        $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) left join users_to_campaigns using(campaign_id) where campaign_status = 1 and  user_id = '{$_SESSION['user_id']}' group by client_id order by client_id";
-        if (!$this->db->query($qry)->result_array()) {
+		if(!in_array("all campaigns",$_SESSION['permissions'])){
+        $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) left join users_to_campaigns using(campaign_id) where campaign_status = 1 and user_id = '{$_SESSION['user_id']}' group by client_id order by client_id";
+		} else {
             $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where campaign_status = 1 group by client_id order by client_id";
         }
         return $this->db->query($qry)->result_array();
