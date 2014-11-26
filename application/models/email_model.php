@@ -363,8 +363,8 @@ class Email_model extends CI_Model
                   t.*
             from email_history eh
             inner join users u ON (u.user_id = eh.user_id)
-            inner join history h ON (h.urn = eh.urn)
-            inner join campaigns c ON (c.campaign_id = h.campaign_id)
+            inner join records r ON (r.urn = eh.urn)
+            inner join campaigns c ON (c.campaign_id = r.campaign_id)
             inner join email_templates t ON (t.template_id = eh.template_id)
             where 1 $where
             order by eh.sent_date desc";
