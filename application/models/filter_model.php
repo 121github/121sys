@@ -569,11 +569,8 @@ class Filter_model extends CI_Model
 
         //only join the email tables if we need them
         $email_qry = "";
-        if (in_array("emails", $fields)||in_array("template", $fields)) {
+        if (in_array("emails", $fields)||in_array("template_id", $fields)) {
             $qry .= " left join email_history on email_history.urn = records.urn ";
-			if ($array['template']>0){
-				$template_qry = " and email_history.template_id = ".intval($array['template']);
-			}
             if ($array['emails'] == "read") {
                 $email_qry = " and email_history.read_confirmed = 1";
             }
