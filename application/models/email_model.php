@@ -14,7 +14,10 @@ class Email_model extends CI_Model
     
 	public function get_webform_id($campaign){
 	$this->db->where("campaign_id",$campaign);
-	return $this->db->get("webforms_to_campaigns")->row()->webform_id;
+	$query = $this->db->get("webforms_to_campaigns");
+	if($query->num_rows()>0){
+	return $query->row()->webform_id;
+	} else { return "0"; }
 	}
 	
 	public function get_placeholder_data($urn=NULL){

@@ -215,7 +215,7 @@ class Email extends CI_Controller
 
 		$webform = $this->Email_model->get_webform_id($placeholder_data[0]['campaign_id']);
 		//if a webform placeholder is in the email create the link
-		$url = "http://www.121leads.co.uk/121sys/webforms/remote/".$placeholder_data[0]['campaign_id']."/".$urn."/".$webform."/".$email_id;
+		$url = "http://www.121system.com/webforms/remote/".$placeholder_data[0]['campaign_id']."/".$urn."/".$webform."/".$email_id;
 		$form_to_send['body'] = str_replace("[webform]",$url,$form_to_send['body']);
 
         //Send the email
@@ -265,7 +265,10 @@ class Email extends CI_Controller
     	
     	$this->load->library('email');
     	
-    	$config = array();
+    	$config = array("smtp_host"=>"mail.121system.com",
+		"smtp_user"=>"mail@121system.com",
+		"smtp_pass"=>"L3O9QDirgUKXNE7rbNkP",
+		"smtp_port"=>25);
     	
     	//Get the server conf if exist
     	if ($template = $this->Email_model->get_template($form['template_id'])) {
@@ -289,7 +292,7 @@ class Email extends CI_Controller
 
         $tmp_path = '';
         $user_id = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
-
+		if(isset($form['template_attachments'])&&count($form['template_attachments'])>0){
         foreach ($form['template_attachments'] as $attachment) {
             if (strlen($attachment['path'])>0) {
                 $tmp_path = substr($attachment['path'], 0, strripos($attachment['path'], "/")+1)."tmp_".$user_id."/";
@@ -308,7 +311,7 @@ class Email extends CI_Controller
                 }
             }
         }
-
+		}
         $result = $this->email->send();
     	//$this->email->print_debugger();
     	$this->email->clear();
