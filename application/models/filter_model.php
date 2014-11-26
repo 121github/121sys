@@ -569,8 +569,11 @@ class Filter_model extends CI_Model
 
         //only join the email tables if we need them
         $email_qry = "";
-        if (in_array("emails", $fields)) {
+        if (in_array("emails", $fields)||in_array("template", $fields)) {
             $qry .= " left join email_history on email_history.urn = records.urn ";
+			if ($array['template']>0){
+				$template_qry = " and email_history.template_id = ".intval($array['template']);
+			}
             if ($array['emails'] == "read") {
                 $email_qry = " and email_history.read_confirmed = 1";
             }
@@ -633,7 +636,7 @@ class Filter_model extends CI_Model
             unset($array['campaigns.campaign_id']);
         }
         
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry";
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry";
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause

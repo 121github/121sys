@@ -149,7 +149,8 @@ $this->_campaigns = campaign_access_dropdown();
             "sent-email-from" => "sent-email-from",
             "sent-email-to" => "sent-email-to",
             "sent-email-date" => "date(email_history.sent_date)",
-            "sent-email-time" => "hour(email_history.sent_date)"
+            "sent-email-time" => "hour(email_history.sent_date)",
+			"template" => "template_id"
 
         );
         
