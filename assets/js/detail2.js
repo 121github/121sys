@@ -1095,7 +1095,7 @@ var record = {
             });
             $(document).on('click', '.del-email-btn', function(e) {
                 e.preventDefault();
-                modal.delete_email($(this).attr('item-id'));
+                modal.delete_email($(this).attr('item-id'), $(this).attr('item-modal'));
             });
             $(document).on('click', '.show-all-email-btn', function(e) {
                 e.preventDefault();
@@ -1151,7 +1151,7 @@ var record = {
                 $('.email-all-content').show();
             });
         },
-        remove_email: function(email_id) {
+        remove_email: function(email_id,modal) {
             $.ajax({
                 url: helper.baseUrl + 'email/delete_email',
                 type: "POST",
@@ -1160,8 +1160,10 @@ var record = {
             }).done(function(response) {
                 if (response.success) {
                     record.email_panel.load_panel();
-                    record.email_panel.close_all_email();
-                    record.email_panel.show_all_email();
+                    if (modal == 1){
+                        record.email_panel.close_all_email();
+                        record.email_panel.show_all_email();
+                    }
                     flashalert.success("Email was deleted from the history");
                 };
             });
@@ -1275,7 +1277,7 @@ var record = {
                         var message = (val.status != true)?"Email no sent":((val.read_confirmed == 1)?"Email read confirmed "+" ("+val.read_confirmed_date+")":"Waiting email read confirmation");
                         var send_to = (val.send_to.length > 15)?val.send_to.substring(0, 15)+'...':val.send_to;
                         var subject = (val.subject.length > 20)?val.subject.substring(0, 20)+'...':val.subject;
-                        $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" title="Delete email" ></span>';
+                        $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="1" item-id="' + val.email_id + '" title="Delete email" ></span>';
                         $view_option = '<span class="glyphicon glyphicon-eye-open '+status+' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="'+message+'"></span>';
                         body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td title="'+val.subject+'" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                     });
@@ -1307,7 +1309,7 @@ var record = {
                             var message = (val.status != true)?"Email no sent":((val.read_confirmed == 1)?"Email read confirmed "+" ("+val.read_confirmed_date+")":"Waiting email read confirmation");
                             var send_to = (val.send_to.length > 15)?val.send_to.substring(0, 15)+'...':val.send_to;
                             var subject = (val.subject.length > 20)?val.subject.substring(0, 20)+'...':val.subject;
-                            $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-id="' + val.email_id + '" title="Delete email" ></span>';
+                            $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="0" item-id="' + val.email_id + '" title="Delete email" ></span>';
                             $view_option = '<span class="glyphicon glyphicon-eye-open '+status+' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="'+message+'"></span>';
                             $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="'+val.send_to+'" >' + send_to + '</td><td title="'+val.subject+'" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                         }
@@ -2144,7 +2146,7 @@ confirm_move:function(moveUrl){
             $('#modal').modal('toggle');
         });
     },
-    delete_email: function(email_id) {
+    delete_email: function(email_id, modal) {
         $('.modal-title').text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
@@ -2152,7 +2154,7 @@ confirm_move:function(moveUrl){
         }).find('.modal-body').text('Are you sure you want to delete this email?');
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
-            record.email_panel.remove_email(email_id);
+            record.email_panel.remove_email(email_id, modal);
             $('#modal').modal('toggle');
         });
     },
