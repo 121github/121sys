@@ -40,38 +40,38 @@ $number_list = rtrim($number_list,",");
 $db2 = $this->load->database('121backup',true);
 foreach($calls as $row){
 $calltime = $row['contact'];
-$qry .= "select call_id,servicename,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls left join parties on calls.id=parties.call_id where name <> '' and replace(servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by call_id union ";
+$qry .= "select call_id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls left join parties on calls.id=parties.call_id where name <> '' and replace(servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by call_id union ";
 }
 $qry = rtrim($qry,"union ");
+//$this->firephp->log($qry);
 $array = $db2->query($qry)->result_array();
+//$this->firephp->log($array);
 foreach($array as $k=> $row){
 $recordings[] = $row;
 }
 foreach($recordings as $k=>$row){
 	$recordings[$k]['duration']=timespan(strtotime($row['starttime']),strtotime($row['endtime']),true);
+	$recordings[$k]['filepath']=base64_encode($row['filepath']);
 }
+//$this->firephp->log($recordings);
 echo json_encode(array("success"=>true,"data"=>$recordings,"msg"=>"No recordings could be found for this record"));
 }
 
 public function listen(){
 $id = intval($this->uri->segment('3'));
-$qry = "select * from calls where id='$id'";
-$db2 = $this->load->database('121backup',true);
-$filename = $db2->query($qry)->row()->filepath;
+//$qry = "select * from calls where id='$id'";
+//$db2 = $this->load->database('121backup',true);
+//$filename = $db2->query($qry)->row()->filepath;
+$filename = base64_decode($this->uri->segment('4'));
 $file = urlencode(str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/34recordings/","",$filename))));
 
+$path = "http://84.19.44.186:8034/";
 
-if(strpos($_SERVER['REMOTE_ADDR'],"192.168.1"!==false)||strpos($_SERVER['REMOTE_ADDR'],"::1")!==false){
-$path = "http://192.168.1.16/";	
-} 
-else
-{
-$path = "http://www.121leads.co.uk:8034/";		
-}
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
-$response = file_get_contents($conversion_path);
-$this->firephp->log($response);
+
+$context = stream_context_create(array('http' => array('header'=>'Connection: close\r\n')));
+file_get_contents($conversion_path,false,$context);
 $u_agent = $_SERVER['HTTP_USER_AGENT'];
 $filetype ="mp3";
 if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
@@ -94,9 +94,9 @@ $filetype="ogg";
     {
  $filetype="ogg";
     }
-if($_SERVER['REMOTE_ADDR']=="84.19.44.186"){
-$path = $path = "http://192.168.1.16/";	
-}
+
+$path = "http://84.19.44.186:8034/";
+
 echo json_encode(array("success"=>true,"filename"=>$path."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
 
 

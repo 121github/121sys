@@ -6,7 +6,7 @@ if ( !function_exists('user_auth_check') )
     {
 		$inactivity = false;
 		//check last action time in session, if > 15 minutes destroy the session to log the user out
-			if (isset($_SESSION['last_action'])&&$_SESSION['last_action'] + 900 < time()) {
+			if (isset($_SESSION['last_action'])&&$_SESSION['last_action'] + 6000 < time()) {
 			session_destroy();
 			session_start(); //start the session again just so we can add an error message
 			$inactivity = true;

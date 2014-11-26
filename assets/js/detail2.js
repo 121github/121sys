@@ -1873,7 +1873,7 @@ var record = {
             record.recordings_panel.load_panel();
             $(document).on('click', '.listen', function(e) {
                 e.preventDefault();
-                record.recordings_panel.convert_recording($(this), $(this).attr('data-id'))
+                record.recordings_panel.convert_recording($(this), $(this).attr('data-id'),$(this).attr('data-path'))
             })
         },
         load_panel: function() {
@@ -1895,7 +1895,7 @@ var record = {
 				$body = "";
                 if (response.data.length > 0) {
                     $.each(response.data, function(i, val) {
-                        $body += '<tr><td>' + val.calldate + '</td><td>' + val.duration + '</td><td>' + val.servicename + '</td><td width="180"><a href="#" class="listen" data-id="' + val.call_id + '"><span class="speaker glyphicon glyphicon-play"></span> Listen</a> <span class="player-loading hidden">Please wait  <img src="' + helper.baseUrl + 'assets/img/ajax-load-black.gif"/></span></td></tr>';
+                        $body += '<tr><td>' + val.calldate + '</td><td>' + val.duration + '</td><td>' + val.servicename + '</td><td width="180"><a href="#" class="listen" data-id="' + val.call_id + '" data-path="'+val.filepath+'"><span class="speaker glyphicon glyphicon-play"></span> Listen</a> <span class="player-loading hidden">Please wait  <img src="' + helper.baseUrl + 'assets/img/ajax-load-black.gif"/></span></td></tr>';
                     });
                     $panel.html('<table class="table table-striped table-responsive"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table>');
                 } else {
@@ -1903,9 +1903,9 @@ var record = {
                 }
             });
         },
-        convert_recording: function($btn, id) {
+        convert_recording: function($btn, id, path) {
             $.ajax({
-                url: helper.baseUrl + 'recordings/listen/' + id,
+                url: helper.baseUrl + 'recordings/listen/' + id + '/' + path,
                 type: "POST",
                 dataType: "JSON",
                 beforeSend: function() {
