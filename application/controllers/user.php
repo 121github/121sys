@@ -26,9 +26,12 @@ class User extends CI_Controller
             if ($this->form_validation->run()) {
                 $username = $this->input->post('username');
                 if ($this->User_model->validate_login($this->input->post('username'), $this->input->post('password'))) {
-                    
+                    if($this->input->post('password')==md5("pass123")){
+					$redirect = base64_encode("user/account");
+					} else {
                     $redirect = $this->input->post('redirect');
-                    if ($redirect) {
+					}
+                    if (!empty($redirect)) {
                         redirect(base64_decode($redirect));
                     } else {
 						if($_SESSION['role']==5||$_SESSION['role']==3){
