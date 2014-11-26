@@ -150,8 +150,7 @@ $this->_campaigns = campaign_access_dropdown();
             "sent-email-to" => "sent-email-to",
             "sent-email-date" => "date(email_history.sent_date)",
             "sent-email-time" => "hour(email_history.sent_date)",
-			"template" => "template_id"
-
+			"template" => "emails"
         );
         
         $search_fields_2 = array(
