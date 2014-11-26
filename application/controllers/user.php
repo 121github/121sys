@@ -159,6 +159,7 @@ class User extends CI_Controller
 				unset($_SESSION['filter']);
 				$_SESSION['campaign_features']=$features;
 				$_SESSION['current_campaign']=$campaign;
+				unset($_SESSION['next']);
 		}
 		} else {
 		if(!in_array("search campaigns",$_SESSION['permissions'])){	
