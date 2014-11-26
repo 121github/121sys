@@ -308,9 +308,9 @@ class Dashboard_model extends CI_Model
 			$read = $this->db->query($qry_read)->row()->num;
 			$read_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/read'.$camp_url;
 			
-			$qry_unread = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and `status` = 0 $where";
-			$unsent = $this->db->query($qry_unread)->row()->num;
-			$unread_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/unsent'.$camp_url;
+			$qry_unsent = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and `status` = 0 $where";
+			$unsent = $this->db->query($qry_unsent)->row()->num;
+			$unsent_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/unsent'.$camp_url;
 			
 			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
 			$new = $this->db->query($qry_new)->row()->num;
