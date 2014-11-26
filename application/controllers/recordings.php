@@ -74,7 +74,7 @@ $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
 //$context = stream_context_create(array('http' => array('header'=>'Connection: close')));
 //file_get_contents($conversion_path,false,$context);
 $this->load->helper('remotefile');
-loadFile($conversion_path);
+$response = loadFile($conversion_path);
 
 $u_agent = $_SERVER['HTTP_USER_AGENT'];
 $filetype ="mp3";
