@@ -510,7 +510,7 @@ class Filter_model extends CI_Model
                 "date_format(records.nextcall,'%d/%m/%y %H:%i')",
                 "rand()"
             );
-            $qry           = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join ownership on records.urn = ownership.urn left join users on users.user_id = ownership.user_id left join data_sources on data_sources.source_id = records.source_id";
+            $qry           = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join data_sources on data_sources.source_id = records.source_id";
             $group_by      = " group by records.urn";
         } else {
             $join_records  = " left join records on records.urn = history.urn ";
@@ -591,6 +591,12 @@ class Filter_model extends CI_Model
         if (in_array("sent-email-to", $fields)) {
             $sent_date_qry .= " and date(email_history.sent_date) <= '" . $array['sent-email-to'] . "'";
             unset($array['sent-email-to']);
+        }
+
+        $user_email_sent_qry = '';
+        if (in_array("user-email-sent-id", $fields)) {
+            $sent_date_qry .= " and email_history.user_id = '" . $array['user-email-sent-id'] . "'";
+            unset($array['user-email-sent-id']);
         }
 
         //this gets ALL transfers including cross transfers

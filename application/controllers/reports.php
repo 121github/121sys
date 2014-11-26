@@ -1080,7 +1080,10 @@ class Reports extends CI_Controller
                     $emailUrl = $url."/sent-email-time/".$row['sql'];
                 }
                 else if( $group == "agent") {
-                    $emailUrl = $url."/user/".$id;
+                    $emailUrl = $url."/user-email-sent-id/".$id;
+                }
+                else if( $group == "campaign") {
+                    $emailUrl = $url."/campaign/".$id;
                 }
                 else {
                     $emailUrl = $url."/allemails/".$id;

@@ -145,6 +145,7 @@ $this->_campaigns = campaign_access_dropdown();
 			"transfers" => "transfers", //this gets the transfers + cross transfers
             "time" => "hour(contact)",
             "emails" => "emails",
+            "user-email-sent-id" => "user-email-sent-id",
             "sent-email-from" => "sent-email-from",
             "sent-email-to" => "sent-email-to",
             "sent-email-date" => "date(email_history.sent_date)",
