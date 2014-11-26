@@ -61,25 +61,25 @@ class Form_model extends CI_Model
                 $exclude = " and feature_name <> 'Recordings'";
             }
             if(!in_array("view appointments",$_SESSION['permissions'])){
-                $exclude = " and feature_name <> 'Appointment Setting'";
+                $exclude .= " and feature_name <> 'Appointment Setting'";
             }
             if(!in_array("view history",$_SESSION['permissions'])){
-                $exclude = " and feature_name <> 'History'";
+                $exclude .= " and feature_name <> 'History'";
             }
             if(!in_array("view ownership",$_SESSION['permissions'])){
-                $exclude = " and feature_name <> 'Ownership Changer'";
+                $exclude .= " and feature_name <> 'Ownership Changer'";
             }
             if(!in_array("view surveys",$_SESSION['permissions'])){
-                $exclude = " and feature_name <> 'Surveys'";
+                $exclude .= " and feature_name <> 'Surveys'";
             }
             if(!in_array("view email",$_SESSION['permissions'])){
-                $exclude = " and feature_name <> 'Emails'";
+                $exclude .= " and feature_name <> 'Emails'";
             }
             if(!in_array("view attachment",$_SESSION['permissions'])){
-                $exclude = " and feature_name <> 'Attachments'";
+                $exclude .= " and feature_name <> 'Attachments'";
             }
 			if(!in_array("view call recordings",$_SESSION['permissions'])){
-                $exclude = " and feature_name <> 'Recordings'";
+                $exclude .= " and feature_name <> 'Recordings'";
             }
 		}
         else {

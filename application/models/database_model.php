@@ -557,7 +557,8 @@ class Database_model extends CI_Model
 		('campaign access','Admin'),
 		('view attachments', 'Attachments'),
 		('add attachment', 'Attachments'),
-		('View Calendar', 'Appointments')");
+		('View Calendar', 'Appointments'),
+		('delete email', 'Email')");
 		
 		if ($this->db->_error_message()) {
 			return "permissions";
@@ -605,6 +606,7 @@ class Database_model extends CI_Model
             (1, 41),
             (1, 43),
             (1, 44),
+            (1, 48),
             (2, 2),
             (2, 3),
             (2, 4),
@@ -642,6 +644,7 @@ class Database_model extends CI_Model
             (2, 41),
             (2, 43),
             (2, 44),
+            (2, 48),
             (3, 1),
             (3, 3),
             (3, 4),
