@@ -150,6 +150,8 @@ class Records extends CI_Controller
         }
         //get the details of the record for the specified features
         $details          = $this->Records_model->get_details($urn, $features);
+		//check if this user has already updated the record and if they have they can select next without an update
+		$allow_skip = $this->Records_model->updated_recently($urn);
         $progress_options = $this->Form_model->get_progress_descriptions();
         $outcomes         = $this->Records_model->get_outcomes($campaign_id);
         $xfers            = $this->Records_model->get_xfers($campaign_id);
@@ -179,6 +181,7 @@ class Records extends CI_Controller
             'outcomes' => $outcomes,
             "features" => $features,
             "panels" => $panels,
+			"allow_skip"=>$allow_skip,
             "xfer_campaigns" => $xfers,
             "progress_options" => $progress_options,
 			"automatic"=>$automatic,

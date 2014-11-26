@@ -5,16 +5,16 @@ There was a problem while finding the selected record details. Maybe it does not
 <div class="page-header">
   <h2>View Details <small>URN: <?php echo $details['record']['urn'] ?> <?php echo (!empty($details['record']['campaign'])?" [". $details['record']['campaign']."]":"") ?></small><span class="pull-right">
     <?php if(!empty($nav['prev'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>
-    <a type="button" class="btn btn-default btn-lg nav-btn" href="<?php echo $nav['prev'] ?>">Previous</a>
+    <a type="button" class="btn btn-default btn-lg <?php if(!$allow_skip){ echo "nav-btn"; } ?>" href="<?php echo $nav['prev'] ?>">Previous</a>
     <?php endif ?>
     <?php if(!empty($nav['next'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>
-    <a type="button" class="btn btn-default btn-lg nav-btn" href="<?php echo $nav['next'] ?>">Next</a>
+    <a type="button" class="btn btn-default btn-lg <?php if(!$allow_skip){ echo "nav-btn"; } ?>" href="<?php echo $nav['next'] ?>">Next</a>
     <?php endif ?>
     <?php if($automatic||empty($nav['next'])&&in_array("set call outcomes",$_SESSION['permissions'])): ?>
     <?php if(isset($_SESSION['previous'])&&!empty($_SESSION['previous'])): ?>
     <a type="button" class="btn btn-default btn-lg" href="<?php echo base_url()."records/detail/".$_SESSION['previous'] ?>">Previous</a>
     <?php endif ?>  
-    <a type="button" class="btn btn-default btn-lg <?php if(!isset($_SESSION['next'])||empty($_SESSION['next'])){ echo "nav-btn"; } ?>" href="<?php echo base_url()."records/detail/".(isset($_SESSION['next'])?$_SESSION['next']:"0") ?>">Next</a>
+    <a type="button" class="btn btn-default btn-lg <?php if(!isset($_SESSION['next'])&&!$allow_skip||empty($_SESSION['next'])&&!$allow_skip){ echo "nav-btn"; } ?>" href="<?php echo base_url()."records/detail/".(isset($_SESSION['next'])?$_SESSION['next']:"0") ?>">Next</a>
     <?php endif ?>
     </span></h2>
 </div>

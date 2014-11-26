@@ -908,5 +908,14 @@ class Records_model extends CI_Model
 		$this->db->join("webforms_to_campaigns", "webforms.webform_id = webforms_to_campaigns.webform_id","LEFT");
         return $this->db->get("webforms")->result_array();
     }
+		public function updated_recently($urn){
+		$qry = "select urn from records where urn = '$urn' and date_updated > subdate(now(),interval 10 minute)";
+		if($this->db->query($qry)->num_rows()>0){
+		return true;	
+		} else {
+		return false;	
+		}
+	}
+
 }
 ?>
