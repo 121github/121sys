@@ -291,21 +291,30 @@ class Dashboard_model extends CI_Model
     }
     
 	public function get_email_stats($campaign=""){
-		$where =" and email_history.user_id = '{$_SESSION['user_id']}' and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-		if(!empty($campaign)){
-		$where = " and records.campaign_id = $campaign ";	
+		$camp_url = "";
+		$where =" and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		if(in_array("set call outcomes",$_SESSION['permissions'])){
+		$where .= " and email_history.user_id = '{$_SESSION['user_id']}'";
 		}
-			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) where 1 $where";	
+		if(!empty($campaign)){
+		$where .= " and records.campaign_id = $campaign ";	
+		$camp_url = "/campaign/$campaign";
+		}
+			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() $where";	
 			$all = $this->db->query($qry_all)->row()->num;
+			$all_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/sent'.$camp_url;
 			
-			$qry_read = "select count(distinct urn) num from email_history left join records using(urn) where read_confirmed = 1 $where";	
+			$qry_read = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and read_confirmed = 1 $where";	
 			$read = $this->db->query($qry_read)->row()->num;
+			$read_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/read'.$camp_url;
 			
-			$qry_unread = "select count(distinct urn) num from email_history left join records using(urn) where read_confirmed = 0 $where";	
+			$qry_unread = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and `status` = 0 $where";
 			$unsent = $this->db->query($qry_unread)->row()->num;
+			$unread_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/unsent'.$camp_url;
 			
-			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
+			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
 			$new = $this->db->query($qry_new)->row()->num;
+			$new_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/new'.$camp_url;
 			
 			return array("new"=>$new,"all"=>$all,"read"=>$read,"unsent"=>$unsent);
 	}

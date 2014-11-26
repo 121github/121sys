@@ -575,10 +575,13 @@ class Filter_model extends CI_Model
                 $email_qry = " and email_history.read_confirmed = 1";
             }
             else if ($array['emails'] == "sent") {
-                $email_qry = " and email_history.status = 1";
+                $email_qry = " and email_history.`status` = 1";
             }
             else if ($array['emails'] == "unsent") {
-                $email_qry = " and email_history.status = 0";
+                $email_qry = " and email_history.`status` = 0";
+            }
+			else if ($array['emails'] == "new") {
+                $email_qry = " and email_history.read_confirmed = 1 and email_history.read_confirmed_date > records.date_updated ";
             }
             unset($array['emails']);
         }

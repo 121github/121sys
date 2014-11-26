@@ -31,8 +31,8 @@ var dashboard = {
                 filter: filter,
             }
         }).done(function (response) {
-            $('.email-stats').html("<ul><li>"+response.data.read+" records with an email read confirmed "
-			+"</li><li>"+response.data.new+" records with new read confirmation</li><li>"+response.data.all+" records with emails sent</li><li>"+response.data.unsent+" record with failed emails</li></ul>");
+            $('.email-stats').html("<ul><li><a href='"+response.data.read_url+"'>"+response.data.read+"</a> records with an email read confirmed "
+			+"</li><li><a href='"+response.data.new_url+"'>"+response.data.new+"</a> records with new read confirmation</li><li><a href='"+response.data.all_url+"'>"+response.data.all+"</a> records with emails sent</li><li><a href='"+response.data.unsent_url+"'>"+response.data.unsent+"</a> record with failed emails</li></ul>");
         });
     },
 	/* the function for the outcomes panel on the main dashboard */
