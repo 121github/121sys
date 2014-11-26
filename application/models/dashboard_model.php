@@ -240,7 +240,7 @@ class Dashboard_model extends CI_Model
 		}
 		
         $qry_filter .= " and campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry = "select urn, max(contact) as `when`, contact as outcome_date,outcome as outcome,`name`,campaign_name as campaign from history h left join campaigns using(campaign_id) left join outcomes using(outcome_id) left join users u using(user_id) left join records using(urn)  left join (select user_id, max(contact) survey_date from history h left join campaigns using(campaign_id)  left join records using(urn) where h.outcome_id in (70,71) $qry_filter group by user_id) ls on ls.user_id = history.user_id where u.team_id is not null $qry_filter  group by u.user_id ";
+        $qry = "select urn, max(contact) as `when`, contact as outcome_date,outcome as outcome,`name`,campaign_name as campaign from history h left join campaigns using(campaign_id) left join outcomes using(outcome_id) left join users u using(user_id) left join records using(urn)  left join (select user_id, max(contact) survey_date from history h left join campaigns using(campaign_id)  left join records using(urn) where h.outcome_id in (70,71) $qry_filter group by user_id) ls on ls.user_id = h.user_id where u.team_id is not null $qry_filter  group by u.user_id ";
         
         return $this->db->query($qry)->result_array();
     }
