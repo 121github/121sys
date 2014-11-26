@@ -150,7 +150,7 @@ $this->_campaigns = campaign_access_dropdown();
             "sent-email-to" => "sent-email-to",
             "sent-email-date" => "date(email_history.sent_date)",
             "sent-email-time" => "hour(email_history.sent_date)",
-			"template" => "emails"
+			"template" => "template"
         );
         
         $search_fields_2 = array(
@@ -170,6 +170,7 @@ $this->_campaigns = campaign_access_dropdown();
 			"alldials" => "alldials",
 			"transfers" => "transfers",
             "emails" => "emails",
+			"template" => "template"
         );
         $fields          = array();
         $array           = array();
