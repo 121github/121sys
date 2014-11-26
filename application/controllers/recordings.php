@@ -69,7 +69,8 @@ $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
 //the old way was a bit slow
 //$context = stream_context_create(array('http' => array('header'=>'Connection: close')));
 //file_get_contents($conversion_path,false,$context);
-$this->load->loadFile($conversion_path);
+$this->load->helper('remotefile');
+loadFile($conversion_path);
 $u_agent = $_SERVER['HTTP_USER_AGENT'];
 $filetype ="mp3";
 if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
