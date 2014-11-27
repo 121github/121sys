@@ -121,7 +121,7 @@ $this->_campaigns = campaign_access_dropdown();
 		//Before save the template, check if the image/s used in the template are still in the new body, otherwise, we remove the image/s from the upload/template folder
 		if ($form['template_id']) {
 			$old_template = $this->Email_model->get_template($form['template_id']);
-			$this->delete_old_images($old_template['template_body'], $form['template_body']);
+			//$this->delete_old_images($old_template['template_body'], $form['template_body']);
 		}
 		
 		//Check if the user selected any campaign for this template
@@ -316,14 +316,14 @@ $this->_campaigns = campaign_access_dropdown();
 			//Get the attachment list (only one file in this case)
 			$attachment_list = array($data['path']);
 			//Delete the files from the server folder
-			foreach ($attachment_list as $path) {
-                if (strripos($path, "?")) {
-                    $path = substr($path,0,  strripos($path, "?"));
-                }
-				if (!unlink(strstr('./'.$path, 'upload'))) {
-					$response = false;
-				}
-			}
+//			foreach ($attachment_list as $path) {
+//                if (strripos($path, "?")) {
+//                    $path = substr($path,0,  strripos($path, "?"));
+//                }
+//				if (!unlink(strstr('./'.$path, 'upload'))) {
+//					$response = false;
+//				}
+//			}
 		}
 		
 		echo json_encode(array("success"=>$response));
@@ -397,7 +397,7 @@ $this->_campaigns = campaign_access_dropdown();
 			$destination = './upload/templates/'.$filename;
 			
 			if(move_uploaded_file($location, $destination)){
-				$tmp = base_url().'/upload/templates/'.$filename;
+				$tmp = base_url().'upload/templates/'.$filename;
 				echo $tmp;
 				exit;
 			}
@@ -463,9 +463,9 @@ $this->_campaigns = campaign_access_dropdown();
 		$response = $this->Email_model->delete_template($template_id);
 		if($response){
 			//Delete the images (old_images). The second parameter represents the new images (empty array in this case)
-			$this->delete_old_images($image_list, '');
+			//$this->delete_old_images($image_list, '');
 			//Delete the old attachments
-			$this->delete_old_attachments($attachment_list);
+			//$this->delete_old_attachments($attachment_list);
 			echo json_encode(array("success"=>true,"data"=>$response));
 		} else {
 			echo json_encode(array("success"=>false));
