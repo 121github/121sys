@@ -569,8 +569,11 @@ class Filter_model extends CI_Model
 
         //only join the email tables if we need them
         $email_qry = "";
-        if (in_array("emails", $fields)||in_array("template_id", $fields)) {
-            $qry .= " left join email_history on email_history.urn = records.urn ";
+		$template_qry = "";
+        if (in_array("emails", $fields)||in_array("template", $fields)) {
+			 $qry .= " left join email_history on email_history.urn = records.urn ";
+		}
+		if (in_array("emails", $fields)){
             if ($array['emails'] == "read") {
                 $email_qry = " and email_history.read_confirmed = 1";
             }
@@ -709,7 +712,7 @@ class Filter_model extends CI_Model
         $start  = $options['start'];
         $length = $options['length'];
         $qry .= " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-				$this->firephp->log($qry);
+				//$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];
         $data = $this->db->query($qry)->result_array();
