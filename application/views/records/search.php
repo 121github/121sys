@@ -398,6 +398,14 @@
                   <option value="desc" >Descending</option>
                 </select>
               </div>
+              <div class="form-group">
+                  <label>Emails</label>
+                  <select  name="email[]" class="selectpicker" data-width="100%" data-size="2" multiple>
+                      <option value="read" >Records with an email read confirmed</option>
+                      <option value="sent" >Records with emails sent</option>
+                      <option value="unsent" >Record with failed emails</option>
+                  </select>
+              </div>
               <button type="submit" class="btn btn-default pull-right submit-filter">View Records</button>
               Found: <span class="record-count"></span> </div>
           </div>
