@@ -55,10 +55,11 @@ class Form_model extends CI_Model
     }
     public function get_campaign_features($campaign = false)
     {
+		$exclude = "";
 		//before we get features in this campaign we need to check the user has permissions on these features
 		if($_SESSION['role']<>"1"){
             if(!in_array("view recordings",$_SESSION['permissions'])){
-                $exclude = " and feature_name <> 'Recordings'";
+                $exclude .= " and feature_name <> 'Recordings'";
             }
             if(!in_array("view appointments",$_SESSION['permissions'])){
                 $exclude .= " and feature_name <> 'Appointment Setting'";
