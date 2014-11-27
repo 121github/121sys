@@ -24,9 +24,9 @@ if ( !function_exists('user_auth_check') )
                 echo 'Logout';
                 exit;
             }
-			
-			$url = base64_encode(str_replace(dirname($_SERVER['SCRIPT_NAME']),'',$_SERVER['REQUEST_URI']));
-            redirect(base_url() . "user/login/$url/");
+			$url = base64_encode($_SERVER['REQUEST_URI']);
+			//$url = base64_encode(str_replace(dirname($_SERVER['SCRIPT_NAME']),'',$_SERVER['REQUEST_URI']));
+            redirect(base_url() . "user/login/$url");
         } 
 		
 		$_SESSION['last_action'] = time();
