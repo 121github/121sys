@@ -239,15 +239,16 @@ class Admin extends CI_Controller
                 $features['features'][] = 3;
             }
 
-            if (($form['min_quote_days'] && $form['max_quote_days'])&&(intval($form['min_quote_days']) < intval($form['max_quote_days']))) {
-                $response = false;
-                $success = true;
-                $message = "Campaign saved";
-            }
-            else {
+            //Check if the minimum quote days is less than the maximum quote days
+            if (($form['min_quote_days'] && $form['max_quote_days'])&&(intval($form['min_quote_days']) > intval($form['max_quote_days']))) {
                 $response = $this->Admin_model->save_campaign_features($features);
                 $message = "ERROR: The minimum quote days must be less than the maximum quote days";
                 $success = false;
+            }
+            else {
+                $response = false;
+                $success = true;
+                $message = "Campaign saved";
             }
             echo json_encode(array(
                 "data" => $response,
