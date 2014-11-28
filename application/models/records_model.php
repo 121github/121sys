@@ -415,6 +415,34 @@ class Records_model extends CI_Model
 		$qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id where urn = '$urn' order by history_id desc ".$limit_;
         return $this->db->query($qry)->result_array();
     }
+
+    public function get_history_by_id($history_id)
+    {
+        $qry = "select history.contact, history.history_id, history.outcome_id, history.progress_id, history.comments, outcomes.outcome, pd.description as progress, u.name
+                from history
+                left join outcomes using(outcome_id)
+                left join progress_description pd using(progress_id)
+                left join users u using(user_id)";
+        $qry .= " where history.history_id = '$history_id'";
+        $result = $this->db->query($qry)->result_array();
+        return $result[0];
+    }
+
+    public function save_history($post)
+    {
+        if (!empty($post['history_id'])) {
+            $this->db->where("history_id", $post['history_id']);
+            return $this->db->update("history", $post);
+        } else {
+            return  $this->db->insert("history", $post);
+        }
+    }
+
+    public function remove_history($id)
+    {
+        $this->db->where("history_id", $id);
+        return $this->db->delete("history");
+    }
     
     public function get_outcomes($campaign)
     {
