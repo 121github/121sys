@@ -158,5 +158,11 @@ var flashalert = {
          root.find('.left-caret').toggleClass('right-caret left-caret');
          root.find('.sub-menu:visible').hide();
      });
+	 
+	 var barheight = $('.navbar').height();
+	 if(barheight>50){
+		 $('.navbar-brand').hide();
+	 }
+	 
  });
 

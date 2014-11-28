@@ -1,6 +1,47 @@
 // JavaScript Document
 
+function table_columns(){
+	 var form = "";
+		$('.save-modal').show();
+		$('.confirm-modal').hide();
+	   $('.modal-title').text('Choose display data');
+	   $.ajax({ url:helper.baseUrl+'ajax/get_table_columns',
+	   type:"POST",
+	   dataType:"JSON",
+	   }).done(function(response){
+		  form ="<form>";
+		  $.each(response,function(key,fields){
+			 form += "<p>"+key+"</p>"; 
+			 form += "<select class='fieldpicker' multiple title='Select the "+key+"'>";
+			 $.each(fields,function(key,field){
+				 form += "<option value='"+key+"'>"+field+"</p>";
+			 });
+			  form += "</select>";
+		  });
+		  form +="</form>";
+		  
+		  
+		 $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').html(form);
+		$('.fieldpicker').selectpicker();
+        $(".save-modal").off('click').show();
+        $('.save-modal').on('click', function(e) {
+           console.log('load');
+        });
+		 
+		 
+		 
+	   });
+	   
+        
+}
+
 $(document).ready( function () {
+
+
+	
 	
     var table = $('.data-table').DataTable({
 		"dom": '<"top">p<"dt_info"i>rt<"bottom"lp><"clear">',
@@ -76,3 +117,5 @@ $(document).ready( function () {
   });
 
 });
+
+

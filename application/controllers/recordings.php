@@ -9,8 +9,6 @@ class Recordings extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        user_auth_check();
-		$this->_campaigns = campaign_access_dropdown();
 		$this->load->model('Records_model');
 		$this->load->model('Recordings_model');
     }

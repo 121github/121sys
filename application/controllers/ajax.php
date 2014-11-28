@@ -19,6 +19,29 @@ $this->_campaigns = campaign_access_dropdown();
         $this->load->helper('array');
 		$this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+	
+	public function get_table_columns(){
+		$array = array();
+		$array['Record Fields'] =  array("r.dials"=>"Dials",
+		"records.last_updated"=>"Last Updated",
+		"outcomes.outcome"=>"Last Outcome",
+		"users.name"=>"Updated By");
+		
+		$array['Contact Fields'] =  array("contacts.fullname"=>"Contact Name",
+		"contacts.dob"=>"Contact DOB",
+		"contacts.email"=>"Contact Email",
+		"contact_telephone.telephone_number"=>"Contact Telepohone",
+		"contact_addresses.postcode"=>"Contact Postcode");
+		
+		$array['Company Fields'] =  array("companies.name"=>"Company Name",
+		"companies.company_number"=>"Company Number",
+		"companies.email"=>"Company Email",
+		"companies.website"=>"Company Website",
+		"companies.employees"=>"Employees");
+				
+		echo json_encode($array);
+	}
+	
     //this function returns a json array of contact data for a given contact id
     public function get_contact()
     {

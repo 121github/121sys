@@ -9,12 +9,7 @@ class Records_model extends CI_Model
     function __construct()
     {
         parent::__construct();
-        if ($_SESSION['config']['use_fullname'] == 1) {
-            $this->name_field = "fullname";
-        } else {
             $this->name_field = "concat(title,' ',firstname,' ',lastname)";
-        }
-        
     }
 	
 		public function get_campaign_from_urn($urn){

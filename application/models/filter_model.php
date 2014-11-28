@@ -1,5 +1,4 @@
 <?php
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -9,6 +8,33 @@ class Filter_model extends CI_Model
     function __construct()
     {
         parent::__construct();
+		$_aliases = array( 
+"records" => "r",
+"companies" => "com",
+"company_telephone" => "comt",
+"company_addresses" => "coma",
+"contacts" => "con",
+"contact_telephone" => "cont",
+"contact_addresses" => "cona",
+"ownership" => "ow",
+"outcomes" => "o",
+"clients" => "cl",
+"client_refs" => "cr",
+"campaigns" => "c",
+"campaign_types" => "ct",
+"appointments" => "a",
+"data_sources" => "ds",
+"email_history" => "eh",
+"history" => "h",
+"record_details" => "rd",
+"surveys" => "s",
+"survey_info" => "si",
+"answers" => "ans",
+"questions" => "q",
+"users" => "u",
+"sectors" => "sec",
+"subsectors" => "subsec"
+);
     }
     
     public function count_records($filter)
@@ -74,7 +100,7 @@ class Filter_model extends CI_Model
         $filter_options["outcome_id"]       = array(
             "table" => "records",
             "type" => "multiple",
-            "alias" => "outcomes.outcome_id"
+            "alias" => "r.outcome_id"
         );
         $filter_options["coname"]           = array(
             "table" => "companies",
@@ -134,12 +160,12 @@ class Filter_model extends CI_Model
         $filter_options["phone"]            = array(
             "table" => "contact_telephone",
             "type" => "like",
-            "alias" => "con_tel.telephone_number"
+            "alias" => "cont.telephone_number"
         );
         $filter_options["address"]          = array(
             "table" => "contact_addresses",
             "type" => "like",
-            "alias" => "concat(con_add.add1,con_add.add2,con_add.add3,con_add.postcode)"
+            "alias" => "concat(cona.add1,cona.add2,cona.add3,cona.postcode)"
         );
         $filter_options["group_id"]         = array(
             "table" => "users",
@@ -305,6 +331,9 @@ class Filter_model extends CI_Model
                 }
                 
                 /* join any additional tables if they are required */
+				 if ($filter_options[$field]['table'] == "outcomes") {
+                    $join['contacts'] = " left join outcomes on outcomes.outcome_id = r.outcome_id";
+                }
                 if ($filter_options[$field]['table'] == "contacts") {
                     $join['contacts'] = " left join contacts con on con.urn = r.urn ";
                 }
@@ -319,11 +348,11 @@ class Filter_model extends CI_Model
                 }
                 if ($filter_options[$field]['table'] == "contact_telephone") {
                     $join['contacts']          = " left join contacts con on c.urn = r.urn ";
-                    $join['contact_telephone'] = " left join contact_telephone con_tel on con.contact_id = con_tel.contact_id ";
+                    $join['contact_telephone'] = " left join contact_telephone cont on con.contact_id = cont.contact_id ";
                 }
                 if ($filter_options[$field]['table'] == "contact_addresses") {
                     $join['contacts']          = " left join contacts  con on con.urn = r.urn ";
-                    $join['contact_addresses'] = " left join contact_addresses con_add on con.contact_id = con_add.contact_id ";
+                    $join['contact_addresses'] = " left join contact_addresses cona on con.contact_id = cona.contact_id ";
                 }
                 if ($filter_options[$field]['table'] == "companies") {
                     $join['companies']          = " left join companies com on com.urn = r.urn ";
@@ -343,13 +372,13 @@ class Filter_model extends CI_Model
                         $join['companies'] = " left join companies com on com.urn = r.urn ";
                     }
                     if (!isset($join['company_addresses'])) {
-                        $join['company_addresses'] = " left join company_addresses com_add on com_add.company_id = com.company_id left join uk_postcodes com_pc on com_add.postcode = com_pc.postcode ";
+                        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id left join uk_postcodes com_pc on coma.postcode = com_pc.postcode ";
                     }
                     if (!isset($join['contacts'])) {
                         $join['contacts'] = " left join contacts  con on con.urn = r.urn ";
                     }
                     if (!isset($join['contact_addresses'])) {
-                        $join['contact_addresses'] = " left join contact_addresses con_add on con.contact_id = con_add.contact_id left join uk_postcodes con_pc on com_add.postcode = con_pc.postcode";
+                        $join['contact_addresses'] = " left join contact_addresses cona on con.contact_id = cona.contact_id left join uk_postcodes con_pc on coma.postcode = con_pc.postcode";
                     }
                 }
                 

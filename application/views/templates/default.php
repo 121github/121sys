@@ -40,7 +40,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       <div class="navbar-header">
         <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle collapsed" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
         <?php if(!isset($_SESSION['permissions'])||count($_SESSION['campaign_access']['array'])<2||in_array("search campaigns",$_SESSION['permissions'])){ ?>
-        <a href="#" class="navbar-brand"><img style="margin-top:-10px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/logo.png"></a>
+        <a href="#" class="navbar-brand"><img style="margin-top:-5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/logo.png"></a>
         <?php } else { ?>
         <span style="position:absolute;top:8px"><img style="margin-top:-10px; margin-right:5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/small-logo.png">
         <select class="selectpicker" id="campaign-select">
@@ -219,6 +219,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       <div class="modal-footer">
         <button type="button" class="btn btn-default close-modal pull-left" data-dismiss="modal">Close</button>
         <button type="button" style="display: none;" class="btn btn-danger discard-modal">No</button>
+        <button type="button" style="display: none;" class="btn btn-primary save-modal">Save</button>
         <button type="button" class="btn btn-primary confirm-modal">Confirm</button>
       </div>
     </div>
