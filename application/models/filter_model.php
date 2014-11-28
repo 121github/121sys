@@ -252,6 +252,11 @@ class Filter_model extends CI_Model
             "type" => "",
             "alias" => ""
         );
+        $filter_options["email"]              = array(
+            "table" => "",
+            "type" => "",
+            "alias" => ""
+        );
         $qry                                = "";
         $special                            = "";
         $multiple                           = "";
@@ -314,6 +319,33 @@ class Filter_model extends CI_Model
                 /* apply the sort order if an order has been set*/
                 if ($field == "order_direction" && !empty($order)) {
                     $order .= ($data == "descending" ? " asc" : " desc");
+                }
+                /*apply the email filetrs */
+                if ($field == "email") {
+                    $email_where = " and (";
+                    $i = 0;
+                    foreach($data as $val) {
+                        $or = ($i==0)?"":" or";
+                        switch ($val) {
+                            case "sent":
+                                $email_where .= $or." eh.status = 1";
+                                break;
+                            case "read":
+                                $email_where .= $or." eh.read_confirmed = 1";
+                                break;
+                            case "unsent":
+                                $email_where .= $or." eh.status = 0";
+                                break;
+                            default:
+                                break;
+                        }
+                        $i++;
+                    }
+                    $email_where .= " )";
+                    if (count($data) > 0) {
+                        $join['email'] = " left join email_history eh on eh.urn = r.urn ";
+                        $where .= $email_where;
+                    }
                 }
                 /*apply the special filetrs */
                 if ($field == "favorites") {
@@ -478,7 +510,7 @@ class Filter_model extends CI_Model
             foreach ($join as $join_query) {
                 $qry .= $join_query;
             }
-            
+
         }
         //if the second parameter in the function is set to true then we will store the filter into the session so it's use throughout the system
         if ($use) {
@@ -497,7 +529,7 @@ class Filter_model extends CI_Model
                 unset($_SESSION['current_campaign']);
             }
         }
-        
+
         return $qry;
         
     }

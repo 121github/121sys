@@ -16,6 +16,7 @@ $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Records_model');
         $this->load->model('Survey_model');
 		$this->load->model('User_model');
+        $this->load->model('Form_model');
         $this->load->helper('array');
 		$this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
@@ -567,6 +568,43 @@ $this->_campaigns = campaign_access_dropdown();
                 "success" => true,
                 "data" => $history
             ));
+        }
+    }
+
+    //fetch the history entry for a given history_id
+    public function get_history_by_id()
+    {
+        if ($this->input->is_ajax_request()) {
+            $history_id = intval($this->input->post('id'));
+
+            $history = $this->Records_model->get_history_by_id($history_id);
+            echo json_encode(array(
+                "success" => true,
+                "data" => $history,
+                "outcomes" => $this->Form_model->get_outcomes(),
+                "progress_list" => $this->Form_model->get_progress_descriptions()
+            ));
+        }
+    }
+
+    public function update_history(){
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            if($this->Records_model->save_history($form)){
+                echo json_encode(array("success"=>true,"msg"=>"The history has been updated"));
+            } else {
+                echo json_encode(array("success"=>false,"msg"=>"The history could not be updated"));
+            }
+        }
+    }
+
+    public function delete_history(){
+        if ($this->input->is_ajax_request()) {
+            if($this->Records_model->remove_history($this->input->post('history_id'))){
+                echo json_encode(array("success"=>true,"msg"=>"The history has been deleted"));
+            } else {
+                echo json_encode(array("success"=>false,"msg"=>"The history could not be deleted"));
+            }
         }
     }
     

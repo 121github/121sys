@@ -80,6 +80,28 @@ var record = {
                 e.preventDefault();
                 record.history_panel.close_all_history($(this));
             });
+            $(document).on('click', '.edit-history-btn', function(e) {
+                e.preventDefault();
+                record.history_panel.edit_history($(this).attr('item-id'), $(this).attr('item-modal'));
+            });
+            $(document).on("click", ".close-history-btn", function(e) {
+                e.preventDefault();
+                var modal = $(this).attr('item-modal');
+                var panel = (modal=="1"?'.history-all-panel':'.history-panel');
+                var content = (modal=="1"?'.history-all-content':'.panel-content');
+                $(panel).find('.glyphicon-remove').removeClass('glyphicon-remove close-history-btn');
+                $(panel).find('form').fadeOut(function() {
+                    $(panel).find(content).fadeIn()
+                });
+            });
+            $(document).on("click", ".save-history-btn", function(e) {
+                e.preventDefault();
+                record.history_panel.update_history($(this).attr('item-modal'));
+            });
+            $(document).on('click', '.del-history-btn', function(e) {
+                e.preventDefault();
+                modal.delete_history($(this).attr('item-id'), $(this).attr('item-modal'));
+            });
         },
         load_panel: function() {
             $.ajax({
@@ -92,24 +114,32 @@ var record = {
                 }
             }).done(function(response) {
                 if (response.success) {
-                    $('.history-panel').empty();
+                    $('.history-panel').find('.panel-content').empty();
                     var $body = "";
+                    var $edit_btn = "";
+                    var $delete_btn = "";
                     if (response.data.length) {
                         //Use the k var only to know if there are more than x records
                         var k = 0;
                         $.each(response.data, function(i, val) {
+                            if(record.permissions['edit history']>0){
+                                $edit_btn = '<span class="glyphicon glyphicon-pencil pull-right edit-history-btn" item-modal="0" item-id="' + val.history_id + '"></span>';
+                            }
+                            if(record.permissions['delete history']>0){
+                                $delete_btn = '<span class="glyphicon glyphicon-trash pull-right del-history-btn marl" data-target="#modal" item-modal="0" item-id="' + val.history_id + '" title="Delete history"></span>';
+                            }
                             if (k <= record.limit-1) {
-                                $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td></tr>';
+                                $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>'+ $edit_btn +'</td><td>'+ $delete_btn +'</td></tr>';
                             }
                             k++;
                         });
                         if (k > record.limit-1) {
                             $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-history-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
                         }
-                        $('.history-panel').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th></tr></thead><tbody>' + $body + '</tbody></table>');
+                        $('.history-panel').find('.panel-content').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>' + $body + '</tbody></table>');
 
                     } else {
-                        $('.history-panel').append('<p>This record has no history information yet</p>');
+                        $('.history-panel').find('.panel-content').append('<p>This record has no history information yet</p>');
                     }
                 }
             });
@@ -126,6 +156,9 @@ var record = {
                 left: moveto,
                 top: '10%'
             }, 1000);
+            record.history_panel.load_all_history_panel();
+        },
+        load_all_history_panel: function() {
             //Get attachment data
             $.ajax({
                 url: helper.baseUrl + "ajax/get_history",
@@ -141,12 +174,20 @@ var record = {
                 var $tbody = $('.history-all-table').find('tbody');
                 $tbody.empty();
                 var $body = "";
+                var $edit_btn = "";
+                var $delete_btn = "";
 
                 if (response.data.length > 0) {
                     $.each(response.data, function(i, val) {
-                        $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td></tr>';
+                        if(record.permissions['edit history']>0){
+                            $edit_btn = '<span class="glyphicon glyphicon-pencil pull-right edit-history-btn" item-modal="1" item-id="' + val.history_id + '"></span>';
+                        }
+                        if(record.permissions['delete history']>0){
+                            $delete_btn = '<span class="glyphicon glyphicon-trash pull-right del-history-btn marl" data-target="#modal" item-modal="1" item-id="' + val.history_id + '" title="Delete history"></span>';
+                        }
+                        $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
                     });
-                    $thead.append('<tr><th>Name</th><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th></tr>');
+                    $thead.append('<tr><th>Name</th><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr>');
                     $tbody.append($body);
                 } else {
                     $tbody.append('<p>This record has no history information yet</p>');
@@ -162,6 +203,102 @@ var record = {
             });
             $('.history-all-container').fadeOut(500, function() {
                 $('.history-all-content').show();
+            });
+        },
+        edit_history: function(id, modal) {
+            var panel = (modal=="1"?'.history-all-panel':'.history-panel');
+            var content = (modal=="1"?'.history-all-content':'.panel-content');
+            $(panel).find(content).fadeOut(function() {
+                $.ajax({
+                    url: helper.baseUrl + "ajax/get_history_by_id",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        id: id
+                    }
+                }).done(function(response) {
+                    record.history_panel.load_history_form(response.data,response.outcomes, response.progress_list, id, modal);
+                });
+                $(panel).find('form').fadeIn();
+            });
+
+        },
+        load_history_form: function(data,outcomes, progress_list, id, modal) {
+            var panel = (modal=="1"?'.history-all-panel':'.history-panel');
+            var $form = $(panel).find('form');
+            $form.empty();
+            $form.append("<input type='hidden' name='history_id' value='" + id + "'/>");
+            var form = "";
+            var $select_outcome = "<option value=''>No action required</option>";
+            var $select_progress = "<option value=''>No action required</option>";
+
+            var disabled = (record.role == 1?"":"disabled");
+
+            $.each(outcomes, function(key, outcome) {
+                var selected = "";
+                if (data.outcome == outcome['name']) {
+                    selected = "selected";
+                }
+                $select_outcome += "<option " + selected + " value='" + outcome['id'] + "'>" + outcome['name'] + "</option>";
+            });
+
+            $.each(progress_list, function(key, progress) {
+                var selected = "";
+                if (data.progress == progress['name']) {
+                    selected = "selected";
+                }
+                $select_progress += "<option " + selected + " value='" + progress['id'] + "'>" + progress['name'] + "</option>";
+            });
+            date_input = "<div class='form-group input-group-sm'><p>"+data.contact+"</p></div>";
+            user_input = "<div class='form-group input-group-sm'><p>"+data.name+"</p></div>";
+            outcome_input = (data.outcome_id)?"<div class='form-group input-group-sm'><p>Outcome</p><select name='outcome_id' class='selectpicker_outcome'  " + disabled  + ">" + $select_outcome + "</select></div>":"";
+            progress_input = (data.progress_id)?"<div class='form-group input-group-sm'><p>Progress</p><select name='progress_id' class='selectpicker_progress'  " + disabled  + ">" + $select_progress + "</select></div>":"";
+            comments_input = "<div class='form-group input-group-sm'><p>Comments</p><textarea class='form-control ' placeholder='Enter the comments here' rows='3' name='comments'>" + data.comments + "</textarea></div>";
+
+            form += date_input +
+                    user_input +
+                    outcome_input +
+                    progress_input +
+                    comments_input;
+
+
+            $form.append(form + "<button class='btn btn-primary pull-right marl save-history-btn' item-modal='"+ modal +"'>Save</button> <button class='btn btn-default pull-right close-history-btn' item-modal='"+ modal +"'>Cancel</button>");
+            $('.selectpicker_outcome').selectpicker();
+            $('.selectpicker_progress').selectpicker();
+        },
+        update_history: function(modal) {
+            var panel = (modal=="1"?'.history-all-panel':'.history-panel');
+            var content = (modal=="1"?'.history-all-content':'.panel-content');
+            $.ajax({
+                url: helper.baseUrl + "ajax/update_history",
+                type: "POST",
+                dataType: "JSON",
+                data: $(panel).find('form').serialize()
+            }).done(function(response) {
+                if (modal=="1") {
+                    record.history_panel.load_all_history_panel();
+                }
+                record.history_panel.load_panel();
+                $(panel).find('form').fadeOut(function() {
+                    $(panel).find(content).fadeIn()
+                });
+                flashalert.success(response.msg);
+            });
+        },
+        remove_history: function(history_id,modal) {
+            $.ajax({
+                url: helper.baseUrl + 'ajax/delete_history',
+                type: "POST",
+                dataType: "JSON",
+                data: {history_id: history_id}
+            }).done(function(response) {
+                if (response.success) {
+                    record.history_panel.load_panel();
+                    if (modal == 1){
+                        record.history_panel.load_all_history_panel();
+                    }
+                    flashalert.success("History was deleted from the history");
+                };
             });
         }
     },
@@ -2210,6 +2347,18 @@ confirm_move:function(moveUrl){
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').html('<audio controls autoplay class="player"><source src="' + url + '" type="audio/' + filetype + '; codecs="theora, vorbis">Your browser does not support the audio element.</audio><p><a style="font-family:Gotham, \'Helvetica Neue\', Helvetica, Arial, sans-serif" href="' + url.replace("ogg", "mp3") + '">Click here to download</a></p>');
-    }
+    },
+    delete_history: function(history_id, modal) {
+        $('.modal-title').text('Confirm Delete');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to delete this history record?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            record.history_panel.remove_history(history_id, modal);
+            $('#modal').modal('toggle');
+        });
+    },
 
 }
