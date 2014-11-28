@@ -286,6 +286,7 @@ var admin = {
         },
         //save a campaign
         save: function($btn) {
+            $("button[type=submit]").attr('disabled','disabled');
             $.ajax({
                 url: helper.baseUrl + 'admin/save_campaign',
                 type: "POST",
@@ -296,9 +297,11 @@ var admin = {
                     admin.campaigns.load_campaigns();
                     admin.hide_edit_form();
                     flashalert.success(response.message);
+                    $("button[type=submit]").attr('disabled',false);
                 }
                 else {
                     flashalert.danger(response.message);
+                    $("button[type=submit]").attr('disabled',false);
                 }
             });
         },
