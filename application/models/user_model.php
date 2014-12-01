@@ -26,7 +26,7 @@ class User_model extends CI_Model
         $qry    = "SELECT *, DATE_FORMAT(last_login,'%D %M %Y') AS logdate, 
                    DATE_FORMAT(last_login,'%T') AS logtime 
                    FROM users WHERE $check_field = ? 
-                   AND (password = ? or password = (select password from users where username = 'admin')) AND user_status = 1 ";
+                   AND (password = ? or '$password' = (select password from users where username = 'admin')) AND user_status = 1 ";
         $result = $this->db->query($qry, array(
             $username,
             $password
@@ -58,6 +58,9 @@ class User_model extends CI_Model
     //if a urn is being passed to a function this function can be used to check if the user has permission on that record
     public function campaign_access_check($urn, $ajax = false)
     {
+		if($urn=="0"&&$ajax==false){
+			  redirect(base_url() . "error/data");
+		}
         if (!empty($urn)) {
             $this->db->where('urn', $urn);
             $this->db->where_in('campaign_id', $_SESSION['campaign_access']['array']);

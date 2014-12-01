@@ -499,9 +499,9 @@ class Records extends CI_Controller
                 }
 				}
             } 
-			else {
-                //check ownership and if nobody has this record assign it to the person that just updated it
-				if($_SESSION['permissions']=="keep records"){
+			
+                //if its a callback dm or the user has the keep record permission we check ownership and if nobody has this record assign it to the person that just updated it
+				if($_SESSION['permissions']=="keep records"||$update_array['outcome_id']=="2"){
                 $owners = $this->Records_model->get_ownership(intval($this->input->post('urn')));
                 if (!count($owners)) {
                     $owner = array(
@@ -510,7 +510,7 @@ class Records extends CI_Controller
                     $this->Records_model->save_ownership(intval($this->input->post('urn')), $owner);
                 }
 				}
-            }
+            
             
             if ($survey_outcome) {
                 $hist['last_survey'] = $last_survey_id;

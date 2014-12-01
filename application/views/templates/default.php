@@ -43,6 +43,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <a href="#" class="navbar-brand"><img style="margin-top:-5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/logo.png"></a>
         <?php } else { ?>
         <span style="position:absolute;top:8px"><img style="margin-top:-10px; margin-right:5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/small-logo.png">
+        <?php if(isset($campaign_access)&&count($campaign_access)>0){ ?>
         <select class="selectpicker" id="campaign-select">
           <option value="">Select a campaign to begin</option>
           <?php foreach($campaign_access as $client => $camp_array){ ?>
@@ -53,7 +54,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           </optgroup>
           <?php } ?>
         </select>
+        
         <img style="margin-top:-5px; display:none" id="campaign-loading-icon" src="<?php echo base_url(); ?>assets/img/ajax-loading.gif"/></span>
+        <?php } ?>
         <?php } ?>
       </div>
       <div class="navbar-collapse collapse pull-right">

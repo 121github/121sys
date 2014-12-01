@@ -27,7 +27,7 @@ class Error extends CI_Controller
 			'pageId' => 'error-page',
 			'campaign_access' => $this->_campaigns,
             'title' => 'Data error',
-			'msg'=>'A suitable record could not be found for calling. Please try another campaign or contact your administrator');
+			'msg'=>'There are no records left for calling. Please try another campaign or contact your administrator');
 			 $this->template->load('default', 'errors/display.php', $data);
 		
 	}
