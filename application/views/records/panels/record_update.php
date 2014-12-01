@@ -33,7 +33,7 @@
             <select <?php if($details['record']['record_status']=="3"||$details['record']['record_status']=="4"){ echo "disabled"; } ?> name="outcome_id" id="outcomes" class="selectpicker outcomepicker">
               <option value="">--Select a call outcome--</option>
               <?php foreach($outcomes as $outcome): ?>
-              <option <?php if($outcome['disabled']=="1"){ ?> disabled <?php } ?> <?php if($details['record']['record_status']=="3"||$details['record']['record_status']=="4"&&$outcome['outcome_id']==$details['record']['outcome_id']){ echo "selected"; } ?> value="<?php echo $outcome['outcome_id'] ?>" <?php echo ($outcome['delay_hours']?"delay='".$outcome['delay_hours']."'":"") ?>><?php echo $outcome['outcome'] ?></option>
+              <option <?php if($outcome['disabled']=="1"){ ?> disabled <?php } ?> <?php if(($details['record']['record_status']=="3"||$details['record']['record_status']=="4")&&$outcome['outcome_id']==$details['record']['outcome_id']){ echo "selected"; } ?> value="<?php echo $outcome['outcome_id'] ?>" <?php echo ($outcome['delay_hours']?"delay='".$outcome['delay_hours']."'":"") ?>><?php echo $outcome['outcome'] ?></option>
               <?php endforeach; ?>
             </select>
             <?php } else {  ?>

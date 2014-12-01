@@ -34,7 +34,6 @@ class Records_model extends CI_Model
 		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between subdate(now(), interval 10 MINUTE) and adddate(now(), interval 10 MINUTE) and (user_id is null or user_id = '$user_id') and outcome_id in(1,2) order by case when outcome_id = 2 then 1 else 2 end limit 1";
 		//2nd priority is virgin, then any other record with a nextcall date in order of lowest dials
 		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null or date(date_updated)<curdate() and nextcall<now()) and (user_id is null or user_id = '$user_id') order by case when outcome_id is null then 1 else 2 end,date_updated,dials limit 1";
-		$_SESSION['queries'] = $priority;
 		//find any other records to call		
 		foreach($priority as $k=>$qry){
 		$query = $this->db->query($qry);
@@ -206,6 +205,11 @@ class Records_model extends CI_Model
         }
         
         
+		/* users can only see records that have not been parked */
+		 if (!isset($_SESSION['filter']['values']['parked_code'])) {
+        $navqry .= " and parked_code is null ";
+        }
+		
         //group by urn to prevent dupes
         $navqry .= " group by r.urn";
         
@@ -218,7 +222,7 @@ class Records_model extends CI_Model
             //if any order has been set then we should apply it here
             $order = (isset($_SESSION['filter']['order']) && $options['draw'] == "1" ? $_SESSION['filter']['order'] : " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn");
             $navqry .= $order;
-            //$this->firephp->log($navqry);
+           //$this->firephp->log($navqry);
             $navigation = $this->db->query($navqry)->result_array();
             
             foreach ($navigation as $navurn):

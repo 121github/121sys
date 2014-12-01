@@ -39,11 +39,10 @@ class Filter_model extends CI_Model
     
     public function count_records($filter)
     {
-        $qry   = "select count(r.urn) as `count` from records r ";
+        $qry   = "select count(distinct r.urn) as `count` from records r ";
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
-        
         $count = $this->db->query($qry)->row('count');
         return $count;
     }
@@ -529,7 +528,6 @@ class Filter_model extends CI_Model
                 unset($_SESSION['current_campaign']);
             }
         }
-
         return $qry;
         
     }
@@ -670,6 +668,8 @@ class Filter_model extends CI_Model
         $all_transfer = "";
         $all_dials    = "";
         $contact_qry  = "";
+		$parked  = "";
+		
         if (in_array("contact-from", $fields)) {
             $contact_qry .= " and date(contact) >= '" . $array['contact-from'] . "'";
             unset($array['contact-from']);
@@ -697,7 +697,10 @@ class Filter_model extends CI_Model
             unset($array['campaigns.campaign_id']);
         }
         
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry";
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry";
+		
+		
+		
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause

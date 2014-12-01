@@ -106,31 +106,27 @@ class Records extends CI_Controller
 		unset($_SESSION['nav']);
 		}
 		} else {
-		//a record can be selected using a crafted url /records/detail/[urn]
+		//a record has been selected using a crafted url /records/detail/[urn]
 		$automatic = false;
         $urn = $this->uri->segment(3);
-		}
-		$previous = (!isset($_SESSION['previous'])?"":$_SESSION['previous']);
-		$current = (!isset($_SESSION['current'])||empty($_SESSION['current'])?$urn:$_SESSION['current']);
-		$next = (!isset($_SESSION['next'])?"":$_SESSION['next']);
+		}		
 		
+		/* work out the previous and next urns */
+		$previous = (isset($_SESSION['prev'])?$_SESSION['prev']:"");
+		$current = (isset($_SESSION['curr'])?$_SESSION['curr']:$urn);
+		$next = (isset($_SESSION['next'])?$_SESSION['next']:"0");
+
 		if($urn==$previous){
-			$_SESSION['current'] = $previous;
 			$_SESSION['next'] = $current;
-			unset($_SESSION['previous']);
+		} else if($urn==$current){
+			$_SESSION['curr'] = $urn;
+			$_SESSION['next'] = "0";
+		} else if($urn==$next||empty($next)){
+		 	$_SESSION['prev'] = $current;
+			$_SESSION['curr'] = $urn;
+			$_SESSION['next'] = "0";
 		}
-		if($urn==$current){
-			$_SESSION['current'] = $current;
-		}
-		if($urn==$next){
-		 	$_SESSION['previous'] = $current;
-			$_SESSION['current'] = $next;
-			unset($_SESSION['next']);
-		}
-		if(!isset($_SESSION['next'])&&empty($_SESSION['next'])){
-		 	$_SESSION['previous'] = $current;
-			$_SESSION['current'] = $urn;
-		}
+		/* end nav config */
 		
 		
 		$this->User_model->campaign_access_check($urn);
@@ -152,6 +148,9 @@ class Records extends CI_Controller
         $details          = $this->Records_model->get_details($urn, $features);
 		//check if this user has already updated the record and if they have they can select next without an update
 		$allow_skip = $this->Records_model->updated_recently($urn);
+		if(in_array("search records",$_SESSION['permissions'])){
+		$allow_skip = true;	
+		}
         $progress_options = $this->Form_model->get_progress_descriptions();
         $outcomes         = $this->Records_model->get_outcomes($campaign_id);
         $xfers            = $this->Records_model->get_xfers($campaign_id);
