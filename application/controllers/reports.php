@@ -165,11 +165,10 @@ class Reports extends CI_Controller
                 $url = base_url() . "search/custom/history";
                 $url .= (!empty($campaign) ? "/campaign/$campaign" : "");
                 $url .= (!empty($user) ? "/user/$user" : "");
-                $url .= (!empty($date_from) ? "/contact/$date_from:emore" : "");
-                $url .= (!empty($date_to) ? "/contact/$date_to:eless" : "");
+                $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
+                $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
 			    $url .= (!empty($team) ? "/team/$team" : "");
                 $url .= (!empty($source) ? "/source/$source" : "");
-                $url .= (!empty($user) ? "/user/$user" : "");
 				
                 $total  = $row['total'];
                 $pc     = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
