@@ -73,6 +73,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                 <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>
                                     <li><a href="<?php echo base_url() ?>data/management" <?php echo @($inner=='management'?"class='active'":"") ?>>Data Management</a></li>
                                 <?php } ?>
+                                <li><a href="<?php echo base_url() ?>data/add_record" <?php echo @($inner=='add_record'?"class='active'":"") ?>>Add Record</a></li>
+                                <li><a href="<?php echo base_url() ?>data/daily_ration" <?php echo @($inner=='daily_ration'?"class='active'":"") ?>>Daily Ration</a></li>
                             </ul>
                         </li>
                         <li>

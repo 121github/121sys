@@ -199,6 +199,9 @@
 			                    <div class="accordion-inner">
 			                         <a href="<?php echo base_url() ?>data/add_record" <?php echo @($inner=='add_record'?"class='active'":"") ?>>Add Record</a>
 			                    </div>
+                               <div class="accordion-inner">
+                                   <a href="<?php echo base_url() ?>data/daily_ration" <?php echo @($inner=='daily_ration'?"class='active'":"") ?>>Daily Ration</a>
+                               </div>
                                 <?php } ?>
 			                </div>
 			            </div>

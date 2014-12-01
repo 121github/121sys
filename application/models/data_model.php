@@ -311,4 +311,35 @@ class Data_model extends CI_Model
         }
 		 return $errors;
     }
+
+    public function get_daily_ration_data($options) {
+        $campaign = $options['campaign'];
+
+        $where = "";
+        if (!empty($campaign)) {
+            $where .= " and record.campaign_id = '$campaign' ";
+        }
+
+        $qry = "select count(*) count,
+                total_parked,
+                c.campaign_name,
+                records.campaign_id,
+                c.daily_data
+                from records
+                inner join campaigns c ON (c.campaign_id = records.campaign_id)
+                left join (select count(*) total_parked, r.campaign_id from records r where r.parked_code is not null $where group by r.campaign_id) tp on tp.campaign_id = records.campaign_id
+                where 1 ";
+        $qry .= $where;
+        $qry .= " group by records.campaign_id order by count desc ";
+
+        return $this->db->query($qry)->result_array();
+
+    }
+
+    public function set_daily_ration($campaign_id, $daily_data) {
+        $this->db->where("campaign_id", $campaign_id);
+        return $this->db->update("campaigns", array(
+            "daily_data" => $daily_data
+        ));
+    }
 }
