@@ -224,13 +224,16 @@ var admin = {
                 $tbody.empty();
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
-                        $tbody.append("<tr><td class='campaign_id'>" + val.campaign_id + "</td><td class='campaign_name'>" + val.campaign_name + "</td><td>" + val.campaign_type_desc + "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span><span class='hidden campaign_type_id'>" + val.campaign_type_id + "</span></td><td>" + val.client_name + "<span class='hidden client_id'>" + val.client_id + "</span></td><td>" + val.campaign_status_text + "<span class='hidden campaign_status'>" + val.campaign_status + "</span></td><td class='start_date'>" + val.start_date + "</td><td class='end_date'>" + val.end_date + "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn'  item-id='" + val.campaign_id + "'>Delete</button></td></tr>");
+                        $tbody.append("<tr><td class='campaign_id'>" + val.campaign_id + "</td><td class='campaign_name'>" + val.campaign_name + "</td><td>" + val.campaign_type_desc + "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span><span class='hidden campaign_type_id'>" + val.campaign_type_id + "</span><span class='hidden min_quote_days'>" + (val.min_quote_days?val.min_quote_days:'') + "</span><span class='hidden max_quote_days'>" + (val.max_quote_days?val.max_quote_days:'') + "</span></td><td>" + val.client_name + "<span class='hidden client_id'>" + val.client_id + "</span></td><td>" + val.campaign_status_text + "<span class='hidden campaign_status'>" + val.campaign_status + "</span></td><td class='start_date'>" + val.start_date + "</td><td class='end_date'>" + val.end_date + "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn'  item-id='" + val.campaign_id + "'>Delete</button></td></tr>");
                     }
                 });
             });
         },
         edit: function($btn) {
             var row = $btn.closest('tr');
+            var min_quote_days = $('form').find('input[name="min_quote_days"]');
+            var max_quote_days = $('form').find('input[name="max_quote_days"]');
+
             $('form').find('input[name="campaign_id"]').val(row.find('.campaign_id').text());
             $('form').find('input[name="custom_panel_name"]').val(row.find('.custom_panel_name').text());
             $('form').find('select[name="campaign_type_id"]').selectpicker('val', row.find('.campaign_type_id').text());
@@ -239,10 +242,39 @@ var admin = {
             $('form').find('select[name="campaign_status"]').selectpicker('val', row.find('.campaign_status').text());
             $('form').find('input[name="start_date"]').data('DateTimePicker').setDate(row.find('.start_date').text());
             $('form').find('input[name="end_date"]').data('DateTimePicker').setDate(row.find('.end_date').text());
+            min_quote_days.val(row.find('.min_quote_days').text());
+            max_quote_days.val(row.find('.max_quote_days').text());
+
             admin.campaigns.get_features(row.find('.campaign_id').text());
+
             $('.ajax-table').fadeOut(1000, function() {
                 $('form').fadeIn();
             });
+
+            //Only numbers permited in those fields
+            min_quote_days.numeric();
+            max_quote_days.numeric();
+
+            //Check if the min_quote_days is less than max_quote_days
+            min_quote_days.blur(function(){
+                admin.campaigns.check_quote_days(parseInt(min_quote_days.val()), parseInt(max_quote_days.val()));
+            });
+            max_quote_days.blur(function(){
+                admin.campaigns.check_quote_days(parseInt(min_quote_days.val()), parseInt(max_quote_days.val()));
+            });
+
+        },
+        check_quote_days: function(min_quote_days, max_quote_days){
+            if (min_quote_days > max_quote_days) {
+                $('form').find('.quote_days_error').append("The minimum quote days must be less than the maximum quote days");
+                $('form').find('input[name="min_quote_days"]').css('color', 'red');
+                $('form').find('input[name="max_quote_days"]').css('color', 'red');
+            }
+            else {
+                $('form').find('.quote_days_error').text("");
+                $('form').find('input[name="min_quote_days"]').css('color', 'black');
+                $('form').find('input[name="max_quote_days"]').css('color', 'black');
+            }
         },
         create: function() {
             $('form').trigger('reset');
@@ -254,15 +286,23 @@ var admin = {
         },
         //save a campaign
         save: function($btn) {
+            $("button[type=submit]").attr('disabled','disabled');
             $.ajax({
                 url: helper.baseUrl + 'admin/save_campaign',
                 type: "POST",
                 dataType: "JSON",
                 data: $btn.closest('form').serialize()
             }).done(function(response) {
-                admin.campaigns.load_campaigns();
-                admin.hide_edit_form();
-                flashalert.success("Campaign saved");
+                if (response.success) {
+                    admin.campaigns.load_campaigns();
+                    admin.hide_edit_form();
+                    flashalert.success(response.message);
+                    $("button[type=submit]").attr('disabled',false);
+                }
+                else {
+                    flashalert.danger(response.message);
+                    $("button[type=submit]").attr('disabled',false);
+                }
             });
         },
 

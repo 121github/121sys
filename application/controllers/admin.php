@@ -66,7 +66,8 @@ class Admin extends CI_Controller
             ),
             'javascript' => array(
                 'dashboard.js',
-                'admin/campaigns.js'
+                'admin/campaigns.js',
+                'lib/jquery.numeric.min.js'
             ),
             'options' => $options,
             'css' => array(
@@ -198,6 +199,12 @@ class Admin extends CI_Controller
             } else {
                 $form['end_date'] = to_mysql_datetime($form['end_date']);
             }
+            if (empty($form['min_quote_days'])) {
+                $form['min_quote_days'] = NULL;
+            }
+            if (empty($form['max_quote_days'])) {
+                $form['max_quote_days'] = NULL;
+            }
             if (!empty($form['new_client']) && $form['client_id'] == "other" || !empty($form['new_client']) && empty($form['client_id'])) {
                 $client_id = $this->Admin_model->find_client($form['new_client']);
                 if (!$client_id) {
@@ -231,9 +238,22 @@ class Admin extends CI_Controller
             if (!in_array(3, $features['features'])) {
                 $features['features'][] = 3;
             }
-            $response = $this->Admin_model->save_campaign_features($features);
+
+            //Check if the minimum quote days is less than the maximum quote days
+            if (($form['min_quote_days'] && $form['max_quote_days'])&&(intval($form['min_quote_days']) > intval($form['max_quote_days']))) {
+                $response = $this->Admin_model->save_campaign_features($features);
+                $message = "ERROR: The minimum quote days must be less than the maximum quote days";
+                $success = false;
+            }
+            else {
+                $response = false;
+                $success = true;
+                $message = "Campaign saved";
+            }
             echo json_encode(array(
-                "data" => $response
+                "data" => $response,
+                "message" => $message,
+                "success" => $success
             ));
         }
     }

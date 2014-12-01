@@ -514,6 +514,7 @@ var record = {
                     $btn.closest('form').find('textarea').val('').css('color', '#555');
                     $btn.closest('form').find('.selectpicker').selectpicker('val', '').selectpicker('render');
                     flashalert.success(response.msg);
+                    location.reload();
                 } else {
                     flashalert.danger(response.msg);
                 }
