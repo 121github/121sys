@@ -84,7 +84,7 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
 <!-- end attachment popup -->
 
 <!-- start history popup -->
-<?php if(in_array(13,$features)){ ?>
+<?php if(in_array('view history',$_SESSION['permissions'])){ ?>
     <div class="panel panel-primary history-all-container">
         <?php $this->view('records/show_all_history.php'); ?>
     </div>
