@@ -304,7 +304,7 @@ class Dashboard_model extends CI_Model
 			$all = $this->db->query($qry_all)->row()->num;
 			$all_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/sent'.$camp_url;
 			
-			$qry_read = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and read_confirmed = 1 $where";	
+			$qry_read = "select count(distinct urn) num from email_history left join records using(urn) where date(read_confirmed_date) = curdate() and read_confirmed = 1 $where";	
 			$read = $this->db->query($qry_read)->row()->num;
 			$read_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/read'.$camp_url;
 			
@@ -312,7 +312,7 @@ class Dashboard_model extends CI_Model
 			$unsent = $this->db->query($qry_unsent)->row()->num;
 			$unsent_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/unsent'.$camp_url;
 			
-			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
+			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where date(read_confirmed_date) = curdate() and read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
 			$new = $this->db->query($qry_new)->row()->num;
 			$new_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/new'.$camp_url;
 			
