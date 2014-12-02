@@ -322,12 +322,14 @@ class Data_model extends CI_Model
 
         $qry = "select count(*) count,
                 total_parked,
+                total_rationing,
                 c.campaign_name,
                 records.campaign_id,
                 c.daily_data
                 from records
                 inner join campaigns c ON (c.campaign_id = records.campaign_id)
                 left join (select count(*) total_parked, r.campaign_id from records r where r.parked_code is not null $where group by r.campaign_id) tp on tp.campaign_id = records.campaign_id
+                left join (select count(*) total_rationing, r.campaign_id from records r inner join park_codes pc ON (pc.parked_code = r.parked_code) where pc.park_reason = 'Rationing' group by r.campaign_id, r.parked_code) tr on tr.campaign_id = records.campaign_id
                 where 1 ";
         $qry .= $where;
         $qry .= " group by records.campaign_id order by count desc ";

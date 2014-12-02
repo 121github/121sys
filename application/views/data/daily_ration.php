@@ -36,7 +36,8 @@
                                     <tr>
                                         <th>Campaign</th>
                                         <th>Total Records</th>
-                                        <th>Packed Records</th>
+                                        <th>Rationing Parked Records</th>
+                                        <th>Total Parked Records</th>
                                         <th>Daily Data</th>
                                     </tr>
                                     </thead>
