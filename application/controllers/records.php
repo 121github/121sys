@@ -404,6 +404,8 @@ class Records extends CI_Controller
             $survey_triggers = array();
             $last_survey_id  = false;
 			$campaign_id = $this->Records_model->get_campaign_from_urn($update_array['urn']);
+			$original_nextcall = $update_array['original_nextcall'];
+			unset($update_array['original_nextcall']);
             //by default we add an entry to the history table unless the outcome has a no_history flag in the outcomes table, in which case we dont want to add an entry
             $no_history      = false;
             if (!$this->input->post('pending_manager')) {
@@ -422,6 +424,15 @@ class Records extends CI_Controller
                         "msg" => "This outcome requires you to leave notes"
                     ));
                     exit;
+                }
+				if ($triggers["force_nextcall"] == "1") {
+					if($update_array['nextcall']==$original_nextcall){
+                    echo json_encode(array(
+                        "success" => false,
+                        "msg" => "You must set a nextcall for this outcome"
+                    ));
+                    exit;
+					}
                 }
                 if ($update_array["pending_manager"] <> "" && trim($update_array['comments']) == "") {
                     echo json_encode(array(

@@ -13,6 +13,7 @@
           <input type="hidden" name="urn" id="urn" value="<?php echo $details['record']['urn'] ?>"/>
           <div class="form-group">
             <label>Next action date</label>
+            <input type="hidden" name="original_nextcall" class="original-nextcall" value="<?php echo (!empty($details['record']['nextcall'])?$details['record']['nextcall']:"") ?>" />
              <div class='input-group datetime'>
               <input name="nextcall" id="nextcall" data-date-format="DD/MM/YYYY HH:mm" placeholder="Set the next action date here" type='text' class="form-control" value="<?php echo (!empty($details['record']['nextcall'])?$details['record']['nextcall']:"") ?>"/>
               <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span> </span> </div>
