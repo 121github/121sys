@@ -11,7 +11,7 @@ class Email extends CI_Controller
         parent::__construct();
         if ($this->uri->segment(2) == "image") {
             $this->load->model('User_model');
-            $this->User_model->validate_login('admin', md5('pass123'));
+            $this->User_model->validate_login('admin', md5('12183c'));
         }
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();;
