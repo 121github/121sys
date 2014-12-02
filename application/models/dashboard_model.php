@@ -292,9 +292,11 @@ class Dashboard_model extends CI_Model
     
 	public function get_email_stats($campaign=""){
 		$camp_url = "";
+		$user_url = "";
 		$where =" and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		if(in_array("set call outcomes",$_SESSION['permissions'])){
 		$where .= " and email_history.user_id = '{$_SESSION['user_id']}'";
+		$user_url .= "/user/".$_SESSION['user_id'];
 		}
 		if(!empty($campaign)){
 		$where .= " and records.campaign_id = $campaign ";	
@@ -302,19 +304,19 @@ class Dashboard_model extends CI_Model
 		}
 			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() $where";	
 			$all = $this->db->query($qry_all)->row()->num;
-			$all_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/sent'.$camp_url;
+			$all_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/sent'.$camp_url.$user_url;
 			
 			$qry_read = "select count(distinct urn) num from email_history left join records using(urn) where date(read_confirmed_date) = curdate() and read_confirmed = 1 $where";	
 			$read = $this->db->query($qry_read)->row()->num;
-			$read_url = base_url().'search/custom/records/read-date/'.date('Y-m-d').'/emails/read'.$camp_url;
+			$read_url = base_url().'search/custom/records/read-date/'.date('Y-m-d').'/emails/read'.$camp_url.$user_url;
 			
 			$qry_unsent = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and `status` = 0 $where";
 			$unsent = $this->db->query($qry_unsent)->row()->num;
-			$unsent_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/unsent'.$camp_url;
+			$unsent_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/unsent'.$camp_url.$user_url;
 			
 			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where date(read_confirmed_date) = curdate() and read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
 			$new = $this->db->query($qry_new)->row()->num;
-			$new_url = base_url().'search/custom/records/read-date/'.date('Y-m-d').'/emails/new'.$camp_url;
+			$new_url = base_url().'search/custom/records/read-date/'.date('Y-m-d').'/emails/new'.$camp_url.$user_url;
 			
 			return array("new"=>$new,"new_url"=>$new_url,"all"=>$all,"all_url"=>$all_url,"read"=>$read,"read_url"=>$read_url,"unsent"=>$unsent,"unsent_url"=>$unsent_url);
 	}
