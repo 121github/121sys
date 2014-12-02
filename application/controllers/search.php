@@ -150,6 +150,7 @@ $this->_campaigns = campaign_access_dropdown();
             "sent-email-to" => "sent-email-to",
             "sent-email-date" => "date(email_history.sent_date)",
             "sent-email-time" => "hour(email_history.sent_date)",
+			"read-date" => "date(read_confirmed_date)",
 			"template" => "template_id",
             "parked" => "parked"
         );
