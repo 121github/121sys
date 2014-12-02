@@ -54,7 +54,7 @@ class Calendar extends CI_Controller
 				'calendar.js',
 				'location.js'
             ),
-			'disable_campaign'=>$disable_campaign_filter = true,
+			'disable_campaign'=>$disable_campaign_filter,
 			'date' => date('Y-m-d'),
             'campaigns' => $campaigns,
 			'users'=>$users,
