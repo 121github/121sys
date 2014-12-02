@@ -128,6 +128,74 @@ $this->_campaigns = campaign_access_dropdown();
         );
         $this->template->load('default', 'data/data_management.php', $data);
     }
+
+    //this controller loads the view for the daily ration page
+    public function daily_ration()
+    {
+        $campaigns = $this->Form_model->get_campaigns();
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Daily Ration',
+            'page' => array(
+                'admin' => 'data',
+                'inner' => 'daily_ration'
+            ),
+            'campaigns' => $campaigns,
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'data.js',
+                'lib/jquery.numeric.min.js'
+            )
+        );
+        $this->template->load('default', 'data/daily_ration.php', $data);
+    }
+
+    //this controller gets the data for the daily ration page
+    public function daily_ration_data()
+    {
+        $results = array();
+
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $results = $this->Data_model->get_daily_ration_data($form);
+            $aux = array();
+            $url = base_url() . "search/custom/records";
+            foreach($results as $result) {
+                $result['count_url'] = $url.(!empty( $result['campaign_id']) ? "/campaign/".$result['campaign_id'] : "");
+                $result['total_parked_url'] = $url.(!empty( $result['campaign_id']) ? "/campaign/".$result['campaign_id']."/parked/yes" : "");
+                array_push($aux, $result);
+            }
+        }
+
+        $results = $aux;
+
+        echo json_encode(array(
+            "success" => (!empty($results)),
+            "data" => $results,
+            "msg" => (!empty($results))?"":"Nothing found"
+        ));
+    }
+
+    //this controller set the daily ration for a particular campaign
+    public function set_daily_ration()
+    {
+        if ($this->input->is_ajax_request()) {
+            $campaign_id = $this->input->post('campaign_id');
+            $daily_data = $this->input->post('daily_data');
+            $results = $this->Data_model->set_daily_ration($campaign_id, $daily_data);
+        }
+
+        echo json_encode(array(
+            "success" => ($results),
+            "msg" => ($results)?"Daily Ration Saved":"ERROR: The daily ration was not saved"
+        ));
+
+    }
+
+
     public function import()
     {
         $options               = array();

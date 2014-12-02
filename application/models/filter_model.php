@@ -664,6 +664,18 @@ class Filter_model extends CI_Model
             unset($array['user-email-sent-id']);
         }
 
+        //For packed records
+        $packed_qry = "";
+        if (in_array("parked", $fields)){
+            if ($array['parked'] == "yes") {
+                $packed_qry = " and records.parked_code is not null";
+            }
+            else if ($array['parked'] == "no") {
+                $packed_qry = " and records.parked_code is null";
+            }
+            unset($array['parked']);
+        }
+
         //this gets ALL transfers including cross transfers
         $all_transfer = "";
         $all_dials    = "";
@@ -697,7 +709,7 @@ class Filter_model extends CI_Model
             unset($array['campaigns.campaign_id']);
         }
         
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry";
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $packed_qry";
 		
 		
 		
