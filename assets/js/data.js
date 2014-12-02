@@ -408,6 +408,8 @@ var daily_ration = {
                             + val.campaign_name
                             + "</td><td class='count'>"
                             + 	"<a href='" + val.count_url + "'>" + val.count + "</a>"
+                            + "</td><td class='total_rationing'>"
+                            + 	"<a href='" + val.total_parked_url + "/parked_code/Rationing'>" + val.total_rationing + "</a>"
                             + "</td><td class='total_parked'>"
                             + 	"<a href='" + val.total_parked_url + "'>" + val.total_parked + "</a>"
                             + "</td><td class='daily_data'>"
