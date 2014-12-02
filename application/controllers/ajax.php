@@ -369,6 +369,12 @@ $this->_campaigns = campaign_access_dropdown();
     public function edit_address()
     {
         if ($this->input->is_ajax_request()) {
+			
+						if($this->input->post("primary")=="1"){
+				$this->db->where("contact_id",intval($this->input->post('contact_id')));
+				$this->db->update("contact_addresses",array("primary"=>NULL));
+			}
+			
             $this->db->where('address_id', intval($this->input->post('address_id')));
             if ($this->db->update('contact_addresses', elements(array(
                 "add1",
@@ -394,6 +400,12 @@ $this->_campaigns = campaign_access_dropdown();
     public function edit_coaddress()
     {
         if ($this->input->is_ajax_request()) {
+			
+			if($this->input->post("primary")=="1"){
+				$this->db->where("company_id",intval($this->input->post('company_id')));
+				$this->db->update("company_addresses",array("primary"=>NULL));
+			}
+			
             $this->db->where('address_id', intval($this->input->post('address_id')));
             if ($this->db->update('company_addresses', elements(array(
                 "add1",
@@ -418,6 +430,11 @@ $this->_campaigns = campaign_access_dropdown();
     public function add_address()
     {
         if ($this->input->is_ajax_request()) {
+			if($this->input->post("primary")=="1"){
+				$this->db->where("contact_id",intval($this->input->post('contact_id')));
+				$this->db->update("contact_addresses",array("primary"=>NULL));
+			}
+			
             if ($this->db->insert('contact_addresses', elements(array(
                 "add1",
                 "add2",
@@ -428,6 +445,7 @@ $this->_campaigns = campaign_access_dropdown();
                 "contact_id",
                 "primary"
             ), $this->input->post()))):
+						
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($this->input->post('contact_id')),
@@ -441,6 +459,13 @@ $this->_campaigns = campaign_access_dropdown();
     public function add_coaddress()
     {
         if ($this->input->is_ajax_request()) {
+			
+			if($this->input->post("primary")=="1"){
+				$this->db->where("company_id",intval($this->input->post('company_id')));
+				$this->db->update("company_addresses",array("primary"=>NULL));
+				$this->firephp->log("done");
+			}
+			
             if ($this->db->insert('company_addresses', elements(array(
                 "add1",
                 "add2",

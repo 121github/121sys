@@ -39,6 +39,15 @@ class Error extends CI_Controller
             'title' => 'No campaign selected',
 			'msg'=>'Please select a campaign from the drop down menu above before you start calling');
 			 $this->template->load('default', 'errors/display.php', $data);
+	}
+	
+				public function calendar(){
+		        $data = array(
+			'pageId' => 'error-page',
+			'campaign_access' => $this->_campaigns,
+            'title' => 'No campaign selected',
+			'msg'=>'Please select a campaign from the drop down menu above to view the associated calendar');
+			 $this->template->load('default', 'errors/display.php', $data);
 		
 	}
 	

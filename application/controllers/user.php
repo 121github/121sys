@@ -159,10 +159,10 @@ class User extends CI_Controller
         foreach ($campaign_features as $row) {
             $features[]         = $row['name'];
         }
-				unset($_SESSION['filter']);
 				$_SESSION['campaign_features']=$features;
 				$_SESSION['current_campaign']=$campaign;
 				unset($_SESSION['next']);
+				unset($_SESSION['filter']);
 		}
 		} else {
 		if(!in_array("search campaigns",$_SESSION['permissions'])){	

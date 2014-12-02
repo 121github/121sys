@@ -131,7 +131,6 @@ class Records extends CI_Controller
 		
 		$this->User_model->campaign_access_check($urn);
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
-
         $_SESSION['current_campaign']=$campaign_id;
         //get the features for the campaign and put the ID's into an array
         $campaign_features = $this->Form_model->get_campaign_features($campaign_id);

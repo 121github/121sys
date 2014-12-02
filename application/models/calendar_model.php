@@ -32,9 +32,38 @@ return '#'.$output;
     public function get_events($options){
 		$join = " left join records using(urn) ";
 		$where = "";
+		$having = "";
+		$select_distance = "";
 		$start = $options['start'];
 		$end = $options['end'];
 		$join .= " left join companies using(urn) left join campaigns using(campaign_id) left join campaign_types using(campaign_type_id) left join appointment_attendees using(appointment_id) left join users using(user_id) ";
+		if(!empty($options['postcode'])&&!empty($options['distance'])){
+			$distance = intval($options['distance'])*1.1515;
+			$coords = postcode_to_coords($options['postcode']);
+			$join .= " left join uk_postcodes using(postcode) ";
+			$having .= " having distance <= $distance";
+			$select_distance .= ",(((ACOS(SIN((" .
+              $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .
+              $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
+              $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60) AS distance";
+			
+			 if (isset($coords['lat']) && isset($coords['lng'])) {
+                        
+                        $where .= " and ( ";
+                        //Distance from the company or the contacts addresses
+                        $where .= $coords['lat'] . " BETWEEN (lat-" . $distance . ") AND (lat+" . $distance . ")";
+                        $where .= " and " . $coords['lng'] . " BETWEEN (lng-" . $distance . ") AND (lng+" . $distance . ")";
+                        /*$where .= " and ((((
+							ACOS(
+								SIN(" . $coords['lat'] . "*PI()/180) * SIN(lat*PI()/180) +
+								COS(" . $coords['lat'] . "*PI()/180) * COS(lat*PI()/180) * COS(((" . $coords['lng'] . " - lng)*PI()/180)
+							)
+						)*180/PI())*160*0.621371192)) <= " . $distance . ")";*/
+                        
+                        $where .= " )";
+                    }
+		}
+		
 		if(!empty($options['campaigns'])){
 		$where .= " and campaign_id in(". implode(",",$options['campaigns']).")";
 		}
@@ -50,7 +79,7 @@ return '#'.$output;
 		if(isset($_SESSION['current_campaign'])){
 		$where .= "	and campaign_id = ".$_SESSION['current_campaign'];
 		}
-		$query = "select appointments.urn,appointment_id,campaign_name,title,text,`start`,`end`,postcode,if(`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company,users.name as user from appointments $join where 1 $where order by users.name";
+		$query = "select appointments.urn,appointment_id,campaign_name,title,text,`start`,`end`,postcode,if(`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company,users.name as user $select_distance from appointments $join where 1 $where $having";
 		//$this->firephp->log($query);
 		$array = array();
 		$users = array();

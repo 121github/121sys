@@ -14,15 +14,33 @@ class Calendar extends CI_Controller
 		$this->load->model('Form_model');
     }
 
+	public function get_calendar_users(){
+		if($this->input->post('campaigns')){
+			$campaigns = $this->input->post('campaigns');
+		} else {
+		$campaigns = array();	
+		}
+			$users = $this->Form_model->get_calendar_users($campaigns);
+			echo json_encode(array("success"=>true,"data"=>$users));
+	}
+
 	  //this loads the data management view
     public function index()
     {
-        $campaigns = $this->Form_model->get_campaigns();
 		$users = array();
-		if(isset($_SESSION['calendar_filter']['campaign_id'])){
-		$users = $this->Form_model->get_campaign_access(false,$_SESSION['calendar_filter']['campaign_id']);
+		if(in_array("search campaigns",$_SESSION['permissions'])){
+		$campaigns = $this->Form_model->get_calendar_campaigns();
+		$users = isset($_SESSION['current_campaign'])?$this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])):"";
+		$disable_campaign_filter = false;
 		}
-		
+		if(!in_array("search campaigns",$_SESSION['permissions'])){
+		$users = isset($_SESSION['current_campaign'])?$this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])):"";	
+		$campaigns = $this->Form_model->get_calendar_campaigns();
+		$disable_campaign_filter = true;
+		}
+		if($disable_campaign_filter&&!isset($_SESSION['current_campaign'])){
+		 redirect('error/calendar');	
+		}
         $data      = array(
             'campaign_access' => $this->_campaigns,
 			'pageId' => 'Dashboard',
@@ -32,9 +50,11 @@ class Calendar extends CI_Controller
             ),
             'javascript' => array(
 			'lib/underscore.js',
-                'plugins/calendar/js/calendar.js'
-                
+                'plugins/calendar/js/calendar.js',
+				'calendar.js',
+				'location.js'
             ),
+			'disable_campaign'=>$disable_campaign_filter = true,
 			'date' => date('Y-m-d'),
             'campaigns' => $campaigns,
 			'users'=>$users,
@@ -65,9 +85,34 @@ class Calendar extends CI_Controller
 	public function get_events(){
 		$start = date('Y-m-d h:i:s', ($_POST['startDate'] / 1000));
 		$end = date('Y-m-d h:i:s', ($_POST['endDate'] / 1000));
-		$users = (!empty($_POST['users'])?$_POST['users']:"");
-		$campaigns = (!empty($_POST['campaigns'])?$_POST['campaigns']:"");
-		$options = array("start"=>$start,"end"=>$end,"users"=>$users,"campaigns"=>$campaigns);
+		
+		if(!empty($_POST['users'])){
+		$users = $_POST['users'];	
+		} else {
+		$users = (isset($_SESSION['users'])?$_SESSION['users']:"");	
+		}
+		
+		
+		if(!empty($_POST['postcode'])){
+		$postcode = $_POST['postcode'];	
+		} else {
+		$postcode = (isset($_SESSION['postcode'])?$_SESSION['postcode']:"");	
+		}
+		
+		if(!empty($_POST['distance'])){
+		$distance = $_POST['distance'];	
+		} else {
+		$distance = (isset($_SESSION['distance'])?$_SESSION['distance']:"");	
+		}
+		
+			if(!empty($_POST['campaigns'])){
+		$campaigns = $_POST['campaigns'];	
+		} else {
+		$campaigns = (isset($_SESSION['campaigns'])?$_SESSION['campaigns']:"");	
+		}
+		
+		$options = array("start"=>$start,"end"=>$end,"users"=>$users,"campaigns"=>$campaigns,"postcode"=>$postcode,"distance"=>$distance);
+		$_SESSION['calendar-filter'] = $options;
 		$result = array();
 		$events = $this->Calendar_model->get_events($options);
 		
@@ -78,6 +123,7 @@ class Calendar extends CI_Controller
 		'text' => (!empty($row['text'])?$row['text']:""),
         'url' => base_url().'records/detail/'.$row['urn'],
 		'class' => 'event-important',
+		'distance_hover' => (isset($row['distance'])&&!empty($row['distance'])?"<br><span style='color:#7FFF00'>".number_format($row['distance'],2)." Miles</span>":""),
         'start' => strtotime($row['start']) . '000',
         'end' => strtotime($row['end']) .'000',
 		'endtime' => date('g:i a',strtotime($row['end'])),

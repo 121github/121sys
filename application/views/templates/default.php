@@ -174,7 +174,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
               <?php if(isset($_SESSION['current_campaign'])&&in_array("set call outcomes",$_SESSION['permissions'])){  ?>
               <li <?php if($this->uri->segment(2)=="detail"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/detail" >Start Calling</a></li>
               <?php } ?>
-              <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Appointment Setting',$_SESSION['campaign_features'])&&in_array("full calendar",$_SESSION['permissions'])){ ?>
+              <?php if(in_array('calendar nav',$_SESSION['permissions'])||isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Appointment Setting',$_SESSION['campaign_features'])&&in_array("full calendar",$_SESSION['permissions'])){ ?>
               <li <?php if($this->uri->segment(1)=="calendar"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>calendar" >Calendar</a></li>
               <?php } ?>
               <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Surveys',$_SESSION['campaign_features'])&&in_array("search surveys",$_SESSION['permissions'])){ ?>
@@ -239,7 +239,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-slider.js"></script> 
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script> 
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script> 
-<script src="<?php echo base_url(); ?>assets/js/main.js"></script> 
+<script src="<?php echo base_url(); ?>assets/js/main.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> 
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + ''; 
 <?php if(isset($_SESSION['user_id'])){ ?>

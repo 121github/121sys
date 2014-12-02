@@ -93,6 +93,23 @@ class Form_model extends CI_Model
         $qry = "select campaign_id id,campaign_name name,campaign_type_desc type from campaigns left join campaign_types using(campaign_type_id) order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
+	public function get_calendar_campaigns()
+    {
+                 $qry = "select campaign_id id,campaign_name name from campaigns left join campaigns_to_features using(campaign_id) left join campaign_features using(feature_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 and feature_name = 'Appointment Setting' group by campaign_id order by campaign_name";
+				 
+        return $this->db->query($qry)->result_array();
+    }
+	
+			public function get_calendar_users($campaign_ids=array())
+    {
+		$where = "";
+		if(count($campaign_ids)>0){
+		$where = " and campaign_id in(". implode(",",$campaign_ids).")";
+		}
+        $qry = "select user_id id,name name from users left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) where campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 and attendee = 1 $where group by user_id order by name";
+		//$this->firephp->log($qry);
+        return $this->db->query($qry)->result_array();
+    }
     
     public function get_campaigns_by_user($user_id)
     {
@@ -119,10 +136,10 @@ class Form_model extends CI_Model
 	
     public function get_clients()
     {
-		if(!in_array("all campaigns",$_SESSION['permissions'])){
+		if(!in_array("campaign access",$_SESSION['permissions'])){
         $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) left join users_to_campaigns using(campaign_id) where campaign_status = 1 and user_id = '{$_SESSION['user_id']}' group by client_id order by client_id";
 		} else {
-            $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where campaign_status = 1 group by client_id order by client_id";
+            $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where 1 group by client_id order by client_id";
         }
         return $this->db->query($qry)->result_array();
     }

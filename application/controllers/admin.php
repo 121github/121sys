@@ -205,6 +205,17 @@ class Admin extends CI_Controller
             if (empty($form['max_quote_days'])) {
                 $form['max_quote_days'] = NULL;
             }
+			
+			//Check if the minimum quote days is less than the maximum quote days
+            if (($form['min_quote_days'] && $form['max_quote_days'])&&(intval($form['min_quote_days']) > intval($form['max_quote_days']))) {
+			echo json_encode(array(
+                "data" => false,
+                "message" => "The minimum quote days must be less than the maximum quote days",
+                "success" => false
+            ));
+			exit;
+            }
+			
             if (!empty($form['new_client']) && $form['client_id'] == "other" || !empty($form['new_client']) && empty($form['client_id'])) {
                 $client_id = $this->Admin_model->find_client($form['new_client']);
                 if (!$client_id) {
@@ -238,22 +249,12 @@ class Admin extends CI_Controller
             if (!in_array(3, $features['features'])) {
                 $features['features'][] = 3;
             }
-
-            //Check if the minimum quote days is less than the maximum quote days
-            if (($form['min_quote_days'] && $form['max_quote_days'])&&(intval($form['min_quote_days']) > intval($form['max_quote_days']))) {
-                $response = $this->Admin_model->save_campaign_features($features);
-                $message = "ERROR: The minimum quote days must be less than the maximum quote days";
-                $success = false;
-            }
-            else {
-                $response = false;
-                $success = true;
-                $message = "Campaign saved";
-            }
+ 			 $response = $this->Admin_model->save_campaign_features($features);
+            
             echo json_encode(array(
-                "data" => $response,
-                "message" => $message,
-                "success" => $success
+                "data" => false,
+                "message" => "Campaign Saved",
+                "success" => true
             ));
         }
     }
