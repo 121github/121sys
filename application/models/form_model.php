@@ -90,7 +90,7 @@ class Form_model extends CI_Model
     }
     public function get_campaigns()
     {
-        $qry = "select campaign_id id,campaign_name name,campaign_type_desc type from campaigns left join campaign_types using(campaign_type_id) order by campaign_name";
+        $qry = "select campaign_id id,campaign_name name,campaign_type_desc type, daily_data, min_quote_days, max_quote_days from campaigns left join campaign_types using(campaign_type_id) order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
 	public function get_calendar_campaigns()

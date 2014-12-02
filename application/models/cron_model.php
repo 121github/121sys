@@ -65,5 +65,46 @@ class Cron_model extends CI_Model
             }
         }
     }
-    
+
+    public function get_renewald_date_field($campaign_id) {
+
+        $qry = "select field
+                from record_details_fields
+                where field_name = 'Renewal Date'
+                and campaign_id = ".$campaign_id;
+
+        $result = $this->db->query($qry)->result_array();
+        return $result[0]['field'];
+    }
+
+    public function set_daily_ration_records($campaign_id, $renewal_date_field,$daily_data, $min_quote_days, $max_quote_days) {
+
+        $where = "";
+        if ($min_quote_days) {
+            $where .= " and rd.".$renewal_date_field." >= DATE_ADD(CURDATE(),INTERVAL ".$min_quote_days." DAY)";
+        }
+        if ($max_quote_days) {
+            $where .= " and rd.".$renewal_date_field." <= DATE_ADD(CURDATE(),INTERVAL ".$max_quote_days." DAY)";
+        }
+        if (!$min_quote_days and !$max_quote_days) {
+            $where .= "0";
+        }
+
+        $qry = "update records
+                set parked_code = null where urn in
+                    (select * from
+                      (select r.urn
+                        from records r
+                        inner join record_details rd ON (r.urn = rd.urn)
+                        where rd.".$renewal_date_field." is not null
+                        and r.parked_code = 1
+                        and r.campaign_id = ".$campaign_id
+                        .$where."
+                        limit ".$daily_data.")
+                    as urn)";
+
+        $update = $this->db->query($qry);
+
+        return $this->db->affected_rows();
+    }
 }
