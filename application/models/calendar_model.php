@@ -80,7 +80,7 @@ return '#'.$output;
 		$where .= "	and campaign_id = ".$_SESSION['current_campaign'];
 		}
 		$query = "select appointments.urn,appointment_id,campaign_name,title,text,`start`,`end`,postcode,if(`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company,users.name as user $select_distance from appointments $join where 1 $where $having";
-		//$this->firephp->log($query);
+		$this->firephp->log($query);
 		$array = array();
 		$users = array();
 		foreach($this->db->query($query)->result_array() as $row){

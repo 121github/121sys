@@ -11,8 +11,10 @@ class Migration_update_7 extends CI_Migration
 
     public function up()
     {
-        $this->db->query("INSERT INTO `121sys`.`permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'calendar nav', 'Calendar')");
-
+        $this->db->query("INSERT INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'calendar nav', 'Calendar')");
+		$this->db->query("ALTER TABLE `appointments` ADD INDEX ( `postcode` )");
+$this->db->query("ALTER TABLE `uk_postcodes` CHANGE `lat` `lat` FLOAT( 10, 8 ) NOT NULL");
+$this->db->query("ALTER TABLE `uk_postcodes` CHANGE `lng` `lng` FLOAT( 10, 8 ) NOT NULL");
 
     }
 
