@@ -156,17 +156,34 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller gets the data for the daily ration page
     public function daily_ration_data()
     {
-        $results = array();
-
+        $parked_codes = array();
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
             $results = $this->Data_model->get_daily_ration_data($form);
             $aux = array();
             $url = base_url() . "search/custom/records";
             foreach($results as $result) {
-                $result['count_url'] = $url.(!empty( $result['campaign_id']) ? "/campaign/".$result['campaign_id'] : "");
-                $result['total_parked_url'] = $url.(!empty( $result['campaign_id']) ? "/campaign/".$result['campaign_id']."/parked/yes" : "");
-                array_push($aux, $result);
+                $result_aux = array();
+                $campaign_id = $result['campaign_id'];
+                if (!isset($aux[$campaign_id])) {
+                    $aux[$campaign_id] = array();
+                    $aux[$campaign_id]['campaign_id'] = $result['campaign_id'];
+                    $aux[$campaign_id]['campaign_name'] = $result['campaign_name'];
+                    $aux[$campaign_id]['total_records'] = $result['total_records'];
+                    $aux[$campaign_id]['daily_data'] = $result['daily_data'];
+                    $aux[$campaign_id]['total_records_url'] = $url."/campaign/".$campaign_id;
+                    $aux[$campaign_id]['total_parked_url'] = $url."/campaign/".$campaign_id."/parked/yes";
+                }
+                if (!in_array($result['park_reason'], $parked_codes)) {
+                    $parked_codes[$result['parked_code']] = $result['park_reason'];
+                }
+                unset($result['campaign_id']);
+                unset($result['campaign_name']);
+                unset($result['total_records']);
+                unset($result['daily_data']);
+                $aux[$campaign_id]['total_parked'] = (isset($aux[$campaign_id]['total_parked']))?($aux[$campaign_id]['total_parked']+$result['count']):$result['count'];
+                $result["url"] = $url."/campaign/".$campaign_id."/parked/yes/parked-code/".$result['parked_code'];
+                $aux[$campaign_id][$result['parked_code']] = $result;
             }
         }
 
@@ -175,6 +192,7 @@ $this->_campaigns = campaign_access_dropdown();
         echo json_encode(array(
             "success" => (!empty($results)),
             "data" => $results,
+            "parked_codes" => $parked_codes,
             "msg" => (!empty($results))?"":"Nothing found"
         ));
     }
