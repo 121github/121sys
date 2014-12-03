@@ -24,7 +24,7 @@ class Dashboard_model extends CI_Model
     
     public function get_favorites($filter = "")
     {
-        $qry = "select urn,fullname,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from records left join contacts using(urn) where urn in(select urn from favorites where user_id = '{$_SESSION['user_id']}')";
+        $qry = "select urn,if(fullname is null,urn,fullname) as fullname,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from records left join contacts using(urn) where urn in(select urn from favorites where user_id = '{$_SESSION['user_id']}')";
         if (!empty($filter)) {
             $qry .= " and campaign_id = '$filter'";
         }
@@ -175,7 +175,7 @@ class Dashboard_model extends CI_Model
 	public function timely_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn order by h.contact desc limit 1)";
-        $qry = "select urn,fullname as contact,nextcall,campaign_name as campaign,name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
+        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
@@ -189,7 +189,7 @@ class Dashboard_model extends CI_Model
     public function missed_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn order by h.contact desc limit 1)";
-        $qry = "select urn,fullname as contact,nextcall,campaign_name as campaign,if(name is null,'-',name) name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall < now() ";
+        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,if(name is null,'-',name) name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall < now() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
@@ -204,7 +204,7 @@ class Dashboard_model extends CI_Model
     public function upcoming_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn order by h.contact desc limit 1)";
-        $qry = "select urn,fullname as contact,nextcall,campaign_name as campaign,name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > now() ";
+        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > now() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
