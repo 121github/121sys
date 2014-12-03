@@ -83,11 +83,6 @@ class Cron extends CI_Controller
             else {
                 echo "No records updated for the campaign " . $campaign['name'] . ". The renewal_date field is not set for the campaign " . $campaign['name'] . " !<br>";
             }
-
         }
-
-
-
     }
-
 }
