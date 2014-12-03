@@ -403,7 +403,7 @@ var daily_ration = {
             if (response.success) {
                 var $parked_reasons = "";
                 $.each(response.parked_codes, function(k, parked_code) {
-                    $parked_reasons += "<th>"+parked_code+"</th>";
+                    $parked_reasons += "<th>"+parked_code.name+"</th>";
                 });
 
                 $thead.append("<tr>" +
@@ -419,13 +419,13 @@ var daily_ration = {
 
                         var $parked_codes = "";
                         $.each(response.parked_codes, function(k, parked_code) {
-                            if (val[k]) {
-                                $parked_codes += "</td><td class='" + parked_code + "'>"
-                                + "<a href='" + val[k].url + "'>" + val[k].count + "</a>";
+                            if (val[parked_code.id]) {
+                                $parked_codes += "</td><td class='" + parked_code.name + "'>"
+                                + "<a href='" + val[parked_code.id].url + "'>" + val[parked_code.id].count + "</a>";
                             }
                             else {
-                                $parked_codes += "</td><td class='" + parked_code + "'>"
-                                + "<a href='"+url+"campaign/"+i+"/parked/yes/parked-code/"+k+"'>0</a>";
+                                $parked_codes += "</td><td class='" + parked_code.name + "'>"
+                                + "<a href='"+url+"campaign/"+i+"/parked/yes/parked-code/"+parked_code.id+"'>0</a>";
                             }
                         });
 
@@ -443,7 +443,6 @@ var daily_ration = {
                     }
                     $('form').find('input[name="'+ val.campaign_id +'"]').numeric();
                 });
-                $tbody.append("</form>");
             } else {
                 $tbody
                     .append("<tr><td colspan='6'>"

@@ -317,7 +317,7 @@ class Data_model extends CI_Model
 
         $where = "";
         if (!empty($campaign)) {
-            $where .= " and record.campaign_id = '$campaign' ";
+            $where .= " and records.campaign_id = '$campaign' ";
         }
 
         $qry = "select count(*) count,
@@ -331,7 +331,7 @@ class Data_model extends CI_Model
                 inner join campaigns c ON (c.campaign_id = records.campaign_id)
                 left join park_codes pc ON (pc.parked_code = records.parked_code)
                 left join (select count(*) total_records, r.campaign_id from records r group by r.campaign_id) tr on tr.campaign_id = records.campaign_id
-                where 1 ";
+                where 1 and records.parked_code is not null";
         $qry .= $where;
         $qry .= " group by records.campaign_id, records.parked_code order by count desc ";
 

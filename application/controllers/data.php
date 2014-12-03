@@ -156,7 +156,7 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller gets the data for the daily ration page
     public function daily_ration_data()
     {
-        $parked_codes = array();
+        $parked_codes = $this->Form_model->get_parked_codes();
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
             $results = $this->Data_model->get_daily_ration_data($form);
@@ -173,9 +173,6 @@ $this->_campaigns = campaign_access_dropdown();
                     $aux[$campaign_id]['daily_data'] = $result['daily_data'];
                     $aux[$campaign_id]['total_records_url'] = $url."/campaign/".$campaign_id;
                     $aux[$campaign_id]['total_parked_url'] = $url."/campaign/".$campaign_id."/parked/yes";
-                }
-                if (!in_array($result['park_reason'], $parked_codes)) {
-                    $parked_codes[$result['parked_code']] = $result['park_reason'];
                 }
                 unset($result['campaign_id']);
                 unset($result['campaign_name']);
