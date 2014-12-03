@@ -74,7 +74,7 @@ class Cron_model extends CI_Model
                 and campaign_id = ".$campaign_id;
 
         $result = $this->db->query($qry)->result_array();
-        return $result[0]['field'];
+        return $result;
     }
 
     public function set_daily_ration_records($campaign_id, $renewal_date_field,$daily_data, $min_quote_days, $max_quote_days) {
