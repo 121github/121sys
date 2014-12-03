@@ -174,13 +174,15 @@ $this->_campaigns = campaign_access_dropdown();
                     $aux[$campaign_id]['total_records_url'] = $url."/campaign/".$campaign_id;
                     $aux[$campaign_id]['total_parked_url'] = $url."/campaign/".$campaign_id."/parked/yes";
                 }
-                unset($result['campaign_id']);
-                unset($result['campaign_name']);
-                unset($result['total_records']);
-                unset($result['daily_data']);
-                $aux[$campaign_id]['total_parked'] = (isset($aux[$campaign_id]['total_parked']))?($aux[$campaign_id]['total_parked']+$result['count']):$result['count'];
-                $result["url"] = $url."/campaign/".$campaign_id."/parked/yes/parked-code/".$result['parked_code'];
-                $aux[$campaign_id][$result['parked_code']] = $result;
+                if ($result['parked_code']) {
+                    unset($result['campaign_id']);
+                    unset($result['campaign_name']);
+                    unset($result['total_records']);
+                    unset($result['daily_data']);
+                    $aux[$campaign_id]['total_parked'] = (isset($aux[$campaign_id]['total_parked'])) ? ($aux[$campaign_id]['total_parked'] + $result['count']) : $result['count'];
+                    $result["url"] = $url . "/campaign/" . $campaign_id . "/parked/yes/parked-code/" . $result['parked_code'];
+                    $aux[$campaign_id][$result['parked_code']] = $result;
+                }
             }
         }
 
