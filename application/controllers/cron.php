@@ -75,13 +75,13 @@ class Cron extends CI_Controller
                 $renewal_date_field = $renewal_date_field[0]['field'];
                 $update_records = $this->Cron_model->set_daily_ration_records($campaign['id'], $renewal_date_field, $campaign['daily_data'], $campaign['min_quote_days'], $campaign['max_quote_days']);
                 if (intval($update_records) >= 0) {
-                    echo $update_records . " records from campaign " . $campaign['id'] . " updated!<br>";
+                    echo $update_records . " records from campaign " . $campaign['name'] . " updated!<br>";
                 } else {
-                    echo "ERROR updating the records from " . $campaign['id'] . " !<br>";
+                    echo "ERROR updating the records from " . $campaign['name'] . " !<br>";
                 }
             }
             else {
-                echo "ERROR updating the records. The renewal_date field is not set for the campaign" . $campaign['id'] . " !<br>";
+                echo "No records updated for the campaign " . $campaign['name'] . ". The renewal_date field is not set for the campaign " . $campaign['name'] . " !<br>";
             }
 
         }
