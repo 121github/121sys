@@ -81,7 +81,7 @@ class Cron extends CI_Controller
                 }
             }
             else {
-                echo "ERROR updating the records. The renewal_date field is not set";
+                echo "ERROR updating the records. The renewal_date field is not set for the campaign" . $campaign['id'] . " !<br>";
             }
 
         }
