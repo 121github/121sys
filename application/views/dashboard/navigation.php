@@ -20,7 +20,7 @@
                     <?php if(in_array("agent dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
-			                <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Advisor Dash</a>
+			                <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Agent Dash</a>
 			            </div>
 			            <div id="collapseTwoManagementDash" class="accordion-body <?php echo @($dashboard=='agent'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
