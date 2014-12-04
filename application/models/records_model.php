@@ -32,6 +32,8 @@ class Records_model extends CI_Model
 		$priority = array();
 		//1st priority is call back DMS and call backs within 10 mins (callback dms first)
 		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between subdate(now(), interval 10 MINUTE) and adddate(now(), interval 10 MINUTE) and (user_id is null or user_id = '$user_id') and outcome_id in(1,2) order by case when outcome_id = 2 then 1 else 2 end limit 1";
+				//2nd priority is virgin, then any other record with a nextcall date in order of lowest dials
+		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now()) and outcome_id in(1,2) and (user_id is null or user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials limit 1";	
 		//2nd priority is virgin, then any other record with a nextcall date in order of lowest dials
 		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null or date(date_updated)<curdate() and nextcall<now()) and (user_id is null or user_id = '$user_id') order by case when outcome_id is null then 1 else 2 end,date_updated,dials limit 1";	
 		foreach($priority as $k=>$qry){

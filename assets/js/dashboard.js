@@ -31,8 +31,7 @@ var dashboard = {
                 filter: filter,
             }
         }).done(function (response) {
-            $('.email-stats').html("<ul><li><a href='"+response.data.read_url+"'>"+response.data.read+"</a> records with an email read confirmed "
-			+"</li><li><a href='"+response.data.new_url+"'>"+response.data.new+"</a> records with new read confirmation</li><li><a href='"+response.data.all_url+"'>"+response.data.all+"</a> records with emails sent</li><li><a href='"+response.data.unsent_url+"'>"+response.data.unsent+"</a> record with failed emails</li></ul>");
+            $('.email-stats').html("<ul><li><a href='"+response.data.new_url+"'>"+response.data.new+"</a> new emails read</li><li><a href='"+response.data.read_url+"'>"+response.data.read+"</a> emails read today "+"</li><li><a href='"+response.data.all_url+"'>"+response.data.all+"</a> emails sent today</li><li><a href='"+response.data.unsent_url+"'>"+response.data.unsent+"</a> failed emails today</li><li><a href='"+response.data.sentall_url+"'>"+response.data.sentall+"</a> emails sent anytime</li><li><a href='"+response.data.readall_url+"'>"+response.data.readall+"</a> emails read anytime</li></ul>");
         });
     },
 	/* the function for the outcomes panel on the main dashboard */
