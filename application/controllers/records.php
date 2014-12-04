@@ -189,10 +189,13 @@ class Records extends CI_Controller
 				'plugins/jqfileupload/jquery.iframe-transport.js',
 				'plugins/jqfileupload/jquery.fileupload.js',
                 'plugins/jqfileupload/jquery.fileupload-process.js',
-                'plugins/jqfileupload/jquery.fileupload-validate.js'
+                'plugins/jqfileupload/jquery.fileupload-validate.js',
+                'plugins/countdown/jquery.plugin.min.js',
+                'plugins/countdown/jquery.countdown.min.js'
             ),
             'css' => array(
-                'plugins/jqfileupload/jquery.fileupload.css'
+                'plugins/jqfileupload/jquery.fileupload.css',
+                'plugins/countdown/jquery.countdown.css'
             ),
             'nav' => array(
                 'prev' => $prev,

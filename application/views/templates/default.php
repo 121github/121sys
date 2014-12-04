@@ -193,12 +193,22 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                   <li><a href="<?php echo base_url(); ?>user/logout" class="hreflink">Logout</a></li>
                 </ul>
               </li>
+
           <?php endif; ?>
         </ul>
       </div>
       <!--/.nav-collapse --> 
     </div>
   </div>
+</div>
+<div  class="img-circle" id="timerclosed" style="display: none;">
+    <span class="glyphicon glyphicon-earphone opentimer pointer"></span>
+    <span class="glyphicon glyphicon-stop stoptimer pointer"></span>
+</div>
+<div class="img-circle" id="timeropened" style="display: none;">
+    <div id="defaultCountdown"></div>
+    <span class="glyphicon glyphicon-earphone closetimer pointer"></span>
+    <span class="glyphicon glyphicon-stop stoptimer pointer"></span>
 </div>
 <?php if($show_footer){ ?>
 <div class="navbar-inverse footer-stats">

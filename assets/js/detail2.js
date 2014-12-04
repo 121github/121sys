@@ -30,6 +30,12 @@ var record = {
             $(this).closest('.alert').addClass('hidden');
             $(this).closest('.alert-text').text('');
         });
+        /*initialize the timer when the agent calls */
+        $(document).on('click', '.startcall', function(e) {
+            e.preventDefault();
+            window.location.href = $(this).attr('item-url');
+            record.start_call();
+        });
         /* Initialize all the panel functions for the record details page */
         this.urn = urn;
         this.role = role;
@@ -38,6 +44,36 @@ var record = {
         this.limit = 6;
 		var data = [];
 		window.history.pushState(data, "Record Details-"+record.urn, helper.baseUrl+'records/detail/'+record.urn);
+    },
+    start_call: function(){
+        $('#defaultCountdown').countdown('destroy');
+        $('#timeropened').css({"color":"#3C0"});
+        $('#timerclosed').css({"color":"#3C0"});
+        $('#timeropened').fadeIn('slow');
+        $('#timerclosed').fadeOut('slow');
+        $('#defaultCountdown').countdown({since: 0, compact: true,
+                format: 'MS', description: ''});
+        var counter = 0; setInterval(function () {
+            ++counter;
+            if ($('#defaultCountdown').text() >= '00:20') {
+                $('#timeropened').css({"color":"#F00"});
+                $('#timerclosed').css({"color":"#F00"});
+            }
+        }, 1000);
+
+        $('.closetimer').click(function(){
+            $('#timeropened').fadeOut('slow');
+            $('#timerclosed').fadeIn('slow');
+        });
+        $('.opentimer').click(function(){
+            $('#timeropened').fadeIn('slow');
+            $('#timerclosed').fadeOut('slow');
+        });
+        $('.stoptimer').click(function(){
+            $('#timeropened').hide();
+            $('#timerclosed').hide();
+            $('#defaultCountdown').countdown('destroy');
+        });
     },
     sticky_note: {
         init: function() {
@@ -691,7 +727,7 @@ var record = {
                     });
                     $.each(val.telephone, function(dt, tel) {
                         if (tel.tel_name) {
-                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a></dd>";
+                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a></dd>";
                         }
                     });
                     $panel.find('.contacts-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
@@ -925,7 +961,6 @@ var record = {
             });
 
 
-
         },
         save_item: function($btn) {
             var id = $btn.attr('item-id');
@@ -1034,7 +1069,7 @@ var record = {
                     });
                     $.each(val.telephone, function(dt, tel) {
                         if (tel.tel_name) {
-                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a></dd>";
+                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a></dd>";
                         }
                     });
                     $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
