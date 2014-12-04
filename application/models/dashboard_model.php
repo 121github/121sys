@@ -174,8 +174,8 @@ class Dashboard_model extends CI_Model
     
 	public function timely_callbacks($filter)
     {
-        $last_comments = "(select h.comments from history h where h.urn = records.urn order by h.contact desc limit 1)";
-        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
+        $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
+        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,name, if($last_comments is not null,$last_comments,'') as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
@@ -183,13 +183,14 @@ class Dashboard_model extends CI_Model
             $qry .= " and user_id = " . intval($filter['user']);
         }
         $qry .= " group by urn order by nextcall asc limit 10";
+        $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 	
     public function missed_callbacks($filter)
     {
-        $last_comments = "(select h.comments from history h where h.urn = records.urn order by h.contact desc limit 1)";
-        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,if(name is null,'-',name) name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall < now() ";
+        $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
+        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,if(name is null,'-',name) name, if($last_comments is not null,$last_comments,'') as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall < now() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
@@ -203,8 +204,8 @@ class Dashboard_model extends CI_Model
     
     public function upcoming_callbacks($filter)
     {
-        $last_comments = "(select h.comments from history h where h.urn = records.urn order by h.contact desc limit 1)";
-        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,name, $last_comments as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > now() ";
+        $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
+        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,name, if($last_comments is not null,$last_comments,'') as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(1,2) and nextcall > now() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
