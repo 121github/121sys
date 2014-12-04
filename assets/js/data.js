@@ -388,6 +388,7 @@ var daily_ration = {
         daily_ration.daily_ration_panel();
     },
     daily_ration_panel: function() {
+        var url = helper.baseUrl + 'search/custom/records/';
         $.ajax({
             url: helper.baseUrl + 'data/daily_ration_data',
             type: "POST",
@@ -395,21 +396,45 @@ var daily_ration = {
             data: $('.filter-form').serialize()
         }).done(function(response) {
             var $row = "";
+            $thead = $('.daily_ration_data .ajax-table').find('thead');
+            $thead.empty();
             $tbody = $('.daily_ration_data .ajax-table').find('tbody');
             $tbody.empty();
             if (response.success) {
-                $tbody.append("<form>");
-                $.each(response.data, function(i, val) {
-                    if (response.data.length) {
+                var $parked_reasons = "";
+                $.each(response.parked_codes, function(k, parked_code) {
+                    $parked_reasons += "<th>"+parked_code.name+"</th>";
+                });
 
+                $thead.append("<tr>" +
+                    "<th>Campaign</th>" +
+                    "<th>Total Records</th>" +
+                    $parked_reasons +
+                    "<th>Total Parked Records</th>" +
+                    "<th>Daily Data</th>" +
+                    "</tr>");
+
+                $.each(response.data, function(i, val) {
+                    if (val.campaign_name) {
+
+                        var $parked_codes = "";
+                        $.each(response.parked_codes, function(k, parked_code) {
+                            if (val[parked_code.id]) {
+                                $parked_codes += "</td><td class='" + parked_code.name + "'>"
+                                + "<a href='" + val[parked_code.id].url + "'>" + val[parked_code.id].count + "</a>";
+                            }
+                            else {
+                                $parked_codes += "</td><td class='" + parked_code.name + "'>"
+                                + "<a href='"+url+"campaign/"+i+"/parked/yes/parked-code/"+parked_code.id+"'>0</a>";
+                            }
+                        });
 
                         $tbody
                             .append("<tr><td class='campaign'>"
                             + val.campaign_name
-                            + "</td><td class='count'>"
-                            + 	"<a href='" + val.count_url + "'>" + val.count + "</a>"
-                            + "</td><td class='total_rationing'>"
-                            + 	"<a href='" + val.total_parked_url + "/parked_code/Rationing'>" + val.total_rationing + "</a>"
+                            + "</td><td class='total_records'>"
+                            + 	"<a href='" + val.total_records_url + "'>" + val.total_records + "</a>"
+                            + $parked_codes
                             + "</td><td class='total_parked'>"
                             + 	"<a href='" + val.total_parked_url + "'>" + val.total_parked + "</a>"
                             + "</td><td class='daily_data'>"
@@ -418,7 +443,6 @@ var daily_ration = {
                     }
                     $('form').find('input[name="'+ val.campaign_id +'"]').numeric();
                 });
-                $tbody.append("</form>");
             } else {
                 $tbody
                     .append("<tr><td colspan='6'>"

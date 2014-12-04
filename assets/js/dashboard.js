@@ -155,9 +155,16 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    if (val.last_comments.length) {
+                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="Comment: ' + val.last_comments + '"></span>';
+                    }
+                    else {
+                        comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
+                    }
+                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td><td>'+comments+'</td></tf></tr>';
                 });
-                $('.timely-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.timely-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th><th></th></thead><tbody>' + $row + '</tbody></table>');
+                $('.tt').tooltip();
             } else {
                 $('.timely-callbacks').append('<p>' + response.msg + '</p>');
             }
@@ -181,9 +188,16 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    if (val.last_comments.length) {
+                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="Comment: ' + val.last_comments + '"></span>';
+                    }
+                    else {
+                        comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
+                    }
+                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td><td>'+comments+'</td></tr>';
                 });
-                $('.missed-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.missed-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th><th></th></thead><tbody>' + $row + '</tbody></table>');
+                $('.tt').tooltip();
             } else {
                 $('.missed-callbacks').append('<p>' + response.msg + '</p>');
             }
@@ -207,9 +221,16 @@ var dashboard = {
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    if (val.last_comments.length) {
+                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="Comment: ' + val.last_comments + '"></span>';
+                    }
+                    else {
+                        comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
+                    }
+                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td><td>'+comments+'</td></tr>';
                 });
-                $('.upcoming-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.upcoming-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th><th></th></thead><tbody>' + $row + '</tbody></table>');
+                $('.tt').tooltip();
             } else {
                 $('.upcoming-callbacks').append('<p>' + response.msg + '</p>');
             }

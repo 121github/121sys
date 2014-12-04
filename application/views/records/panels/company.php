@@ -27,7 +27,7 @@
 	  } ?>
               <?php foreach($company['telephone']  as $id=>$number): ?>
               <dt><?php echo $number['tel_name'] ?></dt>
-              <dd><a href="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?></a></dd>
+                <dd><a href="#" class="startcall" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?></a></dd>
               <?php endforeach; ?>
             </dl>
           </div>

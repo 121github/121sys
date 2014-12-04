@@ -3,8 +3,10 @@
 There was a problem while finding the selected record details. Maybe it does not exist or has been deleted.
 <?php else: ?>
 <div class="page-header">
+
+
   <h2>View Details <small>URN: <?php echo $details['record']['urn'] ?> <?php echo (!empty($details['record']['campaign'])?" [". $details['record']['campaign']."]":"") ?></small><span class="pull-right">
-  
+
     <?php //show navigation if the user came from the list records page
 	if(!empty($nav['prev'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>
     <a type="button" class="btn btn-default btn-lg <?php if(!$allow_skip){ echo "nav-btn"; } ?>" href="<?php echo $nav['prev'] ?>">Previous</a>

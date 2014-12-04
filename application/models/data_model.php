@@ -317,22 +317,23 @@ class Data_model extends CI_Model
 
         $where = "";
         if (!empty($campaign)) {
-            $where .= " and record.campaign_id = '$campaign' ";
+            $where .= " and records.campaign_id = '$campaign' ";
         }
 
         $qry = "select count(*) count,
-                total_parked,
-                total_rationing,
+                total_records,
+                pc.park_reason,
+                records.parked_code,
                 c.campaign_name,
                 records.campaign_id,
                 c.daily_data
                 from records
                 inner join campaigns c ON (c.campaign_id = records.campaign_id)
-                left join (select count(*) total_parked, r.campaign_id from records r where r.parked_code is not null $where group by r.campaign_id) tp on tp.campaign_id = records.campaign_id
-                left join (select count(*) total_rationing, r.campaign_id from records r inner join park_codes pc ON (pc.parked_code = r.parked_code) where pc.park_reason = 'Rationing' group by r.campaign_id, r.parked_code) tr on tr.campaign_id = records.campaign_id
-                where 1 ";
+                left join park_codes pc ON (pc.parked_code = records.parked_code)
+                left join (select count(*) total_records, r.campaign_id from records r group by r.campaign_id) tr on tr.campaign_id = records.campaign_id
+                where 1";
         $qry .= $where;
-        $qry .= " group by records.campaign_id order by count desc ";
+        $qry .= " group by records.campaign_id, records.parked_code order by count desc ";
 
         return $this->db->query($qry)->result_array();
 
