@@ -323,11 +323,11 @@ class Dashboard_model extends CI_Model
 			$new_url = base_url().'search/custom/records/read-date/'.date('Y-m-d').'/emails/new'.$camp_url.$user_url;
 			
 			$qry_readall = "select count(distinct urn) num from email_history left join records using(urn) where 1 and read_confirmed = 1 $where";	
-			$readall = $this->db->query($qry_new)->row()->num;
+			$readall = $this->db->query($qry_readall)->row()->num;
 			$readall_url = base_url().'search/custom/records/emails/read'.$camp_url.$user_url;
 			
 			$qry_sentall = "select count(distinct urn) num from email_history left join records using(urn) where 1 $where";	
-			$sentall = $this->db->query($qry_new)->row()->num;
+			$sentall = $this->db->query($qry_sentall)->row()->num;
 			$sentall_url = base_url().'search/custom/records/emails/sent'.$camp_url.$user_url;
 			
 			return array("new"=>$new,"new_url"=>$new_url,"all"=>$all,"all_url"=>$all_url,"read"=>$read,"read_url"=>$read_url,"unsent"=>$unsent,"unsent_url"=>$unsent_url,"readall"=>$readall,"readall_url"=>$readall_url,"sentall"=>$sentall,"sentall_url"=>$sentall_url);
