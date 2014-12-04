@@ -189,7 +189,7 @@ var dashboard = {
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
                     if (val.last_comments.length) {
-                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="Comment: ' + val.last_comments + '"></span>';
+                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="' + val.last_comments + '"></span>';
                     }
                     else {
                         comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
@@ -222,7 +222,7 @@ var dashboard = {
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
                     if (val.last_comments.length) {
-                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="Comment: ' + val.last_comments + '"></span>';
+                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="' + val.last_comments + '"></span>';
                     }
                     else {
                         comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
