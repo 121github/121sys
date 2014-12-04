@@ -36,6 +36,33 @@ function postcodeFormat($postcode)
 }
 }
 
+
+if (!function_exists('postcodeCheckFormat')) {
+ function postcodeCheckFormat($postcode) {
+
+//--------------------------------------------------
+// Clean up the user input
+
+$postcode = strtoupper($postcode);
+$postcode = preg_replace('/[^A-Z0-9]/', '', $postcode);
+$postcode = preg_replace('/([A-Z0-9]{3})$/', ' \1', $postcode);
+$postcode = trim($postcode);
+
+//--------------------------------------------------
+// Check that the submitted value is a valid
+// British postcode: AN NAA | ANN NAA | AAN NAA |
+// AANN NAA | ANA NAA | AANA NAA
+
+if (preg_match('/^[a-z](\d[a-z\d]?|[a-z]\d[a-z\d]?) \d[a-z]{2}$/i', $postcode)) {
+return $postcode;
+} else {
+return NULL;
+}
+
+} 
+}
+
+
 if (!function_exists('distance')) {
 
     function distance($lat1, $lon1, $lat2, $lon2, $unit = null) {

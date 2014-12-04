@@ -15,17 +15,38 @@ class Cron extends CI_Controller
 
     public function format_postcodes()
     {
+		//format contact postcodes
         $unformatted = $this->Cron_model->get_unformatted_contact_postcodes();
         foreach ($unformatted as $row) {
-            $formatted_postcode = postcodeFormat($row['postcode'], $row['id']);
-            $this->Cron_model->format_contact_postcode($formatted_postcode);
-            echo "updated postcode " . $row['postcode'] . " to " . $formatted_postcode . " on contact_id " . $row['id'] . "<br>";
+            $formatted_postcode = postcodeCheckFormat($row['postcode']);
+			if($formatted_postcode==NULL){
+            $this->Cron_model->format_contact_postcode($formatted_postcode, $row['id']);
+			echo "updated postcode " . $row['postcode'] . " to " . $formatted_postcode . " on contact_id " . $row['id'] . "<br>";
+			} else {
+            $row['postcode'] . " is not a valid postcode?" . "<br>";
+			}
         }
+		//format company postcodes
         $unformatted = $this->Cron_model->get_unformatted_company_postcodes();
         foreach ($unformatted as $row) {
-            $formatted_postcode = postcodeFormat($row['postcode']);
+            $formatted_postcode = postcodeCheckFormat($row['postcode']);
+			if($formatted_postcode){
             $this->Cron_model->format_company_postcode($formatted_postcode, $row['id']);
-            echo "updated postcode " . $row['postcode'] . " to " . $formatted_postcode . " on company_id " . $row['id'] . "<br>";
+			 echo "updated postcode " . $row['postcode'] . " to " . $formatted_postcode . " on company_id " . $row['id'] . "<br>";
+			} else {
+           echo $row['postcode'] . " is not a valid postcode?" . "<br>";	
+			}
+        }
+		//format appointment postcodes
+		$unformatted = $this->Cron_model->get_unformatted_appointment_postcodes();
+        foreach ($unformatted as $row) {
+            $formatted_postcode = postcodeCheckFormat($row['postcode']);
+			if($formatted_postcode){
+            $this->Cron_model->format_appointment_postcode($formatted_postcode, $row['id']);
+			 echo "updated postcode " . $row['postcode'] . " to " . $formatted_postcode . " on company_id " . $row['id'] . "<br>";
+			} else { 
+          echo  $row['postcode'] . " is not a valid postcode?" . "<br>";	
+			}
         }
     }
 
@@ -33,16 +54,23 @@ class Cron extends CI_Controller
     {
         $missing = $this->Cron_model->get_missing_company_postcodes();
         foreach ($missing as $row) {
+			$check = postcodeCheckFormat($row['postcode']);
+			if($check){
             $response = postcode_to_coords($row['postcode']);
             if (!isset($response['error'])) {
                 $this->Cron_model->update_missing($row['postcode'], $response);
                 echo $row['postcode'] . " updated!<br>";
             } else {
                 echo $response['error'] . "<br>";
-            }
+            } 
+			} else {
+			echo "Not a valid postcode ".$row['postcode'].	"<br>";
+			}
         }
         $missing = $this->Cron_model->get_missing_contact_postcodes();
         foreach ($missing as $row) {
+				$check = postcodeCheckFormat($row['postcode']);
+			if($check){
             $response = postcode_to_coords($row['postcode']);
             if (!isset($response['error'])) {
                 $this->Cron_model->update_missing($row['postcode'], $response);
@@ -50,7 +78,10 @@ class Cron extends CI_Controller
             } else {
                 echo $response['error'] . "<br>";
             }
-        }
+        } else {
+			echo "Not a valid postcode ".$row['postcode'].	"<br>";
+			}
+		}
     }
 
     public function update_hours()

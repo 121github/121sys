@@ -33,8 +33,7 @@ class Records_model extends CI_Model
 		//1st priority is call back DMS and call backs within 10 mins (callback dms first)
 		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between subdate(now(), interval 10 MINUTE) and adddate(now(), interval 10 MINUTE) and (user_id is null or user_id = '$user_id') and outcome_id in(1,2) order by case when outcome_id = 2 then 1 else 2 end limit 1";
 		//2nd priority is virgin, then any other record with a nextcall date in order of lowest dials
-		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null or date(date_updated)<curdate() and nextcall<now()) and (user_id is null or user_id = '$user_id') order by case when outcome_id is null then 1 else 2 end,date_updated,dials limit 1";
-		//find any other records to call		
+		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null or date(date_updated)<curdate() and nextcall<now()) and (user_id is null or user_id = '$user_id') order by case when outcome_id is null then 1 else 2 end,date_updated,dials limit 1";	
 		foreach($priority as $k=>$qry){
 		$query = $this->db->query($qry);
 		
@@ -100,7 +99,7 @@ class Records_model extends CI_Model
         );
         
         $join = array();
-        $qry  = "select r.urn, outcome, if(com.name is null,fullname,com.name) fullname, {$this->name_field} client_name, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
+        $qry  = "select r.urn, outcome, if(com.name is null,fullname,com.name) fullname, fullname client_name, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
@@ -267,7 +266,7 @@ class Records_model extends CI_Model
     
     public function get_details($urn, $features)
     {
-        $select = "select r.urn,c.contact_id,{$this->name_field} fullname,title,firstname,lastname,c.email,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
+        $select = "select r.urn,c.contact_id,fullname,c.email,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
         $from   = " from records r ";
         $from .= "  left join outcomes o using(outcome_id) left join progress_description pd using(progress_id) ";
 		$from .= "  left join park_codes pc using(parked_code) ";
@@ -300,12 +299,9 @@ class Records_model extends CI_Model
         $data     = array();
         if (count($results)) {
             foreach ($results as $result):
-                $use_fullname = ($this->name_field == "fullname" ? true : false);
+                $use_fullname = true;
                 if ($result['contact_id']) {
                     $data['contacts'][$result['contact_id']]['name']    = array(
-                        "title" => $result['title'],
-                        "firstname" => $result['firstname'],
-                        "lastname" => $result['lastname'],
                         "fullname" => $result['fullname'],
                         "use_full" => $use_fullname
                     );

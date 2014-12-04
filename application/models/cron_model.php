@@ -32,6 +32,10 @@ class Cron_model extends CI_Model
     {
         return $this->db->query("select postcode,contact_id id from contact_addresses where postcode not like '% %' and postcode is not null")->result_array();
     }
+	    public function get_unformatted_appointment_postcodes()
+    {
+        return $this->db->query("select postcode,appointment_id id from appointments where postcode not like '% %' and postcode is not null")->result_array();
+    }
     public function format_company_postcode($postcode, $id)
     {
         return $this->db->query("update company_addresses set postcode = '$postcode' where company_id = '$id'");
@@ -39,6 +43,10 @@ class Cron_model extends CI_Model
     public function format_contact_postcode($postcode, $id)
     {
         return $this->db->query("update contact_addresses set postcode = '$postcode' where contact_id = '$id'");
+    }
+	    public function format_appointment_postcode($postcode, $id)
+    {
+        return $this->db->query("update appointments set postcode = '$postcode' where appointment_id = '$id'");
     }
     
     public function clear_hours()

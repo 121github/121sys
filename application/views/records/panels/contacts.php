@@ -9,7 +9,7 @@
       <?php if(isset($details['contacts'])){ ?>
       <ul class="list-group contacts-list">
         <?php $x=0; foreach($details['contacts']  as $id=>$contact): $x++; ?>
-        <li  class="list-group-item" item-id="<?php echo $id ?>"><a data-toggle="collapse" data-parent="#accordion" href="#con-collapse-<?php echo $id ?>"> <?php echo ($contact['name']["use_full"]?$contact['name']['fullname']:$contact['name']['title'] ." ".$contact['name']['firstname']." ".$contact['name']['lastname']); ?> </a> <?php if(in_array("delete contacts",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-trash pull-right del-contact-btn" data-target="#modal" item-id="<?php echo $id ?>" ></span><?php } ?> <?php if(in_array("edit contacts",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-pencil pull-right edit-contact-btn"  item-id="<?php echo $id ?>"></span><?php } ?>
+        <li  class="list-group-item" item-id="<?php echo $id ?>"><a data-toggle="collapse" data-parent="#accordion" href="#con-collapse-<?php echo $id ?>"> <?php echo $contact['name']['fullname']; ?> </a> <?php if(in_array("delete contacts",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-trash pull-right del-contact-btn" data-target="#modal" item-id="<?php echo $id ?>" ></span><?php } ?> <?php if(in_array("edit contacts",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-pencil pull-right edit-contact-btn"  item-id="<?php echo $id ?>"></span><?php } ?>
           <div id="con-collapse-<?php echo $id ?>" class="panel-collapse collapse <?php if($x==1){ echo "in"; } ?>">
             <dl class="dl-horizontal contact-detail-list">
               <?php foreach($contact['visible'] as $key=>$val){ if(!empty($val)&&$key!="Address"){ ?>
