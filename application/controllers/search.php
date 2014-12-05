@@ -63,9 +63,15 @@ $this->_campaigns = campaign_access_dropdown();
     public function get_coords()
     {
     	if ($this->input->is_ajax_request()) {
-    		$postcode = $this->input->post('postcode');
-    			
-    		$coords = postcode_to_coords($postcode);
+    		$postcode = postcodeCheckFormat($this->input->post('postcode'));
+			
+    		$this->db->where("postcode",$postcode);
+			$geodata = $this->db->get("uk_postcodes");
+			if($geodata->num_rows()>0){
+			$coords = $geodata->row_array();	
+			} else {
+			$coords = postcode_to_coords($options['postcode']);
+			}
     		
     		if (isset($coords['lat']) && isset($coords['lng'])) {
     			echo json_encode(array(
