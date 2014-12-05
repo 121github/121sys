@@ -93,9 +93,7 @@ class Calendar extends CI_Controller
 		}
 		
 		$postcode = postcodeCheckFormat($this->input->post('postcode'));
-		if(!empty($_POST['postcode'])){
-		$postcode = $_POST['postcode'];	
-		} else {
+		if($postcode==NULL){
 		$postcode = (isset($_SESSION['postcode'])?$_SESSION['postcode']:"");	
 		}
 		$this->firephp->log($postcode);
