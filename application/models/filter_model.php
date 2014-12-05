@@ -403,13 +403,13 @@ class Filter_model extends CI_Model
                         $join['companies'] = " left join companies com on com.urn = r.urn ";
                     }
                     if (!isset($join['company_addresses'])) {
-                        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id left join uk_postcodes com_pc on coma.postcode = com_pc.postcode ";
+                        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id left join locations com_pc on coma.location_id = com_pc.location_id ";
                     }
                     if (!isset($join['contacts'])) {
                         $join['contacts'] = " left join contacts  con on con.urn = r.urn ";
                     }
                     if (!isset($join['contact_addresses'])) {
-                        $join['contact_addresses'] = " left join contact_addresses cona on con.contact_id = cona.contact_id left join uk_postcodes con_pc on coma.postcode = con_pc.postcode";
+                        $join['contact_addresses'] = " left join contact_addresses cona on con.contact_id = cona.contact_id left join locations con_pc on coma.location_id = con_pc.location_id";
                     }
                 }
                 

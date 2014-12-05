@@ -370,10 +370,13 @@ $this->_campaigns = campaign_access_dropdown();
     {
         if ($this->input->is_ajax_request()) {
 			
-						if($this->input->post("primary")=="1"){
+				if($this->input->post("primary")=="1"){
 				$this->db->where("contact_id",intval($this->input->post('contact_id')));
 				$this->db->update("contact_addresses",array("primary"=>NULL));
-			}
+				}
+			//delete the location id incase the postcode has changed
+			 $this->db->where('address_id', intval($this->input->post('address_id')));
+			 $this->db->update('contact_addresses',array("location_id"=>NULL));
 			
             $this->db->where('address_id', intval($this->input->post('address_id')));
             if ($this->db->update('contact_addresses', elements(array(
@@ -405,6 +408,9 @@ $this->_campaigns = campaign_access_dropdown();
 				$this->db->where("company_id",intval($this->input->post('company_id')));
 				$this->db->update("company_addresses",array("primary"=>NULL));
 			}
+			//delete the location id incase the postcode has changed
+			$this->db->where('address_id', intval($this->input->post('address_id')));
+			 $this->db->update('company_addresses',array("location_id"=>NULL));
 			
             $this->db->where('address_id', intval($this->input->post('address_id')));
             if ($this->db->update('company_addresses', elements(array(

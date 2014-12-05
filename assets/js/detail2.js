@@ -1907,7 +1907,11 @@ var record = {
             });
             $(document).on('click', '.save-appointment', function(e) {
                 e.preventDefault();
+				if($(this).closest('form')[0].checkValidity()){
                 record.appointment_panel.save($(this));
+				} else {
+				flashalert.danger("Please complete all form fields");	
+				}
             });
             $(document).on('click', '.edit-appointment', function() {
                 record.appointment_panel.edit($(this).attr('item-id'));
@@ -2020,11 +2024,15 @@ var record = {
                 dataType: "JSON",
                 data: $btn.closest('form').serialize()
             }).done(function(response) {
+				if(response.success){
                record.appointment_panel.load_appointments();
                 record.appointment_panel.hide_edit_form();
 				$('.record-panel').find('.outcomepicker').find('li.disabled').each(function(){ $(this).removeClass('disabled'); });
 				$('.record-panel').find('.outcomepicker').find('option:disabled').each(function(){ $(this).prop('disabled',false); });
                 flashalert.success("Appointment saved");
+				} else {
+				flashalert.danger(response.msg);	
+				}
             });
         },
         remove: function(id) {

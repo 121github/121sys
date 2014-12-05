@@ -13,77 +13,6 @@ class Cron extends CI_Controller
         $this->load->model('Cron_model');
     }
 
-    public function format_postcodes()
-    {
-		//format contact postcodes
-        $unformatted = $this->Cron_model->get_unformatted_contact_postcodes();
-        foreach ($unformatted as $row) {
-            $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			if($formatted_postcode==NULL){
-            $this->Cron_model->format_contact_postcode($formatted_postcode, $row['id']);
-			echo "updated postcode " . $row['postcode'] . " to " . $formatted_postcode . " on contact_id " . $row['id'] . "<br>";
-			} else {
-            $row['postcode'] . " is not a valid postcode?" . "<br>";
-			}
-        }
-		//format company postcodes
-        $unformatted = $this->Cron_model->get_unformatted_company_postcodes();
-        foreach ($unformatted as $row) {
-            $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			if($formatted_postcode){
-            $this->Cron_model->format_company_postcode($formatted_postcode, $row['id']);
-			 echo "updated postcode " . $row['postcode'] . " to " . $formatted_postcode . " on company_id " . $row['id'] . "<br>";
-			} else {
-           echo $row['postcode'] . " is not a valid postcode?" . "<br>";	
-			}
-        }
-		//format appointment postcodes
-		$unformatted = $this->Cron_model->get_unformatted_appointment_postcodes();
-        foreach ($unformatted as $row) {
-            $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			if($formatted_postcode){
-            $this->Cron_model->format_appointment_postcode($formatted_postcode, $row['id']);
-			 echo "updated postcode " . $row['postcode'] . " to " . $formatted_postcode . " on company_id " . $row['id'] . "<br>";
-			} else { 
-          echo  $row['postcode'] . " is not a valid postcode?" . "<br>";	
-			}
-        }
-    }
-
-    public function add_missing_postcodes()
-    {
-        $missing = $this->Cron_model->get_missing_company_postcodes();
-        foreach ($missing as $row) {
-			$check = postcodeCheckFormat($row['postcode']);
-			if($check){
-            $response = postcode_to_coords($row['postcode']);
-            if (!isset($response['error'])) {
-                $this->Cron_model->update_missing($row['postcode'], $response);
-                echo $row['postcode'] . " updated!<br>";
-            } else {
-                echo $response['error'] . "<br>";
-            } 
-			} else {
-			echo "Not a valid postcode ".$row['postcode'].	"<br>";
-			}
-        }
-        $missing = $this->Cron_model->get_missing_contact_postcodes();
-        foreach ($missing as $row) {
-				$check = postcodeCheckFormat($row['postcode']);
-			if($check){
-            $response = postcode_to_coords($row['postcode']);
-            if (!isset($response['error'])) {
-                $this->Cron_model->update_missing($row['postcode'], $response);
-                echo $row['postcode'] . " updated!<br>";
-            } else {
-                echo $response['error'] . "<br>";
-            }
-        } else {
-			echo "Not a valid postcode ".$row['postcode'].	"<br>";
-			}
-		}
-    }
-
     public function update_hours()
     {
         $agents = $this->Form_model->get_agents();
@@ -116,4 +45,32 @@ class Cron extends CI_Controller
             }
         }
     }
+	
+	
+	/* The following functions can be used to format postcodes and update geocoordinates in the uk_postcodes/locations table */
+	public function update_all_locations(){
+		 $this->Cron_model->update_locations_table();
+		 $this->Cron_model->update_location_ids();
+		 $this->Cron_model->update_locations_with_google();
+	}
+	
+	    public function update_locations_table()
+    {
+		//sets invalid postcodes to null and looks up valid postcodes in the uk_postcodes table and copies them to the locations table
+       $this->Cron_model->update_locations_table();
+	   
+	}
+		    public function update_location_ids()
+    {
+	   //sets the location ids on in the contact/company address and appointment table using the id from uk_postcodes where it has a matching postcode
+	   $this->Cron_model->update_location_ids();
+	   
+	}
+	    public function update_locations_with_google()
+    {
+	   //if we have any records left over that dont have a location_id we add the postcode to the uk_postcodes table using google maps api
+	   $this->Cron_model->update_locations_with_google();
+    }
+	
+	/* end location functions */
 }

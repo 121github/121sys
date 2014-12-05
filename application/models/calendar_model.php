@@ -40,7 +40,7 @@ return '#'.$output;
 		if(!empty($options['postcode'])&&!empty($options['distance'])){
 			$distance = intval($options['distance'])*1.1515;
 			$coords = postcode_to_coords($options['postcode']);
-			$join .= " left join uk_postcodes using(postcode) ";
+			$join .= " left join locations using(location_id) ";
 			$having .= " having distance <= $distance";
 			$select_distance .= ",(((ACOS(SIN((" .
               $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .

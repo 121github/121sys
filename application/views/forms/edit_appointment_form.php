@@ -28,7 +28,7 @@
         
                                 <div class="form-group input-group-sm">
           <p>Please select the address the appointment will take place</p>
-<select class="selectpicker addresspicker" title="Choose the address" required data-width="100%">
+<select class="selectpicker addresspicker" title="Choose the address" data-width="100%">
  <?php foreach($addresses as $address): 
  $add = $address['name'];
  $add .= (!empty($address['add1'])?", ".$address['add1']:"");

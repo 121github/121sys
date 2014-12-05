@@ -65,7 +65,7 @@ class Company_model extends CI_Model
     public function get_companies($urn)
     {
         
-        $qry     = "select com.urn,com.company_id,com.name coname,com.description codescription,sector_name,employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join uk_postcodes using(postcode) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) where urn = '$urn' order by com.company_id";
+        $qry     = "select com.urn,com.company_id,com.name coname,com.description codescription,sector_name,employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) where urn = '$urn' order by com.company_id";
         $results = $this->db->query($qry)->result_array();
         //put the contact details into array
         // $this->firephp->log($qry);
@@ -103,25 +103,7 @@ class Company_model extends CI_Model
 	$qry = "select telephone_number from company_telephone left join companies using(company_id) where urn = '$urn'";	
 	return $this->db->query($qry)->result_array();	
 	}
-	
-	
-	public function get_company_addresses_without_coords() {
 		
-		$qry = "select *
-    			from company_addresses left join uk_postcodes using(postcode)
-    			where company_addresses.postcode IS NOT NULL
-    			and lat IS NULL
-    			and lng IS NULL ";
-		 
-		return $this->db->query($qry)->result_array();
-	}
-	
-	public function update_company_address($data) {
-	
-		$this->db->where("address_id", $data['address_id']);
-		return $this->db->update("company_addresses", $data);
-	}
-	
 	public function save_company ($form) {
 		$this->db->insert("companies", $form);
 	

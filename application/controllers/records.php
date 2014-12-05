@@ -622,12 +622,22 @@ class Records extends CI_Controller
     public function save_appointment()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
-            $this->Records_model->save_appointment($this->input->post());
-            
-            //return success to page
+			$data = $this->input->post();
+			$data['postcode'] = postcodeCheckFormat($data['postcode']);	
+			if($data['postcode']===NULL){
+			  echo json_encode(array(
+                "success" => false,
+				"msg"=>"You must set a valid UK Postcode"
+            ));	
+			} else {
+			$this->Records_model->save_appointment($data);	
             echo json_encode(array(
                 "success" => true
             ));
+			}
+            
+            
+
         } else {
             echo "Denied";
             exit;

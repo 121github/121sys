@@ -71,7 +71,7 @@ class Contacts_model extends CI_Model
     public function get_contacts($urn)
     {
         
-        $qry     = "select c.urn,c.contact_id,fullname,a.primary is_primary,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join uk_postcodes using(postcode) where urn = '$urn' order by c.sort,c.contact_id";
+        $qry     = "select c.urn,c.contact_id,fullname,a.primary is_primary,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) where urn = '$urn' order by c.sort,c.contact_id";
         $results = $this->db->query($qry)->result_array();
         //put the contact details into array
         // $this->firephp->log($qry);
@@ -123,25 +123,9 @@ class Contacts_model extends CI_Model
 	return $numbers;
 	}
 	
-	public function get_contact_addresses_without_coords() {
-	
-		$qry = "select *
-    			from contact_addresses left join uk_postcodes using(postcode)
-    			where contact_addresses.postcode IS NOT NULL
-    			and lat IS NULL
-    			and lng e IS NULL ";
-			
-		return $this->db->query($qry)->result_array();
-	}
-	
-	public function update_contact_address($data) {
-		$this->db->where("address_id", $data['address_id']);
-		return $this->db->update("contact_addresses", $data);
-	}
 
 	public function save_contact ($form) {
 		$this->db->insert("contacts", $form);
-	
 		$insert_id = $this->db->insert_id();
 		$this->db->trans_complete();
 	
