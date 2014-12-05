@@ -194,8 +194,9 @@ class Cron_model extends CI_Model
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
-            file_put_contents($file, $status . $response['lat']);
+            
             if (!isset($response['error'])) {
+				file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert into uk_postcodes set lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
@@ -212,8 +213,9 @@ class Cron_model extends CI_Model
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
-			  file_put_contents($file, $status . $response['lat']);
+			 
             if (!isset($response['error'])) {
+				 file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert into uk_postcodes set lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
@@ -228,8 +230,9 @@ class Cron_model extends CI_Model
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
-			  file_put_contents($file, $status . $response['lat']);
+			 
             if (!isset($response['error'])) {
+				 file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert into uk_postcodes set lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
