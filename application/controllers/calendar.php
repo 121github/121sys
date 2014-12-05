@@ -92,13 +92,13 @@ class Calendar extends CI_Controller
 		$users = (isset($_SESSION['users'])?$_SESSION['users']:"");	
 		}
 		
-		
+		$postcode = postcodeCheckFormat($this->input->post('postcode'));
 		if(!empty($_POST['postcode'])){
 		$postcode = $_POST['postcode'];	
 		} else {
 		$postcode = (isset($_SESSION['postcode'])?$_SESSION['postcode']:"");	
 		}
-		
+		$this->firephp->log($postcode);
 		if(!empty($_POST['distance'])){
 		$distance = $_POST['distance'];	
 		} else {

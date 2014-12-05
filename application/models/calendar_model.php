@@ -39,7 +39,14 @@ return '#'.$output;
 		$join .= " left join companies using(urn) left join campaigns using(campaign_id) left join campaign_types using(campaign_type_id) left join appointment_attendees using(appointment_id) left join users using(user_id) ";
 		if(!empty($options['postcode'])&&!empty($options['distance'])){
 			$distance = intval($options['distance'])*1.1515;
+			$this->db->where("postcode",$options['postcode']);
+			$geodata = $this->db->get("uk_postcodes");
+			if($geodata->num_rows()>0){
+			$coords = $geodata->row_array();	
+			} else {
 			$coords = postcode_to_coords($options['postcode']);
+			}
+			$this->firephp->log($coords);
 			$join .= " left join locations using(location_id) ";
 			$having .= " having distance <= $distance";
 			$select_distance .= ",(((ACOS(SIN((" .
