@@ -89,9 +89,9 @@ class Cron_model extends CI_Model
         $status    = "Company Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
-            file_put_contents($file, $status . ": " . $row['postcode']);
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
+			 file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update company_addresses set postcode = null where company_id = '{$row['company_id']}'";
                 $this->db->query($qry);
@@ -109,9 +109,9 @@ class Cron_model extends CI_Model
         $status .= "Contact Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
-            file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
+			  file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update contact_addresses set postcode = null where contact_id = '{$row['contact_id']}'";
                 $this->db->query($qry);
@@ -130,10 +130,9 @@ class Cron_model extends CI_Model
         $status .= "Appointment Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
-            
-            file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
+			 file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update appointments set postcode = null where appointment_id = '{$row['appointment_id']}'";
                 $this->db->query($qry);
