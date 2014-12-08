@@ -1,3 +1,44 @@
+ 
+function setEqualHeight(selector, triggerContinusly) {
+
+    var elements = $(selector);
+    elements.css("height", "auto")
+    var max = Number.NEGATIVE_INFINITY;
+
+    $.each(elements, function(index, item) {
+        if ($(item).height() > max) {
+            max = $(item).height()
+        }
+    })
+
+    $(selector).css("height", max+10 + "px")
+
+    if (!!triggerContinusly) {
+        $(document).on("input", selector, function() {
+            setEqualHeight(selector, false)
+        })
+
+       $(window).resize(function() {
+            setEqualHeight(selector, false)
+       })
+    }
+
+
+}
+
+function match_heights(){
+	console.log("Match heights");
+	 	 setEqualHeight(".match .panel", true) ;
+	     setEqualHeight(".match-1 .panel", true) ;
+		 setEqualHeight(".match-2 .panel", true) ;
+		 setEqualHeight(".match-3 .panel", true) ;
+		 setEqualHeight(".match-4 .panel", true) ;
+		 setEqualHeight(".match-5 .panel", true) ;
+		 setEqualHeight(".match-6 .panel", true) ;
+		 setEqualHeight(".match-7 .panel", true) ;
+		 setEqualHeight(".match-8 .panel", true) ;
+		 setEqualHeight(".match-9 .panel", true) ;
+}
 
  //this function initializes all the javascript widgets - tooltips, datepickers etc when the page loads. It can be ran after an ajax request to apply widgets to new page elements - ensure you are using the correct class names for each element type!
 function renew_js(){

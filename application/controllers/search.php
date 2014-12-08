@@ -71,6 +71,9 @@ $this->_campaigns = campaign_access_dropdown();
 			$coords = $geodata->row_array();	
 			} else {
 			$coords = postcode_to_coords($options['postcode']);
+			if(isset($coords['lat'])){
+			$this->db->query("insert ignore into uk_postcodes set postcode = '$postcode',lat='{$coords['lat']}',lng='{$coords['lng']}'");
+			}
 			}
     		
     		if (isset($coords['lat']) && isset($coords['lng'])) {

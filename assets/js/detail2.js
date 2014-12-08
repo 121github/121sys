@@ -178,7 +178,9 @@ var record = {
                         $('.history-panel').find('.panel-content').append('<p>This record has no history information yet</p>');
                     }
                 }
+						match_heights();
             });
+	
         },
         show_all_history: function(btn) {
             var pagewidth = $(window).width() / 2;

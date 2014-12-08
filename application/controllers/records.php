@@ -191,11 +191,13 @@ class Records extends CI_Controller
                 'plugins/jqfileupload/jquery.fileupload-process.js',
                 'plugins/jqfileupload/jquery.fileupload-validate.js',
                 'plugins/countdown/jquery.plugin.min.js',
-                'plugins/countdown/jquery.countdown.min.js'
+                'plugins/countdown/jquery.countdown.min.js',
+				'plugins/responsive-calendar/0.8/responsive-calendar.js',
             ),
             'css' => array(
                 'plugins/jqfileupload/jquery.fileupload.css',
-                'plugins/countdown/jquery.countdown.css'
+                'plugins/countdown/jquery.countdown.css',
+				'plugins/responsive-calendar/responsive-calendar.css',
             ),
             'nav' => array(
                 'prev' => $prev,
@@ -432,7 +434,14 @@ class Records extends CI_Controller
 					if($update_array['nextcall']==$original_nextcall){
                     echo json_encode(array(
                         "success" => false,
-                        "msg" => "You must set a nextcall for this outcome"
+                        "msg" => "Please change the next action time for this outcome"
+                    ));
+                    exit;
+					}
+					if(strtotime(to_mysql_datetime($update_array['nextcall']))<strtotime('now +30 minutes')){
+                    echo json_encode(array(
+                        "success" => false,
+                        "msg" => "Next action time must be at least 30 minutes in the future"
                     ));
                     exit;
 					}
