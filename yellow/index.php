@@ -3,14 +3,12 @@ session_start();
 if(!isset($_SESSION['yell']['user'])){
 $_SESSION['yell']['user'] = time();
 }
-exit;
 include('conn.php');
 include('dateclass.php');
 include('functions.php');
 include('theme.php');
 include('phpQuery-onefile.php');
 $keyword = $_POST['keyword'];
-
 $location = $_POST['location'];
 
 if($_POST['submit']=="Export"){
@@ -155,6 +153,7 @@ mobile='{$v['mob']}',
 mysql_query($insert_query);// or die(mysql_error());
 }
 */
+exit;
 }
 $q = mysql_query("select * from freedata where user_id = '{$_SESSION['yell']['user']}'");
 ?>
