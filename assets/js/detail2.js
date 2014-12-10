@@ -2415,7 +2415,7 @@ confirm_move:function(moveUrl){
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').html('<p>You have set this record as a dead line but the history shows it has been dialed before. It may be a telephony issue or we are full capacity. Please try to dial it again and confirm it is an actual dead line.<p><p>Click confirm if you are sure this is a dead line otherwize click cancel</p>');
+        }).find('.modal-body').html('<p>You have set this record as a dead line but the history shows it has been dialed previously. There may be a telephony issue or we could be at full dialing capacity. Please try to dial again and confirm it\'s an actual dead line. If this is a B2B record please search for the company telephone number online and update the record with the correct number<p><p>Click confirm if you are sure this is a dead line otherwise click cancel</p>');
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
             record.update_panel.save($btn);
