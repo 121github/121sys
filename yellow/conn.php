@@ -2,7 +2,6 @@
 # FileName="Connection_php_mysql.htm"
 # Type="MYSQL"
 # HTTP="true"
-session_start();
 $hostname_salesdrive = "localhost";
 $database_salesdrive = "121sys";
 $username_salesdrive = "121sys";

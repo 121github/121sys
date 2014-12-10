@@ -1,5 +1,5 @@
 <?
-require_once('conn.php');
+include('conn.php');
 include('dateclass.php');
 include('functions.php');
 include('theme.php');
@@ -38,8 +38,8 @@ header("Content-type: text/csv");
 
 
 if(!empty($keyword)&&!empty($location)){
-$_SESSION['location'] = $location;	
-$_SESSION['keyword'] = $keyword;
+$_SESSION['yell']['location'] = $location;	
+$_SESSION['yell']['keyword'] = $keyword;
 mysql_query("CREATE TABLE IF NOT EXISTS `freedata` (
   `data_id` int(11) NOT NULL auto_increment,
   `coname` varchar(150) default NULL,
@@ -237,9 +237,9 @@ $(document).ready(function(){
 <img src="yell.gif" />
 <form method="post" id="scrape_form" style="padding:15px 5px">
 What do you want to find? eg. Plumber
-<input name="keyword" id="keyword" value="<? echo $_SESSION['keyword'] ?>"/>
+<input name="keyword" id="keyword" value="<? echo $_SESSION['yell']['keyword'] ?>"/>
 Location? eg.Manchester or M5
-<input name="location" id="location" value="<? echo $_SESSION['location'] ?>"/>
+<input name="location" id="location" value="<? echo $_SESSION['yell']['location'] ?>"/>
 <input type="submit" id="scrape_submit" value="Search" /> <? if (!mysql_num_rows($q)){ $disabled="disabled"; } ?>
 <button id="export" <? echo $disabled ?> >Export to file</button>  <!--<button id="import" <? echo $disabled ?> >Import to Campaign</button>-->
 </form>
@@ -255,7 +255,7 @@ while($sector = mysql_fetch_assoc($sector_q)){
 <option value="<? echo $sector['sector_name'] ?>"><? echo $sector['sector_name'] ?></option>
 <? } ?>
 </select></p>
-<p><label>Filename</label> <input style="width:200px" type="text" name="filename" value="<? echo date('ymd').ucfirst($_SESSION['keyword']).ucfirst($_SESSION['location']).".csv" ?>" /></p>
+<p><label>Filename</label> <input style="width:200px" type="text" name="filename" value="<? echo date('ymd').ucfirst($_SESSION['yell']['keyword']).ucfirst($_SESSION['yell']['location']).".csv" ?>" /></p>
 <p><label>Local Only</label> <input type="checkbox" name="local_only" value="1" /></p>
 <p><label>With Website Only</label> <input type="checkbox" name="website_only" value="1" /></p>
 
@@ -292,7 +292,7 @@ while($campaign = mysql_fetch_assoc($cq)){
 </select></p>
 <p id="campaign_div" style="display:none">
 <label> Create New Campaign</label>
-<input style="width:200px;" type="text" id="campaign" name="campaign" value="<? echo date('ymd').ucfirst($_SESSION['keyword']).ucfirst($_SESSION['location']).".csv" ?>" /></p>
+<input style="width:200px;" type="text" id="campaign" name="campaign" value="<? echo date('ymd').ucfirst($_SESSION['yell']['keyword']).ucfirst($_SESSION['yell']['location']).".csv" ?>" /></p>
 
 <p><label>Local Only</label> <input type="checkbox" name="local_only" value="1" /></p>
 <p><label>With Website Only</label> <input type="checkbox" name="website_only" value="1" /></p>
