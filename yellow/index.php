@@ -158,8 +158,8 @@ $q = mysql_query("select * from freedata where user_id = '$user_id'");
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Salesdrive Free Data</title>
-<link rel="stylesheet" href="themes/default/css/theme.green.css">
-<link rel="stylesheet" href="themes/default/ui-lightness/jquery-ui-1.10.1.custom.min.css">
+<link rel="stylesheet" href="css/theme.green.css">
+<link rel="stylesheet" href="css/jquery-ui-1.10.1.custom.min.css">
 <style>
 body { font-family:Verdana, Geneva, sans-serif; padding-top:5px; }
 
@@ -167,7 +167,7 @@ body { font-family:Verdana, Geneva, sans-serif; padding-top:5px; }
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="js/jquery.tablesorter.pager.js"></script>
+<script type="text/javascript" src="js/jquery.tablesorter.pager.min.js"></script>
 <script src="js/jquery.tablesorter.widgets.min.js"></script>
 <script>
 $(document).ready(function(){
@@ -302,7 +302,7 @@ while($campaign = mysql_fetch_assoc($cq)){
 </div>
 <div id="loading" style="display:none">
 <p>Please wait, this may take a minute or two depending on how broad your search is!<br />
-<img  src="images/loading_bar.gif" /></p></div>
+<img  src="loading_bar.gif" /></p></div>
 <div id="table_div">
 <h4>Results : <? echo mysql_num_rows($q) ?></h4>
 <table class="tablesorter" id="table">
