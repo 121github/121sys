@@ -242,11 +242,11 @@ $(document).ready(function(){
 <img src="yell.gif" />
 <form method="post" id="scrape_form" style="padding:15px 5px">
 What do you want to find? eg. Plumber
-<input name="keyword" id="keyword" value="<? echo $_SESSION['yell']['keyword'] ?>"/>
+<input name="keyword" id="keyword" value="<?php echo $_SESSION['yell']['keyword'] ?>"/>
 Location? eg.Manchester or M5
-<input name="location" id="location" value="<? echo $_SESSION['yell']['location'] ?>"/>
-<input type="submit" id="scrape_submit" value="Search" /> <? if (!mysql_num_rows($q)){ $disabled="disabled"; } ?>
-<button id="export" <? echo $disabled ?> >Export to file</button>  <!--<button id="import" <? echo $disabled ?> >Import to Campaign</button>-->
+<input name="location" id="location" value="<?php echo $_SESSION['yell']['location'] ?>"/>
+<input type="submit" id="scrape_submit" value="Search" /> <?php if (!mysql_num_rows($q)){ $disabled="disabled"; } ?>
+<button id="export" <?php echo $disabled ?> >Export to file</button>  <!--<button id="import" <?php echo $disabled ?> >Import to Campaign</button>-->
 </form>
 <hr />
 
@@ -254,13 +254,13 @@ Location? eg.Manchester or M5
 <form method="post">
 <p><label>Sectors</label> 
 <select id="sector" name="sector"><option value="">--All of them--</option>
-<? $sector_q = mysql_query("select distinct sector_name from freedata");
+<?php $sector_q = mysql_query("select distinct sector_name from freedata");
 while($sector = mysql_fetch_assoc($sector_q)){
 ?>
-<option value="<? echo $sector['sector_name'] ?>"><? echo $sector['sector_name'] ?></option>
-<? } ?>
+<option value="<?php echo $sector['sector_name'] ?>"><?php echo $sector['sector_name'] ?></option>
+<?php } ?>
 </select></p>
-<p><label>Filename</label> <input style="width:200px" type="text" name="filename" value="<? echo date('ymd').ucfirst($_SESSION['yell']['keyword']).ucfirst($_SESSION['yell']['location']).".csv" ?>" /></p>
+<p><label>Filename</label> <input style="width:200px" type="text" name="filename" value="<?php echo date('ymd').ucfirst($_SESSION['yell']['keyword']).ucfirst($_SESSION['yell']['location']).".csv" ?>" /></p>
 <p><label>Local Only</label> <input type="checkbox" name="local_only" value="1" /></p>
 <p><label>With Website Only</label> <input type="checkbox" name="website_only" value="1" /></p>
 
@@ -272,7 +272,7 @@ while($sector = mysql_fetch_assoc($sector_q)){
 <p>Please wait, this may take a minute or two depending on how broad your search is!<br />
 <img  src="loading_bar.gif" /></p></div>
 <div id="table_div">
-<?php if (mysql_num_rows($q)>0){ ?><h4>Results : <? echo mysql_num_rows($q) ?></h4>
+<?php if (mysql_num_rows($q)>0){ ?><h4>Results : <?php echo mysql_num_rows($q) ?></h4>
 <table class="tablesorter" id="table">
 <thead>
 <th>Company</th>
@@ -286,21 +286,21 @@ while($sector = mysql_fetch_assoc($sector_q)){
 <th>Add3</th>
 <th>Postcode</th>
 </thead><tbody>
-<? 
+<?php
 while($row = mysql_fetch_assoc($q)){ ?>
-<tr><td><? echo $row['coname'] ?></td>
-<td><? echo $row['sector_name'] ?></td>
-<td><? echo ($row['local']=="1"?"Yes":"No"); ?></td>
-<td><? echo $row['phone'] ?></td>
-<td><? echo $row['mobile'] ?></td>
-<td><? echo $row['website'] ?></td>
-<td><? echo $row['add1'] ?></td>
-<td><? echo $row['add2'] ?></td>
-<td><? echo $row['add3'] ?></td>
-<td><? echo $row['postcode'] ?></td>
+<tr><td><?php echo $row['coname'] ?></td>
+<td><?php echo $row['sector_name'] ?></td>
+<td><?php echo ($row['local']=="1"?"Yes":"No"); ?></td>
+<td><?php echo $row['phone'] ?></td>
+<td><?php echo $row['mobile'] ?></td>
+<td><?php echo $row['website'] ?></td>
+<td><?php echo $row['add1'] ?></td>
+<td><?php echo $row['add2'] ?></td>
+<td><?php echo $row['add3'] ?></td>
+<td><?php echo $row['postcode'] ?></td>
 </tr>
 
-<? } ?>
+<?php } ?>
 </tbody></table>
 <?php } ?>
 </div>
