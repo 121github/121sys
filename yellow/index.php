@@ -216,7 +216,7 @@ $(document).ready(function(){
 				$('#loading').show();
 				
 				$.ajax({url:"freedata.php",data:{keyword:keyword_val,location:location_val},type:"POST" }).done(function(result){
-				$('#table_div').load("freedata.php #table",function(){ $('#loading').hide(); $('#table_div').show();
+				$('#table_div').load("index.php #table",function(){ $('#loading').hide(); $('#table_div').show();
 				tsorter();
 				 });
 				});
