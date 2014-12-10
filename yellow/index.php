@@ -6,7 +6,6 @@ $_SESSION['yell']['user'] = time();
 include('conn.php');
 include('dateclass.php');
 include('functions.php');
-include('theme.php');
 include('phpQuery-onefile.php');
 $keyword = $_POST['keyword'];
 $location = $_POST['location'];

@@ -1,4 +1,4 @@
-<?
+<?php
 function get_theme($theme_id) {
 $theme_query = mysql_query("select * from tbl_themes where theme_id = '$theme_id'");
 $theme = mysql_fetch_assoc($theme_query);
