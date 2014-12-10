@@ -304,7 +304,7 @@ while($campaign = mysql_fetch_assoc($cq)){
 <p>Please wait, this may take a minute or two depending on how broad your search is!<br />
 <img  src="loading_bar.gif" /></p></div>
 <div id="table_div">
-<h4>Results : <? echo mysql_num_rows($q) ?></h4>
+<?php if (mysql_num_rows($q)>0){ ?><h4>Results : <? echo mysql_num_rows($q) ?></h4>
 <table class="tablesorter" id="table">
 <thead>
 <th>Company</th>
@@ -334,6 +334,7 @@ while($row = mysql_fetch_assoc($q)){ ?>
 
 <? } ?>
 </tbody></table>
+<?php } ?>
 </div>
 </body>
 </html>
