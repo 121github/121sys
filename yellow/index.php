@@ -3,7 +3,7 @@ session_start();
 if(!isset($_SESSION['yell']['user'])){
 $_SESSION['yell']['user'] = time();
 }
-
+exit;
 include('conn.php');
 include('dateclass.php');
 include('functions.php');
