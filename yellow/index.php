@@ -1,4 +1,9 @@
-<?
+<?php
+session_start();
+if(!isset($_SESSION['yell']['user'])){
+$_SESSION['yell']['user'] = time();
+}
+
 include('conn.php');
 include('dateclass.php');
 include('functions.php');
@@ -12,7 +17,7 @@ if($_POST['submit']=="Export"){
 $local_only = $_POST['local_only'];
 $website_only = $_POST['website_only'];
 $sector = mysql_real_escape_string($_POST['sector']);
-$export_query = "select * from freedata where user_id = '$user_id' ";
+$export_query = "select * from freedata where user_id = '{$_SESSION['yell']['user']}' ";
 if($local_only=="1"){  $export_query .= " and local = '1'"; }
 if($website_only=="1"){  $export_query .= " and website <> ''"; }
 if(!empty($sector)){  $export_query .= " and sector_name ='$sector'"; }
@@ -20,7 +25,7 @@ $run = mysql_query($export_query);
 while($row = mysql_fetch_assoc($run)){
 unset($headers);
 foreach ($row as $k=>$v){
-	if($k<>"user_id"){
+	if($k<>$_SESSION['yell']['user']){
 $headers .= $k.",";	
 $data .= str_replace(",","",$v).",";
 	}
@@ -54,8 +59,8 @@ mysql_query("CREATE TABLE IF NOT EXISTS `freedata` (
   `user_id` int(3) default NULL,
   PRIMARY KEY  (`data_id`),
   UNIQUE KEY `coname` (`coname`,`phone`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
-mysql_query("delete from freedata where user_id = '$user_id'");
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1") or die(mysql_error()) ;
+mysql_query("delete from freedata where user_id = '{$_SESSION['yell']['user']}'");
 	
 $yell = file_get_contents("http://www.yell.com/ucs/UcsSearchAction.do?keywords=$keyword&location=$location");
 $dom = phpQuery::newDocumentHTML($yell);
@@ -124,7 +129,7 @@ mobile='$mod',
 `website`='$website',
 `local`='$local',
 `sector_name` = '$sector',
-user_id = '$user_id'";
+user_id = '{$_SESSION['yell']['user']}'";
 //echo ";<br>";
 mysql_query($insert_query);// or die(mysql_error());
 $dupe_array[] = strtolower($coname).$tel;
@@ -151,7 +156,7 @@ mysql_query($insert_query);// or die(mysql_error());
 }
 */
 }
-$q = mysql_query("select * from freedata where user_id = '$user_id'");
+$q = mysql_query("select * from freedata where user_id = '{$_SESSION['yell']['user']}'");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -263,43 +268,6 @@ while($sector = mysql_fetch_assoc($sector_q)){
 </form>
 </div>
 
-
-<div id="import_div" style="display:none;background:#ddd; padding:10px">
-<form method="post">
-<p><label>Assign To</label> 
-<select name="user_id">
-<? $uq = mysql_query("select user_id,client_name from tbl_users");
-while($user = mysql_fetch_assoc($uq)){
-?>
-<option value="<? echo $user['user_id'] ?>"><? echo $user['client_name'] ?></option>
-<? } ?>
-</select></p>
-<p><label>Sectors</label> 
-<select id="sector" name="sector"><option value="">--All of them--</option>
-<? $sector_q = mysql_query("select distinct sector_name from freedata");
-while($sector = mysql_fetch_assoc($sector_q)){
-?>
-<option value="<? echo $sector['sector_name'] ?>"><? echo $sector['sector_name'] ?></option>
-<? } ?>
-</select></p>
-<p><label>Campaign</label> 
-<select id="campaign_id" name="campaign_id"><option value="">--Please Select--</option><option value="">--Create New--</option>
-<? $cq = mysql_query("select campaign_id,campaign_name from tbl_campaigns");
-while($campaign = mysql_fetch_assoc($cq)){
-?>
-<option value="<? echo $campaign['campaign_id'] ?>"><? echo $campaign['campaign_name'] ?></option>
-<? } ?>
-</select></p>
-<p id="campaign_div" style="display:none">
-<label> Create New Campaign</label>
-<input style="width:200px;" type="text" id="campaign" name="campaign" value="<? echo date('ymd').ucfirst($_SESSION['yell']['keyword']).ucfirst($_SESSION['yell']['location']).".csv" ?>" /></p>
-
-<p><label>Local Only</label> <input type="checkbox" name="local_only" value="1" /></p>
-<p><label>With Website Only</label> <input type="checkbox" name="website_only" value="1" /></p>
-<p><label>Allow Duplicates</label> <input type="checkbox" name="duplicates" value="1"/></p>
-<p><input type="submit" name="submit" value="Import" /></p>
-</form>
-</div>
 <div id="loading" style="display:none">
 <p>Please wait, this may take a minute or two depending on how broad your search is!<br />
 <img  src="loading_bar.gif" /></p></div>
