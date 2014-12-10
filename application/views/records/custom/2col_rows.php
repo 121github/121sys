@@ -26,19 +26,14 @@ There was a problem while finding the selected record details. Maybe it does not
 </div>
 
 <div class="row">
-     <?php $x=0;$y=1; foreach($features as $k=>$v){ $x++;
+     <?php foreach($features as $k=>$v){ 
 		 if(array_key_exists($v,$panels)){ ?>
-  <div class="col-md-6 col-sm-12 match-<?php echo $y ?>"> <?php
+  <div class="col-md-6 col-sm-12"> <?php
      $this->view('records/panels/'.$panels[$v],$details);
 	 ?></div><?php 
-		}
-		if($x%2==0){
-			$y++;
-			echo "</div><div class='row'>";
-		}
-		
+		}		
 			 } ?>
-
+</div>
 <!-- end row panel -->
 </div>
 <!-- end fluid container --> 

@@ -239,7 +239,7 @@ class Records extends CI_Controller
             $data['email_options']      = $email_options;
         }
         
-        $this->template->load('default', 'records/custom/2col.php', $data);
+        $this->template->load('default', 'records/custom/2col_rows.php', $data);
         
     }
     
@@ -429,7 +429,7 @@ class Records extends CI_Controller
                         "msg" => "This outcome requires you to leave notes"
                     ));
                     exit;
-                }
+                }			
 				if ($triggers["force_nextcall"] == "1") {
 					if($update_array['nextcall']==$original_nextcall){
                     echo json_encode(array(
@@ -438,10 +438,10 @@ class Records extends CI_Controller
                     ));
                     exit;
 					}
-					if(strtotime(to_mysql_datetime($update_array['nextcall']))<strtotime('now +30 minutes')){
+					if(strtotime(to_mysql_datetime($update_array['nextcall']))<strtotime('now +20 minutes')){
                     echo json_encode(array(
                         "success" => false,
-                        "msg" => "Next action time must be at least 30 minutes in the future"
+                        "msg" => "Next action time must be at least 20 minutes in the future"
                     ));
                     exit;
 					}

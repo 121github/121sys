@@ -354,7 +354,11 @@ var record = {
             $(document).on('click', '.update-record', function(e) {
                 e.preventDefault();
 				if($('.outcomepicker').val().length>0){
+				if($('.outcomepicker').val()=="4"&&$('.history-panel').find('tbody tr').length>0){
+				modal.dead_line($(this));	
+				} else {
                 record.update_panel.save($(this));
+				}
 				} else {
 				flashalert.danger("You must select a call outcome first");
 				}
@@ -2406,5 +2410,17 @@ confirm_move:function(moveUrl){
             $('#modal').modal('toggle');
         });
     },
+	    dead_line: function($btn) {
+        $('.modal-title').text('Confirm Dead Line');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').html('<p>You have set this record as a dead line but the history shows it has been dialed before. It may be a telephony issue or we are full capacity. Please try to dial it again and confirm it is an actual dead line.<p><p>Click confirm if you are sure this is a dead line otherwize click cancel</p>');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            record.update_panel.save($btn);
+            $('#modal').modal('toggle');
+        });
+    }
 
 }
