@@ -239,7 +239,7 @@ class Records extends CI_Controller
             $data['email_options']      = $email_options;
         }
         
-        $this->template->load('default', 'records/custom/2col_rows.php', $data);
+        $this->template->load('default', 'records/custom/2col.php', $data);
         
     }
     
