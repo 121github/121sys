@@ -470,6 +470,102 @@ var daily_ration = {
     }
 }
 
+/*the class below is for the backup_restore page. It gets initialized by the backup_restore.php view*/
+var backup_restore = {
+    init: function () {
+        $(document).on("click", ".backup-campaign-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            backup_restore.backup_panel();
+        });
+
+        backup_restore.backup_panel();
+    },
+    backup_panel: function() {
+        $.ajax({
+            url: helper.baseUrl + 'data/backup_data',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.backup-filter-form').serialize()
+        }).done(function(response) {
+            $tbody = $('.daily_ration_data .ajax-table').find('tbody');
+            $tbody.empty();
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                    if (val.campaign_name) {
+                        $.ajax({
+                            url: helper.baseUrl + 'data/backup_data_by_campaign',
+                            type: "POST",
+                            dataType: "JSON",
+                            data: {
+                                    'campaign_id': val.campaign_id,
+                                    'update_date_from': ($('.backup-filter-form').find('input[name="update_date_from"]').val()?$('.backup-filter-form').find('input[name="update_date_from"]').val():(val.update_date_from?val.update_date_from:"")),
+                                    'update_date_to': ($('.backup-filter-form').find('input[name="update_date_to"]').val()?$('.backup-filter-form').find('input[name="update_date_to"]').val():(val.update_date_to?val.update_date_to:"")),
+                                    'renewal_date_from': ($('.backup-filter-form').find('input[name="renewal_date_from"]').val()?$('.backup-filter-form').find('input[name="renewal_date_from"]').val():(val.renewal_date_from?val.renewal_date_from:"")),
+                                    'renewal_date_to': ($('.backup-filter-form').find('input[name="renewal_date_to"]').val()?$('.backup-filter-form').find('input[name="renewal_date_to"]').val():(val.renewal_date_to?val.renewal_date_to:"")),
+                            }
+                        }).done(function(response) {
+                            console.log(val.campaign_id);
+                            if (response.success) {
+                                $.each(response.data, function(k, records) {
+                                    $tbody
+                                        .append("<tr><td class='campaign'>"
+                                        + val.campaign_name
+                                        + "</td><td class='update_date_from'>"
+                                        + "<div class='input-group'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_from+"' name='update_date_from' type='text' class='form-control date'>"
+                                        +       "<span class='input-group-btn'>"
+                                        +           "<button class='btn btn-default clear-input' type='button'>X</button>"
+                                        +       "</span>"
+                                        + "</div>"
+                                        + "</td><td class='update_date_to'>"
+                                        + "<div class='input-group'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_to+"' name='update_date_to' type='text' class='form-control date'>"
+                                        +       "<span class='input-group-btn'>"
+                                        +           "<button class='btn btn-default clear-input' type='button'>X</button>"
+                                        +       "</span>"
+                                        + "</div>"
+                                        + "</td><td class='renewal_date_from'>"
+                                        + "<div class='input-group'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.renewal_date_from+"' name='renewal_date_from' type='text' class='form-control date'>"
+                                        +       "<span class='input-group-btn'>"
+                                        +           "<button class='btn btn-default clear-input' type='button'>X</button>"
+                                        +       "</span>"
+                                        + "</div>"
+                                        + "</td><td class='renewal_date_to'>"
+                                        + "<div class='input-group'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.renewal_date_to+"' name='renewal_date_to' type='text' class='form-control date'>"
+                                        +       "<span class='input-group-btn'>"
+                                        +           "<button class='btn btn-default clear-input' type='button'>X</button>"
+                                        +       "</span>"
+                                        + "</div>"
+                                        + "</td><td class='records_num'>"
+                                        + "<a href='" + val.records_num_url + "'>" + records.records_num + "</a>"
+                                        + "</td><td class=''>"
+                                        + ""
+                                        + "</td></tr>");
+                                });
+                                $('.date').datetimepicker({
+                                    pickTime: false
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                $tbody
+                    .append("<tr><td colspan='6'>"
+                    + response.msg
+                    + "</td></tr>");
+            }
+        });
+    }
+}
+
 /*the class below is for the add_record page. It gets initialized by the add_record.php view*/
 var add_record = {
     init: function () {

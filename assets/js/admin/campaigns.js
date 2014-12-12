@@ -224,7 +224,24 @@ var admin = {
                 $tbody.empty();
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
-                        $tbody.append("<tr><td class='campaign_id'>" + val.campaign_id + "</td><td class='campaign_name'>" + val.campaign_name + "</td><td>" + val.campaign_type_desc + "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span><span class='hidden campaign_type_id'>" + val.campaign_type_id + "</span><span class='hidden min_quote_days'>" + (val.min_quote_days?val.min_quote_days:'') + "</span><span class='hidden max_quote_days'>" + (val.max_quote_days?val.max_quote_days:'') + "</span></td><td>" + val.client_name + "<span class='hidden client_id'>" + val.client_id + "</span></td><td>" + val.campaign_status_text + "<span class='hidden campaign_status'>" + val.campaign_status + "</span></td><td class='start_date'>" + val.start_date + "</td><td class='end_date'>" + val.end_date + "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn'  item-id='" + val.campaign_id + "'>Delete</button></td></tr>");
+                        $tbody.append("<tr>" +
+                                    "<td class='campaign_id'>" + val.campaign_id +
+                                    "</td><td class='campaign_name'>" + val.campaign_name +
+                                    "</td><td>" + val.campaign_type_desc +
+                                            "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span>" +
+                                            "<span class='hidden campaign_type_id'>" + val.campaign_type_id + "</span>" +
+                                            "<span class='hidden min_quote_days'>" + (val.min_quote_days?val.min_quote_days:'') + "</span>" +
+                                            "<span class='hidden max_quote_days'>" + (val.max_quote_days?val.max_quote_days:'') + "</span>" +
+                                            "<span class='hidden months_ago'>" + (val.months_ago?val.months_ago:'') + "</span>" +
+                                            "<span class='hidden months_num'>" + (val.months_num?val.months_num:'') + "</span>" +
+                                    "</td><td>" + val.client_name +
+                                            "<span class='hidden client_id'>" + val.client_id + "</span>" +
+                                    "</td><td>" + val.campaign_status_text +
+                                            "<span class='hidden campaign_status'>" + val.campaign_status + "</span>" +
+                                    "</td><td class='start_date'>" + val.start_date +
+                                    "</td><td class='end_date'>" + val.end_date +
+                                    "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn'  item-id='" + val.campaign_id + "'>Delete</button>" +
+                                "</td></tr>");
                     }
                 });
             });
@@ -244,6 +261,9 @@ var admin = {
             $('form').find('input[name="end_date"]').data('DateTimePicker').setDate(row.find('.end_date').text());
             min_quote_days.val(row.find('.min_quote_days').text());
             max_quote_days.val(row.find('.max_quote_days').text());
+            $('form').find('select[name="months_ago"]').selectpicker('val', row.find('.months_ago').text());
+            $('form').find('input[name="months_num"]').val(row.find('.months_num').text());
+
 
             admin.campaigns.get_features(row.find('.campaign_id').text());
 
@@ -254,6 +274,7 @@ var admin = {
             //Only numbers permited in those fields
             min_quote_days.numeric();
             max_quote_days.numeric();
+            $('form').find('input[name="months_num"]').numeric();
 
             //Check if the min_quote_days is less than max_quote_days
             min_quote_days.blur(function(){

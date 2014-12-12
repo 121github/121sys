@@ -345,4 +345,68 @@ class Data_model extends CI_Model
             "daily_data" => $daily_data
         ));
     }
+
+    public function get_backup_data($options) {
+        $campaign = $options['campaign'];
+
+        $where = "";
+        if (!empty($campaign)) {
+            $where .= " and c.campaign_id = '$campaign' ";
+        }
+
+        $qry = "select c.campaign_id, c.campaign_name, IF(bc.months_ago is not NULL,bc.months_ago,0) as months_ago, IF(bc.months_num is not NULL,bc.months_num,0) as months_num
+                from campaigns c
+                left join backup_by_campaign bc ON (bc.campaign_id = c.campaign_id)
+                where 1";
+        $qry .= $where;
+        $qry .= " order by c.campaign_name asc ";
+
+        return $this->db->query($qry)->result_array();
+
+    }
+
+    public function get_backup_data_by_campaign($options) {
+        $where = "";
+        if (!empty($options['campaign_id'])) {
+            $where .= " and r.campaign_id = '".$options['campaign_id']."'";
+        }
+
+        $update_date = "";
+        $update_date_from = "";
+        $update_date_to = "";
+        if (!empty($options['update_date_from'])) {
+            $update_date_from = "(r.date_updated >= '".$options['update_date_from']."' or (r.date_updated is null and r.date_added >=  '".$options['update_date_from']."'))";
+        }
+        if (!empty($options['update_date_to'])) {
+            $update_date_to = "(r.date_updated <= '".$options['update_date_to']."' or (r.date_updated is null and r.date_added <=  '".$options['update_date_to']."'))";
+        }
+        $update_date .= $update_date_from.(strlen($update_date_from)>0?" and ":"").$update_date_to;
+
+        $renewal_date = "";
+        $renewal_date_from = "";
+        $renewal_date_to = "";
+        if (!empty($options['renewal_date_from'])) {
+            $renewal_date_from = "(rd.d1 >= '".$options['renewal_date_from']."')";
+        }
+        if (!empty($options['renewal_date_to'])) {
+            $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(rd.d1 >= '".$options['renewal_date_to']."')";
+        }
+        $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0?" and ":"").$renewal_date_to;
+
+        if (strlen($update_date)>0 || strlen($renewal_date)>0) {
+            $where .= " and (".$update_date.(strlen($update_date)>0?" or ":"").$renewal_date.")";
+        }
+
+        $qry = "select count(*) as records_num
+                from records r
+                inner join campaigns c ON (c.campaign_id = r.campaign_id)
+                inner join record_details rd ON (rd.urn = r.urn)
+                where 1";
+        $qry .= $where;
+
+        $this->firephp->log($qry);
+
+        return $this->db->query($qry)->result_array();
+
+    }
 }

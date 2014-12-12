@@ -205,6 +205,14 @@ class Admin extends CI_Controller
             if (empty($form['max_quote_days'])) {
                 $form['max_quote_days'] = NULL;
             }
+
+            //Form to save the backup by campaign settings
+            $backup_form = array();
+            $backup_form['months_ago'] = $form['months_ago'];
+            $backup_form['months_num'] = $form['months_num'];
+            unset($form['months_ago']);
+            unset($form['months_num']);
+
 			
 			//Check if the minimum quote days is less than the maximum quote days
             if (($form['min_quote_days'] && $form['max_quote_days'])&&(intval($form['min_quote_days']) > intval($form['max_quote_days']))) {
@@ -227,6 +235,9 @@ class Admin extends CI_Controller
             if (empty($form['campaign_id'])) {
                 $response                = $this->Admin_model->add_new_campaign($form);
                 $features['campaign_id'] = $response;
+                //Save the backup by campaign settings
+                $backup_form['campaign_id'] = $response;
+                $this->Admin_model->insert_backup_by_campaign($backup_form);
             } else {
                 $features['campaign_id'] = $form['campaign_id'];
                 $response                = $this->Admin_model->update_campaign($form);
@@ -237,7 +248,12 @@ class Admin extends CI_Controller
                     $user_array[] = $user['id'];
                 }
                 if ($this->User_model->flag_users_for_reload($user_array));
+
+                //Save the backup by campaign settings
+                $backup_form['campaign_id'] = $form['campaign_id'];
+                $this->Admin_model->update_backup_by_campaign($backup_form);
             }
+
             //if it's set as B2B then we add the company feature to the campaign
             if ($form['campaign_type_id'] == "2") {
                 $features['features'][] = 2;
@@ -249,8 +265,9 @@ class Admin extends CI_Controller
             if (!in_array(3, $features['features'])) {
                 $features['features'][] = 3;
             }
- 			 $response = $this->Admin_model->save_campaign_features($features);
-            
+
+            $response = $this->Admin_model->save_campaign_features($features);
+
             echo json_encode(array(
                 "data" => false,
                 "message" => "Campaign Saved",
