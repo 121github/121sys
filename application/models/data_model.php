@@ -397,14 +397,32 @@ class Data_model extends CI_Model
             $where .= " and (".$update_date.(strlen($update_date)>0?" or ":"").$renewal_date.")";
         }
 
-        $qry = "select count(*) as records_num
+        $qry = "select *
                 from records r
                 inner join campaigns c ON (c.campaign_id = r.campaign_id)
                 inner join record_details rd ON (rd.urn = r.urn)
                 where 1";
         $qry .= $where;
 
-        $this->firephp->log($qry);
+        return $this->db->query($qry)->result_array();
+
+    }
+
+    public function get_backup_history_data($options) {
+        $campaign = $options['campaign'];
+
+        $where = "";
+        if (!empty($campaign)) {
+            $where .= " and bc.campaign_id = '$campaign' ";
+        }
+
+        $qry = "select bc.*, c.campaign_name, u.name as user_name
+                from backup_campaign_history bc
+                inner join campaigns c ON (c.campaign_id = bc.campaign_id)
+                inner join users u ON (u.user_id = bc.user_id)
+                where 1";
+        $qry .= $where;
+        $qry .= " order by bc.backup_date desc ";
 
         return $this->db->query($qry)->result_array();
 

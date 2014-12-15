@@ -482,8 +482,34 @@ var backup_restore = {
             $(this).css("color","green");
             backup_restore.backup_panel();
         });
+        $(document).on("click", ".backup-history-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            backup_restore.backup_history_panel();
+        });
 
+        $(document).on("click", ".btn-new-backup", function (e) {
+            e.preventDefault();
+            backup_restore.new_backup($(this));
+        });
+
+        $(document).on("click", ".continue-backup", function (e) {
+            e.preventDefault();
+            backup_restore.save_backup($(this));
+        });
+
+        $(document).on('click', '.close-backup', function(e) {
+            e.preventDefault();
+            backup_restore.close_backup($(this));
+        });
+
+        $('.backup-container').hide();
         backup_restore.backup_panel();
+        backup_restore.backup_history_panel();
     },
     backup_panel: function() {
         $.ajax({
@@ -492,7 +518,7 @@ var backup_restore = {
             dataType: "JSON",
             data: $('.backup-filter-form').serialize()
         }).done(function(response) {
-            $tbody = $('.daily_ration_data .ajax-table').find('tbody');
+            var $tbody = $('.backup_data .ajax-table').find('tbody');
             $tbody.empty();
             if (response.success) {
                 $.each(response.data, function(i, val) {
@@ -509,12 +535,10 @@ var backup_restore = {
                                     'renewal_date_to': ($('.backup-filter-form').find('input[name="renewal_date_to"]').val()?$('.backup-filter-form').find('input[name="renewal_date_to"]').val():(val.renewal_date_to?val.renewal_date_to:"")),
                             }
                         }).done(function(response) {
-                            console.log(val.campaign_id);
                             if (response.success) {
-                                $.each(response.data, function(k, records) {
                                     $tbody
                                         .append("<tr><td class='campaign'>"
-                                        + val.campaign_name
+                                        + val.campaign_name + "<span class='campaign_id'>"+val.campaign_id+"</span>"
                                         + "</td><td class='update_date_from'>"
                                         + "<div class='input-group'>"
                                         +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_from+"' name='update_date_from' type='text' class='form-control date'>"
@@ -544,11 +568,10 @@ var backup_restore = {
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='records_num'>"
-                                        + "<a href='" + val.records_num_url + "'>" + records.records_num + "</a>"
+                                        + "<a href='" + response.records_url + "'>" + response.records_num + "</a>"
                                         + "</td><td class=''>"
-                                        + ""
+                                        + "<span class='glyphicon glyphicon-save btn-new-backup pointer'></span>"
                                         + "</td></tr>");
-                                });
                                 $('.date').datetimepicker({
                                     pickTime: false
                                 });
@@ -562,6 +585,108 @@ var backup_restore = {
                     + response.msg
                     + "</td></tr>");
             }
+        });
+    },
+    backup_history_panel: function() {
+        $.ajax({
+            url: helper.baseUrl + 'data/backup_history_data',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.backup-history-filter-form').serialize()
+        }).done(function(response) {
+            var $tbody = $('.backup_history_data .ajax-table').find('tbody');
+            $tbody.empty();
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                        $tbody
+                            .append("<tr><td class='campaign'>"
+                            + val.campaign_name
+                            + "</td><td class='backup_date'>"
+                            +       val.backup_date
+                            + "</td><td class='backup_user'>"
+                            +       val.user_name
+                            + "</td><td class='update_date_from'>"
+                            +       val.update_date_from
+                            + "</td><td class='update_date_to'>"
+                            +       val.update_date_to
+                            + "</td><td class='renewal_date_from'>"
+                            +       val.renewal_date_from
+                            + "</td><td class='renewal_date_to'>"
+                            +       val.renewal_date_from
+                            + "</td><td class='records_num'>"
+                            + "<a href='" + val.records_num_url + "'>" + val.records_num + "</a>"
+                            + "</td><td class=''>"
+                            + "<span class='glyphicon glyphicon-open btn-restore-backup pointer'></span>"
+                            + "</td></tr>");
+                });
+            } else {
+                $tbody
+                    .append("<tr><td colspan='6'>"
+                    + response.msg
+                    + "</td></tr>");
+            }
+        });
+    },
+
+    new_backup: function($btn){
+        var row = $btn.closest('tr');
+        var records_num = row.find('.records_num').text();
+        var campaign_name = row.find('.campaign').text();
+        var campaign_id = row.find('.campaign_id').text();
+        var update_date_from = row.find('input[name="update_date_from"]').val();
+        var update_date_to = row.find('input[name="update_date_to"]').val();
+        var renewal_date_from = row.find('input[name="renewal_date_from"]').val();
+        var renewal_date_to = row.find('input[name="renewal_date_to"]').val();
+
+        $('.num_records_new').text(records_num);
+
+        var d = new Date();
+        $('.new-backup-form').find('input[name="file_name"]').val(campaign_name+"_"+ d.getFullYear()+ d.getMonth()+ d.getDay()+ d.getHours()+ d.getMinutes());
+
+        $('.new-backup-form').find('input[name="campaign_id"]').val(campaign_id);
+        $('.new-backup-form').find('input[name="update_date_from"]').val(update_date_from);
+        $('.new-backup-form').find('input[name="update_date_to"]').val(update_date_to);
+        $('.new-backup-form').find('input[name="renewal_date_from"]').val(renewal_date_from);
+        $('.new-backup-form').find('input[name="renewal_date_to"]').val(renewal_date_to);
+        $('.new-backup-form').find('input[name="records_num"]').val(records_num);
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+        $('<div class="modal-backdrop backup in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.backup-container').find('.backup-panel').show();
+        $('.backup-content').show();
+        $('.backup-container').fadeIn()
+        $('.backup-container').animate({
+            width: '600px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+        $('.new-backup-form').find('input[name="file_name"]').blur(function(){
+            if ($('.new-backup-form').find('input[name="file_name"]').val().length <= 0) {
+                $('.continue-backup').prop('disabled', true);
+            }
+            else {
+                $('.continue-backup').prop('disabled', false);
+            }
+        });
+    },
+    close_backup: function() {
+        $('.modal-backdrop.backup').fadeOut();
+        $('.backup-container').fadeOut(500, function() {
+            $('.backup-content').show();
+            $('.new-backup-form')[0].reset();
+            $('.alert').addClass('hidden');
+        });
+    },
+    save_backup: function($btn){
+        $.ajax({
+            url: helper.baseUrl + 'data/save_backup',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.new-backup-form').serialize()
+        }).done(function(response) {
+
         });
     }
 }
