@@ -11,12 +11,11 @@
                 <input type="hidden" name="update_date_to">
                 <input type="hidden" name="renewal_date_from">
                 <input type="hidden" name="renewal_date_to">
-                <input type="hidden" name="records_num">
-                <input data-date-format='DD/MM/YYYY' name='renewal_date_to' type='hidden' class='form-control date'>
+                <input type="hidden" name="num_records">
                 <div class="form-group input-group-sm">
                     <div class="input-group">
                         <p>Backup File Name</p>
-                        <input name="file_name" type="text" class="form-control">
+                        <input name="name" type="text" class="form-control">
                     </div>
                 </div>
                 <p>

@@ -380,7 +380,7 @@ class Data_model extends CI_Model
         if (!empty($options['update_date_to'])) {
             $update_date_to = "(r.date_updated <= '".$options['update_date_to']."' or (r.date_updated is null and r.date_added <=  '".$options['update_date_to']."'))";
         }
-        $update_date .= $update_date_from.(strlen($update_date_from)>0?" and ":"").$update_date_to;
+        $update_date .= $update_date_from.(strlen($update_date_from)>0 && strlen($update_date_to)>0?" and ":"").$update_date_to;
 
         $renewal_date = "";
         $renewal_date_from = "";
@@ -391,10 +391,10 @@ class Data_model extends CI_Model
         if (!empty($options['renewal_date_to'])) {
             $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(rd.d1 >= '".$options['renewal_date_to']."')";
         }
-        $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0?" and ":"").$renewal_date_to;
+        $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0 && strlen($renewal_date_to)>0?" and ":"").$renewal_date_to;
 
         if (strlen($update_date)>0 || strlen($renewal_date)>0) {
-            $where .= " and (".$update_date.(strlen($update_date)>0?" or ":"").$renewal_date.")";
+            $where .= " and (".$update_date.(strlen($update_date)>0 && strlen($renewal_date)>0?" or ":"").$renewal_date.")";
         }
 
         $qry = "select *
@@ -426,5 +426,11 @@ class Data_model extends CI_Model
 
         return $this->db->query($qry)->result_array();
 
+    }
+
+    public function save_backup_campaign_history($form)
+    {
+        $this->db->insert("backup_campaign_history", $form);
+        return $this->db->insert_id();
     }
 }

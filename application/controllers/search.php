@@ -162,7 +162,11 @@ $this->_campaigns = campaign_access_dropdown();
 			"read-date" => "date(read_confirmed_date)",
 			"template" => "template_id",
             "parked-code" => "records.parked_code",
-            "parked" => "parked"
+            "parked" => "parked",
+            "update-date-from" => "update-date-from",
+            "update-date-to" => "update-date-to",
+            "renewal-date-from" => "renewal-date-from",
+            "renewal-date-to" => "renewal-date-to"
         );
         
         $search_fields_2 = array(

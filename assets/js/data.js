@@ -507,6 +507,11 @@ var backup_restore = {
             backup_restore.close_backup($(this));
         });
 
+        $(document).on('click', '.clear-input', function(e) {
+            e.preventDefault();
+            backup_restore.update_records($(this));
+        });
+
         $('.backup-container').hide();
         backup_restore.backup_panel();
         backup_restore.backup_history_panel();
@@ -541,34 +546,34 @@ var backup_restore = {
                                         + val.campaign_name + "<span class='campaign_id'>"+val.campaign_id+"</span>"
                                         + "</td><td class='update_date_from'>"
                                         + "<div class='input-group'>"
-                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_from+"' name='update_date_from' type='text' class='form-control date'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_from+"' name='update_date_from_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
                                         +       "<span class='input-group-btn'>"
                                         +           "<button class='btn btn-default clear-input' type='button'>X</button>"
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='update_date_to'>"
                                         + "<div class='input-group'>"
-                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_to+"' name='update_date_to' type='text' class='form-control date'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_to+"' name='update_date_to_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
                                         +       "<span class='input-group-btn'>"
                                         +           "<button class='btn btn-default clear-input' type='button'>X</button>"
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='renewal_date_from'>"
                                         + "<div class='input-group'>"
-                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.renewal_date_from+"' name='renewal_date_from' type='text' class='form-control date'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.renewal_date_from+"' name='renewal_date_from_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
                                         +       "<span class='input-group-btn'>"
                                         +           "<button class='btn btn-default clear-input' type='button'>X</button>"
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='renewal_date_to'>"
                                         + "<div class='input-group'>"
-                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.renewal_date_to+"' name='renewal_date_to' type='text' class='form-control date'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.renewal_date_to+"' name='renewal_date_to_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
                                         +       "<span class='input-group-btn'>"
                                         +           "<button class='btn btn-default clear-input' type='button'>X</button>"
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='records_num'>"
-                                        + "<a href='" + response.records_url + "'>" + response.records_num + "</a>"
+                                        + "<a class='records_url' href='" + response.records_url + "'><span class='records_val'>" + response.records_num + "</span></a>"
                                         + "</td><td class=''>"
                                         + "<span class='glyphicon glyphicon-save btn-new-backup pointer'></span>"
                                         + "</td></tr>");
@@ -627,28 +632,56 @@ var backup_restore = {
             }
         });
     },
+    update_records: function($btn) {
+        var row = $btn.closest('tr');
+        var campaign_id = row.find('.campaign_id').text();
+        var update_date_from = row.find('input[name="update_date_from_'+campaign_id+'"]').val();
+        var update_date_to = row.find('input[name="update_date_to_'+campaign_id+'"]').val();
+        var renewal_date_from = row.find('input[name="renewal_date_from_'+campaign_id+'"]').val();
+        var renewal_date_to = row.find('input[name="renewal_date_to_'+campaign_id+'"]').val();
 
+        $.ajax({
+            url: helper.baseUrl + 'data/backup_data_by_campaign',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                'campaign_id': campaign_id,
+                'update_date_from': update_date_from,
+                'update_date_to': update_date_to,
+                'renewal_date_from': renewal_date_from,
+                'renewal_date_to': renewal_date_to
+            }
+        }).done(function(response) {
+            if (response.success) {
+                row.find('.records_val').text(response.records_num);
+                row.find('.records_url').attr("href",response.records_url);
+            }
+        });
+    },
     new_backup: function($btn){
         var row = $btn.closest('tr');
         var records_num = row.find('.records_num').text();
         var campaign_name = row.find('.campaign').text();
         var campaign_id = row.find('.campaign_id').text();
-        var update_date_from = row.find('input[name="update_date_from"]').val();
-        var update_date_to = row.find('input[name="update_date_to"]').val();
-        var renewal_date_from = row.find('input[name="renewal_date_from"]').val();
-        var renewal_date_to = row.find('input[name="renewal_date_to"]').val();
+        var update_date_from = row.find('input[name="update_date_from_'+campaign_id+'"]').val();
+        var update_date_to = row.find('input[name="update_date_to_'+campaign_id+'"]').val();
+        var renewal_date_from = row.find('input[name="renewal_date_from_'+campaign_id+'"]').val();
+        var renewal_date_to = row.find('input[name="renewal_date_to_'+campaign_id+'"]').val();
+
+        $('.new-backup-form').find('input[name="file_name"]').prop('disabled', false);
+        $('.continue-backup').prop('disabled', false);
 
         $('.num_records_new').text(records_num);
 
         var d = new Date();
-        $('.new-backup-form').find('input[name="file_name"]').val(campaign_name+"_"+ d.getFullYear()+ d.getMonth()+ d.getDay()+ d.getHours()+ d.getMinutes());
+        $('.new-backup-form').find('input[name="name"]').val(campaign_name+"_"+ d.getFullYear()+ d.getMonth()+ d.getDay()+ d.getHours()+ d.getMinutes());
 
         $('.new-backup-form').find('input[name="campaign_id"]').val(campaign_id);
         $('.new-backup-form').find('input[name="update_date_from"]').val(update_date_from);
         $('.new-backup-form').find('input[name="update_date_to"]').val(update_date_to);
         $('.new-backup-form').find('input[name="renewal_date_from"]').val(renewal_date_from);
         $('.new-backup-form').find('input[name="renewal_date_to"]').val(renewal_date_to);
-        $('.new-backup-form').find('input[name="records_num"]').val(records_num);
+        $('.new-backup-form').find('input[name="num_records"]').val(records_num);
 
         var pagewidth = $(window).width() / 2;
         var moveto = pagewidth - 250;
@@ -670,6 +703,11 @@ var backup_restore = {
                 $('.continue-backup').prop('disabled', false);
             }
         });
+
+        if (records_num <= 0) {
+            $('.new-backup-form').find('input[name="file_name"]').prop('disabled', true);
+            $('.continue-backup').prop('disabled', true);
+        }
     },
     close_backup: function() {
         $('.modal-backdrop.backup').fadeOut();
