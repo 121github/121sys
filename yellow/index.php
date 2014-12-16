@@ -7,10 +7,130 @@ include('conn.php');
 include('dateclass.php');
 include('functions.php');
 include('phpQuery-onefile.php');
-$keyword = $_POST['keyword'];
-$location = $_POST['location'];
 
-if($_POST['submit']=="Export"){
+function gzdecoder($data) { 
+  $len = strlen($data); 
+  if ($len < 18 || strcmp(substr($data,0,2),"\x1f\x8b")) { 
+    return null;  // Not GZIP format (See RFC 1952) 
+  } 
+  $method = ord(substr($data,2,1));  // Compression method 
+  $flags  = ord(substr($data,3,1));  // Flags 
+  if ($flags & 31 != $flags) { 
+    // Reserved bits are set -- NOT ALLOWED by RFC 1952 
+    return null; 
+  } 
+  // NOTE: $mtime may be negative (PHP integer limitations) 
+  $mtime = unpack("V", substr($data,4,4)); 
+  $mtime = $mtime[1]; 
+  $xfl   = substr($data,8,1); 
+  $os    = substr($data,8,1); 
+  $headerlen = 10; 
+  $extralen  = 0; 
+  $extra     = ""; 
+  if ($flags & 4) { 
+    // 2-byte length prefixed EXTRA data in header 
+    if ($len - $headerlen - 2 < 8) { 
+      return false;    // Invalid format 
+    } 
+    $extralen = unpack("v",substr($data,8,2)); 
+    $extralen = $extralen[1]; 
+    if ($len - $headerlen - 2 - $extralen < 8) { 
+      return false;    // Invalid format 
+    } 
+    $extra = substr($data,10,$extralen); 
+    $headerlen += 2 + $extralen; 
+  } 
+
+  $filenamelen = 0; 
+  $filename = ""; 
+  if ($flags & 8) { 
+    // C-style string file NAME data in header 
+    if ($len - $headerlen - 1 < 8) { 
+      return false;    // Invalid format 
+    } 
+    $filenamelen = strpos(substr($data,8+$extralen),chr(0)); 
+    if ($filenamelen === false || $len - $headerlen - $filenamelen - 1 < 8) { 
+      return false;    // Invalid format 
+    } 
+    $filename = substr($data,$headerlen,$filenamelen); 
+    $headerlen += $filenamelen + 1; 
+  } 
+
+  $commentlen = 0; 
+  $comment = ""; 
+  if ($flags & 16) { 
+    // C-style string COMMENT data in header 
+    if ($len - $headerlen - 1 < 8) { 
+      return false;    // Invalid format 
+    } 
+    $commentlen = strpos(substr($data,8+$extralen+$filenamelen),chr(0)); 
+    if ($commentlen === false || $len - $headerlen - $commentlen - 1 < 8) { 
+      return false;    // Invalid header format 
+    } 
+    $comment = substr($data,$headerlen,$commentlen); 
+    $headerlen += $commentlen + 1; 
+  } 
+
+  $headercrc = ""; 
+  if ($flags & 1) { 
+    // 2-bytes (lowest order) of CRC32 on header present 
+    if ($len - $headerlen - 2 < 8) { 
+      return false;    // Invalid format 
+    } 
+    $calccrc = crc32(substr($data,0,$headerlen)) & 0xffff; 
+    $headercrc = unpack("v", substr($data,$headerlen,2)); 
+    $headercrc = $headercrc[1]; 
+    if ($headercrc != $calccrc) { 
+      return false;    // Bad header CRC 
+    } 
+    $headerlen += 2; 
+  } 
+
+  // GZIP FOOTER - These be negative due to PHP's limitations 
+  $datacrc = unpack("V",substr($data,-8,4)); 
+  $datacrc = $datacrc[1]; 
+  $isize = unpack("V",substr($data,-4)); 
+  $isize = $isize[1]; 
+
+  // Perform the decompression: 
+  $bodylen = $len-$headerlen-8; 
+  if ($bodylen < 1) { 
+    // This should never happen - IMPLEMENTATION BUG! 
+    return null; 
+  } 
+  $body = substr($data,$headerlen,$bodylen); 
+  $data = ""; 
+  if ($bodylen > 0) { 
+    switch ($method) { 
+      case 8: 
+        // Currently the only supported compression method: 
+        $data = gzinflate($body); 
+        break; 
+      default: 
+        // Unknown compression method 
+        return false; 
+    } 
+  } else { 
+    // I'm not sure if zero-byte body content is allowed. 
+    // Allow it for now...  Do nothing... 
+  } 
+
+  // Verifiy decompressed size and CRC32: 
+  // NOTE: This may fail with large data sizes depending on how 
+  //       PHP's integer limitations affect strlen() since $isize 
+  //       may be negative for large sizes. 
+  if ($isize != strlen($data) || crc32($data) != $datacrc) { 
+    // Bad format!  Length or CRC doesn't match! 
+    return false; 
+  } 
+  return $data; 
+} 
+
+
+$keyword = @$_POST['keyword'];
+$location = @$_POST['location'];
+
+if(@$_POST['submit']=="Export"){
 $local_only = $_POST['local_only'];
 $website_only = $_POST['website_only'];
 $sector = mysql_real_escape_string($_POST['sector']);
@@ -38,8 +158,10 @@ header("Content-type: text/csv");
 	exit;	
 }
 
-
+ini_set('user_agent', 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT
+5.1)');
 if(!empty($keyword)&&!empty($location)){
+$pages=0;
 $_SESSION['yell']['location'] = $location;	
 $_SESSION['yell']['keyword'] = $keyword;
 mysql_query("CREATE TABLE IF NOT EXISTS `freedata` (
@@ -54,23 +176,43 @@ mysql_query("CREATE TABLE IF NOT EXISTS `freedata` (
   `add3` varchar(100) default NULL,
   `postcode` varchar(15) default NULL,
   `user_id` int(3) default NULL,
+  `sector_name`  varchar(100) default NULL,
   PRIMARY KEY  (`data_id`),
   UNIQUE KEY `coname` (`coname`,`phone`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1") or die(mysql_error()) ;
 mysql_query("delete from freedata where user_id = '{$_SESSION['yell']['user']}'");
 	
-$yell = file_get_contents("http://www.yell.com/ucs/UcsSearchAction.do?keywords=$keyword&location=$location");
-$dom = phpQuery::newDocumentHTML($yell);
-foreach($dom->find('.results_headercount')  as $count) {
+$opts = array(
+  'http'=>array(
+    'method'=>"GET",
+    'header'=>"Host: www.yell.com\r\n" .
+              "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0\r\n" .
+			  "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" .
+			  "Accept-Language: en-US,en;q=0.5\r\n" .
+			  "x-insight: activate\r\n" .
+			  "Connection: keep-alive\r\n" .
+			  "Accept-Encoding: gzip, deflate\r\n".
+			  "Cache-Control: max-age=0")
+);
+$count = 1;
+$context = stream_context_create($opts);
+
+$original = file_get_contents("http://www.yell.com/ucs/UcsSearchAction.do?keywords=$keyword&location=$location",false,$context);
+$decode = gzdecoder($original);
+$html = ($decode?$decode:$original);
+$dom = phpQuery::newDocumentHTML($html);
+foreach($dom->find('.results_headercount') as $count) {
 $results = preg_replace('/[^\d]/i','',pq($count)->text());
 $pages = ceil($results/10);
 }
-
 for($page=1;$page<$pages;$page++){
-$content = file_get_contents("http://www.yell.com/ucs/UcsSearchAction.do?keywords=$keyword&location=$location&pageNum=$page");
-$html = phpQuery::newDocumentHTML($content);
-
-foreach($html->find('.parentListing')  as $companies) { $count++; 
+$context = "";
+$context = stream_context_create($opts);
+$original = file_get_contents("http://www.yell.com/ucs/UcsSearchAction.do?keywords=$keyword&location=$location&pageNum=$page",false,$context);
+$decode = gzdecoder($original);
+$html = ($decode?$decode:$original);
+$dom = phpQuery::newDocumentHTML($html);
+foreach($dom->find('.parentListing')  as $companies) { $count++; 
 $local = false;
 $website="";
 $add1="";
@@ -114,21 +256,21 @@ $postcode = pq($postcode)->text();
 foreach(pq($company)->find('a[data-target-weblink]')  as $website) { 
 $website = mysql_real_escape_string(pq($website)->attr("href"));
 }
-
+$dupe_array = array();
 if(!in_array(strtolower($coname).$tel,$dupe_array)){
-$insert_query = "replace into freedata set coname='$coname',
+$insert_query = "insert ignore into freedata set coname='$coname',
 add1='$add1',
 add2='$add2',
 add3='$add3',
 postcode='$postcode',
 phone='$tel',
-mobile='$mod',
+mobile='$mob',
 `website`='$website',
 `local`='$local',
 `sector_name` = '$sector',
 user_id = '{$_SESSION['yell']['user']}'";
 //echo ";<br>";
-mysql_query($insert_query);// or die(mysql_error());
+mysql_query($insert_query) or die(mysql_error());
 $dupe_array[] = strtolower($coname).$tel;
 }
 
@@ -240,10 +382,10 @@ $(document).ready(function(){
 <img src="yell.gif" />
 <form method="post" id="scrape_form" style="padding:15px 5px">
 What do you want to find? eg. Plumber
-<input name="keyword" id="keyword" value="<?php echo $_SESSION['yell']['keyword'] ?>"/>
+<input name="keyword" id="keyword" value="<?php echo @$_SESSION['yell']['keyword'] ?>"/>
 Location? eg.Manchester or M5
-<input name="location" id="location" value="<?php echo $_SESSION['yell']['location'] ?>"/>
-<input type="submit" id="scrape_submit" value="Search" /> <?php if (!mysql_num_rows($q)){ $disabled="disabled"; } ?>
+<input name="location" id="location" value="<?php echo @$_SESSION['yell']['location'] ?>"/>
+<input type="submit" id="scrape_submit" value="Search" /> <?php if (@!mysql_num_rows($q)){ $disabled="disabled"; } ?>
 <button id="export" <?php echo $disabled ?> >Export to file</button>  <!--<button id="import" <?php echo $disabled ?> >Import to Campaign</button>-->
 </form>
 <hr />
@@ -270,7 +412,7 @@ while($sector = mysql_fetch_assoc($sector_q)){
 <p>Please wait, this may take a minute or two depending on how broad your search is!<br />
 <img  src="loading_bar.gif" /></p></div>
 <div id="table_div">
-<?php if (mysql_num_rows($q)>0){ ?><h4>Results : <?php echo mysql_num_rows($q) ?></h4>
+<?php if (@mysql_num_rows($q)>0){ ?><h4>Results : <?php echo @mysql_num_rows($q) ?></h4>
 <table class="tablesorter" id="table">
 <thead>
 <th>Company</th>
