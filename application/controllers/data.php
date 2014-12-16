@@ -594,9 +594,129 @@ $this->_campaigns = campaign_access_dropdown();
     			$response = false;
     		}
     	} 
-    	
-    	
+
+
     	echo json_encode(array("success"=>$response, "record_id" => (isset($record_id))?$record_id:false));
     
     }
+
+    //this controller loads the view for the backup_restore page
+    public function backup_restore()
+    {
+        $campaigns = $this->Form_model->get_campaigns();
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Backup and Restore',
+            'page' => array(
+                'admin' => 'data',
+                'inner' => 'backup_restore'
+            ),
+            'campaigns' => $campaigns,
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'data.js',
+                'lib/jquery.numeric.min.js'
+            )
+        );
+        $this->template->load('default', 'data/backup_restore.php', $data);
+    }
+
+    //this controller gets the data for the backup_restore page
+    public function backup_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $results = $this->Data_model->get_backup_data($form);
+
+            $aux = array();
+            foreach ($results as $result) {
+                $current_date_from = date('d/m/Y', strtotime('-'.$result['months_ago'].' months'));
+                $current_date_to = date('d/m/Y', strtotime('-'.($result['months_ago']-$result['months_num']).' months'));
+                $result['update_date_from'] = $current_date_from;
+                $result['update_date_to'] = $current_date_to;
+                $result['renewal_date_from'] = $current_date_from;
+                $result['renewal_date_to'] = $current_date_to;
+                unset($result['months_ago']);
+                unset($result['months_num']);
+                array_push($aux,$result);
+            }
+            $results = $aux;
+        }
+
+        echo json_encode(array(
+            "success" => (!empty($results)),
+            "data" => $results,
+            "msg" => (!empty($results))?"":"Nothing found"
+        ));
+    }
+
+    //this controller gets the data for the backup_restore by campaign page
+    public function backup_data_by_campaign()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $form['update_date_from'] = ($form['update_date_from']?to_mysql_datetime($form['update_date_from']):"");
+            $form['update_date_to'] = ($form['update_date_to']?to_mysql_datetime($form['update_date_to']):"");
+            $form['renewal_date_from'] = ($form['renewal_date_from']?to_mysql_datetime($form['renewal_date_from']):"");
+            $form['renewal_date_to'] = ($form['renewal_date_to']?to_mysql_datetime($form['renewal_date_to']):"");
+            $results = $this->Data_model->get_backup_data_by_campaign($form);
+            $records_num = count($results);
+            $records_url = "";
+        }
+
+        echo json_encode(array(
+            "success" => "true",
+            "records_num" => $records_num,
+            "records_url" => $records_url,
+            "msg" => (!empty($results))?"":"Nothing found"
+        ));
+    }
+
+    //this controller gets the backup history data for the backup_restore page
+    public function backup_history_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $results = $this->Data_model->get_backup_history_data($form);
+        }
+
+        echo json_encode(array(
+            "success" => (!empty($results)),
+            "data" => $results,
+            "msg" => (!empty($results))?"":"Nothing found"
+        ));
+    }
+
+    public function save_backup(){
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            //Get the urn's
+            $form['update_date_from'] = ($form['update_date_from']?to_mysql_datetime($form['update_date_from']):"");
+            $form['update_date_to'] = ($form['update_date_to']?to_mysql_datetime($form['update_date_to']):"");
+            $form['renewal_date_from'] = ($form['renewal_date_from']?to_mysql_datetime($form['renewal_date_from']):"");
+            $form['renewal_date_to'] = ($form['renewal_date_to']?to_mysql_datetime($form['renewal_date_to']):"");
+            $results = $this->Data_model->get_backup_data_by_campaign($form);
+            $urn_list = "";
+            foreach($results as $result) {
+                $urn_list .= $result['urn'].", ";
+            }
+            if (strlen($urn_list) > 0) {
+                $urn_list = "(".substr($urn_list,0,strlen($urn_list)-2).")";
+            }
+
+//            exec('mysqldump -u121sys -p121sys 121sys records --where="urn IN (1,2)" --compact --no-create-info', $records_qry, $status);
+//            $this->firephp->log($records_qry);
+//            $this->firephp->log($urn_list);
+            //Create the file and write the backup_query into the file
+//            $fp = fopen($form['file_name'].'.sql', 'a');
+//            fwrite($fp, );
+//            fwrite($fp, '23');
+//            fclose($fp);
+        }
+    }
+
+
 }

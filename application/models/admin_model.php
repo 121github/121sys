@@ -10,7 +10,7 @@ class Admin_model extends CI_Model
     /* functions for the admin campaigns page */
     public function get_campaign_details($campaign = "")
     {
-        $qry = "select campaign_id,campaign_name,campaign_type_desc,client_name,IF(campaign_status=1,'Live','Dead') campaign_status_text,campaign_type_id,custom_panel_name, campaign_status, client_id, IF(start_date is null,'-',date_format(start_date,'%d/%m/%Y')) start_date,IF(end_date is null,'-',date_format(end_date,'%d/%m/%Y')) end_date, min_quote_days, max_quote_days  from campaigns left join campaign_types using(campaign_type_id) left join clients using(client_id) where 1";
+        $qry = "select campaign_id,campaign_name,campaign_type_desc,client_name,IF(campaign_status=1,'Live','Dead') campaign_status_text,campaign_type_id,custom_panel_name, campaign_status, client_id, IF(start_date is null,'-',date_format(start_date,'%d/%m/%Y')) start_date,IF(end_date is null,'-',date_format(end_date,'%d/%m/%Y')) end_date, min_quote_days, max_quote_days, bc.months_ago, bc.months_num  from campaigns left join campaign_types using(campaign_type_id) left join clients using(client_id) left join backup_by_campaign bc using (campaign_id) where 1";
         if (!empty($urn)) {
             $qry .= " and camapign_id = '$campaign'";
         }
@@ -94,6 +94,18 @@ class Admin_model extends CI_Model
             }
         }
     }
+
+    public function update_backup_by_campaign($form)
+    {
+        $this->db->where("campaign_id", $form['campaign_id']);
+        return $this->db->update("backup_by_campaign", $form);
+    }
+
+    public function insert_backup_by_campaign($form)
+    {
+        return $this->db->insert("backup_by_campaign", $form);
+    }
+
     /* functions for the admin logs page */
     public function get_logs()
     {

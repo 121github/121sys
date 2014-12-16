@@ -42,7 +42,7 @@ body { overflow-y:scroll;
 color:	#428bca
 }
 .edit-panel { display:none; padding:0 20px; }
-.survey-container,.xfer-container,.email-container,.email-view-container, .email-all-container, .attachment-all-container, .history-all-container {
+.survey-container,.xfer-container,.email-container,.email-view-container, .email-all-container, .attachment-all-container, .history-all-container, .backup-container {
 position:fixed;
 z-index: 1050;
 right:0px;

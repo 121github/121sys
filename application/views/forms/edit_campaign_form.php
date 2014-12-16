@@ -89,6 +89,17 @@
             </div>
         </div>
     </div>
+    <div class="form-group input-group-sm">
+        <p>Months to backup this campaign</p>
+        <select name="months_ago" id="months-ago" class="selectpicker pull-left">
+            <option value="">Nothing selected</option>
+            <?php for ($i=1;$i<=12;$i++): ?>
+                <option value="<?php echo $i; ?>"><?php echo $i." months ago"; ?></option>
+            <?php endfor ?>
+        </select>
+        <input type="text" name="months_num" class="form-control pull-left marl" style="width:300px;"
+               placeholder="Enter the number of months to backup"/>
+    </div>
     <div class="form-actions pull-right">
         <button class="marl btn btn-default close-btn">Cancel</button>
         <button type="submit" class="marl btn btn-primary save-btn">Save</button>
