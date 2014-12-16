@@ -67,7 +67,7 @@
                 <div class="col-lg-12">
                     <form id="data-form" class="backup-history-filter-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Backup History
+                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Backup History (Last 12 backups)
                                 <div class="pull-right">
                                     <div class="btn-group">
                                         <input type="hidden" name="campaign">

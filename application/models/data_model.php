@@ -416,13 +416,20 @@ class Data_model extends CI_Model
             $where .= " and bc.campaign_id = '$campaign' ";
         }
 
-        $qry = "select bc.*, c.campaign_name, u.name as user_name
+        $qry = "select bc.campaign_id, bc.name, bc.path,
+                  IF(bc.backup_date ,date_format(bc.backup_date,'%d/%m/%y'),'-') as backup_date,
+                  bc.num_records, bc.user_id,
+                  IF(bc.update_date_from ,date_format(bc.update_date_from,'%d/%m/%y'),'-') as update_date_from,
+                  IF(bc.update_date_to ,date_format(bc.update_date_to,'%d/%m/%y'),'-') as update_date_to,
+                  IF(bc.renewal_date_from ,date_format(bc.renewal_date_from,'%d/%m/%y'),'-') as renewal_date_from,
+                  IF(bc.renewal_date_to ,date_format(bc.renewal_date_to,'%d/%m/%y'),'-') as renewal_date_to,
+                  c.campaign_name, u.name as user_name
                 from backup_campaign_history bc
                 inner join campaigns c ON (c.campaign_id = bc.campaign_id)
                 inner join users u ON (u.user_id = bc.user_id)
                 where 1";
         $qry .= $where;
-        $qry .= " order by bc.backup_date desc ";
+        $qry .= " order by bc.backup_date desc limit 0,12";
 
         return $this->db->query($qry)->result_array();
 
@@ -432,5 +439,108 @@ class Data_model extends CI_Model
     {
         $this->db->insert("backup_campaign_history", $form);
         return $this->db->insert_id();
+    }
+
+    public function remove_backup_campaign_data($urn_list, $campaign_id) {
+
+        //cross_transfers
+        $delqry = "delete from cross_transfers where history_id IN (select history_id from history where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //history
+        $delqry = "delete from history where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //record_details
+        $delqry = "delete from record_details where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //email_history_attachments
+        $delqry = "delete from email_history_attachments where email_id IN (select email_id from email_history where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //email_history
+        $delqry = "delete from email_history where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //appointment_attendees
+        $delqry = "delete from appointment_attendees where appointment_id IN (select appointment_id from appointments where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //appointments
+        $delqry = "delete from appointments where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //attachments
+        $delqry = "delete from attachments where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //client_refs
+        $delqry = "delete from client_refs where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //company_telephone
+        $delqry = "delete from company_telephone where company_id IN (select company_id from companies where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //company_addresses
+        $delqry = "delete from company_addresses where company_id IN (select company_id from companies where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //companies
+        $delqry = "delete from companies where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //contact_telephone
+        $delqry = "delete from contact_telephone where contact_id IN (select contact_id from contacts where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //contact_addresses
+        $delqry = "delete from contact_addresses where contact_id IN (select contact_id from contacts where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //contacts
+        $delqry = "delete from contacts where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //answer_notes
+        $delqry = "delete from answer_notes where answer_id IN (select answer_id from survey_answers where survey_id IN (select survey_id from surveys where urn IN ".$urn_list."))";
+        $this->db->query($delqry);
+
+        //answers_to_options
+        $delqry = "delete from answers_to_options where answer_id IN (select answer_id from survey_answers where survey_id IN (select survey_id from surveys where urn IN ".$urn_list."))";
+        $this->db->query($delqry);
+
+        //survey_answers
+        $delqry = "delete from survey_answers where survey_id IN (select survey_id from surveys where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //surveys
+        $delqry = "delete from surveys where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //webform_answers
+        $delqry = "delete from webform_answers where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //sticky_notes
+        $delqry = "delete from sticky_notes where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //favorites
+        $delqry = "delete from favorites where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //ownership
+        $delqry = "delete from ownership where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //campaign_xfers
+        $delqry = "delete from campaign_xfers where campaign_id = ".$campaign_id;
+        $this->db->query($delqry);
+
+        //records
+        $delqry = "delete from records where urn IN ".$urn_list;
+        $this->db->query($delqry);
     }
 }

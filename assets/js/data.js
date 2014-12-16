@@ -512,6 +512,11 @@ var backup_restore = {
             backup_restore.update_records($(this));
         });
 
+        $(document).on("click", ".btn-restore-backup", function (e) {
+            e.preventDefault();
+            modal.delete_template($(this));
+        });
+
         $('.backup-container').hide();
         backup_restore.backup_panel();
         backup_restore.backup_history_panel();
@@ -534,8 +539,8 @@ var backup_restore = {
                             dataType: "JSON",
                             data: {
                                     'campaign_id': val.campaign_id,
-                                    'update_date_from': ($('.backup-filter-form').find('input[name="update_date_from"]').val()?$('.backup-filter-form').find('input[name="update_date_from"]').val():(val.update_date_from?val.update_date_from:"")),
-                                    'update_date_to': ($('.backup-filter-form').find('input[name="update_date_to"]').val()?$('.backup-filter-form').find('input[name="update_date_to"]').val():(val.update_date_to?val.update_date_to:"")),
+                                    'update_date_from': ($('.backup-filter-form').find('input[name="update_date_from"]').val()?$('.backup-filter-form').find('input[name="update_date_from"]').val():(val.update_date_from && init?val.update_date_from:"")),
+                                    'update_date_to': ($('.backup-filter-form').find('input[name="update_date_to"]').val()?$('.backup-filter-form').find('input[name="update_date_to"]').val():(val.update_date_to && init?val.update_date_to:"")),
                                     'renewal_date_from': ($('.backup-filter-form').find('input[name="renewal_date_from"]').val()?$('.backup-filter-form').find('input[name="renewal_date_from"]').val():(val.renewal_date_from?val.renewal_date_from:"")),
                                     'renewal_date_to': ($('.backup-filter-form').find('input[name="renewal_date_to"]').val()?$('.backup-filter-form').find('input[name="renewal_date_to"]').val():(val.renewal_date_to?val.renewal_date_to:"")),
                             }
@@ -617,9 +622,9 @@ var backup_restore = {
                             + "</td><td class='renewal_date_from'>"
                             +       val.renewal_date_from
                             + "</td><td class='renewal_date_to'>"
-                            +       val.renewal_date_from
-                            + "</td><td class='records_num'>"
-                            + "<a href='" + val.records_num_url + "'>" + val.records_num + "</a>"
+                            +       val.renewal_date_to
+                            + "</td><td class='records_num' style='font-weight: bold; color: green'>"
+                            + val.num_records
                             + "</td><td class=''>"
                             + "<span class='glyphicon glyphicon-open btn-restore-backup pointer'></span>"
                             + "</td></tr>");
@@ -725,7 +730,22 @@ var backup_restore = {
             data: $('.new-backup-form').serialize()
         }).done(function(response) {
 
+            if (response.success) {
+                $('.modal-backdrop.backup').fadeOut();
+                $('.backup-container').hide();
+                //backup_restore.backup_panel();
+                backup_restore.backup_history_panel();
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
         });
+    },
+    restore_backup: function($btn) {
+        var row = $btn.closest('tr');
+
+
     }
 }
 
@@ -773,6 +793,25 @@ var add_record = {
                 flashalert.danger("Error saving the record");
             }
 
+        });
+    }
+}
+
+/* ==========================================================================
+ MODALS ON THIS PAGE
+ ========================================================================== */
+var modal = {
+
+    restore_campaign_backup: function(id) {
+        $('.modal-title').text('Confirm Restore Backup');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to restore this backup?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            backup_restore.restore_backup($(this));
+            $('#modal').modal('toggle');
         });
     }
 }

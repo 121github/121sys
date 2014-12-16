@@ -714,67 +714,75 @@ $this->_campaigns = campaign_access_dropdown();
                 $urn_list = "(".substr($urn_list,0,strlen($urn_list)-2).")";
             }
 
-            $form['path'] = "".$form['name'].'.sql';
+            if (!file_exists("../backup/121sys/")) {
+                mkdir("../backup/121sys/", 0755);
+            }
+            $form['path'] = "../backup/121sys/".$form['name'].'.sql';
             $form['user_id'] = $_SESSION['user_id'];
             $form['backup_date'] = date('Y-m-d H:i:s');
 
-//            $qry = array();
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' records --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['records']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' history --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['history']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' cross_transfers --where="history_id IN (select history_id from history where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['cross_transfers']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' record_details --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['record_details']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' email_history --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['email_history']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' email_history --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['email_history']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' email_history_attachments --where="email_id IN (select email_id from email_history where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['email_history_attachments']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' appointments --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['appointments']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' appointment_attendees --where="appointment_id IN (select appointment_id from appointments where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['appointment_attendees']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' attachments --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['attachments']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' client_refs --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['client_refs']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' companies --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['companies']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' company_telephone --where="company_id IN (select company_id from companies where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['company_telephone']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' company_addresses --where="company_id IN (select company_id from companies where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['company_addresses']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' contacts --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['contacts']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' contact_telephone --where="contact_id IN (select contact_id from contacts where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['contact_telephone']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' contact_addresses --where="contact_id IN (select contact_id from contacts where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['contact_addresses']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' surveys --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['surveys']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' survey_answers --where="survey_id IN (select survey_id from surveys where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['survey_answers']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' answer_notes --where="answer_id IN (select answer_id from survey_answers where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['answer_notes']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' answers_to_options --where="answer_id IN (select answer_id from survey_answers where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['answers_to_options']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' webform_answers --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['webform_answers']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' sticky_notes --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['sticky_notes']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' favorites --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['favorites']);
-//            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' ownership --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['ownership']);
-//
-//            //Create the file and write the backup_query into the file
-//            $fp = fopen('./'.$form['file_name'].'.sql', 'a');
-//            fwrite($fp, '--------------------------------------------------------------------------'.PHP_EOL);
-//            fwrite($fp, '--CAMPAIGN BACKUP'.PHP_EOL);
-//            fwrite($fp, '--File name - '.$form['name'].PHP_EOL);
-//            fwrite($fp, '--Number of records - '.$form['num_records'].PHP_EOL);
-//            fwrite($fp, '--------------------------------------------------------------------------'.PHP_EOL);
-//            foreach($qry as $table => $query) {
-//                fwrite($fp, ''.PHP_EOL);
-//                fwrite($fp, '--'.strtoupper($table).PHP_EOL);
-//                if (!empty($query)) {
-//                    fwrite($fp, $query[0].PHP_EOL);
-//                }
-//                else {
-//                    fwrite($fp, '-- No data'.PHP_EOL);
-//                }
-//            }
-//            fclose($fp);
+            $qry = array();
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' records --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['records']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' history --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['history']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' cross_transfers --where="history_id IN (select history_id from history where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['cross_transfers']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' record_details --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['record_details']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' email_history --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['email_history']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' email_history_attachments --where="email_id IN (select email_id from email_history where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['email_history_attachments']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' appointments --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['appointments']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' appointment_attendees --where="appointment_id IN (select appointment_id from appointments where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['appointment_attendees']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' attachments --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['attachments']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' client_refs --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['client_refs']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' companies --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['companies']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' company_telephone --where="company_id IN (select company_id from companies where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['company_telephone']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' company_addresses --where="company_id IN (select company_id from companies where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['company_addresses']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' contacts --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['contacts']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' contact_telephone --where="contact_id IN (select contact_id from contacts where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['contact_telephone']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' contact_addresses --where="contact_id IN (select contact_id from contacts where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['contact_addresses']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' surveys --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['surveys']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' survey_answers --where="survey_id IN (select survey_id from surveys where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['survey_answers']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' answer_notes --where="answer_id IN (select answer_id from survey_answers where survey_id IN (select survey_id from surveys where urn IN '.$urn_list.'))" --compact --no-create-info  --single-transaction', $qry['answer_notes']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' answers_to_options --where="answer_id IN (select answer_id from survey_answers where survey_id IN (select survey_id from surveys where urn IN '.$urn_list.'))" --compact --no-create-info  --single-transaction', $qry['answers_to_options']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' webform_answers --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['webform_answers']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' sticky_notes --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['sticky_notes']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' favorites --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['favorites']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' ownership --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['ownership']);
+            exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' campaign_xfers --where="campaign_id = '.$form["campaign_id"].'" --compact --no-create-info', $qry['campaign_xfers']);
 
+            //Create the file and write the backup_query into the file
+            if (file_exists($form['path'])) {
+                unlink($form['path']);
+            }
+            $fp = fopen($form['path'], 'a');
+            fwrite($fp, '--------------------------------------------------------------------------'.PHP_EOL);
+            fwrite($fp, '--CAMPAIGN BACKUP'.PHP_EOL);
+            fwrite($fp, '--File name - '.$form['name'].PHP_EOL);
+            fwrite($fp, '--Number of records - '.$form['num_records'].PHP_EOL);
+            fwrite($fp, '--------------------------------------------------------------------------'.PHP_EOL);
+            foreach($qry as $table => $query) {
+                fwrite($fp, ''.PHP_EOL);
+                fwrite($fp, '--'.strtoupper($table).PHP_EOL);
+                if (!empty($query)) {
+                    fwrite($fp, $query[0].PHP_EOL);
+                }
+                else {
+                    fwrite($fp, '-- No data'.PHP_EOL);
+                }
+            }
+            fclose($fp);
 
             //Save the backup
-            $this->Data_model->save_backup_campaign_history($form);
+            $backup_id = $this->Data_model->save_backup_campaign_history($form);
 
-            //Remove the data from the database
+            if ($backup_id) {
+                //Remove the data from the database
+                $this->Data_model->remove_backup_campaign_data($urn_list, $form['campaign_id']);
+            }
 
 
             echo json_encode(array(
-                "success" => (!empty($results)),
-                "data" => $results,
-                "msg" => (!empty($results))?"":"Nothing found"
+                "success" => ($backup_id),
+                "data" => $backup_id,
+                "msg" => ($backup_id)?"Backup finished successfully":"ERROR: Backup ended with errors"
             ));
         }
     }
