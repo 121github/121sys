@@ -385,7 +385,7 @@ What do you want to find? eg. Plumber
 <input name="keyword" id="keyword" value="<?php echo @$_SESSION['yell']['keyword'] ?>"/>
 Location? eg.Manchester or M5
 <input name="location" id="location" value="<?php echo @$_SESSION['yell']['location'] ?>"/>
-<input type="submit" id="scrape_submit" value="Search" /> <?php if (@!mysql_num_rows($q)){ $disabled="disabled"; } ?>
+<input type="submit" id="scrape_submit" value="Search" /> <?php $disabled = ""; if (@mysql_num_rows($q)==0){ $disabled="disabled"; } ?>
 <button id="export" <?php echo $disabled ?> >Export to file</button>  <!--<button id="import" <?php echo $disabled ?> >Import to Campaign</button>-->
 </form>
 <hr />
