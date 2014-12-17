@@ -363,6 +363,7 @@ $(document).ready(function(){
 				$.ajax({url:"index.php",data:{keyword:keyword_val,location:location_val},type:"POST" }).done(function(result){
 				$('#table_div').load("index.php #table",function(){ $('#loading').hide(); $('#table_div').show();
 				tsorter();
+				$('#export').removeAttr("disabled");
 				 });
 				});
 			});
