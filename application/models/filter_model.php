@@ -715,11 +715,11 @@ class Filter_model extends CI_Model
             $update_date_from = "";
             $update_date_to = "";
             if (in_array("update-date-from", $fields)) {
-                $update_date_from = "(records.date_updated >= '".$array['update-date-from']."' or (records.date_updated is null and records.date_added >=  '".$array['update-date-from']."'))";
+                $update_date_from = "(date(records.date_updated) >= '".$array['update-date-from']."' or (records.date_updated is null and date(records.date_added) >=  '".$array['update-date-from']."'))";
                 unset($array['update-date-from']);
             }
             if (in_array("update-date-to", $fields)) {
-                $update_date_to = "(records.date_updated <= '".$array['update-date-to']."' or (records.date_updated is null and records.date_added <=  '".$array['update-date-to']."'))";
+                $update_date_to = "(date(records.date_updated) <= '".$array['update-date-to']."' or (records.date_updated is null and date(records.date_added) <=  '".$array['update-date-to']."'))";
                 unset($array['update-date-to']);
             }
             $update_date .= $update_date_from.(strlen($update_date_from)>0 && strlen($update_date_to)>0?" and ":"").$update_date_to;
@@ -731,11 +731,11 @@ class Filter_model extends CI_Model
                 $qry  .= " inner join record_details rd ON (rd.urn = records.urn)";
             }
             if (in_array("renewal-date-from", $fields)) {
-                $renewal_date_from = "(rd.d1 >= '".$array['renewal-date-from']."')";
+                $renewal_date_from = "(date(rd.d1) >= '".$array['renewal-date-from']."')";
                 unset($array['renewal-date-from']);
             }
             if (in_array("renewal-date-to", $fields)) {
-                $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(rd.d1 >= '".$array['renewal-date-to']."')";
+                $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(date(rd.d1) >= '".$array['renewal-date-to']."')";
                 unset($array['renewal-date-to']);
             }
             $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0 && strlen($renewal_date_to)>0?" and ":"").$renewal_date_to;

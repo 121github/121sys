@@ -514,7 +514,7 @@ var backup_restore = {
 
         $(document).on("click", ".btn-restore-backup", function (e) {
             e.preventDefault();
-            modal.delete_template($(this));
+            modal.restore_campaign_backup($(this));
         });
 
         $('.backup-container').hide();
@@ -528,9 +528,10 @@ var backup_restore = {
             dataType: "JSON",
             data: $('.backup-filter-form').serialize()
         }).done(function(response) {
-            var $tbody = $('.backup_data .ajax-table').find('tbody');
-            $tbody.empty();
+            var body = "";
             if (response.success) {
+                var $tbody = $('.backup_data .ajax-table').find('tbody');
+                $tbody.empty();
                 $.each(response.data, function(i, val) {
                     if (val.campaign_name) {
                         $.ajax({
@@ -539,16 +540,16 @@ var backup_restore = {
                             dataType: "JSON",
                             data: {
                                     'campaign_id': val.campaign_id,
-                                    'update_date_from': ($('.backup-filter-form').find('input[name="update_date_from"]').val()?$('.backup-filter-form').find('input[name="update_date_from"]').val():(val.update_date_from && init?val.update_date_from:"")),
-                                    'update_date_to': ($('.backup-filter-form').find('input[name="update_date_to"]').val()?$('.backup-filter-form').find('input[name="update_date_to"]').val():(val.update_date_to && init?val.update_date_to:"")),
-                                    'renewal_date_from': ($('.backup-filter-form').find('input[name="renewal_date_from"]').val()?$('.backup-filter-form').find('input[name="renewal_date_from"]').val():(val.renewal_date_from?val.renewal_date_from:"")),
-                                    'renewal_date_to': ($('.backup-filter-form').find('input[name="renewal_date_to"]').val()?$('.backup-filter-form').find('input[name="renewal_date_to"]').val():(val.renewal_date_to?val.renewal_date_to:"")),
+                                    'update_date_from': (val.update_date_from?val.update_date_from:""),
+                                    'update_date_to': (val.update_date_to?val.update_date_to:""),
+                                    'renewal_date_from': (val.renewal_date_from?val.renewal_date_from:""),
+                                    'renewal_date_to': (val.renewal_date_to?val.renewal_date_to:"")
                             }
                         }).done(function(response) {
                             if (response.success) {
-                                    $tbody
-                                        .append("<tr><td class='campaign'>"
-                                        + val.campaign_name + "<span class='campaign_id'>"+val.campaign_id+"</span>"
+                                    $tbody.append(
+                                        "<tr><td class='campaign'>"
+                                        + val.campaign_name + "<span style='display:none' class='campaign_id'>"+val.campaign_id+"</span>"
                                         + "</td><td class='update_date_from'>"
                                         + "<div class='input-group'>"
                                         +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_from+"' name='update_date_from_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
@@ -673,13 +674,16 @@ var backup_restore = {
         var renewal_date_from = row.find('input[name="renewal_date_from_'+campaign_id+'"]').val();
         var renewal_date_to = row.find('input[name="renewal_date_to_'+campaign_id+'"]').val();
 
-        $('.new-backup-form').find('input[name="file_name"]').prop('disabled', false);
+        $('.new-backup-form').find('input[name="name"]').prop('disabled', false);
+        $('.file-name').css('display', 'block');
         $('.continue-backup').prop('disabled', false);
+        $('.close-backup').prop('disabled', false);
+        $('.backup-running').css('display', 'none');
 
         $('.num_records_new').text(records_num);
 
         var d = new Date();
-        $('.new-backup-form').find('input[name="name"]').val(campaign_name+"_"+ d.getFullYear()+ d.getMonth()+ d.getDay()+ d.getHours()+ d.getMinutes());
+        $('.new-backup-form').find('input[name="name"]').val(campaign_name+"_"+ d.getFullYear()+ (d.getMonth()+1).toString().replace(/(^.$)/,"0$1") + d.getDate().toString().replace(/(^.$)/,"0$1")+ d.getHours().toString().replace(/(^.$)/,"0$1")+ d.getMinutes().toString().replace(/(^.$)/,"0$1")+ d.getSeconds().toString().replace(/(^.$)/,"0$1"));
 
         $('.new-backup-form').find('input[name="campaign_id"]').val(campaign_id);
         $('.new-backup-form').find('input[name="update_date_from"]').val(update_date_from);
@@ -700,8 +704,8 @@ var backup_restore = {
             top: '10%'
         }, 1000);
 
-        $('.new-backup-form').find('input[name="file_name"]').blur(function(){
-            if ($('.new-backup-form').find('input[name="file_name"]').val().length <= 0) {
+        $('.new-backup-form').find('input[name="name"]').blur(function(){
+            if ($('.new-backup-form').find('input[name="name"]').val().length <= 0) {
                 $('.continue-backup').prop('disabled', true);
             }
             else {
@@ -710,7 +714,7 @@ var backup_restore = {
         });
 
         if (records_num <= 0) {
-            $('.new-backup-form').find('input[name="file_name"]').prop('disabled', true);
+            $('.new-backup-form').find('input[name="name"]').prop('disabled', true);
             $('.continue-backup').prop('disabled', true);
         }
     },
@@ -723,23 +727,27 @@ var backup_restore = {
         });
     },
     save_backup: function($btn){
+        $('.continue-backup').prop('disabled', true);
+        $('.close-backup').prop('disabled', true);
+        $('.backup-running').css('display', 'block');
+        $('.file-name').css('display', 'none');
         $.ajax({
             url: helper.baseUrl + 'data/save_backup',
             type: "POST",
             dataType: "JSON",
             data: $('.new-backup-form').serialize()
         }).done(function(response) {
-
             if (response.success) {
                 $('.modal-backdrop.backup').fadeOut();
                 $('.backup-container').hide();
-                //backup_restore.backup_panel();
+                backup_restore.backup_panel();
                 backup_restore.backup_history_panel();
                 flashalert.success(response.msg);
             }
             else {
                 flashalert.danger(response.msg);
             }
+            $('.backup-running').css('display', 'none');
         });
     },
     restore_backup: function($btn) {
