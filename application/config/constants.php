@@ -41,4 +41,6 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 /* Location: ./application/config/constants.php */
 
 
-define('BACKUP_PATH', $_SERVER['DOCUMENT_ROOT'].'/backup/121sys/');
+$fcpath = str_replace('\\','/',substr(FCPATH,0, strlen(FCPATH)-1));
+define('DOCROOT', substr($fcpath,0,strripos ($fcpath,'/')));
+define('BACKUP_PATH', DOCROOT.'/backup/121sys/');

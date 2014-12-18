@@ -684,6 +684,8 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller gets the backup history data for the backup_restore page
     public function backup_history_data()
     {
+        $this->firephp->log(BACKUP_PATH);
+
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
             $results = $this->Data_model->get_backup_history_data($form);
