@@ -482,11 +482,21 @@ var backup_restore = {
             $(this).css("color","green");
             backup_restore.backup_panel();
         });
-        $(document).on("click", ".backup-history-filter", function(e) {
+        $(document).on("click", ".backup-history-filter-campaign", function(e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
             $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            backup_restore.backup_history_panel();
+        });
+
+        $(document).on("click", ".backup-history-filter-restored", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $(this).closest('form').find('input[name="restored"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
             backup_restore.backup_history_panel();
@@ -549,7 +559,8 @@ var backup_restore = {
                             if (response.success) {
                                     $tbody.append(
                                         "<tr><td class='campaign'>"
-                                        + val.campaign_name + "<span style='display:none' class='campaign_id'>"+val.campaign_id+"</span>"
+                                        + val.campaign_name
+                                                + "<span style='display:none' class='campaign_id'>"+val.campaign_id+"</span>"
                                         + "</td><td class='update_date_from'>"
                                         + "<div class='input-group'>"
                                         +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_from+"' name='update_date_from_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
@@ -609,9 +620,20 @@ var backup_restore = {
             $tbody.empty();
             if (response.success) {
                 $.each(response.data, function(i, val) {
+                        if (val.restored == 0) {
+                            restore_btn = "<span class='glyphicon glyphicon-open btn-restore-backup pointer'></span>";
+                            style_color = "";
+                        }
+                        else {
+                            restore_btn = "Restored";
+                            style_color = "success";
+                        }
                         $tbody
-                            .append("<tr><td class='campaign'>"
+                            .append("<tr class='"+style_color+"'><td class='campaign'>"
                             + val.campaign_name
+                                + "<span style='display:none' class='name'>"+val.name+"</span>"
+                                + "<span style='display:none' class='backup_campaign_id'>"+val.backup_campaign_id+"</span>"
+                                + "<span style='display:none' class='path'>"+val.path+"</span>"
                             + "</td><td class='backup_date'>"
                             +       val.backup_date
                             + "</td><td class='backup_user'>"
@@ -624,10 +646,10 @@ var backup_restore = {
                             +       val.renewal_date_from
                             + "</td><td class='renewal_date_to'>"
                             +       val.renewal_date_to
-                            + "</td><td class='records_num' style='font-weight: bold; color: green'>"
+                            + "</td><td class='records_num' "+(val.restored == 1?"style='font-weight: bold; color: green'":"")+">"
                             + val.num_records
                             + "</td><td class=''>"
-                            + "<span class='glyphicon glyphicon-open btn-restore-backup pointer'></span>"
+                            + restore_btn
                             + "</td></tr>");
                 });
             } else {
@@ -753,7 +775,40 @@ var backup_restore = {
     restore_backup: function($btn) {
         var row = $btn.closest('tr');
 
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth;
+        $('<div class="modal-backdrop restore in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.restore-container').find('.restore-panel').show();
+        $('.restore-content').show();
+        $('.restore-container').fadeIn();
+        $('.restore-container').animate({
+            width: '50px',
+            left: moveto,
+            top: '50%'
+        }, 1000);
 
+        $.ajax({
+            url: helper.baseUrl + 'data/restore_backup',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                'backup_campaign_id': row.find('.backup_campaign_id').text(),
+                'path': row.find('.path').text()
+            }
+        }).done(function(response) {
+            if (response.success) {
+                flashalert.success(response.msg);
+                backup_restore.backup_panel();
+                backup_restore.backup_history_panel();
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+            $('.modal-backdrop.restore').fadeOut();
+            $('.restore-container').fadeOut(500, function() {
+                $('.restore-content').show();
+            });
+        });
     }
 }
 
@@ -810,16 +865,17 @@ var add_record = {
  ========================================================================== */
 var modal = {
 
-    restore_campaign_backup: function(id) {
-        $('.modal-title').text('Confirm Restore Backup');
+    restore_campaign_backup: function($btn) {
+        var row = $btn.closest('tr');
+        $('.modal-title').text('Confirm Restore Backup - '+row.find('.name').text()+'');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').text('Are you sure you want to restore this backup?');
+        }).find('.modal-body').text('You are going to restore '+row.find('.records_num').text()+' records. Are you sure you want to restore this backup?');
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
-            backup_restore.restore_backup($(this));
             $('#modal').modal('toggle');
+            backup_restore.restore_backup($btn);
         });
     }
 }

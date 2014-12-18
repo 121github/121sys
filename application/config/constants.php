@@ -39,3 +39,6 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
+
+
+define('BACKUP_PATH', $_SERVER['DOCUMENT_ROOT'].'/backup/121sys/');

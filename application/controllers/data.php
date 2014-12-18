@@ -714,10 +714,10 @@ $this->_campaigns = campaign_access_dropdown();
                 $urn_list = "(".substr($urn_list,0,strlen($urn_list)-2).")";
             }
 
-            if (!file_exists("../backup/121sys/")) {
-                mkdir("../backup/121sys/", 0755);
+            if (!file_exists(BACKUP_PATH)) {
+                mkdir(BACKUP_PATH, 0755);
             }
-            $form['path'] = "../backup/121sys/".$form['name'].'.sql';
+            $form['path'] = BACKUP_PATH.$form['name'].'.sql';
             $form['user_id'] = $_SESSION['user_id'];
             $form['backup_date'] = date('Y-m-d H:i:s');
 
@@ -753,14 +753,14 @@ $this->_campaigns = campaign_access_dropdown();
                 unlink($form['path']);
             }
             $fp = fopen($form['path'], 'a');
-            fwrite($fp, '--------------------------------------------------------------------------'.PHP_EOL);
-            fwrite($fp, '--CAMPAIGN BACKUP'.PHP_EOL);
-            fwrite($fp, '--File name - '.$form['name'].PHP_EOL);
-            fwrite($fp, '--Number of records - '.$form['num_records'].PHP_EOL);
-            fwrite($fp, '--------------------------------------------------------------------------'.PHP_EOL);
+            fwrite($fp, '-- ------------------------------------------------------------------------'.PHP_EOL);
+            fwrite($fp, '-- CAMPAIGN BACKUP'.PHP_EOL);
+            fwrite($fp, '-- File name - '.$form['name'].PHP_EOL);
+            fwrite($fp, '-- Number of records - '.$form['num_records'].PHP_EOL);
+            fwrite($fp, '-- ------------------------------------------------------------------------'.PHP_EOL);
             foreach($qry as $table => $query) {
                 fwrite($fp, ''.PHP_EOL);
-                fwrite($fp, '--'.strtoupper($table).PHP_EOL);
+                fwrite($fp, '-- '.strtoupper($table).PHP_EOL);
                 if (!empty($query)) {
                     fwrite($fp, $query[0].PHP_EOL);
                 }
@@ -785,6 +785,26 @@ $this->_campaigns = campaign_access_dropdown();
                 "msg" => ($backup_id)?"Backup finished successfully":"ERROR: Backup ended with errors"
             ));
         }
+    }
+
+    public function restore_backup() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            exec('"mysql" -u '.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' < "'.$form['path'].'"', $results, $status);
+            if ($status == 0) {
+                $this->Data_model->update_backup_campaign_history_by_id(array(
+                    'backup_campaign_id' => $form['backup_campaign_id'],
+                    'restored' => 1,
+                    'restored_date' => date('Y-m-d H:i:s')
+                ));
+            }
+        }
+
+        echo json_encode(array(
+            "success" => ($status == 0),
+            "msg" => ($status == 0?"Restored successfully":"ERROR: The restored doesn't finish successfully")
+        ));
     }
 
 

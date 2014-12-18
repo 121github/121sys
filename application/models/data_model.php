@@ -410,19 +410,26 @@ class Data_model extends CI_Model
 
     public function get_backup_history_data($options) {
         $campaign = $options['campaign'];
+        $restored = $options['restored'];
 
         $where = "";
         if (!empty($campaign)) {
             $where .= " and bc.campaign_id = '$campaign' ";
         }
 
-        $qry = "select bc.campaign_id, bc.name, bc.path,
+        $where = "";
+        if (($restored == 0 || $restored == 1)&&$restored != '') {
+            $where .= " and bc.restored = '$restored' ";
+        }
+
+        $qry = "select bc.backup_campaign_id, bc.campaign_id, bc.name, bc.path,
                   IF(bc.backup_date ,date_format(bc.backup_date,'%d/%m/%y'),'-') as backup_date,
                   bc.num_records, bc.user_id,
                   IF(bc.update_date_from ,date_format(bc.update_date_from,'%d/%m/%y'),'-') as update_date_from,
                   IF(bc.update_date_to ,date_format(bc.update_date_to,'%d/%m/%y'),'-') as update_date_to,
                   IF(bc.renewal_date_from ,date_format(bc.renewal_date_from,'%d/%m/%y'),'-') as renewal_date_from,
                   IF(bc.renewal_date_to ,date_format(bc.renewal_date_to,'%d/%m/%y'),'-') as renewal_date_to,
+                  bc.restored, bc.restored_date,
                   c.campaign_name, u.name as user_name
                 from backup_campaign_history bc
                 inner join campaigns c ON (c.campaign_id = bc.campaign_id)
@@ -542,5 +549,10 @@ class Data_model extends CI_Model
         //records
         $delqry = "delete from records where urn IN ".$urn_list;
         $this->db->query($delqry);
+    }
+
+    public function update_backup_campaign_history_by_id($form) {
+        $this->db->where("backup_campaign_id", $form['backup_campaign_id']);
+        return $this->db->update("backup_campaign_history", $form);
     }
 }
