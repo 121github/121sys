@@ -365,36 +365,38 @@ class Data_model extends CI_Model
 
     }
 
-    public function get_backup_data_by_campaign($options) {
+    public function get_backup_data_by_campaign($options, $renewal_date_field = null) {
         $where = "";
         if (!empty($options['campaign_id'])) {
             $where .= " and r.campaign_id = '".$options['campaign_id']."'";
+        }
+
+        $renewal_date = "";
+        if ($renewal_date_field) {
+            $renewal_date_from = "";
+            $renewal_date_to = "";
+            if (!empty($options['renewal_date_from'])) {
+                $renewal_date_from = "(date(rd.".$renewal_date_field.") >= '".$options['renewal_date_from']."')";
+            }
+            if (!empty($options['renewal_date_to'])) {
+                $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(date(rd.".$renewal_date_field.") >= '".$options['renewal_date_to']."')";
+            }
+            $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0 && strlen($renewal_date_to)>0?" and ":"").$renewal_date_to;
         }
 
         $update_date = "";
         $update_date_from = "";
         $update_date_to = "";
         if (!empty($options['update_date_from'])) {
-            $update_date_from = "(r.date_updated >= '".$options['update_date_from']."' or (r.date_updated is null and r.date_added >=  '".$options['update_date_from']."'))";
+            $update_date_from = "(date(r.date_updated) >= '".$options['update_date_from']."' or (r.date_updated is null and date(r.date_added) >=  '".$options['update_date_from']."'))";
         }
         if (!empty($options['update_date_to'])) {
-            $update_date_to = "(r.date_updated <= '".$options['update_date_to']."' or (r.date_updated is null and r.date_added <=  '".$options['update_date_to']."'))";
+            $update_date_to = "(date(r.date_updated) <= '".$options['update_date_to']."' or (r.date_updated is null and date(r.date_added) <=  '".$options['update_date_to']."'))";
         }
-        $update_date .= $update_date_from.(strlen($update_date_from)>0?" and ":"").$update_date_to;
-
-        $renewal_date = "";
-        $renewal_date_from = "";
-        $renewal_date_to = "";
-        if (!empty($options['renewal_date_from'])) {
-            $renewal_date_from = "(rd.d1 >= '".$options['renewal_date_from']."')";
-        }
-        if (!empty($options['renewal_date_to'])) {
-            $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(rd.d1 >= '".$options['renewal_date_to']."')";
-        }
-        $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0?" and ":"").$renewal_date_to;
+        $update_date .= $update_date_from.(strlen($update_date_from)>0 && strlen($update_date_to)>0?" and ":"").$update_date_to;
 
         if (strlen($update_date)>0 || strlen($renewal_date)>0) {
-            $where .= " and (".$update_date.(strlen($update_date)>0?" or ":"").$renewal_date.")";
+            $where .= " and (".$update_date.(strlen($update_date)>0 && strlen($renewal_date)>0?" or ":"").$renewal_date.")";
         }
 
         $qry = "select *
@@ -410,21 +412,149 @@ class Data_model extends CI_Model
 
     public function get_backup_history_data($options) {
         $campaign = $options['campaign'];
+        $restored = $options['restored'];
 
         $where = "";
         if (!empty($campaign)) {
             $where .= " and bc.campaign_id = '$campaign' ";
         }
 
-        $qry = "select bc.*, c.campaign_name, u.name as user_name
+        $where = "";
+        if (($restored == 0 || $restored == 1)&&$restored != '') {
+            $where .= " and bc.restored = '$restored' ";
+        }
+
+        $qry = "select bc.backup_campaign_id, bc.campaign_id, bc.name, bc.path,
+                  IF(bc.backup_date ,date_format(bc.backup_date,'%d/%m/%y'),'-') as backup_date,
+                  bc.num_records, bc.user_id,
+                  IF(bc.update_date_from ,date_format(bc.update_date_from,'%d/%m/%y'),'-') as update_date_from,
+                  IF(bc.update_date_to ,date_format(bc.update_date_to,'%d/%m/%y'),'-') as update_date_to,
+                  IF(bc.renewal_date_from ,date_format(bc.renewal_date_from,'%d/%m/%y'),'-') as renewal_date_from,
+                  IF(bc.renewal_date_to ,date_format(bc.renewal_date_to,'%d/%m/%y'),'-') as renewal_date_to,
+                  bc.restored, bc.restored_date,
+                  c.campaign_name, u.name as user_name
                 from backup_campaign_history bc
                 inner join campaigns c ON (c.campaign_id = bc.campaign_id)
                 inner join users u ON (u.user_id = bc.user_id)
                 where 1";
         $qry .= $where;
-        $qry .= " order by bc.backup_date desc ";
+        $qry .= " order by bc.backup_date desc limit 0,12";
 
         return $this->db->query($qry)->result_array();
 
+    }
+
+    public function save_backup_campaign_history($form)
+    {
+        $this->db->insert("backup_campaign_history", $form);
+        return $this->db->insert_id();
+    }
+
+    public function remove_backup_campaign_data($urn_list, $campaign_id) {
+
+        //cross_transfers
+        $delqry = "delete from cross_transfers where history_id IN (select history_id from history where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //history
+        $delqry = "delete from history where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //record_details
+        $delqry = "delete from record_details where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //email_history_attachments
+        $delqry = "delete from email_history_attachments where email_id IN (select email_id from email_history where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //email_history
+        $delqry = "delete from email_history where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //appointment_attendees
+        $delqry = "delete from appointment_attendees where appointment_id IN (select appointment_id from appointments where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //appointments
+        $delqry = "delete from appointments where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //attachments
+        $delqry = "delete from attachments where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //client_refs
+        $delqry = "delete from client_refs where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //company_telephone
+        $delqry = "delete from company_telephone where company_id IN (select company_id from companies where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //company_addresses
+        $delqry = "delete from company_addresses where company_id IN (select company_id from companies where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //companies
+        $delqry = "delete from companies where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //contact_telephone
+        $delqry = "delete from contact_telephone where contact_id IN (select contact_id from contacts where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //contact_addresses
+        $delqry = "delete from contact_addresses where contact_id IN (select contact_id from contacts where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //contacts
+        $delqry = "delete from contacts where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //answer_notes
+        $delqry = "delete from answer_notes where answer_id IN (select answer_id from survey_answers where survey_id IN (select survey_id from surveys where urn IN ".$urn_list."))";
+        $this->db->query($delqry);
+
+        //answers_to_options
+        $delqry = "delete from answers_to_options where answer_id IN (select answer_id from survey_answers where survey_id IN (select survey_id from surveys where urn IN ".$urn_list."))";
+        $this->db->query($delqry);
+
+        //survey_answers
+        $delqry = "delete from survey_answers where survey_id IN (select survey_id from surveys where urn IN ".$urn_list.")";
+        $this->db->query($delqry);
+
+        //surveys
+        $delqry = "delete from surveys where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //webform_answers
+        $delqry = "delete from webform_answers where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //sticky_notes
+        $delqry = "delete from sticky_notes where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //favorites
+        $delqry = "delete from favorites where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //ownership
+        $delqry = "delete from ownership where urn IN ".$urn_list;
+        $this->db->query($delqry);
+
+        //campaign_xfers
+        $delqry = "delete from campaign_xfers where campaign_id = ".$campaign_id;
+        $this->db->query($delqry);
+
+        //records
+        $delqry = "delete from records where urn IN ".$urn_list;
+        $this->db->query($delqry);
+    }
+
+    public function update_backup_campaign_history_by_id($form) {
+        $this->db->where("backup_campaign_id", $form['backup_campaign_id']);
+        return $this->db->update("backup_campaign_history", $form);
     }
 }

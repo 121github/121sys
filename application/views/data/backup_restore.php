@@ -10,6 +10,13 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            <div class="panel panel-primary restore-container">
+                <div class="restore-panel">
+                    <div class="restore-content">
+                        <img width="50px;" src="<?php echo base_url(); ?>assets/img/ajax-loader.gif" />
+                    </div>
+                </div>
+            </div>
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
@@ -46,8 +53,8 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td colspan="3"><img
-                                                src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
+                                        <td colspan="3">
+                                            <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
                                         </td>
                                     </tr>
                                     </tbody>
@@ -67,17 +74,27 @@
                 <div class="col-lg-12">
                     <form id="data-form" class="backup-history-filter-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Backup History
+                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Backup History (Last 12 backups)
                                 <div class="pull-right">
+                                    <div class="btn-group">
+                                        <input type="hidden" name="restored">
+                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Restored?</button>
+                                        <ul class="dropdown-menu pull-right" role="menu">
+                                            <li><a href="#" class="backup-history-filter-restored" id="1">Restored - Yes</a> </li>
+                                            <li><a href="#" class="backup-history-filter-restored" id="0">Restored - No</a> </li>
+                                            <li class="divider"></li>
+                                            <li><a class="backup-history-filter-restored" ref="#" style="color: green;">Restored - All</a> </li>
+                                        </ul>
+                                    </div>
                                     <div class="btn-group">
                                         <input type="hidden" name="campaign">
                                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
                                         <ul class="dropdown-menu pull-right" role="menu">
                                             <?php foreach($campaigns as $row): ?>
-                                                <li><a href="#" class="backup-history-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                                                <li><a href="#" class="backup-history-filter-campaign" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
                                             <?php endforeach ?>
                                             <li class="divider"></li>
-                                            <li><a class="backup-history-filter" ref="#" style="color: green;">All Campaigns</a> </li>
+                                            <li><a class="backup-history-filter-campaign" ref="#" style="color: green;">All Campaigns</a> </li>
                                         </ul>
                                     </div>
                                 </div>

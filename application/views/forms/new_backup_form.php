@@ -11,12 +11,15 @@
                 <input type="hidden" name="update_date_to">
                 <input type="hidden" name="renewal_date_from">
                 <input type="hidden" name="renewal_date_to">
-                <input type="hidden" name="records_num">
-                <input data-date-format='DD/MM/YYYY' name='renewal_date_to' type='hidden' class='form-control date'>
+                <input type="hidden" name="num_records">
                 <div class="form-group input-group-sm">
-                    <div class="input-group">
+                    <div class="input-group file-name">
                         <p>Backup File Name</p>
-                        <input name="file_name" type="text" class="form-control">
+                        <input name="name" type="text" class="form-control">
+                    </div>
+                    <div class="backup-running">
+                        <span style="color: red; font-weight: bold">Saving the data, please, don't close or reload the browser!</span>
+                        <span><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></span>
                     </div>
                 </div>
                 <p>

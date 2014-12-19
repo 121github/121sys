@@ -708,8 +708,44 @@ class Filter_model extends CI_Model
             unset($array['alldials']);
             unset($array['campaigns.campaign_id']);
         }
-        
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $packed_qry";
+
+        $update_date_qry = "";
+        if (in_array("update-date-from", $fields) || in_array("update-date-to", $fields) || in_array("renewal-date-from", $fields) || in_array("renewal-date-to", $fields)) {
+            $update_date = "";
+            $update_date_from = "";
+            $update_date_to = "";
+            if (in_array("update-date-from", $fields)) {
+                $update_date_from = "(date(records.date_updated) >= '".$array['update-date-from']."' or (records.date_updated is null and date(records.date_added) >=  '".$array['update-date-from']."'))";
+                unset($array['update-date-from']);
+            }
+            if (in_array("update-date-to", $fields)) {
+                $update_date_to = "(date(records.date_updated) <= '".$array['update-date-to']."' or (records.date_updated is null and date(records.date_added) <=  '".$array['update-date-to']."'))";
+                unset($array['update-date-to']);
+            }
+            $update_date .= $update_date_from.(strlen($update_date_from)>0 && strlen($update_date_to)>0?" and ":"").$update_date_to;
+
+            $renewal_date = "";
+            $renewal_date_from = "";
+            $renewal_date_to = "";
+            if (in_array("renewal-date-from", $fields) || in_array("renewal-date-to", $fields)) {
+                $qry  .= " inner join record_details rd ON (rd.urn = records.urn)";
+            }
+            if (in_array("renewal-date-from", $fields)) {
+                $renewal_date_from = "(date(rd.d1) >= '".$array['renewal-date-from']."')";
+                unset($array['renewal-date-from']);
+            }
+            if (in_array("renewal-date-to", $fields)) {
+                $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(date(rd.d1) >= '".$array['renewal-date-to']."')";
+                unset($array['renewal-date-to']);
+            }
+            $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0 && strlen($renewal_date_to)>0?" and ":"").$renewal_date_to;
+
+            if (strlen($update_date)>0 || strlen($renewal_date)>0) {
+                $update_date_qry .= " and (".$update_date.(strlen($update_date)>0 && strlen($renewal_date)>0?" or ":"").$renewal_date.")";
+            }
+        }
+
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $packed_qry $update_date_qry";
 		
 		
 		

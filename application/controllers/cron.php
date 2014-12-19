@@ -30,7 +30,7 @@ class Cron extends CI_Controller
     {
         $campaigns = $this->Form_model->get_campaigns();
         foreach ($campaigns as $campaign) {
-            $renewal_date_field =  $this->Cron_model->get_renewald_date_field($campaign['id']);
+            $renewal_date_field =  $this->Form_model->get_renewald_date_field($campaign['id']);
             if ($renewal_date_field) {
                 $renewal_date_field = $renewal_date_field[0]['field'];
                 $update_records = $this->Cron_model->set_daily_ration_records($campaign['id'], $renewal_date_field, $campaign['daily_data'], $campaign['min_quote_days'], $campaign['max_quote_days']);

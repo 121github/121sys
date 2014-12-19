@@ -235,9 +235,8 @@ class Admin extends CI_Controller
             if (empty($form['campaign_id'])) {
                 $response                = $this->Admin_model->add_new_campaign($form);
                 $features['campaign_id'] = $response;
-                //Save the backup by campaign settings
+
                 $backup_form['campaign_id'] = $response;
-                $this->Admin_model->insert_backup_by_campaign($backup_form);
             } else {
                 $features['campaign_id'] = $form['campaign_id'];
                 $response                = $this->Admin_model->update_campaign($form);
@@ -249,9 +248,18 @@ class Admin extends CI_Controller
                 }
                 if ($this->User_model->flag_users_for_reload($user_array));
 
-                //Save the backup by campaign settings
                 $backup_form['campaign_id'] = $form['campaign_id'];
-                $this->Admin_model->update_backup_by_campaign($backup_form);
+            }
+
+            //Save the backup by campaign settings
+            if ($backup_form['months_ago'] && $backup_form['months_num']) {
+                $backup_by_campaign = $this->Admin_model->get_backup_by_campaign($backup_form['campaign_id']);
+                if (!empty($backup_by_campaign)) {
+                    $this->Admin_model->update_backup_by_campaign($backup_form);
+                }
+                else {
+                    $this->Admin_model->insert_backup_by_campaign($backup_form);
+                }
             }
 
             //if it's set as B2B then we add the company feature to the campaign

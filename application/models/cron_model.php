@@ -35,18 +35,6 @@ class Cron_model extends CI_Model
         }
     }
     
-    public function get_renewald_date_field($campaign_id)
-    {
-        
-        $qry = "select field
-                from record_details_fields
-                where field_name = 'Renewal Date'
-                and campaign_id = " . $campaign_id;
-        
-        $result = $this->db->query($qry)->result_array();
-        return $result;
-    }
-    
     public function set_daily_ration_records($campaign_id, $renewal_date_field, $daily_data, $min_quote_days, $max_quote_days)
     {
         

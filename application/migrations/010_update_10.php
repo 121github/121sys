@@ -24,6 +24,8 @@ class Migration_update_10 extends CI_Migration
                 `num_records` INT DEFAULT 0 NOT NULL,
                 `name` VARCHAR(100) NOT NULL,
                 `path` VARCHAR(255) NOT NULL,
+                `restored` TINYINT DEFAULT 0 NOT NULL,
+                `restored_date` DATETIME NULL,
                 KEY `FK_backup_campaign_id` (`campaign_id`),
                 CONSTRAINT `FK_backup_campaign_id` FOREIGN KEY (`campaign_id`) REFERENCES `campaigns` (`campaign_id`) ON DELETE CASCADE ON UPDATE CASCADE,
                 KEY `FK_backup_user_id` (`user_id`),

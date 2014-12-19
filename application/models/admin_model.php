@@ -95,6 +95,14 @@ class Admin_model extends CI_Model
         }
     }
 
+    public function get_backup_by_campaign($campaign_id)
+    {
+        $qry = "select *
+                from backup_by_campaign
+                where campaign_id = ".$campaign_id;
+        return $this->db->query($qry)->result_array();
+    }
+
     public function update_backup_by_campaign($form)
     {
         $this->db->where("campaign_id", $form['campaign_id']);
