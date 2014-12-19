@@ -229,6 +229,7 @@ var admin = {
                                     "</td><td class='campaign_name'>" + val.campaign_name +
                                     "</td><td>" + val.campaign_type_desc +
                                             "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span>" +
+											 "<span class='hidden record_layout'>" + val.record_layout + "</span>" +
                                             "<span class='hidden campaign_type_id'>" + val.campaign_type_id + "</span>" +
                                             "<span class='hidden min_quote_days'>" + (val.min_quote_days?val.min_quote_days:'') + "</span>" +
                                             "<span class='hidden max_quote_days'>" + (val.max_quote_days?val.max_quote_days:'') + "</span>" +
@@ -256,6 +257,7 @@ var admin = {
             $('form').find('select[name="campaign_type_id"]').selectpicker('val', row.find('.campaign_type_id').text());
             $('form').find('input[name="campaign_name"]').val(row.find('.campaign_name').text());
             $('form').find('select[name="client_id"]').selectpicker('val', row.find('.client_id').text());
+			$('form').find('select[name="record_layout"]').selectpicker('val', row.find('.record_layout').text());
             $('form').find('select[name="campaign_status"]').selectpicker('val', row.find('.campaign_status').text());
             $('form').find('input[name="start_date"]').data('DateTimePicker').setDate(row.find('.start_date').text());
             $('form').find('input[name="end_date"]').data('DateTimePicker').setDate(row.find('.end_date').text());
