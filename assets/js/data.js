@@ -674,7 +674,7 @@ var backup_restore = {
         var update_date_to = row.find('input[name="update_date_to_'+campaign_id+'"]').val();
         var renewal_date_from = row.find('input[name="renewal_date_from_'+campaign_id+'"]').val();
         var renewal_date_to = row.find('input[name="renewal_date_to_'+campaign_id+'"]').val();
-        var renewal_date_field = row.find('renewal_date_field').text();
+        var renewal_date_field = row.find('.renewal_date_field').text();
 
         $.ajax({
             url: helper.baseUrl + 'data/backup_data_by_campaign',
