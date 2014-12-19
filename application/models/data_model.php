@@ -365,10 +365,23 @@ class Data_model extends CI_Model
 
     }
 
-    public function get_backup_data_by_campaign($options) {
+    public function get_backup_data_by_campaign($options, $renewal_date_field = null) {
         $where = "";
         if (!empty($options['campaign_id'])) {
             $where .= " and r.campaign_id = '".$options['campaign_id']."'";
+        }
+
+        $renewal_date = "";
+        if ($renewal_date_field) {
+            $renewal_date_from = "";
+            $renewal_date_to = "";
+            if (!empty($options['renewal_date_from'])) {
+                $renewal_date_from = "(date(rd.".$renewal_date_field.") >= '".$options['renewal_date_from']."')";
+            }
+            if (!empty($options['renewal_date_to'])) {
+                $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(date(rd.".$renewal_date_field.") >= '".$options['renewal_date_to']."')";
+            }
+            $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0 && strlen($renewal_date_to)>0?" and ":"").$renewal_date_to;
         }
 
         $update_date = "";
@@ -381,17 +394,6 @@ class Data_model extends CI_Model
             $update_date_to = "(date(r.date_updated) <= '".$options['update_date_to']."' or (r.date_updated is null and date(r.date_added) <=  '".$options['update_date_to']."'))";
         }
         $update_date .= $update_date_from.(strlen($update_date_from)>0 && strlen($update_date_to)>0?" and ":"").$update_date_to;
-
-        $renewal_date = "";
-        $renewal_date_from = "";
-        $renewal_date_to = "";
-        if (!empty($options['renewal_date_from'])) {
-            $renewal_date_from = "(date(rd.d1) >= '".$options['renewal_date_from']."')";
-        }
-        if (!empty($options['renewal_date_to'])) {
-            $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."((daterd.d1) >= '".$options['renewal_date_to']."')";
-        }
-        $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0 && strlen($renewal_date_to)>0?" and ":"").$renewal_date_to;
 
         if (strlen($update_date)>0 || strlen($renewal_date)>0) {
             $where .= " and (".$update_date.(strlen($update_date)>0 && strlen($renewal_date)>0?" or ":"").$renewal_date.")";

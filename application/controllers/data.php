@@ -641,6 +641,12 @@ $this->_campaigns = campaign_access_dropdown();
                 $result['renewal_date_to'] = ($result['months_num']&&$result['months_ago']?$current_date_to:"");
                 unset($result['months_ago']);
                 unset($result['months_num']);
+
+                //Check if exist the renewal date
+                $renewal_date_field =  $this->Form_model->get_renewald_date_field($result['campaign_id']);
+                $renewal_date_field = ($renewal_date_field)?$renewal_date_field[0]['field']:"";
+                $result['renewal_date_field'] = $renewal_date_field;
+
                 array_push($aux,$result);
             }
             $results = $aux;
@@ -664,7 +670,9 @@ $this->_campaigns = campaign_access_dropdown();
             $form['update_date_to'] = ($form['update_date_to']?to_mysql_datetime($form['update_date_to']):"");
             $form['renewal_date_from'] = ($form['renewal_date_from']?to_mysql_datetime($form['renewal_date_from']):"");
             $form['renewal_date_to'] = ($form['renewal_date_to']?to_mysql_datetime($form['renewal_date_to']):"");
-            $results = $this->Data_model->get_backup_data_by_campaign($form);
+            $renewal_date_field = $form['renewal_date_field'];
+            unset($form['renewal_date_field']);
+            $results = $this->Data_model->get_backup_data_by_campaign($form, $renewal_date_field);
             $records_num = count($results);
             $records_url = $url."/campaign/".$form['campaign_id'];
             $records_url .= ($form['update_date_from']?"/update-date-from/".$form['update_date_from']:"");

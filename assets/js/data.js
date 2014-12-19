@@ -543,6 +543,10 @@ var backup_restore = {
                 var $tbody = $('.backup_data .ajax-table').find('tbody');
                 $tbody.empty();
                 $.each(response.data, function(i, val) {
+                    var update_date_from = (val.update_date_from?val.update_date_from:"");
+                    var update_date_to = (val.update_date_to?val.update_date_to:"");
+                    var renewal_date_from = (val.renewal_date_field!=""?(val.renewal_date_from?val.renewal_date_from:""):"");
+                    var renewal_date_to = (val.renewal_date_field!=""?(val.renewal_date_to?val.renewal_date_to:""):"");
                     if (val.campaign_name) {
                         $.ajax({
                             url: helper.baseUrl + 'data/backup_data_by_campaign',
@@ -550,43 +554,46 @@ var backup_restore = {
                             dataType: "JSON",
                             data: {
                                     'campaign_id': val.campaign_id,
-                                    'update_date_from': (val.update_date_from?val.update_date_from:""),
-                                    'update_date_to': (val.update_date_to?val.update_date_to:""),
-                                    'renewal_date_from': (val.renewal_date_from?val.renewal_date_from:""),
-                                    'renewal_date_to': (val.renewal_date_to?val.renewal_date_to:"")
+                                    'update_date_from': update_date_from,
+                                    'update_date_to': update_date_to,
+                                    'renewal_date_from': renewal_date_from,
+                                    'renewal_date_to': renewal_date_to,
+                                    'renewal_date_field': (val.renewal_date_field!= ""?val.renewal_date_field:null)
                             }
                         }).done(function(response) {
                             if (response.success) {
+                                    var disabled = (val.renewal_date_field=="")?"disabled title='Renewal date field is not defined' style='color:red'":"";
                                     $tbody.append(
                                         "<tr><td class='campaign'>"
                                         + val.campaign_name
                                                 + "<span style='display:none' class='campaign_id'>"+val.campaign_id+"</span>"
+                                                + "<span style='display:none' class='renewal_date_field'>"+val.renewal_date_field+"</span>"
                                         + "</td><td class='update_date_from'>"
                                         + "<div class='input-group'>"
-                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_from+"' name='update_date_from_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+update_date_from+"' name='update_date_from_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
                                         +       "<span class='input-group-btn'>"
                                         +           "<button class='btn btn-default clear-input' type='button'>X</button>"
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='update_date_to'>"
                                         + "<div class='input-group'>"
-                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.update_date_to+"' name='update_date_to_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+update_date_to+"' name='update_date_to_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
                                         +       "<span class='input-group-btn'>"
                                         +           "<button class='btn btn-default clear-input' type='button'>X</button>"
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='renewal_date_from'>"
                                         + "<div class='input-group'>"
-                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.renewal_date_from+"' name='renewal_date_from_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+renewal_date_from+"' name='renewal_date_from_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))' "+disabled+">"
                                         +       "<span class='input-group-btn'>"
-                                        +           "<button class='btn btn-default clear-input' type='button'>X</button>"
+                                        +           "<button class='btn btn-default clear-input' type='button' "+disabled+">X</button>"
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='renewal_date_to'>"
                                         + "<div class='input-group'>"
-                                        +       "<input data-date-format='DD/MM/YYYY' value='"+val.renewal_date_to+"' name='renewal_date_to_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))'>"
+                                        +       "<input data-date-format='DD/MM/YYYY' value='"+renewal_date_to+"' name='renewal_date_to_"+val.campaign_id+"' type='text' class='form-control date' onblur='backup_restore.update_records($(this))' "+disabled+">"
                                         +       "<span class='input-group-btn'>"
-                                        +           "<button class='btn btn-default clear-input' type='button'>X</button>"
+                                        +           "<button class='btn btn-default clear-input' type='button' "+disabled+">X</button>"
                                         +       "</span>"
                                         + "</div>"
                                         + "</td><td class='records_num'>"
@@ -667,6 +674,7 @@ var backup_restore = {
         var update_date_to = row.find('input[name="update_date_to_'+campaign_id+'"]').val();
         var renewal_date_from = row.find('input[name="renewal_date_from_'+campaign_id+'"]').val();
         var renewal_date_to = row.find('input[name="renewal_date_to_'+campaign_id+'"]').val();
+        var renewal_date_field = row.find('renewal_date_field').text();
 
         $.ajax({
             url: helper.baseUrl + 'data/backup_data_by_campaign',
@@ -677,7 +685,8 @@ var backup_restore = {
                 'update_date_from': update_date_from,
                 'update_date_to': update_date_to,
                 'renewal_date_from': renewal_date_from,
-                'renewal_date_to': renewal_date_to
+                'renewal_date_to': renewal_date_to,
+                'renewal_date_field': renewal_date_field
             }
         }).done(function(response) {
             if (response.success) {
