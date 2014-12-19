@@ -1,3 +1,10 @@
+
+.responsive-calendar .tooltip-inner {
+	text-align:left;
+    max-width: 750px !important;
+    /* If max-width does not work, try using width instead */
+    width: 450px; 
+}
 .responsive-calendar .controls {
   text-align: center;
 }

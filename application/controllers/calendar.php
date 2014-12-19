@@ -83,8 +83,12 @@ class Calendar extends CI_Controller
 	}
 	
 	public function get_events(){
-		$start = date('Y-m-d h:i:s', ($_POST['startDate'] / 1000));
-		$end = date('Y-m-d h:i:s', ($_POST['endDate'] / 1000));
+		$postcode = $this->input->post('postcode');
+		if($this->input->post('urn')){
+		$postcode = $this->Calendar_model->get_postcode_from_urn($this->input->post('urn'));	
+		}
+		$start = isset($_POST['startDate'])?date('Y-m-d h:i:s', ($_POST['startDate'] / 1000)):date('Y-m-d h:i:s');
+		$end = isset($_POST['endDate'])?date('Y-m-d h:i:s', ($_POST['endDate'] / 1000)):date('2040-m-d h:i:s');
 		
 		if(!empty($_POST['users'])){
 		$users = $_POST['users'];	
@@ -92,7 +96,7 @@ class Calendar extends CI_Controller
 		$users = (isset($_SESSION['users'])?$_SESSION['users']:"");	
 		}
 		
-		$postcode = postcodeCheckFormat($this->input->post('postcode'));
+		$postcode = postcodeCheckFormat($postcode);
 		if($postcode==NULL){
 		$postcode = (isset($_SESSION['postcode'])?$_SESSION['postcode']:"");	
 		}
@@ -112,8 +116,19 @@ class Calendar extends CI_Controller
 		$options = array("start"=>$start,"end"=>$end,"users"=>$users,"campaigns"=>$campaigns,"postcode"=>$postcode,"distance"=>$distance);
 		$_SESSION['calendar-filter'] = $options;
 		$result = array();
-		$events = $this->Calendar_model->get_events($options);
+		if(isset($_POST['modal'])){
+		$options['modal'] = "list";	
+		}
 		
+		$events = $this->Calendar_model->get_events($options);
+		if(isset($_POST['modal'])){
+	foreach($events as $k=>$row) {
+		$date = date('Y-m-d',strtotime($row['start']));
+		$result[$date]['dayEvents'][] = array("title"=>$row['title'],'endtime' => date('g:i a',strtotime($row['end'])),'starttime' => date('g:i a',strtotime($row['start'])),'distance'=>number_format($row['distance'],1),"attendees"=>$row['attendeelist']);
+		$result[$date]['number']=(isset($result[$date]['number'])?$result[$date]['number']+1:1);
+	}
+	
+} else {
 		foreach($events as $row) {
     $result[] = array(
         'id' => $row['appointment_id'],
@@ -122,6 +137,7 @@ class Calendar extends CI_Controller
         'url' => base_url().'records/detail/'.$row['urn'],
 		'class' => 'event-important',
 		'distance_hover' => (isset($row['distance'])&&!empty($row['distance'])?"<br><span style='color:#7FFF00'>".number_format($row['distance'],2)." Miles</span>":""),
+		'distance'=>number_format($row['distance'],1)." Miles",
         'start' => strtotime($row['start']) . '000',
         'end' => strtotime($row['end']) .'000',
 		'endtime' => date('g:i a',strtotime($row['end'])),
@@ -132,8 +148,11 @@ class Calendar extends CI_Controller
 		'attendees' => (isset($row['attendeelist'])?$row['attendeelist']:"<span class='red'>No Attendee!</span>"),
 		'status'=>(!empty($row['status'])?"<br><span class='red'>".$row['status']."</span>":""),
 		'statusinline'=>(!empty($row['status'])?"<span class='red'>".$row['status']."</span>":""),
-		'color'=>$row['color']
+		'color'=>$row['color'],
+		'startDate' => date('d/m/Y',strtotime($row['start'])),
+		'endDate' => date('d/m/Y',strtotime($row['end'])),
     );
+}
 }
 
 echo json_encode(array('success' => 1, 'result' => $result));

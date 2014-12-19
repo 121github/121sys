@@ -1,4 +1,11 @@
- 
+ function addLeadingZero(num) {
+    if (num < 10) {
+      return "0" + num;
+    } else {
+      return "" + num;
+    }
+  }
+   
 function setEqualHeight(selector, triggerContinusly) {
 
     var elements = $(selector);

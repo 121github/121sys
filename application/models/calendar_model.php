@@ -36,6 +36,11 @@ return '#'.$output;
 		$select_distance = "";
 		$start = $options['start'];
 		$end = $options['end'];
+		$order_by = "";
+		if(isset($options['modal'])){
+			$order_by = " order by distance";
+		}
+		
 		$join .= " left join companies using(urn) left join campaigns using(campaign_id) left join campaign_types using(campaign_type_id) left join appointment_attendees using(appointment_id) left join users using(user_id) ";
 		if(!empty($options['postcode'])&&!empty($options['distance'])){
 			$distance = intval($options['distance'])*1.1515;
@@ -86,8 +91,12 @@ return '#'.$output;
 		if(isset($_SESSION['current_campaign'])){
 		$where .= "	and campaign_id = ".$_SESSION['current_campaign'];
 		}
-		$query = "select appointments.urn,appointment_id,campaign_name,title,text,`start`,`end`,postcode,if(`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company,users.name as user $select_distance from appointments $join where 1 $where $having";
-		$this->firephp->log($query);
+		if(isset($options['modal'])){
+					$query = "select if(companies.name,'',companies.name) as title,appointment_id,`start`,`end`,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
+					$this->firephp->log($query);
+		} else {
+		$query = "select appointments.urn,appointment_id,campaign_name,title,text,`start`,`end`,postcode,if(`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
+		}
 		$array = array();
 		$users = array();
 		foreach($this->db->query($query)->result_array() as $row){
@@ -106,5 +115,14 @@ return '#'.$output;
 		//$this->firephp->log($array);
 		return $array;
 	}
+
+public function get_postcode_from_urn($urn){
+$query = "select if(campaign_type_id=1,cona.postcode,coma.postcode) postcode from records left join campaigns using(campaign_id) left join contacts using(urn) left join contact_addresses cona using(contact_id) left join companies using(urn) left join company_addresses coma using(company_id) where urn = '".intval($urn)."' and (cona.`primary`=1 or coma.`primary`=1) ";	
+	$result = $this->db->query($query);
+	if($result->num_rows()>0){
+		$pc = $result->row(0)->postcode;;
+		return $pc;
+	}
+}
 
 }

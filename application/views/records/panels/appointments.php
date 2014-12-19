@@ -1,5 +1,5 @@
     <div class="panel panel-primary">
-      <div class="panel-heading">Appointments<?php if(in_array("add appointments",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pull-right new-appointment"></span><?php } ?></div>
+      <div class="panel-heading">Appointments  <?php if(in_array("add appointments",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pull-right new-appointment marl"></span><?php } ?> <span class="glyphicon glyphicon-calendar pull-right view-calendar pointer"></span></div>
       <div class="panel-body appointment-panel"> 
       
               <?php $this->view('forms/edit_appointment_form.php',array("attendees"=>$attendees,"addresses"=>$addresses)); ?>

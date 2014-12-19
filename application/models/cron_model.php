@@ -98,7 +98,7 @@ class Cron_model extends CI_Model
             } else {
 				$qry = "update company_addresses set postcode = '$formatted_postcode' where company_id = '{$row['company_id']}'";
                 $this->db->query($qry);
-                $qry = "insert into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
+                $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
                 $this->db->query($qry);
             }
         }
@@ -118,9 +118,9 @@ class Cron_model extends CI_Model
                 $qry = "update contact_addresses set postcode = null where contact_id = '{$row['contact_id']}'";
                 $this->db->query($qry);
             } else {
-				$qry = "update contact_addresses set postcode = '$formatted_postcode' where company_id = '{$row['company_id']}'";
+				$qry = "update contact_addresses set postcode = '$formatted_postcode' where contact_id = '{$row['contact_id']}'";
                 $this->db->query($qry);
-                $qry = "insert into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
+                $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
                 $this->db->query($qry);
             }
         }
@@ -141,9 +141,9 @@ class Cron_model extends CI_Model
                 $qry = "update appointments set postcode = null where appointment_id = '{$row['appointment_id']}'";
                 $this->db->query($qry);
             } else {
-				$qry = "update appointments set postcode = '$formatted_postcode' where company_id = '{$row['company_id']}'";
+				$qry = "update appointments set postcode = '$formatted_postcode' where appointment_id = '{$row['appointment_id']}'";
                 $this->db->query($qry);
-                $qry = "insert into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
+                $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
                 $this->db->query($qry);
             }
         }

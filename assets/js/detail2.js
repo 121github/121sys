@@ -1929,6 +1929,10 @@ var record = {
             e.preventDefault();
             record.appointment_panel.hide_edit_form();
         });
+		$(document).on('click', '.view-calendar', function(e) {
+            e.preventDefault();
+            modal.show_calendar(record.urn);
+        });
 			$(document).on('change','.addresspicker',function(){
 				if($(this).val().length>0){
 				$(this).closest('form').find('input[name="postcode"]').val($(this).val());
@@ -2421,6 +2425,37 @@ confirm_move:function(moveUrl){
             record.update_panel.save($btn);
             $('#modal').modal('toggle');
         });
-    }
+    },
+	show_calendar: function(urn){
+		 $(".confirm-modal").hide();
+		var d = new Date();
+		var time = d.getTime();
+			$('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').html('<div class="responsive-calendar"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div>');
+		$('#modal').find('.modal-footer').html('<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button><select class="selectpicker"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="500">Any Distance</option></select>'); 
+		$('#modal').find('.selectpicker').selectpicker().on('change',function(){
+			modal.configure_calendar(urn,$(this).val(),true);
+		});
+		modal.configure_calendar(urn,10);
+	},
+	configure_calendar:function(urn,distance,renew){
+	$('.modal-title').text('Scheduled appointments within '+distance+' miles');
+		$.ajax({ url:helper.baseUrl+'calendar/get_events',
+		data: { modal:true,urn: urn,distance:distance,
+		campaigns:[record.campaign] },
+		dataType:"JSON",
+		type: "POST"}).done(function(response){	
+		if(renew){
+			 $('.responsive-calendar').responsiveCalendar('clearAll').responsiveCalendar('edit',response.result);
+		} else {
+			 $('.responsive-calendar').responsiveCalendar({
+	 time: '2014-12',
+    events: response.result
+			 });
+		}
+		});	
+	}
 
 }
