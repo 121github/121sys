@@ -5,7 +5,7 @@ There was a problem while finding the selected record details. Maybe it does not
 <div class="page-header">
 
 
-  <h2>View Details <small>URN: <?php echo $details['record']['urn'] ?> <?php echo (!empty($details['record']['campaign'])?" [". $details['record']['campaign']."]":"") ?></small><span class="pull-right">
+  <h2>View Details <small>URN: <?php echo $details['record']['urn'] ?> <?php echo (!empty($details['record']['campaign'])?" [". $details['record']['campaign']."]":"") ?></small> <?php echo (!empty($details['record']['logo'])?'<img style="max-height:40px" src="'.base_url().'assets/logos/'.$details['record']['logo'].'" />':""); ?> <span class="pull-right">
 
     <?php //show navigation if the user came from the list records page
 	if(!empty($nav['prev'])&&!$automatic&&in_array("search records",$_SESSION['permissions'])): ?>

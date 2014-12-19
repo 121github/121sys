@@ -40,6 +40,14 @@
         <input type="text" name="new_client" class="form-control pull-left marl" style="width:200px; display:none"
                placeholder="Enter the client name"/>
     </div>
+        <div class="form-group input-group-sm">
+        <p>Please set the record layout</p>
+        <select name="record_layout" class="selectpicker" required>
+ <?php foreach ($views as $view): ?>
+                <option value="<?php echo $view ?>"><?php echo str_replace('.php','',$view) ?></option>
+            <?php endforeach ?>
+        </select>
+    </div>
     <div class="form-group input-group-sm">
         <p>Please set the campaign status</p>
         <select name="campaign_status" class="selectpicker" required>

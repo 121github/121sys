@@ -12,6 +12,10 @@ class Form_model extends CI_Model
         $this->user_id = $_SESSION['user_id'];
 		}
     }
+	public function get_custom_views(){
+		$directory = APPPATH.'views/records/custom';
+		return array_diff(scandir($directory), array('..', '.'));
+	}
     public function users_in_group($group_id, $campaign)
     {
         $this->db->select("user_id id,name");

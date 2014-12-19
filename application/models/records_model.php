@@ -459,9 +459,9 @@ class Records_model extends CI_Model
     
     public function get_users($urn = "",$campaign_id="")
     {
-        if (empty($urn)):
+        if (empty($urn)&&empty($campaign_id)):
             $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
-        elseif(empty($campaign_id)):
+        elseif(empty($urn)&&!empty($campaign_id)):
 		   $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and user_id in(select user_id from users_to_campaigns where campaign_id = '$campaign_id') ";
 		else:
             $qry = "select user_id,name,user_email,user_telephone from ownership left join users using(user_id) where user_status = 1 and urn = '$urn' and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']}))";
@@ -610,7 +610,7 @@ class Records_model extends CI_Model
     public function get_campaign($urn = "")
     {
         if (intval($urn)) {
-            $this->db->select("records.campaign_id,campaign_name");
+            $this->db->select("records.campaign_id,campaign_name,record_layout,logo");
             $this->db->from('records');
             $this->db->join('campaigns', 'records.campaign_id = campaigns.campaign_id', 'left');
             $this->db->where("urn", $urn);

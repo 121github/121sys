@@ -18,7 +18,7 @@ function setEqualHeight(selector, triggerContinusly) {
         }
     })
 
-    $(selector).css("height", max+10 + "px")
+    $(selector).css("min-height", max+10 + "px")
 
     if (!!triggerContinusly) {
         $(document).on("input", selector, function() {
@@ -34,17 +34,33 @@ function setEqualHeight(selector, triggerContinusly) {
 }
 
 function match_heights(){
-	console.log("Match heights");
-	 	 setEqualHeight(".match .panel", true) ;
-	     setEqualHeight(".match-1 .panel", true) ;
-		 setEqualHeight(".match-2 .panel", true) ;
-		 setEqualHeight(".match-3 .panel", true) ;
-		 setEqualHeight(".match-4 .panel", true) ;
-		 setEqualHeight(".match-5 .panel", true) ;
-		 setEqualHeight(".match-6 .panel", true) ;
-		 setEqualHeight(".match-7 .panel", true) ;
-		 setEqualHeight(".match-8 .panel", true) ;
-		 setEqualHeight(".match-9 .panel", true) ;
+	 	 //setEqualHeight(".match .panel", true) ;
+	     //setEqualHeight(".match1", true) ;
+		 //setEqualHeight(".match2 .panel", true) ;
+		// setEqualHeight(".match3 .panel", true) ;
+		// setEqualHeight(".match4 .panel", true) ;
+		// setEqualHeight(".match5 .panel", true) ;
+		// setEqualHeight(".match6 .panel", true) ;
+		// setEqualHeight(".match7 .panel", true) ;
+		 //setEqualHeight(".match8 .panel", true) ;
+		// setEqualHeight(".match9 .panel", true) ;
+}
+
+//this function stretches any panel in a strech element to the remaining height of the row
+function stretch(){
+$.each($('.stretch'),function(){
+	rowheight = $(this).closest('.row').height();
+	colheight = $(this).closest('[class^="col"]').height();
+	diff = rowheight-colheight
+	eleheight = $(this).children().height();
+	panheight = $(this).closest('.panel').height();
+	if($(this).children().height()<diff+eleheight&&diff<100){
+	$(this).children().css("min-height",diff+eleheight+"px");
+	}
+	if($(this).closest('.panel').height()<diff+panheight&&diff<100){
+	$(this).closest('.panel').css("min-height",diff+panheight+"px");
+	}
+});
 }
 
  //this function initializes all the javascript widgets - tooltips, datepickers etc when the page loads. It can be ran after an ajax request to apply widgets to new page elements - ensure you are using the correct class names for each element type!

@@ -130,11 +130,13 @@ class Records extends CI_Controller
 		
 		
 		$this->User_model->campaign_access_check($urn);
-		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
+		$campaign = $this->Records_model->get_campaign($urn);
+		$campaign_id = $campaign['campaign_id'];
+		$campaign_layout = $campaign['record_layout'];
         $_SESSION['current_campaign']=$campaign_id;
         //get the features for the campaign and put the ID's into an array
         $campaign_features = $this->Form_model->get_campaign_features($campaign_id);
-				
+		//get the panels for the different features. These panels will be laoded in the view if they have been selected on the campaign
         $features          = array();
 		$panels = array();
         foreach ($campaign_features as $row) {
@@ -143,8 +145,10 @@ class Records extends CI_Controller
             $panels[$row['id']] = $row['path'];
 			}
         }
-        //get the details of the record for the specified features
+        //get the details of the record for the specified features eg appointment details etc. This saves us having to join every single table when they may not be needed
         $details          = $this->Records_model->get_details($urn, $features);
+		//add the logo file to the record details so we can load it in the view
+		$details['record']['logo'] = $campaign['logo'];
 		//check if this user has already updated the record and if they have they can select next without an update
 		$allow_skip = $this->Records_model->updated_recently($urn);
 		if(in_array("search records",$_SESSION['permissions'])){
@@ -239,7 +243,7 @@ class Records extends CI_Controller
             $data['email_options']      = $email_options;
         }
         
-        $this->template->load('default', 'records/custom/2col.php', $data);
+        $this->template->load('default', 'records/custom/'.(!empty($campaign_layout)?$campaign_layout:"2col.php"),$data);
         
     }
     

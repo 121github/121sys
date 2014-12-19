@@ -5,8 +5,9 @@
 function equalizer() {
     var height = 0;
     var maxheight = 0;
-    $.each($('.row').find('.col-md-6 .panel ul'), function() {
+    $.each($('.row').find('.col-md-6 .panel'), function() {
         height = $(this).height();
+		console.log(height);
         if (height > maxheight) {
             maxheight = height;
             var $row = $(this).closest('.row');
@@ -19,7 +20,7 @@ function equalizer() {
 
 function balance($row, height) {
     $.each($row.find('.col-md-6'), function() {
-        $(this).find('.panel ul').css('height', height);
+        $(this).find('.panel').css('height', height);
     });
 }
 
@@ -172,7 +173,7 @@ var record = {
                         if (k > record.limit-1) {
                             $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-history-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
                         }
-                        $('.history-panel').find('.panel-content').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>' + $body + '</tbody></table>');
+                        $('.history-panel').find('.panel-content').append('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
 
                     } else {
                         $('.history-panel').find('.panel-content').append('<p>This record has no history information yet</p>');
@@ -321,6 +322,7 @@ var record = {
                     $(panel).find(content).fadeIn()
                 });
                 flashalert.success(response.msg);
+				stretch()
             });
         },
         remove_history: function(history_id,modal) {
@@ -1503,10 +1505,11 @@ var record = {
                     if (k > record.limit-1) {
                         $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-email-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
                     }
-                    $('.email-panel').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table>');
+                    $('.email-panel').append('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
                     $('.email-panel').append('<p>No emails have been sent for this record</p>');
                 }
+						stretch();
             });
         }
     },
@@ -1631,13 +1634,14 @@ var record = {
 
                         $body += '<tr><td>' + val.date_created + '</td><td>' + val.contact_name + '</td><td>' + val.client_name + '</td><td>' + val.answer + '</td><td>' + val.is_completed + '</td><td>' + $options + '</td></tr>';
                     });
-                    $('.surveys-panel').append('<table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>Contact</th><th>User</th><th>NPS</th><th>Status</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table>');
+                    $('.surveys-panel').append('<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Date</th><th>Contact</th><th>User</th><th>NPS</th><th>Status</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
 
                     //alert("show surveys");
                 } else {
                     $('.surveys-panel').append('<p>No surveys have been created for this record</p>');
                     //alert("no surveys");
                 }
+				stretch()
             });
         }
     },
@@ -1736,7 +1740,7 @@ var record = {
         load_table: function(data) {
             var $panel = $('.custom-panel').find('.panel-content');
             $panel.empty();
-            var table = "<table class='table'>";
+            var table = "<div class='table-responsive'><table class='table  table-striped'>";
             var thead, detail_id;
             var tbody = "<tbody>";
             var contents = "";
@@ -1750,9 +1754,9 @@ var record = {
                 });
                 tbody += '<td><span class="glyphicon glyphicon-trash pull-right del-detail-btn marl" data-target="#modal" item-id="' + detail_id + '" ></span> <span class="glyphicon glyphicon-pencil pull-right edit-detail-btn"  item-id="' + detail_id + '"></span></td><tr>';
             });
-            table += thead + '</thead>' + tbody + '<tbody></table>';
+            table += thead + '</thead>' + tbody + '<tbody></table></div>';
             $panel.append(table);;
-
+			stretch()
 
 
         },
@@ -1863,6 +1867,7 @@ var record = {
                 } else {
                     $panel.find('.panel-content').append($('<p/>').text('There are no users allocated to this record. To take ownership you can update the record or use the edit button to assign it to another user.'));
                 }
+				stretch()
             });
         },
         edit: function($btn) {
@@ -1977,13 +1982,14 @@ var record = {
             var $panel = $('.appointment-panel').find('.panel-content');
             $panel.empty();
        	
-					var table = "<table class='table'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th><th>Options</th></tr></thead><tbody>";
+					var table = "<div class='table-responsive'><table class='table table-striped'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th><th>Options</th></tr></thead><tbody>";
                     $.each(data, function(i, val) {
                         if (data.length) {
                             table +='<tr><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><button class="btn btn-default btn-xs edit-appointment" item-id="' + val.appointment_id + '">Edit</button> <button class="btn btn-default btn-xs del-appointment" item-id="' + val.appointment_id + '">Delete</button></td></tr>';
                         }
                     });
-					$panel.append(table+"</tbody></table>");	
+					$panel.append(table+"</tbody></table></div>");
+					stretch()
         },
         load_form: function(data,id) {
             var $form = $('.appointment-panel').find('form');
@@ -2096,10 +2102,11 @@ var record = {
                     $.each(response.data, function(i, val) {
                         $body += '<tr><td>' + val.calldate + '</td><td>' + val.duration + '</td><td>' + val.servicename + '</td><td width="180"><a href="#" class="listen" data-id="' + val.call_id + '" data-path="'+val.filepath+'"><span class="speaker glyphicon glyphicon-play"></span> Listen</a> <span class="player-loading hidden">Please wait  <img src="' + helper.baseUrl + 'assets/img/ajax-load-black.gif"/></span></td></tr>';
                     });
-                    $panel.html('<table class="table table-striped table-responsive"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table>');
+                    $panel.html('<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
                     $panel.html($('<p/>').text(response.msg));
                 }
+				stretch()
             });
         },
         convert_recording: function($btn, id, path) {
@@ -2176,7 +2183,7 @@ var record = {
                     if (k > record.limit-1) {
                         body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-attachments-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
                     }
-                    $('.attachment-list').append('<table class="table table-striped table-responsive"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table>');
+                    $('.attachment-list').append('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table></div>');
 
                     if (attachment_id) {
                         $panel.find('.attachment-list').find('.'+attachment_id).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);
@@ -2185,6 +2192,7 @@ var record = {
                 else {
                     $panel.find('.attachment-list').append('<p>This record has no attachments</p>');
                 }
+				stretch()
             });
         },
         show_all_attachments: function(btn) {
@@ -2433,7 +2441,7 @@ confirm_move:function(moveUrl){
 			$('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').html('<div class="responsive-calendar"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div>');
+        }).find('.modal-body').html('<img id="modal-loading" src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif"/><div class="responsive-calendar" style="display:none"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div>');
 		$('#modal').find('.modal-footer').html('<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button><select class="selectpicker"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="500">Any Distance</option></select>'); 
 		$('#modal').find('.selectpicker').selectpicker().on('change',function(){
 			modal.configure_calendar(urn,$(this).val(),true);
@@ -2453,8 +2461,10 @@ confirm_move:function(moveUrl){
 			 $('.responsive-calendar').responsiveCalendar({
 	 time: '2014-12',
     events: response.result
-			 });
+			 })
 		}
+		$('#modal-loading').hide();
+		$('.responsive-calendar').slideDown();
 		});	
 	}
 

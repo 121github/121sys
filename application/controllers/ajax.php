@@ -564,6 +564,7 @@ $this->_campaigns = campaign_access_dropdown();
     {
         if ($this->input->is_ajax_request()) {
             $result = $this->Records_model->get_ownership(intval($this->input->post("urn")));
+			$owners=array();
             foreach ($result as $row) {
                 $owners[] = $row['user_id'];
             }

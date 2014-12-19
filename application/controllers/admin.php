@@ -57,6 +57,7 @@ class Admin extends CI_Controller
         $options['clients']   = $this->Form_model->get_clients();
         $options['groups']    = $this->Form_model->get_groups();
         $options['campaigns'] = $this->Form_model->get_campaigns();
+		$options['views'] = $this->Form_model->get_custom_views();
         $data                 = array(
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
@@ -205,7 +206,9 @@ class Admin extends CI_Controller
             if (empty($form['max_quote_days'])) {
                 $form['max_quote_days'] = NULL;
             }
-
+			if (empty($form['record_layout'])) {
+                $form['record_layout'] = "2col.php";
+            }
             //Form to save the backup by campaign settings
             $backup_form = array();
             $backup_form['months_ago'] = $form['months_ago'];
