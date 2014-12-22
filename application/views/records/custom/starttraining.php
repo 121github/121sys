@@ -41,12 +41,12 @@ There was a problem while finding the selected record details. Maybe it does not
 </div>
 </div>
 <div class="row">
-  <div class="col-md-6 col-sm-12"> 
+  <div class="col-md-5 col-sm-12"> 
   <span class="stretch-panel">
   <?php $this->view('records/panels/appointments.php',$details); ?>
   </span>
 </div>
-  <div class="col-md-6 col-sm-12"> 
+  <div class="col-md-7 col-sm-12"> 
   <?php $this->view('records/panels/emails.php',$details); ?>
 </div>
 </div>
