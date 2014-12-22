@@ -2,27 +2,12 @@
 /* ==========================================================================
  RECORD DETAILS PAGE
  ========================================================================== */
-function equalizer() {
-    var height = 0;
-    var maxheight = 0;
-    $.each($('.row').find('.col-md-6 .panel'), function() {
-        height = $(this).height();
-		console.log(height);
-        if (height > maxheight) {
-            maxheight = height;
-            var $row = $(this).closest('.row');
-            balance($row, height);
-        }
 
-    });
 
-}
-
-function balance($row, height) {
-    $.each($row.find('.col-md-6'), function() {
-        $(this).find('.panel').css('height', height);
-    });
-}
+//when all the ajax requests have finished we run the stretch function to align the panels
+$(document).ajaxStop(function () {
+      stretch();
+  });
 
 var record = {
     init: function(urn, role, campaign, permissions) {
@@ -179,7 +164,7 @@ var record = {
                         $('.history-panel').find('.panel-content').append('<p>This record has no history information yet</p>');
                     }
                 }
-						stretch();
+						;
             });
 	
         },
@@ -322,7 +307,7 @@ var record = {
                     $(panel).find(content).fadeIn()
                 });
                 flashalert.success(response.msg);
-				stretch()
+				
             });
         },
         remove_history: function(history_id,modal) {
@@ -1509,7 +1494,7 @@ var record = {
                 } else {
                     $('.email-panel').append('<p>No emails have been sent for this record</p>');
                 }
-						stretch();
+						;
             });
         }
     },
@@ -1641,7 +1626,7 @@ var record = {
                     $('.surveys-panel').append('<p>No surveys have been created for this record</p>');
                     //alert("no surveys");
                 }
-				stretch()
+				
             });
         }
     },
@@ -1755,10 +1740,7 @@ var record = {
                 tbody += '<td><span class="glyphicon glyphicon-trash pull-right del-detail-btn marl" data-target="#modal" item-id="' + detail_id + '" ></span> <span class="glyphicon glyphicon-pencil pull-right edit-detail-btn"  item-id="' + detail_id + '"></span></td><tr>';
             });
             table += thead + '</thead>' + tbody + '<tbody></table></div>';
-            $panel.append(table);;
-			stretch()
-
-
+            $panel.append(table);
         },
         load_form: function(data,id) {
             var $form = $('.custom-panel').find('form');
@@ -1867,7 +1849,7 @@ var record = {
                 } else {
                     $panel.find('.panel-content').append($('<p/>').text('There are no users allocated to this record. To take ownership you can update the record or use the edit button to assign it to another user.'));
                 }
-				stretch()
+				
             });
         },
         edit: function($btn) {
@@ -1989,7 +1971,7 @@ var record = {
                         }
                     });
 					$panel.append(table+"</tbody></table></div>");
-					stretch()
+					
         },
         load_form: function(data,id) {
             var $form = $('.appointment-panel').find('form');
@@ -2106,7 +2088,7 @@ var record = {
                 } else {
                     $panel.html($('<p/>').text(response.msg));
                 }
-				stretch()
+				
             });
         },
         convert_recording: function($btn, id, path) {
@@ -2192,7 +2174,7 @@ var record = {
                 else {
                     $('.attachment-list').append('<p>This record has no attachments</p>');
                 }
-				stretch()
+				
             });
         },
         show_all_attachments: function(btn) {

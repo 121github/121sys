@@ -33,6 +33,7 @@ There was a problem while finding the selected record details. Maybe it does not
   
 </div>
   <div class="col-md-4 col-sm-12"> 
+  <?php $this->view('records/panels/contacts.php',$details); ?>
   <?php $this->view('records/panels/sticky.php',$details); ?>
 </div>
   <div class="col-md-4 col-sm-12"> 
