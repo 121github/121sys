@@ -26,23 +26,25 @@ There was a problem while finding the selected record details. Maybe it does not
 </div>
 <div class="row">
   <div class="col-md-4 col-sm-12"> 
-   <span class="stretch-panel">
+ <span class="stretch-panel">
   <?php $this->view('records/panels/company.php',$details); ?>
-   </span>
-</div>
+  </span>
+ </div>
+     <div class="col-md-4 col-sm-12"> 
+      <span class="stretch-panel">
+        <?php $this->view('records/panels/contacts.php',$details); ?>
+        </span>
+          <?php $this->view('records/panels/webform.php',$details); ?>
+              <?php $this->view('records/panels/scripts.php',$details); ?>
+    </div>
   <div class="col-md-4 col-sm-12"> 
-    <span class="stretch-panel">
-  <?php $this->view('records/panels/contacts.php',$details); ?>
-      </span>
-  <?php $this->view('records/panels/webform.php',$details); ?>
+    <?php $this->view('records/panels/record_update.php',$details); ?>
+  </div>
+</div>
 
-    <?php $this->view('records/panels/scripts.php',$details); ?>
 
-</div>
-  <div class="col-md-4 col-sm-12"> 
-  <?php $this->view('records/panels/record_update.php',$details); ?>
-</div>
-</div>
+
+
 <div class="row">
   <div class="col-md-6 col-sm-12"> 
   <span class="stretch-panel">

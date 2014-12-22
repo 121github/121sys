@@ -610,7 +610,7 @@ class Records_model extends CI_Model
     public function get_campaign($urn = "")
     {
         if (intval($urn)) {
-            $this->db->select("records.campaign_id,campaign_name,record_layout,logo");
+            $this->db->select("records.campaign_id,campaign_name,campaign_type_id,record_layout,logo");
             $this->db->from('records');
             $this->db->join('campaigns', 'records.campaign_id = campaigns.campaign_id', 'left');
             $this->db->where("urn", $urn);
