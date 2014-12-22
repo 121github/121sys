@@ -6,54 +6,20 @@
     }
   }
    
-function setEqualHeight(selector, triggerContinusly) {
-
-    var elements = $(selector);
-    elements.css("height", "auto")
-    var max = Number.NEGATIVE_INFINITY;
-
-    $.each(elements, function(index, item) {
-        if ($(item).height() > max) {
-            max = $(item).height()
-        }
-    })
-
-    $(selector).css("min-height", max+10 + "px")
-
-    if (!!triggerContinusly) {
-        $(document).on("input", selector, function() {
-            setEqualHeight(selector, false)
-        })
-
-       $(window).resize(function() {
-            setEqualHeight(selector, false)
-       })
-    }
-
-
-}
-
-function match_heights(){
-	 	 //setEqualHeight(".match .panel", true) ;
-	     //setEqualHeight(".match1", true) ;
-		 //setEqualHeight(".match2 .panel", true) ;
-		// setEqualHeight(".match3 .panel", true) ;
-		// setEqualHeight(".match4 .panel", true) ;
-		// setEqualHeight(".match5 .panel", true) ;
-		// setEqualHeight(".match6 .panel", true) ;
-		// setEqualHeight(".match7 .panel", true) ;
-		 //setEqualHeight(".match8 .panel", true) ;
-		// setEqualHeight(".match9 .panel", true) ;
-}
-
 //this function stretches any panel in a strech element to the remaining height of the row
 function stretch(){
 $.each($('.stretch-panel'),function(){
 	rowheight = $(this).closest('.row').height();
 	colheight = $(this).closest('[class^="col"]').height();
-	diff = rowheight-colheight
+	if(rowheight-colheight<100){
+		diff = rowheight-colheight;
+	} else {
+		diff=100;
+	}
+	
+	
 	panheight = $(this).find('.panel').height();
-	if($(this).find('.panel').height()<diff+panheight&&diff<100){
+	if($(this).find('.panel').height()<diff+panheight){
 	$(this).find('.panel').css("min-height",diff+panheight+"px");
 	}
 });
@@ -63,7 +29,7 @@ $.each($('.stretch-element'),function(){
 	diff = rowheight-colheight
 	eleheight = $(this).children().height();
 	panheight = $(this).closest('.panel').height();
-	if($(this).children().height()<diff+eleheight&&diff<100){
+	if($(this).children().height()<diff+eleheight){
 	$(this).children().css("min-height",diff+eleheight+"px");
 	}
 });
