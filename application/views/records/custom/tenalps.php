@@ -24,13 +24,11 @@ There was a problem while finding the selected record details. Maybe it does not
     <?php endif ?>
     </span></h2>
 </div>
-<?php $this->firephp->log($panels); ?>
 <div class="row">
   <div class="col-md-4 col-sm-12"> 
    <span class="stretch">
   <?php $this->view('records/panels/company.php',$details); ?>
    </span>
-      <?php $this->view('records/panels/ownership.php',$details); ?>
 </div>
   <div class="col-md-4 col-sm-12"> 
     <span class="stretch">
