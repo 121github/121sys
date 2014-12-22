@@ -26,7 +26,7 @@ There was a problem while finding the selected record details. Maybe it does not
 </div>
 <div class="row">
   <div class="col-md-4 col-sm-12"> 
-   <span class="stretch">
+   <span class="stretch-panel">
   <?php $this->view('records/panels/company.php',$details); ?>
    </span>
    <?php $this->view('records/panels/scripts.php',$details); ?>
@@ -42,7 +42,7 @@ There was a problem while finding the selected record details. Maybe it does not
 </div>
 <div class="row">
   <div class="col-md-6 col-sm-12"> 
-  <span class="stretch">
+  <span class="stretch-panel">
   <?php $this->view('records/panels/appointments.php',$details); ?>
   </span>
 </div>

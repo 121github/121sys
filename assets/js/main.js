@@ -48,7 +48,16 @@ function match_heights(){
 
 //this function stretches any panel in a strech element to the remaining height of the row
 function stretch(){
-$.each($('.stretch'),function(){
+$.each($('.stretch-panel'),function(){
+	rowheight = $(this).closest('.row').height();
+	colheight = $(this).closest('[class^="col"]').height();
+	diff = rowheight-colheight
+	panheight = $(this).find('.panel').height();
+	if($(this).find('.panel').height()<diff+panheight&&diff<100){
+	$(this).find('.panel').css("min-height",diff+panheight+"px");
+	}
+});
+$.each($('.stretch-element'),function(){
 	rowheight = $(this).closest('.row').height();
 	colheight = $(this).closest('[class^="col"]').height();
 	diff = rowheight-colheight
@@ -56,9 +65,6 @@ $.each($('.stretch'),function(){
 	panheight = $(this).closest('.panel').height();
 	if($(this).children().height()<diff+eleheight&&diff<100){
 	$(this).children().css("min-height",diff+eleheight+"px");
-	}
-	if($(this).closest('.panel').height()<diff+panheight&&diff<100){
-	$(this).closest('.panel').css("min-height",diff+panheight+"px");
 	}
 });
 }
