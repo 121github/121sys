@@ -692,7 +692,7 @@ class Records_model extends CI_Model
                     $info[$id][$k]["id"]   = $detail['detail_id'];
                     $info[$id][$k]["code"] = $stuff1[$k];
                     $info[$id][$k]["name"] = $k;
-					if($detail['formatted_date']){
+					if(isset($detail['formatted_date'])){
 						 $info[$id][$k]["formatted"] = $detail['formatted_date'];
 					}
                     if (isset($stuff2[$k])) {
