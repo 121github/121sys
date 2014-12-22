@@ -1,7 +1,7 @@
 var admin = {
     //initialize all the generic javascript datapickers etc for this page
     init: function() {
-        $(document).on('change', '.campaign-select', function(e) {
+        $(document).on('change', '#client-select', function(e) {
             if ($(this).val() == "other") {
                 $(this).closest('.form-group').find('input[type="text"]').show()
             } else {

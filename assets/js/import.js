@@ -5,7 +5,11 @@ var importer = {
         $(document).on('change', '#source', function(e) {
             importer.check_source($(this));
         });
-
+		$(document).on('blur', '#new_source', function(e) {
+            if($(this).val().length>0){
+				 importer.add_source();
+			}
+        });
         $(document).on('change', '#campaign', function() {
             importer.show_campaign_type();
         });
@@ -57,6 +61,28 @@ var importer = {
 
 
     },
+	add_source:function(){
+		 $.ajax({
+            url: helper.baseUrl + 'import/add_source',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                source: $('#new_source').val()
+            }
+        }).done(function(response) {
+			if(response.success){
+				$('#source option').each(function(){
+					$(this).removeAttr('selected');
+				});
+				$('#source').append('<option selected value="'+response.data+'">'+$('#new_source').val()+'</option>');	
+			$('#new_source').hide();
+			$('#source').selectpicker('render').selectpicker('refresh')
+			} else {
+			flashalert.danger("This data source already exists");	
+			}
+		
+		});
+	},
     importcsv: function(filename) {
         $.ajax({
             url: helper.baseUrl + 'import/import_csv',
@@ -283,11 +309,27 @@ var importer = {
             dataType: "JSON"
         }).done(function(response) {
             if (response.success) {
-                flashalert.success("The import was successful");
-				$('#import-progress').html("<span class='green'>Import was completed</span>");
+                  importer.tidy_up();
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while adding the company addresses</span>");
                 flashalert.danger("Import failed while adding the company addresses");
+				importer.undo_changes();
+            }
+        });
+    },
+	    tidy_up: function() {
+        $('#import-progress').text("Cleaning up any mess...");
+        $.ajax({
+            url: helper.baseUrl + 'import/tidy_up',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if (response.success) {
+                flashalert.success("The import was successful");
+				$('#import-progress').html("<span class='green'>Import was completed</span>");
+            } else {
+				$('#import-progress').html("<span class='red'>Import failed while cleaning up</span>");
+                flashalert.danger("Import failed while cleaning up");
 				importer.undo_changes();
             }
         });

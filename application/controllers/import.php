@@ -23,6 +23,20 @@ echo json_encode(array("success"=>true));
 }
 }
 	
+	public function add_source(){
+	$source = $this->input->post('source');
+	$this->db->insert('data_sources',array("source_name"=>$source));
+	if($this->db->_error_message()){	
+	 echo json_encode(array(
+            "success"=>false
+        ));
+		exit;
+	}
+	$id = $this->db->insert_id();
+	 echo json_encode(array(
+            "success"=>true,"data" => $id
+        ));
+	}
 	  //this loads the data management view
     public function index()
     {
@@ -208,8 +222,11 @@ echo json_encode(array("success"=>true));
         $qry_fields  = $this->Import_model->get_fields("record_details");
         if (!empty($qry_fields)) {
             $insert_query = "insert into record_details (detail_id" . $qry_fields['table_fields'] . ") select ''" . $qry_fields['import_fields'] . " from importcsv";
+			$fix_details = "delete from record_details where c1 is null and c2 is null and c3 is null and c4 is null and c5 is null and d1 is null and d2 is null and d3 is null and dt1 is null and dt2 is null and n1 is null and n2 is null and n3 is null";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
+			//clean up any empty rows in record details
+			$this->db->query($fix_details);
         }
         echo json_encode(array(
             "success" => true
@@ -243,7 +260,7 @@ echo json_encode(array("success"=>true));
 		if(!empty($number_descriptions)){
         foreach ($number_descriptions as $description) {
             $insert_query = "insert into contact_telephone (telephone_id,contact_id,description,telephone_number) select '',contact_id,'$description',contact_tel_" . $description . " from importcsv ";
-				$fix_telephone_numbers = "delete from company_telephone where trim(telephone_number) = '' or telephone_number is null";
+				$fix_telephone_numbers = "delete from contact_telephone where trim(telephone_number) = '' or telephone_number is null";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
 			$this->db->query($fix_telephone_numbers);
@@ -470,19 +487,34 @@ echo json_encode(array("success"=>true));
 		}
 		
 	}
+	//if we need to do anything AFTER the import has ran (eg: formatting/checking tables) we can add it to this function
+	public function tidy_up(){
+		sleep(2);
+		echo json_encode(array("success"=>true));
+	}
+	
+	//this function is used to merge contacts for when a record has multiple contacts
 	public function merge_contacts_by_clientref(){
-	$qry = "select name,urn,concat(companies.website,add1,postcode) as dupe from companies left join records using(urn) left join contacts using(urn) left join company_addresses using(company_id) group by concat(companies.website,add1,postcode) having count(concat(companies.website,add1,postcode)) > 1";
+	$qry = "select name,urn,concat(substring(companies.name, 1, 4 ),add1,postcode) as dupe from companies left join records using(urn) left join contacts using(urn) left join company_addresses using(company_id) where add1 is not null and postcode is not null group by concat(substring(companies.name, 1, 4 ),add1,postcode) having count(concat(substring(companies.name, 1, 4 ),add1,postcode)) > 1";
 	$array = $this->db->query($qry)->result_array();
 	$dupes = array();
 	foreach($array as $row){
 		$dupes[$row['dupe']]=array("name"=>$row['name'],"urn"=>$row['urn']);
 	}
 	foreach($dupes as $ref => $array){
-	$update = "update contacts left join companies using(urn) left join company_addresses using(company_id) set contacts.urn = {$array['urn']} where concat(companies.website,add1,postcode) = '$ref'";
+	$update = "update contacts left join companies using(urn) left join company_addresses using(company_id) set contacts.urn = {$array['urn']} where concat(substring(companies.name, 1, 4 ),add1,postcode) = '$ref'";
 	//echo $update.";<br>";
 	echo $array['name'] .": ". $ref.";<br>";
-//$this->db->query($update);
+	//$this->db->query($update);
+	$find_removed ="select urn from client_refs where concat(substring(companies.name, 1, 4 ),add1,postcode) = '$ref' and urn <> '{$array['urn']}'";
+	foreach($this->db->query($find_removed)->result_array() as $row){
+		//$this->db->query("delete from records where urn = '{$row['urn']}'");
+		//$this->db->query("delete from companies where urn = '{$row['urn']}'");
+		//$this->db->query("delete from records where urn = '{$row['urn']}'");
+			}
+	
 	}
+	
 	}
 	
 }
