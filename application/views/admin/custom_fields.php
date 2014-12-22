@@ -30,66 +30,96 @@
                 </tr>
                 <tr>
                   <td><div class="fields_container" style="display:none">
-                      <h4>Custom Text fields</h4>
-                      <div class="form-group form-inline">
-                        <label for="c1">1. Text field name</label>
-                        <input class="form-control" value="" name="c1" id="c1"/>
-                      </div>
-                      <div class="form-group form-inline">
-                        <label for="c2">2. Text field name</label>
-                        <input class="form-control" value="" name="c2" id="c2"/>
-                      </div>
-                      <div class="form-group form-inline">
-                        <label for="c3">3. Text field name</label>
-                        <input class="form-control" value="" name="c3" id="c3"/>
-                      </div>
-                      <div class="form-group form-inline">
-                        <label for="c4">4. Text field name</label>
-                        <input class="form-control" value="" name="c4" id="c4"/>
-                      </div>
-                      <div class="form-group form-inline">
-                        <label for="c5">5. Text field name</label>
-                        <input class="form-control" value="" name="c5" id="c5"/>
-                      </div>
-                      <hr />
-                      <h4>Custom Date fields</h4>
-                      <div class="form-group form-inline">
-                        <label for="d1">1. Date field name</label>
-                        <input class="form-control" value="" name="d1" id="d1"/>
-                      </div>
-                      <div class="form-group form-inline">
-                        <label for="d2">2. Date field name</label>
-                        <input class="form-control" value="" name="d2" id="d2"/>
-                      </div>
-                      <div class="form-group form-inline">
-                        <label for="d3">3. Date field name</label>
-                        <input class="form-control" value="" name="d3" id="d3"/>
-                      </div>
-                      <hr />
-                      <h4>Custom Datetime fields</h4>
-                      <div class="form-group form-inline">
-                        <label for="d1">1. Datetime field name</label>
-                        <input class="form-control" value="" name="dt1" id="dt1"/>
-                      </div>
-                      <div class="form-group form-inline">
-                        <label for="d2">2. Datetime field name</label>
-                        <input class="form-control" value="" name="dt2" id="dt2"/>
-                      </div>
-                      <hr />
-                      <h4>Custom Numeric fields</h4>
-                      <div class="form-group form-inline">
-                        <label for="d1">1. Numeric field name</label>
-                        <input class="form-control" value="" name="n1" id="n1"/>
-                      </div>
-                      <div class="form-group form-inline">
-                        <label for="d2">2. Numeric field name</label>
-                        <input class="form-control" value="" name="n2" id="n2"/>
-                      </div>
-                      <div class="form-group">
+                    <h4>Custom Text fields</h4>
+                    <table>
+                      <tr>
+                        <th>Text field name</th>
+                        <th>Visible</th>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="c1[name]" id="c1"/></td>
+                        <td><input type="checkbox" class="form-control" name="c1[visible]" id="c1_vis"/></td>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="c2[name]" id="c2"/></td>
+                        <td><input type="checkbox" class="form-control" name="c2[visible]" id="c2_vis"/></td>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="c3[name]" id="c3"/></td>
+                        <td><input type="checkbox" class="form-control" name="c3[visible]" id="c3_vis"/></td>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="c4[name]" id="c4"/></td>
+                        <td><input type="checkbox" class="form-control" name="c4[visible]" id="c4_vis"/></td>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="c5[name]" id="c5"/></td>
+                        <td><input type="checkbox" class="form-control" name="c5[visible]" id="c5_vis"/></td>
+                      </tr>
+                    </table>
+                    <hr />
+                    <h4>Custom Date fields</h4>
+                    <table>
+                      <tr>
+                        <th>Date field name</th>
+                        <th> Visible | </th>
+                        <th> | Renewal</th>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="d1[name]" id="d1"/></td>
+                        <td><input type="checkbox" class="form-control"  name="d1[visible]" id="d1_vis"/></td>
+                        <td><input type="checkbox"  class="form-control" name="d1[renewal]"/></td>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="d2[name]" id="d2"/></td>
+                        <td><input type="checkbox" class="form-control"  name="d2[visible]" id="d2_vis"/></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="d3[name]" id="d3"/></td>
+                        <td><input type="checkbox" class="form-control"  name="d3[visible]" id="d3_vis"/></td>
+                        <td></td>
+                      </tr>
+                    </table>
+                    <hr />
+                    <h4>Custom Datetime fields</h4>
+                    <table>
+                      <tr>
+                        <th>Datetime field name</th>
+                        <th>Visible</th>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="dt1[name]" id="dt1"/></td>
+                        <td><input type="checkbox" class="form-control" name="dt1[visible]" id="dt1_vis"/></td>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="dt2[name]" id="dt2"/></td>
+                        <td><input type="checkbox" class="form-control" name="dt2[visible]" id="dt2_vis"/></td>
+                      </tr>
+                    </table>
+                    <hr />
+                    <h4>Custom Numeric fields</h4>
+                    <table>
+                      <tr>
+                        <th>Numeric field name</th>
+                        <th>Visible</th>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="n1[name]" id="n1"/></td>
+                        <td><input type="checkbox" class="form-control"  name="n1[visible]" id="n1_vis"/></td>
+                      </tr>
+                      <tr>
+                        <td><input class="form-control" value="" name="n2[name]" id="n2"/></td>
+                        <td><input type="checkbox" class="form-control" name="n2[visible]" id="n2_vis"/></td>
+                      </tr>
+                    </table>
+                    <hr />
+                      <div class="form-group pull-right">
                         <button class="btn btn-primary"  id="save_fields" >Save</button>
                       </div>
-                    </div></td>
-                </tr>
+                    </div>
+                    </td>
+               </tr>         
               </table>
             </form>
           </div>
@@ -108,3 +138,4 @@ $(document).ready(function(){
 	admin.init();
 });
 </script> 
+

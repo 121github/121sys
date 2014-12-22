@@ -294,8 +294,15 @@ class Admin_model extends CI_Model
 		$this->db->delete('record_details_fields');
 			
 		foreach($post as $k=>$v){
-		if(!empty($v)){
-			$insert = array("campaign_id"=>$campaign,"field"=>$k,"field_name"=>$v,"is_select"=>"0");
+		if(!empty($v['name'])){
+			
+			$insert = array("campaign_id"=>$campaign,"field"=>$k,"field_name"=>$v['name'],"is_select"=>"0");
+			if(isset($v['visible'])){
+				$insert["is_visible"] = 1;
+			}
+			if($k=="d1"&&isset($v['renewal'])){
+				$insert["is_renewal"] = 1;
+			}
 			$this->db->insert("record_details_fields",$insert);
 		}
 			

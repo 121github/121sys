@@ -227,6 +227,11 @@ echo json_encode(array("success"=>true));
             $this->db->query($insert_query);
 			//clean up any empty rows in record details
 			$this->db->query($fix_details);
+			
+			$renewals = "update record_details rd left join records r using(urn) left join record_details_fields rdf on r.campaign_id = rdf.campaign_id set d1 = concat(
+year(curdate())+1,'-',month(d1),'-',day(d1)
+) where is_renewal = 1 and d1 < curdate()";
+$this->db->query($renewals);
         }
         echo json_encode(array(
             "success" => true

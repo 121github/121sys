@@ -13,6 +13,8 @@ class Migration_update_12 extends CI_Migration
     public function up()
     {
         $this->db->query("ALTER TABLE `record_details_fields` ADD `is_visible` INT NULL DEFAULT NULL");
+		$this->db->query("ALTER TABLE `record_details_fields` ADD `is_renewal` INT NULL DEFAULT NULL");
+		$this->db->query("ALTER TABLE `data_sources` ADD UNIQUE(`source_name`)");
        }
 
     public function down()
