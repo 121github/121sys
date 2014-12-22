@@ -670,13 +670,12 @@ class Records_model extends CI_Model
             
 			 if ($row['is_renewal'] == 1) {
 			 $date_formatted = "date_format(" . $row['field'] . ",'%D %b') formatted_date,";
-			 } else {
+			 }
             if (substr($row['field'], 0, 1) == "d") {
                 $sqlfield = "date_format(" . $row['field'] . ",'%d/%m/%Y')";
             } else {
                 $sqlfield = $row['field'];
             }
-			 }
             $fields .= "if($sqlfield is null,'-',$sqlfield)" . " as `" . $row['field_name'] . "`,  $date_formatted";
         }
         
