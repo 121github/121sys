@@ -649,7 +649,7 @@ class Records_model extends CI_Model
     
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
-        $fields_qry    = "select `field`,`field_name`,`is_select` from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
+        $fields_qry    = "select `field`,`field_name`,`is_select`,is_renewal from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
         $fields_result = $this->db->query($fields_qry)->result_array();
         $fields        = "";
         foreach ($fields_result as $row) {
@@ -667,12 +667,15 @@ class Records_model extends CI_Model
                 $stuff2[$row['field_name']] = $options;
             }
             
+			 if ($row['is_renewal'] == 1) {
+			 $sqlfield = "date_format(" . $row['field'] . ",'%D %b')";
+			 } else {
             if (substr($row['field'], 0, 1) == "d") {
                 $sqlfield = "date_format(" . $row['field'] . ",'%d/%m/%Y')";
             } else {
                 $sqlfield = $row['field'];
             }
-            
+			 }
             $fields .= "if($sqlfield is null,'-',$sqlfield)" . " as `" . $row['field_name'] . "`,";
         }
         
