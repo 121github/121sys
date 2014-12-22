@@ -17,6 +17,7 @@
       </div>
 
       <div class="attachment-list panel-body">
+       <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> 
       </div>
 
 

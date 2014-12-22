@@ -2190,7 +2190,7 @@ var record = {
                     }
                 }
                 else {
-                    $panel.find('.attachment-list').append('<p>This record has no attachments</p>');
+                    $('.attachment-list').append('<p>This record has no attachments</p>');
                 }
 				stretch()
             });
