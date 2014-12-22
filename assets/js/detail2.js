@@ -173,13 +173,13 @@ var record = {
                         if (k > record.limit-1) {
                             $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-history-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
                         }
-                        $('.history-panel').find('.panel-content').append('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                        $('.history-panel').find('.panel-content').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
 
                     } else {
                         $('.history-panel').find('.panel-content').append('<p>This record has no history information yet</p>');
                     }
                 }
-						match_heights();
+						stretch();
             });
 	
         },
@@ -1505,7 +1505,7 @@ var record = {
                     if (k > record.limit-1) {
                         $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-email-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
                     }
-                    $('.email-panel').append('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                    $('.email-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
                     $('.email-panel').append('<p>No emails have been sent for this record</p>');
                 }
@@ -1634,7 +1634,7 @@ var record = {
 
                         $body += '<tr><td>' + val.date_created + '</td><td>' + val.contact_name + '</td><td>' + val.client_name + '</td><td>' + val.answer + '</td><td>' + val.is_completed + '</td><td>' + $options + '</td></tr>';
                     });
-                    $('.surveys-panel').append('<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Date</th><th>Contact</th><th>User</th><th>NPS</th><th>Status</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                    $('.surveys-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Date</th><th>Contact</th><th>User</th><th>NPS</th><th>Status</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
 
                     //alert("show surveys");
                 } else {
@@ -1740,7 +1740,7 @@ var record = {
         load_table: function(data) {
             var $panel = $('.custom-panel').find('.panel-content');
             $panel.empty();
-            var table = "<div class='table-responsive'><table class='table  table-striped'>";
+            var table = "<div class='table-responsive'><table class='table table-striped table-condensed'>";
             var thead, detail_id;
             var tbody = "<tbody>";
             var contents = "";
@@ -1982,7 +1982,7 @@ var record = {
             var $panel = $('.appointment-panel').find('.panel-content');
             $panel.empty();
        	
-					var table = "<div class='table-responsive'><table class='table table-striped'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th><th>Options</th></tr></thead><tbody>";
+					var table = "<div class='table-responsive'><table class='table table-striped table-condensed'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th><th>Options</th></tr></thead><tbody>";
                     $.each(data, function(i, val) {
                         if (data.length) {
                             table +='<tr><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><button class="btn btn-default btn-xs edit-appointment" item-id="' + val.appointment_id + '">Edit</button> <button class="btn btn-default btn-xs del-appointment" item-id="' + val.appointment_id + '">Delete</button></td></tr>';
@@ -2102,7 +2102,7 @@ var record = {
                     $.each(response.data, function(i, val) {
                         $body += '<tr><td>' + val.calldate + '</td><td>' + val.duration + '</td><td>' + val.servicename + '</td><td width="180"><a href="#" class="listen" data-id="' + val.call_id + '" data-path="'+val.filepath+'"><span class="speaker glyphicon glyphicon-play"></span> Listen</a> <span class="player-loading hidden">Please wait  <img src="' + helper.baseUrl + 'assets/img/ajax-load-black.gif"/></span></td></tr>';
                     });
-                    $panel.html('<div class="table-responsive"><table class="table table-striped"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                    $panel.html('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
                     $panel.html($('<p/>').text(response.msg));
                 }
@@ -2183,7 +2183,7 @@ var record = {
                     if (k > record.limit-1) {
                         body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-attachments-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
                     }
-                    $('.attachment-list').append('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table></div>');
+                    $('.attachment-list').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table></div>');
 
                     if (attachment_id) {
                         $panel.find('.attachment-list').find('.'+attachment_id).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);

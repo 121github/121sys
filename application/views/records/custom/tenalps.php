@@ -29,13 +29,15 @@ There was a problem while finding the selected record details. Maybe it does not
  <span class="stretch-panel">
   <?php $this->view('records/panels/company.php',$details); ?>
   </span>
+  <?php $this->view('records/panels/scripts.php',$details); ?>
  </div>
      <div class="col-md-4 col-sm-12"> 
       <span class="stretch-panel">
         <?php $this->view('records/panels/contacts.php',$details); ?>
         </span>
           <?php $this->view('records/panels/webform.php',$details); ?>
-              <?php $this->view('records/panels/scripts.php',$details); ?>
+              <?php $this->view('records/panels/custom_info.php',$details); ?>
+            
     </div>
   <div class="col-md-4 col-sm-12"> 
     <?php $this->view('records/panels/record_update.php',$details); ?>
