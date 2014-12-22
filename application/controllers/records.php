@@ -145,6 +145,7 @@ class Records extends CI_Controller
             $panels[$row['id']] = $row['path'];
 			}
         }
+		$this->firephp->log($features);
         //get the details of the record for the specified features eg appointment details etc. This saves us having to join every single table when they may not be needed
         $details          = $this->Records_model->get_details($urn, $features);
 		//add the logo file to the record details so we can load it in the view
