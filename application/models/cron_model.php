@@ -214,7 +214,7 @@ class Cron_model extends CI_Model
         }
         
         //3.2 use google to update the rest
-        $this->db->select("postcode,contact_id");
+        $this->db->select("postcode,appointment_id");
         $this->db->join("locations", "locations.location_id=appointments.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("appointments")->result_array();
