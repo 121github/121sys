@@ -649,7 +649,7 @@ class Records_model extends CI_Model
     
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
-        $fields_qry    = "select `field`,`field_name`,`is_select` from record_details_fields where campaign_id = '$campaign' order by sort";
+        $fields_qry    = "select `field`,`field_name`,`is_select` from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
         $fields_result = $this->db->query($fields_qry)->result_array();
         $fields        = "";
         foreach ($fields_result as $row) {
