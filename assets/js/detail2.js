@@ -2163,7 +2163,7 @@ var record = {
             }).done(function(response) {
                 $panel.find('.attachment-list').empty();
                 var body = '';
-                if (response.data.length) {
+                if (response.data.length>0) {
                     //Use the k var only to know if there are more than x records
                     var k = 0;
                     $.each(response.data, function (key, val) {
