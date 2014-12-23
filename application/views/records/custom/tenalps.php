@@ -40,7 +40,7 @@ There was a problem while finding the selected record details. Maybe it does not
             
     </div>
   <div class="col-md-4 col-sm-12"> 
-    <?php $this->view('records/panels/record_update.php',$details); ?>
+    <?php $details['stretch'] = true; $this->view('records/panels/record_update.php',$details); ?>
   </div>
 </div>
 

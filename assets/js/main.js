@@ -27,10 +27,10 @@ $.each($('.stretch-element'),function(){
 	rowheight = $(this).closest('.row').height();
 	colheight = $(this).closest('[class^="col"]').height();
 	diff = rowheight-colheight
-	eleheight = $(this).children().height();
+	eleheight = $(this).height();
 	panheight = $(this).closest('.panel').height();
-	if($(this).children().height()<diff+eleheight){
-	$(this).children().css("min-height",diff+eleheight+"px");
+	if($(this).height()<diff+eleheight){
+	$(this).css("min-height",diff+eleheight+"px");
 	}
 });
 }

@@ -649,12 +649,12 @@ class Records_model extends CI_Model
     
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
-		$date_formatted = "";
-        $fields_qry    = "select `field`,`field_name`,`is_select`,is_renewal from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
+        $fields_qry    = "select `field`,`field_name`,`is_select`,is_renewal,format from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
         $fields_result = $this->db->query($fields_qry)->result_array();
         $fields        = "";
         foreach ($fields_result as $row) {
             $stuff1[$row['field_name']] = $row['field'];
+			$renewal[$row['field_name']] = $row['format'];
             if ($row['is_select'] == 1) {
                 $this->db->select("id,option");
                 $this->db->where(array(
@@ -667,16 +667,16 @@ class Records_model extends CI_Model
                 }
                 $stuff2[$row['field_name']] = $options;
             }
-            
-			 if ($row['is_renewal'] == 1) {
-			 $date_formatted = "date_format(" . $row['field'] . ",'%D %b') formatted_date,";
-			 }
+            /*			 
             if (substr($row['field'], 0, 1) == "d") {
-                $sqlfield = "date_format(" . $row['field'] . ",'%d/%m/%Y')";
+                $sqlfield = "date_format(" . $row['field'] . ",'%Y-%m-%d')";
             } else {
                 $sqlfield = $row['field'];
             }
-            $fields .= "if($sqlfield is null,'-',$sqlfield)" . " as `" . $row['field_name'] . "`,  $date_formatted";
+			*/
+			
+			$sqlfield = $row['field'];
+            $fields .= "if($sqlfield is null,'-',$sqlfield)" . " as `" . $row['field_name'] . "`,";
         }
         
         $select = $fields . "detail_id ";
@@ -692,21 +692,24 @@ class Records_model extends CI_Model
                     $info[$id][$k]["id"]   = $detail['detail_id'];
                     $info[$id][$k]["code"] = $stuff1[$k];
                     $info[$id][$k]["name"] = $k;
-					if(isset($detail['formatted_date'])){
-						 $info[$id][$k]["formatted"] = $detail['formatted_date'];
+					if(isset($renewal[$k])){
+					$info[$id][$k]["formatted"] = date($renewal[$k],strtotime($v));
+					$this->firephp->log($renewal[$k]);
 					}
                     if (isset($stuff2[$k])) {
                         $info[$id][$k]["options"] = $stuff2[$k];
                     }
-                    $info[$id][$k]["value"] = $v;
+                   	$info[$id][$k]["value"] = $v;
                     if (strpos($stuff1[$k], "c") !== false) {
                         $info[$id][$k]["type"] = "varchar";
                     } else if (substr($stuff1[$k], 1, 1) == "t") {
                         $info[$id][$k]["type"] = "datetime";
+						$info[$id][$k]["value"] = date("d/m/Y H:i",strtotime($v));
                     } else if (strpos($stuff1[$k], "n") !== false) {
                         $info[$id][$k]["type"] = "number";
                     } else {
                         $info[$id][$k]["type"] = "date";
+						$info[$id][$k]["value"] = date("d/m/Y",strtotime($v));
                     }
                 }
                 

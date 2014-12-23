@@ -1734,7 +1734,11 @@ var record = {
                 thead = "<thead><tr>";
                 $.each(detail, function(i, row) {
                     thead += "<th>" + row.name + "</th>";
+					if(row.formatted){
+					tbody += "<td class='" + row.code + "'>" + row.formatted + "</td>";
+					} else {
                     tbody += "<td class='" + row.code + "'>" + row.value + "</td>";
+					}
                     detail_id = row.id;
                 });
                 tbody += '<td><span class="glyphicon glyphicon-trash pull-right del-detail-btn marl" data-target="#modal" item-id="' + detail_id + '" ></span> <span class="glyphicon glyphicon-pencil pull-right edit-detail-btn"  item-id="' + detail_id + '"></span></td><tr>';

@@ -61,7 +61,7 @@
 		  $text = "This record has been parked and cannot not be dialed. \r\nReason for parking: ".$details['record']['park_reason']."\r\n".$parktext;   
 		   }
 		   ?>
-             <span class="stretch-element"><textarea name="comments" class="form-control <?php echo $color ?>" rows="1" placeholder="Enter the call notes here"><?php echo $text ?>
+             <textarea name="comments" class="form-control <?php echo $color ?> <?php if(isset($stretch)){ echo "stretch-element"; } ?>" rows="<?php echo isset($stretch)?1:3 ?>" placeholder="Enter the call notes here"><?php echo $text ?>
 </textarea></span>
           </div>
           <div class="form-group">
