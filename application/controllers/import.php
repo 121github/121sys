@@ -318,7 +318,7 @@ $this->db->query($renewals);
 	//create and update company sectors/subsectors
 		 public function create_sectors()
     {
-		$qry = "select distinct subsector_name,sector_name from importcsv";
+		$qry = "select distinct subsector_name,sector_name from importcsv where sector_name is not null and subsector_name is not null";
 		$result =  $this->db->query($qry)->result_array();
 		foreach($result as $row){
 			$insert = "insert ignore into sectors set sector_name = '{$row['sector_name']}'";
@@ -562,7 +562,7 @@ $this->db->query($renewals);
 FROM client_refs
 GROUP BY client_ref
 HAVING count( client_ref ) >1";	
-	$result = $this->db->query($qry)->result_array();
+	$result = $this->db->query($dupe_query)->result_array();
 	foreach($result as $row){
 	$contact_list = "";
 	$dupe = $row['client_ref'];
