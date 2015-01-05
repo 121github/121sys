@@ -1,5 +1,6 @@
 <?php
-//require('upload.php');
+require('upload.php');
+
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
