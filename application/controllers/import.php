@@ -445,7 +445,12 @@ $this->db->query($renewals);
                 "company_postcode" => "Postcode"
             );
             $fields['company_telephone'] = array(
-                "company_tel_Telephone" => "Company Telephone"
+            "company_tel_Telephone" => "Company Telephone",
+            "company_tel_Headquarters" => "Company Headquarters",
+			"company_tel_Reception" => "Company Reception",
+            "company_tel_Other" => "Company Other",
+            "company_tel_Mobile" => "Company Mobile",
+            "company_tel_Fax" => "Company Fax"
             );
         } else {
             $fields['contact_addresses'] = array(
