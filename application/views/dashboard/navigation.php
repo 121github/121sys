@@ -67,7 +67,7 @@
                     <?php } ?>
                     <!-- End Management -->
                      <!-- Email Dash -->
-                                        <?php if(in_array("log hours",$_SESSION['permissions'])){ ?>
+                                        <?php if(in_array("my emails",$_SESSION['permissions'])){ ?>
                                        <div class="accordion-group panel">
                         <div class="accordion-inner">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoEmailReport">
@@ -80,13 +80,7 @@
                                     <a href="<?php echo base_url() ?>reports/email/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
                                 </div>
                                 <div class="accordion-inner">
-                                    <a href="<?php echo base_url() ?>reports/email/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a>
-                                </div>
-                                <div class="accordion-inner">
                                     <a href="<?php echo base_url() ?>reports/email/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
-                                </div>
-                                <div class="accordion-inner">
-                                    <a href="<?php echo base_url() ?>reports/email/time/1" <?php echo @($inner=='time'?"class='active'":"") ?>>By Time</a>
                                 </div>
                             </div>
                         </div>
