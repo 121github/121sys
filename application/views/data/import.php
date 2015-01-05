@@ -62,7 +62,7 @@
         <i class="glyphicon glyphicon-plus"></i>
         <span>Select file...</span>
                                     <!-- The file input field used as target for the file upload widget -->
-                                    <input id="fileupload" type="file" name="files[]" data-url="<?php echo base_url()."data/import"; ?>">
+                                    <input id="fileupload" type="file" name="files[]" data-url="<?php echo base_url()."import/import_file"; ?>">
                                     </span>
                                     <br>
                                     <br>

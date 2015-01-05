@@ -68,6 +68,14 @@ echo json_encode(array("success"=>true));
     }
 	
 	
+    public function import_file()
+    {
+        $options               = array();
+        $options['upload_dir'] = dirname($_SERVER['SCRIPT_FILENAME']) . '/datafiles/';
+        $options['upload_url'] = base_url() . '/datafiles/';
+        $upload_handler        = new Upload($options, true);
+    }
+	
     public function import_csv()
     {
 	
