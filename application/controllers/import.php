@@ -611,7 +611,7 @@ HAVING count( client_ref ) >1";
 	}
 	
 	public function match_outcomes(){
-		if(!$this->input->post){
+		if(!$this->input->post()){
 		echo "<form method='post'>";
 	$outcome_list = "select * from 121sys.outcomes";
 	$outcomes = $this->db->query($outcome_list)->result_array();
