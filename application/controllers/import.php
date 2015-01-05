@@ -604,6 +604,13 @@ HAVING count( client_ref ) >1";
 	echo $tidy.";<br>";
 	echo $tidy2.";<br>";
 	//$this->db->query($tidy);	
+	
+	$outcome_list = "select * from outcomes";
+	$outcomes = $this->db->query($outcome_list)->result_array();
+	echo "121sys Outcomes<br>";
+	foreach($outcomes as $outcomes){
+	echo $outcomes['outcome_id']."=>".$outcomes['outcome']."<br>";
+	}
 	}
 	
 	public function update_history(){

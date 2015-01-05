@@ -48,7 +48,7 @@
 	                    <li><a class="campaign-filter" ref="#" style="color: green;">All Campaigns</a> </li>
 	                  </ul>
                   </div>
-                                    <?php if(!$all_emails){ ?>
+                                    <?php if($all_emails){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
