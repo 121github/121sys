@@ -122,8 +122,12 @@ echo json_encode(array("success"=>true));
         $this->db->query("ALTER TABLE `importcsv` DROP `company_id`");
 		}
 		$urn = 1;
-        //if the csv has no urn column we make one starting from the max urn in the records table
-            $urn = $this->db->query("select max(urn)+1 urn from records")->row()->urn;
+		$db_name = $this->db->database;
+        //if the csv has no urn column we get it from the records table auto increment
+            $urn = $this->db->query("SELECT `AUTO_INCREMENT` urn
+FROM  INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = '$db_name'
+AND   TABLE_NAME   = 'records'")->row()->urn;
             if (empty($urn)) {
                 $urn = 1;
             }
@@ -604,13 +608,32 @@ HAVING count( client_ref ) >1";
 	echo $tidy.";<br>";
 	echo $tidy2.";<br>";
 	//$this->db->query($tidy);	
+	}
 	
-	$outcome_list = "select * from outcomes";
+	public function match_outcomes(){
+		if(!$this->input->post){
+		echo "<form method='post'>";
+	$outcome_list = "select * from 121sys.outcomes";
 	$outcomes = $this->db->query($outcome_list)->result_array();
 	echo "121sys Outcomes<br>";
 	foreach($outcomes as $outcomes){
 	echo $outcomes['outcome_id']."=>".$outcomes['outcome']."<br>";
 	}
+	echo "<hr>";
+	$outcome_list = "select * from newbusiness.outcomes";
+	$outcomes = $this->db->query($outcome_list)->result_array();
+	echo "NBF Outcomes<br>";
+	foreach($outcomes as $outcomes){
+	echo $outcomes['outcome']." - <input name='outcome[{$outcomes['outcome_id']}]' value='' /><br>";
+	}
+	echo "<input type='submit' value='go?'";
+	echo "</form>";
+		} else {
+		foreach($this->input->post('outcome') as $nbf_id=>$newid){
+			echo "update records set outcome_id = $newid where outcome_id = $nbf_id and campaign_id = 3";
+			echo ";<br>";	
+		}
+		}
 	}
 	
 	public function update_history(){
