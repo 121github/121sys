@@ -986,7 +986,6 @@ class Reports extends CI_Controller
         } else {
             $group = "campaign";
         }
-
         $templates    = $this->Form_model->get_templates();
         $campaigns    = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
@@ -1016,8 +1015,13 @@ class Reports extends CI_Controller
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'all_emails'=> false
         );
+		//if its an agent then they can only see their own emails
+		if(in_array("log hours",$_SESSION['permissions'])){
+			 $data['all_emails']=false;
+		}
         $this->template->load('default', 'reports/email.php', $data);
     }
 

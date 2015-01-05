@@ -24,7 +24,7 @@
                   <input type="hidden" name="date_to">
                   <input type="hidden" name="template">
                   <input type="hidden" name="campaign">
-                  <?php if(in_array("log hours",$_SESSION['permissions'])){ ?>
+                  <?php if($all_emails){ ?>
                   <input type="hidden" name="team">
                    <input type="hidden" name="agent">
                    <?php } ?>
