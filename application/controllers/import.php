@@ -77,11 +77,13 @@ echo json_encode(array("success"=>true));
 		if(empty($csv_file)){
 		$csv_file = "import_sample.csv";	
 		}
+		$csv_file = "142689205154aaaed1900614.17537355.csv";
         $output   = array();
 		//run the bash script
 		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table . ' ' . $database;
 		$this->firephp->log($command);
         exec($command,$output);
+		$this->firephp->log($output);
 		if($this->Import_model->check_import()){
         //if csv imports successfully
         echo json_encode(array(
