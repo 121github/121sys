@@ -24,8 +24,10 @@
                   <input type="hidden" name="date_to">
                   <input type="hidden" name="template">
                   <input type="hidden" name="campaign">
+                  <?php if(in_array("log hours",$_SESSION['permissions'])){ ?>
                   <input type="hidden" name="team">
                    <input type="hidden" name="agent">
+                   <?php } ?>
                   <input type="hidden" name="source">
                   <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button></div>
                   <div class="btn-group">

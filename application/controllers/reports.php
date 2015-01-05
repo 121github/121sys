@@ -1021,6 +1021,7 @@ class Reports extends CI_Controller
         $this->template->load('default', 'reports/email.php', $data);
     }
 
+
     //this controller sends the campaign appointment report data back the page in JSON format. It ran when the page loads and any time the filter is changed
     public function email_data()
     {
@@ -1030,6 +1031,12 @@ class Reports extends CI_Controller
             $form = $this->input->post();
             $form["date_from"] = ($this->input->post("date_from"))?$this->input->post("date_from"):date('Y-m-d',strtotime("2014-07-02"));
             $form["date_to"] = ($this->input->post("date_to"))?$this->input->post("date_to"):date('Y-m-d');
+			
+			if(in_array("log hours",$_SESSION['permissions'])){
+				$form['agent'] = $_SESSION['user_id'];
+			}
+			
+			
             $results = $this->Report_model->get_email_data($form);
 
             $date_from_search = $form["date_from"];
