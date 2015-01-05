@@ -1,4 +1,7 @@
-<?php if(!isset($details['record']['urn'])): ?>
+<?php if(!isset($details['record']['urn'])):
+//if this is set to true it forces the first contact in the panel to be expanded when loaded on b2b campaigns
+$details['expand_contacts']=true;
+ ?>
 
 There was a problem while finding the selected record details. Maybe it does not exist or has been deleted.
 <?php else: ?>

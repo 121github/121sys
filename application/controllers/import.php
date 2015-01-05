@@ -318,7 +318,7 @@ $this->db->query($renewals);
 	//create and update company sectors/subsectors
 		 public function create_sectors()
     {
-		$qry = "select distinct subsector_name,sector_name from importcsv where sector_name is not null and subsector_name is not null";
+		$qry = "select distinct subsector_name,sector_name from importcsv";
 		$result =  $this->db->query($qry)->result_array();
 		foreach($result as $row){
 			$insert = "insert ignore into sectors set sector_name = '{$row['sector_name']}'";
@@ -555,44 +555,52 @@ $this->db->query($renewals);
 	
 	
 	public function merge_by_client_ref(){
-	$delete_array = array();
-	$keep_array = array();
 	//find all client_refs that appear more than once
 	$dupe_query = "SELECT client_ref,urn
 FROM client_refs
 GROUP BY client_ref
 HAVING count( client_ref ) >1";	
 	$result = $this->db->query($dupe_query)->result_array();
+	$delete_array = array();
+	$keep_array = array();
 	foreach($result as $row){
-	$contact_list = "";
+	$list = "";
+	$comlist = "";
 	$dupe = $row['client_ref'];
 	$urn = $row['urn'];
 	$keep_array[$urn] = $urn;
 	//now find all contacts with the client ref
 	$qry = "select contact_id,urn from client_refs left join contacts using(urn) where client_ref = '$dupe'";
-	$new_result = $this->db->query($qry)->result_array();
-	foreach($new_result as $list_item){
+	$con_result = $this->db->query($qry)->result_array();
+	foreach($con_result as $list_item){
 	$delete_array[$list_item['urn']] = $list_item['urn'];
 	$list .= $list_item['contact_id'].",";
 	}
+	$list = rtrim($list,",");
+	echo $dupe.";<br>";
 	$update = "update contacts set contacts.urn = $urn where contact_id in($list)";
 	echo $update.";<br>";
 	//now update all the companies
 	$qry = "select company_id,urn from client_refs left join companies using(urn) where client_ref = '$dupe'";
-	$new_result = $this->db->query($qry)->result_array();
-	foreach($new_result as $list_item){
+	$com_result = $this->db->query($qry)->result_array();
+	foreach($com_result as $list_item){
 	$delete_array[$list_item['urn']] = $list_item['urn'];
-	$list .= $list_item['company_id'].",";
+	$comlist .= (!empty($list_item['company_id'])?$list_item['company_id'].",":"");
 	}
-	$update = "update companies set companies.urn = $urn where company_id in($list)";
+	$comlist = rtrim($comlist,",");
+	$update = "delete from companies where companies.urn <> $urn and company_id in($comlist)";
 	echo $update.";<br>";
 	}
 	
+	foreach($keep_array as $ignore){
+	unset($delete_list[$ignore]);	
+	}
+	
 	$keep_list = implode(', ', $keep_array);
-	$delete_list = implode(', ', $delete_list);
+	$delete_list = implode(', ', $delete_array);
 	//tidy up the records table removing all the redunant records that have been merged
-	$tidy = "delete from records where urn in($delete_list) and urn not in($keep_array)";
-	$tidy2 = "delete from client_refs where urn in($delete_list) and urn not in($keep_array)";
+	$tidy = "delete from records where urn in($delete_list)";
+	$tidy2 = "delete from client_refs where urn in($delete_list)";
 	echo $tidy.";<br>";
 	echo $tidy2.";<br>";
 	//$this->db->query($tidy);	

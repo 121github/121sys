@@ -63,6 +63,7 @@ $(document).ready( function () {
 		 		},                                                                                         
 		"columns": [                                                                                           
             { "data": "campaign_name"},
+			{ "data": "name" },
             { "data": "fullname" },
             { "data": "outcome" },
             { "data": "date_updated" },

@@ -28,13 +28,17 @@ class Records extends CI_Controller
             "column" => "campaign_name",
             "header" => "Campaign"
         );
+		$visible_columns[] = array(
+            "column" => "name",
+            "header" => "Company"
+        );
         $visible_columns[] = array(
             "column" => "fullname",
-            "header" => "Client Name"
+            "header" => "Contact"
         );
         $visible_columns[] = array(
             "column" => "outcome",
-            "header" => "Last Outcome"
+            "header" => "Outcome"
         );
         $visible_columns[] = array(
             "column" => "date_updated",
