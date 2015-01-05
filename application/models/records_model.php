@@ -93,6 +93,7 @@ class Records_model extends CI_Model
     {
         $table_columns = array(
             "campaign_name",
+			"name",
             "fullname",
             "outcome",
             "date_format(r.date_updated,'%d/%m/%Y %H:%i')",
@@ -101,7 +102,7 @@ class Records_model extends CI_Model
         );
         
         $join = array();
-        $qry  = "select r.urn, outcome, if(companies.name is null,'na',companies.name) name, fullname, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
+        $qry  = "select r.urn, outcome, if(name is null,'na',name) name, fullname, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
@@ -168,6 +169,7 @@ class Records_model extends CI_Model
     {
         $table_columns = array(
             "campaign_name",
+			"name",
             "fullname",
             "outcome",
             "date_format(r.date_updated,'%d/%m/%Y %H:%i')",
@@ -182,6 +184,7 @@ class Records_model extends CI_Model
         }
         
         //these joins are mandatory for sorting by name, outcome or campaign
+		$join['companies']  = " left join companies com on com.urn = r.urn ";
         $join['contacts']  = " left join contacts con on con.urn = r.urn ";
         $join['outcomes']  = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
