@@ -86,7 +86,7 @@ echo json_encode(array("success"=>true));
 		if(empty($csv_file)){
 		$csv_file = "import_sample.csv";	
 		}
-		//$csv_file = "142689205154aaaed1900614.17537355.csv";
+		$csv_file = "88743374654aabe64425770.05885833.csv";
         $output   = array();
 		//run the bash script
 		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table . ' ' . $database;
