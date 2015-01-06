@@ -599,7 +599,7 @@ var backup_restore = {
                                         + "</td><td class='records_num'>"
                                         + "<a class='records_url' href='" + response.records_url + "'><span class='records_val'>" + response.records_num + "</span></a>"
                                         + "</td><td class=''>"
-                                        + "<span class='glyphicon glyphicon-save btn-new-backup pointer' style='display:none'></span>"
+                                        + "<span class='glyphicon glyphicon-save btn-new-backup pointer'></span>"
                                         + "</td></tr>");
                                 $('.date').datetimepicker({
                                     pickTime: false

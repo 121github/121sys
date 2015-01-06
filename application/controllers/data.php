@@ -729,7 +729,13 @@ $this->_campaigns = campaign_access_dropdown();
             if (!empty($results)) {
                 //Create the file if doesn't exist
                 if (!file_exists(BACKUP_PATH)) {
-                    mkdir(BACKUP_PATH, 0755);
+                    if (!mkdir(BACKUP_PATH, 0755)){
+                        echo json_encode(array(
+                            "success" => false,
+                            "msg" => "ERROR: Backup ended with errors. Backup path does not exist"
+                        ));
+                        return;
+                    }
                 }
                 $form['path'] = BACKUP_PATH.$form['name'].'.sql';
                 $form['user_id'] = $_SESSION['user_id'];
@@ -769,7 +775,7 @@ $this->_campaigns = campaign_access_dropdown();
                     exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' history --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['history']);
                     exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' cross_transfers --where="history_id IN (select history_id from history where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['cross_transfers']);
                     exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' record_details --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['record_details']);
-                    exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' email_history --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['email_history']);
+                    exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' email_history --where="urn IN '.$urn_list.'" --compact --no-create-info --extended-insert --net_buffer_length=5000', $qry['email_history']);
                     exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' email_history_attachments --where="email_id IN (select email_id from email_history where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['email_history_attachments']);
                     exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' appointments --where="urn IN '.$urn_list.'" --compact --no-create-info', $qry['appointments']);
                     exec('mysqldump -u'.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' appointment_attendees --where="appointment_id IN (select appointment_id from appointments where urn IN '.$urn_list.')" --compact --no-create-info  --single-transaction', $qry['appointment_attendees']);
@@ -797,11 +803,18 @@ $this->_campaigns = campaign_access_dropdown();
                     fwrite($fp, '-- URN List - '.$urn_list.PHP_EOL);
                     fwrite($fp, '-- Number of records - '.count($result_part).PHP_EOL);
                     fwrite($fp, '-- ------------------------------------------------------------------------'.PHP_EOL);
+
+                    fwrite($fp, ''.PHP_EOL);
+                    fwrite($fp, 'START TRANSACTION;'.PHP_EOL);
+                    fwrite($fp, ''.PHP_EOL);
+
                     foreach($qry as $table => $query) {
                         fwrite($fp, ''.PHP_EOL);
                         fwrite($fp, '-- '.strtoupper($table).PHP_EOL);
                         if (!empty($query)) {
-                            fwrite($fp, $query[0].PHP_EOL);
+                            foreach ($query as $qry) {
+                                fwrite($fp, $qry.PHP_EOL);
+                            }
                         }
                         else {
                             fwrite($fp, '-- No data'.PHP_EOL);
@@ -812,10 +825,12 @@ $this->_campaigns = campaign_access_dropdown();
                     //Remove the data stored from the database
                     $this->Data_model->remove_backup_campaign_data($urn_list, $form['campaign_id']);
                 }
+                fwrite($fp, ''.PHP_EOL);
+                fwrite($fp, 'COMMIT;'.PHP_EOL);
+                fwrite($fp, ''.PHP_EOL);
                 //Close the file
                 fclose($fp);
             }
-
 
             //Save the backup
             $backup_id = $this->Data_model->save_backup_campaign_history($form);
