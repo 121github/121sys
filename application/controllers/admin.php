@@ -219,12 +219,22 @@ class Admin extends CI_Controller
 			
 			//Check if the minimum quote days is less than the maximum quote days
             if (($form['min_quote_days'] && $form['max_quote_days'])&&(intval($form['min_quote_days']) > intval($form['max_quote_days']))) {
-			echo json_encode(array(
-                "data" => false,
-                "message" => "The minimum quote days must be less than the maximum quote days",
-                "success" => false
-            ));
-			exit;
+                echo json_encode(array(
+                    "data" => false,
+                    "message" => "The minimum quote days must be less than the maximum quote days",
+                    "success" => false
+                ));
+                exit;
+            }
+
+            //Check if the number of months is greater than the months ago
+            if (($backup_form['months_ago'] && $backup_form['months_num'])&&(intval($backup_form['months_ago']) < intval($backup_form['months_num']))) {
+                echo json_encode(array(
+                    "data" => false,
+                    "message" => "The number of months must be greater than the months ago",
+                    "success" => false
+                ));
+                exit;
             }
 			
             if (!empty($form['new_client']) && $form['client_id'] == "other" || !empty($form['new_client']) && empty($form['client_id'])) {
