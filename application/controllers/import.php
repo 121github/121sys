@@ -629,15 +629,16 @@ HAVING count( client_ref ) >1";
 	public function match_outcomes(){
 		if(!$this->input->post()){
 		echo "<form method='post'>";
-	$outcome_list = "select * from 121sys.outcomes";
+	$outcome_list = "select * from outcomes";
 	$outcomes = $this->db->query($outcome_list)->result_array();
 	echo "121sys Outcomes<br>";
 	foreach($outcomes as $outcomes){
 	echo $outcomes['outcome_id']."=>".$outcomes['outcome']."<br>";
 	}
 	echo "<hr>";
+	$db2 = $this->load->database('121backup',true);
 	$outcome_list = "select * from newbusiness.outcomes";
-	$outcomes = $this->db->query($outcome_list)->result_array();
+	$outcomes = $db2->query($outcome_list)->result_array();
 	echo "NBF Outcomes<br>";
 	foreach($outcomes as $outcomes){
 	echo $outcomes['outcome']." - <input name='outcome[{$outcomes['outcome_id']}]' value='' /><br>";
