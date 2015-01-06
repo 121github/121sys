@@ -627,21 +627,21 @@ HAVING count( client_ref ) >1";
 	}
 	
 	public function match_outcomes(){
-$db['newbusiness']['hostname'] = '121system.com';
-$db['newbusiness']['username'] = 'bradf';
-$db['newbusiness']['password'] = 'brad123';
-$db['newbusiness']['database'] = 'newbusiness';
-$db['newbusiness']['dbdriver'] = 'mysqli';
-$db['newbusiness']['dbprefix'] = '';
-$db['newbusiness']['pconnect'] = FALSE;
-$db['newbusiness']['db_debug'] = TRUE;
-$db['newbusiness']['cache_on'] = FALSE;
-$db['newbusiness']['cachedir'] = '';
+$nbf['hostname'] = '121system.com';
+$nbf['username'] = 'bradf';
+$nbf['password'] = 'brad123';
+$nbf['database'] = 'newbusiness';
+$nbf['dbdriver'] = 'mysqli';
+$nbf['dbprefix'] = '';
+$nbf['pconnect'] = FALSE;
+$nbf['db_debug'] = TRUE;
+$nbf['cache_on'] = FALSE;
+$nbf['cachedir'] = '';
 //$db['121backup']['char_set'] = 'UTF-8';
-$db['newbusiness']['dbcollat'] = 'latin1_swedish_ci';
-$db['newbusiness']['swap_pre'] = '';
-$db['newbusiness']['autoinit'] = TRUE;
-$db['newbusiness']['stricton'] = FALSE;
+$nbf['dbcollat'] = 'latin1_swedish_ci';
+$nbf['swap_pre'] = '';
+$nbf['autoinit'] = TRUE;
+$nbf['stricton'] = FALSE;
 		
 		if(!$this->input->post()){
 		echo "<form method='post'>";
@@ -652,7 +652,7 @@ $db['newbusiness']['stricton'] = FALSE;
 	echo $outcomes['outcome_id']."=>".$outcomes['outcome']."<br>";
 	}
 	echo "<hr>";
-	$db2 = $this->load->database('newbusiness',true);
+	$db2 = $this->load->database($nbf,true);
 	$outcome_list = "select * from tbl_outcomes";
 	$outcomes = $db2->query($outcome_list)->result_array();
 	echo "NBF Outcomes<br>";
