@@ -627,6 +627,22 @@ HAVING count( client_ref ) >1";
 	}
 	
 	public function match_outcomes(){
+$db['newbusiness']['hostname'] = '121system.com';
+$db['newbusiness']['username'] = 'bradf';
+$db['newbusiness']['password'] = 'brad123';
+$db['newbusiness']['database'] = 'newbusiness';
+$db['newbusiness']['dbdriver'] = 'mysqli';
+$db['newbusiness']['dbprefix'] = '';
+$db['newbusiness']['pconnect'] = FALSE;
+$db['newbusiness']['db_debug'] = TRUE;
+$db['newbusiness']['cache_on'] = FALSE;
+$db['newbusiness']['cachedir'] = '';
+//$db['121backup']['char_set'] = 'UTF-8';
+$db['newbusiness']['dbcollat'] = 'latin1_swedish_ci';
+$db['newbusiness']['swap_pre'] = '';
+$db['newbusiness']['autoinit'] = TRUE;
+$db['newbusiness']['stricton'] = FALSE;
+		
 		if(!$this->input->post()){
 		echo "<form method='post'>";
 	$outcome_list = "select * from outcomes";
@@ -636,8 +652,8 @@ HAVING count( client_ref ) >1";
 	echo $outcomes['outcome_id']."=>".$outcomes['outcome']."<br>";
 	}
 	echo "<hr>";
-	$db2 = $this->load->database('121backup',true);
-	$outcome_list = "select * from newbusiness.outcomes";
+	$db2 = $this->load->database('newbusiness',true);
+	$outcome_list = "select * from tbl_outcomes";
 	$outcomes = $db2->query($outcome_list)->result_array();
 	echo "NBF Outcomes<br>";
 	foreach($outcomes as $outcomes){
