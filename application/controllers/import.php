@@ -592,7 +592,7 @@ HAVING count( client_ref ) >1";
 	$urn = $row['urn'];
 	$keep_array[$urn] = $urn;
 	//now find all contacts with the client ref
-	$qry = "select contact_id,urn from client_refs left join contacts using(urn) where client_ref = '$dupe'";
+	$qry = "select contact_id,urn from client_refs left join contacts using(urn) where client_ref = '$dupe' and urn in(select urn from records where campaign_id=3";
 	$con_result = $this->db->query($qry)->result_array();
 	foreach($con_result as $list_item){
 	$delete_array[$list_item['urn']] = $list_item['urn'];
