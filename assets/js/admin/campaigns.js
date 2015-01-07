@@ -286,10 +286,18 @@ var admin = {
                 admin.campaigns.check_quote_days(parseInt(min_quote_days.val()), parseInt(max_quote_days.val()));
             });
 
+            $('form').find('input[name="months_num"]').blur(function(){
+                admin.campaigns.check_backup_months(parseInt($('form').find('select[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
+            });
+            $('form').find('select[name="months_ago"]').change(function(){
+                admin.campaigns.check_backup_months(parseInt($('form').find('select[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
+            });
+
         },
         check_quote_days: function(min_quote_days, max_quote_days){
+            $('form').find('.min_quote_days').text("");
             if (min_quote_days > max_quote_days) {
-                $('form').find('.quote_days_error').append("The minimum quote days must be less than the maximum quote days");
+                $('form').find('.quote_days_error').text("The minimum quote days must be less than the maximum quote days");
                 $('form').find('input[name="min_quote_days"]').css('color', 'red');
                 $('form').find('input[name="max_quote_days"]').css('color', 'red');
             }
@@ -297,6 +305,20 @@ var admin = {
                 $('form').find('.quote_days_error').text("");
                 $('form').find('input[name="min_quote_days"]').css('color', 'black');
                 $('form').find('input[name="max_quote_days"]').css('color', 'black');
+            }
+        },
+
+        check_backup_months: function(months_ago, months_num){
+            $('form').find('.backup_error').text("");
+            if (months_ago < months_num) {
+                $('form').find('.backup_error').text("The number of months must be greater than the months ago ");
+                $('form').find('input[name="months_num"]').css('color', 'red');
+                $('form').find('select[name="months_ago"]').css('color', 'red');
+            }
+            else {
+                $('form').find('.backup_error').text("");
+                $('form').find('input[name="months_num"]').css('color', 'black');
+                $('form').find('select[name="months_ago"]').css('color', 'black');
             }
         },
         create: function() {

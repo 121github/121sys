@@ -107,6 +107,10 @@
         </select>
         <input type="text" name="months_num" class="form-control pull-left marl" style="width:300px;"
                placeholder="Enter the number of months to backup"/>
+        <div class="col-xs-3" style="color: red;">
+            <p></p>
+            <p class="backup_error"></p>
+        </div>
     </div>
     <div class="form-actions pull-right">
         <button class="marl btn btn-default close-btn">Cancel</button>
