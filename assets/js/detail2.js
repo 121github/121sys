@@ -1051,7 +1051,7 @@ var record = {
                             $company_detail_telephone_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function(key, val) {
-                                if (val.length) {
+                                if (val&&val!='') {
                                     $address += val + "</br>";
                                     $postcode = dd.postcode;
                                 }
