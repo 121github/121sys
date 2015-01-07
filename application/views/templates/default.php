@@ -170,8 +170,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                   <?php } ?>
                 </ul>
               </li>
-              <?php if(in_array("search records",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])||in_array("search campaigns",$_SESSION['permissions'])){ ?>
+              <?php if(isset($_SESSION['current_campaign'])&&@in_array("set call outcomes",$_SESSION['permissions'])||@in_array("search campaigns",$_SESSION['permissions'])){  ?>
               <li <?php if($this->uri->segment(1)=="records"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" >List Records</a></li>
+              <?php } ?>
+              <?php if(in_array("search records",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])||in_array("search campaigns",$_SESSION['permissions'])||@in_array("Search Page",$_SESSION['campaign_features'])){ ?>
               <li <?php if($this->uri->segment(1)=="search"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
               <?php } ?>
               <?php if(isset($_SESSION['current_campaign'])&&in_array("set call outcomes",$_SESSION['permissions'])){  ?>

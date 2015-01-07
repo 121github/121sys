@@ -100,6 +100,16 @@ class Records_model extends CI_Model
             "date_format(r.nextcall,'%d/%m/%Y %H:%i')",
             "rand()"
         );
+		
+		 $order_columns = array(
+            "campaign_name",
+			"name",
+            "fullname",
+            "outcome",
+            "r.date_updated",
+            "r.nextcall",
+            "rand()"
+        );
         
         $join = array();
         $qry  = "select r.urn, outcome, if(name is null,'na',name) name, fullname, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
@@ -133,10 +143,10 @@ class Records_model extends CI_Model
             $qry .= $_SESSION['filter']['where'];
         }
         
-        /*agents can only see live records unless they specifically search for dead ones
-        if (!isset($_SESSION['filter']['values']['record_status']) && $_SESSION['role'] == 3) {
-        $qry .= " and record_status = 1 ";
-        } */
+        //agents can only see live records unless they specifically search for dead ones
+        if (!isset($_SESSION['filter']['values']['record_status']) && in_array("set call outcomes",$_SESSION['permissions'])) {
+        $qry .= " and (record_status = 1 or record_status = 4)";
+        }
         
 		/* users can only see records that have not been parked */
 		 if (!isset($_SESSION['filter']['values']['parked_code'])) {
@@ -152,7 +162,7 @@ class Records_model extends CI_Model
         if (isset($_SESSION['filter']['order']) && $options['draw'] == "1") {
             $order = $_SESSION['filter']['order'];
         } else {
-            $order = " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn";
+            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn";
             unset($_SESSION['filter']['order']);
             unset($_SESSION['filter']['values']['order']);
         }

@@ -8,10 +8,11 @@
                 <h4>Permissions</h4>
         <ul class="list-group">
        <?php foreach($permissions as $group_name => $group_permissions){ ?>
-    <li class="list-group-item"><?php echo $group_name ?><span class="pull-right">
+    <li class="list-group-item" style="height:60px"><?php echo $group_name ?><span class="pull-right"><div>
     <?php foreach($group_permissions as $id=>$name){ ?>
-    <input id="pm_<?php echo $id ?>" type="checkbox" name="permission[<?php echo $id ?>]"> <?php echo $name ?>
-     <?php } ?>
+    <div style="display:inline-block"><input id="pm_<?php echo $id ?>" type="checkbox" name="permission[<?php echo $id ?>]"> <?php echo $name ?></div >
+     <?php } ?></div>
+     </span>
     </li>
     <?php } ?>
   </ul>
