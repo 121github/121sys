@@ -1686,10 +1686,9 @@ var record = {
                     }
                 }).done(function(response) {
                     record.additional_info.load_form(response.data,id);
-                });
-                $('.custom-panel').find('form').fadeIn();
+					$('.custom-panel').find('form').fadeIn();
+                });  
             });
-
         },
         save: function() {
             $.ajax({
@@ -1716,21 +1715,6 @@ var record = {
             }).done(function(response) {
 				if(response.data.length>0){
                 record.additional_info.load_table(response.data);
-				} else {
-				$('.custom-panel').find('.panel-content').text("Nothing was found");	
-				}
-            });
-        },
-		        get_form: function() {
-            $.ajax({
-                url: helper.baseUrl + "ajax/get_additional_fields",
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    urn: record.urn
-                }
-            }).done(function(response) {
-				if(response.data.length>0){
                 record.additional_info.load_form(response.data);
 				} else {
 				$('.custom-panel').find('.panel-content').text("Nothing was found");	
