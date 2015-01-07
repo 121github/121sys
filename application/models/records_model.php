@@ -697,7 +697,14 @@ class Records_model extends CI_Model
         if ($id) {
             $qry = "select $select from record_details where detail_id='$id'";
         }
-        $result = $this->db->query($qry)->result_array();
+		$result = $this->db->query($qry)->result_array();
+		if(count($result)==0){
+			$this->db->insert("record_details",array("urn"=>$urn));
+			$id = $this->db->insert_id();
+            $qry = "select $select from record_details where detail_id='$id'";
+		$result = $this->db->query($qry)->result_array();
+		}
+		
         $info   = array();
         foreach ($result as $id => $detail) {
             foreach ($detail as $k => $v) {
