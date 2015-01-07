@@ -169,7 +169,7 @@ class Records_model extends CI_Model
         
         $qry .= $order;
         $qry .= "  limit $start,$length";
-        //$this->firephp->log($qry);
+        $this->firephp->log($qry);
         $records = $this->db->query($qry)->result_array();
         
         return $records;
