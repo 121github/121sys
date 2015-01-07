@@ -6,7 +6,7 @@
         <?php $this->view('forms/edit_contact_form.php',array("urn"=>$details['record']["urn"])) ?>
       </div>
       <!-- List group -->
-      <?php if(count($details['contacts'])>0){ ?>
+      <?php if(isset($details['contacts'])){ ?>
       <ul class="list-group contacts-list">
         <?php $x=0; foreach($details['contacts']  as $id=>$contact): $x++; ?>
         <li  class="list-group-item" item-id="<?php echo $id ?>"><a data-toggle="collapse" data-parent="#accordion" href="#con-collapse-<?php echo $id ?>"> <?php echo $contact['name']['fullname']; ?> </a> <?php if(in_array("delete contacts",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-trash pull-right del-contact-btn" data-target="#modal" item-id="<?php echo $id ?>" ></span><?php } ?> <?php if(in_array("edit contacts",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-pencil pull-right edit-contact-btn"  item-id="<?php echo $id ?>"></span><?php } ?>

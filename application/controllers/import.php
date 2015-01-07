@@ -597,7 +597,7 @@ HAVING count( client_ref ) >1";
 	$list .= $list_item['contact_id'].",";
 	}
 	$list = rtrim($list,",");
-	echo $dupe.";<br>";
+	echo "#".$dupe.";<br>";
 	$update = "update contacts set contacts.urn = $urn where contact_id in($list)";
 	echo $update.";<br>";
 	//now update all the companies
@@ -659,7 +659,7 @@ $nbf['stricton'] = FALSE;
 	foreach($outcomes as $outcomes){
 	echo $outcomes['outcome']." - <input name='outcome[{$outcomes['outcome_id']}]' value='' /><br>";
 	}
-	echo "<input type='submit' value='go?'";
+	echo "<input type='submit' value='go?' />";
 	echo "</form>";
 		} else {
 		foreach($this->input->post('outcome') as $nbf_id=>$newid){
@@ -667,6 +667,12 @@ $nbf['stricton'] = FALSE;
 			echo ";<br>";	
 		}
 		}
+	}
+	
+		public function update_history_urns(){
+	$tidy = "select client_ref as nbf_urn, c.urn as newurn from importcsv i left join client_refs c on i.urn = c.client_ref";
+	echo $tidy.";<br>";
+	$result = $this->db->query($tidy)->result_assoc();	
 	}
 	
 	public function update_history(){
