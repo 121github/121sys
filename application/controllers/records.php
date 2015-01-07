@@ -520,7 +520,7 @@ class Records extends CI_Controller
             if ($update_array['pending_manager'] > 0 || $survey_outcome || $this->input->post('outcome_id')) {
 				//check if the outcome triggers an ownership update
 				$outcome_owners = $this->Records_model->get_owners_for_outcome($campaign_id,$update_array['outcome_id']);
-				
+				$this->firephp->log($outcome_owners);
 				if(count($outcome_owners)>0){
 					$this->Records_model->save_ownership(intval($this->input->post('urn')), $outcome_owners);
 				} else {
@@ -532,7 +532,7 @@ class Records extends CI_Controller
             } 
 			
                 //if its a callback dm or the user has the keep record permission we check ownership and if nobody has this record assign it to the person that just updated it
-				if($_SESSION['permissions']=="keep records"||$update_array['outcome_id']=="2"){
+				if($_SESSION['permissions']=="keep records"||$triggers['keep_record']=="1"){
                 $owners = $this->Records_model->get_ownership(intval($this->input->post('urn')));
                 if (!count($owners)) {
                     $owner = array(
@@ -643,6 +643,13 @@ class Records extends CI_Controller
         if ($this->input->is_ajax_request() && $this->_access) {
 			$data = $this->input->post();
 			$data['postcode'] = postcodeCheckFormat($data['postcode']);	
+		if(!isset($data['attendees'])){
+			  echo json_encode(array(
+                "success" => false,
+				"msg"=>"You must add an attendee"
+            ));	
+		}
+			
 			if($data['postcode']===NULL){
 			  echo json_encode(array(
                 "success" => false,

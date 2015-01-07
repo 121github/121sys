@@ -9,7 +9,6 @@ class Email_model extends CI_Model
     function __construct()
     {
         parent::__construct();
-        
     }
     
 	public function get_webform_id($campaign){
@@ -22,6 +21,7 @@ class Email_model extends CI_Model
 	
 	public function get_placeholder_data($urn=NULL){
 		$user_qry="";
+				
 		if(isset($_SESSION['user_id'])){
 		$user_qry = " ,(select name as user from users where user_id = '{$_SESSION['user_id']}') user,(select user_email from users where user_id = '{$_SESSION['user_id']}') user_email, (select user_telephone from users where user_id = '{$_SESSION['user_id']}') user_telephone ";	
 			

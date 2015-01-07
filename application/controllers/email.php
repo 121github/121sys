@@ -72,10 +72,13 @@ class Email extends CI_Controller
     {
     	$urn             = intval($this->uri->segment(4));
     	$template_id     = intval($this->uri->segment(3));
-    	
+    	$placeholder_data = $this->Email_model->get_placeholder_data($urn);
     	$template = $this->Email_model->get_template($template_id);
-
-			$placeholder_data = $this->Email_model->get_placeholder_data($urn);
+		$last_comment = $this->Records_model->get_last_comment($urn);
+		
+		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
+		$placeholder_data[0]['comments'] = $last_comment;
+		
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
 			$template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
