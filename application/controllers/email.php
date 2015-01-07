@@ -148,7 +148,9 @@ class Email extends CI_Controller
         $form['status'] = false;
 				
 		$urn = intval($this->input->post('urn'));
+		$last_comment = $this->Records_model->get_last_comment($urn);
 		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
+		$placeholder_data[0]['comments'] = $last_comment;
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
 			$body = str_replace("[$key]",$val,$form['body']);
@@ -250,7 +252,9 @@ class Email extends CI_Controller
 			//create the form structure to pass to the send function
 			$form = $this->Email_model->template_to_form($template_id);
 			$form['send_to'] = $details['email'];
+		$last_comment = $this->Records_model->get_last_comment($urn);
 		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
+		$placeholder_data[0]['comments'] = $last_comment;
 		$placeholder_data['recipient_name'] = $details['name'];
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
