@@ -583,6 +583,8 @@ HAVING count( client_ref ) >1";
 	$result = $this->db->query($dupe_query)->result_array();
 	$delete_array = array();
 	$keep_array = array();
+	$delete_list = "";
+	$keep_list = "";
 	foreach($result as $row){
 	$list = "";
 	$comlist = "";
