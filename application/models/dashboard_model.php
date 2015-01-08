@@ -220,7 +220,7 @@ class Dashboard_model extends CI_Model
     
     public function client_progress($filter)
     {
-        $qry = "select urn,if(companies.name,companies.name,fullname) as name,nextcall,comments,campaign_name as campaign,pd.`description` as `status`,urgent from records left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join ownership using(urn) left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) left join progress_description pd using(progress_id) where (progress_id in(1,2) and progress_id is not null) and nextcall is not null or urgent=1 and nextcall is not null";
+        $qry = "select urn,if(companies.name is null,fullname,companies.name) as name,nextcall,comments,campaign_name as campaign,pd.`description` as `status`,urgent from records left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join ownership using(urn) left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) left join progress_description pd using(progress_id) where (progress_id in(1,2) and progress_id is not null) and nextcall is not null or urgent=1 and nextcall is not null";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
