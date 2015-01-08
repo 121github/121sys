@@ -121,7 +121,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     </ul>
                   </li>
               <?php } ?>
-              <?php if(in_array("view reports",$_SESSION['permissions'])){ ?>
+              <?php if(in_array("view reports",$_SESSION['permissions'])&&in_array("agent reporting",$_SESSION['permissions'])){ ?>
                   <li class="dropdown <?php if($this->uri->segment(1)=="report"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Reports <b class="caret"></b></a>
                       <ul class="dropdown-menu">
                           <li><a href="<?php echo base_url() ?>reports/answers" <?php echo @($reports=='answers'?"class='active'":"") ?>>Survey Answers</a></li>
