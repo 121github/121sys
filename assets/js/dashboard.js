@@ -126,14 +126,16 @@ var dashboard = {
             }
         }).done(function (response) {
             $('.favorites-panel').empty();
-            var $row = "";
 			var $table="";
+			    var $tbody = "";
             if (response.data.length > 0) {
-				$table = "<table class='table'><thead><tr><th>Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Comment</th><th>Option</th></tr></tr></thead><tbody>";
+				$table = "<table class='table'><thead><tr><th>Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Comment</th><th>View</th></tr></tr></thead><tbody>";
                 $.each(response.data, function (i, val) {
-                    $row += '<tr><td>'+val.campaign_name+'</td><td>'+val.fullname+'</td><td>'+val.date_updated+'</td><td>'+val.nextcall+'</td><td>'+val.comments+'</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"></td></tr>';
-					$table += $row;
+					        
+                    $tbody += '<tr><td>'+val.campaign_name+'</td><td>'+val.fullname+'</td><td>'+val.date_updated+'</td><td>'+val.nextcall+'</td><td>'+outcome+'</td><td><span class="glyphicon glyphicon-comment tt pointer" title="" data-toggle="tooltip" data-placement="left" data-original-title="'+comments+'"></span></td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+					
                 });
+				$table += $tbody;
                $table += "</tbody></table>";
 			      $('.favorites-panel').append($table);
             } else {
