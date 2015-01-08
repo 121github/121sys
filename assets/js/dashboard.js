@@ -135,6 +135,7 @@ var dashboard = {
 					$table += $row;
                 });
                $table += "</tbody></table>";
+			      $('.favorites-panel').append($table);
             } else {
                 $('.favorites-panel').append('<p>' + response.msg + '</p>');
             }
