@@ -56,7 +56,7 @@ class Report_model extends CI_Model
         $where .= " and history.campaign_id = '$campaign' ";
         }
 				if (!empty($user)) {
-        $where .= " and user_id = '$user' ";
+        $where .= " and history.user_id = '$user' ";
         }
 						if (!empty($team)) {
         $where .= " and teams.team_id = '$team' ";
@@ -66,7 +66,7 @@ class Report_model extends CI_Model
         }
 		//if the user does not have the agent reporting permission they can only see their own stats 
 		if(@!in_array("agent reporting",$_SESSION['permissions'])){
-		$where .= " and user_id = '{$_SESSION['user_id']}' ";	
+		$where .= " and history.user_id = '{$_SESSION['user_id']}' ";	
 		}
 		
         $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and outcome is not null ";
@@ -421,7 +421,7 @@ class Report_model extends CI_Model
 		
 		//if the user does not have the agent reporting permission they can only see their own stats 
 		if(@!in_array("agent reporting",$_SESSION['permissions'])){
-		$where .= " and user_id = '{$_SESSION['user_id']}' ";	
+		$where .= " and eh.user_id = '{$_SESSION['user_id']}' ";	
 		}
 		
         $joins = "
