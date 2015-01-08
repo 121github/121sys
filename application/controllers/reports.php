@@ -1015,13 +1015,9 @@ class Reports extends CI_Controller
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
-            ),
-			'all_emails'=> false
+            )
         );
-		//if its an agent then they can only see their own emails
-		if(in_array("log hours",$_SESSION['permissions'])){
-			 $data['all_emails']=false;
-		}
+
         $this->template->load('default', 'reports/email.php', $data);
     }
 
@@ -1035,13 +1031,7 @@ class Reports extends CI_Controller
             $form = $this->input->post();
             $form["date_from"] = ($this->input->post("date_from"))?$this->input->post("date_from"):date('Y-m-d',strtotime("2014-07-02"));
             $form["date_to"] = ($this->input->post("date_to"))?$this->input->post("date_to"):date('Y-m-d');
-			
-			if(in_array("log hours",$_SESSION['permissions'])){
-				$form['agent'] = $_SESSION['user_id'];
-			}
-			
-			
-            $results = $this->Report_model->get_email_data($form);
+			$results = $this->Report_model->get_email_data($form);
 
             $date_from_search = $form["date_from"];
             $date_to_search   = $form["date_to"];

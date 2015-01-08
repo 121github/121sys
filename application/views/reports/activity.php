@@ -39,6 +39,7 @@
 	                    <li><a class="campaign-filter" ref="#" style="color: green;">All campaigns</a> </li>
 	                  </ul>
                   </div>
+                  <?php if(in_array("agent reporting")){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -59,6 +60,7 @@
 	                    <li><a class="team-filter" ref="#" style="color: green;">All Teams</a> </li>
 	                  </ul>
                   </div>
+                 <?php } ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Source</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
