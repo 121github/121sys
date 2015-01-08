@@ -13,8 +13,14 @@
       </div>
       <!-- /.row -->
       <div class="row">
-        <div class="col-lg-8">
-          
+        <div class="col-lg-12">
+                  <div class="panel panel-primary">
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites</div>
+              <div class="panel-body favorites-panel">
+             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
+            </div>
+        </div>
+        
            <div class="panel panel-primary">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Action Required
               <div class="pull-right">
@@ -37,15 +43,10 @@
             <!-- /.panel-body --> 
           </div>
           
-        </div>
+      
            <!-- /col-lg-8 -->
-        <div class="col-lg-4">
-        <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites</div>
-              <div class="panel-body favorites-panel">
-             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
-        </div>
+
+
         
                 <div class="panel panel-primary">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Urgent</div>
@@ -53,7 +54,7 @@
 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
         <!-- /.col-lg-4 --> 
-      </div>
+   </div>
       <!-- /.row --> 
     </div>
     <!-- /#page-wrapper --></div>
