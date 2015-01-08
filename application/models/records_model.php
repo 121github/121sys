@@ -87,7 +87,14 @@ class Records_model extends CI_Model
             "record_status" => $status
         ));
     }
-    
+     //sets the record status as defined in the function
+    public function set_progress($urn, $progress)
+    {
+        $this->db->where("urn", $urn);
+        $this->db->update("records", array(
+            "progress_id" => $progress
+        ));
+    }
     //function to list all the records
     public function get_records($options)
     {

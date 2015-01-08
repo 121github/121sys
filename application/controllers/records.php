@@ -464,9 +464,13 @@ class Records extends CI_Controller
                     exit;
                 }
                 if ($triggers["set_status"] && $update_array["pending_manager"] == "") {
-                    //if set_status is not null and client action is not required then we set the status to whatever is defined in the outcome table
+                    //if the outcome triggers a status update do it now
                     $this->Records_model->set_status($update_array['urn'], $triggers["set_status"]);
                 }
+				if($triggers['set_progress']&&$update_array["pending_manager"] == ""){
+					 $this->Records_model->set_progress($update_array['urn'], $triggers["set_progress"]);
+				//if the outcome triggers a progress update do it now
+				}	
                 if (intval($triggers["delay_hours"]) > 0) {
 					if(!in_array("keep records",$_SESSION['permissions'])){
 						//delete all owners so it can get called back by anyone (answer machines etc)
@@ -518,9 +522,8 @@ class Records extends CI_Controller
 
             //if the pending_manager requires attention we assign the record to the campaign managers
             if ($update_array['pending_manager'] > 0 || $survey_outcome || $this->input->post('outcome_id')) {
-				//check if the outcome triggers an ownership update
+				//wqcheck if the outcome triggers an ownership update
 				$outcome_owners = $this->Records_model->get_owners_for_outcome($campaign_id,$update_array['outcome_id']);
-				$this->firephp->log($outcome_owners);
 				if(count($outcome_owners)>0){
 					$this->Records_model->save_ownership(intval($this->input->post('urn')), $outcome_owners);
 				} else {
