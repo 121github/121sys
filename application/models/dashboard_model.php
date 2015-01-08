@@ -228,7 +228,7 @@ class Dashboard_model extends CI_Model
             $qry .= " and user_id = " . intval($filter['user']);
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= " group by urn order by nextcall asc limit 20";
+        $qry .= " group by urn order by nextcall asc";
         $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
