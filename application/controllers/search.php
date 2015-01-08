@@ -99,12 +99,34 @@ $this->_campaigns = campaign_access_dropdown();
 			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
-            $count   = $this->Filter_model->count_records($filter);
+            $urn_list   = $this->Filter_model->count_records($filter);
+            $count   = count($urn_list);
+            $aux = "";
+            foreach($urn_list as $urn) {
+                $aux .= $urn['urn'].", ";
+            }
+            if (strlen($aux) > 0) {
+                $aux = "(".substr($aux,0,strlen($aux)-2).")";
+            }
+            $urn_list = $aux;
+            $_SESSION['filter']['result']['urn_list'] = $urn_list;
+            $_SESSION['filter']['result']['count'] = $count;
+
             echo json_encode(array(
                 "success" => true,
                 "data" => $count
             ));
         }
+    }
+
+    public function get_urn_list()
+    {
+        $urn_list = $_SESSION['filter']['result']['urn_list'];
+
+        echo json_encode(array(
+            "success" => (strlen($urn_list)),
+            "data" => $urn_list
+        ));
     }
     
     
@@ -277,6 +299,39 @@ $this->_campaigns = campaign_access_dropdown();
                 "data" => $records
             );
             echo json_encode($data);
+        }
+    }
+
+    public function save_parked_code() {
+        if ($this->input->is_ajax_request()) {
+            $results = $this->Filter_model->save_parked_code($this->input->post());
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Parked code was set successfully":"ERROR: Parked code was not set successfully!")
+            ));
+        }
+    }
+
+    public function save_ownership() {
+        if ($this->input->is_ajax_request()) {
+            $results = $this->Filter_model->save_ownership($this->input->post());
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Ownership was set successfully":"ERROR: Ownership was not set successfully!")
+            ));
+        }
+    }
+
+    public function copy_records() {
+        if ($this->input->is_ajax_request()) {
+            $results = $this->Filter_model->copy_records($this->input->post());
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Records were copied successfully":"ERROR: Records were not copied  successfully!")
+            ));
         }
     }
 }

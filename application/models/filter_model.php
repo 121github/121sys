@@ -36,15 +36,15 @@ class Filter_model extends CI_Model
 "subsectors" => "subsec"
 );
     }
-    
+
+
     public function count_records($filter)
     {
-        $qry   = "select count(distinct r.urn) as `count` from records r ";
+        $qry   = "select distinct r.urn from records r ";
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
-        $count = $this->db->query($qry)->row('count');
-        return $count;
+        return $this->db->query($qry)->result_array();
     }
     
     public function apply_filter($filter)
@@ -120,6 +120,11 @@ class Filter_model extends CI_Model
             "table" => "companies",
             "type" => "id",
             "alias" => "com.company_id"
+        );
+        $filter_options["company_phone"]            = array(
+            "table" => "company_telephone",
+            "type" => "like",
+            "alias" => "comt.telephone_number"
         );
         $filter_options["employees"]        = array(
             "table" => "companies",
@@ -390,6 +395,10 @@ class Filter_model extends CI_Model
                     $join['company_subsectors'] = " left join company_subsectors csubsec on csubsec.company_id = com.company_id ";
                     $join['subsectors']         = " left join subsectors subsec on subsec.subsector_id = csubsec.subsector_id ";
                     $join['sectors']            = " left join sectors sec on sec.sector_id = subsec.sector_id ";
+                }
+                if ($filter_options[$field]['table'] == "company_telephone") {
+                    $join['companies']          = " left join companies com on com.urn = r.urn ";
+                    $join['company_telephone'] = " left join company_telephone comt on com.company_id = comt.company_id ";
                 }
                 if ($filter_options[$field]['table'] == "ownership") {
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
@@ -833,5 +842,17 @@ class Filter_model extends CI_Model
             "count" => $count,
             "data" => $data
         );
+    }
+
+    public function save_parked_code($form) {
+        return false;
+    }
+
+    public function save_ownership($form) {
+        return false;
+    }
+
+    public function copy_records($form) {
+        return false;
     }
 }

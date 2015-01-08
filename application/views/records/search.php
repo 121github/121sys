@@ -1,6 +1,6 @@
- <form id="filter-form">
+ <form id="filter-form" class="filter-form">
 <div class="page-header">
-  <h2>Search Records<small class="pull-right"><button type="submit" class="btn btn-default submit-filter">View Records</button> <button class="btn btn-default clear-filter">Clear Filter</button> Found: <span class="record-count"></span></small></h2>
+  <h2>Search Records<small class="pull-right"><button type="submit" class="btn btn-default submit-filter">View Records</button> <button class="btn btn-default actions-filter">Actions</button> <button class="btn btn-default clear-filter">Clear Filter</button> Found: <span class="record-count"></span></small></h2>
 </div>
 <div class="row">
   <div class="col-md-12 col-sm-12">
@@ -265,6 +265,10 @@
                 <input <?php if(@isset($_SESSION['filter']['values']['coname'])){ echo "value='".$_SESSION['filter']['values']['coname']."'"; } ?> name="coname" type="text" class="form-control" placeholder="Enter all or part of the company name">
               </div>
               <div class="form-group">
+                <label>Company Phone</label>
+                <input <?php if(@isset($_SESSION['filter']['values']['company_phone'])){ echo "value='".$_SESSION['filter']['values']['company_phone']."'"; } ?> name="company_phone" type="text" class="form-control" placeholder="Enter all or part of a phone number">
+              </div>
+              <div class="form-group">
                 <label>Sector</label>
                 <select  name="sector_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
                   <?php foreach($sectors as $row): ?>
@@ -415,6 +419,10 @@
   </div>
 </div>
  </form>
+
+ <div class="panel panel-primary actions-container">
+   <?php $this->view('forms/actions_filter_form.php'); ?>
+ </div>
 <script>
 $(document).ready(function(){
 	$('.selectpicker').selectpicker();
