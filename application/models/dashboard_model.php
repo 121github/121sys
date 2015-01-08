@@ -229,7 +229,7 @@ class Dashboard_model extends CI_Model
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc limit 20";
-        
+        $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     public function agent_activity($campaign)
