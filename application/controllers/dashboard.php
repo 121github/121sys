@@ -277,7 +277,7 @@ class Dashboard extends CI_Controller
             $results = $this->Dashboard_model->client_progress($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
-                $results[$k]['date'] = date('jS M', strtotime($row['nextcall']));
+                $results[$k]['date'] = date('jS M y', strtotime($row['nextcall']));
             }
             echo json_encode(array(
                 "success" => true,
