@@ -24,7 +24,7 @@ class Dashboard_model extends CI_Model
     
     public function get_favorites($filter = "")
     {
-        $qry = "select urn,if(fullname is null,urn,fullname) as fullname,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from records left join contacts using(urn) where urn in(select urn from favorites where user_id = '{$_SESSION['user_id']}')";
+        $qry = "select urn,if(companies.name is null,fullname,name) as fullname,campaign_name,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated,date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall,comments from records left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) where urn in(select urn from favorites where user_id = '{$_SESSION['user_id']}')";
         if (!empty($filter)) {
             $qry .= " and campaign_id = '$filter'";
         }

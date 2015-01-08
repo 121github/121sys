@@ -127,11 +127,14 @@ var dashboard = {
         }).done(function (response) {
             $('.favorites-panel').empty();
             var $row = "";
+			var $table="";
             if (response.data.length > 0) {
+				$table = "<table class='table'><thead><tr><th>Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Comment</th><th>Option</th></tr></tr></thead><tbody>";
                 $.each(response.data, function (i, val) {
-                    $row += '<li><a href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Last Updated on ' + val.date_updated + '</span></li>';
+                    $row += '<tr><td>'+val.campaign_name+'</td><td>'+val.fullname+'</td><td>'+val.date_updated+'</td><td>'+val.nextcall+'</td><td>'+val.comments+'</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"></td></tr>';
+					$table += $row;
                 });
-                $('.favorites-panel').append('<ul>' + $row + '</ul>');
+               $table += "</tbody></table>";
             } else {
                 $('.favorites-panel').append('<p>' + response.msg + '</p>');
             }
