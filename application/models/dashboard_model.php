@@ -30,6 +30,7 @@ class Dashboard_model extends CI_Model
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " order by records.date_updated asc";
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     
