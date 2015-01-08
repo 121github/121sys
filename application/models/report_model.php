@@ -65,7 +65,7 @@ class Report_model extends CI_Model
         $where .= " and source_id = '$source' ";
         }
 		//if the user does not have the agent reporting permission they can only see their own stats 
-		if(!in_array("agent reporting",$_SESSION['permissions'])){
+		if(@!in_array("agent reporting",$_SESSION['permissions'])){
 		$where .= " and user_id = '{$_SESSION['user_id']}' ";	
 		}
 		
@@ -420,7 +420,7 @@ class Report_model extends CI_Model
         }
 		
 		//if the user does not have the agent reporting permission they can only see their own stats 
-		if(!in_array("agent reporting",$_SESSION['permissions'])){
+		if(@!in_array("agent reporting",$_SESSION['permissions'])){
 		$where .= " and user_id = '{$_SESSION['user_id']}' ";	
 		}
 		

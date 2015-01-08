@@ -66,26 +66,6 @@
 			        </div>
                     <?php } ?>
                     <!-- End Management -->
-                     <!-- Email Dash -->
-                                        <?php if(in_array("my emails",$_SESSION['permissions'])){ ?>
-                                       <div class="accordion-group panel">
-                        <div class="accordion-inner">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoEmailReport">
-                                My Emails
-                            </a>
-                        </div>
-                        <div id="collapseTwoEmailReport" class="accordion-body <?php echo @($reports=='email'?"":"collapse") ?>">
-                            <div class="accordion-group submenu">
-                                <div class="accordion-inner">
-                                    <a href="<?php echo base_url() ?>reports/email/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
-                                </div>
-                                <div class="accordion-inner">
-                                    <a href="<?php echo base_url() ?>reports/email/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -103,13 +83,16 @@
                       <a href="<?php echo base_url() ?>reports/targets" <?php echo @($reports=='targets'?"class='active'":"") ?>>Targets</a>
                     </div>
                     -->
+                    <?php if(@in_array("agent reporting",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
                      <a href="<?php echo base_url() ?>reports/answers" <?php echo @($reports=='answers'?"class='active'":"") ?>>Survey Answers</a>
                     </div>
+                    <?php } ?>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>reports/activity" <?php echo @($reports=='activity'?"class='active'":"") ?>>Activity</a>
                     </div>
                     <!-- Transfers -->
+                     <?php if(@in_array("agent reporting",$_SESSION['permissions'])){ ?>
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
 			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoTransfersReport">
@@ -133,8 +116,10 @@
 			                </div>
 			            </div>
 			        </div>
+                    <? } ?>
 			        <!-- End transfers -->
 			        <!-- Outcomes -->
+                     <?php if(@in_array("agent reporting",$_SESSION['permissions'])){ ?>
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
 			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoOutcomesReport">
@@ -158,6 +143,7 @@
 			                </div>
 			            </div>
 			        </div>
+                    <?php } ?>
 			        <!-- End Outcomes -->
                     <!-- Emails -->
                     <div class="accordion-group panel">
@@ -171,15 +157,19 @@
                                 <div class="accordion-inner">
                                     <a href="<?php echo base_url() ?>reports/email/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
                                 </div>
+                                 <?php if(@in_array("agent reporting",$_SESSION['permissions'])){ ?>
                                 <div class="accordion-inner">
                                     <a href="<?php echo base_url() ?>reports/email/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a>
                                 </div>
+                                <?php } ?>
                                 <div class="accordion-inner">
                                     <a href="<?php echo base_url() ?>reports/email/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
                                 </div>
+                                 <?php if(@in_array("agent reporting",$_SESSION['permissions'])){ ?>
                                 <div class="accordion-inner">
                                     <a href="<?php echo base_url() ?>reports/email/time/1" <?php echo @($inner=='time'?"class='active'":"") ?>>By Time</a>
                                 </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
