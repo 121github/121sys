@@ -535,7 +535,7 @@ class Records extends CI_Controller
             } 
 			
                 //if its a callback dm or the user has the keep record permission we check ownership and if nobody has this record assign it to the person that just updated it
-				if($_SESSION['permissions']=="keep records"||$triggers['keep_record']=="1"){
+				if($_SESSION['permissions']=="keep records"||@$triggers['keep_record']=="1"){
                 $owners = $this->Records_model->get_ownership(intval($this->input->post('urn')));
                 if (!count($owners)) {
                     $owner = array(
