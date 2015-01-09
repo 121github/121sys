@@ -264,7 +264,7 @@ class Admin_model extends CI_Model
     //functions for permissions page
     public function get_permissions()
     {
-        $qry    = "select * from permissions";
+        $qry    = "select * from permissions order by permission_group";
         $result = $this->db->query($qry)->result_array();
         return $result;
     }

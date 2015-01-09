@@ -116,7 +116,7 @@
 			                </div>
 			            </div>
 			        </div>
-                    <? } ?>
+                    <?php } ?>
 			        <!-- End transfers -->
 			        <!-- Outcomes -->
                      <?php if(@in_array("agent reporting",$_SESSION['permissions'])){ ?>

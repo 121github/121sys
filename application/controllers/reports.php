@@ -83,7 +83,7 @@ class Reports extends CI_Controller
             foreach ($results as $k => $v) {
                 //create the url for the click throughs
                 $perfects                = base_url() . "search/custom/records/question/" . $v['question_id'] . "/survey/" . $v['survey_info_id'] . "/score/10";
-                $lows                    = base_url() . "search/custom/records/question/" . $v['question_id'] . "/survey/" . $v['survey_info_id'] . "/score/4:less";
+                $lows                    = base_url() . "search/custom/records/question/" . $v['question_id'] . "/survey/" . $v['survey_info_id'] . "/score/7:less";
                 $results[$k]['perfects'] = $perfects;
                 $results[$k]['lows']     = $lows;
             }

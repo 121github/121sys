@@ -108,12 +108,12 @@ class Filter_model extends CI_Model
         );
         $filter_options["sector_id"]        = array(
             "table" => "subsectors",
-            "type" => "id",
+            "type" => "multiple",
             "alias" => "sec.sector_id"
         );
         $filter_options["subsector_id"]     = array(
             "table" => "company_subsectors",
-            "type" => "id",
+            "type" => "multiple",
             "alias" => "subsec.subsector_id"
         );
         $filter_options["company_id"]       = array(
@@ -394,7 +394,7 @@ class Filter_model extends CI_Model
                 if ($filter_options[$field]['table'] == "ownership") {
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
                 }
-                if ($filter_options[$field]['table'] == "users") {
+                if ($filter_options[$field]['table'] == "users"||!in_array("any owner",$_SESSION['permissions'])) {
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
                     $join['users']     = " left join users u on u.user_id = ow.user_id";
                 }
@@ -517,6 +517,18 @@ class Filter_model extends CI_Model
             $_SESSION['filter']['where'] = $where;
             $_SESSION['filter']['order'] = $order . ",urn";
         }
+		
+		/* users can only see records that have not been parked */
+		 if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("view parked",$_SESSION['permissions'])) {
+        $where .= " and parked_code is null ";
+        }
+		
+		//users can only see their own records
+		if(!in_array("any owner",$_SESSION['permissions'])){
+		$where .= " and (ow.user_id = '{$_SESSION['user_id']}' or ow.user_id is null) ";	
+		}
+		
+		
         if (!empty($where)) {
             $qry .= " where 1 " . $where;
         }
@@ -528,7 +540,7 @@ class Filter_model extends CI_Model
                 unset($_SESSION['current_campaign']);
             }
         }
-		//$this->firephp->log($qry);
+		$this->firephp->log($qry);
         return $qry;
         
     }
@@ -570,6 +582,14 @@ class Filter_model extends CI_Model
                 "date_format(records.nextcall,'%d/%m/%y %H:%i')",
                 "rand()"
             );
+			 $order_columns = array(
+                "campaigns.campaign_name",
+                "fullname",
+                "outcome",
+                "records.date_updated",
+                "records.nextcall",
+                "rand()"
+            );
             $qry           = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join data_sources on data_sources.source_id = records.source_id";
             $group_by      = " group by records.urn";
         } else {
@@ -580,6 +600,14 @@ class Filter_model extends CI_Model
                 "outcome",
                 "date_format(contact,'%d/%m/%y %H:%i')",
                 "date_format(history.nextcall,'%d/%m/%y %H:%i')",
+                "rand()"
+            );
+						 $order_columns = array(
+                "campaigns.campaign_name",
+                "fullname",
+                "outcome",
+                "contact",
+                "history.nextcall",
                 "rand()"
             );
             $qry  = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
@@ -824,7 +852,7 @@ class Filter_model extends CI_Model
 
         $start  = $options['start'];
         $length = $options['length'];
-        $qry .= " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
+        $qry .= " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
 				//$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];

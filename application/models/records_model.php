@@ -100,17 +100,17 @@ class Records_model extends CI_Model
     {
         $table_columns = array(
             "campaign_name",
-			"name",
+			"com.name",
             "fullname",
             "outcome",
-            "date_format(r.date_updated,'%d/%m/%Y %H:%i')",
-            "date_format(r.nextcall,'%d/%m/%Y %H:%i')",
+            "date_format(r.date_updated,'%d/%m/%y %H:%i')",
+            "date_format(r.nextcall,'%d/%m/%y %H:%i')",
             "rand()"
         );
 		
 		 $order_columns = array(
             "campaign_name",
-			"name",
+			"com.name",
             "fullname",
             "outcome",
             "r.date_updated",
@@ -119,7 +119,7 @@ class Records_model extends CI_Model
         );
         
         $join = array();
-        $qry  = "select r.urn, outcome, if(name is null,'na',name) name, fullname, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
+        $qry  = "select r.urn, outcome, if(com.name is null,'na',com.name) name, fullname, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
@@ -129,6 +129,7 @@ class Records_model extends CI_Model
         $join['contacts']  = " left join contacts con on con.urn = r.urn ";
         $join['outcomes']  = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
+		$join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
         
         
         foreach ($join as $join_query) {
@@ -156,10 +157,14 @@ class Records_model extends CI_Model
         }
         
 		/* users can only see records that have not been parked */
-		 if (!isset($_SESSION['filter']['values']['parked_code'])) {
+		 if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("view parked",$_SESSION['permissions'])) {
         $qry .= " and parked_code is null ";
         }
 		
+		//users can only see their own records
+		if(!in_array("any owner",$_SESSION['permissions'])){
+		$qry .= " and ow.user_id = '{$_SESSION['user_id']}'";	
+		}
 		
         $qry .= " group by r.urn";
         //if any order has been set then we should apply it here
@@ -185,11 +190,20 @@ class Records_model extends CI_Model
     {
         $table_columns = array(
             "campaign_name",
-			"name",
+			"com.name",
             "fullname",
             "outcome",
-            "date_format(r.date_updated,'%d/%m/%Y %H:%i')",
-            "date_format(r.nextcall,'%d/%m/%Y %H:%i')",
+            "date_format(r.date_updated,'%d/%m/%y %H:%i')",
+            "date_format(r.nextcall,'%d/%m/%y %H:%i')",
+            "rand()"
+        );
+		$order_columns = array(
+            "campaign_name",
+			"com.name",
+            "fullname",
+            "outcome",
+            "r.date_updated",
+            "r.nextcall",
             "rand()"
         );
         $navqry        = "select r.urn from records r ";
@@ -204,6 +218,7 @@ class Records_model extends CI_Model
         $join['contacts']  = " left join contacts con on con.urn = r.urn ";
         $join['outcomes']  = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
+		$join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
         
         foreach ($join as $join_query) {
             $navqry .= $join_query;
@@ -225,11 +240,21 @@ class Records_model extends CI_Model
         }
         
         
+        //agents can only see live records unless they specifically search for dead ones
+        if (!isset($_SESSION['filter']['values']['record_status']) && in_array("set call outcomes",$_SESSION['permissions'])) {
+        $navqry .= " and (record_status = 1 or record_status = 4)";
+        }
+        
 		/* users can only see records that have not been parked */
 		 if (!isset($_SESSION['filter']['values']['parked_code'])) {
         $navqry .= " and parked_code is null ";
         }
 		
+		//users can only see their own records
+		if(!in_array("any owner",$_SESSION['permissions'])){
+		$navqry .= " and ow.user_id = '{$_SESSION['user_id']}'";	
+		}
+
         //group by urn to prevent dupes
         $navqry .= " group by r.urn";
         
@@ -242,7 +267,7 @@ class Records_model extends CI_Model
             //if any order has been set then we should apply it here
             $order = (isset($_SESSION['filter']['order']) && $options['draw'] == "1" ? $_SESSION['filter']['order'] : " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn");
             $navqry .= $order;
-           //$this->firephp->log($navqry);
+           $this->firephp->log($navqry);
             $navigation = $this->db->query($navqry)->result_array();
             
             foreach ($navigation as $navurn):

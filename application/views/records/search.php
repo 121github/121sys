@@ -16,7 +16,7 @@
              <?php if(count($campaigns)>1){ ?>
                 <label>Campaign</label>
                 <br>
-                <select  name="campaign_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                <select  name="campaign_id[]" class="selectpicker" data-width="100%" data-size="5" multiple title="All campaigns">
                   <?php foreach($campaigns as $row): ?>
                   <?php if(in_array($row['id'],$_SESSION['campaign_access']['array'])):  ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['campaign_id'])){ echo "selected"; } else { echo (isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
@@ -79,18 +79,18 @@
                 <input <?php if(isset($_SESSION['filter']['values']['client_ref'])){ echo "value='".$_SESSION['filter']['values']['client_ref']."'"; } ?> type="text" name="client_ref" class="form-control" placeholder="Enter the client reference ID">
               </div>
               <div class="form-group">
-                <label>Last Call Outcome</label>
+                <label>Call Outcome</label>
                 <br>
-                <select  name="outcome_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                <select  name="outcome_id[]" class="selectpicker" data-width="100%" data-size="5" multiple title="Any">
                   <?php foreach($outcomes as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['outcome_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
               <div class="form-group">
-                <label>Manager Progress</label>
+                <label>Progress Status</label>
                 <br>
-                <select  name="progress_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                <select  name="progress_id[]" class="selectpicker" data-width="100%" data-size="5" multiple title="Any">
                   <?php foreach($progress as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['progress_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
@@ -98,23 +98,26 @@
               </div>
               <div class="form-group">
                 <label>Status</label>
-                <select  name="record_status[]" class="selectpicker record-status" data-width="100%" data-size="5" multiple>
+                <select  name="record_status[]" class="selectpicker record-status" data-width="100%" data-size="5" multiple title="Any">
                   <?php foreach($status as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['record_status'])||empty($_SESSION['filter']['values'])&&$row['id']=="1"){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
+              <?php if(in_array("view parked",$_SESSION['permissions'])){ ?>
                <div class="form-group">
-                <label>Parked Records</label>
-                <select  name="parked_code[]" class="selectpicker parked-code" data-width="100%" data-size="5" multiple>
+                <label>Parked Status</label>
+                <select  name="parked_code[]" class="selectpicker parked-code" data-width="100%" title="Unparked" data-size="5" multiple>
                   <?php foreach($parked_codes as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['parked_code'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
+              <?php } ?>
+               <?php if(!in_array("any owner",$_SESSION['permissions'])){ ?>
               <div class="form-group">
                 <label>Group Ownership</label>
-                <select name="group_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                <select name="group_id[]" class="selectpicker" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($groups as $row): ?>
                   <option  <?php if(@in_array($row['id'],$_SESSION['filter']['values']['group_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
@@ -122,12 +125,13 @@
               </div>
               <div class="form-group">
                 <label>User Ownership</label>
-                <select  name="user_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                <select  name="user_id[]" class="selectpicker" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($users as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['user_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
+              <?php } ?>
               <div class="form-group">
                 <label>Next Call Date</label>
                 <div class="row">
@@ -266,7 +270,7 @@
               </div>
               <div class="form-group">
                 <label>Sector</label>
-                <select  name="sector_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                <select  name="sector_id[]" class="selectpicker" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($sectors as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['sector_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
@@ -274,7 +278,7 @@
               </div>
               <div class="form-group">
                 <label>Subsector</label>
-                <select  name="subsector_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                <select  name="subsector_id[]" class="selectpicker" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($subsectors as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['subsector_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
@@ -352,8 +356,7 @@
               </div>
                             <div class="form-group">
                 <label>Number of dials</label>
-                <select name="dials" class="selectpicker" data-width="100%" data-dropupAuto="false" data-size="5">
-                  <option value="" >Any</option>
+                <select name="dials" class="selectpicker" data-width="100%" data-dropupAuto="false" data-size="5"  title="Any">
                   <option <?php if(@$_SESSION['filter']['values']['dials']=="zero"){ echo "selected"; } ?> value="zero" >None</option>
                   <option <?php if(@$_SESSION['filter']['values']['dials']=="1"){ echo "selected"; } ?> value="1" >1</option>
                   <option <?php if(@$_SESSION['filter']['values']['dials']=="2"){ echo "selected"; } ?> value="2" >2</option>
@@ -400,7 +403,7 @@
               </div>
               <div class="form-group">
                   <label>Emails</label>
-                  <select  name="email[]" class="selectpicker" data-width="100%" data-size="2" multiple>
+                  <select  name="email[]" class="selectpicker" data-width="100%" data-size="2" multiple  title="Show all">
                       <option value="read" >Records with an email read confirmed</option>
                       <option value="sent" >Records with emails sent</option>
                       <option value="unsent" >Record with failed emails</option>
