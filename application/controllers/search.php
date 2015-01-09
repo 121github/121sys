@@ -304,7 +304,24 @@ $this->_campaigns = campaign_access_dropdown();
 
     public function save_parked_code() {
         if ($this->input->is_ajax_request()) {
-            $results = $this->Filter_model->save_parked_code($this->input->post());
+            $form = $this->input->post();
+            $results = $this->Filter_model->save_parked_code($form);
+
+            if ($results) {
+                $suppress = $form['suppress'];
+                $urn_list = $form['urn_list'];
+                if ($suppress) {
+                    //Add the phone numbers to the suppression table
+                    $reason = $form['reason'];
+                    $all_campaigns = $form['all_campaigns'];
+
+                    //Get the phone numbers that are not already suppressed for one campaign or for all of them
+                    //$phone_number_list = $this->Filter_model->get_phone_numbers_to_suppress($urn_list, $all_campaigns);
+
+                    //Suppress the phone numbers
+                    //$results = $this->suppress_phone_numbers($phone_number_list, $reason, $all_campaigns);
+                }
+            }
 
             echo json_encode(array(
                 "success" => ($results),

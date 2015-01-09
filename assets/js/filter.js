@@ -69,7 +69,10 @@ var filter = {
 			e.preventDefault();
 			var urn_list = filter.get_urn_list();
 			var parked_code_id = $('.actions_parked_code_select option:selected').val();
-			filter.save_parked_code(urn_list, parked_code_id);
+			var all_campaigns = $('.edit-parkedcode-form').find('input[name="all_campaigns"]').is(":checked");
+			var reason = $('.edit-parkedcode-form').find('textarea[name="reason"]').val();
+			var suppress = $('.edit-parkedcode-form').find('input[name="suppress"]').val();
+			filter.save_parked_code(urn_list, parked_code_id, all_campaigns, reason, suppress);
 		});
 
 		$(document).on('click', '.change-ownership', function(e) {
@@ -109,9 +112,13 @@ var filter = {
 				$('.actions-parkedcode-btn').prop('disabled', false);
 				if (selected_name == "Suppressed") {
 					$('.suppress-form').show();
+					$('.edit-parkedcode-form').find('input[name="suppress"]').val('1');
 				}
 				else {
 					$('.suppress-form').hide();
+					$('.edit-parkedcode-form').find('input[name="all_campaigns"]').removeAttr('checked')
+					$('.edit-parkedcode-form').find('textarea[name="reason"]').val('');
+					$('.edit-parkedcode-form').find('input[name="suppress"]').val('0');
 				}
 			}
 			else {
@@ -293,13 +300,13 @@ var filter = {
 		return urn_list;
 	},
 
-	save_parked_code : function(urn_list, parked_code_id) {
+	save_parked_code : function(urn_list, parked_code_id, all_campaigns, reason, suppress) {
 
 		$.ajax({
 			url: helper.baseUrl + 'search/save_parked_code',
 			type: "POST",
 			dataType: "JSON",
-			data: {'urn_list': urn_list, 'parked_code_id': parked_code_id},
+			data: {'urn_list': urn_list, 'parked_code_id': parked_code_id, 'all_campaigns': all_campaigns, 'reason': reason, 'suppress': suppress},
 			beforeSend: function(){
 				$('.saving').html("<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />");
 				$('.actions-parkedcode-btn').prop('disabled', true);

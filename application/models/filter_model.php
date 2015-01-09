@@ -845,7 +845,12 @@ class Filter_model extends CI_Model
     }
 
     public function save_parked_code($form) {
-        return false;
+
+        $urn_list = $form['urn_list'];
+        $parked_code_id = $form['parked_code_id'];
+
+        $qry = "UPDATE records SET parked_code = ".$parked_code_id." WHERE urn IN ".$urn_list;
+        return $this->db->query($qry);
     }
 
     public function save_ownership($form) {

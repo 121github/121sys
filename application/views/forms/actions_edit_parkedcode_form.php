@@ -1,5 +1,6 @@
 <form style="display:none; padding:10px 20px;" class="form-horizontal edit-parkedcode-form">
     <div class="form-group input-group-sm">
+        <input type="hidden" name="suppress">
         <p>Please set the parked code for these records</p>
         <select class="selectpicker actions_parked_code_select" name="parked_code">
             <option value="" >Nothing selected</option>
