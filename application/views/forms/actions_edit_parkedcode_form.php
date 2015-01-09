@@ -8,6 +8,13 @@
             <?php endforeach; ?>
         </select>
     </div>
+    <div class="form-group input-group-sm suppress-form" style="display: none">
+        <div class="checkbox">
+            <label>Check for all campaigns</label>
+            <input class="all_campaigns_checkbox" name="all_campaigns" type="checkbox">
+        </div>
+        <textarea class="form-control" placeholder="Enter the reason here" rows="3" name="reason"></textarea>
+    </div>
     <div class="form-actions">
         <span class="marl btn btn-default close-edit-actions-btn">Back</span>
         <button class="marl btn btn-success actions-parkedcode-btn pull-right">Save</button>

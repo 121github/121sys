@@ -10,6 +10,9 @@
         </select>
     </div>
     <div class="form-actions">
+        <span style="color: red; font-size: 11px; display: none;" class="actions_copy_records_error">* You have to select a campaing different of the selected in the main filter</span>
+    </div>
+    <div class="form-actions">
         <span class="marl btn btn-default close-edit-actions-btn">Back</span>
         <button type="submit" class="marl btn btn-primary actions-copy-btn pull-right">Copy</button>
     </div>

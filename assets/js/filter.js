@@ -16,7 +16,7 @@ var filter = {
 			filter.check_postcode(postcode);
 		});
 
-		$(document).on('click','input[type="checkbox"]',function(){
+		$(document).on('click','input[type="checkbox"]:not(.all_campaigns_checkbox)',function(){
 			filter.count_records();
 		});
 
@@ -104,8 +104,15 @@ var filter = {
 
 		$('.actions_parked_code_select').on('change', function(){
 			var selected = $('.actions_parked_code_select option:selected').val();
+			var selected_name = $('.actions_parked_code_select option:selected').text();
 			if (selected) {
 				$('.actions-parkedcode-btn').prop('disabled', false);
+				if (selected_name == "Suppressed") {
+					$('.suppress-form').show();
+				}
+				else {
+					$('.suppress-form').hide();
+				}
 			}
 			else {
 				$('.actions-parkedcode-btn').prop('disabled', true);
@@ -123,10 +130,34 @@ var filter = {
 		$('.actions_campaign_select').on('change', function(){
 			var selected = $('.actions_campaign_select option:selected').val();
 			if (selected) {
-				$('.actions-copy-btn').prop('disabled', false);
+				if ($('.campaigns_select').val()[0] != selected) {
+					$('.actions-copy-btn').prop('disabled', false);
+					$('.actions_copy_records_error').hide();
+				}
+				else {
+					$('.actions-copy-btn').prop('disabled', true);
+					$('.actions_copy_records_error').show();
+				}
 			}
 			else {
 				$('.actions-copy-btn').prop('disabled', true);
+				$('.actions_copy_records_error').hide();
+			}
+		});
+
+		if ($('.campaigns_select').val() && $('.campaigns_select').val().length!=1) {
+			$('.copy-records').prop('disabled', false);
+			$('.copy_records_error').hide();
+		}
+		$('.campaigns_select').on('change', function(){
+			var num_selected = $('.campaigns_select').val();
+			if (num_selected && num_selected.length==1) {
+				$('.copy-records').prop('disabled', false);
+				$('.copy_records_error').hide();
+			}
+			else {
+				$('.copy-records').prop('disabled', true);
+				$('.copy_records_error').show();
 			}
 		});
 	},

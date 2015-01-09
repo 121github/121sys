@@ -16,7 +16,7 @@
              <?php if(count($campaigns)>1){ ?>
                 <label>Campaign</label>
                 <br>
-                <select  name="campaign_id[]" class="selectpicker" data-width="100%" data-size="5" multiple>
+                <select  name="campaign_id[]" class="selectpicker campaigns_select" data-width="100%" data-size="5" multiple>
                   <?php foreach($campaigns as $row): ?>
                   <?php if(in_array($row['id'],$_SESSION['campaign_access']['array'])):  ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['campaign_id'])){ echo "selected"; } else { echo (isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>

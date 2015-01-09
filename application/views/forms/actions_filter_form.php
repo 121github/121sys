@@ -23,6 +23,9 @@
                       <button class="btn copy-records btn-warning" style="width:130px">Copy</button>
                       Copy the records to another campaign <span style="font-weight: bold" class="copy-records-result pull-right"></span>
                   </li>
+                  <li class="list-group-item">
+                      <span style="color: red; font-size: 11px; display: none;" class="copy_records_error">* You have more than one campaing selected in the main filter</span>
+                  </li>
 
               </ul>
              <button class="marl btn btn-default close-actions pull-right">Cancel</button>
