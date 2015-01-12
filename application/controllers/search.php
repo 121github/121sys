@@ -35,6 +35,7 @@ $this->_campaigns = campaign_access_dropdown();
         );
         $progress       = $this->Form_model->get_progress_descriptions();
         $sectors        = $this->Form_model->get_sectors();
+		$selected_sectors = array();
 		if(isset($_SESSION['filter']['values']['sector_id'])){
 		$selected_sectors = $_SESSION['filter']['values']['sector_id'];	
 		}
