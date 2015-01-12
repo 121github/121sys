@@ -549,7 +549,7 @@ class Filter_model extends CI_Model
                 unset($_SESSION['current_campaign']);
             }
         }
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $qry;
         
     }
@@ -878,7 +878,27 @@ class Filter_model extends CI_Model
         $parked_code_id = $form['parked_code_id'];
 
         $qry = "UPDATE records SET parked_code = ".$parked_code_id." WHERE urn IN ".$urn_list;
-        return $this->db->query($qry);
+        //return $this->db->query($qry);
+        return true;
+    }
+    
+    public function get_suppressed_numbers($all_campaigns) {
+    	if ($all_campaigns) {
+    		$qry = "select telephone_number 
+    				from suppression 
+    				where suppression_id NOT IN (
+    					select suppression_id from suppression_by_campaign
+    				)";
+    	}
+    	else {
+    		$qry = "select telephone_number 
+    				from suppression 
+    				where suppression_id IN (
+    					select suppression_id from suppression_by_campaign
+    				)";
+    	}
+    	
+    	return $this->db->query($qry)->result_array();
     }
 
     public function save_ownership($form) {
