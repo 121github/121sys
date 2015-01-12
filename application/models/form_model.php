@@ -191,9 +191,18 @@ class Form_model extends CI_Model
         $qry = "select sector_id id,sector_name name from sectors order by sector_name";
         return $this->db->query($qry)->result_array();
     }
-    public function get_subsectors()
+    public function get_subsectors($sector=array())
     {
-        $qry = "select subsector_id id,subsector_name name from subsectors order by subsector_name";
+		
+		if(is_array($sector)){
+			$sector_list = "(0";
+			foreach($sector as $sector_id){
+			$sector_list .= ",".$sector_id;
+			}
+			$sector_list .= ")";
+			$where = " and sector_id in $sector_list";
+		}
+        $qry = "select subsector_id id,subsector_name name from subsectors where 1 $where order by subsector_name";
         return $this->db->query($qry)->result_array();
     }
     public function get_status_list()

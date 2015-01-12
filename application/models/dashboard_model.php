@@ -144,7 +144,7 @@ class Dashboard_model extends CI_Model
         } else if ($comments == 3) {
             $qry = "select urn,note notes,s.date_updated `date`,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra $notes_extra order by s.date_updated desc  limit 10";
         } else {
-            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 40   $survey_extra $extra group by contacts.contact_id union select urn,comments,contact,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $extra $comments_extra union select urn,note,s.date_updated,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra $notes_extra group by urn) t order by t.`date` desc limit 10";
+            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 40   $survey_extra $extra group by contacts.contact_id union select urn,comments,contact,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $extra $comments_extra group by contacts.contact_id union select urn,note,s.date_updated,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra $notes_extra group by urn) t order by t.`date` desc limit 10";
         }
         $result = $this->db->query($qry)->result_array();
         $now    = time();
@@ -176,7 +176,7 @@ class Dashboard_model extends CI_Model
 	public function timely_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
-        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,name, if($last_comments is not null,$last_comments,'') as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id = 2 and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
+        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) where outcome_id = 2 and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
@@ -191,7 +191,7 @@ class Dashboard_model extends CI_Model
     public function missed_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
-        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,if(name is null,'-',name) name, if($last_comments is not null,$last_comments,'') as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id = 2 and nextcall < now() ";
+        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,users.name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id = 2 and nextcall < now() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
@@ -206,7 +206,7 @@ class Dashboard_model extends CI_Model
     public function upcoming_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
-        $qry = "select urn,if(fullname is null,'-',fullname) as contact,nextcall,campaign_name as campaign,name, if($last_comments is not null,$last_comments,'') as last_comments from records left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id = 2 and nextcall > now() ";
+        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) where outcome_id = 2 and nextcall > now() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }

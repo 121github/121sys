@@ -13,14 +13,14 @@
                     </div>
                     <?php if(in_array("client dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
-                   <a href="<?php echo base_url() ?>dashboard/client" <?php echo @($dashboard=='client'?"class='active'":"") ?>>Client Dash</a>
+                   <a href="<?php echo base_url() ?>dashboard/client" <?php echo @($dashboard=='client'?"class='active'":"") ?>>Tasklist</a>
                     </div>
                     <?php } ?>
                     <!-- Advisor Dash -->
                     <?php if(in_array("agent dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
-			                <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Agent Dash</a>
+			                <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Callbacks</a>
 			            </div>
 			            <div id="collapseTwoManagementDash" class="accordion-body <?php echo @($dashboard=='agent'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
