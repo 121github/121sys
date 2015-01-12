@@ -180,11 +180,12 @@ var filter = {
             dataType: "JSON",
             data: { sectors:sectors }
         }).done(function(response) {
-			$('.subsector-select').selectpicker('destroy');
+			var option_data = "";
 			$.each(response,function(i,val){
-			$('#subsector-select').append('<option val="'+val.id+'">'+val.name+'</option>');
+			option_data+= '<option val="'+val.id+'">'+val.name+'</option>';
 			});
-			$('#subsector-select').selectpicker();
+			$('#subsector-select').html(option_data);
+			$('.subsector-select').selectpicker('refresh');
 		});
 		
 	},

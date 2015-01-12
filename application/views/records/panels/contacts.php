@@ -14,7 +14,7 @@
             <dl class="dl-horizontal contact-detail-list">
               <?php foreach($contact['visible'] as $key=>$val){ if(!empty($val)&&$key!="Address"){ ?>
               <dt><?php echo $key ?></dt>
-              <dd><?php echo $val ?></dd>
+              <dd <?php if($key=="Notes"){ echo "style='color:red'"; } ?>><?php echo $val ?></dd>
               <?php }
 		  if($key=="Address"){
 			 ?>

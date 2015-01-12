@@ -34,7 +34,10 @@ $this->_campaigns = campaign_access_dropdown();
         );
         $progress       = $this->Form_model->get_progress_descriptions();
         $sectors        = $this->Form_model->get_sectors();
-        $subsectors     = $this->Form_model->get_subsectors();
+		if(isset($_SESSION['filter']['values']['sector_id'])){
+		$selected_sectors = $_SESSION['filter']['values']['sector_id'];	
+		}
+        $subsectors     = $this->Form_model->get_subsectors($selected_sectors);
         $status         = $this->Form_model->get_status_list();
 		$parked_codes   = $this->Form_model->get_parked_codes();
         $groups         = $this->Form_model->get_groups();

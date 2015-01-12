@@ -18,7 +18,7 @@
               <input name="nextcall" id="nextcall" data-date-format="DD/MM/YYYY HH:mm" placeholder="Set the next action date here" type='text' class="form-control" value="<?php echo (!empty($details['record']['nextcall'])?$details['record']['nextcall']:"") ?>"/>
               <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span> </span> </div>
           </div>
-          <div class="form-group input-group">
+       
             <?php 
 			if(in_array("park records",$_SESSION['permissions'])){
 			$parktext = "Click the unpark button below to allow dialing.";
@@ -31,21 +31,26 @@
 			if(in_array("set call outcomes",$_SESSION['permissions'])){  
 
 			?>
+               <div class="form-group input-group">
             <select <?php if($details['record']['record_status']=="3"||$details['record']['record_status']=="4"){ echo "disabled"; } ?> name="outcome_id" id="outcomes" class="selectpicker outcomepicker">
               <option value="">--Select a call outcome--</option>
               <?php foreach($outcomes as $outcome): ?>
               <option <?php if($outcome['disabled']=="1"){ ?> disabled <?php } ?> <?php if(($details['record']['record_status']=="3"||$details['record']['record_status']=="4")&&$outcome['outcome_id']==$details['record']['outcome_id']){ echo "selected"; } ?> value="<?php echo $outcome['outcome_id'] ?>" <?php echo ($outcome['delay_hours']?"delay='".$outcome['delay_hours']."'":"") ?>><?php echo $outcome['outcome'] ?></option>
               <?php endforeach; ?>
             </select>
-            <?php } else {  ?>
+               </div>
+            <?php }
+			
+				if(in_array("set progress",$_SESSION['permissions'])) {  ?>
+                   <div class="form-group input-group">
             <select name="progress_id" id="progress" class="selectpicker outcomepicker">
               <option value="">No action required</option>
               <?php foreach($progress_options as $row): ?>
               <option value="<?php echo $row['id'] ?>" <?php if($details['record']['progress_id']==$row['id']){ echo "selected"; } ?> ><?php echo $row['name'] ?></option>
               <?php endforeach; ?>
-            </select>
+            </select></div>
             <?php } ?>
-          </div>
+          
           <div class="form-group">
           <?php $text = ""; $color=""; 
 		  if($details['record']['record_status']=="3"){ 
