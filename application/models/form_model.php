@@ -193,7 +193,7 @@ class Form_model extends CI_Model
     }
     public function get_subsectors($sectors=array())
     {
-		
+		$where = "";
 		if(count($sectors)>0){
 			$sector_list = "(0";
 			foreach($sectors as $sector_id){
