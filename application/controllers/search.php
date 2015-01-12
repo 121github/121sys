@@ -13,6 +13,7 @@ class Search extends CI_Controller
 $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
+        $this->load->model('Contacts_model');
     }
     //this function returns all subsectors for the selected sectors
 	public function get_subsectors(){
@@ -324,7 +325,11 @@ $this->_campaigns = campaign_access_dropdown();
                     $all_campaigns = $form['all_campaigns'];
 
                     //Get the phone numbers that are not already suppressed for one campaign or for all of them
-                    //$phone_number_list = $this->Filter_model->get_phone_numbers_to_suppress($urn_list, $all_campaigns);
+                    $phone_number_list = $this->Contacts_model->get_numbers_from_urn_list($urn_list);
+                    
+                    //Get numbers already suppressed
+                    $suppressed_number_list =  $this->Filter_model->get_suppressed_numbers($all_campaigns);
+                    
 
                     //Suppress the phone numbers
                     //$results = $this->suppress_phone_numbers($phone_number_list, $reason, $all_campaigns);

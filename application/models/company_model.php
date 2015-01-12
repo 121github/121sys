@@ -100,8 +100,13 @@ class Company_model extends CI_Model
     }
 	
 	public function get_numbers($urn){
-	$qry = "select telephone_number from company_telephone left join companies using(company_id) where urn = '$urn'";	
-	return $this->db->query($qry)->result_array();	
+		$qry = "select telephone_number from company_telephone left join companies using(company_id) where urn = '$urn'";	
+		return $this->db->query($qry)->result_array();	
+	}
+	
+	public function get_numbers_from_urn_list($urn_list){
+		$qry = "select telephone_number from company_telephone left join companies using(company_id) where urn IN $urn_list";
+		return $this->db->query($qry)->result_array();
 	}
 		
 	public function save_company ($form) {
