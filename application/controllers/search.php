@@ -14,7 +14,12 @@ $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
     }
-    
+    //this function returns all subsectors for the selected sectors
+	public function get_subsectors(){
+		$sectors = $this->input->post('sectors');
+		$subsectors     = $this->Form_model->get_subsectors($sectors);
+		echo json_encode($subsectors);
+	}
     
     //this is the default controller for search, its specified in application/config/routes.php.  
     public function search_form()

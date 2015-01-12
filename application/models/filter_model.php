@@ -549,7 +549,7 @@ class Filter_model extends CI_Model
                 unset($_SESSION['current_campaign']);
             }
         }
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $qry;
         
     }
