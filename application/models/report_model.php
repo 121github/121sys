@@ -69,10 +69,10 @@ class Report_model extends CI_Model
 		$where .= " and history.user_id = '{$_SESSION['user_id']}' ";	
 		}
 		
-        $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and outcome is not null ";
+        $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history left join outcomes using(outcome_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and outcome is not null ";
 		$qry .= $where;
         
-        $qry .= " ) t on history.outcome_id = outcomes.outcome_id where 1 and history.outcome_id is not null ";
+        $qry .= " ) t on history.outcome_id = outcomes.outcome_id where 1 and outcome is not null ";
         
 		$qry .= $where;
         $qry .= " group by history.outcome_id order by count desc ";

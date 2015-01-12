@@ -2,7 +2,12 @@
 var filter = {
     init: function () {
 		filter.count_records();
-
+		
+		$(document).on('change','.sector-select',function(){
+			console.log($(this).val());
+			filter.load_subsectors($(this).val());
+		});
+		
 		$(document).on('blur','input[type="text"]',function(){
 			var postcode = $('.filter-form').find('input[name="postcode"]').val();
 			//The postcode is evaluated in the current_postcode_input click control
