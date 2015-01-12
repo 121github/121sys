@@ -173,6 +173,21 @@ var filter = {
 			}
 		});
 	},
+	load_subsectors:function(sectors){
+		$.ajax({
+            url: helper.baseUrl + 'search/get_subsectors',
+            type: "POST",
+            dataType: "JSON",
+            data: { sectors:sectors }
+        }).done(function(response) {
+			$('.subsector-select').selectpicker('destroy');
+			$.each(response,function(i,val){
+			$('#subsector-select').append('<option val="'+val.id+'">'+val.name+'</option>');
+			});
+			$('#subsector-select').selectpicker();
+		});
+		
+	},
 	check_postcode:function(postcode){
 		var data = {postcode :  postcode};
 		$.ajax({

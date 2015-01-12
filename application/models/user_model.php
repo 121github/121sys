@@ -121,12 +121,9 @@ class User_model extends CI_Model
         if (!empty($theme_folder)) {
             $_SESSION['theme_folder'] = $theme_folder;
         }
-        
-        $role_permissions        = $this->db->query("select * from role_permissions left join permissions using(permission_id) where role_id = '" . $_SESSION['role'] . "' and permission_name is not null")->result_array();
-        $_SESSION['permissions'] = array();
-        foreach ($role_permissions as $row){
-            $_SESSION['permissions'][$row['permission_id']] = $row['permission_name'];
-        }
+
+		$this->set_permissions();
+		
         if (in_array("all campaigns", $_SESSION['permissions'])) {
             //admin has all access
             $qry = "select campaign_id from `campaigns` where campaign_status = 1";
@@ -157,6 +154,16 @@ class User_model extends CI_Model
             'reload_session' => '0'
         ));
     }
+	
+	public function set_permissions(){
+			$role_permissions        = $this->db->query("select * from role_permissions left join permissions using(permission_id) where role_id = '" . $_SESSION['role'] . "' and permission_name is not null")->result_array();
+        $_SESSION['permissions'] = array();
+        foreach ($role_permissions as $row){
+            $_SESSION['permissions'][$row['permission_id']] = $row['permission_name'];
+        }	
+		
+	}
+	
     public function set_password($password)
     {
         $password = md5($password);
@@ -259,5 +266,11 @@ class User_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
+	public function campaign_permissions($campaign_id){
+		$this->db->select("permissions.permission_id","permission_name");
+		$this->db->join("permissions","permissions.permission_id=campaign_permissions.permission_id","LEFT");
+		$this->db->where("campaign_id",$campaign_id);
+		return $this->db->get("campaign_permissions")->result_array();
+	}
 	
 }

@@ -30,7 +30,7 @@ class Dashboard_model extends CI_Model
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= "  group by urn order by records.date_updated asc";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     
@@ -176,7 +176,7 @@ class Dashboard_model extends CI_Model
 	public function timely_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
-        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) where outcome_id = 2 and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
+        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,users.name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id)  where outcome_id = 2 and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
@@ -184,7 +184,7 @@ class Dashboard_model extends CI_Model
             $qry .= " and user_id = " . intval($filter['user']);
         }
         $qry .= " group by urn order by nextcall asc limit 10";
-        $this->firephp->log($qry);
+        //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 	
@@ -229,7 +229,7 @@ class Dashboard_model extends CI_Model
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc";
-        $this->firephp->log($qry);
+//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     public function agent_activity($campaign)

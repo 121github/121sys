@@ -154,6 +154,21 @@ class User extends CI_Controller
 						$this->User_model->update_hours_log($campaign,$user_id);
 				}
 				*/
+				//reset the permissions
+				$this->User_model->set_permissions();
+				//this function lets you add and remove permisisons based on the selected campaign rather than user role! :)
+				$campaign_permissions = $this->User_model->campaign_permissions($campaign);
+				$this->firephp->log($campaign_permissions);
+				foreach($campaign_permissions as $row){
+					//a 1 indicates the permission should be added otherwize it is revoked!
+				if($row['permission_state']=="1"){
+					$_SESSION['permissions'][$row['permission_id']] = $row['permission_name'];
+				} else {
+					unset($_SESSION['permissions'][$row['permission_id']]);
+				}
+				}
+				
+				
 				        $campaign_features = $this->Form_model->get_campaign_features($campaign);
         				$features  = array();
         foreach ($campaign_features as $row) {
@@ -165,7 +180,7 @@ class User extends CI_Controller
 				unset($_SESSION['filter']);
 		}
 		} else {
-		if(!in_array("search campaigns",$_SESSION['permissions'])){	
+		if(!in_array("all campaigns",$_SESSION['permissions'])){	
 			unset($_SESSION['current_campaign']);
 			unset($_SESSION['campaign_features']);
 			/* no longer logging in realtime 

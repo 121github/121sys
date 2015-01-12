@@ -114,7 +114,7 @@
                 </select>
               </div>
               <?php } ?>
-               <?php if(!in_array("any owner",$_SESSION['permissions'])){ ?>
+               <?php if(in_array("any owner",$_SESSION['permissions'])){ ?>
               <div class="form-group">
                 <label>Group Ownership</label>
                 <select name="group_id[]" class="selectpicker" data-width="100%" data-size="5" multiple  title="Any">
@@ -282,7 +282,7 @@
               </div>
               <div class="form-group">
                 <label>Subsector</label>
-                <select  name="subsector_id[]" class="selectpicker subsector-select" data-width="100%" data-size="5" multiple  title="Any">
+                <select  name="subsector_id[]" id="subsector-select" class="selectpicker subsector-select" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($subsectors as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['subsector_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
