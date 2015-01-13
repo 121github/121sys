@@ -20,7 +20,7 @@
         <input type="text" class="form-control" placeholder="Company Description" name="description" value="">
       </div>
        <div class='form-group input-group-sm' data-picktime="false">
-            <input name="company_number" placeholder="Company number" type='text' class="form-control" value=""/>
+            <input name="conumber" placeholder="Company number" type='text' class="form-control" value=""/>
         </div>
       <div class="form-group input-group-sm">
         <input type="text" class="form-control" placeholder="Turnover" name="turnover" value="">

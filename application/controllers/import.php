@@ -576,8 +576,8 @@ $this->db->query($renewals);
 	
 	public function merge_by_client_ref(){
 	//find all client_refs that appear more than once
-	$dupe_query = "SELECT client_ref,urn
-FROM client_refs
+	$dupe_query = "SELECT client_ref, urn
+FROM client_refs left join records using(urn) where campaign_id = 3
 GROUP BY client_ref
 HAVING count( client_ref ) >1";	
 	$result = $this->db->query($dupe_query)->result_array();
@@ -600,7 +600,7 @@ HAVING count( client_ref ) >1";
 	}
 	$list = rtrim($list,",");
 	echo "#".$dupe.";<br>";
-	$update = "update contacts set contacts.urn = $urn where contact_id in($list)";
+	$update = "update contacts set contacts.urn = $urn where contact_id in('0',$list)";
 	echo $update.";<br>";
 	//now update all the companies
 	$qry = "select company_id,urn from client_refs left join companies using(urn) where client_ref = '$dupe'";
@@ -610,7 +610,7 @@ HAVING count( client_ref ) >1";
 	$comlist .= (!empty($list_item['company_id'])?$list_item['company_id'].",":"");
 	}
 	$comlist = rtrim($comlist,",");
-	$update = "delete from companies where companies.urn <> $urn and company_id in($comlist)";
+	$update = "delete from companies where companies.urn <> $urn and company_id in('0',$comlist)";
 	echo $update.";<br>";
 	}
 	
@@ -625,7 +625,7 @@ HAVING count( client_ref ) >1";
 	$tidy2 = "delete from client_refs where urn in($delete_list)";
 	echo $tidy.";<br>";
 	echo $tidy2.";<br>";
-	//$this->db->query($tidy);	
+	$this->db->query($tidy);	
 	}
 	
 	public function match_outcomes(){
