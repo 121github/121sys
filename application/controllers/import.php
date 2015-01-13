@@ -431,7 +431,7 @@ $this->db->query($renewals);
                 "company_name" => "Company Name",
                 "company_description" => "Description",
 				"company_website" => "Website",
-                "company_company_number" => "Company House Number",
+                "company_conumber" => "Company House Number",
                 "company_turnover" => "Turnover",
                 "company_employees" => "Employees",
 				"sector_name" => "Sector",

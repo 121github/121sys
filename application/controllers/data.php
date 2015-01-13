@@ -72,9 +72,9 @@ $this->_campaigns = campaign_access_dropdown();
             $fields['companies']         = array(
                 "name" => "Company Name",
                 "description" => "Description",
-                "company_number" => "LTD CoNumber",
+                "conumber" => "LTD CoNumber",
                 "turnover" => "Turnover",
-                "Employees" => "employees"
+                "employees" => "employees"
             );
             $fields['company_addresses'] = array(
                 "c_add1" => "Address 1",
