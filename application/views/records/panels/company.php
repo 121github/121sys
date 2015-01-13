@@ -14,7 +14,7 @@
             <dl class="dl-horizontal company-detail-list">
               <?php foreach($company['visible'] as $key=>$val){ if(!empty($val)&&$key!="Address"){ ?>
               <dt><?php echo $key ?></dt>
-              <dd><?php echo $val ?></dd>
+              <dd><?php if($key=="Website"){ ?><a target="blank" href="<?php echo "http://".str_replace("http://","",$val) ?>"><?php echo $val ?></a><?php } else { echo $val; } ?></dd>
               <?php }
 		  if($key=="Address"){
 			 ?>
