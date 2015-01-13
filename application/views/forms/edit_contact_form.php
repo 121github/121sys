@@ -46,6 +46,9 @@
       <div class="form-group input-group-sm">
         <input type="text" class="form-control" placeholder="Facebook profile page" name="facebook" value="">
       </div>
+            <div class="form-group input-group-sm">
+        <textarea class="form-control" name="notes" placeholder="Enter contact notes here" style="height:5em"></textarea>
+      </div>
       <div class="form-actions pull-right">
       <span class="alert-success hidden">Contact details saved</span>
         <button type="submit" class="btn btn-primary save-contact-general">Save changes</button>

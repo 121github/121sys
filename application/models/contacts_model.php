@@ -88,7 +88,8 @@ class Contacts_model extends CI_Model
                 "Email address" => $result['email'],
                 "Linkedin" => $result['linkedin'],
                 "Email Optout" => $result['email_optout'],
-                "Website" => $result['website']
+                "Website" => $result['website'],
+				"Notes" => $result['notes']
             );
             $contacts[$result['contact_id']]['telephone'][$result['telephone_id']] = array(
                 "tel_name" => $result['tel_name'],
