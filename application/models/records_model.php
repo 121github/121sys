@@ -52,6 +52,22 @@ class Records_model extends CI_Model
 		}
 	}
 	
+	public function get_records_by_urn_list($urn_list) {
+		$qry = "SELECT * 
+				from records 
+				WHERE urn IN ".$urn_list;
+		
+		return $this->db->query($qry)->result_array();
+	}
+	
+	public function get_record_details_by_urn_list($urn_list) {
+		$qry = "SELECT *
+				from record_details
+				WHERE urn IN ".$urn_list;
+	
+		return $this->db->query($qry)->result_array();
+	}
+	
     //sets the manager progress status as 1=pending so they know that something needs looking at on this record
     public function set_pending($urn)
     {

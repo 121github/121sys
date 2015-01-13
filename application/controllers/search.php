@@ -10,10 +10,12 @@ class Search extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
-$this->_campaigns = campaign_access_dropdown();
+		$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
+        $this->load->model('Company_model');
         $this->load->model('Contacts_model');
+        $this->load->model('Records_model');
     }
     //this function returns all subsectors for the selected sectors
 	public function get_subsectors(){
@@ -355,6 +357,45 @@ $this->_campaigns = campaign_access_dropdown();
 
     public function copy_records() {
         if ($this->input->is_ajax_request()) {
+        	$form = $this->input->post();
+        	$urn_list = $form['urn_list'];
+        	
+        	$ar_to_copy = array();
+        	
+        	//Get the data to be copied
+        	$record_details = $this->Records_model->get_record_details_by_urn_list($urn_list);
+        	$aux = array();
+        	foreach ($record_details as $record_detail) {
+        		$aux[$record_detail['urn']] = $record_detail;
+        	}
+        	$record_details = $aux;
+        	
+        	//$companies = $this->Company_model->get_companies_by_urn_list($urn_list);
+        	$companies = array();
+        	$aux = array();
+        	foreach ($companies as $company) {
+        		$aux[$company['urn']] = $company;
+        	}
+        	$companies = $aux;
+        	
+        	//$contacts = $this->Contact_model->get_contacts_by_urn_list($urn_list);
+        	$contacts = array();
+        	$aux = array();
+        	foreach ($contacts as $contact) {
+        		$aux[$contact['urn']] = $contact;
+        	}
+        	$contacts = $aux;
+        	
+        	$records = $this->Records_model->get_records_by_urn_list($urn_list);
+        	foreach ($records as $record) {
+        		$ar_to_copy[$record['urn']]['records'] = $record;
+        		$ar_to_copy[$record['urn']]['record_details'] = (isset($record_details[$record['urn']])?$record_details[$record['urn']]:array());
+        		$ar_to_copy[$record['urn']]['companies'] = (isset($companies[$record['urn']])?$companies[$record['urn']]:array());
+        		$ar_to_copy[$record['urn']]['contacts'] = (isset($contacts[$record['urn']])?$contacts[$record['urn']]:array());
+        	}
+        	
+        	$this->firephp->log($ar_to_copy);
+        	
             $results = $this->Filter_model->copy_records($this->input->post());
 
             echo json_encode(array(
