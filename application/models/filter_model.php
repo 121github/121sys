@@ -44,6 +44,7 @@ class Filter_model extends CI_Model
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     

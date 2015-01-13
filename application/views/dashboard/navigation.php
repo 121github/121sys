@@ -13,7 +13,12 @@
                     </div>
                     <?php if(in_array("client dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-inner">
-                   <a href="<?php echo base_url() ?>dashboard/client" <?php echo @($dashboard=='client'?"class='active'":"") ?>>Tasklist</a>
+                   <a href="<?php echo base_url() ?>dashboard/client" <?php echo @($dashboard=='client'?"class='active'":"") ?>>Client Dashboard</a>
+                    </div>
+                    <?php } ?>
+                                        <?php if(in_array("nbf dash",$_SESSION['permissions'])){ ?>
+                    <div class="accordion-inner">
+                   <a href="<?php echo base_url() ?>dashboard/nbf" <?php echo @($dashboard=='nbf'?"class='active'":"") ?>>New Business</a>
                     </div>
                     <?php } ?>
                     <!-- Advisor Dash -->

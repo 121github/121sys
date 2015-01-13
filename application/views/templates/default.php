@@ -162,6 +162,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                   <?php if(in_array("client dash",$_SESSION['permissions'])){ ?>
                   <li><a href="<?php echo base_url(); ?>dashboard/client">Client Dash</a></li>
                   <?php } ?>
+                  <?php if(in_array("nbf dash",$_SESSION['permissions'])){ ?>
+                  <li><a href="<?php echo base_url(); ?>dashboard/nbf">NBF Dash</a></li>
+                  <?php } ?>
                   <?php if(in_array("agent dash",$_SESSION['permissions'])){ ?>
                   <li><a href="<?php echo base_url(); ?>dashboard/agent">Agent Dash</a></li>
                   <?php } ?>

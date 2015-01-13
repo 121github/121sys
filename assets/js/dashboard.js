@@ -273,6 +273,37 @@ var dashboard = {
             }
         });
     },
+	/* the function for the progress panel on the client dashboard */
+    passover_panel: function (agent, campaign) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/nbf_progress',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                campaign: campaign,
+                user: agent
+            },
+			beforeSend: function(){
+			            $('.progress-panel').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
+			}
+        }).done(function (response) {
+            $('.progress-panel').empty();
+            var $row = "";
+            if (response.data.length > 0) {
+                $.each(response.data, function (i, val) {
+                    var $urgent = "";
+                    if (val.urgent == "1") {
+                        $urgent = "class='red'";
+                    }
+                    $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td ' + $urgent + '>' + val.status + '</td><td><span class="glyphicon glyphicon-comment tt pointer" data-toggle="tooltip" data-placement="top" title="'+val.comments+'"></span> <a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                });
+                $('.progress-panel').append('<table class="table table-striped table-responsive" style="max-height:600px"><thead><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>Status</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+				$('.tt').tooltip();
+            } else {
+                $('.progress-panel').append('<p>' + response.msg + '</p>');
+            }
+        });
+    },
 /* the function for the latest activity panel on the management dashboard */
     agent_activity: function (campaign) {
         $.ajax({

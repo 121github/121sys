@@ -99,6 +99,26 @@ class Dashboard extends CI_Controller
         $this->template->load('default', 'dashboard/client_dash.php', $data);
     }
     
+	 //this is the controller loads the initial view for the nbf dashboard
+    public function nbf()
+    {        
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
+            'title' => 'Dashboard',
+			'page'=> array('dashboard'=>'nbf'),
+            'javascript' => array(
+                'charts.js',
+                'dashboard.js'
+            ),
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css'
+            )
+        );
+        $this->template->load('default', 'dashboard/nbf_dash.php', $data);
+    }
+	
     //this is the controller loads the initial view for the management dashboard
     public function management()
     {
@@ -275,6 +295,28 @@ class Dashboard extends CI_Controller
                 "user" => intval($this->input->post('user'))
             );
             $results = $this->Dashboard_model->client_progress($filter);
+            foreach ($results as $k => $row) {
+                $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
+                $results[$k]['date'] = date('jS M y', strtotime($row['nextcall']));
+            }
+            echo json_encode(array(
+                "success" => true,
+                "data" => $results,
+                "msg" => "No records require your attention"
+            ));
+        }
+        
+    }
+	
+	//this controller displays the progress data in JSON format. It gets called by the javascript function "progress_panel" 
+    public function nbf_progress()
+    {
+        if ($this->input->is_ajax_request()) {
+            $filter  = array(
+                "campaign" => intval($this->input->post('campaign')),
+                "user" => intval($this->input->post('user'))
+            );
+            $results = $this->Dashboard_model->nbf_progress($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
                 $results[$k]['date'] = date('jS M y', strtotime($row['nextcall']));

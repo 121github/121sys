@@ -45,7 +45,7 @@ $this->_campaigns = campaign_access_dropdown();
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();
-        
+        $this->firephp->log($sources);
         $data = array(
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Search',
@@ -109,17 +109,13 @@ $this->_campaigns = campaign_access_dropdown();
 			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
-            $urn_list   = $this->Filter_model->count_records($filter);
-            $count   = count($urn_list);
-            $aux = "";
-            foreach($urn_list as $urn) {
-                $aux .= $urn['urn'].", ";
+            $urn_array   = $this->Filter_model->count_records($filter);
+            $count   = count($urn_array);
+            $urn_list = "0";
+            foreach($urn_array as $urn) {
+                $urn_list .= ", ".$urn['urn'];
             }
-            if (strlen($aux) > 0) {
-                $aux = "(".substr($aux,0,strlen($aux)-2).")";
-            }
-            $urn_list = $aux;
-            $_SESSION['filter']['result']['urn_list'] = $urn_list;
+            $_SESSION['filter']['result']['urn_list'] = "(".$urn_list.")";
             $_SESSION['filter']['result']['count'] = $count;
 
             echo json_encode(array(
