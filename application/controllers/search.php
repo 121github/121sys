@@ -325,11 +325,13 @@ $this->_campaigns = campaign_access_dropdown();
                     $phone_number_list = $this->Contacts_model->get_numbers_from_urn_list($urn_list);
                     
                     //Get numbers already suppressed
-                    $suppressed_number_list =  $this->Filter_model->get_suppressed_numbers($all_campaigns);
+                    $suppressed_number_list =  $this->Filter_model->get_suppressed_numbers($all_campaigns, 1);
                     
+                    //Suppress only the numbers that are not already suppressed
+                    $numbers_to_suppress = array_diff($phone_number_list, $suppressed_number_list);
 
                     //Suppress the phone numbers
-                    //$results = $this->suppress_phone_numbers($phone_number_list, $reason, $all_campaigns);
+                    //$results = $this->suppress_phone_numbers($numbers_to_suppress, $reason, $all_campaigns, 1);
                 }
             }
 

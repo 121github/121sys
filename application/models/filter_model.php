@@ -882,23 +882,51 @@ class Filter_model extends CI_Model
         return true;
     }
     
-    public function get_suppressed_numbers($all_campaigns) {
+    public function get_suppressed_numbers($all_campaigns,$campaign_id) {
+    	$numbers = array();
+    	
     	if ($all_campaigns) {
     		$qry = "select telephone_number 
-    				from suppression 
-    				where suppression_id NOT IN (
-    					select suppression_id from suppression_by_campaign
-    				)";
+    				from suppression";
     	}
     	else {
     		$qry = "select telephone_number 
     				from suppression 
     				where suppression_id IN (
     					select suppression_id from suppression_by_campaign
+    					where campaign_id = ".$campaign_id."
     				)";
     	}
     	
-    	return $this->db->query($qry)->result_array();
+    	$result =  $this->db->query($qry)->result_array();
+    	
+    	foreach($result as $row){
+    		$numbers[] = $row['telephone_number'];
+    	}
+    	
+    	return $numbers;
+    }
+    
+    public function suppress_phone_numbers($numbers_to_suppress, $reason, $all_campaigns, $campaign_id) {
+    	foreach($numbers_to_suppress as $number)
+    	{
+    		$suppression = array(
+    			"telephone_number" => $number,
+    			"reason" => $reason
+    		);
+    		
+    		$result = $this->db->insert('suppression', $suppression);
+    		
+    		if (!$all_campaigns && $result) {
+    			$suppression_id = $this->db->insert_id();
+    			$result = $this->db->insert('suppression_by_campaign', array(
+    					"suppresion_id" => $suppression_id,
+    					"campaign_id" => $campaign_id
+    			));
+    		}
+    	}
+    	
+    	//return $this->db->query($qry);
     }
 
     public function save_ownership($form) {
