@@ -35,7 +35,7 @@ $this->_campaigns = campaign_access_dropdown();
 		"contact_addresses.postcode"=>"Contact Postcode");
 		
 		$array['Company Fields'] =  array("companies.name"=>"Company Name",
-		"companies.company_number"=>"Company Number",
+		"companies.conumber"=>"Company Number",
 		"companies.email"=>"Company Email",
 		"companies.website"=>"Company Website",
 		"companies.employees"=>"Employees");

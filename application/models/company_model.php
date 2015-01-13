@@ -27,7 +27,7 @@ class Company_model extends CI_Model
                 "description" => $result['codescription'],
 				"employees" => $result['employees'],
 				"turnover" => $result['turnover'],
-				"company_number" => $result['company_number']
+				"company_number" => $result['conumber']
             );
             if ($result['telephone_id']) {
                 $company['telephone'][$result['telephone_id']] = array(
