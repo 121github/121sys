@@ -615,7 +615,7 @@ HAVING count( client_ref ) >1";
 	}
 	
 	foreach($keep_array as $ignore){
-	unset($delete_list[$ignore]);	
+	unset($delete_array[$ignore]);	
 	}
 	
 	$keep_list = implode(', ', $keep_array);
