@@ -5,7 +5,8 @@
 <div class="row">
   <div class="col-md-12 col-sm-12">
     <div class="panel-group" id="accordion">
-      <?php if(in_array("search campaigns",$_SESSION['permissions'])){ ?>
+      <?php if(in_array("search campaigns",$_SESSION['permissions'])){ 
+	  if(count($campaigns)>1||count($campaign_types)>1||count($clients)>1||count($sources)>1){ ?>
         <div class="panel panel-primary visible">
           <div class="panel-heading">
             <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseZero"> Campaign Filter Options </a> </h4>
@@ -51,13 +52,13 @@
                   <?php endforeach; ?>
                 </select>
                  <?php } ?>
-              
               </div>
              
               <button type="submit" class="btn btn-default pull-right submit-filter">View Records</button>
               Found: <span class="record-count"></span> </div>
           </div>
         </div>
+         <?php } ?>
         <?php } ?>
         
         <!-------------------->
@@ -360,6 +361,7 @@
                             <div class="form-group">
                 <label>Number of dials</label>
                 <select name="dials" class="selectpicker" data-width="100%" data-dropupAuto="false" data-size="5"  title="Any">
+                                  <option <?php if(@$_SESSION['filter']['values']['dials']==""){ echo "selected"; } ?> value="" >Any</option>
                   <option <?php if(@$_SESSION['filter']['values']['dials']=="zero"){ echo "selected"; } ?> value="zero" >None</option>
                   <option <?php if(@$_SESSION['filter']['values']['dials']=="1"){ echo "selected"; } ?> value="1" >1</option>
                   <option <?php if(@$_SESSION['filter']['values']['dials']=="2"){ echo "selected"; } ?> value="2" >2</option>

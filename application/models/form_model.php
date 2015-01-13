@@ -140,10 +140,10 @@ class Form_model extends CI_Model
 	
     public function get_clients()
     {
-		if(!in_array("campaign access",$_SESSION['permissions'])){
-        $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) left join users_to_campaigns using(campaign_id) where campaign_status = 1 and user_id = '{$_SESSION['user_id']}' group by client_id order by client_id";
+		if(in_array("all campaigns",$_SESSION['permissions'])){
+			 $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where 1 group by client_id order by client_id";
 		} else {
-            $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where 1 group by client_id order by client_id";
+             $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where campaign_status = 1 and campaign_id in({$_SESSION['campaign_access']['list']}) group by client_id order by client_name";
         }
         return $this->db->query($qry)->result_array();
     }
@@ -164,10 +164,10 @@ class Form_model extends CI_Model
     }
     public function get_sources()
     {
-        if ($_SESSION['role'] == 1) {
+        if (in_array("all campaigns",$_SESSION['permissions'])) {
             $qry = "select source_id id,source_name name from data_sources";
         } else {
-            $qry = "select source_id id,source_name name from records left join data_sources using(source_id) left join users_to_campaigns using(campaign_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by source_id";
+            $qry = "select source_id id,source_name name from records left join data_sources using(source_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by source_name";
         }
         return $this->db->query($qry)->result_array();
     }
@@ -227,7 +227,11 @@ class Form_model extends CI_Model
     }
     public function get_managers()
     {
-        $qry = "select user_id id,name from users where role_id in(2,3)";
+		if(in_array("all campaigns",$_SESSION['permissions'])){
+        $qry = "select user_id id,name from users where user_id in team_managers";
+		} else {
+		$qry = "select user_id id,name from users where user_id in team_managers left join users using(user_id) where group_id = '{$_SESSION['group']}'";	
+		}
         return $this->db->query($qry)->result_array();
     }
     public function get_team_managers($team)

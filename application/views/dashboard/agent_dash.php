@@ -7,7 +7,7 @@
     <div id="page-wrapper">
       <div class="row">
         <div class="col-lg-12">
-          <h1 class="page-header">Callback Dashboard</h1>
+          <h1 class="page-header">My Callbacks</h1>
         </div>
         <!-- /.col-lg-12 --> 
       </div>
@@ -15,7 +15,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="panel panel-primary" id="a_favorites">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites</div>
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Favorites</div>
             <div class="panel-body favorites-panel"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
           </div>
         </div>
