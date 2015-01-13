@@ -624,8 +624,7 @@ HAVING count( client_ref ) >1";
 	$tidy = "delete from records where urn in($delete_list)";
 	$tidy2 = "delete from client_refs where urn in($delete_list)";
 	echo $tidy.";<br>";
-	echo $tidy2.";<br>";
-	$this->db->query($tidy);	
+	echo $tidy2.";<br>";	
 	}
 	
 	public function match_outcomes(){
