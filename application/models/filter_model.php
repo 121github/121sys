@@ -934,7 +934,40 @@ class Filter_model extends CI_Model
         return false;
     }
 
-    public function copy_records($form) {
-        return false;
+    public function copy_records($records) {
+    	return $this->db->insert_batch('records', $records);
+    }
+    
+    public function copy_record_details($record_details) {
+    	return $this->db->insert_batch('record_details', $record_details);
+    }
+    
+    public function copy_companies($companies) {
+    	return $this->db->insert_batch('companies', $companies);
+    }
+    
+    public function get_next_autoincrement_id ($table) {
+    	$next = $this->db->query("SHOW TABLE STATUS LIKE '".$table."'");
+    	$next = $next->row(0);
+    	$next->Auto_increment;
+    	return $next->Auto_increment;
+    }
+
+    public function get_urns_inserted($urn_list, $urn_from) {
+    	$qry = "select urn, urn_copied
+				from records
+				where urn_copied IN ".$urn_list."
+				and urn >= ".$urn_from;
+    	 
+    	return $this->db->query($qry)->result_array();
+    }
+    
+    public function get_companies_inserted($company_list, $company_id_from) {
+    	$qry = "select company_id, company_copied
+				from companies
+				where company_copied IN ".$company_list."
+				and company_id >= ".$company_id_from;
+    
+    	return $this->db->query($qry)->result_array();
     }
 }

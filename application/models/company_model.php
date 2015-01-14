@@ -99,6 +99,17 @@ class Company_model extends CI_Model
         return $companies;
     }
 	
+    public function get_companies_by_urn_list($urn_list) {
+    	$qry = "select *
+				from companies cm
+				left join company_addresses cma ON (cma.company_id = cm.company_id)
+				left join company_subsectors cms ON (cms.company_id = cm.company_id)
+				left join company_telephone cmt ON (cmt.company_id = cm.company_id)
+				where urn IN ".$urn_list;
+    	 
+    	return $this->db->query($qry)->result_array();
+    }
+    
 	public function get_numbers($urn){
 		$qry = "select telephone_number from company_telephone left join companies using(company_id) where urn = '$urn'";	
 		return $this->db->query($qry)->result_array();	

@@ -360,48 +360,236 @@ class Search extends CI_Controller
         	$form = $this->input->post();
         	$urn_list = $form['urn_list'];
         	
-        	$ar_to_copy = array();
+        	//Get the records
+        	$records = $this->Records_model->get_records_by_urn_list($urn_list);
         	
-        	//Get the data to be copied
+        	//Get the next urn to be inserted (with the autoincrement)
+        	$next_urn = $this->Filter_model->get_next_autoincrement_id('records');
+        	
+        	//Copy the records
+        	$records_to_copy = array();
+        	foreach ($records as $record) {
+        		$record['urn_copied'] = $record['urn'];
+        		unset($record['urn']);
+        		array_push($records_to_copy, $record);
+        	}
+        	//$results = $this->Filter_model->copy_records($records_to_copy);
+        	
+        	//Get the new urns inserted
+        	$new_urn_list = $this->Filter_model->get_urns_inserted($urn_list, $next_urn);
+        	$aux = array();
+        	foreach ($new_urn_list as $new_urn) {
+        		$aux[$new_urn['urn_copied']] = $new_urn['urn'];
+        	}
+        	$new_urn_list = $aux;
+        	
+        	//Get the record_details
         	$record_details = $this->Records_model->get_record_details_by_urn_list($urn_list);
         	$aux = array();
         	foreach ($record_details as $record_detail) {
+        		$record_detail['urn'] = $new_urn_list[$record_detail['urn']];
         		$aux[$record_detail['urn']] = $record_detail;
         	}
         	$record_details = $aux;
         	
-        	//$companies = $this->Company_model->get_companies_by_urn_list($urn_list);
-        	$companies = array();
+        	//Get the companies
+        	$companies = $this->Company_model->get_companies_by_urn_list($urn_list);
         	$aux = array();
         	foreach ($companies as $company) {
-        		$aux[$company['urn']] = $company;
+        		$company['urn'] = $new_urn_list[$company['urn']];
+        		if (!isset($aux[$company['urn']][$company['company_id']])) {
+        			$aux[$company['urn']][$company['company_id']] = array();
+        		}
+        		array_push($aux[$company['urn']][$company['company_id']],$company);
         	}
         	$companies = $aux;
         	
-        	//$contacts = $this->Contact_model->get_contacts_by_urn_list($urn_list);
-        	$contacts = array();
+        	//Get the contacts
+        	$contacts = $this->Contacts_model->get_contacts_by_urn_list($urn_list);
         	$aux = array();
         	foreach ($contacts as $contact) {
-        		$aux[$contact['urn']] = $contact;
+        		$contact['urn'] = $new_urn_list[$contact['urn']];
+        		if (!isset($aux[$contact['urn']][$contact['contact_id']])) {
+        			$aux[$contact['urn']][$contact['contact_id']] = array();
+        		}
+        		array_push($aux[$contact['urn']][$contact['contact_id']],$contact);
         	}
         	$contacts = $aux;
         	
-        	$records = $this->Records_model->get_records_by_urn_list($urn_list);
+        	
+        	//Compose the array to be copied
+        	$record_details_to_copy = array();
+        	$companies_to_copy = array();
+        	$contacts_to_copy = array();
         	foreach ($records as $record) {
-        		$ar_to_copy[$record['urn']]['records'] = $record;
-        		$ar_to_copy[$record['urn']]['record_details'] = (isset($record_details[$record['urn']])?$record_details[$record['urn']]:array());
-        		$ar_to_copy[$record['urn']]['companies'] = (isset($companies[$record['urn']])?$companies[$record['urn']]:array());
-        		$ar_to_copy[$record['urn']]['contacts'] = (isset($contacts[$record['urn']])?$contacts[$record['urn']]:array());
+        		$record['urn_copied'] = $record['urn'];
+        		$record['urn'] = $new_urn_list[$record['urn']];
+        		
+        		if (isset($record_details[$record['urn']])) {
+        			unset($record_details[$record['urn']]['detail_id']);
+        			array_push($record_details_to_copy, $record_details[$record['urn']]);
+        		}
+        		
+        		if (isset($companies[$record['urn']])) {
+        			foreach ($companies[$record['urn']] as $company_id => $company) {
+        				foreach ($company as $data) {
+        					$companies_to_copy[$company_id]['companies'] = array(
+        							"company_copied" => $data['company_id'],
+        							"urn" => $data['urn'],
+        							"name" => $data['name'],
+        							"description" => $data['description'],
+        							"company_number" => $data['company_number'],
+        							"turnover" => $data['turnover'],
+        							"employees" => $data['employees'],
+        							"website" => $data['website'],
+        							"email" => $data['email']
+        					);
+        					$company_address = array(
+        							"company_id" => $data['company_id'],
+        							"address_id" => $data['address_id'],
+       								"add1" => $data['add1'],
+        							"add2" => $data['add2'],
+        							"add3" => $data['add3'],
+        							"county" => $data['county'],
+        							"country" => $data['country'],
+        							"postcode" => $data['postcode'],
+        							"location_id" => $data['location_id'],
+        							"primary" => $data['primary']
+        					);
+        					if (!isset($companies_to_copy[$company_id]['company_addresses'])) {
+        						$companies_to_copy[$company_id]['company_addresses'] = array();
+        					}
+        					if (!isset($companies_to_copy[$company_id]['company_addresses'][$company_address['address_id']]) && $company_address['address_id']) {
+        						$companies_to_copy[$company_id]['company_addresses'][$company_address['address_id']] = $company_address;
+        					}
+        					
+        					$company_subsector = array(
+        							"company_id" => $data['company_id'],
+        							"subsector_id" => $data['subsector_id']
+        					);
+        					if (!isset($companies_to_copy[$company_id]['company_subsectors'])) {
+        						$companies_to_copy[$company_id]['company_subsectors'] = array();
+        					}
+        					if (!isset($companies_to_copy[$company_id]['company_subsectors'][$company_subsector['subsector_id']]) && $company_subsector['subsector_id']) {
+        						$companies_to_copy[$company_id]['company_subsectors'][$company_subsector['subsector_id']] = $company_subsector;
+        					}
+        					
+        					$company_telephone = array(
+        							"company_id" => $data['company_id'],
+        							"telephone_id" => $data['telephone_id'],
+        							"telephone_number" => $data['telephone_number'],
+        							"ctps" => $data['ctps']
+        					);
+        					if (!isset($companies_to_copy[$company_id]['company_telephone'])) {
+        						$companies_to_copy[$company_id]['company_telephone'] = array();
+        					}
+        					if (!isset($companies_to_copy[$company_id]['company_telephone'][$company_telephone['telephone_id']]) && $company_telephone['telephone_id']) {
+        						$companies_to_copy[$company_id]['company_telephone'][$company_telephone['telephone_id']] = $company_telephone;
+        					}
+        					
+        				}
+        			}
+        		}
+        		
+        		if (isset($contacts[$record['urn']])) {
+        			foreach ($contacts[$record['urn']] as $contact_id => $contact) {
+        				foreach ($contact as $data) {
+        					$contacts_to_copy[$contact_id]['contacts'] = array(
+        							"contact_copied" => $data['contact_id'],
+        							"urn" => $data['urn'],
+        							"fullname" => $data['fullname'],
+        							"title" => $data['title'],
+        							"firstname" => $data['firstname'],
+        							"lastname" => $data['lastname'],
+        							"gender" => $data['gender'],
+        							"position" => $data['position'],
+        							"dob" => $data['dob'],
+        							"fax" => $data['fax'],
+        							"email" => $data['email'],
+        							"email_optout" => $data['email_optout'],
+        							"website" => $data['website'],
+        							"linkedin" => $data['linkedin'],
+        							"facebook" => $data['facebook'],
+        							"notes" => $data['notes'],
+        							"sort" => $data['sort']
+        					);
+        					$contact_address = array(
+        							"contact_id" => $data['contact_id'],
+        							"address_id" => $data['address_id'],
+       								"add1" => $data['add1'],
+        							"add2" => $data['add2'],
+        							"add3" => $data['add3'],
+        							"county" => $data['county'],
+        							"country" => $data['country'],
+        							"postcode" => $data['postcode'],
+        							"location_id" => $data['location_id'],
+        							"primary" => $data['primary']
+        					);
+        					if (!isset($contacts_to_copy[$contact_id]['contact_addresses'])) {
+        						$contacts_to_copy[$contact_id]['contact_addresses'] = array();
+        					}
+        					if (!isset($contacts_to_copy[$contact_id]['contact_addresses'][$contact_address['address_id']]) && $contact_address['address_id']) {
+        						$contacts_to_copy[$contact_id]['contact_addresses'][$contact_address['address_id']] = $contact_address;
+        					}
+        					
+        					$contact_telephone = array(
+        							"contact_id" => $data['contact_id'],
+        							"telephone_id" => $data['telephone_id'],
+        							"telephone_number" => $data['telephone_number'],
+        							"description" => $data['description'],
+        							"tps" => $data['tps']
+        					);
+        					if (!isset($contacts_to_copy[$contact_id]['contact_telephone'])) {
+        						$contacts_to_copy[$contact_id]['contact_telephone'] = array();
+        					}
+        					if (!isset($contacts_to_copy[$contact_id]['contact_telephone'][$contact_telephone['telephone_id']]) && $contact_telephone['telephone_id']) {
+        						$contacts_to_copy[$contact_id]['contact_telephone'][$contact_telephone['telephone_id']] = $contact_telephone;
+        					}
+        					
+        				}
+        			}
+        		}
         	}
         	
-        	$this->firephp->log($ar_to_copy);
+        	//Copy the record_details
+        	$results = $this->Filter_model->copy_record_details($record_details);
         	
-            $results = $this->Filter_model->copy_records($this->input->post());
+        	//Copy the companies
+        	$this->copy_companies($companies_to_copy);
+        	
+        	//Copy the contacts
+        	//$this->copy_companies($contacts_to_copy);
 
             echo json_encode(array(
                 "success" => ($results),
                 "msg" => ($results?"Records were copied successfully":"ERROR: Records were not copied  successfully!")
             ));
         }
+    }
+    
+    private function copy_companies($companies) {
+    	$companies_to_copy = array();
+    	$company_list = "0";
+    	foreach ($companies as $company_id => $company) {
+    		array_push($companies_to_copy, $company['companies']);
+    		$company_list .= ", ".$company_id;
+    	}
+    	$company_list = "(".$company_list.")";
+    	
+    	//Get the next company_id to be inserted (with the autoincrement)
+    	$next_company_id = $this->Filter_model->get_next_autoincrement_id('companies');
+    	
+    	//Copy the record_details
+    	//$results = $this->Filter_model->copy_companies($companies_to_copy);
+    	
+    	//Get the new company_ids
+    	$new_company_list = $this->Filter_model->get_companies_inserted($company_list, $next_company_id);
+    	$aux = array();
+    	foreach ($new_company_list as $new_company) {
+    		$aux[$new_company['company_copied']] = $new_company['company_id'];
+    	}
+    	$new_company_list = $aux;
+    	
+    	
     }
 }

@@ -109,6 +109,16 @@ class Contacts_model extends CI_Model
         endforeach;
         return $contacts;
     }
+    
+    public function get_contacts_by_urn_list($urn_list) {
+    	$qry = "select *
+				from contacts cn
+				left join contact_addresses cna ON (cna.contact_id = cn.contact_id)
+				left join contact_telephone cnt ON (cnt.contact_id = cn.contact_id)
+				where urn IN ".$urn_list;
+    	
+    	return $this->db->query($qry)->result_array();
+    }
 	
 	public function get_numbers($urn){
 		$qry = "select replace(telephone_number,' ','') as telephone_number from contact_telephone left join contacts using(contact_id) where urn = '$urn'";	
@@ -148,5 +158,7 @@ class Contacts_model extends CI_Model
 	
 		return $insert_id;
 	}
+	
+	
 	
 }
