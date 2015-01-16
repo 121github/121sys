@@ -7,6 +7,7 @@ class Search extends CI_Controller
 {
     
     public function __construct()
+
     {
         parent::__construct();
         user_auth_check();
@@ -47,7 +48,6 @@ class Search extends CI_Controller
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();
-        $this->firephp->log($sources);
         $data = array(
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Search',
@@ -112,24 +112,29 @@ class Search extends CI_Controller
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
             $urn_array   = $this->Filter_model->count_records($filter);
-            $count   = count($urn_array);
-            $urn_list = "0";
-            foreach($urn_array as $urn) {
-                $urn_list .= ", ".$urn['urn'];
-            }
-            $_SESSION['filter']['result']['urn_list'] = "(".$urn_list.")";
-            $_SESSION['filter']['result']['count'] = $count;
 
             echo json_encode(array(
                 "success" => true,
-                "data" => $count
+                "query" => $urn_array['query'],
+                "data" => count($urn_array['data'])
             ));
         }
     }
 
     public function get_urn_list()
     {
-        $urn_list = $_SESSION['filter']['result']['urn_list'];
+        $form = $this->input->post();
+
+        $urn_array = $this->Filter_model->get_urn_list($form['query']);
+
+        $this->firephp->log($urn_array);
+
+        $urn_list = "0";
+        foreach($urn_array as $urn) {
+            $urn_list .= ", ".$urn['urn'];
+        }
+
+        $urn_list = "(".$urn_list.")";
 
         echo json_encode(array(
             "success" => (strlen($urn_list)),
@@ -359,30 +364,13 @@ class Search extends CI_Controller
         if ($this->input->is_ajax_request()) {
         	$form = $this->input->post();
         	$urn_list = $form['urn_list'];
+            $campaign_id = $form['campaign_id'];
         	
         	//Get the records
-        	$records = $this->Records_model->get_records_by_urn_list($urn_list);
-        	
-        	//Get the next urn to be inserted (with the autoincrement)
-        	$next_urn = $this->Filter_model->get_next_autoincrement_id('records');
-        	
-        	//Copy the records
-        	$records_to_copy = array();
-        	foreach ($records as $record) {
-        		$record['urn_copied'] = $record['urn'];
-        		unset($record['urn']);
-        		array_push($records_to_copy, $record);
-        	}
-        	//$results = $this->Filter_model->copy_records($records_to_copy);
-        	
-        	//Get the new urns inserted
-        	$new_urn_list = $this->Filter_model->get_urns_inserted($urn_list, $next_urn);
-        	$aux = array();
-        	foreach ($new_urn_list as $new_urn) {
-        		$aux[$new_urn['urn_copied']] = $new_urn['urn'];
-        	}
-        	$new_urn_list = $aux;
-        	
+            $records = $this->Records_model->get_records_by_urn_list($urn_list);
+            $new_urn_list = $this->copy_records_to_campaign($records, $urn_list, $campaign_id);
+
+
         	//Get the record_details
         	$record_details = $this->Records_model->get_record_details_by_urn_list($urn_list);
         	$aux = array();
@@ -415,8 +403,8 @@ class Search extends CI_Controller
         		array_push($aux[$contact['urn']][$contact['contact_id']],$contact);
         	}
         	$contacts = $aux;
-        	
-        	
+
+
         	//Compose the array to be copied
         	$record_details_to_copy = array();
         	$companies_to_copy = array();
@@ -438,7 +426,7 @@ class Search extends CI_Controller
         							"urn" => $data['urn'],
         							"name" => $data['name'],
         							"description" => $data['description'],
-        							"company_number" => $data['company_number'],
+        							"conumber" => $data['conumber'],
         							"turnover" => $data['turnover'],
         							"employees" => $data['employees'],
         							"website" => $data['website'],
@@ -490,8 +478,8 @@ class Search extends CI_Controller
         				}
         			}
         		}
-        		
-        		if (isset($contacts[$record['urn']])) {
+
+                if (isset($contacts[$record['urn']])) {
         			foreach ($contacts[$record['urn']] as $contact_id => $contact) {
         				foreach ($contact as $data) {
         					$contacts_to_copy[$contact_id]['contacts'] = array(
@@ -550,15 +538,25 @@ class Search extends CI_Controller
         			}
         		}
         	}
+
         	
         	//Copy the record_details
-        	$results = $this->Filter_model->copy_record_details($record_details);
+            if (!empty($record_details)) {
+                $this->Filter_model->copy_record_details($record_details);
+                $this->firephp->log($record_details);
+            }
         	
         	//Copy the companies
-        	$this->copy_companies($companies_to_copy);
+            if (!empty($companies_to_copy)) {
+                $this->copy_companies($companies_to_copy);
+            }
         	
         	//Copy the contacts
-        	//$this->copy_companies($contacts_to_copy);
+            if (!empty($contacts_to_copy)) {
+                $this->copy_contacts($contacts_to_copy);
+            }
+
+            $results = true;
 
             echo json_encode(array(
                 "success" => ($results),
@@ -566,9 +564,43 @@ class Search extends CI_Controller
             ));
         }
     }
-    
+
+    private function copy_records_to_campaign($records, $urn_list, $campaign_id) {
+
+        //Get the next urn to be inserted (with the autoincrement)
+        $next_urn = $this->Filter_model->get_next_autoincrement_id('records');
+
+        //Copy the records
+        $records_to_copy = array();
+        foreach ($records as $record) {
+
+            $record['campaign_id'] = $campaign_id;
+            $record['urn_copied'] = $record['urn'];
+            unset($record['urn']);
+            $record['date_added'] = date('Y-m-d H:i:s');
+            unset($record['date_updated']);
+            array_push($records_to_copy, $record);
+        }
+        $results = $this->Filter_model->copy_records($records_to_copy);
+        $this->firephp->log($records_to_copy);
+
+
+        //Get the new urns inserted
+        $new_urn_list = $this->Filter_model->get_urns_inserted($urn_list, $next_urn);
+        $aux = array();
+        foreach ($new_urn_list as $new_urn) {
+            $aux[$new_urn['urn_copied']] = $new_urn['urn'];
+        }
+        $new_urn_list = $aux;
+
+        $this->firephp->log($new_urn_list);
+
+        return $new_urn_list;
+    }
+
     private function copy_companies($companies) {
-    	$companies_to_copy = array();
+
+        $companies_to_copy = array();
     	$company_list = "0";
     	foreach ($companies as $company_id => $company) {
     		array_push($companies_to_copy, $company['companies']);
@@ -579,8 +611,9 @@ class Search extends CI_Controller
     	//Get the next company_id to be inserted (with the autoincrement)
     	$next_company_id = $this->Filter_model->get_next_autoincrement_id('companies');
     	
-    	//Copy the record_details
-    	//$results = $this->Filter_model->copy_companies($companies_to_copy);
+    	//Copy the companies
+    	$results = $this->Filter_model->copy_companies($companies_to_copy);
+        $this->firephp->log($companies_to_copy);
     	
     	//Get the new company_ids
     	$new_company_list = $this->Filter_model->get_companies_inserted($company_list, $next_company_id);
@@ -589,7 +622,92 @@ class Search extends CI_Controller
     		$aux[$new_company['company_copied']] = $new_company['company_id'];
     	}
     	$new_company_list = $aux;
-    	
-    	
+
+    	$company_addresses = array();
+        $company_subsectors = array();
+        $company_telephones = array();
+        foreach($companies as $company) {
+            foreach($company['company_addresses'] as $company_address) {
+                $company_address['company_id'] = $new_company_list[$company_address['company_id']];
+                unset($company_address['address_id']);
+                array_push($company_addresses, $company_address);
+            }
+            foreach($company['company_subsectors'] as $company_subsector) {
+                $company_subsector['company_id'] = $new_company_list[$company_subsector['company_id']];
+                unset($company_subsector['subsector_id']);
+                array_push($company_subsectors, $company_subsector);
+            }
+            foreach($company['company_telephone'] as $company_telephone) {
+                $company_telephone['company_id'] = $new_company_list[$company_telephone['company_id']];
+                unset($company_telephone['telephone_id']);
+                array_push($company_telephones, $company_telephone);
+            }
+        }
+
+        //Copy the company_addresses
+        if (!empty($company_addresses)) {
+            $results = $this->Filter_model->copy_company_addresses($company_addresses);
+        }
+
+        //Copy the company_subsectors
+        if (!empty($company_subsectors)) {
+            $results = $this->Filter_model->copy_company_subsectors($company_subsectors);
+        }
+
+        //Copy the company_telephones
+        if (!empty($company_telephones)) {
+            $results = $this->Filter_model->copy_company_telephone($company_telephones);
+        }
+    }
+
+    private function copy_contacts($contacts) {
+
+        $contacts_to_copy = array();
+        $contact_list = "0";
+        foreach ($contacts as $contact_id => $contact) {
+            array_push($contacts_to_copy, $contact['contacts']);
+            $contact_list .= ", ".$contact_id;
+        }
+        $contact_list = "(".$contact_list.")";
+
+        //Get the next contact_id to be inserted (with the autoincrement)
+        $next_contact_id = $this->Filter_model->get_next_autoincrement_id('contacts');
+
+        //Copy the contacts
+        $results = $this->Filter_model->copy_contacts($contacts_to_copy);
+        $this->firephp->log($contacts_to_copy);
+
+        //Get the new contact_ids
+        $new_contact_list = $this->Filter_model->get_contacts_inserted($contact_list, $next_contact_id);
+        $aux = array();
+        foreach ($new_contact_list as $new_contact) {
+            $aux[$new_contact['contact_copied']] = $new_contact['contact_id'];
+        }
+        $new_contact_list = $aux;
+
+        $contact_addresses = array();
+        $contact_telephones = array();
+        foreach($contacts as $contact) {
+            foreach($contact['contact_addresses'] as $contact_address) {
+                $contact_address['contact_id'] = $new_contact_list[$contact_address['contact_id']];
+                unset($contact_address['address_id']);
+                array_push($contact_addresses, $contact_address);
+            }
+            foreach($contact['contact_telephone'] as $contact_telephone) {
+                $contact_telephone['contact_id'] = $new_contact_list[$contact_telephone['contact_id']];
+                unset($contact_telephone['telephone_id']);
+                array_push($contact_telephones, $contact_telephone);
+            }
+        }
+
+        //Copy the contact_addresses
+        if (!empty($contact_addresses)) {
+            $results = $this->Filter_model->copy_contact_addresses($contact_addresses);
+        }
+
+        //Copy the contact_telephones
+        if (!empty($contact_telephones)) {
+            $results = $this->Filter_model->copy_contact_telephone($contact_telephones);
+        }
     }
 }

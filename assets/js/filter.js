@@ -60,9 +60,11 @@ var filter = {
 			$('.record-status').selectpicker('val',1);
 			$('input[type="checkbox"]').prop('checked',false);
 			filter.count_records(true);
-			$(document).on('change', 'select',function(){
+			$(document).on('change', 'select:not(.actions_parked_code_select,.actions_ownership_select,.actions_campaign_select)',function(){
 				filter.count_records();
-			})
+			});
+			$('.copy-records').prop('disabled', true);
+			$('.copy_records_error').show();
 		});
 
 		$(document).on('click', '.change-parkedcode', function(e) {
@@ -236,6 +238,7 @@ var filter = {
 				$('button[type="submit"]').prop('disabled', false);
 				$('.record-count').html(response.data).css('color','green');
 				$('.actions-filter').prop('disabled', false);
+				$('.actions-qry').html(btoa(response.query));
 			}
 		});
 
@@ -309,10 +312,12 @@ var filter = {
 	get_urn_list: function() {
 
 		var urn_list;
+		var query = atob($(".actions-qry").html());
 		$.ajax({
 			url: helper.baseUrl + 'search/get_urn_list',
 			type: "POST",
 			dataType: "JSON",
+			data: {"query": query},
 			async: false
 		}).done(function(response){
 			urn_list = response.data;

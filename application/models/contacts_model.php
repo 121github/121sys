@@ -113,8 +113,8 @@ class Contacts_model extends CI_Model
     public function get_contacts_by_urn_list($urn_list) {
     	$qry = "select *
 				from contacts cn
-				left join contact_addresses cna ON (cna.contact_id = cn.contact_id)
-				left join contact_telephone cnt ON (cnt.contact_id = cn.contact_id)
+				inner join contact_addresses cna ON (cna.contact_id = cn.contact_id)
+				inner join contact_telephone cnt ON (cnt.contact_id = cn.contact_id)
 				where urn IN ".$urn_list;
     	
     	return $this->db->query($qry)->result_array();

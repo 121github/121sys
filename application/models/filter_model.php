@@ -44,7 +44,14 @@ class Filter_model extends CI_Model
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
-		$this->firephp->log($qry);
+		$result = array(
+            "query" => $qry,
+            "data" => $this->db->query($qry)->result_array()
+        );
+        return $result;
+    }
+
+    public function get_urn_list($qry) {
         return $this->db->query($qry)->result_array();
     }
     
@@ -934,6 +941,10 @@ class Filter_model extends CI_Model
         return false;
     }
 
+    /**************************************************************/
+    /*************** COPY RECORDS ********************************/
+    /**************************************************************/
+
     public function copy_records($records) {
     	return $this->db->insert_batch('records', $records);
     }
@@ -945,12 +956,37 @@ class Filter_model extends CI_Model
     public function copy_companies($companies) {
     	return $this->db->insert_batch('companies', $companies);
     }
-    
+
+    public function copy_company_addresses($company_addresses) {
+        return $this->db->insert_batch('company_addresses', $company_addresses);
+    }
+
+    public function copy_company_subsectors($company_subsectors) {
+        return $this->db->insert_batch('company_subsectors', $company_subsectors);
+    }
+
+    public function copy_company_telephone($company_telephone) {
+        return $this->db->insert_batch('company_telephone', $company_telephone);
+    }
+
+
+    public function copy_contacts($contacts) {
+        return $this->db->insert_batch('contacts', $contacts);
+    }
+
+    public function copy_contact_addresses($contact_addresses) {
+        return $this->db->insert_batch('contact_addresses', $contact_addresses);
+    }
+
+    public function copy_contact_telephone($contact_telephone) {
+        return $this->db->insert_batch('contact_telephone', $contact_telephone);
+    }
+
     public function get_next_autoincrement_id ($table) {
-    	$next = $this->db->query("SHOW TABLE STATUS LIKE '".$table."'");
-    	$next = $next->row(0);
-    	$next->Auto_increment;
-    	return $next->Auto_increment;
+        $next = $this->db->query("SHOW TABLE STATUS LIKE '".$table."'");
+        $next = $next->row(0);
+        $next->Auto_increment;
+        return $next->Auto_increment;
     }
 
     public function get_urns_inserted($urn_list, $urn_from) {
@@ -969,5 +1005,14 @@ class Filter_model extends CI_Model
 				and company_id >= ".$company_id_from;
     
     	return $this->db->query($qry)->result_array();
+    }
+
+    public function get_contacts_inserted($contact_list, $contact_id_from) {
+        $qry = "select contact_id, contact_copied
+				from contacts
+				where contact_copied IN ".$contact_list."
+				and contact_id >= ".$contact_id_from;
+
+        return $this->db->query($qry)->result_array();
     }
 }
