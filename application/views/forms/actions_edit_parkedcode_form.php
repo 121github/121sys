@@ -10,10 +10,19 @@
         </select>
     </div>
     <div class="form-group input-group-sm suppress-form" style="display: none">
+        <p>Please select the campaign</p>
         <div class="checkbox">
             <label>Check for all campaigns</label>
-            <input class="all_campaigns_checkbox" name="all_campaigns" type="checkbox">
+            <input class="all_campaigns_checkbox" id="all_campaigns" name="all_campaigns" type="checkbox">
+
+            <select class="selectpicker actions_parked_code_campaign" name="parked_code_campaign">
+                <option value="" >Nothing selected</option>
+                <?php foreach($campaigns as $row): ?>
+                    <option value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
+        <p>Please select the reason</p>
         <textarea class="form-control" placeholder="Enter the reason here" rows="3" name="reason"></textarea>
     </div>
     <div class="form-actions">
