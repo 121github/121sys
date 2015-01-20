@@ -180,6 +180,7 @@ var filter = {
 		}
 		$('.campaigns_select').on('change', function(){
 			var num_selected = $('.campaigns_select').val();
+			console.log(num_selected);
 			if (num_selected && num_selected.length==1) {
 				$('.copy-records').prop('disabled', false);
 				$('.copy_records_error').hide();
@@ -252,7 +253,9 @@ var filter = {
 				$('.actions-filter').prop('disabled', true);
 				$('.change-parkedcode').prop('disabled', true);
 				$('.change-ownership').prop('disabled', true);
-				$('.copy-records').prop('disabled', true);
+				if ($('.campaigns_select').val() && $('.campaigns_select').val().length == 1 ) {
+					$('.copy-records').prop('disabled', true);
+				}
 			} else {
 				$('button[type="submit"]').prop('disabled', false);
 				$('.record-count').html(response.data).css('color','green');
@@ -260,7 +263,9 @@ var filter = {
 				$('.actions-filter').prop('disabled', false);
 				$('.change-parkedcode').prop('disabled', false);
 				$('.change-ownership').prop('disabled', false);
-				$('.copy-records').prop('disabled', false);
+				if ($('.campaigns_select').val() && $('.campaigns_select').val().length == 1 ) {
+					$('.copy-records').prop('disabled', false);
+				}
 				$('.actions-qry').html(btoa(response.query));
 			}
 		});
