@@ -399,13 +399,44 @@ class Search extends CI_Controller
         }
     }
 
-    public function save_ownership() {
+    public function add_ownership() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $urn_list = $form['urn_list'];
+            $urn_list_ar = explode(',', $urn_list);
+            $ownership_list = $form['ownership_ar'];
+
+            //$ownership_by_urn_list = $this->Records_model->get_ownership_by_urn_list($urn_list);
+
+            $aux = array();
+            foreach($urn_list_ar as $urn) {
+                foreach($ownership_list as $ownership) {
+                    if ($urn > 0) {
+                        array_push($aux, array(
+                            'urn' => $urn,
+                            'user_id' => $ownership
+                        ));
+                    }
+                }
+            }
+            $form = $aux;
+
+            $results = $this->Filter_model->add_ownership($form);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Ownership(s) added successfully":"ERROR: Ownership(s) not added successfully!")
+            ));
+        }
+    }
+
+    public function replace_ownership() {
         if ($this->input->is_ajax_request()) {
             $results = $this->Filter_model->save_ownership($this->input->post());
 
             echo json_encode(array(
                 "success" => ($results),
-                "msg" => ($results?"Ownership was set successfully":"ERROR: Ownership was not set successfully!")
+                "msg" => ($results?"Ownership(s) replaced successfully":"ERROR: Ownership(s) not replaced successfully!")
             ));
         }
     }

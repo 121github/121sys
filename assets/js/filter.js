@@ -98,11 +98,18 @@ var filter = {
 				$('.edit-ownership-form').fadeIn(1000)
 			});
 		});
-		$(document).on('click', '.actions-ownership-btn', function(e) {
+		$(document).on('click', '.actions-ownership-add-btn', function(e) {
 			e.preventDefault();
 			var urn_list = filter.get_urn_list();
-			var ownership_id = $('.actions_ownership_select option:selected').val();
-			filter.save_ownership(urn_list, ownership_id);
+			var ownership_ar = $('.actions_ownership_select').val();
+			filter.add_ownership(urn_list, ownership_ar);
+		});
+
+		$(document).on('click', '.actions-ownership-replace-btn', function(e) {
+			e.preventDefault();
+			var urn_list = filter.get_urn_list();
+			var ownership_ar = $('.actions_ownership_select').val();
+			filter.replace_ownership(urn_list, ownership_ar);
 		});
 
 		$(document).on('click', '.copy-records', function(e) {
@@ -150,10 +157,12 @@ var filter = {
 		$('.actions_ownership_select').on('change', function(){
 			var selected = $('.actions_ownership_select option:selected').val();
 			if (selected) {
-				$('.actions-ownership-btn').prop('disabled', false);
+				$('.actions-ownership-add-btn').prop('disabled', false);
+				$('.actions-ownership-replace-btn').prop('disabled', false);
 			}
 			else {
-				$('.actions-ownership-btn').prop('disabled', true);
+				$('.actions-ownership-add-btn').prop('disabled', true);
+				$('.actions-ownership-replace-btn').prop('disabled', true);
 			}
 		});
 		$('.actions_campaign_select').on('change', function(){
@@ -180,7 +189,6 @@ var filter = {
 		}
 		$('.campaigns_select').on('change', function(){
 			var num_selected = $('.campaigns_select').val();
-			console.log(num_selected);
 			if (num_selected && num_selected.length==1) {
 				$('.copy-records').prop('disabled', false);
 				$('.copy_records_error').hide();
@@ -300,7 +308,8 @@ var filter = {
 		$('.records-found').html($('.record-count').html());
 
 		$('.actions-parkedcode-btn').prop('disabled', true);
-		$('.actions-ownership-btn').prop('disabled', true);
+		$('.actions-ownership-add-btn').prop('disabled', true);
+		$('.actions-ownership-replace-btn').prop('disabled', true);
 		$('.actions-copy-btn').prop('disabled', true);
 
 	},
@@ -322,7 +331,8 @@ var filter = {
 	},
 	reload_actions: function() {
 		$('.actions-parkedcode-btn').prop('disabled', true);
-		$('.actions-ownership-btn').prop('disabled', true);
+		$('.actions-ownership-add-btn').prop('disabled', true);
+		$('.actions-ownership-replace-btn').prop('disabled', true);
 		$('.actions-copy-btn').prop('disabled', true);
 
 		$('.change-parkedcode-result').html("");
@@ -389,15 +399,40 @@ var filter = {
 			});
 		}
 	},
-	save_ownership : function(urn_list, ownership_id) {
+	add_ownership : function(urn_list, ownership_ar) {
 		$.ajax({
-			url: helper.baseUrl + 'search/save_ownership',
+			url: helper.baseUrl + 'search/add_ownership',
 			type: "POST",
 			dataType: "JSON",
-			data: {'urn_list': urn_list, 'ownership_id': ownership_id},
+			data: {'urn_list': urn_list, 'ownership_ar': ownership_ar},
 			beforeSend: function(){
 				$('.saving').html("<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />");
-				$('.actions-ownership-btn').prop('disabled', true);
+				$('.actions-ownership-add-btn').prop('disabled', true);
+				$('.actions-ownership-replace-btn').prop('disabled', true);
+			}
+		}).done(function(response) {
+			if (response.success) {
+				flashalert.success(response.msg);
+				$('.change-ownership-result').html("Success").css('color', 'green');
+			}
+			else {
+				flashalert.danger(response.msg);
+				$('.change-ownership-result').html("Error").css('color', 'red');
+			}
+			$('.saving').html("");
+			filter.close_edit_actions();
+		});
+	},
+	replace_ownership : function(urn_list, ownership_ar) {
+		$.ajax({
+			url: helper.baseUrl + 'search/replace_ownership',
+			type: "POST",
+			dataType: "JSON",
+			data: {'urn_list': urn_list, 'ownership_ar': ownership_ar},
+			beforeSend: function(){
+				$('.saving').html("<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />");
+				$('.actions-ownership-add-btn').prop('disabled', true);
+				$('.actions-ownership-replace-btn').prop('disabled', true);
 			}
 		}).done(function(response) {
 			if (response.success) {

@@ -950,12 +950,10 @@ class Filter_model extends CI_Model
                 }
             }
     	}
-    	
-    	//return $this->db->query($qry);
     }
 
-    public function save_ownership($form) {
-        return false;
+    public function add_ownership($form) {
+        return $this->db->insert_batch('ownership', $form);
     }
 
     /**************************************************************/
