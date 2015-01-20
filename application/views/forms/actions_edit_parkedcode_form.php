@@ -11,12 +11,12 @@
     </div>
     <div class="form-group input-group-sm suppress-form" style="display: none">
         <p>Please select the campaign</p>
+        <span style="color: red; font-size: 11px; display: none;" class="change-parked-code-campaign-error"></span>
         <div class="checkbox">
             <label>Check for all campaigns</label>
             <input class="all_campaigns_checkbox" id="all_campaigns" name="all_campaigns" type="checkbox">
 
-            <select class="selectpicker actions_parked_code_campaign" name="parked_code_campaign">
-                <option value="" >Nothing selected</option>
+            <select class="selectpicker actions_parked_code_campaign" name="parked_code_campaign_id[]" multiple>
                 <?php foreach($campaigns as $row): ?>
                     <option value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                 <?php endforeach; ?>

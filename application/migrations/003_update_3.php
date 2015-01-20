@@ -12,6 +12,7 @@ class Migration_update_3 extends CI_Migration
   {
 
     //Alter table suppression
+    $this->db->query("ALTER TABLE `suppression` ADD `date_updated` TIMESTAMP NULL");
     $this->db->query("ALTER TABLE `suppression` ADD `reason` TEXT NULL");
     $this->db->query("ALTER TABLE `suppression` DROP INDEX `outcome_id`");
     $this->db->query("ALTER TABLE `suppression` DROP `outcome_id`");

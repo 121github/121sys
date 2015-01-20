@@ -325,19 +325,16 @@ class Search extends CI_Controller
                     //Add the phone numbers to the suppression table
                     $reason = $form['reason'];
                     $all_campaigns = $form['all_campaigns'];
-                    $campaign_id = $form['campaign_id'];
+                    $suppression_campaigns = $form['suppression_campaigns'];
 
                     //Get the phone numbers that are not already suppressed for one campaign or for all of them
                     $phone_number_list = $this->Contacts_model->get_numbers_from_urn_list($urn_list);
                     $aux = array();
                     foreach($phone_number_list as $phone_number) {
-                        if (!isset($aux[trim($phone_number)])) {
-                            $aux[trim($phone_number)] = array();
-                        }
-                        array_push($aux[trim($phone_number)], array(
+                        $aux[trim($phone_number)] = array(
                             "telephone_number" => trim($phone_number),
                             "reason" => $reason
-                        ));
+                        );
                     }
                     $phone_number_list = $aux;
                     
@@ -354,7 +351,7 @@ class Search extends CI_Controller
                     $suppressed_number_list = $aux;
 
                     //Suppress the phone numbers
-                    //$this->suppress_phone_numbers($phone_number_list, $suppressed_number_list, $all_campaigns, $campaign_id);
+                    $this->suppress_phone_numbers($phone_number_list, $suppressed_number_list, $all_campaigns, $suppression_campaigns);
                 }
             }
 
@@ -365,22 +362,35 @@ class Search extends CI_Controller
         }
     }
 
-    private function suppress_phone_numbers($phone_number_list, $suppressed_number_list, $all_campaigns, $campaign_id) {
+    private function suppress_phone_numbers($phone_number_list, $suppressed_number_list, $all_campaigns, $suppression_campaigns) {
         foreach($phone_number_list as $phone_number)
         {
             if (!isset($suppressed_number_list[$phone_number['telephone_number']])) {
+                //Insert new suppressed number
                 $suppression_id = $this->Filter_model->insert_suppression_number($phone_number);
                 if (!$all_campaigns && $suppression_id) {
-                    $this->Filter_model->insert_suppression_by_campaign($suppression_id, $campaign_id);
+                    //Insert suppression_by_campaign
+                    foreach($suppression_campaigns as $campaign_id) {
+                        $this->Filter_model->insert_suppression_by_campaign($suppression_id, $campaign_id);
+                    }
                 }
             }
             else {
+                //Update suppressed number (reason)
+                $this->Filter_model->update_suppression_number($phone_number);
+                //Update suppression_by_campaign if is needed
+                $update_suppression_by_campaign_ar = array();
                 foreach($suppressed_number_list[$phone_number['telephone_number']] as $suppressed_number) {
-                    if ($all_campaigns) {
+                    array_push($update_suppression_by_campaign_ar, $suppressed_number['campaign_id']);
+                }
+                if ($all_campaigns) {
+                    foreach($update_suppression_by_campaign_ar as $campaign_id) {
                         $this->Filter_model->remove_suppression_by_campaign($suppressed_number['suppression_id']);
                     }
-                    else {
-                        if ($suppressed_number_list['campaign_id'] != $campaign_id) {
+                }
+                else {
+                    foreach($suppression_campaigns as $campaign_id) {
+                        if (!in_array($campaign_id, $update_suppression_by_campaign_ar) || empty($update_suppression_by_campaign_ar)) {
                             $this->Filter_model->insert_suppression_by_campaign($suppressed_number['suppression_id'], $campaign_id);
                         }
                     }
@@ -409,7 +419,6 @@ class Search extends CI_Controller
         	//Get the records
             $records = $this->Records_model->get_records_by_urn_list($urn_list);
             $new_urn_list = $this->copy_records_to_campaign($records, $urn_list, $campaign_id);
-
 
         	//Get the record_details
         	$record_details = $this->Records_model->get_record_details_by_urn_list($urn_list);

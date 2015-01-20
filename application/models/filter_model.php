@@ -886,8 +886,7 @@ class Filter_model extends CI_Model
         $parked_code_id = $form['parked_code_id'];
 
         $qry = "UPDATE records SET parked_code = ".$parked_code_id." WHERE urn IN ".$urn_list;
-        //return $this->db->query($qry);
-        return true;
+        return $this->db->query($qry);
     }
     
     public function get_suppressed_numbers() {
@@ -903,6 +902,12 @@ class Filter_model extends CI_Model
     public function insert_suppression_number($form) {
         $this->db->insert('suppression', $form);
         return $this->db->insert_id();
+    }
+
+    public function update_suppression_number($form) {
+        $form['date_updated'] = date("Y-m-d H:i:s");
+        $this->db->where('telephone_number', $form['telephone_number']);
+        return $this->db->update('suppression', $form);
     }
 
     public function insert_suppression_by_campaign($suppression_id, $campaign_id) {
