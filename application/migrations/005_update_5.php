@@ -12,8 +12,8 @@ class Migration_update_5 extends CI_Migration
   {
 
     //Alter table suppression
-    $this->db->query("delete from table role_permissions");
-    $this->db->query("delete from table permissions");
+    $this->db->query("delete from role_permissions");
+    $this->db->query("delete from permissions");
     $this->db->query("INSERT INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES
 (1, 'set call outcomes', 'Records'),
 (2, 'set progress', 'Records'),
