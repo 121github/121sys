@@ -272,6 +272,7 @@ class Filter_model extends CI_Model
         );
         $qry                                = "";
         $special                            = "";
+		$parked								= " parked_code is null";
         $multiple                           = "";
 		$skip = false; //this is used to skip the first value in a multiple array
         $join                               = array();
@@ -468,7 +469,7 @@ class Filter_model extends CI_Model
                 if ($filter_options[$field]['type'] == "multiple" && count($data)) {
                     $where .= " and (";
 					if($filter_options[$field]['alias'] == "r.parked_code" && $data[0]=="0"){
-					$multiple .=" parked_code is null or parked_code is not null or";	$skip = true; //don't include "0" in the search below
+					$parked = "";	$skip = true; //don't include "0" in the search below
 					}
 					if($filter_options[$field]['alias'] == "ow.user_id" && $data[0]=="0"){
 					$multiple .=" ow.user_id is null or";	$skip = true; //don't include "0" in the search below
@@ -553,9 +554,12 @@ class Filter_model extends CI_Model
         }
 		
 		/* users can only see records that have not been parked */
-		 if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("view parked",$_SESSION['permissions'])) {
-        $where .= " and parked_code is null ";
+		 if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])) {
+        $parked .= " and (parked_code is null)";
         }
+		
+		
+		$where .= $parked;
 		
 		//users can see unaassigned records
 		if(@in_array("search unasssigned",$_SESSION['permissions'])){
@@ -733,14 +737,14 @@ class Filter_model extends CI_Model
             unset($array['user-email-sent-id']);
         }
 
-        //For packed records
-        $packed_qry = "";
+        //For parked records
+        $parked_qry = "";
         if (in_array("parked", $fields)){
             if ($array['parked'] == "yes") {
-                $packed_qry = " and records.parked_code is not null";
+                $parked_qry = " and records.parked_code is not null";
             }
             else if ($array['parked'] == "no") {
-                $packed_qry = " and records.parked_code is null";
+                $parked_qry = " and records.parked_code is null";
             }
             unset($array['parked']);
         }
@@ -814,7 +818,7 @@ class Filter_model extends CI_Model
             }
         }
 
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $packed_qry $update_date_qry";
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry";
 		
 		
 		
