@@ -905,59 +905,79 @@ class Filter_model extends CI_Model
         $parked_code_id = $form['parked_code_id'];
 
         $qry = "UPDATE records SET parked_code = ".$parked_code_id." WHERE urn IN ".$urn_list;
-        //return $this->db->query($qry);
-        return true;
+        return $this->db->query($qry);
     }
     
-    public function get_suppressed_numbers($all_campaigns,$campaign_id) {
+    public function get_suppressed_numbers() {
     	$numbers = array();
+
+        $qry = "SELECT s.suppression_id, s.telephone_number, s.date_added, s.reason, sc.campaign_id
+                FROM suppression s
+                LEFT JOIN suppression_by_campaign sc ON (sc.suppression_id = s.suppression_id)";
     	
-    	if ($all_campaigns) {
-    		$qry = "select telephone_number 
-    				from suppression";
-    	}
-    	else {
-    		$qry = "select telephone_number 
-    				from suppression 
-    				where suppression_id IN (
-    					select suppression_id from suppression_by_campaign
-    					where campaign_id = ".$campaign_id."
-    				)";
-    	}
-    	
-    	$result =  $this->db->query($qry)->result_array();
-    	
-    	foreach($result as $row){
-    		$numbers[] = $row['telephone_number'];
-    	}
-    	
-    	return $numbers;
-    }
-    
-    public function suppress_phone_numbers($numbers_to_suppress, $reason, $all_campaigns, $campaign_id) {
-    	foreach($numbers_to_suppress as $number)
-    	{
-    		$suppression = array(
-    			"telephone_number" => $number,
-    			"reason" => $reason
-    		);
-    		
-    		$result = $this->db->insert('suppression', $suppression);
-    		
-    		if (!$all_campaigns && $result) {
-    			$suppression_id = $this->db->insert_id();
-    			$result = $this->db->insert('suppression_by_campaign', array(
-    					"suppresion_id" => $suppression_id,
-    					"campaign_id" => $campaign_id
-    			));
-    		}
-    	}
-    	
-    	//return $this->db->query($qry);
+    	return $this->db->query($qry)->result_array();
     }
 
-    public function save_ownership($form) {
-        return false;
+    public function insert_suppression_number($form) {
+        $this->db->insert('suppression', $form);
+        return $this->db->insert_id();
+    }
+
+    public function update_suppression_number($form) {
+        $form['date_updated'] = date("Y-m-d H:i:s");
+        $this->db->where('telephone_number', $form['telephone_number']);
+        return $this->db->update('suppression', $form);
+    }
+
+    public function insert_suppression_by_campaign($suppression_id, $campaign_id) {
+        $this->db->insert('suppression_by_campaign', array(
+            "suppression_id" => $suppression_id,
+            "campaign_id" => $campaign_id
+        ));
+    }
+
+    public function remove_suppression_by_campaign($suppression_id) {
+        $this->db->where('suppression_id', $suppression_id);
+        $this->db->delete('suppression_by_campaign');
+    }
+    
+    public function suppress_phone_numbers($phone_number_list, $suppressed_number_list, $all_campaigns, $campaign_id) {
+        foreach($phone_number_list as $phone_number)
+    	{
+    		if (!isset($suppressed_number_list[$phone_number['telephone_number']])) {
+                $this->db->insert('suppression', $phone_number);
+                $suppression_id = $this->db->insert_id();
+                if (!$all_campaigns && $suppression_id) {
+                    $this->db->insert('suppression_by_campaign', array(
+                        "suppression_id" => $suppression_id,
+                        "campaign_id" => $campaign_id
+                    ));
+                }
+            }
+            else {
+                foreach($suppressed_number_list[$phone_number['telephone_number']] as $suppressed_number) {
+                    if ($all_campaigns) {
+                        $this->db->where('suppression_id', $suppressed_number['suppression_id']);
+                        $this->db->delete('suppression_by_campaign');
+                    }
+                    else {
+                        $this->db->insert('suppression_by_campaign', array(
+                            "suppression_id" => $suppressed_number['suppression_id'],
+                            "campaign_id" => $campaign_id
+                        ));
+                    }
+                }
+            }
+    	}
+    }
+
+    public function add_ownership($form) {
+        return $this->db->insert_batch('ownership', $form);
+    }
+
+    public function remove_ownership_by_urn_list($urn_list) {
+        $qry = "DELETE FROM ownership WHERE urn IN $urn_list";
+        return $this->db->query($qry);
     }
 
     /**************************************************************/

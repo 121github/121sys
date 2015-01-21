@@ -4,7 +4,6 @@ var filter = {
 		filter.count_records();
 		
 		$(document).on('change','.sector-select',function(){
-			console.log($(this).val());
 			filter.load_subsectors($(this).val());
 		});
 		
@@ -25,8 +24,19 @@ var filter = {
 			filter.count_records();
 		});
 
-		$(document).on('change','select:not(#campaign-select,.actions_parked_code_select,.actions_ownership_select,.actions_campaign_select)',function(e){
+		$(document).on('change','select:not(#campaign-select,.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select)',function(e){
 			filter.count_records();
+		});
+
+		$(document).on('click','input[name="all_campaigns"]',function(e){
+			if ($('.edit-parkedcode-form').find('input[name="all_campaigns"]').is(":checked")) {
+				$('.actions_parked_code_campaign').attr('disabled', true).trigger("chosen:updated");
+				$('.actions_parked_code_campaign').val('');
+				$('.actions_parked_code_campaign').selectpicker('deselectAll');
+			}
+			else {
+				$('.actions_parked_code_campaign').attr('disabled', false).trigger("chosen:updated")
+			}
 		});
 
 		$(document).on('click','.submit-filter',function(e){
@@ -60,7 +70,7 @@ var filter = {
 			$('.record-status').selectpicker('val',1);
 			$('input[type="checkbox"]').prop('checked',false);
 			filter.count_records(true);
-			$(document).on('change', 'select:not(.actions_parked_code_select,.actions_ownership_select,.actions_campaign_select)',function(){
+			$(document).on('change', 'select:not(.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select)',function(){
 				filter.count_records();
 			});
 			$('.copy-records').prop('disabled', true);
@@ -76,10 +86,11 @@ var filter = {
 			e.preventDefault();
 			var urn_list = filter.get_urn_list();
 			var parked_code_id = $('.actions_parked_code_select option:selected').val();
-			var all_campaigns = $('.edit-parkedcode-form').find('input[name="all_campaigns"]').is(":checked");
+			var all_campaigns = ($('.edit-parkedcode-form').find('input[name="all_campaigns"]').is(":checked")?1:0);
+			var suppression_campaigns = $('.actions_parked_code_campaign').val();
 			var reason = $('.edit-parkedcode-form').find('textarea[name="reason"]').val();
 			var suppress = $('.edit-parkedcode-form').find('input[name="suppress"]').val();
-			filter.save_parked_code(urn_list, parked_code_id, all_campaigns, reason, suppress);
+			filter.save_parked_code(urn_list, parked_code_id, all_campaigns, suppression_campaigns, reason, suppress);
 		});
 
 		$(document).on('click', '.change-ownership', function(e) {
@@ -87,11 +98,18 @@ var filter = {
 				$('.edit-ownership-form').fadeIn(1000)
 			});
 		});
-		$(document).on('click', '.actions-ownership-btn', function(e) {
+		$(document).on('click', '.actions-ownership-add-btn', function(e) {
 			e.preventDefault();
 			var urn_list = filter.get_urn_list();
-			var ownership_id = $('.actions_ownership_select option:selected').val();
-			filter.save_ownership(urn_list, ownership_id);
+			var ownership_ar = $('.actions_ownership_select').val();
+			filter.add_ownership(urn_list, ownership_ar);
+		});
+
+		$(document).on('click', '.actions-ownership-replace-btn', function(e) {
+			e.preventDefault();
+			var urn_list = filter.get_urn_list();
+			var ownership_ar = $('.actions_ownership_select').val();
+			filter.replace_ownership(urn_list, ownership_ar);
 		});
 
 		$(document).on('click', '.copy-records', function(e) {
@@ -125,20 +143,26 @@ var filter = {
 					$('.suppress-form').hide();
 					$('.edit-parkedcode-form').find('input[name="all_campaigns"]').removeAttr('checked')
 					$('.edit-parkedcode-form').find('textarea[name="reason"]').val('');
+					$('.actions_parked_code_campaign').attr('disabled', false).trigger("chosen:updated");
+					$('.actions_parked_code_campaign').val('');
+					$('.actions_parked_code_campaign').selectpicker('deselectAll');
 					$('.edit-parkedcode-form').find('input[name="suppress"]').val('0');
 				}
 			}
 			else {
 				$('.actions-parkedcode-btn').prop('disabled', true);
+				$('.suppress-form').hide();
 			}
 		});
 		$('.actions_ownership_select').on('change', function(){
 			var selected = $('.actions_ownership_select option:selected').val();
 			if (selected) {
-				$('.actions-ownership-btn').prop('disabled', false);
+				$('.actions-ownership-add-btn').prop('disabled', false);
+				$('.actions-ownership-replace-btn').prop('disabled', false);
 			}
 			else {
-				$('.actions-ownership-btn').prop('disabled', true);
+				$('.actions-ownership-add-btn').prop('disabled', true);
+				$('.actions-ownership-replace-btn').prop('disabled', true);
 			}
 		});
 		$('.actions_campaign_select').on('change', function(){
@@ -233,11 +257,23 @@ var filter = {
 			if(response.data<1){
 				$('button[type="submit"]').prop('disabled', true);
 				$('.record-count').text(response.data).css('color','red');
+				$('.records-found').html(response.data).css('color','red');
 				$('.actions-filter').prop('disabled', true);
+				$('.change-parkedcode').prop('disabled', true);
+				$('.change-ownership').prop('disabled', true);
+				if ($('.campaigns_select').val() && $('.campaigns_select').val().length == 1 ) {
+					$('.copy-records').prop('disabled', true);
+				}
 			} else {
 				$('button[type="submit"]').prop('disabled', false);
 				$('.record-count').html(response.data).css('color','green');
+				$('.records-found').html(response.data).css('color','green');
 				$('.actions-filter').prop('disabled', false);
+				$('.change-parkedcode').prop('disabled', false);
+				$('.change-ownership').prop('disabled', false);
+				if ($('.campaigns_select').val() && $('.campaigns_select').val().length == 1 ) {
+					$('.copy-records').prop('disabled', false);
+				}
 				$('.actions-qry').html(btoa(response.query));
 			}
 		});
@@ -272,7 +308,8 @@ var filter = {
 		$('.records-found').html($('.record-count').html());
 
 		$('.actions-parkedcode-btn').prop('disabled', true);
-		$('.actions-ownership-btn').prop('disabled', true);
+		$('.actions-ownership-add-btn').prop('disabled', true);
+		$('.actions-ownership-replace-btn').prop('disabled', true);
 		$('.actions-copy-btn').prop('disabled', true);
 
 	},
@@ -294,7 +331,8 @@ var filter = {
 	},
 	reload_actions: function() {
 		$('.actions-parkedcode-btn').prop('disabled', true);
-		$('.actions-ownership-btn').prop('disabled', true);
+		$('.actions-ownership-add-btn').prop('disabled', true);
+		$('.actions-ownership-replace-btn').prop('disabled', true);
 		$('.actions-copy-btn').prop('disabled', true);
 
 		$('.change-parkedcode-result').html("");
@@ -326,39 +364,75 @@ var filter = {
 		return urn_list;
 	},
 
-	save_parked_code : function(urn_list, parked_code_id, all_campaigns, reason, suppress) {
+	save_parked_code : function(urn_list, parked_code_id, all_campaigns, suppression_campaigns, reason, suppress) {
 
+		if (!all_campaigns && !suppression_campaigns && suppress==1) {
+			$('.change-parked-code-campaign-error').html("Please select a campaign before or click on \"Check for all campaigns\"");
+			$('.change-parked-code-campaign-error').show();
+		}
+		else {
+			$('.change-parked-code-campaign-error').hide();
+			$.ajax({
+				url: helper.baseUrl + 'search/save_parked_code',
+				type: "POST",
+				dataType: "JSON",
+				data: {'urn_list': urn_list, 'parked_code_id': parked_code_id, 'all_campaigns': all_campaigns, 'suppression_campaigns': suppression_campaigns, 'reason': reason, 'suppress': suppress},
+				beforeSend: function(){
+					$('.saving').html("<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />");
+					$('.actions-parkedcode-btn').prop('disabled', true);
+				}
+			}).done(function(response) {
+				if (response.success) {
+					flashalert.success(response.msg);
+					$('.change-parkedcode-result').html("Success").css('color', 'green');
+					filter.count_records();
+				}
+				else {
+					flashalert.danger(response.msg);
+					$('.change-parkedcode-result').html("Error").css('color', 'red');
+				}
+				$('.saving').html("");
+				filter.close_edit_actions();
+				setTimeout(function(){
+					$('.records-found').html($('.record-count').html());
+				}, 2000);
+			});
+		}
+	},
+	add_ownership : function(urn_list, ownership_ar) {
 		$.ajax({
-			url: helper.baseUrl + 'search/save_parked_code',
+			url: helper.baseUrl + 'search/add_ownership',
 			type: "POST",
 			dataType: "JSON",
-			data: {'urn_list': urn_list, 'parked_code_id': parked_code_id, 'all_campaigns': all_campaigns, 'reason': reason, 'suppress': suppress},
+			data: {'urn_list': urn_list, 'ownership_ar': ownership_ar},
 			beforeSend: function(){
 				$('.saving').html("<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />");
-				$('.actions-parkedcode-btn').prop('disabled', true);
+				$('.actions-ownership-add-btn').prop('disabled', true);
+				$('.actions-ownership-replace-btn').prop('disabled', true);
 			}
 		}).done(function(response) {
 			if (response.success) {
 				flashalert.success(response.msg);
-				$('.change-parkedcode-result').html("Success").css('color', 'green');
+				$('.change-ownership-result').html("Success").css('color', 'green');
 			}
 			else {
 				flashalert.danger(response.msg);
-				$('.change-parkedcode-result').html("Error").css('color', 'red');
+				$('.change-ownership-result').html("Error").css('color', 'red');
 			}
 			$('.saving').html("");
 			filter.close_edit_actions();
 		});
 	},
-	save_ownership : function(urn_list, ownership_id) {
+	replace_ownership : function(urn_list, ownership_ar) {
 		$.ajax({
-			url: helper.baseUrl + 'search/save_ownership',
+			url: helper.baseUrl + 'search/replace_ownership',
 			type: "POST",
 			dataType: "JSON",
-			data: {'urn_list': urn_list, 'ownership_id': ownership_id},
+			data: {'urn_list': urn_list, 'ownership_ar': ownership_ar},
 			beforeSend: function(){
 				$('.saving').html("<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />");
-				$('.actions-ownership-btn').prop('disabled', true);
+				$('.actions-ownership-add-btn').prop('disabled', true);
+				$('.actions-ownership-replace-btn').prop('disabled', true);
 			}
 		}).done(function(response) {
 			if (response.success) {

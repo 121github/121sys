@@ -16,7 +16,7 @@
                   <li class="list-group-item" style="font-weight: bold;">OWNERSHIP</li>
                   <li class="list-group-item">
                       <button class="btn change-ownership btn-success" style="width:130px">Set</button>
-                      Set/Change the ownership <span style="font-weight: bold" class="change-ownership-result pull-right"></span>
+                      Add/Replace the ownership <span style="font-weight: bold" class="change-ownership-result pull-right"></span>
                   </li>
 
                   <li class="list-group-item" style="font-weight: bold;">CAMPAIGN</li>

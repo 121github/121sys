@@ -124,8 +124,6 @@ class Search extends CI_Controller
 
         $urn_array = $this->Filter_model->get_urn_list($form['query']);
 
-        $this->firephp->log($urn_array);
-
         $urn_list = "0";
         foreach($urn_array as $urn) {
             $urn_list .= ", ".$urn['urn'];
@@ -323,18 +321,33 @@ class Search extends CI_Controller
                     //Add the phone numbers to the suppression table
                     $reason = $form['reason'];
                     $all_campaigns = $form['all_campaigns'];
+                    $suppression_campaigns = $form['suppression_campaigns'];
 
                     //Get the phone numbers that are not already suppressed for one campaign or for all of them
                     $phone_number_list = $this->Contacts_model->get_numbers_from_urn_list($urn_list);
+                    $aux = array();
+                    foreach($phone_number_list as $phone_number) {
+                        $aux[trim($phone_number)] = array(
+                            "telephone_number" => trim($phone_number),
+                            "reason" => $reason
+                        );
+                    }
+                    $phone_number_list = $aux;
                     
                     //Get numbers already suppressed
-                    $suppressed_number_list =  $this->Filter_model->get_suppressed_numbers($all_campaigns, 1);
-                    
-                    //Suppress only the numbers that are not already suppressed
-                    $numbers_to_suppress = array_diff($phone_number_list, $suppressed_number_list);
+                    $suppressed_number_list =  $this->Filter_model->get_suppressed_numbers();
+                    $aux = array();
+                    foreach($suppressed_number_list as $suppressed) {
+                        if (!isset($aux[$suppressed['telephone_number']])) {
+                            $aux[$suppressed['telephone_number']] = array();
+                        }
+                        array_push($aux[$suppressed['telephone_number']], $suppressed);
+                        array_push($suppressed_number_list, $suppressed['telephone_number']);
+                    }
+                    $suppressed_number_list = $aux;
 
                     //Suppress the phone numbers
-                    //$results = $this->suppress_phone_numbers($numbers_to_suppress, $reason, $all_campaigns, 1);
+                    $this->suppress_phone_numbers($phone_number_list, $suppressed_number_list, $all_campaigns, $suppression_campaigns);
                 }
             }
 
@@ -345,13 +358,116 @@ class Search extends CI_Controller
         }
     }
 
-    public function save_ownership() {
+    private function suppress_phone_numbers($phone_number_list, $suppressed_number_list, $all_campaigns, $suppression_campaigns) {
+        foreach($phone_number_list as $phone_number)
+        {
+            if (!isset($suppressed_number_list[$phone_number['telephone_number']])) {
+                //Insert new suppressed number
+                $suppression_id = $this->Filter_model->insert_suppression_number($phone_number);
+                if (!$all_campaigns && $suppression_id) {
+                    //Insert suppression_by_campaign
+                    foreach($suppression_campaigns as $campaign_id) {
+                        $this->Filter_model->insert_suppression_by_campaign($suppression_id, $campaign_id);
+                    }
+                }
+            }
+            else {
+                //Update suppressed number (reason)
+                $this->Filter_model->update_suppression_number($phone_number);
+                //Update suppression_by_campaign if is needed
+                $update_suppression_by_campaign_ar = array();
+                foreach($suppressed_number_list[$phone_number['telephone_number']] as $suppressed_number) {
+                    array_push($update_suppression_by_campaign_ar, $suppressed_number['campaign_id']);
+                }
+                if ($all_campaigns) {
+                    foreach($update_suppression_by_campaign_ar as $campaign_id) {
+                        $this->Filter_model->remove_suppression_by_campaign($suppressed_number['suppression_id']);
+                    }
+                }
+                else {
+                    foreach($suppression_campaigns as $campaign_id) {
+                        if (!in_array($campaign_id, $update_suppression_by_campaign_ar) || empty($update_suppression_by_campaign_ar)) {
+                            $this->Filter_model->insert_suppression_by_campaign($suppressed_number['suppression_id'], $campaign_id);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function add_ownership() {
         if ($this->input->is_ajax_request()) {
-            $results = $this->Filter_model->save_ownership($this->input->post());
+            $form = $this->input->post();
+            $urn_list = str_replace(' ','', $form['urn_list']);
+            $urn_list_ar = explode(',', substr($urn_list, 1, strlen($urn_list)-2));
+            $ownership_list = $form['ownership_ar'];
+
+            $ownership_by_urn_list = $this->Records_model->get_ownership_by_urn_list($urn_list);
+            $aux = array();
+            foreach($ownership_by_urn_list as $ownership) {
+                if (!isset($aux[$ownership['urn']])) {
+                    $aux[$ownership['urn']] = array();
+                }
+                array_push($aux[$ownership['urn']], $ownership['user_id']);
+            }
+            $ownership_by_urn_list = $aux;
+
+            $aux = array();
+            foreach($urn_list_ar as $urn) {
+                foreach($ownership_list as $ownership) {
+                    if ($urn > 0 && isset($ownership_by_urn_list[$urn]) && !in_array($ownership, $ownership_by_urn_list[$urn])) {
+                        array_push($aux, array(
+                            'urn' => $urn,
+                            'user_id' => $ownership
+                        ));
+                    }
+                }
+            }
+            $form = $aux;
+
+            if (!empty($form)) {
+                $results = $this->Filter_model->add_ownership($form);
+                echo json_encode(array(
+                    "success" => ($results),
+                    "msg" => ($results?"Ownership(s) added successfully":"ERROR: Ownership(s) not added successfully!")
+                ));
+            }
+            else {
+                echo json_encode(array(
+                    "success" => true,
+                    "msg" => ("Ownership(s) already exist for the urn(s) listed!")
+                ));
+            }
+        }
+    }
+
+    public function replace_ownership() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $urn_list = str_replace(' ','', $form['urn_list']);
+            $urn_list_ar = explode(',', substr($urn_list, 1, strlen($urn_list)-2));
+            $ownership_list = $form['ownership_ar'];
+
+            $this->Filter_model->remove_ownership_by_urn_list($urn_list);
+
+            $aux = array();
+            foreach($urn_list_ar as $urn) {
+                foreach($ownership_list as $ownership) {
+                    if ($urn > 0) {
+                        array_push($aux, array(
+                            'urn' => $urn,
+                            'user_id' => $ownership
+                        ));
+                    }
+                }
+            }
+            $form = $aux;
+
+            $results = $this->Filter_model->add_ownership($form);
 
             echo json_encode(array(
                 "success" => ($results),
-                "msg" => ($results?"Ownership was set successfully":"ERROR: Ownership was not set successfully!")
+                "msg" => ($results?"Ownership(s) replaced successfully":"ERROR: Ownership(s) not replaced successfully!")
             ));
         }
     }
@@ -365,7 +481,6 @@ class Search extends CI_Controller
         	//Get the records
             $records = $this->Records_model->get_records_by_urn_list($urn_list);
             $new_urn_list = $this->copy_records_to_campaign($records, $urn_list, $campaign_id);
-
 
         	//Get the record_details
         	$record_details = $this->Records_model->get_record_details_by_urn_list($urn_list);
@@ -539,7 +654,6 @@ class Search extends CI_Controller
         	//Copy the record_details
             if (!empty($record_details)) {
                 $this->Filter_model->copy_record_details($record_details);
-                $this->firephp->log($record_details);
             }
         	
         	//Copy the companies
@@ -578,7 +692,6 @@ class Search extends CI_Controller
             array_push($records_to_copy, $record);
         }
         $results = $this->Filter_model->copy_records($records_to_copy);
-        $this->firephp->log($records_to_copy);
 
 
         //Get the new urns inserted
@@ -609,7 +722,6 @@ class Search extends CI_Controller
     	
     	//Copy the companies
     	$results = $this->Filter_model->copy_companies($companies_to_copy);
-        $this->firephp->log($companies_to_copy);
     	
     	//Get the new company_ids
     	$new_company_list = $this->Filter_model->get_companies_inserted($company_list, $next_company_id);
@@ -671,7 +783,6 @@ class Search extends CI_Controller
 
         //Copy the contacts
         $results = $this->Filter_model->copy_contacts($contacts_to_copy);
-        $this->firephp->log($contacts_to_copy);
 
         //Get the new contact_ids
         $new_contact_list = $this->Filter_model->get_contacts_inserted($contact_list, $next_contact_id);

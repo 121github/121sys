@@ -10,6 +10,7 @@
 
     <div class="form-actions">
         <span class="marl btn btn-default close-edit-actions-btn">Back</span>
-        <button type="submit" class="marl btn btn-success actions-ownership-btn pull-right">Save</button>
+        <button type="submit" class="marl btn btn-success actions-ownership-add-btn pull-right">Add</button>
+        <button type="submit" class="marl btn btn-warning actions-ownership-replace-btn pull-right">Replace</button>
     </div>
 </form>
