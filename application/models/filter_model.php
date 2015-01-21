@@ -272,7 +272,7 @@ class Filter_model extends CI_Model
         );
         $qry                                = "";
         $special                            = "";
-		$parked								= " parked_code is null";
+		$parked								= " and parked_code is null";
         $multiple                           = "";
 		$skip = false; //this is used to skip the first value in a multiple array
         $join                               = array();
@@ -555,7 +555,7 @@ class Filter_model extends CI_Model
 		
 		/* users can only see records that have not been parked */
 		 if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])) {
-        $parked .= " and (parked_code is null)";
+        $parked = " and (parked_code is null)";
         }
 		
 		
