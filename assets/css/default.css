@@ -37,12 +37,40 @@ body { overflow-y:scroll;
   margin-bottom: 10px;
 }
 
+.form-restore_password {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-restore_password .form-restore_password-heading,
+.form-restore_password .checkbox {
+    margin-bottom: 10px;
+}
+.form-restore_password .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+.form-restore_password .form-control:focus {
+    z-index: 2;
+}
+.form-restore_password input[type="text"] {
+    margin-bottom: -1px;
+}
+.form-restore_password input[type="password"] {
+    margin-bottom: 10px;
+}
+
 .edit-btn,.glyphicon-pencil,.glyphicon-remove,.glyphicon-plus,.glyphicon-trash,.favorite-btn,.urgent-btn,.pointer { cursor:pointer !important }
 .favorite-btn:hover,.urgent-btn:hover {
 color:	#428bca
 }
 .edit-panel { display:none; padding:0 20px; }
-.survey-container,.xfer-container,.email-container,.email-view-container, .email-all-container, .attachment-all-container, .history-all-container, .backup-container, .restore-container, .actions-container {
+.survey-container,.xfer-container,.email-container,.email-view-container, .email-all-container, .attachment-all-container, .history-all-container, .backup-container, .restore-container, .actions-container, .forgot-password-container {
 position:fixed;
 z-index: 1050;
 right:0px;
