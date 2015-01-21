@@ -402,11 +402,57 @@ class Search extends CI_Controller
     public function add_ownership() {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
-            $urn_list = $form['urn_list'];
-            $urn_list_ar = explode(',', $urn_list);
+            $urn_list = str_replace(' ','', $form['urn_list']);
+            $urn_list_ar = explode(',', substr($urn_list, 1, strlen($urn_list)-2));
             $ownership_list = $form['ownership_ar'];
 
-            //$ownership_by_urn_list = $this->Records_model->get_ownership_by_urn_list($urn_list);
+            $ownership_by_urn_list = $this->Records_model->get_ownership_by_urn_list($urn_list);
+            $aux = array();
+            foreach($ownership_by_urn_list as $ownership) {
+                if (!isset($aux[$ownership['urn']])) {
+                    $aux[$ownership['urn']] = array();
+                }
+                array_push($aux[$ownership['urn']], $ownership['user_id']);
+            }
+            $ownership_by_urn_list = $aux;
+
+            $aux = array();
+            foreach($urn_list_ar as $urn) {
+                foreach($ownership_list as $ownership) {
+                    if ($urn > 0 && isset($ownership_by_urn_list[$urn]) && !in_array($ownership, $ownership_by_urn_list[$urn])) {
+                        array_push($aux, array(
+                            'urn' => $urn,
+                            'user_id' => $ownership
+                        ));
+                    }
+                }
+            }
+            $form = $aux;
+
+            if (!empty($form)) {
+                $results = $this->Filter_model->add_ownership($form);
+                echo json_encode(array(
+                    "success" => ($results),
+                    "msg" => ($results?"Ownership(s) added successfully":"ERROR: Ownership(s) not added successfully!")
+                ));
+            }
+            else {
+                echo json_encode(array(
+                    "success" => true,
+                    "msg" => ("Ownership(s) already exist for the urn(s) listed!")
+                ));
+            }
+        }
+    }
+
+    public function replace_ownership() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $urn_list = str_replace(' ','', $form['urn_list']);
+            $urn_list_ar = explode(',', substr($urn_list, 1, strlen($urn_list)-2));
+            $ownership_list = $form['ownership_ar'];
+
+            $this->Filter_model->remove_ownership_by_urn_list($urn_list);
 
             $aux = array();
             foreach($urn_list_ar as $urn) {
@@ -422,17 +468,6 @@ class Search extends CI_Controller
             $form = $aux;
 
             $results = $this->Filter_model->add_ownership($form);
-
-            echo json_encode(array(
-                "success" => ($results),
-                "msg" => ($results?"Ownership(s) added successfully":"ERROR: Ownership(s) not added successfully!")
-            ));
-        }
-    }
-
-    public function replace_ownership() {
-        if ($this->input->is_ajax_request()) {
-            $results = $this->Filter_model->save_ownership($this->input->post());
 
             echo json_encode(array(
                 "success" => ($results),

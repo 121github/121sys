@@ -579,7 +579,7 @@ class Records_model extends CI_Model
     //returns an array of users that own a record (urn) by urn list
     public function get_ownership_by_urn_list($urn_list)
     {
-        $qry = "select user_id from ownership left join users using(user_id) where user_status = 1 and urn IN '$urn_list' group by user_id";
+        $qry = "select urn, user_id from ownership left join users using(user_id) where user_status = 1 and urn IN $urn_list";
         return $this->db->query($qry)->result_array();
     }
     

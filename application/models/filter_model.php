@@ -956,6 +956,11 @@ class Filter_model extends CI_Model
         return $this->db->insert_batch('ownership', $form);
     }
 
+    public function remove_ownership_by_urn_list($urn_list) {
+        $qry = "DELETE FROM ownership WHERE urn IN $urn_list";
+        return $this->db->query($qry);
+    }
+
     /**************************************************************/
     /*************** COPY RECORDS ********************************/
     /**************************************************************/
