@@ -109,7 +109,7 @@ class Search extends CI_Controller
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
             $urn_array   = $this->Filter_model->count_records($filter);
-
+			
             echo json_encode(array(
                 "success" => true,
                 "query" => $urn_array['query'],

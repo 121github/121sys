@@ -98,9 +98,10 @@
               </div>
               <div class="form-group">
                 <label>Status</label>
-                <select  name="record_status[]" class="selectpicker record-status" data-width="100%" data-size="5"  <?php if(in_array("search dead",$_SESSION['permissions'])||in_array("search parked",$_SESSION['permissions'])||in_array("search completed",$_SESSION['permissions'])){ echo "multiple"; } ?> title="Any">
+                <select  name="record_status[]" class="selectpicker record-status" data-width="100%" data-size="5"  multiple title="Any">
                   <?php foreach($status as $row): ?>
-                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['record_status'])||empty($_SESSION['filter']['values'])&&$row['id']=="1"&&in_array("view live",$_SESSION['permissions'])||count($status)=="1"){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['record_status'])
+				  ||count($status)=="1"){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>

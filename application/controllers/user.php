@@ -96,9 +96,8 @@ class User extends CI_Controller
                 }
               
 				/*if the default is to view all parked record we just add all the parked codes to the filter (as long as there are less than 10 this will do the trick) */	
-				if (@in_array("view parked", $_SESSION['permissions'])) {
-                       $filter['parked_code'][] = 0;
-                }
+                  $filter['parked_code'][] = 0;
+				
 					if (in_array("view unassigned", $_SESSION['permissions'])) {
                     $filter['user_id'][] = 0; //this allows to search for null value in ownership table
 					$filter['user_id'][] = $_SESSION['user_id'];

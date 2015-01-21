@@ -208,7 +208,8 @@ class Form_model extends CI_Model
     }
     public function get_status_list()
     {
-        $qry = "select record_status_id id,status_name name from status_list";
+        $qry = "select record_status_id id,status_name name from status_list where record_status_id = 1";
+		if(in_array("search dead",$_SESSION['permissions'])){  $qry .= " or record_status_id > 1"; } 
         return $this->db->query($qry)->result_array();
     }
     public function get_groups()
