@@ -115,6 +115,53 @@ var dashboard = {
             }
         });
     },
+	
+		/* the function for the urgent panel on the client dashboard */
+    pending_panel: function (campaign) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_pending',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                campaign: campaign
+            }
+        }).done(function (response) {
+            $('.pending-panel').empty();
+            var $pending = "";
+            if (response.data.length > 0) {
+                $.each(response.data, function (i, val) {
+                    $pending += '<li><a class="tt pointer" data-toggle="tooltip" data-placement="left" title="'+val.last_comment+'"" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Last Updated on ' + val.date_updated + '</span></li>';
+                });
+                $('.pending-panel').append('<ul>' + $pending + '</ul>');
+				$('.tt').tooltip();
+            } else {
+                $('.pending-panel').append('<p>' + response.msg + '</p>');
+            }
+        });
+    },
+		/* the function for the urgent panel on the client dashboard */
+    appointments_panel: function (campaign) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_appointments',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                campaign: campaign
+            }
+        }).done(function (response) {
+            $('.appointments-panel').empty();
+            var $appointments = "";
+            if (response.data.length > 0) {
+                $.each(response.data, function (i, val) {
+                    $appointments += '<li><a class="tt pointer" data-toggle="tooltip" data-placement="left" title="'+val.last_comment+'"" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Start time: ' + val.date_updated + '</span></li>';
+                });
+                $('.appointments-panel').append('<ul>' + $appointments + '</ul>');
+				$('.tt').tooltip();
+            } else {
+                $('.appointments-panel').append('<p>' + response.msg + '</p>');
+            }
+        });
+    },
 	/* the function for the outcomes panel on the agent/client dashboard */
     favorites_panel: function (campaign) {
         $.ajax({
@@ -126,13 +173,18 @@ var dashboard = {
             }
         }).done(function (response) {
             $('.favorites-panel').empty();
+			if(campaign==3){
+			var campcol = "style='display:none'";				
+			} else {
+			var campcol = "";	
+			}
 			var $table="";
 			    var $tbody = "";
             if (response.data.length > 0) {
-				$table = "<table class='table'><thead><tr><th>Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Outcome</th><th>View</th></tr></tr></thead><tbody>";
+				$table = "<table class='table'><thead><tr><th "+campcol+" >Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Outcome</th><th>View</th></tr></tr></thead><tbody>";
                 $.each(response.data, function (i, val) {
 					        
-                    $tbody += '<tr><td>'+val.campaign_name+'</td><td>'+val.fullname+'</td><td>'+val.date_updated+'</td><td>'+val.nextcall+'</td><td>'+val.outcome+'</td><td><span class="glyphicon glyphicon-comment tt pointer" title="" data-toggle="tooltip" data-placement="left" data-original-title="'+val.comments+'"></span></td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $tbody += '<tr><td '+campcol+' >'+val.campaign_name+'</td><td>'+val.fullname+'</td><td>'+val.date_updated+'</td><td>'+val.nextcall+'</td><td>'+val.outcome+'</td><td><span class="glyphicon glyphicon-comment tt pointer" title="" data-toggle="tooltip" data-placement="left" data-original-title="'+val.comments+'"></span></td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
 					
                 });
 				$table += $tbody;
@@ -274,7 +326,7 @@ var dashboard = {
         });
     },
 	/* the function for the progress panel on the client dashboard */
-    passover_panel: function (agent, campaign) {
+    interest_panel: function (agent, campaign) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/nbf_progress',
             type: "POST",
@@ -284,10 +336,10 @@ var dashboard = {
                 user: agent
             },
 			beforeSend: function(){
-			            $('.progress-panel').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
+			            $('.interest-panel').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
         }).done(function (response) {
-            $('.progress-panel').empty();
+            $('.interest-panel').empty();
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
@@ -295,12 +347,12 @@ var dashboard = {
                     if (val.urgent == "1") {
                         $urgent = "class='red'";
                     }
-                    $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td ' + $urgent + '>' + val.status + '</td><td><span class="glyphicon glyphicon-comment tt pointer" data-toggle="tooltip" data-placement="top" title="'+val.comments+'"></span> <a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $row += '<tr><td>' + val.name + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td ' + $urgent + '>' + val.status + '</td><td><span class="glyphicon glyphicon-comment tt pointer" data-toggle="tooltip" data-placement="top" title="'+val.comments+'"></span> <a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
-                $('.progress-panel').append('<table class="table table-striped table-responsive" style="max-height:600px"><thead><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>Status</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.interest-panel').append('<table class="table table-striped table-responsive" style="max-height:600px"><thead><th>Name</th><th>Date</th><th>Time</th><th>Status</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
 				$('.tt').tooltip();
             } else {
-                $('.progress-panel').append('<p>' + response.msg + '</p>');
+                $('.interest-panel').append('<p>' + response.msg + '</p>');
             }
         });
     },

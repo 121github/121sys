@@ -230,6 +230,45 @@ class Dashboard extends CI_Controller
         }
         
     }
+	
+	    //this controller sends the urgent records back the page in JSON format. It ran when the javascript function "urgent_panel" is executed
+    public function get_pending()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->model('Records_model');
+            $campaign = intval($this->input->post('campaign'));
+            $data     = $this->Dashboard_model->get_pending($campaign);
+            foreach ($data as $k => $v) {
+                $comment                  = $this->Records_model->get_last_comment($v['urn']);
+                $data[$k]['last_comment'] = (!empty($comment) ? $comment : "No Comment Found");
+            }
+            echo json_encode(array(
+                "success" => true,
+                "data" => $data,
+                "msg" => "No records found"
+            ));
+        }
+        
+    }
+	    //this controller sends the urgent records back the page in JSON format. It ran when the javascript function "appointments_panel" is executed
+    public function get_appointments()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->model('Records_model');
+            $campaign = intval($this->input->post('campaign'));
+            $data     = $this->Dashboard_model->get_appointments($campaign);
+            foreach ($data as $k => $v) {
+                $comment                  = $this->Records_model->get_last_comment($v['urn']);
+                $data[$k]['last_comment'] = (!empty($comment) ? $comment : "No Comment Found");
+            }
+            echo json_encode(array(
+                "success" => true,
+                "data" => $data,
+                "msg" => "No records found"
+            ));
+        }
+        
+    }
     //this controller sends the favorites records back the page in JSON format. It ran when the javascript function "favorites_panel" is executed
     public function get_favorites()
     {

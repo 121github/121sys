@@ -56,6 +56,14 @@ if ( !function_exists('user_auth_check') )
 
 	}
 	
+	
+	function check_page_permissions($required){
+	if(@!in_array($required,$_SESSION['permissions'])){
+		redirect(base_url() . "dashboard");
+	}	
+	}
+	
+	
 }
 
 

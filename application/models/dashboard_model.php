@@ -22,6 +22,28 @@ class Dashboard_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
     
+	    public function get_appointments($filter = "")
+    {
+        $qry = "select urn,if(companies.name is null,fullname,name) as fullname,date_format(`start`,'%d/%m/%y %H:%i') start_date from records left join appointments using(urn) left join appointment_attendees using(appointment_id) left join contacts using(urn) left join companies using(urn) where appointments.start > subdate(now(),interval 3 day) and user_id = '{$_SESSION['user_id']}' ";
+        if (!empty($filter)) {
+            $qry .= " and campaign_id = '$filter'";
+        }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry .= " order by `start`";
+        return $this->db->query($qry)->result_array();
+    }
+    
+	    public function get_pending($filter = "")
+    {
+        $qry = "select urn,if(companies.name is null,fullname,name) as fullname,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from records left join contacts using(urn) left join companies using(urn) where record_status = 2 ";
+        if (!empty($filter)) {
+            $qry .= " and campaign_id = '$filter'";
+        }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry .= " group by urn order by records.date_updated asc";
+        return $this->db->query($qry)->result_array();
+    }
+	
     public function get_favorites($filter = "")
     {
         $qry = "select urn,if(companies.name is null,fullname,name) as fullname,campaign_name,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated,date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall,comments,outcome from records left join outcomes using(outcome_id) left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) where urn in(select urn from favorites where user_id = '{$_SESSION['user_id']}') ";
@@ -138,13 +160,15 @@ class Dashboard_model extends CI_Model
         }
         $this->load->helper('date');
         if ($comments == 1) {
-            $qry = "select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys  using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 50 $extra $survey_extra group by contacts.contact_id order by completed_date desc limit 10";
+            $qry = "select urn,an.notes,completed_date `date`,if(companies.name is null,fullname,name) as fullname from answer_notes an left join survey_answers using(answer_id) left join surveys  using(survey_id) left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(an.notes) > 50 $extra $survey_extra group by contacts.contact_id order by completed_date desc limit 10";
         } else if ($comments == 2) {
-            $qry = "select urn,comments notes,contact `date`,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $comments_extra $extra order by history_id desc  limit 10";
+            $qry = "select urn,comments notes,contact `date`,if(companies.name is null,fullname,name) as fullname from history left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(comments) > 40 $comments_extra $extra order by history_id desc  limit 10";
         } else if ($comments == 3) {
-            $qry = "select urn,note notes,s.date_updated `date`,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra $notes_extra order by s.date_updated desc  limit 10";
+            $qry = "select urn,note notes,s.date_updated `date`,if(companies.name is null,fullname,name) as fullname from sticky_notes s left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(note) > 40 $extra $notes_extra order by s.date_updated desc  limit 10";
         } else {
-            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) where char_length(an.notes) > 40   $survey_extra $extra group by an.answer_id union select urn,comments,contact,fullname from history left join records using(urn) left join contacts using(urn) where char_length(comments) > 40 $extra $comments_extra group by history.history_id union select urn,note,s.date_updated,fullname from sticky_notes s left join records using(urn) left join contacts using(urn) where char_length(note) > 40 $extra $notes_extra group by urn) t order by t.`date` desc limit 10";
+            $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,if(companies.name is null,fullname,name) as fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(an.notes) > 40   $survey_extra $extra group by an.answer_id 
+			union select urn,comments,contact,if(companies.name is null,fullname,name) as fullname from history left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(comments) > 40 $extra $comments_extra group by history.history_id 
+			union select urn,note,s.date_updated,if(companies.name is null,fullname,name) as fullname from sticky_notes s left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(note) > 40 $extra $notes_extra group by urn) t order by t.`date` desc limit 10";
         }
         $result = $this->db->query($qry)->result_array();
         $now    = time();
@@ -234,7 +258,7 @@ class Dashboard_model extends CI_Model
     }
 	 public function nbf_progress($filter)
     {
-        $qry = "select urn,if(companies.name is null,fullname,companies.name) as name,nextcall,comments,campaign_name as campaign,outcome as `status`,urgent from records left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join ownership using(urn) left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) left join outcomes using(outcome_id) where outcome_id in(85,72) and (nextcall is not null or urgent=1)";
+        $qry = "select urn,if(companies.name is null,fullname,companies.name) as name,nextcall,comments,campaign_name as campaign,outcome as `status`,urgent from records left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join ownership using(urn) left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) left join outcomes using(outcome_id) where outcome_id in(85) and (nextcall is not null or urgent=1)";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }

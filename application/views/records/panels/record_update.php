@@ -70,14 +70,14 @@
 </textarea></span>
           </div>
           <div class="form-group">
-            <?php if(!in_array("set call outcomes",$_SESSION['permissions'])){ ?>
+            <?php if(in_array("urgent flag",$_SESSION['permissions'])){ ?>
             <?php if($details['record']['urgent']){ ?>
             <span class="urgent-btn" action="remove"><span class="red glyphicon glyphicon-flag"></span> Unflag as urgent</span>
             <?php } else { ?>
             <span class="urgent-btn" action="add"><span class="glyphicon glyphicon-flag"></span> Flag as urgent</span>
             <?php } ?>
             <?php } else  { 
-			if(in_array("set urgent",$_SESSION['permissions'])){ ?>
+			if(in_array("urgent dropdown",$_SESSION['permissions'])){ ?>
             <select class="selectpicker" name="pending_manager">
               <option value="">--Additional Options--</option>
               <option data-icon="glyphicon glyphicon-flag" value="1">Requires Attention</option>

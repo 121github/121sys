@@ -7,15 +7,19 @@ class Form_model extends CI_Model
     function __construct()
     {
         parent::__construct();
-		if(isset($_SESSION['user_id'])){
-        $this->role_id = $_SESSION['role'];
-        $this->user_id = $_SESSION['user_id'];
-		}
+        if (isset($_SESSION['user_id'])) {
+            $this->role_id = $_SESSION['role'];
+            $this->user_id = $_SESSION['user_id'];
+        }
     }
-	public function get_custom_views(){
-		$directory = APPPATH.'views/records/custom';
-		return array_diff(scandir($directory), array('..', '.'));
-	}
+    public function get_custom_views()
+    {
+        $directory = APPPATH . 'views/records/custom';
+        return array_diff(scandir($directory), array(
+            '..',
+            '.'
+        ));
+    }
     public function users_in_group($group_id, $campaign)
     {
         $this->db->select("user_id id,name");
@@ -26,17 +30,17 @@ class Form_model extends CI_Model
         $this->db->order_by("name");
         return $this->db->get("users")->result_array();
     }
-    public function get_campaign_access($id,$array=false)
+    public function get_campaign_access($id, $array = false)
     {
         $this->db->select("users.user_id id,name");
         $this->db->join("users", "users.user_id = users_to_campaigns.user_id", "left");
-		if(!empty($id)){
-        $this->db->where("campaign_id", $id);
-		}
-		if(!empty($array)){
-		$campaigns = implode(",",$array);
-        $this->db->where("campaign_id in($campaigns)");
-		}
+        if (!empty($id)) {
+            $this->db->where("campaign_id", $id);
+        }
+        if (!empty($array)) {
+            $campaigns = implode(",", $array);
+            $this->db->where("campaign_id in($campaigns)");
+        }
         $this->db->order_by("name");
         return $this->db->get("users_to_campaigns")->result_array();
     }
@@ -59,32 +63,31 @@ class Form_model extends CI_Model
     }
     public function get_campaign_features($campaign = false)
     {
-		$exclude = "";
-		//before we get features in this campaign we need to check the user has permissions on these features
-		if($_SESSION['role']<>"1"){
-            if(!in_array("view recordings",$_SESSION['permissions'])){
+        $exclude = "";
+        //before we get features in this campaign we need to check the user has permissions on these features
+        if ($_SESSION['role'] <> "1") {
+            if (!in_array("view recordings", $_SESSION['permissions'])) {
                 $exclude .= " and feature_name <> 'Recordings'";
             }
-            if(!in_array("view appointments",$_SESSION['permissions'])){
+            if (!in_array("view appointments", $_SESSION['permissions'])) {
                 $exclude .= " and feature_name <> 'Appointment Setting'";
             }
-            if(!in_array("view history",$_SESSION['permissions'])){
+            if (!in_array("view history", $_SESSION['permissions'])) {
                 $exclude .= " and feature_name <> 'History'";
             }
-            if(!in_array("view ownership",$_SESSION['permissions'])){
+            if (!in_array("view ownership", $_SESSION['permissions'])) {
                 $exclude .= " and feature_name <> 'Ownership Changer'";
             }
-            if(!in_array("view surveys",$_SESSION['permissions'])){
+            if (!in_array("view surveys", $_SESSION['permissions'])) {
                 $exclude .= " and feature_name <> 'Surveys'";
             }
-            if(!in_array("view email",$_SESSION['permissions'])){
+            if (!in_array("view email", $_SESSION['permissions'])) {
                 $exclude .= " and feature_name <> 'Emails'";
             }
-            if(!in_array("view attachments",$_SESSION['permissions'])){
+            if (!in_array("view attachments", $_SESSION['permissions'])) {
                 $exclude .= " and feature_name <> 'Attachments'";
             }
-		}
-        else {
+        } else {
             $exclude = '';
         }
         $qry = "select feature_id id,feature_name name,panel_path path from campaign_features left join campaigns_to_features using(feature_id) where 1 $exclude ";
@@ -97,33 +100,33 @@ class Form_model extends CI_Model
         $qry = "select campaign_id id,campaign_name name,record_layout,campaign_type_desc type, daily_data, min_quote_days, max_quote_days from campaigns left join campaign_types using(campaign_type_id) order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
-	public function get_calendar_campaigns()
+    public function get_calendar_campaigns()
     {
-                 $qry = "select campaign_id id,campaign_name name from campaigns left join campaigns_to_features using(campaign_id) left join campaign_features using(feature_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 and feature_name = 'Appointment Setting' group by campaign_id order by campaign_name";
-				 
+        $qry = "select campaign_id id,campaign_name name from campaigns left join campaigns_to_features using(campaign_id) left join campaign_features using(feature_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 and feature_name = 'Appointment Setting' group by campaign_id order by campaign_name";
+        
         return $this->db->query($qry)->result_array();
     }
-	
-			public function get_calendar_users($campaign_ids=array())
+    
+    public function get_calendar_users($campaign_ids = array())
     {
-		$where = "";
-		if(count($campaign_ids)>0){
-		$where = " and campaign_id in(". implode(",",$campaign_ids).")";
-		}
+        $where = "";
+        if (count($campaign_ids) > 0) {
+            $where = " and campaign_id in(" . implode(",", $campaign_ids) . ")";
+        }
         $qry = "select user_id id,name name from users left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) where campaign_id in({$_SESSION['campaign_access']['list']})  and campaign_status = 1 and attendee = 1 $where group by user_id order by name";
-		//$this->firephp->log($qry);
+        //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     
     public function get_campaigns_by_user($user_id)
     {
-    	$qry = "select campaign_id id,campaign_name name,campaign_type_desc type 
+        $qry = "select campaign_id id,campaign_name name,campaign_type_desc type 
     			from campaigns 
     			left join campaign_types using(campaign_type_id)
     			inner join users_to_campaigns using (campaign_id)
     			where user_id = $user_id
     			order by campaign_name";
-    	return $this->db->query($qry)->result_array();
+        return $this->db->query($qry)->result_array();
     }
     
     public function get_user_campaigns()
@@ -131,40 +134,38 @@ class Form_model extends CI_Model
         $qry = "select campaign_id id,campaign_name name from campaigns where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 group by campaign_id order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
-	
-	    public function get_user_email_campaigns()
+    
+    public function get_user_email_campaigns()
     {
         $qry = "select campaign_id id,campaign_name name from campaigns where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 and campaign_id in(select campaign_id from campaigns_to_features where feature_id = 9) group by campaign_id order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
-	
+    
     public function get_clients()
     {
-		if(in_array("all campaigns",$_SESSION['permissions'])){
-			 $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where 1 group by client_id order by client_id";
-		} else {
-             $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where campaign_status = 1 and campaign_id in({$_SESSION['campaign_access']['list']}) group by client_id order by client_name";
-        }
+        $qry = "select client_id id,client_name name from clients left join campaigns using(client_id) where campaign_status = 1 and campaign_id in({$_SESSION['campaign_access']['list']}) group by client_id order by client_name";
         return $this->db->query($qry)->result_array();
     }
     public function get_users()
     {
         if ($_SESSION['role'] == 1) {
-            $qry = "select user_id id,name from users where user_status = 1 ";
+            $qry = "select user_id id,name from users where user_status = 1 order by name";
+        } else if (@in_array("search any owner", $_SESSION['permissions'])) {
+            $qry = "select user_id id,name from users_to_campaigns left join users using(user_id) where user_status = 1 and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id order by name";
         } else {
-            $qry = "select user_id id,name from users_to_campaigns left join users using(user_id) where user_status = 1 and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id";
+            $qry = "select user_id id,name from users where user_id = '{$_SESSION['user_id']}'";
         }
         return $this->db->query($qry)->result_array();
     }
     public function get_agents()
     {
-		$qry = "select user_id id,name from users left join role_permissions using(role_id) left join permissions using(permission_id) left join users_to_campaigns using(user_id) where permission_name = 'log hours' and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id";
-
+        $qry = "select user_id id,name from users left join role_permissions using(role_id) left join permissions using(permission_id) left join users_to_campaigns using(user_id) where permission_name = 'log hours' and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id";
+        
         return $this->db->query($qry)->result_array();
     }
     public function get_sources()
     {
-        if (in_array("all campaigns",$_SESSION['permissions'])) {
+        if (in_array("all campaigns", $_SESSION['permissions'])) {
             $qry = "select source_id id,source_name name from data_sources";
         } else {
             $qry = "select source_id id,source_name name from records left join data_sources using(source_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by source_name";
@@ -191,17 +192,17 @@ class Form_model extends CI_Model
         $qry = "select sector_id id,sector_name name from sectors order by sector_name";
         return $this->db->query($qry)->result_array();
     }
-    public function get_subsectors($sectors=array())
+    public function get_subsectors($sectors = array())
     {
-		$where = "";
-		if(count($sectors)>0){
-			$sector_list = "(0";
-			foreach($sectors as $sector_id){
-			$sector_list .= ",".$sector_id;
-			}
-			$sector_list .= ")";
-			$where = " and sector_id in $sector_list";
-		}
+        $where = "";
+        if (count($sectors) > 0) {
+            $sector_list = "(0";
+            foreach ($sectors as $sector_id) {
+                $sector_list .= "," . $sector_id;
+            }
+            $sector_list .= ")";
+            $where = " and sector_id in $sector_list";
+        }
         $qry = "select subsector_id id,subsector_name name from subsectors where 1 $where order by subsector_name";
         return $this->db->query($qry)->result_array();
     }
@@ -212,12 +213,12 @@ class Form_model extends CI_Model
     }
     public function get_groups()
     {
-        $qry = "select group_id id,group_name name,theme_folder as theme_folder from user_groups";
+        $qry = "select group_id id,group_name name,theme_folder as theme_folder from user_groups left join users using(group_id) left join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']})";
         return $this->db->query($qry)->result_array();
     }
     public function get_teams()
     {
-        $qry = "select team_id id,team_name name,group_id,if(group_name is not null,group_name,'-') group_name from teams left join user_groups using(group_id)";
+        $qry = "select teams.team_id id,team_name name,group_id,if(group_name is not null,group_name,'-') group_name from teams left join user_groups using(group_id) left join users using(group_id) left join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by teams.team_id";
         return $this->db->query($qry)->result_array();
     }
     public function get_roles()
@@ -227,11 +228,11 @@ class Form_model extends CI_Model
     }
     public function get_managers()
     {
-		if(in_array("all campaigns",$_SESSION['permissions'])){
-        $qry = "select user_id id,name from users where user_id in team_managers";
-		} else {
-		$qry = "select user_id id,name from users where user_id in team_managers left join users using(user_id) where group_id = '{$_SESSION['group']}'";	
-		}
+        if (in_array("all campaigns", $_SESSION['permissions'])) {
+            $qry = "select user_id id,name from users where user_id in team_managers ";
+        } else {
+            $qry = "select user_id id,name from users where user_id in team_managers left join users using(user_id) where group_id = '{$_SESSION['group']}'";
+        }
         return $this->db->query($qry)->result_array();
     }
     public function get_team_managers($team)
@@ -251,7 +252,11 @@ class Form_model extends CI_Model
     }
     public function get_templates()
     {
-        $qry = "select template_id id,template_name name from email_templates order by template_name";
+        if (in_array("all campaigns", $_SESSION['permissions'])) {
+            $qry = "select template_id id,template_name name from email_templates order by template_name";
+        } else {
+            $qry = "select template_id id,template_name name from email_templates left join email_template_to_campaigns using(template_id) where campaign_id in({$_SESSION['campaign_access']['list']}) order by template_name";
+        }
         return $this->db->query($qry)->result_array();
     }
     /**
@@ -274,28 +279,28 @@ class Form_model extends CI_Model
         $this->db->where("role_id", $role_id);
         return $this->db->get('users')->result_array();
     }
-	
-	public function get_parked_codes()
+    
+    public function get_parked_codes()
     {
         $this->db->select('parked_code id,park_reason name');
         return $this->db->get('park_codes')->result_array();
     }
     
-
+    
     public function get_time_exception_type()
     {
         $this->db->select('exception_type_id id,exception_name  name, paid');
         return $this->db->get('time_exception_type')->result_array();
     }
-
+    
     public function get_renewald_date_field($campaign_id)
     {
-
+        
         $qry = "select field
                 from record_details_fields
                 where field_name LIKE 'Renewal%Date'
                 and campaign_id = " . $campaign_id;
-
+        
         $result = $this->db->query($qry)->result_array();
         return $result;
     }

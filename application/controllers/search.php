@@ -11,6 +11,7 @@ class Search extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+		check_page_permissions("search records");
 		$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -32,10 +33,6 @@ class Search extends CI_Controller
         $clients        = $this->Form_model->get_clients();
         $users          = $this->Form_model->get_users();
         $outcomes       = $this->Form_model->get_outcomes();
-        $outcomes[]     = array(
-            "id" => 69,
-            "name" => "No Number"
-        );
         $progress       = $this->Form_model->get_progress_descriptions();
         $sectors        = $this->Form_model->get_sectors();
 		$selected_sectors = array();
@@ -254,7 +251,6 @@ class Search extends CI_Controller
                 }
 			}
         }
-        $this->firephp->log($array);
         
         //Now we can just stick the new array into an active record query to find the matching records!
         $_SESSION['custom_view']['array']  = $array;

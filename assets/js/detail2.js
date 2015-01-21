@@ -16,10 +16,14 @@ var record = {
             $(this).closest('.alert').addClass('hidden');
             $(this).closest('.alert-text').text('');
         });
-        /*initialize the timer when the agent calls */
+        /*initialize the call when the agent calls */
         $(document).on('click', '.startcall', function(e) {
             e.preventDefault();
             window.location.href = $(this).attr('item-url');
+        });
+		/*initialize the timer when the agent calls */
+        $(document).on('click', '.starttimer', function(e) {
+            e.preventDefault();
             record.start_call();
         });
         /* Initialize all the panel functions for the record details page */

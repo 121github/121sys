@@ -14,17 +14,17 @@
           <div id="collapseZero" class="panel-collapse collapse in">
             <div class="panel-body">
             <div class="form-group">
-             <?php if(count($campaigns)>1){ ?>
+         
                 <label>Campaign</label>
                 <br>
-                <select  name="campaign_id[]" class="selectpicker campaigns_select" data-width="100%" data-size="5" multiple title="All campaigns">
+                <select  name="campaign_id[]" class="selectpicker campaigns_select" data-width="100%" data-size="5" <?php if(in_array("mix campaigns",$_SESSION['permissions'])){ echo "multiple"; } ?> title="All campaigns">
 <?php foreach($campaigns as $row): ?>
                   <?php if(in_array($row['id'],$_SESSION['campaign_access']['array'])):  ?>
-                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['campaign_id'])){ echo "selected"; } else { echo (isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['campaign_id'])||count($campaigns)=="1"){ echo "selected"; } else { echo (isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endif ?>
 				  <?php endforeach; ?>
                 </select>
-                 <?php } ?>
+           
             <?php if(count($clients)>1){ ?>
                 <label>Client</label>
                 <br>
@@ -98,13 +98,13 @@
               </div>
               <div class="form-group">
                 <label>Status</label>
-                <select  name="record_status[]" class="selectpicker record-status" data-width="100%" data-size="5" multiple title="Any">
+                <select  name="record_status[]" class="selectpicker record-status" data-width="100%" data-size="5"  <?php if(in_array("search dead",$_SESSION['permissions'])||in_array("search parked",$_SESSION['permissions'])||in_array("search completed",$_SESSION['permissions'])){ echo "multiple"; } ?> title="Any">
                   <?php foreach($status as $row): ?>
-                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['record_status'])||empty($_SESSION['filter']['values'])&&$row['id']=="1"){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['record_status'])||empty($_SESSION['filter']['values'])&&$row['id']=="1"&&in_array("view live",$_SESSION['permissions'])||count($status)=="1"){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
-              <?php if(in_array("view parked",$_SESSION['permissions'])){ ?>
+              <?php if(in_array("search parked",$_SESSION['permissions'])){ ?>
                <div class="form-group">
                 <label>Parked Status</label>
                 <select  name="parked_code[]" class="selectpicker parked-code" data-width="100%" title="Unparked" data-size="5" multiple>
@@ -114,20 +114,22 @@
                 </select>
               </div>
               <?php } ?>
-               <?php if(in_array("any owner",$_SESSION['permissions'])){ ?>
+               <?php if(in_array("search groups",$_SESSION['permissions'])){ ?>
               <div class="form-group">
                 <label>Group Ownership</label>
-                <select name="group_id[]" class="selectpicker" data-width="100%" data-size="5" multiple  title="Any">
+                <select name="group_id[]" class="selectpicker" data-width="100%" data-size="5" <?php if(count($groups)>1){ echo "multiple"; } ?> title="Any">
                   <?php foreach($groups as $row): ?>
-                  <option  <?php if(@in_array($row['id'],$_SESSION['filter']['values']['group_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option  <?php if(@in_array($row['id'],$_SESSION['filter']['values']['group_id'])||empty($_SESSION['filter']['values'])&&$row['id']==$_SESSION['group']&&in_array("own group",$_SESSION['permissions'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
+                <?php } ?>
+                 <?php if(in_array("search any owner",$_SESSION['permissions'])){ ?>
               <div class="form-group">
                 <label>User Ownership</label>
-                <select  name="user_id[]" class="selectpicker" data-width="100%" data-size="5" multiple  title="Any">
+                <select  name="user_id[]" class="selectpicker" data-width="100%" data-size="5" <?php if(count($users)>1){ echo "multiple"; } ?>  title="Any">
                   <?php foreach($users as $row): ?>
-                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['user_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['user_id'])||empty($_SESSION['filter']['values'])&&$row['id']==$_SESSION['user_id']&&in_array("own records",$_SESSION['permissions'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>
@@ -379,7 +381,7 @@
                 <input <?php if(@isset($_SESSION['filter']['values']['survey'])){ echo "checked"; } ?> name="survey" type="checkbox">
               </div>
               <div class="checkbox">
-                <label>My favorites only</label>
+                <label>Favorites only</label>
                 <input <?php if(@isset($_SESSION['filter']['values']['favorites'])){ echo "checked"; } ?> name="favorites" type="checkbox">
               </div>
               <div class="checkbox">

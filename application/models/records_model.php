@@ -147,41 +147,11 @@ class Records_model extends CI_Model
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
 		$join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
         
-        
         foreach ($join as $join_query) {
             $qry .= $join_query;
         }
-        //set the default criteria
-        $qry .= " where r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         
-        //check the tabel header filter
-        foreach ($options['columns'] as $k => $v) {
-            //if the value is not empty we add it to the where clause
-            if ($v['search']['value'] <> "") {
-                $qry .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
-            }
-        }
-        
-        //if any filter has been set then we should apply it here
-        if (isset($_SESSION['filter']['where']) && !empty($_SESSION['filter']['where'])) {
-            $qry .= $_SESSION['filter']['where'];
-        }
-        
-        //agents can only see live records unless they specifically search for dead ones
-        if (!isset($_SESSION['filter']['values']['record_status']) && in_array("set call outcomes",$_SESSION['permissions'])) {
-        $qry .= " and (record_status = 1 or record_status = 4)";
-        }
-        
-		/* users can only see records that have not been parked */
-		 if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("view parked",$_SESSION['permissions'])) {
-        $qry .= " and parked_code is null ";
-        }
-		
-		//users can only see their own records
-		if(!in_array("any owner",$_SESSION['permissions'])){
-		$qry .= " and ow.user_id = '{$_SESSION['user_id']}'";	
-		}
-		
+		$qry .= $this->get_where($options,$table_columns);
         $qry .= " group by r.urn";
         //if any order has been set then we should apply it here
         //$this->firephp->log($qry);
@@ -197,11 +167,50 @@ class Records_model extends CI_Model
         
         $qry .= $order;
         $qry .= "  limit $start,$length";
+		$this->firephp->log($qry);
         $records = $this->db->query($qry)->result_array();
         
         return $records;
     }
     
+	public function get_where($options,$table_columns){
+		//the default condition in ever search query to stop people viewing campaigns they arent supposed to!
+		$where = " where 1 ";
+		
+	     //check the tabel header filter
+        foreach ($options['columns'] as $k => $v) {
+            //if the value is not empty we add it to the where clause
+            if ($v['search']['value'] <> "") {
+                $where .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
+            }
+        }
+        
+        //if any filter has been set then we should apply it here
+        if (isset($_SESSION['filter']['where']) && !empty($_SESSION['filter']['where'])) {
+            $where .= $_SESSION['filter']['where'];
+        }
+        
+		/* users can only see records that have not been parked */
+		 if (@!in_array("search parked",$_SESSION['permissions'])) {
+        $where .= " and parked_code is null ";
+        }
+		
+		//users can see unaassigned records
+		if(in_array("search unasssigned",$_SESSION['permissions'])){
+		$unassigned = " or ow.user_id is null ";	
+		} else {
+		$unassigned = "";	
+		}
+		
+		//users can only see their own records
+		if(!in_array("search any owner",$_SESSION['permissions'])){
+		$where .= " and (ow.user_id = '{$_SESSION['user_id']}' $unassigned) ";	
+		}
+		return $where;	
+		
+	}
+	
+	
     public function get_nav($options = "")
     {
         $table_columns = array(
@@ -239,37 +248,7 @@ class Records_model extends CI_Model
         foreach ($join as $join_query) {
             $navqry .= $join_query;
         }
-        //set the default criteria
-        $navqry .= " where r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        
-        //check the tabel header filter
-        foreach ($options['columns'] as $k => $v) {
-            //if the value is not empty we add it to the where clause
-            if ($v['search']['value'] <> "") {
-                $navqry .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
-            }
-        }
-        
-        //if any filter has been set then we should apply it here
-        if (isset($_SESSION['filter']['where'])) {
-            $navqry .= $_SESSION['filter']['where'];
-        }
-        
-        
-        //agents can only see live records unless they specifically search for dead ones
-        if (!isset($_SESSION['filter']['values']['record_status']) && in_array("set call outcomes",$_SESSION['permissions'])) {
-        $navqry .= " and (record_status = 1 or record_status = 4)";
-        }
-        
-		/* users can only see records that have not been parked */
-		 if (!isset($_SESSION['filter']['values']['parked_code'])) {
-        $navqry .= " and parked_code is null ";
-        }
-		
-		//users can only see their own records
-		if(!in_array("any owner",$_SESSION['permissions'])){
-		$navqry .= " and ow.user_id = '{$_SESSION['user_id']}'";	
-		}
+        $navqry .= $this->get_where($options,$table_columns);
 
         //group by urn to prevent dupes
         $navqry .= " group by r.urn";

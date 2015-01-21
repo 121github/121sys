@@ -39,7 +39,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <div class="container">
       <div class="navbar-header">
         <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle collapsed" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-        <?php if(!isset($_SESSION['permissions'])||count($_SESSION['campaign_access']['array'])<2||in_array("search campaigns",$_SESSION['permissions'])){ ?>
+        <?php if(!isset($_SESSION['permissions'])||count($_SESSION['campaign_access']['array'])<3||in_array("mix campaigns",$_SESSION['permissions'])){ ?>
         <a href="#" class="navbar-brand"><img style="margin-top:-5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/logo.png"></a>
         <?php } else { ?>
         <span style="position:absolute;top:8px"><img style="margin-top:-10px; margin-right:5px;" src="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/small-logo.png">
@@ -62,29 +62,41 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       <div class="navbar-collapse collapse pull-right">
         <ul class="nav navbar-nav">
           <?php if(isset($_SESSION['user_id'])): ?>
-              <?php if(in_array("admin nav",$_SESSION['permissions'])){ ?>
+              <?php if(in_array("admin menu",$_SESSION['permissions'])){ ?>
                   <li class="dropdown <?php if($this->uri->segment(1)=="admin"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Admin <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                      <?php if(in_array("data menu",$_SESSION['permissions'])){ ?>
                         <li>
                             <a class="trigger right-caret">Data</a>
                             <ul class="dropdown-menu sub-menu">
-                                <li> <a href="<?php echo base_url() ?>import" <?php echo @($inner=='import'?"class='active'":"") ?>>Import</a></li>
+                            <?php if(in_array("import data",$_SESSION['permissions'])){ ?>
+                                <li> <a href="<?php echo base_url() ?>import" <?php echo @($inner=='import'?"class='active'":"") ?>>Import</a></li> <?php } ?>
+                                    <?php if(in_array("export data",$_SESSION['permissions'])){ ?>
                                 <li><a href="<?php echo base_url() ?>exports" <?php echo @($inner=='export'?"class='active'":"") ?>>Export</a></li>
+                                 <?php } ?>
                                 <?php if(in_array("reassign data",$_SESSION['permissions'])){ ?>
                                     <li><a href="<?php echo base_url() ?>data/management" <?php echo @($inner=='management'?"class='active'":"") ?>>Data Management</a></li>
                                 <?php } ?>
+                                                <?php if(in_array("add records",$_SESSION['permissions'])){ ?>
                                 <li><a href="<?php echo base_url() ?>data/add_record" <?php echo @($inner=='add_record'?"class='active'":"") ?>>Add Record</a></li>
+                                 <?php } ?>
+                                 <?php if(in_array("ration data",$_SESSION['permissions'])){ ?>
                                 <li><a href="<?php echo base_url() ?>data/daily_ration" <?php echo @($inner=='daily_ration'?"class='active'":"") ?>>Daily Ration</a></li>
+                                 <?php } ?>
+                                <?php if(in_array("archive data",$_SESSION['permissions'])){ ?>
                                 <li><a href="<?php echo base_url() ?>data/backup_restore" <?php echo @($inner=='backup_restore'?"class='active'":"") ?>>Backup and Restore</a></li>
+                                 <?php } ?>
                             </ul>
                         </li>
+                            <?php } ?>
+                              <?php if(in_array("campaign menu",$_SESSION['permissions'])){ ?>
                         <li>
                             <a class="trigger right-caret">Campaigns</a>
                             <ul class="dropdown-menu sub-menu">
-                                <?php if(in_array("campaign access",$_SESSION['permissions'])){ ?>
+                                    <?php if($_SESSION['role']=="1"){ ?>
                                     <li><a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($inner=='campaign'?"class='active'":"") ?>>Campaign Setup</a></li>
-                                <?php } ?>
                                 <li><a href="<?php echo base_url() ?>admin/campaign_fields" <?php echo @($inner=='custom_fields'?"class='active'":"") ?>>Campaign Fields</a></li>
+                                  <?php } ?>
                                 <?php if(in_array("edit templates",$_SESSION['permissions'])){ ?>
                                     <li><a href="<?php echo base_url() ?>templates" <?php echo @($inner=='templates'?"class='active'":"") ?>>Templates</a></li>
                                 <?php } ?>
@@ -93,6 +105,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                 <?php } ?>
                             </ul>
                         </li>
+                         <?php } ?>
                         <?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
                             <li><a href="<?php echo base_url() ?>admin/users" <?php echo @($admin=='users'?"class='active'":"") ?>>Users</a></li>
                             <li><a href="<?php echo base_url() ?>admin/roles" <?php echo @($admin=='roles'?"class='active'":"") ?>>Roles</a></li>
@@ -102,10 +115,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         <?php if(in_array("view logs",$_SESSION['permissions'])){ ?>
                             <li><a href="<?php echo base_url() ?>admin/logs" <?php echo @($admin=='logs'?"class='active'":"") ?>>Logs</a></li>
                         <?php } ?>
+                        <?php if(in_array("view hours",$_SESSION['permissions'])){ ?>
                         <li>
                             <a class="trigger right-caret">Hours</a>
                             <ul class="dropdown-menu sub-menu">
-                                <?php if(in_array("view hours",$_SESSION['permissions'])){ ?>
+                                
                                 <li><a href="<?php echo base_url() ?>hour/default_hours" <?php echo @($inner=='default_hours'?"class='active'":"") ?>>Default Hours</a></li>
                                 <li><a href="<?php echo base_url() ?>hour/hours" <?php echo @($inner=='hours'?"class='active'":"") ?>>Agent Hours</a></li>
                             </ul>
@@ -113,24 +127,29 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         <li>
                             <a class="trigger right-caret">Time</a>
                             <ul class="dropdown-menu sub-menu">
-                                <li><a href="<?php echo base_url() ?>time/default_time" <?php echo @($inner=='default_time'?"class='active'":"") ?>>Default Time</a></li>
+                                <li><a href="<?php echo base_url() ?>time/default_time" <?php echo @($inner=='default_time'?"class='active'":"") ?>>Default Time</a></li>                  
                                 <li><a href="<?php echo base_url() ?>time/agent_time" <?php echo @($inner=='agent_time'?"class='active'":"") ?>>Agent Time</a></li>
-                                <?php } ?>
                             </ul>
                         </li>
+                           <?php } ?>
                     </ul>
                   </li>
               <?php } ?>
-              <?php if(in_array("view reports",$_SESSION['permissions'])&&in_array("agent reporting",$_SESSION['permissions'])){ ?>
+              <?php if(in_array("reports menu",$_SESSION['permissions'])){ ?>
                   <li class="dropdown <?php if($this->uri->segment(1)=="report"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Reports <b class="caret"></b></a>
                       <ul class="dropdown-menu">
-                          <li><a href="<?php echo base_url() ?>reports/answers" <?php echo @($reports=='answers'?"class='active'":"") ?>>Survey Answers</a></li>
+                         <?php if(in_array("survey answers",$_SESSION['permissions'])){ ?>
+                          <li><a href="<?php echo base_url() ?>reports/answers" <?php echo @($reports=='answers'?"class='active'":"") ?>>Survey Answers</a></li>  <?php } ?>
+                             <?php if(in_array("activity",$_SESSION['permissions'])){ ?>
                           <li><a href="<?php echo base_url() ?>reports/activity" <?php echo @($reports=='activity'?"class='active'":"") ?>>Activity</a></li>
+                          <?php } ?>
                           <li>
                               <a class="trigger right-caret">Transfers</a>
                               <ul class="dropdown-menu sub-menu">
                                   <li> <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>By Campaign</a></li>
+                                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                                   <li><a href="<?php echo base_url() ?>reports/agenttransfer" <?php echo @($inner=='agenttransfer'?"class='active'":"") ?>>By Agent</a></li>
+                                   <?php } ?>
                                   <li><a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>By Date</a></li>
                                   <li><a href="<?php echo base_url() ?>reports/timetransfer" <?php echo @($inner=='dailytransfer'?"class='active'":"") ?>>By Time</a></li>
                               </ul>
@@ -139,20 +158,27 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                               <a class="trigger right-caret">Outcomes</a>
                               <ul class="dropdown-menu sub-menu">
                                   <li><a href="<?php echo base_url() ?>reports/outcomes/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a></li>
+                                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                                   <li><a href="<?php echo base_url() ?>reports/outcomes/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a></li>
+                                    <?php } ?>
                                   <li><a href="<?php echo base_url() ?>reports/outcomes/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a></li>
                                   <li><a href="<?php echo base_url() ?>reports/outcomes/time/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Time</a></li>
                               </ul>
                           </li>
+                            <?php if(in_array("email",$_SESSION['permissions'])){ ?>
                           <li>
+                         
                               <a class="trigger right-caret">Emails</a>
                               <ul class="dropdown-menu sub-menu">
                                   <li> <a href="<?php echo base_url() ?>reports/email/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a></li>
+                                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                                   <li><a href="<?php echo base_url() ?>reports/email/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a></li>
+                                  <?php } ?>
                                   <li><a href="<?php echo base_url() ?>reports/email/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a></li>
                                   <li><a href="<?php echo base_url() ?>reports/email/time/1" <?php echo @($inner=='time'?"class='active'":"") ?>>By Time</a></li>
                               </ul>
                           </li>
+                           <?php } ?>
                       </ul>
                   </li>
               <?php } ?>
@@ -176,16 +202,16 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
               <?php if(isset($_SESSION['current_campaign'])||@in_array("search campaigns",$_SESSION['permissions'])){  ?>
               <li <?php if($this->uri->segment(1)=="records"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" >List Records</a></li>
               <?php } ?>
-              <?php if(@in_array("search campaigns",$_SESSION['permissions'])||isset($_SESSION['current_campaign'])&&isset($_SESSION['search records'])){ ?>
+              <?php if(@in_array("search records",$_SESSION['permissions'])||isset($_SESSION['current_campaign'])&&isset($_SESSION['search records'])){ ?>
               <li <?php if($this->uri->segment(1)=="search"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
               <?php } ?>
-              <?php if(isset($_SESSION['current_campaign'])&&in_array("set call outcomes",$_SESSION['permissions'])){  ?>
+              <?php if(isset($_SESSION['current_campaign'])&&in_array("use callpot",$_SESSION['permissions'])){  ?>
               <li <?php if($this->uri->segment(2)=="detail"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/detail" >Start Calling</a></li>
               <?php } ?>
-              <?php if(in_array('calendar nav',$_SESSION['permissions'])&&in_array('search campaigns',$_SESSION['permissions'])||isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Appointment Setting',$_SESSION['campaign_features'])&&in_array("calendar nav",$_SESSION['permissions'])){ ?>
+              <?php if(@in_array('full calendar',$_SESSION['permissions'])&&in_array("mix campaigns",$_SESSION['permissions'])||@in_array('Appointment Setting',$_SESSION['campaign_features'])){ ?>
               <li <?php if($this->uri->segment(1)=="calendar"){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>calendar" >Calendar</a></li>
               <?php } ?>
-              <?php if(isset($_SESSION['current_campaign'])&&isset($_SESSION['campaign_features'])&&in_array('Surveys',$_SESSION['campaign_features'])&&in_array("search surveys",$_SESSION['permissions'])){ ?>
+              <?php if(@in_array('Surveys',$_SESSION['campaign_features'])&&in_array("search surveys",$_SESSION['permissions'])){ ?>
               <li class="dropdown <?php if($this->uri->segment(1)=="survey"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Surveys <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo base_url(); ?>survey/view">View Surveys</a></li>
@@ -218,10 +244,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 </div>
 <?php if($show_footer){ ?>
 <div class="navbar-inverse footer-stats">
-  <div>Current Rate: <span id="rate_box">0</span></div>
+  <!--<div>Current Rate: <span id="rate_box">0</span></div>-->
   <div><span id="transfers">Transfers</span>: <span id="transfers_box">0</span></div>
   <div>Records worked: <span id="worked_box">0</span></div>
-  <div>Time on this campaign: <span id="time_box">00:00:00</span></div>
+  <!--<div>Time on this campaign: <span id="time_box">00:00:00</span></div>-->
 </div>
 <?php } ?>
 <div class="container-fluid" <?php if($show_footer){ ?>style="padding-bottom:50px"<?php } ?>> <?php echo $body; ?></div>
@@ -272,10 +298,11 @@ $.getJSON(helper.baseUrl+'user/check_session',function(response){
 		if(response.positive_outcome.length>0){
 		$('#transfers_box').text(response.transfers);
 		$('#worked_box').text(response.worked);
-		$('#rate_box').text(response.rate+ ' per hour');
+		//we are not using the live rate features on the system
+		//$('#rate_box').text(response.rate+ ' per hour');
 		}
-		var start = new Date;
-	
+		//var start = new Date;
+		/* we are not using the live rate features on the system
 		refreshIntervalId = setInterval(function() {
 		  elapsed_seconds = ((new Date - start)/1000)+Number(response.duration)
 		  $('#time_box').text(get_elapsed_time_string(elapsed_seconds));
@@ -285,6 +312,7 @@ $.getJSON(helper.baseUrl+'user/check_session',function(response){
 		
 		$('#time_box').fadeIn(800);
 		$('#rate_box').fadeIn(800);
+		*/
 	<?php } ?>
 });	
 	}

@@ -577,7 +577,7 @@ $this->db->query($renewals);
 	public function merge_by_client_ref(){
 	//find all client_refs that appear more than once
 	$dupe_query = "SELECT client_ref, urn
-FROM client_refs left join records using(urn) where campaign_id = 3
+FROM client_refs left join records using(urn) where campaign_id = 5
 GROUP BY client_ref
 HAVING count( client_ref ) >1";	
 	$result = $this->db->query($dupe_query)->result_array();

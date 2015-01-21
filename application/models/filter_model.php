@@ -58,7 +58,7 @@ class Filter_model extends CI_Model
     public function apply_filter($filter)
     {
         //setting the second parameter to 'true' stores the filter in the session
-        $addon                        = $this->Filter_model->create_query_filter($filter, true);
+        $this->Filter_model->create_query_filter($filter, true);
         $_SESSION['filter']['values'] = $this->Filter_model->clean_filter($filter);
     }
     
@@ -272,6 +272,7 @@ class Filter_model extends CI_Model
         $qry                                = "";
         $special                            = "";
         $multiple                           = "";
+		$skip = false; //this is used to skip the first value in a multiple array
         $join                               = array();
         $where                              = " and r.campaign_id in ({$_SESSION['campaign_access']['list']}) ";
         $order                              = "";
@@ -361,7 +362,11 @@ class Filter_model extends CI_Model
                 }
                 /*apply the special filetrs */
                 if ($field == "favorites") {
-                    $where .= " and urn in(select urn from favorites where user_id = '{$_SESSION['user_id']}') ";
+					if(@!in_array("search any owner",$_SESSION['permissions'])){
+                    $where .= " and r.urn in(select distinct urn from favorites where user_id = '{$_SESSION['user_id']}') ";
+					} else {
+					$where .= " and r.urn in(select distinct urn from favorites) ";	
+					}
                 }
                 if ($field == "new_only") {
                     $where .= " and r.outcome_id is null and r.progress_id is null and r.nextcall is null and record_status = 1 ";
@@ -411,7 +416,7 @@ class Filter_model extends CI_Model
                 if ($filter_options[$field]['table'] == "ownership") {
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
                 }
-                if ($filter_options[$field]['table'] == "users"||!in_array("any owner",$_SESSION['permissions'])) {
+                if ($filter_options[$field]['table'] == "users"||!in_array("search any owner",$_SESSION['permissions'])) {
                     $join['ownership'] = " left join ownership ow on ow.urn = r.urn";
                     $join['users']     = " left join users u on u.user_id = ow.user_id";
                 }
@@ -461,8 +466,19 @@ class Filter_model extends CI_Model
                 //if the filter type is a multiselect or checkboxes we have to loop through and add them inside brackets
                 if ($filter_options[$field]['type'] == "multiple" && count($data)) {
                     $where .= " and (";
+					if($filter_options[$field]['alias'] == "r.parked_code" && $data[0]=="0"){
+					$multiple .=" parked_code is null or parked_code is not null or";	$skip = true; //don't include "0" in the search below
+					}
+					if($filter_options[$field]['alias'] == "ow.user_id" && $data[0]=="0"){
+					$multiple .=" ow.user_id is null or";	$skip = true; //don't include "0" in the search below
+					}
                     foreach ($data as $val) {
+						if(!$skip){
                         $multiple .= " {$filter_options[$field]['alias']} = '$val' or";
+						} else {
+						//once we have skipped the first zero we set skip to false so no other values are ignored.
+						$skip = false;	
+						}
                     }
                     $multiple = rtrim($multiple, "or");
                     $where .= $multiple . " )";
@@ -540,11 +556,18 @@ class Filter_model extends CI_Model
         $where .= " and parked_code is null ";
         }
 		
-		//users can only see their own records
-		if(!in_array("any owner",$_SESSION['permissions'])){
-		$where .= " and (ow.user_id = '{$_SESSION['user_id']}' or ow.user_id is null) ";	
+		//users can see unaassigned records
+		if(@in_array("search unasssigned",$_SESSION['permissions'])){
+		$unassigned = " or ow.user_id is null ";	
+		} else {
+		$unassigned = "";	
 		}
 		
+		//users can only see their own records
+		if(!in_array("search any owner",$_SESSION['permissions'])){
+		$where .= " and (ow.user_id = '{$_SESSION['user_id']}' $unassigned) ";	
+		}
+
 		
         if (!empty($where)) {
             $qry .= " where 1 " . $where;
@@ -557,7 +580,6 @@ class Filter_model extends CI_Model
                 unset($_SESSION['current_campaign']);
             }
         }
-		//$this->firephp->log($qry);
         return $qry;
         
     }
@@ -866,11 +888,8 @@ class Filter_model extends CI_Model
         
         
         $qry .= $group_by;
-
-        $start  = $options['start'];
-        $length = $options['length'];
         $qry .= " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-				//$this->firephp->log($qry);
+		$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];
         $data = $this->db->query($qry)->result_array();
