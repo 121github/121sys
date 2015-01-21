@@ -277,5 +277,37 @@ class User_model extends CI_Model
         $result = $this->db->get("campaign_permissions")->result_array();
         return $result;
     }
-    
+
+    public function get_user_by_username($username) {
+        $qry = "SELECT * FROM users WHERE username='$username'";
+        $results = $this->db->query($qry)->result_array();
+
+        return $results;
+    }
+
+    public function get_user_by_reset_pass_token($reset_pass_token) {
+        $qry = "SELECT * FROM users WHERE reset_pass_token='$reset_pass_token'";
+        $results = $this->db->query($qry)->result_array();
+
+        return $results;
+    }
+
+    public function update_user($user_id, $form)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->update("users", $form);
+    }
+
+    public function restore_password($user_id, $password)
+    {
+        $password = md5($password);
+
+        $this->db->where("user_id", $user_id);
+        $results = $this->db->update("users", array(
+            "password" => $password,
+            "reset_pass_token" => null
+        ));
+
+        return $results;
+    }
 }

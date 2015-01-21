@@ -6,6 +6,13 @@
   <?php echo ($this->session->flashdata('error')?$this->session->flashdata('error'):$_SESSION['logout_message']); ?>  
 	</div>  
 <?php endif; ?>
+
+<?php if($this->session->flashdata('success')): ?>
+    <div class="alert alert-success alert-dismissable" style="margin-top:10px">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <?php echo $this->session->flashdata('success'); ?>
+    </div>
+<?php endif; ?>
     
           <form class="form-signin" role="form" method="post">
     <?php if($redirect): ?>
@@ -19,7 +26,16 @@
         </div>
         <label class="checkbox">
           <input type="checkbox" value="remember-me"> Remember me
+            <a href="#" class="forgot-password">Forgot password?</a>
         </label>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
       </form>
-    
+
+<div class="panel panel-primary forgot-password-container">
+    <?php $this->view('forms/forgot_password_form.php'); ?>
+</div>
+<script>
+    $(document).ready(function(){
+        login.init();
+    });
+</script>
