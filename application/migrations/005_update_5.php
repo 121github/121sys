@@ -99,7 +99,8 @@ class Migration_update_5 extends CI_Migration
 (90, 'view live', 'Default view'),
 (91, 'view pending', 'Default view'),
 (92, 'keep records', 'System'),
-(93, 'use timer', 'System')");
+(93, 'use timer', 'System'),
+(94, 'search actions', 'Search')");
     $this->db->query("INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES
 (1, 2),
 (1, 3),
@@ -172,6 +173,7 @@ class Migration_update_5 extends CI_Migration
 (1, 84),
 (1, 86),
 (1, 90),
+(1, 94),
 (2, 2),
 (2, 3),
 (2, 4),

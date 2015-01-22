@@ -1,6 +1,6 @@
  <form id="filter-form" class="filter-form">
 <div class="page-header">
-  <h2>Search Records<small class="pull-right"><button type="submit" class="btn btn-default submit-filter">View Records</button> <?php if($_SESSION['role']=="1"){ ?><button class="btn btn-default actions-filter">Actions</button><?php } ?> <button class="btn btn-default clear-filter">Clear Filter</button> Found: <span class="record-count"></span></small></h2>
+  <h2>Search Records<small class="pull-right"><button type="submit" class="btn btn-default submit-filter">View Records</button> <?php if(in_array("search actions",$_SESSION['permissions'])){ ?><button class="btn btn-default actions-filter">Actions</button><?php } ?> <button class="btn btn-default clear-filter">Clear Filter</button> Found: <span class="record-count"></span></small></h2>
 </div>
 <div class="row">
   <div class="col-md-12 col-sm-12">
