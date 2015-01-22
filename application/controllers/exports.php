@@ -7,7 +7,7 @@ class Exports extends CI_Controller
     {
         parent::__construct();
         user_auth_check(false);
-$this->_campaigns = campaign_access_dropdown();
+        $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Export_model');
 		$this->load->model('Form_model');
     }
@@ -36,10 +36,30 @@ $this->_campaigns = campaign_access_dropdown();
         );
         $this->template->load('default', 'exports/view_exports.php', $data);
     }
+
     /*
-    Sample export
+    Dials export
     */
-    public function sample_export()
+    public function dials_export()
+    {
+        if ($this->input->post()) {
+            $options             = array();
+            $options['from']     = ($this->input->post('date_from') ? to_mysql_datetime($this->input->post('date_from')) : "2014-01-01");
+            $options['to']       = ($this->input->post('date_to') ? to_mysql_datetime($this->input->post('date_to')) : "2050-01-01");
+            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
+            //exit;
+            $result              = $this->Export_model->dials_export($options);
+            $filename            = "Sample Export";
+
+            //Export the data to a csv file
+            $this->export2csv($result, $filename);
+        }
+    }
+
+    /*
+    Contacts added export
+    */
+    public function contacts_added_export()
     {
         if ($this->input->post()) {
             $options             = array();
@@ -47,23 +67,30 @@ $this->_campaigns = campaign_access_dropdown();
             $options['to']       = ($this->input->post('date_to') ? to_mysql_datetime($this->input->post('date_to')) : "2050-01-01");
             $options['campaign'] = ($this->input->post('date_to') ? $this->input->post('campaign') : "");
             //exit;
-            $result              = $this->Export_model->sample_export($options);
-            $filename            = "Sample Export";
-            header("Content-type: text/csv");
-            header("Content-Disposition: attachment; filename={$filename}.csv");
-            header("Pragma: no-cache");
-            header("Expires: 0");
-            $outputBuffer = fopen("php://output", 'w');
-            $headers      = array(
-                "Date",
-                "Campaign",
-                "Dials"
-            );
-            fputcsv($outputBuffer, $headers);
-            foreach ($result as $val) {
-                fputcsv($outputBuffer, $val);
-            }
-            fclose($outputBuffer);
+            $result              = $this->Export_model->contacts_added_export($options);
+            $filename            = "Contacts Added Export";
+
+            //Export the data to a csv file
+            $this->export2csv($result, $filename);
         }
+    }
+
+    //Export data to csv
+    private function export2csv($data, $filename) {
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename={$filename}.csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $outputBuffer = fopen("php://output", 'w');
+        $headers      = array(
+            "Date",
+            "Campaign",
+            "Dials"
+        );
+        fputcsv($outputBuffer, $headers);
+        foreach ($data as $val) {
+            fputcsv($outputBuffer, $val);
+        }
+        fclose($outputBuffer);
     }
 }
