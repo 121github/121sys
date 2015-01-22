@@ -30,12 +30,18 @@ class Records_model extends CI_Model
 		$user_id = $_SESSION['user_id'];
 		if(intval($campaign)){
 		$priority = array();
+		if(in_array("search unassigned",$_SESSION['permissions'])){
+		$unassigned = " or user_id is null";
+		} else { 
+		$unassigned = ""; 
+		}
+		
 		//1st priority is call back DMS and call backs within 10 mins (callback dms first)
-		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between subdate(now(), interval 10 MINUTE) and adddate(now(), interval 10 MINUTE) and (user_id is null or user_id = '$user_id') and outcome_id in(1,2) order by case when outcome_id = 2 then 1 else 2 end limit 1";
+		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between subdate(now(), interval 10 MINUTE) and adddate(now(), interval 10 MINUTE) and (user_id = '$user_id' $unassigned) and outcome_id in(1,2) order by case when outcome_id = 2 then 1 else 2 end limit 1";
 				//2nd priority is virgin, then any other record with a nextcall date in order of lowest dials
-		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now()) and outcome_id in(1,2) and (user_id is null or user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials limit 1";	
+		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now()) and outcome_id in(1,2) and (user_id = '$user_id' $unassigned) order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials limit 1";	
 		//2nd priority is virgin, then any other record with a nextcall date in order of lowest dials
-		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null or date(date_updated)<curdate() and nextcall<now()) and (user_id is null or user_id = '$user_id') order by case when outcome_id is null then 1 else 2 end,date_updated,dials limit 1";	
+		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null or date(date_updated)<curdate() and nextcall<now()) and (user_id = '$user_id' $unassigned) order by case when outcome_id is null then 1 else 2 end,date_updated,dials limit 1";	
 		foreach($priority as $k=>$qry){
 		$query = $this->db->query($qry);
 		
@@ -196,8 +202,8 @@ class Records_model extends CI_Model
         }
 		
 		//users can see unaassigned records
-		if(in_array("search unasssigned",$_SESSION['permissions'])){
-		$unassigned = " or ow.user_id is null ";	
+		if(!in_array("search unassigned",$_SESSION['permissions'])){
+		$unassigned = " or ow.user_id is not null ";	
 		} else {
 		$unassigned = "";	
 		}
@@ -457,7 +463,7 @@ class Records_model extends CI_Model
     {
         $limit_ = ($limit)?"limit ".$offset.",".$limit:'';
 
-        $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null,if(pd.description is null,'No Action Required',pd.description),if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome)) as outcome, history.history_id, comments from history left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join users u using(user_id) left join cross_transfers on cross_transfers.history_id = history.history_id ";
+        $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null,if(pd.description is null,'No Action Required',pd.description),if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome)) as outcome, history.history_id, comments, keep_record,u.user_id from history left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join users u using(user_id) left join cross_transfers on cross_transfers.history_id = history.history_id ";
 		$qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id where urn = '$urn' order by history_id desc ".$limit_;
         return $this->db->query($qry)->result_array();
     }

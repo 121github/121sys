@@ -204,3 +204,18 @@ div.tooltip-inner {
     border: 0px solid black;
     font-size:10px;
 }
+
+.loaded {
+   background-color: #99FF99;
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}
+.revert {
+   background-color: #FFF;
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}

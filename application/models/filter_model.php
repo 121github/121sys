@@ -65,7 +65,7 @@ class Filter_model extends CI_Model
     
     public function create_query_filter($filter, $use = false)
     {
-        $filter_options["urn"]              = array(
+		$filter_options["urn"]              = array(
             "table" => "records",
             "type" => "id",
             "alias" => "r.urn"
@@ -245,8 +245,23 @@ class Filter_model extends CI_Model
             "type" => "",
             "alias" => ""
         );
-        $filter_options["postcode"]         = array(
-            "table" => "address",
+		$filter_options["order"]            = array(
+            "table" => "",
+            "type" => "",
+            "alias" => ""
+        );
+		$filter_options["view_parked"]            = array(
+            "table" => "",
+            "type" => "",
+            "alias" => ""
+        );
+		$filter_options["view_unassigned"]            = array(
+            "table" => "",
+            "type" => "",
+            "alias" => ""
+        );
+		$filter_options["postcode"]            = array(
+            "table" => "",
             "type" => "",
             "alias" => ""
         );
@@ -272,9 +287,8 @@ class Filter_model extends CI_Model
         );
         $qry                                = "";
         $special                            = "";
-		$parked								= " and parked_code is null";
+		$parked								= "";
         $multiple                           = "";
-		$skip = false; //this is used to skip the first value in a multiple array
         $join                               = array();
         $where                              = " and r.campaign_id in ({$_SESSION['campaign_access']['list']}) ";
         $order                              = "";
@@ -468,20 +482,12 @@ class Filter_model extends CI_Model
                 //if the filter type is a multiselect or checkboxes we have to loop through and add them inside brackets
                 if ($filter_options[$field]['type'] == "multiple" && count($data)) {
                     $where .= " and (";
-					if($filter_options[$field]['alias'] == "r.parked_code" && $data[0]=="0"){
-					$parked = "";	$skip = true; //don't include "0" in the search below
-					}
-					if($filter_options[$field]['alias'] == "ow.user_id" && $data[0]=="0"){
-					$multiple .=" ow.user_id is null or";	$skip = true; //don't include "0" in the search below
-					}
                     foreach ($data as $val) {
-						if(!$skip){
                         $multiple .= " {$filter_options[$field]['alias']} = '$val' or";
-						} else {
-						//once we have skipped the first zero we set skip to false so no other values are ignored.
-						$skip = false;	
-						}
                     }
+					if($field=="user_id"&&array_key_exists("view_unassigned",$filter)){
+					$multiple .= " ow.user_id is null";
+					}
                     $multiple = rtrim($multiple, "or");
                     $where .= $multiple . " )";
                     
@@ -546,24 +552,19 @@ class Filter_model extends CI_Model
             }
 
         }
-        //if the second parameter in the function is set to true then we will store the filter into the session so it's use throughout the system
-        if ($use) {
-            $_SESSION['filter']['join']  = $join;
-            $_SESSION['filter']['where'] = $where;
-            $_SESSION['filter']['order'] = $order . ",urn";
-        }
-		
+
 		/* users can only see records that have not been parked */
 		 if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])) {
         $parked = " and (parked_code is null)";
         }
-		
-		
+		if(array_key_exists("view_parked",$filter)){
+		$parked = "";
+		}
 		$where .= $parked;
 		
 		//users can see unaassigned records
-		if(@in_array("search unasssigned",$_SESSION['permissions'])){
-		$unassigned = " or ow.user_id is null ";	
+		if(@in_array("search unassigned",$_SESSION['permissions'])&&@array_key_exists("view_unassigned",$filter)){
+		$unassigned = " or ow.user_id is null";	
 		} else {
 		$unassigned = "";	
 		}
@@ -572,8 +573,15 @@ class Filter_model extends CI_Model
 		if(!in_array("search any owner",$_SESSION['permissions'])){
 		$where .= " and (ow.user_id = '{$_SESSION['user_id']}' $unassigned) ";	
 		}
-
 		
+		
+        //if the second parameter in the function is set to true then we will store the filter into the session so it's use throughout the system
+        if ($use) {
+            $_SESSION['filter']['join']  = $join;
+            $_SESSION['filter']['where'] = $where;
+            $_SESSION['filter']['order'] = $order . ",urn";
+        }
+	
         if (!empty($where)) {
             $qry .= " where 1 " . $where;
         }

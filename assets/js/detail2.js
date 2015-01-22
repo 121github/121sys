@@ -145,6 +145,10 @@ var record = {
                     var $edit_btn = "";
                     var $delete_btn = "";
                     if (response.data.length) {
+						//if any outcomes in the history have the "keep" flag the user will keep ownership. This stops answermachines from being taken out of the users pot when they have had a call back Dm previously
+						if(response.keep){
+							$('#record-update-form').append('<input type="hidden" name="keep" value="1" />');
+						}
                         //Use the k var only to know if there are more than x records
                         var k = 0;
                         $.each(response.data, function(i, val) {
@@ -391,7 +395,8 @@ var record = {
 					var today = new Date();
                     var nextcall = new Date().addHours($delay);
 					var hour = nextcall.getHours();
-					if(hour>12){
+					console.log(hour);
+					if(hour>16){
 					var nextcall = moment(today).add(1, 'days').toDate();
 					}
 
@@ -399,7 +404,7 @@ var record = {
                     $('#nextcall').datetimepicker({
                         format: 'DD/MM/YYYY HH:mm'
                     });
-                    $('input[name="nextcall"]').fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);
+					$('#nextcall').animate({backgroundColor:"#99FF99"},500).delay(300).animate({backgroundColor:"#FFFFFF"},500);
                     //$('#nextcall').data("DateTimePicker").setDate(timestamp_to_uk(nextcall,true));
                 }
                 //If the previous outcome had delay, set the date to the old_nextcall
@@ -409,7 +414,7 @@ var record = {
                     $('#nextcall').datetimepicker({
                         format: 'DD/MM/YYYY HH:mm'
                     });
-                    $('input[name="nextcall"]').fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);
+                   $('#nextcall').animate({backgroundColor:"#99FF99"},500).delay(300).animate({backgroundColor:"#FFFFFF"},500);
                 }
 
                 //Set the new outcome

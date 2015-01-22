@@ -214,7 +214,7 @@ class Form_model extends CI_Model
     }
     public function get_groups()
     {
-        $qry = "select group_id id,group_name name,theme_folder as theme_folder from user_groups left join users using(group_id) left join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']})";
+        $qry = "select group_id id,group_name name,theme_folder as theme_folder from user_groups left join users using(group_id) left join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by user_groups.group_id";
         return $this->db->query($qry)->result_array();
     }
     public function get_teams()

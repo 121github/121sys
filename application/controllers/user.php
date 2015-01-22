@@ -29,7 +29,7 @@ class User extends CI_Controller
                     if (isset($_SESSION['current_campaign'])) {
                         $this->set_campaign_features();
                     }
-					$this->apply_default_filter($filter);
+					$this->apply_default_filter();
                     if ($this->input->post('password') == md5("pass123")) {
                         $redirect = base64_encode("user/account");
                     } else {
@@ -100,18 +100,16 @@ class User extends CI_Controller
               
 				/*if the default is to view all parked record we just add all the parked codes to the filter (as long as there are less than 10 this will do the trick) */	
 				if (@in_array("view parked", $_SESSION['permissions'])) {
-                       $filter['parked_code'][] = 0;
+                       $filter['view_parked'] = true;
                 }
 				
 					if (in_array("view unassigned", $_SESSION['permissions'])) {
-                    $filter['user_id'][] = 0; //this allows to search for null value in ownership table
-					$filter['user_id'][] = $_SESSION['user_id'];
+                    $filter['view_unassigned'] = true; //this allows to search for null value in ownership table
 					}
-                	if (in_array("view own records", $_SESSION['permissions'])&&!in_array("view unassigned", $_SESSION['permissions'])) {
+                	if (in_array("view own records", $_SESSION['permissions'])) {
                     $filter['user_id'][] = $_SESSION['user_id'];
 					}
 					
-					$this->firephp->log($filter);
 					if (!isset($_SESSION['filter']['values']['group_id'])) {	
                     if (in_array("view own group", $_SESSION['permissions'])&&!empty($_SESSION['group'])) {
                      $filter['group_id'][] = $_SESSION['group'];
@@ -231,6 +229,9 @@ class User extends CI_Controller
         $user_id  = $_SESSION['user_id'];
         if ($campaign > "0") {
             if (in_array($campaign, $_SESSION['campaign_access']['array'])) {
+				unset($_SESSION['next']);
+                unset($_SESSION['filter']);
+				
                 /* no longer logging in realtime  
                 if(in_array("log hours",$_SESSION['permissions'])){
                 //start logging the duration on the selected campaign
@@ -251,9 +252,7 @@ class User extends CI_Controller
                 }
                 $_SESSION['current_campaign'] = $campaign;
 				$this->set_campaign_features();
-				
-                unset($_SESSION['next']);
-                unset($_SESSION['filter']);
+				$this->apply_default_filter(); 
             }
         } else {
             if (!in_array("all campaigns", $_SESSION['permissions'])) {

@@ -431,7 +431,7 @@ class Records extends CI_Controller
                     ));
                     exit;
                 }
-                if ($triggers["force_nextcall"] == "1") {
+                if ($triggers["force_nextcall"] == "1"||intval($triggers["delay_hours"])) {
                     if (strtotime(to_mysql_datetime($update_array['nextcall'])) < strtotime('now +20 minutes')) {
                         echo json_encode(array(
                             "success" => false,
@@ -507,19 +507,22 @@ class Records extends CI_Controller
             //if the pending_manager requires attention we assign the record to the campaign managers
             if ($update_array['pending_manager'] > 0 || $survey_outcome || $this->input->post('outcome_id')) {
                 //wqcheck if the outcome triggers an ownership update
-                $outcome_owners = $this->Records_model->get_owners_for_outcome($campaign_id, $update_array['outcome_id']);
-                if (count($outcome_owners) > 0) {
-                    $this->Records_model->save_ownership(intval($this->input->post('urn')), $outcome_owners);
+                $new_owners = $this->Records_model->get_owners_for_outcome($campaign_id, $update_array['outcome_id']);
+				if ($_SESSION['permissions'] == "keep records" || @$triggers['keep_record'] == "1") {
+					$new_owners[]=$_SESSION['user_id'];
+				}
+                if (count($new_owners) > 0) {
+                    $this->Records_model->save_ownership(intval($this->input->post('urn')), $new_owners);
                 } else {
-                    $owners = $this->Records_model->get_campaign_managers($campaign_id);
-                    if (count($owners) > 0) {
-                        $this->Records_model->save_ownership(intval($this->input->post('urn')), $owners);
+                    $new_managers = $this->Records_model->get_campaign_managers($campaign_id);
+                    if (count($new_managers) > 0) {
+                        $this->Records_model->save_ownership(intval($this->input->post('urn')), $new_managers);
                     }
                 }
             }
             
             //if its a callback dm or the user has the keep record permission we check ownership and if nobody has this record assign it to the person that just updated it
-            if ($_SESSION['permissions'] == "keep records" || @$triggers['keep_record'] == "1") {
+            if ($_SESSION['permissions'] == "keep records" || @$triggers['keep_record'] == "1" || $this->input->post('keep')) {
                 $owners = $this->Records_model->get_ownership(intval($this->input->post('urn')));
                 if (!count($owners)) {
                     $owner = array(

@@ -596,8 +596,16 @@ $this->_campaigns = campaign_access_dropdown();
             $limit = (intval($this->input->post('limit')))?intval($this->input->post('limit')):NULL;
 
             $history = $this->Records_model->get_history($record_urn,$limit,0);
+			$keep = false;
+			foreach($history as $row){
+				//if any outcome in the history was a keeper and set by the current user we flag ensure that they remain the owner by setting this keep flag. This tells the JS to append a new hidden form element which gets passed to the php if the user submits the form
+			if($row['keep_record']==1&&$row['user_id']==$_SESSION['user_id']){
+			$keep = true;	
+			}
+			}
             echo json_encode(array(
                 "success" => true,
+				"keep" => $keep,
                 "data" => $history
             ));
         }
