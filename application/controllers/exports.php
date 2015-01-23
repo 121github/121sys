@@ -22,7 +22,8 @@ class Exports extends CI_Controller
             'title' => 'Admin | Exporter',
             'javascript' => array(
                 'lib/moment.js',
-                'lib/daterangepicker.js'
+                'lib/daterangepicker.js',
+                'export.js'
             ),
             'page' => array(
                 'admin' => 'data',
@@ -44,12 +45,13 @@ class Exports extends CI_Controller
     {
         if ($this->input->post()) {
             $options             = array();
-            $options['from']     = ($this->input->post('date_from') ? to_mysql_datetime($this->input->post('date_from')) : "2014-01-01");
-            $options['to']       = ($this->input->post('date_to') ? to_mysql_datetime($this->input->post('date_to')) : "2050-01-01");
+            $options['from']     = ($this->input->post('date_from') ? $this->input->post('date_from') : "2014-01-01");
+            $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : "2015-01-01");
             $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
-            //exit;
-            $result              = $this->Export_model->dials_export($options);
-            $filename            = "Sample Export";
+            $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+
+            $result = $this->Export_model->dials_export($options);
+            $filename = $this->get_filename("DialsExport", $options);
 
             //Export the data to a csv file
             $this->export2csv($result, $filename);
@@ -63,12 +65,13 @@ class Exports extends CI_Controller
     {
         if ($this->input->post()) {
             $options             = array();
-            $options['from']     = ($this->input->post('date_from') ? to_mysql_datetime($this->input->post('date_from')) : "2014-01-01");
-            $options['to']       = ($this->input->post('date_to') ? to_mysql_datetime($this->input->post('date_to')) : "2050-01-01");
-            $options['campaign'] = ($this->input->post('date_to') ? $this->input->post('campaign') : "");
-            //exit;
-            $result              = $this->Export_model->contacts_added_export($options);
-            $filename            = "Contacts Added Export";
+            $options['from']     = ($this->input->post('date_from') ? $this->input->post('date_from') : "2014-01-01");
+            $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : "2015-01-01");
+            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
+            $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+
+            $result = $this->Export_model->contacts_added_export($options);
+            $filename = $this->get_filename("ContactsAddedExport", $options);
 
             //Export the data to a csv file
             $this->export2csv($result, $filename);
@@ -84,13 +87,42 @@ class Exports extends CI_Controller
         $outputBuffer = fopen("php://output", 'w');
         $headers      = array(
             "Date",
-            "Campaign",
-            "Dials"
+            "Fullname",
+            "URN",
+            "Add1",
+            "Add2",
+            "Add3",
+            "Postcode",
+            "County",
+            "Country",
+            "Telephone number",
+            "Email",
+            "Email optout",
+            "Website",
+            "Linkedin",
+            "Facebook"
+
         );
         fputcsv($outputBuffer, $headers);
         foreach ($data as $val) {
             fputcsv($outputBuffer, $val);
         }
         fclose($outputBuffer);
+    }
+
+    private function get_filename($name, $options) {
+        $filename = date("YmdHsi")."_".$name;
+
+        if (!empty($options['from'])) {
+            $filename .= "_".$options['from'];
+        }
+        if (!empty($options['to'])) {
+            $filename .= "_".$options['to'];
+        }
+        if (!empty($options['campaign'])) {
+            $filename .= "_".$options['campaign_name'];
+        }
+
+        return $filename;
     }
 }
