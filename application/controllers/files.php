@@ -58,7 +58,7 @@ if (!empty($_FILES)&&is_dir(FCPATH."upload/$folder")) {
       
     $targetPath = FCPATH."upload/$folder/";  //4
      
-    $targetFile =  $targetPath. $_FILES['file']['name'];  //5
+    $targetFile =  $targetPath. date('ymdhis-').$_FILES['file']['name'];  //5
  
     if(move_uploaded_file($tempFile,$targetFile)){
 	echo json_encode(array("success"=>true));
