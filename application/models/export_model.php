@@ -108,4 +108,37 @@ class Export_model extends CI_Model
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
+
+    /**
+     * Add a new export form
+     *
+     * @param Form $form
+     */
+    public function insert_export_form($form)
+    {
+        return $this->db->insert("export_forms", $form);
+
+    }
+
+    /**
+     * Update an export form
+     *
+     * @param Form $form
+     */
+    public function update_export_form($form)
+    {
+        $this->db->where("export_forms_id", $form['export_forms_id']);
+        return $this->db->update("export_forms", $form);
+    }
+
+    /**
+     * Remove an export form
+     *
+     * @param integer $export_forms_id
+     */
+    public function delete_export_form($export_forms_id)
+    {
+        $this->db->where("export_forms_id", $export_forms_id);
+        return $this->db->delete("export_forms");
+    }
 }
