@@ -7,7 +7,7 @@ class Exports extends CI_Controller
     {
         parent::__construct();
         user_auth_check(false);
-$this->_campaigns = campaign_access_dropdown();
+        $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Export_model');
 		$this->load->model('Form_model');
     }
@@ -22,7 +22,8 @@ $this->_campaigns = campaign_access_dropdown();
             'title' => 'Admin | Exporter',
             'javascript' => array(
                 'lib/moment.js',
-                'lib/daterangepicker.js'
+                'lib/daterangepicker.js',
+                'export.js'
             ),
             'page' => array(
                 'admin' => 'data',
@@ -36,34 +37,72 @@ $this->_campaigns = campaign_access_dropdown();
         );
         $this->template->load('default', 'exports/view_exports.php', $data);
     }
+
+    public function get_export_forms() {
+        $results = $this->Export_model->get_export_forms();
+
+        echo json_encode(array(
+            "success" => ($results),
+            "data" => ($results?$results:"No export forms were created yet!")
+        ));
+    }
+
     /*
-    Sample export
+    Data export
     */
-    public function sample_export()
+    public function data_export()
     {
         if ($this->input->post()) {
             $options             = array();
-            $options['from']     = ($this->input->post('date_from') ? to_mysql_datetime($this->input->post('date_from')) : "2014-01-01");
-            $options['to']       = ($this->input->post('date_to') ? to_mysql_datetime($this->input->post('date_to')) : "2050-01-01");
-            $options['campaign'] = ($this->input->post('date_to') ? $this->input->post('campaign') : "");
-            //exit;
-            $result              = $this->Export_model->sample_export($options);
-            $filename            = "Sample Export";
-            header("Content-type: text/csv");
-            header("Content-Disposition: attachment; filename={$filename}.csv");
-            header("Pragma: no-cache");
-            header("Expires: 0");
-            $outputBuffer = fopen("php://output", 'w');
-            $headers      = array(
-                "Date",
-                "Campaign",
-                "Dials"
-            );
-            fputcsv($outputBuffer, $headers);
-            foreach ($result as $val) {
-                fputcsv($outputBuffer, $val);
+            $options['from']     = ($this->input->post('date_from') ? $this->input->post('date_from') : "2014-01-01");
+            $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : "2015-01-01");
+            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
+            $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+            $options['export_forms_id'] = ($this->input->post('export_forms_id') ? $this->input->post('export_forms_id') : "");
+
+            $export_form = $this->Export_model->get_export_forms_by_id($options['export_forms_id']);
+
+            if (!empty($export_form)) {
+                $filename = $this->get_filename(str_replace(" ", "", $export_form['name']), $options);
+                $headers  = explode(";",$export_form['columns_menu']);
+
+                $result = $this->Export_model->get_data($export_form, $options);
+
+                //Export the data to a csv file
+                $this->export2csv($result, $filename, $headers);
             }
-            fclose($outputBuffer);
         }
+    }
+
+
+    //Export data to csv
+    private function export2csv($data, $filename, $headers) {
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename={$filename}.csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $outputBuffer = fopen("php://output", 'w');
+
+        fputcsv($outputBuffer, $headers);
+        foreach ($data as $val) {
+            fputcsv($outputBuffer, $val);
+        }
+        fclose($outputBuffer);
+    }
+
+    private function get_filename($name, $options) {
+        $filename = date("YmdHsi")."_".$name;
+
+        if (!empty($options['from'])) {
+            $filename .= "_".$options['from'];
+        }
+        if (!empty($options['to'])) {
+            $filename .= "_".$options['to'];
+        }
+        if (!empty($options['campaign'])) {
+            $filename .= "_".$options['campaign_name'];
+        }
+
+        return $filename;
     }
 }
