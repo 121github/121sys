@@ -75,6 +75,16 @@ var export_data = {
             e.preventDefault();
             modal.delete_template($(this).attr('item-id'));
         });
+
+        $(document).on('click', '.export-report-btn', function(e) {
+            e.preventDefault();
+            export_data.show_export_report($(this).attr('item-id'), $(this).attr('item-name'));
+        });
+
+        $(document).on('click', '.close-export-report', function(e) {
+            e.preventDefault();
+            export_data.close_export_report($(this));
+        });
     },
     load_export_forms: function() {
         $tbody = $('.export-data .ajax-table').find('tbody');
@@ -85,7 +95,6 @@ var export_data = {
             dataType: "JSON",
             async: false
         }).done(function(response){
-            var export_forms = response.data;
             if (response.success) {
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
@@ -104,7 +113,7 @@ var export_data = {
                             + val.description
                             + "</td><td class='pull-right'>" +
                                     "<button title='Export to csv' type='submit' class='btn btn-default report-btn' onclick='document.pressed=this.value' value='"+val.export_forms_id+"'><span class='glyphicon glyphicon-export pointer'></span></button>" +
-                                    "<span title='View the data before export' class='btn btn-default report-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon glyphicon-eye-open pointer'></span></span>" +
+                                    "<span title='View the data before export' class='btn btn-default export-report-btn' item-id='"+ val.export_forms_id+"' item-name='"+ val.name+"'><span class='glyphicon glyphicon-eye-open pointer'></span></span>" +
                                     "<span title='Edit export form' class='btn btn-default edit-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon glyphicon-pencil'></span></span>" +
                                     "<span title='Delete export form' class='btn btn-default del-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon glyphicon-remove'></span></span>"
                             + "</td></tr>");
@@ -113,7 +122,7 @@ var export_data = {
             }
             else {
                 $tbody
-                    .append("<tr><td>"+export_forms+"</td></tr>");
+                    .append("<tr><td>"+response.data+"</td></tr>");
             }
         });
     },
@@ -196,6 +205,75 @@ var export_data = {
             }
             else {
                 flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    show_export_report: function(export_forms_id, name) {
+
+        $('.export-report-name').html(name);
+
+        $('<div class="modal-backdrop export-report in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.export-report-container').find('.export-report-panel').show();
+        $('.export-report-content').show();
+        $('.export-report-container').fadeIn()
+        $('.export-report-container').animate({
+            width: '95%',
+            height: '70%',
+            left: '2%',
+            top: '10%'
+        }, 1000);
+
+        $('.filter-form').find('input[name="export_forms_id"]').val(export_forms_id);
+
+        export_data.load_export_report_data(export_forms_id);
+
+    },
+    close_export_report: function() {
+        $('.modal-backdrop.export-report').fadeOut();
+        $('.export-report-container').fadeOut(500, function() {
+            $('.export-report-content').show();
+            $('.alert').addClass('hidden');
+        });
+    },
+    load_export_report_data: function(export_forms_id) {
+        $thead = $('.export-report-content .ajax-table').find('thead');
+        $thead.empty();
+        $thead.append("<tr></tr>");
+        $tbody = $('.export-report-content .ajax-table').find('tbody');
+        $tbody.empty();
+
+        $.ajax({
+            url: helper.baseUrl + 'exports/load_export_report_data',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function(response) {
+            if (response.header) {
+                $.each(response.header, function(i, val) {
+                    if (response.header.length) {
+                        $thead
+                            .append("<th style='padding: 5px;'>"+val+"</th>");
+                    }
+                });
+            }
+            if (response.success) {
+                $.each(response.data, function(i, data) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr>");
+                        $.each(data, function(k, val) {
+                            $tbody
+                                .append("<td style='padding: 5px;'>"+val+"</td>");
+                        });
+                        $tbody
+                            .append("</tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+data+"</td></tr>");
             }
         });
     }

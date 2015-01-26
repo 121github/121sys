@@ -54,61 +54,6 @@ class Export_model extends CI_Model
         return $result;
     }
 
-    public function dials_export($options)
-    {
-        $qry = "select date(contact),campaign_name,count(*) from history left join campaigns using(campaign_id) where role_id is not null";
-        if (isset($options['from']) && !empty($options['from'])) {
-            $qry .= " and contact >= '" . $options['from'] . "' ";
-        }
-        if (isset($options['to']) && !empty($options['to'])) {
-            $qry .= " and contact <= '" . $options['to'] . "' ";
-        }
-        if (isset($options['campaign']) && !empty($options['campaign'])) {
-            $qry .= " and campaign_id = '" . $options['campaign'] . "' ";
-        }
-        $qry .= " group by date(contact) ";
-        $result = $this->db->query($qry)->result_array();
-        return $result;
-    }
-
-    public function contacts_added_export($options)
-    {
-        $qry = "select
-                  date(date_created),
-                  IF(fullname is not null,fullname,' ') as fullname,
-                  IF(urn is not null,urn,' ') as urn,
-                  IF(add1 is not null,add1,' ') as add1,
-                  IF(add2 is not null,add2,' ') as add2,
-                  IF(add3 is not null,add3,' ') as add3,
-                  IF(postcode is not null,postcode,' ') as postcode,
-                  IF(county is not null,county,' ') as county,
-                  IF(country is not null,country,' ') as country,
-                  IF(telephone_number is not null,telephone_number,' ') as telephone_number,
-                  IF(email is not null,email,' ') as email,
-                  IF(email_optout is not null,email_optout,' ') as email_optout,
-                  IF(website is not null,website,' ') as website,
-                  IF(linkedin is not null,linkedin,' ') as linkedin,
-                  IF(facebook is not null,facebook,' ') as facebook
-                from contacts
-                  left join contact_telephone using(contact_id)
-                  left join contact_addresses using(contact_id)
-                  inner join records using(urn)
-                  left join campaigns using(campaign_id)
-                where 1=1 ";
-        if (isset($options['from']) && !empty($options['from'])) {
-            $qry .= " and date_created >= '" . $options['from'] . "' ";
-        }
-        if (isset($options['to']) && !empty($options['to'])) {
-            $qry .= " and date_created <= '" . $options['to'] . "' ";
-        }
-        if (isset($options['campaign']) && !empty($options['campaign'])) {
-            $qry .= " and campaign_id = '" . $options['campaign'] . "' ";
-        }
-        $qry .= " order by date_created desc";
-        $result = $this->db->query($qry)->result_array();
-        return $result;
-    }
-
     /**
      * Add a new export form
      *
