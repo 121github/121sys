@@ -38,6 +38,7 @@
             }).done(function (response) {
 				if(response.success){
 				flashalert.success("Password was changed");	
+				$('form')[0].reset();
 				} else {
 				flashalert.danger(response.msg);	
 				}
