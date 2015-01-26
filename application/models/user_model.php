@@ -223,22 +223,12 @@ class User_model extends CI_Model
         }
     }
     
-    public function get_positive($campaign, $user_id, $positive = 0)
+    public function get_positives($campaign, $user_id)
     {
-        if ($positive == "Transfers") {
-            $outcome_id = "70";
-        } else if ($positive == "Surveys") {
-            $outcome_id = "60";
-        } else if ($positive == "Appointments") {
-            $outcome_id = "72";
-        }
-        $qry   = "select count(distinct urn) transfers from history where outcome_id in($outcome_id) and campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate()";
+		$qry = "select outcome,count(*) count from history left join outcomes using(outcome_id) where campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate() and `positive` = 1 group by outcome_id";
+
         $query = $this->db->query($qry);
-        if ($query->num_rows()) {
-            return $query->row()->transfers;
-        } else {
-            return "0";
-        }
+            return $query->result_array();
     }
     
     public function get_cross_transfers_by_campaign_destination($campaign, $user_id)

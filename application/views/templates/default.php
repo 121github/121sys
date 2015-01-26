@@ -200,7 +200,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                   <?php } ?>
                 </ul>
               </li>
-              <?php if(isset($_SESSION['current_campaign'])||@in_array("search campaigns",$_SESSION['permissions'])){  ?>
+              <?php if(isset($_SESSION['current_campaign'])&&@in_array("view files",$_SESSION['permissions'])){  ?>
+              <li <?php if($this->uri->segment(1)=="files"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>files/anon/cv" >Files</a></li>
+              <?php } ?>
+              <?php if(isset($_SESSION['current_campaign'])&&@in_array("list records",$_SESSION['permissions'])||@in_array("search campaigns",$_SESSION['permissions'])){  ?>
               <li <?php if($this->uri->segment(1)=="records"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" >List Records</a></li>
               <?php } ?>
               <?php if(@in_array("search records",$_SESSION['permissions'])||isset($_SESSION['current_campaign'])&&isset($_SESSION['search records'])){ ?>
@@ -245,10 +248,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 </div>
 <?php if($show_footer){ ?>
 <div class="navbar-inverse footer-stats">
-  <!--<div>Current Rate: <span id="rate_box">0</span></div>-->
-  <div><span id="transfers">Transfers</span>: <span id="transfers_box">0</span></div>
-  <div>Records worked: <span id="worked_box">0</span></div>
-  <!--<div>Time on this campaign: <span id="time_box">00:00:00</span></div>-->
+<!--ajax generated footer stats go here -->
 </div>
 <?php } ?>
 <div class="container-fluid" <?php if($show_footer){ ?>style="padding-bottom:50px"<?php } ?>> <?php echo $body; ?></div>
@@ -296,12 +296,10 @@ function check_session(){
 	}
 $.getJSON(helper.baseUrl+'user/check_session',function(response){
 	<?php if($show_footer&&isset($_SESSION['current_campaign'])){ ?>
-		if(response.positive_outcome.length>0){
-		$('#transfers_box').text(response.transfers);
-		$('#worked_box').text(response.worked);
-		//we are not using the live rate features on the system
-		//$('#rate_box').text(response.rate+ ' per hour');
-		}
+	$('.footer-stats').empty();
+	$.each(response,function(name,count){
+		$('.footer-stats').append('<div>'+name+': '+count+'</div>');	
+	});
 		//var start = new Date;
 		/* we are not using the live rate features on the system
 		refreshIntervalId = setInterval(function() {

@@ -189,25 +189,34 @@ class User extends CI_Controller
             }
 		echo "Session reloaded";
 		}
-        /* no longer showing footer 
+        //no longer showing footer 
         if(in_array("show footer",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){	
         $user_id = $_SESSION['user_id'];
         $campaign = $_SESSION['current_campaign'];
         
         $this->load->model('Records_model');
-        $duration = $this->User_model->get_duration($campaign,$user_id);
-        $positive_outcome = $this->Records_model->get_positive_for_footer($campaign);
+       // $duration = $this->User_model->get_duration($campaign,$user_id);
+	   // $rate = number_format(($transfers + $cross_transfers)/($duration/60/60),2);
+        $positive_outcomes = $this->Records_model->get_positive_for_footer($campaign);
+		
+		
         $worked = $this->User_model->get_worked($campaign,$user_id);
-        $transfers = $this->User_model->get_positive($campaign,$user_id, "Transfers");
+        $positives = $this->User_model->get_positives($campaign,$user_id);
+
+		
+
         $cross_transfers = $this->User_model->get_cross_transfers_by_campaign_destination($campaign,$user_id);
-        
-        if($duration>0){
-        $rate = number_format(($transfers + $cross_transfers)/($duration/60/60),2);
-        } else { $rate = 0; }
-        echo json_encode(array("duration"=>$duration,"worked"=>$worked,"transfers"=>$transfers+$cross_transfers,"rate"=>$rate,"positive_outcome"=>$positive_outcome));
-        
-        }
-        */
+		$this->firephp->log($positives);
+		$footer_stats["Records Worked"] = $worked;
+		foreach($positives as $row){
+		if($row['outcome']=="Transfer"){
+		$row['count'] = $row['count']+$cross_transfers;	
+		}
+		$footer_stats[$row['outcome']] = $row['count'];
+		}
+        echo json_encode($footer_stats);
+      
+		}
     }
     
     public function set_campaign_features()

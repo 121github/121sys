@@ -188,6 +188,16 @@
             </div>
         </div>
 <?php } ?>
+<?php if(in_array("files menu",$_SESSION['permissions'])){ ?>
+ <div class="accordion-group panel">
+            <div class="accordion-heading">
+                <a href="<?php echo base_url() ?>files/anon/cv">
+                    <i class="glyphicon glyphicon-upload"></i> Files
+                </a>
+            </div>
+            </div>
+            
+            <?php } ?>
 <?php if(in_array("admin menu",$_SESSION['permissions'])){ ?>
         <div class="accordion-group panel">
             <div class="accordion-heading">

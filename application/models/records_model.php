@@ -920,21 +920,9 @@ class Records_model extends CI_Model
 	}
 	
 	public function get_positive_for_footer($campaign){
-	$qry = "select outcome_id from outcomes_to_campaigns left join outcomes using(outcome_id) where campaign_id = '$campaign' group by outcome_id";
+	$qry = "select outcome,outcome_id from outcomes_to_campaigns left join outcomes using(outcome_id) where campaign_id = '$campaign' and `positive` = 1 group by outcome_id";
 	$result = $this->db->query($qry)->result_array();
-	$outcome = "";
-		foreach($result as $row){
-			if($row['outcome_id']==70){
-			$outcome = "Transfers";	
-			}
-			if($row['outcome_id']==60&&$outcome<>"Transfers"){
-			$outcome = "Surveys";
-			}
-			if($row['outcome_id']==72&&$outcome<>"Transfers"&&$outcome<>"Surveys"){
-			$outcome = "Appointments";
-			}
-	}
-	return $outcome;
+	return $result;
 	}
 	
 	public function get_status_by_name ($name) {
