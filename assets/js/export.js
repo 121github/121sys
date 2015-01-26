@@ -62,8 +62,8 @@ var export_data = {
                             + val.description
                             + "</td><td class='pull-right'>" +
                                     "<button type='submit' class='btn btn-default report-btn' onclick='document.pressed=this.value' value='"+val.export_forms_id+"'><span class='glyphicon glyphicon-export pointer'></span></button>" +
-                                    "<button class='btn btn-default report-btn'><span class='glyphicon glyphicon-eye-open pointer'></span></button>" +
-                                    "<button class='btn btn-default del-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon glyphicon-remove'></span></button>"
+                                    "<span class='btn btn-default report-btn'><span class='glyphicon glyphicon-eye-open pointer'></span></span>" +
+                                    "<span class='btn btn-default del-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon glyphicon-remove'></span></span>"
                             + "</td></tr>");
                     }
                 });
