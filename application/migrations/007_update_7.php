@@ -16,7 +16,7 @@ class Migration_update_7 extends CI_Migration
                           export_forms_id INT NOT NULL AUTO_INCREMENT,
                           name VARCHAR(50) NOT NULL,
                           description VARCHAR(255) NOT NULL,
-                          columns_menu TEXT NOT NULL,
+                          header TEXT NOT NULL,
                           query TEXT NOT NULL,
                           order by VARCHAR(25) NULL,
                           group by VARCHAR(25) NULL,
