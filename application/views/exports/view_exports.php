@@ -14,7 +14,7 @@
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form name="myform" method="post" class="filter-form" onsubmit="return export_data.onsubmitform();">
+                   <form name="myform" method="post" class="filter-form" onsubmit="return export_data.onsubmitform();">
                         <div class="panel panel-primary">
                             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Available Exports
                                 <div class="pull-right">
@@ -23,6 +23,8 @@
                                         <input type="hidden" name="date_to">
                                         <input type="hidden" name="campaign">
                                         <input type="hidden" name="campaign_name">
+                                        <input type="hidden" name="campaign_name">
+                                        <input type="hidden" name="export_forms_id">
 
                                         <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button></div>
                                     <div class="btn-group">
@@ -38,38 +40,21 @@
                                 </div>
                             </div>
                             <!-- /.panel-heading -->
-                            <div class="panel-body agenttransfer-data">
+                            <div class="panel-body export-data">
                                 <table class="table ajax-table">
                                     <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Export</th>
-                                    </tr>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th class="pull-right">Options</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>
-                                            Dials By Date
-                                        </td>
-                                        <td style="font-size: 12px;">
-                                            The number of dials by date
-                                        </td>
-                                        <td>
-                                            <button type="submit" onclick="document.pressed=this.value" value="Dials"><span class="glyphicon glyphicon-export pointer"></span></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Contacts Added
-                                        </td>
-                                        <td style="font-size: 12px;">
-                                            The contacts added
-                                        </td>
-                                        <td>
-                                            <button type="submit" onclick="document.pressed=this.value" value="Contacts"><span class="glyphicon glyphicon-export pointer"></span></button>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="3"><img
+                                                    src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -79,7 +64,7 @@
                 </div>
             <!-- /.row -->
             </div>
-            <div class="row">
+            <div class="row custom-exports" style="display: none">
                 <div class="col-lg-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Custom Exports

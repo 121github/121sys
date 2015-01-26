@@ -38,10 +38,19 @@ class Exports extends CI_Controller
         $this->template->load('default', 'exports/view_exports.php', $data);
     }
 
+    public function get_export_forms() {
+        $results = $this->Export_model->get_export_forms();
+
+        echo json_encode(array(
+            "success" => ($results),
+            "data" => ($results?$results:"No export forms were created yet!")
+        ));
+    }
+
     /*
-    Dials export
+    Data export
     */
-    public function dials_export()
+    public function data_export()
     {
         if ($this->input->post()) {
             $options             = array();
@@ -49,60 +58,31 @@ class Exports extends CI_Controller
             $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : "2015-01-01");
             $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
             $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+            $options['export_forms_id'] = ($this->input->post('export_forms_id') ? $this->input->post('export_forms_id') : "");
 
-            $result = $this->Export_model->dials_export($options);
-            $filename = $this->get_filename("DialsExport", $options);
+            $export_form = $this->Export_model->get_export_forms_by_id($options['export_forms_id']);
 
-            //Export the data to a csv file
-            $this->export2csv($result, $filename);
+            if (!empty($export_form)) {
+                $filename = $this->get_filename(str_replace(" ", "", $export_form['name']), $options);
+                $headers  = explode(";",$export_form['columns_menu']);
+
+                $result = $this->Export_model->get_data($export_form, $options);
+
+                //Export the data to a csv file
+                $this->export2csv($result, $filename, $headers);
+            }
         }
     }
 
-    /*
-    Contacts added export
-    */
-    public function contacts_added_export()
-    {
-        if ($this->input->post()) {
-            $options             = array();
-            $options['from']     = ($this->input->post('date_from') ? $this->input->post('date_from') : "2014-01-01");
-            $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : "2015-01-01");
-            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
-            $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
-
-            $result = $this->Export_model->contacts_added_export($options);
-            $filename = $this->get_filename("ContactsAddedExport", $options);
-
-            //Export the data to a csv file
-            $this->export2csv($result, $filename);
-        }
-    }
 
     //Export data to csv
-    private function export2csv($data, $filename) {
+    private function export2csv($data, $filename, $headers) {
         header("Content-type: text/csv");
         header("Content-Disposition: attachment; filename={$filename}.csv");
         header("Pragma: no-cache");
         header("Expires: 0");
         $outputBuffer = fopen("php://output", 'w');
-        $headers      = array(
-            "Date",
-            "Fullname",
-            "URN",
-            "Add1",
-            "Add2",
-            "Add3",
-            "Postcode",
-            "County",
-            "Country",
-            "Telephone number",
-            "Email",
-            "Email optout",
-            "Website",
-            "Linkedin",
-            "Facebook"
 
-        );
         fputcsv($outputBuffer, $headers);
         foreach ($data as $val) {
             fputcsv($outputBuffer, $val);

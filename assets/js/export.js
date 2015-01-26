@@ -38,25 +38,45 @@ var export_data = {
             $(this).css("color","green");
         });
 
-        $(document).on("click", '.dials-export', function(e) {
-            e.preventDefault();
-            //export_data.dials_export();
-            window.location.href= helper.baseUrl + 'export/dials_export';
-        });
-
-        $(document).on("click", '.contacts-added-export', function(e) {
-            e.preventDefault();
-            export_data.contacts_added_export();
+        export_data.load_export_forms();
+    },
+    load_export_forms: function() {
+        $tbody = $('.export-data .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'exports/get_export_forms',
+            type: "POST",
+            dataType: "JSON",
+            async: false
+        }).done(function(response){
+            var export_forms = response.data;
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td class='export_forms_id'>"
+                            + val.export_forms_id
+                            + "</td><td class='name'>"
+                            + val.name
+                            + "</td><td class='description'>"
+                            + val.description
+                            + "</td><td class='pull-right'>" +
+                                    "<button type='submit' class='btn btn-default report-btn' onclick='document.pressed=this.value' value='"+val.export_forms_id+"'><span class='glyphicon glyphicon-export pointer'></span></button>" +
+                                    "<button class='btn btn-default report-btn'><span class='glyphicon glyphicon-eye-open pointer'></span></button>" +
+                                    "<button class='btn btn-default del-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon glyphicon-remove'></span></button>"
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+export_forms+"</td></tr>");
+            }
         });
     },
     onsubmitform: function() {
-
-        if(document.pressed == 'Dials') {
-            document.myform.action = helper.baseUrl + "exports/dials_export";
-        }
-        else if(document.pressed == 'Contacts') {
-            document.myform.action = helper.baseUrl + "exports/contacts_added_export";
-        }
+        $('.filter-form').find('input[name="export_forms_id"]').val(document.pressed);
+        document.myform.action = helper.baseUrl + "exports/data_export";
 
         return true;
     }
