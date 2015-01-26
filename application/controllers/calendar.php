@@ -100,7 +100,7 @@ class Calendar extends CI_Controller
 		if($postcode==NULL){
 		$postcode = (isset($_SESSION['postcode'])?$_SESSION['postcode']:"");	
 		}
-		$this->firephp->log($postcode);
+		
 		if(!empty($_POST['distance'])){
 		$distance = $_POST['distance'];	
 		} else {
@@ -137,7 +137,7 @@ class Calendar extends CI_Controller
         'url' => base_url().'records/detail/'.$row['urn'],
 		'class' => 'event-important',
 		'distance_hover' => (isset($row['distance'])&&!empty($row['distance'])?"<br><span style='color:#7FFF00'>".number_format($row['distance'],2)." Miles</span>":""),
-		'distance'=>number_format($row['distance'],1)." Miles",
+		'distance'=>(isset($row['distance'])&&!empty($row['distance'])?number_format($row['distance'],1)." Miles":""),
         'start' => strtotime($row['start']) . '000',
         'end' => strtotime($row['end']) .'000',
 		'endtime' => date('g:i a',strtotime($row['end'])),
