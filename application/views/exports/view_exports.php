@@ -47,13 +47,13 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Description</th>
+                                            <th></th>
                                             <th class="pull-right">Options</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td colspan="3"><img
-                                                    src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
+                                            <td colspan="3"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
                                         </tr>
                                     </tbody>
                                 </table>

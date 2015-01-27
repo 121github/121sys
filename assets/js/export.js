@@ -75,7 +75,7 @@ var export_data = {
 
         $(document).on('click', '.export-report-btn', function(e) {
             e.preventDefault();
-            export_data.show_export_report($(this).attr('item-id'), $(this).attr('item-name'));
+            export_data.load_export_report_data($(this).attr('item-id'), $(this).attr('item-name'));
         });
 
         $(document).on('click', '.close-export-report', function(e) {
@@ -110,6 +110,7 @@ var export_data = {
                             + val.name
                             + "</td><td class='description'>"
                             + val.description
+                            + "</td><td class='report-export-prog-"+val.export_forms_id+"'>"
                             + "</td><td class='pull-right'>" +
                                     "<button title='Export to csv' type='submit' class='btn btn-default report-btn' onclick='document.pressed=this.value' value='"+val.export_forms_id+"'><span class='glyphicon glyphicon-export pointer'></span></button>" +
                                     "<span title='View the data before export' class='btn btn-default export-report-btn' item-id='"+ val.export_forms_id+"' item-name='"+ val.name+"'><span class='glyphicon glyphicon-eye-open pointer'></span></span>" +
@@ -208,34 +209,12 @@ var export_data = {
         });
     },
 
-    show_export_report: function(export_forms_id, name) {
+    load_export_report_data: function(export_forms_id, name) {
 
-        $('.export-report-name').html(name);
-
-        $('<div class="modal-backdrop export-report in"></div>').appendTo(document.body).hide().fadeIn();
-        $('.export-report-container').find('.export-report-panel').show();
-        $('.export-report-content').show();
-        $('.export-report-container').fadeIn()
-        $('.export-report-container').animate({
-            width: '95%',
-            height: '70%',
-            left: '2%',
-            top: '10%'
-        }, 1000);
+        $('.report-export-prog-'+export_forms_id).html("<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />");
 
         $('.filter-form').find('input[name="export_forms_id"]').val(export_forms_id);
 
-        export_data.load_export_report_data(export_forms_id);
-
-    },
-    close_export_report: function() {
-        $('.modal-backdrop.export-report').fadeOut();
-        $('.export-report-container').fadeOut(500, function() {
-            $('.export-report-content').show();
-            $('.alert').addClass('hidden');
-        });
-    },
-    load_export_report_data: function(export_forms_id) {
         $thead = $('.export-report-content .ajax-table').find('thead');
         $thead.empty();
         $thead.append("<tr></tr>");
@@ -274,6 +253,36 @@ var export_data = {
                 $tbody
                     .append("<tr><td>"+data+"</td></tr>");
             }
+        });
+
+        export_data.show_export_report(export_forms_id, name);
+    },
+
+    show_export_report: function(export_forms_id, name) {
+
+        $('.export-report-name').html(name);
+
+        $('<div class="modal-backdrop export-report in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.export-report-container').find('.export-report-panel').show();
+        $('.export-report-content').show();
+        $('.export-report-container').fadeIn()
+        $('.export-report-container').animate({
+            width: '95%',
+            height: '70%',
+            left: '2%',
+            top: '10%'
+        }, 1000);
+
+    },
+    close_export_report: function() {
+
+        var export_forms_id = $('.filter-form').find('input[name="export_forms_id"]').val();
+        $('.report-export-prog-'+export_forms_id).html("");
+
+        $('.modal-backdrop.export-report').fadeOut();
+        $('.export-report-container').fadeOut(500, function() {
+            $('.export-report-content').show();
+            $('.alert').addClass('hidden');
         });
     }
 }
