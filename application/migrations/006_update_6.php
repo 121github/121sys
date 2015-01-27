@@ -10,11 +10,23 @@ class Migration_update_6 extends CI_Migration
 
   public function up()
   {
-    $this->db->query("INSERT INTO `121sys`.`permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'keep records', 'System');");
+    //Alter users table (add reset password token)
+    $this->db->query("CREATE TABLE export_forms
+                      (
+                          export_forms_id INT NOT NULL AUTO_INCREMENT,
+                          name VARCHAR(50) NOT NULL,
+                          description VARCHAR(255) NOT NULL,
+                          header TEXT NOT NULL,
+                          query TEXT NOT NULL,
+                          order by VARCHAR(25) NULL,
+                          group by VARCHAR(25) NULL,
+                          date_filter VARCHAR(25),
+                          campaign_filter VARCHAR(25),
+                      PRIMARY KEY (export_forms_id)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
   }
   public function down()
   {
-
+    $this->db->query("DROP TABLE export_forms");
   }
-
 }
