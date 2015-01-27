@@ -45,15 +45,16 @@
                                 <table class="table ajax-table">
                                     <thead>
                                         <tr>
+                                            <th style="display: none"></th>
                                             <th>Name</th>
                                             <th>Description</th>
+                                            <th></th>
                                             <th class="pull-right">Options</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td colspan="3"><img
-                                                    src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
+                                            <td colspan="3"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -173,7 +174,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="export-report-panel">
-                        <div class="export-report-content" style="overflow: auto; height: 400px;">
+                        <div class="export-report-content" style="overflow: auto; height: 550px;">
                             <table class="table ajax-table">
                                 <thead></thead>
                                 <tbody></tbody>
