@@ -672,8 +672,8 @@ class Filter_model extends CI_Model
             
             
             //if agent they can only see todays
-            if (in_array("set call outcomes", $_SESSION['permissions'])) {
-                $agent .= " and date(contact) = curdate() ";
+            if (!in_array("by agent", $_SESSION['permissions'])) {
+                $agent .= " and u.user_id = '{$_SESSION['user_id']}' ";
             }
         }
         
