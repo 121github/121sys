@@ -41,6 +41,7 @@ var export_data = {
         $(document).on("click", '.new-export-btn', function(e) {
             e.preventDefault();
             $('.edit-export-form')[0].reset();
+            $('.edit-export-form').find('input[name="export_forms_id"]').val("");
             $('.custom-exports').show();
         });
 
@@ -89,8 +90,8 @@ var export_data = {
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
                         $tbody
-                            .append("<tr><td class='export_forms_id' style='display: none'>"
-                            + val.export_forms_id
+                            .append("<tr><td>"
+                                + "<span class='export_forms_id' style='display: none'>"+(val.export_forms_id?val.export_forms_id:'')+"</span>"
                                 + "<span class='header' style='display: none'>"+(val.header?val.header:'')+"</span>"
                                 + "<span class='query' style='display: none'>"+(val.query?val.query:'')+"</span>"
                                 + "<span class='order_by' style='display: none'>"+(val.order_by?val.order_by:'')+"</span>"
