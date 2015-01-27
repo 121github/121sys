@@ -27,7 +27,7 @@
 	  } ?>
               <?php foreach($contact['telephone']  as $id=>$number): ?>
               <dt><?php echo $number['tel_name'] ?></dt>
-                  <dd><a href="#" class="startcall <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>"item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?></a></dd>
+                  <dd><a href="#" class="startcall <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?></a></dd>
               <?php endforeach; ?>
             </dl>
           </div>

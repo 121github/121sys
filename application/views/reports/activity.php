@@ -39,7 +39,7 @@
 	                    <li><a class="campaign-filter" ref="#" style="color: green;">All campaigns</a> </li>
 	                  </ul>
                   </div>
-                  <?php if(in_array("agent reporting",$_SESSION['permissions'])){ ?>
+                  <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -50,6 +50,8 @@
 	                    <li><a class="agent-filter" ref="#" style="color: green;">All Agents</a> </li>
 	                  </ul>
                   </div>
+                  <?php } ?>
+                    <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
