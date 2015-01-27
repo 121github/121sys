@@ -187,6 +187,7 @@ class Migration_update_5 extends CI_Migration
 (1, 95),
 (1, 96),
 (1, 97),
+(1, 99),
 (2, 1),
 (2, 3),
 (2, 4),
