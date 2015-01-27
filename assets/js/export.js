@@ -40,22 +40,13 @@ var export_data = {
 
         $(document).on("click", '.new-export-btn', function(e) {
             e.preventDefault();
-            if ($('.custom-exports').css("display") == "none") {
-                $('.custom-exports').show();
-            }
-            else {
-                $('.custom-exports').hide();
-            }
+            $('.edit-export-form')[0].reset();
+            $('.custom-exports').show();
         });
 
         $(document).on("click", '.edit-btn', function(e) {
             e.preventDefault();
-            if ($('.custom-exports').css("display") == "none") {
-                export_data.edit_export_form($(this));
-            }
-            else {
-                export_data.close_export_form();
-            }
+            export_data.edit_export_form($(this));
         });
 
         $(document).on('click', '.close-edit-btn', function(e) {
