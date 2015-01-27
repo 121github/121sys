@@ -442,7 +442,7 @@ class Report_model extends CI_Model
 		
 						//if the user does not have the group reporting permission they can only see their own stats 
 		if(@!in_array("by team",$_SESSION['permissions'])){
-		$where .= " and eh.team_id = '{$_SESSION['team']}' ";	
+		//$where .= " and users.team_id = '{$_SESSION['team']}' ";	
 		}
 		
         $joins = "
@@ -455,7 +455,7 @@ class Report_model extends CI_Model
                 count(*) as email_sent_count,
                 if(email_read_count is null,0,email_read_count) email_read_count,
                 if(email_unsent_count is null,0,email_unsent_count) email_unsent_count
-        from email_history eh
+        from email_history eh left join users using(user_id) 
           $joins
           left join (select count(*) email_read_count,$group_by gb from email_history eh $joins where eh.read_confirmed = 1 $where group by $group_by) erc on erc.gb = $group_by
           left join (select count(*) email_unsent_count,$group_by gb_2 from email_history eh $joins where eh.status = 0 $where group by $group_by) euc on euc.gb_2 = $group_by
