@@ -145,7 +145,7 @@ class Exports extends CI_Controller
                 $export_forms_id = $this->Export_model->insert_export_form($form);
             }
 
-            if ($export_forms_id && !empty($users)) {
+            if ($export_forms_id) {
                 $results = $this->Export_model->update_export_user($users, $export_forms_id);
             }
 
