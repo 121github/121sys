@@ -284,9 +284,9 @@ class Survey_model extends CI_Model
         $length = $options['length'];
         
         $qry .= "  limit $start,$length";
-        
+         $this->firephp->log($qry);
         $data = $this->db->query($qry)->result_array();
-        //$this->firephp->log($qry);
+       
         return array(
             "data" => $data,
             "count" => $count

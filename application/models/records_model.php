@@ -520,7 +520,7 @@ class Records_model extends CI_Model
         if (empty($urn)):
             $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and attendee = 1 and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
         elseif(empty($campaign_id)):
-		   $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and  attendee = 1 and user_id in(select user_id from users_to_campaigns where campaign_id = '$campaign_id') ";
+		   $qry = "select user_id,name,user_email,user_telephone from users left join users_to_campaigns using(user_id) where user_status = 1 and  attendee = 1 and  campaign_id = '$campaign_id') ";
 		else:
             $qry = "select user_id,name,user_email,user_telephone from ownership left join users using(user_id) and attendee = 1 where user_status = 1 and urn = '$urn' and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']}))";
         endif;
