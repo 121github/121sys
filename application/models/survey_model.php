@@ -279,7 +279,7 @@ class Survey_model extends CI_Model
             }
         }
         $count = $this->db->query($qry)->num_rows();
-        $qry .= " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
+        $qry .= " group by s.survey_id order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
         $start  = $options['start'];
         $length = $options['length'];
         
