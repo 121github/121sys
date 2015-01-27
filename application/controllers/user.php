@@ -28,6 +28,7 @@ class User extends CI_Controller
                 if ($this->User_model->validate_login($this->input->post('username'), $this->input->post('password'))) {
                     if (isset($_SESSION['current_campaign'])) {
                         $this->set_campaign_features();
+						$this->current_campaign($_SESSION['current_campaign']);
                     }
 					$this->apply_default_filter();
                     if ($this->input->post('password') == md5("pass123")) {
@@ -232,9 +233,9 @@ class User extends CI_Controller
     
     
     /* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
-    public function current_campaign()
+    public function current_campaign($camp_id="")
     {
-        $campaign = intval($this->uri->segment(3));
+        $campaign = (empty($camp_id)?intval($this->uri->segment(3)):$camp_id);
         $user_id  = $_SESSION['user_id'];
         if ($campaign > "0") {
             if (in_array($campaign, $_SESSION['campaign_access']['array'])) {
