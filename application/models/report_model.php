@@ -65,8 +65,18 @@ class Report_model extends CI_Model
         $where .= " and source_id = '$source' ";
         }
 		//if the user does not have the agent reporting permission they can only see their own stats 
-		if(@!in_array("agent reporting",$_SESSION['permissions'])){
+		if(@!in_array("by agent",$_SESSION['permissions'])){
 		$where .= " and history.user_id = '{$_SESSION['user_id']}' ";	
+		}
+		
+				//if the user does not have the group reporting permission they can only see their own stats 
+		if(@!in_array("by group",$_SESSION['permissions'])){
+		$where .= " and history.group_id = '{$_SESSION['group']}' ";	
+		}
+		
+						//if the user does not have the group reporting permission they can only see their own stats 
+		if(@!in_array("by team",$_SESSION['permissions'])){
+		$where .= " and history.team_id = '{$_SESSION['team']}' ";	
 		}
 		
         $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history left join outcomes using(outcome_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and outcome is not null ";
@@ -420,8 +430,18 @@ class Report_model extends CI_Model
         }
 		
 		//if the user does not have the agent reporting permission they can only see their own stats 
-		if(@!in_array("agent reporting",$_SESSION['permissions'])){
+		if(@!in_array("by agent",$_SESSION['permissions'])){
 		$where .= " and eh.user_id = '{$_SESSION['user_id']}' ";	
+		}
+		
+				//if the user does not have the group reporting permission they can only see their own stats 
+		if(@!in_array("by group",$_SESSION['permissions'])){
+		$where .= " and eh.group_id = '{$_SESSION['group']}' ";	
+		}
+		
+						//if the user does not have the group reporting permission they can only see their own stats 
+		if(@!in_array("by team",$_SESSION['permissions'])){
+		$where .= " and eh.team_id = '{$_SESSION['team']}' ";	
 		}
 		
         $joins = "

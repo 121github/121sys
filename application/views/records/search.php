@@ -118,9 +118,9 @@
                <?php if(in_array("search groups",$_SESSION['permissions'])){ ?>
               <div class="form-group">
                 <label>Group Ownership</label>
-                <select name="group_id[]" class="selectpicker" data-width="100%" data-size="5" <?php if(count($groups)>1){ echo "multiple"; } ?> title="Any">
+                <select name="group_id[]" class="selectpicker" data-width="100%" data-size="5" multiple title="Any">
                   <?php foreach($groups as $row): ?>
-                  <option  <?php if(@in_array($row['id'],$_SESSION['filter']['values']['group_id'])||empty($_SESSION['filter']['values'])&&$row['id']==$_SESSION['group']&&in_array("own group",$_SESSION['permissions'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+                  <option  <?php if(@in_array($row['id'],$_SESSION['filter']['values']['group_id'])||empty($_SESSION['filter']['values'])&&$row['id']==$_SESSION['group']&&in_array("view own group",$_SESSION['permissions'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
                 </select>
               </div>

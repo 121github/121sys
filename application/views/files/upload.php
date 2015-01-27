@@ -6,7 +6,6 @@
 
 <script>
 $(document).ready(function(){
-
    Dropzone.options.mydropzone = {
         accept: function(file, done) {
             if (file.name.split('.').pop() != "doc"&&file.name.split('.').pop() != "docx") {
