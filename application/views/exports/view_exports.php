@@ -45,6 +45,7 @@
                                 <table class="table ajax-table">
                                     <thead>
                                         <tr>
+                                            <th style="display: none"></th>
                                             <th>Name</th>
                                             <th>Description</th>
                                             <th></th>
