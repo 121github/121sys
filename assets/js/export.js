@@ -90,7 +90,7 @@ var export_data = {
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
                         $tbody
-                            .append("<tr><td>"
+                            .append("<tr>"
                                 + "<span class='export_forms_id' style='display: none'>"+(val.export_forms_id?val.export_forms_id:'')+"</span>"
                                 + "<span class='header' style='display: none'>"+(val.header?val.header:'')+"</span>"
                                 + "<span class='query' style='display: none'>"+(val.query?val.query:'')+"</span>"
@@ -98,7 +98,7 @@ var export_data = {
                                 + "<span class='group_by' style='display: none'>"+(val.group_by?val.group_by:'')+"</span>"
                                 + "<span class='date_filter' style='display: none'>"+(val.date_filter?val.date_filter:'')+"</span>"
                                 + "<span class='campaign_filter' style='display: none'>"+(val.campaign_filter?val.campaign_filter:'')+"</span>"
-                            + "</td><td class='name'>"
+                            + "<td class='name'>"
                             + val.name
                             + "</td><td class='description'>"
                             + val.description
