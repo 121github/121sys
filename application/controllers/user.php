@@ -267,7 +267,11 @@ class User extends CI_Controller
 				
                 $_SESSION['current_campaign'] = $campaign;
 				$this->set_campaign_features();
-				$this->apply_default_filter(); 
+				$this->apply_default_filter();
+				if(!in_array("use callpot",$_SESSION['permissions'])||!in_array("list records",$_SESSION['permissions'])||!in_array("search records",$_SESSION['permissions'])){
+					//if the campain does not use the call pot jusr send them to the dashboard
+				echo json_encode(array("location"=>"dashboard"));	
+				}
             }
         } else {
             if (!in_array("all campaigns", $_SESSION['permissions'])) {

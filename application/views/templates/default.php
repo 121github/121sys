@@ -320,11 +320,15 @@ $.getJSON(helper.baseUrl+'user/check_session',function(response){
 $(document).on('change','#campaign-select',function(){
 	$('#campaign-loading-icon').show();
 	$.get(helper.baseUrl+'user/current_campaign/'+$(this).val(),function(response){
+		if(response.location=="dashboard"){
+			window.location = helper.baseUrl+'dashboard';
+		} else {
 			<?php if($this->uri->segment(2)=="detail"||$this->uri->segment(1)=="error"){ ?>
 			window.location = helper.baseUrl+'records/detail';
 			<?php } else { ?>
 			location.reload();
 			<?php } ?>
+		}
 	});
 });
 <?php } ?>
