@@ -118,6 +118,7 @@ class User extends CI_Controller
 					}
 					if (!isset($_SESSION['filter']['values']['team_id'])) {	
                     if (in_array("view own team", $_SESSION['permissions'])&&!empty($_SESSION['team'])) {
+						$this->firephp->log("test".$_SESSION['team']);
                     $filter['team_id'][] = $_SESSION['team'];
                     }
 
@@ -136,6 +137,7 @@ class User extends CI_Controller
 	
     public function account()
     {
+		$campaign_access = campaign_access_dropdown();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $this->load->library('form_validation');
@@ -171,6 +173,7 @@ class User extends CI_Controller
         }
         
         $data = array(
+			'campaign_access' => $campaign_access,
             'pageId' => 'my-account',
             'pageClass' => 'my-account',
             'title' => 'My Account'
@@ -251,7 +254,7 @@ class User extends CI_Controller
                 //reset the permissions
                 $this->User_model->set_permissions();
                 //this function lets you add and remove permisisons based on the selected campaign rather than user role! :)
-                /*
+                
 				$campaign_permissions = $this->User_model->campaign_permissions($campaign);
                 foreach ($campaign_permissions as $row) {
                     //a 1 indicates the permission should be added otherwize it is revoked!
@@ -261,7 +264,7 @@ class User extends CI_Controller
                         unset($_SESSION['permissions'][$row['permission_id']]);
                     }
                 }
-				*/
+				
                 $_SESSION['current_campaign'] = $campaign;
 				$this->set_campaign_features();
 				$this->apply_default_filter(); 

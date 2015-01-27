@@ -185,6 +185,11 @@ class Filter_model extends CI_Model
             "type" => "multiple",
             "alias" => "u.group_id"
         );
+		$filter_options["team_id"]         = array(
+            "table" => "users",
+            "type" => "multiple",
+            "alias" => "u.team_id"
+        );
         $filter_options["user_id"]          = array(
             "table" => "ownership",
             "type" => "multiple",
@@ -685,7 +690,7 @@ class Filter_model extends CI_Model
             $qry .= " left join cross_transfers on cross_transfers.history_id = history.history_id ";
             $qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id ";
             //only join the user tables if we need them
-            if (in_array("user", $fields) || in_array("group_id", $fields) || in_array("team", $fields)) {
+            if (in_array("user", $fields) || in_array("group_id", $fields) || in_array("team_id", $fields)) {
                 $qry .= " left join ownership on records.urn = ownership.urn ";
                 $qry .= " left join users on users.user_id = ownership.user_id ";
                 $qry .= " left join teams on users.team_id = teams.team_id ";

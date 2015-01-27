@@ -14,7 +14,10 @@ class Migration_update_5 extends CI_Migration
     //Alter table suppression
     $this->db->query("delete from role_permissions");
     $this->db->query("delete from permissions");
-    $this->db->query("INSERT INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES
+	
+	$this->db->query("ALTER TABLE `permissions` ADD UNIQUE(`permission_name`)");
+	
+    $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES
 (1, 'set call outcomes', 'Records'),
 (2, 'set progress', 'Records'),
 (3, 'add surveys', 'Surveys'),
@@ -106,15 +109,9 @@ class Migration_update_5 extends CI_Migration
 (97, 'search files', 'Files'),
 (98, 'admin files', 'Admin'),
 (99, 'list records', 'Records'),
-(100, 'files menu', 'Files'),
-(101, 'view files', 'Files'),
-(102, 'delete files', 'Files'),
-(103, 'add files', 'Files'),
-(104, 'search files', 'Files'),
-(105, 'admin files', 'Admin'),
-(106, 'list records', 'Records')");
+(108, 'view dashboard', 'Dashboard')");
 
-    $this->db->query("INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES
+    $this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES
 (1, 2),
 (1, 3),
 (1, 4),
@@ -190,6 +187,7 @@ class Migration_update_5 extends CI_Migration
 (1, 95),
 (1, 96),
 (1, 97),
+(1, 108),
 (2, 2),
 (2, 3),
 (2, 4),
@@ -236,6 +234,7 @@ class Migration_update_5 extends CI_Migration
 (2, 61),
 (2, 63),
 (2, 67),
+(2, 108),
 (3, 1),
 (3, 3),
 (3, 4),
@@ -282,6 +281,7 @@ class Migration_update_5 extends CI_Migration
 (3, 79),
 (3, 85),
 (3, 90),
+(3, 108),
 (4, 2),
 (4, 3),
 (4, 4),
@@ -314,6 +314,7 @@ class Migration_update_5 extends CI_Migration
 (4, 76),
 (4, 79),
 (4, 89),
+(4, 108),
 (5, 1),
 (5, 3),
 (5, 4),
@@ -347,6 +348,7 @@ class Migration_update_5 extends CI_Migration
 (5, 79),
 (5, 85),
 (5, 90),
+(5, 108),
 (6, 2),
 (6, 4),
 (6, 5),
@@ -409,6 +411,7 @@ class Migration_update_5 extends CI_Migration
 (6, 79),
 (6, 89),
 (6, 90),
+(6, 108),
 (7, 1),
 (7, 4),
 (7, 8),
@@ -448,6 +451,7 @@ class Migration_update_5 extends CI_Migration
 (7, 75),
 (7, 76),
 (7, 79),
+(7, 108),
 (8, 1),
 (8, 7),
 (8, 8),
@@ -495,7 +499,8 @@ class Migration_update_5 extends CI_Migration
 (8, 79),
 (8, 85),
 (8, 90),
-(8, 92)");
+(8, 92),
+(8, 108)");
 
   }
   public function down()

@@ -183,6 +183,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                       </ul>
                   </li>
               <?php } ?>
+              <?php if(@in_array("view dashboard",$_SESSION['permissions'])){  ?>
               <li class="dropdown <?php if($this->uri->segment(1)=="dashboard"){ echo "active"; } ?>" > <a data-toggle="dropdown" class="dropdown-toggle" href="<?php echo base_url(); ?>survey/view">Dashboard <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="<?php echo base_url(); ?>dashboard">Overview</a></li>
@@ -200,6 +201,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                   <?php } ?>
                 </ul>
               </li>
+              <?php } ?>
               <?php if(isset($_SESSION['current_campaign'])&&@in_array("view files",$_SESSION['permissions'])){  ?>
               <li <?php if($this->uri->segment(1)=="files"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>files/upload" >Files</a></li>
               <?php } ?>
