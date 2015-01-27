@@ -156,6 +156,22 @@
                                     </div>
                                     <div class="col-lg-4"></div>
                                 </div>
+                                <div style="border-bottom: 1px solid grey; margin-bottom: 20px; font-weight: bold">USERS</div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="btn-group">
+                                            <div class="form-group input-group-sm">
+                                                <p>Select the users that will recieve this data by email</p>
+                                                <select class="selectpicker user_select" name="user_id[]" multiple>
+                                                    <?php foreach($users as $user): ?>
+                                                        <option value="<?php echo $user['id'] ?>"><?php echo $user['name'] ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4"></div>
+                                </div>
                                 <div class="pull-right">
                                     <span class="marl btn btn-default close-edit-btn">Cancel</span>
                                     <span class="marl btn btn-primary save-edit-btn">Save</span>

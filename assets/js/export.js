@@ -41,6 +41,7 @@ var export_data = {
         $(document).on("click", '.new-export-btn', function(e) {
             e.preventDefault();
             $('.edit-export-form')[0].reset();
+            $('.user_select').selectpicker('val',[]).selectpicker('render');
             $('.edit-export-form').find('input[name="export_forms_id"]').val("");
             $('.custom-exports').show();
         });
@@ -148,6 +149,18 @@ var export_data = {
         $('.edit-export-form').find('input[name="order_by"]').val(order_by);
         $('.edit-export-form').find('input[name="date_filter"]').val(date_filter);
         $('.edit-export-form').find('input[name="campaign_filter"]').val(campaign_filter);
+
+        $.ajax({
+            url: helper.baseUrl + 'exports/get_export_users',
+            type: "POST",
+            dataType: "JSON",
+            data: {'export_forms_id': export_forms_id}
+        }).done(function(response) {
+            if (response.success) {
+                $('.user_select').selectpicker('val',response.data).selectpicker('render');
+            }
+        });
+
     },
     close_export_form: function() {
 

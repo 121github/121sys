@@ -15,6 +15,7 @@ class Exports extends CI_Controller
     public function index()
     {
 		$campaigns = $this->Form_model->get_user_campaigns();
+        $users = $this->Form_model->get_users();
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -33,7 +34,8 @@ class Exports extends CI_Controller
                 'dashboard.css',
                 'daterangepicker-bs3.css'
             ),
-			'campaigns' => $campaigns
+			'campaigns' => $campaigns,
+            'users' => $users
         );
         $this->template->load('default', 'exports/view_exports.php', $data);
     }
@@ -43,8 +45,27 @@ class Exports extends CI_Controller
 
         echo json_encode(array(
             "success" => (!empty($results)),
-            "data" => (!empty($results)?$results:"No export forms were created yet!")
+            "data" => (!empty($results)?$results:"No export forms were created yet!"),
         ));
+    }
+
+    public function get_export_users() {
+        if ($this->input->post()) {
+            $export_forms_id = $this->input->post('export_forms_id');
+
+            $results = $this->Export_model->get_export_users_by_export_id($export_forms_id);
+
+            $auxList = array();
+            foreach ($results as $user) {
+                array_push($auxList, $user["user_id"]);
+            }
+            $results = $auxList;
+
+            echo json_encode(array(
+                "success" => ($results),
+                "data" => $results,
+            ));
+        }
     }
 
     /*
@@ -91,8 +112,6 @@ class Exports extends CI_Controller
             if (!empty($export_form)) {
                 $results = $this->Export_model->get_data($export_form, $options);
 
-                //$this->firephp->log($results);
-
                 echo json_encode(array(
                     "success" => ($results),
                     "data" => ($results?$results:"No export forms were created yet!"),
@@ -114,16 +133,25 @@ class Exports extends CI_Controller
         if ($this->input->post()) {
             $form = $this->input->post();
 
+            $users = (isset($form['user_id'])?$form['user_id']:array());
+            unset($form['user_id']);
+
+
             if (!empty($form['export_forms_id'])) {
                 $results = $this->Export_model->update_export_form($form);
+                $export_forms_id = $form['export_forms_id'];
             }
             else {
-                $results = $this->Export_model->insert_export_form($form);
+                $export_forms_id = $this->Export_model->insert_export_form($form);
+            }
+
+            if ($export_forms_id && !empty($users)) {
+                $results = $this->Export_model->update_export_user($users, $export_forms_id);
             }
 
             echo json_encode(array(
-                "success" => ($results),
-                "msg" => ($results?"Export Form saved successfully":"ERROR: The export form was not saved successfully!")
+                "success" => ($export_forms_id),
+                "msg" => ($export_forms_id?"Export Form saved successfully":"ERROR: The export form was not saved successfully!")
             ));
 
         }
@@ -135,6 +163,11 @@ class Exports extends CI_Controller
             $export_forms_id = $this->input->post("export_forms_id");
 
             $results = $this->Export_model->delete_export_form($export_forms_id);
+
+            //Delete the users for this export
+            if ($results) {
+                $results = $this->Export_model->update_export_user(array(), $export_forms_id);
+            }
 
             echo json_encode(array(
                 "success" => ($results),

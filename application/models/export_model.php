@@ -27,6 +27,12 @@ class Export_model extends CI_Model
         }
     }
 
+    public function get_export_users_by_export_id($export_forms_id) {
+        $qry = "select * from export_to_users where export_forms_id = ".$export_forms_id;
+
+        return $this->db->query($qry)->result_array();
+    }
+
     public function get_data($export_form, $options) {
 
         $qry = $export_form['query'];
@@ -61,7 +67,8 @@ class Export_model extends CI_Model
      */
     public function insert_export_form($form)
     {
-        return $this->db->insert("export_forms", $form);
+         $this->db->insert("export_forms", $form);
+         return $this->db->insert_id();
 
     }
 
@@ -85,5 +92,34 @@ class Export_model extends CI_Model
     {
         $this->db->where("export_forms_id", $export_forms_id);
         return $this->db->delete("export_forms");
+    }
+
+    /**
+     * Update a user to an export. Delete the old_users and add the new_users selected
+     *
+     * @param Form $form
+     */
+    public function update_export_user($users, $export_forms_id)
+    {
+        //Delete all the users for this export before
+        $this->db->where("export_forms_id", $export_forms_id);
+        $results = $this->db->delete("export_to_users");
+
+        //Insert the new users selected
+        if (!empty($users) && $results) {
+            $aux = array();
+            foreach($users as $user) {
+                array_push($aux,array(
+                    'export_forms_id' => $export_forms_id,
+                    'user_id' => $user
+                ));
+            }
+            $users = $aux;
+
+            $results = $this->db->insert_batch("export_to_users", $users);
+        }
+
+        return $results;
+
     }
 }
