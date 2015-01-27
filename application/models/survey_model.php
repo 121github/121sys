@@ -278,13 +278,13 @@ class Survey_model extends CI_Model
                 $qry .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
             }
         }
+		$qry .= " group by s.survey_id ";
         $count = $this->db->query($qry)->num_rows();
-        $qry .= " group by s.survey_id order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
+        $qry .= "order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
         $start  = $options['start'];
         $length = $options['length'];
         
         $qry .= "  limit $start,$length";
-         $this->firephp->log($qry);
         $data = $this->db->query($qry)->result_array();
        
         return array(
