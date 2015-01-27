@@ -18,7 +18,7 @@ class Admin extends CI_Controller
     {
 		$options['teams']  = $this->Form_model->get_teams();
         $options['roles']  = $this->Form_model->get_roles();
-        $options['groups'] = $this->Form_model->get_groups();
+        $options['groups'] = $this->Form_model->get_all_groups();
         $data              = array(
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
@@ -55,7 +55,7 @@ class Admin extends CI_Controller
         $options['types']     = $this->Form_model->get_campaign_types(false);
         $options['features']  = $this->Form_model->get_campaign_features();
         $options['clients']   = $this->Form_model->get_clients();
-        $options['groups']    = $this->Form_model->get_groups();
+        $options['groups']    = $this->Form_model->get_all_groups();
         $options['campaigns'] = $this->Form_model->get_campaigns();
 		$options['views'] = $this->Form_model->get_custom_views();
         $data                 = array(
@@ -423,7 +423,7 @@ class Admin extends CI_Controller
     }
     public function get_groups()
     {
-        $groups = $this->Form_model->get_groups();
+        $groups = $this->Form_model->get_all_groups();
         echo json_encode(array(
             "data" => $groups
         ));

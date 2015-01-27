@@ -11,11 +11,11 @@
             <?php endforeach ?>
           </select>
         </div>
-        <?php if(count($survey_options['contacts'])>0): ?>
+        <?php if(@count($survey_options['contacts'])>0): ?>
         <div class="form-group input-group-sm">
           <p>Please choose the contact doing the survey</p>
           <select class="contactpicker">
-            <?php foreach($survey_options["contacts"] as $id=>$name): ?>
+            <?php foreach(@$survey_options["contacts"] as $id=>$name): ?>
             <option value="<?php echo $id ?>"><?php echo $name ?></option>
             <?php endforeach ?>
             <option value="">Other</option>
