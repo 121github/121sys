@@ -71,7 +71,7 @@ class Report_model extends CI_Model
 		
 				//if the user does not have the group reporting permission they can only see their own stats 
 		if(@!in_array("by group",$_SESSION['permissions'])){
-		$where .= " and history.group_id = '{$_SESSION['group']}' ";	
+		//$where .= " and history.group_id = '{$_SESSION['group']}' ";	
 		}
 		
 		//if the user does not have the group reporting permission they can only see their own stats
@@ -437,7 +437,7 @@ class Report_model extends CI_Model
 		
 				//if the user does not have the group reporting permission they can only see their own stats 
 		if(@!in_array("by group",$_SESSION['permissions'])){
-		$where .= " and eh.group_id = '{$_SESSION['group']}' ";	
+		//$where .= " and eh.group_id = '{$_SESSION['group']}' ";	
 		}
 		
 						//if the user does not have the group reporting permission they can only see their own stats 
