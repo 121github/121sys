@@ -42,8 +42,8 @@ class Exports extends CI_Controller
         $results = $this->Export_model->get_export_forms();
 
         echo json_encode(array(
-            "success" => ($results),
-            "data" => ($results?$results:"No export forms were created yet!")
+            "success" => (!empty($results)),
+            "data" => (!empty($results)?$results:"No export forms were created yet!")
         ));
     }
 

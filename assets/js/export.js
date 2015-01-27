@@ -38,9 +38,6 @@ var export_data = {
             $(this).css("color","green");
         });
 
-        export_data.load_export_forms();
-
-
         $(document).on("click", '.new-export-btn', function(e) {
             e.preventDefault();
             if ($('.custom-exports').css("display") == "none") {
@@ -85,6 +82,8 @@ var export_data = {
             e.preventDefault();
             export_data.close_export_report($(this));
         });
+
+        export_data.load_export_forms();
     },
     load_export_forms: function() {
         $tbody = $('.export-data .ajax-table').find('tbody');

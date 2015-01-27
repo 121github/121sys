@@ -173,7 +173,7 @@
                 </div>
                 <div class="panel-body">
                     <div class="export-report-panel">
-                        <div class="export-report-content" style="overflow: auto; height: 550px;">
+                        <div class="export-report-content" style="overflow: auto; height: 400px;">
                             <table class="table ajax-table">
                                 <thead></thead>
                                 <tbody></tbody>
