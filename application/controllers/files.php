@@ -93,12 +93,11 @@ class Files extends CI_Controller
         $this->email->initialize($config);
 
         $this->email->from('noreply@121customerinsight.co.uk');
-        //$this->email->to('cvproject@121customerinsight.co.uk');
-        $this->email->to('estebanc@121customerinsight.co.uk');
+        $this->email->to('cvproject@121customerinsight.co.uk');
         $this->email->cc('');
         $this->email->bcc('');
-        $this->email->subject('New File uploaded');
-        $this->email->message('A new File was uploaded');
+        $this->email->subject('[121System] New CV uploaded');
+        $this->email->message('A new CV File was uploaded');
 
 
         //Attach the file
