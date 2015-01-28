@@ -67,7 +67,9 @@
             </div>
             <div class="row" style="margin-bottom: 10px;">
                 <div class="col-lg-12">
-                    <button class="btn btn-success new-export-btn">New Export Form</button>
+                    <?php if(in_array("edit export",$_SESSION['permissions'])): ?>
+                        <button class="btn btn-success new-export-btn">New Export Form</button>
+                    <?php endif ?>
                 </div>
             </div>
             <div class="row custom-exports" style="display: none">
