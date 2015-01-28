@@ -27,6 +27,14 @@ class Export_model extends CI_Model
         }
     }
 
+    public function get_export_users() {
+        $qry = "select *
+                from export_to_users
+                inner join users using (user_id)";
+
+        return $this->db->query($qry)->result_array();
+    }
+
     public function get_export_users_by_export_id($export_forms_id) {
         $qry = "select * from export_to_users where export_forms_id = ".$export_forms_id;
 

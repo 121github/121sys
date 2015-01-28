@@ -11,6 +11,7 @@ class Cron extends CI_Controller
         parent::__construct();
         $this->load->model('Form_model');
         $this->load->model('Cron_model');
+        $this->load->model('Export_model');
     }
 
     public function update_hours()
@@ -26,6 +27,9 @@ class Cron extends CI_Controller
     }
 
 
+    /**
+     * Daily Ration
+     */
     public function daily_ration()
     {
         $campaigns = $this->Form_model->get_campaigns();
@@ -74,4 +78,132 @@ class Cron extends CI_Controller
     }
 	
 	/* end location functions */
+
+
+    /**
+     * Send export reports to the users selected
+     */
+    public function send_exports_to_users()
+    {
+        $export_users = $this->Export_model->get_export_users();
+
+        $exports = array();
+        foreach($export_users as $export_user) {
+            if (!isset($exports[$export_user['export_forms_id']])) {
+                $exports[$export_user['export_forms_id']]['users'] = array();
+                $export_form = $this->Export_model->get_export_forms_by_id($export_user['export_forms_id']);
+                $exports[$export_user['export_forms_id']]['export_form'] = $export_form;
+            }
+            array_push($exports[$export_user['export_forms_id']]['users'], $export_user);
+        }
+
+        foreach($exports as $export) {
+            $export_form = $export['export_form'];
+
+            $filename = date("YmdHsi")."_".str_replace(" ", "", $export_form['name']);
+            $dirname = dirname ( $_SERVER['SCRIPT_FILENAME'] )  . '/upload/tmp/exports/';
+            $headers  = explode(";",$export_form['header']);
+
+            $result = $this->Export_model->get_data($export_form, array());
+
+            //Export the data to a csv file
+            if ($this->save_export_to_csv($result, $dirname, $filename, $headers)) {
+                echo "The file ".$filename.".csv was exported to a csv file". " !<br>";
+                //Send the file to the users
+                if ($this->send_file_exported_by_email($dirname, $filename, $export['users'])) {
+                    echo "The file ".$filename.".csv was sent to the user/s selected". " !<br>";
+                }
+                else {
+                    echo "Error sending the file ".$filename.".csv to the user/s selected". " !<br>";
+                }
+            }
+            else {
+                echo "Error exporting the data to the csv file ".$filename. ".csv !<br>";
+            }
+        }
+
+    }
+
+    /**
+     * Generate and save the export data to an csv file temporally
+     */
+    private function save_export_to_csv($data, $dirname, $filename, $headers) {
+
+        $path = $dirname.$filename.".csv";
+
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename={$filename}.csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $outputBuffer = fopen($path, 'w');
+
+        fputcsv($outputBuffer, $headers);
+        foreach ($data as $val) {
+            fputcsv($outputBuffer, $val);
+        }
+        if (fclose($outputBuffer)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private function send_file_exported_by_email($dirname, $filename, $users) {
+
+        if (!empty($users)) {
+            $email_address = "";
+            foreach($users as $user) {
+                if (strlen($user['user_email']) > 0) {
+                    $email_address .= $user['user_email'].",";
+                }
+            }
+            if (strlen($email_address) > 0) {
+                $email_address = substr($email_address, 0, strlen(($email_address) - 1));
+            }
+
+            $subject = "[121System] New export data received - ".$filename;
+            $body = "You have received a new export data - ".$filename;
+
+            echo "The file ".$filename." is going to be sent to the user/s: ".$email_address." ". " !<br>";
+
+            if ($this->send_email($dirname.$filename.".csv", $email_address, $subject, $body)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    private function send_email($filePath, $email_address, $subject, $body) {
+
+        $this->load->library('email');
+
+        $config = array("smtp_host"=>"mail.121system.com",
+            "smtp_user"=>"mail@121system.com",
+            "smtp_pass"=>"L3O9QDirgUKXNE7rbNkP",
+            "smtp_port"=>25);
+
+        $config['mailtype'] = 'html';
+
+        $this->email->initialize($config);
+
+        $this->email->from('noreply@121customerinsight.co.uk');
+        $this->email->to('estebanc@121customerinsight.co.uk');
+//        $this->email->cc('');
+//        $this->email->bcc('');
+        $this->email->subject($subject);
+        $this->email->message($body);
+
+
+        //Attach the file
+        $this->email->attach($filePath);
+
+        $result = $this->email->send();
+        echo $this->email->print_debugger();
+        $this->email->clear();
+
+        return $result;
+    }
 }
