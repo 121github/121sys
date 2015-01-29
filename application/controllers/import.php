@@ -424,7 +424,8 @@ $this->db->query($renewals);
 			"contact_tel_Home" => "Contact Home",
             "contact_tel_Mobile" => "Contact Mobile",
             "contact_tel_Work" => "Contact Work",
-            "contact_tel_Fax" => "Contact Fax"
+            "contact_tel_Fax" => "Contact Fax",
+			"contact_tel_Transfer" => "Contact Transfer"
         );
         if ($this->input->post('type') == "B2B") {
             $fields['companies']         = array(
@@ -450,7 +451,8 @@ $this->db->query($renewals);
 			"company_tel_Reception" => "Company Reception",
             "company_tel_Other" => "Company Other",
             "company_tel_Mobile" => "Company Mobile",
-            "company_tel_Fax" => "Company Fax"
+            "company_tel_Fax" => "Company Fax",
+			"company_tel_Transfer" => "Company Transfer"
             );
         } else {
             $fields['contact_addresses'] = array(
