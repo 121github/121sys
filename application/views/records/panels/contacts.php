@@ -25,9 +25,9 @@
               <?php
 		  }
 	  } ?>
-              <?php foreach($contact['telephone']  as $id=>$number): $style = (strpos($number['tel_name'],"Transfer")!==false?"style='color:green'":"") ?>
+              <?php foreach($contact['telephone']  as $id=>$number): $btn =(strpos($number['tel_name'],"Transfer")!==false?"btn btn-info":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"") ?>
               <dt><?php echo $number['tel_name'] ?></dt>
-                  <dd><a  <?php echo $style ?>  href="#" class="startcall <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?></a></dd>
+                  <dd><a  <?php echo $style ?>  href="#" class="startcall <?php echo $btn ?> <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?></a></dd>
               <?php endforeach; ?>
             </dl>
           </div>
