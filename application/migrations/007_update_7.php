@@ -20,6 +20,6 @@ class Migration_update_7 extends CI_Migration
   }
   public function down()
   {
-    $this->db->query("DROP TABLE export_forms");
+    $this->db->query("DROP TABLE export_to_users");
   }
 }

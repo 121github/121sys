@@ -27,6 +27,14 @@ class Export_model extends CI_Model
         }
     }
 
+    public function get_export_users() {
+        $qry = "select *
+                from export_to_users
+                inner join users using (user_id)";
+
+        return $this->db->query($qry)->result_array();
+    }
+
     public function get_export_users_by_export_id($export_forms_id) {
         $qry = "select * from export_to_users where export_forms_id = ".$export_forms_id;
 
@@ -36,6 +44,11 @@ class Export_model extends CI_Model
     public function get_data($export_form, $options) {
 
         $qry = $export_form['query'];
+
+        //If there is not where clause in the query, add it
+        if (!stripos($qry, "where")) {
+            $qry .= " where 1=1 ";
+        }
 
         if ($export_form['date_filter']) {
             if (isset($options['from']) && !empty($options['from'])) {

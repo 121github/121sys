@@ -15,7 +15,7 @@ class Exports extends CI_Controller
     public function index()
     {
 		$campaigns = $this->Form_model->get_user_campaigns();
-        $users = $this->Form_model->get_users();
+        $users = $this->Form_model->get_users_with_email();
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -46,6 +46,7 @@ class Exports extends CI_Controller
         echo json_encode(array(
             "success" => (!empty($results)),
             "data" => (!empty($results)?$results:"No export forms were created yet!"),
+            "edit_permission" => (in_array("edit export",$_SESSION['permissions']))
         ));
     }
 
@@ -63,7 +64,7 @@ class Exports extends CI_Controller
 
             echo json_encode(array(
                 "success" => ($results),
-                "data" => $results,
+                "data" => $results
             ));
         }
     }

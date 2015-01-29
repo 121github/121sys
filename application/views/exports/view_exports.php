@@ -7,7 +7,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Special Exports</h1>
+                    <h1 class="page-header">Exports</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -67,7 +67,9 @@
             </div>
             <div class="row" style="margin-bottom: 10px;">
                 <div class="col-lg-12">
-                    <button class="btn btn-success new-export-btn">New Export Form</button>
+                    <?php if(in_array("edit export",$_SESSION['permissions'])): ?>
+                        <button class="btn btn-success new-export-btn">New Export Form</button>
+                    <?php endif ?>
                 </div>
             </div>
             <div class="row custom-exports" style="display: none">
