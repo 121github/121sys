@@ -336,7 +336,7 @@ class Records_model extends CI_Model
             $from .= " left join ownership own using(urn) left join users u using(user_id)";
         }
         $where   = "  where r.campaign_id in({$_SESSION['campaign_access']['list']}) and urn = '$urn' ";
-        $order   = " order by c.sort,c.contact_id ";
+        $order   = " order by c.sort,c.contact_id,ct.description, ";
         $qry     = $select . $from . $where . $order;
         $results = $this->db->query($qry)->result_array();
         
