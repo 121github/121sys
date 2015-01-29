@@ -15,7 +15,7 @@ class Exports extends CI_Controller
     public function index()
     {
 		$campaigns = $this->Form_model->get_user_campaigns();
-        $users = $this->Form_model->get_users();
+        $users = $this->Form_model->get_users_with_email();
 
         $data = array(
             'campaign_access' => $this->_campaigns,

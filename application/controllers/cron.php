@@ -111,7 +111,13 @@ class Cron extends CI_Controller
                 echo "The file ".$filename.".csv was exported to a csv file". " !<br>";
                 //Send the file to the users
                 if ($this->send_file_exported_by_email($dirname, $filename, $export['users'])) {
-                    echo "The file ".$filename.".csv was sent to the user/s selected". " !<br>";
+                    //Delete the temp file
+                    if (unlink($dirname.$filename.".csv")){
+                        echo "The file ".$filename.".csv was sent to the user/s selected". " !<br>";
+                    }
+                    else {
+                        echo "The file ".$filename.".csv was sent to the user/s selected, but the temp file was not deleted". " !<br>";
+                    }
                 }
                 else {
                     echo "Error sending the file ".$filename.".csv to the user/s selected". " !<br>";
@@ -159,7 +165,7 @@ class Cron extends CI_Controller
                 }
             }
             if (strlen($email_address) > 0) {
-                $email_address = substr($email_address, 0, strlen(($email_address) - 1));
+                $email_address = substr($email_address, 0, strlen($email_address) - 1);
             }
 
             $subject = "[121System] New export data received - ".$filename;
@@ -178,6 +184,8 @@ class Cron extends CI_Controller
 
     private function send_email($filePath, $email_address, $subject, $body) {
 
+        var_dump($email_address);
+
         $this->load->library('email');
 
         $config = array("smtp_host"=>"mail.121system.com",
@@ -190,9 +198,7 @@ class Cron extends CI_Controller
         $this->email->initialize($config);
 
         $this->email->from('noreply@121customerinsight.co.uk');
-        $this->email->to('estebanc@121customerinsight.co.uk');
-//        $this->email->cc('');
-//        $this->email->bcc('');
+        $this->email->to($email_address);
         $this->email->subject($subject);
         $this->email->message($body);
 
@@ -201,7 +207,7 @@ class Cron extends CI_Controller
         $this->email->attach($filePath);
 
         $result = $this->email->send();
-        echo $this->email->print_debugger();
+        //echo $this->email->print_debugger();
         $this->email->clear();
 
         return $result;
