@@ -104,8 +104,6 @@ var details = {
                 //Close edit form
                 details.close_details();
 
-                $(".save-details-btn").attr('disabled',false);
-
                 flashalert.success(response.msg);
             }
             else {
