@@ -45,6 +45,11 @@ class Export_model extends CI_Model
 
         $qry = $export_form['query'];
 
+        //If there is not where clause in the query, add it
+        if (!stripos($qry, "where")) {
+            $qry .= " where 1=1 ";
+        }
+
         if ($export_form['date_filter']) {
             if (isset($options['from']) && !empty($options['from'])) {
                 $qry .= " and ".$export_form['date_filter']." >= '" . $options['from'] . "' ";
