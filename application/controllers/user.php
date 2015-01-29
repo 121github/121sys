@@ -171,16 +171,59 @@ class User extends CI_Controller
             ));
             exit;
         }
+
+        $user_id = $_SESSION['user_id'];
+
+        $users = $this->Form_model->get_users();
+        $roles = $this->Form_model->get_roles();
+        $groups = $this->Form_model->get_groups();
+        $teams = $this->Form_model->get_teams();
         
         $data = array(
 			'campaign_access' => $campaign_access,
             'pageId' => 'my-account',
             'pageClass' => 'my-account',
-            'title' => 'My Account'
+            'title' => 'My Account',
+            'roles' => $roles,
+            'groups' => $groups,
+            'teams' => $teams,
+            'users' => $users,
+            'user_id' => $user_id,
+            'javascript' => array(
+                'account.js'
+            ),
         );
         $this->template->load('default', 'user/account', $data);
     }
-    
+
+    public function get_user_by_id() {
+        if ($this->input->post()) {
+            $user = $this->User_model->get_user_by_id($this->input->post("user_id"));
+
+            echo json_encode(array(
+                "success" => (!empty($user)),
+                "data" => $user
+            ));
+        }
+    }
+
+    /**
+     * Save contact details
+     */
+    public function save_contact_details() {
+        if ($this->input->post()) {
+            $form = $this->input->post();
+
+            //$results = $this->User_model->update_user($form);
+            $results = false;
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Contact details saved successfully":"ERROR: The Contact details was not saved successfully!")
+            ));
+        }
+    }
+
     /* at the bottom of default.php template: this function is ran every time a page is loaded and it checks whether user permissions/access have been changed or not so they can be reapplied without needing to log out */
     public function check_session()
     {
