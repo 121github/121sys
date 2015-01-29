@@ -25,9 +25,9 @@
               <?php
 		  }
 	  } ?>
-              <?php foreach($contact['telephone']  as $id=>$number): $btn =(strpos($number['tel_name'],"Transfer")!==false?"btn btn-info":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"") ?>
-              <dt><?php echo $number['tel_name'] ?></dt>
-                  <dd><a  <?php echo $style ?>  href="#" class="startcall <?php echo $btn ?> <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?></a></dd>
+              <?php foreach($contact['telephone']  as $id=>$number): $this->firephp->log($number['tel_name']); $btn =($number['tel_name']=="Transfer"?"btn btn-info pull-right":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"");$number_text = ($number['tel_name']=="Transfer"?"Transfer":$number['tel_num']); ?>
+              <dt><?php echo ($number_text=="Transfer"?"":$number['tel_name']) ?></dt>
+                  <dd><a  <?php echo $style ?>  href="#" class="startcall <?php echo $btn ?> <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number_text ?></a></dd>
               <?php endforeach; ?>
             </dl>
           </div>
