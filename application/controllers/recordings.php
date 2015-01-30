@@ -47,7 +47,7 @@ foreach($calls as $row){
 $calltime = $row['contact'];
 $qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,owner from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
-$this->firephp->log($db2->conn_id());
+$this->firephp->log($db2->conn_id);
 $qry = rtrim($qry,"union ");
 $result = $db2->query($qry);
 $recordings = $result->result_array();
@@ -62,8 +62,8 @@ $db2->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%
 $db2->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime')",null,false);
 $db2->group_by("calls.id");
 $transfer_query = $db2->get('recordings.calls');
-$this->firephp->log($db2->conn_id());
-$this->firephp->log($db2->last_query());
+$this->firephp->log($db2->conn_id);
+
 $this->firephp->log($transfer_query);
 $this->firephp->log($transfer_query->num_rows());
 $transfers = $transfer_query->result_array();
