@@ -43,8 +43,9 @@ $qry .= "select call_id,servicename,filepath,starttime,endtime,date_format(start
 }
 $qry = rtrim($qry,"union ");
 
-$this->firephp->log($qry);
-$array = $db2->query($qry)->result_array();
+$result = $db2->query($qry);
+$this->firephp->log($result->num_rows());
+$array = $result->result_array();
 $this->firephp->log($array);
 
 
