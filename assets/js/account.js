@@ -31,6 +31,11 @@ var details = {
             details.save_details();
         });
 
+        $(document).on('click', '.reset-failed-logins-btn', function(e) {
+            e.preventDefault();
+            details.reset_failed_logins();
+        });
+
         details.load_details();
     },
     load_details: function() {
@@ -53,11 +58,25 @@ var details = {
                 $('.email').html(response.data[0].user_email);
                 $('.telephone').html(response.data[0].user_telephone);
                 $('.ext').html(response.data[0].ext);
+
+                $('.user_status').html(response.data[0].user_status);
+                $('.login_mode').html(response.data[0].login_mode);
+                $('.last_login').html(response.data[0].last_login);
+                var failed_logins = response.data[0].failed_logins;
+                $('.failed_logins').html((failed_logins == 0?failed_logins:failed_logins+'<span class="btn btn-sm reset-failed-logins-btn" style="color: red">Reset</span>'));
+                $('.last_failed_login').html(response.data[0].last_failed_login);
+                $('.reload_session').html(response.data[0].reload_session);
+                $('.token').html(response.data[0].token);
+                $('.pass_changed').html(response.data[0].pass_changed);
+                $('.atendee').html(response.data[0].atendee);
+                $('.reset_pass_token').html((response.data[0].reset_pass_token?"Yes":""));
             }
         });
     },
     edit_details: function(btn) {
         $(".save-details-btn").attr('disabled',false);
+        $('#details-form').find('input[name="telephone_form"]').numeric();
+        $('#details-form').find('input[name="ext_form"]').numeric();
 
         var pagewidth = $(window).width() / 2;
         var moveto = pagewidth - 250;
@@ -104,6 +123,24 @@ var details = {
                 //Close edit form
                 details.close_details();
 
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+    reset_failed_logins: function(){
+        var user_id = $('#details-form').find('input[name="user_id"]').val();
+        $.ajax({
+            url: helper.baseUrl + 'user/reset_failed_logins',
+            type: "POST",
+            dataType: "JSON",
+            data: {'user_id': user_id}
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                details.load_details();
                 flashalert.success(response.msg);
             }
             else {

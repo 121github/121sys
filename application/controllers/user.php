@@ -190,7 +190,8 @@ class User extends CI_Controller
             'users' => $users,
             'user_id' => $user_id,
             'javascript' => array(
-                'account.js'
+                'account.js',
+                'lib/jquery.numeric.min.js',
             ),
         );
         $this->template->load('default', 'user/account', $data);
@@ -212,14 +213,39 @@ class User extends CI_Controller
      */
     public function save_contact_details() {
         if ($this->input->post()) {
-            $form = $this->input->post();
+            $form = array();
+            $form['user_email'] = ($this->input->post("email_form")?$this->input->post("email_form"):NULL);
+            $form['user_telephone'] = ($this->input->post("telephone_form")?$this->input->post("telephone_form"):NULL);
+            $form['ext'] = ($this->input->post("ext_form")?$this->input->post("ext_form"):NULL);
+            $user_id = $this->input->post("user_id");
 
-            //$results = $this->User_model->update_user($form);
-            $results = false;
+
+            //Update the contact details
+            $results = $this->User_model->update_user($user_id, $form);
 
             echo json_encode(array(
                 "success" => ($results),
                 "msg" => ($results?"Contact details saved successfully":"ERROR: The Contact details was not saved successfully!")
+            ));
+        }
+    }
+
+    /*
+     * Rsest failed login to 0
+     */
+    public function reset_failed_logins() {
+        if ($this->input->post()) {
+
+            $user_id = $this->input->post('user_id');
+
+            $form['failed_logins'] = 0;
+
+            //Update the user
+            $results = $this->User_model->update_user($user_id, $form);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Failed logins reset to 0 successfully":"ERROR: The Failed logins was not updated successfully!")
             ));
         }
     }

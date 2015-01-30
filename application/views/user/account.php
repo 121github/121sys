@@ -1,17 +1,13 @@
 <div class="page-header">
-    <h2>My account</h2>
-</div>
-
-
-<div class="row">
-    <div class="col-md-8 col-sm-12">
-        <div class="panel panel-primary" >
-            <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i>
-                Details
-                <div class="pull-right">
+    <div class="row">
+        <div class="col-lg-10">
+            <h2>My account</h2>
+        </div>
+        <div class="col-lg-2">
+            <?php if($_SESSION['role'] == 1): ?>
+                <div class="">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Select other user</button>
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Select other user</button>
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li><a class="campaign-filter" ref="#" style="color: green;">Select other user</a> </li>
                             <?php foreach($users as $row): ?>
@@ -21,6 +17,17 @@
                         </ul>
                     </div>
                 </div>
+            <?php endif ?>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-sm-12">
+        <div class="panel panel-primary" >
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart-o fa-fw"></i>
+                Details
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -108,6 +115,56 @@
                 </form>
             </div>
         </div>
+        <?php if($_SESSION['role'] == 1): ?>
+        <div class="panel panel-primary" >
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Activity</div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <table class="table ajax-table">
+                    <tr>
+                        <td style="font-weight: bold">User status</td>
+                        <td class="user_status"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Login mode</td>
+                        <td class="login_mode"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Last login</td>
+                        <td class="last_login"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Failed logins</td>
+                        <td class="failed_logins"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Last failed login</td>
+                        <td class="last_failed_login"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Reload session</td>
+                        <td class="reload_session"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Token</td>
+                        <td class="token"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Atendee</td>
+                        <td class="atendee"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Pass changed</td>
+                        <td class="pass_changed"></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold">Change pass required</td>
+                        <td class="reset_pass_token"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <?php endif ?>
     </div>
 </div>
 <?php echo form_close(); ?>

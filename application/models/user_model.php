@@ -297,7 +297,7 @@ class User_model extends CI_Model
     public function update_user($user_id, $form)
     {
         $this->db->where('user_id', $user_id);
-        $this->db->update("users", $form);
+        return $this->db->update("users", $form);
     }
 
     public function restore_password($user_id, $password)
