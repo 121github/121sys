@@ -42,8 +42,9 @@ $calltime = $row['contact'];
 $qry .= "select call_id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls left join parties on calls.id=parties.call_id where name <> '' and replace(servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by call_id union ";
 }
 $qry = rtrim($qry,"union ");
-$recordings = $db2->query($qry)->result_array();
-$this->firephp->log($db2->query($qry)->last_query());
+$result = $db2->query($qry);
+$recordings = $result->result_array();
+$this->firephp->log($result->last_query());
 foreach($recordings as $k=>$row){
 	$recordings[$k]['duration']=timespan(strtotime($row['starttime']),strtotime($row['endtime']),true);
 	$recordings[$k]['filepath']=base64_encode($row['filepath']);
