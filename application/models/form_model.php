@@ -235,7 +235,7 @@ class Form_model extends CI_Model
     }
     public function get_teams()
     {
-        $qry = "select teams.team_id id,team_name name,group_id,if(group_name is not null,group_name,'-') group_name from teams left join user_groups using(group_id) left join users using(group_id) left join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by teams.team_id";
+        $qry = "select teams.team_id id,team_name name,group_id,if(group_name is not null,group_name,'-') group_name from teams left join user_groups using(group_id) left join users using(group_id) left join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by teams.team_id order by team_name";
         return $this->db->query($qry)->result_array();
     }
     public function get_roles()
@@ -259,12 +259,12 @@ class Form_model extends CI_Model
     }
     public function populate_outcomes($id)
     {
-        $qry = "select outcome_id id,outcome name from outcomes where outcome_id not in(select outcome_id from outcomes_to_campaigns where campaign_id = '$id')";
+        $qry = "select outcome_id id,outcome name from outcomes where outcome_id not in(select outcome_id from outcomes_to_campaigns where campaign_id = '$id') order by outcome";
         return $this->db->query($qry)->result_array();
     }
     public function campaign_outcomes($id)
     {
-        $qry = "select outcome_id id,outcome name from outcomes where outcome_id in(select outcome_id from outcomes_to_campaigns where campaign_id = '$id')";
+        $qry = "select outcome_id id,outcome name from outcomes where outcome_id in(select outcome_id from outcomes_to_campaigns where campaign_id = '$id') order by outcome";
         return $this->db->query($qry)->result_array();
     }
     public function get_templates()

@@ -249,7 +249,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <span class="glyphicon glyphicon-stop stoptimer pointer"></span>
 </div>
 <?php if($show_footer){ ?>
-<div class="navbar-inverse footer-stats">
+<div class="navbar-inverse footer-stats" style="z-index:1">
 <!--ajax generated footer stats go here -->
 </div>
 <?php } ?>
