@@ -59,8 +59,8 @@ $endtime = $row['endtime']; //the endtime of the call is the starttime of the tr
 $transfer_qry = "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime') group by id";
 $this->firephp->log($transfer_qry);
 $transfers = $db2->query($transfer_qry)->result_array();
+$this->firephp->log($transfers);
 foreach($transfers as $k=>$row){
-	$this->firephp->log($row);
 	$recordings[] = $row;	
 }
 }
