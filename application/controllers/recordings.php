@@ -39,7 +39,7 @@ $db2 = $this->load->database('121backup',true);
 if(count($calls)>0){
 foreach($calls as $row){
 $calltime = $row['contact'];
-$qry .= "select call_id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls left join parties on calls.id=parties.call_id where name <> '' and replace(servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by call_id union ";
+$qry .= "select calls.id,calls.servicename,calls.filepath,calls.starttime,calls.endtime,calls.date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(calls.servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
 $qry = rtrim($qry,"union ");
 $result = $db2->query($qry);
