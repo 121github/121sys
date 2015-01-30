@@ -23,13 +23,18 @@ $numbers =  $this->Recordings_model->get_numbers($urn);
 $calls =  $this->Records_model->get_calls($urn);
 $number_list = "''";
 $qry = "";
+$transfer_number ="";
 $array = array();
 $recordings = array();
 $recording = array();
 if(count($numbers)>0){
 $number_list = "";
-foreach($numbers as $k =>$num){
-	$number_list .= '"'.$num.'",';	
+foreach($numbers as $k =>$number){
+	if($number['description']<>"Transfer"){
+	$number_list .= '"'.$number['number'].'",';	
+	} else {
+	$transfer_number = 	$number['number'];
+	}
 }
 }
 
@@ -39,16 +44,28 @@ $db2 = $this->load->database('121backup',true);
 if(count($calls)>0){
 foreach($calls as $row){
 $calltime = $row['contact'];
-$qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 5 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
+$qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
 $qry = rtrim($qry,"union ");
 $this->firephp->log($qry);
 $result = $db2->query($qry);
-
 $recordings = $result->result_array();
+
 foreach($recordings as $k=>$row){
+//once we have the dials to the customer we look for any transfers relating to those calls	
+if(!empty($transfer_number)){
+$endtime = $row['endtime']; //the endtime of the call is the starttime of the transfer
+$transfer_qry = "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(servicename,' ','') ='$transfer_number' and starttime = '$endtime' and calldate = date('$calltime') group by id";
+}
+$transfers = $db2->query($transfer_qry)->result_array();
+array_merge($recordings,$transfers);
+}
+
+foreach($recordings as $k=>$row){
+	//append some other stats to the array
 	$recordings[$k]['duration']=timespan(strtotime($row['starttime']),strtotime($row['endtime']),true);
 	$recordings[$k]['filepath']=base64_encode($row['filepath']);
+
 }
 }
 //$this->firephp->log($recordings);
