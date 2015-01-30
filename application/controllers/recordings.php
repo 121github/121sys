@@ -62,6 +62,8 @@ $db3->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%
 $db3->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime')",null,false);
 $db3->group_by("calls.id");
 $transfer_query = $db3->get('recordings.calls');
+$this->firephp->log($db3);
+$this->firephp->log($transfer_query);
 $transfers = $transfer_query->result_array();
 foreach($transfers as $k=>$row){
 	$recordings[] = $row;	
