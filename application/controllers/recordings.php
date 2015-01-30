@@ -57,7 +57,7 @@ if(!empty($transfer_number)){
 $owner = $row['owner']; 	
 $endtime = $row['endtime']; //the endtime of the call is the starttime of the transfer
 
-$db2->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate",null,false);
+$db2->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate",false);
 $db2->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime')",null,false);
 $db2->group_by("calls.id");
 $transfer_query = $db2->get('recordings.calls');
