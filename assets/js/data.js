@@ -870,6 +870,67 @@ var add_record = {
     }
 }
 
+var outcomes = {
+    init: function () {
+        outcomes.load_outcomes();
+    },
+    load_outcomes: function() {
+        $tbody = $('.outcome-data .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_outcomes',
+            type: "POST",
+            dataType: "JSON",
+        }).done(function (response) {
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td style='display: none'>"
+                                + "<span class='outcome_id' style='display: none'>"+val.outcome_id+"</span>"
+                                + "<span class='status_id' style='display: none'>"+val.set_status+"</span>"
+                                + "<span class='progress_id' style='display: none'>"+val.set_progress+"</span>"
+                            + "</td><td class='disabled' style='vertical-align: middle'>"
+                            + "<input id="+val.outcome_id+" type='checkbox' name='disabled_"+val.outcome_id+"' "+(val.disabled?"":"checked")+">"
+                            + "</td><td class='outcome' style='vertical-align: middle'>"
+                            + val.outcome
+                            + "</td><td class='status' style='vertical-align: middle'>"
+                            + (val.status_name?val.status_name:'-')
+                            + "</td><td class='progress_description' style='vertical-align: middle'>"
+                            + (val.description?val.description:'-')
+                            + "</td><td class='positive' style='vertical-align: middle'>"
+                            + (val.positive?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td class='dm_contact' style='vertical-align: middle'>"
+                            + (val.dm_contact?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td class='sort' style='vertical-align: middle'>"
+                            + (val.sort?val.sort:'-')
+                            + "</td><td class='enable_select' style='vertical-align: middle'>"
+                            + (val.enable_select?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td class='force_comment' style='vertical-align: middle'>"
+                            + (val.force_comment?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td class='force_nextcall' style='vertical-align: middle'>"
+                            + (val.force_nextcall?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td class='delay_hours' style='vertical-align: middle'>"
+                            + (val.delay_hours?val.delay_hours:'-')
+                            + "</td><td class='no_history' style='vertical-align: middle'>"
+                            + (val.no_history?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td class='keep_record' style='vertical-align: middle'>"
+                            + (val.keep_record?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td class=''>" +
+                                "<span title='Edit export form' class='btn edit-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.outcome_id+"'></span>" +
+                                "<span title='Delete export form' class='btn del-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.outcome_id+"'></span>"
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+response.data+"</td></tr>");
+            }
+        });
+    }
+}
+
 /* ==========================================================================
  MODALS ON THIS PAGE
  ========================================================================== */

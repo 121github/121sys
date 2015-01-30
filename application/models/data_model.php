@@ -557,4 +557,13 @@ class Data_model extends CI_Model
         $this->db->where("backup_campaign_id", $form['backup_campaign_id']);
         return $this->db->update("backup_campaign_history", $form);
     }
+
+    public function get_outcomes() {
+        $qry = "select *
+                from outcomes o
+                  left join status_list s ON (s.record_status_id = o.set_status)
+                  left join progress_description p ON (p.progress_id = o.set_progress)
+                order by outcome asc";
+        return $this->db->query($qry)->result_array();
+    }
 }

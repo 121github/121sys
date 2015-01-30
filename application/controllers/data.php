@@ -888,6 +888,15 @@ $this->_campaigns = campaign_access_dropdown();
         $this->template->load('default', 'data/outcomes.php', $data);
     }
 
+    public function get_outcomes() {
+        $outcomes = $this->Data_model->get_outcomes();
+
+        echo json_encode(array(
+            "success" => (!empty($outcomes)),
+            "data" => (!empty($outcomes)?$outcomes:"No data created")
+        ));
+    }
+
     //################################################################################################
     //################################### TRIGGERS functions #########################################
     //################################################################################################
