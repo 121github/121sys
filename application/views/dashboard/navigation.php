@@ -246,6 +246,26 @@
                                    <a href="<?php echo base_url() ?>data/backup_restore" <?php echo @($inner=='backup_restore'?"class='active'":"") ?>>Backup and Restore</a>
                                </div>
                                 <?php } ?>
+                                <?php if(in_array("edit outcomes",$_SESSION['permissions'])){ ?>
+                                    <div class="accordion-inner">
+                                        <a href="<?php echo base_url() ?>data/outcomes" <?php echo @($inner=='outcomes'?"class='active'":"") ?>>Outcomes</a>
+                                    </div>
+                                <?php } ?>
+                                <?php if(in_array("triggers",$_SESSION['permissions'])){ ?>
+                                    <div class="accordion-inner">
+                                        <a href="<?php echo base_url() ?>data/triggers" <?php echo @($inner=='triggers'?"class='active'":"") ?>>Triggers</a>
+                                    </div>
+                                <?php } ?>
+                                <?php if(in_array("duplicates",$_SESSION['permissions'])){ ?>
+                                    <div class="accordion-inner">
+                                        <a href="<?php echo base_url() ?>data/duplicates" <?php echo @($inner=='duplicates'?"class='active'":"") ?>>Duplicates</a>
+                                    </div>
+                                <?php } ?>
+                                <?php if(in_array("suppression",$_SESSION['permissions'])){ ?>
+                                    <div class="accordion-inner">
+                                        <a href="<?php echo base_url() ?>data/suppression" <?php echo @($inner=='suppression'?"class='active'":"") ?>>Suppression Numbers</a>
+                                    </div>
+                                <?php } ?>
 			                </div>
 			            </div>
 			        </div>
