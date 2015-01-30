@@ -137,6 +137,7 @@ class User extends CI_Controller
 	
     public function account()
     {
+        user_auth_check(false);
 		$campaign_access = campaign_access_dropdown();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
