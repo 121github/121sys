@@ -116,6 +116,10 @@ div.tooltip-inner {
    Menu
    ======================================================================== */
 
+.dropdown-menu {
+    border: 1px solid grey;
+}
+
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
     background-color: #e7e7e7;
     color: black;

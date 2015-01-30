@@ -87,6 +87,22 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                 <?php if(in_array("archive data",$_SESSION['permissions'])){ ?>
                                 <li><a href="<?php echo base_url() ?>data/backup_restore" <?php echo @($inner=='backup_restore'?"class='active'":"") ?>>Backup and Restore</a></li>
                                  <?php } ?>
+                                <?php if (in_array("edit outcomes", $_SESSION['permissions'])) { ?>
+                                    <li>
+                                        <a href="<?php echo base_url() ?>data/outcomes" <?php echo @($inner=='outcomes'?"class='active'":"") ?>>Outcomes</a></li>
+                                <?php } ?>
+                                <?php if (in_array("triggers", $_SESSION['permissions'])) { ?>
+                                    <li>
+                                        <a href="<?php echo base_url() ?>data/triggers" <?php echo @($inner=='triggers'?"class='active'":"") ?>>Triggers</a></li>
+                                <?php } ?>
+                                <?php if (in_array("duplicates", $_SESSION['permissions'])) { ?>
+                                    <li>
+                                        <a href="<?php echo base_url() ?>data/duplicates" <?php echo @($inner=='duplicates'?"class='active'":"") ?>>Duplicates</a></li>
+                                <?php } ?>
+                                <?php if (in_array("suppression", $_SESSION['permissions'])) { ?>
+                                    <li>
+                                        <a href="<?php echo base_url() ?>data/suppression" <?php echo @($inner=='suppression'?"class='active'":"") ?>>Suppression Numbers</a></li>
+                                <?php } ?>
                             </ul>
                         </li>
                             <?php } ?>
