@@ -56,10 +56,14 @@ foreach($recordings as $k=>$row){
 if(!empty($transfer_number)){
 $owner = $row['owner']; 	
 $endtime = $row['endtime']; //the endtime of the call is the starttime of the transfer
-$transfer_qry = "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime') group by id";
+
+$db2->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate")->from('recordings.calls');
+$db2->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime')");
+$db2->group_by("group by id");
 $this->firephp->log($transfer_qry);
-$transfers = $db2->query($transfer_qry)->result_array();
-$this->firephp->log($db2);
+$transfer_query = $db2->get('recordings.calls');
+$transfers = $transfer_query->result_array();
+$this->firephp->log($db2->last_query());
 foreach($transfers as $k=>$row){
 	$recordings[] = $row;	
 }
