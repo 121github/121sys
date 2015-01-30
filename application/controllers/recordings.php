@@ -50,6 +50,7 @@ $qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,
 $qry = rtrim($qry,"union ");
 $this->firephp->log($qry);
 $result = $db2->query($qry);
+$this->firephp->log($result);
 $recordings = $result->result_array();
 
 foreach($recordings as $k=>$row){
