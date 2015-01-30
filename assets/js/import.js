@@ -260,7 +260,11 @@ var importer = {
             dataType: "JSON"
         }).done(function(response) {
             if (response.success) {
+				if($('#campaign option:selected').attr('ctype')=="B2B"){
                 importer.create_companies();
+				} else {
+				importer.tidy_up();	
+				}
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while adding the contact addresses</span>");
 				importer.undo_changes();
