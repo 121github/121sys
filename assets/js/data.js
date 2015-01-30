@@ -872,6 +872,21 @@ var add_record = {
 
 var outcomes = {
     init: function () {
+        $(document).on("click", '.edit-outcome-btn', function(e) {
+            e.preventDefault();
+            outcomes.edit_outcome($(this));
+        });
+
+        $(document).on('click', '.close-outcome-btn', function(e) {
+            e.preventDefault();
+            outcomes.close_outcome();
+        });
+
+        $(document).on('click', '.save-outcome-btn', function(e) {
+            e.preventDefault();
+            outcomes.save_outcome();
+        });
+
         outcomes.load_outcomes();
     },
     load_outcomes: function() {
@@ -917,8 +932,8 @@ var outcomes = {
                             + "</td><td class='keep_record' style='vertical-align: middle'>"
                             + (val.keep_record?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
                             + "</td><td class=''>" +
-                                "<span title='Edit export form' class='btn edit-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.outcome_id+"'></span>" +
-                                "<span title='Delete export form' class='btn del-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.outcome_id+"'></span>"
+                                "<span title='Edit export form' class='btn edit-outcome-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.outcome_id+"'></span>" +
+                                "<span title='Delete export form' class='btn del-outcome-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.outcome_id+"'></span>"
                             + "</td></tr>");
                     }
                 });
@@ -926,6 +941,53 @@ var outcomes = {
             else {
                 $tbody
                     .append("<tr><td>"+response.data+"</td></tr>");
+            }
+        });
+    },
+    edit_outcome: function(btn) {
+        $(".save-outcome-btn").attr('disabled',false);
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop outcome in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.outcome-container').find('.outcome-panel').show();
+        $('.outcome-content').show();
+        $('.outcome-container').fadeIn()
+        $('.outcome-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    close_outcome: function() {
+
+        $('.modal-backdrop.outcome').fadeOut();
+        $('.outcome-container').fadeOut(500, function() {
+            $('.outcome-content').show();
+            $('.alert').addClass('hidden');
+        });
+    },
+
+    save_outcome: function() {
+        $(".save-details-btn").attr('disabled','disabled');
+        $.ajax({
+            url: helper.baseUrl + 'data/save_outcome',
+            type: "POST",
+            dataType: "JSON",
+            data: $('#details-form').serialize()
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                outcomes.load_outcomes();
+                //Close edit form
+                outcomes.close_outcome();
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
             }
         });
     }

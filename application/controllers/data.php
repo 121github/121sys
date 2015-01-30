@@ -870,6 +870,9 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller loads the view for the outcomes page
     public function outcomes()
     {
+        $status_list = $this->Form_model->get_status_list();
+        $progress_list = $this->Form_model->get_progress_descriptions();
+
         $data      = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
@@ -883,7 +886,9 @@ $this->_campaigns = campaign_access_dropdown();
             ),
             'javascript' => array(
                 'data.js'
-            )
+            ),
+            'status_list' => $status_list,
+            'progress_list' => $progress_list
         );
         $this->template->load('default', 'data/outcomes.php', $data);
     }

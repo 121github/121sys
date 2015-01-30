@@ -53,6 +53,10 @@
         </div>
     </div>
 
+    <div class="panel panel-primary outcome-container">
+        <?php $this->view('forms/edit_outcome_form.php'); ?>
+    </div>
+
     <script>
         $(document).ready(function () {
             outcomes.init();
