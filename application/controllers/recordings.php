@@ -44,10 +44,11 @@ $qry .= "select call_id,servicename,filepath,starttime,endtime,date_format(start
 $qry = rtrim($qry,"union ");
 $this->firephp->log($qry);
 $array = $db2->query($qry)->result_array();
-//$this->firephp->log($array);
+$this->firephp->log($array);
 foreach($array as $k=> $row){
 $recordings[] = $row;
 }
+$this->firephp->log($recordings);
 foreach($recordings as $k=>$row){
 	$recordings[$k]['duration']=timespan(strtotime($row['starttime']),strtotime($row['endtime']),true);
 	$recordings[$k]['filepath']=base64_encode($row['filepath']);
