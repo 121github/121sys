@@ -28,6 +28,7 @@ class Files extends CI_Controller
 
     public function upload()
     {
+		user_auth_check(false);
         //this function returns all files uploaded to the open directory (unrestricted/no login required)
         $folder = ($this->uri->segment(3) ? $this->uri->segment(3) : "");
         if (!is_dir(FCPATH . "upload/$folder")) {

@@ -25,22 +25,14 @@ There was a problem while finding the selected record details. Maybe it does not
     </span></h2>
 </div>
 <div class="row">
-  <div class="col-md-4 col-sm-12"> 
-
+  <div class="col-md-6 col-sm-12"> 
    <?php $details['stretch'] = true; $this->view('records/panels/record_update.php',$details); ?>
-
-   
-  
 </div>
-  <div class="col-md-4 col-sm-12"> 
+  <div class="col-md-6 col-sm-12"> 
      <span class="stretch-panel">
   <?php $this->view('records/panels/contacts.php',$details); ?>
      </span>
   <?php $this->view('records/panels/scripts.php',$details); ?>
-
-</div>
-  <div class="col-md-4 col-sm-12">
-
 </div>
 </div>
 <div class="row">
