@@ -44,7 +44,7 @@ $db2 = $this->load->database('121backup',true);
 if(count($calls)>0){
 foreach($calls as $row){
 $calltime = $row['contact'];
-$qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
+$qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,owner from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
 $qry = rtrim($qry,"union ");
 $this->firephp->log($qry);
@@ -54,9 +54,9 @@ $recordings = $result->result_array();
 foreach($recordings as $k=>$row){
 //once we have the dials to the customer we look for any transfers relating to those calls	
 if(!empty($transfer_number)){
-	
+$owner = $row['owner']; 	
 $endtime = $row['endtime']; //the endtime of the call is the starttime of the transfer
-$transfer_qry = "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(servicename,' ','') ='$transfer_number' and starttime = '$endtime' and calldate = date('$calltime') group by id";
+$transfer_qry = "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime') group by id";
 $this->firephp->log("transfer_query:".$transfer_qry);
 }
 $transfers = $db2->query($transfer_qry)->result_array();
