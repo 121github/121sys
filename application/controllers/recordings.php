@@ -37,7 +37,7 @@ foreach($numbers as $k =>$number){
 	}
 }
 }
-
+$this->firephp->log($transfer_number);
 $number_list = rtrim($number_list,",");
 
 $db2 = $this->load->database('121backup',true);
@@ -54,8 +54,10 @@ $recordings = $result->result_array();
 foreach($recordings as $k=>$row){
 //once we have the dials to the customer we look for any transfers relating to those calls	
 if(!empty($transfer_number)){
+	
 $endtime = $row['endtime']; //the endtime of the call is the starttime of the transfer
 $transfer_qry = "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(servicename,' ','') ='$transfer_number' and starttime = '$endtime' and calldate = date('$calltime') group by id";
+$this->firephp->log("transfer_query:".$transfer_qry);
 }
 $transfers = $db2->query($transfer_qry)->result_array();
 array_merge($recordings,$transfers);
