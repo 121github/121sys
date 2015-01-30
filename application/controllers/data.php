@@ -863,5 +863,105 @@ $this->_campaigns = campaign_access_dropdown();
         ));
     }
 
+    //################################################################################################
+    //################################### OUTCOMES functions #########################################
+    //################################################################################################
+
+    //this controller loads the view for the outcomes page
+    public function outcomes()
+    {
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Outcomes',
+            'page' => array(
+                'admin' => 'data',
+                'inner' => 'outcomes'
+            ),
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'data.js'
+            )
+        );
+        $this->template->load('default', 'data/outcomes.php', $data);
+    }
+
+    //################################################################################################
+    //################################### TRIGGERS functions #########################################
+    //################################################################################################
+
+    //this controller loads the view for the triggers page
+    public function triggers()
+    {
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Triggers',
+            'page' => array(
+                'admin' => 'data',
+                'inner' => 'triggers'
+            ),
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'data.js'
+            )
+        );
+        $this->template->load('default', 'data/triggers.php', $data);
+    }
+
+
+    //################################################################################################
+    //################################### DUPLICATES functions #######################################
+    //################################################################################################
+
+    //this controller loads the view for the duplicates page
+    public function duplicates()
+    {
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Duplicates',
+            'page' => array(
+                'admin' => 'data',
+                'inner' => 'duplicates'
+            ),
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'data.js'
+            )
+        );
+        $this->template->load('default', 'data/duplicates.php', $data);
+    }
+
+    //################################################################################################
+    //################################### SUPPRESSION functions ######################################
+    //################################################################################################
+
+    //this controller loads the view for the suppression page
+    public function suppression()
+    {
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Suppression',
+            'page' => array(
+                'admin' => 'data',
+                'inner' => 'suppression'
+            ),
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'data.js'
+            )
+        );
+        $this->template->load('default', 'data/suppression.php', $data);
+    }
 
 }
