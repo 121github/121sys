@@ -137,6 +137,7 @@ class User extends CI_Controller
 	
     public function account()
     {
+        user_auth_check(false);
 		$campaign_access = campaign_access_dropdown();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
@@ -171,16 +172,85 @@ class User extends CI_Controller
             ));
             exit;
         }
+
+        $user_id = $_SESSION['user_id'];
+
+        $users = $this->Form_model->get_users();
+        $roles = $this->Form_model->get_roles();
+        $groups = $this->Form_model->get_groups();
+        $teams = $this->Form_model->get_teams();
         
         $data = array(
 			'campaign_access' => $campaign_access,
             'pageId' => 'my-account',
             'pageClass' => 'my-account',
-            'title' => 'My Account'
+            'title' => 'My Account',
+            'roles' => $roles,
+            'groups' => $groups,
+            'teams' => $teams,
+            'users' => $users,
+            'user_id' => $user_id,
+            'javascript' => array(
+                'account.js',
+                'lib/jquery.numeric.min.js',
+            ),
         );
         $this->template->load('default', 'user/account', $data);
     }
-    
+
+    public function get_user_by_id() {
+        if ($this->input->post()) {
+            $user = $this->User_model->get_user_by_id($this->input->post("user_id"));
+
+            echo json_encode(array(
+                "success" => (!empty($user)),
+                "data" => $user
+            ));
+        }
+    }
+
+    /**
+     * Save contact details
+     */
+    public function save_contact_details() {
+        if ($this->input->post()) {
+            $form = array();
+            $form['user_email'] = ($this->input->post("email_form")?$this->input->post("email_form"):NULL);
+            $form['user_telephone'] = ($this->input->post("telephone_form")?$this->input->post("telephone_form"):NULL);
+            $form['ext'] = ($this->input->post("ext_form")?$this->input->post("ext_form"):NULL);
+            $user_id = $this->input->post("user_id");
+
+
+            //Update the contact details
+            $results = $this->User_model->update_user($user_id, $form);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Contact details saved successfully":"ERROR: The Contact details was not saved successfully!")
+            ));
+        }
+    }
+
+    /*
+     * Rsest failed login to 0
+     */
+    public function reset_failed_logins() {
+        if ($this->input->post()) {
+
+            $user_id = $this->input->post('user_id');
+
+            $form['failed_logins'] = 0;
+
+            //Update the user
+            $results = $this->User_model->update_user($user_id, $form);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Failed logins reset to 0 successfully":"ERROR: The Failed logins was not updated successfully!")
+            ));
+        }
+    }
+
     /* at the bottom of default.php template: this function is ran every time a page is loaded and it checks whether user permissions/access have been changed or not so they can be reapplied without needing to log out */
     public function check_session()
     {

@@ -34,7 +34,7 @@ var campaigntransfer = {
 
         $(document).on("click", ".campaign-filter", function(e) {
             e.preventDefault();
-						$icon = $(this).closest('ul').prev('button').find('span');
+            $icon = $(this).closest('ul').prev('button').find('span');
 			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
             $(this).closest('ul').find('a').css("color","black");
