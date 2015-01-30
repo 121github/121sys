@@ -64,6 +64,7 @@ $db3->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner'
 $db3->group_by("calls.id");
 $transfer_query = $db3->get('recordings.calls');
 $this->firephp->log($db3);
+$this->firephp->log($db3->last_query());
 $this->firephp->log($transfer_query);
 $this->firephp->log($transfer_query->num_rows());
 $transfers = $transfer_query->result_array();
