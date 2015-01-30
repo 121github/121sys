@@ -39,10 +39,11 @@ $db2 = $this->load->database('121backup',true);
 if(count($calls)>0){
 foreach($calls as $row){
 $calltime = $row['contact'];
-$qry .= "select calls.id,calls.servicename,calls.filepath,calls.starttime,calls.endtime,calls.date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(calls.servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
+$qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate from calls where  replace(servicename,' ','') in($number_list) and (endtime > '$calltime' - INTERVAL 5 minute or endtime < '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
 $qry = rtrim($qry,"union ");
 $result = $db2->query($qry);
+$this->firephp->log($result->_last_error());
 $recordings = $result->result_array();
 foreach($recordings as $k=>$row){
 	$recordings[$k]['duration']=timespan(strtotime($row['starttime']),strtotime($row['endtime']),true);
