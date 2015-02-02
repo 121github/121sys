@@ -2397,16 +2397,83 @@ confirm_move:function(moveUrl){
         });
     },
     call_player: function(url, filetype) {
-        $(document).on("click", ".close-modal", function() {
-            $('.player').trigger('pause');
+        $(document).off("hidden.bs.modal").on("hidden.bs.modal", function() {
+            wavesurfer.destroy();
+			$('#modal').find('.modal-body').empty();
         });
         $(".confirm-modal").hide();
         $('.modal-title').text('Call Playback');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').html('<audio controls autoplay class="player"><source src="' + url + '" type="audio/' + filetype + '; codecs="theora, vorbis">Your browser does not support the audio element.</audio><p><a style="font-family:Gotham, \'Helvetica Neue\', Helvetica, Arial, sans-serif" href="' + url.replace("ogg", "mp3") + '">Click here to download</a></p>');
+        }).find('.modal-body').html('<div id="waveform"></div><div class="controls"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info" href="' + url.replace("ogg", "mp3") + '">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>');
+		modal.wavesurfer(url.replace('ogg','mp3'));
     },
+	wavesurfer: function(fileurl){
+		// Create an instance
+wavesurfer = Object.create(WaveSurfer);
+// Init & load audio file
+var options = {
+container : document.querySelector('#waveform'),
+waveColor : 'violet',
+progressColor : 'purple',
+loaderColor : 'purple',
+cursorColor : 'navy',
+audioRate: 1
+};
+if (location.search.match('scroll')) {
+options.minPxPerSec = 100;
+options.scrollParent = true;
+}
+if (location.search.match('normalize')) {
+options.normalize = true;
+}
+// Init
+wavesurfer.init(options);
+// Load audio from URL
+wavesurfer.load(fileurl);
+// Regions
+if (wavesurfer.enableDragSelection) {
+wavesurfer.enableDragSelection({
+color: 'rgba(0, 255, 0, 0.1)'
+});
+}
+;
+// Play at once when ready
+// Won't work on iOS until you touch the page
+wavesurfer.on('ready', function () {
+wavesurfer.play();
+$('#duration').text(wavesurfer.getDuration()+'s');
+});
+// Report errors
+wavesurfer.on('error', function (err) {
+console.error(err);
+});
+// Do something when the clip is over
+wavesurfer.on('finish', function () {
+console.log('Finished playing');
+});
+
+$('#speedplay').click(function(){
+	wavesurfer.setPlaybackRate(Number($('#audiorate').text())+0.2);
+	$('#audiorate').text(Number($('#audiorate').text())+0.2);
+});
+$('#slowplay').click(function(){
+	wavesurfer.setPlaybackRate(Number($('#audiorate').text())-0.2);
+	$('#audiorate').text(Number($('#audiorate').text())-0.2);
+});
+$('#playpause').click(function(){
+	if($('#playpause i').hasClass('glyphicon-pause')){
+	$('#playpause').html('<i class="glyphicon glyphicon-play"></i> Play');
+	wavesurfer.pause();
+	console.log("Paused");
+	} else {
+	$('#playpause').html('<i class="glyphicon glyphicon-pause"></i> Pause');	
+	wavesurfer.play();
+	console.log("Playing");
+	}
+});
+	},
     delete_history: function(history_id, modal) {
         $('.modal-title').text('Confirm Delete');
         $('#modal').modal({

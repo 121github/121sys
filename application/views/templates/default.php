@@ -31,6 +31,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <link rel="shortcut icon" href="<?php echo base_url(); ?>assets/themes/<?php echo (isset($_SESSION['theme_folder'])?$_SESSION['theme_folder']:"default"); ?>/icon.png">
 <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
 <!--Need to make a new icon for this
           <link rel="apple-touch-icon" href="<?php echo base_url(); ?>assets/img/apple-touch-icon.png" />-->
 </head>
