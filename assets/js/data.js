@@ -870,6 +870,237 @@ var add_record = {
     }
 }
 
+var outcomes = {
+    init: function () {
+        $(document).on("click", '.new-outcome-btn', function(e) {
+            e.preventDefault();
+            outcomes.new_outcome();
+        });
+
+        $(document).on("click", '.edit-outcome-btn', function(e) {
+            e.preventDefault();
+            outcomes.edit_outcome($(this));
+        });
+
+        $(document).on('click', '.close-outcome-btn', function(e) {
+            e.preventDefault();
+            outcomes.close_outcome();
+        });
+
+        $(document).on('click', '.save-outcome-btn', function(e) {
+            e.preventDefault();
+            outcomes.save_outcome();
+        });
+
+        $(document).on('click', '.del-outcome-btn', function(e) {
+            e.preventDefault();
+            modal.remove_outcome($(this).attr('item-id'));
+        });
+
+        outcomes.load_outcomes();
+    },
+    load_outcomes: function() {
+        $tbody = $('.outcome-data .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_outcomes',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td style='display: none'>"
+                                + "<span class='outcome_id' style='display: none'>"+val.outcome_id+"</span>"
+                                + "<span class='outcome' style='display: none'>"+(val.outcome?val.outcome:"")+"</span>"
+                                + "<span class='set_status' style='display: none'>"+val.set_status+"</span>"
+                                + "<span class='set_progress' style='display: none'>"+val.set_progress+"</span>"
+                                + "<span class='disabled' style='display: none'>"+val.disabled+"</span>"
+                                + "<span class='sort' style='display: none'>"+(val.sort?val.sort:"")+"</span>"
+                                + "<span class='delay_hours' style='display: none'>"+(val.delay_hours?val.delay_hours:"")+"</span>"
+                                + "<span class='positive' style='display: none'>"+val.positive+"</span>"
+                                + "<span class='dm_contact' style='display: none'>"+val.dm_contact+"</span>"
+                                + "<span class='enable_select' style='display: none'>"+val.enable_select+"</span>"
+                                + "<span class='force_comment' style='display: none'>"+val.force_comment+"</span>"
+                                + "<span class='force_nextcall' style='display: none'>"+val.force_nextcall+"</span>"
+                                + "<span class='no_history' style='display: none'>"+val.no_history+"</span>"
+                                + "<span class='keep_record' style='display: none'>"+val.keep_record+"</span>"
+
+                            + "</td><td class='' style='vertical-align: middle'>"
+                            + "<input id="+val.outcome_id+" type='checkbox' "+(val.disabled?"":"checked")+" item-id='"+val.outcome_id+"' onclick='outcomes.disable($(this), this.checked ? 0 : 1)'>"
+                            + "</td><td style='vertical-align: middle'>"
+                            + val.outcome
+                            + "</td><td class='status' style='vertical-align: middle'>"
+                            + (val.status_name?val.status_name:'-')
+                            + "</td><td class='progress_description' style='vertical-align: middle'>"
+                            + (val.description?val.description:'-')
+                            + "</td><td style='vertical-align: middle'>"
+                            + (val.positive==1?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td style='vertical-align: middle'>"
+                            + (val.dm_contact==1?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td style='vertical-align: middle'>"
+                            + (val.sort?val.sort:'-')
+                            + "</td><td style='vertical-align: middle'>"
+                            + (val.enable_select==1?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td style='vertical-align: middle'>"
+                            + (val.force_comment==1?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td style='vertical-align: middle'>"
+                            + (val.force_nextcall==1?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td style='vertical-align: middle'>"
+                            + (val.delay_hours?val.delay_hours:'-')
+                            + "</td><td style='vertical-align: middle'>"
+                            + (val.no_history==1?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td" +
+                            " style='vertical-align: middle'>"
+                            + (val.keep_record==1?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
+                            + "</td><td class=''>" +
+                                "<span title='Edit export form' class='btn edit-outcome-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.outcome_id+"'></span>" +
+                                "<span title='Delete export form' class='btn del-outcome-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.outcome_id+"'></span>"
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+response.data+"</td></tr>");
+            }
+        });
+    },
+    new_outcome: function() {
+        $(".save-outcome-btn").attr('disabled',false);
+
+        $('#outcome-form')[0].reset();
+        $('.status_select').selectpicker('val',[]).selectpicker('render');
+        $('.progress_select').selectpicker('val',[]).selectpicker('render');
+        $('#outcome-form').find('input[name="outcome_id"]').val("");
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop outcome in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.outcome-container').find('.outcome-panel').show();
+        $('.outcome-content').show();
+        $('.outcome-container').fadeIn()
+        $('.outcome-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    edit_outcome: function(btn) {
+        $(".save-outcome-btn").attr('disabled',false);
+
+        var row = btn.closest('tr');
+        $('#outcome-form').find('input[name="outcome_id"]').val(row.find('.outcome_id').text());
+        $('#outcome-form').find('input[name="outcome"]').val(row.find('.outcome').text());
+        $('#outcome-form').find('input[name="outcome"]').val(row.find('.outcome').text());
+        $('.status_select').selectpicker('val',row.find('.set_status').text()).selectpicker('render');
+        $('.progress_select').selectpicker('val',row.find('.set_progress').text()).selectpicker('render');
+        $('#outcome-form').find('input[name="disabled"]').prop( "checked", (row.find('.disabled').text()==1) );
+        $('#outcome-form').find('input[name="disabled"]').val( (row.find('.disabled').text()==1?1:0) );
+        $('#outcome-form').find('input[name="sort"]').val(row.find('.sort').text());
+        $('#outcome-form').find('input[name="delay_hours"]').val(row.find('.delay_hours').text());
+        $('#outcome-form').find('input[name="keep_record"]').prop( "checked", (row.find('.keep_record').text()==1) );
+        $('#outcome-form').find('input[name="keep_record"]').val( (row.find('.keep_record').text()==1)?1:0 );
+        $('#outcome-form').find('input[name="force_comment"]').prop( "checked", (row.find('.force_comment').text()==1) );
+        $('#outcome-form').find('input[name="force_comment"]').val( (row.find('.force_comment').text()==1)?1:0 );
+        $('#outcome-form').find('input[name="force_nextcall"]').prop( "checked", (row.find('.force_nextcall').text()==1) );
+        $('#outcome-form').find('input[name="force_nextcall"]').val( (row.find('.force_nextcall').text()==1)?1:0 );
+        $('#outcome-form').find('input[name="positive"]').prop( "checked", (row.find('.positive').text()==1) );
+        $('#outcome-form').find('input[name="positive"]').val( (row.find('.positive').text()==1)?1:0 );
+        $('#outcome-form').find('input[name="dm_contact"]').prop( "checked", (row.find('.dm_contact').text()==1) );
+        $('#outcome-form').find('input[name="dm_contact"]').val( (row.find('.dm_contact').text()==1)?1:0 );
+        $('#outcome-form').find('input[name="enable_select"]').prop( "checked", (row.find('.enable_select').text()==1) );
+        $('#outcome-form').find('input[name="enable_select"]').val( (row.find('.enable_select').text()==1)?1:0 );
+
+
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop outcome in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.outcome-container').find('.outcome-panel').show();
+        $('.outcome-content').show();
+        $('.outcome-container').fadeIn()
+        $('.outcome-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    close_outcome: function() {
+
+        $('.modal-backdrop.outcome').fadeOut();
+        $('.outcome-container').fadeOut(500, function() {
+            $('.outcome-content').show();
+            $('.alert').addClass('hidden');
+        });
+    },
+
+    save_outcome: function() {
+        $(".save-details-btn").attr('disabled','disabled');
+        $.ajax({
+            url: helper.baseUrl + 'data/save_outcome',
+            type: "POST",
+            dataType: "JSON",
+            data: $('#outcome-form').serialize()
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                outcomes.load_outcomes();
+                //Close edit form
+                outcomes.close_outcome();
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+    disable: function(item, disabled) {
+        var outcome_id = item.attr('item-id');
+
+        $.ajax({
+            url: helper.baseUrl + 'data/disable_outcome',
+            type: "POST",
+            dataType: "JSON",
+            data: {'outcome_id': outcome_id, 'disabled': disabled}
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                outcomes.load_outcomes();
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+    delete_outcome: function(outcome_id) {
+        $.ajax({
+            url: helper.baseUrl + 'data/delete_outcome',
+            type: "POST",
+            dataType: "JSON",
+            data: {'outcome_id': outcome_id}
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                outcomes.load_outcomes();
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    }
+}
+
 /* ==========================================================================
  MODALS ON THIS PAGE
  ========================================================================== */
@@ -886,6 +1117,19 @@ var modal = {
         $('.confirm-modal').on('click', function(e) {
             $('#modal').modal('toggle');
             backup_restore.restore_backup($btn);
+        });
+    },
+
+    remove_outcome: function(outcome_id) {
+        $('.modal-title').text('Confirm Delete');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to delete this outcome?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            $('#modal').modal('toggle');
+            outcomes.delete_outcome(outcome_id);
         });
     }
 }

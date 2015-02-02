@@ -870,6 +870,9 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller loads the view for the outcomes page
     public function outcomes()
     {
+        $status_list = $this->Form_model->get_status_list();
+        $progress_list = $this->Form_model->get_progress_descriptions();
+
         $data      = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
@@ -883,9 +886,96 @@ $this->_campaigns = campaign_access_dropdown();
             ),
             'javascript' => array(
                 'data.js'
-            )
+            ),
+            'status_list' => $status_list,
+            'progress_list' => $progress_list
         );
         $this->template->load('default', 'data/outcomes.php', $data);
+    }
+
+    public function get_outcomes() {
+        $outcomes = $this->Data_model->get_outcomes();
+
+        echo json_encode(array(
+            "success" => (!empty($outcomes)),
+            "data" => (!empty($outcomes)?$outcomes:"No data created")
+        ));
+    }
+
+    /**
+     * Insert/Update an outcome
+     */
+    public function save_outcome() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $form['sort'] = ((isset($form['sort']) && ($form['sort']))?$form['sort']:null);
+            $form['delay_hours'] = ((isset($form['delay_hours']) && ($form['delay_hours']))?$form['delay_hours']:null);
+
+            $form['disabled'] = (isset($form['disabled'])?$form['disabled']:null);
+            $form['positive'] = (isset($form['positive'])?$form['positive']:null);
+            $form['dm_contact'] = (isset($form['dm_contact'])?$form['dm_contact']:null);
+            $form['enable_select'] = (isset($form['enable_select'])?$form['enable_select']:null);
+            $form['force_comment'] = (isset($form['force_comment'])?$form['force_comment']:null);
+            $form['force_nextcall'] = (isset($form['force_nextcall'])?$form['force_nextcall']:null);
+            $form['no_history'] = (isset($form['no_history'])?$form['no_history']:null);
+            $form['keep_record'] = (isset($form['keep_record'])?$form['keep_record']:null);
+
+            if ($form['outcome_id']) {
+                $outcome_id = $form['outcome_id'];
+                unset($form['outcome_id']);
+                //Update the outcome
+                $this->Data_model->update_outcome($outcome_id, $form);
+            }
+            else {
+                //Insert a new outcome
+                $outcome_id = $this->Data_model->insert_outcome($form);
+            }
+
+            echo json_encode(array(
+                "success" => ($outcome_id),
+                "msg" => ($outcome_id?"Outcome saved successfully!":"ERROR: The outcome was not save successfully!")
+            ));
+        }
+    }
+
+    /**
+     * Disable an outcome
+     */
+    public function disable_outcome() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $form['disabled'] = ((isset($form['disabled']) && ($form['disabled']))?$form['disabled']:null);
+
+            $disabled = ($form['disabled']?"disabled":"enabled");
+
+            $outcome_id = $form['outcome_id'];
+            unset($form['outcome_id']);
+            //Update the outcome
+            $results = $this->Data_model->update_outcome($outcome_id, $form);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Outcome ".$disabled." successfully!":"ERROR: The outcome was not save successfully!")
+            ));
+        }
+    }
+
+    /**
+     * Delete outcome
+     */
+    public function delete_outcome() {
+        if ($this->input->is_ajax_request()) {
+            $outcome_id = $this->input->post("outcome_id");
+
+            $results = $this->Data_model->delete_outcome($outcome_id);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Outcome deleted successfully!":"ERROR: The outcome was not deleted successfully!")
+            ));
+        }
     }
 
     //################################################################################################
