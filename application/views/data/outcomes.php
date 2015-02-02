@@ -16,6 +16,13 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i>Outcomes
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle new-outcome-btn"
+                                            data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> New Outcome
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body outcome-data">

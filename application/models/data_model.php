@@ -22,7 +22,7 @@ class Data_model extends CI_Model
 		$data = array();
         $where = "";
         if ($states == "1") {
-            //virgin record only	
+            //virgin record only
             $where .= " and outcome_id is null and (dials = 0 or dials is null) ";
         }
         if ($states == "2") {
@@ -83,7 +83,7 @@ class Data_model extends CI_Model
         $where = "";
         $limit = "";
         if ($state == "1") {
-            //virgin record only	
+            //virgin record only
             $where .= " and outcome_id is null and (dials = 0 or dials is null) ";
         }
         if ($state == "2") {
@@ -121,7 +121,7 @@ class Data_model extends CI_Model
 		$client_ref = "";
 		$fullname = "";
         if (isset($row["contacts"])) {
-            $fullname = (!empty($row["contacts"]["fullname"]) ? $row["contacts"]["fullname"] : ""); 
+            $fullname = (!empty($row["contacts"]["fullname"]) ? $row["contacts"]["fullname"] : "");
         }
 		if(empty($fullname)){
 			$fullname .= (isset($row["contacts"]["title"]) ? $row["contacts"]["title"] : "");
@@ -133,7 +133,7 @@ class Data_model extends CI_Model
             if (isset($row["records"])) {
 								if(isset($row["records"]['client_ref'])){
 								$client_ref=$row["records"]['client_ref'];
-								unset($row["records"]['client_ref']);		
+								unset($row["records"]['client_ref']);
 								}
                 //insert the options into the records table data
                 $row["records"]['campaign_id'] = $options['campaign'];
@@ -223,7 +223,7 @@ class Data_model extends CI_Model
             if (isset($row["records"])) {
 				if(isset($row["records"]['client_ref'])){
 								$client_ref=$row["records"]['client_ref'];
-								unset($row["records"]['client_ref']);		
+								unset($row["records"]['client_ref']);
 								}
                 //insert the options into the records table data
                 $row["records"]['campaign_id'] = $options['campaign'];
@@ -565,5 +565,23 @@ class Data_model extends CI_Model
                   left join progress_description p ON (p.progress_id = o.set_progress)
                 order by outcome asc";
         return $this->db->query($qry)->result_array();
+    }
+
+    public function insert_outcome($outcome)
+    {
+        $this->db->insert("outcomes", $outcome);
+        return $this->db->insert_id();
+    }
+
+    public function update_outcome($outcome_id, $outcome)
+    {
+        $this->db->where("outcome_id", $outcome_id);
+        return $this->db->update("outcomes", $outcome);
+    }
+
+    public function delete_outcome($outcome_id)
+    {
+        $this->db->where("outcome_id", $outcome_id);
+        return $this->db->delete("outcomes");
     }
 }
