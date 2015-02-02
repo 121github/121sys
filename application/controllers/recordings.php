@@ -85,11 +85,11 @@ $id = intval($this->uri->segment('3'));
 $filename = base64_decode($this->uri->segment('4'));
 $file = urlencode(str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/34recordings/","",$filename))));
 
-$path = "http://recordings.121system.com:8034/";
+$path = "http://recordings.121leads.co.uk:8034/";
 
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
-//$this->firephp->log($conversion_path);
+$this->firephp->log($conversion_path);
 //the old way was a bit slow
 //$context = stream_context_create(array('http' => array('header'=>'Connection: close')));
 //file_get_contents($conversion_path,false,$context);
@@ -119,7 +119,7 @@ $filetype="ogg";
  $filetype="ogg";
     }
 
-$path = "http://recordings.121system.com:8034/";
+$path = "http://recordings.121leads.co.uk:8034/";
 
 echo json_encode(array("success"=>true,"filename"=>$path."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
 
