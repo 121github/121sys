@@ -2094,7 +2094,10 @@ var record = {
 				$body = "";
                 if (response.data.length > 0) {
                     $.each(response.data, function(i, val) {
-                        $body += '<tr><td>' + val.calldate + '</td><td>' + val.duration + '</td><td>' + val.servicename + '</td><td width="180"><a href="#" class="listen" data-id="' + val.call_id + '" data-path="'+val.filepath+'"><span class="speaker glyphicon glyphicon-play"></span> Listen</a> <span class="player-loading hidden">Please wait  <img src="' + helper.baseUrl + 'assets/img/ajax-load-black.gif"/></span></td></tr>';
+						var icon = "";
+						if(val.transfer){
+						icon = '<img style="vertical-align:top"  src="'+helper.baseUrl+'assets/img/icons/icon-transfer.png"/>'; }
+                        $body += '<tr><td>' + val.calldate + '</td><td>' + val.duration + '</td><td>' + val.servicename + ' '+icon+'</td><td width="180"><a href="#" class="listen" data-id="' + val.call_id + '" data-path="'+val.filepath+'"><span class="speaker glyphicon glyphicon-play"></span> Listen</a> <span class="player-loading hidden">Please wait  <img src="' + helper.baseUrl + 'assets/img/ajax-load-black.gif"/></span></td></tr>';
                     });
                     $panel.html('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {

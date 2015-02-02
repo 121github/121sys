@@ -31,9 +31,9 @@ if(count($numbers)>0){
 $number_list = "";
 foreach($numbers as $k =>$number){
 	if($number['description']<>"Transfer"){
-	$number_list .= '"'.$number['number'].'",';	
+	$number_list .= '"'.trim($number['number']).'",';	
 	} else {
-	$transfer_number = 	$number['number'];
+	$transfer_number = 	trim($number['number']);
 	}
 }
 }
@@ -85,7 +85,7 @@ $id = intval($this->uri->segment('3'));
 $filename = base64_decode($this->uri->segment('4'));
 $file = urlencode(str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/34recordings/","",$filename))));
 
-$path = "http://recordings.121leads.co.uk:8034/";
+$path = "http://recordings.121system.com:8034/";
 
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
@@ -119,45 +119,13 @@ $filetype="ogg";
  $filetype="ogg";
     }
 
-$path = "http://recordings.121leads.co.uk:8034/";
+$path = "http://recordings.121system.com:8034/";
 
 echo json_encode(array("success"=>true,"filename"=>$path."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
 
 
 }
 
-public function test(){
-
-$db2 = $this->load->database('121backup',true);
-$transfer_number = '01254355536';
-$calltime = '2015-01-30 11:18:00';
-$qry = "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,owner from calls where  replace(servicename,' ','') in(01276246201) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id ";
-$result = $db2->query($qry);
-$recordings = $result->result_array();
-
-foreach($recordings as $k=>$row){
-//once we have the dials to the customer we look for any transfers relating to those calls	
-if(!empty($transfer_number)){
-$owner = $row['owner']; 	
-$endtime = $row['endtime']; //the endtime of the call is the starttime of the transfer
-
-$db2->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate",false);
-$db2->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime')",null,false);
-$db2->group_by("calls.id");
-$transfer_query = $db2->get('recordings.calls');
-$transfers = $transfer_query->result_array();
-
-foreach($transfers as $k=>$row){
-	$row['transfer']=true;
-	$recordings[] = $row;
-}
-$this->firephp->log($recordings);
-}
-
-}
-
-	
-}
 
 }
 ?>
