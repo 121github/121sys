@@ -1115,6 +1115,10 @@ var duplicates = {
             duplicates.load_duplicates();
         });
 
+        $('.selectpicker').on('change', function(){
+            duplicates.load_duplicates();
+        });
+
         $('.filter-form').find('input[name="filter_input"]').blur(function(){
             duplicates.load_duplicates();
         });
@@ -1127,19 +1131,20 @@ var duplicates = {
         duplicates.load_duplicates();
     },
     load_duplicates: function() {
+        var field_ar = $('.duplicates-filter').val();
+
         var filter_name = $('.filter-form').find('input[name="filter_name"]').val();
         var filter_field = $('.filter-form').find('input[name="filter_field"]').val();
 
         var img_loader = helper.baseUrl+"assets/img/ajax-loader-bar.gif";
 
-        if (filter_field) {
-            $('.filter-form').find('input[name="filter_input"]').attr("placeholder", "Insert the "+filter_name);
-            $('.filter-form').find('input[name="filter_input"]').attr("disabled", false);
+        $thead = $('.filter-table .ajax-table').find('thead');
+        $thead.empty();
+        $tbody = $('.filter-table .ajax-table').find('tbody');
+        $tbody.empty();
 
-            $thead = $('.filter-table .ajax-table').find('thead');
-            $thead.empty();
-            $tbody = $('.filter-table .ajax-table').find('tbody');
-            $tbody.empty();
+        if (field_ar) {
+            $('.filter-form').find('input[name="filter_input"]').attr("disabled", false);
             $tbody
                 .append("<tr><td colspan='3'><img src='"+img_loader+"'></td>");
             $.ajax({
@@ -1152,19 +1157,28 @@ var duplicates = {
                 $tbody.empty();
                 if (response.success) {
                     if (response.data.length) {
+                        var thead_fields = "";
+                        $.each(field_ar, function (k, field) {
+                            thead_fields += "<th>"+field+"</th>";
+                        });
                         $thead
                             .append(
-                            "<th>Name</th>" +
+                            thead_fields +
                             "<th>Duplicates count</th>");
                         $.each(response.data, function (i, val) {
-
+                            var tbody_fields = "";
+                            var search_url = helper.baseUrl + "search/custom/records";
+                            $.each(field_ar, function (k, field) {
+                                tbody_fields += "<td>"+val[field]+"</td>";
+                                search_url += "/"+(field.replace("_","-"))+"/"+val[field];
+                            });
                             $tbody
-                                .append("<tr><td class='name'>"
-                                + val.name
-                                + "</td><td class='duplicates-count'>"
+                                .append("<tr>"
+                                + tbody_fields
+                                + "<td class='duplicates-count'>"
                                 + val.duplicates_count
                                 + "</td><td style='text-align: right'>" +
-                                "<a href='"+response.search_url+val.name+"'><span class='marl btn btn-success view-records-btn btn-sm'>View duplicate records</span></a>"
+                                "<a href='"+search_url+"'><span class='marl btn btn-success view-records-btn btn-sm'>View duplicate records</span></a>"
                                 + "</td></tr>");
                         });
                     }
@@ -1176,7 +1190,9 @@ var duplicates = {
             });
         }
         else {
-
+            $('.filter-form').find('input[name="filter_input"]').attr("disabled", true);
+            $tbody
+                .append("<tr><td>Please, select a filter in order to search the duplicates records</td>");
         }
     }
 }

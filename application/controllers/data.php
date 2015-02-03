@@ -1043,27 +1043,17 @@ $this->_campaigns = campaign_access_dropdown();
 
             $form = $this->input->post();
 
-            $field = $form['filter_field'];
+            $field_ar = $form['field'];
             $filter_input = $form['filter_input'];
 
-            if (isset($field)) {
+            if (isset($field_ar)) {
 
-                $results = $this->Data_model->get_duplicates($field, $filter_input);
-            }
-
-            switch($field) {
-                case "telephone_number":
-                    $search_field = "contact-telephone";
-                    break;
-                case "postcode":
-                    $search_field = "contact-postcode";
-                    break;
+                $results = $this->Data_model->get_duplicates($field_ar, $filter_input);
             }
 
             echo json_encode(array(
                 "success" => (!empty($results)),
-                "data" => (!empty($results)?$results:"No duplicates found"),
-                "search_url" => base_url() . "search/custom/records/".$search_field."/"
+                "data" => (!empty($results)?$results:"No duplicates found")
             ));
         }
     }

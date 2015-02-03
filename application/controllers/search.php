@@ -197,7 +197,7 @@ class Search extends CI_Controller
             "update-date-to" => "update-date-to",
             "renewal-date-from" => "renewal-date-from",
             "renewal-date-to" => "renewal-date-to",
-            "contact-postcode" => "contact-postcode",
+            "postcode" => "postcode",
             "telephone-number" => "telephone-number"
         );
         
@@ -220,7 +220,7 @@ class Search extends CI_Controller
             "emails" => "emails",
 			"template" => "template",
             "parked" => "parked",
-            "contact-postcode" => "contact-postcode"
+            "postcode" => "postcode"
         );
         $fields          = array();
         $array           = array();

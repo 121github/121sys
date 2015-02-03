@@ -718,7 +718,7 @@ class Filter_model extends CI_Model
         }
 
         //contact_postcode
-        if (in_array("contact-postcode", $fields)) {
+        if (in_array("postcode", $fields)) {
             $qry .= " left join contact_addresses cona on cona.contact_id = contacts.contact_id ";
         }
 
@@ -814,9 +814,9 @@ class Filter_model extends CI_Model
 
         //contact_postcode
         $contact_postcode_qry = "";
-        if (in_array("contact-postcode", $fields)) {
-            $contact_postcode_qry .= " and cona.postcode = '".$array['contact-postcode']."'";
-            unset($array['contact-postcode']);
+        if (in_array("postcode", $fields)) {
+            $contact_postcode_qry .= " and cona.postcode = '".$array['postcode']."'";
+            unset($array['postcode']);
         }
 
         $update_date_qry = "";

@@ -588,29 +588,34 @@ class Data_model extends CI_Model
     /**
      * Get duplicates by a filter
      */
-    public function get_duplicates($field, $filter_input) {
-        switch($field) {
-            case "telephone_number":
-                $join = "left join contacts using (urn)
-                                 left join contact_telephone using (contact_id)";
-                break;
-            case "postcode":
-                $join = "left join contacts using (urn)
-                                 left join contact_addresses using (contact_id)";
-                break;
-        }
+    public function get_duplicates($field_ar, $filter_input) {
 
-        $qry = "select ".$field." as name, count(*) as duplicates_count
-                from records ";
-        $qry .= $join;
-        $qry .= " where ".$field." is not null";
-        if ($filter_input) {
-            $qry .= " and ".$field." like '".$filter_input."%'";
+        $select = "";
+        $join = " left join contacts using (urn)";
+        foreach($field_ar as $field) {
+            if ($field == "telephone_number") {
+                $join .= " left join contact_telephone using (contact_id)";
+            }
+            elseif ($field == "postcode") {
+                $join .= " left join contact_addresses using (contact_id)";
+            }
+            $select .= $field.",";
         }
-        if ($field == "telephone_number") {
+        $select =substr($select, 0, strlen($select)-1);
+
+
+        $qry = "select ".$select.", count(*) as duplicates_count
+                from records ";
+
+        $qry .= $join;
+        $qry .= " where CONCAT(".$select.") is not null";
+        if ($filter_input) {
+            $qry .= " and CONCAT(".$select.") like '%".$filter_input."%'";
+        }
+        if (in_array("telephone_number",$field_ar)) {
             $qry .= " and description != 'Transfer'";
         }
-        $qry .= " group by ".$field."
+        $qry .= " group by CONCAT(".$select.")
                 having count(*)>1";
 
         return $this->db->query($qry)->result_array();
