@@ -10,10 +10,10 @@ class Migrate extends CI_Controller
 
 parent::__construct();
 $this->load->model('Database_model');	
+$this->load->library('migration');
 }
 
 public function index(){
-	$this->load->library('migration');
 if ( !$this->migration->current())
 {
 	$this->firephp->log($this->migration->error_string());
@@ -28,7 +28,6 @@ public function force_version(){
 }
 
 public function rollback(){
-	$this->load->library('migration');
 	$rollback = $this->Database_model->current();
 if ( !$this->migration->version($rollback))
 {
