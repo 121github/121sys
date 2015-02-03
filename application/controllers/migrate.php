@@ -16,10 +16,15 @@ public function index(){
 	$this->load->library('migration');
 if ( !$this->migration->current())
 {
-	show_error($this->migration->error_string());
+	$this->firephp->log($this->migration->error_string());
 } else {
       echo json_encode(array("success"=>true,"version"=>$this->Database_model->get_version()));
 }	
+}
+
+public function force_version(){
+	$version = $this->uri->segment(3);
+	$this->migration->version($version);	
 }
 
 public function rollback(){
@@ -27,7 +32,7 @@ public function rollback(){
 	$rollback = $this->Database_model->current();
 if ( !$this->migration->version($rollback))
 {
-	show_error($this->migration->error_string());
+	$this->firephp->log($this->migration->error_string());
 } else {
       echo json_encode(array("success"=>true,"version"=>$this->Database_model->get_version()));
 }	
