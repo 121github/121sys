@@ -12,7 +12,6 @@
     <form class="form-horizontal">
      <input name="urn" type="hidden" value="<?php echo $urn ?>">
       <input name="contact_id" type="hidden" value="">
-      <input name="date_created" type="hidden" value="<?php echo date('Y-m-d H:i:s') ?>">
       <?php if($_SESSION['config']['use_fullname']): ?>
             <div class="form-group input-group-sm">
         <input type="text" class="form-control" placeholder="Full name" name="fullname" value="">

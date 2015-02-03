@@ -148,6 +148,7 @@ $this->_campaigns = campaign_access_dropdown();
 			if (!empty($array["dob"])) {
                 $array["dob"] = to_mysql_datetime($array["dob"]);
             }
+ 			$array["date_created"] = date('Y-m-d H:i:s');
             if ($this->db->insert('contacts', array_filter($array))):
                 echo json_encode(array(
                     "success" => true,
@@ -161,7 +162,9 @@ $this->_campaigns = campaign_access_dropdown();
     public function add_company()
     {
         if ($this->input->is_ajax_request()) {
-            if ($this->db->insert('companies', array_filter($this->input->post()))):
+			$array = $this->input->post();
+			$array["date_created"] = date('Y-m-d H:i:s');
+            if ($this->db->insert('companies', array_filter($array))):
                 echo json_encode(array(
                     "success" => true,
                     "id" => $this->db->insert_id()

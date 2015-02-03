@@ -2,6 +2,19 @@
         <div class="col-lg-12">
           <div class="panel panel-primary">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>File Browser</div>
+            <div class="pull-right">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                  <?php foreach($folders as $row): ?>
+                  <li><a href="#" class="folder-filter" id="<?php echo $row['folder_id'] ?>"><?php echo $row['folder_name'] ?></a> </li>
+                  <?php endforeach ?>
+                  <li class="divider"></li>
+                  <li><a class="folder-filter" ref="#">Show All</a> </li>
+                </ul>
+              </div>
+            </div>
+            
             <div class="panel-body browser-panel"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> 
             </div>
           </div>

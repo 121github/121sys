@@ -13,6 +13,7 @@ class Files extends CI_Controller
         //check_page_permissions("view files");
         $this->_campaigns = campaign_access_dropdown();
 		$this->load->model('Docscanner_model');
+		$this->load->model('File_model');
     }
 
 
@@ -63,14 +64,15 @@ class Files extends CI_Controller
 
         if (!empty($_FILES) && is_dir(FCPATH . "upload/$folder")) {
 
-            $tempFile = $_FILES['file']['tmp_name'];          //3
-
+           $tempFile = $_FILES['file']['tmp_name'];          //3
+			$originalname = preg_replace("/[^A-Za-z0-9 ]/", '', $_FILES['file']['name']);
             $targetPath = FCPATH . "upload/$folder/";  //4
-
-            $targetFile = $targetPath . date('ymdhis-') . $_FILES['file']['name'];  //5
+			$newname = date('ymdhis')."-".$originalname;
+            $targetFile = $targetPath . $newname;  //5
 
             if (move_uploaded_file($tempFile, $targetFile)) {
                 //Send email to cvproject@121customerinsight.co.uk
+				$this->File_model->add_file($filename,$folder);
                 if ($this->send_email($targetFile)) {
                     //Return success
                     echo json_encode(array("success" => true));
@@ -114,8 +116,10 @@ class Files extends CI_Controller
 	
 	
 		public function index(){
+			$folders = $this->File_model->get_folders();
 	        $data                 = array(
             'campaign_access' => $this->_campaigns,
+			'folders'=>$folders,
 			'pageId' => 'Admin',
             'title' => 'Admin',
             'javascript' => array(
