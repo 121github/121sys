@@ -24,7 +24,8 @@ if ( !$this->migration->current())
 
 public function force_version(){
 	$version = $this->uri->segment(3);
-	$this->migration->version($version);	
+	$this->migration->version($version);
+	$this->firephp->log($this->migration->error_string());
 }
 
 public function rollback(){

@@ -10,6 +10,7 @@ class Migration_update_9 extends CI_Migration
 
   public function up()
   {
+	   $this->firephp->log("starting migration 9");
     //Adding search actions permissions and edit export permissions
       $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES
                       (112, 'edit outcomes', 'Data'),
