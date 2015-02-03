@@ -1,6 +1,6 @@
     <div class="panel panel-primary company-panel">
       <div class="panel-heading">
-        <h4 class="panel-title"> Company Details<?php if(in_array("add companies",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pull-right add-company-btn"></span><?php } ?> </h4>
+        <h4 class="panel-title"> Company Details<?php if(in_array("add companies",$_SESSION['permissions'])){ ?><!--Not using this feature yet. Need to clear the company id value in form if we start using it <span class="glyphicon glyphicon-plus pull-right add-company-btn"></span>--><?php } ?> </h4>
       </div>
       <div class="form-container">
         <?php $this->view('forms/edit_company_form.php',array("urn"=>$details['record']["urn"])) ?>
