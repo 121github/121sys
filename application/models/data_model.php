@@ -588,10 +588,18 @@ class Data_model extends CI_Model
     /**
      * Get duplicates by a filter
      */
-    public function get_duplicates($field_ar, $filter_input) {
+    public function get_duplicates($form) {
+        $field_ar = $form['field'];
+        $filter_input = $form['filter_input'];
+
+        $where = "";
+        if (!empty($form['campaign'])) {
+            $where .= " and campaign_id = ".$form['campaign']." ";
+        }
 
         $select = "";
-        $join = " left join contacts using (urn)";
+        $join = " inner join campaigns using (campaign_id)
+                left join contacts using (urn)";
         foreach($field_ar as $field) {
             if ($field == "telephone_number") {
                 $join .= " left join contact_telephone using (contact_id)";
@@ -615,6 +623,7 @@ class Data_model extends CI_Model
         if (in_array("telephone_number",$field_ar)) {
             $qry .= " and description != 'Transfer'";
         }
+        $qry .= $where;
         $qry .= " group by CONCAT(".$select.")
                 having count(*)>1";
 

@@ -1103,6 +1103,18 @@ var outcomes = {
 
 var duplicates = {
     init: function () {
+
+        $(document).on("click", ".campaign-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.filter-form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+
+            duplicates.load_duplicates();
+        });
+
         $(document).on("click", ".duplicates-filter", function(e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
@@ -1171,6 +1183,9 @@ var duplicates = {
                             $.each(field_ar, function (k, field) {
                                 tbody_fields += "<td>"+val[field]+"</td>";
                                 search_url += "/"+(field.replace("_","-"))+"/"+val[field];
+                                if ($('.filter-form').find('input[name="campaign"]').val()) {
+                                    search_url += "/campaign/"+$('.filter-form').find('input[name="campaign"]').val();
+                                }
                             });
                             $tbody
                                 .append("<tr>"

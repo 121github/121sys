@@ -18,6 +18,18 @@
                             <div class="panel-heading">
                                 <i class="fa fa-bar-chart-o fa-fw"></i>Search duplicate records
                                 <div class="pull-right">
+                                    <div class="btn-group">
+                                        <input type="hidden" name="campaign">
+
+                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
+                                        <ul class="dropdown-menu pull-right" role="menu">
+                                            <?php foreach($campaigns as $row): ?>
+                                                <li><a href="#" class="campaign-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                                            <?php endforeach ?>
+                                            <li class="divider"></li>
+                                            <li><a class="campaign-filter" ref="#" style="color: green;">All Campaigns</a> </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <!-- /.panel-heading -->

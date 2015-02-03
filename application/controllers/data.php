@@ -1016,6 +1016,8 @@ $this->_campaigns = campaign_access_dropdown();
             array('field'=>'postcode', 'name'=>'Postcode')
         );
 
+        $campaigns = $this->Form_model->get_campaigns();
+
         $data      = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
@@ -1030,7 +1032,8 @@ $this->_campaigns = campaign_access_dropdown();
             'javascript' => array(
                 'data.js'
             ),
-            'filter' => $filter
+            'filter' => $filter,
+            'campaigns' => $campaigns
         );
         $this->template->load('default', 'data/duplicates.php', $data);
     }
@@ -1043,12 +1046,9 @@ $this->_campaigns = campaign_access_dropdown();
 
             $form = $this->input->post();
 
-            $field_ar = $form['field'];
-            $filter_input = $form['filter_input'];
+            if (isset($form['field'])) {
 
-            if (isset($field_ar)) {
-
-                $results = $this->Data_model->get_duplicates($field_ar, $filter_input);
+                $results = $this->Data_model->get_duplicates($form);
             }
 
             echo json_encode(array(
