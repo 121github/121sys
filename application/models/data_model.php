@@ -584,4 +584,35 @@ class Data_model extends CI_Model
         $this->db->where("outcome_id", $outcome_id);
         return $this->db->delete("outcomes");
     }
+
+    /**
+     * Get duplicates by a filter
+     */
+    public function get_duplicates($field, $filter_input) {
+        switch($field) {
+            case "telephone_number":
+                $join = "left join contacts using (urn)
+                                 left join contact_telephone using (contact_id)";
+                break;
+            case "postcode":
+                $join = "left join contacts using (urn)
+                                 left join contact_addresses using (contact_id)";
+                break;
+        }
+
+        $qry = "select ".$field." as name, count(*) as duplicates_count
+                from records ";
+        $qry .= $join;
+        $qry .= " where ".$field." is not null";
+        if ($filter_input) {
+            $qry .= " and ".$field." like '".$filter_input."%'";
+        }
+        if ($field == "telephone_number") {
+            $qry .= " and description != 'Transfer'";
+        }
+        $qry .= " group by ".$field."
+                having count(*)>1";
+
+        return $this->db->query($qry)->result_array();
+    }
 }

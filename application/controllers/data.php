@@ -1011,6 +1011,11 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller loads the view for the duplicates page
     public function duplicates()
     {
+        $filter = array(
+            array('field'=>'telephone_number', 'name'=>'Telephone number'),
+            array('field'=>'postcode', 'name'=>'Postcode')
+        );
+
         $data      = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
@@ -1024,9 +1029,43 @@ $this->_campaigns = campaign_access_dropdown();
             ),
             'javascript' => array(
                 'data.js'
-            )
+            ),
+            'filter' => $filter
         );
         $this->template->load('default', 'data/duplicates.php', $data);
+    }
+
+    /**
+     * Get the duplicates records by a filter
+     */
+    public function get_duplicates() {
+        if ($this->input->is_ajax_request()) {
+
+            $form = $this->input->post();
+
+            $field = $form['filter_field'];
+            $filter_input = $form['filter_input'];
+
+            if (isset($field)) {
+
+                $results = $this->Data_model->get_duplicates($field, $filter_input);
+            }
+
+            switch($field) {
+                case "telephone_number":
+                    $search_field = "contact-telephone";
+                    break;
+                case "postcode":
+                    $search_field = "contact-postcode";
+                    break;
+            }
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "data" => (!empty($results)?$results:"No duplicates found"),
+                "search_url" => base_url() . "search/custom/records/".$search_field."/"
+            ));
+        }
     }
 
     //################################################################################################

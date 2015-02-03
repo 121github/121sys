@@ -13,13 +13,44 @@
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
-                    <form id="record-form">
+                    <form class="filter-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Search duplicate records
+                            <div class="panel-heading">
+                                <i class="fa fa-bar-chart-o fa-fw"></i>Search duplicate records
+                                <div class="pull-right">
+                                    <div class="btn-group">
+                                        <input type="hidden" name="filter_name">
+                                        <input type="hidden" name="filter_field">
+                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Filter</button>
+                                        <ul class="dropdown-menu pull-right" role="menu">
+                                            <?php foreach($filter as $row): ?>
+                                                <li><a href="#" class="duplicates-filter" id="<?php echo $row['field'] ?>"><?php echo $row['name'] ?></a> </li>
+                                            <?php endforeach ?>
+                                            <li class="divider"></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">
-
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="pull-right" style="margin-bottom: 10px; width: 30%">
+                                            <input type="text" name="filter_input" class="form-control" placeholder="Filter input" disabled/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-table">
+                                    <table class="table ajax-table" >
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td colspan="3">Please, select a filter in order to search the duplicates records</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                     </form>
                 </div>

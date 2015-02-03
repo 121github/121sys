@@ -1101,6 +1101,86 @@ var outcomes = {
     }
 }
 
+var duplicates = {
+    init: function () {
+        $(document).on("click", ".duplicates-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.filter-form').find('input[name="filter_field"]').val($(this).attr('id'));
+            $('.filter-form').find('input[name="filter_name"]').val(($(this).html()));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+
+            duplicates.load_duplicates();
+        });
+
+        $('.filter-form').find('input[name="filter_input"]').blur(function(){
+            duplicates.load_duplicates();
+        });
+
+        $('.filter-form').submit(function(){
+            duplicates.load_duplicates();
+            return false;
+        });
+
+        duplicates.load_duplicates();
+    },
+    load_duplicates: function() {
+        var filter_name = $('.filter-form').find('input[name="filter_name"]').val();
+        var filter_field = $('.filter-form').find('input[name="filter_field"]').val();
+
+        var img_loader = helper.baseUrl+"assets/img/ajax-loader-bar.gif";
+
+        if (filter_field) {
+            $('.filter-form').find('input[name="filter_input"]').attr("placeholder", "Insert the "+filter_name);
+            $('.filter-form').find('input[name="filter_input"]').attr("disabled", false);
+
+            $thead = $('.filter-table .ajax-table').find('thead');
+            $thead.empty();
+            $tbody = $('.filter-table .ajax-table').find('tbody');
+            $tbody.empty();
+            $tbody
+                .append("<tr><td colspan='3'><img src='"+img_loader+"'></td>");
+            $.ajax({
+                url: helper.baseUrl + 'data/get_duplicates',
+                type: "POST",
+                dataType: "JSON",
+                data: $('.filter-form').serialize(),
+                async: false
+            }).done(function(response){
+                $tbody.empty();
+                if (response.success) {
+                    if (response.data.length) {
+                        $thead
+                            .append(
+                            "<th>Name</th>" +
+                            "<th>Duplicates count</th>");
+                        $.each(response.data, function (i, val) {
+
+                            $tbody
+                                .append("<tr><td class='name'>"
+                                + val.name
+                                + "</td><td class='duplicates-count'>"
+                                + val.duplicates_count
+                                + "</td><td style='text-align: right'>" +
+                                "<a href='"+response.search_url+val.name+"'><span class='marl btn btn-success view-records-btn btn-sm'>View duplicate records</span></a>"
+                                + "</td></tr>");
+                        });
+                    }
+                }
+                else {
+                    $tbody
+                        .append("<tr><td>"+response.data+"</td></tr>");
+                }
+            });
+        }
+        else {
+
+        }
+    }
+}
+
 /* ==========================================================================
  MODALS ON THIS PAGE
  ========================================================================== */
