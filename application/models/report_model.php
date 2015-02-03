@@ -227,12 +227,15 @@ class Report_model extends CI_Model
     	$source = $options['source'];
     	
     	$where = "";
+		$hours_where = "";
     	$crosswhere = "";
     	if (!empty($date_from)) {
     		$where .= " and date(contact) >= '$date_from' ";
+			$hours_where = " and `date` >= '$date_from' ";
     	}
     	if (!empty($date_to)) {
     		$where .= " and date(contact) <= '$date_to' ";
+			$hours_where = " and `date` >= '$date_to' ";
     	}
     	if (!empty($campaign)) {
     		$where .= " and h.campaign_id = '$campaign' ";
@@ -248,7 +251,7 @@ class Report_model extends CI_Model
     		$where .= " and r.source_id = '$source' ";
     	}
     $joins = " left join users u using(user_id) left join records r using(urn) ";
-    	$qry = "select h.user_id,u.name,if(transfer_count is null,0,transfer_count) transfer_count,if(cross_count is null,0,cross_count) cross_count,d.dials+if(cross_count is null,'0',cross_count) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h $joins left join 
+    	$qry = "select h.user_id,u.name,if(transfer_count is null,0,transfer_count) transfer_count,if(cross_count is null,0,cross_count) cross_count,d.dials+if(cross_count is null,'0',cross_count) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id $hours_where) as duration from history h $joins left join 
 		(select count(*) transfer_count,h.user_id from history h $joins where h.outcome_id = 70 $where group by h.user_id) transfers on transfers.user_id = h.user_id left join 
 		(select count(*) cross_count,h.user_id from history h $joins left join cross_transfers ct using(history_id) where h.outcome_id = 71 $crosswhere group by h.user_id) crosstrans on crosstrans.user_id = h.user_id left join 
 		(select count(*) dials,h.user_id from history h $joins where h.outcome_id <> 71 $where group by user_id) d on d.user_id = h.user_id group by h.user_id "
@@ -270,12 +273,15 @@ class Report_model extends CI_Model
     	$group_by_field = $options['view'];
 		
     	$where = "";
+		$hours_where = "";
     	$crosswhere = "";
     	if (!empty($date_from)) {
     		$where .= " and date(contact) >= '$date_from' ";
+			$hours_where .= " and `date` >= '$date_from' ";
     	}
     	if (!empty($date_to)) {
     		$where .= " and date(contact) <= '$date_to' ";
+			$hours_where .= " and `date` >= '$date_to' ";
     	}
     	if (!empty($campaign)) {
     		$where .= " and h.campaign_id = '$campaign' ";
@@ -310,7 +316,7 @@ class Report_model extends CI_Model
 
         $joins = " left join users u using(user_id) left join teams on h.team_id = teams.team_id left join records r using(urn) left join data_sources using(source_id) left join campaigns c on c.campaign_id = h.campaign_id ";
 	
-    	$qry = "select date(contact) `date` $select,if(transfer_count is null,0,transfer_count) transfer_count,if(cross_count is null,0,cross_count) cross_count,d.dials+if(cross_count is null,'0',cross_count) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id) as duration from history h $joins left join 
+    	$qry = "select date(contact) `date` $select,if(transfer_count is null,0,transfer_count) transfer_count,if(cross_count is null,0,cross_count) cross_count,d.dials+if(cross_count is null,'0',cross_count) as total_dials,(select sum(hr.duration) from hours hr where h.user_id=hr.user_id $hours_where) as duration from history h $joins left join 
 		(select count(*) transfer_count,date(contact) `date` $select from history h $joins where h.outcome_id = 70 $where group by date(contact) $group_by) transfers on transfers.`date` = date(h.contact) $transfer_join left join 
 		(select count(*) cross_count,date(contact) `date` $select from history h $joins left join cross_transfers ct using(history_id) where h.outcome_id = 71 $crosswhere group by date(contact) $group_by) crosstrans on crosstrans.`date` = date(h.contact) $cross_transfers_join left join 
 		(select count(*) dials,date(contact) `date` $select from history h $joins where h.outcome_id <> 71 $where group by date(contact) $group_by) d on d.`date` = date(h.contact) $all_dials_join group by date(h.contact) $group_by having total_dials is not null"
@@ -329,14 +335,17 @@ class Report_model extends CI_Model
         $source = $options['source'];
         $group_by_field = $options['view'];
 
-        $where = "";
-        $crosswhere = "";
-        if (!empty($date_from)) {
-            $where .= " and date(contact) >= '$date_from' ";
-        }
-        if (!empty($date_to)) {
-            $where .= " and date(contact) <= '$date_to' ";
-        }
+    	$where = "";
+		$hours_where = "";
+    	$crosswhere = "";
+    	if (!empty($date_from)) {
+    		$where .= " and date(contact) >= '$date_from' ";
+			$hours_where .= " and `date` >= '$date_from' ";
+    	}
+    	if (!empty($date_to)) {
+    		$where .= " and date(contact) <= '$date_to' ";
+			$hours_where .= " and `date` >= '$date_to' ";
+    	}
         if (!empty($campaign)) {
             $where .= " and h.campaign_id = '$campaign' ";
             $crosswhere .= " and ct.campaign_id = '$campaign' ";

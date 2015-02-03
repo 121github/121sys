@@ -12,7 +12,7 @@ var targets = {
                 },
                 format: 'DD/MM/YYYY',
                 minDate: "02/07/2014",
-                startDate: "02/07/2014",
+                startDate: moment(),
                 endDate: moment()
             },
             function(start, end, element) {

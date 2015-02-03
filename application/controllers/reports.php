@@ -620,9 +620,9 @@ class Reports extends CI_Controller
                 $totalDuration += $row['duration'];
             }
             
-            $totalTransfersPercent      = number_format(($totalTransfers * 100) / $totalDials, 2) . '%';
-            $totalCrossTransfersPercent = number_format(($totalCrossTransfers * 100) / $totalDials, 2) . '%';
-            $totalPercent               = number_format((($totalTransfers + $totalCrossTransfers) * 100) / $totalDials, 2) . '%';
+            $totalTransfersPercent      = ($totalDials?number_format(($totalTransfers * 100) / $totalDials, 2) . '%':"0");
+            $totalCrossTransfersPercent = ($totalDials?number_format(($totalCrossTransfers * 100) / $totalDials, 2) . '%':"0");
+            $totalPercent               = ($totalDials?number_format((($totalTransfers + $totalCrossTransfers) * 100) / $totalDials, 2) . '%':"0");
             
             $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
             

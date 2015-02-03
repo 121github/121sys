@@ -19,10 +19,9 @@
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Target Report
              <div class="pull-right">
               <div class="btn-group">
-                      <form class="filter-form">
-        <input type="hidden" name="date_from">
-        <input type="hidden" name="date_to">
-   <button class="daterange btn btn-default btn-xs" style="margin-right:5px"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button>
+                      <form class="filter-form"> <input type="hidden" name="date_from" value="<?php echo date('Y-m-d') ?>">
+<input type="hidden" name="date_to" value="<?php echo date('Y-m-d') ?>">
+   <button class="daterange btn btn-default btn-xs" style="margin-right:5px"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "Today"; ?> </span></button>
    </form>
    </div></div>
             </div>

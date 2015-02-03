@@ -72,7 +72,7 @@ class Files extends CI_Controller
 
             if (move_uploaded_file($tempFile, $targetFile)) {
                 //Send email to cvproject@121customerinsight.co.uk
-				$this->File_model->add_file($filename,$folder);
+				//$this->File_model->add_file($filename,$folder);
                 if ($this->send_email($targetFile)) {
                     //Return success
                     echo json_encode(array("success" => true));
