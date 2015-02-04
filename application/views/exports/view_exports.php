@@ -23,7 +23,6 @@
                                         <input type="hidden" name="date_to">
                                         <input type="hidden" name="campaign">
                                         <input type="hidden" name="campaign_name">
-                                        <input type="hidden" name="campaign_name">
                                         <input type="hidden" name="export_forms_id">
 
                                         <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button>

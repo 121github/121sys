@@ -1101,6 +1101,117 @@ var outcomes = {
     }
 }
 
+var duplicates = {
+    init: function () {
+
+        $(document).on("click", ".campaign-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.filter-form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+
+            duplicates.load_duplicates();
+        });
+
+        $(document).on("click", ".duplicates-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.filter-form').find('input[name="filter_field"]').val($(this).attr('id'));
+            $('.filter-form').find('input[name="filter_name"]').val(($(this).html()));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+
+            duplicates.load_duplicates();
+        });
+
+        $('.selectpicker').on('change', function(){
+            duplicates.load_duplicates();
+        });
+
+        $('.filter-form').find('input[name="filter_input"]').blur(function(){
+            duplicates.load_duplicates();
+        });
+
+        $('.filter-form').submit(function(){
+            duplicates.load_duplicates();
+            return false;
+        });
+
+        duplicates.load_duplicates();
+    },
+    load_duplicates: function() {
+        var field_ar = $('.duplicates-filter').val();
+
+        var filter_name = $('.filter-form').find('input[name="filter_name"]').val();
+        var filter_field = $('.filter-form').find('input[name="filter_field"]').val();
+
+        var img_loader = helper.baseUrl+"assets/img/ajax-loader-bar.gif";
+
+        $thead = $('.filter-table .ajax-table').find('thead');
+        $thead.empty();
+        $tbody = $('.filter-table .ajax-table').find('tbody');
+        $tbody.empty();
+
+        if (field_ar) {
+            $('.filter-form').find('input[name="filter_input"]').attr("disabled", false);
+            $tbody
+                .append("<tr><td colspan='3'><img src='"+img_loader+"'></td>");
+            $.ajax({
+                url: helper.baseUrl + 'data/get_duplicates',
+                type: "POST",
+                dataType: "JSON",
+                data: $('.filter-form').serialize(),
+                async: false
+            }).done(function(response){
+                $tbody.empty();
+                if (response.success) {
+                    if (response.data.length) {
+                        var thead_fields = "";
+                        $.each(field_ar, function (k, field) {
+                            thead_fields += "<th>"+field+"</th>";
+                        });
+                        $thead
+                            .append(
+                            thead_fields +
+                            "<th>Duplicates count</th>");
+                        $.each(response.data, function (i, val) {
+                            var tbody_fields = "";
+                            var search_url = helper.baseUrl + "search/custom/records";
+                            $.each(field_ar, function (k, field) {
+                                tbody_fields += "<td>"+val[field]+"</td>";
+                                search_url += "/"+(field.replace("_","-"))+"/"+val[field];
+                                if ($('.filter-form').find('input[name="campaign"]').val()) {
+                                    search_url += "/campaign/"+$('.filter-form').find('input[name="campaign"]').val();
+                                }
+                            });
+                            $tbody
+                                .append("<tr>"
+                                + tbody_fields
+                                + "<td class='duplicates-count'>"
+                                + val.duplicates_count
+                                + "</td><td style='text-align: right'>" +
+                                "<a href='"+search_url+"'><span class='marl btn btn-success view-records-btn btn-sm'>View duplicate records</span></a>"
+                                + "</td></tr>");
+                        });
+                    }
+                }
+                else {
+                    $tbody
+                        .append("<tr><td>"+response.data+"</td></tr>");
+                }
+            });
+        }
+        else {
+            $('.filter-form').find('input[name="filter_input"]').attr("disabled", true);
+            $tbody
+                .append("<tr><td>Please, select a filter in order to search the duplicates records</td>");
+        }
+    }
+}
+
 /* ==========================================================================
  MODALS ON THIS PAGE
  ========================================================================== */

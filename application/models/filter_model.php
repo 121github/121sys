@@ -720,6 +720,16 @@ class Filter_model extends CI_Model
             $qry .= " left join survey_answers on surveys.survey_id = survey_answers.survey_id ";
         }
 
+        //contact_telephone
+        if (in_array("telephone-number", $fields)) {
+            $qry .= " left join contact_telephone cont on cont.contact_id = contacts.contact_id ";
+        }
+
+        //contact_postcode
+        if (in_array("postcode", $fields)) {
+            $qry .= " left join contact_addresses cona on cona.contact_id = contacts.contact_id ";
+        }
+
         //only join the email tables if we need them
         $email_qry = "";
 		$template_qry = "";
@@ -803,6 +813,20 @@ class Filter_model extends CI_Model
             unset($array['campaigns.campaign_id']);
         }
 
+        //contact_telephone
+        $contact_telephone_qry = "";
+        if (in_array("telephone-number", $fields)) {
+            $contact_telephone_qry .= " and cont.telephone_number = '".$array['telephone-number']."'";
+            unset($array['telephone-number']);
+        }
+
+        //contact_postcode
+        $contact_postcode_qry = "";
+        if (in_array("postcode", $fields)) {
+            $contact_postcode_qry .= " and cona.postcode = '".$array['postcode']."'";
+            unset($array['postcode']);
+        }
+
         $update_date_qry = "";
         if (in_array("update-date-from", $fields) || in_array("update-date-to", $fields) || in_array("renewal-date-from", $fields) || in_array("renewal-date-to", $fields)) {
             $update_date = "";
@@ -839,8 +863,10 @@ class Filter_model extends CI_Model
             }
         }
 
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry";
-				
+
+
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry $contact_telephone_qry $contact_postcode_qry";
+
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause

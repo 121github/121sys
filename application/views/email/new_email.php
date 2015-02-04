@@ -32,6 +32,7 @@
 				<p>
 					<span class="glyphicon glyphicon-question-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="Add more than one address separated by comas"></span>
 					To
+					<span class="to-msg" style="color:red; font-style: italic; display: none;">You must enter a valid email, or comma separate multiple</span>
 					<span class="glyphicon glyphicon-plus pull-right add-contact" option='send_to' data-toggle="tooltip" data-html="true" data-placement="top"></span>
 				</p>
 				<input type="text" class="form-control" name="send_to"
@@ -43,6 +44,7 @@
 				<p>
 					<span class="glyphicon glyphicon-question-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="Add more than one address separated by comas"></span>
 					CC
+					<span class="cc-msg" style="color:red; font-style: italic; display: none;">You must enter a valid email, or comma separate multiple</span>
 					<span class="glyphicon glyphicon-plus pull-right add-contact" option='cc' data-toggle="tooltip" data-html="true" data-placement="top"></span>
 				</p>
 				<input type="text" class="form-control" name="cc"
@@ -54,6 +56,7 @@
 				<p>
 					<span class="glyphicon glyphicon-question-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="Add more than one address separated by comas"></span>
 					BCC
+					<span class="bcc-msg" style="color:red; font-style: italic; display: none;">You must enter a valid email, or comma separate multiple</span>
 					<span class="glyphicon glyphicon-plus pull-right add-contact" option='bcc' data-toggle="tooltip" data-html="true" data-placement="top"></span>
 				</p>
 				<input type="text" class="form-control" name="bcc"

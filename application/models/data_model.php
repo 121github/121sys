@@ -584,4 +584,49 @@ class Data_model extends CI_Model
         $this->db->where("outcome_id", $outcome_id);
         return $this->db->delete("outcomes");
     }
+
+    /**
+     * Get duplicates by a filter
+     */
+    public function get_duplicates($form) {
+        $field_ar = $form['field'];
+        $filter_input = $form['filter_input'];
+
+        $where = "";
+        if (!empty($form['campaign'])) {
+            $where .= " and campaign_id = ".$form['campaign']." ";
+        }
+
+        $select = "";
+        $join = " inner join campaigns using (campaign_id)
+                left join contacts using (urn)";
+        foreach($field_ar as $field) {
+            if ($field == "telephone_number") {
+                $join .= " left join contact_telephone using (contact_id)";
+            }
+            elseif ($field == "postcode") {
+                $join .= " left join contact_addresses using (contact_id)";
+            }
+            $select .= $field.",";
+        }
+        $select =substr($select, 0, strlen($select)-1);
+
+
+        $qry = "select ".$select.", count(*) as duplicates_count
+                from records ";
+
+        $qry .= $join;
+        $qry .= " where CONCAT(".$select.") is not null";
+        if ($filter_input) {
+            $qry .= " and CONCAT(".$select.") like '%".$filter_input."%'";
+        }
+        if (in_array("telephone_number",$field_ar)) {
+            $qry .= " and description != 'Transfer'";
+        }
+        $qry .= $where;
+        $qry .= " group by CONCAT(".$select.")
+                having count(*)>1";
+
+        return $this->db->query($qry)->result_array();
+    }
 }

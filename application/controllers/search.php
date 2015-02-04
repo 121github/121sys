@@ -196,7 +196,9 @@ class Search extends CI_Controller
             "update-date-from" => "update-date-from",
             "update-date-to" => "update-date-to",
             "renewal-date-from" => "renewal-date-from",
-            "renewal-date-to" => "renewal-date-to"
+            "renewal-date-to" => "renewal-date-to",
+            "postcode" => "postcode",
+            "telephone-number" => "telephone-number"
         );
         
         $search_fields_2 = array(
@@ -217,7 +219,8 @@ class Search extends CI_Controller
 			"transfers" => "transfers",
             "emails" => "emails",
 			"template" => "template",
-            "parked" => "parked"
+            "parked" => "parked",
+            "postcode" => "postcode"
         );
         $fields          = array();
         $array           = array();
