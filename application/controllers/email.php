@@ -196,50 +196,61 @@ class Email extends CI_Controller
             }
         }
 
+        $msg = "";
+
     	//Save the email in the history table
         unset($form['template_attachments']);
         $email_id = $this->Email_model->add_new_email_history($form);
         $response = ($email_id)?true:false;
 
-        if ($response && !empty($attachmentsForm)) {
-            //Save the new attachments in the email_history table
-            $response = $this->save_attachment_by_email($attachmentsForm, $email_id);
-        }
-
-        if (!empty($attachmentsForm)) {
-            //Add the attachments to the form
-            $form['template_attachments'] = $attachmentsForm;
-        }
-
-		
-		
-		
-    	//Add the tracking image to know if the email is read
-        $form_to_send = $form;
-        $form_to_send['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?id=".$email_id."'>";
-
-		$webform = $this->Email_model->get_webform_id($placeholder_data[0]['campaign_id']);
-		//if a webform placeholder is in the email create the link
-		$url = "http://www.121system.com/webforms/remote/".$placeholder_data[0]['campaign_id']."/".$urn."/".$webform."/".$email_id;
-		$form_to_send['body'] = str_replace("[webform]",$url,$form_to_send['body']);
-
-        //Send the email
-        $email_sent = $this->send($form_to_send);
-        unset($form['template_attachments']);
-
-        //Update the status in the Email History table
-        if ($email_sent) {
-            $form['email_id'] = $email_id;
-            $form['status'] = true;
-            $this->Email_model->update_email_history($form);
-            $response = true;
+        if (!$response) {
+            $msg = "ERROR saving the email history. The email was not sent.";
         }
         else {
-            $response = false;
+            if (!empty($attachmentsForm)) {
+                //Save the new attachments in the email_history table
+                $response = $this->save_attachment_by_email($attachmentsForm, $email_id);
+
+                //Add the attachments to the form
+                $form['template_attachments'] = $attachmentsForm;
+
+                if (!$response) {
+                    $msg = "ERROR saving the attachments in the email history table. The email was not sent.";
+                }
+            }
+
+            if ($response) {
+                //Add the tracking image to know if the email is read
+                $form_to_send = $form;
+                $form_to_send['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?id=".$email_id."'>";
+
+                $webform = $this->Email_model->get_webform_id($placeholder_data[0]['campaign_id']);
+                //if a webform placeholder is in the email create the link
+                $url = "http://www.121system.com/webforms/remote/".$placeholder_data[0]['campaign_id']."/".$urn."/".$webform."/".$email_id;
+                $form_to_send['body'] = str_replace("[webform]",$url,$form_to_send['body']);
+
+                //Send the email
+                $email_sent = $this->send($form_to_send);
+                unset($form['template_attachments']);
+
+                //Update the status in the Email History table
+                if ($email_sent) {
+                    $form['email_id'] = $email_id;
+                    $form['status'] = true;
+                    $this->Email_model->update_email_history($form);
+                    $response = true;
+                    $msg = "Email sent successfully!";
+                }
+                else {
+                    $response = false;
+                    $msg = "ERROR: The email was not sent. Please, check that the attached are still in the server or talk with your Administrator";
+                }
+            }
         }
     	
     	echo json_encode(array(
     			"success" => $response,
+                "msg" => $msg
     	));
     }
     
