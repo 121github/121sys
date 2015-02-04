@@ -83,6 +83,13 @@
                                             </tbody>
                                         </table>
                                         <!-- /.table-responsive -->
+                                        <div class="pull-right">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-success btn-xs dropdown-toggle new-email-trigger-btn"
+                                                        data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> New Email Trigger
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- /.row -->
@@ -144,6 +151,13 @@
                                             </tbody>
                                         </table>
                                         <!-- /.table-responsive -->
+                                        <div class="pull-right">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-success btn-xs dropdown-toggle new-ownership-trigger-btn"
+                                                        data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> New Ownership Trigger
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- /.row -->
@@ -159,6 +173,13 @@
         </div>
         <!-- /#page-wrapper -->
     </div>
+</div>
+
+<div class="panel panel-primary email-trigger-container">
+    <?php $this->view('forms/edit_email_trigger_form.php'); ?>
+</div>
+<div class="panel panel-primary ownership-trigger-container">
+    <?php $this->view('forms/edit_ownership_trigger_form.php'); ?>
 </div>
 
 <script>

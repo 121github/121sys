@@ -1104,6 +1104,9 @@ var outcomes = {
 var triggers = {
     init: function () {
 
+        //##########################################################################################
+        //############################### EMAIL TRIGGERS ###########################################
+        //##########################################################################################
         $(document).on("click", ".email-campaign-filter", function (e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
@@ -1135,6 +1138,37 @@ var triggers = {
             triggers.load_email_triggers();
         });
 
+        $(document).on("click", '.new-email-trigger-btn', function(e) {
+            e.preventDefault();
+            triggers.new_email_trigger();
+        });
+
+        $(document).on("click", '.edit-email-trigger-btn', function(e) {
+            e.preventDefault();
+            triggers.edit_email_trigger($(this));
+        });
+
+        $(document).on('click', '.close-email-trigger-btn', function(e) {
+            e.preventDefault();
+            triggers.close_email_trigger();
+        });
+
+        $(document).on('click', '.save-email-trigger-btn', function(e) {
+            e.preventDefault();
+            triggers.save_email_trigger();
+        });
+
+        $(document).on('click', '.del-email-trigger-btn', function(e) {
+            e.preventDefault();
+            modal.remove_email_trigger($(this).attr('item-id'));
+        });
+
+        //Load the email triggers
+        triggers.load_email_triggers();
+
+        //##########################################################################################
+        //############################### OWNERSHIP TRIGGERS #######################################
+        //##########################################################################################
         $(document).on("click", ".ownership-campaign-filter", function (e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
@@ -1156,12 +1190,37 @@ var triggers = {
             triggers.load_ownership_triggers();
         });
 
-        //Load the email triggers
-        triggers.load_email_triggers();
+        $(document).on("click", '.new-ownership-trigger-btn', function(e) {
+            e.preventDefault();
+            triggers.new_ownership_trigger();
+        });
+
+        $(document).on("click", '.edit-ownership-trigger-btn', function(e) {
+            e.preventDefault();
+            triggers.edit_ownership_trigger($(this));
+        });
+
+        $(document).on('click', '.close-ownership-trigger-btn', function(e) {
+            e.preventDefault();
+            triggers.close_ownership_trigger();
+        });
+
+        $(document).on('click', '.save-ownership-trigger-btn', function(e) {
+            e.preventDefault();
+            triggers.save_ownership_trigger();
+        });
+
+        $(document).on('click', '.del-ownership-trigger-btn', function(e) {
+            e.preventDefault();
+            modal.remove_ownership_trigger($(this).attr('item-id'));
+        });
 
         //Load the ownership triggers
         triggers.load_ownership_triggers();
     },
+    //##########################################################################################
+    //############################### EMAIL TRIGGERS FUNCTIONS #################################
+    //##########################################################################################
     load_email_triggers: function() {
         var $tbody = $('.email-triggers .ajax-table').find('tbody');
         $tbody.empty();
@@ -1230,6 +1289,296 @@ var triggers = {
             else {
                 $tbody
                     .append("<tr><td>"+response.data+"</td></tr>");
+            }
+        });
+    },
+    new_email_trigger: function() {
+        $(".save-email-trigger-btn").attr('disabled',false);
+
+        $('#email-trigger-form')[0].reset();
+        $('#email-trigger-form').find('.campaign_select').selectpicker('val',[]).selectpicker('render');
+        $('#email-trigger-form').find('.outcome_select').selectpicker('val',[]).selectpicker('render');
+        $('#email-trigger-form').find('.template_select').selectpicker('val',[]).selectpicker('render');
+        $('#email-trigger-form').find('.user_select').selectpicker('val',[]).selectpicker('render');
+        $('#email-trigger-form').find('input[name="trigger_id"]').val("");
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop email-trigger in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.email-trigger-container').find('.email-trigger-panel').show();
+        $('.email-trigger-content').show();
+        $('.email-trigger-container').fadeIn()
+        $('.email-trigger-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    edit_email_trigger: function(btn) {
+        $(".save-email-trigger-btn").attr('disabled',false);
+
+        var row = btn.closest('tr');
+
+        $('#email-trigger-form').find('input[name="trigger_id"]').val(row.find('.email_trigger_id').text());
+        $('#email-trigger-form').find('.campaign_select').selectpicker('val',row.find('.email_campaign_id').text()).selectpicker('render');
+        $('#email-trigger-form').find('.outcome_select').selectpicker('val',row.find('.email_outcome_id').text()).selectpicker('render');
+        $('#email-trigger-form').find('.template_select').selectpicker('val',row.find('.email_template_id').text()).selectpicker('render');
+
+        $.ajax({
+            url: helper.baseUrl + 'data/get_email_trigger_recipients',
+            type: "POST",
+            dataType: "JSON",
+            data: {'trigger_id': row.find('.email_trigger_id').text()}
+        }).done(function(response) {
+            if (response.success) {
+                $('#email-trigger-form').find('.user_select').selectpicker('val',response.data).selectpicker('render');
+            }
+        });
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop email-trigger in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.email-trigger-container').find('.email-trigger-panel').show();
+        $('.email-trigger-content').show();
+        $('.email-trigger-container').fadeIn()
+        $('.email-trigger-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    close_email_trigger: function() {
+
+        $('.modal-backdrop.email-trigger').fadeOut();
+        $('.email-trigger-container').fadeOut(500, function() {
+            $('.email-trigger-content').show();
+            $('.alert').addClass('hidden');
+        });
+    },
+    save_email_trigger: function() {
+        $(".save-email-trigger-btn").attr('disabled','disabled');
+
+        if (triggers.email_trigger_validation_form()) {
+            $.ajax({
+                url: helper.baseUrl + 'data/save_email_trigger',
+                type: "POST",
+                dataType: "JSON",
+                data: $('#email-trigger-form').serialize()
+            }).done(function(response) {
+                if (response.success) {
+                    //Reload details table
+                    triggers.load_email_triggers();
+                    //Close edit form
+                    triggers.close_email_trigger();
+
+                    flashalert.success(response.msg);
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        }
+        else {
+            flashalert.danger("There is at least one mandatory field empty");
+            $('#email-trigger-form').find('.validation_msg').html("There is at least one mandatory field empty").css('color', 'red').show();
+            $(".save-email-trigger-btn").attr('disabled',false);
+        }
+    },
+    email_trigger_validation_form: function() {
+        var validation = true;
+
+        var campaign_id = $('#email-trigger-form').find('.campaign_select').val();
+        var outcome_id = $('#email-trigger-form').find('.outcome_select').val();
+        var template_id = $('#email-trigger-form').find('.template_select').val();
+        var users = $('#email-trigger-form').find('.user_select').val();
+
+        $('#email-trigger-form').find('.campaign_label').css('color', 'black');
+        $('#email-trigger-form').find('.outcome_label').css('color', 'black');
+        $('#email-trigger-form').find('.template_label').css('color', 'black');
+        $('#email-trigger-form').find('.users_label').css('color', 'black');
+        $('#email-trigger-form').find('.validation_msg').hide();
+
+        if (!campaign_id) {
+            validation = false;
+            $('#email-trigger-form').find('.campaign_label').css('color', 'red');
+        }
+        if (!outcome_id) {
+            validation = false;
+            $('#email-trigger-form').find('.outcome_label').css('color', 'red');
+        }
+        if (!template_id) {
+            validation = false;
+            $('#email-trigger-form').find('.template_label').css('color', 'red');
+        }
+        if (!users) {
+            validation = false;
+            $('#email-trigger-form').find('.users_label').css('color', 'red');
+        }
+
+        return validation;
+    },
+    delete_email_trigger: function(trigger_id) {
+        $.ajax({
+            url: helper.baseUrl + 'data/delete_email_trigger',
+            type: "POST",
+            dataType: "JSON",
+            data: {'trigger_id': trigger_id}
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                triggers.load_email_triggers();
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+    //##########################################################################################
+    //############################### OWNERSHIP TRIGGERS FUNCTIONS #############################
+    //##########################################################################################
+    new_ownership_trigger: function() {
+        $(".save-ownership-trigger-btn").attr('disabled',false);
+
+        $('#ownership-trigger-form')[0].reset();
+        $('#ownership-trigger-form').find('.campaign_select').selectpicker('val',[]).selectpicker('render');
+        $('#ownership-trigger-form').find('.outcome_select').selectpicker('val',[]).selectpicker('render');
+        $('#ownership-trigger-form').find('.user_select').selectpicker('val',[]).selectpicker('render');
+        $('#ownership-trigger-form').find('input[name="trigger_id"]').val("");
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop ownership-trigger in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.ownership-trigger-container').find('.ownership-trigger-panel').show();
+        $('.ownership-trigger-content').show();
+        $('.ownership-trigger-container').fadeIn()
+        $('.ownership-trigger-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    edit_ownership_trigger: function(btn) {
+        $(".save-ownership-trigger-btn").attr('disabled',false);
+
+        var row = btn.closest('tr');
+
+        $('#ownership-trigger-form').find('input[name="trigger_id"]').val(row.find('.ownership_trigger_id').text());
+        $('#ownership-trigger-form').find('.campaign_select').selectpicker('val',row.find('.ownership_campaign_id').text()).selectpicker('render');
+        $('#ownership-trigger-form').find('.outcome_select').selectpicker('val',row.find('.ownership_outcome_id').text()).selectpicker('render');
+
+        $.ajax({
+            url: helper.baseUrl + 'data/get_ownership_trigger_recipients',
+            type: "POST",
+            dataType: "JSON",
+            data: {'trigger_id': row.find('.ownership_trigger_id').text()}
+        }).done(function(response) {
+            if (response.success) {
+                $('#ownership-trigger-form').find('.user_select').selectpicker('val',response.data).selectpicker('render');
+            }
+        });
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop ownership-trigger in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.ownership-trigger-container').find('.ownership-trigger-panel').show();
+        $('.ownership-trigger-content').show();
+        $('.ownership-trigger-container').fadeIn()
+        $('.ownership-trigger-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    close_ownership_trigger: function() {
+
+        $('.modal-backdrop.ownership-trigger').fadeOut();
+        $('.ownership-trigger-container').fadeOut(500, function() {
+            $('.ownership-trigger-content').show();
+            $('.alert').addClass('hidden');
+        });
+    },
+
+    save_ownership_trigger: function() {
+        $(".save-ownership-trigger-btn").attr('disabled','disabled');
+
+        if (triggers.ownership_trigger_validation_form()) {
+            $.ajax({
+                url: helper.baseUrl + 'data/save_ownership_trigger',
+                type: "POST",
+                dataType: "JSON",
+                data: $('#ownership-trigger-form').serialize()
+            }).done(function(response) {
+                if (response.success) {
+                    //Reload details table
+                    triggers.load_ownership_triggers();
+                    //Close edit form
+                    triggers.close_ownership_trigger();
+
+                    flashalert.success(response.msg);
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        }
+        else {
+            flashalert.danger("There is at least one mandatory field empty");
+            $('#ownership-trigger-form').find('.validation_msg').html("There is at least one mandatory field empty").css('color', 'red').show();
+            $(".save-ownership-trigger-btn").attr('disabled',false);
+        }
+    },
+    ownership_trigger_validation_form: function() {
+        var validation = true;
+
+        var campaign_id = $('#ownership-trigger-form').find('.campaign_select').val();
+        var outcome_id = $('#ownership-trigger-form').find('.outcome_select').val();
+        var users = $('#ownership-trigger-form').find('.user_select').val();
+
+        $('#ownership-trigger-form').find('.campaign_label').css('color', 'black');
+        $('#ownership-trigger-form').find('.outcome_label').css('color', 'black');
+        $('#ownership-trigger-form').find('.users_label').css('color', 'black');
+        $('#ownership-trigger-form').find('.validation_msg').hide();
+
+        if (!campaign_id) {
+            validation = false;
+            $('#ownership-trigger-form').find('.campaign_label').css('color', 'red');
+        }
+        if (!outcome_id) {
+            validation = false;
+            $('#ownership-trigger-form').find('.outcome_label').css('color', 'red');
+        }
+        if (!users) {
+            validation = false;
+            $('#ownership-trigger-form').find('.users_label').css('color', 'red');
+        }
+
+        return validation;
+    },
+    delete_ownership_trigger: function(trigger_id) {
+        $.ajax({
+            url: helper.baseUrl + 'data/delete_ownership_trigger',
+            type: "POST",
+            dataType: "JSON",
+            data: {'trigger_id': trigger_id}
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                triggers.load_ownership_triggers();
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
             }
         });
     }
@@ -1376,5 +1725,31 @@ var modal = {
             $('#modal').modal('toggle');
             outcomes.delete_outcome(outcome_id);
         });
-    }
+    },
+
+    remove_email_trigger: function(trigger_id) {
+        $('.modal-title').text('Confirm Delete');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to delete this email trigger?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            $('#modal').modal('toggle');
+            triggers.delete_email_trigger(trigger_id);
+        });
+    },
+
+    remove_ownership_trigger: function(trigger_id) {
+        $('.modal-title').text('Confirm Delete');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to delete this ownership trigger?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            $('#modal').modal('toggle');
+            triggers.delete_ownership_trigger(trigger_id);
+        });
+    },
 }

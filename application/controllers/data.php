@@ -988,6 +988,7 @@ $this->_campaigns = campaign_access_dropdown();
         $campaigns = $this->Form_model->get_campaigns();
         $outcomes = $this->Form_model->get_outcomes();
         $templates = $this->Form_model->get_templates();
+        $users = $this->Form_model->get_users();
 
         $data      = array(
             'campaign_access' => $this->_campaigns,
@@ -1005,7 +1006,8 @@ $this->_campaigns = campaign_access_dropdown();
             ),
             'campaigns' => $campaigns,
             'outcomes' => $outcomes,
-            'templates' => $templates
+            'templates' => $templates,
+            'users' => $users
         );
         $this->template->load('default', 'data/triggers.php', $data);
     }
@@ -1029,6 +1031,75 @@ $this->_campaigns = campaign_access_dropdown();
     }
 
     /**
+     * Get email triggers recipients
+     */
+    public function get_email_trigger_recipients() {
+        if ($this->input->post()) {
+            $trigger_id = $this->input->post('trigger_id');
+
+            $results = $this->Data_model->get_email_trigger_recipients($trigger_id);
+
+            $auxList = array();
+            foreach ($results as $user) {
+                array_push($auxList, $user["user_id"]);
+            }
+            $results = $auxList;
+
+            echo json_encode(array(
+                "success" => ($results),
+                "data" => $results
+            ));
+        }
+    }
+
+    //Save or update an email trigger
+    public function save_email_trigger(){
+        if ($this->input->post()) {
+            $form = $this->input->post();
+
+            $users = (isset($form['user_id'])?$form['user_id']:array());
+            unset($form['user_id']);
+
+
+            if (!empty($form['trigger_id'])) {
+                $results = $this->Data_model->update_email_trigger($form);
+                $trigger_id = $form['trigger_id'];
+            }
+            else {
+                $trigger_id = $this->Data_model->insert_email_trigger($form);
+            }
+
+            if ($trigger_id) {
+                $results = $this->Data_model->update_email_trigger_recipients($users, $trigger_id);
+            }
+
+            echo json_encode(array(
+                "success" => ($trigger_id),
+                "msg" => ($trigger_id?"Email Trigger saved successfully":"ERROR: The Email Trigger was not saved successfully!")
+            ));
+        }
+    }
+
+    //Delete an email trigger
+    public function delete_email_trigger(){
+        if ($this->input->post()) {
+            $trigger_id = $this->input->post("trigger_id");
+
+            $results = $this->Data_model->delete_email_trigger($trigger_id);
+
+            //Delete the users for this trigger
+            if ($results) {
+                $results = $this->Data_model->update_email_trigger_recipients(array(), $trigger_id);
+            }
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Email Trigger deleted successfully":"ERROR: The Email Trigger was not deleted successfully!")
+            ));
+        }
+    }
+
+    /**
      * Get ownership triggers
      */
     public function get_ownership_triggers() {
@@ -1046,6 +1117,74 @@ $this->_campaigns = campaign_access_dropdown();
         }
     }
 
+    /**
+     * Get ownership triggers recipients
+     */
+    public function get_ownership_trigger_recipients() {
+        if ($this->input->post()) {
+            $trigger_id = $this->input->post('trigger_id');
+
+            $results = $this->Data_model->get_ownership_trigger_recipients($trigger_id);
+
+            $auxList = array();
+            foreach ($results as $user) {
+                array_push($auxList, $user["user_id"]);
+            }
+            $results = $auxList;
+
+            echo json_encode(array(
+                "success" => ($results),
+                "data" => $results
+            ));
+        }
+    }
+
+    //Save or update an ownership trigger
+    public function save_ownership_trigger(){
+        if ($this->input->post()) {
+            $form = $this->input->post();
+
+            $users = (isset($form['user_id'])?$form['user_id']:array());
+            unset($form['user_id']);
+
+
+            if (!empty($form['trigger_id'])) {
+                $results = $this->Data_model->update_ownership_trigger($form);
+                $trigger_id = $form['trigger_id'];
+            }
+            else {
+                $trigger_id = $this->Data_model->insert_ownership_trigger($form);
+            }
+
+            if ($trigger_id) {
+                $results = $this->Data_model->update_ownership_trigger_recipients($users, $trigger_id);
+            }
+
+            echo json_encode(array(
+                "success" => ($trigger_id),
+                "msg" => ($trigger_id?"Ownership Trigger saved successfully":"ERROR: The Ownership Trigger was not saved successfully!")
+            ));
+        }
+    }
+
+    //Delete an ownership trigger
+    public function delete_ownership_trigger(){
+        if ($this->input->post()) {
+            $trigger_id = $this->input->post("trigger_id");
+
+            $results = $this->Data_model->delete_ownership_trigger($trigger_id);
+
+            //Delete the users for this trigger
+            if ($results) {
+                $results = $this->Data_model->update_ownership_trigger_recipients(array(), $trigger_id);
+            }
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Ownership Trigger deleted successfully":"ERROR: The Ownership Trigger was not deleted successfully!")
+            ));
+        }
+    }
 
     //################################################################################################
     //################################### DUPLICATES functions #######################################

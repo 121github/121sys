@@ -612,8 +612,76 @@ class Data_model extends CI_Model
 
         $qry .= $where;
 
-        $qry .= "order by t.campaign_id asc";
+        $qry .= "order by c.campaign_name asc";
         return $this->db->query($qry)->result_array();
+    }
+
+    public function get_email_trigger_recipients($trigger_id) {
+        $qry = "select * from email_trigger_recipients where trigger_id = ".$trigger_id;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Add a new email trigger
+     *
+     * @param Form $form
+     */
+    public function insert_email_trigger($form)
+    {
+        $this->db->insert("email_triggers", $form);
+        return $this->db->insert_id();
+
+    }
+
+    /**
+     * Update an email trigger
+     *
+     * @param Form $form
+     */
+    public function update_email_trigger($form)
+    {
+        $this->db->where("trigger_id", $form['trigger_id']);
+        return $this->db->update("email_triggers", $form);
+    }
+
+    /**
+     * Remove an email trigger
+     *
+     * @param integer $trigger_id
+     */
+    public function delete_email_trigger($trigger_id)
+    {
+        $this->db->where("trigger_id", $trigger_id);
+        return $this->db->delete("email_triggers");
+    }
+
+    /**
+     * Update the email trigger recipients. Delete the old_users and add the new_users selected
+     *
+     * @param Form $form
+     */
+    public function update_email_trigger_recipients($users, $trigger_id)
+    {
+        //Delete all the users for this email trigger before
+        $this->db->where("trigger_id", $trigger_id);
+        $results = $this->db->delete("email_trigger_recipients");
+
+        //Insert the new users selected
+        if (!empty($users) && $results) {
+            $aux = array();
+            foreach($users as $user) {
+                array_push($aux,array(
+                    'trigger_id' => $trigger_id,
+                    'user_id' => $user
+                ));
+            }
+            $users = $aux;
+
+            $results = $this->db->insert_batch("email_trigger_recipients", $users);
+        }
+
+        return $results;
     }
 
     public function get_ownership_triggers($form) {
@@ -632,9 +700,77 @@ class Data_model extends CI_Model
 
         $qry .= $where;
 
-        $qry .= "order by t.campaign_id asc";
+        $qry .= "order by c.campaign_name asc";
 
         return $this->db->query($qry)->result_array();
+    }
+
+    public function get_ownership_trigger_recipients($trigger_id) {
+        $qry = "select * from ownership_trigger_users where trigger_id = ".$trigger_id;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Add a new ownership trigger
+     *
+     * @param Form $form
+     */
+    public function insert_ownership_trigger($form)
+    {
+        $this->db->insert("ownership_triggers", $form);
+        return $this->db->insert_id();
+
+    }
+
+    /**
+     * Update an ownership trigger
+     *
+     * @param Form $form
+     */
+    public function update_ownership_trigger($form)
+    {
+        $this->db->where("trigger_id", $form['trigger_id']);
+        return $this->db->update("ownership_triggers", $form);
+    }
+
+    /**
+     * Remove an ownership trigger
+     *
+     * @param integer $trigger_id
+     */
+    public function delete_ownership_trigger($trigger_id)
+    {
+        $this->db->where("trigger_id", $trigger_id);
+        return $this->db->delete("ownership_triggers");
+    }
+
+    /**
+     * Update the ownership trigger recipients. Delete the old_users and add the new_users selected
+     *
+     * @param Form $form
+     */
+    public function update_ownership_trigger_recipients($users, $trigger_id)
+    {
+        //Delete all the users for this ownership trigger before
+        $this->db->where("trigger_id", $trigger_id);
+        $results = $this->db->delete("ownership_trigger_users");
+
+        //Insert the new users selected
+        if (!empty($users) && $results) {
+            $aux = array();
+            foreach($users as $user) {
+                array_push($aux,array(
+                    'trigger_id' => $trigger_id,
+                    'user_id' => $user
+                ));
+            }
+            $users = $aux;
+
+            $results = $this->db->insert_batch("ownership_trigger_users", $users);
+        }
+
+        return $results;
     }
 
     //##########################################################################################
