@@ -105,13 +105,11 @@ var email = {
             data: $('form').serialize()
         }).done(function (response) {
             if (response.success) {
-                //flashalert.success("Email sent successfully");
                 flashalert.success(response.msg);
-                //window.history.back();
+                window.history.back();
             }
             else {
                 $("button[type=submit]").attr('disabled', false);
-                //flashalert.danger("ERROR: Email has not be sent. Check that the attached are still in the server");
                 flashalert.danger(response.msg);
             }
         });
