@@ -558,6 +558,9 @@ class Data_model extends CI_Model
         return $this->db->update("backup_campaign_history", $form);
     }
 
+    //##########################################################################################
+    //############################### OUTCOMES #################################################
+    //##########################################################################################
     public function get_outcomes() {
         $qry = "select *
                 from outcomes o
@@ -585,6 +588,58 @@ class Data_model extends CI_Model
         return $this->db->delete("outcomes");
     }
 
+    //##########################################################################################
+    //############################### TRIGGERS #################################################
+    //##########################################################################################
+    public function get_email_triggers($form) {
+
+        $where = "";
+        if (!empty($form['campaign'])) {
+            $where .= " and t.campaign_id = ".$form['campaign']." ";
+        }
+        if (!empty($form['outcome'])) {
+            $where .= " and t.outcome_id = ".$form['outcome']." ";
+        }
+        if (!empty($form['template'])) {
+            $where .= " and t.template_id = ".$form['template']." ";
+        }
+
+        $qry = "select t.trigger_id, t.campaign_id, t.outcome_id, t.template_id, c.campaign_name as campaign, o.outcome, et.template_name as template
+                from email_triggers t
+                  inner join campaigns c ON (c.campaign_id = t.campaign_id)
+                  inner join outcomes o ON (o.outcome_id = t.outcome_id)
+                  inner join email_templates et ON (et.template_id = t.template_id)";
+
+        $qry .= $where;
+
+        $qry .= "order by t.campaign_id asc";
+        return $this->db->query($qry)->result_array();
+    }
+
+    public function get_ownership_triggers($form) {
+        $where = "";
+        if (!empty($form['campaign'])) {
+            $where .= " and t.campaign_id = ".$form['campaign']." ";
+        }
+        if (!empty($form['outcome'])) {
+            $where .= " and t.outcome_id = ".$form['outcome']." ";
+        }
+
+        $qry = "select t.trigger_id, t.campaign_id, t.outcome_id, c.campaign_name as campaign, o.outcome
+                from ownership_triggers t
+                  inner join campaigns c ON (c.campaign_id = t.campaign_id)
+                  inner join outcomes o ON (o.outcome_id = t.outcome_id)";
+
+        $qry .= $where;
+
+        $qry .= "order by t.campaign_id asc";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    //##########################################################################################
+    //############################### DUPLICATES ###############################################
+    //##########################################################################################
     /**
      * Get duplicates by a filter
      */

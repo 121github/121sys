@@ -1101,6 +1101,140 @@ var outcomes = {
     }
 }
 
+var triggers = {
+    init: function () {
+
+        $(document).on("click", ".email-campaign-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.email-filter-form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+
+            triggers.load_email_triggers();
+        });
+        $(document).on("click", ".email-outcome-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.email-filter-form').find('input[name="outcome"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+
+            triggers.load_email_triggers();
+        });
+        $(document).on("click", ".email-template-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.email-filter-form').find('input[name="template"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+
+            triggers.load_email_triggers();
+        });
+
+        $(document).on("click", ".ownership-campaign-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.ownership-filter-form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+
+            triggers.load_ownership_triggers();
+        });
+        $(document).on("click", ".ownership-outcome-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.ownership-filter-form').find('input[name="outcome"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+
+            triggers.load_ownership_triggers();
+        });
+
+        //Load the email triggers
+        triggers.load_email_triggers();
+
+        //Load the ownership triggers
+        triggers.load_ownership_triggers();
+    },
+    load_email_triggers: function() {
+        var $tbody = $('.email-triggers .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_email_triggers',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.email-filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td style='display: none'>"
+                            + "<span class='email_trigger_id' style='display: none'>"+val.trigger_id+"</span>"
+                            + "<span class='email_campaign_id' style='display: none'>"+val.campaign_id+"</span>"
+                            + "<span class='email_outcome_id' style='display: none'>"+val.outcome_id+"</span>"
+                            + "<span class='email_template_id' style='display: none'>"+val.template_id+"</span>"
+                            + "</td><td class='email_campaign' style='vertical-align: middle'>"
+                            + (val.campaign?val.campaign:'-')
+                            + "</td><td class='email_outcome' style='vertical-align: middle'>"
+                            + (val.outcome?val.outcome:'-')
+                            + "</td><td class='email_template' style='vertical-align: middle'>"
+                            + (val.template?val.template:'-')
+                            + "</td><td class=''  style='text-align: right'>" +
+                            "<span title='Edit email trigger' class='btn edit-email-trigger-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.trigger_id+"'></span>" +
+                            "<span title='Delete email trigger' class='btn del-email-trigger-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.trigger_id+"'></span>"
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+response.data+"</td></tr>");
+            }
+        });
+    },
+    load_ownership_triggers: function() {
+        var $tbody = $('.ownership-triggers .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_ownership_triggers',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.ownership-filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td style='display: none'>"
+                            + "<span class='ownership_trigger_id' style='display: none'>"+val.trigger_id+"</span>"
+                            + "<span class='ownership_campaign_id' style='display: none'>"+val.campaign_id+"</span>"
+                            + "<span class='ownership_outcome_id' style='display: none'>"+val.outcome_id+"</span>"
+                            + "</td><td class='ownership_campaign' style='vertical-align: middle'>"
+                            + (val.campaign?val.campaign:'-')
+                            + "</td><td class='ownership_outcome' style='vertical-align: middle'>"
+                            + (val.outcome?val.outcome:'-')
+                            + "</td><td class=''  style='text-align: right'>" +
+                            "<span title='Edit ownership trigger' class='btn edit-ownership-trigger-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.trigger_id+"'></span>" +
+                            "<span title='Delete ownership trigger' class='btn del-ownership-trigger-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.trigger_id+"'></span>"
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+response.data+"</td></tr>");
+            }
+        });
+    }
+}
+
 var duplicates = {
     init: function () {
 

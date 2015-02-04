@@ -985,6 +985,10 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller loads the view for the triggers page
     public function triggers()
     {
+        $campaigns = $this->Form_model->get_campaigns();
+        $outcomes = $this->Form_model->get_outcomes();
+        $templates = $this->Form_model->get_templates();
+
         $data      = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
@@ -998,9 +1002,48 @@ $this->_campaigns = campaign_access_dropdown();
             ),
             'javascript' => array(
                 'data.js'
-            )
+            ),
+            'campaigns' => $campaigns,
+            'outcomes' => $outcomes,
+            'templates' => $templates
         );
         $this->template->load('default', 'data/triggers.php', $data);
+    }
+
+    /**
+     * Get email triggers
+     */
+    public function get_email_triggers() {
+        if ($this->input->is_ajax_request()) {
+
+            $form = $this->input->post();
+
+            $results = $this->Data_model->get_email_triggers($form);
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "data" => (!empty($results)?$results:"No email triggers found")
+            ));
+
+        }
+    }
+
+    /**
+     * Get ownership triggers
+     */
+    public function get_ownership_triggers() {
+        if ($this->input->is_ajax_request()) {
+
+            $form = $this->input->post();
+
+            $results = $this->Data_model->get_ownership_triggers($form);
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "data" => (!empty($results)?$results:"No ownership triggers found")
+            ));
+
+        }
     }
 
 
