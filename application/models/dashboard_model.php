@@ -73,7 +73,7 @@ class Dashboard_model extends CI_Model
     
     public function get_outcomes($filter = array())
     {
-        $qry = "select outcome,count(*) count from history left join outcomes using(outcome_id) left join records using(urn) where 1 and history.outcome_id is not null and date(contact) = curdate() ";
+        $qry = "select outcome,count(*) count,curdate() as `curdate` from history left join outcomes using(outcome_id) left join records using(urn) where 1 and history.outcome_id is not null and date(contact) = curdate() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and history.campaign_id = '" . intval($filter['campaign']) . "'";
         }
@@ -83,6 +83,7 @@ class Dashboard_model extends CI_Model
 		$qry .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by history.outcome_id order by count desc ";
         return $this->db->query($qry)->result_array();
+
     }
     
   

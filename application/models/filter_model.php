@@ -648,7 +648,15 @@ class Filter_model extends CI_Model
                 "rand()"
             );
             $qry           = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join data_sources on data_sources.source_id = records.source_id";
+
             $group_by      = " group by records.urn";
+			
+						
+			 //if they dont have permission to view other agent records
+            if (!in_array("search any owner", $_SESSION['permissions'])) {
+                $agent .= " and ownership.user_id = '{$_SESSION['user_id']}' ";
+            }
+			
         } else {
             $join_records  = " left join records on records.urn = history.urn ";
             $table_columns = array(
@@ -671,9 +679,9 @@ class Filter_model extends CI_Model
             $group_by = " group by history.history_id ";
             
             
-            //if agent they can only see todays
+            //if they dont have permission to view other agent records
             if (!in_array("by agent", $_SESSION['permissions'])) {
-                $agent .= " and u.user_id = '{$_SESSION['user_id']}' ";
+                $agent .= " and history.user_id = '{$_SESSION['user_id']}' ";
             }
         }
         
@@ -690,7 +698,7 @@ class Filter_model extends CI_Model
             $qry .= " left join cross_transfers on cross_transfers.history_id = history.history_id ";
             $qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id ";
             //only join the user tables if we need them
-            if (in_array("user", $fields) || in_array("group_id", $fields) || in_array("team_id", $fields)) {
+            if (in_array("user", $fields) || in_array("group_id", $fields) || in_array("team_id", $fields)||!in_array("search any owner", $_SESSION['permissions'])) {
                 $qry .= " left join ownership on records.urn = ownership.urn ";
                 $qry .= " left join users on users.user_id = ownership.user_id ";
                 $qry .= " left join teams on users.team_id = teams.team_id ";
@@ -832,9 +840,7 @@ class Filter_model extends CI_Model
         }
 
         $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry";
-		
-		
-		
+				
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause

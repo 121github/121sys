@@ -11,7 +11,6 @@ class Search extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
-		check_page_permissions("search records");
 		$this->_campaigns = campaign_access_dropdown();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -29,6 +28,7 @@ class Search extends CI_Controller
     //this is the default controller for search, its specified in application/config/routes.php.  
     public function search_form()
     { 
+	check_page_permissions("search records");
         $campaigns      = $this->Form_model->get_user_campaigns();
         $clients        = $this->Form_model->get_clients();
         $users          = $this->Form_model->get_users();

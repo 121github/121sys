@@ -1136,4 +1136,29 @@ class Reports extends CI_Controller
         }
     }
     
+	public function contact_counts(){
+	//get number of records loaded into the system
+	echo "2241 Matrix Starting Companies";
+	echo "<br>";
+			//get the number of contacts added on the day the data was loaded
+	$first_contacts = $this->db->query("select count(*) result from contacts where date_created < '2015-01-21 14:00'")->row()->result;
+	echo "$first_contacts Matrix Starting Contacts";
+	echo "<hr><br>";	
+	//get the number of records marked as data captured
+	$captured = $this->db->query("select count(*) result from records where campaign_id = 5 and outcome_id = 89")->row()->result;
+	echo "$captured called resulted in Data Captured";
+	echo "<br>";
+		//get the number of records mared as data captured
+	$contacts = $this->db->query("select count(*) result from contacts left join records using(urn) where campaign_id = 5")->row()->result;
+	echo "$contacts number of contacts now";
+	echo "<br>";
+	//contacts added	
+	echo $contacts - $first_contacts . " new contacts have been added";
+	echo "<br>";
+		//records have had details updated
+	
+	echo $captured - ($contacts - $first_contacts) . " records have had contact details updated";
+	echo "<br>";
+	}
+	
 }
