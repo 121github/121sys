@@ -37,7 +37,7 @@ if ( !function_exists('to_mysql_datetime') )
             return $result;
 			
         }
-        return false;
+        return $datetime;
     }   
 }
 if ( !function_exists('sql_date_check') )

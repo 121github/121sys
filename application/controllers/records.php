@@ -461,6 +461,7 @@ class Records extends CI_Controller
                         //delete all owners so it can get called back by anyone (answer machines etc)
                         $this->Records_model->save_ownership($update_array['urn'], array());
                     }
+					//This is now done using javascipt to change the input box when a delayed outcome is selected so we dont need to change it in the array. If we wanted to force a nextcall
                     $delay                    = $triggers['delay_hours'];
                     $update_array['nextcall'] = date('Y-m-d H:i', strtotime("+$delay hours"));
                 }

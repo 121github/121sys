@@ -110,7 +110,7 @@
 			                    <div class="accordion-inner">
 			                        <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner=='campaigntransfer'?"class='active'":"") ?>>By Campaign</a>
 			                    </div>
-                                  <?php if(@in_array("agent reporting",$_SESSION['permissions'])){ ?>
+                                  <?php if(@in_array("by agent",$_SESSION['permissions'])){ ?>
 			                    <div class="accordion-inner">
 			                        <a href="<?php echo base_url() ?>reports/agenttransfer" <?php echo @($inner=='agenttransfer'?"class='active'":"") ?>>By Agent</a>
 			                    </div>
