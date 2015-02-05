@@ -180,7 +180,8 @@ class Dashboard extends CI_Controller
             }
             echo json_encode(array(
                 "success" => true,
-                "data" => $data
+                "data" => $data,
+				"date"=>date('Y-m-d')
             ));
         }
     }

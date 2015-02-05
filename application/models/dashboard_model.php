@@ -63,7 +63,7 @@ class Dashboard_model extends CI_Model
         if (!empty($filter)) {
             $qry .= " and h.campaign_id = '$filter'";
         }
-		if (in_array("set call outcomes",$_SESSION['permissions'])) {
+		if (in_array("by agent",$_SESSION['permissions'])) {
             $qry .= " and h.user_id = '".$_SESSION['user_id']."'";
         }
 		$qry .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
@@ -73,12 +73,12 @@ class Dashboard_model extends CI_Model
     
     public function get_outcomes($filter = array())
     {
-        $qry = "select outcome,count(*) count,curdate() as `curdate` from history left join outcomes using(outcome_id) left join records using(urn) where 1 and history.outcome_id is not null and date(contact) = curdate() ";
+        $qry = "select outcome,count(*) count from history left join outcomes using(outcome_id) left join records using(urn) where 1 and history.outcome_id is not null and date(contact) = curdate() ";
         if (!empty($filter['campaign'])) {
             $qry .= " and history.campaign_id = '" . intval($filter['campaign']) . "'";
         }
-		if (in_array("set call outcomes",$_SESSION['permissions'])) {
-			  $qry .= " and history.user_id = '" . $_SESSION['user_id'] . "' and date(contact)=curdate()";
+		if (in_array("by agent",$_SESSION['permissions'])) {
+			  $qry .= " and history.user_id = '" . $_SESSION['user_id'] . "' ";
 		}
 		$qry .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by history.outcome_id order by count desc ";
@@ -153,7 +153,7 @@ class Dashboard_model extends CI_Model
 		$survey_extra = "";
 		$notes_extra = "";
 		$comments_extra = "";
-		if (in_array("set call outcomes",$_SESSION['permissions'])) {
+		if (in_array("by agent",$_SESSION['permissions'])) {
             $survey_extra = " and surveys.user_id = '".$_SESSION['user_id']."' ";
 			$notes_extra = " and s.updated_by = '".$_SESSION['user_id']."' ";
 			$comments_extra = " and history.user_id = '".$_SESSION['user_id']."' ";
@@ -338,7 +338,7 @@ $this->firephp->log($qry);
 		$camp_url = "";
 		$user_url = "";
 		$where =" and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-		if(in_array("set call outcomes",$_SESSION['permissions'])){
+		if(in_array("by agent",$_SESSION['permissions'])){
 		$where .= " and email_history.user_id = '{$_SESSION['user_id']}'";
 		$user_url .= "/user/".$_SESSION['user_id'];
 		}
