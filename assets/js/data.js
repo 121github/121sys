@@ -1629,6 +1629,11 @@ var duplicates = {
             return false;
         });
 
+        $(document).on("click", '.del-duplicates-btn', function(e) {
+            e.preventDefault();
+            modal.remove_duplicates($(this));
+        });
+
         duplicates.load_duplicates();
     },
     load_duplicates: function() {
@@ -1658,6 +1663,7 @@ var duplicates = {
                 $tbody.empty();
                 if (response.success) {
                     if (response.data.length) {
+                        $('.del-duplicates-btn').show().attr('disabled', false);
                         var thead_fields = "";
                         $.each(field_ar, function (k, field) {
                             thead_fields += "<th>"+field+"</th>";
@@ -1665,7 +1671,8 @@ var duplicates = {
                         $thead
                             .append(
                             thead_fields +
-                            "<th>Duplicates count</th>");
+                            "<th>Duplicates count</th>" +
+                            "<th></th>");
                         $.each(response.data, function (i, val) {
                             var tbody_fields = "";
                             var search_url = helper.baseUrl + "search/custom/records";
@@ -1682,12 +1689,13 @@ var duplicates = {
                                 + "<td class='duplicates-count'>"
                                 + val.duplicates_count
                                 + "</td><td style='text-align: right'>" +
-                                "<a href='"+search_url+"'><span class='marl btn btn-success view-records-btn btn-sm'>View duplicate records</span></a>"
+                                "<a href='"+search_url+"'><span class='marl btn btn-success view-duplicates-btn btn-sm'>View duplicate records</span></a>"
                                 + "</td></tr>");
                         });
                     }
                 }
                 else {
+                    $('.del-duplicates-btn').hide().attr('disabled', false);
                     $tbody
                         .append("<tr><td>"+response.data+"</td></tr>");
                 }
@@ -1695,9 +1703,33 @@ var duplicates = {
         }
         else {
             $('.filter-form').find('input[name="filter_input"]').attr("disabled", true);
+            $('.del-duplicates-btn').hide().attr('disabled', false);
             $tbody
                 .append("<tr><td>Please, select a filter in order to search the duplicates records</td>");
         }
+    },
+
+    delete_duplicates: function(btn) {
+        $(".del-duplicates-btn").attr('disabled','disabled');
+
+        $.ajax({
+            url: helper.baseUrl + 'data/delete_duplicates',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function(response) {
+            if (response.success) {
+                //Reload duplicates table
+                duplicates.load_duplicates;
+                //Close delete form
+                duplicates.close_delete_duplicates();
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
     }
 }
 
@@ -1758,4 +1790,17 @@ var modal = {
             triggers.delete_ownership_trigger(trigger_id);
         });
     },
+
+    remove_duplicates: function(btn) {
+        $('.modal-title').text('Confirm Delete');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to delete all the duplicate records and keep the old one?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            $('#modal').modal('toggle');
+            duplicates.delete_duplicates(btn);
+        });
+    }
 }

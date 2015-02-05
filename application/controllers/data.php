@@ -1240,6 +1240,28 @@ $this->_campaigns = campaign_access_dropdown();
         }
     }
 
+    /**
+     * Delete the duplicates records (keeps the old one)
+     */
+    public function delete_duplicates() {
+        if ($this->input->is_ajax_request()) {
+
+            $form = $this->input->post();
+
+            if (isset($form['field'])) {
+
+                $results = $this->Data_model->get_duplicate_records($form);
+                $this->firephp->log($results);
+                exit(0);
+            }
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "data" => (!empty($results)?$results:"No duplicates found")
+            ));
+        }
+    }
+
     //################################################################################################
     //################################### SUPPRESSION functions ######################################
     //################################################################################################

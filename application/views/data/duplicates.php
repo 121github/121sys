@@ -35,7 +35,10 @@
                             <!-- /.panel-heading -->
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-4">
+                                        <span class='marl btn btn-danger del-duplicates-btn btn-sm' style="display: none">Remove duplicates</span>
+                                    </div>
+                                    <div class="col-lg-8">
                                         <div class="pull-right" style="margin-bottom: 10px;">
                                             <select class="selectpicker duplicates-filter" name="field[]" multiple>
                                                 <?php foreach($filter as $row): ?>
@@ -66,7 +69,6 @@
             <!-- /#page-wrapper -->
         </div>
     </div>
-
     <script>
         $(document).ready(function () {
             duplicates.init();

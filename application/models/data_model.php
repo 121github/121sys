@@ -789,10 +789,11 @@ class Data_model extends CI_Model
     //##########################################################################################
     //############################### DUPLICATES ###############################################
     //##########################################################################################
+
     /**
-     * Get duplicates by a filter
+     * Get duplicates query by a filter
      */
-    public function get_duplicates($form) {
+    private function get_duplicates_qry($form) {
         $field_ar = $form['field'];
         $filter_input = $form['filter_input'];
 
@@ -831,6 +832,51 @@ class Data_model extends CI_Model
         $qry .= " group by CONCAT(".$select.")
                 having count(*)>1";
 
+        return $qry;
+    }
+    /**
+     * Get duplicates by a filter
+     */
+    public function get_duplicates($form) {
+        $qry = $this->get_duplicates_qry($form);
+
         return $this->db->query($qry)->result_array();
     }
+    /**
+     * Get duplicates by a filter
+     */
+    public function get_duplicate_records($form) {
+
+        $field_ar = $form['field'];
+        $on_subqry = array();
+        $select = array();
+        foreach($field_ar as $field) {
+            if ($field == "telephone_number") {
+                array_push($on_subqry, "duplicates.".$field."=ct.".$field);
+                array_push($select, "ct.".$field);
+            }
+            elseif ($field == "postcode") {
+                array_push($on_subqry, "duplicates.".$field."=ca.".$field);
+                array_push($select, "ca.".$field);
+            }
+        }
+        $on_subqry = implode(" AND ", $on_subqry);
+        $select = implode(", ", $select);
+
+        $qry = "select distinct r.urn, r.date_added, r.date_updated, ".$select." from records r
+                  left join contacts c ON (c.urn = r.urn)
+                  left join contact_telephone ct ON (ct.contact_id = c.contact_id)
+                  left join contact_addresses ca ON (ca.contact_id = c.contact_id) ";
+
+        $subqry = $this->get_duplicates_qry($form);
+
+
+
+
+        $qry .= "inner join (".$subqry.") duplicates ON (".$on_subqry.")";
+
+
+        return $this->db->query($qry)->result_array();
+    }
+
 }
