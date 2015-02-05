@@ -558,6 +558,9 @@ class Data_model extends CI_Model
         return $this->db->update("backup_campaign_history", $form);
     }
 
+    //##########################################################################################
+    //############################### OUTCOMES #################################################
+    //##########################################################################################
     public function get_outcomes() {
         $qry = "select *
                 from outcomes o
@@ -585,6 +588,194 @@ class Data_model extends CI_Model
         return $this->db->delete("outcomes");
     }
 
+    //##########################################################################################
+    //############################### TRIGGERS #################################################
+    //##########################################################################################
+    public function get_email_triggers($form) {
+
+        $where = "";
+        if (!empty($form['campaign'])) {
+            $where .= " and t.campaign_id = ".$form['campaign']." ";
+        }
+        if (!empty($form['outcome'])) {
+            $where .= " and t.outcome_id = ".$form['outcome']." ";
+        }
+        if (!empty($form['template'])) {
+            $where .= " and t.template_id = ".$form['template']." ";
+        }
+
+        $qry = "select t.trigger_id, t.campaign_id, t.outcome_id, t.template_id, c.campaign_name as campaign, o.outcome, et.template_name as template
+                from email_triggers t
+                  inner join campaigns c ON (c.campaign_id = t.campaign_id)
+                  inner join outcomes o ON (o.outcome_id = t.outcome_id)
+                  inner join email_templates et ON (et.template_id = t.template_id)";
+
+        $qry .= $where;
+
+        $qry .= "order by c.campaign_name asc";
+        return $this->db->query($qry)->result_array();
+    }
+
+    public function get_email_trigger_recipients($trigger_id) {
+        $qry = "select * from email_trigger_recipients where trigger_id = ".$trigger_id;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Add a new email trigger
+     *
+     * @param Form $form
+     */
+    public function insert_email_trigger($form)
+    {
+        $this->db->insert("email_triggers", $form);
+        return $this->db->insert_id();
+
+    }
+
+    /**
+     * Update an email trigger
+     *
+     * @param Form $form
+     */
+    public function update_email_trigger($form)
+    {
+        $this->db->where("trigger_id", $form['trigger_id']);
+        return $this->db->update("email_triggers", $form);
+    }
+
+    /**
+     * Remove an email trigger
+     *
+     * @param integer $trigger_id
+     */
+    public function delete_email_trigger($trigger_id)
+    {
+        $this->db->where("trigger_id", $trigger_id);
+        return $this->db->delete("email_triggers");
+    }
+
+    /**
+     * Update the email trigger recipients. Delete the old_users and add the new_users selected
+     *
+     * @param Form $form
+     */
+    public function update_email_trigger_recipients($users, $trigger_id)
+    {
+        //Delete all the users for this email trigger before
+        $this->db->where("trigger_id", $trigger_id);
+        $results = $this->db->delete("email_trigger_recipients");
+
+        //Insert the new users selected
+        if (!empty($users) && $results) {
+            $aux = array();
+            foreach($users as $user) {
+                array_push($aux,array(
+                    'trigger_id' => $trigger_id,
+                    'user_id' => $user
+                ));
+            }
+            $users = $aux;
+
+            $results = $this->db->insert_batch("email_trigger_recipients", $users);
+        }
+
+        return $results;
+    }
+
+    public function get_ownership_triggers($form) {
+        $where = "";
+        if (!empty($form['campaign'])) {
+            $where .= " and t.campaign_id = ".$form['campaign']." ";
+        }
+        if (!empty($form['outcome'])) {
+            $where .= " and t.outcome_id = ".$form['outcome']." ";
+        }
+
+        $qry = "select t.trigger_id, t.campaign_id, t.outcome_id, c.campaign_name as campaign, o.outcome
+                from ownership_triggers t
+                  inner join campaigns c ON (c.campaign_id = t.campaign_id)
+                  inner join outcomes o ON (o.outcome_id = t.outcome_id)";
+
+        $qry .= $where;
+
+        $qry .= "order by c.campaign_name asc";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    public function get_ownership_trigger_recipients($trigger_id) {
+        $qry = "select * from ownership_trigger_users where trigger_id = ".$trigger_id;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Add a new ownership trigger
+     *
+     * @param Form $form
+     */
+    public function insert_ownership_trigger($form)
+    {
+        $this->db->insert("ownership_triggers", $form);
+        return $this->db->insert_id();
+
+    }
+
+    /**
+     * Update an ownership trigger
+     *
+     * @param Form $form
+     */
+    public function update_ownership_trigger($form)
+    {
+        $this->db->where("trigger_id", $form['trigger_id']);
+        return $this->db->update("ownership_triggers", $form);
+    }
+
+    /**
+     * Remove an ownership trigger
+     *
+     * @param integer $trigger_id
+     */
+    public function delete_ownership_trigger($trigger_id)
+    {
+        $this->db->where("trigger_id", $trigger_id);
+        return $this->db->delete("ownership_triggers");
+    }
+
+    /**
+     * Update the ownership trigger recipients. Delete the old_users and add the new_users selected
+     *
+     * @param Form $form
+     */
+    public function update_ownership_trigger_recipients($users, $trigger_id)
+    {
+        //Delete all the users for this ownership trigger before
+        $this->db->where("trigger_id", $trigger_id);
+        $results = $this->db->delete("ownership_trigger_users");
+
+        //Insert the new users selected
+        if (!empty($users) && $results) {
+            $aux = array();
+            foreach($users as $user) {
+                array_push($aux,array(
+                    'trigger_id' => $trigger_id,
+                    'user_id' => $user
+                ));
+            }
+            $users = $aux;
+
+            $results = $this->db->insert_batch("ownership_trigger_users", $users);
+        }
+
+        return $results;
+    }
+
+    //##########################################################################################
+    //############################### DUPLICATES ###############################################
+    //##########################################################################################
     /**
      * Get duplicates by a filter
      */
