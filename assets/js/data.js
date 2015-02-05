@@ -1358,6 +1358,12 @@ var triggers = {
             $('.email-trigger-content').show();
             $('.alert').addClass('hidden');
         });
+
+        $('#email-trigger-form').find('.campaign_label').css('color', 'black');
+        $('#email-trigger-form').find('.outcome_label').css('color', 'black');
+        $('#email-trigger-form').find('.template_label').css('color', 'black');
+        $('#email-trigger-form').find('.users_label').css('color', 'black');
+        $('#email-trigger-form').find('.validation_msg').hide();
     },
     save_email_trigger: function() {
         $(".save-email-trigger-btn").attr('disabled','disabled');
