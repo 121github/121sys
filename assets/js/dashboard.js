@@ -1,6 +1,24 @@
 // JavaScript Document
 var dashboard = {
     init: function () {
+		/* load any other panels on this dashboard */
+		dashboard.history_panel();
+		dashboard.outcomes_panel();
+		dashboard.system_stats();
+		dashboard.comments_panel();
+		dashboard.emails_panel();
+		
+				
+		$(".filter").click(function(e) {
+            e.preventDefault();
+			var input = $(this).attr('data-ref');
+			var func = $(this).closest('form').attr('data-func');
+			$icon = $(this).closest('ul').prev('button').find('span');
+			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $(this).closest('form').find('input[name="'+input+'"]').val($(this).attr('id'));
+			//run the panel function specified in the data-func
+			eval("dashboard."+func+"()");
+        });
 
     },
 	/* the function for the history panel on the main dashboard */
@@ -9,9 +27,7 @@ var dashboard = {
             url: helper.baseUrl + 'dashboard/get_history',
             type: "POST",
             dataType: "JSON",
-            data: {
-                filter: filter,
-            }
+            data: $('.history-filter').serialize(),
         }).done(function (response) {
             $tbody = $('.call-history').find('tbody');
             $tbody.empty();
@@ -27,9 +43,7 @@ var dashboard = {
             url: helper.baseUrl + 'dashboard/get_email_stats',
             type: "POST",
             dataType: "JSON",
-            data: {
-                filter: filter,
-            }
+            data: $('.emails-filter').serialize(),
         }).done(function (response) {
             $('.email-stats').html("<ul><li><a href='"+response.data.new_url+"'>"+response.data.new+"</a> new emails read</li><li><a href='"+response.data.read_url+"'>"+response.data.read+"</a> emails read today "+"</li><li><a href='"+response.data.all_url+"'>"+response.data.all+"</a> emails sent today</li><li><a href='"+response.data.unsent_url+"'>"+response.data.unsent+"</a> failed emails today</li><li><a href='"+response.data.sentall_url+"'>"+response.data.sentall+"</a> emails sent anytime</li><li><a href='"+response.data.readall_url+"'>"+response.data.readall+"</a> emails read anytime</li></ul>");
         });
@@ -40,9 +54,7 @@ var dashboard = {
             url: helper.baseUrl + 'dashboard/get_outcomes',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign_id
-            }
+           data: $('.outcomes-filter').serialize(),
         }).done(function (response) {
             $('.outcome-stats').empty();
             var $outcomes = "";
@@ -62,9 +74,7 @@ var dashboard = {
             url: helper.baseUrl + 'dashboard/system_stats',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: filter
-            }
+           data: $('.stats-filter').serialize(),
         }).done(function (response) {
             $('.timeline').empty();
             $timeline = '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Campaign Stats</h4></div><div class="timeline-body"><p><a href="'+response.data.virgin_url+'">' + response.data.virgin + '</a> records have yet to be called.<br><a href="'+response.data.active_url+'">' + response.data.active + '</a> records are in progress<br><a href="'+response.data.parked_url+'">' + response.data.parked + '</a> records have been parked<br><a href="'+response.data.dead_url+'">' + response.data.dead + '</a> records are dead</p></div></div></li>';
@@ -82,9 +92,7 @@ var dashboard = {
             url: helper.baseUrl + 'dashboard/get_comments',
             type: "POST",
             dataType: "JSON",
-            data: {
-                comments: filter
-            }
+           data: $('.comments-filter').serialize(),
         }).done(function (response) {
             $('.chat').empty();
             $.each(response.data, function (i, val) {
@@ -93,14 +101,12 @@ var dashboard = {
         });
     },
 	/* the function for the urgent panel on the client dashboard */
-    urgent_panel: function (campaign) {
+    urgent_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_urgent',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign
-            }
+            data: $('.urgent-filter').serialize(),
         }).done(function (response) {
             $('.urgent-panel').empty();
             var $urgents = "";
@@ -117,14 +123,12 @@ var dashboard = {
     },
 	
 		/* the function for the urgent panel on the client dashboard */
-    pending_panel: function (campaign) {
+    pending_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_pending',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign
-            }
+           data: $('.pending-filter').serialize(),
         }).done(function (response) {
             $('.pending-panel').empty();
             var $pending = "";
@@ -140,14 +144,12 @@ var dashboard = {
         });
     },
 		/* the function for the urgent panel on the client dashboard */
-    appointments_panel: function (campaign) {
+    appointments_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_appointments',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign
-            }
+            data: $('.appointments-filter').serialize(),
         }).done(function (response) {
             $('.appointments-panel').empty();
             var $appointments = "";
@@ -163,14 +165,12 @@ var dashboard = {
         });
     },
 	/* the function for the outcomes panel on the agent/client dashboard */
-    favorites_panel: function (campaign) {
+    favorites_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_favorites',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign
-            }
+            data: $('.favorites-filter').serialize(),
         }).done(function (response) {
             $('.favorites-panel').empty();
 			if(campaign==3){
@@ -196,17 +196,14 @@ var dashboard = {
         });
     },
 	/* the function for the missed call backs panel on the agent dashboard */
-    timely_callbacks_panel: function (agent, campaign) {
+    callbacks_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/timely_callbacks',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign,
-                user: agent
-            },
+            data: $('.callbacks-filter').serialize(),
 			beforeSend: function(){
-			            $('.missed-callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
+			            $('.timely-callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
         }).done(function (response) {
             $('.timely-callbacks').empty();
@@ -229,15 +226,12 @@ var dashboard = {
         });
     },
 	/* the function for the missed call backs panel on the agent dashboard */
-    missed_callbacks_panel: function (agent, campaign) {
+    missed_callbacks_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/missed_callbacks',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign,
-                user: agent
-            },
+            data: $('.callbacks-filter').serialize(),
 			beforeSend: function(){
 			            $('.missed-callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
@@ -262,15 +256,12 @@ var dashboard = {
         });
     },
 	/* the function for the upcoming callbacks panel on the agent dashboard */
-    upcoming_callbacks_panel: function (agent, campaign) {
+    upcoming_callbacks_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/upcoming_callbacks',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign,
-                user: agent
-            },
+            data: $('.callbacks-filter').serialize(),
 			beforeSend: function(){
 			            $('.upcoming-callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
@@ -295,15 +286,12 @@ var dashboard = {
         });
     },
 	/* the function for the progress panel on the client dashboard */
-    progress_panel: function (agent, campaign) {
+    progress_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/client_progress',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign,
-                user: agent
-            },
+			data: $('.progress-filter').serialize(),
 			beforeSend: function(){
 			            $('.progress-panel').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
@@ -326,15 +314,12 @@ var dashboard = {
         });
     },
 	/* the function for the progress panel on the client dashboard */
-    interest_panel: function (agent, campaign) {
+    interest_panel: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/nbf_progress',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign,
-                user: agent
-            },
+            data: $('.interest-filter').serialize(),
 			beforeSend: function(){
 			            $('.interest-panel').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
@@ -357,14 +342,12 @@ var dashboard = {
         });
     },
 /* the function for the latest activity panel on the management dashboard */
-    agent_activity: function (campaign) {
+    agent_activity: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/agent_activity',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign
-            },
+            data: $('.activity-filter').serialize(),
 			beforeSend: function(){
 			            $('.agent-activity').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
@@ -382,14 +365,12 @@ var dashboard = {
         });
     },
 	/* the function for the agent success on the management dashboard */
-    agent_success: function (campaign) {
+    agent_success: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/agent_success',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign
-            },
+            data: $('.success-filter').serialize(),
 			beforeSend: function(){
 			            $('.agent-success').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
@@ -411,14 +392,12 @@ var dashboard = {
         });
     },
 		/* the function for the agent success on the management dashboard */
-    agent_data: function(campaign) {
+    agent_data: function(filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/agent_data',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign
-            },
+            data: $('.data-filter').serialize(),
 			beforeSend: function(){
 			            $('.agent-data').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
@@ -440,14 +419,12 @@ var dashboard = {
         });
     },
     /* the function for the agent current hours on the management dashboard */
-    agent_current_hours: function (campaign) {
+    agent_current_hours: function (filter) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/agent_current_hours',
             type: "POST",
             dataType: "JSON",
-            data: {
-                campaign: campaign
-            },
+            data: $('.hours-filter').serialize(),
 			beforeSend: function(){
 			            $('.agent-current-hours').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}

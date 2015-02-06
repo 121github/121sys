@@ -18,6 +18,14 @@
         <div class="panel panel-primary">
         <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Data Management
           <div class="pull-right">
+                       <select name="dials" id="dials-select">
+             <option value="0">Ignore Dials</option>
+              <option value="1">1 Dial</option>
+              <option value="2">2 Dials</option>
+              <option value="3">3 Dials</option>
+              <option value="4">More than 3</option>
+            </select>
+            
           <?php if(count($campaigns)>0){ ?>
             <select name="campaign" id="campaign">
               <?php  foreach($campaigns as $row){ ?>

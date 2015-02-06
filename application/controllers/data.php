@@ -263,9 +263,9 @@ $this->_campaigns = campaign_access_dropdown();
             $i = 0;
             foreach ($array as $user) {
                 if ($i > 0) {
-                    $this->Data_model->reassign_data($user['user'], $this->input->post('state'), $this->input->post('campaign'), $user['count']);
+                    $this->Data_model->reassign_data($user['user'], $this->input->post('state'), $this->input->post('campaign'), $this->input->post('dials'), $user['count']);
                 } else {
-                    $this->Data_model->reassign_data($user['user'], $this->input->post('state'), $this->input->post('campaign'));
+                    $this->Data_model->reassign_data($user['user'], $this->input->post('state'), $this->input->post('campaign'), $this->input->post('dials'));
                 }
                 $i++;
             }

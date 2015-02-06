@@ -77,7 +77,7 @@ class Data_model extends CI_Model
             ));
         }
     }
-    public function reassign_data($user, $state, $campaign, $count = "all")
+    public function reassign_data($user, $state, $campaign, $dials, $count = "all")
     {
         $count = (!$count ? "0" : $count);
         $where = "";
@@ -94,16 +94,29 @@ class Data_model extends CI_Model
             //callbacks only
             $where .= " and outcome_id in(1,2) ";
         }
-        $delqry = "delete from ownership where user_id = '$user' and urn in(select urn from records where campaign_id = '$campaign' and progress_id is null and record_status = 1 $where)";
-        $this->db->query($delqry);
-        if ($count == "all") {
-            $insqry = "insert into ownership (select urn,'$user' from records where campaign_id = '$campaign' and progress_id is null and record_status = 1 $where)";
-            $this->db->query($insqry);
-            $_SESSION['prevuser'] = $user;
-        } else {
-            $insqry = "update ownership set user_id = '$user' where user_id = '{$_SESSION['prevuser']}' and urn in(select urn from records where campaign_id = '$campaign' and progress_id is null and record_status = 1 $where) limit $count";
-            $this->db->query($insqry);
+      				$wheredials = "";
+        if (!empty($dials)) {
+            //callbacks only
+			if($dials==4){
+			$wheredials .= " and dials > 3 ";
+			} else {
+            $wheredials .= " and dials = '$dials' ";
+			}
         }
+		$delqry = "delete from ownership where user_id = '$user' and urn in(select urn from records where campaign_id = '$campaign' $wheredials and progress_id is null and record_status = 1 $where $wheredials)";
+        $this->db->query($delqry);
+        if ($count=="all") {
+		$insqry = "insert into ownership (select '',urn,'$user' from records where campaign_id = '$campaign' and progress_id is null and record_status = 1 $where $wheredials)";
+
+        $this->db->query($insqry);
+		$this->firephp->log($insqry);
+		$_SESSION['prevuser']=$user;
+        } else {
+			$insqry = "update ownership set user_id = '$user' where user_id = '{$_SESSION['prevuser']}' and urn in(select urn from records where campaign_id = '$campaign' and progress_id is null and record_status = 1 $where $wheredials) limit $count";
+			$this->firephp->log($insqry);
+        $this->db->query($insqry);
+			
+		}
     }
     public function create_source($source)
     {

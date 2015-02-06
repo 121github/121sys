@@ -506,35 +506,33 @@ class Records extends CI_Controller
             $hist                = $update_array;
             $hist['campaign_id'] = $campaign_id;
             
-            //if the pending_manager requires attention we assign the record to the campaign managers
-            if ($update_array['pending_manager'] > 0 || $survey_outcome || $this->input->post('outcome_id')) {
-                //wqcheck if the outcome triggers an ownership update
+			$new_owners = array();
+          
+            if ($this->input->post('outcome_id')) {
+                //check if the outcome triggers an ownership update
                 $new_owners = $this->Records_model->get_owners_for_outcome($campaign_id, $update_array['outcome_id']);
-				if ($_SESSION['permissions'] == "keep records" || @$triggers['keep_record'] == "1") {
+								
+			if(count($new_owners)==0){
+				//if a callback DM was previously set then keep the user on it
+				if($this->input->post('keep')){
 					$new_owners[]=$_SESSION['user_id'];
 				}
-                if (count($new_owners) > 0) {
-                    $this->Records_model->save_ownership(intval($this->input->post('urn')), $new_owners);
-                } else {
-                    $new_managers = $this->Records_model->get_campaign_managers($campaign_id);
-                    if (count($new_managers) > 0) {
-                        $this->Records_model->save_ownership(intval($this->input->post('urn')), $new_managers);
+				  //if the pending_manager or survey outcome we can add the campaign managers if they have been set
+			if($update_array['pending_manager'] > 0 || $survey_outcome){
+			        $new_managers = $this->Records_model->get_campaign_managers($campaign_id);
+                    foreach($new_managers as $manager){
+						$new_owners[] = $manager ;
+					}
                     }
-                }
+			}
+							
             }
-            
-            //if its a callback dm or the user has the keep record permission we check ownership and if nobody has this record assign it to the person that just updated it
-            if ($_SESSION['permissions'] == "keep records" || @$triggers['keep_record'] == "1" || $this->input->post('keep')) {
-                $owners = $this->Records_model->get_ownership(intval($this->input->post('urn')));
-                if (!count($owners)) {
-                    $owner = array(
-                        $_SESSION['user_id']
-                    );
-                    $this->Records_model->save_ownership(intval($this->input->post('urn')), $owner);
-                }
-            }
-            
-            
+				//if the user has the keep record permission or the outcome is keeper then we keep the user on the record too
+				if ($_SESSION['permissions'] == "keep records" || @$triggers['keep_record'] == "1"){
+					$new_owners[]=$_SESSION['user_id'];
+				}
+                    $this->Records_model->save_ownership(intval($this->input->post('urn')), $new_owners);
+         
             if ($survey_outcome) {
                 $hist['last_survey'] = $last_survey_id;
                 //get all the answer options and question trigger thresholds

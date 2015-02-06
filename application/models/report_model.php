@@ -199,6 +199,7 @@ $this->firephp->log($qry);
     	}
 		if (!empty($agent)) {
     		$where .= " and h.user_id = '$agent' ";
+			$hours_where .= " and hr.user_id = '$agent' ";
             $name = "u.name";
     	}
     	if (!empty($source)) {

@@ -99,6 +99,7 @@
                     </div>
                     <?php } ?>
                     <!-- Transfers -->
+                    <!--
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
 			                <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo" href="#collapseTwoTransfersReport">
@@ -137,18 +138,18 @@
 			            <div id="collapseTwoOutcomesReport" class="accordion-body <?php echo @($reports=='outcomes'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/outcomes/campaign/1" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/campaign/70" <?php echo @($inner=='campaign'?"class='active'":"") ?>>By Campaign</a>
 			                    </div>
                                 <?php if(@in_array("by agent",$_SESSION['permissions'])){ ?>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/outcomes/agent/1" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/agent/70" <?php echo @($inner=='agent'?"class='active'":"") ?>>By Agent</a>
 			                    </div>
                                 <?php } ?>
 			                    <div class="accordion-inner">
-			                       <a href="<?php echo base_url() ?>reports/outcomes/date/1" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
+			                       <a href="<?php echo base_url() ?>reports/outcomes/date/70" <?php echo @($inner=='date'?"class='active'":"") ?>>By Date</a>
 			                    </div>
                                 <div class="accordion-inner">
-                                    <a href="<?php echo base_url() ?>reports/outcomes/time/1" <?php echo @($inner=='time'?"class='active'":"") ?>>By Time</a>
+                                    <a href="<?php echo base_url() ?>reports/outcomes/time/70" <?php echo @($inner=='time'?"class='active'":"") ?>>By Time</a>
                                 </div>
 			                </div>
 			            </div>

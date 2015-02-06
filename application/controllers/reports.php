@@ -240,6 +240,8 @@ class Reports extends CI_Controller
             $form["date_to"] = ($this->input->post("date_to"))?$this->input->post("date_to"):date('Y-m-d');
             $results = $this->Report_model->get_transfers_data($form);
             
+			$this->firephp->log($results);
+			
             $date_from_search = $form["date_from"];
             $date_to_search   = $form["date_to"];
             $agent_search      = $form["agent"];
@@ -345,7 +347,7 @@ class Reports extends CI_Controller
 		if(intval($this->uri->segment(4))){
         $outcome_id = $this->uri->segment(4);
 		} else {
-		$outcome_id = "72";	
+		$outcome_id = "70";	
 		}
         $campaigns    = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();

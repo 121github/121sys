@@ -56,16 +56,23 @@ class Dashboard_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
     
-    public function get_history($filter = "")
+    public function get_history($filter = array())
     {
         $qry = "select contact, u.name, campaign_name, if(h.outcome_id is null,if(pd.description is null,'No Action Required',pd.description),outcome) as outcome, history_id, comments,urn from history h left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join campaigns using(campaign_id) left join users u using(user_id) where 1 ";
         //if a filter is selected then we just return history from that campaign, otehrwize get all the history
-        if (!empty($filter)) {
-            $qry .= " and h.campaign_id = '$filter'";
+        if (!empty($filter['campaign'])) {
+            $qry .= " and h.campaign_id = '{$filter['campaign']}'";
         }
-		if (in_array("by agent",$_SESSION['permissions'])) {
+		if (!empty($filter['team'])) {
+            $qry .= " and h.team_id = '{$filter['team']}'";
+        }
+		if (!empty($filter['agent'])) {
+            $qry .= " and h.user_id = '{$filter['agent']}'";
+        }
+		if (!in_array("by agent",$_SESSION['permissions'])) {
             $qry .= " and h.user_id = '".$_SESSION['user_id']."'";
         }
+
 		$qry .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " order by history_id desc limit 10";
         return $this->db->query($qry)->result_array();
@@ -73,28 +80,32 @@ class Dashboard_model extends CI_Model
     
     public function get_outcomes($filter = array())
     {
-        $qry = "select outcome,count(*) count from history left join outcomes using(outcome_id) left join records using(urn) where 1 and history.outcome_id is not null and date(contact) = curdate() ";
+        $qry = "select outcome,count(*) count from history h left join outcomes using(outcome_id) left join records using(urn) where 1 and h.outcome_id is not null and date(contact) = curdate() ";
         if (!empty($filter['campaign'])) {
-            $qry .= " and history.campaign_id = '" . intval($filter['campaign']) . "'";
+            $qry .= " and h.campaign_id = '{$filter['campaign']}'";
         }
-		if (in_array("by agent",$_SESSION['permissions'])) {
-			  $qry .= " and history.user_id = '" . $_SESSION['user_id'] . "' ";
-		}
-		$qry .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= " group by history.outcome_id order by count desc ";
+		if (!empty($filter['team'])) {
+            $qry .= " and h.team_id = '".$filter['team']."'";
+        }
+		if (!in_array("by agent",$_SESSION['permissions'])) {
+            $qry .= " and h.user_id = '".$_SESSION['user_id']."'";
+        }
+		$qry .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry .= " group by h.outcome_id order by count desc ";
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
 
     }
     
   
     
-    public function system_stats($filter = "")
+    public function system_stats($filter = array())
     {
         $extra     = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $extra_url = "";
-        if (!empty($filter)) {
-            $extra     = " and campaign_id = '" . intval($filter) . "'";
-            $extra_url = "/campaign/$filter";
+        if (!empty($filter['campaign'])) {
+            $extra     = " and campaign_id = '" . intval($filter['campaign']) . "'";
+            $extra_url = "/campaign/".$filter['campaign'];
         }
         //data stats
         $virgin_qry            = "select count(*) data from records where outcome_id is null and nextcall is null and record_status = 1 and progress_id is null $extra  ";
@@ -147,24 +158,42 @@ class Dashboard_model extends CI_Model
         return $data;
     }
     
-    public function get_comments($comments)
+    public function get_comments($filter=array())
     {
 		$extra = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$survey_extra = "";
 		$notes_extra = "";
 		$comments_extra = "";
-		if (in_array("by agent",$_SESSION['permissions'])) {
-            $survey_extra = " and surveys.user_id = '".$_SESSION['user_id']."' ";
-			$notes_extra = " and s.updated_by = '".$_SESSION['user_id']."' ";
-			$comments_extra = " and history.user_id = '".$_SESSION['user_id']."' ";
+
+		
+		 if (!empty($filter['campaign'])) {
+            $survey_extra .= " and surveys.user_id = '".$filter['campaign']."' ";
+			$notes_extra .= " and s.updated_by = '".$filter['campaign']."' ";
+			$comments_extra .= " and history.campaign_id = '".$filter['campaign']."' ";
+        }
+		if (!empty($filter['team'])) {
+            $survey_extra .= " and surveys.user_id in(select user_id from users where team_id = '".$filter['team']."') ";
+			$notes_extra .= " and s.updated_by in(select user_id from users where team_id = '".$filter['team']."') ";
+			$comments_extra .= " and history.user_id in(select user_id from users where team_id = '".$filter['team']."') ";
+        }
+		if (!empty($filter['agent'])) {
+        $survey_extra .= " and surveys.user_id = '".$filter['agent']."' ";
+			$notes_extra .= " and s.updated_by = '".$filter['agent']."' ";
+			$comments_extra .= " and history.user_id = '".$filter['agent']."' ";
+        }
+		if (!in_array("by agent",$_SESSION['permissions'])) {
+            $survey_extra .= " and surveys.user_id = '".$_SESSION['user_id']."' ";
+			$notes_extra .= " and s.updated_by = '".$_SESSION['user_id']."' ";
+			$comments_extra .= " and history.user_id = '".$_SESSION['user_id']."' ";
 			
         }
+		
         $this->load->helper('date');
-        if ($comments == 1) {
+        if ($filter['comments'] == 1) {
             $qry = "select urn,an.notes,completed_date `date`,if(companies.name is null,fullname,name) as fullname from answer_notes an left join survey_answers using(answer_id) left join surveys  using(survey_id) left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(an.notes) > 50 $extra $survey_extra group by contacts.contact_id order by completed_date desc limit 10";
-        } else if ($comments == 2) {
+        } else if ($filter['comments']  == 2) {
             $qry = "select urn,comments notes,contact `date`,if(companies.name is null,fullname,name) as fullname from history left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(comments) > 40 $comments_extra $extra order by history_id desc  limit 10";
-        } else if ($comments == 3) {
+        } else if ($filter['comments']  == 3) {
             $qry = "select urn,note notes,s.date_updated `date`,if(companies.name is null,fullname,name) as fullname from sticky_notes s left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(note) > 40 $extra $notes_extra order by s.date_updated desc  limit 10";
         } else {
             $qry = "select urn,notes,`date`,fullname from (select urn,an.notes,completed_date `date`,if(companies.name is null,fullname,name) as fullname from answer_notes an left join survey_answers using(answer_id) left join surveys using(survey_id) left join records using(urn) left join contacts using(urn) left join companies using(urn) where char_length(an.notes) > 40   $survey_extra $extra group by an.answer_id 
@@ -205,8 +234,8 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
-        if (!empty($filter['user'])) {
-            $qry .= " and user_id = " . intval($filter['user']);
+        if (!empty($filter['agent'])) {
+            $qry .= " and user_id = " . intval($filter['agent']);
         }
         $qry .= " group by urn order by nextcall asc limit 10";
         //$this->firephp->log($qry);
@@ -220,8 +249,8 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
-        if (!empty($filter['user'])) {
-            $qry .= " and user_id = " . intval($filter['user']);
+        if (!empty($filter['agent'])) {
+            $qry .= " and user_id = " . intval($filter['agent']);
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc limit 10";
@@ -235,8 +264,8 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
-        if (!empty($filter['user'])) {
-            $qry .= " and user_id = " . intval($filter['user']);
+        if (!empty($filter['agent'])) {
+            $qry .= " and user_id = " . intval($filter['agent']);
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc limit 10";
@@ -249,8 +278,8 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
-        if (!empty($filter['user'])) {
-            $qry .= " and user_id = " . intval($filter['user']);
+        if (!empty($filter['agent'])) {
+            $qry .= " and user_id = " . intval($filter['agent']);
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc";
@@ -263,8 +292,8 @@ class Dashboard_model extends CI_Model
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = " . intval($filter['campaign']);
         }
-        if (!empty($filter['user'])) {
-            $qry .= " and user_id = " . intval($filter['user']);
+        if (!empty($filter['agent'])) {
+            $qry .= " and user_id = " . intval($filter['agent']);
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc";
@@ -334,17 +363,17 @@ $this->firephp->log($qry);
     	return $this->db->query($qry)->result_array();
     }
     
-	public function get_email_stats($campaign=""){
+	public function get_email_stats($filter=array()){
 		$camp_url = "";
 		$user_url = "";
 		$where =" and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-		if(in_array("by agent",$_SESSION['permissions'])){
+		if(!in_array("by agent",$_SESSION['permissions'])){
 		$where .= " and email_history.user_id = '{$_SESSION['user_id']}'";
 		$user_url .= "/user/".$_SESSION['user_id'];
 		}
-		if(!empty($campaign)){
-		$where .= " and records.campaign_id = $campaign ";	
-		$camp_url = "/campaign/$campaign";
+		if(!empty($filter['campaign'])){
+		$where .= " and records.campaign_id = '{$filter['campaign']}'";	
+		$camp_url = "/campaign/{$filter['campaign']}";
 		}
 			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() $where";	
 			$all = $this->db->query($qry_all)->row()->num;
