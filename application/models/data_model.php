@@ -789,10 +789,11 @@ class Data_model extends CI_Model
     //##########################################################################################
     //############################### DUPLICATES ###############################################
     //##########################################################################################
+
     /**
-     * Get duplicates by a filter
+     * Get duplicates query by a filter
      */
-    public function get_duplicates($form) {
+    private function get_duplicates_qry($form) {
         $field_ar = $form['field'];
         $filter_input = $form['filter_input'];
 
@@ -820,7 +821,7 @@ class Data_model extends CI_Model
                 from records ";
 
         $qry .= $join;
-        $qry .= " where CONCAT(".$select.") is not null";
+        $qry .= " where CONCAT(".$select.") is not null and (parked_code is null or parked_code <>'5') ";
         if ($filter_input) {
             $qry .= " and CONCAT(".$select.") like '%".$filter_input."%'";
         }
@@ -831,6 +832,63 @@ class Data_model extends CI_Model
         $qry .= " group by CONCAT(".$select.")
                 having count(*)>1";
 
+        return $qry;
+    }
+    /**
+     * Get duplicates by a filter
+     */
+    public function get_duplicates($form) {
+        $qry = $this->get_duplicates_qry($form);
+
         return $this->db->query($qry)->result_array();
     }
+    /**
+     * Get duplicates by a filter
+     */
+    public function get_duplicate_records($form) {
+
+        $field_ar = $form['field'];
+        $on_subqry = array();
+        $select = array();
+        foreach($field_ar as $field) {
+            if ($field == "telephone_number") {
+                array_push($on_subqry, "duplicates.".$field."=ct.".$field);
+                array_push($select, "ct.".$field);
+            }
+            elseif ($field == "postcode") {
+                array_push($on_subqry, "duplicates.".$field."=ca.".$field);
+                array_push($select, "ca.".$field);
+            }
+        }
+        $on_subqry = implode(" AND ", $on_subqry);
+        $select = implode(", ", $select);
+
+        $qry = "select distinct r.urn, r.date_added, r.date_updated, CONCAT(".$select.") as filter from records r
+                  left join contacts c ON (c.urn = r.urn)
+                  left join contact_telephone ct ON (ct.contact_id = c.contact_id)
+                  left join contact_addresses ca ON (ca.contact_id = c.contact_id) ";
+
+        $subqry = $this->get_duplicates_qry($form);
+
+
+
+
+        $qry .= "inner join (".$subqry.") duplicates ON (".$on_subqry.")";
+
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Delete duplicates
+     *
+     * Set the parked_code as Duplicate
+     */
+    public function delete_duplicates($urn_list) {
+        $qry = "UPDATE records
+                SET parked_code = (select parked_code from park_codes where park_reason = 'Duplicated')
+                WHERE urn IN ".$urn_list;
+        return $this->db->query($qry);
+    }
+
 }
