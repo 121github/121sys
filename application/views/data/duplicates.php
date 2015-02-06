@@ -36,7 +36,9 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-lg-4">
-                                        <span class='marl btn btn-danger del-duplicates-btn btn-sm' style="display: none">Remove duplicates</span>
+                                        <span class='marl btn btn-danger del-duplicates-btn btn-sm' style="display: none">
+                                            Remove duplicates
+                                        </span>
                                     </div>
                                     <div class="col-lg-8">
                                         <div class="pull-right" style="margin-bottom: 10px;">

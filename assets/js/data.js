@@ -1719,10 +1719,19 @@ var duplicates = {
             data: $('.filter-form').serialize()
         }).done(function(response) {
             if (response.success) {
-                //Reload duplicates table
-                duplicates.load_duplicates;
-                //Close delete form
-                duplicates.close_delete_duplicates();
+                $thead = $('.filter-table .ajax-table').find('thead');
+                $thead.empty();
+                $thead
+                    .append(
+                    "<th>Duplicates removed</th>" +
+                    "<th></th>");
+                $tbody = $('.filter-table .ajax-table').find('tbody');
+                $tbody.empty();
+                $tbody
+                    .append("<tr>"
+                    + "<td>"
+                    + response.num_records+" duplicate record(s) removed"
+                    + "</td></tr>");
 
                 flashalert.success(response.msg);
             }

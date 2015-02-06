@@ -821,7 +821,7 @@ class Data_model extends CI_Model
                 from records ";
 
         $qry .= $join;
-        $qry .= " where CONCAT(".$select.") is not null";
+        $qry .= " where CONCAT(".$select.") is not null and (parked_code is null or parked_code <>'5') ";
         if ($filter_input) {
             $qry .= " and CONCAT(".$select.") like '%".$filter_input."%'";
         }
@@ -863,7 +863,7 @@ class Data_model extends CI_Model
         $on_subqry = implode(" AND ", $on_subqry);
         $select = implode(", ", $select);
 
-        $qry = "select distinct r.urn, r.date_added, r.date_updated, ".$select." from records r
+        $qry = "select distinct r.urn, r.date_added, r.date_updated, CONCAT(".$select.") as filter from records r
                   left join contacts c ON (c.urn = r.urn)
                   left join contact_telephone ct ON (ct.contact_id = c.contact_id)
                   left join contact_addresses ca ON (ca.contact_id = c.contact_id) ";
@@ -877,6 +877,18 @@ class Data_model extends CI_Model
 
 
         return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Delete duplicates
+     *
+     * Set the parked_code as Duplicate
+     */
+    public function delete_duplicates($urn_list) {
+        $qry = "UPDATE records
+                SET parked_code = (select parked_code from park_codes where park_reason = 'Duplicated')
+                WHERE urn IN ".$urn_list;
+        return $this->db->query($qry);
     }
 
 }

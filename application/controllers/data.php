@@ -1250,14 +1250,60 @@ $this->_campaigns = campaign_access_dropdown();
 
             if (isset($form['field'])) {
 
+                //Get the duplicate records
                 $results = $this->Data_model->get_duplicate_records($form);
-                $this->firephp->log($results);
-                exit(0);
+                //Group the duplicates by filter
+                $aux = array();
+                foreach($results as $result) {
+                    $index = $result['filter'];
+                    if (!isset($aux[$index])) {
+                        $aux[$index] = array();
+                    }
+                    unset($result['filter']);
+                    array_push($aux[$index], $result);
+                }
+                $results = $aux;
+
+                //Keep the oldest duplicate records. For each duplicate group, remove from the array to delete the oldest
+                $records_to_delete = array();
+                foreach($results as $duplicate_records) {
+                    $date_added = NULL;
+                    $date_updated = NULL;
+                    $urn = false;
+                    $aux_dup = array();
+                    foreach($duplicate_records as $key => $result) {
+
+                        if (!$date_added || ($result['date_added'] && $date_added > $result['date_added'])) {
+                            $date_added = $result['date_added'];
+                            $date_updated = $result['date_updated'];
+                            $urn = $result['urn'];
+                        }
+                        elseif ($date_added == $result['date_added']) {
+                            if (!$date_updated || ($result['date_updated'] && $date_updated > $result['date_updated'])) {
+                                $date_added = $result['date_added'];
+                                $date_updated = $result['date_updated'];
+                                $urn = $result['urn'];
+                            }
+                        }
+                        $aux_dup[$result['urn']] = $result;
+                    }
+                    unset($aux_dup[$urn]);
+                    foreach($aux_dup as $dup) {
+                        array_push($records_to_delete, $dup['urn']);
+                    }
+                }
+                $num_records = count(implode(",",array_unique($records_to_delete)));
+                $records_to_delete = "(".implode(",",array_unique($records_to_delete)).")";
+
+                //Delete the duplicate records (set the parked_code as Duplicate)
+                $results = $this->Data_model->delete_duplicates($records_to_delete);
             }
 
             echo json_encode(array(
-                "success" => (!empty($results)),
-                "data" => (!empty($results)?$results:"No duplicates found")
+                "success" => (($results)),
+                "num_records" => $num_records,
+                "urn_list" => $records_to_delete,
+                "msg" => (($results)?"Duplicates removed successfully":"The duplicates was not removed successfully")
             ));
         }
     }
