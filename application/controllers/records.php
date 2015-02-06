@@ -529,7 +529,9 @@ class Records extends CI_Controller
             }
 				//if the user has the keep record permission or the outcome is keeper then we keep the user on the record too
 				if ($_SESSION['permissions'] == "keep records" || @$triggers['keep_record'] == "1"){
+					if(!in_array($_SESSION['user_id'],$new_owners)){
 					$new_owners[]=$_SESSION['user_id'];
+					}
 				}
                     $this->Records_model->save_ownership(intval($this->input->post('urn')), $new_owners);
          
