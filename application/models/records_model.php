@@ -556,7 +556,7 @@ class Records_model extends CI_Model
                     "urn" => $urn,
                     "user_id" => $user
                 );
-                $this->db->insert("ownership", $data);
+                $this->db->replace("ownership", $data);
             }
         }
     }
@@ -735,7 +735,7 @@ class Records_model extends CI_Model
 			*/
 			
 			$sqlfield = $row['field'];
-            $fields .= "if($sqlfield is null,'-',$sqlfield)" . " as `" . $row['field_name'] . "`,";
+            $fields .= "$sqlfield" . " as `" . $row['field_name'] . "`,";
         }
         
         $select = $fields . "detail_id ";
@@ -759,23 +759,22 @@ class Records_model extends CI_Model
                     $info[$id][$k]["code"] = $stuff1[$k];
                     $info[$id][$k]["name"] = $k;
 					if(isset($renewal[$k])){
-					$info[$id][$k]["formatted"] = date($renewal[$k],strtotime($v));
-					$this->firephp->log($renewal[$k]);
+					$info[$id][$k]["formatted"] = (!empty($v)?date($renewal[$k],strtotime($v)):"-");
 					}
                     if (isset($stuff2[$k])) {
                         $info[$id][$k]["options"] = $stuff2[$k];
                     }
-                   	$info[$id][$k]["value"] = $v;
+                   	$info[$id][$k]["value"] = (!empty($v)?$v:"-");
                     if (strpos($stuff1[$k], "c") !== false) {
                         $info[$id][$k]["type"] = "varchar";
                     } else if (substr($stuff1[$k], 1, 1) == "t") {
                         $info[$id][$k]["type"] = "datetime";
-						$info[$id][$k]["value"] = date("d/m/Y H:i",strtotime($v));
+						$info[$id][$k]["value"] = (!empty($v)?date("d/m/Y H:i",strtotime($v)):"-");
                     } else if (strpos($stuff1[$k], "n") !== false) {
                         $info[$id][$k]["type"] = "number";
                     } else {
                         $info[$id][$k]["type"] = "date";
-						$info[$id][$k]["value"] = date("d/m/Y",strtotime($v));
+						$info[$id][$k]["value"] = (!empty($v)?date("d/m/Y",strtotime($v)):"-");
                     }
                 }
                 

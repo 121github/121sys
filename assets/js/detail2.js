@@ -1778,6 +1778,7 @@ var record = {
                     } else {
                         if (row.type != "varchar" && row.type != "number") {
                             inputclass = row.type;
+							if(row.value='-'&&row.type=="datetime"){ row.value = moment(new Date()).format("DD/MM/YYYY HH:mm:ss"); } if(row.value='-'&&row.type=="date"){ row.value = moment(new Date()).format("DD/MM/YYYY"); }
                         }
                         form += " <div class='form-group input-group-sm " + inputclass + "'>" + row.name + "<input class='form-control' name='" + row.code + "' type='text' value='" + row.value + "'/></div>";
                     }

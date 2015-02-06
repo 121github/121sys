@@ -54,7 +54,7 @@ foreach($recordings as $k=>$row){
 if(!empty($transfer_number)){
 $owner = $row['owner']; 	
 $endtime = $row['endtime']; //the endtime of the call is the starttime of the transfer
-$db2->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate",false);
+$db2->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,server",false);
 $db2->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime')",null,false);
 $db2->group_by("calls.id");
 $transfer_query = $db2->get('recordings.calls');
@@ -83,9 +83,15 @@ public function listen(){
 session_write_close();
 $id = intval($this->uri->segment('3'));
 $filename = base64_decode($this->uri->segment('4'));
-$file = urlencode(str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/34recordings/","",$filename))));
+if(strpos($filename,"34recordings")!==false){
+$port = "8034";	
+} else {
+$port = "8016";	
+}
 
-$path = "http://recordings.121leads.co.uk:8034/";
+$file34 = str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/34recordings/","",$filename)));
+$file = str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/16recordings/","",$file34)));
+$path = "http://recordings.121leads.co.uk:$port/";
 
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
@@ -119,7 +125,7 @@ $filetype="ogg";
  $filetype="ogg";
     }
 
-$path = "http://recordings.121leads.co.uk:8034/";
+$path = "http://recordings.121leads.co.uk:$port/";
 
 echo json_encode(array("success"=>true,"filename"=>$path."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
 
