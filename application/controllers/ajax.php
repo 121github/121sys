@@ -348,7 +348,7 @@ $this->_campaigns = campaign_access_dropdown();
             $this->db->where('telephone_id', intval($this->input->post('id')));
             if ($this->db->delete('contact_telephone')):
                 echo json_encode(array(
-                    "id" => intval($this->input->post('company')),
+                    "id" => intval($this->input->post('contact')),
                     "type" => "phone"
                 ));
             endif;

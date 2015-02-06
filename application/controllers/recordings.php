@@ -46,6 +46,7 @@ $calltime = $row['contact'];
 $qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,owner from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
 $qry = rtrim($qry,"union ");
+$this->firephp->log($qry);
 $result = $db2->query($qry);
 $recordings = $result->result_array();
 
@@ -88,14 +89,12 @@ $port = "8034";
 } else {
 $port = "8016";	
 }
-
-$file34 = str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/34recordings/","",$filename)));
-$file = str_replace("xml","wav",str_replace("/","\\",str_replace("/mnt/16recordings/","",$file34)));
+$file34 = str_replace("xml","wav",str_replace("/mnt/16recordings/","",str_replace("/mnt/34recordings/","",$filename)));
+$file = str_replace("/","\\",$file34);
 $path = "http://recordings.121leads.co.uk:$port/";
-
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
-$this->firephp->log($conversion_path);
+
 //the old way was a bit slow
 //$context = stream_context_create(array('http' => array('header'=>'Connection: close')));
 //file_get_contents($conversion_path,false,$context);

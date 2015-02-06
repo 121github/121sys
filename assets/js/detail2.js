@@ -647,7 +647,7 @@ var record = {
                 }
             }).done(function(response) {
                 record.contact_panel.load_tabs(response.id, response.type);
-                record.contact_panel.load_panel();
+                record.contact_panel.load_panel(record.urn,response.id);
             });
         },
         new_item_form: function($btn) {
