@@ -360,5 +360,10 @@
 <script>
 	$(document).ready(function(){
 		dashboard.init();
+		dashboard.history_panel();
+		dashboard.outcomes_panel();
+		dashboard.system_stats();
+		dashboard.comments_panel();
+		dashboard.emails_panel();
 	});
 	</script> 

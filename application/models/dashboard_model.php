@@ -227,6 +227,38 @@ class Dashboard_model extends CI_Model
         return $data;
     }
     
+		public function all_callbacks($filter)
+    {
+        $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
+        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,users.name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id = 2 ";
+		$date_from = $filter['date_from'];
+		$date_to = $filter['date_to'];
+		if (!empty($date_from)) {
+        $qry .= " and date(nextcall) >= '$date_from' ";
+        }
+		if (!empty($date_to)) {
+        $qry .= " and date(nextcall) <= '$date_to' ";
+        }
+        if (!empty($filter['campaign'])) {
+            $qry .= " and campaign_id = '{$filter['campaign']}'";
+        }
+		if (!empty($filter['team'])) {
+            $qry .= " and users.team_id = '{$filter['team']}'";
+        }
+		if (!empty($filter['agent'])) {
+            $qry .= " and ownership.user_id = '{$filter['agent']}'";
+        }
+		if (!in_array("by agent",$_SESSION['permissions'])) {
+            $qry .= " and ownership.user_id = '".$_SESSION['user_id']."'";
+        }
+
+		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		
+        $qry .= " group by urn order by nextcall asc limit 50";
+        $this->firephp->log($qry);
+        return $this->db->query($qry)->result_array();
+    }
+	
 	public function timely_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";

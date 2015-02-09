@@ -43,7 +43,7 @@ class Records_model extends CI_Model
 		}
 		//next priority is lapsed callbacks	beloning to the user
 		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(1,2,85) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,date_updated,dials limit 1";
-		//next priority is lapsed callbacks	for anyone
+		//next priority is lapsed callbacks	unassigned
 		if(in_array("search unassigned",$_SESSION['permissions'])){		
 		$priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(1,2,85) and user_id is null order by case when outcome_id = 2 then 1 else 2 end,date_updated,dials limit 1";
 		}

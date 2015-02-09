@@ -1,14 +1,6 @@
 // JavaScript Document
 var dashboard = {
-    init: function () {
-		/* load any other panels on this dashboard */
-		dashboard.history_panel();
-		dashboard.outcomes_panel();
-		dashboard.system_stats();
-		dashboard.comments_panel();
-		dashboard.emails_panel();
-		
-				
+    init: function () {	
 		$(".filter").click(function(e) {
             e.preventDefault();
 			var input = $(this).attr('data-ref');
@@ -19,7 +11,6 @@ var dashboard = {
 			//run the panel function specified in the data-func
 			eval("dashboard."+func+"()");
         });
-
     },
 	/* the function for the history panel on the main dashboard */
     history_panel: function (filter) {
@@ -173,18 +164,13 @@ var dashboard = {
             data: $('.favorites-filter').serialize(),
         }).done(function (response) {
             $('.favorites-panel').empty();
-			if(campaign==3){
-			var campcol = "style='display:none'";				
-			} else {
-			var campcol = "";	
-			}
 			var $table="";
 			    var $tbody = "";
             if (response.data.length > 0) {
-				$table = "<table class='table'><thead><tr><th "+campcol+" >Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Outcome</th><th>View</th></tr></tr></thead><tbody>";
+				$table = "<table class='table'><thead><tr><th>Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Outcome</th><th>View</th></tr></tr></thead><tbody>";
                 $.each(response.data, function (i, val) {
 					        
-                    $tbody += '<tr><td '+campcol+' >'+val.campaign_name+'</td><td>'+val.fullname+'</td><td>'+val.date_updated+'</td><td>'+val.nextcall+'</td><td>'+val.outcome+'</td><td><span class="glyphicon glyphicon-comment tt pointer" title="" data-toggle="tooltip" data-placement="left" data-original-title="'+val.comments+'"></span></td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
+                    $tbody += '<tr><td>'+val.campaign_name+'</td><td>'+val.fullname+'</td><td>'+val.date_updated+'</td><td>'+val.nextcall+'</td><td>'+val.outcome+'</td><td><span class="glyphicon glyphicon-comment tt pointer" title="" data-toggle="tooltip" data-placement="left" data-original-title="'+val.comments+'"></span></td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
 					
                 });
 				$table += $tbody;
@@ -198,7 +184,7 @@ var dashboard = {
 	/* the function for the missed call backs panel on the agent dashboard */
     callbacks_panel: function (filter) {
         $.ajax({
-            url: helper.baseUrl + 'dashboard/timely_callbacks',
+            url: helper.baseUrl + 'dashboard/all_callbacks',
             type: "POST",
             dataType: "JSON",
             data: $('.callbacks-filter').serialize(),

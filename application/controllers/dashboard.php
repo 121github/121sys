@@ -69,13 +69,16 @@ class Dashboard extends CI_Controller
 			'page'=> array('dashboard'=>'agent'),
             'javascript' => array(
                 'charts.js',
-                'dashboard.js'
+                'dashboard.js',
+				'lib/moment.js',
+                'lib/daterangepicker.js'
             ),
             'campaigns' => $campaigns,
             'surveys' => $surveys,
             'css' => array(
                 'dashboard.css',
-                'plugins/morris/morris-0.4.3.min.css'
+                'plugins/morris/morris-0.4.3.min.css',
+				'daterangepicker-bs3.css'
             )
         );
         $this->template->load('default', 'dashboard/agent_dash.php', $data);
@@ -418,7 +421,24 @@ class Dashboard extends CI_Controller
             ));
         }
     }
-    
+ 
+    public function all_callbacks()
+    {
+        if ($this->input->is_ajax_request()) {
+              $filter  = $this->input->post();
+            $results = $this->Dashboard_model->all_callbacks($filter);
+            foreach ($results as $k => $row) {
+                $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
+                $results[$k]['date'] = date('jS M', strtotime($row['nextcall']));
+            }
+            echo json_encode(array(
+                "success" => true,
+                "data" => $results,
+                "msg" => "No callbacks found"
+            ));
+        }
+    }
+	
      //this controller displays the timely callback data in JSON format. It gets called by the javascript function "timely_callbacks_panel" 
     public function timely_callbacks()
     {
