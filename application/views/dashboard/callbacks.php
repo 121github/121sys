@@ -151,7 +151,7 @@
             </div>
           </div>
           <!-- /.panel-heading -->
-          <div class="panel-body timely-callbacks"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+          <div class="panel-body callbacks"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
           <!-- /.panel-body --> 
         </div>
         
@@ -181,7 +181,7 @@
                     'Todays': [moment(), moment()],
                     'Tomorrow': [moment().add('days', 1), moment().add('days', 1)],
                     'Missed': [moment('2014-01-01'), moment()],
-                    'Upcoming': [moment().subtract('hours', 1),moment('2020-01-01')]
+                    'Upcoming': [moment('2020-01-01')]
                 },
                 format: 'DD/MM/YYYY HH:mm',
                 minDate: "02/07/2014",

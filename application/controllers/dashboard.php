@@ -69,7 +69,7 @@ class Dashboard extends CI_Controller
 			$btntext = "Missed";
 		} else if($type=="upcoming"){
 			$date_from = date('Y-m-d H:s');
-			$date_to = date('Y-m-d 2020-01-01'); //if i'm not here in 5 years this might break :O
+			$date_to = date('2020-01-01'); //if i'm not here in 5 years this might break :O
 			$btntext = "Upcoming";
 		} else {
 			$date_from = "";
