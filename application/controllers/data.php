@@ -1292,7 +1292,7 @@ $this->_campaigns = campaign_access_dropdown();
                         array_push($records_to_delete, $dup['urn']);
                     }
                 }
-                $num_records = count(implode(",",array_unique($records_to_delete)));
+                $num_records = count(array_unique($records_to_delete));
                 $records_to_delete = "(".implode(",",array_unique($records_to_delete)).")";
 
                 //Delete the duplicate records (set the parked_code as Duplicate)
