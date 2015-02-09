@@ -58,8 +58,10 @@ class Dashboard extends CI_Controller
 	    //this is the controller loads the initial view for the activity dashboard
     public function callbacks()
     {
+		$agents       = $this->Form_model->get_agents();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources      = $this->Form_model->get_sources();
         $campaigns = $this->Form_model->get_user_campaigns();
-        $surveys   = $this->Form_model->get_surveys();
         $type = $this->uri->segment(3);
 		if($type=="missed"){
 			$date_from = date('2014-07-02');
@@ -89,7 +91,9 @@ class Dashboard extends CI_Controller
 			'date_to'=>$date_to,
 			'btntext'=>$btntext,
             'campaigns' => $campaigns,
-            'surveys' => $surveys,
+            'surveys' => $sources,
+			'agents'=>$agents,
+			'team_managers'=>$teamManagers,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
@@ -102,30 +106,7 @@ class Dashboard extends CI_Controller
     //this is the controller loads the initial view for the activity dashboard
     public function agent()
     {
-        $campaigns = $this->Form_model->get_user_campaigns();
-        $surveys   = $this->Form_model->get_surveys();
-        $type = $this->uri->segment(3);
-        $data = array(
-            'campaign_access' => $this->_campaigns,
-'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
-			'page'=> array('dashboard'=>'agent'),
-            'javascript' => array(
-                'charts.js',
-                'dashboard.js',
-				'lib/moment.js',
-                'lib/daterangepicker.js'
-            ),
-			'type'=>$type,
-            'campaigns' => $campaigns,
-            'surveys' => $surveys,
-            'css' => array(
-                'dashboard.css',
-                'plugins/morris/morris-0.4.3.min.css',
-				'daterangepicker-bs3.css'
-            )
-        );
-        $this->template->load('default', 'dashboard/agent_dash.php', $data);
+       header('location:'.base_url().'dashboard/callbacks');
     }
     //this is the controller loads the initial view for the client dashboard
     public function client()
