@@ -91,7 +91,7 @@ class Dashboard extends CI_Controller
 			'date_to'=>$date_to,
 			'btntext'=>$btntext,
             'campaigns' => $campaigns,
-            'surveys' => $sources,
+            'sources' => $sources,
 			'agents'=>$agents,
 			'team_managers'=>$teamManagers,
             'css' => array(
