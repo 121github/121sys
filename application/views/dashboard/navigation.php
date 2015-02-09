@@ -25,21 +25,15 @@
                     <?php if(in_array("agent dash",$_SESSION['permissions'])){ ?>
                     <div class="accordion-group panel">
 			            <div class="accordion-inner">
-			                <a href="<?php echo base_url() ?>dashboard/agent" <?php echo @($dashboard=='agent'?"class='active'":"") ?>>Callbacks</a>
+			                <a href="<?php echo base_url() ?>dashboard/callbacks" <?php echo @($dashboard=='callbacks'?"class='active'":"") ?>>Callbacks</a>
 			            </div>
-			            <div id="collapseTwoManagementDash" class="accordion-body <?php echo @($dashboard=='agent'?"":"collapse") ?>">
+			            <div id="collapseTwoManagementDash" class="accordion-body <?php echo @($dashboard=='callbacks'?"":"collapse") ?>">
 			                <div class="accordion-group submenu">
 			                    <div class="accordion-inner">
-			                    	<span id="my_favorites">My Favorites</span>
+			                      <a href="<?php echo base_url() ?>dashboard/callbacks/missed" <?php echo @($dashboard=='callbacks'?"class='active'":"") ?>>Missed Callbacks</a>
 			                    </div>
 			                    <div class="accordion-inner">
-			                        <span id="callbacks">Callbacks</span>
-			                    </div>
-			                    <div class="accordion-inner">
-			                        <span id="missed_callbacks">Missed Callbacks</span>
-			                    </div>
-			                    <div class="accordion-inner">
-			                        <span id="upcoming_callbacks">Upcoming Callbacks</span>
+			                        <a href="<?php echo base_url() ?>dashboard/callbacks/upcoming" <?php echo @($dashboard=='callbacks'?"class='active'":"") ?>>Upcoming Callbacks</a>
 			                    </div>
 			                </div>
 			            </div>

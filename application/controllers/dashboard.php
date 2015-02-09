@@ -55,13 +55,56 @@ class Dashboard extends CI_Controller
         $this->template->load('default', 'dashboard/dashboard.php', $data);
     }
     
+	    //this is the controller loads the initial view for the activity dashboard
+    public function callbacks()
+    {
+        $campaigns = $this->Form_model->get_user_campaigns();
+        $surveys   = $this->Form_model->get_surveys();
+        $type = $this->uri->segment(3);
+		if($type=="missed"){
+			$date_from = date('2014-07-02');
+			$date_to = date('Y-m-d H:s');
+			$btntext = "Missed";
+		} else if($type=="upcoming"){
+			$date_from = date('Y-m-d H:s');
+			$date_to = date('Y-m-d 2020-01-01'); //if i'm not here in 5 years this might break :O
+			$btntext = "Upcoming";
+		} else {
+			$date_from = "";
+			$date_to = "";
+			$btntext = "";
+		}
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
+            'title' => 'Dashboard',
+			'page'=> array('dashboard'=>'callbacks'),
+            'javascript' => array(
+                'charts.js',
+                'dashboard.js',
+				'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+			'date_from'=>$date_from,
+			'date_to'=>$date_to,
+			'btntext'=>$btntext,
+            'campaigns' => $campaigns,
+            'surveys' => $surveys,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+				'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'dashboard/callbacks.php', $data);
+    }
     
     //this is the controller loads the initial view for the activity dashboard
     public function agent()
     {
         $campaigns = $this->Form_model->get_user_campaigns();
         $surveys   = $this->Form_model->get_surveys();
-        
+        $type = $this->uri->segment(3);
         $data = array(
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Dashboard',
@@ -73,6 +116,7 @@ class Dashboard extends CI_Controller
 				'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
+			'type'=>$type,
             'campaigns' => $campaigns,
             'surveys' => $surveys,
             'css' => array(

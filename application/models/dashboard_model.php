@@ -44,15 +44,26 @@ class Dashboard_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 	
-    public function get_favorites($filter = "")
+    public function get_favorites($filter = array())
     {
-        $qry = "select urn,if(companies.name is null,fullname,name) as fullname,campaign_name,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated,date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall,comments,outcome from records left join outcomes using(outcome_id) left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) where urn in(select urn from favorites where user_id = '{$_SESSION['user_id']}') ";
-        if (!empty($filter)) {
-            $qry .= " and campaign_id = '$filter'";
+		$fav_user = (!empty($filter['agent'])?$filter['agent']:$_SESSION['user_id']);
+        $qry = "select urn,if(companies.name is null,fullname,name) as fullname,campaign_name,if(records.date_updated is null,'-',date_format(records.date_updated,'%d/%m/%y %H:%i')) date_updated,if(records.nextcall is null,'-',date_format(records.nextcall,'%d/%m/%y %H:%i')) nextcall,comments,if(outcome is null,'-',outcome) outcome from favorites left join records using(urn) left join outcomes using(outcome_id) left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) where 1 ";
+  if (!empty($filter['campaign'])) {
+            $qry .= " and campaign_id = '{$filter['campaign']}'";
         }
+		if (!empty($filter['team'])) {
+            $qry .= " and team_id = '{$filter['team']}'";
+        }
+		if (!empty($filter['agent'])) {
+            $qry .= " and user_id = '{$filter['agent']}'";
+        }
+		if (!in_array("by agent",$_SESSION['permissions'])) {
+            $qry .= " and user_id = '".$_SESSION['user_id']."'";
+        }
+
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= "  group by urn order by records.date_updated asc";
-		//$this->firephp->log($qry);
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     
@@ -259,50 +270,6 @@ class Dashboard_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 	
-	public function timely_callbacks($filter)
-    {
-        $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
-        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,users.name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id)  where outcome_id = 2 and nextcall > subdate(NOW(), INTERVAL 1 HOUR) and nextcall <  adddate(NOW(), INTERVAL 1 HOUR) ";
-        if (!empty($filter['campaign'])) {
-            $qry .= " and campaign_id = " . intval($filter['campaign']);
-        }
-        if (!empty($filter['agent'])) {
-            $qry .= " and user_id = " . intval($filter['agent']);
-        }
-        $qry .= " group by urn order by nextcall asc limit 10";
-        //$this->firephp->log($qry);
-        return $this->db->query($qry)->result_array();
-    }
-	
-    public function missed_callbacks($filter)
-    {
-        $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
-        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,users.name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id = 2 and nextcall < now() ";
-        if (!empty($filter['campaign'])) {
-            $qry .= " and campaign_id = " . intval($filter['campaign']);
-        }
-        if (!empty($filter['agent'])) {
-            $qry .= " and user_id = " . intval($filter['agent']);
-        }
-		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= " group by urn order by nextcall asc limit 10";
-        return $this->db->query($qry)->result_array();
-    }
-    
-    public function upcoming_callbacks($filter)
-    {
-        $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
-        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) where outcome_id = 2 and nextcall > now() ";
-        if (!empty($filter['campaign'])) {
-            $qry .= " and campaign_id = " . intval($filter['campaign']);
-        }
-        if (!empty($filter['agent'])) {
-            $qry .= " and user_id = " . intval($filter['agent']);
-        }
-		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= " group by urn order by nextcall asc limit 10";
-        return $this->db->query($qry)->result_array();
-    }
     
     public function client_progress($filter)
     {

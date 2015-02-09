@@ -211,66 +211,6 @@ var dashboard = {
             }
         });
     },
-	/* the function for the missed call backs panel on the agent dashboard */
-    missed_callbacks_panel: function (filter) {
-        $.ajax({
-            url: helper.baseUrl + 'dashboard/missed_callbacks',
-            type: "POST",
-            dataType: "JSON",
-            data: $('.callbacks-filter').serialize(),
-			beforeSend: function(){
-			            $('.missed-callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
-			}
-        }).done(function (response) {
-            $('.missed-callbacks').empty();
-            var $row = "";
-            if (response.data.length > 0) {
-                $.each(response.data, function (i, val) {
-                    if (val.last_comments.length) {
-                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="' + val.last_comments + '"></span>';
-                    }
-                    else {
-                        comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
-                    }
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td><td>'+comments+'</td></tr>';
-                });
-                $('.missed-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th><th></th></thead><tbody>' + $row + '</tbody></table>');
-                $('.tt').tooltip();
-            } else {
-                $('.missed-callbacks').append('<p>' + response.msg + '</p>');
-            }
-        });
-    },
-	/* the function for the upcoming callbacks panel on the agent dashboard */
-    upcoming_callbacks_panel: function (filter) {
-        $.ajax({
-            url: helper.baseUrl + 'dashboard/upcoming_callbacks',
-            type: "POST",
-            dataType: "JSON",
-            data: $('.callbacks-filter').serialize(),
-			beforeSend: function(){
-			            $('.upcoming-callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
-			}
-        }).done(function (response) {
-            $('.upcoming-callbacks').empty();
-            var $row = "";
-            if (response.data.length > 0) {
-                $.each(response.data, function (i, val) {
-                    if (val.last_comments.length) {
-                        comments = '<span class="glyphicon glyphicon-comment tt pointer" data-placement="left" data-toggle="tooltip" title="' + val.last_comments + '"></span>';
-                    }
-                    else {
-                        comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
-                    }
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td><td>'+comments+'</td></tr>';
-                });
-                $('.upcoming-callbacks').append('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th><th></th></thead><tbody>' + $row + '</tbody></table>');
-                $('.tt').tooltip();
-            } else {
-                $('.upcoming-callbacks').append('<p>' + response.msg + '</p>');
-            }
-        });
-    },
 	/* the function for the progress panel on the client dashboard */
     progress_panel: function (filter) {
         $.ajax({
