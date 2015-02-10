@@ -1195,7 +1195,10 @@ $this->_campaigns = campaign_access_dropdown();
     {
         $filter = array(
             array('field'=>'telephone_number', 'name'=>'Telephone number'),
-            array('field'=>'postcode', 'name'=>'Postcode')
+            array('field'=>'postcode', 'name'=>'Postcode'),
+            array('field'=>'fullname', 'name'=>'Fullname'),
+            array('field'=>'coname', 'name'=>'Company Name'),
+            array('field'=>'client_ref', 'name'=>'Client Reference')
         );
 
         $campaigns = $this->Form_model->get_campaigns();

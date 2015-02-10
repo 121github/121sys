@@ -803,16 +803,43 @@ class Data_model extends CI_Model
         }
 
         $select = "";
-        $join = " inner join campaigns using (campaign_id)
-                left join contacts using (urn)";
+        $join = "";
         foreach($field_ar as $field) {
             if ($field == "telephone_number") {
+                if (!isset($contact_join)){
+                    $contact_join = " left join contacts using (urn)";
+                    $join .= $contact_join;
+                }
                 $join .= " left join contact_telephone using (contact_id)";
+                $select .= $field.",";
             }
             elseif ($field == "postcode") {
+                if (!isset($contact_join)){
+                    $contact_join = " left join contacts using (urn)";
+                    $join .= $contact_join;
+                }
                 $join .= " left join contact_addresses using (contact_id)";
+                $select .= $field.",";
             }
-            $select .= $field.",";
+            elseif ($field == "fullname") {
+                if (!isset($contact_join)){
+                    $contact_join = " left join contacts using (urn)";
+                    $join .= $contact_join;
+                }
+                $select .= $field.",";
+            }
+            elseif ($field == "coname") {
+                if (!isset($campaign_join)){
+                    $campaign_join = " inner join campaigns using (campaign_id)";
+                    $join .= $campaign_join;
+                }
+                $join .= " inner join companies using (urn)";
+                $select .= "name,";
+            }
+            elseif ($field == "client_ref") {
+                $join .= " inner join client_refs using (urn)";
+                $select .= $field.",";
+            }
         }
         $select =substr($select, 0, strlen($select)-1);
 
@@ -821,7 +848,7 @@ class Data_model extends CI_Model
                 from records ";
 
         $qry .= $join;
-        $qry .= " where CONCAT(".$select.") is not null and (parked_code is null or parked_code <>'5') ";
+        $qry .= " where CONCAT(".$select.") is not null and CONCAT(".$select.")<>'' and (parked_code is null or parked_code <>'5') ";
         if ($filter_input) {
             $qry .= " and CONCAT(".$select.") like '%".$filter_input."%'";
         }
@@ -859,6 +886,18 @@ class Data_model extends CI_Model
                 array_push($on_subqry, "duplicates.".$field."=ca.".$field);
                 array_push($select, "ca.".$field);
             }
+            elseif ($field == "fullname") {
+                array_push($on_subqry, "duplicates.".$field."=c.".$field);
+                array_push($select, "c.".$field);
+            }
+            elseif ($field == "coname") {
+                array_push($on_subqry, "duplicates.name=cm.name");
+                array_push($select, "cm.name");
+            }
+            elseif ($field == "client_ref") {
+                array_push($on_subqry, "duplicates.".$field."=cr.".$field);
+                array_push($select, "cr.".$field);
+            }
         }
         $on_subqry = implode(" AND ", $on_subqry);
         $select = implode(", ", $select);
@@ -866,7 +905,9 @@ class Data_model extends CI_Model
         $qry = "select distinct r.urn, r.date_added, r.date_updated, CONCAT(".$select.") as filter from records r
                   left join contacts c ON (c.urn = r.urn)
                   left join contact_telephone ct ON (ct.contact_id = c.contact_id)
-                  left join contact_addresses ca ON (ca.contact_id = c.contact_id) ";
+                  left join contact_addresses ca ON (ca.contact_id = c.contact_id)
+                  left join companies cm ON (cm.urn = r.urn)
+                  left join client_refs cr ON (cr.urn = r.urn) ";
 
         $subqry = $this->get_duplicates_qry($form);
 

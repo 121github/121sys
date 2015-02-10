@@ -730,6 +730,16 @@ class Filter_model extends CI_Model
             $qry .= " left join contact_addresses cona on cona.contact_id = contacts.contact_id ";
         }
 
+        //company_name
+        if (in_array("coname", $fields)) {
+            $qry .= " left join companies companies on companies.urn = records.urn ";
+        }
+
+        //client_refs
+        if (in_array("client-ref", $fields)) {
+            $qry .= " left join client_refs cr on cr.urn = records.urn ";
+        }
+
         //only join the email tables if we need them
         $email_qry = "";
 		$template_qry = "";
@@ -826,6 +836,25 @@ class Filter_model extends CI_Model
             $contact_postcode_qry .= " and cona.postcode = '".$array['postcode']."'";
             unset($array['postcode']);
         }
+        //contact_fullname
+        $contact_fullname_qry = "";
+        if (in_array("fullname", $fields)) {
+            $contact_fullname_qry .= " and contacts.fullname = '".$array['fullname']."'";
+            unset($array['fullname']);
+        }
+
+        //company_name
+        $comany_name_qry = "";
+        if (in_array("coname", $fields)) {
+            $comany_name_qry .= " and companies.name = '".base64_decode($array['coname'])."'";
+            unset($array['coname']);
+        }
+        //client_refs
+        $client_ref_qry = "";
+        if (in_array("client-ref", $fields)) {
+            $client_ref_qry .= " and cr.client_ref = '".$array['client-ref']."'";
+            unset($array['client-ref']);
+        }
 
         $update_date_qry = "";
         if (in_array("update-date-from", $fields) || in_array("update-date-to", $fields) || in_array("renewal-date-from", $fields) || in_array("renewal-date-to", $fields)) {
@@ -865,7 +894,7 @@ class Filter_model extends CI_Model
 
 
 
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry $contact_telephone_qry $contact_postcode_qry";
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry $contact_telephone_qry $contact_postcode_qry $contact_fullname_qry $comany_name_qry $client_ref_qry";
 
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {

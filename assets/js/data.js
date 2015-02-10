@@ -1677,8 +1677,10 @@ var duplicates = {
                             var tbody_fields = "";
                             var search_url = helper.baseUrl + "search/custom/records";
                             $.each(field_ar, function (k, field) {
-                                tbody_fields += "<td>"+val[field]+"</td>";
-                                search_url += "/"+(field.replace("_","-"))+"/"+val[field];
+                                var field_name = (field == "coname"?"name":field);
+                                var field_value = (field == "coname"?btoa(val[field_name]):val[field_name]);
+                                tbody_fields += "<td>"+val[field_name]+"</td>";
+                                search_url += "/"+(field.replace("_","-"))+"/"+field_value;
                                 if ($('.filter-form').find('input[name="campaign"]').val()) {
                                     search_url += "/campaign/"+$('.filter-form').find('input[name="campaign"]').val();
                                 }
