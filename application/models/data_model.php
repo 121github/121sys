@@ -932,4 +932,41 @@ class Data_model extends CI_Model
         return $this->db->query($qry);
     }
 
+
+    //##########################################################################################
+    //############################### SUPPRESSION NUMBERS ######################################
+    //##########################################################################################
+
+    /**
+     * Get suppression numbers by a filter
+     */
+    public function get_suppression_numbers($form) {
+        $where = " where 1 ";
+        if (!empty($form['campaign'])) {
+            $where .= " and (campaign_id = ".$form['campaign']." OR campaign_id is NULL) ";
+        }
+        if (!empty($form['date_from'])) {
+            $where .= " and (date(date_added) >= '".$form['date_from']."' OR date(date_updated) >= '".$form['date_from']."') ";
+        }
+        if (!empty($form['date_to'])) {
+            $where .= " and (date(date_added) <= '".$form['date_to']."' OR date(date_updated) <= '".$form['date_to']."') ";
+        }
+
+        $qry = "SELECT
+                  suppression_id,
+                  telephone_number,
+                  date_format(date_added,'%d/%m/%y') as date_added,
+                  date_format(date_updated,'%d/%m/%y') as date_updated,
+                  reason,
+                  GROUP_CONCAT(campaign_name SEPARATOR ', ') as campaign_list,
+                  GROUP_CONCAT(campaign_id SEPARATOR ', ') as campaign_id_list
+                FROM suppression
+                  LEFT JOIN suppression_by_campaign using (suppression_id)
+                  LEFT JOIN campaigns using (campaign_id)";
+        $qry .= $where;
+        $qry .= " GROUP BY suppression_id";
+
+        return $this->db->query($qry)->result_array();
+    }
+
 }

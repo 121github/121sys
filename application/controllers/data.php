@@ -1318,6 +1318,8 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller loads the view for the suppression page
     public function suppression()
     {
+        $campaigns = $this->Form_model->get_campaigns();
+
         $data      = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
@@ -1327,13 +1329,34 @@ $this->_campaigns = campaign_access_dropdown();
                 'inner' => 'suppression'
             ),
             'css' => array(
-                'dashboard.css'
+                'dashboard.css',
+                'daterangepicker-bs3.css'
             ),
             'javascript' => array(
-                'data.js'
-            )
+                'data.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'campaigns' => $campaigns
         );
         $this->template->load('default', 'data/suppression.php', $data);
+    }
+
+    /**
+     * Get the suppression numbers by a filter
+     */
+    public function get_suppression_numbers() {
+        if ($this->input->is_ajax_request()) {
+
+            $form = $this->input->post();
+
+            $results = $this->Data_model->get_suppression_numbers($form);
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "data" => (!empty($results)?$results:"No suppression numbers found")
+            ));
+        }
     }
 
 }

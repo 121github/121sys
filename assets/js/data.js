@@ -1744,6 +1744,85 @@ var duplicates = {
     }
 }
 
+var suppression = {
+    init: function () {
+
+        $('.daterange').daterangepicker({
+                opens: "left",
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                format: 'DD/MM/YYYY',
+                minDate: "02/07/2014",
+                maxDate: moment(),
+                startDate: moment(),
+                endDate: moment()
+            },
+            function(start, end, element) {
+                var $btn = this.element;
+                $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
+                $btn.closest('.filter-form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                $btn.closest('.filter-form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+                suppression.load_suppression();
+            });
+        $(document).on("click", '.daterange', function(e) {
+            e.preventDefault();
+        });
+
+        $(document).on("click", ".campaign-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.filter-form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+
+            suppression.load_suppression();
+        });
+        suppression.load_suppression();
+    },
+    load_suppression: function() {
+        var $tbody = $('.filter-table .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_suppression_numbers',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                $.each(response.data, function (i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td style='display: none'>"
+                            + "<span class='suppression_id' style='display: none'>" + val.suppression_id + "</span>"
+                            + "</td><td class='telephone_number' style='vertical-align: middle'>"
+                            + val.telephone_number
+                            + "</td><td class='date_added' style='vertical-align: middle'>"
+                            + (val.date_added ? val.date_added : '-')
+                            + "</td><td class='date_updated' style='vertical-align: middle'>"
+                            + (val.date_updated ? val.date_updated : '-')
+                            + "</td><td class='campaign_list' style='vertical-align: middle'>"
+                            + (val.campaign_list ? val.campaign_list : 'All')
+                            + "</td><td class='reason' style='vertical-align: middle'>"
+                            + (val.reason ? val.reason : '-')
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>" + response.data + "</td></tr>");
+            }
+        });
+    }
+}
+
 /* ==========================================================================
  MODALS ON THIS PAGE
  ========================================================================== */
