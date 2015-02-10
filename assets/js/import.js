@@ -95,8 +95,16 @@ var importer = {
             if (response.success) {
                 $('.goto-step-3').show();
             } else {
-				$('#import-progress').html("<span class='red'>There was a problem creating the temperary table</span>");
-                flashalert.danger('There was a problem creating the temperary table');
+				if(response.error){
+				$('#filename').text("File was removed due to a formatting issue");
+				$('#file-status').html("<span class='red'>"+response.error+"</span>");
+				flashalert.danger('There was a problem with the file contents');
+				}
+               if(response.output){
+				$('#filename').text("Temp table could not be created. Please contact the site admin");
+				$('#file-status').html("<span class='red'>"+response.output+"</span>");
+				flashalert.danger('There was a problem with the import script.');
+				}
             }
         });
     },

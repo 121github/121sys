@@ -77,6 +77,54 @@ echo json_encode(array("success"=>true));
         $upload_handler        = new Upload($options, true);
     }
 	
+	public function checkfile($file=NULL){
+		if(!isset($file)){
+		$file = "new nps.csv";	
+		}
+	$row = 1;
+	if(!file_exists(FCPATH."datafiles\\".$file)){
+	echo "File not uploaded";
+	exit;
+	}
+if (($handle = fopen(FCPATH."datafiles\\".$file, "r")) !== FALSE) {
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+		if($row==1){
+		$length = count($data);
+		$headers=array();
+		//check the headers	
+		foreach($data as $k=>$column_name){
+		//duplicate columns not allowed
+		if(in_array($column_name,$headers)){
+		return "Duplicate header names are not allowed";
+		exit;
+		}
+		//empty columns not allowed
+		if(empty($column_name)){
+		return "Empty column headers are not allowed, check for trailing columns";
+		exit;
+		}
+		//dodgy characters not allowed
+		if(!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/',$column_name)){
+		return "Please check column headers for invalid characters";
+		exit;
+		}
+		$headers[] = $column_name;
+		}
+		}
+		//detect mismatched header/value counts
+		if(count($data)!==$length){
+		return "Row $row has a different number of columns!";
+		exit;	
+		}
+        $row++;
+    }
+    fclose($handle);
+	return false;
+}
+	
+		
+	}
+	
     public function import_csv()
     {
 	
@@ -86,23 +134,38 @@ echo json_encode(array("success"=>true));
 		if(empty($csv_file)){
 		$csv_file = "import_sample.csv";	
 		}
-		//$csv_file = "100645407554aac0b1ab9b21.64503497.csv";
         $output   = array();
+		
+		//run the check function to make sure all headers are valid
+		$file_error = $this->checkfile($csv_file);
+		$this->firephp->log($file_error);
+		if(@!empty($file_error)){
+		@unlink(FCPATH."datafiles\\".$csv_file);
+		echo json_encode(array(
+			"success"=>false,
+            "error" => $file_error
+        ));
+		exit;
+		}
+		
 		//run the bash script
 		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table . ' ' . $database;
-		$this->firephp->log($command);
-        exec($command,$output);
-		//$this->firephp->log($output);
+        $output = shell_exec($command);
+		$this->firephp->log($output);
 		if($this->Import_model->check_import()){
         //if csv imports successfully
         echo json_encode(array(
             "success" => true
         ));
+		exit;
 		}
 		else {
+		@unlink(FCPATH."datafiles\\".$csv_file);
 		 echo json_encode(array(
+		 	"success"=>false,
             "output" => $output	
         ));	
+		exit;
 		}
     }
     
@@ -221,14 +284,21 @@ AND   TABLE_NAME   = 'records'")->row()->urn;
 	  //create record details 
     public function create_client_refs()
     {
-		 $qry_fields  = $this->Import_model->get_fields("client_refs");
+		//first check if the client_ref field was add
+		$result = $this->db->query("SHOW COLUMNS FROM `importcsv` LIKE 'client_refs_client_ref'");
+		$exists = $result->num_rows()?TRUE:FALSE;	
+		//if there is a client ref column then import them	
+		if($exists) {
+  		 $qry_fields  = $this->Import_model->get_fields("client_refs");
 		 if(!empty($qry_fields)){
 		 $insert_query = "insert into client_refs (client_ref,urn) select " .ltrim($qry_fields['import_fields'],",") . " from importcsv";
 		 $this->db->query($insert_query);
 		 }
-		 echo json_encode(array(
+		}
+		echo json_encode(array(
             "success" => true
         ));
+
 	}
 	
 	    //create record details 
