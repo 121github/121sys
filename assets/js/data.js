@@ -1972,6 +1972,167 @@ var suppression = {
     }
 }
 
+var parkcode = {
+    init: function () {
+        $(document).on("click", '.new-parkcode-btn', function(e) {
+            e.preventDefault();
+            parkcode.new_parkcode();
+        });
+
+        $(document).on("click", '.edit-parkcode-btn', function(e) {
+            e.preventDefault();
+            parkcode.edit_parkcode($(this));
+        });
+
+        $(document).on('click', '.close-parkcode-btn', function(e) {
+            e.preventDefault();
+            parkcode.close_parkcode();
+        });
+
+        $(document).on('click', '.save-parkcode-btn', function(e) {
+            e.preventDefault();
+            parkcode.save_parkcode();
+        });
+
+        $(document).on('click', '.del-parkcode-btn', function(e) {
+            e.preventDefault();
+            modal.remove_parkcode($(this).attr('item-id'));
+        });
+
+        parkcode.load_parkcodes();
+    },
+    load_parkcodes: function() {
+        $tbody = $('.parkcode-data .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_parkcodes',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td class='parked_code'>"
+                            + val.parked_code
+                            + "</td><td class='park_reason' style='vertical-align: middle'>"
+                            + (val.park_reason?val.park_reason:'-')
+                            + "</td><td style='text-align: right'>" +
+                            "<span title='Edit export form' class='btn edit-parkcode-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.parked_code+"'></span>" +
+                            "<span title='Delete export form' class='btn del-parkcode-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.parked_code+"'></span>"
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+response.data+"</td></tr>");
+            }
+        });
+    },
+    new_parkcode: function() {
+        $(".save-parkcode-btn").attr('disabled',false);
+
+        $('#parkcode-form')[0].reset();
+        $('#parkcode-form').find('input[name="parked_code"]').val("");
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop parkcode in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.parkcode-container').find('.parkcode-panel').show();
+        $('.parkcode-content').show();
+        $('.parkcode-container').fadeIn()
+        $('.parkcode-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    edit_parkcode: function(btn) {
+        $(".save-parkcode-btn").attr('disabled',false);
+
+        var row = btn.closest('tr');
+        $('#parkcode-form').find('input[name="parked_code"]').val(row.find('.parked_code').text());
+        $('#parkcode-form').find('input[name="park_reason"]').val(row.find('.park_reason').text());
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop parkcode in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.parkcode-container').find('.parkcode-panel').show();
+        $('.parkcode-content').show();
+        $('.parkcode-container').fadeIn()
+        $('.parkcode-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    close_parkcode: function() {
+
+        $('.modal-backdrop.parkcode').fadeOut();
+        $('.parkcode-container').fadeOut(500, function() {
+            $('.parkcode-content').show();
+            $('.alert').addClass('hidden');
+        });
+        $('.parkcode-error').hide();
+    },
+
+    save_parkcode: function() {
+        $(".save-parkcode-btn").attr('disabled','disabled');
+
+        var park_reason = $('#parkcode-form').find('input[name="park_reason"]').val();
+
+        if (!park_reason) {
+            $('.parkcode-error').html("Please set this input");
+            $(".save-parkcode-btn").attr('disabled',false);
+            $('.parkcode-error').show();
+        }
+        else {
+            $('.parkcode-error').hide();
+            $.ajax({
+                url: helper.baseUrl + 'data/save_parkcode',
+                type: "POST",
+                dataType: "JSON",
+                data: $('#parkcode-form').serialize()
+            }).done(function(response) {
+                if (response.success) {
+                    //Reload parkcode table
+                    parkcode.load_parkcodes();
+                    //Close edit form
+                    parkcode.close_parkcode();
+
+                    flashalert.success(response.msg);
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        }
+    },
+    delete_parkcode: function(parked_code) {
+        $.ajax({
+            url: helper.baseUrl + 'data/delete_parkcode',
+            type: "POST",
+            dataType: "JSON",
+            data: {'parked_code': parked_code}
+        }).done(function(response) {
+            if (response.success) {
+                //Reload parkcode table
+                parkcode.load_parkcodes();
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    }
+}
+
 /* ==========================================================================
  MODALS ON THIS PAGE
  ========================================================================== */
@@ -2040,6 +2201,19 @@ var modal = {
         $('.confirm-modal').on('click', function(e) {
             $('#modal').modal('toggle');
             duplicates.delete_duplicates(btn);
+        });
+    },
+
+    remove_parkcode: function(parked_code) {
+        $('.modal-title').text('Confirm Delete');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to delete this parkcode?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            $('#modal').modal('toggle');
+            parkcode.delete_parkcode(parked_code);
         });
     }
 }

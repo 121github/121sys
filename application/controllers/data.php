@@ -1412,4 +1412,79 @@ $this->_campaigns = campaign_access_dropdown();
         }
     }
 
+    //################################################################################################
+    //################################### PARK CODE functions ########################################
+    //################################################################################################
+
+    //this controller loads the view for the parkcodes page
+    public function parkcodes()
+    {
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Park Codes',
+            'page' => array(
+                'admin' => 'data',
+                'inner' => 'parkcode'
+            ),
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'data.js'
+            )
+        );
+        $this->template->load('default', 'data/parkcodes.php', $data);
+    }
+
+    public function get_parkcodes() {
+        $parkcodes = $this->Data_model->get_parkcodes();
+
+        echo json_encode(array(
+            "success" => (!empty($parkcodes)),
+            "data" => (!empty($parkcodes)?$parkcodes:"No data created")
+        ));
+    }
+
+    /**
+     * Insert/Update an parkcode
+     */
+    public function save_parkcode() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            if ($form['parked_code']) {
+                $parked_code = $form['parked_code'];
+                unset($form['parked_code']);
+                //Update the parkcode
+                $this->Data_model->update_parkcode($parked_code, $form);
+            }
+            else {
+                //Insert a new parkcode
+                $parked_code = $this->Data_model->insert_parkcode($form);
+            }
+
+            echo json_encode(array(
+                "success" => ($parked_code),
+                "msg" => ($parked_code?"Parkcode saved successfully!":"ERROR: The parkcode was not save successfully!")
+            ));
+        }
+    }
+
+    /**
+     * Delete parkcode
+     */
+    public function delete_parkcode() {
+        if ($this->input->is_ajax_request()) {
+            $parked_code = $this->input->post("parked_code");
+
+            $results = $this->Data_model->delete_parkcode($parked_code);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Parkcode deleted successfully!":"ERROR: The parkcode was not deleted successfully!")
+            ));
+        }
+    }
+
 }

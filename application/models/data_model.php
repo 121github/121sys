@@ -1048,4 +1048,32 @@ class Data_model extends CI_Model
         return $results;
     }
 
+    //##########################################################################################
+    //############################### PARK CODE ################################################
+    //##########################################################################################
+    public function get_parkcodes() {
+        $qry = "select *
+                from park_codes p
+                order by parked_code asc";
+        return $this->db->query($qry)->result_array();
+    }
+
+    public function insert_parkcode($parked_code)
+    {
+        $this->db->insert("park_codes", $parked_code);
+        return $this->db->insert_id();
+    }
+
+    public function update_parkcode($parked_code, $form)
+    {
+        $this->db->where("parked_code", $parked_code);
+        return $this->db->update("park_codes", $form);
+    }
+
+    public function delete_parkcode($parked_code)
+    {
+        $this->db->where("parked_code", $parked_code);
+        return $this->db->delete("park_codes");
+    }
+
 }

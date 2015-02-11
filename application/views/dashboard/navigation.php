@@ -261,6 +261,11 @@
                                         <a href="<?php echo base_url() ?>data/suppression" <?php echo @($inner=='suppression'?"class='active'":"") ?>>Suppression Numbers</a>
                                     </div>
                                 <?php } ?>
+                                <?php if(in_array("parkcodes",$_SESSION['permissions'])){ ?>
+                                    <div class="accordion-inner">
+                                        <a href="<?php echo base_url() ?>data/parkcodes" <?php echo @($inner=='parkcodes'?"class='active'":"") ?>>Park Codes</a>
+                                    </div>
+                                <?php } ?>
 			                </div>
 			            </div>
 			        </div>
