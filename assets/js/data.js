@@ -1879,15 +1879,19 @@ var suppression = {
                 }
             }
             else {
-                $('#suppression-form').val('');
                 $('.suppression_exist').hide();
                 $('.suppression_campaign_select').selectpicker('deselectAll');
                 $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+                $('#suppression-form').find('input[name="suppression_id"]').val('');
             }
         });
     },
     new_suppression: function() {
         $(".save-suppression-btn").attr('disabled',false);
+        $('.suppression_exist').hide();
+        $('.suppression_campaign_select').selectpicker('deselectAll');
+        $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+        $('#suppression-form').find('input[name="suppression_id"]').val('');
 
         $('#suppression-form')[0].reset();
         $('.status_select').selectpicker('val',[]).selectpicker('render');
