@@ -1892,6 +1892,8 @@ var suppression = {
         $('.suppression_campaign_select').selectpicker('deselectAll');
         $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
         $('#suppression-form').find('input[name="suppression_id"]').val('');
+        $('.campaign-error').hide();
+        $('.telephone-error').hide();
 
         $('#suppression-form')[0].reset();
         $('.status_select').selectpicker('val',[]).selectpicker('render');
@@ -1923,29 +1925,50 @@ var suppression = {
         $('.suppression_campaign_select').selectpicker('deselectAll');
         $('.suppression_exist').hide();
         $('#suppression-form')[0].reset();
+        $('.campaign-error').hide();
+        $('.telephone-error').hide();
     },
 
     save_suppression: function() {
         $(".save-suppression-btn").attr('disabled','disabled');
-        $.ajax({
-            url: helper.baseUrl + 'data/save_suppression',
-            type: "POST",
-            dataType: "JSON",
-            data: $('#suppression-form').serialize()
-        }).done(function(response) {
-            if (response.success) {
-                flashalert.success(response.msg);
-                //Reload suppression table
-                suppression.load_suppression();
-                //Close suppression form
-                suppression.close_suppression();
+
+        var all_campaigns = ($('#suppression-form').find('input[name="all_campaigns"]').is(":checked")?1:0);
+        var suppression_campaigns = $('.suppression_campaign_select').val();
+        var telephone_number = $('#suppression-form').find('input[name="telephone_number"]').val();
+
+        if (!telephone_number) {
+            $('.telephone-error').html("Please set the telephone number");
+            $(".save-suppression-btn").attr('disabled',false);
+            $('.telephone-error').show();
+        }
+        else if (!all_campaigns && !suppression_campaigns) {
+            $('.telephone-error').hide();
+            $('.campaign-error').html("Please select a campaign before or click on \"Check for all campaigns\"");
+            $(".save-suppression-btn").attr('disabled',false);
+            $('.campaign-error').show();
+        }
+        else {
+            $('.campaign-error').hide();
+            $.ajax({
+                url: helper.baseUrl + 'data/save_suppression',
+                type: "POST",
+                dataType: "JSON",
+                data: $('#suppression-form').serialize()
+            }).done(function(response) {
+                if (response.success) {
+                    flashalert.success(response.msg);
+                    //Reload suppression table
+                    suppression.load_suppression();
+                    //Close suppression form
+                    suppression.close_suppression();
 
 
-            }
-            else {
-                flashalert.danger(response.msg);
-            }
-        });
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        }
     }
 }
 

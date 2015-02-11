@@ -10,6 +10,7 @@
                         <input type="hidden" name="suppression_id">
                         <div class="form-group input-group-sm">
                             <label>Telephone Number</label>
+                            <div><span style="color: red; font-size: 11px; display: none;" class="telephone-error"></span></div>
                             <input type="text" name="telephone_number" class="form-control" required/>
                         </div>
                     </div>
@@ -17,7 +18,7 @@
                 <div class="col-lg-7">
                     <div class="btn-group">
                         <label>Please select the campaign</label>
-                        <span style="color: red; font-size: 11px; display: none;" class="change-parked-code-campaign-error"></span>
+                        <div><span style="color: red; font-size: 11px; display: none;" class="campaign-error"></span></div>
                         <div class="checkbox">
                             <label>Check for all campaigns</label>
                             <input class="all_campaigns_checkbox" id="all_campaigns" name="all_campaigns" type="checkbox">
