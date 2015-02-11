@@ -1910,7 +1910,6 @@ var suppression = {
             left: moveto,
             top: '10%'
         }, 1000);
-
     },
     close_suppression: function() {
 
