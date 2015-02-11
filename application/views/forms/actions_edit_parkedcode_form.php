@@ -22,7 +22,7 @@
                 <?php endforeach; ?>
             </select>
         </div>
-        <p>Please select the reason</p>
+        <p>Please set the reason</p>
         <textarea class="form-control" placeholder="Enter the reason here" rows="3" name="reason"></textarea>
     </div>
     <div class="form-actions">

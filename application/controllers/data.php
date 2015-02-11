@@ -1359,4 +1359,57 @@ $this->_campaigns = campaign_access_dropdown();
         }
     }
 
+    /**
+     * Get the suppression numbers by telephone_number
+     */
+    public function get_suppression_by_telephone_number() {
+        if ($this->input->is_ajax_request()) {
+
+            $telephone_number = ($this->input->post('telephone_number')?$this->input->post('telephone_number'):"''");
+
+            $result = $this->Data_model->get_suppression_by_telephone_number($telephone_number);
+
+            if (!empty($result)) {
+                $result['campaign_id_list'] = explode(',',str_replace(" ","",$result['campaign_id_list']));
+            }
+
+            echo json_encode(array(
+                "success" => (!empty($result)),
+                "data" => ($result)
+            ));
+        }
+    }
+
+    /**
+     * Save the suppression number
+     */
+    public function save_suppression() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $reason = $form['reason'];
+            $telephone_number = $form['telephone_number'];
+            $campaign_list = (isset($form['suppression_campaign_id'])?$form['suppression_campaign_id']:array());
+
+            if ($form['suppression_id']) {
+                $results = $this->Data_model->update_suppression($form['suppression_id'],$telephone_number, $reason);
+                $suppression_id = $form['suppression_id'];
+            }
+            else {
+                $suppression_id = $this->Data_model->insert_suppression($telephone_number, $reason);
+            }
+
+            if ($suppression_id) {
+                // Save the campaigns
+                $this->Data_model->save_suppression_by_campaign($suppression_id, $campaign_list);
+            }
+
+            echo json_encode(array(
+                "success" => ($suppression_id),
+                "msg" => ($suppression_id?"Suppression number saved successfully!":"ERROR: The suppression number was not saved successfully!")
+            ));
+
+        }
+    }
+
 }

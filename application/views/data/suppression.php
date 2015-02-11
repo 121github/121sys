@@ -17,7 +17,6 @@
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <i class="fa fa-bar-chart-o fa-fw"></i>Suppresion Numbers
-
                                 <div class="pull-right">
                                     <div class="btn-group">
                                         <input type="hidden" name="date_from">
@@ -43,6 +42,11 @@
                             </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-success btn-xs dropdown-toggle new-suppression-btn"
+                                            data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> New Suppression Number
+                                    </button>
+                                </div>
                                 <div class="filter-table">
                                     <table class="table ajax-table" >
                                         <thead>
@@ -53,6 +57,7 @@
                                             <th>Reason</th>
                                         </thead>
                                         <tbody>
+                                            <td colspan="3"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
                                         </tbody>
                                     </table>
                                 </div>
@@ -64,6 +69,10 @@
             </div>
             <!-- /#page-wrapper -->
         </div>
+    </div>
+
+    <div class="panel panel-primary suppression-container">
+        <?php $this->view('forms/new_suppression_form.php'); ?>
     </div>
 
     <script>

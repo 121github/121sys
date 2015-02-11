@@ -964,9 +964,88 @@ class Data_model extends CI_Model
                   LEFT JOIN suppression_by_campaign using (suppression_id)
                   LEFT JOIN campaigns using (campaign_id)";
         $qry .= $where;
-        $qry .= " GROUP BY suppression_id";
+        $qry .= " GROUP BY suppression_id ORDER BY date_updated desc, date_added desc";
 
         return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Get suppression number by telephone number
+     */
+    public function get_suppression_by_telephone_number($telephone_number) {
+        $qry = "SELECT
+                  suppression_id,
+                  telephone_number,
+                  date_format(date_added,'%d/%m/%y') as date_added,
+                  date_format(date_updated,'%d/%m/%y') as date_updated,
+                  reason,
+                  GROUP_CONCAT(campaign_name SEPARATOR ', ') as campaign_list,
+                  GROUP_CONCAT(campaign_id SEPARATOR ', ') as campaign_id_list
+                FROM suppression
+                  LEFT JOIN suppression_by_campaign using (suppression_id)
+                  LEFT JOIN campaigns using (campaign_id)";
+        $qry .= " WHERE telephone_number = ".$telephone_number." ";
+        $qry .= " GROUP BY suppression_id";
+
+        $result =  $this->db->query($qry)->result_array();
+
+        if (!empty($result)) {
+            return $result[0];
+        }
+        else {
+            $result;
+        }
+    }
+
+    /**
+     * Insert suppression number
+     */
+    public function insert_suppression($telephone_number, $reason)
+    {
+        $this->db->insert("suppression", array(
+            "telephone_number" => $telephone_number,
+            "reason" => $reason
+        ));
+        return $this->db->insert_id();
+    }
+
+    /**
+     * Update suppression number
+     */
+    public function update_suppression($suppression_id, $telephone_number, $reason)
+    {
+        $this->db->where('suppression_id', $suppression_id);
+        return $this->db->update("suppression", array(
+            "telephone_number" => $telephone_number,
+            "reason" => $reason,
+            "date_updated" => date("Y-m-d H:i:s")
+        ));
+    }
+
+    /**
+     * Save campaigns for a suppression number
+     */
+    public function save_suppression_by_campaign($suppression_id, $campaign_list) {
+
+        //Remove the old campaigns
+        $this->db->where('suppression_id', $suppression_id);
+        $results = $this->db->delete("suppression_by_campaign");
+
+        //Insert the new campaigns
+        if (!empty($campaign_list) && $results) {
+            $aux = array();
+            foreach($campaign_list as $campaign) {
+                array_push($aux,array(
+                    'suppression_id' => $suppression_id,
+                    'campaign_id' => $campaign
+                ));
+            }
+            $campaign_list = $aux;
+
+            $results = $this->db->insert_batch("suppression_by_campaign", $campaign_list);
+        }
+
+        return $results;
     }
 
 }

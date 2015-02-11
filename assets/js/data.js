@@ -1784,6 +1784,40 @@ var suppression = {
 
             suppression.load_suppression();
         });
+
+        $(document).on("click", '.new-suppression-btn', function(e) {
+            e.preventDefault();
+            suppression.new_suppression($(this));
+        });
+
+        $(document).on('click', '.close-suppression-btn', function(e) {
+            e.preventDefault();
+            suppression.close_suppression();
+        });
+
+        $(document).on('click', '.save-suppression-btn', function(e) {
+            e.preventDefault();
+            suppression.save_suppression();
+        });
+
+        $('#suppression-form').find('input[name="telephone_number"]').blur(function(){
+            suppression.load_new_suppression_form();
+        });
+
+        $('#suppression-form').submit(function(){
+            suppression.load_new_suppression_form();
+            return false;
+        });
+
+        $(document).on('click','input[name="all_campaigns"]',function(e){
+            if ($('#suppression-form').find('input[name="all_campaigns"]').is(":checked")) {
+                $('.suppression_campaign_select').attr('disabled', true).trigger("chosen:updated");
+            }
+            else {
+                $('.suppression_campaign_select').attr('disabled', false).trigger("chosen:updated")
+            }
+        });
+
         suppression.load_suppression();
     },
     load_suppression: function() {
@@ -1818,6 +1852,95 @@ var suppression = {
             else {
                 $tbody
                     .append("<tr><td>" + response.data + "</td></tr>");
+            }
+        });
+    },
+    load_new_suppression_form: function() {
+        var telephone_number = $('#suppression-form').find('input[name="telephone_number"]').val();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_suppression_by_telephone_number',
+            type: "POST",
+            dataType: "JSON",
+            data: {'telephone_number': telephone_number}
+        }).done(function (response) {
+            if (response.success) {
+                $('.suppression_exist').show();
+                $('#suppression-form').find('input[name="suppression_id"]').val(response.data.suppression_id);
+                $('#suppression-form').find('textarea[name="reason"]').val(response.data.reason);
+                if (response.data.campaign_id_list.length>0 && response.data.campaign_id_list[0].length>0) {
+                    $('.suppression_campaign_select').attr('disabled', false).trigger("chosen:updated");
+                    $('.suppression_campaign_select').selectpicker('val',response.data.campaign_id_list).selectpicker('render');
+                    $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+                }
+                else {
+                    $('.suppression_campaign_select').selectpicker('deselectAll');
+                    $('.suppression_campaign_select').attr('disabled', true).trigger("chosen:updated");
+                    $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', true);
+                }
+            }
+            else {
+                $('#suppression-form').val('');
+                $('.suppression_exist').hide();
+                $('.suppression_campaign_select').selectpicker('deselectAll');
+                $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+            }
+        });
+    },
+    new_suppression: function() {
+        $(".save-suppression-btn").attr('disabled',false);
+
+        $('#suppression-form')[0].reset();
+        $('.status_select').selectpicker('val',[]).selectpicker('render');
+        $('.progress_select').selectpicker('val',[]).selectpicker('render');
+        $('#suppression-form').find('input[name="suppression_id"]').val("");
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop suppression in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.suppression-container').find('.suppression-panel').show();
+        $('.suppression-content').show();
+        $('.suppression-container').fadeIn()
+        $('.suppression-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    close_suppression: function() {
+
+        $('.modal-backdrop.suppression').fadeOut();
+        $('.suppression-container').fadeOut(500, function() {
+            $('.suppression-content').show();
+            $('.alert').addClass('hidden');
+        });
+        $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+        $('.suppression_campaign_select').attr('disabled', false).trigger("chosen:updated");
+        $('.suppression_campaign_select').selectpicker('deselectAll');
+        $('.suppression_exist').hide();
+        $('#suppression-form')[0].reset();
+    },
+
+    save_suppression: function() {
+        $(".save-suppression-btn").attr('disabled','disabled');
+        $.ajax({
+            url: helper.baseUrl + 'data/save_suppression',
+            type: "POST",
+            dataType: "JSON",
+            data: $('#suppression-form').serialize()
+        }).done(function(response) {
+            if (response.success) {
+                flashalert.success(response.msg);
+                //Reload suppression table
+                suppression.load_suppression();
+                //Close suppression form
+                suppression.close_suppression();
+
+
+            }
+            else {
+                flashalert.danger(response.msg);
             }
         });
     }
