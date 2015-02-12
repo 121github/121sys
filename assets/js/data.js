@@ -1677,8 +1677,10 @@ var duplicates = {
                             var tbody_fields = "";
                             var search_url = helper.baseUrl + "search/custom/records";
                             $.each(field_ar, function (k, field) {
-                                tbody_fields += "<td>"+val[field]+"</td>";
-                                search_url += "/"+(field.replace("_","-"))+"/"+val[field];
+                                var field_name = (field == "coname"?"name":field);
+                                var field_value = (field == "coname"?btoa(val[field_name]):val[field_name]);
+                                tbody_fields += "<td>"+val[field_name]+"</td>";
+                                search_url += "/"+(field.replace("_","-"))+"/"+field_value;
                                 if ($('.filter-form').find('input[name="campaign"]').val()) {
                                     search_url += "/campaign/"+$('.filter-form').find('input[name="campaign"]').val();
                                 }
@@ -1732,6 +1734,395 @@ var duplicates = {
                     + "<td>"
                     + response.num_records+" duplicate record(s) removed"
                     + "</td></tr>");
+
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    }
+}
+
+var suppression = {
+    init: function () {
+
+        $('.daterange').daterangepicker({
+                opens: "left",
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                format: 'DD/MM/YYYY',
+                minDate: "02/07/2014",
+                maxDate: moment(),
+                startDate: moment(),
+                endDate: moment()
+            },
+            function(start, end, element) {
+                var $btn = this.element;
+                $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
+                $btn.closest('.filter-form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                $btn.closest('.filter-form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+                suppression.load_suppression();
+            });
+        $(document).on("click", '.daterange', function(e) {
+            e.preventDefault();
+        });
+
+        $(document).on("click", ".campaign-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.filter-form').find('input[name="campaign"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+
+            suppression.load_suppression();
+        });
+
+        $(document).on("click", '.new-suppression-btn', function(e) {
+            e.preventDefault();
+            suppression.new_suppression($(this));
+        });
+
+        $(document).on('click', '.close-suppression-btn', function(e) {
+            e.preventDefault();
+            suppression.close_suppression();
+        });
+
+        $(document).on('click', '.save-suppression-btn', function(e) {
+            e.preventDefault();
+            suppression.save_suppression();
+        });
+
+        $('#suppression-form').find('input[name="telephone_number"]').blur(function(){
+            suppression.load_new_suppression_form();
+        });
+
+        $('#suppression-form').submit(function(){
+            suppression.load_new_suppression_form();
+            return false;
+        });
+
+        $(document).on('click','input[name="all_campaigns"]',function(e){
+            if ($('#suppression-form').find('input[name="all_campaigns"]').is(":checked")) {
+                $('.suppression_campaign_select').attr('disabled', true).trigger("chosen:updated");
+            }
+            else {
+                $('.suppression_campaign_select').attr('disabled', false).trigger("chosen:updated")
+            }
+        });
+
+        suppression.load_suppression();
+    },
+    load_suppression: function() {
+        var $tbody = $('.filter-table .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_suppression_numbers',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                $.each(response.data, function (i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td style='display: none'>"
+                            + "<span class='suppression_id' style='display: none'>" + val.suppression_id + "</span>"
+                            + "</td><td class='telephone_number' style='vertical-align: middle'>"
+                            + val.telephone_number
+                            + "</td><td class='date_added' style='vertical-align: middle'>"
+                            + (val.date_added ? val.date_added : '-')
+                            + "</td><td class='date_updated' style='vertical-align: middle'>"
+                            + (val.date_updated ? val.date_updated : '-')
+                            + "</td><td class='campaign_list' style='vertical-align: middle'>"
+                            + (val.campaign_list ? val.campaign_list : 'All')
+                            + "</td><td class='reason' style='vertical-align: middle'>"
+                            + (val.reason ? val.reason : '-')
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>" + response.data + "</td></tr>");
+            }
+        });
+    },
+    load_new_suppression_form: function() {
+        var telephone_number = $('#suppression-form').find('input[name="telephone_number"]').val();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_suppression_by_telephone_number',
+            type: "POST",
+            dataType: "JSON",
+            data: {'telephone_number': telephone_number}
+        }).done(function (response) {
+            if (response.success) {
+                $('.suppression_exist').show();
+                $('#suppression-form').find('input[name="suppression_id"]').val(response.data.suppression_id);
+                $('#suppression-form').find('textarea[name="reason"]').val(response.data.reason);
+                if (response.data.campaign_id_list.length>0 && response.data.campaign_id_list[0].length>0) {
+                    $('.suppression_campaign_select').attr('disabled', false).trigger("chosen:updated");
+                    $('.suppression_campaign_select').selectpicker('val',response.data.campaign_id_list).selectpicker('render');
+                    $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+                }
+                else {
+                    $('.suppression_campaign_select').selectpicker('deselectAll');
+                    $('.suppression_campaign_select').attr('disabled', true).trigger("chosen:updated");
+                    $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', true);
+                }
+            }
+            else {
+                $('.suppression_exist').hide();
+                $('.suppression_campaign_select').selectpicker('deselectAll');
+                $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+                $('#suppression-form').find('input[name="suppression_id"]').val('');
+            }
+        });
+    },
+    new_suppression: function() {
+        $(".save-suppression-btn").attr('disabled',false);
+        $('.suppression_exist').hide();
+        $('.suppression_campaign_select').selectpicker('deselectAll');
+        $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+        $('#suppression-form').find('input[name="suppression_id"]').val('');
+        $('.campaign-error').hide();
+        $('.telephone-error').hide();
+
+        $('#suppression-form')[0].reset();
+        $('.status_select').selectpicker('val',[]).selectpicker('render');
+        $('.progress_select').selectpicker('val',[]).selectpicker('render');
+        $('#suppression-form').find('input[name="suppression_id"]').val("");
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop suppression in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.suppression-container').find('.suppression-panel').show();
+        $('.suppression-content').show();
+        $('.suppression-container').fadeIn()
+        $('.suppression-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+    },
+    close_suppression: function() {
+
+        $('.modal-backdrop.suppression').fadeOut();
+        $('.suppression-container').fadeOut(500, function() {
+            $('.suppression-content').show();
+            $('.alert').addClass('hidden');
+        });
+        $('#suppression-form').find('input[name="all_campaigns"]').prop('checked', false);
+        $('.suppression_campaign_select').attr('disabled', false).trigger("chosen:updated");
+        $('.suppression_campaign_select').selectpicker('deselectAll');
+        $('.suppression_exist').hide();
+        $('#suppression-form')[0].reset();
+        $('.campaign-error').hide();
+        $('.telephone-error').hide();
+    },
+
+    save_suppression: function() {
+        $(".save-suppression-btn").attr('disabled','disabled');
+
+        var all_campaigns = ($('#suppression-form').find('input[name="all_campaigns"]').is(":checked")?1:0);
+        var suppression_campaigns = $('.suppression_campaign_select').val();
+        var telephone_number = $('#suppression-form').find('input[name="telephone_number"]').val();
+
+        if (!telephone_number) {
+            $('.telephone-error').html("Please set the telephone number");
+            $(".save-suppression-btn").attr('disabled',false);
+            $('.telephone-error').show();
+        }
+        else if (!all_campaigns && !suppression_campaigns) {
+            $('.telephone-error').hide();
+            $('.campaign-error').html("Please select a campaign before or click on \"Check for all campaigns\"");
+            $(".save-suppression-btn").attr('disabled',false);
+            $('.campaign-error').show();
+        }
+        else {
+            $('.campaign-error').hide();
+            $.ajax({
+                url: helper.baseUrl + 'data/save_suppression',
+                type: "POST",
+                dataType: "JSON",
+                data: $('#suppression-form').serialize()
+            }).done(function(response) {
+                if (response.success) {
+                    flashalert.success(response.msg);
+                    //Reload suppression table
+                    suppression.load_suppression();
+                    //Close suppression form
+                    suppression.close_suppression();
+
+
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        }
+    }
+}
+
+var parkcode = {
+    init: function () {
+        $(document).on("click", '.new-parkcode-btn', function(e) {
+            e.preventDefault();
+            parkcode.new_parkcode();
+        });
+
+        $(document).on("click", '.edit-parkcode-btn', function(e) {
+            e.preventDefault();
+            parkcode.edit_parkcode($(this));
+        });
+
+        $(document).on('click', '.close-parkcode-btn', function(e) {
+            e.preventDefault();
+            parkcode.close_parkcode();
+        });
+
+        $(document).on('click', '.save-parkcode-btn', function(e) {
+            e.preventDefault();
+            parkcode.save_parkcode();
+        });
+
+        $(document).on('click', '.del-parkcode-btn', function(e) {
+            e.preventDefault();
+            modal.remove_parkcode($(this).attr('item-id'));
+        });
+
+        parkcode.load_parkcodes();
+    },
+    load_parkcodes: function() {
+        $tbody = $('.parkcode-data .ajax-table').find('tbody');
+        $tbody.empty();
+        $.ajax({
+            url: helper.baseUrl + 'data/get_parkcodes',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            if (response.success) {
+                $.each(response.data, function(i, val) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr><td class='parked_code'>"
+                            + val.parked_code
+                            + "</td><td class='park_reason' style='vertical-align: middle'>"
+                            + (val.park_reason?val.park_reason:'-')
+                            + "</td><td style='text-align: right'>" +
+                            "<span title='Edit export form' class='btn edit-parkcode-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.parked_code+"'></span>" +
+                            "<span title='Delete export form' class='btn del-parkcode-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.parked_code+"'></span>"
+                            + "</td></tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+response.data+"</td></tr>");
+            }
+        });
+    },
+    new_parkcode: function() {
+        $(".save-parkcode-btn").attr('disabled',false);
+
+        $('#parkcode-form')[0].reset();
+        $('#parkcode-form').find('input[name="parked_code"]').val("");
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop parkcode in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.parkcode-container').find('.parkcode-panel').show();
+        $('.parkcode-content').show();
+        $('.parkcode-container').fadeIn()
+        $('.parkcode-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    edit_parkcode: function(btn) {
+        $(".save-parkcode-btn").attr('disabled',false);
+
+        var row = btn.closest('tr');
+        $('#parkcode-form').find('input[name="parked_code"]').val(row.find('.parked_code').text());
+        $('#parkcode-form').find('input[name="park_reason"]').val(row.find('.park_reason').text());
+
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+
+        $('<div class="modal-backdrop parkcode in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.parkcode-container').find('.parkcode-panel').show();
+        $('.parkcode-content').show();
+        $('.parkcode-container').fadeIn()
+        $('.parkcode-container').animate({
+            width: '500px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+
+    },
+    close_parkcode: function() {
+
+        $('.modal-backdrop.parkcode').fadeOut();
+        $('.parkcode-container').fadeOut(500, function() {
+            $('.parkcode-content').show();
+            $('.alert').addClass('hidden');
+        });
+        $('.parkcode-error').hide();
+    },
+
+    save_parkcode: function() {
+        $(".save-parkcode-btn").attr('disabled','disabled');
+
+        var park_reason = $('#parkcode-form').find('input[name="park_reason"]').val();
+
+        if (!park_reason) {
+            $('.parkcode-error').html("Please set this input");
+            $(".save-parkcode-btn").attr('disabled',false);
+            $('.parkcode-error').show();
+        }
+        else {
+            $('.parkcode-error').hide();
+            $.ajax({
+                url: helper.baseUrl + 'data/save_parkcode',
+                type: "POST",
+                dataType: "JSON",
+                data: $('#parkcode-form').serialize()
+            }).done(function(response) {
+                if (response.success) {
+                    //Reload parkcode table
+                    parkcode.load_parkcodes();
+                    //Close edit form
+                    parkcode.close_parkcode();
+
+                    flashalert.success(response.msg);
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        }
+    },
+    delete_parkcode: function(parked_code) {
+        $.ajax({
+            url: helper.baseUrl + 'data/delete_parkcode',
+            type: "POST",
+            dataType: "JSON",
+            data: {'parked_code': parked_code}
+        }).done(function(response) {
+            if (response.success) {
+                //Reload parkcode table
+                parkcode.load_parkcodes();
 
                 flashalert.success(response.msg);
             }
@@ -1810,6 +2201,19 @@ var modal = {
         $('.confirm-modal').on('click', function(e) {
             $('#modal').modal('toggle');
             duplicates.delete_duplicates(btn);
+        });
+    },
+
+    remove_parkcode: function(parked_code) {
+        $('.modal-title').text('Confirm Delete');
+        $('#modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        }).find('.modal-body').text('Are you sure you want to delete this parkcode?');
+        $(".confirm-modal").off('click').show();
+        $('.confirm-modal').on('click', function(e) {
+            $('#modal').modal('toggle');
+            parkcode.delete_parkcode(parked_code);
         });
     }
 }

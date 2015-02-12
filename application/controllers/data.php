@@ -1195,7 +1195,10 @@ $this->_campaigns = campaign_access_dropdown();
     {
         $filter = array(
             array('field'=>'telephone_number', 'name'=>'Telephone number'),
-            array('field'=>'postcode', 'name'=>'Postcode')
+            array('field'=>'postcode', 'name'=>'Postcode'),
+            array('field'=>'fullname', 'name'=>'Fullname'),
+            array('field'=>'coname', 'name'=>'Company Name'),
+            array('field'=>'client_ref', 'name'=>'Client Reference')
         );
 
         $campaigns = $this->Form_model->get_campaigns();
@@ -1315,6 +1318,8 @@ $this->_campaigns = campaign_access_dropdown();
     //this controller loads the view for the suppression page
     public function suppression()
     {
+        $campaigns = $this->Form_model->get_campaigns();
+
         $data      = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
@@ -1324,13 +1329,162 @@ $this->_campaigns = campaign_access_dropdown();
                 'inner' => 'suppression'
             ),
             'css' => array(
+                'dashboard.css',
+                'daterangepicker-bs3.css'
+            ),
+            'javascript' => array(
+                'data.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'campaigns' => $campaigns
+        );
+        $this->template->load('default', 'data/suppression.php', $data);
+    }
+
+    /**
+     * Get the suppression numbers by a filter
+     */
+    public function get_suppression_numbers() {
+        if ($this->input->is_ajax_request()) {
+
+            $form = $this->input->post();
+
+            $results = $this->Data_model->get_suppression_numbers($form);
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "data" => (!empty($results)?$results:"No suppression numbers found")
+            ));
+        }
+    }
+
+    /**
+     * Get the suppression numbers by telephone_number
+     */
+    public function get_suppression_by_telephone_number() {
+        if ($this->input->is_ajax_request()) {
+
+            $telephone_number = ($this->input->post('telephone_number')?$this->input->post('telephone_number'):"''");
+
+            $result = $this->Data_model->get_suppression_by_telephone_number($telephone_number);
+
+            if (!empty($result)) {
+                $result['campaign_id_list'] = explode(',',str_replace(" ","",$result['campaign_id_list']));
+            }
+
+            echo json_encode(array(
+                "success" => (!empty($result)),
+                "data" => ($result)
+            ));
+        }
+    }
+
+    /**
+     * Save the suppression number
+     */
+    public function save_suppression() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $reason = $form['reason'];
+            $telephone_number = $form['telephone_number'];
+            $campaign_list = (isset($form['suppression_campaign_id'])?$form['suppression_campaign_id']:array());
+
+            if ($form['suppression_id']) {
+                $results = $this->Data_model->update_suppression($form['suppression_id'],$telephone_number, $reason);
+                $suppression_id = $form['suppression_id'];
+            }
+            else {
+                $suppression_id = $this->Data_model->insert_suppression($telephone_number, $reason);
+            }
+
+            if ($suppression_id) {
+                // Save the campaigns
+                $this->Data_model->save_suppression_by_campaign($suppression_id, $campaign_list);
+            }
+
+            echo json_encode(array(
+                "success" => ($suppression_id),
+                "msg" => ($suppression_id?"Suppression number saved successfully!":"ERROR: The suppression number was not saved successfully!")
+            ));
+
+        }
+    }
+
+    //################################################################################################
+    //################################### PARK CODE functions ########################################
+    //################################################################################################
+
+    //this controller loads the view for the parkcodes page
+    public function parkcodes()
+    {
+        $data      = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Park Codes',
+            'page' => array(
+                'admin' => 'data',
+                'inner' => 'parkcode'
+            ),
+            'css' => array(
                 'dashboard.css'
             ),
             'javascript' => array(
                 'data.js'
             )
         );
-        $this->template->load('default', 'data/suppression.php', $data);
+        $this->template->load('default', 'data/parkcodes.php', $data);
+    }
+
+    public function get_parkcodes() {
+        $parkcodes = $this->Data_model->get_parkcodes();
+
+        echo json_encode(array(
+            "success" => (!empty($parkcodes)),
+            "data" => (!empty($parkcodes)?$parkcodes:"No data created")
+        ));
+    }
+
+    /**
+     * Insert/Update an parkcode
+     */
+    public function save_parkcode() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            if ($form['parked_code']) {
+                $parked_code = $form['parked_code'];
+                unset($form['parked_code']);
+                //Update the parkcode
+                $this->Data_model->update_parkcode($parked_code, $form);
+            }
+            else {
+                //Insert a new parkcode
+                $parked_code = $this->Data_model->insert_parkcode($form);
+            }
+
+            echo json_encode(array(
+                "success" => ($parked_code),
+                "msg" => ($parked_code?"Parkcode saved successfully!":"ERROR: The parkcode was not save successfully!")
+            ));
+        }
+    }
+
+    /**
+     * Delete parkcode
+     */
+    public function delete_parkcode() {
+        if ($this->input->is_ajax_request()) {
+            $parked_code = $this->input->post("parked_code");
+
+            $results = $this->Data_model->delete_parkcode($parked_code);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Parkcode deleted successfully!":"ERROR: The parkcode was not deleted successfully!")
+            ));
+        }
     }
 
 }

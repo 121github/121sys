@@ -39,7 +39,7 @@ class Data_model extends CI_Model
         $where .= "  and progress_id is null and record_status = 1 ";
         $all_data = "select count(*) count from records left join outcomes using(outcome_id) where campaign_id = '$campaign' $where group by campaign_id";
         $all      = intval($this->db->query($all_data)->row('count'));
-        //$this->firephp->log($all_data);
+
         if ($all > 0) {
             $qry    = "select user_id,name from users_to_campaigns left join users using(user_id) left join role_permissions using(role_id) left join permissions using(permission_id) where campaign_id = '$campaign' and group_id = 1 and permission_name = 'set call outcomes' and user_id is not null ";
 			if(!empty($_SESSION['team'])){
@@ -803,16 +803,43 @@ class Data_model extends CI_Model
         }
 
         $select = "";
-        $join = " inner join campaigns using (campaign_id)
-                left join contacts using (urn)";
+        $join = "";
         foreach($field_ar as $field) {
             if ($field == "telephone_number") {
+                if (!isset($contact_join)){
+                    $contact_join = " left join contacts using (urn)";
+                    $join .= $contact_join;
+                }
                 $join .= " left join contact_telephone using (contact_id)";
+                $select .= $field.",";
             }
             elseif ($field == "postcode") {
+                if (!isset($contact_join)){
+                    $contact_join = " left join contacts using (urn)";
+                    $join .= $contact_join;
+                }
                 $join .= " left join contact_addresses using (contact_id)";
+                $select .= $field.",";
             }
-            $select .= $field.",";
+            elseif ($field == "fullname") {
+                if (!isset($contact_join)){
+                    $contact_join = " left join contacts using (urn)";
+                    $join .= $contact_join;
+                }
+                $select .= $field.",";
+            }
+            elseif ($field == "coname") {
+                if (!isset($campaign_join)){
+                    $campaign_join = " inner join campaigns using (campaign_id)";
+                    $join .= $campaign_join;
+                }
+                $join .= " inner join companies using (urn)";
+                $select .= "name,";
+            }
+            elseif ($field == "client_ref") {
+                $join .= " inner join client_refs using (urn)";
+                $select .= $field.",";
+            }
         }
         $select =substr($select, 0, strlen($select)-1);
 
@@ -821,7 +848,7 @@ class Data_model extends CI_Model
                 from records ";
 
         $qry .= $join;
-        $qry .= " where CONCAT(".$select.") is not null and (parked_code is null or parked_code <>'5') ";
+        $qry .= " where CONCAT(".$select.") is not null and CONCAT(".$select.")<>'' and (parked_code is null or parked_code <>'5') ";
         if ($filter_input) {
             $qry .= " and CONCAT(".$select.") like '%".$filter_input."%'";
         }
@@ -859,6 +886,18 @@ class Data_model extends CI_Model
                 array_push($on_subqry, "duplicates.".$field."=ca.".$field);
                 array_push($select, "ca.".$field);
             }
+            elseif ($field == "fullname") {
+                array_push($on_subqry, "duplicates.".$field."=c.".$field);
+                array_push($select, "c.".$field);
+            }
+            elseif ($field == "coname") {
+                array_push($on_subqry, "duplicates.name=cm.name");
+                array_push($select, "cm.name");
+            }
+            elseif ($field == "client_ref") {
+                array_push($on_subqry, "duplicates.".$field."=cr.".$field);
+                array_push($select, "cr.".$field);
+            }
         }
         $on_subqry = implode(" AND ", $on_subqry);
         $select = implode(", ", $select);
@@ -866,7 +905,9 @@ class Data_model extends CI_Model
         $qry = "select distinct r.urn, r.date_added, r.date_updated, CONCAT(".$select.") as filter from records r
                   left join contacts c ON (c.urn = r.urn)
                   left join contact_telephone ct ON (ct.contact_id = c.contact_id)
-                  left join contact_addresses ca ON (ca.contact_id = c.contact_id) ";
+                  left join contact_addresses ca ON (ca.contact_id = c.contact_id)
+                  left join companies cm ON (cm.urn = r.urn)
+                  left join client_refs cr ON (cr.urn = r.urn) ";
 
         $subqry = $this->get_duplicates_qry($form);
 
@@ -889,6 +930,150 @@ class Data_model extends CI_Model
                 SET parked_code = (select parked_code from park_codes where park_reason = 'Duplicated')
                 WHERE urn IN ".$urn_list;
         return $this->db->query($qry);
+    }
+
+
+    //##########################################################################################
+    //############################### SUPPRESSION NUMBERS ######################################
+    //##########################################################################################
+
+    /**
+     * Get suppression numbers by a filter
+     */
+    public function get_suppression_numbers($form) {
+        $where = " where 1 ";
+        if (!empty($form['campaign'])) {
+            $where .= " and (campaign_id = ".$form['campaign']." OR campaign_id is NULL) ";
+        }
+        if (!empty($form['date_from'])) {
+            $where .= " and (date(date_added) >= '".$form['date_from']."' OR date(date_updated) >= '".$form['date_from']."') ";
+        }
+        if (!empty($form['date_to'])) {
+            $where .= " and (date(date_added) <= '".$form['date_to']."' OR date(date_updated) <= '".$form['date_to']."') ";
+        }
+
+        $qry = "SELECT
+                  suppression_id,
+                  telephone_number,
+                  date_format(date_added,'%d/%m/%y') as date_added,
+                  date_format(date_updated,'%d/%m/%y') as date_updated,
+                  reason,
+                  GROUP_CONCAT(campaign_name SEPARATOR ', ') as campaign_list,
+                  GROUP_CONCAT(campaign_id SEPARATOR ', ') as campaign_id_list
+                FROM suppression
+                  LEFT JOIN suppression_by_campaign using (suppression_id)
+                  LEFT JOIN campaigns using (campaign_id)";
+        $qry .= $where;
+        $qry .= " GROUP BY suppression_id ORDER BY date_updated desc, date_added desc";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Get suppression number by telephone number
+     */
+    public function get_suppression_by_telephone_number($telephone_number) {
+        $qry = "SELECT
+                  suppression_id,
+                  telephone_number,
+                  date_format(date_added,'%d/%m/%y') as date_added,
+                  date_format(date_updated,'%d/%m/%y') as date_updated,
+                  reason,
+                  GROUP_CONCAT(campaign_name SEPARATOR ', ') as campaign_list,
+                  GROUP_CONCAT(campaign_id SEPARATOR ', ') as campaign_id_list
+                FROM suppression
+                  LEFT JOIN suppression_by_campaign using (suppression_id)
+                  LEFT JOIN campaigns using (campaign_id)";
+        $qry .= " WHERE telephone_number = ".$telephone_number." ";
+        $qry .= " GROUP BY suppression_id";
+
+        $result =  $this->db->query($qry)->result_array();
+
+        if (!empty($result)) {
+            return $result[0];
+        }
+        else {
+            $result;
+        }
+    }
+
+    /**
+     * Insert suppression number
+     */
+    public function insert_suppression($telephone_number, $reason)
+    {
+        $this->db->insert("suppression", array(
+            "telephone_number" => $telephone_number,
+            "reason" => $reason
+        ));
+        return $this->db->insert_id();
+    }
+
+    /**
+     * Update suppression number
+     */
+    public function update_suppression($suppression_id, $telephone_number, $reason)
+    {
+        $this->db->where('suppression_id', $suppression_id);
+        return $this->db->update("suppression", array(
+            "telephone_number" => $telephone_number,
+            "reason" => $reason,
+            "date_updated" => date("Y-m-d H:i:s")
+        ));
+    }
+
+    /**
+     * Save campaigns for a suppression number
+     */
+    public function save_suppression_by_campaign($suppression_id, $campaign_list) {
+
+        //Remove the old campaigns
+        $this->db->where('suppression_id', $suppression_id);
+        $results = $this->db->delete("suppression_by_campaign");
+
+        //Insert the new campaigns
+        if (!empty($campaign_list) && $results) {
+            $aux = array();
+            foreach($campaign_list as $campaign) {
+                array_push($aux,array(
+                    'suppression_id' => $suppression_id,
+                    'campaign_id' => $campaign
+                ));
+            }
+            $campaign_list = $aux;
+
+            $results = $this->db->insert_batch("suppression_by_campaign", $campaign_list);
+        }
+
+        return $results;
+    }
+
+    //##########################################################################################
+    //############################### PARK CODE ################################################
+    //##########################################################################################
+    public function get_parkcodes() {
+        $qry = "select *
+                from park_codes p
+                order by parked_code asc";
+        return $this->db->query($qry)->result_array();
+    }
+
+    public function insert_parkcode($parked_code)
+    {
+        $this->db->insert("park_codes", $parked_code);
+        return $this->db->insert_id();
+    }
+
+    public function update_parkcode($parked_code, $form)
+    {
+        $this->db->where("parked_code", $parked_code);
+        return $this->db->update("park_codes", $form);
+    }
+
+    public function delete_parkcode($parked_code)
+    {
+        $this->db->where("parked_code", $parked_code);
+        return $this->db->delete("park_codes");
     }
 
 }

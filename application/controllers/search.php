@@ -201,7 +201,10 @@ class Search extends CI_Controller
             "renewal-date-from" => "renewal-date-from",
             "renewal-date-to" => "renewal-date-to",
             "postcode" => "postcode",
-            "telephone-number" => "telephone-number"
+            "telephone-number" => "telephone-number",
+            "fullname" => "fullname",
+            "coname" => "coname",
+            "client-ref" => "client-ref"
         );
         
         $search_fields_2 = array(
@@ -223,7 +226,10 @@ class Search extends CI_Controller
             "emails" => "emails",
 			"template" => "template",
             "parked" => "parked",
-            "postcode" => "postcode"
+            "postcode" => "postcode",
+            "fullname" => "fullname",
+            "coname" => "coname",
+            "client-ref" => "client-ref"
         );
         $fields          = array();
         $array           = array();
