@@ -39,10 +39,6 @@ function table_columns(){
 }
 
 $(document).ready( function () {
-
-
-	
-	
     var table = $('.data-table').DataTable({
 		"dom": '<"top">p<"dt_info"i>rt<"bottom"lp><"clear">',
 		"oLanguage": {

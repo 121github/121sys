@@ -7,7 +7,6 @@
 <option <?php if($folder==$row['folder_id']){ echo "selected"; } ?> value="<?php echo $row['folder_id'] ?>"><?php echo $row['folder_name'] ?></option>
 <?php } ?>
 </select>
-<hr />
 </div>
 </div>
  <div class="row">
@@ -24,11 +23,11 @@
 </div>
 <div class="row">
 <?php if($read||$write){ ?>
-            <div style='display:none' class="col-md-12 col-lg-12">
+            <div class="col-md-12 col-lg-12">
             <h3>Folder Contents [<?php echo $folder_name ?>]</h3>
         <div class="panel panel-primary" id="files-panel">
           <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Files 
-            <div class="pull-right"><div class="btn-group"><button style="display:none" type="button" id="showall-files" class="btn btn-default btn-xs">Show All</button></div></div>
+            <div class="pull-right"><!--<div class="btn-group"><button style="display:none" type="button" id="showall-files" class="btn btn-default btn-xs">Show All</button></div>--></div>
           
             </div>
               <div class="panel-body"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
