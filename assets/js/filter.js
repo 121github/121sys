@@ -42,7 +42,6 @@ var filter = {
 		$(document).on('click','.submit-filter',function(e){
 			e.preventDefault();
 			filter.apply_filter();
-
 		});
 
 		$(document).on('click','.actions-filter',function(e){
@@ -289,7 +288,7 @@ var filter = {
 			data: $('#filter-form').serialize()
 		}).done(function(response) {
 			window.location.href= helper.baseUrl + 'records/view';
-			localStorage.removeItem("DataTables_DataTables_Table_0_/thinkmoney-nps/records/view");
+			localStorage.removeItem('DataTables_'+settings.sInstance+'_'+'/records/view');
 		});
 	},
 	actions: function() {

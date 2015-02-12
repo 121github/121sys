@@ -22,6 +22,16 @@ class Error extends CI_Controller
 		
 	}
 	
+		public function files(){
+		        $data = array(
+			'pageId' => 'error-page',
+ 			'campaign_access' => $this->_campaigns,
+            'title' => 'Permission Denied',
+			'msg'=>'You do not have access to these files. Please contact the administrator if you believe you should have access');
+			 $this->template->load('default', 'errors/display.php', $data);
+		
+	}
+	
 		public function data(){
 		        $data = array(
 			'pageId' => 'error-page',

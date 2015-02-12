@@ -125,6 +125,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         </li>
                          <?php } ?>
                         <?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
+                            <li><a href="<?php echo base_url() ?>admin/files" <?php echo @($admin=='files'?"class='active'":"") ?>>Folder Access</a></li>
                             <li><a href="<?php echo base_url() ?>admin/users" <?php echo @($admin=='users'?"class='active'":"") ?>>Users</a></li>
                             <li><a href="<?php echo base_url() ?>admin/roles" <?php echo @($admin=='roles'?"class='active'":"") ?>>Roles</a></li>
                             <li><a href="<?php echo base_url() ?>admin/teams" <?php echo @($admin=='teams'?"class='active'":"") ?>>Teams</a></li>
@@ -219,8 +220,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </ul>
               </li>
               <?php } ?>
-              <?php if(isset($_SESSION['current_campaign'])&&@in_array("view files",$_SESSION['permissions'])){  ?>
-              <li <?php if($this->uri->segment(1)=="files"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>files/upload" >Files</a></li>
+              <?php if(@in_array("view files",$_SESSION['permissions'])){  ?>
+              <li <?php if($this->uri->segment(1)=="files"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>files/manager" >Files</a></li>
               <?php } ?>
               <?php if(isset($_SESSION['current_campaign'])&&@in_array("list records",$_SESSION['permissions'])||@in_array("search campaigns",$_SESSION['permissions'])){  ?>
               <li <?php if($this->uri->segment(1)=="records"&&!isset($automatic)){ echo "class='active'"; } ?>><a href="<?php echo base_url(); ?>records/view" >List Records</a></li>

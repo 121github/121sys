@@ -112,9 +112,8 @@ $(document).ready( function () {
   $('#search_0').css('text-align', 'center');
   
   $(document).on('click','.reset-dt-filter',function(table){
-	 localStorage.removeItem("DataTables_DataTables_Table_0_/thinkmoney-nps/records/view"); 
+	 localStorage.removeItem('DataTables_'+settings.sInstance+'_'+'/records/view'); 
 	 table.search().draw();
- 
   });
 
 });

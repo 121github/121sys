@@ -130,7 +130,7 @@ class User_model extends CI_Model
         }
         $user_campaigns = $this->db->query($qry)->result_array();
         
-        if (count($user_campaigns) < 1 && $_SESSION['role'] <> 1) {
+        if (count($user_campaigns) < 1 && $_SESSION['role'] <> 1 && !in_array("view files",$_SESSION['permissions'])) {
             session_destroy();
             $this->session->set_flashdata('error', 'You do not have access to any campaigns.');
             redirect('user/login');

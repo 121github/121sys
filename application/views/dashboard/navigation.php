@@ -186,7 +186,7 @@
 <?php if(in_array("files menu",$_SESSION['permissions'])){ ?>
  <div class="accordion-group panel">
             <div class="accordion-heading">
-                <a href="<?php echo base_url() ?>files/upload">
+                <a href="<?php echo base_url() ?>files/manager">
                     <i class="glyphicon glyphicon-upload"></i> Files
                 </a>
             </div>
@@ -301,6 +301,9 @@
             
                 <div class="accordion-group">
                 	<?php if($_SESSION['group']=="1"&&$_SESSION['role']=="1"){ ?>
+                     <div class="accordion-inner">
+                       <a href="<?php echo base_url() ?>admin/files" <?php echo @($admin=='files'?"class='active'":"") ?>>Folder Access</a>
+                    </div>
                     <div class="accordion-inner">
                        <a href="<?php echo base_url() ?>admin/users" <?php echo @($admin=='users'?"class='active'":"") ?>>Users</a>
                     </div>

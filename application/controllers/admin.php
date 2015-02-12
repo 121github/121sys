@@ -12,7 +12,123 @@ class Admin extends CI_Controller
         $this->load->model('Filter_model');
         $this->load->model('Admin_model');
         $this->load->model('User_model');
+		$this->load->model('File_model');
     }
+	
+	public function get_folder_read_users(){
+	$id = $this->input->post('id');
+	$user_array = array();
+	$users = $this->File_model->get_folder_read_users($id);
+	foreach($users as $k=>$v){
+	$user_array[] = $v['user_id'];	
+	}
+	echo json_encode(array("users"=>$user_array));	
+	}
+	
+		public function get_folder_write_users(){
+	$id = $this->input->post('id');
+	$user_array = array();
+	$users = $this->File_model->get_folder_write_users($id);
+	foreach($users as $k=>$v){
+	$user_array[] = $v['user_id'];	
+	}
+	 echo json_encode(array("users"=>$user_array));	
+	}
+	
+	public function files(){
+		$folders = $this->File_model->get_folders();
+		$users = $this->Form_model->get_users();
+		$data = array( 
+		'campaign_access' => $this->_campaigns,
+		"folders"=>$folders,
+		'pageId' => 'Admin',
+            'title' => 'Admin',
+            'page' => array(
+                'admin' => 'files'
+            ),
+			'css' => array(
+                'dashboard.css'
+            ),
+			'javascript' => array(
+                'admin/files.js'
+            ),
+			'options' => array("users"=>$users)
+			
+			);		
+		$this->template->load('default', 'admin/files.php', $data);
+	}
+	
+	public function delete_folder(){
+		$this->load->helper('scan');
+		if($this->File_model->delete_folder($this->input->post('id'))){
+		$old_folder_name = $this->File_model->folder_name($this->input->post('id'));
+		if(!empty($old_folder_name)){
+		$file = FCPATH ."/upload/".$old_folder_name;
+		chown($file, 666);
+		force_rmdir($file);
+		}
+		echo json_encode(array("success"=>true));
+		} else {
+		echo json_encode(array("success"=>false,"msg"=>"Folder could not be deleted"));	
+		}
+	}
+	
+	public function save_folder(){
+		$data = $this->input->post();
+		$msg = "Error creating folder";
+		//clean the folder name
+		$new_folder_name = preg_replace('/[^\da-z ]/i', '', $data['folder_name']);
+		$success=false;
+		//if an id is sent then we just update the folder
+		if($data['folder_id']&&!empty($data['folder_name'])){
+		$old_folder_name = $this->File_model->folder_name($data['folder_id']);
+		$data['folder_name'] = $new_folder_name;
+		if($this->File_model->save_folder($data)){
+			$success=true;
+			if($old_folder_name!==$new_folder_name){
+			if(rename(FCPATH ."/upload/".$old_folder_name,FCPATH ."/upload/".$new_folder_name)){
+			$success=false;
+			$msg = "Folder already taken";
+			}
+			}
+		} else {
+			$success=false;
+			$msg = "Folder already exists in database";
+		}
+		}
+		//if no id is sent we create a new folder
+		if(@empty($data['folder_id'])&&!empty($data['folder_name'])){
+			$insert_id = $this->File_model->create_folder($data);
+		if(intval($insert_id)){
+			$data['folder_id'] = $insert_id;
+			$success=true;
+			if(!mkdir(FCPATH ."/upload/".$new_folder_name)){
+			$msg = "Folder already exists";
+			$success=false;
+			}
+		} else {
+			$msg = "Folder already exists";
+			$success=false;
+		}
+		}
+		if($success){
+		$this->File_model->add_read_users($this->input->post('readusers'),$data['folder_id']);	
+		$this->File_model->add_write_users($this->input->post('writeusers'),$data['folder_id']);	
+		echo json_encode(array("success"=>true));
+		} else {
+		echo json_encode(array("success"=>false,"msg"=>$msg));
+		}
+	}
+	
+	public function folder_data(){
+	$folders = $this->File_model->get_folders();
+	if(count($folders)>0){
+	echo json_encode(array("success"=>true,"data"=>$folders)); }
+	else {
+	echo json_encode(array("success"=>false,"msg"=>"No folders found"));	
+	}
+	}
+	
     //this controller loads the view for the user page
     public function users()
     {
