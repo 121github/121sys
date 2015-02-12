@@ -138,7 +138,7 @@ class Files extends CI_Controller
         if (!empty($_FILES) && is_dir(FCPATH . "upload/$folder_name")) {
 
            $tempFile = $_FILES['file']['tmp_name'];          //3
-			$originalname = preg_replace("/[^A-Za-z0-9. ]/", '', $_FILES['file']['name']);
+			$originalname = preg_replace("/[^A-Za-z0-9 ]/", '', $_FILES['file']['name']);
             $targetPath = FCPATH . "upload/$folder_name/";  //4
             $targetFile = $targetPath . $originalname;  //5
 			$filesize = filesize($tempFile);
@@ -173,8 +173,8 @@ exit;
         $this->email->initialize($config);
 		
         $this->email->from('noreply@121customerinsight.co.uk');
-		$this->email->to('bradf@121customerinsight.co.uk');
-        //$this->email->to('cvproject@121customerinsight.co.uk');
+		//$this->email->to('bradf@121customerinsight.co.uk');
+        $this->email->to('cvproject@121customerinsight.co.uk');
         $this->email->cc('');
         $this->email->bcc('');
         $this->email->subject('CV Submission');

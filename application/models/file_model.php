@@ -123,7 +123,7 @@ class File_model extends CI_Model
 	$this->db->where(array("file_id"=>$id));
 	$this->db->update("files",array("deleted_on"=>date('Y-m-d H:i:s'),"deleted_by"=>$_SESSION['user_id']));	
 	//set the filename to avoid dupes
-	$this->db->query("update files set filename = concat(filename,'-',deleted) where file_id = '".intval($id)."'");
+	$this->db->query("update files set filename = concat(filename,'-deleted') where file_id = '".intval($id)."'");
 	}
 	
 	public function get_files($folder,$showall=false){

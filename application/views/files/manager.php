@@ -12,7 +12,7 @@
 </div>
  <div class="row">
 <?php if($write){ ?>
-<div class="col-md-12 col-lg-6">
+<div class="col-md-12 col-lg-12">
 <h3>File Upload</h3>
 <form action="<?php echo base_url()."files/start_upload" ?>" id="mydropzone" class="dropzone" >
 <input type="hidden" name="folder" value="<?php if(!empty($folder)){ echo $folder; } ?>" />
@@ -21,9 +21,10 @@
 </div>
 <?php //end if folder is empty 
 } ?>
-
+</div>
+<div class="row">
 <?php if($read||$write){ ?>
-            <div class="col-md-12 <?php if($write){ echo "col-lg-6"; } else { echo "col-lg-12"; } ?>">
+            <div style='display:none' class="col-md-12 col-lg-12">
             <h3>Folder Contents [<?php echo $folder_name ?>]</h3>
         <div class="panel panel-primary" id="files-panel">
           <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Files 
@@ -34,6 +35,7 @@
             </div>
             
           </div>
+           </div>
            </div>
 <?php } ?>
 
