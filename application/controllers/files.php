@@ -253,7 +253,7 @@ foreach (scandir($folder) as $file) {
 $date = filemtime($folder."/".$file);
  
     clearstatcache();
-	$this->db->query("insert into files set filename = '$file',filesize='".filesize($folder."/".$file)."',folder_id = 1,date_added='".date('Y-m-d H:i:s',$date)."'");
+	$this->db->query("insert into files set filename = '".addslashes($file)."',filesize='".filesize($folder."/".$file)."',folder_id = 1,date_added='".date('Y-m-d H:i:s',$date)."'");
      // echo $file . date('Y-m-d H:i:s',$date); echo formatSizeUnits(filesize($file));
 }
 	
