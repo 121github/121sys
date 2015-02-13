@@ -62,14 +62,6 @@ class File_model extends CI_Model
         }
     }
     
-    public function count_files($id = 1)
-    {
-        $this->db->where(array(
-            "folder_id" => $id
-        ));
-        return $this->db->get("files")->num_rows();
-    }
-    
     public function create_folder($data)
     {
         $this->db->insert("folders", array(
@@ -196,12 +188,15 @@ class File_model extends CI_Model
         $this->db->query("update files set filename = concat(filename,'-deleted') where file_id = '" . intval($id) . "'");
     }
     
-    public function get_files_for_table($options)
+	 public function get_permissions($id){
+		 	$qry = "select `read` read_access,`write` write_access,accepted_filetypes,folders.folder_id,folder_name from folder_permissions left join folders on folders.folder_id=folder_permissions.folder_id where folders.folder_id = $id and user_id = ".$_SESSION['user_id'];
+			$this->firephp->log($qry);
+			return  $this->db->query($qry)->row_array();
+}
+    public function get_files_for_table($options,$count=false)
     {
         
         $table_columns = array(
-            "folder_id",
-            "file_id",
             "folder_name",
             "filename",
             "filesize",
@@ -210,17 +205,36 @@ class File_model extends CI_Model
         );
         
         $order_columns = array(
-            "folder_id",
-            "file_id",
             "folder_name",
             "filename",
             "filesize",
             "username",
             "date_added"
         );
-        
-        $qry = "select folder_id,file_id,folder_name,filename,filesize,if(name is null,'Anonymous','name') as username,date_format(date_added,'%d/%m/%y %H:%i') date_added,`read`,`write` from files left join folders using(folder_id) left join users using(user_id) left join folder_permissions using(folder_id) ";
+        //admins dont need permissions set
+		if($_SESSION['role']>1){
+		$permissions = " `read`,`write` ";
+		} else {
+		$permissions = " '1' as `read`,'1' as `write` ";	
+		}
+		
+        $qry = "select folder_name,filename,filesize,if(name is null,'Anonymous',name) as username,date_format(date_added,'%d/%m/%y %H:%i') date_added,$permissions,accepted_filetypes,file_id from files left join folders using(folder_id) left join users using(user_id) left join folder_permissions using(folder_id) ";
+		
+		
         $qry .= $this->get_where($options, $table_columns);
+		if(isset($options['folder'])){
+		$qry .= " and folder_id = ".$options['folder'];
+		}
+		$qry .= " and deleted_on is null ";
+		//admins dont need permissions set
+		if($_SESSION['role']>1){
+		$qry .= " and folder_permissions.user_id = ".$_SESSION['user_id'];
+		}
+		
+		if($count){
+		return $files = $this->db->query($qry)->num_rows();	
+		}
+		
         $start  = $options['start'];
         $length = $options['length'];
         if (isset($_SESSION['files']['order']) && $options['draw'] == "1") {
@@ -230,10 +244,11 @@ class File_model extends CI_Model
             unset($_SESSION['files']['order']);
             unset($_SESSION['files']['values']['order']);
         }
-        
+        $qry .= " group by file_id ";
         $qry .= $order;
+		
         $qry .= "  limit $start,$length";
-        $this->firephp->log($qry);
+     $this->firephp->log($qry);
         $files = $this->db->query($qry)->result_array();
         $this->load->helper('scan');
         foreach ($files as $k => $row) {
@@ -243,7 +258,6 @@ class File_model extends CI_Model
                 $file_options .= '<span data-file="' . $row['file_id'] . '" class="delete-file marl glyphicon glyphicon-remove red tt" data-toggle="tooltip" data-placement="top" title="Delete file"></span>';
             }
             $files[$k]['options'] = $file_options;
-            unset($files[$k]['write']);
         }
         return $files;
         

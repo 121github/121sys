@@ -31,16 +31,8 @@ class Files extends CI_Controller
     public function manager()
     {
         user_auth_check(false);
-        //this function returns all files uploaded to the open directory (unrestricted/no login required)
-        $folder       = ($this->uri->segment(3) ? $this->uri->segment(3) : false);
-        $user_folders = $this->File_model->get_folders();
-        if (@!is_dir(FCPATH . "upload/" . $user_folders[$folder]['folder_name']) || @intval($folder) && !array_key_exists($folder, $user_folders) || @!count($user_folders)) {
-            redirect('error/files');
-            exit;
-        }
-        //admin has read and write access if a folder is selected. Otherwize use the database results
-        $read         = $_SESSION['role'] == 1 && $folder || $folder && $user_folders[$folder]['read'] == 1 ? true : false;
-        $write        = $_SESSION['role'] == 1 && $folder || $folder && $user_folders[$folder]['write'] == 1 ? true : false;
+ $user_folders = $this->File_model->get_folders();
+/*
         $folder_name  = $folder ? $user_folders[$folder]['folder_name'] : false;
         $filetypes    = $folder ? $user_folders[$folder]['accepted_filetypes'] : false;
         $ft           = explode(",", $filetypes);
@@ -50,14 +42,15 @@ class Files extends CI_Controller
         }
         $check_string = $folder ? rtrim($check_string, "&&") : false;
         //$files = $this->File_model->get_files($folder);
-        
+        */
+		
         $data = array(
-            'check_string' => $check_string,
-            'filetypes' => $filetypes,
-            'write' => $write,
-            'read' => $read,
-            'folder_name' => $folder_name,
-            'folder' => $folder,
+          //  'check_string' => $check_string,
+          ///  'filetypes' => $filetypes,
+           // 'write' => $write,
+           // 'read' => $read,
+            //'folder_name' => $folder_name,
+            //'folder' => $folder,
             'pageId' => 'Admin',
             'campaign_access' => $this->_campaigns,
             'title' => 'File Manager',
@@ -78,7 +71,7 @@ class Files extends CI_Controller
     public function process_files()
     {
         if ($this->input->is_ajax_request()) {
-            $count = $this->File_model->count_files();
+            $count = $this->File_model->get_files_for_table($this->input->post(),true); //second param just returns the count
             $files = $this->File_model->get_files_for_table($this->input->post());
             $data  = array(
                 "draw" => $this->input->post('draw'),
@@ -90,6 +83,29 @@ class Files extends CI_Controller
         }
     }
     
+	    public function get_permissions()
+    {
+        if ($this->input->is_ajax_request()) {
+		$folder = $this->input->post('id');
+		if($_SESSION['role']==1){
+		$permissions = array("write_access"=>1,"read_access"=>1);
+		} else {
+		$permissions = $this->File_model->get_permissions($folder);
+		}
+		
+		$ft = explode(",", $permissions['accepted_filetypes']);
+        $check_string = "";
+        foreach ($ft as $k => $v) {
+            $check_string .= "file.name.split('.').pop() != '$v'&&";
+        }
+        $check_string = $folder ? rtrim($check_string, "&&") : false;
+		
+echo json_encode(array("success"=>true,"permissions"=>$permissions,"checkstring"=>$check_string));
+
+
+		}
+	}
+	
     public function get_files($folder = NULL)
     {
         if ($this->input->is_ajax_request()) {
@@ -157,12 +173,21 @@ class Files extends CI_Controller
     public function start_upload()
     {
         $user_folders = $this->File_model->get_folders();
-        $folder       = $this->input->post('folder'); //2
-        $folder_name  = $this->input->post('folder_name');
+        $folder       = $this->input->post('folder');
+		$this->firephp->log($folder);
+		//check the user has access to write to this folder
+		if($user_folders[$folder]['write']=="1"){
+		$folder_name = $user_folders[$folder]['folder_name'];
+		} else {
+		//display an error
+		header('HTTP/1.0 406 Not Found');
+       	echo "You don't have permission to write to this folder";
+        exit;	
+		}
         if (!is_dir(FCPATH . "upload/$folder_name")) {
-            echo json_encode(array(
-                "success" => false
-            ));
+        header('HTTP/1.0 406 Not Found');
+       	echo "Selected folder does not exist";
+        exit;
         }
         
         if (!empty($_FILES) && is_dir(FCPATH . "upload/$folder_name")) {
@@ -172,15 +197,26 @@ class Files extends CI_Controller
             $targetPath   = FCPATH . "upload/$folder_name/"; //4
             $targetFile   = $targetPath . $originalname; //5
             $filesize     = filesize($tempFile);
+			
+			//this checks the filetype is allowed
+			$allowed =  explode(",",$user_folders[$folder]['accepted_filetypes']);
+			$ext = pathinfo($originalname, PATHINFO_EXTENSION);
+			if(!in_array($ext,$allowed) ) {
+   				header('HTTP/1.0 406 Not Found');
+                echo "File type is not allowed only {$user_folders[$folder]['accepted_filetypes']} may be added to this folder";
+                exit;
+				}
+			//check the file is not a duplicate
             if (file_exists($targetFile)) {
                 header('HTTP/1.0 406 Not Found');
                 echo "File already exists in the selected folder";
                 exit;
             }
+			//if there are no errors then move the file
             if (move_uploaded_file($tempFile, $targetFile)) {
                 //Send email to cvproject@121customerinsight.co.uk
-                $this->File_model->add_file($originalname, $folder, $filesize);
-                if ($this->send_email($targetFile)) {
+               if($this->File_model->add_file($originalname, $folder, $filesize)){
+					$this->send_email($targetFile);
                     echo json_encode(array(
                         "success" => true
                     ));

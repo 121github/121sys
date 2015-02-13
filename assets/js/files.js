@@ -1,60 +1,61 @@
+
+
 var files = {
-    init: function(folder_id, folder_name, write_access) {
-        if (write_access) {
-            this.write_access = true;
-        }
+    init: function() {
         $('#folderpicker').on('change', function() {
             window.location.href = helper.baseUrl + 'files/manager/' + $(this).val();
         });
 
-        $('#showall-files').on('click', function() {
-            files.reload_folder(folder_id, 1);
+        files.reload_folder();
+		
+		$('.folder-filter').on('click',function() {
+		   $('#folder-filter-text').html('<span class="glyphicon glyphicon-filter"></span> '+$(this).text());
+		   if(Number($(this).attr('data-id'))>0){
+			
+			$('#panel-title').text('Showing all files in '+$('#folder-filter-text').text()+' folder'); 
+			 files.check_access($(this).attr('data-id'));
+		   } else {
+			 $('#upload-btn').addClass('disabled');
+			 $('#dropzone-holder').hide(); 
+			$('#panel-title').text('Showing all files...'); 
+		   }
+		 
+		  files.data_table($(this).attr('data-id'));
         });
-        files.reload_folder(folder_id);
-        this.folder_id = folder_id;
-        this.folder_name = folder_name;
+		$(document).on('click','#upload-btn,.close-upload',function(){
+				$('#dropzone-holder').toggle();
+			})
+	
     },
-    reload_folder: function(id, showall) {
-        if (showall) {
-            showall = 1;
-        }
-        $.ajax({
-            url: helper.baseUrl + 'files/get_files',
+	check_access:function(id){
+		$.ajax({
             type: "POST",
-            dataType: "JSON",
+            url: helper.baseUrl + 'files/get_permissions',
             data: {
-                folder: id,
-                showall: showall
-            }
+                id: id
+            },
+            dataType: 'JSON'
         }).done(function(response) {
-            if (response.files.length > 0) {
-                if (response.files.length > 9) {
-                    $('#showall-files').show();
-                }
-                var table = "<table class='table table-striped table-bordered data-table'><thead><tr><th>Folder ID</th><th>File ID</th><th>Folder Name</th><th>Filename</th><th>File size</th><th>Added by</th><th>Date Added</th><th>Options</th></tr></thead>";
-
-                /*
-				table += "<tbody>";
-				$.each(response.files, function(i, row) {
-					if(files.write_access){
-					var delete_button = '<span data-file="' + row.file_id + '" class="delete-file glyphicon glyphicon-remove red tt" data-toggle="tooltip" data-placement="top" title="Delete file"></span>';	
-					} else {
-					var delete_button = '';	
-					}
-					
-                    table += '<tr><td><a href="' + helper.baseUrl + 'upload/' + row.folder_name + '/' + row.filename + '">' + row.filename + '</a></td><td>' + row.size + '</td><td>' + row.username + '</td><td>' + row.date_added + '</td><td><span data-file="' + row.file_id + '" class="download-file glyphicon glyphicon-download-alt green pointer tt" data-toggle="tooltip" data-placement="top" title="Compress and download"></span> '+delete_button+'</td></tr>';
-                });
-				table += "</tbody>";
-				*/
-                table += "<tfoot><tr><th>Folder ID</th><th>File ID</th><th>Folder Name</th><th>Filename</th><th>File size</th><th>Added by</th><th>Date Added</th><th>Options</th></tr></tfoot></table>";
-
-                $('#files-panel').find('.panel-body').html(table);
-                files.data_table();
-            } else {
-                $('#files-panel').find('.panel-body').html('<p>No files found in the selected folder</p>');
+            if (response.success) {
+				$('#dropzone-folder-id').val(response.permissions.folder_id);
+				$('#dropzone-folder-name').val(response.permissions.folder_name);
+                if(response.permissions.write_access){
+				$('#upload-btn').removeClass('disabled'); 
+				}
+				Dropzone.options.mydropzone = {
+  paramName: "file", // The name that will be used to transfer the file
+  maxFilesize: 2, // MB
+ acceptedFiles:response.permissions.accepted_filetypes
+};
             }
-
         });
+	},
+    reload_folder: function() {
+                var table = "<table class='table table-striped table-bordered data-table'><thead><tr><th>Folder Name</th><th>Filename</th><th>File size</th><th>Added by</th><th>Date Added</th><th>Options</th></tr></thead>";
+                table += "<tfoot><tr><th>Folder Name</th><th>Filename</th><th>File size</th><th>Added by</th><th>Date Added</th><th>Options</th></tr></tfoot></table>";
+
+                $('#files-panel').find('#table-holder').html(table);
+                files.data_table();
 
     },
     download: function(id) {
@@ -75,8 +76,8 @@ var files = {
             }
         });
     },
-    data_table: function() {
-
+    data_table: function(folder_id) {
+		$('.data-table').dataTable().fnDestroy();
         var table = $('.data-table').DataTable({
             "dom": '<"top">p<"dt_info"i>rt<"bottom"lp><"clear">',
             "oLanguage": {
@@ -94,6 +95,9 @@ var files = {
                 beforeSend: function() {
                     $('.dt_info').hide();
                 },
+				data: function (d){
+				d.folder = folder_id;
+           		 },
                 complete: function() {
                     $('.dt_info').show();
                     $('.tt').tooltip();
@@ -102,14 +106,10 @@ var files = {
                     });
                     $('.delete-file').click(function() {
                         modal.confirm_delete($(this).attr('data-file'));
-                    });
+                    });				
                 }
             },
             "columns": [{
-                "data": "folder_id"
-            }, {
-                "data": "file_id"
-            }, {
                 "data": "folder_name"
             }, {
                 "data": "filename"
@@ -123,13 +123,9 @@ var files = {
                 "data": "options"
             }],
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4, 5, 6, 7],
+                "targets": [0, 1, 2, 3, 4, 5],
                 "data": null,
                 "defaultContent": "na"
-            }, {
-                "targets": [0, 1, 2],
-                "visible": false,
-                "searchable": false
             }]
         });
 
@@ -141,6 +137,7 @@ var files = {
                 $(this).html('');
             } else {
                 var search_val = table.column($(this).index()).search();
+				//console.log(table.column($(this).index()).search());
                 $(this).html('<input class="dt-filter form-control" placeholder="Filter..." value="' + search_val[0] + '" />');
             }
         });

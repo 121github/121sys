@@ -1,62 +1,47 @@
- <div class="row">
- <div class="col-md-12 col-lg-12">
-<h4>Select the storage folder</h4>
-<select id="folderpicker" class="selectpicker" name="folder" title="Select a folder..">
-<option value="">Select a folder...</option>
-<?php foreach($user_folders as $row){ print_r($row);?>
-<option <?php if($folder==$row['folder_id']){ echo "selected"; } ?> value="<?php echo $row['folder_id'] ?>"><?php echo $row['folder_name'] ?></option>
-<?php } ?>
-</select>
-</div>
-</div>
- <div class="row">
-<?php if($write){ ?>
-<div class="col-md-12 col-lg-12">
-<h3>File Upload</h3>
-<form action="<?php echo base_url()."files/start_upload" ?>" id="mydropzone" class="dropzone" >
-<input type="hidden" name="folder" value="<?php if(!empty($folder)){ echo $folder; } ?>" />
-<input type="hidden" name="folder_name" value="<?php if(!empty($folder)){ echo $folder_name; } ?>" />
-</form>
-</div>
-<?php //end if folder is empty 
-} ?>
-</div>
 <div class="row">
-<?php if($read||$write){ ?>
             <div class="col-md-12 col-lg-12">
-            <h3>Folder Contents [<?php echo $folder_name ?>]</h3>
+            <h3 id="panel-title">Showing all files...</h3>
         <div class="panel panel-primary" id="files-panel">
           <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Files 
-            <div class="pull-right"><!--<div class="btn-group"><button style="display:none" type="button" id="showall-files" class="btn btn-default btn-xs">Show All</button></div>--></div>
+            <div class="pull-right">
+              <div class="btn-group">
+               <button type="button" id="upload-btn" class="btn btn-default btn-xs disabled"> <span class="glyphicon glyphicon-file"></span> Upload</button>
+              </div>
+            <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"  id="folder-filter-text"> <span class="glyphicon glyphicon-filter"></span> All Folders</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                   <?php foreach($user_folders as $row):?>
+	                    <li><a href="#" class="folder-filter" data-id="<?php echo $row['folder_id'] ?>" data-ref="folder_id"><?php echo $row['folder_name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="folder-filter" ref="#" data-ref="folder_id">All folders</a> </li>
+	                  </ul>
+                  </div>
+            </div>
           
             </div>
-              <div class="panel-body"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+              <div class="panel-body"> 
+            <div id="dropzone-holder" style="display:none; position:relative">
+            <span style="position:absolute; top:10px; right:10px; z-index:99999" class="close-upload glyphicon glyphicon-remove"></span>
+              <form action="<?php echo base_url()."files/start_upload" ?>" class="dropzone" id="mydropzone">
+<input type="hidden" id="dropzone-folder-id" name="folder" value="" />
+<input type="hidden" id="dropzone-folder-name" name="folder_name" value="" />
+</form>
+
+</div>
+          
+              <div id="table-holder">
+              <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+              </div>
             </div>
             
           </div>
            </div>
            </div>
-<?php } ?>
+
 
 <script>
 $(document).ready(function(){
-files.init('<?php echo $folder ?>','<?php echo $folder_name ?>',<?php echo $write?"1":'0'; ?>);
-
-<?php if($write) { ?>
-Dropzone.options.mydropzone = {
-	maxFilesize: 100,
-        accept: function(file, done) {
-            if (<?php echo $check_string ?>) {
-                done("Only <?php echo $filetypes ?> files can be added to the <?php echo $folder_name ?> folder");
-            }
-            else { done(); 	
-			}
-        },
-		success: function(file, response){
-			files.reload_folder(<?php echo $folder ?>)
-		}
-    }
-<?php } ?>
-	
+files.init();
 });
 </script>
