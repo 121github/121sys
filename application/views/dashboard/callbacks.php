@@ -130,7 +130,7 @@
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($team_managers as $row): ?>
-	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="source"><?php echo $row['name'] ?></a> </li>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="team"><?php echo $row['name'] ?></a> </li>
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
 	                    <li><a class="filter" ref="#" style="color: green;" data-ref="team">All Teams</a> </li>

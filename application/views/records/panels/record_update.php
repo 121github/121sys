@@ -94,7 +94,7 @@
             <?php if($details['record']['record_status']=="3"&&in_array("reset records",$_SESSION['permissions'])){ ?>
             <button type="button" class="btn btn-default pull-right reset-record marl">Reset Record</button>
             <?php } ?>
-            <?php if($details['record']['record_status']=="1"&&empty($details['record']['park_reason'])){ ?>
+            <?php if($details['record']['record_status']=="2"||$details['record']['record_status']=="1"&&empty($details['record']['park_reason'])){ ?>
             <button type="button" class="btn btn-default pull-right update-record" disabled>Update Record</button>
             <?php } ?>
           </div>

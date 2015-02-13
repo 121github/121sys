@@ -17,20 +17,64 @@
          <div class="panel panel-primary" id="a_activity">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Activity
               <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($campaigns as $row): ?>
-                    <li><a href="#" class="agent-activity-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a class="agent-activity-filter" ref="#">Show All</a> </li>
-                  </ul>
-                </div>
+   <form class="agent-activity-filter" data-func="agent_activity">
+            	<div class="btn-group">
+                  <input type="hidden" name="campaign">
+                  <input type="hidden" name="team">
+                  <input type="hidden" name="agent">
+                  <input type="hidden" name="source">
+			      <input type="hidden" name="colname">
+</div>
+			      
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($campaigns as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="campaign"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="campaign">All campaigns</a> </li>
+	                  </ul>
+                  </div>
+                  <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($agents as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="agent"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="agent">All Agents</a> </li>
+	                  </ul>
+                  </div>
+                  <?php } ?>
+                    <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($team_managers as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="team"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="team">All Teams</a> </li>
+	                  </ul>
+                  </div>
+                 <?php } ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Source</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($sources as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="source"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="source">All Sources</a> </li>
+	                  </ul>
+                  </div>
+                </form>
               </div>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body agent-activity">
+            <div class="panel-body agent-activity table-responsive">
               <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
             <!-- /.panel-body --> 
@@ -39,21 +83,68 @@
            <div class="panel panel-primary" id="a_success">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Success Rates
               <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($campaigns as $row): ?>
-                    <li><a href="#" class="agent-success-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a class="agent-success-filter" ref="#">Show All</a> </li>
-                  </ul>
-                </div>
+               <form class="success-filter" data-func="agent_success">
+            	<div class="btn-group">
+                  <input type="hidden" name="date_from" value="<?php echo date('Y-m-d') ?>">
+                  <input type="hidden" name="date_to" value="<?php echo date('Y-m-d') ?>">
+                  <input type="hidden" name="campaign">
+                  <input type="hidden" name="team">
+                  <input type="hidden" name="agent">
+                  <input type="hidden" name="source">
+			      <input type="hidden" name="colname">
+                  			      <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "Today"; ?> </span></button>
+</div>
+			      
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($campaigns as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="campaign"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="campaign">All campaigns</a> </li>
+	                  </ul>
+                  </div>
+                  <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($agents as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="agent"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="agent">All Agents</a> </li>
+	                  </ul>
+                  </div>
+                  <?php } ?>
+                    <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($team_managers as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="team"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="team">All Teams</a> </li>
+	                  </ul>
+                  </div>
+                 <?php } ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Source</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($sources as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="source"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="source">All Sources</a> </li>
+	                  </ul>
+                  </div>
+                </form>
               </div>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body agent-success">
-              <div id="progress"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+            <div class="panel-body agent-success table-responsive">
+              <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
             <!-- /.panel-body --> 
           </div>
@@ -75,7 +166,7 @@
               </div>
             
             </div>
-              <div class="panel-body agent-data">
+              <div class="panel-body agent-data table-responsive">
               <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
 
@@ -118,23 +209,35 @@
 		dashboard.agent_activity();
 		dashboard.agent_success();
 		dashboard.agent_data();
-		//dashboard.agent_current_hours();
-		$(document).on("click",".agent-activity-filter",function(e){
-			e.preventDefault();
-			dashboard.agent_activity($(this).attr('id'));
-		});
-		$(document).on("click",".agent-success-filter",function(e){
-			e.preventDefault();
-			dashboard.agent_success($(this).attr('id'));
-		});
-		$(document).on("click",".agent-data-filter",function(e){
-			e.preventDefault();
-			dashboard.agent_data($(this).attr('id'));
-		});
-		$(document).on("click",".agent-current-hours-filter",function(e){
-			e.preventDefault();
-			dashboard.agent_current_hours($(this).attr('id'));
-		});
+dashboard.init();
+		
+		$('.daterange').daterangepicker({
+                opens: "left",
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                format: 'DD/MM/YYYY',
+                minDate: "02/07/2014",
+                maxDate: moment(),
+                startDate: moment(),
+                endDate: moment()
+            },
+            function(start, end, element) {
+                var $btn = this.element;
+                $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
+                $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+                dashboard.agent_success()
+            });
+        $(document).on("click", '.daterange', function(e) {
+            e.preventDefault();
+        });
+		
 		$("#agent_activity").on("click", function(){
 			$("html,body").animate(
 					{ scrollTop : $("#a_activity").offset().top  },

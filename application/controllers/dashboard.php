@@ -156,8 +156,10 @@ class Dashboard extends CI_Controller
     //this is the controller loads the initial view for the management dashboard
     public function management()
     {
+        $agents       = $this->Form_model->get_agents();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources      = $this->Form_model->get_sources();
         $campaigns = $this->Form_model->get_user_campaigns();
-        $surveys   = $this->Form_model->get_surveys();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -166,13 +168,18 @@ class Dashboard extends CI_Controller
 			'page'=> array('dashboard'=>'management'),
             'javascript' => array(
                 'charts.js',
-                'dashboard.js'
+                'dashboard.js',
+				'lib/moment.js',
+                'lib/daterangepicker.js'
             ),
             'campaigns' => $campaigns,
-            'surveys' => $surveys,
+            'sources' => $sources,
+			'agents' => $agents,
+			'team_managers' => $teamManagers,
             'css' => array(
                 'dashboard.css',
-                'plugins/morris/morris-0.4.3.min.css'
+                'plugins/morris/morris-0.4.3.min.css',
+						'daterangepicker-bs3.css'
             )
         );
         $this->template->load('default', 'dashboard/management_dash.php', $data);
@@ -394,6 +401,7 @@ class Dashboard extends CI_Controller
         $this->load->helper('date');
         if ($this->input->is_ajax_request()) {
             $filter  = $this->input->post();
+			$this->firephp->log($filter);
             $results  = $this->Dashboard_model->agent_activity($filter);
             $now      = time();
             foreach ($results as $k => $row) {
@@ -417,7 +425,7 @@ class Dashboard extends CI_Controller
             $results  = $this->Dashboard_model->agent_success($filter);
             $now      = time();
             foreach ($results as $k => $row) {
-                $results[$k]['rate'] = number_format(($results[$k]['transfers'] / $results[$k]['dials']) * 100, 1) . "%";
+                $results[$k]['rate'] = number_format(($results[$k]['positives'] / $results[$k]['dials']) * 100, 1) . "%";
             }
             echo json_encode(array(
                 "success" => true,
