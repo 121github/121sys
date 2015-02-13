@@ -18,7 +18,7 @@ class Dashboard_model extends CI_Model
             $qry .= " and campaign_id = '$filter'";
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= " order by records.date_updated asc";
+        $qry .= " group_by urn order by records.date_updated asc";
         return $this->db->query($qry)->result_array();
     }
     
@@ -29,7 +29,7 @@ class Dashboard_model extends CI_Model
             $qry .= " and campaign_id = '$filter'";
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= " order by `start`";
+        $qry .= " group by appointment_id order by `start`";
         return $this->db->query($qry)->result_array();
     }
     

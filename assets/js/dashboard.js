@@ -146,7 +146,7 @@ var dashboard = {
             var $appointments = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $appointments += '<li><a class="tt pointer" data-toggle="tooltip" data-placement="left" title="'+val.last_comment+'"" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Start time: ' + val.date_updated + '</span></li>';
+                    $appointments += '<li><a class="tt pointer" data-toggle="tooltip" data-placement="left" title="'+val.last_comment+'"" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a><br><span class="small">Start time: ' + val.start_date + '</span></li>';
                 });
                 $('.appointments-panel').append('<ul>' + $appointments + '</ul>');
 				$('.tt').tooltip();

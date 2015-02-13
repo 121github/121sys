@@ -46,7 +46,7 @@ $calltime = $row['contact'];
 $qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,owner from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
 $qry = rtrim($qry,"union ");
-$this->firephp->log($qry);
+//$this->firephp->log($qry);
 $result = $db2->query($qry);
 $recordings = $result->result_array();
 
