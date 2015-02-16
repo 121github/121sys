@@ -360,13 +360,13 @@ $this->firephp->log($qry);
     {
        $qry_filter = "";
 	           if (!empty($filter['campaign'])) {
-            $qry_filter .= " and h.campaign_id = '{$filter['campaign']}'";
+            $qry_filter .= " and campaign_id = '{$filter['campaign']}'";
 			$campaign = "campaign_name";
         } else {
 			$campaign = "'All'";
 		}
 		if (!empty($filter['team'])) {
-            $qry_filter .= " and o.team_id = '{$filter['team']}'";
+            $qry_filter .= " and o.user_id in (select user_id from users where team_id='{$filter['team']}')";
         }
 		if (!empty($filter['agent'])) {
             $qry_filter .= " and o.user_id = '{$filter['agent']}'";

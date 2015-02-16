@@ -153,16 +153,61 @@
         <div class="panel panel-primary" id="a_data">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent  Data
              <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($campaigns as $row): ?>
-                    <li><a href="#" class="agent-data-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a class="agent-data-filter" ref="#">Show All</a> </li>
-                  </ul>
-                </div>
+                <form class="agent-data-filter" data-func="agent_data">
+            	<div class="btn-group">
+
+                  <input type="hidden" name="campaign">
+                  <input type="hidden" name="team">
+                  <input type="hidden" name="agent">
+                  <input type="hidden" name="source">
+			      <input type="hidden" name="colname">
+</div>
+			      
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($campaigns as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="campaign"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="campaign">All campaigns</a> </li>
+	                  </ul>
+                  </div>
+                  <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($agents as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="agent"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="agent">All Agents</a> </li>
+	                  </ul>
+                  </div>
+                  <?php } ?>
+                    <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($team_managers as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="team"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="team">All Teams</a> </li>
+	                  </ul>
+                  </div>
+                 <?php } ?>
+                  <div class="btn-group">
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Source</button>
+	                  <ul class="dropdown-menu pull-right" role="menu">
+	                    <?php foreach($sources as $row): ?>
+	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="source"><?php echo $row['name'] ?></a> </li>
+	                    <?php endforeach ?>
+	                    <li class="divider"></li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="source">All Sources</a> </li>
+	                  </ul>
+                  </div>
+                </form>
               </div>
             
             </div>

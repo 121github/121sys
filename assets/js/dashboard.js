@@ -323,7 +323,7 @@ var dashboard = {
             url: helper.baseUrl + 'dashboard/agent_data',
             type: "POST",
             dataType: "JSON",
-            data: $('.data-filter').serialize(),
+            data: $('.agent-data-filter').serialize(),
 			beforeSend: function(){
 			            $('.agent-data').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}

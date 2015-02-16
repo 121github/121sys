@@ -18,7 +18,13 @@ var admin = {
 		}).done(function(response){
 			if(response.length>0){
 				$.each(response,function(i,row){
-					$('.fields_container').find('input[name="'+row.field+'"]').val(row.field_name);
+					$('.fields_container').find('#'+row.field).val(row.field_name);
+					if(row.is_visible=="1"){
+					$('.fields_container').find('#'+row.field+'_vis').prop('checked',true);
+					}
+					if(row.is_renewal=="1"){
+					$('.fields_container').find('#'+row.field+'_ren').prop('checked',true);
+					}
 				});
 				
 			}

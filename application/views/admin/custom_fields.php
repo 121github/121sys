@@ -68,7 +68,7 @@
                       <tr>
                         <td><input class="form-control" value="" name="d1[name]" id="d1"/></td>
                         <td><input type="checkbox" class="form-control"  name="d1[visible]" id="d1_vis"/></td>
-                        <td><input type="checkbox"  class="form-control" name="d1[renewal]"/></td>
+                        <td><input type="checkbox"  class="form-control" name="d1[renewal]" id="d1_ren"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="d2[name]" id="d2"/></td>
