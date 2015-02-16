@@ -149,7 +149,7 @@ class File_model extends CI_Model
     
     public function file_from_id($id)
     {
-        $query = "select filename,folder_name from files left join folders using(folder_id) left join folder_permissions using(folder_id) where file_id = '" . intval($id) . "'";
+        $query = "select filename,folder_name,date(date_added) subfolder from files left join folders using(folder_id) left join folder_permissions using(folder_id) where file_id = '" . intval($id) . "'";
         if ($_SESSION['role'] > 1) {
             $query .= " and folder_permissions.user_id = '" . $_SESSION['user_id'] . "'";
         }
