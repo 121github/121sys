@@ -222,7 +222,7 @@ class File_model extends CI_Model
 		$permissions = " '1' as `read`,'1' as `write` ";	
 		}
 		
-        $qry = "select folder_name,filename,filesize,if(name is null,'Anonymous',name) as username,date_format(date_added,'%d/%m/%y %H:%i') date_added,$permissions,accepted_filetypes,file_id from files left join folders using(folder_id) left join users using(user_id) left join folder_permissions using(folder_id) ";
+        $qry = "select folder_name,filename,filesize,if(name is null,'Anonymous',name) as username,date_format(date_added,'%d/%m/%y %H:%i') date_uploaded,$permissions,accepted_filetypes,file_id from files left join folders using(folder_id) left join users using(user_id) left join folder_permissions using(folder_id) ";
 		
 		
         $qry .= $this->get_where($options, $table_columns);

@@ -122,7 +122,7 @@ var files = {
             }, {
                 "data": "username"
             }, {
-                "data": "date_added"
+                "data": "date_uploaded"
             }, {
                 "data": "options"
             }],
