@@ -234,11 +234,7 @@ class File_model extends CI_Model
 		if($_SESSION['role']>1){
 		$qry .= " and folder_permissions.user_id = ".$_SESSION['user_id'];
 		}
-		
-		if($count){
-		return $files = $this->db->query($qry)->num_rows();	
-		}
-		
+				
         $start  = $options['start'];
         $length = $options['length'];
         if (isset($_SESSION['files']['order']) && $options['draw'] == "1") {
@@ -249,9 +245,13 @@ class File_model extends CI_Model
             unset($_SESSION['files']['values']['order']);
         }
         $qry .= " group by file_id ";
+		if($count){
+		return $files = $this->db->query($qry)->num_rows();	
+		}
         $qry .= $order;
 		
         $qry .= "  limit $start,$length";
+		 $this->firephp->log($qry);
         $files = $this->db->query($qry)->result_array();
         $this->load->helper('scan');
         foreach ($files as $k => $row) {
