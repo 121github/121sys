@@ -88,19 +88,19 @@ class Files extends CI_Controller
         if ($this->input->is_ajax_request()) {
 		$folder = $this->input->post('id');
 		if($_SESSION['role']==1){
-		$permissions = array("write_access"=>1,"read_access"=>1);
+		$permissions = array("folder_id"=>$folder,"write_access"=>1,"read_access"=>1,"accepted_filetypes"=>"*");
 		} else {
 		$permissions = $this->File_model->get_permissions($folder);
 		}
-		
+		/* doesnt work :(
 		$ft = explode(",", $permissions['accepted_filetypes']);
         $check_string = "";
         foreach ($ft as $k => $v) {
             $check_string .= "file.name.split('.').pop() != '$v'&&";
         }
         $check_string = $folder ? rtrim($check_string, "&&") : false;
-		
-echo json_encode(array("success"=>true,"permissions"=>$permissions,"checkstring"=>$check_string));
+		*/
+echo json_encode(array("success"=>true,"permissions"=>$permissions));
 
 
 		}
@@ -174,11 +174,11 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions,"checkstring"
     {
         $user_folders = $this->File_model->get_folders();
         $folder       = $this->input->post('folder');
-		
+		//$this->firephp->log($folder);
 		//check the user has access to write to this folder
 		if($user_folders[$folder]['write']=="1"){
 		$folder_name = $user_folders[$folder]['folder_name'];
-		$day = date('y-m-d');
+		$day = date('Y-m-d');
 		if(!is_dir(FCPATH . "upload/".$day)){
 		mkdir(FCPATH . "upload/$folder_name/$day");
 		}
@@ -199,10 +199,11 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions,"checkstring"
             $tempFile     = $_FILES['file']['tmp_name']; //3
             $originalname = preg_replace("/[^A-Za-z0-9. ]/", '', $_FILES['file']['name']);
             $targetPath   = FCPATH . "upload/$folder_name/$day"; //4
-            $targetFile   = $targetPath . $originalname; //5
+            $targetFile   = $targetPath ."/". $originalname; //5
             $filesize     = filesize($tempFile);
 			
 			//this checks the filetype is allowed
+			if(@!empty($user_folders[$folder]['accepted_filetypes'])){
 			$allowed =  explode(",",$user_folders[$folder]['accepted_filetypes']);
 			$ext = pathinfo($originalname, PATHINFO_EXTENSION);
 			if(!in_array($ext,$allowed) ) {
@@ -210,6 +211,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions,"checkstring"
                 echo "File type is not allowed only {$user_folders[$folder]['accepted_filetypes']} may be added to this folder";
                 exit;
 				}
+			}
 			//check the file is not a duplicate
             if (file_exists($targetFile)) {
                 header('HTTP/1.0 406 Not Found');

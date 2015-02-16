@@ -44,8 +44,7 @@ var files = {
 				}
 				Dropzone.options.mydropzone = {
   paramName: "file", // The name that will be used to transfer the file
-  maxFilesize: 2, // MB
- acceptedFiles:response.permissions.accepted_filetypes
+  maxFilesize: 100, // MB
 };
             }
         });

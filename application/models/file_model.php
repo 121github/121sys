@@ -153,7 +153,7 @@ class File_model extends CI_Model
         if ($_SESSION['role'] > 1) {
             $query .= " and folder_permissions.user_id = '" . $_SESSION['user_id'] . "'";
         }
-        $this->firephp->log($query);
+        //$this->firephp->log($query);
         return $this->db->query($query)->row_array();
     }
     
@@ -170,6 +170,10 @@ class File_model extends CI_Model
         }
         $this->db->order_by("folder_name");
         foreach ($this->db->get("folders")->result_array() as $row) {
+			if ($_SESSION['role']== "1") {
+				$row['read']="1";
+				$row['write']="1";
+			}
             $folders[$row['folder_id']] = $row;
         }
         return $folders;
@@ -190,7 +194,7 @@ class File_model extends CI_Model
     
 	 public function get_permissions($id){
 		 	$qry = "select `read` read_access,`write` write_access,accepted_filetypes,folders.folder_id,folder_name from folder_permissions left join folders on folders.folder_id=folder_permissions.folder_id where folders.folder_id = $id and user_id = ".$_SESSION['user_id'];
-			$this->firephp->log($qry);
+			//$this->firephp->log($qry);
 			return  $this->db->query($qry)->row_array();
 }
     public function get_files_for_table($options,$count=false)
@@ -248,7 +252,6 @@ class File_model extends CI_Model
         $qry .= $order;
 		
         $qry .= "  limit $start,$length";
-     $this->firephp->log($qry);
         $files = $this->db->query($qry)->result_array();
         $this->load->helper('scan');
         foreach ($files as $k => $row) {
