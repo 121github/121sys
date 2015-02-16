@@ -179,7 +179,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
 		if($user_folders[$folder]['write']=="1"){
 		$folder_name = $user_folders[$folder]['folder_name'];
 		$day = date('Y-m-d');
-		if(!is_dir(FCPATH . "upload/".$day)){
+		if(!is_dir(FCPATH . "upload/".$folder_name."/".$day)){
 		mkdir(FCPATH . "upload/$folder_name/$day");
 		}
 		} else {
@@ -434,7 +434,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
 			mkdir($folder."/".$row['subfolder']);	
 			}
 			if(file_exists($old)&&is_dir($row['subfolder'])){
-			move_uploaded_file($old,$new);
+			rename($old,$new);
 			}
 		}
 	   }

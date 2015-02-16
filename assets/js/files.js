@@ -1,4 +1,13 @@
-
+Dropzone.options.mydropzone = {
+					 init: function () {
+    this.on("queuecomplete", function (file) {
+		   files.reload_folder($('#dropzone-folder-id').val());
+    });
+  },
+  paramName: "file", // The name that will be used to transfer the file
+  maxFilesize: 100, // MB
+  
+};
 
 var files = {
     init: function() {
@@ -20,7 +29,7 @@ var files = {
 			$('#panel-title').text('Showing all files...'); 
 		   }
 		 
-		  files.data_table($(this).attr('data-id'));
+		  files.reload_folder($(this).attr('data-id'));
         });
 		$(document).on('click','#upload-btn,.close-upload',function(){
 				$('#dropzone-holder').toggle();
@@ -42,19 +51,15 @@ var files = {
                 if(response.permissions.write_access){
 				$('#upload-btn').removeClass('disabled'); 
 				}
-				Dropzone.options.mydropzone = {
-  paramName: "file", // The name that will be used to transfer the file
-  maxFilesize: 100, // MB
-};
             }
         });
 	},
-    reload_folder: function() {
+    reload_folder: function(folder_id) {
                 var table = "<table class='table table-striped table-bordered data-table'><thead><tr><th>Folder Name</th><th>Filename</th><th>File size</th><th>Added by</th><th>Date Added</th><th>Options</th></tr></thead>";
                 table += "<tfoot><tr><th>Folder Name</th><th>Filename</th><th>File size</th><th>Added by</th><th>Date Added</th><th>Options</th></tr></tfoot></table>";
 
                 $('#files-panel').find('#table-holder').html(table);
-                files.data_table();
+                files.data_table(folder_id);
 
     },
     download: function(id) {
@@ -151,6 +156,7 @@ var files = {
             });
         });
         //this moves the search input boxes to the top of the table
+		
         var r = $('.data-table tfoot tr');
         r.find('th').each(function() {
             $(this).css('padding', 8);
