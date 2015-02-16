@@ -428,7 +428,14 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
 		$files = $this->db->query("select filename,date(date_added) subfolder from files")->result_array();
 		  $folder = FCPATH . "upload/cv";
 		foreach( $files as $row){
-			move_uploaded_file($folder."/".$row['filename'],$folder."/".$row['subfolder']."/".$row['filename']);
+			echo $old = $folder."/".$row['filename'];
+			echo $new = $folder."/".$row['subfolder']."/".$row['filename'];
+			if(!is_dir($folder."/".$row['subfolder'])){
+			mkdir($folder."/".$row['subfolder']);	
+			}
+			if(file_exists($old)&&is_dir($row['subfolder'])){
+			move_uploaded_file($old,$new);
+			}
 		}
 	   }
 }

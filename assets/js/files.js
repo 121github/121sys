@@ -11,7 +11,7 @@ var files = {
 		$('.folder-filter').on('click',function() {
 		   $('#folder-filter-text').html('<span class="glyphicon glyphicon-filter"></span> '+$(this).text());
 		   if(Number($(this).attr('data-id'))>0){
-			
+			   
 			$('#panel-title').text('Showing all files in '+$('#folder-filter-text').text()+' folder'); 
 			 files.check_access($(this).attr('data-id'));
 		   } else {
