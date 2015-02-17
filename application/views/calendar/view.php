@@ -37,6 +37,8 @@
           <option value="30" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >30 Mile</option>
           <option value="50" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?>> 50 Mile</option>
           <option value="100" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >100 Mile</option>
+           <option value="200" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >200 Mile</option>
+                    <option value="" <?php if(@empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >Any Distance</option>
           </select>
           </p>
           </div>

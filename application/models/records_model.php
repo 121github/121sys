@@ -861,7 +861,7 @@ class Records_model extends CI_Model
 			  $this->db->where(
                 "urn",$post['urn']
             );
-			 
+			$post['location_id']=NULL;
             $post['date_updated'] = date('Y-m-d H:i:s');
             $this->db->update("appointments", $post);
         } else {

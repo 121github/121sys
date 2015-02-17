@@ -28,7 +28,7 @@ class Locations_model extends CI_Model
                 if (!isset($response['error']) && isset($response['lng'])) {
                     $this->db->query("insert ignore into uk_postcodes set postcode='$formatted_postcode',lat = '{$response['lat']}',lng = '{$response['lng']}'");
                     $id = $this->db->insert_id();
-					$this->db->query("insert ignore into locations set location_id = '$id',lat = '{$row['lat']}',lng = '{$row['lng']}'");
+					$this->db->query("insert ignore into locations set location_id = '$id',lat = '{$response['lat']}',lng = '{$response['lng']}'");
                     $this->set_postcode_ids($formatted_postcode, $id); 
                 }
             }
