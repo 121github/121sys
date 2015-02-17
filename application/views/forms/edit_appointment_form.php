@@ -2,12 +2,12 @@
       <input type="hidden" name="appointment_id">
         <input name="urn" type="hidden" value="">
         <div class="form-group input-group-sm">
-          <p>Please enter a title</p>
-<input type="text" class="form-control" name="title" placeholder="Enter the title" required/>
+          <p>Please enter a title for the appoinment</p>
+<input type="text" class="form-control" name="title" placeholder="Eg: Meeting with Joe Bloggs" required/>
         </div>
                 <div class="form-group input-group-sm">
-          <p>Please enter a description</p>
-<input type="text" class="form-control" name="text" placeholder="Enter the description" required/>
+          <p>Please enter a description including the location</p>
+<input type="text" class="form-control" name="text" placeholder="Location, special requirments, purpose. Eg: Quote, Presentation, Proposal" required/>
         </div>
                 <div class="form-group input-group-sm">
           <p>Please set the start time</p>
@@ -19,7 +19,7 @@
         </div>
                 <div class="form-group input-group-sm">
           <p>Please add the attendees</p>
-<select name="attendees[]" class="selectpicker attendeepicker" title="Choose the attendees" data-width="100%">
+<select name="attendees[]" class="selectpicker attendeepicker" title="Choose the attendees" data-width="100%" required>
  <?php foreach($attendees as $attendee): ?>
  <option value="<?php echo $attendee['user_id'] ?>"><?php echo $attendee['name'] ?></option>
  <?php endforeach; ?>

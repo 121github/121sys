@@ -2507,24 +2507,36 @@ $('#playpause').click(function(){
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').html('<img id="modal-loading" src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif"/><div class="responsive-calendar" style="display:none"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div>');
-		$('#modal').find('.modal-footer').html('<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button><select class="selectpicker"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="500">Any Distance</option></select>'); 
-		$('#modal').find('.selectpicker').selectpicker().on('change',function(){
-			modal.configure_calendar(urn,$(this).val(),true);
+		$('#modal').find('.modal-footer').html('<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button> <button class="btn btn-primary submit-cal pull-right" type="button">Update</button> <input class="form-control pull-right marl" style="width:130px" value="" name="postcode" id="cal-postcode" placeholder="Postcode"/> <select class="cal-range selectpicker" data-width="130px"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="">Any Distance</option></select>'); 
+		$('#modal').find('.cal-range').selectpicker();
+		$('#modal').find('.submit-cal').on('click',function(){
+			modal.configure_calendar(urn,$('#modal').find('.cal-range').val(),$('#cal-postcode').val(),true);
 		});
 		modal.configure_calendar(urn,10);
 	},
-	configure_calendar:function(urn,distance,renew){
-	$('.modal-title').text('Scheduled appointments within '+distance+' miles');
+	configure_calendar:function(urn,distance,postcode,renew){
+	if(distance){
+	$('.modal-title').text('Scheduled appointments within '+distance+' miles of '+postcode)
+	} else {
+	$('.modal-title').text('Scheduled appointments')	
+	}
 		$.ajax({ url:helper.baseUrl+'calendar/get_events',
-		data: { modal:true,urn: urn,distance:distance,
+		data: { modal:true,urn: urn,distance:distance,postcode:postcode,
 		campaigns:[record.campaign] },
 		dataType:"JSON",
 		type: "POST"}).done(function(response){	
+		if(response.error){
+		flashalert.danger(response.msg);	
+		}
+		if(response.postcode&&distance){
+		$('.modal-title').text('Scheduled appointments within '+distance+' miles of '+response.postcode)
+		$('#cal-postcode').val(response.postcode);
+		}
 		if(renew){
 			 $('.responsive-calendar').responsiveCalendar('clearAll').responsiveCalendar('edit',response.result);
 		} else {
 			 $('.responsive-calendar').responsiveCalendar({
-	 time: '2014-12',
+	 time: response.date,
     events: response.result
 			 })
 		}

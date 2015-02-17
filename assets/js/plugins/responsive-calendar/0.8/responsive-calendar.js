@@ -190,7 +190,10 @@
             day.addClass("active");
 			$.each(dayEvents,function(i,thisDayEvents){
 				$.each(thisDayEvents,function(i,val){
-					title += "<b>"+val.starttime +"</b> til <b>"+val.endtime+"</b> with <b>"+val.attendees+"</b> <span style='color:green'>["+val.distance+" miles away]</span></br>";
+					title += "<b>"+val.starttime +"</b> til <b>"+val.endtime+"</b> with <b>"+val.attendees+"</b>";
+					if(val.distance.length>0){
+						title += "<span style='color:green'>["+val.distance+" miles away]</span></br>";
+					}
 				});
 			});
 			day.attr('data-toggle',"tooltip").attr("data-html","true").attr('data-original-title',title).attr('data-placement','top').tooltip();

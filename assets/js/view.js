@@ -67,9 +67,9 @@ $(document).ready( function () {
             { "data": "options" }
         ],
 		"columnDefs": [{
-   			 "targets": [0,1,2,3,4],
+   			 "targets": [0,1,2,3,4,5],
    			 "data": null,
-   			 "defaultContent": "na"
+   			 "defaultContent": "-"
   					}]
 	});
 	

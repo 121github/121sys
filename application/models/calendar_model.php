@@ -37,7 +37,7 @@ return '#'.$output;
 		$start = $options['start'];
 		$end = $options['end'];
 		$order_by = "";
-		if(isset($options['modal'])){
+		if(isset($options['modal'])&&!empty($options['distance'])){
 			$order_by = " order by distance";
 		}
 		
@@ -51,7 +51,6 @@ return '#'.$output;
 			} else {
 			$coords = postcode_to_coords($options['postcode']);
 			}
-			$this->firephp->log($coords);
 			$join .= " left join locations using(location_id) ";
 			$having .= " having distance <= $distance";
 			$select_distance .= ",(((ACOS(SIN((" .

@@ -82,11 +82,26 @@ class Calendar extends CI_Controller
 		
 	}
 	
-	public function get_events(){
+	public function suggested_slots(){
+		/* not using this its not complete
 		$postcode = $this->input->post('postcode');
 		if($this->input->post('urn')){
 		$postcode = $this->Calendar_model->get_postcode_from_urn($this->input->post('urn'));	
 		}
+		$postcode = postcodeCheckFormat($postcode);
+		if($postcode==NULL){
+		$postcode = (isset($_SESSION['postcode'])?$_SESSION['postcode']:"");	
+		}
+		*/	
+	}
+	
+	
+	public function get_events(){
+		$postcode = $this->input->post('postcode');
+		if($this->input->post('urn')&&!$this->input->post('postcode')){
+		$postcode = $this->Calendar_model->get_postcode_from_urn($this->input->post('urn'));	
+		}
+
 		$start = isset($_POST['startDate'])?date('Y-m-d h:i:s', ($_POST['startDate'] / 1000)):date('Y-m-d h:i:s');
 		$end = isset($_POST['endDate'])?date('Y-m-d h:i:s', ($_POST['endDate'] / 1000)):date('2040-m-d h:i:s');
 		
@@ -97,8 +112,9 @@ class Calendar extends CI_Controller
 		}
 		
 		$postcode = postcodeCheckFormat($postcode);
-		if($postcode==NULL){
-		$postcode = (isset($_SESSION['postcode'])?$_SESSION['postcode']:"");	
+		if($postcode==NULL&&!empty($_POST['distance'])){
+		echo json_encode(array("error"=>"Postcode","msg"=>"Postcode is not valid"));
+		exit;
 		}
 		
 		if(!empty($_POST['distance'])){
@@ -119,12 +135,11 @@ class Calendar extends CI_Controller
 		if(isset($_POST['modal'])){
 		$options['modal'] = "list";	
 		}
-		
 		$events = $this->Calendar_model->get_events($options);
 		if(isset($_POST['modal'])){
 	foreach($events as $k=>$row) {
 		$date = date('Y-m-d',strtotime($row['start']));
-		$result[$date]['dayEvents'][] = array("title"=>$row['title'],'endtime' => date('g:i a',strtotime($row['end'])),'starttime' => date('g:i a',strtotime($row['start'])),'distance'=>number_format($row['distance'],1),"attendees"=>$row['attendeelist']);
+		$result[$date]['dayEvents'][] = array("title"=>$row['title'],'endtime' => date('g:i a',strtotime($row['end'])),'starttime' => date('g:i a',strtotime($row['start'])),'distance'=>isset($row['distance'])?number_format($row['distance'],1):"","attendees"=>$row['attendeelist']);
 		$result[$date]['number']=(isset($result[$date]['number'])?$result[$date]['number']+1:1);
 	}
 	
@@ -155,7 +170,7 @@ class Calendar extends CI_Controller
 }
 }
 
-echo json_encode(array('success' => 1, 'result' => $result));
+echo json_encode(array('success' => 1, 'result' => $result,'postcode'=>$postcode,'date'=>date('Y-m')));
 exit;
 		
 	}
