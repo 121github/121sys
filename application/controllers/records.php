@@ -652,6 +652,8 @@ class Records extends CI_Controller
                 echo json_encode(array(
                     "success" => true
                 ));
+						//set the location id on the appointment
+		file_get_contents("http://www.121system.com/cron/update_locations_table/".$data['postcode']);
             }
             
             
@@ -660,8 +662,6 @@ class Records extends CI_Controller
             echo "Denied";
             exit;
         }
-		//set the location id on the appointment
-		file_get_contents("http://www.121system.com/cron/update_all_locations");
     }
     
     public function delete_appointment()

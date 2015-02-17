@@ -66,8 +66,27 @@ class Cron_model extends CI_Model
         return $this->db->affected_rows();
     }
     
-    public function update_locations_table()
+    public function update_locations_table($postcode = false)
     {
+        //if postcode param is set we just run the function on the specified postcode.
+        if ($postcode) {
+            $formatted_postcode = postcodeCheckFormat($postcode);
+            if (!empty($formatted_postcode)) {
+                $check = "select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode'";
+                if ($this->db->query($check)->num_rows()) {
+                    $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
+                    $this->db->query($qry);
+                    $this->update_location_ids($postcode);
+                } else {
+                    //if postcode doesn't exist then use google to find it
+                    $this->update_locations_with_google($formatted_postcode);
+                }
+            }
+            exit;
+        }
+        
+        //if postcode param is not set we have to check all 3 tables to find all the postcodes that need updating (contacts,companies,appointments)
+        
         $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
         //1. add company locations
         $this->db->select("postcode,company_id");
@@ -79,15 +98,23 @@ class Cron_model extends CI_Model
         foreach ($postcodes as $row) {
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			 file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
+            file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update company_addresses set postcode = null where company_id = '{$row['company_id']}'";
                 $this->db->query($qry);
             } else {
-				$qry = "update company_addresses set postcode = '$formatted_postcode' where company_id = '{$row['company_id']}'";
+                $qry = "update company_addresses set postcode = '$formatted_postcode' where company_id = '{$row['company_id']}'";
                 $this->db->query($qry);
-                $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
-                $this->db->query($qry);
+                
+                $check = "select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode'";
+                if ($this->db->query($check)->num_rows()) {
+                    //insert the location id if post code exists in the uk_postcode table
+                    $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
+                    $this->db->query($qry);
+                } else {
+                    //if postcode doesn't exist then use google to find it
+                    $this->update_locations_with_google($formatted_postcode);
+                }
             }
         }
         
@@ -101,15 +128,21 @@ class Cron_model extends CI_Model
         foreach ($postcodes as $row) {
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			  file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
+            file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update contact_addresses set postcode = null where contact_id = '{$row['contact_id']}'";
                 $this->db->query($qry);
             } else {
-				$qry = "update contact_addresses set postcode = '$formatted_postcode' where contact_id = '{$row['contact_id']}'";
+                $qry = "update contact_addresses set postcode = '$formatted_postcode' where contact_id = '{$row['contact_id']}'";
                 $this->db->query($qry);
-                $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
-                $this->db->query($qry);
+                $check = "select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode'";
+                if ($this->db->query($check)->num_rows()) {
+                    $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
+                    $this->db->query($qry);
+                } else {
+                    //if postcode doesn't exist then use google to find it
+                    $this->update_locations_with_google($formatted_postcode);
+                }
             }
         }
         
@@ -118,32 +151,48 @@ class Cron_model extends CI_Model
         $this->db->select("postcode,appointment_id");
         $this->db->join("locations", "locations.location_id=appointments.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
+        if ($postcode) {
+            $this->db->where("postcode = '$postcode'");
+        }
         $postcodes = $this->db->get("appointments")->result_array();
         $status .= "Appointment Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			 file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
+            file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update appointments set postcode = null where appointment_id = '{$row['appointment_id']}'";
                 $this->db->query($qry);
             } else {
-				$qry = "update appointments set postcode = '$formatted_postcode' where appointment_id = '{$row['appointment_id']}'";
+                $qry = "update appointments set postcode = '$formatted_postcode' where appointment_id = '{$row['appointment_id']}'";
                 $this->db->query($qry);
-                $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
-                $this->db->query($qry);
+                $check = "select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode'";
+                if ($this->db->query($check)->num_rows()) {
+                    $qry = "insert ignore into locations (select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode')";
+                    $this->db->query($qry);
+                } else {
+                    //if postcode doesn't exist then use google to find it
+                    $this->update_locations_with_google($formatted_postcode);
+                }
             }
         }
         
     }
-    public function update_location_ids()
+    
+    public function update_location_ids($postcode = false)
     {
-		 $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
+        
+        if ($postcode) {
+            $this->db->query("update contact_addresses set location_id = (select postcode_id from uk_postcodes where postcode = '$postcode') where postcode = '$postcode' and location_id is null");
+            $this->db->query("update company_addresses set location_id = (select postcode_id from uk_postcodes where postcode = '$postcode') where postcode = '$postcode' and location_id is null");
+            $this->db->query("update appointments set location_id = (select postcode_id from uk_postcodes where postcode = '$postcode') where postcode = '$postcode' and location_id is null");
+        }
+        $file      = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
         //1.1 update location ids
         $qry       = "select postcode from company_addresses where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
-        $status = "NULL Company IDs found: " . count($postcodes) . "\r\n";
+        $status    = "NULL Company IDs found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
@@ -174,22 +223,30 @@ class Cron_model extends CI_Model
     }
     
     
-    public function update_locations_with_google()
+    public function update_locations_with_google($postcode = false)
     {
-         $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
+        if ($postcode) {
+            $response = postcode_to_coords($postcode);
+            if (!isset($response['error']) && isset($response['lng'])) {
+                $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
+                $this->update_locations_table($postcode);
+            }
+        }
+        
+        $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
         //1.2 use google to update the rest
         $this->db->select("postcode,company_id");
         $this->db->join("locations", "locations.location_id=company_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("company_addresses")->result_array();
-        $status = "Company Postcodes found [google search]: " . count($postcodes) . "\r\n";
+        $status    = "Company Postcodes found [google search]: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
             
             if (!isset($response['error'])) {
-				file_put_contents($file, $status . $response['lat']);
+                file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
@@ -206,9 +263,9 @@ class Cron_model extends CI_Model
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
-			 
+            
             if (!isset($response['error'])) {
-				 file_put_contents($file, $status . $response['lat']);
+                file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
@@ -223,9 +280,9 @@ class Cron_model extends CI_Model
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
-			 
+            
             if (!isset($response['error'])) {
-				 file_put_contents($file, $status . $response['lat']);
+                file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
