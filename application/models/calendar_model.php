@@ -82,10 +82,10 @@ return '#'.$output;
 		$where .= " and user_id in(". implode(",",$options['users']).")";
 		}
 		if(!empty($start)){
-			$where .= " and `start` >= '$start' ";
+			$where .= " and date(`start`) >= '$start' ";
 		}
 		if(!empty($end)){
-			$where .= " and `end` <= '$end' ";
+			$where .= " and date(`end`) <= '$end' ";
 		}
 		if(isset($_SESSION['current_campaign'])){
 		$where .= "	and campaign_id = ".$_SESSION['current_campaign'];

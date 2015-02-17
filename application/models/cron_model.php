@@ -190,7 +190,7 @@ class Cron_model extends CI_Model
             
             if (!isset($response['error'])) {
 				file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert into uk_postcodes set lat = '{$response['lat']}',lng = '{$response['lng']}'");
+                $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
         
@@ -209,7 +209,7 @@ class Cron_model extends CI_Model
 			 
             if (!isset($response['error'])) {
 				 file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert into uk_postcodes set lat = '{$response['lat']}',lng = '{$response['lng']}'");
+                $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
         
@@ -226,7 +226,7 @@ class Cron_model extends CI_Model
 			 
             if (!isset($response['error'])) {
 				 file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert into uk_postcodes set lat = '{$response['lat']}',lng = '{$response['lng']}'");
+                $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
         

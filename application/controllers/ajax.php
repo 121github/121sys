@@ -399,6 +399,7 @@ $this->_campaigns = campaign_access_dropdown();
                 ));
             endif;
         }
+		file_get_contents("http://www.121system.com/cron/update_all_locations");
     }
     
 	
@@ -433,6 +434,7 @@ $this->_campaigns = campaign_access_dropdown();
                 ));
             endif;
         }
+		file_get_contents("http://www.121system.com/cron/update_all_locations");
     }
 	
     //this function updates contact address
@@ -462,6 +464,7 @@ $this->_campaigns = campaign_access_dropdown();
                 ));
             endif;
         }
+		file_get_contents("http://www.121system.com/cron/update_all_locations");
     }
     
 	//this function updates company address
@@ -492,6 +495,7 @@ $this->_campaigns = campaign_access_dropdown();
                 ));
             endif;
         }
+		file_get_contents("http://www.121system.com/cron/update_all_locations");
     }
 	
     //this function deletes contact address
