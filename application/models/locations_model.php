@@ -20,7 +20,7 @@ class Locations_model extends CI_Model
             $check = "select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode'";
             if ($this->db->query($check)->num_rows()) {
                 $row = $this->db->query($check)->row_array();
-                $qry = "insert ignore into locations set postcode_id = '{$row['postcode_id']}',lat = '{$row['lat']}',lng = '{$row['lng']}'";
+                $qry = "insert ignore into locations set location_id = '{$row['postcode_id']}',lat = '{$row['lat']}',lng = '{$row['lng']}'";
                 $this->db->query($qry);
                 $this->set_postcode_ids($formatted_postcode, $row['postcode_id']);
             } else {
@@ -28,7 +28,7 @@ class Locations_model extends CI_Model
                 if (!isset($response['error']) && isset($response['lng'])) {
                     $this->db->query("insert ignore into uk_postcodes set postcode='$formatted_postcode',lat = '{$response['lat']}',lng = '{$response['lng']}'");
                     $id = $this->db->insert_id();
-					$this->db->query("insert ignore into locations set postcode_id = '$id',lat = '{$row['lat']}',lng = '{$row['lng']}'");
+					$this->db->query("insert ignore into locations set location_id = '$id',lat = '{$row['lat']}',lng = '{$row['lng']}'");
                     $this->set_postcode_ids($formatted_postcode, $id); 
                 }
             }
