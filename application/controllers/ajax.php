@@ -410,7 +410,9 @@ class Ajax extends CI_Controller
                 ));
             endif;
         }
-        file_get_contents("http://www.121system.com/cron/update_locations_table/" . $this->input->post('postcode'));
+        		$this->load->model('Cron_model');
+				//set the location id on the appointment
+				$this->Cron_model->update_locations_table($data['postcode']);
     }
     
     
@@ -449,7 +451,9 @@ class Ajax extends CI_Controller
                 ));
             endif;
         }
-        file_get_contents("http://www.121system.com/cron/update_locations_table/" . $this->input->post('postcode'));
+        		$this->load->model('Cron_model');
+				//set the location id on the appointment
+				$this->Cron_model->update_locations_table($data['postcode']);
     }
     
     //this function updates contact address

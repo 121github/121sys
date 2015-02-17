@@ -652,8 +652,9 @@ class Records extends CI_Controller
                 echo json_encode(array(
                     "success" => true
                 ));
-						//set the location id on the appointment
-		file_get_contents("http://www.121system.com/cron/update_locations_table/".$data['postcode']);
+				$this->load->model('Cron_model');
+				//set the location id on the appointment
+				$this->Cron_model->update_locations_table($data['postcode']);
             }
             
             
