@@ -410,9 +410,9 @@ class Ajax extends CI_Controller
                 ));
             endif;
         }
-        		$this->load->model('Cron_model');
+        		$this->load->model('Locations_model');
 				//set the location id on the appointment
-				$this->Cron_model->update_locations_table($data['postcode']);
+				$this->Locations_model->set_location_id($this->input->post('postcode'));
     }
     
     
@@ -451,9 +451,9 @@ class Ajax extends CI_Controller
                 ));
             endif;
         }
-        		$this->load->model('Cron_model');
+				$this->load->model('Locations_model');
 				//set the location id on the appointment
-				$this->Cron_model->update_locations_table($data['postcode']);
+				$this->Locations_model->set_location_id($this->input->post('postcode'));;
     }
     
     //this function updates contact address
@@ -484,7 +484,9 @@ class Ajax extends CI_Controller
                 ));
             endif;
         }
-        file_get_contents("http://www.121system.com/cron/update_locations_table/" . $this->input->post('postcode'));
+				$this->load->model('Locations_model');
+				//set the location id on the appointment
+				$this->Locations_model->set_location_id($this->input->post('postcode'));
     }
     
     //this function updates company address
@@ -517,7 +519,9 @@ class Ajax extends CI_Controller
                 ));
             endif;
         }
-        file_get_contents("http://www.121system.com/cron/update_locations_table/" . $this->input->post('postcode'));
+				$this->load->model('Locations_model');
+				//set the location id on the appointment
+				$this->Locations_model->set_location_id($this->input->post('postcode'));
     }
     
     //this function deletes contact address
