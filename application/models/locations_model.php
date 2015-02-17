@@ -42,7 +42,7 @@ class Locations_model extends CI_Model
     {
         $this->db->query("update contact_addresses set location_id = $id where postcode = '$postcode' and location_id is null");
         $this->db->query("update company_addresses set location_id =$id where postcode = '$postcode' and location_id is null");
-        $this->db->query("update appointments set location_id = $idwhere postcode = '$postcode' and location_id is null");
+        $this->db->query("update appointments set location_id = $id where postcode = '$postcode' and location_id is null");
     }
     
     

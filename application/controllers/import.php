@@ -617,7 +617,10 @@ $this->db->query($renewals);
 	}
 	//if we need to do anything AFTER the import has ran (eg: formatting/checking tables) we can add it to this function
 	public function tidy_up(){
-		sleep(2);
+		$this->load->model('Cron_model');
+		$this->Cron_model->update_locations_table();
+		$this->Cron_model->update_location_ids();
+		$this->Cron_model->update_locations_with_google();
 		echo json_encode(array("success"=>true));
 	}
 	
