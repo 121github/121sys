@@ -142,9 +142,11 @@ class Cron_model extends CI_Model
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
 			$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
+			if($this->db->query($qry)->num_rows()){
             $pc = $this->db->query($qry)->row();
-						$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");	
+			$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");	
             $this->db->query("update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
+			}
         }
         
         //2.1 update location ids
@@ -154,9 +156,11 @@ class Cron_model extends CI_Model
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
 			$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
+			if($this->db->query($qry)->num_rows()){
             $pc = $this->db->query($qry)->row();	
 						$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");
             $this->db->query("update contact_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
+			}
         }
         
         
@@ -167,11 +171,12 @@ class Cron_model extends CI_Model
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
            	$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
+			if($this->db->query($qry)->num_rows()){
             $pc = $this->db->query($qry)->row();
 			$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");
             $this->db->query("update appointments set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
         }
-        
+		}
     }
     
     
