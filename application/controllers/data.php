@@ -1442,7 +1442,7 @@ $this->_campaigns = campaign_access_dropdown();
 
         echo json_encode(array(
             "success" => (!empty($parkcodes)),
-            "data" => (!empty($parkcodes)?$parkcodes:"No data created")
+            "data" => (!empty($parkcodes)?$parkcodes:"No data found")
         ));
     }
 
@@ -1451,22 +1451,18 @@ $this->_campaigns = campaign_access_dropdown();
      */
     public function save_parkcode() {
         if ($this->input->is_ajax_request()) {
-            $form = $this->input->post();
-
-            if ($form['parked_code']) {
-                $parked_code = $form['parked_code'];
-                unset($form['parked_code']);
+            if (!empty($this->input->post('parked_code'))) {
                 //Update the parkcode
-                $this->Data_model->update_parkcode($parked_code, $form);
+                $response = $this->Data_model->update_parkcode($this->input->post());
             }
             else {
                 //Insert a new parkcode
-                $parked_code = $this->Data_model->insert_parkcode($form);
+                $response = $this->Data_model->insert_parkcode($this->input->post());
             }
 
             echo json_encode(array(
-                "success" => ($parked_code),
-                "msg" => ($parked_code?"Parkcode saved successfully!":"ERROR: The parkcode was not save successfully!")
+                "success" => $response,
+                "msg" => $response?"Park code saved successfully":"There was an error saving the parked code"
             ));
         }
     }
@@ -1476,13 +1472,10 @@ $this->_campaigns = campaign_access_dropdown();
      */
     public function delete_parkcode() {
         if ($this->input->is_ajax_request()) {
-            $parked_code = $this->input->post("parked_code");
-
-            $results = $this->Data_model->delete_parkcode($parked_code);
-
+            $results = $this->Data_model->delete_parkcode($this->input->post("parked_code"));
             echo json_encode(array(
                 "success" => ($results),
-                "msg" => ($results?"Parkcode deleted successfully!":"ERROR: The parkcode was not deleted successfully!")
+                "msg" => ($results?"Park code was deleted successfully":"The park code was not deleted")
             ));
         }
     }

@@ -858,7 +858,7 @@ class Data_model extends CI_Model
         $qry .= $where;
         $qry .= " group by CONCAT(".$select.")
                 having count(*)>1";
-
+		$this->firephp->log($qry);
         return $qry;
     }
     /**
@@ -927,7 +927,7 @@ class Data_model extends CI_Model
      */
     public function delete_duplicates($urn_list) {
         $qry = "UPDATE records
-                SET parked_code = (select parked_code from park_codes where park_reason = 'Duplicated')
+                SET parked_code = (select parked_code from park_codes where park_reason like 'Duplicate%')
                 WHERE urn IN ".$urn_list;
         return $this->db->query($qry);
     }
@@ -1058,21 +1058,20 @@ class Data_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
-    public function insert_parkcode($parked_code)
+    public function insert_parkcode($data)
     {
-        $this->db->insert("park_codes", $parked_code);
-        return $this->db->insert_id();
+        return $this->db->insert("park_codes", $data);
     }
 
-    public function update_parkcode($parked_code, $form)
+    public function update_parkcode($data)
     {
-        $this->db->where("parked_code", $parked_code);
-        return $this->db->update("park_codes", $form);
+        $this->db->where("parked_code", $data['parked_code']);
+        return $this->db->update("park_codes", $data);
     }
 
-    public function delete_parkcode($parked_code)
+    public function delete_parkcode($id)
     {
-        $this->db->where("parked_code", $parked_code);
+        $this->db->where("parked_code", $id);
         return $this->db->delete("park_codes");
     }
 

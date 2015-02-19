@@ -630,8 +630,12 @@ var record = {
                 dataType: "JSON",
                 data: $btn.closest('form').serialize()
             }).done(function(response) {
+				if(response.success){
                 record.contact_panel.load_tabs(response.id, response.type);
                 record.contact_panel.load_panel(record.urn, response.id);
+				} else {
+				flashalert.danger(response.msg);	
+				}
             });
         },
         delete_item: function($btn) {
@@ -680,16 +684,21 @@ var record = {
                     id: id
                 }
             }).done(function(response) {
+				if(response.success){
                 $.each(response, function(key, val) {
                     $tab.find('form input[name="' + key + '"]').val(val);
                     $tab.find('select[name="' + key + '"]').selectpicker('val', val);
                 });
                 $tab.find('.table-container').hide();
                 $tab.find('form').show();
-            });
-            $tab.find('.close-contact-btn').removeClass('close-contact-btn').addClass('hide-item-form');
+				            $tab.find('.close-contact-btn').removeClass('close-contact-btn').addClass('hide-item-form');
             $tab.find('.save-contact-phone').attr('action', 'edit_phone');
             $tab.find('.save-contact-address').attr('action', 'edit_address');
+							} else {
+			flashalert.danger(response.msg);		
+			}
+            });
+
         },
         load_panel: function(urn, id) {
             var $panel = $(record.contact_panel.config.panel);
@@ -911,7 +920,7 @@ var record = {
             /*initialize the add company button*/
             $(document).on('click', '.add-company-btn', function(e) {
                 e.preventDefault();
-                record.company_panel.add_form();
+                //record.company_panel.add_form();
             });
             /* initialize the edit company buttons */
             $(document).on('click', '.edit-company-btn', function(e) {
@@ -972,8 +981,12 @@ var record = {
                 dataType: "JSON",
                 data: $btn.closest('form').serialize()
             }).done(function(response) {
+				if(response.success){
                 record.company_panel.load_tabs(response.id, response.type);
                 record.company_panel.load_panel(record.urn, response.id);
+				} else {
+				flashalert.danger(response.msg);	
+				}
             });
         },
         delete_item: function($btn) {
@@ -1022,16 +1035,21 @@ var record = {
                     id: id
                 }
             }).done(function(response) {
+					if(response.success){
                 $.each(response, function(key, val) {
                     $tab.find('form input[name="' + key + '"]').val(val);
                     $tab.find('select[name="' + key + '"]').selectpicker('val', val);
                 });
                 $tab.find('.table-container').hide();
                 $tab.find('form').show();
-            });
-            $tab.find('.close-company-btn').removeClass('close-company-btn').addClass('hide-item-form');
+				$tab.find('.close-company-btn').removeClass('close-company-btn').addClass('hide-item-form');
             $tab.find('.save-company-phone').attr('action', 'edit_cophone');
             $tab.find('.save-company-address').attr('action', 'edit_coaddress');
+				} else {
+			flashalert.danger(response.msg);	
+			}
+            });
+            
         },
         load_panel: function(urn, id) {
             var $panel = $(record.company_panel.config.panel);
@@ -1056,6 +1074,10 @@ var record = {
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function(dt, dd) {
+						if(dt == 'Company #'){ dd = "<a href='http://companycheck.co.uk/company/"+dd+"' target='blank'>"+dd+"</a>";
+							
+						}
+						
                         if (dd && dd != '' && dt != 'Address' && dt != 'Company') {
                             $company_detail_telephone_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
@@ -1119,7 +1141,7 @@ var record = {
             var $panel = $(record.company_panel.config.panel);
             $('.tab[href="#general"]').tab('show');
 
-            $panel.find('.panel-title span').removeClass('glyphicon-plus add-company-btn').addClass('glyphicon-remove close-company-btn');
+            $panel.find('.panel-title span').removeClass('glyphicon-plus add-company-btn').addClass('glyphicon-remove close-company-btn').show();
             $panel.find('form').each(function() {
                 $(this)[0].reset();
                 $(this).show();
@@ -1143,7 +1165,7 @@ var record = {
                 $(this).val(id);
             });
             record.company_panel.load_tabs(id);
-            $panel.find('.panel-title span').removeClass('glyphicon-plus add-company-btn').addClass('glyphicon-remove close-company-btn');
+            $panel.find('.panel-title span').removeClass('glyphicon-plus add-company-btn').addClass('glyphicon-remove close-company-btn').show();
             record.company_panel.animate_panel();
             $panel.find('.list-group').fadeOut(1000, function() {
                 $panel.find('.form-container').fadeIn(1000).find('.save-company-general').attr('action', 'save_company');
@@ -1157,6 +1179,7 @@ var record = {
                 url: helper.baseUrl + "ajax/" + action,
                 type: "POST",
                 dataType: "JSON",
+				global: false,
                 data: $form.serialize()
             }).done(function(response) {
                 flashalert.success("company details saved");
@@ -1168,6 +1191,7 @@ var record = {
                     $('.tab-alert').hide();
                 }
                 record.company_panel.load_panel(record.urn, response.id);
+				
             });
         },
         close_panel: function() {
@@ -1177,7 +1201,7 @@ var record = {
                 $panel.find('.list-group').fadeIn(500);
                 $('.modal-backdrop').fadeOut();
             })
-            $panel.find('.panel-title span').removeClass('glyphicon-remove close-company-btn').addClass('glyphicon-plus add-company-btn');
+            $panel.find('.panel-title span').removeClass('glyphicon-remove close-company-btn').addClass('glyphicon-plus add-company-btn').hide();
         },
         load_tabs: function(company, item_form) {
             var $panel = $(record.company_panel.config.panel);

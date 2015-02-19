@@ -337,7 +337,7 @@ class Records_model extends CI_Model
             $from .= " left join sticky_notes sticky using(urn) ";
         }
         if (in_array(2, $features)) {
-            $select .= ",com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,com_pc.lat colatitude,com_pc.lng colongitude";
+            $select .= ",com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.conumber,com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,com_pc.lat colatitude,com_pc.lng colongitude";
             $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join locations com_pc on com_pc.location_id = coma.location_id left join company_telephone comt using(company_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id)";
         }
         if (in_array(6, $features)) {
@@ -401,7 +401,8 @@ class Records_model extends CI_Model
                         "Subsector" => $result['subsector_name'],
                         "Description" => $result['codescription'],
                         "Website" => $result['cowebsite'],
-                        "Employees" => $result['employees']
+                        "Employees" => $result['employees'],
+						"Company #" => $result['conumber']
                     );
                     
                     $data['company'][$result['company_id']]['telephone'][$result['cotelephone_id']] = array(
@@ -814,7 +815,7 @@ class Records_model extends CI_Model
     }
     
     public function delete_appointment($id)
-    {
+    {   
         $this->db->where("appointment_id", $id);
         $this->db->set("status", '0');
         $this->db->update("appointments");
@@ -864,6 +865,7 @@ class Records_model extends CI_Model
 			$post['location_id']=NULL;
             $post['date_updated'] = date('Y-m-d H:i:s');
             $this->db->update("appointments", $post);
+			return $post['appointment_id'];
         } else {
             $post['created_by'] = $_SESSION['user_id'];
             $this->db->insert("appointments", $post);
@@ -874,6 +876,7 @@ class Records_model extends CI_Model
                     "user_id" => $attendee
                 ));
             }
+			return $insert;
         }
         
         

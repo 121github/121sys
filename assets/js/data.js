@@ -2110,6 +2110,7 @@ var parkcode = {
                 else {
                     flashalert.danger(response.msg);
                 }
+				 $(".save-parkcode-btn").attr('disabled',false);
             });
         }
     },
@@ -2196,7 +2197,7 @@ var modal = {
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete all the duplicate records and keep the old one?');
+        }).find('.modal-body').text('This will park all duplicates leaving only the original record available. Do you wish to continue?');
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
             $('#modal').modal('toggle');

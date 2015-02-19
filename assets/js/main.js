@@ -17,11 +17,12 @@ $.each($('.stretch-panel'),function(){
 		diff=100;
 	}
 	
-	
 	panheight = $(this).find('.panel').height();
 	if($(this).find('.panel').height()<diff+panheight){
 	$(this).find('.panel').css("min-height",diff+panheight+"px");
 	}
+	//remove the stretch class once complete so it doesnt do it again
+	$(this).removeClass('stretch-panel');
 });
 $.each($('.stretch-element'),function(){
 	rowheight = $(this).closest('.row').height();
@@ -32,6 +33,8 @@ $.each($('.stretch-element'),function(){
 	if($(this).height()<diff+eleheight){
 	$(this).css("min-height",diff+eleheight+"px");
 	}
+	//remove the stretch class once complete so it doesnt do it again
+	$(this).removeClass('stretch-element');
 });
 }
 

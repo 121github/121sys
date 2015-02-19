@@ -14,7 +14,7 @@
             <dl class="dl-horizontal contact-detail-list">
               <?php foreach($contact['visible'] as $key=>$val){ if(!empty($val)&&$key!="Address"){ ?>
               <dt><?php echo $key ?></dt>
-              <dd <?php if($key=="Notes"){ echo "style='color:red'"; } ?>><?php if($key=="Website"){ ?><a target="blank" href="<?php echo "http://".str_replace("http://","",$val) ?>"><?php echo $val ?></a><?php } else { echo $val; } ?></dd>
+              <dd <?php if($key=="Notes"){ echo "style='color:red'"; } ?>><?php if($key=="Website"){ ?><a target="blank" href="<?php echo "http://".str_replace("http://","",$val) ?>"><?php echo $val ?></a><?php } else if($key=="Linkedin"){ ?><a target="blank" href="https://www.linkedin.com/profile/view?id=<?php echo $val ?>">View Profile</a><?php } else { echo $val; } ?></dd>
               <?php }
 		  if($key=="Address"){
 			 ?>

@@ -13,8 +13,10 @@
      <input name="urn" type="hidden" value="<?php echo $urn ?>">
       <input name="contact_id" type="hidden" value="">
       <?php if($_SESSION['config']['use_fullname']): ?>
-            <div class="form-group input-group-sm">
-        <input type="text" class="form-control" placeholder="Full name" name="fullname" value="">
+      <div class="form-group input-group-sm">
+       <label class="col-sm-2 control-label">Fullname</label> 
+       <div class="col-sm-10"><input type="text" class="form-control" placeholder="Full name" name="fullname" value="">
+       </div>
       </div>
       <?php else: ?>
       <div class="form-group input-group-sm">
@@ -28,25 +30,46 @@
       </div>
       <?php endif ?>
       <div class="form-group input-group-sm">
+             <label class="col-sm-2 control-label">Position</label> 
+       <div class="col-sm-10">
         <input type="text" class="form-control" placeholder="Job title" name="position" value="">
       </div>
+      </div>
        <div class='form-group input-group-sm' data-picktime="false">
+                    <label class="col-sm-2 control-label">DOB</label> 
+       <div class="col-sm-10">
             <input name="dob" placeholder="Date of birth" type='text' class="form-control dob" value=""/>
         </div>
+        </div>
       <div class="form-group input-group-sm">
+                   <label class="col-sm-2 control-label">Email</label> 
+       <div class="col-sm-10">
         <input type="text" class="form-control" placeholder="Email Address" name="email" value="">
       </div>
+      </div>
       <div class="form-group input-group-sm">
+                   <label class="col-sm-2 control-label">Website</label> 
+       <div class="col-sm-10">
         <input type="text" class="form-control" placeholder="Website address" name="website" value="">
       </div>
-      <div class="form-group input-group-sm">
-        <input type="text" class="form-control" placeholder="Linkedin profile page" name="linkedin" value="">
       </div>
       <div class="form-group input-group-sm">
+                   <label class="col-sm-2 control-label">Linkedin</label> 
+       <div class="col-sm-10">
+        <input type="text" class="form-control" placeholder="Linkedin profile page or ID" name="linkedin" value="">
+      </div>
+      </div>
+      <div class="form-group input-group-sm">
+                   <label class="col-sm-2 control-label">Facebook</label> 
+       <div class="col-sm-10">
         <input type="text" class="form-control" placeholder="Facebook profile page" name="facebook" value="">
       </div>
+      </div>
             <div class="form-group input-group-sm">
+                         <label class="col-sm-2 control-label">Notes</label> 
+       <div class="col-sm-10">
         <textarea class="form-control" name="notes" placeholder="Enter contact notes here" style="height:5em"></textarea>
+      </div>
       </div>
       <div class="form-actions pull-right">
       <span class="alert-success hidden">Contact details saved</span>

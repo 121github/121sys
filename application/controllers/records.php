@@ -648,7 +648,9 @@ class Records extends CI_Controller
                     "msg" => "You must set a valid UK Postcode"
                 ));
             } else {
-                $this->Records_model->save_appointment($data);
+                $id = $this->Records_model->save_appointment($data);
+				$data['appointment_id'] = $id;
+				$this->Audit_model->log_appointment_update($data,$data['urn']);
                 echo json_encode(array(
                     "success" => true
                 ));
@@ -668,6 +670,7 @@ class Records extends CI_Controller
     public function delete_appointment()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
+			$this->Audit_model->log_appointment_delete($this->input->post('id'));
             $this->Records_model->delete_appointment($this->input->post('id'));
             
             //return success to page

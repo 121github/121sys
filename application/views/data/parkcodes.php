@@ -15,7 +15,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i>Outcomes
+                            <i class="fa fa-bar-chart-o fa-fw"></i>Park codes
                             <div class="pull-right">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default btn-xs dropdown-toggle new-parkcode-btn"

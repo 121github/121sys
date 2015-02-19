@@ -27,7 +27,7 @@ class Company_model extends CI_Model
                 "description" => $result['codescription'],
 				"employees" => $result['employees'],
 				"turnover" => $result['turnover'],
-				"company_number" => $result['conumber']
+				"conumber" => $result['conumber']
             );
             if ($result['telephone_id']) {
                 $company['telephone'][$result['telephone_id']] = array(
@@ -65,7 +65,7 @@ class Company_model extends CI_Model
     public function get_companies($urn)
     {
         
-        $qry     = "select com.urn,com.company_id,com.name coname,com.description codescription,sector_name,employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) where urn = '$urn' order by com.company_id";
+        $qry     = "select com.urn,com.company_id,com.name coname,com.description ,com.conumbercodescription,sector_name,employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) where urn = '$urn' order by com.company_id";
         $results = $this->db->query($qry)->result_array();
         //put the contact details into array
         // $this->firephp->log($qry);
@@ -76,7 +76,8 @@ class Company_model extends CI_Model
                 "Subsector" => $result['subsector_name'],
                 "Description" => $result['codescription'],
                 "Website" => $result['cowebsite'],
-                "Employees" => $result['employees']
+				"Employees" => $result['employees'],
+				"Company #" => $result['conumber'],
             );
 
 			$companies[$result['company_id']]['telephone'][$result['cotelephone_id']] = array(

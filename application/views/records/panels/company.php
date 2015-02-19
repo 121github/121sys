@@ -1,6 +1,6 @@
     <div class="panel panel-primary company-panel">
       <div class="panel-heading">
-        <h4 class="panel-title"> Company Details<?php if(in_array("add companies",$_SESSION['permissions'])){ ?><!--Not using this feature yet. Need to clear the company id value in form if we start using it <span class="glyphicon glyphicon-plus pull-right add-company-btn"></span>--><?php } ?> </h4>
+        <h4 class="panel-title"> Company Details<?php if(in_array("add companies",$_SESSION['permissions'])){ ?><!--Not using this feature yet. Need to clear the company id value in form if we start using it--><span class="glyphicon glyphicon-plus pull-right add-company-btn" style="display:none"></span><?php } ?> </h4>
       </div>
       <div class="form-container">
         <?php $this->view('forms/edit_company_form.php',array("urn"=>$details['record']["urn"])) ?>
@@ -14,7 +14,7 @@
             <dl class="dl-horizontal company-detail-list">
               <?php foreach($company['visible'] as $key=>$val){ if(!empty($val)&&$key!="Address"){ ?>
               <dt><?php echo $key ?></dt>
-              <dd><?php if($key=="Website"){ ?><a target="blank" href="<?php echo "http://".str_replace("http://","",$val) ?>"><?php echo $val ?></a><?php } else { echo $val; } ?></dd>
+              <dd><?php if($key=="Website"){ ?><a target="blank" href="<?php echo "http://".str_replace("http://","",$val) ?>"><?php echo $val ?></a><?php } else if($key=="Company #"){ ?><a href='http://companycheck.co.uk/company/<?php echo $val ?>' target='blank'><?php echo $val ?></a><?php } else if($key=="Linkedin"){ ?><a href='https://www.linkedin.com/profile/view?id=<?php echo $val ?>' target='blank'><?php echo $val ?></a><?php } else { echo $val; } ?></dd>
               <?php }
 		  if($key=="Address"){
 			 ?>

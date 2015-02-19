@@ -13,26 +13,44 @@
      <input name="urn" type="hidden" value="<?php echo $urn ?>">
       <input name="company_id" type="hidden" value="">
      <div class="form-group input-group-sm">
+                        <label class="col-sm-3 control-label">Co. Name</label> 
+       <div class="col-sm-9">
         <input type="text" class="form-control" placeholder="Company name" name="name" value="">
       </div>
+      </div>
       <div class="form-group input-group-sm">
+                         <label class="col-sm-3 control-label">Description</label> 
+       <div class="col-sm-9">
         <input type="text" class="form-control" placeholder="Company Description" name="description" value="">
       </div>
+      </div>
        <div class='form-group input-group-sm' data-picktime="false">
+                          <label class="col-sm-3 control-label">Company #</label> 
+       <div class="col-sm-9">
             <input name="conumber" placeholder="Company number" type='text' class="form-control" value=""/>
         </div>
+        </div>
       <div class="form-group input-group-sm">
-        <input type="text" class="form-control" placeholder="Turnover" name="turnover" value="">
+                         <label class="col-sm-3 control-label">Turnover</label> 
+       <div class="col-sm-9">
+        <input type="text" class="form-control force-int" placeholder="Annual Turnover" name="turnover" value="">
+      </div>
       </div>
       <div class="form-group input-group-sm">
+                         <label class="col-sm-3 control-label">Website</label> 
+       <div class="col-sm-9">
         <input type="text" class="form-control" placeholder="Website address" name="website" value="">
       </div>
+      </div>
       <div class="form-group input-group-sm">
-        <input type="text" class="form-control" placeholder="Number of employees" name="employees" value="">
+                         <label class="col-sm-3 control-label">Employees</label> 
+       <div class="col-sm-9">
+        <input type="text" class="form-control force-int" placeholder="Number of employees" name="employees" value="">
+      </div>
       </div>
       <div class="form-actions pull-right">
       <span class="alert-success hidden">Company details saved</span>
-        <button type="submit" class="btn btn-primary save-company-general">Save changes</button>
+        <button class="btn btn-primary save-company-general">Save changes</button>
         <button class="btn btn-default close-company-btn">Close</button>
       </div>
     </form>
