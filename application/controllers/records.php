@@ -16,6 +16,7 @@ class Records extends CI_Controller
         $this->load->model('Records_model');
         $this->load->model('Survey_model');
         $this->load->model('Form_model');
+		$this->load->model('Audit_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
     
@@ -650,7 +651,7 @@ class Records extends CI_Controller
             } else {
                 $id = $this->Records_model->save_appointment($data);
 				$data['appointment_id'] = $id;
-				$this->Audit_model->log_appointment_update($data,$data['urn']);
+				$this->Audit_model->log_appointment_update($data);
                 echo json_encode(array(
                     "success" => true
                 ));

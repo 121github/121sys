@@ -263,19 +263,20 @@ class Audit_model extends CI_Model {
         return $audit_id;
     }
 //appointment updated  
-    public function log_appointment_update($data = array(),$urn=NULL) {
-
+    public function log_appointment_update($data = array()) {
+		unset($data['attendees']);
         $id = $data['appointment_id'];
         $qry = "SELECT * from appointments WHERE appointment_id = '$id'";
-        $original = $this->db->query($qry)->result_array();
+        $original = $this->db->query($qry)->row_array();
 
-        foreach ($original[0] as $key => $value) {
+        foreach ($original as $key => $value) {
             if (!array_key_exists($key, $data)) {
-                unset($original[0][$key]);
+                unset($original[$key]);
             }
         }
+		
         //compare the new data with the old data to see what has changed
-        $diff = array_diff($data, $original[0]);
+        $diff = array_diff($data, $original);
         //$this->firephp->log($original[0]);
         $log_id = NULL;
 
@@ -286,14 +287,14 @@ class Audit_model extends CI_Model {
                 'change_type' => "update",
                 'table_name' => 'appointments',
                 'reference' => $id,
-				'urn' => $urn
+				'urn' => $original['urn']
             );
             $this->db->insert('audit', $details);
             $audit_id = $this->db->insert_id();
         }
         //we also log the associated values in the log data table
         foreach ($diff as $column => $value) {
-            $oldval = (empty($original[0][$column]) ? "" : $original[0][$column]);
+            $oldval = (empty($original[$column]) ? "" : $original[$column]);
 
             $fields = array(
                 'audit_id' => $audit_id,
@@ -310,14 +311,14 @@ class Audit_model extends CI_Model {
 	
 //appointment deleted	
 //this function should be ran BEFORE the deletion actually occurs so it can make a log of the old data
-    public function log_appointment_deleted($appointment_id) {
+    public function log_appointment_delete($appointment_id) {
 		
 		$qry = "SELECT * from appointments WHERE appointment_id = '$appointment_id'";
         $original = $this->db->query($qry)->row_array();
 		
         $details = array(
             'user_id' => $_SESSION['user_id'],
-			'reference'=>$company_id,
+			'reference'=>$appointment_id,
             'change_type' => "delete",
             'table_name' => "appointments",
             'urn' =>  $original['urn']
