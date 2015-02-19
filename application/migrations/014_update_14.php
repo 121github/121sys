@@ -12,7 +12,7 @@ class Migration_update_14 extends CI_Migration
   public function up()
   {
 	  $this->firephp->log("starting migration 14");
-	    $this->db->query("ALTER TABLE `park_codes` ADD UNIQUE (`park_reason`");
+	    $this->db->query("ALTER TABLE `park_codes` ADD UNIQUE (`park_reason`)");
 		$this->db->query("ALTER TABLE `records` ADD `parked_date` TIMESTAMP NULL DEFAULT NULL AFTER `parked_code`");
 	//this trigger makes the parked date update when ever a park code changes on a record
 	$this->db->query("CREATE TRIGGER `records_before_update` BEFORE UPDATE ON `records`\r\n 
