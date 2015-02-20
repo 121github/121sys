@@ -124,7 +124,6 @@ if (($handle = fopen(FCPATH."datafiles/".$file, "r")) !== FALSE) {
 	
     public function import_csv()
     {
-		echo "hwat"; exit;
 		$database = $this->db->database;
         $table    = "importcsv";
         $csv_file = $this->input->post('filename');
