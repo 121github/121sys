@@ -8,14 +8,27 @@
           <p>Please enter the full name</p>
 <input type="text" class="form-control" name="name" title="Enter the full name" required/>
         </div>
+                        <div class="form-group input-group-sm">
+          <p>Please enter the email address</p>
+<input type="text" class="form-control" name="user_email" title="Enter the email address" required/>
+        </div>
                 <div class="form-group input-group-sm">
           <p>Please enter the telephone number</p>
 <input type="text" class="form-control" name="user_telephone" title="Enter the telephone number" required/>
         </div>
-                <div class="form-group input-group-sm">
-          <p>Please enter the email address</p>
-<input type="text" class="form-control" name="user_email" title="Enter the email address" required/>
+                        <div class="form-group input-group-sm">
+          <p>Please enter the telephone extension</p>
+<input type="text" class="form-control" name="ext" title="Enter the extension number" required/>
         </div>
+                        <div class="form-group input-group-sm">
+          <p>Please enter the telephony system username</p>
+<input type="text" class="form-control" name="phone_un" title="Enter the telephony username" required/>
+        </div>
+                                <div class="form-group input-group-sm">
+          <p>Please enter the telephony system password</p>
+<input type="password" class="form-control" name="phone_pw" title="Enter the telephony password" required/>
+        </div>
+
                 <div class="form-group input-group-sm">
           <p>Please set the status</p>
 <select name="user_status" class="selectpicker">

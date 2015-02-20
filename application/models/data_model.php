@@ -392,7 +392,7 @@ class Data_model extends CI_Model
                 $renewal_date_from = "(date(rd.".$renewal_date_field.") >= '".$options['renewal_date_from']."')";
             }
             if (!empty($options['renewal_date_to'])) {
-                $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(date(rd.".$renewal_date_field.") >= '".$options['renewal_date_to']."')";
+                $renewal_date_to = (strlen($renewal_date)>0?" and ":"")."(date(rd.".$renewal_date_field.") <= '".$options['renewal_date_to']."')";
             }
             $renewal_date .= $renewal_date_from.(strlen($renewal_date_from)>0 && strlen($renewal_date_to)>0?" and ":"").$renewal_date_to;
         }
@@ -414,11 +414,11 @@ class Data_model extends CI_Model
 
         $qry = "select *
                 from records r
-                inner join campaigns c ON (c.campaign_id = r.campaign_id)
-                inner join record_details rd ON (rd.urn = r.urn)
+                left join campaigns c ON (c.campaign_id = r.campaign_id)
+                left join record_details rd ON (rd.urn = r.urn)
                 where 1";
         $qry .= $where;
-
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
 
     }

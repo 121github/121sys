@@ -6,7 +6,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Backup and Restore</h1>
+                    <h1 class="page-header">Archive and Restore</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -22,7 +22,7 @@
                 <div class="col-lg-12">
                     <form id="data-form" class="backup-filter-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Backup Campaign
+                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Archive Campaign
                                 <div class="pull-right">
                                     <div class="btn-group">
                                         <input type="hidden" name="campaign">
@@ -48,7 +48,7 @@
                                         <th>Renewal Date From</th>
                                         <th>Renewal Date To</th>
                                         <th>Total Records</th>
-                                        <th>Backup</th>
+                                        <th>Archive</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -74,16 +74,16 @@
                 <div class="col-lg-12">
                     <form id="data-form" class="backup-history-filter-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Backup History (Last 12 backups)
+                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Archive History (Last 12 backups)
                                 <div class="pull-right">
                                     <div class="btn-group">
                                         <input type="hidden" name="restored">
-                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Restored?</button>
+                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Archive Status</button>
                                         <ul class="dropdown-menu pull-right" role="menu">
-                                            <li><a href="#" class="backup-history-filter-restored" id="1">Restored - Yes</a> </li>
-                                            <li><a href="#" class="backup-history-filter-restored" id="0">Restored - No</a> </li>
+                                            <li><a href="#" class="backup-history-filter-restored" id="1">Restored</a> </li>
+                                            <li><a href="#" class="backup-history-filter-restored" id="0">Archived</a> </li>
                                             <li class="divider"></li>
-                                            <li><a class="backup-history-filter-restored" ref="#" style="color: green;">Restored - All</a> </li>
+                                            <li><a class="backup-history-filter-restored" ref="#" style="color: green;">Show all</a> </li>
                                         </ul>
                                     </div>
                                     <div class="btn-group">

@@ -157,6 +157,13 @@ class Admin extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $results = $this->Admin_model->get_users();
+			foreach($results as $rownum=>$row){
+				foreach($row as $k=>$v){
+			if($v==NULL){
+			$results[$rownum][$k]="";	
+			}
+				}
+			}
             echo json_encode(array(
                 "success" => true,
                 "data" => $results,
@@ -184,7 +191,8 @@ class Admin extends CI_Controller
             'javascript' => array(
                 'dashboard.js',
                 'admin/campaigns.js',
-                'lib/jquery.numeric.min.js'
+                'lib/jquery.numeric.min.js',
+				'lib/moment.js'
             ),
             'options' => $options,
             'css' => array(
@@ -342,7 +350,8 @@ class Admin extends CI_Controller
                 ));
                 exit;
             }
-
+$this->firephp->log($backup_form['months_ago']);
+$this->firephp->log($backup_form['months_num']);
             //Check if the number of months is greater than the months ago
             if (($backup_form['months_ago'] && $backup_form['months_num'])&&(intval($backup_form['months_ago']) < intval($backup_form['months_num']))) {
                 echo json_encode(array(
@@ -616,6 +625,12 @@ class Admin extends CI_Controller
     public function save_user()
     {
         $form = $this->input->post();
+		foreach($form as $k=>$v){
+		if($v=="null"){
+		unset($form[$k]);	
+		}
+		}
+		
         if (empty($form['user_id'])) {
             $response = $this->Admin_model->add_new_user($form);
         } else {
@@ -702,5 +717,40 @@ class Admin extends CI_Controller
 		$fields = $this->Admin_model-> save_custom_fields($this->input->post());
 		echo json_encode(array("success"=>true));
 	}
+	
+	public function logos(){
+		$campaigns = $this->Form_model->get_campaigns();
+		 $logos = array();
+		 $path = FCPATH."/assets/logos";
+		if ($handle = opendir($path)) {
+    		while (false !== ($entry = readdir($handle))) {
+       		 	if ($entry != "." && $entry != "..") {
+            $logos[$entry] = base_url()."assets/logos/".$entry;
+        	}
+    		}
+   		 closedir($handle);
+			}
+		
+    	$data     = array(
+    			'campaign_access' => $this->_campaigns,
+    			'pageId' => 'Admin',
+    			'title' => 'Campaign logos',
+    			'page' => array(
+    					'admin' => 'logos'
+    			),
+    			'javascript' => array(	
+				'lib/dropzone.js'
+    			),
+    			'css' => array(
+    					'dashboard.css',
+						 'plugins/dropzone/dropzone.min.css'
+    			),
+    			'campaigns' => $campaigns,
+				"logos"=>$logos
+    	);
+    	$this->template->load('default', 'admin/logos.php', $data);
+	}
+	
+	
 	
 }

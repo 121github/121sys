@@ -263,7 +263,7 @@ var admin = {
             $('form').find('input[name="end_date"]').data('DateTimePicker').setDate(row.find('.end_date').text());
             min_quote_days.val(row.find('.min_quote_days').text());
             max_quote_days.val(row.find('.max_quote_days').text());
-            $('form').find('select[name="months_ago"]').selectpicker('val', row.find('.months_ago').text());
+            $('form').find('input[name="months_ago"]').val(row.find('.months_ago').text());
             $('form').find('input[name="months_num"]').val(row.find('.months_num').text());
 
 
@@ -276,7 +276,7 @@ var admin = {
             //Only numbers permited in those fields
             min_quote_days.numeric();
             max_quote_days.numeric();
-            $('form').find('input[name="months_num"]').numeric();
+            $('form').find('input[name="months_num"],input[name="months_ago"]').numeric();
 
             //Check if the min_quote_days is less than max_quote_days
             min_quote_days.blur(function(){
@@ -286,11 +286,11 @@ var admin = {
                 admin.campaigns.check_quote_days(parseInt(min_quote_days.val()), parseInt(max_quote_days.val()));
             });
 
-            $('form').find('input[name="months_num"]').blur(function(){
-                admin.campaigns.check_backup_months(parseInt($('form').find('select[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
+            $('form').find('input[name="months_num"]').keyup(function(){
+                admin.campaigns.check_backup_months(parseInt($('form').find('input[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
             });
-            $('form').find('select[name="months_ago"]').change(function(){
-                admin.campaigns.check_backup_months(parseInt($('form').find('select[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
+            $('form').find('input[name="months_ago"]').keyup(function(){
+                admin.campaigns.check_backup_months(parseInt($('form').find('input[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
             });
 
         },
@@ -310,15 +310,20 @@ var admin = {
 
         check_backup_months: function(months_ago, months_num){
             $('form').find('.backup_error').text("");
-            if (months_ago < months_num) {
-                $('form').find('.backup_error').text("The number of months must be greater than the months ago ");
+            if (months_ago < months_num||!months_num||!months_ago) {
+                $('form').find('.backup_error').text("Second input should be less than the first");
                 $('form').find('input[name="months_num"]').css('color', 'red');
-                $('form').find('select[name="months_ago"]').css('color', 'red');
+                $('form').find('input[name="months_ago"]').css('color', 'red');
+				$('#archive-example').text('');
             }
             else {
+				var months_ago_moment = moment().subtract(months_ago,'months')
+				var month_ago_date = months_ago_moment.format('DD/MM/YYYY');
+				var month_num_date = months_ago_moment.add(months_num,'months').format('DD/MM/YYYY');
                 $('form').find('.backup_error').text("");
                 $('form').find('input[name="months_num"]').css('color', 'black');
-                $('form').find('select[name="months_ago"]').css('color', 'black');
+                $('form').find('input[name="months_ago"]').css('color', 'black');
+				$('#archive-example').text('This would archive all records with a last update between '+month_ago_date+' and '+month_num_date+' if it was ran today');
             }
         },
         create: function() {

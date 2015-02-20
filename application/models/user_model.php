@@ -38,6 +38,8 @@ class User_model extends CI_Model
             $_SESSION['config']      = $config;
             $result                  = $result[0];
             $_SESSION['user_id']     = $result['user_id'];
+			$_SESSION['phone_user']     = $result['phone_un'];
+			$_SESSION['phone_password']     = $result['phone_pw'];
             $_SESSION['last_action'] = time();
             //get the permissions for the users role and store them in the session
             $this->load_user_session();

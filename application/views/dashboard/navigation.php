@@ -238,7 +238,7 @@
                                <?php } ?>
                                <?php if(in_array("archive data",$_SESSION['permissions'])){ ?>
                                <div class="accordion-inner">
-                                   <a href="<?php echo base_url() ?>data/backup_restore" <?php echo @($inner=='backup_restore'?"class='active'":"") ?>>Backup and Restore</a>
+                                   <a href="<?php echo base_url() ?>data/backup_restore" <?php echo @($inner=='backup_restore'?"class='active'":"") ?>>Data Archives</a>
                                </div>
                                 <?php } ?>
                                 <?php if(in_array("edit outcomes",$_SESSION['permissions'])){ ?>

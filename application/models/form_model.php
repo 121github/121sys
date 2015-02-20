@@ -310,12 +310,12 @@ class Form_model extends CI_Model
         return $this->db->get('time_exception_type')->result_array();
     }
     
-    public function get_renewald_date_field($campaign_id)
+    public function get_renewal_date_field($campaign_id)
     {
         
         $qry = "select field
                 from record_details_fields
-                where field_name LIKE 'Renewal%Date'
+                where is_renewal='1'
                 and campaign_id = " . $campaign_id;
         
         $result = $this->db->query($qry)->result_array();

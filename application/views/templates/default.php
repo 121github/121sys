@@ -86,7 +86,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                 <li><a href="<?php echo base_url() ?>data/daily_ration" <?php echo @($inner=='daily_ration'?"class='active'":"") ?>>Daily Ration</a></li>
                                  <?php } ?>
                                 <?php if(in_array("archive data",$_SESSION['permissions'])){ ?>
-                                <li><a href="<?php echo base_url() ?>data/backup_restore" <?php echo @($inner=='backup_restore'?"class='active'":"") ?>>Backup and Restore</a></li>
+                                <li><a href="<?php echo base_url() ?>data/backup_restore" <?php echo @($inner=='backup_restore'?"class='active'":"") ?>>Data Archives</a></li>
                                  <?php } ?>
                                 <?php if (in_array("edit outcomes", $_SESSION['permissions'])) { ?>
                                     <li>

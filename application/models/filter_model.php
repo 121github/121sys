@@ -559,10 +559,10 @@ class Filter_model extends CI_Model
         }
 
 		/* users can only see records that have not been parked */
-		 if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])) {
+		if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])) 									 		{
         $parked = " and (parked_code is null)";
         }
-		if(array_key_exists("view_parked",$filter)){
+		if(array_key_exists("parked_code",$filter)){
 		$parked = "";
 		}
 		$where .= $parked;

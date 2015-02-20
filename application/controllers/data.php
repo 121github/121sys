@@ -643,7 +643,7 @@ $this->_campaigns = campaign_access_dropdown();
                 unset($result['months_num']);
 
                 //Check if exist the renewal date
-                $renewal_date_field =  $this->Form_model->get_renewald_date_field($result['campaign_id']);
+                $renewal_date_field =  $this->Form_model->get_renewal_date_field($result['campaign_id']);
                 $renewal_date_field = ($renewal_date_field)?$renewal_date_field[0]['field']:"";
                 $result['renewal_date_field'] = $renewal_date_field;
 

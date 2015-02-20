@@ -78,15 +78,12 @@ echo json_encode(array("success"=>true));
     }
 	
 	public function checkfile($file=NULL){
-		if(!isset($file)){
-		$file = "new nps.csv";	
-		}
 	$row = 1;
-	if(!file_exists(FCPATH."datafiles\\".$file)){
-	echo "File not uploaded";
+	if(!file_exists(FCPATH."datafiles/".$file)){
+	echo "File not uploaded (".FCPATH."datafiles/".$file>")";
 	exit;
 	}
-if (($handle = fopen(FCPATH."datafiles\\".$file, "r")) !== FALSE) {
+if (($handle = fopen(FCPATH."datafiles/".$file, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 		if($row==1){
 		$length = count($data);
@@ -127,7 +124,7 @@ if (($handle = fopen(FCPATH."datafiles\\".$file, "r")) !== FALSE) {
 	
     public function import_csv()
     {
-	
+		echo "hwat"; exit;
 		$database = $this->db->database;
         $table    = "importcsv";
         $csv_file = $this->input->post('filename');
@@ -315,7 +312,7 @@ AND   TABLE_NAME   = 'records'")->row()->urn;
 			//this query sets all lapsed renewal dates to the subsequent year
 			$renewals = "update record_details rd left join records r using(urn) left join record_details_fields rdf on r.campaign_id = rdf.campaign_id set d1 = concat(
 year(curdate())+1,'-',month(d1),'-',day(d1)
-) where is_renewal = 1 and d1 < curdate()";
+) where is_renewal = 1 and d1 <= curdate()";
 $this->db->query($renewals);
         }
         echo json_encode(array(

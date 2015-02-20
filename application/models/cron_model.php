@@ -49,6 +49,25 @@ class Cron_model extends CI_Model
             $where .= "0";
         }
         
+		
+		//first we set them all as rationed
+		$qry = "update records r left join record_details rd using(urn)
+                set parked_code = 6 where r.campaign_id = " . $campaign_id ." and (r.parked_code is null or r.parked_code=1)";
+		$this->db->query($qry);
+		
+		//now we set all records that are in date to rationed	
+        $qry = "update records
+                set parked_code = 1 where urn in
+                    (select * from
+                      (select r.urn
+                        from records r
+                        inner join record_details rd ON (r.urn = rd.urn)
+                        where rd." . $renewal_date_field . " is not null
+                        and (r.parked_code is null or r.parked_code=6)
+                        and r.campaign_id = " . $campaign_id . $where . ")
+                    as urn)";
+		
+		//now we put the daily amount in the pot for calling		
         $qry = "update records
                 set parked_code = null where urn in
                     (select * from
