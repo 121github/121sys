@@ -718,38 +718,7 @@ $this->firephp->log($backup_form['months_num']);
 		echo json_encode(array("success"=>true));
 	}
 	
-	public function logos(){
-		$campaigns = $this->Form_model->get_campaigns();
-		 $logos = array();
-		 $path = FCPATH."/assets/logos";
-		if ($handle = opendir($path)) {
-    		while (false !== ($entry = readdir($handle))) {
-       		 	if ($entry != "." && $entry != "..") {
-            $logos[$entry] = base_url()."assets/logos/".$entry;
-        	}
-    		}
-   		 closedir($handle);
-			}
-		
-    	$data     = array(
-    			'campaign_access' => $this->_campaigns,
-    			'pageId' => 'Admin',
-    			'title' => 'Campaign logos',
-    			'page' => array(
-    					'admin' => 'logos'
-    			),
-    			'javascript' => array(	
-				'lib/dropzone.js'
-    			),
-    			'css' => array(
-    					'dashboard.css',
-						 'plugins/dropzone/dropzone.min.css'
-    			),
-    			'campaigns' => $campaigns,
-				"logos"=>$logos
-    	);
-    	$this->template->load('default', 'admin/logos.php', $data);
-	}
+	
 	
 	
 	
