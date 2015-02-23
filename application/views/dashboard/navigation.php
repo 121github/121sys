@@ -288,7 +288,7 @@
 			                          <a href="<?php echo base_url() ?>admin/campaign_fields" <?php echo @($inner=='custom_fields'?"class='active'":"") ?>>Campaign Fields</a>
 			                    </div>
                                 			                    <div class="accordion-inner">          
-			                      <a href="<?php echo base_url() ?>admin/logos" <?php echo @($inner=='campaign'?"class='active'":"") ?>>Campaign Logos</a>
+			                      <a href="<?php echo base_url() ?>logos" <?php echo @($inner=='campaign'?"class='active'":"") ?>>Campaign Logos</a>
 			                    </div>
                                  <?php } ?>
                                    <?php if(in_array("edit templates",$_SESSION['permissions'])){ ?>

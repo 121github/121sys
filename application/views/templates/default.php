@@ -118,6 +118,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                     <?php if($_SESSION['role']=="1"){ ?>
                                     <li><a href="<?php echo base_url() ?>admin/campaigns" <?php echo @($inner=='campaign'?"class='active'":"") ?>>Campaign Setup</a></li>
                                 <li><a href="<?php echo base_url() ?>admin/campaign_fields" <?php echo @($inner=='custom_fields'?"class='active'":"") ?>>Campaign Fields</a></li>
+                                                                <li><a href="<?php echo base_url() ?>logos" <?php echo @($inner=='logos'?"class='active'":"") ?>>Campaign Logos</a></li>
                                   <?php } ?>
                                 <?php if(in_array("edit templates",$_SESSION['permissions'])){ ?>
                                     <li><a href="<?php echo base_url() ?>templates" <?php echo @($inner=='templates'?"class='active'":"") ?>>Templates</a></li>
