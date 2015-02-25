@@ -403,7 +403,7 @@ class Records extends CI_Controller
     
 	
 	//unpark a record by urn
-        public function reset_record()
+        public function unpark_record()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
             if ($this->Records_model->unpark_record(intval($this->input->post('urn')))):
