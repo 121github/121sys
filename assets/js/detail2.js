@@ -339,6 +339,7 @@ var record = {
     update_panel: {
         init: function() {
             $(document).off('click', '.update-record');
+			$(document).off('click', '.unpark-record');
             $(document).off('click', '.reset-record');
             $(document).off('click', '.favorite-btn');
             $(document).off('click', '.urgent-btn');
@@ -361,6 +362,10 @@ var record = {
             $(document).on('click', '.reset-record', function(e) {
                 e.preventDefault();
                 record.update_panel.reset_record($(this));
+            });
+			 $(document).on('click', '.unpark-record', function(e) {
+                e.preventDefault();
+                record.update_panel.unpark_record($(this));
             });
             $(document).on('click', '.favorite-btn', function(e) {
                 record.update_panel.set_favorite($(this));
@@ -538,6 +543,25 @@ var record = {
                 }
                 flashalert.success(response.msg);
             });
+        },
+		unpark_record: function($btn) {
+            $.ajax({
+                url: helper.baseUrl + 'records/unpark_record',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: record.urn
+                }
+            }).done(function(response) {
+                if (response.success) {
+                                   $btn.closest('form').find('textarea').val('').css('color', '#555');
+                    $btn.closest('form').find('.selectpicker').selectpicker('val', '').selectpicker('render');
+                    flashalert.success(response.msg);
+                    location.reload();
+                } else {
+               flashalert.danger(response.msg);
+				}
+			});
         },
         reset_record: function($btn) {
             $.ajax({

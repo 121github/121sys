@@ -401,7 +401,27 @@ class Records extends CI_Controller
         }
     }
     
-    
+	
+	//unpark a record by urn
+        public function reset_record()
+    {
+        if ($this->input->is_ajax_request() && $this->_access) {
+            if ($this->Records_model->unpark_record(intval($this->input->post('urn')))):
+                echo json_encode(array(
+                    "success" => true,
+                    "msg" => "Record was unparked and restored to previous state"
+                ));
+            else:
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "Record could not be unparked. Contact the administrator"
+                ));
+            endif;
+        } else {
+            echo "Denied";
+            exit;
+        }
+    }
     /*update record details */
     public function update()
     {

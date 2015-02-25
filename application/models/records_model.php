@@ -106,6 +106,14 @@ class Records_model extends CI_Model
             "nextcall" => NULL
         ));
     }
+	    //unpark the record
+    public function reset_record($urn)
+    {
+        $this->db->where("urn", $urn);
+        return $this->db->update("records", array(
+            "parked_code" => NULL
+        ));
+    }
     //sets the record as "dead"
     public function set_dead($urn)
     {
