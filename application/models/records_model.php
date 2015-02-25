@@ -107,7 +107,7 @@ class Records_model extends CI_Model
         ));
     }
 	    //unpark the record
-    public function reset_record($urn)
+    public function unpark_record($urn)
     {
         $this->db->where("urn", $urn);
         return $this->db->update("records", array(
