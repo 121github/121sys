@@ -192,9 +192,9 @@ class Cron extends CI_Controller
         }
     }
 
-    private function send_email($filePath, $email_address, $subject, $body) {
+    private function send_email($filePath, $email_address,$subject, $body) {
 
-        var_dump($email_address);
+        //var_dump($email_address);
 
         $this->load->library('email');
 
@@ -219,6 +219,7 @@ class Cron extends CI_Controller
         $result = $this->email->send();
         //echo $this->email->print_debugger();
         $this->email->clear();
+		
 
         return $result;
     }
@@ -226,16 +227,14 @@ class Cron extends CI_Controller
 			$qry = "select * from files left join folders using(folder_id) where folder_name = 'cv'";
 			$result = $this->db->query($qry)->result_array();
 			$i=0;
-			foreach($result as $k=>$row){ 
-			if($i<3){
+			foreach($result as $k=>$row){
+			sleep(1);
+			echo $row['file_id'];
 			$file = FCPATH . "/upload/cv/" . date("Y-m-d",strtotime($row['date_added'])) . "/" . $row['filename'];
 			$subject = "New CV File";
-			$body = "The attached CV was uploaded on ".date("d/m/Y",strtotime($row['date_added']));
+			$body = "The attached CV was uploaded on ".date("d/m/Y",strtotime($row['date_added']))."<br>Filename: ".$row['filename'];
 			$this->send_email($file, "bradf@121customerinsight.co.uk",$subject,$body);
-			} $i++;
-			}
-			
-			
-		
+			} $i++;	
+
 	}
 }
