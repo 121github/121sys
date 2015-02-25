@@ -223,7 +223,7 @@ class Cron extends CI_Controller
         return $result;
     }
 	public function matrix_cv_upload(){
-			$qry = "";
+			$qry = "select * from files left join folders using(folder_id) where folder_name = 'cv'";
 			$result = $this->db->query($qry)->result_array();
 			$i=0;
 			foreach($result as $k=>$row){ 
