@@ -35,9 +35,8 @@ class Cron_model extends CI_Model
         }
     }
     
-    public function set_daily_ration_records($campaign_id, $renewal_date_field, $daily_data, $min_quote_days, $max_quote_days)
+    public function set_daily_ration_renewals($campaign_id, $renewal_date_field, $daily_data, $min_quote_days, $max_quote_days)
     {
-        
         $where = "";
         if ($min_quote_days) {
             $where .= " and rd." . $renewal_date_field . " >= DATE_ADD(CURDATE(),INTERVAL " . $min_quote_days . " DAY)";
@@ -49,8 +48,7 @@ class Cron_model extends CI_Model
             $where .= "0";
         }
         
-		
-		//first we set them all as rationed
+		//first we set them all out of date
 		$qry = "update records r left join record_details rd using(urn)
                 set parked_code = 6 where r.campaign_id = " . $campaign_id ." and (r.parked_code is null or r.parked_code=1)";
 		$this->db->query($qry);
@@ -67,7 +65,7 @@ class Cron_model extends CI_Model
                         and r.campaign_id = " . $campaign_id . $where . ")
                     as urn)";
 		
-		//now we put the daily amount in the pot for calling		
+		//now we unpark the daily amount that are rationed so they are available for calling		
         $qry = "update records
                 set parked_code = null where urn in
                     (select * from
@@ -76,7 +74,27 @@ class Cron_model extends CI_Model
                         inner join record_details rd ON (r.urn = rd.urn)
                         where rd." . $renewal_date_field . " is not null
                         and r.parked_code = 1
+						and r.record_status = 1
                         and r.campaign_id = " . $campaign_id . $where . "
+                        limit " . $daily_data . ")
+                    as urn)";
+        
+        $update = $this->db->query($qry);
+        
+        return $this->db->affected_rows();
+    }
+	
+	  public function set_daily_ration_records($campaign_id, $daily_data)
+    {
+		//if there is no renewal date we dont need to remove any records, we just add in the daily amount	
+        $qry = "update records
+                set parked_code = null where urn in
+                    (select * from
+                      (select r.urn
+                        from records r
+                        inner join record_details rd ON (r.urn = rd.urn)
+                        where r.parked_code = 1 and r.record_status = 1
+                        and r.campaign_id = " . $campaign_id . "
                         limit " . $daily_data . ")
                     as urn)";
         

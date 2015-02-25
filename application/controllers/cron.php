@@ -32,12 +32,22 @@ class Cron extends CI_Controller
      */
     public function daily_ration()
     {
+		$update_records = 0;
         $campaigns = $this->Form_model->get_campaigns();
         foreach ($campaigns as $campaign) {
             $renewal_date_field =  $this->Form_model->get_renewal_date_field($campaign['id']);
-            if ($renewal_date_field) {
+			//we only add in daily data if an amount as been set
+            if($campaign['daily_data']>0) {
+			
+			if($renewal_date_field){
+				//if the data contains a renewal date we only want to call records that are within the allowed quoting days
                 $renewal_date_field = $renewal_date_field[0]['field'];
-                $update_records = $this->Cron_model->set_daily_ration_records($campaign['id'], $renewal_date_field, $campaign['daily_data'], $campaign['min_quote_days'], $campaign['max_quote_days']);
+                $update_records = $this->Cron_model->set_daily_ration_renewals($campaign['id'], $renewal_date_field, $campaign['daily_data'], $campaign['min_quote_days'], $campaign['max_quote_days']);
+			} else {
+				//if data has no renewal we just add in a fixed amount
+				 $update_records = $this->Cron_model->set_daily_ration_records($campaign['id'], $campaign['daily_data']);
+			}
+				
                 if (intval($update_records) >= 0) {
                     echo $update_records . " records from campaign " . $campaign['name'] . " were made available for calling<br>";
                 } else {
