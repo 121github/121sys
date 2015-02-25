@@ -228,9 +228,9 @@ class Cron extends CI_Controller
 			$i=0;
 			foreach($result as $k=>$row){ 
 			if($i<3){
-			$file = FCPATH . "/upload/cv/" . date("Y-m-d",strtotime($result['date_added'])) . "/" . $result['filename'];
+			$file = FCPATH . "/upload/cv/" . date("Y-m-d",strtotime($row['date_added'])) . "/" . $row['filename'];
 			$subject = "New CV File";
-			$body = "The attached CV was uploaded on ".date("d/m/Y",strtotime($result['date_added']));
+			$body = "The attached CV was uploaded on ".date("d/m/Y",strtotime($row['date_added']));
 			$this->send_email($file, "bradf@121customerinsight.co.uk",$subject,$body);
 			} $i++;
 			}
