@@ -222,4 +222,20 @@ class Cron extends CI_Controller
 
         return $result;
     }
+	public function matrix_cv_upload(){
+			$qry = "";
+			$result = $this->db->query($qry)->result_array();
+			$i=0;
+			foreach($result as $k=>$row){ 
+			if($i<3){
+			$file = FCPATH . "/upload/cv/" . date("Y-m-d",strtotime($result['date_added'])) . "/" . $result['filename'];
+			$subject = "New CV File";
+			$body = "The attached CV was uploaded on ".date("d/m/Y",strtotime($result['date_added']));
+			$this->send_email($file, "bradf@121customerinsight.co.uk",$subject,$body);
+			} $i++;
+			}
+			
+			
+		
+	}
 }
