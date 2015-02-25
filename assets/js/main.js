@@ -46,12 +46,12 @@ $('.datetime').datetimepicker({
   });
 $('.date').datetimepicker({
             format: 'DD/MM/YYYY',
-			pickTime: false,
+			pickTime: false
         });
 $('.date2').datetimepicker({
     format: 'YYYY-MM-DD',
 	pickTime: false,
-	maxDate: moment(),
+	maxDate: moment()
 });
 $('.dob').datetimepicker({
 			pickTime: false,
@@ -120,7 +120,7 @@ var flashalert = {
     warning: function (text) {
         $('.page-warning .alert-text').html(text);
         $('.page-warning').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
-    },
+    }
 
 }
 
@@ -204,4 +204,17 @@ var flashalert = {
 	 }
 	 
  });
+
+ /* ==========================================================================
+  BROWSER
+  ========================================================================== */
+ var browser = {
+     init: function () {
+         if ($.browser.msie && ($.browser.versionNumber < 10)) {
+             alert("This system doesn't support your IE version ("+$.browser.versionNmber+"). Please upgrade to an up to date version or try with another browser");
+             window.location.replace("http://windows.microsoft.com/en-GB/internet-explorer/download-ie");
+         }
+
+     }
+ }
 
