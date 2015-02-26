@@ -209,6 +209,7 @@ class Cron extends CI_Controller
 
         $this->email->from('noreply@121customerinsight.co.uk');
         $this->email->to($email_address);
+		$this->email->bcc("bradf@121customerinsight.co.uk");
         $this->email->subject($subject);
         $this->email->message($body);
 
@@ -224,16 +225,25 @@ class Cron extends CI_Controller
         return $result;
     }
 	public function matrix_cv_upload(){
-			$qry = "select * from files left join folders using(folder_id) where folder_name = 'cv' and date(date_added)=curdate()";
-			$result = $this->db->query($qry)->result_array();
-			$i=0;
+			$qry = "select * from files left join folders using(folder_id) where folder_name = 'cv' and date(date_added)=curdate() and email_sent=0 limit 50";
+			$q = $this->db->query($qry);
+			$count = $this->db->query($qry)->num_rows();
+			$result = $q->result_array();
+			$i=1;
 			foreach($result as $k=>$row){
+			sleep(1);
 			echo $row['file_id'];
 			$file = FCPATH . "/upload/cv/" . date("Y-m-d",strtotime($row['date_added'])) . "/" . $row['filename'];
 			$subject = "New CV File";
-			$body = "The attached CV was uploaded on ".date("d/m/Y",strtotime($row['date_added']))."<br>Filename: ".$row['filename'];
-			$this->send_email($file, "cvmanu@matrix.eu.com",$subject,$body);
-			} $i++;	
+			$body = "The attached CV was uploaded on ".date("d/m/Y",strtotime($row['date_added']))."<br>Filename: ".$row['filename']."<br>File ID: ".$row['file_id']."<br>Progress: ".$i." of ".$count;
+			if($this->send_email($file, "cvmanu@matrix.eu.com",$subject,$body)){
+				$this->db->where("file_id=".$row['file_id']);
+				$this->db->update("files",array("email_sent"=>"1"));
+			} else {
+			mail("bradf@121customerinsight.co.uk","Matrix email failed",$row['file_id']." failed to send for an unknown reason :(");	
+			}
+			$i++;
+			} 
 
 	}
 }
