@@ -109,13 +109,13 @@ function pptx_to_text($input_file){
         if($file_ext == "doc" || $file_ext == "docx")
         {
           if($file_ext == "doc") {
-                return $this->read_doc();
+                return $this->read_doc($filename);
             } elseif($file_ext == "docx") {
-                return $this->read_docx();
+                return $this->read_docx($filename);
             } elseif($file_ext == "xlsx") {
-                return $this->xlsx_to_text();
+                return $this->xlsx_to_text($filename);
             }elseif($file_ext == "pptx") {
-                return $this->pptx_to_text();
+                return $this->pptx_to_text($filename);
             }
         } else {
             return "Invalid File Type";
