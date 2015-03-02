@@ -234,25 +234,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                         </li>
                                     <?php } ?>
                                     <li>
-                                        <a class="trigger right-caret">Transfers</a>
-                                        <ul class="dropdown-menu sub-menu">
-                                            <li>
-                                                <a href="<?php echo base_url() ?>reports/campaigntransfer" <?php echo @($inner == 'campaigntransfer' ? "class='active'" : "") ?>>By
-                                                    Campaign</a></li>
-                                            <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
-                                                <li>
-                                                    <a href="<?php echo base_url() ?>reports/agenttransfer" <?php echo @($inner == 'agenttransfer' ? "class='active'" : "") ?>>By
-                                                        Agent</a></li>
-                                            <?php } ?>
-                                            <li>
-                                                <a href="<?php echo base_url() ?>reports/dailytransfer" <?php echo @($inner == 'dailytransfer' ? "class='active'" : "") ?>>By
-                                                    Date</a></li>
-                                            <li>
-                                                <a href="<?php echo base_url() ?>reports/timetransfer" <?php echo @($inner == 'dailytransfer' ? "class='active'" : "") ?>>By
-                                                    Time</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
                                         <a class="trigger right-caret">Outcomes</a>
                                         <ul class="dropdown-menu sub-menu">
                                             <li>
@@ -271,6 +252,13 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                                     Time</a></li>
                                         </ul>
                                     </li>
+                                    <?php if (in_array("productivity", $_SESSION['permissions'])) { ?>
+                                        <li>
+                                            <a href="<?php echo base_url() ?>reports/productivity" <?php echo @($reports == 'productivity' ? "class='active'" : "") ?>>
+                                                Productivity
+                                            </a>
+                                        </li>
+                                    <?php } ?>
                                     <?php if (in_array("email", $_SESSION['permissions'])) { ?>
                                         <li>
 
