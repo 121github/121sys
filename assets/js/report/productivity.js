@@ -44,7 +44,6 @@ var productivity = {
 			$icon = $(this).closest('ul').prev('button').find('span');
 			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
-			$(this).closest('form').find('input[name="team"]').val('');
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
             productivity.productivity_panel()
@@ -54,7 +53,6 @@ var productivity = {
 			$icon = $(this).closest('ul').prev('button').find('span');
 			$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
-			$(this).closest('form').find('input[name="agent"]').val('');
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
             productivity.productivity_panel()
