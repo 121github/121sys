@@ -298,7 +298,7 @@ class Report_model extends CI_Model
             $where .= " and history.user_id = '{$_SESSION['user_id']}' ";
         }
 
-        $qry = "select count(*) count, IF(duration,duration,0) as duration, IF(ring_time,ring_time,0) as ring_time, users.ext, users.name as agent
+        $qry = "select count(*) count, IF(duration,duration,0) as duration, IF(ring_time,ring_time,0) as ring_time, users.ext, users.name as agent, users.user_id as agent_id
                 from history
                   inner join records using(urn)
                   inner join users using(user_id)

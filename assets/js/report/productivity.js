@@ -90,6 +90,7 @@ var productivity = {
             if (response.success) {
                 var total_duration = 0;
                 var productivity_val = "";
+                var search_url = "";
                 thead.append("<tr><th>Agent</th>"
                             + "<th>"+$('.filter-form').find('input[name="colname"]').val()+"</th>"
                             + "<th>Talk Time</th>"
@@ -101,9 +102,14 @@ var productivity = {
 				$.each(response.data, function(i, val) {
                     total_duration = ((parseInt(val.duration)+parseInt(val.ring_time))/3600);
                     productivity_val = ((val.count/total_duration).toFixed(2));
+                    search_url = helper.baseUrl + 'search/custom/history/'
+                                                +'contact-from/'+$('.filter-form').find('input[name="date_from"]').val()
+                                                +'/contact-to/'+$('.filter-form').find('input[name="date_to"]').val()
+                                                +'/outcome/'+$('.filter-form').find('input[name="outcome"]').val()
+                                                +'/user/'+val.agent_id;
 
                     tbody.append("<tr class='"+(total_duration == 0?"danger":"success")+"'><td>"+val.agent
-                                + "<td>"+val.count
+                                + "<td>"+"<a href='" + search_url + "'>" + val.count + "</a>"
                                 + "<td>"+productivity.toHHMMSS(val.duration)
                                 + "<td>"+productivity.toHHMMSS(val.ring_time)
                                 + "<td>"+productivity.toHHMMSS(parseInt(val.duration)+parseInt(val.ring_time))
