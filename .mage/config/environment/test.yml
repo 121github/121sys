@@ -7,7 +7,7 @@ deployment:
     - upload
 releases:
   enabled: true
-  max: 3
+  max: 4
   symlink: 121sys
   directory: releases/121sys_releases/121sys
 hosts:
