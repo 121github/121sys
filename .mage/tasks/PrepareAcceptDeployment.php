@@ -4,7 +4,7 @@ namespace Task;
 
 use Mage\Task\AbstractTask;
 
-class PrepareTestDeployment extends AbstractTask
+class PrepareAcceptDeployment extends AbstractTask
 {
     public function getName()
     {
