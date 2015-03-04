@@ -1,6 +1,6 @@
 #accept
 deployment:
-  user: esteban
+  user: samba
   from: /var/lib/jenkins/jobs/121Sys/workspace/
   to: /var/www/accept_env
   excludes:

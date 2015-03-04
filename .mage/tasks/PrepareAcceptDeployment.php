@@ -8,7 +8,7 @@ class PrepareAcceptDeployment extends AbstractTask
 {
     public function getName()
     {
-        return 'Preparing the deployment on the test environment';
+        return 'Preparing the deployment on the accept environment';
     }
 
     public function run()
