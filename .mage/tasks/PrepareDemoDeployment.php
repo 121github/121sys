@@ -8,7 +8,7 @@ class PrepareDemoDeployment extends AbstractTask
 {
     public function getName()
     {
-        return 'Preparing the deployment on the production environment';
+        return 'Preparing the deployment on the demo environment';
     }
 
     public function run()

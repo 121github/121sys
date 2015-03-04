@@ -19,5 +19,5 @@ tasks:
     - prepareDemoDeployment
     - permissionsGroup
   post-release:
-    - databaseBackup: {user: 121sys, pass: Bu4XNm3Q6fqntySp, host: localhost, database: 121sys}
+    - databaseBackup: {user: 121sys_demo, pass: UuXWzT2WAwBabjHj, host: localhost, database: 121sys_demo}
   post-deploy:
