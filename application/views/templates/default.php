@@ -83,6 +83,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                         <li>
                                             <a class="trigger right-caret">Data</a>
                                             <ul class="dropdown-menu sub-menu">
+                                                <?php if (in_array("database", $_SESSION['permissions'])) { ?>
+                                                    <li>
+                                                        <a href="<?php echo base_url() ?>database" <?php echo @($inner == 'database' ? "class='active'" : "") ?>>Database Admin</a>
+                                                    </li> <?php } ?>
                                                 <?php if (in_array("import data", $_SESSION['permissions'])) { ?>
                                                     <li>
                                                         <a href="<?php echo base_url() ?>import" <?php echo @($inner == 'import' ? "class='active'" : "") ?>>Import</a>

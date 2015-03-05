@@ -210,6 +210,11 @@
                             <div id="collapseThreeData"
                                  class="accordion-body <?php echo @($admin == 'data' ? "" : "collapse") ?>">
                                 <div class="accordion-group submenu">
+                                    <?php if (in_array("database", $_SESSION['permissions'])) { ?>
+                                        <div class="accordion-inner">
+                                            <a href="<?php echo base_url() ?>database" <?php echo @($inner == 'database' ? "class='active'" : "") ?>>Database Admin</a>
+                                        </div>
+                                    <?php } ?>
                                     <?php if (in_array("import data", $_SESSION['permissions'])) { ?>
                                         <div class="accordion-inner">
                                             <a href="<?php echo base_url() ?>import" <?php echo @($inner == 'import' ? "class='active'" : "") ?>>Import</a>
