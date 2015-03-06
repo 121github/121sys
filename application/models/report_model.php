@@ -157,8 +157,9 @@ class Report_model extends CI_Model
             $name = "u.name";
         }
         if (!empty($source)) {
-            $where .= " and r.source_id = '$source' and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+            $where .= " and r.source_id = '$source' ";
         }
+		$where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $joins = " left join users u using(user_id) left join records r using(urn) ";
         $qry = "select $id id,$name name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration)
 		 from hours hr where $hours $hours_where) as duration from history h left join campaigns c using(campaign_id)  $joins left join 
@@ -166,6 +167,7 @@ class Report_model extends CI_Model
 		(select count(*) dials,$group_by dd from history h $joins where h.outcome_id is not null $where group by $group_by) d on d.dd = $group_by
         where 1 $where
 		group by $group_by ";
+		
         $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
@@ -236,7 +238,7 @@ class Report_model extends CI_Model
         if (@!in_array("by team", $_SESSION['permissions'])) {
             $where .= " and u.team_id = '{$_SESSION['team']}' ";
         }
-		$where .=" and records.campaign_id in({$_SESSION['campaign_access']['list']})";
+		$where .=" and r.campaign_id in({$_SESSION['campaign_access']['list']})";
         $joins = "
           inner join records r ON (r.urn = eh.urn)
           inner join campaigns c ON (c.campaign_id = r.campaign_id)
