@@ -1,8 +1,7 @@
-*/config/development
-*/config/*
-!*/config/migration.php
-*/config/database.php
-!*/config/database.php.*
+application/config/*
+!application/config/migration.php
+application/config/database.php
+!application/config/database.php.*
 */logs/log-*.php
 */logs/!index.html
 */cache/*
@@ -13,6 +12,7 @@
 !/datafiles/uploadprogress.txt
 /upload/attachments/*
 /upload/templates/*
+
 
 # Files created by IDEs like Eclipse, Zend Studio, Netbeans, PHPStorm and TextMate2, Intellij
 .buildpath
