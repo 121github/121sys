@@ -135,6 +135,7 @@
 
                         <!-- End Outcomes -->
                         <!-- Emails -->
+                          <?php if (@in_array("email", $_SESSION['permissions'])) { ?>
                         <div class="accordion-group panel">
                             <div class="accordion-inner">
                                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#collapseTwo"
@@ -167,7 +168,8 @@
                                     <?php } ?>
                                 </div>
                             </div>
-                        </div>
+                        </div
+                        <?php } ?>
                         <!-- End Emails -->
                         <!-- Productivity -->
                         <?php if (@in_array("activity", $_SESSION['permissions'])) { ?>

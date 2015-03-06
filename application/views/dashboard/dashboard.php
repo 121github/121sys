@@ -67,7 +67,8 @@
           <div class="panel-body">
             <div class="row">
               <div class="col-lg-12">
-                <table class="table table-bordered table-hover table-striped table-responsive">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
                   <thead>
                     <tr>
                       <th>Campaign name</th>
@@ -82,7 +83,7 @@
                     <!--The contents of this table is loaded via an ajax function in dashboard.js -->
                   </tbody>
                 </table>
-                
+                </div>
                 <!-- /.table-responsive --> 
               </div>
               <!-- /.col-lg-4 (nested) -->

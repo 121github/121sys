@@ -167,14 +167,14 @@ var dashboard = {
 			var $table="";
 			    var $tbody = "";
             if (response.data.length > 0) {
-				$table = "<table class='table'><thead><tr><th>Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Outcome</th><th>View</th></tr></tr></thead><tbody>";
+				$table = "<div class='table-responsive'><table class='table'><thead><tr><th>Campaign</th><th>Name</th><th>Last Update</th><th>Nextcall</th><th>Outcome</th><th>View</th></tr></tr></thead><tbody>";
                 $.each(response.data, function (i, val) {
 					        
                     $tbody += '<tr><td>'+val.campaign_name+'</td><td>'+val.fullname+'</td><td>'+val.date_updated+'</td><td>'+val.nextcall+'</td><td>'+val.outcome+'</td><td><span class="glyphicon glyphicon-comment tt pointer" title="" data-toggle="tooltip" data-placement="left" data-original-title="'+val.comments+'"></span></td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
 					
                 });
 				$table += $tbody;
-               $table += "</tbody></table>";
+               $table += "</tbody></table></div>";
 			      $('.favorites-panel').append($table);
             } else {
                 $('.favorites-panel').append('<p>' + response.msg + '</p>');
@@ -204,7 +204,7 @@ var dashboard = {
                     }
                     $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td><td>'+comments+'</td></tf></tr>';
                 });
-                $('.callbacks').html('<table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th><th></th></thead><tbody>' + $row + '</tbody></table>');
+                $('.callbacks').html('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th><th></th></thead><tbody>' + $row + '</tbody></table></div>');
                 $('.tt').tooltip();
             } else {
                 $('.callbacks').html('<p>' + response.msg + '</p>');
@@ -232,7 +232,7 @@ var dashboard = {
                     }
                     $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td ' + $urgent + '>' + val.status + '</td><td><span class="glyphicon glyphicon-comment tt pointer" data-toggle="tooltip" data-placement="top" title="'+val.comments+'"></span> <a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
-                $('.progress-panel').append('<table class="table table-striped table-responsive" style="max-height:600px"><thead><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>Status</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.progress-panel').append('<div class="table-responsive"><table class="table table-striped table-responsive" style="max-height:600px"><thead><th>Name</th><th>Campaign</th><th>Date</th><th>Time</th><th>Status</th><th>View</th></thead><tbody>' + $row + '</tbody></table></div>');
 				$('.tt').tooltip();
             } else {
                 $('.progress-panel').append('<p>' + response.msg + '</p>');
@@ -260,7 +260,7 @@ var dashboard = {
                     }
                     $row += '<tr><td>' + val.name + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td ' + $urgent + '>' + val.status + '</td><td><span class="glyphicon glyphicon-comment tt pointer" data-toggle="tooltip" data-placement="top" title="'+val.comments+'"></span> <a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
-                $('.interest-panel').append('<table class="table table-striped" style="max-height:600px"><thead><th>Name</th><th>Date</th><th>Time</th><th>Status</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.interest-panel').append('<div class="table-responsive"><table class="table table-striped" style="max-height:600px"><thead><th>Name</th><th>Date</th><th>Time</th><th>Status</th><th>View</th></thead><tbody>' + $row + '</tbody></table></div>');
 				$('.tt').tooltip();
             } else {
                 $('.interest-panel').append('<p>' + response.msg + '</p>');
@@ -284,7 +284,7 @@ var dashboard = {
                 $.each(response.data, function (i, val) {
                     $row += '<tr><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.outcome + '</td><td>' + val.when + '</td><td>' + val.outcome_date + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td></tr>';
                 });
-                $('.agent-activity').append('<table class="table table-striped table-condensed"><thead><th>Name</th><th>Campaign</th><th>Last Outcome</th><th>Last Update</th><th>Last Positive</th><th>View</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.agent-activity').append('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><th>Name</th><th>Campaign</th><th>Last Outcome</th><th>Last Update</th><th>Last Positive</th><th>View</th></thead><tbody>' + $row + '</tbody></table></div>');
             } else {
                 $('.agent-activity').append('<p>' + response.msg + '</p>');
             }
@@ -311,7 +311,7 @@ var dashboard = {
 					} else {  $row += "<td>All</td>	"; }
 					$row += '<td>' + val.dials + '</td><td>' + val.positives + '</td><td>' + val.rate + '</td></tr>';
                 });
-                $('.agent-success').append('<table class="table table-striped table-condensed"><thead><th>Name</th><th>Campaign</th><th>Dials</th><th>Positives</th><th>Success Rate</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.agent-success').append('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><th>Name</th><th>Campaign</th><th>Dials</th><th>Positives</th><th>Success Rate</th></thead><tbody>' + $row + '</tbody></table></div>');
             } else {
                 $('.agent-success').append('<p>' + response.msg + '</p>');
             }
@@ -338,7 +338,7 @@ var dashboard = {
 					} else {  $row += "<td>All</td>	"; }
 					$row += '<td>' + val.total + '</td><td>' + val.virgin + '</td><td>' + val.in_progress + '</td><td>' + val.completed + '</td></tr>';
                 });
-                $('.agent-data').append('<table class="table table-striped table-responsive table-condensed"><thead><th>Name</th><th>Campaign</th><th>Total</th><th>New</th><th>In Progress</th><th>Completed</th></thead><tbody>' + $row + '</tbody></table>');
+                $('.agent-data').append('<div class="table-responsive"><table class="table table-striped table-responsive table-condensed"><thead><th>Name</th><th>Campaign</th><th>Total</th><th>New</th><th>In Progress</th><th>Completed</th></thead><tbody>' + $row + '</tbody></table></div>');
             } else {
                 $('.agent-data').append('<p>' + response.msg + '</p>');
             }
@@ -371,7 +371,7 @@ var dashboard = {
 	            		$row += "</tr>";
 	            	//});
 	            });
-	            $('.agent-current-hours').append('<table class="table table-striped table-responsive"><thead><th>Agent</th><th>Campaign</th><th>Time on this campaign</th><th>Records worked</th><th>Transfers</th><th>Current Rate</th><th style="display:none;"></th></thead><tbody>' + $row + '</tbody></table>');
+	            $('.agent-current-hours').append('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><th>Agent</th><th>Campaign</th><th>Time on this campaign</th><th>Records worked</th><th>Transfers</th><th>Current Rate</th><th style="display:none;"></th></thead><tbody>' + $row + '</tbody></table></div>');
             } else {
                 $('.agent-current-hours').append('<p>' + response.msg + '</p>');
             }
