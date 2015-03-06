@@ -14,9 +14,9 @@ class Report_model extends CI_Model
 
     public function all_answers_data()
     {
-        $qry = "SELECT survey_name,l.question_id,surveys.survey_info_id,count(distinct survey_id) count,avg(answer) average_nps,tens,low_score from surveys left join survey_info using(survey_info_id) left join survey_answers using(survey_id) left join questions using(question_id)
+        $qry = "SELECT survey_name,l.question_id,surveys.survey_info_id,count(distinct survey_id) count,avg(answer) average_nps,tens,low_score from surveys left join survey_info using(survey_info_id) left join surveys_to_campaigns using(survey_info_id) left join survey_answers using(survey_id) left join questions using(question_id)
 	 left join (select surveys.survey_info_id,count(*) tens from surveys left join survey_answers using(survey_id) left join questions using(question_id) where answer = 10 and answer is not null and nps_question = 1 group by surveys.survey_info_id) t on t.survey_info_id = surveys.survey_info_id
-	 left join (select surveys.survey_info_id,question_id,count(*) low_score from surveys left join survey_answers using(survey_id) left join questions using(question_id) where answer < 4 and answer is not null and nps_question = 1 group by surveys.survey_info_id) l on l.survey_info_id = surveys.survey_info_id where nps_question = 1
+	 left join (select surveys.survey_info_id,question_id,count(*) low_score from surveys left join survey_answers using(survey_id) left join questions using(question_id) where answer < 4 and answer is not null and nps_question = 1 group by surveys.survey_info_id) l on l.survey_info_id = surveys.survey_info_id where nps_question = 1 and campaign_id in({$_SESSION['campaign_access']['list']})
 	 group by surveys.survey_info_id";
         return $this->db->query($qry)->result_array();
     }
@@ -28,10 +28,10 @@ class Report_model extends CI_Model
         } else {
             $qry_filter = "";
         }
-        $qry = "SELECT survey_name,sa.question_id,surveys.survey_info_id,question_name,question_script,count(sa.question_id) count,avg(answer) average,t.tens,IF(low_score is null,'0',low_score) low_score from surveys left join survey_info using(survey_info_id) left join survey_answers sa using(survey_id) left join questions using(question_id) 
+        $qry = "SELECT survey_name,sa.question_id,surveys.survey_info_id,question_name,question_script,count(sa.question_id) count,avg(answer) average,t.tens,IF(low_score is null,'0',low_score) low_score from surveys left join survey_info using(survey_info_id) left join surveys_to_campaigns usign(survey_info_id) left join survey_answers sa using(survey_id) left join questions using(question_id) 
 	 left join (select question_id,count(*) tens from survey_answers left join questions using(question_id) where answer = 10 and answer is not null $qry_filter group by question_id) t on t.question_id = sa.question_id
-	  left join (select question_id,count(*) low_score from survey_answers left join questions using(question_id) where answer < 4 and answer is not null $qry_filter group by question_id) l on l.question_id = sa.question_id
-	 where answer is not null  $qry_filter group by sa.question_id ";
+	  left join (select question_id,count(*) low_score from survey_answers left join questions using(question_id) where answer < 4 and answer is not null $qry_filter group by question_id) l on l.question_id = sa.question_id 
+	 where answer is not null and campaign_id in({$_SESSION['campaign_access']['list']}) $qry_filter group by sa.question_id ";
         return $this->db->query($qry)->result_array();
     }
 
@@ -44,7 +44,7 @@ class Report_model extends CI_Model
         $team = isset($options['team']) ? $options['team'] : "";
         $source = $options['source'];
 
-        $where = "";
+        $where = " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         if (!empty($date_from)) {
             $where .= " and date(contact) >= '$date_from' ";
         }
@@ -79,10 +79,10 @@ class Report_model extends CI_Model
             //$where .= " and history.team_id = '{$_SESSION['team']}' ";
         }
 
-        $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history left join outcomes using(outcome_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and outcome is not null ";
+        $qry = "select outcome,count(*) count,total from history left join outcomes using(outcome_id) left join records using(urn) left join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history left join outcomes using(outcome_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and outcome is not null and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= $where;
 
-        $qry .= " ) t on history.outcome_id = outcomes.outcome_id where 1 and outcome is not null ";
+        $qry .= " ) t on history.outcome_id = outcomes.outcome_id where 1 and outcome is not null and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         $qry .= $where;
         $qry .= " group by history.outcome_id order by count desc ";
@@ -94,7 +94,7 @@ class Report_model extends CI_Model
     {
         $qry = "Select *
     	from campaigns
-    	where campaign_id =  '$campaign_id'";
+    	where campaign_id =  '$campaign_id' and campaign_id in({$_SESSION['campaign_access']['list']})";
 
         return $this->db->query($qry)->result_array();
     }
@@ -157,7 +157,7 @@ class Report_model extends CI_Model
             $name = "u.name";
         }
         if (!empty($source)) {
-            $where .= " and r.source_id = '$source' ";
+            $where .= " and r.source_id = '$source' and campaign_id in({$_SESSION['campaign_access']['list']}) ";
         }
         $joins = " left join users u using(user_id) left join records r using(urn) ";
         $qry = "select $id id,$name name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration)
@@ -229,14 +229,14 @@ class Report_model extends CI_Model
 
         //if the user does not have the group reporting permission they can only see their own stats
         if (@!in_array("by group", $_SESSION['permissions'])) {
-            //$where .= " and eh.group_id = '{$_SESSION['group']}' ";
+            $where .= " and u.group_id = '{$_SESSION['group']}' ";
         }
 
         //if the user does not have the group reporting permission they can only see their own stats
         if (@!in_array("by team", $_SESSION['permissions'])) {
-            //$where .= " and users.team_id = '{$_SESSION['team']}' ";
+            $where .= " and u.team_id = '{$_SESSION['team']}' ";
         }
-
+		$where .=" and records.campaign_id in({$_SESSION['campaign_access']['list']})";
         $joins = "
           inner join records r ON (r.urn = eh.urn)
           inner join campaigns c ON (c.campaign_id = r.campaign_id)
@@ -297,7 +297,9 @@ class Report_model extends CI_Model
         if (@!in_array("by agent", $_SESSION['permissions'])) {
             $where .= " and history.user_id = '{$_SESSION['user_id']}' ";
         }
-
+		
+		$where .=" and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+				
         $qry = "select count(*) count, IF(duration,duration,0) as duration, IF(ring_time,ring_time,0) as ring_time, users.ext, users.name as agent, users.user_id as agent_id
                 from history
                   inner join records using(urn)
