@@ -626,7 +626,7 @@ $this->firephp->log($backup_form['months_num']);
     {
         $form = $this->input->post();
 		foreach($form as $k=>$v){
-		if($v=="null"){
+		if($v=="null"||empty($v)){
 		unset($form[$k]);	
 		}
 		}

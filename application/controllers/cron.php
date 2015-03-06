@@ -221,18 +221,24 @@ class Cron extends CI_Controller
         
         $result = $this->email->send();
         //echo $this->email->print_debugger();
-        $this->email->clear();
+        $this->email->clear(TRUE);
         
         
         return $result;
     }
     public function matrix_cv_upload()
     {
+		//first prepare all the files by checking for and removing dupes
+		$this->add_hashes();
+		$this->remove_dupe_files();
+		
+		$count  = $this->db->query("select * from files where folder_id = 1")->num_rows();
+		$sent  = $this->db->query("select * from files where folder_id = 1 and email_sent = 1")->num_rows();
         $qry    = "select * from files left join folders using(folder_id) where folder_name = 'cv' and date(date_added)=curdate() and email_sent=0 limit 50";
         $q      = $this->db->query($qry);
-        $count  = $this->db->query($qry)->num_rows();
+        
         $result = $q->result_array();
-        $i      = 1;
+        $i      = ($sent>0?$sent+1:1);
         foreach ($result as $k => $row) {
             sleep(1);
             echo $row['file_id'];
@@ -240,7 +246,7 @@ class Cron extends CI_Controller
             $subject = "New CV File";
             $body    = "The attached CV was uploaded on " . date("d/m/Y", strtotime($row['date_added'])) . "<br>Filename: " . $row['filename'] . "<br>File ID: " . $row['file_id'] . "<br>Progress: " . $i . " of " . $count;
             if ($this->send_email($file, "cvmanu@matrix.eu.com", $subject, $body)) {
-                $this->db->where("file_id=" . $row['file_id']);
+                $this->db->where(array("file_id="=>$row['file_id']));
                 $this->db->update("files", array(
                     "email_sent" => "1"
                 ));
@@ -257,7 +263,7 @@ class Cron extends CI_Controller
         $this->load->model('Docscanner_model');
         $this->load->helper('scan');
         
-        $qry    = "select * from files where doc_hash is null order by file_id";
+        $qry    = "select * from files where doc_hash is null and folder_id = 1 order by file_id";
         $q      = $this->db->query($qry);
         $result = $q->result_array();
         foreach ($result as $k => $row) {
@@ -282,7 +288,7 @@ class Cron extends CI_Controller
     {
         
         $qry    = "SELECT doc_hash, count( * ) count
-FROM `files`
+FROM `files` where folder_id = 1 and doc_hash is not null and doc_hash <> ''
 GROUP BY doc_hash
 HAVING count( doc_hash ) >1";
         $q      = $this->db->query($qry);
@@ -292,8 +298,9 @@ HAVING count( doc_hash ) >1";
         foreach ($result as $k => $row) {
             $i++;
             $remove = $row['count'] - 1;
-            echo "delete from files where doc_hash = '" . $row['doc_hash'] . "' order by date_added desc limit $remove;";
+            echo $delete = "delete from files where doc_hash = '" . $row['doc_hash'] . "' order by date_added desc limit $remove;";
             echo "<br>";
+			$this->db->query($delete);
         }
         echo $i . " Duplicates can be deleted";
         

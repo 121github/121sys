@@ -172,6 +172,8 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
     
     public function start_upload()
     {
+		$this->load->model('Docscanner_model');
+        $this->load->helper('scan');
         $user_folders = $this->File_model->get_folders();
         $folder       = $this->input->post('folder');
 		//$this->firephp->log($folder);

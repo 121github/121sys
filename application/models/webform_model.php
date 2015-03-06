@@ -46,6 +46,7 @@ class Webform_model extends CI_Model
 	public function save_answer($data){
 		$urn = intval($data['urn']);
 		$webform_id = intval($data['id']);
+		$user_id = $_SESSION['user_id'];
 		$answers = "";
 		foreach($data['answers'] as $column => $answer){
 	    $a = $this->db->escape($answer);
@@ -53,8 +54,9 @@ class Webform_model extends CI_Model
 			$answers .= ",`$column` = $a";
 		}
 		}
-		$qry = "replace into webform_answers set webform_id=$webform_id,urn=$urn $answers";
-		//$this->firephp->log($qry);
+
+		$qry = "replace into webform_answers set updated_by=$user_id,webform_id=$webform_id,urn=$urn $answers";
+		$this->firephp->log($qry);
 		return $this->db->query($qry);
 	}
 	

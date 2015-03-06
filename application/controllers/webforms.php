@@ -50,12 +50,25 @@ class Webforms extends CI_Controller
 		$path = $this->Webform_model->get_path($form);
 		if(intval($campaign_id)&&intval($urn)&&intval($form)){
 			
-			
 		if($this->input->post('save')=="1"){
-			$data['answers'] = $this->input->post('answer');
+			$answers = $this->input->post('answers');
+			
+			foreach($answers as $question_name=>$input){
+				$list = "";
+			if(is_array($input)){
+				foreach($input as $item){
+					if(!empty($item)){
+				$list .= $item.",";
+					}
+				}
+				$answers[$question_name] = rtrim($list,",");
+			}
+			}
+			$data['answers'] = $answers;
 			$data['urn'] = $urn;
 			$data['id'] = $form;
 			$this->Webform_model->save_answer($data);
+			echo "Saved";
 			exit;
 		}
 			
