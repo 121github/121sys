@@ -173,11 +173,12 @@ class Workbooks extends CI_Controller
                 "success" => $response['success']
             ));
         }
-
-        echo json_encode(array(
-            "msg" => 'ERROR: Lead not found',
-            "success" => false
-        ));
+        else {
+            echo json_encode(array(
+                "msg" => 'ERROR: Lead not found',
+                "success" => false
+            ));
+        }
     }
 
     /**
@@ -192,17 +193,64 @@ class Workbooks extends CI_Controller
             $lead_id = $form['lead_id'];
 
             $response = $this->get_data_by_id('crm/sales_leads', $lead_id);
+            $data = $response['data'][0];
+            $success = $response['success'];
+
+            $lead = array();
+            $lead['id'] = $data['id'];
+            $lead['lock_version'] = $data['lock_version'];
+            $lead['created_at'] = $data['created_at'];
+            $lead['title'] = ($data['person_lead_party[person_personal_title]']?$data['person_lead_party[person_personal_title]']:'');
+            $lead['name'] = ($data['name']?$data['name']:'');
+            $lead['job_title'] = ($data['person_lead_party[person_job_title]']?$data['person_lead_party[person_job_title]']:'');
+            $lead['first_name'] = ($data['person_lead_party[person_first_name]']?$data['person_lead_party[person_first_name]']:'');
+            $lead['last_name'] = ($data['person_lead_party[person_last_name]']?$data['person_lead_party[person_last_name]']:'');
+            $lead['salutation'] = ($data['person_lead_party[person_salutation]']?$data['person_lead_party[person_salutation]']:'');
+            $lead['telephone'] = ($data['org_lead_party[main_location[telephone]]']?$data['org_lead_party[main_location[telephone]]']:'');
+            $lead['mobile'] = ($data['org_lead_party[main_location[mobile]]']?$data['org_lead_party[main_location[mobile]]']:'');
+            $lead['email'] = ($data['org_lead_party[main_location[email]]']?$data['org_lead_party[main_location[email]]']:'');
+            $lead['assigned_to'] = ($data['assigned_to']?$data['assigned_to']:'');
+            $lead['organisation'] = ($data['org_lead_party[name]']?$data['org_lead_party[name]']:'');
+            $lead['industry'] = ($data['org_lead_party[industry]']?$data['org_lead_party[industry]']:'');
+            $lead['website'] = ($data['org_lead_party[website]']?$data['org_lead_party[website]']:'');
+            $lead['street_address'] = ($data['org_lead_party[main_location[street_address]]']?$data['org_lead_party[main_location[street_address]]']:'');
+            $lead['town_city'] = ($data['org_lead_party[main_location[town]]']?$data['org_lead_party[main_location[town]]']:'');
+            $lead['county_state'] = ($data['org_lead_party[main_location[county_province_state]]']?$data['org_lead_party[main_location[county_province_state]]']:'');
+            $lead['postcode_zipcode'] = ($data['org_lead_party[main_location[postcode]]']?$data['org_lead_party[main_location[postcode]]']:'');
+            $lead['country'] = ($data['org_lead_party[main_location[country]]']?$data['org_lead_party[main_location[country]]']:'');
+            $lead['no_sales_calls'] = ($data['org_lead_party[no_phone_soliciting]']?$data['org_lead_party[no_phone_soliciting]']:'false');
+            $lead['no_email'] = ($data['org_lead_party[no_email_soliciting]']?$data['org_lead_party[no_email_soliciting]']:'false');
+            $lead['no_post_calls'] = ($data['org_lead_party[no_post_soliciting]']?$data['org_lead_party[no_post_soliciting]']:'false');
+            $lead['source'] = ($data['lead_source_type']?$data['lead_source_type']:'');
+            $lead['rating'] = ($data['sales_lead_rating_type']?$data['sales_lead_rating_type']:'');
+            $lead['status'] = ($data['sales_lead_status_type']?$data['sales_lead_status_type']:'');
+            $lead['last_contacted'] = ($data['last_contacted']?$data['last_contacted']:'');
+            $lead['permanent_only'] = ($data['cf_sales_lead_permanent_only']?$data['cf_sales_lead_permanent_only']:'');
+            $lead['no_of_employees'] = ($data['org_lead_party[organisation_num_employees]']?$data['org_lead_party[organisation_num_employees]']:'');
+            $lead['no_of_contractors'] = ($data['cf_sales_lead_no_of_contractors']?$data['cf_sales_lead_no_of_contractors']:'');
+            $lead['ave_contract_rate'] = ($data['cf_sales_lead_ave_contract_rate']?$data['cf_sales_lead_ave_contract_rate']:'');
+            $lead['how_contractors_work'] = ($data['cf_sales_lead_how_contractors_work']?$data['cf_sales_lead_how_contractors_work']:'');
+            $lead['using_a_competitor'] = ($data['cf_sales_lead_using_a_competitor']?$data['cf_sales_lead_using_a_competitor']:'');
+            $lead['main_competitor'] = ($data['cf_sales_lead_main_competitor']?$data['cf_sales_lead_main_competitor']:'');
+            $lead['uses_a_psl'] = ($data['cf_sales_lead_uses_a_psl']?$data['cf_sales_lead_uses_a_psl']:'');
+            $lead['psl_review_date'] = ($data['cf_sales_lead_psl_review_date']?$data['cf_sales_lead_psl_review_date']:'');
+            $lead['psl_review_person'] = ($data['cf_sales_lead_psl_review_person']?$data['cf_sales_lead_psl_review_person']:'');
+            $lead['year_established'] = ($data['cf_sales_lead_year_established']?$data['cf_sales_lead_year_established']:'');
+            $lead['annual_revenue'] = ($data['org_lead_party[organisation_annual_revenue]']?$data['org_lead_party[organisation_annual_revenue]']:'');
+            $lead['turnover_band'] = ($data['cf_sales_lead_turnover_band']?$data['cf_sales_lead_turnover_band']:'');
+            $lead['industry_description'] = ($data['cf_sales_lead_industry_description']?$data['cf_sales_lead_industry_description']:'');
 
             echo json_encode(array(
-                "success" => $response['success'],
-                "data" => $response['data']
+                "success" => $success,
+                "data" => $lead
             ));
         }
-
-        echo json_encode(array(
-            "msg" => 'ERROR: Lead not found',
-            "success" => false
-        ));
+        else {
+            echo json_encode(array(
+                "msg" => 'ERROR: Lead not found',
+                "success" => false
+            ));
+        }
 
     }
 

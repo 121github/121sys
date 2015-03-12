@@ -457,6 +457,11 @@ var record = {
                 e.preventDefault();
                 workbooks.view_workbooks_data($(this).attr('item-id'));
             });
+
+            $(document).on('click', '.close-workbooks', function (e) {
+                e.preventDefault();
+                workbooks.close_workbooks_data();
+            });
         },
         disabled_btn: function (old_outcome, outcome, old_nextcall, nextcall, old_comments, comments) {
             if (((outcome.length != 0) && (outcome != old_outcome)) || ((nextcall.length != 0) && (nextcall != old_nextcall)) || ((comments.length != 0) && (comments != old_comments))) {
@@ -2652,18 +2657,86 @@ var workbooks = {
         });
     },
     view_workbooks_data: function (lead_id) {
+        var pagewidth = $(window).width() / 2;
+        var moveto = pagewidth - 250;
+        $('<div class="modal-backdrop workbooks in"></div>').appendTo(document.body).hide().fadeIn();
+        $('.workbooks-container').find('.workbooks-panel').show();
+        $('.workbooks-content').show();
+        $('.workbooks-container').fadeIn()
+        $('.workbooks-container').animate({
+            width: '600px',
+            left: moveto,
+            top: '10%'
+        }, 1000);
+        //Get workbooks data
         $.ajax({
             url: helper.baseUrl + 'workbooks/get_lead',
             dataType: "JSON",
             type: "POST",
             data: {'lead_id': lead_id}
         }).done(function (response) {
-            if (response.success) {
-                console.log(response.data);
-            }
-            else {
+            var $tbody = $('.workbooks-table').find('tbody');
+            $tbody.empty();
+            var body = "";
 
+            if (response.success) {
+                var val = response.data;
+                body =
+                    '<tr><th>Id</th><td>' + val.id + '</td></tr>' +
+                    '<tr><th>Lock Version</th><td>' + val.lock_version + '</td></tr>' +
+                    '<tr><th>Created At</th><td>' + val.created_at + '</td></tr>' +
+                    '<tr><th>Name</th><td>' + val.name + '</td></tr>' +
+                    '<tr><th>Title</th><td>' + val.title + '</td></tr>' +
+                    '<tr><th>Job Title</th><td>' + val.job_title + '</td></tr>' +
+                    '<tr><th>First Name</th><td>' + val.first_name + '</td></tr>' +
+                    '<tr><th>Last Name</th><td>' + val.last_name + '</td></tr>' +
+                    '<tr><th>Salutation</th><td>' + val.salutation + '</td></tr>' +
+                    '<tr><th>Telephone</th><td>' + val.telephone + '</td></tr>' +
+                    '<tr><th>Mobile</th><td>' + val.mobile + '</td></tr>' +
+                    '<tr><th>Email</th><td>' + val.email + '</td></tr>' +
+                    '<tr><th>Assigned To</th><td>' + val.assigned_to + '</td></tr>' +
+                    '<tr><th>Organisation</th><td>' + val.organisation + '</td></tr>' +
+                    '<tr><th>Industry</th><td>' + val.industry + '</td></tr>' +
+                    '<tr><th>Website</th><td><a href="'+val.website+'" target="_blank">' + val.website + '</a></td></tr>' +
+                    '<tr><th>Street Address</th><td>' + val.street_address + '</td></tr>' +
+                    '<tr><th>Town/City</th><td>' + val.town_city + '</td></tr>' +
+                    '<tr><th>County/State</th><td>' + val.county_state + '</td></tr>' +
+                    '<tr><th>Postcode/Zipcode</th><td>' + val.postcode_zipcode + '</td></tr>' +
+                    '<tr><th>Country</th><td>' + val.country + '</td></tr>' +
+                    '<tr><th>No Sales Calls</th><td>' + val.no_sales_calls + '</td></tr>' +
+                    '<tr><th>No Email</th><td>' + val.no_email + '</td></tr>' +
+                    '<tr><th>No Post Calls</th><td>' + val.no_post_calls + '</td></tr>' +
+                    '<tr><th>Source</th><td>' + val.source + '</td></tr>' +
+                    '<tr><th>Rating</th><td>' + val.rating + '</td></tr>' +
+                    '<tr><th>Status</th><td>' + val.status + '</td></tr>' +
+                    '<tr><th>Last Contacted</th><td>' + val.last_contacted + '</td></tr>' +
+                    '<tr><th>Permanent Only</th><td>' + val.permanent_only + '</td></tr>' +
+                    '<tr><th>No Of Employees</th><td>' + val.no_of_employees + '</td></tr>' +
+                    '<tr><th>No Of Contractors</th><td>' + val.no_of_contractors + '</td></tr>' +
+                    '<tr><th>Ave. Contract Rate</th><td>' + val.ave_contract_rate + '</td></tr>' +
+                    '<tr><th>How Contractors Work</th><td>' + val.how_contractors_work + '</td></tr>' +
+                    '<tr><th>Main Competitor</th><td>' + val.main_competitor + '</td></tr>' +
+                    '<tr><th>Uses a PSL</th><td>' + val.uses_a_psl + '</td></tr>' +
+                    '<tr><th>PSL Review Date</th><td>' + val.psl_review_date + '</td></tr>' +
+                    '<tr><th>PSL Review Person</th><td>' + val.psl_review_person + '</td></tr>' +
+                    '<tr><th>Year Established</th><td>' + val.year_established + '</td></tr>' +
+                    '<tr><th>Annual Revenue</th><td>' + val.annual_revenue + '</td></tr>' +
+                    '<tr><th>Turnover Band</th><td>' + val.turnover_band + '</td></tr>' +
+                    '<tr><th>Industry Description</th><td>' + val.industry_description + '</td></tr>';
+                $tbody.append(body);
+            } else {
+                $tbody.append('<p>The lead does not exist in workbooks</p>');
             }
+        });
+    },
+    close_workbooks_data: function () {
+        $('.modal-backdrop.workbooks').fadeOut();
+        $('.workbooks-container').fadeOut(500, function () {
+            $('.workbooks-content').show();
+            $('.alert').addClass('hidden');
+        });
+        $('.workbooks-container').fadeOut(500, function () {
+            $('.workbooks-content').show();
         });
     }
 }

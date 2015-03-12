@@ -97,6 +97,12 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
 <!-- end history popup -->
 
 
+<!-- start workbooks popup -->
+<div class="panel panel-primary workbooks-container">
+    <?php $this->view('records/show_workbooks_data.php'); ?>
+</div>
+<!-- end attachment popup -->
+
 <script type="text/javascript">
     $(document).ready(function () {
         var urn = '<?php echo $details['record']['urn'] ?>';
