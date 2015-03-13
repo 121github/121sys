@@ -506,13 +506,6 @@ var record = {
                     check_session();
                     $(document).off('click', '.nav-btn');
                     flashalert.success(response.msg);
-                    //If the record was updated as an appointment, export data to the workbooks CRM
-                    var outcome_id = $('.outcomepicker').selectpicker('#outcome_id:selected').val();
-                    var campaign_id = $('form').find('input[name="campaign_id"]').val();
-                    var urn = $('form').find('input[name="urn"]').val();
-                    if (outcome_id == 72 && campaign_id == 12) {
-                        //workbooks.create_workbooks_lead(urn);
-                    }
                     if (response.email_trigger) {
                         $.ajax({
                             url: helper.baseUrl + 'email/trigger_email',
@@ -2640,22 +2633,6 @@ var modal = {
  ========================================================================== */
 var workbooks = {
 
-    create_workbooks_lead: function (urn) {
-        $.ajax({
-            url: helper.baseUrl + 'workbooks/create_lead/' + urn,
-            dataType: "JSON",
-            type: "GET"
-        }).done(function (sale_response) {
-            if (sale_response.success) {
-                var lead_id = sale_response.new_lead.data[0].id;
-                var lead_lock_version = sale_response.new_lead.data[0].lock_version;
-                flashalert.success(sale_response.msg + " Id: " + lead_id + " Lock version: " + lead_lock_version);
-            }
-            else {
-                flashalert.danger(sale_response.msg);
-            }
-        });
-    },
     view_workbooks_data: function (lead_id) {
         var pagewidth = $(window).width() / 2;
         var moveto = pagewidth - 250;
