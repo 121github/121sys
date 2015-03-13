@@ -25,7 +25,7 @@ class Migration_update_19 extends CI_Migration
 
         //Adding the trigger for the integration between Onions campaign CRM (workbooks) and the 121 calling system
         $this->db->query("INSERT ignore INTO `function_triggers` (`campaign_id`, `outcome_id`, `path`) VALUES
-                      (12, 72, 'workbooks/create_leads/')");
+                      (12, 72, 'workbooks/create_lead')");
 
     }
 
