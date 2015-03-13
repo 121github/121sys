@@ -2642,22 +2642,6 @@ var modal = {
  ========================================================================== */
 var workbooks = {
 
-    create_workbooks_lead: function (urn) {
-        $.ajax({
-            url: helper.baseUrl + 'workbooks/create_lead/' + urn,
-            dataType: "JSON",
-            type: "GET"
-        }).done(function (sale_response) {
-            if (sale_response.success) {
-                var lead_id = sale_response.new_lead.data[0].id;
-                var lead_lock_version = sale_response.new_lead.data[0].lock_version;
-                flashalert.success(sale_response.msg + " Id: " + lead_id + " Lock version: " + lead_lock_version);
-            }
-            else {
-                flashalert.danger(sale_response.msg);
-            }
-        });
-    },
     view_workbooks_data: function (lead_id) {
         var pagewidth = $(window).width() / 2;
         var moveto = pagewidth - 250;
