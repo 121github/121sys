@@ -515,11 +515,16 @@ var record = {
                     }
 					if (response.function_triggers) {
 						$.each(response.function_triggers,function(i,path){
-                        $.ajax({
-                            url: helper.baseUrl + path + '/' + record.urn,
-                            type: "POST",
-                            data: {urn: record.urn}
-                        });
+                            $.ajax({
+                                url: helper.baseUrl + path + '/' + record.urn,
+                                type: "POST",
+                                dataType: "JSON",
+                                data: {urn: record.urn}
+                            }).done(function(function_trigger_response) {
+                                if (function_trigger_response.function_name == "workbooks") {
+                                    record.additional_info.load_panel();
+                                }
+                            });
 						});
                     }
                     record.update_panel.init();

@@ -111,10 +111,15 @@ class Workbooks extends CI_Controller
 
                 //Update the record details in order to associate the lead to the record
                 $this->Workbooks_model->update_record_details($urn, $lead_data);
+
+                //Send an email with the request
+                $body = 'Data requested for the integration with the Workbooks: '.json_encode(array("request" => $data));
+                $this->send_email($body);
             }
             echo json_encode(array(
                 "msg" => $response['flash'],
                 "success" => $response['success'],
+                "function_name" => "workbooks",
                 "new_lead" => $new_lead
             ));
         }
@@ -125,6 +130,24 @@ class Workbooks extends CI_Controller
             ));
         }
     }
+
+//        /**
+//     * Delete a lead by id
+//     */
+//    public function delete_lead()
+//    {
+//
+//        $lead_id = $this->uri->segment(3, 0);
+//        $lead_lock_version = $this->uri->segment(4, 0);
+//
+//        $response = $this->delete_data('crm/sales_leads', $lead_id, $lead_lock_version);
+//
+//        echo json_encode(array(
+//            "msg" => $response['flash'],
+//            "success" => $response['success']
+//        ));
+//
+//    }
 
     /**
      * Delete a lead by id
@@ -313,5 +336,36 @@ class Workbooks extends CI_Controller
 
         return $response;
 
+    }
+
+    private function send_email($body)
+    {
+
+        $this->load->library('email');
+
+        $config = array(
+            "smtp_host" => "mail.121system.com",
+            "smtp_user" => "mail@121system.com",
+            "smtp_pass" => "L3O9QDirgUKXNE7rbNkP",
+            "smtp_port" => 25
+        );
+
+        $config['mailtype'] = 'html';
+
+        $this->email->initialize($config);
+
+        $this->email->from('noreply@121customerinsight.co.uk');
+        $this->email->to('bradf@121customerinsight.co.uk');
+        $this->email->cc('estebanc@121customerinsight.co.uk');
+        $this->email->bcc('');
+        $this->email->subject('Workbooks Integration');
+        $this->email->message($body);
+
+
+        $result = $this->email->send();
+        //$this->email->print_debugger();
+        $this->email->clear();
+
+        return $result;
     }
 }
