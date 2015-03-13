@@ -506,19 +506,21 @@ var record = {
                     check_session();
                     $(document).off('click', '.nav-btn');
                     flashalert.success(response.msg);
-                    //If the record was updated as an appointment, export data to the workbooks CRM
-                    var outcome_id = $('.outcomepicker').selectpicker('#outcome_id:selected').val();
-                    var campaign_id = $('form').find('input[name="campaign_id"]').val();
-                    var urn = $('form').find('input[name="urn"]').val();
-                    if (outcome_id == 72 && campaign_id == 12) {
-                        //workbooks.create_workbooks_lead(urn);
-                    }
                     if (response.email_trigger) {
                         $.ajax({
                             url: helper.baseUrl + 'email/trigger_email',
                             type: "POST",
                             data: {urn: record.urn}
                         });
+                    }
+					if (response.function_triggers) {
+						$.each(response.function_triggers,function(i,path){
+                        $.ajax({
+                            url: helper.baseUrl + path + '/' + record.urn,
+                            type: "POST",
+                            data: {urn: record.urn}
+                        });
+						});
                     }
                     record.update_panel.init();
                     $('textarea[name="comments"]').val('');

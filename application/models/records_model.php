@@ -910,6 +910,17 @@ class Records_model extends CI_Model
 		return $email_triggers;
 	 }
 	
+		//when a record is update this function is ran to see if the urn should be sent to any other function
+		 public function get_function_triggers($campaign_id,$outcome_id){
+		 $this->db->where(array("outcome_id"=>$outcome_id,"campaign_id"=>$campaign_id));
+        $function_triggers  = $this->db->get("function_triggers")->result_array();
+		$functions = array();
+		foreach($function_triggers as $row){
+		$functions[] = $row['path'];
+		}
+		return $functions;
+	 }
+	
     
 	/*get all the new owners for a specific outcome*/
 	public function get_owners_for_outcome($campaign_id,$outcome_id){

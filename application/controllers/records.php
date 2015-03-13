@@ -444,6 +444,8 @@ class Records extends CI_Controller
             if ($this->input->post('outcome_id')) {
                 //check if an email should be sent for this outcome	
                 $email_triggers = $this->Records_model->get_email_triggers($campaign_id, intval($this->input->post('outcome_id')));
+				//check if any other function should be called
+				 $function_triggers = $this->Records_model->get_function_triggers($campaign_id, intval($this->input->post('outcome_id')));
                 //get the outcome triggers
                 $triggers       = $this->get_triggers(intval($this->input->post('outcome_id')));
                 if ($triggers["force_comment"] == "1" && trim($update_array['comments']) == "") {
@@ -619,6 +621,9 @@ class Records extends CI_Controller
             
             if (isset($email_triggers) && count($email_triggers) > 0) {
                 $response['email_trigger'] = true;
+            }
+			if (isset($function_triggers) && count($function_triggers) > 0) {
+                $response['function_triggers'] = $function_triggers;
             }
             echo json_encode($response);
             
