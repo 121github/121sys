@@ -136,11 +136,14 @@ class Dashboard extends CI_Controller
 	 //this is the controller loads the initial view for the nbf dashboard
     public function nbf()
     {        
+	  $campaigns = $this->Form_model->get_user_campaigns();
+	  
         $data = array(
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Dashboard',
             'title' => 'Dashboard',
 			'page'=> array('dashboard'=>'nbf'),
+			'campaigns' => $campaigns,
             'javascript' => array(
                 'charts.js',
                 'dashboard.js'

@@ -17,7 +17,7 @@ class Charts_model extends CI_Model
 		$date_to = (isset($options['date_to'])?$options['date_to']:"");
 		$limit = (isset($options['limit'])?$options['limit']:"");
 		
-		$qry = "SELECT round(avg(answer),1) score,question_name,question_script script FROM `questions` left join survey_answers using(question_id) left join surveys using(survey_id) where answer is not null";
+		$qry = "SELECT round(avg(answer),1) score,question_name,question_script script FROM `questions` left join survey_answers using(question_id) left join surveys using(survey_id) left join records using(urn) where campaign_id in({$_SESSION['campaign_access']['list']}) and answer is not null";
         if (!empty($filter)) {
         $qry .= " and surveys.survey_info_id = '$filter' ";
         }
@@ -51,8 +51,8 @@ class Charts_model extends CI_Model
 		if (!empty($date_to)) {
             $where .= " and date(completed_date) <= '$date_to' ";
         }
-		$qry = "select count(*) survey_count, surveys.survey_info_id, survey_name,round(nps,1) nps from surveys left join survey_info using(survey_info_id) left join (select avg(answer) nps,surveys.survey_info_id from survey_answers left join surveys using(survey_id) left join questions using(question_id) where nps_question = '1' $where group by questions.survey_info_id) n on n.survey_info_id = surveys.survey_info_id";
-		 $qry .= " where 1 $where ";
+		$qry = "select count(*) survey_count, surveys.survey_info_id, survey_name,round(nps,1) nps from surveys records using(urn) left join survey_info using(survey_info_id) left join (select avg(answer) nps,surveys.survey_info_id from survey_answers left join surveys using(survey_id) left join records using(urn) left join questions using(question_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and nps_question = '1' $where group by questions.survey_info_id) n on n.survey_info_id = surveys.survey_info_id";
+		 $qry .= " where campaign_id in({$_SESSION['campaign_access']['list']}) and $where ";
         $qry .= " group by survey_info_id order by survey_info_id";
 		//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
@@ -61,7 +61,7 @@ class Charts_model extends CI_Model
 	
     public function all_surveys($survey_info_id = "")
     {
-        $qry = "select answer,completed_date,survey_name,survey_id from surveys left join survey_info using(survey_info_id) left join survey_answers using(survey_id) where answer is not null and completed_date > subdate(curdate(),interval 30 day) ";
+        $qry = "select answer,completed_date,survey_name,survey_id from surveys left join records using(urn) left join survey_info using(survey_info_id) left join survey_answers using(survey_id) where campaign_id in({$_SESSION['campaign_access']['list']}) answer is not null and completed_date > subdate(curdate(),interval 30 day) ";
         if (!empty($survey_info_id)) {
             $qry .= " and survey_info_id = '$survey_info_id' ";
         }
@@ -73,7 +73,7 @@ class Charts_model extends CI_Model
     
     public function survey_counts()
     {
-        $qry = "select survey_name, count(*) count from surveys left join survey_info using(survey_info_id)";
+        $qry = "select survey_name, count(*) count from surveys left join records using(urn) left join survey_info using(survey_info_id) where campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by survey_info_id";
         //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();

@@ -346,7 +346,7 @@ $this->db->query($renewals);
 		if(!empty($number_descriptions)){
         foreach ($number_descriptions as $description) {
             $insert_query = "insert into contact_telephone (telephone_id,contact_id,description,telephone_number) select '',contact_id,'$description',contact_tel_" . $description . " from importcsv ";
-				$fix_telephone_numbers = "delete from contact_telephone where trim(telephone_number) = '' or telephone_number is null";
+				$fix_telephone_numbers = "delete from contact_telephone where trim(telephone_number) = '' or telephone_number is null or char_length(telephone_number) < '4'";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
 			$this->db->query($fix_telephone_numbers);
@@ -431,7 +431,7 @@ $this->db->query($renewals);
         $number_descriptions = $this->Import_model->get_telephone_numbers("company");
         foreach ($number_descriptions as $description) {
             $insert_query = "insert into company_telephone (telephone_id,company_id,description,telephone_number) select '',company_id,'$description',company_tel_" . $description . " from importcsv";
-			$fix_telephone_numbers = "delete from company_telephone where trim(telephone_number) = '' or telephone_number is null";
+			$fix_telephone_numbers = "delete from company_telephone where trim(telephone_number) = '' or telephone_number is null  or char_length(telephone_number) < '4'";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
 			 $this->db->query($fix_telephone_numbers);
@@ -614,15 +614,19 @@ $this->db->query($renewals);
 	//if we need to do anything AFTER the import has ran (eg: formatting/checking tables) we can add it to this function
 	public function tidy_up(){
 		$this->load->model('Cron_model');
+		echo json_encode(array("success"=>true));
+	}
+	
+	public function update_locations(){
 		$this->Cron_model->update_locations_table();
 		$this->Cron_model->update_location_ids();
 		$this->Cron_model->update_locations_with_google();
-		echo json_encode(array("success"=>true));
 	}
 	
 	//this function is used to merge contacts for when a record has multiple contacts
 	public function merge_dupe_companies(){
-	$qry = "select name,urn,concat(substring(companies.name, 1, 4 ),add1,postcode) as dupe from companies left join records using(urn) left join contacts using(urn) left join company_addresses using(company_id) where add1 is not null and postcode is not null group by concat(substring(companies.name, 1, 4 ),add1,postcode) having count(concat(substring(companies.name, 1, 4 ),add1,postcode)) > 1";
+		$campaign_id = $this->input->post('campaign');
+	$qry = "select name,urn,concat(substring(companies.name, 1, 4 ),add1,postcode) as dupe from companies left join records using(urn) left join contacts using(urn) left join company_addresses using(company_id) where campaign_id = $campaign_id and add1 is not null and postcode is not null group by concat(substring(companies.name, 1, 4 ),add1,postcode) having count(concat(substring(companies.name, 1, 4 ),add1,postcode)) > 1";
 	$array = $this->db->query($qry)->result_array();
 	$dupes = array();
 	foreach($array as $row){
@@ -646,10 +650,7 @@ $this->db->query($renewals);
 	
 	
 	public function merge_by_client_ref(){
-		$campaign_id = $this->uri->segment(3);
-		if(intval($campaign_id)<1){
-		exit("Need a campaign ID");	
-		}
+		$campaign_id = $this->input->post('campaign');
 	//find all client_refs that appear more than once
 	$dupe_query = "SELECT client_ref, urn
 FROM client_refs left join records using(urn) where campaign_id = $campaign_id

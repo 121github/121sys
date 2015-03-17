@@ -266,7 +266,7 @@ class Filter_model extends CI_Model
             "alias" => ""
         );
 		$filter_options["postcode"]            = array(
-            "table" => "",
+            "table" => "address",
             "type" => "",
             "alias" => ""
         );

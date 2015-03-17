@@ -106,7 +106,7 @@ class Data_model extends CI_Model
 		$delqry = "delete from ownership where user_id = '$user' and urn in(select urn from records where campaign_id = '$campaign' $wheredials and progress_id is null and record_status = 1 $where $wheredials)";
         $this->db->query($delqry);
         if ($count=="all") {
-		$insqry = "insert into ownership (select '',urn,'$user' from records where campaign_id = '$campaign' and progress_id is null and record_status = 1 $where $wheredials)";
+		$insqry = "insert into ownership (select urn,'$user' from records where campaign_id = '$campaign' and progress_id is null and record_status = 1 $where $wheredials)";
 
         $this->db->query($insqry);
 		$this->firephp->log($insqry);

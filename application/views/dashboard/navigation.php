@@ -169,10 +169,10 @@
                                 </div>
                             </div>
                         </div
-                        <?php } ?>
+                        ><?php } ?>
                         <!-- End Emails -->
                         <!-- Productivity -->
-                        <?php if (@in_array("activity", $_SESSION['permissions'])) { ?>
+                        <?php if (@in_array("productivity", $_SESSION['permissions'])) { ?>
                             <div class="accordion-inner">
                                 <a href="<?php echo base_url() ?>reports/productivity" <?php echo @($reports == 'productivity' ? "class='active'" : "") ?>>Productivity</a>
                             </div>

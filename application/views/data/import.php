@@ -98,6 +98,15 @@
                                             <option value="3">Update (update the selected fields)</option>
                                         </select>
                                     </div>
+                                    
+                                  <div class="form-group input-group-sm pull-left marl">
+                                        <p>Merge Contacts</p>
+                                        <select name="merge" class="selectpicker" id="merge-options" data-width="150px">
+                                         	<option value="">Do not merge</option>
+                                            <option value="1">Merge by client ref</option>
+                                            <option value="2">Merge by company</option>
+                                        </select>
+                                    </div>
                                     <!--<div class="form-group input-group-sm pull-left marl">
                                         <p>Header options</p>
                                         <select name="header" class="selectpicker" id="more-options" data-width="150px">

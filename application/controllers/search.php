@@ -79,7 +79,7 @@ class Search extends CI_Controller
 			if($geodata->num_rows()>0){
 			$coords = $geodata->row_array();	
 			} else {
-			$coords = postcode_to_coords($options['postcode']);
+			$coords = postcode_to_coords($postcode);
 			if(isset($coords['lat'])){
 			$this->db->query("insert ignore into uk_postcodes set postcode = '$postcode',lat='{$coords['lat']}',lng='{$coords['lng']}'");
 			}

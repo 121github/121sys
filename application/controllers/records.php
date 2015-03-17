@@ -152,7 +152,7 @@ class Records extends CI_Controller
             $allow_skip = true;
         }
         $progress_options = $this->Form_model->get_progress_descriptions();
-        $outcomes         = $this->Records_model->get_outcomes($campaign_id);
+        $outcomes         = $this->Records_model->get_outcomes($campaign_id);		
         $xfers            = $this->Records_model->get_xfers($campaign_id);
         
         if (isset($details['contacts'])) {
