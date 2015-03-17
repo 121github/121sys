@@ -646,9 +646,13 @@ $this->db->query($renewals);
 	
 	
 	public function merge_by_client_ref(){
+		$campaign_id = $this->uri->segment(3);
+		if(intval($campaign_id)<1){
+		exit("Need a campaign ID");	
+		}
 	//find all client_refs that appear more than once
 	$dupe_query = "SELECT client_ref, urn
-FROM client_refs left join records using(urn) where campaign_id = 5
+FROM client_refs left join records using(urn) where campaign_id = $campaign_id
 GROUP BY client_ref
 HAVING count( client_ref ) >1";	
 	$result = $this->db->query($dupe_query)->result_array();
@@ -663,7 +667,7 @@ HAVING count( client_ref ) >1";
 	$urn = $row['urn'];
 	$keep_array[$urn] = $urn;
 	//now find all contacts with the client ref
-	$qry = "select contact_id,urn from client_refs left join contacts using(urn) where client_ref = '$dupe' and urn in(select urn from records where campaign_id=3)";
+	$qry = "select contact_id,urn from client_refs left join contacts using(urn) where client_ref = '$dupe' and urn in(select urn from records where campaign_id=$campaign_id)";
 	$con_result = $this->db->query($qry)->result_array();
 	foreach($con_result as $list_item){
 	$delete_array[$list_item['urn']] = $list_item['urn'];
