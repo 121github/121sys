@@ -111,6 +111,7 @@ class Cron_model extends CI_Model
         $this->db->join("locations", "locations.location_id=company_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("company_addresses")->result_array();
+		$this->firephp->log("Find all company postcodes without a location ID:" . $this->db->last_query());
         $status    = "Company Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
@@ -131,6 +132,7 @@ class Cron_model extends CI_Model
         $this->db->join("locations", "locations.location_id=contact_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("contact_addresses")->result_array();
+		$this->firephp->log("Find all contact postcodes without a location ID:" . $this->db->last_query());
         $status .= "Contact Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
@@ -153,6 +155,7 @@ class Cron_model extends CI_Model
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("appointments")->result_array();
         $status .= "Appointment Postcodes found: " . count($postcodes) . "\r\n";
+		$this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             //check valid format
@@ -176,13 +179,18 @@ class Cron_model extends CI_Model
         $qry       = "select postcode from company_addresses where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
         $status = "NULL Company IDs found: " . count($postcodes) . "\r\n";
+		$this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
 			$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
 			if($this->db->query($qry)->num_rows()){
-            $pc = $this->db->query($qry)->row();
-			$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");	
-            $this->db->query("update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
+            $pc = $this->db->query($qry)->row_array();
+			$q1 = "insert ignore into locations set location_id='{$pc['postcode_id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
+			$this->firephp->log($q1);
+			$this->db->query($q1);	
+			$q2 = "update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'";
+            $this->firephp->log($q2);
+			$this->db->query($q2);
 			}
         }
         
@@ -190,11 +198,12 @@ class Cron_model extends CI_Model
         $qry       = "select postcode from contact_addresses where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
         $status .= "NULL Contact IDs found: " . count($postcodes) . "\r\n";
+		$this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
 			$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
 			if($this->db->query($qry)->num_rows()){
-            $pc = $this->db->query($qry)->row();	
+   $pc = $this->db->query($qry)->row_array();	
 						$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");
             $this->db->query("update contact_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
 			}
@@ -205,11 +214,12 @@ class Cron_model extends CI_Model
         $qry       = "select postcode from appointments where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
         $status .= "NULL Appointment IDs found: " . count($postcodes) . "\r\n";
+		$this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
            	$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
 			if($this->db->query($qry)->num_rows()){
-            $pc = $this->db->query($qry)->row();
+   $pc = $this->db->query($qry)->row_array();
 			$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");
             $this->db->query("update appointments set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
         }
@@ -226,6 +236,7 @@ class Cron_model extends CI_Model
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("company_addresses")->result_array();
         $status = "Company Postcodes found [google search]: " . count($postcodes) . "\r\n";
+		$this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
@@ -245,6 +256,7 @@ class Cron_model extends CI_Model
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("contact_addresses")->result_array();
         $status .= "Contact Postcodes found [google search]: " . count($postcodes) . "\r\n";
+		$this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
@@ -262,6 +274,7 @@ class Cron_model extends CI_Model
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("appointments")->result_array();
         $status .= "Appointment Postcodes found [google search]: " . count($postcodes) . "\r\n";
+		$this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");

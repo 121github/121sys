@@ -44,16 +44,16 @@ class Filter_model extends CI_Model
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
-		$this->firephp->log($qry);
+		$_SESSION['action_query'] = base64_encode($qry);
 		$result = array(
-            "query" => $qry,
             "data" => $this->db->query($qry)->result_array()
         );
         return $result;
     }
 
-    public function get_urn_list($qry) {
-        return $this->db->query($qry)->result_array();
+    public function get_urn_list() {
+		$decode = base64_decode($_SESSION['action_query']);
+        return $this->db->query($decode)->result_array();
     }
     
     public function apply_filter($filter)
@@ -306,7 +306,6 @@ class Filter_model extends CI_Model
                 if (empty($data) && $filter_options[$field]['type'] != "range") {
                     unset($filter[$field]);
                     continue;
-                    
                 }
                 if ($filter_options[$field]['type'] == "range") {
                     if (empty($data[0])) {
@@ -354,7 +353,7 @@ class Filter_model extends CI_Model
                 if ($field == "order_direction" && !empty($order)) {
                     $order .= ($data == "descending" ? " asc" : " desc");
                 }
-                /*apply the email filetrs */
+                /*apply the email filters */
                 if ($field == "email") {
                     $email_where = " and (";
                     $i = 0;
@@ -454,6 +453,7 @@ class Filter_model extends CI_Model
                     if (!isset($join['contact_addresses'])) {
                         $join['contact_addresses'] = " left join contact_addresses cona on con.contact_id = cona.contact_id left join locations con_pc on coma.location_id = con_pc.location_id";
                     }
+					$this->firephp->log($join);
                 }
                 
                 //if the filter field has a type of 'id' then it requires an exact match

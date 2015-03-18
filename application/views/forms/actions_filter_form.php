@@ -7,7 +7,7 @@
           <div class="actions-select-form">
               <ul class="list-group">
                   <span class="actions-qry" style="display: none"></span>
-                  <li class="list-group-item" style="font-weight: bold;">PARCKED CODE</li>
+                  <li class="list-group-item" style="font-weight: bold;">PARKED CODE</li>
                   <li class="list-group-item">
                       <button class="btn change-parkedcode btn-success" style="width:130px">Set</button>
                       Set/Change the parked code <span style="font-weight: bold" class="change-parkedcode-result pull-right"></span>

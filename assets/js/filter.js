@@ -273,7 +273,7 @@ var filter = {
 				if ($('.campaigns_select').val() && $('.campaigns_select').val().length == 1 ) {
 					$('.copy-records').prop('disabled', false);
 				}
-				$('.actions-qry').html(btoa(response.query));
+				$('.actions-qry').html(response.query);
 			}
 		});
 
@@ -349,12 +349,11 @@ var filter = {
 	get_urn_list: function() {
 
 		var urn_list;
-		var query = atob($(".actions-qry").html());
+		var query = "";
 		$.ajax({
 			url: helper.baseUrl + 'search/get_urn_list',
 			type: "POST",
 			dataType: "JSON",
-			data: {"query": query},
 			async: false
 		}).done(function(response){
 			urn_list = response.data;

@@ -7,7 +7,7 @@ class Search extends CI_Controller
 {
     
     public function __construct()
-
+		 
     {
         parent::__construct();
         user_auth_check();
@@ -27,7 +27,7 @@ class Search extends CI_Controller
     
     //this is the default controller for search, its specified in application/config/routes.php.  
     public function search_form()
-    { 
+    {
 	check_page_permissions("search records");
         $campaigns      = $this->Form_model->get_user_campaigns();
         $clients        = $this->Form_model->get_clients();
@@ -112,7 +112,6 @@ class Search extends CI_Controller
 			
             echo json_encode(array(
                 "success" => true,
-                "query" => $urn_array['query'],
                 "data" => count($urn_array['data'])
             ));
         }
@@ -121,8 +120,7 @@ class Search extends CI_Controller
     public function get_urn_list()
     {
         $form = $this->input->post();
-
-        $urn_array = $this->Filter_model->get_urn_list($form['query']);
+        $urn_array = $this->Filter_model->get_urn_list(base64_decode($_SESSION['action_query']));
 
         $urn_list = "0";
         foreach($urn_array as $urn) {
