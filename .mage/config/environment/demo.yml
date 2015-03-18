@@ -2,14 +2,14 @@
 deployment:
   user: samba
   from: /var/lib/jenkins/jobs/121Sys/workspace/
-  to: /var/www
+  to: /var/www/demo_env
   excludes:
     - upload
 releases:
   enabled: true
   max: 10
-  symlink: 121sys_demo
-  directory: releases/121sys_releases/demo
+  symlink: 121sys
+  directory: releases/121sys_releases
 hosts:
     - 10.10.1.13
 tasks:
