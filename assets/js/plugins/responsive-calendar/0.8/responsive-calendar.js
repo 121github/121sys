@@ -192,7 +192,7 @@
 				$.each(thisDayEvents,function(i,val){
 					title += "<b>"+val.starttime +"</b> til <b>"+val.endtime+"</b> with <b>"+val.attendees+"</b>";
 					if(val.distance.length>0){
-						title += " <span style='color:yellow'> ["+val.distance+" miles away]</span> <span style='color:green'> ["+val.postcode+"]</span> </br>";
+						title += " <span style='color:green'> ["+val.distance+" miles away]</span> <span style='color:yellow'> ["+val.postcode+"]</span> </br>";
 					}
 				});
 			});

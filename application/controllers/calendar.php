@@ -139,7 +139,7 @@ class Calendar extends CI_Controller
 		if(isset($_POST['modal'])){
 	foreach($events as $k=>$row) {
 		$date = date('Y-m-d',strtotime($row['start']));
-		$result[$date]['dayEvents'][] = array("title"=>$row['title'],'endtime' => date('g:i a',strtotime($row['end'])),'starttime' => date('g:i a',strtotime($row['start'])),'distance'=>isset($row['distance'])?number_format($row['distance'],1):"","attendees"=>$row['attendeelist']);
+		$result[$date]['dayEvents'][] = array("postcode"=>$row['postcode'],"title"=>$row['title'],'endtime' => date('g:i a',strtotime($row['end'])),'starttime' => date('g:i a',strtotime($row['start'])),'distance'=>isset($row['distance'])?number_format($row['distance'],1):"","attendees"=>$row['attendeelist']);
 		$result[$date]['number']=(isset($result[$date]['number'])?$result[$date]['number']+1:1);
 	}
 	
@@ -151,6 +151,7 @@ class Calendar extends CI_Controller
 		'text' => (!empty($row['text'])?$row['text']:""),
         'url' => base_url().'records/detail/'.$row['urn'],
 		'class' => 'event-important',
+		'postcode' => $row['postcode'],
 		'distance_hover' => (isset($row['distance'])&&!empty($row['distance'])?"<br><span style='color:#7FFF00'>".number_format($row['distance'],2)." Miles</span>":""),
 		'distance'=>(isset($row['distance'])&&!empty($row['distance'])?number_format($row['distance'],1)." Miles":""),
         'start' => strtotime($row['start']) . '000',
