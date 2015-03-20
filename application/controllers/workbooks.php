@@ -16,8 +16,8 @@ class Workbooks extends CI_Controller
         $this->workbooks = new WorkbooksApi(array(
             'application_name' => 'PHP test client',
             'user_agent' => 'php_test_client/0.1',
-            'api_key' => '88979-95551-0f48a-1fbbd-9a35b-464f5-48da2-ba6a3', //Prod DB
-            //'api_key' => '875df-632ea-baee0-12876-632a8-4e89e-c2038-2f61a   ', //Testing DB
+            //'api_key' => '88979-95551-0f48a-1fbbd-9a35b-464f5-48da2-ba6a3', //Prod DB
+            'api_key' => '875df-632ea-baee0-12876-632a8-4e89e-c2038-2f61a   ', //Testing DB
         ));
     }
 
