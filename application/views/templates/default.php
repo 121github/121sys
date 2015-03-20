@@ -22,7 +22,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-select.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/slider.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/default.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/offcanvas.css">
+
     
     <!-- Set the baseUrl in the JavaScript helper -->
     <?php //load specific javascript files set in the controller
@@ -417,7 +417,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-slider.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/jasny-bootstrap.js"></script>
+
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
