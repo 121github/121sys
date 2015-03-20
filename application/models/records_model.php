@@ -850,8 +850,6 @@ class Records_model extends CI_Model
     {
         $attendees = $post['attendees'];
         unset($post['attendees']);
-        $post['start'] = to_mysql_datetime($post['start']);
-        $post['end']   = to_mysql_datetime($post['end']);
       
         if (!empty($post['appointment_id'])) {
             $this->db->where("appointment_id", $post['appointment_id']);

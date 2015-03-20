@@ -238,7 +238,8 @@ class Audit_model extends CI_Model {
 ####################################################################################
 //appointment inserted
  public function log_appointment_insert($data = array(),$urn=NULL) {
-			$id = $data['id'];
+	 		unset($data['attendees']);
+			$id = $data['appointment_id'];
             $details = array(
                 'user_id' => $_SESSION['user_id'],
                 'change_type' => "insert",
@@ -378,7 +379,7 @@ public function audit_data($count=false,$options=false){
             unset($_SESSION['audit_table']['order']);
             unset($_SESSION['audit_table']['values']['order']);
         }
-        
+          $qry .= " group by audit.audit_id" ;
         $qry .= $order;
         $qry .= "  limit $start,$length";
 	$result = $this->db->query($qry)->result_array();

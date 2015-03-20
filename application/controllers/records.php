@@ -674,9 +674,16 @@ class Records extends CI_Controller
                     "msg" => "You must set a valid UK Postcode"
                 ));
             } else {
+				$data['start'] = to_mysql_datetime($data['start']);
+        		$data['end']   = to_mysql_datetime($data['end']);
+				if(empty($data['appointment_id'])){
+				$this->Audit_model->log_appointment_insert($data);
+				$id = $this->Records_model->save_appointment($data);
+				} else {
                 $id = $this->Records_model->save_appointment($data);
 				$data['appointment_id'] = $id;
 				$this->Audit_model->log_appointment_update($data);
+				}
                 echo json_encode(array(
                     "success" => true
                 ));
