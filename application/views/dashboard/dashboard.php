@@ -226,7 +226,7 @@
            
         </div>
        <?php } ?> 
-       
+          <?php if(in_array("email",$_SESSION['permissions'])){ ?>
         <div class="panel panel-primary">
           <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i>Email Statistics
             <div class="pull-right">
@@ -285,7 +285,7 @@
           <!-- /.panel-body -->
            
         </div>
-       
+       <?php } ?>
        
         <div class="panel panel-primary">
           <div class="panel-heading"> <i class="fa fa-bell fa-fw"></i> Todays Outcomes

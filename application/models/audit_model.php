@@ -343,4 +343,70 @@ class Audit_model extends CI_Model {
         return $audit_id;
     }
 
+public function audit_data($count=false,$options=false){
+	      $table_columns = array(
+            "campaign_name",
+            "table_name",
+            "change_type",
+            "column_name",
+            "name",
+            "date_format(`timestamp`,'%d/%m/%y')",
+        );
+        $order_columns = array(
+            "campaign_name",
+            "table_name",
+            "change_type",
+            "column_name",
+            "name",
+            "timestamp"
+        );
+	
+	$qry = "select campaign_name,table_name,change_type,column_name,name,date_format(`timestamp`,'%d/%m/%Y %H:%i') `timestamp`,urn,audit_id from audit left join audit_values using(audit_id) left join records using(urn) left join campaigns using(campaign_id) left join users using(user_id)";
+	$where = $this->get_where($options, $table_columns);
+		$qry .= $where;
+	if($count){
+	return $this->db->query($qry)->num_rows();
+	}
+	
+
+	 $start  = $options['start'];
+        $length = $options['length'];
+        if (isset($_SESSION['audit_table']['order']) && $options['draw'] == "1") {
+            $order = $_SESSION['audit_table']['order'];
+        } else {
+            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
+            unset($_SESSION['audit_table']['order']);
+            unset($_SESSION['audit_table']['values']['order']);
+        }
+        
+        $qry .= $order;
+        $qry .= "  limit $start,$length";
+	$result = $this->db->query($qry)->result_array();
+	return $result;
+}
+
+private function get_where($options, $table_columns)
+    {
+        //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
+        $where = " where 1 ";
+        
+        //check the tabel header filter
+        foreach ($options['columns'] as $k => $v) {
+            //if the value is not empty we add it to the where clause
+            if ($v['search']['value'] <> "") {
+                $where .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
+            }
+        }
+        return $where;
+    }
+public function audit_modal($id){
+	$qry = "select * from audit left join users using(user_id) where audit_id = ".intval($id);	
+	return $this->db->query($qry)->row_array();
+}
+
+public function audit_values($id){
+	$qry = "select * from audit_values where audit_id = ".intval($id);	
+	return $this->db->query($qry)->result_array();
+}
+
 }

@@ -17,6 +17,11 @@
                                 Dashboard</a>
                         </div>
                     <?php } ?>
+                   <?php if (in_array("view appointments", $_SESSION['permissions'])) { ?>
+                        <div class="accordion-inner">
+                            <a href="<?php echo base_url() ?>appointments" <?php echo @($dashboard == 'appointments' ? "class='active'" : "") ?>>Appointments</a>
+                        </div>
+                    <?php } ?>
                     <?php if (in_array("nbf dash", $_SESSION['permissions'])) { ?>
                         <div class="accordion-inner">
                             <a href="<?php echo base_url() ?>dashboard/nbf" <?php echo @($dashboard == 'nbf' ? "class='active'" : "") ?>>New

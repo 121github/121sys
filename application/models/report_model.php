@@ -12,6 +12,38 @@ class Report_model extends CI_Model
         parent::__construct();
     }
 
+public function get_audit_data($options){
+ 			 $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $campaign = $options['campaign'];
+        $user = isset($options['agent']) ? $options['agent'] : "";
+        $team = isset($options['team']) ? $options['team'] : "";
+        $source = $options['source'];
+
+        $where = " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        if (!empty($date_from)) {
+            $where .= " and date(contact) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(contact) <= '$date_to' ";
+        }
+        if (!empty($campaign)) {
+            $where .= " and history.campaign_id = '$campaign' ";
+        }
+        if (!empty($user)) {
+            $where .= " and history.user_id = '$user' ";
+        }
+        if (!empty($team)) {
+            $where .= " and teams.team_id = '$team' ";
+        }
+        if (!empty($source)) {
+            $where .= " and source_id = '$source' ";
+        }
+		$qry = "select campaign_name,table_name,change_type,count(*) from audit left join records using(urn) left join campaigns using(campaign_id) group by campaign_id,table_name,change_type";
+		//not finished
+}
+
+
     public function all_answers_data()
     {
         $qry = "SELECT survey_name,l.question_id,surveys.survey_info_id,count(distinct survey_id) count,avg(answer) average_nps,tens,low_score from surveys left join survey_info using(survey_info_id) left join surveys_to_campaigns using(survey_info_id) left join survey_answers using(survey_id) left join questions using(question_id)

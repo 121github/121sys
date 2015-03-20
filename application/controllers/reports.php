@@ -16,6 +16,45 @@ class Reports extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
     }
 
+    //this controller loads the view for the capture page on the reports
+    public function capture()
+    {
+        $campaigns = $this->Form_model->get_user_campaigns();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources = $this->Form_model->get_sources();
+        $agents = $this->Form_model->get_agents();
+        $outcomes = $this->Form_model->get_outcomes();
+		
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Reports',
+            'title' => 'Reports | Data Capture',
+            'page' => array(
+                'reports' => 'Data Capture'
+            ),
+			'campaigns' => $campaigns,
+            'sources' => $sources,
+            'team_managers' => $teamManagers,
+            'agents' => $agents,
+            'javascript' => array(
+                'report/data_capture.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+
+            ),
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/data_capture.php', $data);
+    }
+
+
+
+
+
     //this controller loads the view for the targets page on the dashboard
     public function targets()
     {
@@ -96,6 +135,8 @@ class Reports extends CI_Controller
             exit;
         }
     }
+
+
 
     //this is the controller loads the initial view for the activity dashboard
     public function activity()
@@ -579,6 +620,17 @@ class Reports extends CI_Controller
         );
         $this->template->load('default', 'reports/productivity.php', $data);
     }
+
+public function capture_data(){
+
+			$results = $this->Report_model->get_audit_data($this->input->post());
+			   echo json_encode(array(
+                "success" => true,
+                "data" => $results,
+                "msg" => "No results found"
+            ));
+}
+
 
     //this controller sends the productivity data back the page in JSON format. It ran when the page loads and any time the filter is changed
     public function productivity_data()
