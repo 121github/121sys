@@ -24,7 +24,7 @@ public function index(){
             'campaign_access' => $this->_campaigns,
             'pageId' => 'System appointment',
             'title' => 'Appointments',
-			'page'=> "appointments",
+			'page'=> array('dashboard'=>'appointments'),
 			            'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
