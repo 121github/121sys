@@ -3,7 +3,7 @@
 	text-align:left;
     max-width: 750px !important;
     /* If max-width does not work, try using width instead */
-    width: 450px; 
+    /*width: 550px;*/ 
 }
 .responsive-calendar .controls {
   text-align: center;
