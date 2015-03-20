@@ -181,7 +181,7 @@
                     'Todays': [moment(), moment()],
                     'Tomorrow': [moment().add('days', 1), moment().add('days', 1)],
                     'Missed': [moment('2014-01-01'), moment()],
-                    'Upcoming': [moment('2020-01-01')]
+                    'Upcoming': [moment(),moment('2025-01-01')]
                 },
                 format: 'DD/MM/YYYY HH:mm',
                 minDate: "02/07/2014",
@@ -196,7 +196,7 @@ console.log(start.format('YYYY-MM-DD'));
 			 if(start.format('YYYY-MM-DD')=='2014-07-02'){
 			var btntext = "Missed";
 			 }
-			  if(end.format('YYYY-MM-DD')=='2020-01-01'){
+			  if(end.format('YYYY-MM-DD')=='2025-01-01'){
 			var btntext = "Upcoming";
 			 }
                 $btn.find('.date-text').html(btntext);
