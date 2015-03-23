@@ -19,7 +19,7 @@
               <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span> </span> </div>
           </div>
        
-            <?php 
+            <?php $parktext = "";
 			if(in_array("park records",$_SESSION['permissions'])){
 			$parktext = "Click the unpark button below to allow dialing.";
 			}
