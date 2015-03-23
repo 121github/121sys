@@ -82,7 +82,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <tr>
                 <td>
                     <div class="radio"><label for="sectorsCheck1">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck1"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck1"
                                    value="Banking/Finance/Legal" <?php if (@strpos($values['a2'], "Banking") !== false) {
                                 echo "checked";
                             } ?>>
@@ -91,7 +91,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck2">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck2"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck2"
                                    value="Health/Social Care/Hospitality" <?php if (@strpos($values['a2'], "Health") !== false) {
                                 echo "checked";
                             } ?>>
@@ -100,7 +100,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck3">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck3"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck3"
                                    value="Office Administration" <?php if (@strpos($values['a2'], "Office") !== false) {
                                 echo "checked";
                             } ?>>
@@ -113,7 +113,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <tr>
                 <td>
                     <div class="radio"><label for="sectorsCheck4">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck4"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck4"
                                    value="Biotechnology" <?php if (@strpos($values['a2'], "Biotechnology") !== false) {
                                 echo "checked";
                             } ?>>
@@ -122,7 +122,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck5">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck5"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck5"
                                    value="Hospitality" <?php if (@strpos($values['a2'], "Hospitality") !== false) {
                                 echo "checked";
                             } ?>>
@@ -131,7 +131,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck6">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck6"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck6"
                                    value="Secretarial" <?php if (@strpos($values['a2'], "Secretarial") !== false) {
                                 echo "checked";
                             } ?>>
@@ -143,7 +143,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <tr>
                 <td>
                     <div class="radio"><label for="sectorsCheck7">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck7"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck7"
                                    value="IT" <?php if (@strpos($values['a2'], "IT") !== false) {
                                 echo "checked";
                             } ?>>
@@ -152,7 +152,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck8">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck8"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck8"
                                    value="Sales/Retail" <?php if (@strpos($values['a2'], "Retail") !== false) {
                                 echo "checked";
                             } ?>>
@@ -161,7 +161,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck9">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck9"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck9"
                                    value="Construction/Property" <?php if (@strpos($values['a2'], "Construction") !== false) {
                                 echo "checked";
                             } ?>>
@@ -176,7 +176,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                             for="sectorsCheck10" <?php if (@strpos($values['a2'], "Health") !== false) {
                             echo "checked";
                         } ?>>
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck10"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck10"
                                    value="Interim/Change" <?php if (@strpos($values['a2'], "Interim") !== false) {
                                 echo "checked";
                             } ?>>
@@ -185,7 +185,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck11">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck11"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck11"
                                    value="Security" <?php if (@strpos($values['a2'], "Security") !== false) {
                                 echo "checked";
                             } ?>>
@@ -194,7 +194,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck12">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck12"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck12"
                                    value="Consultancy" <?php if (@strpos($values['a2'], "Consultancy") !== false) {
                                 echo "checked";
                             } ?>>
@@ -206,7 +206,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <tr>
                 <td>
                     <div class="radio"><label for="sectorsCheck13">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck13"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck13"
                                    value="Management" <?php if (@strpos($values['a2'], "Management") !== false) {
                                 echo "checked";
                             } ?>>
@@ -215,7 +215,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck14">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck14"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck14"
                                    value="Teaching/Education" <?php if (@strpos($values['a2'], "Teaching") !== false) {
                                 echo "checked";
                             } ?>>
@@ -224,7 +224,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck15">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck15"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck15"
                                    value="Drivers" <?php if (@strpos($values['a2'], "Drivers") !== false) {
                                 echo "checked";
                             } ?>>
@@ -236,7 +236,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <tr>
                 <td>
                     <div class="radio"><label for="sectorsCheck16">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck16"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck16"
                                    value="Media/Digital/Creative" <?php if (@strpos($values['a2'], "Media") !== false) {
                                 echo "checked";
                             } ?>>
@@ -245,7 +245,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck17">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck17"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck17"
                                    value="Telecommunication" <?php if (@strpos($values['a2'], "Telecommunication") !== false) {
                                 echo "checked";
                             } ?>>
@@ -254,20 +254,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </td>
                 <td>
                     <div class="radio"><label for="sectorsCheck18">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck18"
+                            <input type="checkbox" name="answers[a2][]" id="sectorsCheck18"
                                    value="Engineering" <?php if (@strpos($values['a2'], "Engineering") !== false) {
                                 echo "checked";
                             } ?>>
                             Engineering
-                        </label></div>
-                </td>
-                                <td>
-                    <div class="radio"><label for="sectorsCheck19">
-                            <input type="radio" name="answers[a2][]" id="sectorsCheck19"
-                                   value="Other" <?php if (@strpos($values['a2'], "Other") !== false) {
-                                echo "checked";
-                            } ?>>
-                            Other
                         </label></div>
                 </td>
             </tr>
@@ -388,7 +379,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             })
         });
 
-        $(document).on('change', 'input[type="checkbox"],input[type="radio"]', function () {
+        $(document).on('change', 'input[type="checkbox"]', function () {
             $.ajax({
                 type: "POST",
                 data: $('#form').serialize() + '&save=1'
