@@ -147,8 +147,12 @@ class Ajax extends CI_Controller
             $array                 = $this->input->post();
 			$audit_id = $this->Audit_model->log_company_update(array_filter($array),$array['urn']);
 			$array["date_updated"] = date('Y-m-d H:i:s');
+            $array['turnover'] = ($array['turnover']==''?NULL:$array['turnover']);
+            if (@!empty($array["date_of_creation"])) {
+                $array["date_of_creation"] = to_mysql_datetime($array["date_of_creation"]);
+            }
 			$this->db->where("company_id", intval($this->input->post('company_id')));
-            if ($this->db->update('companies', array_filter($array))):
+            if ($this->db->update('companies', $array)):
 			$this->firephp->log($this->db->last_query());
                 echo json_encode(array(
                     "success" => true,

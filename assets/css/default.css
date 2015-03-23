@@ -95,6 +95,10 @@ display:none;
     padding: 10px;
 }
 
+.search-container { display:none; margin-bottom:40px;  }
+
+.get-company-container { display:none; margin-bottom:40px;  }
+
 .nav-tabs {
     margin-bottom: 0;
 }

@@ -980,6 +980,30 @@ var record = {
                 e.preventDefault();
                 record.company_panel.edit_form($(this).attr('item-id'));
             });
+            $(document).on('click', '.search-company-btn', function (e) {
+                e.preventDefault();
+                record.company_panel.search_form($(this).attr('item-id'));
+            });
+            $(document).on('click', '.search-company-action', function (e) {
+                e.preventDefault();
+                record.company_panel.search_company();
+            });
+            $(document).on('click', '.search-next-company-action', function (e) {
+                e.preventDefault();
+                record.company_panel.search_company($(this).attr('item-start-index'));
+            });
+            $(document).on('click', '.search-table tr', function (e) {
+                e.preventDefault();
+                record.company_panel.get_company($(this).attr('item-number'));
+            });
+            $(document).on('click', '.back-company-btn', function (e) {
+                e.preventDefault();
+                record.company_panel.close_get_company();
+            });
+            $(document).on('click', '.update-company-action', function (e) {
+                e.preventDefault();
+                record.company_panel.update_company();
+            });
             /* initialize the delete company buttons */
             $(document).on('click', '.del-company-btn', function (e) {
                 e.preventDefault();
@@ -1152,7 +1176,8 @@ var record = {
                     });
                     $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#com-collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.visible['Company']).addClass(collapse))
-                            .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-company-btn').attr('item-id', key).attr('data-target', '#model'))
+                            //.append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-company-btn').attr('item-id', key).attr('data-target', '#model'))
+                            .append($('<span/>').addClass('glyphicon glyphicon-search pull-right search-company-btn').attr('item-id', key))
                             .append($('<span/>').addClass('glyphicon glyphicon-pencil pull-right edit-company-btn').attr('item-id', key))
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal company-detail-list').append($company_detail_list_items).append($company_detail_telephone_items))
@@ -1252,6 +1277,8 @@ var record = {
             var $panel = $(record.company_panel.config.panel);
             $panel.find('.form-container').fadeOut(500, function () {
                 $panel.removeAttr('style');
+                $panel.find('.search-container').fadeOut(500);
+                $panel.find('.get-company-container').fadeOut(500);
                 $panel.find('.list-group').fadeIn(500);
                 $('.modal-backdrop').fadeOut();
             })
@@ -1319,8 +1346,180 @@ var record = {
                 $('.tt').tooltip();
 
             });
-        }
+        },
+        search_form: function (id) {
+            var $panel = $(record.company_panel.config.panel);
+            $panel.find('#cosearchresult .table-container table').hide();
+            $('.result-pagination').empty();
+            $('.searchresult-tab').find('.num-results').html("");
+            $('.nav-tabs a[href="#cosearch"]').tab('show');
+            $('.tab[href="#search"]').tab('show');
+            $panel.find('.tab-alert').hide();
+            $panel.find('tbody').empty();
+            $panel.find('.searchresult-tab').show();
+            $panel.find('.search-company-form').find('input[name="company_id"]').each(function () {
+                $(this).val(id);
+            });
+            record.company_panel.load_search_tabs(id);
+            $panel.find('.panel-title span').removeClass('glyphicon-plus add-company-btn').addClass('glyphicon-remove close-company-btn').show();
+            record.company_panel.animate_panel();
+            $panel.find('.list-group').fadeOut(1000, function () {
+                $panel.find('.search-container').fadeIn(1000);
+            });
+        },
+        search_company: function (start_index) {
+            var $panel = $(record.company_panel.config.panel);
+            var $form = $panel.find('.search-company-form');
+            var name = $form.find('input[name="name"]').val();
+            var conumber = $form.find('input[name="conumber"]').val();
+            var search = name+(name.length==0?"":" ")+conumber;
+            var num_results = 5;
+            start_index = (start_index?start_index:0);
+            $('.result-pagination').empty();
 
+            $.ajax({
+                url: helper.baseUrl + "companyhouse/search_companies",
+                type: "POST",
+                dataType: "JSON",
+                data: {'search': search, 'num_per_page': num_results, 'start_index': start_index}
+            }).done(function (response) {
+                $('.searchresult-tab').find('.num-results').html(response.totalResults);
+                $('.nav-tabs a[href="#cosearchresult"]').tab('show');
+                var tbody = $panel.find('#cosearchresult .table-container table tbody');
+                tbody.empty();
+                if (response.totalResults>0) {
+                    $panel.find('#cosearchresult .table-container table').show();
+                    $.each(response.items, function (key, val) {
+                        tbody.append("<tr item-number='"+val.number.replace('<strong>','').replace('</strong>','')+"'>" +
+                                "<td>"+val.name+"</td>" +
+                                "<td>"+val.number+"</td>" +
+                                "<td>"+val.status+"</td>" +
+                                "<td>"+val.date+"</td>" +
+                            "</tr>");
+                    });
+                    if (response.totalResults>num_results) {
+                        var num_pages = Math.ceil(response.totalResults/num_results);
+                        var prev = (response.page_number==1?'disabled':'');
+                        var next = (response.page_number==num_pages?'disabled':'');
+
+                        var pagination = '';
+                        pagination += '<ul class="pagination">';
+                        pagination += '<li class="search-next-company-action '+prev+'" item-start-index="0"><a href="#">'+"<<"+'</a></li>';
+                        pagination += '<li class="search-next-company-action '+prev+'" item-start-index="'+Math.ceil((response.page_number-2)*num_results)+'"><a href="#">'+"<"+'</a></li>';
+
+                        for(var i = 1; i <= num_pages; i++) {
+                            var active = ((response.page_number) == i?'active':'');
+                            var num_pages_view = ((1==response.page_number || response.page_number==num_pages)?6:4);
+                            if (i > (response.page_number - num_pages_view) && i < (response.page_number + num_pages_view)) {
+                                pagination += '<li class="search-next-company-action '+active+'" item-start-index="'+Math.ceil((i-1)*num_results)+'"><a href="#">'+i+'</a></li>';
+                            }
+                        }
+                        pagination +=  '<li class="search-next-company-action '+next+'" item-start-index="'+Math.ceil((response.page_number)*num_results)+'"><a href="#">'+">"+'</a></li>';
+                        pagination +=  '<li class="search-next-company-action '+next+'" item-start-index="'+Math.ceil((num_pages-1)*num_results)+'"><a href="#">'+">>"+'</a></li>';
+                        pagination += '</ul>';
+                        $('.result-pagination').append(pagination);
+                    }
+                }
+                else {
+                    $panel.find('#cosearchresult .table-container table').hide();
+                }
+            });
+        },
+        load_search_tabs: function (company) {
+            var $panel = $(record.company_panel.config.panel);
+            $.ajax({
+                url: helper.baseUrl + "ajax/get_company",
+                type: "POST",
+                dataType: "JSON",
+                data: { id: company }
+            }).done(function (response) {
+                if (response.success) {
+                    $.each(response.data.general, function (key, val) {
+                        $panel.find('#cosearch input[name="' + key + '"]').val(val);
+                    });
+                    $panel.find('#cosearchresult .table-container table').hide();
+                    $panel.find('#cosearchresult .none-found').show();
+                }
+                $('.tt').tooltip();
+            });
+        },
+        get_company: function (company_no) {
+            var $panel = $(record.company_panel.config.panel);
+            var form = $('.update-company-form');
+
+            $panel.find('.search-container').fadeOut(1000, function () {
+                $panel.find('.get-company-container').fadeIn(1000);
+            });
+            $.ajax({
+                url: helper.baseUrl + "companyhouse/get_company",
+                type: "POST",
+                dataType: "JSON",
+                data: { 'company_no': company_no }
+            }).done(function (response) {
+                form.find('input[name="company_id"]').val($('.search-company-form').find('input[name="company_id"]').val());
+                form.find('input[name="company_name"]').val(response.company_name);
+                form.find('input[name="company_number"]').val(response.company_number);
+                form.find('input[name="date_of_creation"]').val(response.date_of_creation);
+                form.find('input[name="company_status"]').val(response.company_status);
+
+                if (response.registered_office_address) {
+                    form.find('input[name="postal_code"]').val(response.registered_office_address.postal_code);
+                    form.find('input[name="address_line_1"]').val(response.registered_office_address.address_line_1);
+                    form.find('input[name="address_line_2"]').val(response.registered_office_address.address_line_2);
+                    form.find('input[name="locality"]').val(response.registered_office_address.locality);
+                }
+                $('.company-officers').empty();
+                var i = 1;
+                var officers_table = '<table class="table">' +
+                        '<thead>' +
+                            '<th></th>' +
+                            '<th>Name</th>' +
+                            '<th>Position</th>' +
+                            '<th>DOB</th>' +
+                        '</thead>' +
+                        '<tbody>';
+                var officer_val = '';
+                    $.each(response.officer_summary.officers, function (key, val) {
+                    officer_val = val.name+'_'+val.officer_role+'_'+val.date_of_birth;
+                    officers_table += '<tr>' +
+                                '<td><input type="checkbox" name="officer['+i+']" value="'+officer_val+'"></td>' +
+                                '<td>' + val.name + '</td>' +
+                                '<td>' + val.officer_role + '</td>' +
+                                '<td>' + val.date_of_birth + '</td>' +
+                            '</tr>';
+                    i++;
+                });
+                officers_table += '</tbody></table>';
+
+                $('.company-officers').append(officers_table);
+            });
+        },
+        close_get_company: function () {
+            var $panel = $(record.company_panel.config.panel);
+            $panel.find('.get-company-container').fadeOut(1000, function () {
+                $panel.find('.search-container').fadeIn(1000);
+            });
+        },
+        update_company: function (start_index) {
+            $.ajax({
+                url: helper.baseUrl + "companyhouse/update_company",
+                type: "POST",
+                dataType: "JSON",
+                global: false,
+                data: $('.update-company-form').serialize()
+            }).done(function (response) {
+                if (response.success) {
+                    record.company_panel.load_panel(record.urn, $('.search-company-form').find('input[name="company_id"]').val());
+                    record.contact_panel.load_panel(record.urn, $('.search-company-form').find('input[name="company_id"]').val());
+                    record.company_panel.close_get_company();
+                    flashalert.success(response.msg);
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+
+            });
+        }
     },
     //emails panel functions
     email_panel: {

@@ -14,7 +14,7 @@ class Company_model extends CI_Model
     
     public function get_company($id)
     {
-        $qry     = "select *,c.description as codescription,ct.description as ctdescription from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) where company_id = '$id'";
+        $qry     = "select *,c.description as codescription,ct.description as ctdescription, date_format(c.date_of_creation,'%d/%m/%Y') date_of_creation from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) where company_id = '$id'";
         //$this->firephp->log($qry);
         $results = $this->db->query($qry)->result_array();
         foreach ($results as $result):
@@ -27,7 +27,9 @@ class Company_model extends CI_Model
                 "description" => $result['codescription'],
 				"employees" => $result['employees'],
 				"turnover" => $result['turnover'],
-				"conumber" => $result['conumber']
+				"conumber" => $result['conumber'],
+                "status" => $result['status'],
+                "date_of_creation" => $result['date_of_creation']
             );
             if ($result['telephone_id']) {
                 $company['telephone'][$result['telephone_id']] = array(
@@ -129,5 +131,24 @@ class Company_model extends CI_Model
 	
 		return $insert_id;
 	}
+
+    public function save_company_address ($form) {
+        $this->db->insert("company_addresses", $form);
+
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+
+        return $insert_id;
+    }
+
+    public function update_company ($form) {
+
+        $this->db->where("company_id", $form['company_id']);
+        $result = $this->db->update("companies", $form);
+
+        $this->db->trans_complete();
+
+        return $result;
+    }
 	
 }
