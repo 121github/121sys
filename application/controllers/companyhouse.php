@@ -96,11 +96,11 @@ class Companyhouse extends CI_Controller
                     $aux = array();
 
                     $aux['urn'] = $form['urn'];
-                    $aux['firstname'] = $contact_name[1];
-                    $aux['lastname'] = $contact_name[0];
+                    $aux['firstname'] = (isset($contact_name[1])?$contact_name[1]:'');
+                    $aux['lastname'] = (isset($contact_name[0])?$contact_name[0]:'');
                     $aux['fullname'] = $aux['firstname'].' '.$aux['lastname'];
-                    $aux['position'] = $contact[1];
-                    $aux['dob'] = $contact[2];
+                    $aux['position'] = (isset($contact[1])?$contact[1]:'');
+                    $aux['dob'] = (isset($contact[2])?$contact[2]:'');
                     $contact = $aux;
 
                     $contact_id = $this->Contacts_model->save_contact($contact);
