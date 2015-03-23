@@ -110,7 +110,7 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
                 'cf_sales_lead_psl_review_person' => $data['psl_exists'],
                 //'cf_sales_lead_year_established' => 2002,
                 //'org_lead_party[organisation_annual_revenue]' => 0.2,
-                'cf_sales_lead_industry_description' => $data['industry_sector'],
+                'cf_sales_lead_industry_description' => substr($data['industry_sector'],0,248),
             );
 
             $response = $this->create_data('crm/sales_leads', $data);
