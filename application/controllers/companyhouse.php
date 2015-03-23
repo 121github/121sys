@@ -22,7 +22,7 @@ class Companyhouse extends CI_Controller
     public function search_companies() {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
-            $search = str_replace(" ","+",$form['search']);
+            $search = urlencode($form['search']);
             $num_per_page = (isset($form['num_per_page'])?$form['num_per_page']:"");
             $start_index = (isset($form['start_index'])?$form['start_index']:"");
 
