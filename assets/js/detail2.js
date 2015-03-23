@@ -1373,6 +1373,9 @@ var record = {
             var name = $form.find('input[name="name"]').val();
             var conumber = $form.find('input[name="conumber"]').val();
             var search = name+(name.length==0?"":" ")+conumber;
+			if(conumber.length>0){
+			var search = conumber;	
+			}
             var num_results = 5;
             start_index = (start_index?start_index:0);
             $('.result-pagination').empty();
