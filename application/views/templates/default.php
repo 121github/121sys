@@ -93,7 +93,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
   <?php if(isset($_SESSION['permissions'])){ ?>
   <ul>
     <li><a href="#">Home</a></li>
+    <?php if(in_array("use callpot", $_SESSION['permissions'])){ 
+	if (isset($_SESSION['current_campaign'])) { ?>
     <li><a href="<?php echo base_url(); ?>records/detail">Start Calling</a></li>
+    <?php } else { ?>
+    <li><a href="#" style="color:red">You must select a campaign</a></li>
+    <?php } } ?>
     <li><a href="#mm-1">Dashboard</a>
       <ul>
         <li <?php echo @($page == 'favorites_dash' ? "class=Selected'" : "") ?>> <a href="<?php echo base_url() ?>dashboard/favorites" >Favorites</a></li>
