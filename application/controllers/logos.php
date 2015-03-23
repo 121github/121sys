@@ -31,9 +31,7 @@ class Logos extends CI_Controller
     			'campaign_access' => $this->_campaigns,
     			'pageId' => 'Admin',
     			'title' => 'Campaign logos',
-    			'page' => array(
-    					'admin' => 'logos'
-    			),
+    			'page' => 'logos',
     			'javascript' => array(	
 				'lib/dropzone.js'
     			),

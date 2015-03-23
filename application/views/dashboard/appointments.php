@@ -1,10 +1,4 @@
 
-<div id="wrapper">
-  <div id="sidebar-wrapper">
- <?php  $this->view('dashboard/navigation.php',$page) ?>
-  </div>
-  <div id="page-content-wrapper">
-    <div id="page-wrapper">
       <div class="row">
         <div class="col-lg-12">
           <h1 class="page-header">Appointments</h1>
@@ -20,9 +14,6 @@
         
     </div>
 
-</div>
-</div>
-</div>
 <script>
 $(document).ready(function(){
 appointment.init();

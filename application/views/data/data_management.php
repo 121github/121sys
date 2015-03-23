@@ -1,10 +1,3 @@
-
-<div id="wrapper">
-<div id="sidebar-wrapper">
- <?php  $this->view('dashboard/navigation.php',$page) ?>
-</div>
-<div id="page-content-wrapper">
-<div id="page-wrapper">
   <div class="row">
     <div class="col-lg-12">
       <h1 class="page-header">Data Management</h1>
@@ -76,9 +69,7 @@
       </div>
       </form>
       <!-- /.row --> 
-    </div>
-    <!-- /#page-wrapper --></div>
-</div>
+
 <script>
     $(document).ready(function() {
         data_manager.init();

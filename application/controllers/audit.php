@@ -22,8 +22,8 @@ class Audit extends CI_Controller
 public function index(){
 	 $data = array(
             'campaign_access' => $this->_campaigns,
-            'pageId' => 'System Audit',
-            'title' => 'System Audit',
+            'page' => 'audit',
+            'title' => 'System Audit'
         );
         $this->template->load('default', 'audit/audit_list.php', $data);
 }

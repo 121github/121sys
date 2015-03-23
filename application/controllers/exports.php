@@ -26,10 +26,7 @@ class Exports extends CI_Controller
                 'lib/daterangepicker.js',
                 'export.js'
             ),
-            'page' => array(
-                'admin' => 'data',
-            	'inner' => 'export'
-            ),
+            'page' => 'export_data',
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'

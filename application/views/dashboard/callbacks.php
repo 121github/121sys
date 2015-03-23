@@ -1,10 +1,3 @@
-
-<div id="wrapper">
-  <div id="sidebar-wrapper">
-    <?php  $this->view('dashboard/navigation.php',$page) ?>
-  </div>
-  <div id="page-content-wrapper">
-    <div id="page-wrapper">
       <div class="row">
         <div class="col-lg-12">
           <h1 class="page-header">Callbacks</h1>
@@ -12,79 +5,6 @@
         <!-- /.col-lg-12 --> 
       </div>
       <!-- /.row -->
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="panel panel-primary" id="a_favorites">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Favorites 
-            <div class="pull-right">
-              <form class="favorites-filter" data-func="favorites_panel">
-            	<div class="btn-group">
-                  <input type="hidden" name="campaign">
-                  <input type="hidden" name="team">
-                  <input type="hidden" name="agent">
-                  <input type="hidden" name="source">
-			      <input type="hidden" name="colname">
-</div>
-			      
-                  <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
-	                  <ul class="dropdown-menu pull-right" role="menu">
-	                    <?php foreach($campaigns as $row): ?>
-	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="campaign"><?php echo $row['name'] ?></a> </li>
-	                    <?php endforeach ?>
-	                    <li class="divider"></li>
-	                    <li><a class="filter" ref="#" style="color: green;" data-ref="campaign">All campaigns</a> </li>
-	                  </ul>
-                  </div>
-                  <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
-                  <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
-	                  <ul class="dropdown-menu pull-right" role="menu">
-	                    <?php foreach($agents as $row): ?>
-	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="agent"><?php echo $row['name'] ?></a> </li>
-	                    <?php endforeach ?>
-	                    <li class="divider"></li>
-	                    <li><a class="filter" ref="#" style="color: green;" data-ref="agent">All Agents</a> </li>
-	                  </ul>
-                  </div>
-                  <?php } ?>
-                    <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
-                  <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
-	                  <ul class="dropdown-menu pull-right" role="menu">
-	                    <?php foreach($team_managers as $row): ?>
-	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="source"><?php echo $row['name'] ?></a> </li>
-	                    <?php endforeach ?>
-	                    <li class="divider"></li>
-	                    <li><a class="filter" ref="#" style="color: green;" data-ref="team">All Teams</a> </li>
-	                  </ul>
-                  </div>
-                 <?php } ?>
-                  <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Source</button>
-	                  <ul class="dropdown-menu pull-right" role="menu">
-	                    <?php foreach($sources as $row): ?>
-	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="source"><?php echo $row['name'] ?></a> </li>
-	                    <?php endforeach ?>
-	                    <li class="divider"></li>
-	                    <li><a class="filter" ref="#" style="color: green;" data-ref="source">All Sources</a> </li>
-	                  </ul>
-                  </div>
-                </form>
-                </div>
-                </div>
-            <div class="panel-body favorites-panel"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
-          </div>
-        </div>
-        <!--
-        <div class="col-lg-6">
-          <div class="panel panel-primary" id="a_favorites">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites</div>
-            <div class="panel-body favorites-panel"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
-          </div>
-        </div>
-        -->
-        </div>
         
           <div class="row">
             <div class="col-lg-12">
@@ -154,13 +74,7 @@
           <div class="panel-body callbacks"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
           <!-- /.panel-body --> 
         </div>
-        
-      
-      <!-- /.row --> 
-    </div>
-    <!-- /#page-wrapper --> 
-  </div>
-</div>
+
 <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
 
 <!-- Page-Level Plugin Scripts - Dashboard --> 
@@ -172,7 +86,6 @@
 <script>
 	$(document).ready(function(){
 		dashboard.init();
-		dashboard.favorites_panel();
 		dashboard.callbacks_panel();
 
         $('.daterange').daterangepicker({
@@ -208,12 +121,6 @@ console.log(start.format('YYYY-MM-DD'));
             e.preventDefault();
         });
 
-	$("#my_favorites").on("click", function(){
-		$("html,body").animate(
-				{ scrollTop : $("#a_favorites").offset().top  },
-				1500 
-		);
-	});
 	});
 	-->
 	</script> 

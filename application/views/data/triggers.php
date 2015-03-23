@@ -1,9 +1,3 @@
-<div id="wrapper">
-    <div id="sidebar-wrapper">
-        <?php $this->view('dashboard/navigation.php', $page) ?>
-    </div>
-    <div id="page-content-wrapper">
-        <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Triggers </h1>
@@ -170,10 +164,7 @@
             <!-- /.col-lg-8 -->
 
             <!-- /.row -->
-        </div>
-        <!-- /#page-wrapper -->
-    </div>
-</div>
+
 
 <div class="panel panel-primary email-trigger-container">
     <?php $this->view('forms/edit_email_trigger_form.php'); ?>

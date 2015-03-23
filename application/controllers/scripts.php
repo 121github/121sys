@@ -26,7 +26,7 @@ $this->_campaigns = campaign_access_dropdown();
 				'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
 				'title' => 'Admin',
-				'page'=> array('admin'=>'scripts'),
+				'page'=> 'scripts',
 				'css' => array(
 						'dashboard.css',
 				),

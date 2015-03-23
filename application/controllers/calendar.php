@@ -45,9 +45,8 @@ class Calendar extends CI_Controller
             'campaign_access' => $this->_campaigns,
 			'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-            'page' => array(
-                'admin' => 'data'
-            ),
+            'page' => 'data'
+            ,
             'javascript' => array(
 			'lib/underscore.js',
                 'plugins/calendar/js/calendar.js',

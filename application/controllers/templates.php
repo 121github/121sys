@@ -28,7 +28,7 @@ $this->_campaigns = campaign_access_dropdown();
 				'campaign_access' => $this->_campaigns,
 'pageId' => 'Dashboard',
 				'title' => 'Dashboard',
-				'page'=> array('admin'=>'templates'),
+				'page'=> 'templates',
 				'css' => array(
 						'dashboard.css',
 						'plugins/summernote/summernote.css',

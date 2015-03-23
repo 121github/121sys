@@ -24,10 +24,7 @@ class Time extends CI_Controller
     			'campaign_access' => $this->_campaigns,
     			'pageId' => 'Admin',
     			'title' => 'Admin | Time',
-    			'page' => array(
-    					'admin' => 'time',
-    					'inner' => 'time',
-    			),
+    			'page' =>  'agent_time',
     			'javascript' => array(
     					'admin/time.js',
     					'lib/moment.js',
@@ -293,10 +290,7 @@ class Time extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Time',
-            'page' => array(
-                'admin' => 'time',
-                'inner' => 'time',
-            ),
+            'page' => 'default_time',
             'javascript' => array(
                 'admin/time.js',
                 'lib/moment.js',

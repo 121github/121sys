@@ -246,7 +246,7 @@ class Form_model extends CI_Model
     public function get_managers()
     {
         if (in_array("all campaigns", $_SESSION['permissions'])) {
-            $qry = "select user_id id,name from users where user_id in team_managers ";
+            $qry = "select user_id id,name from users where user_id in (select user_id from team_managers) and user_status = 1";
         } else {
             $qry = "select user_id id,name from users where user_id in team_managers left join users using(user_id) where group_id = '{$_SESSION['group']}'";
         }

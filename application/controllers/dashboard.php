@@ -33,7 +33,7 @@ class Dashboard extends CI_Controller
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-			'page'=> array('dashboard'=>'overview'),
+			'page'=> 'overview',
             'javascript' => array(
                 'charts.js',
                 'dashboard.js',
@@ -80,7 +80,7 @@ class Dashboard extends CI_Controller
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-			'page'=> array('dashboard'=>'callbacks'),
+			'page'=> 'callback_dash',
             'javascript' => array(
                 'charts.js',
                 'dashboard.js',
@@ -102,6 +102,54 @@ class Dashboard extends CI_Controller
         );
         $this->template->load('default', 'dashboard/callbacks.php', $data);
     }
+	
+	    //this is the controller loads the initial view for the favorites
+    public function favorites()
+    {
+		$agents       = $this->Form_model->get_agents();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources      = $this->Form_model->get_sources();
+        $campaigns = $this->Form_model->get_user_campaigns();
+        $type = $this->uri->segment(3);
+		if($type=="missed"){
+			$date_from = date('2014-07-02');
+			$date_to = date('Y-m-d H:s');
+			$btntext = "Missed";
+		} else if($type=="upcoming"){
+			$date_from = date('Y-m-d H:s');
+			$date_to = date('2020-01-01'); //if i'm not here in 5 years this might break :O
+			$btntext = "Upcoming";
+		} else {
+			$date_from = "";
+			$date_to = "";
+			$btntext = "";
+		}
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
+            'title' => 'Dashboard',
+			'page'=> 'favorites_dash',
+            'javascript' => array(
+                'charts.js',
+                'dashboard.js',
+				'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+			'date_from'=>$date_from,
+			'date_to'=>$date_to,
+			'btntext'=>$btntext,
+            'campaigns' => $campaigns,
+            'sources' => $sources,
+			'agents'=>$agents,
+			'team_managers'=>$teamManagers,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+				'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'dashboard/favorites.php', $data);
+    }
     
     //this is the controller loads the initial view for the activity dashboard
     public function agent()
@@ -118,7 +166,7 @@ class Dashboard extends CI_Controller
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-			'page'=> array('dashboard'=>'client'),
+			'page'=> 'client_dash',
             'javascript' => array(
                 'charts.js',
                 'dashboard.js'
@@ -142,7 +190,7 @@ class Dashboard extends CI_Controller
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-			'page'=> array('dashboard'=>'nbf'),
+			'page'=> 'nbf_dash',
 			'campaigns' => $campaigns,
             'javascript' => array(
                 'charts.js',
@@ -168,7 +216,7 @@ class Dashboard extends CI_Controller
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-			'page'=> array('dashboard'=>'management'),
+			'page'=> 'management_dash',
             'javascript' => array(
                 'charts.js',
                 'dashboard.js',

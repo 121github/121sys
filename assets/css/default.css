@@ -1,3 +1,10 @@
+@media (max-width: 478px) {
+  #small-logo {
+    display: none !important;
+  }
+}
+
+
 @-moz-document url-prefix() {
   fieldset { display: table-cell; }
 }
@@ -6,8 +13,9 @@
 body { overflow-y:scroll;
  }
 
+
 .container-fluid {
-    margin-top: 60px !important;
+    padding:60px 20px;
 }
 
 .form-signin {

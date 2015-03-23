@@ -29,10 +29,13 @@ class Workbooks extends CI_Controller
 
 
         if ($this->input->is_ajax_request()) {
+			if(intval($this->uri->segment(3))>0&&$_SESSION['role']==1){
+			$urn = $this->uri->segment(3);	
+			} else {
             $form = $this->input->post();
-
-            $urn = $form['urn'];
-
+			$urn = $form['urn'];
+			}
+            
             $current_date = new DateTime('now');
 
             //Get the data for this urn

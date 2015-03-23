@@ -1,9 +1,4 @@
-<div id="wrapper">
-    <div id="sidebar-wrapper">
-        <?php $this->view('dashboard/navigation.php', $page) ?>
-    </div>
-    <div id="page-content-wrapper">
-        <div id="page-wrapper">
+
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Archive and Restore</h1>
@@ -128,9 +123,7 @@
                     </form>
                 </div>
             </div><!-- /.row -->
-        </div><!-- /#page-wrapper -->
-    </div>
-</div>
+
 <script>
     $(document).ready(function () {
         backup_restore.init();

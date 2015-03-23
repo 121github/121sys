@@ -1,9 +1,4 @@
-<div id="wrapper">
-    <div id="sidebar-wrapper">
-        <?php $this->view('dashboard/navigation.php',$page) ?>
-    </div>
-    <div id="page-content-wrapper">
-        <div id="page-wrapper">
+
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Data Admin <span id="campaign-name-title" class="small"></span> <span class="small" id="campaign-type-title"></span></h1>
@@ -140,10 +135,7 @@
                 </div>
 
                 <!-- /.row -->
-            </div>
-            <!-- /#page-wrapper -->
-        </div>
-    </div>
+
 
     <script src="<?php echo base_url() ?>assets/js/plugins/jqfileupload/vendor/jquery.ui.widget.js"></script>
     <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->

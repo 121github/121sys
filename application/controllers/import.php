@@ -45,11 +45,8 @@ echo json_encode(array("success"=>true));
         $sources   = $this->Form_model->get_sources();
         $data      = array(
             'campaign_access' => $this->_campaigns,
-			'pageId' => 'Dashboard',
-            'title' => 'Dashboard',
-            'page' => array(
-                'admin' => 'data'
-            ),
+            'title' => 'Import Data',
+            'page' => 'import_data',
             'javascript' => array(
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',

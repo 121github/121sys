@@ -31,7 +31,7 @@ class Database extends CI_Controller
         //Get the version after update the schema
         $version = $this->Database_model->get_version();
         $data = array(
-            'page' => array('admin' => 'data'),
+            'page' => 'database',
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Database-management',
             'version' => $version,

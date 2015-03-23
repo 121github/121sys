@@ -1,10 +1,4 @@
 
-<div id="wrapper">
-  <div id="sidebar-wrapper">
- <?php  $this->view('dashboard/navigation.php',$page) ?>
-  </div>
-  <div id="page-content-wrapper">
-    <div id="page-wrapper">
       <div class="row">
         <div class="col-lg-12">
           <h1 class="page-header">New Business Dashboard</h1>
@@ -70,9 +64,7 @@
         <!-- /.col-lg-4 --> 
    </div>
       <!-- /.row --> 
-    </div>
-    <!-- /#page-wrapper --></div>
-</div>
+
 <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
 
 <!-- Page-Level Plugin Scripts - Dashboard --> 

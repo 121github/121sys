@@ -1,9 +1,4 @@
-<div id="wrapper">
-  <div id="sidebar-wrapper">
-   <?php  $this->view('dashboard/navigation.php',$page) ?>
-  </div>
-  <div id="page-content-wrapper">
-    <div id="page-wrapper">
+
       <div class="row">
         <div class="col-lg-12">
           <h1 class="page-header">Campaign Admin</h1>
@@ -124,9 +119,7 @@ Outcomes</td>
         </div>
 
       <!-- /.row --> 
-    </div>
-    <!-- /#page-wrapper --></div>
-</div>
+
 <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
 <!-- SB Admin Scripts - Include with every page --> 
 <script src="<?php echo base_url() ?>assets/js/sb-admin.js"></script> 

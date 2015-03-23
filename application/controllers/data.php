@@ -24,11 +24,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
 			'pageId' => 'Admin',
             'title' => 'Admin | Import',
-            'page' => array(
-                'admin' => 'data',
-            	'inner' => 'import'
-            		
-            ),
+            'page' =>  'import',
             'javascript' => array(
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
@@ -42,7 +38,7 @@ $this->_campaigns = campaign_access_dropdown();
                 'plugins/jqfileupload/jquery.fileupload.css'
             )
         );
-        $this->template->load('default', 'data/data.php', $data);
+        $this->template->load('default', 'data/import.php', $data);
     }
     public function import_fields($echo = true)
     {
@@ -114,10 +110,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
 			'pageId' => 'Admin',
             'title' => 'Admin | Data Management',
-            'page' => array(
-                'admin' => 'data',
-            	'inner' => 'management'
-            ),
+            'page' =>'data_allocation',
             'campaigns' => $campaigns,
             'css' => array(
                 'dashboard.css'
@@ -137,10 +130,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Daily Ration',
-            'page' => array(
-                'admin' => 'data',
-                'inner' => 'daily_ration'
-            ),
+            'page' => 'daily_ration',
             'campaigns' => $campaigns,
             'css' => array(
                 'dashboard.css'
@@ -608,10 +598,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Backup and Restore',
-            'page' => array(
-                'admin' => 'data',
-                'inner' => 'backup_restore'
-            ),
+            'page' =>  'backup_restore',
             'campaigns' => $campaigns,
             'css' => array(
                 'dashboard.css'
@@ -877,10 +864,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Outcomes',
-            'page' => array(
-                'admin' => 'data',
-                'inner' => 'outcomes'
-            ),
+            'page' => 'outcomes',
             'css' => array(
                 'dashboard.css'
             ),
@@ -994,10 +978,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Triggers',
-            'page' => array(
-                'admin' => 'data',
-                'inner' => 'triggers'
-            ),
+            'page' => 'triggers',
             'css' => array(
                 'dashboard.css'
             ),
@@ -1207,10 +1188,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Duplicates',
-            'page' => array(
-                'admin' => 'data',
-                'inner' => 'duplicates'
-            ),
+            'page' => 'duplicates',
             'css' => array(
                 'dashboard.css'
             ),
@@ -1324,10 +1302,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Suppression',
-            'page' => array(
-                'admin' => 'data',
-                'inner' => 'suppression'
-            ),
+            'page' =>  'suppression' ,
             'css' => array(
                 'dashboard.css',
                 'daterangepicker-bs3.css'
@@ -1423,10 +1398,7 @@ $this->_campaigns = campaign_access_dropdown();
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Park Codes',
-            'page' => array(
-                'admin' => 'data',
-                'inner' => 'parkcode'
-            ),
+            'page' => 'parkcode',
             'css' => array(
                 'dashboard.css'
             ),

@@ -29,9 +29,7 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Data Capture',
-            'page' => array(
-                'reports' => 'Data Capture'
-            ),
+            'page' => 'data_capture',
 			'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
@@ -63,9 +61,8 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Targets',
-            'page' => array(
-                'reports' => 'targets'
-            ),
+            'page' =>  'targets'
+           ,
             'javascript' => array(
                 'charts.js',
                 'report/targets.js',
@@ -97,9 +94,8 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Answers',
-            'page' => array(
-                'reports' => 'answers'
-            ),
+            'page' => 'answers'
+            ,
             'javascript' => array(
                 'charts.js',
                 'report/answers.js'
@@ -150,9 +146,8 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Activity',
-            'page' => array(
-                'reports' => 'activity'
-            ),
+            'page' => 'activity'
+            ,
             'javascript' => array(
                 'charts.js',
                 'report/activity.js',
@@ -264,10 +259,7 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Campaign Outcme',
-            'page' => array(
-                'reports' => 'outcomes',
-                'inner' => $group
-            ),
+            'page' => "outcome_report_$group",
             'javascript' => array(
                 'charts.js',
                 'report/outcomes.js',
@@ -426,10 +418,7 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Email',
-            'page' => array(
-                'reports' => 'email',
-                'inner' => $group
-            ),
+            'page' =>"email_report_$group",
             'javascript' => array(
                 'charts.js',
                 'report/email.js',
@@ -600,9 +589,7 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Productivity',
-            'page' => array(
-                'reports' => 'productivity'
-            ),
+            'page' => 'productivity',
             'javascript' => array(
                 'charts.js',
                 'report/productivity.js',

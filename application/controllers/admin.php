@@ -43,9 +43,7 @@ class Admin extends CI_Controller
 		"folders"=>$folders,
 		'pageId' => 'Admin',
             'title' => 'Admin',
-            'page' => array(
-                'admin' => 'files'
-            ),
+            'page' => 'files',
 			'css' => array(
                 'dashboard.css'
             ),
@@ -139,9 +137,8 @@ class Admin extends CI_Controller
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
             'title' => 'Admin',
-            'page' => array(
-                'admin' => 'users'
-            ),
+            'page' => 'users'
+            ,
             'options' => $options,
             'javascript' => array(
                 'admin/users.js'
@@ -185,9 +182,7 @@ class Admin extends CI_Controller
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
             'title' => 'Admin',
-            'page' => array(
-                'admin' => 'campaign'
-            ),
+            'page' => 'campaign_setup',
             'javascript' => array(
                 'dashboard.js',
                 'admin/campaigns.js',
@@ -442,9 +437,8 @@ $this->firephp->log($backup_form['months_num']);
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
             'title' => 'Admin',
-            'page' => array(
-                'admin' => 'logs'
-            ),
+            'page' =>  'logs'
+            ,
             'logs' => $logs,
             'css' => array(
                 'dashboard.css'
@@ -464,9 +458,8 @@ $this->firephp->log($backup_form['months_num']);
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
             'title' => 'Admin',
-            'page' => array(
-                'admin' => 'roles'
-            ),
+            'page' => 'roles'
+            ,
             'javascript' => array(
                 'admin/roles.js'
             ),
@@ -534,9 +527,8 @@ $this->firephp->log($backup_form['months_num']);
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
             'title' => 'Admin',
-            'page' => array(
-                'admin' => 'groups'
-            ),
+            'page' => 'groups'
+            ,
             'javascript' => array(
                 'admin/groups.js'
             ),
@@ -574,9 +566,8 @@ $this->firephp->log($backup_form['months_num']);
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
             'title' => 'Admin',
-            'page' => array(
-                'admin' => 'teams'
-            ),
+            'page' => 'teams'
+            ,
             'javascript' => array(
                 'admin/teams.js'
             ),
@@ -694,9 +685,7 @@ $this->firephp->log($backup_form['months_num']);
     			'campaign_access' => $this->_campaigns,
     			'pageId' => 'Admin',
     			'title' => 'Campaign custom fields',
-    			'page' => array(
-    					'admin' => 'custom_fields'
-    			),
+    			'page' =>  'custom_fields',
     			'javascript' => array(
     					'admin/customfields.js'
     			),

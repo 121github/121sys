@@ -1,10 +1,4 @@
 
-<div id="wrapper">
-	<div id="sidebar-wrapper">
- <?php  $this->view('dashboard/navigation.php',$page) ?>
-	</div>
-	<div id="page-content-wrapper">
-		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
 					<h1 class="page-header">Hours</h1>
@@ -90,9 +84,7 @@
 					<!-- /.row -->
 				</div>
 				<!-- /#page-wrapper -->
-			</div>
-		</div>
-	</div>
+
 <script>
 	$(document).ready(function(){
 		$('.selectpicker').selectpicker();

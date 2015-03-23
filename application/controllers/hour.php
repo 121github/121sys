@@ -27,10 +27,7 @@ class Hour extends CI_Controller
     			'campaign_access' => $this->_campaigns,
     			'pageId' => 'Admin',
     			'title' => 'Admin | Hours',
-    			'page' => array(
-    					'admin' => 'hours',
-    					'inner' => 'hours',
-    			),
+    			'page' =>  'agent_hours',
     			'javascript' => array(
     					'admin/hours.js',
     					'lib/moment.js',
@@ -180,10 +177,7 @@ class Hour extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Admin',
             'title' => 'Admin | Hours',
-            'page' => array(
-                'admin' => 'hours',
-                'inner' => 'hours',
-            ),
+            'page' => 'default_hours',
             'javascript' => array(
                 'admin/hours.js',
                 'lib/moment.js',

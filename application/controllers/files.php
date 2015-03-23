@@ -51,7 +51,7 @@ class Files extends CI_Controller
            // 'read' => $read,
             //'folder_name' => $folder_name,
             //'folder' => $folder,
-            'pageId' => 'Admin',
+            'page' => 'files',
             'campaign_access' => $this->_campaigns,
             'title' => 'File Manager',
             'user_folders' => $user_folders,
