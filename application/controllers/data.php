@@ -508,10 +508,7 @@ $this->_campaigns = campaign_access_dropdown();
     			'campaign_access' => $this->_campaigns,
     			'pageId' => 'Admin',
     			'title' => 'Admin | Add Record',
-    			'page' => array(
-    					'admin' => 'data',
-    					'inner' => 'add_record'
-    			),
+    			'page' =>'add_record',
     			'campaigns' => $campaigns,
     			'css' => array(
     					'dashboard.css'

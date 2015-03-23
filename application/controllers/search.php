@@ -48,6 +48,7 @@ class Search extends CI_Controller
         $data = array(
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Search',
+			'page'=>"search",
             'title' => 'Search',
             'campaigns' => $campaigns,
             'campaign_types' => $campaign_types,
