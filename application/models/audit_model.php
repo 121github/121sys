@@ -509,7 +509,7 @@ public function audit_data($count=false,$options=false){
 private function get_where($options, $table_columns)
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
-        $where = " where 1 ";
+        $where = " where campaign_id in({$_SESSION['campaign_access']['list']}) ";
         
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {

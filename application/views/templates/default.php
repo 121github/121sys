@@ -185,8 +185,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                         </li>
                                         <li <?php echo @($page == 'groups' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>admin/groups" >Groups</a>
-                                        </li ><?php echo @($page == 'default_time' ? "class='Selected'" : "") ?>>
-                                                                                        <li>
+                                        </li>
+                                       <li <?php echo @($page == 'default_time' ? "class='Selected'" : "") ?>>
                                                     <a href="<?php echo base_url() ?>time/default_time" >Default
                                                         Times</a></li>
                                                                                                   <li <?php echo @($page == 'default_hours' ? "class='Selected'" : "") ?>>

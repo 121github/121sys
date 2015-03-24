@@ -50,7 +50,7 @@ public function index(){
     $audit = $this->Audit_model->audit_modal($id);
 	$values = $this->Audit_model->audit_values($id);
 	$formatted_date = date('D jS M Y',strtotime($audit['timestamp']));
-	$config = array("appointments"=>"An appointment","companies"=>"A company","contacts"=>"A contact", "delete"=>"deleted", "update"=>"updated","insert"=>"inserted");
+	$config = array("company_addresses"=>"A company address","contact_addresses"=>"A contact address","company_telephone"=>"A company phone number","contact_telephone"=>"A contact phone number", "appointments"=>"An appointment","companies"=>"A company","contacts"=>"A contact", "delete"=>"deleted", "update"=>"updated","insert"=>"inserted");
 	$audit['title'] =  $config[$audit['table_name']] . " was " . $config[$audit['change_type']] . " by " . $audit['name'];
 	$audit['date_formatted'] = $formatted_date;
 	$result['audit'] = $audit;
