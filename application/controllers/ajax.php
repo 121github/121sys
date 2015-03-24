@@ -333,6 +333,10 @@ class Ajax extends CI_Controller
                 "description",
                 "tps"
             ), array_filter($data, 'strlen'), null))):
+			
+				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+				$this->Audit_model->log_phone_update($data,$urn);
+				
                 echo json_encode(array(
 					"success"=>true,
                     "id" => intval($data['contact_id']),
@@ -366,6 +370,10 @@ class Ajax extends CI_Controller
                 "description",
                 "ctps"
             ), array_filter($data, 'strlen'), null))):
+			
+				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+				$this->Audit_model->log_cophone_update($data,$urn);
+				
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($data['company_id']),
@@ -382,6 +390,9 @@ class Ajax extends CI_Controller
 			$data = $this->input->post();
 			$data['telephone_number'] = numbers_only($data['telephone_number']);
             if ($this->db->insert('contact_telephone', array_filter($data))):
+				$data['telephone_id'] = $this->db->insert_id();
+				$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
+				$this->Audit_model->log_phone_insert($data,$urn);
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($data['contact_id']),
@@ -398,6 +409,9 @@ class Ajax extends CI_Controller
 			$data = $this->input->post();
 			$data['telephone_number'] = numbers_only($data['telephone_number']);
             if ($this->db->insert('company_telephone', array_filter($data))):
+			$data['telephone_id'] = $this->db->insert_id();
+			$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+			$this->Audit_model->log_cophone_insert($data,$urn);
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($data['company_id']),
@@ -413,6 +427,8 @@ class Ajax extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $this->db->where('telephone_id', numbers_only($this->input->post('id')));
             if ($this->db->delete('contact_telephone')):
+				$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
+				$this->Audit_model->log_phone_delete($data,$urn);
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($this->input->post('contact')),
@@ -427,6 +443,8 @@ class Ajax extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $this->db->where('telephone_id', intval($this->input->post('id')));
             if ($this->db->delete('company_telephone')):
+				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+				$this->Audit_model->log_cophone_delete($data,$urn);
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($this->input->post('company')),
@@ -470,6 +488,8 @@ class Ajax extends CI_Controller
                 "contact_id",
                 "primary"
             ), $data))):
+				$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
+				$this->Audit_model->log_address_update($data,$urn);
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($this->input->post('contact_id')),
@@ -518,6 +538,8 @@ class Ajax extends CI_Controller
                 "company_id",
                 "primary"
             ), $data))):
+				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+				$this->Audit_model->log_coaddress_update($data,$urn);
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($data['company_id']),
@@ -558,6 +580,9 @@ class Ajax extends CI_Controller
                 "contact_id",
                 "primary"
             ), $data))):
+			$data['address_id'] = $this->db->last_insert();
+			$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
+			$this->Audit_model->log_address_insert($data,$urn);
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($data['contact_id']),
@@ -599,6 +624,8 @@ class Ajax extends CI_Controller
                 "company_id",
                 "primary"
             ), $data))):
+						$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+			$this->Audit_model->log_coaddress_insert($data,$urn);
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($data['company_id']),

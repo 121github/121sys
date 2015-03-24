@@ -311,6 +311,123 @@ class Audit_model extends CI_Model {
     }
 	
 //appointment deleted	
+
+//cophone inserted
+    public function log_cophone_insert($data = array(),$urn=NULL) {
+			$id = $data['telephone_id'];
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "insert",
+                'table_name' => 'contact_telephone',
+                'reference' => $id,
+				'urn' => $urn
+            );
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		
+		$log_fields = array("telephone_id","company_id","telephone_number","description","ctps");
+		
+        foreach ($data as $column => $value) {
+            if (in_array($column,$log_fields)&&!empty($value)) {
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $column,
+                'oldval' => "",
+                'newval' => $value
+            );
+                $this->db->insert('audit_values', $fields);
+            }
+        }
+        return $audit_id;
+    }
+
+
+//cophone inserted
+    public function log_phone_insert($data = array(),$urn=NULL) {
+			$id = $data['telephone_id'];
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "insert",
+                'table_name' => 'contact_telephone',
+                'reference' => $id,
+				'urn' => $urn
+            );
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		
+		$log_fields = array("telephone_id","contact_id","telephone_number","description","ctps");
+		
+        foreach ($data as $column => $value) {
+            if (in_array($column,$log_fields)&&!empty($value)) {
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $column,
+                'oldval' => "",
+                'newval' => $value
+            );
+                $this->db->insert('audit_values', $fields);
+            }
+        }
+        return $audit_id;
+    }
+
+//cophone inserted
+    public function log_address_insert($data = array(),$urn=NULL) {
+			$id = $data['address_id'];
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "insert",
+                'table_name' => 'contact_address',
+                'reference' => $id,
+				'urn' => $urn
+            );
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		
+		$log_fields = array("address_id","contact_id","add1","add2","add3","county","country","postcode");
+		
+        foreach ($data as $column => $value) {
+            if (in_array($column,$log_fields)&&!empty($value)) {
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $column,
+                'oldval' => "",
+                'newval' => $value
+            );
+                $this->db->insert('audit_values', $fields);
+            }
+        }
+        return $audit_id;
+    }
+	
+	public function log_coaddress_insert($data = array(),$urn=NULL) {
+			$id = $data['address_id'];
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "insert",
+                'table_name' => 'company_address',
+                'reference' => $id,
+				'urn' => $urn
+            );
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		
+		$log_fields = array("address_id","company_id","add1","add2","add3","county","country","postcode");
+		
+        foreach ($data as $column => $value) {
+            if (in_array($column,$log_fields)&&!empty($value)) {
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $column,
+                'oldval' => "",
+                'newval' => $value
+            );
+                $this->db->insert('audit_values', $fields);
+            }
+        }
+        return $audit_id;
+    }
+
 //this function should be ran BEFORE the deletion actually occurs so it can make a log of the old data
     public function log_appointment_delete($appointment_id) {
 		
@@ -385,6 +502,9 @@ public function audit_data($count=false,$options=false){
 	$result = $this->db->query($qry)->result_array();
 	return $result;
 }
+
+
+
 
 private function get_where($options, $table_columns)
     {

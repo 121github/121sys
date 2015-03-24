@@ -174,7 +174,7 @@ class Records extends CI_Controller
         
         $data = array(
             'campaign_access' => $this->_campaigns,
-            'pageId' => 'list-records',
+            'page' => '',
             'campaign' => $campaign,
             'title' => 'Record Details',
             'details' => $details,
