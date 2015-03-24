@@ -295,7 +295,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                             <a href="#logs">Logs</a>
                                             <ul id="logs">
                                             <li <?php echo @($page == 'logs' ? "class='Selected'" : "") ?>><a href="<?php echo base_url() ?>admin/logs">Access Logs</a></li>
-                                             <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a href="<?php echo base_url() ?>audit">Data Logs</a></li>
+                                             <li <?php echo @($page == 'admin_audit' ? "class='Selected'" : "") ?>><a href="<?php echo base_url() ?>audit">Data Logs</a></li>
                                             </ul>
                                         </li>
                                     <?php } ?>
@@ -317,6 +317,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                             <a href="<?php echo base_url() ?>reports/activity" >Activity</a>
                                         </li>
                                     <?php } ?>
+                                        <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
                                     <li>
                                         <a href="#reports-outcomes">Outcomes</a>
                                         <ul id="reports-outcomes">
