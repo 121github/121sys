@@ -34,7 +34,7 @@
     <div class="tab-pane" id="cosearchresult">
         <a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img style="margin-bottom: 5px;" height="40px;" src="<?php echo base_url(); ?>assets/img/companieshouse.png"></a>
         <div class="table-container">
-            <table class="table search-table">
+            <table class="table table-hover search-table">
                 <thead>
                     <th>Name</th>
                     <th>Number</th>

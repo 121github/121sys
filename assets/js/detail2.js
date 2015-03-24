@@ -1386,14 +1386,15 @@ var record = {
                 dataType: "JSON",
                 data: {'search': search, 'num_per_page': num_results, 'start_index': start_index}
             }).done(function (response) {
-                $('.searchresult-tab').find('.num-results').html(response.totalResults);
+                $('.searchresult-tab').find('.num-results').html((response.totalResults < 200?response.totalResults:'> 200'));
                 $('.nav-tabs a[href="#cosearchresult"]').tab('show');
                 var tbody = $panel.find('#cosearchresult .table-container table tbody');
                 tbody.empty();
                 if (response.totalResults>0) {
+                    response.totalResults = (response.totalResults < 200?response.totalResults:199);
                     $panel.find('#cosearchresult .table-container table').show();
                     $.each(response.items, function (key, val) {
-                        tbody.append("<tr item-number='"+val.number.replace('<strong>','').replace('</strong>','')+"'>" +
+                        tbody.append("<tr class='pointer' item-number='"+val.number.replace('<strong>','').replace('</strong>','')+"'>" +
                                 "<td>"+val.name+"</td>" +
                                 "<td>"+val.number+"</td>" +
                                 "<td>"+val.status+"</td>" +
@@ -1402,13 +1403,13 @@ var record = {
                     });
                     if (response.totalResults>num_results) {
                         var num_pages = Math.ceil(response.totalResults/num_results);
-                        var prev = (response.page_number==1?'disabled':'');
-                        var next = (response.page_number==num_pages?'disabled':'');
+                        var prev = (response.page_number==1?'disabled':'search-next-company-action');
+                        var next = (response.page_number==num_pages?'disabled':'search-next-company-action');
 
                         var pagination = '';
                         pagination += '<ul class="pagination">';
-                        pagination += '<li class="search-next-company-action '+prev+'" item-start-index="0"><a href="#">'+"<<"+'</a></li>';
-                        pagination += '<li class="search-next-company-action '+prev+'" item-start-index="'+Math.ceil((response.page_number-2)*num_results)+'"><a href="#">'+"<"+'</a></li>';
+                        pagination += '<li class="'+prev+'" item-start-index="0"><a href="#">'+"<<"+'</a></li>';
+                        pagination += '<li class="'+prev+'" item-start-index="'+Math.ceil((response.page_number-2)*num_results)+'"><a href="#">'+"<"+'</a></li>';
 
                         for(var i = 1; i <= num_pages; i++) {
                             var active = ((response.page_number) == i?'active':'');
@@ -1417,8 +1418,8 @@ var record = {
                                 pagination += '<li class="search-next-company-action '+active+'" item-start-index="'+Math.ceil((i-1)*num_results)+'"><a href="#">'+i+'</a></li>';
                             }
                         }
-                        pagination +=  '<li class="search-next-company-action '+next+'" item-start-index="'+Math.ceil((response.page_number)*num_results)+'"><a href="#">'+">"+'</a></li>';
-                        pagination +=  '<li class="search-next-company-action '+next+'" item-start-index="'+Math.ceil((num_pages-1)*num_results)+'"><a href="#">'+">>"+'</a></li>';
+                        pagination +=  '<li class="'+next+'" item-start-index="'+Math.ceil((response.page_number)*num_results)+'"><a href="#">'+">"+'</a></li>';
+                        pagination +=  '<li class="'+next+'" item-start-index="'+Math.ceil((num_pages-1)*num_results)+'"><a href="#">'+">>"+'</a></li>';
                         pagination += '</ul>';
                         $('.result-pagination').append(pagination);
                     }
@@ -1483,12 +1484,13 @@ var record = {
                         '<tbody>';
                 var officer_val = '';
                     $.each(response.officer_summary.officers, function (key, val) {
-                    officer_val = val.name+'_'+val.officer_role+'_'+val.date_of_birth;
-                    officers_table += '<tr>' +
-                                '<td><input type="checkbox" name="officer['+i+']" value="'+officer_val+'"></td>' +
+                    officer_val = val.name+'_'+val.officer_role+'_'+(val.date_of_birth?val.date_of_birth:'');
+                    var checkbox = ((val.name.length>0)&&(val.officer_role.length>0)&&(val.date_of_birth)?'<input type="checkbox" name="officer['+i+']" value="'+officer_val+'">':'');
+                    officers_table += '<tr class="'+(checkbox?'success':'danger')+'">' +
+                                '<td>'+checkbox+'</td>' +
                                 '<td>' + val.name + '</td>' +
                                 '<td>' + val.officer_role + '</td>' +
-                                '<td>' + val.date_of_birth + '</td>' +
+                                '<td>' + (val.date_of_birth?val.date_of_birth:'') + '</td>' +
                             '</tr>';
                     i++;
                 });
