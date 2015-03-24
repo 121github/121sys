@@ -93,6 +93,7 @@ var importer = {
             }
         }).done(function(response) {
             if (response.success) {
+				$('.tt').tooltip();
                 $('.goto-step-3').show();
             } else {
 				if(response.error){
@@ -321,7 +322,11 @@ var importer = {
             dataType: "JSON"
         }).done(function(response) {
             if (response.success) {
+				if($('#merge-options').val()){
+					importer.merge_contacts();
+				} else {
                   importer.tidy_up();
+				}
             } else {
 				$('#import-progress').html("<span class='red'>Import failed while adding the company addresses</span>");
                 flashalert.danger("Import failed while adding the company addresses");
@@ -329,6 +334,26 @@ var importer = {
             }
         });
     },
+	merge_contacts:function(){
+		 $('#import-progress').text("Merging contacts to companies...");
+		 if($('#merge-contacts').val()=="1"){
+			var merge_path = "merge_by_client_refs"
+		 } else if($('#merge-contacts').val()=="2"){
+			 var merge_path = "merge_dupe_companies";
+		 }else if($('#merge-contacts').val()=="3"){
+			 var merge_path = "merge_by_merge_column";
+		 }
+		 $.ajax({
+            url: helper.baseUrl + 'import/'+merge_path,
+            type: "POST",
+            dataType: "JSON",
+			data: { campaign: $('#campaign').val() }
+        }).done(function(response) {
+            if (response.success) {
+                importer.tidy_up();
+            }
+		});
+	},
 	    tidy_up: function() {
         $('#import-progress').text("Cleaning up any mess...");
         $.ajax({

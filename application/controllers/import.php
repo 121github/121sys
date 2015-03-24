@@ -517,6 +517,9 @@ $this->db->query($renewals);
             "company_tel_Fax" => "Company Fax",
 			"company_tel_Transfer" => "Company Transfer"
             );
+			 $fields['merge_companies'] = array(
+			 "merge_column" => "Merge Column"
+			 );
         } else {
             $fields['contact_addresses'] = array(
                 "contact_add1" => "Address 1",
@@ -622,83 +625,102 @@ $this->db->query($renewals);
 	
 	//this function is used to merge contacts for when a record has multiple contacts
 	public function merge_dupe_companies(){
-		$campaign_id = $this->input->post('campaign');
-	$qry = "select name,urn,concat(substring(companies.name, 1, 4 ),add1,postcode) as dupe from companies left join records using(urn) left join contacts using(urn) left join company_addresses using(company_id) where campaign_id = $campaign_id and add1 is not null and postcode is not null group by concat(substring(companies.name, 1, 4 ),add1,postcode) having count(concat(substring(companies.name, 1, 4 ),add1,postcode)) > 1";
+		if(intval($this->uri->segment(3))>0){
+			$campaign_id = $this->uri->segment(3); } else {
+	$campaign_id = $this->input->post('campaign');
+			}
+	$qry = "select name,urn,concat(substring(companies.name, 1, 4 ),add1,postcode) as dupe from companies left join records using(urn) left join contacts using(urn) left join company_addresses using(company_id) where campaign_id = $campaign_id and add1 is not null and postcode is not null group by concat(substring(companies.name, 1, 4 ),add1,postcode) having count(concat(substring(companies.name, 1, 4 ),add1,postcode)) > 1 ";
 	$array = $this->db->query($qry)->result_array();
 	$dupes = array();
 	foreach($array as $row){
 		$dupes[$row['dupe']]=array("name"=>$row['name'],"urn"=>$row['urn']);
 	}
 	foreach($dupes as $ref => $array){
-	$update = "update contacts left join companies using(urn) left join company_addresses using(company_id) set contacts.urn = {$array['urn']} where concat(substring(companies.name, 1, 4 ),add1,postcode) = '$ref'";
-	//echo $update.";<br>";
-	echo $array['name'] .": ". $ref.";<br>";
-	//$this->db->query($update);
-	$find_removed ="select urn from client_refs where concat(substring(companies.name, 1, 4 ),add1,postcode) = '$ref' and urn <> '{$array['urn']}'";
+	$update = "update contacts left join companies using(urn) left join company_addresses using(company_id) set contacts.urn = {$array['urn']} where concat(substring(companies.name, 1, 4 ),add1,postcode) = '".addslashes($ref)."'";
+	//echo $array['name'] .": ". $ref.";<br>";
+	$this->db->query($update);
+	$find_removed ="select urn from companies left join company_addresses using(company_id) where concat(substring(companies.name, 1, 4 ),add1,postcode) = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
+	echo ";<br>";
 	foreach($this->db->query($find_removed)->result_array() as $row){
-		//$this->db->query("delete from records where urn = '{$row['urn']}'");
-		//$this->db->query("delete from companies where urn = '{$row['urn']}'");
-		//$this->db->query("delete from records where urn = '{$row['urn']}'");
+		$this->db->query("delete from records where urn = '{$row['urn']}'");
+		$this->db->query("delete from companies where urn = '{$row['urn']}'");
+		$this->db->query("delete from client_refs where urn = '{$row['urn']}'");
+		$this->db->query("delete from record_details where urn = '{$row['urn']}'");
 			}
 	
 	}
-	
+	echo json_encode(array("success"=>true));
 	}
 	
-	
-	public function merge_by_client_ref(){
-		$campaign_id = $this->input->post('campaign');
-	//find all client_refs that appear more than once
-	$dupe_query = "SELECT client_ref, urn
-FROM client_refs left join records using(urn) where campaign_id = $campaign_id
-GROUP BY client_ref
-HAVING count( client_ref ) >1";	
-	$result = $this->db->query($dupe_query)->result_array();
-	$delete_array = array();
-	$keep_array = array();
-	$delete_list = "";
-	$keep_list = "";
-	foreach($result as $row){
-	$list = "";
-	$comlist = "";
-	$dupe = $row['client_ref'];
-	$urn = $row['urn'];
-	$keep_array[$urn] = $urn;
-	//now find all contacts with the client ref
-	$qry = "select contact_id,urn from client_refs left join contacts using(urn) where client_ref = '$dupe' and urn in(select urn from records where campaign_id=$campaign_id)";
-	$con_result = $this->db->query($qry)->result_array();
-	foreach($con_result as $list_item){
-	$delete_array[$list_item['urn']] = $list_item['urn'];
-	$list .= $list_item['contact_id'].",";
-	}
-	$list = rtrim($list,",");
-	echo "#".$dupe.";<br>";
-	$update = "update contacts set contacts.urn = $urn where contact_id in('0',$list)";
-	echo $update.";<br>";
-	//now update all the companies
-	$qry = "select company_id,urn from client_refs left join companies using(urn) where client_ref = '$dupe'";
-	$com_result = $this->db->query($qry)->result_array();
-	foreach($com_result as $list_item){
-	$delete_array[$list_item['urn']] = $list_item['urn'];
-	$comlist .= (!empty($list_item['company_id'])?$list_item['company_id'].",":"");
-	}
-	$comlist = rtrim($comlist,",");
-	$update = "delete from companies where companies.urn <> $urn and company_id in('0',$comlist)";
-	echo $update.";<br>";
+	public function merge_by_client_refs(){
+		if(intval($this->uri->segment(3))>0){
+			$campaign_id = $this->uri->segment(3); } else {
+	$campaign_id = $this->input->post('campaign');
+			}	
+	//find all duplciate client reference numbers
+	$qry = "select name,urn,client_ref as dupe,count(*) from client_refs left join records using(urn) left join companies using(urn) where campaign_id = $campaign_id group by client_ref having count(*) > 1 ";
+	$array = $this->db->query($qry)->result_array();
+	$dupes = array();
+	foreach($array as $row){
+		$dupes[$row['dupe']]=array("name"=>$row['name'],"urn"=>$row['urn']);
 	}
 	
-	foreach($keep_array as $ignore){
-	unset($delete_array[$ignore]);	
+	//update all the contacts on each dupe to the same urn
+	foreach($dupes as $ref => $array){
+	$update = "update contacts left join client_refs using(urn) set contacts.urn = {$array['urn']} where client_ref = '".addslashes($ref)."'";
+	$this->db->query($update);
+	
+	//find all the orphan urns with no contacts
+	$find_removed ="select urn from companies left join client_refs using(urn) where client_ref = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
+   //delete all the orphan record details
+	foreach($this->db->query($find_removed)->result_array() as $row){
+		$this->db->query("delete from records where urn = '{$row['urn']}'");
+		$this->db->query("delete from companies where urn = '{$row['urn']}'");
+		$this->db->query("delete from client_refs where urn = '{$row['urn']}'");
+		$this->db->query("delete from record_details where urn = '{$row['urn']}'");
+			}
+	
+	}
+	echo json_encode(array("success"=>true));
 	}
 	
-	$keep_list = implode(', ', $keep_array);
-	$delete_list = implode(', ', $delete_array);
-	//tidy up the records table removing all the redunant records that have been merged
-	$tidy2 = "delete from client_refs where urn in($delete_list)";
-	$tidy = "delete from records where urn in($delete_list)";
-	echo $tidy.";<br>";
-	echo $tidy2.";<br>";	
+	
+	public function merge_by_merge_column(){
+		if(intval($this->uri->segment(3))>0){
+			$campaign_id = $this->uri->segment(3); } else {
+	$campaign_id = $this->input->post('campaign');
+			}	
+		$result = $this->db->query("SHOW COLUMNS FROM `importcsv` LIKE 'merge_column'");
+		$exists = $result->num_rows()?TRUE:FALSE;
+	if($exists){
+	//find all duplciate client reference numbers
+	$qry = "select urn,merge_column as dupe,count(*) from importcsv left join records using(urn) where campaign_id = $campaign_id group by duplicate having count(merge_column) > 1 ";
+	$array = $this->db->query($qry)->result_array();
+	$dupes = array();
+	foreach($array as $row){
+		$dupes[$row['dupe']]=array("urn"=>$row['urn']);
 	}
+	
+	//update all the contacts on each dupe to the same urn
+	foreach($dupes as $ref => $array){
+	$update = "update contacts left join importcsv using(urn) set contacts.urn = {$array['urn']} where duplciate = '".addslashes($ref)."'";
+	$this->db->query($update);
+	
+	//find all the orphan urns with no contacts
+	$find_removed ="select urn from companies left join importcsv using(urn) where duplicate = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
+   //delete all the orphan record details
+	foreach($this->db->query($find_removed)->result_array() as $row){
+		$this->db->query("delete from records where urn = '{$row['urn']}'");
+		$this->db->query("delete from companies where urn = '{$row['urn']}'");
+		$this->db->query("delete from client_refs where urn = '{$row['urn']}'");
+		$this->db->query("delete from record_details where urn = '{$row['urn']}'");
+			}
+	
+	}
+	}
+	echo json_encode(array("success"=>true));
+	}
+	
 	
 	public function match_outcomes(){
 $nbf['hostname'] = '121system.com';

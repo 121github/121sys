@@ -95,11 +95,13 @@
                                     </div>
                                     
                                   <div class="form-group input-group-sm pull-left marl">
-                                        <p>Merge Contacts</p>
+                                        <p>Merge companies <span class="glyphicon glyphicon-info-sign tt" data-toggle="tooltip" data-placement="left" data-html="true" title="This feature allows multiple contacts to be added to a single company.<p>The company option uses both company name and postcode to find a match.</p><p>The merge column uses any column selected as the merge column</p>"></span></p>
                                         <select name="merge" class="selectpicker" id="merge-options" data-width="150px">
                                          	<option value="">Do not merge</option>
                                             <option value="1">Merge by client ref</option>
                                             <option value="2">Merge by company</option>
+                                            <option value="3">Merge by merge column</option>
+                                            <!--<option value="3">Merge by dupe column</option>-->
                                         </select>
                                     </div>
                                     <!--<div class="form-group input-group-sm pull-left marl">
