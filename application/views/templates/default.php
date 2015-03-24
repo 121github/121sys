@@ -317,7 +317,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                             <a href="<?php echo base_url() ?>reports/activity" >Activity</a>
                                         </li>
                                     <?php } ?>
-                                        <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
                                     <li>
                                         <a href="#reports-outcomes">Outcomes</a>
                                         <ul id="reports-outcomes">
@@ -366,6 +365,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                             </ul>
                                         </li>
                                     <?php } ?>
+                                                                            <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
                                 </ul>
                             </li>
                         <?php } ?>
