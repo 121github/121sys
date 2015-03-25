@@ -156,7 +156,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <!--<li><a href="<?php echo base_url(); ?>planner">Journey Planner</a></li> 
     <li><a href="#">Maps</a></li>-->
     <?php } ?>
-     <?php if ($_SESSION['role']==1) { ?>
+     <?php if (in_array("admin menu",$_SESSION['permissions'])) { ?>
     <li><a href="#admin">Admin</a>
        <ul id="admin">
        <li><a href="#system">System Config</a>
@@ -174,6 +174,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                                         <a href="<?php echo base_url() ?>data/parkcodes">Park
                                                             Codes</a></li>
                                                 <?php } ?>
+                                                <?php if($_SESSION['role']==1){ ?>
+											
+                                                
                                                                                         <li <?php echo @($page == 'users' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>admin/users" >Users</a>
                                         </li>
@@ -186,6 +189,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                         <li <?php echo @($page == 'groups' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>admin/groups" >Groups</a>
                                         </li>
+                                        <?php } ?>
                                        <li <?php echo @($page == 'default_time' ? "class='Selected'" : "") ?>>
                                                     <a href="<?php echo base_url() ?>time/default_time" >Default
                                                         Times</a></li>
