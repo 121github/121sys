@@ -19,7 +19,6 @@ class Contacts_model extends CI_Model
     public function get_contact($id)
     {
         $qry     = "select * from contacts left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) where contact_id = '$id'";
-        //$this->firephp->log($qry);
         $results = $this->db->query($qry)->result_array();
         foreach ($results as $result):
             $contact['general'] = array(

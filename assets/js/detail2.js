@@ -404,7 +404,6 @@ var record = {
                     var today = new Date();
                     var nextcall = new Date().addHours($delay);
                     var hour = nextcall.getHours();
-                    console.log(hour);
                     if (hour > 16) {
                         var nextcall = moment(today).add(1, 'days').toDate();
                     }
@@ -615,6 +614,7 @@ var record = {
     },
     //contact_panel_functions
     contact_panel: {
+		
         init: function () {
             this.config = {
                 panel: '.contact-panel'
@@ -655,10 +655,9 @@ var record = {
                 record.contact_panel.edit_item_form($(this));
             });
             /*initialize the delete item buttons for phone or address*/
-            $(document).on('click', '.del-item-btn', function (e) {
+            $(document).on('click', '.contact-panel .del-item-btn', function (e) {
                 e.preventDefault();
                 record.contact_panel.delete_item($(this));
-
             });
             /*save the new phone or address*/
             $(document).on('click', '.save-contact-phone,.save-contact-address', function (e) {
@@ -703,7 +702,7 @@ var record = {
                     contact: contact
                 }
             }).done(function (response) {
-                record.contact_panel.load_tabs(response.id, response.type);
+                record.contact_panel.load_tabs(contact, response.type);
                 record.contact_panel.load_panel(record.urn, response.id);
             });
         },
@@ -776,7 +775,7 @@ var record = {
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function (dt, dd) {
-                        if (dd && dd != '' && dt != 'Address') {
+                        if (dd && dd != '' && dd.length>0 && dt != 'Address') {
                             $contact_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function (key, val) {
@@ -1004,6 +1003,11 @@ var record = {
                 e.preventDefault();
                 record.company_panel.update_company();
             });
+			/*initialize the delete item buttons for phone or address*/
+            $(document).on('click', '.company-panel .del-item-btn', function (e) {
+                e.preventDefault();
+                record.company_panel.delete_item($(this));
+            });
             /* initialize the delete company buttons */
             $(document).on('click', '.del-company-btn', function (e) {
                 e.preventDefault();
@@ -1028,12 +1032,6 @@ var record = {
             $(document).on('click', '.company-item-btn', function (e) {
                 e.preventDefault();
                 record.company_panel.edit_item_form($(this));
-            });
-            /*initialize the delete item buttons for phone or address*/
-            $(document).on('click', '.del-item-btn', function (e) {
-                e.preventDefault();
-                record.company_panel.delete_item($(this));
-
             });
             /*save the new phone or address*/
             $(document).on('click', '.save-company-phone,.save-company-address', function (e) {
@@ -1068,7 +1066,7 @@ var record = {
         },
         delete_item: function ($btn) {
             var id = $btn.attr('item-id');
-            company = $btn.closest('.tab-pane').find('input[name="company_id"]').val();
+            var company = $btn.closest('.tab-pane').find('input[name="company_id"]').val();
             $.ajax({
                 url: helper.baseUrl + 'ajax/' + $btn.attr('action'),
                 type: "POST",
@@ -1078,7 +1076,7 @@ var record = {
                     company: company
                 }
             }).done(function (response) {
-                record.company_panel.load_tabs(response.id, response.type);
+                record.company_panel.load_tabs(company, response.type);
                 record.company_panel.load_panel();
             });
         },
@@ -1151,12 +1149,10 @@ var record = {
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function (dt, dd) {
-                        if (dt == 'Company #') {
-                            dd = "<a href='http://companycheck.co.uk/company/" + dd + "' target='blank'>" + dd + "</a>";
-
-                        }
-
                         if (dd && dd != '' && dt != 'Address' && dt != 'Company') {
+						if (dt == 'Company #') {
+                            dd = "<a href='http://companycheck.co.uk/company/" + dd + "' target='blank'>" + dd + "</a>";
+                        }
                             $company_detail_telephone_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function (key, val) {

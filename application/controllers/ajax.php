@@ -326,6 +326,9 @@ class Ajax extends CI_Controller
 			echo json_encode(array("success"=>false,"msg"=>$msg));
 			exit;
 			}
+				$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
+				$this->Audit_model->log_phone_update($data,$urn);
+				
             $this->db->where('telephone_id', $data['telephone_id']);
             if ($this->db->update('contact_telephone', elements(array(
                 "contact_id",
@@ -333,10 +336,7 @@ class Ajax extends CI_Controller
                 "description",
                 "tps"
             ), array_filter($data, 'strlen'), null))):
-			
-				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
-				$this->Audit_model->log_phone_update($data,$urn);
-				
+							
                 echo json_encode(array(
 					"success"=>true,
                     "id" => intval($data['contact_id']),
@@ -363,6 +363,9 @@ class Ajax extends CI_Controller
 			echo json_encode(array("success"=>false,"msg"=>$msg));
 			exit;
 			}
+				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+				$this->Audit_model->log_cophone_update($data,$urn);
+				
             $this->db->where('telephone_id', $data['telephone_id']);
             if ($this->db->update('company_telephone', elements(array(
                 "company_id",
@@ -371,8 +374,7 @@ class Ajax extends CI_Controller
                 "ctps"
             ), array_filter($data, 'strlen'), null))):
 			
-				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
-				$this->Audit_model->log_cophone_update($data,$urn);
+
 				
                 echo json_encode(array(
 				"success"=>true,
@@ -425,13 +427,15 @@ class Ajax extends CI_Controller
     public function delete_phone()
     {
         if ($this->input->is_ajax_request()) {
-            $this->db->where('telephone_id', numbers_only($this->input->post('id')));
+						$id = intval($this->input->post('id'));
+			$urn = $this->db->query("select urn from contacts left join contact_telephone using(contact_id) where telephone_id = '$id'")->row()->urn;
+			$this->Audit_model->log_phone_delete($id,$urn);
+			
+            $this->db->where(array('telephone_id'=> $id));
             if ($this->db->delete('contact_telephone')):
-				$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
-				$this->Audit_model->log_phone_delete($data,$urn);
                 echo json_encode(array(
 				"success"=>true,
-                    "id" => intval($this->input->post('contact')),
+                    "id" => intval($this->input->post('id')),
                     "type" => "phone"
                 ));
             endif;
@@ -441,13 +445,15 @@ class Ajax extends CI_Controller
     public function delete_cophone()
     {
         if ($this->input->is_ajax_request()) {
-            $this->db->where('telephone_id', intval($this->input->post('id')));
+			$id = intval($this->input->post('id'));
+						$urn = $this->db->query("select urn from companies left join company_telephone using(company_id) where telephone_id = '$id'")->row()->urn;
+			$this->Audit_model->log_cophone_delete($id,$urn);
+			
+            $this->db->where(array('telephone_id'=>$id));
             if ($this->db->delete('company_telephone')):
-				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
-				$this->Audit_model->log_cophone_delete($data,$urn);
                 echo json_encode(array(
 				"success"=>true,
-                    "id" => intval($this->input->post('company')),
+                    "id" => intval($this->input->post('id')),
                     "type" => "cophone"
                 ));
             endif;
@@ -471,12 +477,16 @@ class Ajax extends CI_Controller
                     "primary" => NULL
                 ));
             }
+			
+				$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
+				$this->Audit_model->log_address_update($data,$urn);
+			
             //delete the location id incase the postcode has changed
             $this->db->where('address_id', intval($this->input->post('address_id')));
             $this->db->update('contact_addresses', array(
                 "location_id" => NULL
-            ));
-            
+            )); 
+				
             $this->db->where('address_id', intval($this->input->post('address_id')));
             if ($this->db->update('contact_addresses', elements(array(
                 "add1",
@@ -488,8 +498,7 @@ class Ajax extends CI_Controller
                 "contact_id",
                 "primary"
             ), $data))):
-				$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
-				$this->Audit_model->log_address_update($data,$urn);
+
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($this->input->post('contact_id')),
@@ -521,6 +530,10 @@ class Ajax extends CI_Controller
                     "primary" => NULL
                 ));
             }
+			
+			$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+			$this->Audit_model->log_coaddress_update($data,$urn);
+			
             //delete the location id incase the postcode has changed
             $this->db->where('address_id', $data['address_id']);
             $this->db->update('company_addresses', array(
@@ -538,8 +551,7 @@ class Ajax extends CI_Controller
                 "company_id",
                 "primary"
             ), $data))):
-				$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
-				$this->Audit_model->log_coaddress_update($data,$urn);
+				
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($data['company_id']),
@@ -580,7 +592,7 @@ class Ajax extends CI_Controller
                 "contact_id",
                 "primary"
             ), $data))):
-			$data['address_id'] = $this->db->last_insert();
+			$data['address_id'] = $this->db->insert_id();
 			$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
 			$this->Audit_model->log_address_insert($data,$urn);
                 echo json_encode(array(
@@ -624,7 +636,8 @@ class Ajax extends CI_Controller
                 "company_id",
                 "primary"
             ), $data))):
-						$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
+			$data['address_id'] = $this->db->insert_id();
+			$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
 			$this->Audit_model->log_coaddress_insert($data,$urn);
                 echo json_encode(array(
                     "success" => true,
@@ -642,7 +655,11 @@ class Ajax extends CI_Controller
     public function delete_address()
     {
         if ($this->input->is_ajax_request()) {
-            $this->db->where('address_id', intval($this->input->post('id')));
+			$id = intval($this->input->post('id'));
+			$urn = $this->db->query("select urn from contacts left join contact_addresses using(contact_id) where address_id = '$id'")->row()->urn;
+			$this->Audit_model->log_address_delete($id,$urn);
+			
+            $this->db->where(array('address_id'=>$id));
             if ($this->db->delete('contact_addresses')):
                 echo json_encode(array(
 				"success"=>true,
@@ -657,7 +674,11 @@ class Ajax extends CI_Controller
     public function delete_coaddress()
     {
         if ($this->input->is_ajax_request()) {
-            $this->db->where('address_id', intval($this->input->post('id')));
+			$id = intval($this->input->post('id'));
+						$urn = $this->db->query("select urn from contacts left join contact_addresses using(contact_id) where address_id = '$id'")->row()->urn;
+			$this->Audit_model->log_phone_delete($id,$urn);
+			
+            $this->db->where(array('address_id'=>$id));
             if ($this->db->delete('company_addresses')):
                 echo json_encode(array(
 				"success"=>true,

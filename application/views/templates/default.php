@@ -468,11 +468,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     });
     <?php } ?>
 </script> 
-<script>
-    $(document).ready(function(){
-        browser.init()
-    });
-</script> 
+
 <script type="text/javascript">
 			$(function() {
 				$('nav#menu').mmenu();

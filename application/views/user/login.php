@@ -37,5 +37,6 @@
 <script>
     $(document).ready(function(){
         login.init();
+		browser.init();
     });
 </script>

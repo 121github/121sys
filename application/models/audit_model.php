@@ -318,7 +318,7 @@ class Audit_model extends CI_Model {
             $details = array(
                 'user_id' => $_SESSION['user_id'],
                 'change_type' => "insert",
-                'table_name' => 'contact_telephone',
+                'table_name' => 'company_telephone',
                 'reference' => $id,
 				'urn' => $urn
             );
@@ -377,7 +377,7 @@ class Audit_model extends CI_Model {
             $details = array(
                 'user_id' => $_SESSION['user_id'],
                 'change_type' => "insert",
-                'table_name' => 'contact_address',
+                'table_name' => 'contact_addresses',
                 'reference' => $id,
 				'urn' => $urn
             );
@@ -400,12 +400,197 @@ class Audit_model extends CI_Model {
         return $audit_id;
     }
 	
+	  public function log_address_update($data = array(),$urn=NULL) {
+        $id = $data['address_id'];
+        $qry = "SELECT * from contact_addresses WHERE address_id = '$id'";
+		
+        $original = $this->db->query($qry)->row_array();
+	
+        foreach ($original as $key => $value) {
+            if (!array_key_exists($key, $data)) {
+                unset($original[$key]);
+            }
+        }
+
+        //compare the new data with the old data to see what has changed
+        $diff = array_diff($data, $original);
+        //$this->firephp->log($original[0]);
+        $log_id = NULL;
+		$this->firephp->log($diff);
+        //if something has changed we log the change
+        if (count($diff) > 0) {
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "update",
+                'table_name' => 'contact_addresses',
+                'reference' => $id,
+				'urn' => $urn
+            );
+		
+            $this->db->insert('audit', $details);
+            $audit_id = $this->db->insert_id();
+        }
+        //we also log the associated values in the log data table
+        foreach ($diff as $column => $value) {
+            $oldval = (empty($original[$column]) ? "" : $original[$column]);
+
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $column,
+                'oldval' => $oldval,
+                'newval' => $value
+            );
+
+            $this->db->insert('audit_values', $fields);
+        }
+
+        return $audit_id;
+    }
+	
+	
+		  public function log_coaddress_update($data = array(),$urn=NULL) {
+        $id = $data['address_id'];
+        $qry = "SELECT * from company_addresses WHERE address_id = '$id'";
+        $original = $this->db->query($qry)->row_array();
+
+        foreach ($original as $key => $value) {
+            if (!array_key_exists($key, $data)) {
+                unset($original[$key]);
+            }
+        }
+		
+        //compare the new data with the old data to see what has changed
+        $diff = array_diff($data, $original);
+        //$this->firephp->log($original[0]);
+        $log_id = NULL;
+
+        //if something has changed we log the change
+        if (count($diff) > 0) {
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "update",
+                'table_name' => 'company_addresses',
+                'reference' => $id,
+				'urn' => $urn
+            );
+            $this->db->insert('audit', $details);
+            $audit_id = $this->db->insert_id();
+        }
+        //we also log the associated values in the log data table
+        foreach ($diff as $column => $value) {
+            $oldval = (empty($original[$column]) ? "" : $original[$column]);
+
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $column,
+                'oldval' => $oldval,
+                'newval' => $value
+            );
+
+            $this->db->insert('audit_values', $fields);
+        }
+
+        return $audit_id;
+    }
+	
+	  public function log_phone_update($data = array(),$urn=NULL) {
+        $id = $data['telephone_id'];
+        $qry = "SELECT * from contact_telephone WHERE telephone_id = '$id'";
+        $original = $this->db->query($qry)->row_array();
+
+        foreach ($original as $key => $value) {
+            if (!array_key_exists($key, $data)) {
+                unset($original[$key]);
+            }
+        }
+		
+        //compare the new data with the old data to see what has changed
+        $diff = array_diff($data, $original);
+        //$this->firephp->log($original[0]);
+        $log_id = NULL;
+
+        //if something has changed we log the change
+        if (count($diff) > 0) {
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "update",
+                'table_name' => 'contact_telephone',
+                'reference' => $id,
+				'urn' => $urn
+            );
+            $this->db->insert('audit', $details);
+            $audit_id = $this->db->insert_id();
+        }
+        //we also log the associated values in the log data table
+        foreach ($diff as $column => $value) {
+            $oldval = (empty($original[$column]) ? "" : $original[$column]);
+
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $column,
+                'oldval' => $oldval,
+                'newval' => $value
+            );
+
+            $this->db->insert('audit_values', $fields);
+        }
+
+        return $audit_id;
+    }
+	
+	public function log_cophone_update($data = array(),$urn=NULL) {
+        $id = $data['telephone_id'];
+        $qry = "SELECT * from company_telephone WHERE telephone_id = '$id'";
+        $original = $this->db->query($qry)->row_array();
+
+        foreach ($original as $key => $value) {
+            if (!array_key_exists($key, $data)) {
+                unset($original[$key]);
+            }
+        }
+		
+        //compare the new data with the old data to see what has changed
+        $diff = array_diff($data, $original);
+        //$this->firephp->log($original[0]);
+        $log_id = NULL;
+
+        //if something has changed we log the change
+        if (count($diff) > 0) {
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "update",
+                'table_name' => 'company_telephone',
+                'reference' => $id,
+				'urn' => $urn
+            );
+            $this->db->insert('audit', $details);
+            $audit_id = $this->db->insert_id();
+        }
+        //we also log the associated values in the log data table
+        foreach ($diff as $column => $value) {
+            $oldval = (empty($original[$column]) ? "" : $original[$column]);
+
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $column,
+                'oldval' => $oldval,
+                'newval' => $value
+            );
+
+            $this->db->insert('audit_values', $fields);
+        }
+
+        return $audit_id;
+    }
+	
+	
+	
 	public function log_coaddress_insert($data = array(),$urn=NULL) {
 			$id = $data['address_id'];
             $details = array(
                 'user_id' => $_SESSION['user_id'],
                 'change_type' => "insert",
-                'table_name' => 'company_address',
+                'table_name' => 'company_addresses',
                 'reference' => $id,
 				'urn' => $urn
             );
@@ -428,6 +613,132 @@ class Audit_model extends CI_Model {
         return $audit_id;
     }
 
+ public function log_phone_delete($id,$urn) {
+		
+		$qry = "SELECT * from contact_telephone WHERE telephone_id = '$id'";
+        $original = $this->db->query($qry)->row_array();
+		
+        $details = array(
+            'user_id' => $_SESSION['user_id'],
+			'reference'=>$id,
+            'change_type' => "delete",
+            'table_name' => "contact_telephone",
+            'urn' =>  $urn
+        );
+
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		
+        foreach ($original as $k => $v) {
+		$log_fields = array("telephone_id","contact_id","telephone_number","description","tps");
+		if(in_array($k,$log_fields)&&!empty($v)){
+            $fields = array(
+                'audit_id' => $audit_id,
+                'oldval' => $v,
+                'newval' => NULL,
+                'column_name' => $k
+            );
+		 $this->db->insert('audit_values', $fields);
+		}
+        }
+
+        return $audit_id;
+    }
+
+
+ public function log_cophone_delete($id,$urn) {
+		$qry = "SELECT * from company_telephone WHERE telephone_id = '$id'";
+        $original = $this->db->query($qry)->row_array();
+		
+        $details = array(
+            'user_id' => $_SESSION['user_id'],
+			'reference'=>$id,
+            'change_type' => "delete",
+            'table_name' => "company_telephone",
+            'urn' =>  $urn
+        );
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		
+        foreach ($original as $k => $v) {
+			$log_fields = array("telephone_id","company_id","telephone_number","description","ctps");
+		if(in_array($k,$log_fields)&&!empty($v)){
+            $fields = array(
+                'audit_id' => $audit_id,
+                'oldval' => $v,
+                'newval' => NULL,
+                'column_name' => $k
+            );
+		 $this->db->insert('audit_values', $fields);
+		}
+        }
+        return $audit_id;
+    }
+	
+	 public function log_address_delete($id,$urn) {
+		
+		$qry = "SELECT * from contact_addresses WHERE address_id = '$id'";
+        $original = $this->db->query($qry)->row_array();
+		
+        $details = array(
+            'user_id' => $_SESSION['user_id'],
+			'reference'=>$id,
+            'change_type' => "delete",
+            'table_name' => "contact_addresses",
+            'urn' =>  $urn
+        );
+
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		
+        foreach ($original as $k => $v) {
+		$log_fields = array("address_id","contact_id","add1","add2","add3","county","country","postcode","primary");
+		if(in_array($k,$log_fields)&&!empty($v)){
+            $fields = array(
+                'audit_id' => $audit_id,
+                'oldval' => $v,
+                'newval' => NULL,
+                'column_name' => $k
+            );
+		 $this->db->insert('audit_values', $fields);
+		}
+        }
+
+        return $audit_id;
+    }
+	
+	
+		 public function log_coaddress_delete($id,$urn) {
+		
+		$qry = "SELECT * from company_addresses WHERE address_id = '$id'";
+        $original = $this->db->query($qry)->row_array();
+		
+        $details = array(
+            'user_id' => $_SESSION['user_id'],
+			'reference'=>$id,
+            'change_type' => "delete",
+            'table_name' => "company_addresses",
+            'urn' =>  $urn
+        );
+
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		
+        foreach ($original as $k => $v) {
+		$log_fields = array("address_id","company_id","add1","add2","add3","county","country","postcode","primary");
+		if(in_array($k,$log_fields)&&!empty($v)){
+            $fields = array(
+                'audit_id' => $audit_id,
+                'oldval' => $v,
+                'newval' => NULL,
+                'column_name' => $k
+            );
+		 $this->db->insert('audit_values', $fields);
+		}
+        }
+
+        return $audit_id;
+    }
 //this function should be ran BEFORE the deletion actually occurs so it can make a log of the old data
     public function log_appointment_delete($appointment_id) {
 		
@@ -466,15 +777,13 @@ public function audit_data($count=false,$options=false){
             "campaign_name",
             "table_name",
             "change_type",
-            "column_name",
             "name",
-            "date_format(`timestamp`,'%d/%m/%y')",
+            "date_format(`timestamp`,'%d/%m/%y %H:%i')",
         );
         $order_columns = array(
             "campaign_name",
             "table_name",
             "change_type",
-            "column_name",
             "name",
             "timestamp"
         );
