@@ -169,7 +169,7 @@
 </div>
 <?php echo form_close(); ?>
 
-<div class="panel panel-primary details-container"">
+<div class="panel panel-primary details-container">
     <div class="panel-heading">
         <div style="font-size: 18px;">
             Change Contact Details
@@ -207,6 +207,9 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+		<?php if($this->session->flashdata('change_pass')){ ?>
+		flashalert.info("Please change your password");
+		<?php } ?>
         details.init();
         password.init();
         $('button[type="submit"]').on('click', function (e) {

@@ -32,6 +32,7 @@ class User extends CI_Controller
                     }
 					$this->apply_default_filter();
                     if ($this->input->post('password') == md5("pass123")) {
+						$this->session->set_flashdata('change_pass', '1');
                         $redirect = base64_encode("user/account");
                     } else {
                         $redirect = $this->input->post('redirect');
