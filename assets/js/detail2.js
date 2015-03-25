@@ -2888,7 +2888,7 @@ var workbooks = {
                     '<tr><th>Assigned To</th><td>' + val.assigned_to + '</td></tr>' +
                     '<tr><th>Organisation</th><td>' + val.organisation + '</td></tr>' +
                     '<tr><th>Industry</th><td>' + val.industry + '</td></tr>' +
-                    '<tr><th>Website</th><td><a href="'+val.website+'" target="_blank">' + val.website + '</a></td></tr>' +
+                    '<tr><th>Website</th><td><a href="http://'+val.website+'" target="_blank">' + val.website + '</a></td></tr>' +
                     '<tr><th>Street Address</th><td>' + val.street_address + '</td></tr>' +
                     '<tr><th>Town/City</th><td>' + val.town_city + '</td></tr>' +
                     '<tr><th>County/State</th><td>' + val.county_state + '</td></tr>' +
@@ -2906,7 +2906,7 @@ var workbooks = {
                     '<tr><th>No Of Contractors</th><td>' + val.no_of_contractors + '</td></tr>' +
                     '<tr><th>Ave. Contract Rate</th><td>' + val.ave_contract_rate + '</td></tr>' +
                     '<tr><th>How Contractors Work</th><td>' + val.how_contractors_work + '</td></tr>' +
-                    '<tr><th>Main Competitor</th><td>' + val.main_competitor + '</td></tr>' +
+                    //'<tr><th>Main Competitor</th><td>' + val.main_competitor + '</td></tr>' +
                     '<tr><th>Uses a PSL</th><td>' + val.uses_a_psl + '</td></tr>' +
                     '<tr><th>PSL Review Date</th><td>' + val.psl_review_date + '</td></tr>' +
                     '<tr><th>PSL Review Person</th><td>' + val.psl_review_person + '</td></tr>' +
