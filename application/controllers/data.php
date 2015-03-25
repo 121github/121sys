@@ -1172,10 +1172,12 @@ $this->_campaigns = campaign_access_dropdown();
     public function duplicates()
     {
         $filter = array(
-            array('field'=>'telephone_number', 'name'=>'Telephone number'),
-            array('field'=>'postcode', 'name'=>'Postcode'),
-            array('field'=>'fullname', 'name'=>'Fullname'),
+            array('field'=>'telephone_number', 'name'=>'Contact Telephone number'),
+            array('field'=>'postcode', 'name'=>'Contact Postcode'),
+            array('field'=>'fullname', 'name'=>'Contact Fullname'),
             array('field'=>'coname', 'name'=>'Company Name'),
+            array('field'=>'company_telephone_number', 'name'=>'Company Telephone number'),
+            array('field'=>'company_postcode', 'name'=>'Company Postcode'),
             array('field'=>'client_ref', 'name'=>'Client Reference')
         );
 
