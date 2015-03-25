@@ -206,6 +206,9 @@ class Admin_model extends CI_Model
 		if(empty($form['team_id'])){
 		$form['team_id'] = NULL;
 		}
+		if(empty($form['ext'])){
+		$form['ext'] = NULL;
+		}
         return $this->db->insert("users", $form);
     }
     public function update_user($form)
