@@ -717,6 +717,9 @@ var record = {
             //reset the item id
             $tab.find('.item-id').val('');
 
+            //Set the telephone number input as a number
+            $tab.find('form').find('input[name="telephone_number"]').numeric();
+
         },
         edit_item_form: function ($btn) {
             id = $btn.attr('item-id');
@@ -746,6 +749,8 @@ var record = {
                     $tab.find('.close-contact-btn').removeClass('close-contact-btn').addClass('hide-item-form');
                     $tab.find('.save-contact-phone').attr('action', 'edit_phone');
                     $tab.find('.save-contact-address').attr('action', 'edit_address');
+                    //Set the telephone number input as a number
+                    $tab.find('form').find('input[name="telephone_number"]').numeric();
                 } else {
                     flashalert.danger(response.msg);
                 }
@@ -1045,8 +1050,6 @@ var record = {
                 $tab.find('form').hide();
                 $tab.find('.table-container').show();
             });
-
-
         },
         save_item: function ($btn) {
             var id = $btn.attr('item-id');
@@ -1091,6 +1094,9 @@ var record = {
             //reset the item id
             $tab.find('.item-id').val('');
 
+            //Set the telephone number input as a number
+            $tab.find('form').find('input[name="telephone_number"]').numeric();
+
         },
         edit_item_form: function ($btn) {
             id = $btn.attr('item-id');
@@ -1120,6 +1126,8 @@ var record = {
                     $tab.find('.close-company-btn').removeClass('close-company-btn').addClass('hide-item-form');
                     $tab.find('.save-company-phone').attr('action', 'edit_cophone');
                     $tab.find('.save-company-address').attr('action', 'edit_coaddress');
+                    //Set the telephone number input as a number
+                    $tab.find('form').find('input[name="telephone_number"]').numeric();
                 } else {
                     flashalert.danger(response.msg);
                 }
