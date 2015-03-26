@@ -2250,6 +2250,12 @@ var record = {
                 if (response.success) {
                     if (response.data.length > 0) {
                         record.appointment_panel.load_table(response.data);
+                        $('.record-panel').find('.outcomepicker').find('li.disabled').each(function () {
+                            $(this).removeClass('disabled');
+                        });
+                        $('.record-panel').find('.outcomepicker').find('option:disabled').each(function () {
+                            $(this).prop('disabled', false);
+                        });
                     } else {
                         $panel.append('<p>No appointments have been created</p>');
                     }
@@ -2323,12 +2329,12 @@ var record = {
                 if (response.success) {
                     record.appointment_panel.load_appointments();
                     record.appointment_panel.hide_edit_form();
-                    $('.record-panel').find('.outcomepicker').find('li.disabled').each(function () {
-                        $(this).removeClass('disabled');
-                    });
-                    $('.record-panel').find('.outcomepicker').find('option:disabled').each(function () {
-                        $(this).prop('disabled', false);
-                    });
+                    //$('.record-panel').find('.outcomepicker').find('li.disabled').each(function () {
+                    //    $(this).removeClass('disabled');
+                    //});
+                    //$('.record-panel').find('.outcomepicker').find('option:disabled').each(function () {
+                    //    $(this).prop('disabled', false);
+                    //});
                     flashalert.success("Appointment saved");
                 } else {
                     flashalert.danger(response.msg);
