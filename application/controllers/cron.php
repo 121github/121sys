@@ -254,7 +254,7 @@ HAVING count( doc_hash ) >1";
      */
     public function check_contact_telephone_numbers()
     {
-        echo "Checking and fixing wrong contact telephone numbers... <br><br>";
+        echo "\nChecking and fixing wrong contact telephone numbers... \n\n";
 
         //Get the wrong telephone numbers
         $wrong_telephone_numbers = $this->Cron_model->get_wrong_contact_telephone_numbers();
@@ -289,43 +289,35 @@ HAVING count( doc_hash ) >1";
         $wrong_telephone_numbers = $aux;
 
         //Delete the telephone numbers with length less than 7
-        echo "<span style='padding-left: 20px;'>";
-        echo "\t Deleting wrong contact telephone numbers (length less than 7)... ";
+        echo "\tDeleting wrong contact telephone numbers (length less than 7)... ";
         if (!empty($delete_telephone_numbers)) {
             $result = $this->Cron_model->update_contact_telephone_numbers($delete_telephone_numbers);
-            echo ($result?"OK":"KO")."--> ".count($delete_telephone_numbers)." deleted <br><br>";
+            echo ($result?"OK":"KO")."--> ".count($delete_telephone_numbers)." deleted \n\n";
             foreach($delete_telephone_numbers as $val) {
-                echo "<span style='padding-left: 50px;'>";
-                echo "Contact ID: ".$val['contact_id']." - ".$wrong_telephone_numbers[$val['contact_id']]." deleted <br>";
-                echo "</span>";
+                echo "\t\tContact ID: ".$val['contact_id']." - ".$wrong_telephone_numbers[$val['contact_id']]." deleted \n";
             }
-            echo "<br>";
+            echo "\n";
         }
         else {
-            echo "OK --> 0 deleted <br><br>";
+            echo "OK --> 0 deleted \n\n";
         }
-        echo "</span>";
 
 
         //Update the copmany with the new telephone_numbers
-        echo "<span style='padding-left: 20px;'>";
-        echo "Updating wrong contact telephone numbers... ";
+        echo "\tUpdating wrong contact telephone numbers... ";
         if (!empty($update_telephone_numbers)) {
             $result = $this->Cron_model->update_contact_telephone_numbers($update_telephone_numbers);
-            echo ($result?"OK":"KO")."--> ".count($update_telephone_numbers)." updated <br><br>";
+            echo ($result?"OK":"KO")."--> ".count($update_telephone_numbers)." updated \n\n";
             foreach($update_telephone_numbers as $val) {
-                echo "<span style='padding-left: 50px;'>";
-                echo "Contact ID: ".$val['contact_id']." - ".$wrong_telephone_numbers[$val['contact_id']]." updated with ".$val['telephone_number']." <br>";
-                echo "</span>";
+                echo "\t\tContact ID: ".$val['contact_id']." - ".$wrong_telephone_numbers[$val['contact_id']]." updated with ".$val['telephone_number']." \n";
             }
-            echo "<br>";
+            echo "\n";
         }
         else {
-            echo "OK --> 0 updated <br><br>";
+            echo "OK --> 0 updated \n\n";
         }
-        echo "</span>";
 
-        echo "Finished!! <br><br>";
+        echo "Finished!! \n\n";
     }
 
     /**
@@ -333,7 +325,7 @@ HAVING count( doc_hash ) >1";
      */
     public function check_company_telephone_numbers()
     {
-        echo "Checking and fixing wrong company telephone numbers... <br><br>";
+        echo "Checking and fixing wrong company telephone numbers... \n\n";
 
         //Get the wrong telephone numbers
         $wrong_telephone_numbers = $this->Cron_model->get_wrong_company_telephone_numbers();
@@ -367,43 +359,36 @@ HAVING count( doc_hash ) >1";
         $wrong_telephone_numbers = $aux;
 
         //Delete the telephone numbers with length less than 7
-        echo "<span style='padding-left: 20px;'>";
-        echo "Deleting wrong company telephone numbers (length less than 7)... ";
+        echo "\tDeleting wrong company telephone numbers (length less than 7)... ";
         if (!empty($delete_telephone_numbers)) {
             $result = $this->Cron_model->update_company_telephone_numbers($delete_telephone_numbers);
-            echo ($result?"OK":"KO")." --> ".count($delete_telephone_numbers)." deleted <br><br>";
+            echo ($result?"OK":"KO")." --> ".count($delete_telephone_numbers)." deleted \n\n";
             foreach($delete_telephone_numbers as $val) {
-                echo "<span style='padding-left: 50px;'>";
-                echo "Company ID: ".$val['company_id']." - ".$wrong_telephone_numbers[$val['company_id']]." updated <br>";
-                echo "</span>";
+                echo "\t\tCompany ID: ".$val['company_id']." - ".$wrong_telephone_numbers[$val['company_id']]." updated \n";
             }
-            echo "<br>";
+            echo "\n";
         }
         else {
-            echo "OK --> 0 deleted <br><br>";
+            echo "OK --> 0 deleted \n\n";
         }
-        echo "</span>";
+        echo "\n";
 
 
         //Update the copmany with the new telephone_numbers
-        echo "<span style='padding-left: 20px;'>";
-        echo "Updating wrong company telephone numbers... ";
+        echo "\tUpdating wrong company telephone numbers... ";
         if (!empty($update_telephone_numbers)) {
             $result = $this->Cron_model->update_company_telephone_numbers($update_telephone_numbers);
-            echo ($result?"OK":"KO")." --> ".count($update_telephone_numbers)." updated <br><br>";
+            echo ($result?"OK":"KO")." --> ".count($update_telephone_numbers)." updated \n\n";
             foreach($update_telephone_numbers as $val) {
-                echo "<span style='padding-left: 50px;'>";
-                echo "Company ID: ".$val['company_id']." - ".$wrong_telephone_numbers[$val['company_id']]." updated with ".$val['telephone_number']." <br>";
-                echo "</span>";
+                echo "\t\tCompany ID: ".$val['company_id']." - ".$wrong_telephone_numbers[$val['company_id']]." updated with ".$val['telephone_number']." \n";
             }
-            echo "<br>";
+            echo "\n";
         }
         else {
-            echo "OK --> 0 updated <br><br>";
+            echo "OK --> 0 updated \n\n";
         }
-        echo "</span>";
 
-        echo "Finished!! <br><br>";
+        echo "Finished!! \n\n";
     }
 
     /**
