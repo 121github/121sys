@@ -257,23 +257,40 @@ HAVING count( doc_hash ) >1";
         //Get the wrong telephone numbers
         $wrong_telephone_numbers = $this->Cron_model->get_wrong_contact_telephone_numbers();
 
-        $aux = array();
+        //Reformat the telephone numbers
+        $update_telephone_numbers = array();
+        $delete_telephone_numbers = array();
         foreach($wrong_telephone_numbers as $contact) {
             $new_telephone_number = $contact['telephone_number'];
             $new_telephone_number = str_replace('+44','0',$new_telephone_number);
             $new_telephone_number = str_replace('+','00',substr($new_telephone_number,0,2)).substr($new_telephone_number,2);
             $new_telephone_number = str_replace('(0)','',$new_telephone_number);
-            $new_telephone_number = str_replace('-','',$new_telephone_number);
-            $new_telephone_number = str_replace('/','',$new_telephone_number);
 
-            $contact['telephone_number'] = $new_telephone_number;
-            array_push($aux,$contact);
+            $new_telephone_number = preg_replace('/[^0-9]/','',$new_telephone_number);
+
+
+            if (strlen($new_telephone_number) < 7) {
+                $contact['telephone_number'] = '';
+                array_push($delete_telephone_numbers,$contact);
+            }
+            else {
+                if ($new_telephone_number != $contact['telephone_number']) {
+                    $contact['telephone_number'] = $new_telephone_number;
+                    array_push($update_telephone_numbers,$contact);
+                }
+            }
         }
 
-        $wrong_telephone_numbers = $aux;
+        //Delete the telephone numbers with length less than 7
+        if (!empty($delete_telephone_numbers)) {
+           $result = $this->Cron_model->update_contact_telephone_numbers($delete_telephone_numbers);
+        }
 
-        //Update the contacts with the new telephone_numbers
-        $result = $this->Cron_model->update_contact_telephone_numbers($wrong_telephone_numbers);
+
+        //Update the copmany with the new telephone_numbers
+        if (!empty($update_telephone_numbers)) {
+          $result = $this->Cron_model->update_contact_telephone_numbers($update_telephone_numbers);
+        }
     }
 
     /**
@@ -284,23 +301,40 @@ HAVING count( doc_hash ) >1";
         //Get the wrong telephone numbers
         $wrong_telephone_numbers = $this->Cron_model->get_wrong_company_telephone_numbers();
 
-        $aux = array();
+
+        //Reformat the telephone numbers
+        $update_telephone_numbers = array();
+        $delete_telephone_numbers = array();
         foreach($wrong_telephone_numbers as $company) {
             $new_telephone_number = $company['telephone_number'];
             $new_telephone_number = str_replace('+44','0',$new_telephone_number);
             $new_telephone_number = str_replace('+','00',substr($new_telephone_number,0,2)).substr($new_telephone_number,2);
             $new_telephone_number = str_replace('(0)','',$new_telephone_number);
-            $new_telephone_number = str_replace('-','',$new_telephone_number);
-            $new_telephone_number = str_replace('/','',$new_telephone_number);
 
-            $company['telephone_number'] = $new_telephone_number;
-            array_push($aux,$company);
+            $new_telephone_number = preg_replace('/[^0-9]/','',$new_telephone_number);
+
+            if (strlen($new_telephone_number) < 7) {
+                $company['telephone_number'] = '';
+                array_push($delete_telephone_numbers,$company);
+            }
+            else {
+                if ($new_telephone_number != $company['telephone_number']) {
+                    $company['telephone_number'] = $new_telephone_number;
+                    array_push($update_telephone_numbers,$company);
+                }
+            }
         }
 
-        $wrong_telephone_numbers = $aux;
+        //Delete the telephone numbers with length less than 7
+        if (!empty($delete_telephone_numbers)) {
+            $result = $this->Cron_model->update_company_telephone_numbers($delete_telephone_numbers);
+        }
+
 
         //Update the copmany with the new telephone_numbers
-        $result = $this->Cron_model->update_company_telephone_numbers($wrong_telephone_numbers);
+        if (!empty($update_telephone_numbers)) {
+            $result = $this->Cron_model->update_company_telephone_numbers($update_telephone_numbers);
+        }
     }
 
     /**

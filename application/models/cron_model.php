@@ -341,11 +341,12 @@ class Cron_model extends CI_Model
      */
     public function update_company_telephone_numbers($companies) {
 
-        $result = $this->db->update_batch("company_telephone", $companies, 'company_id');
+        $this->db->update_batch("company_telephone", $companies, 'company_id');
 
         $this->db->trans_complete();
 
         return $this->db->trans_status();
     }
+
     
 }
