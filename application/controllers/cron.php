@@ -325,7 +325,7 @@ HAVING count( doc_hash ) >1";
             $email_output = $output;
             $email_output = str_replace("\n","<br>",$email_output);
             $output .= "Sending email...";
-            $this->send_email('','estebanc@121customerinsight.co.uk,bradf@121customerinsight.co.uk','[121SYS][CRON] Checking telephone numbers', $email_output);
+            $this->send_email('','estebanc@121customerinsight.co.uk,bradf@121customerinsight.co.uk','[121SYS][CRON] Checking contact telephone numbers', $email_output);
             $output .= "OK\n\n";
         }
 
@@ -408,7 +408,7 @@ HAVING count( doc_hash ) >1";
             $email_output = $output;
             $email_output = str_replace("\n","<br>",$email_output);
             $output .= "Sending email...";
-            $this->send_email('','estebanc@121customerinsight.co.uk,bradf@121customerinsight.co.uk','[121SYS][CRON] Checking telephone numbers', $email_output);
+            $this->send_email('','estebanc@121customerinsight.co.uk,bradf@121customerinsight.co.uk','[121SYS][CRON] Checking company telephone numbers', $email_output);
             $output .= "OK\n\n";
         }
 
