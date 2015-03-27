@@ -19,7 +19,7 @@ class Migration_update_22 extends CI_Migration
  		$this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('2', '119')");
 
 		  $this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('1', '120')");
- 		$this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('2', '120')");
+ 		$this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('2', '120')"); 
     }
 
 
