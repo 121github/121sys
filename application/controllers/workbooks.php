@@ -41,7 +41,7 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
                 $form = $this->input->post();
                 $urn = $form['urn'];
             }
-            
+
             $current_date = new DateTime('now');
 
             //Get the data for this urn
@@ -123,11 +123,17 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
 
                 //Update the record details in order to associate the lead to the record
                 $this->Workbooks_model->update_record_details($urn, $lead_data);
-
-                //Send an email with the request
-                $body = 'Data requested for the integration with the Workbooks: '.json_encode(array("request" => $data));
-                $this->send_email($body);
             }
+            //Send an email with the request
+            if (!$response || !isset($response['flash'])) {
+                $body = 'ERROR: The workbook id was not saved: '.json_encode(array("request" => $data));
+            }
+            else {
+                $body = 'Lead saved successfully!! (ID: '.(isset($lead_data['id'])?$lead_data['id']:'').') Data requested for the integration with the Workbooks: \n'.json_encode(array("request" => $data));
+            }
+            $subject = 'Workbooks Integration. URN: '.$urn;
+            $this->send_email($body,$subject);
+
             echo json_encode(array(
                 "msg" => (isset($response['flash'])?$response['flash']:'ERROR: Lead not saved!'),
                 "success" => (isset($response['success'])?$response['success']:false),
@@ -136,6 +142,11 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
             ));
         }
         else {
+            //Send an email with the error
+            $body = 'ERROR: The workbook id was not saved: URN not found';
+            $subject = 'Workbooks Integration.';
+            $this->send_email($body,$subject);
+
             echo json_encode(array(
                 "msg" => 'ERROR: URN not found',
                 "success" => false
@@ -357,7 +368,7 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
 
     }
 
-    private function send_email($body)
+    private function send_email($body, $subject)
     {
 
         $this->load->library('email');
@@ -377,7 +388,7 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
         $this->email->to('bradf@121customerinsight.co.uk');
         $this->email->cc('estebanc@121customerinsight.co.uk');
         $this->email->bcc('');
-        $this->email->subject('Workbooks Integration');
+        $this->email->subject($subject);
         $this->email->message($body);
 
 
