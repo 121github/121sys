@@ -254,13 +254,18 @@ HAVING count( doc_hash ) >1";
      */
     public function check_contact_telephone_numbers()
     {
+        echo "Checking and fixing wrong contact telephone numbers... <br><br>";
+
         //Get the wrong telephone numbers
         $wrong_telephone_numbers = $this->Cron_model->get_wrong_contact_telephone_numbers();
+        $aux = array();
 
         //Reformat the telephone numbers
         $update_telephone_numbers = array();
         $delete_telephone_numbers = array();
         foreach($wrong_telephone_numbers as $contact) {
+            $aux[$contact['contact_id']] = $contact['telephone_number'];
+
             $new_telephone_number = $contact['telephone_number'];
             $new_telephone_number = str_replace('+44','0',$new_telephone_number);
             $new_telephone_number = str_replace('+','00',substr($new_telephone_number,0,2)).substr($new_telephone_number,2);
@@ -281,16 +286,46 @@ HAVING count( doc_hash ) >1";
             }
         }
 
+        $wrong_telephone_numbers = $aux;
+
         //Delete the telephone numbers with length less than 7
+        echo "<span style='padding-left: 20px;'>";
+        echo "\t Deleting wrong contact telephone numbers (length less than 7)... ";
         if (!empty($delete_telephone_numbers)) {
-           $result = $this->Cron_model->update_contact_telephone_numbers($delete_telephone_numbers);
+            $result = $this->Cron_model->update_contact_telephone_numbers($delete_telephone_numbers);
+            echo ($result?"OK":"KO")."--> ".count($delete_telephone_numbers)." deleted <br><br>";
+            foreach($delete_telephone_numbers as $val) {
+                echo "<span style='padding-left: 50px;'>";
+                echo "Contact ID: ".$val['contact_id']." - ".$wrong_telephone_numbers[$val['contact_id']]." deleted <br>";
+                echo "</span>";
+            }
+            echo "<br>";
         }
+        else {
+            echo "OK --> 0 deleted <br><br>";
+        }
+        echo "</span>";
 
 
         //Update the copmany with the new telephone_numbers
+        echo "<span style='padding-left: 20px;'>";
+        echo "Updating wrong contact telephone numbers... ";
         if (!empty($update_telephone_numbers)) {
-          $result = $this->Cron_model->update_contact_telephone_numbers($update_telephone_numbers);
+            $result = $this->Cron_model->update_contact_telephone_numbers($update_telephone_numbers);
+            echo ($result?"OK":"KO")."--> ".count($update_telephone_numbers)." updated <br><br>";
+            foreach($update_telephone_numbers as $val) {
+                echo "<span style='padding-left: 50px;'>";
+                echo "Contact ID: ".$val['contact_id']." - ".$wrong_telephone_numbers[$val['contact_id']]." updated with ".$val['telephone_number']." <br>";
+                echo "</span>";
+            }
+            echo "<br>";
         }
+        else {
+            echo "OK --> 0 updated <br><br>";
+        }
+        echo "</span>";
+
+        echo "Finished!! <br><br>";
     }
 
     /**
@@ -298,14 +333,18 @@ HAVING count( doc_hash ) >1";
      */
     public function check_company_telephone_numbers()
     {
+        echo "Checking and fixing wrong company telephone numbers... <br><br>";
+
         //Get the wrong telephone numbers
         $wrong_telephone_numbers = $this->Cron_model->get_wrong_company_telephone_numbers();
-
+        $aux = array();
 
         //Reformat the telephone numbers
         $update_telephone_numbers = array();
         $delete_telephone_numbers = array();
         foreach($wrong_telephone_numbers as $company) {
+            $aux[$company['company_id']] = $company['telephone_number'];
+
             $new_telephone_number = $company['telephone_number'];
             $new_telephone_number = str_replace('+44','0',$new_telephone_number);
             $new_telephone_number = str_replace('+','00',substr($new_telephone_number,0,2)).substr($new_telephone_number,2);
@@ -325,16 +364,46 @@ HAVING count( doc_hash ) >1";
             }
         }
 
+        $wrong_telephone_numbers = $aux;
+
         //Delete the telephone numbers with length less than 7
+        echo "<span style='padding-left: 20px;'>";
+        echo "Deleting wrong company telephone numbers (length less than 7)... ";
         if (!empty($delete_telephone_numbers)) {
             $result = $this->Cron_model->update_company_telephone_numbers($delete_telephone_numbers);
+            echo ($result?"OK":"KO")." --> ".count($delete_telephone_numbers)." deleted <br><br>";
+            foreach($delete_telephone_numbers as $val) {
+                echo "<span style='padding-left: 50px;'>";
+                echo "Company ID: ".$val['company_id']." - ".$wrong_telephone_numbers[$val['company_id']]." updated <br>";
+                echo "</span>";
+            }
+            echo "<br>";
         }
+        else {
+            echo "OK --> 0 deleted <br><br>";
+        }
+        echo "</span>";
 
 
         //Update the copmany with the new telephone_numbers
+        echo "<span style='padding-left: 20px;'>";
+        echo "Updating wrong company telephone numbers... ";
         if (!empty($update_telephone_numbers)) {
             $result = $this->Cron_model->update_company_telephone_numbers($update_telephone_numbers);
+            echo ($result?"OK":"KO")." --> ".count($update_telephone_numbers)." updated <br><br>";
+            foreach($update_telephone_numbers as $val) {
+                echo "<span style='padding-left: 50px;'>";
+                echo "Company ID: ".$val['company_id']." - ".$wrong_telephone_numbers[$val['company_id']]." updated with ".$val['telephone_number']." <br>";
+                echo "</span>";
+            }
+            echo "<br>";
         }
+        else {
+            echo "OK --> 0 updated <br><br>";
+        }
+        echo "</span>";
+
+        echo "Finished!! <br><br>";
     }
 
     /**
