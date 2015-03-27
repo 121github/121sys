@@ -625,24 +625,28 @@ $this->db->query($renewals);
 	
 	//this function is used to merge contacts for when a record has multiple contacts
 	public function merge_dupe_companies(){
-		if(intval($this->uri->segment(3))>0){
-			$campaign_id = $this->uri->segment(3); } else {
-	$campaign_id = $this->input->post('campaign');
-			}
-	$qry = "select name,urn,concat(substring(companies.name, 1, 4 ),add1,postcode) as dupe from companies left join records using(urn) left join contacts using(urn) left join company_addresses using(company_id) where campaign_id = $campaign_id and add1 is not null and postcode is not null group by concat(substring(companies.name, 1, 4 ),add1,postcode) having count(concat(substring(companies.name, 1, 4 ),add1,postcode)) > 1 ";
+		if ($this->input->is_ajax_request()) {
+			$show = false;
+				$campaign_id = $this->input->post('campaign');
+		} else {
+			$show=true;
+			intval($this->uri->segment(3));
+		}
+	$qry = "select name,urn,concat(substring(companies.name, 1, 4 ),add1,postcode) as dupe from companies left join records using(urn) left join company_addresses using(company_id) where campaign_id = $campaign_id and add1 is not null and postcode is not null group by concat(substring(companies.name, 1, 4 ),add1,postcode) having count(concat(substring(companies.name, 1, 4 ),add1,postcode)) > 1 ";
 	$array = $this->db->query($qry)->result_array();
 	$dupes = array();
 	foreach($array as $row){
 		$dupes[$row['dupe']]=array("name"=>$row['name'],"urn"=>$row['urn']);
 	}
 	foreach($dupes as $ref => $array){
-	$update = "update contacts left join companies using(urn) left join company_addresses using(company_id) set contacts.urn = {$array['urn']} where concat(substring(companies.name, 1, 4 ),add1,postcode) = '".addslashes($ref)."'";
+	$update = "update contacts left join records using(urn) left join companies using(urn) left join company_addresses using(company_id) set contacts.urn = {$array['urn']} where campaign_id = '$campaign_id' and concat(substring(companies.name, 1, 4 ),add1,postcode) = '".addslashes($ref)."'";
 	//echo $array['name'] .": ". $ref.";<br>";
 	$this->db->query($update);
-	$find_removed ="select urn from companies left join company_addresses using(company_id) where concat(substring(companies.name, 1, 4 ),add1,postcode) = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
+	$find_removed ="select urn from companies left join records using(urn) left join company_addresses using(company_id) where campaign_id = '$campaign_id' and concat(substring(companies.name, 1, 4 ),add1,postcode) = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
 	echo ";<br>";
 	foreach($this->db->query($find_removed)->result_array() as $row){
 		$this->db->query("delete from records where urn = '{$row['urn']}'");
+		$this->db->query("delete from contacts where urn = '{$row['urn']}'");
 		$this->db->query("delete from companies where urn = '{$row['urn']}'");
 		$this->db->query("delete from client_refs where urn = '{$row['urn']}'");
 		$this->db->query("delete from record_details where urn = '{$row['urn']}'");
@@ -667,11 +671,11 @@ $this->db->query($renewals);
 	
 	//update all the contacts on each dupe to the same urn
 	foreach($dupes as $ref => $array){
-	$update = "update contacts left join client_refs using(urn) set contacts.urn = {$array['urn']} where client_ref = '".addslashes($ref)."'";
+	$update = "update contacts left join records using(urn) left join client_refs using(urn) set contacts.urn = {$array['urn']} where campaign_id = '$campaign_id' and client_ref = '".addslashes($ref)."'";
 	$this->db->query($update);
 	
 	//find all the orphan urns with no contacts
-	$find_removed ="select urn from companies left join client_refs using(urn) where client_ref = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
+	$find_removed ="select urn from companies left join records using(urn) left join client_refs using(urn) where campaign_id = '$campaign_id' and client_ref = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
    //delete all the orphan record details
 	foreach($this->db->query($find_removed)->result_array() as $row){
 		$this->db->query("delete from records where urn = '{$row['urn']}'");
