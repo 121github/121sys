@@ -322,7 +322,7 @@ var importer = {
             dataType: "JSON"
         }).done(function(response) {
             if (response.success) {
-				if($('#merge-options').val()){
+				if($('#merge-options').val()!=""){
 					importer.merge_contacts();
 				} else {
                   importer.tidy_up();
@@ -336,11 +336,11 @@ var importer = {
     },
 	merge_contacts:function(){
 		 $('#import-progress').text("Merging contacts to companies...");
-		 if($('#merge-contacts').val()=="1"){
+		 if($('#merge-options').val()=="1"){
 			var merge_path = "merge_by_client_refs"
-		 } else if($('#merge-contacts').val()=="2"){
+		 } else if($('#merge-options').val()=="2"){
 			 var merge_path = "merge_dupe_companies";
-		 }else if($('#merge-contacts').val()=="3"){
+		 }else if($('#merge-options').val()=="3"){
 			 var merge_path = "merge_by_merge_column";
 		 }
 		 $.ajax({

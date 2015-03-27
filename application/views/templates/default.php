@@ -136,9 +136,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
   
     </ul>
     </li>
-                                         
-    
-    
+           <?php if (in_array("files menu", $_SESSION['permissions'])) { ?>                                 
+       <li <?php echo @($page == 'files' ? "class=Selected'" : "") ?>> <a href="<?php echo base_url() ?>files/manager" >File Storage</a></li>
+    <?php } ?>
     
 
         <?php if (in_array("view appointments", $_SESSION['permissions'])) { ?>
@@ -246,9 +246,14 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                         <li>
                                             <a href="#admin-campaigns">Campaign Setup</a>
                                             <ul id="admin-campaigns">
-                                                <?php if ($_SESSION['role'] == "1") { ?>
-                                                    <li <?php echo @($page == 'campaign_setup' ? "class='Selected'" : "") ?>>
-                                                        <a href="<?php echo base_url() ?>admin/campaigns" <>Campaign
+                                              <?php if (in_array("campaign access", $_SESSION['permissions'])) { ?>
+                                                             <li <?php echo @($page == 'campaign_access' ? "class='Selected'" : "") ?>>
+                                                        <a href="<?php echo base_url() ?>admin/campaign_access">Campaign
+                                                            Access</a></li>
+                                                            <?php } ?>
+                                            
+                                               <?php if (in_array("campaign setup", $_SESSION['permissions'])) { ?>
+                                                    <li <?php echo @($page == 'campaign_setup' ? "class='Selected'" : "") ?>>                                                <a href="<?php echo base_url() ?>admin/campaigns">Campaign
                                                             Setup</a></li>
                                                     <li <?php echo @($page == 'custom_fields' ? "class='Selected'" : "") ?>>
                                                         <a href="<?php echo base_url() ?>admin/campaign_fields" >Campaign
@@ -256,7 +261,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                                     <li <?php echo @($page == 'logos' ? "class='Selected'" : "") ?>>
                                                         <a href="<?php echo base_url() ?>logos" >Campaign
                                                             Logos</a></li>
-                                                <?php } ?>
+                                                  <?php } ?>
                                                 <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
                                                     <li <?php echo @($page == 'templates' ? "class='Selected'" : "") ?>>
                                                         <a href="<?php echo base_url() ?>templates" >Email Templates</a>

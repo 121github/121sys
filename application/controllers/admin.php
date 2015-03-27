@@ -196,6 +196,34 @@ class Admin extends CI_Controller
         );
         $this->template->load('default', 'admin/campaign.php', $data);
     }
+	
+	    public function campaign_users()
+    {
+        $options['types']     = $this->Form_model->get_campaign_types(false);
+        $options['features']  = $this->Form_model->get_campaign_features();
+        $options['clients']   = $this->Form_model->get_clients();
+        $options['groups']    = $this->Form_model->get_all_groups();
+        $options['campaigns'] = $this->Form_model->get_campaigns();
+		$options['views'] = $this->Form_model->get_custom_views();
+        $data                 = array(
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Admin',
+            'title' => 'Admin | Campaign Access',
+            'page' => 'campaign_access',
+            'javascript' => array(
+                'dashboard.js',
+                'admin/campaigns.js',
+                'lib/jquery.numeric.min.js',
+				'lib/moment.js'
+            ),
+            'options' => $options,
+            'css' => array(
+                'dashboard.css'
+            )
+        );
+        $this->template->load('default', 'admin/campaign_access.php', $data);
+    }
+	
     public function users_in_group()
     {
         if ($this->input->is_ajax_request()) {
