@@ -1680,7 +1680,7 @@ var duplicates = {
                                 var field_name = (field == "coname"?"name":field);
                                 var field_value = (field == "coname"?btoa(val[field_name]):val[field_name]);
                                 tbody_fields += "<td>"+val[field_name]+"</td>";
-                                search_url += "/"+(field.replace("_","-"))+"/"+field_value;
+                                search_url += "/"+(field.replace(/_/g,"-"))+"/"+field_value;
                                 if ($('.filter-form').find('input[name="campaign"]').val()) {
                                     search_url += "/campaign/"+$('.filter-form').find('input[name="campaign"]').val();
                                 }

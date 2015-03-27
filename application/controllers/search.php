@@ -203,6 +203,8 @@ class Search extends CI_Controller
             "telephone-number" => "telephone-number",
             "fullname" => "fullname",
             "coname" => "coname",
+            "company-postcode" => "company-postcode",
+            "company-telephone-number" => "company-telephone-number",
             "client-ref" => "client-ref"
         );
         
@@ -228,6 +230,7 @@ class Search extends CI_Controller
             "postcode" => "postcode",
             "fullname" => "fullname",
             "coname" => "coname",
+            "company-postcode" => "company-postcode",
             "client-ref" => "client-ref"
         );
         $fields          = array();

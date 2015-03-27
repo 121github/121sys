@@ -799,64 +799,88 @@ class Data_model extends CI_Model
 
         $where = "";
         if (!empty($form['campaign'])) {
-            $where .= " and campaign_id = ".$form['campaign']." ";
+            $where .= " and r.campaign_id = ".$form['campaign']." ";
         }
 
         $select = "";
+        $select_concat = "";
         $join = "";
         foreach($field_ar as $field) {
             if ($field == "telephone_number") {
                 if (!isset($contact_join)){
-                    $contact_join = " left join contacts using (urn)";
+                    $contact_join = " left join contacts cn ON (cn.urn = r.urn)";
                     $join .= $contact_join;
                 }
-                $join .= " left join contact_telephone using (contact_id)";
-                $select .= $field.",";
+                $join .= " left join contact_telephone cnt ON (cnt.contact_id = cn.contact_id)";
+                $select .= "cnt.".$field.",";
+                $select_concat .= "cnt.".$field.",";
             }
             elseif ($field == "postcode") {
                 if (!isset($contact_join)){
-                    $contact_join = " left join contacts using (urn)";
+                    $contact_join = " left join contacts cn ON (cn.urn = r.urn)";
                     $join .= $contact_join;
                 }
-                $join .= " left join contact_addresses using (contact_id)";
-                $select .= $field.",";
+                $join .= " left join contact_addresses cna ON (cna.contact_id = cn.contact_id)";
+                $select .= "cna.".$field.",";
+                $select_concat .= "cna.".$field.",";
             }
             elseif ($field == "fullname") {
                 if (!isset($contact_join)){
-                    $contact_join = " left join contacts using (urn)";
+                    $contact_join = " left join contacts cn ON (cn.urn = r.urn)";
                     $join .= $contact_join;
                 }
-                $select .= $field.",";
+                $select .= "cn.".$field.",";
+                $select_concat .= "cn.".$field.",";
             }
             elseif ($field == "coname") {
-                if (!isset($campaign_join)){
-                    $campaign_join = " inner join campaigns using (campaign_id)";
-                    $join .= $campaign_join;
+                if (!isset($company_join)){
+                    $company_join = " inner join companies cm ON (cm.urn = r.urn)";
+                    $join .= $company_join;
                 }
-                $join .= " inner join companies using (urn)";
-                $select .= "name,";
+                $select .= "cm.name,";
+                $select_concat .= "cm.name,";
+            }
+            elseif ($field == "company_telephone_number") {
+                if (!isset($company_join)){
+                    $company_join = " inner join companies cm ON (cm.urn = r.urn)";
+                    $join .= $company_join;
+                }
+                $join .= " left join company_telephone cmt ON (cmt.company_id = cm.company_id)";
+                $select .= "cmt.telephone_number as company_telephone_number,";
+                $select_concat .= "cmt.telephone_number,";
+            }
+            elseif ($field == "company_postcode") {
+                if (!isset($company_join)){
+                    $company_join = " inner join companies cm ON (cm.urn = r.urn)";
+                    $join .= $company_join;
+                }
+                $join .= " left join company_addresses cma ON (cma.company_id = cm.company_id)";
+                $select .= "cma.postcode as company_postcode,";
+                $select_concat .= "cma.postcode,";
             }
             elseif ($field == "client_ref") {
-                $join .= " inner join client_refs using (urn)";
-                $select .= $field.",";
+                $join .= " inner join client_refs cr ON (cr.urn = r.urn)";
+                $select .= "cr.".$field.",";
+                $select_concat .= "cr.".$field.",";
             }
         }
         $select =substr($select, 0, strlen($select)-1);
+        $select_concat =substr($select_concat, 0, strlen($select_concat)-1);
 
 
         $qry = "select ".$select.", count(*) as duplicates_count
-                from records ";
+                from records r ";
 
         $qry .= $join;
-        $qry .= " where CONCAT(".$select.") is not null and CONCAT(".$select.")<>'' and (parked_code is null or parked_code <>'5') ";
+        $qry .= " where CONCAT(".$select_concat.") is not null and CONCAT(".$select_concat.")<>'' and (parked_code is null or parked_code <>'5') ";
         if ($filter_input) {
-            $qry .= " and CONCAT(".$select.") like '%".$filter_input."%'";
+            $qry .= " and CONCAT(".$select_concat.") like '%".$filter_input."%'";
         }
         if (in_array("telephone_number",$field_ar)) {
-            $qry .= " and description != 'Transfer'";
+            $qry .= " and cnt.description != 'Transfer'";
         }
         $qry .= $where;
-        $qry .= " group by CONCAT(".$select.")
+        $qry .= " group by CONCAT(".$select_concat.")
                 having count(*)>1";
 		$this->firephp->log($qry);
         return $qry;
@@ -894,6 +918,14 @@ class Data_model extends CI_Model
                 array_push($on_subqry, "duplicates.name=cm.name");
                 array_push($select, "cm.name");
             }
+            elseif ($field == "company_telephone_number") {
+                array_push($on_subqry, "duplicates.company_telephone_number=cmt.telephone_number");
+                array_push($select, "cmt.telephone_number");
+            }
+            elseif ($field == "company_postcode") {
+                array_push($on_subqry, "duplicates.company_postcode=cma.postcode");
+                array_push($select, "cma.postcode");
+            }
             elseif ($field == "client_ref") {
                 array_push($on_subqry, "duplicates.".$field."=cr.".$field);
                 array_push($select, "cr.".$field);
@@ -907,6 +939,8 @@ class Data_model extends CI_Model
                   left join contact_telephone ct ON (ct.contact_id = c.contact_id)
                   left join contact_addresses ca ON (ca.contact_id = c.contact_id)
                   left join companies cm ON (cm.urn = r.urn)
+                  left join company_telephone cmt ON (cmt.company_id = cm.company_id)
+                  left join company_addresses cma ON (cma.company_id = cm.company_id)
                   left join client_refs cr ON (cr.urn = r.urn) ";
 
         $subqry = $this->get_duplicates_qry($form);

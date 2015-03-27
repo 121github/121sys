@@ -139,93 +139,7 @@ class Cron extends CI_Controller
         
     }
     
-    /**
-     * Generate and save the export data to an csv file temporally
-     */
-    private function save_export_to_csv($data, $dirname, $filename, $headers)
-    {
-        
-        $path = $dirname . $filename . ".csv";
-        
-        header("Content-type: text/csv");
-        header("Content-Disposition: attachment; filename={$filename}.csv");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        $outputBuffer = fopen($path, 'w');
-        
-        fputcsv($outputBuffer, $headers);
-        foreach ($data as $val) {
-            fputcsv($outputBuffer, $val);
-        }
-        if (fclose($outputBuffer)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    private function send_file_exported_by_email($dirname, $filename, $users)
-    {
-        
-        if (!empty($users)) {
-            $email_address = "";
-            foreach ($users as $user) {
-                if (strlen($user['user_email']) > 0) {
-                    $email_address .= $user['user_email'] . ",";
-                }
-            }
-            if (strlen($email_address) > 0) {
-                $email_address = substr($email_address, 0, strlen($email_address) - 1);
-            }
-            
-            $subject = "[121System] New export data received - " . $filename;
-            $body    = "You have received a new export data - " . $filename;
-            
-            echo "The file " . $filename . " is going to be sent to the user/s: " . $email_address . " " . " !<br>";
-            
-            if ($this->send_email($dirname . $filename . ".csv", $email_address, $subject, $body)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-    
-    private function send_email($filePath, $email_address, $subject, $body)
-    {
-        
-        //var_dump($email_address);
-        
-        $this->load->library('email');
-        
-        $config = array(
-            "smtp_host" => "mail.121system.com",
-            "smtp_user" => "mail@121system.com",
-            "smtp_pass" => "L3O9QDirgUKXNE7rbNkP",
-            "smtp_port" => 25
-        );
-        
-        $config['mailtype'] = 'html';
-        
-        $this->email->initialize($config);
-        
-        $this->email->from('noreply@121customerinsight.co.uk');
-        $this->email->to($email_address);
-        $this->email->bcc("bradf@121customerinsight.co.uk");
-        $this->email->subject($subject);
-        $this->email->message($body);
-        
-        
-        //Attach the file
-        $this->email->attach($filePath);
-        
-        $result = $this->email->send();
-        //echo $this->email->print_debugger();
-        $this->email->clear(TRUE);
-        
-        
-        return $result;
-    }
+
     public function matrix_cv_upload()
     {
 		//first prepare all the files by checking for and removing dupes
@@ -333,7 +247,148 @@ HAVING count( doc_hash ) >1";
             }
         }
     }
-    
-    
+
+
+    /**
+     * Check and fix the contact telephone numbers
+     */
+    public function check_contact_telephone_numbers()
+    {
+        //Get the wrong telephone numbers
+        $wrong_telephone_numbers = $this->Cron_model->get_wrong_contact_telephone_numbers();
+
+        $aux = array();
+        foreach($wrong_telephone_numbers as $contact) {
+            $new_telephone_number = $contact['telephone_number'];
+            $new_telephone_number = str_replace('+44','0',$new_telephone_number);
+            $new_telephone_number = str_replace('+','00',substr($new_telephone_number,0,2)).substr($new_telephone_number,2);
+            $new_telephone_number = str_replace('(0)','',$new_telephone_number);
+            $new_telephone_number = str_replace('-','',$new_telephone_number);
+            $new_telephone_number = str_replace('/','',$new_telephone_number);
+
+            $contact['telephone_number'] = $new_telephone_number;
+            array_push($aux,$contact);
+        }
+
+        $wrong_telephone_numbers = $aux;
+
+        //Update the contacts with the new telephone_numbers
+        $result = $this->Cron_model->update_contact_telephone_numbers($wrong_telephone_numbers);
+    }
+
+    /**
+     * Check and fix the company telephone numbers
+     */
+    public function check_company_telephone_numbers()
+    {
+        //Get the wrong telephone numbers
+        $wrong_telephone_numbers = $this->Cron_model->get_wrong_company_telephone_numbers();
+
+        $aux = array();
+        foreach($wrong_telephone_numbers as $company) {
+            $new_telephone_number = $company['telephone_number'];
+            $new_telephone_number = str_replace('+44','0',$new_telephone_number);
+            $new_telephone_number = str_replace('+','00',substr($new_telephone_number,0,2)).substr($new_telephone_number,2);
+            $new_telephone_number = str_replace('(0)','',$new_telephone_number);
+            $new_telephone_number = str_replace('-','',$new_telephone_number);
+            $new_telephone_number = str_replace('/','',$new_telephone_number);
+
+            $company['telephone_number'] = $new_telephone_number;
+            array_push($aux,$company);
+        }
+
+        $wrong_telephone_numbers = $aux;
+
+        //Update the copmany with the new telephone_numbers
+        $result = $this->Cron_model->update_company_telephone_numbers($wrong_telephone_numbers);
+    }
+
+    /**
+     * Generate and save the export data to an csv file temporally
+     */
+    private function save_export_to_csv($data, $dirname, $filename, $headers)
+    {
+
+        $path = $dirname . $filename . ".csv";
+
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename={$filename}.csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $outputBuffer = fopen($path, 'w');
+
+        fputcsv($outputBuffer, $headers);
+        foreach ($data as $val) {
+            fputcsv($outputBuffer, $val);
+        }
+        if (fclose($outputBuffer)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function send_file_exported_by_email($dirname, $filename, $users)
+    {
+
+        if (!empty($users)) {
+            $email_address = "";
+            foreach ($users as $user) {
+                if (strlen($user['user_email']) > 0) {
+                    $email_address .= $user['user_email'] . ",";
+                }
+            }
+            if (strlen($email_address) > 0) {
+                $email_address = substr($email_address, 0, strlen($email_address) - 1);
+            }
+
+            $subject = "[121System] New export data received - " . $filename;
+            $body    = "You have received a new export data - " . $filename;
+
+            echo "The file " . $filename . " is going to be sent to the user/s: " . $email_address . " " . " !<br>";
+
+            if ($this->send_email($dirname . $filename . ".csv", $email_address, $subject, $body)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private function send_email($filePath, $email_address, $subject, $body)
+    {
+
+        //var_dump($email_address);
+
+        $this->load->library('email');
+
+        $config = array(
+            "smtp_host" => "mail.121system.com",
+            "smtp_user" => "mail@121system.com",
+            "smtp_pass" => "L3O9QDirgUKXNE7rbNkP",
+            "smtp_port" => 25
+        );
+
+        $config['mailtype'] = 'html';
+
+        $this->email->initialize($config);
+
+        $this->email->from('noreply@121customerinsight.co.uk');
+        $this->email->to($email_address);
+        $this->email->bcc("bradf@121customerinsight.co.uk");
+        $this->email->subject($subject);
+        $this->email->message($body);
+
+
+        //Attach the file
+        $this->email->attach($filePath);
+
+        $result = $this->email->send();
+        //echo $this->email->print_debugger();
+        $this->email->clear(TRUE);
+
+
+        return $result;
+    }
     
 }

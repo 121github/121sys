@@ -20,7 +20,17 @@ class Workbooks_model extends CI_Model
         $qry = "SELECT
                   contacts.fullname,
                   contacts.position,
-                  group_concat(telephone_number SEPARATOR ',') as telephone_numbers,
+                  CONCAT(
+                    IF(
+                      group_concat(contact_telephone.telephone_number SEPARATOR ','),
+                      CONCAT(
+                        group_concat(contact_telephone.telephone_number SEPARATOR ','),
+                        ','
+                      ),
+                      ''
+                    ),
+                    company_telephone.telephone_number) as telephone_numbers,
+                  company_telephone.telephone_number,
                   contacts.email,
                   companies.name as company_name,
                   companies.website,
@@ -30,19 +40,22 @@ class Workbooks_model extends CI_Model
                   company_addresses.county,
                   company_addresses.postcode,
                   company_addresses.country,
+                  DATE_FORMAT(companies.date_of_creation,'%Y') as year_established,
                   webform_answers.a1 as temporary_contracts,
                   webform_answers.a2 as industry_sector,
                   webform_answers.a3 as num_of_employees,
                   webform_answers.a4 as num_of_temp_contractors,
                   webform_answers.a5 as ave_contract_rates,
                   webform_answers.a6 as how_do_contractors_work,
-                  webform_answers.a7 as competitors,
-                  webform_answers.a8 as psl_exists
+                  webform_answers.a8 as uses_psl,
+                  webform_answers.a9 as psl_review_person,
+                  webform_answers.a10 as psl_review_date
 				from records
 				inner JOIN contacts using (urn)
 				left JOIN contact_telephone using (contact_id)
 				inner JOIN companies using (urn)
 				left JOIN company_addresses using (company_id)
+				left JOIN company_telephone using (company_id)
 				left JOIN webform_answers using (urn)
 				WHERE urn = ".$urn;
 

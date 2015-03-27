@@ -717,6 +717,9 @@ var record = {
             //reset the item id
             $tab.find('.item-id').val('');
 
+            //Set the telephone number input as a number
+            $tab.find('form').find('input[name="telephone_number"]').numeric();
+
         },
         edit_item_form: function ($btn) {
             id = $btn.attr('item-id');
@@ -746,6 +749,8 @@ var record = {
                     $tab.find('.close-contact-btn').removeClass('close-contact-btn').addClass('hide-item-form');
                     $tab.find('.save-contact-phone').attr('action', 'edit_phone');
                     $tab.find('.save-contact-address').attr('action', 'edit_address');
+                    //Set the telephone number input as a number
+                    $tab.find('form').find('input[name="telephone_number"]').numeric();
                 } else {
                     flashalert.danger(response.msg);
                 }
@@ -1045,8 +1050,6 @@ var record = {
                 $tab.find('form').hide();
                 $tab.find('.table-container').show();
             });
-
-
         },
         save_item: function ($btn) {
             var id = $btn.attr('item-id');
@@ -1091,6 +1094,9 @@ var record = {
             //reset the item id
             $tab.find('.item-id').val('');
 
+            //Set the telephone number input as a number
+            $tab.find('form').find('input[name="telephone_number"]').numeric();
+
         },
         edit_item_form: function ($btn) {
             id = $btn.attr('item-id');
@@ -1120,6 +1126,8 @@ var record = {
                     $tab.find('.close-company-btn').removeClass('close-company-btn').addClass('hide-item-form');
                     $tab.find('.save-company-phone').attr('action', 'edit_cophone');
                     $tab.find('.save-company-address').attr('action', 'edit_coaddress');
+                    //Set the telephone number input as a number
+                    $tab.find('form').find('input[name="telephone_number"]').numeric();
                 } else {
                     flashalert.danger(response.msg);
                 }
@@ -2250,6 +2258,12 @@ var record = {
                 if (response.success) {
                     if (response.data.length > 0) {
                         record.appointment_panel.load_table(response.data);
+                        $('.record-panel').find('.outcomepicker').find('li.disabled').each(function () {
+                            $(this).removeClass('disabled');
+                        });
+                        $('.record-panel').find('.outcomepicker').find('option:disabled').each(function () {
+                            $(this).prop('disabled', false);
+                        });
                     } else {
                         $panel.append('<p>No appointments have been created</p>');
                     }
@@ -2323,12 +2337,12 @@ var record = {
                 if (response.success) {
                     record.appointment_panel.load_appointments();
                     record.appointment_panel.hide_edit_form();
-                    $('.record-panel').find('.outcomepicker').find('li.disabled').each(function () {
-                        $(this).removeClass('disabled');
-                    });
-                    $('.record-panel').find('.outcomepicker').find('option:disabled').each(function () {
-                        $(this).prop('disabled', false);
-                    });
+                    //$('.record-panel').find('.outcomepicker').find('li.disabled').each(function () {
+                    //    $(this).removeClass('disabled');
+                    //});
+                    //$('.record-panel').find('.outcomepicker').find('option:disabled').each(function () {
+                    //    $(this).prop('disabled', false);
+                    //});
                     flashalert.success("Appointment saved");
                 } else {
                     flashalert.danger(response.msg);
@@ -2888,7 +2902,7 @@ var workbooks = {
                     '<tr><th>Assigned To</th><td>' + val.assigned_to + '</td></tr>' +
                     '<tr><th>Organisation</th><td>' + val.organisation + '</td></tr>' +
                     '<tr><th>Industry</th><td>' + val.industry + '</td></tr>' +
-                    '<tr><th>Website</th><td><a href="'+val.website+'" target="_blank">' + val.website + '</a></td></tr>' +
+                    '<tr><th>Website</th><td><a href="http://'+val.website+'" target="_blank">' + val.website + '</a></td></tr>' +
                     '<tr><th>Street Address</th><td>' + val.street_address + '</td></tr>' +
                     '<tr><th>Town/City</th><td>' + val.town_city + '</td></tr>' +
                     '<tr><th>County/State</th><td>' + val.county_state + '</td></tr>' +
@@ -2906,7 +2920,7 @@ var workbooks = {
                     '<tr><th>No Of Contractors</th><td>' + val.no_of_contractors + '</td></tr>' +
                     '<tr><th>Ave. Contract Rate</th><td>' + val.ave_contract_rate + '</td></tr>' +
                     '<tr><th>How Contractors Work</th><td>' + val.how_contractors_work + '</td></tr>' +
-                    '<tr><th>Main Competitor</th><td>' + val.main_competitor + '</td></tr>' +
+                    //'<tr><th>Main Competitor</th><td>' + val.main_competitor + '</td></tr>' +
                     '<tr><th>Uses a PSL</th><td>' + val.uses_a_psl + '</td></tr>' +
                     '<tr><th>PSL Review Date</th><td>' + val.psl_review_date + '</td></tr>' +
                     '<tr><th>PSL Review Person</th><td>' + val.psl_review_person + '</td></tr>' +

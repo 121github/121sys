@@ -301,13 +301,14 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                                             data-toggle="tooltip" data-width="500" data-html="true"
                                                             data-placement="right"
                                                             title="Eg. PAYE,Umbrella,PSC? How they allow contractors to work will give us an idea of whether they are completely new to the concept of a PSC or if they already have experience."></span></label>
-<!--            <input name="answers[a6]" class="form-control" id="how"-->
-<!--                   placeholder="Enter the ways they allow contractors to work, any payment schemes used"-->
-<!--                   value="--><?php //echo @$values['a6'] ?><!--">-->
-            <select  name="answers[a6][]" class="selectpicker" id="how_contractors_select" data-width="100%" data-size="5" multiple>
-                <option value="Limited Company (PSC)" >Limited Company (PSC)</option>
-                <option value="Umbrella" >Umbrella</option>
-                <option value="Employee (PAYE)" >Employee (PAYE)</option>
+            <!--            <input name="answers[a6]" class="form-control" id="how"-->
+            <!--                   placeholder="Enter the ways they allow contractors to work, any payment schemes used"-->
+            <!--                   value="--><?php //echo @$values['a6'] ?><!--">-->
+            <select name="answers[a6][]" class="selectpicker" id="how_contractors_select" data-width="100%"
+                    data-size="5" multiple>
+                <option value="Limited Company (PSC)">Limited Company (PSC)</option>
+                <option value="Umbrella">Umbrella</option>
+                <option value="Employee (PAYE)">Employee (PAYE)</option>
             </select>
         </div>
         <div class="form-group">
@@ -315,28 +316,43 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                                         data-toggle="tooltip" data-width="500" data-html="true"
                                                         data-placement="right"
                                                         title="Are they already working with any of Onions competitors? If so, who are they up against."></span></label>
-<!--            <input name="answers[a7]" class="form-control" id="how"-->
-<!--                   placeholder="Enter any other accountancy firms the recruiter may deal with"-->
-<!--                   value="--><?php //echo @$values['a7'] ?><!--">-->
-            <select  name="answers[a7]" class="selectpicker" id="competitors_select" data-width="100%" data-size="5">
-                <option value="" >Nothing selected</option>
-                <option value="Brookson Limited" >Brookson Limited</option>
-                <option value="Contractor Genie" >Contractor Genie</option>
-                <option value="Danbro" >Danbro</option>
-                <option value="Income Made Smart (IMS)" >Income Made Smart (IMS)</option>
-                <option value="Liberty Bishop" >Liberty Bishop</option>
-                <option value="SJD Accountancy" >SJD Accountancy</option>
-            </select>
+            <input name="answers[a7]" class="form-control" id="how"
+                   placeholder="Enter any other accountancy firms the recruiter may deal with"
+                   value="<?php echo @$values['a7'] ?>">
+            <!--            <select  name="answers[a7]" class="selectpicker" id="competitors_select" data-width="100%" data-size="5">-->
+            <!--                <option value="" >Nothing selected</option>-->
+            <!--                <option value="Brookson Limited" >Brookson Limited</option>-->
+            <!--                <option value="Contractor Genie" >Contractor Genie</option>-->
+            <!--                <option value="Danbro" >Danbro</option>-->
+            <!--                <option value="Income Made Smart (IMS)" >Income Made Smart (IMS)</option>-->
+            <!--                <option value="Liberty Bishop" >Liberty Bishop</option>-->
+            <!--                <option value="SJD Accountancy" >SJD Accountancy</option>-->
+            <!--            </select>-->
         </div>
 
         <div class="form-group">
-            <label for="psls">Preferred Supplier List? <span class="glyphicon glyphicon-question-sign tt"
+            <input type="checkbox" name="answers[a8]" value="true" <?php if (@$values['a8']) { echo 'checked'; } ?>>
+            <label for="psls">Uses PSL? <span class="glyphicon glyphicon-question-sign tt"
                                                              data-toggle="tooltip" data-width="500" data-html="true"
                                                              data-placement="right"
                                                              title="If they have a psl, when is it due to be renewed and who is responsible for that?"></span></label>
-            <input name="answers[a8]" class="form-control" id="psls" placeholder="Eneter any captured PSL info here"
-                   value="<?php echo @$values['a8'] ?>">
+<!--            <input name="answers[a8]" class="form-control" id="psls" placeholder="Eneter the PSL review person here"-->
+<!--                   value="--><?php //echo @$values['a8'] ?><!--">-->
         </div>
+
+        <div class="form-group">
+            <label for="psls">PSL Review Person? </label>
+            <input name="answers[a9]" class="form-control" id="psls" placeholder="Eneter the PSL review person here"
+                   value="<?php echo @$values['a9'] ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="psls">PSL Review Date? </label>
+            <input name="answers[a10]" class="form-control date" id="psls" placeholder="Eneter the PSL review date here"
+                   value="<?php echo @$values['a10'] ?>">
+        </div>
+
+
         <a href="<?php echo base_url() . 'records/detail/' . $this->uri->segment(4); ?>" class="btn btn-default">Go
             back</a>
         <button type="submit" id="save-form" class="btn btn-primary">Save form</button>
@@ -365,8 +381,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         $('form').find('input[name="answers[a3]"]').numeric();
         $('form').find('input[name="answers[a4]"]').numeric();
         $('form').find('input[name="answers[a5]"]').numeric();
-        $('#how_contractors_select').selectpicker('val',(<?php echo "'".@$values['a6']."'" ?>).split(',')).selectpicker('render');
-        $('#competitors_select').selectpicker('val',(<?php echo "'".@$values['a7']."'" ?>).split(',')).selectpicker('render');
+        $('#how_contractors_select').selectpicker('val', (<?php echo "'".@$values['a6']."'" ?>).split(',')).selectpicker('render');
+        $('#competitors_select').selectpicker('val', (<?php echo "'".@$values['a7']."'" ?>).split(',')).selectpicker('render');
 
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
@@ -395,7 +411,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 flashalert.success("Form was saved");
             });
         });
-
 
 
     });

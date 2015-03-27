@@ -195,6 +195,7 @@ class Records extends CI_Controller
                 'plugins/countdown/jquery.plugin.min.js',
                 'plugins/countdown/jquery.countdown.min.js',
                 'plugins/responsive-calendar/0.8/responsive-calendar.js',
+                'lib/jquery.numeric.min.js',
 				//'lib/wavsurfer.js'
             ),
             'css' => array(

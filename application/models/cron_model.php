@@ -287,6 +287,65 @@ class Cron_model extends CI_Model
         }
         
     }
-    
+
+    /**
+     * Get the wrong contact telephone numbers
+     */
+    public function get_wrong_contact_telephone_numbers() {
+        $qry    = "select contact_id, telephone_number
+                  from contact_telephone
+                  where
+                      telephone_number like '%+%' or
+                      telephone_number like '%/%' or
+                      telephone_number like '%(%' or
+                      telephone_number like '%)%' or
+                      telephone_number like '%-%' ";
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
+    }
+
+    /**
+     * Update the contact telephone numbers with the right numbers
+     */
+    public function update_contact_telephone_numbers($contacts) {
+
+        $result = $this->db->update_batch("contact_telephone", $contacts, 'contact_id');
+
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
+    }
+
+    /**
+     * Get the wrong company telephone numbers
+     */
+    public function get_wrong_company_telephone_numbers() {
+        $qry    = "select company_id, telephone_number
+                  from company_telephone
+                  where
+                      telephone_number like '%+%' or
+                      telephone_number like '%/%' or
+                      telephone_number like '%(%' or
+                      telephone_number like '%)%' or
+                      telephone_number like '%-%' ";
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
+    }
+
+    /**
+     * Update the company telephone numbers with the right numbers
+     */
+    public function update_company_telephone_numbers($companies) {
+
+        $result = $this->db->update_batch("company_telephone", $companies, 'company_id');
+
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
+    }
     
 }

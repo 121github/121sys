@@ -735,6 +735,19 @@ class Filter_model extends CI_Model
             $qry .= " left join companies companies on companies.urn = records.urn ";
         }
 
+
+        //company_telephone
+        if (in_array("company-telephone-number", $fields)) {
+            $qry .= " left join companies companies on companies.urn = records.urn ";
+            $qry .= " left join company_telephone cmt on cmt.company_id = companies.company_id ";
+        }
+
+        //company_postcode
+        if (in_array("company-postcode", $fields)) {
+            $qry .= " left join companies companies on companies.urn = records.urn ";
+            $qry .= " left join company_addresses cma on cma.company_id = companies.company_id ";
+        }
+
         //client_refs
         if (in_array("client-ref", $fields)) {
             $qry .= " left join client_refs cr on cr.urn = records.urn ";
@@ -849,6 +862,21 @@ class Filter_model extends CI_Model
             $comany_name_qry .= " and companies.name = '".base64_decode($array['coname'])."'";
             unset($array['coname']);
         }
+
+        //company_telephone
+        $company_telephone_qry = "";
+        if (in_array("company-telephone-number", $fields)) {
+            $company_telephone_qry .= " and cmt.telephone_number= '".$array['company-telephone-number']."'";
+            unset($array['company-telephone-number']);
+        }
+
+        //company_postcode
+        $company_postcode_qry = "";
+        if (in_array("company-postcode", $fields)) {
+            $company_postcode_qry .= " and cma.postcode= '".$array['company-postcode']."'";
+            unset($array['company-postcode']);
+        }
+
         //client_refs
         $client_ref_qry = "";
         if (in_array("client-ref", $fields)) {
@@ -894,7 +922,7 @@ class Filter_model extends CI_Model
 
 
 
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry $contact_telephone_qry $contact_postcode_qry $contact_fullname_qry $comany_name_qry $client_ref_qry";
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry $contact_telephone_qry $contact_postcode_qry $contact_fullname_qry $comany_name_qry $company_telephone_qry $company_postcode_qry $client_ref_qry";
 
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
