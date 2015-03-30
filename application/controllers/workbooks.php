@@ -126,10 +126,10 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
             }
             //Send an email with the request
             if (!$response || !isset($response['flash'])) {
-                $body = 'ERROR: The workbook id was not saved: '.json_encode(array("request" => $data));
+                $body = '<span style="color:red; font-weight: bold;">ERROR: The workbook id was not saved.</span> <br><br> REQUEST:<br> '.json_encode(array("request" => $data)).' <br><br> RESPONSE: <br>'.json_encode(array("response" => $response));
             }
             else {
-                $body = 'Lead saved successfully!! (ID: '.(isset($lead_data['id'])?$lead_data['id']:'').') Data requested for the integration with the Workbooks: \n'.json_encode(array("request" => $data));
+                $body = '<span style="color:green; font-weight: bold;">Lead saved successfully!! (ID: '.(isset($lead_data['id'])?$lead_data['id']:'').') </span><br><br> REQUEST <br>'.json_encode(array("request" => $data)).'<br><br> RESPONSE: <br>'.json_encode(array("response" => $response));
             }
             $subject = 'Workbooks Integration. URN: '.$urn;
             $this->send_email($body,$subject);
@@ -138,12 +138,12 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
                 "msg" => (isset($response['flash'])?$response['flash']:'ERROR: Lead not saved!'),
                 "success" => (isset($response['success'])?$response['success']:false),
                 "function_name" => "workbooks",
-                "new_lead" => ($new_lead?$new_lead:NULL)
+                "new_lead" => (isset($new_lead)?$new_lead:NULL)
             ));
         }
         else {
             //Send an email with the error
-            $body = 'ERROR: The workbook id was not saved: URN not found';
+            $body = '<span style="color:red; font-weight: bold;">ERROR: The workbook id was not saved: URN not found</span>';
             $subject = 'Workbooks Integration.';
             $this->send_email($body,$subject);
 

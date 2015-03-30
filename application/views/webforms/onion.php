@@ -342,7 +342,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 
         <div class="form-group">
             <label for="psls">PSL Review Person? </label>
-            <input name="answers[a9]" class="form-control" id="psls" placeholder="Eneter the PSL review person here"
+            <input name="answers[a9]" class="form-control" id="psls" maxlength="100" placeholder="Eneter the PSL review person here"
                    value="<?php echo @$values['a9'] ?>">
         </div>
 
