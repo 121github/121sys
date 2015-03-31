@@ -16,8 +16,8 @@ class Workbooks extends CI_Controller
         $this->workbooks = new WorkbooksApi(array(
             'application_name' => 'PHP test client',
             'user_agent' => 'php_test_client/0.1',
-            'api_key' => '88979-95551-0f48a-1fbbd-9a35b-464f5-48da2-ba6a3' //Prod DB
-            //'api_key' => '875df-632ea-baee0-12876-632a8-4e89e-c2038-2f61a', //Testing DB
+            //'api_key' => '88979-95551-0f48a-1fbbd-9a35b-464f5-48da2-ba6a3' //Prod DB
+            'api_key' => '875df-632ea-baee0-12876-632a8-4e89e-c2038-2f61a', //Testing DB
         ));
     }
 
@@ -84,7 +84,7 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
                 'person_lead_party[person_first_name]' => (isset($data['firstname']) ? $data['firstname'] : NULL),
                 'person_lead_party[person_last_name]' => (isset($data['lastname']) ? $data['lastname'] : NULL),
                 'person_lead_party[person_salutation]' => 'Dear ' . $data['fullname'],
-                'org_lead_party[main_location[telephone]]' => $data['telephone'],
+                'org_lead_party[main_location[telephone]]' => (isset($data['telephone']) ? $data['telephone'] : NULL),
                 'org_lead_party[main_location[mobile]]' => (isset($data['mobile']) ? $data['mobile'] : NULL),
                 'org_lead_party[main_location[email]]' => $data['email'],
                 'org_lead_party[name]' => $data['company_name'],
