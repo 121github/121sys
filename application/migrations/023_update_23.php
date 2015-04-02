@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Migration_update_22 extends CI_Migration
+class Migration_update_23 extends CI_Migration
 {
 
     public function __construct()
@@ -25,7 +25,7 @@ class Migration_update_22 extends CI_Migration
         ");
 
         //Add the data field to the tps table
-        $this->db->query("ALTER TABLE `121sys`.tps ADD date_updated TIMESTAMP NOT NULL");
+        $this->db->query("ALTER TABLE `tps` ADD `date_updated` TIMESTAMP NOT NULL");
         //Set the current date to the numbers that already exists in the tps table
         $this->db->query("UPDATE `tps` SET `date_updated`=NOW()");
     }
