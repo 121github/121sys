@@ -1050,6 +1050,11 @@ var record = {
                 $tab.find('form').hide();
                 $tab.find('.table-container').show();
             });
+            /*check ctps */
+            $(document).on('click', '.ctps-btn', function (e) {
+                e.preventDefault();
+                record.company_panel.check_ctps($(this).attr('item-number'), $(this).attr('item-company-id'), $(this).attr('item-number-id'));
+            });
         },
         save_item: function ($btn) {
             var id = $btn.attr('item-id');
@@ -1096,7 +1101,7 @@ var record = {
 
             //Set the telephone number input as a number
             $tab.find('form').find('input[name="telephone_number"]').numeric();
-
+            $tab.find('.edit-ctps').html("");
         },
         edit_item_form: function ($btn) {
             id = $btn.attr('item-id');
@@ -1128,6 +1133,21 @@ var record = {
                     $tab.find('.save-company-address').attr('action', 'edit_coaddress');
                     //Set the telephone number input as a number
                     $tab.find('form').find('input[name="telephone_number"]').numeric();
+                    var ctps_option = $tab.find('select[name="ctps"]').val();
+                    var company_id = $tab.find('form').find('input[name="company_id"]').val();
+                    var telephone_id = $tab.find('form input[name="telephone_id"]').val();
+                    var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
+                    var ctps = "";
+                    if (ctps_option.length == 0) {
+                        ctps = "<span class='glyphicon glyphicon-question-sign black edit-ctps-btn tt pointer' item-company-id='"+company_id+"' item-number-id='"+telephone_id+"' item-number='"+telephone_number+"' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
+                    }
+                    else if (ctps_option == 1) {
+                        ctps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS CTPS registered'></span>";
+                    }
+                    else {
+                        ctps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
+                    }
+                    $tab.find('.edit-ctps').html(ctps);
                 } else {
                     flashalert.danger(response.msg);
                 }
@@ -1175,7 +1195,17 @@ var record = {
                     });
                     $.each(val.telephone, function (dt, tel) {
                         if (tel.tel_name) {
-                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a></dd>";
+                            var ctps = "";
+                            if (tel.tel_tps == null) {
+                                ctps = "<span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='"+id+"' item-number-id='"+dt+"' item-number='"+tel.tel_num+"' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
+                            }
+                            else if (tel.tel_tps == 1) {
+                                ctps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS CTPS registered'></span>";
+                            }
+                            else {
+                                ctps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
+                            }
+                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> "+ctps+"</dd>";
                         }
                     });
                     $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
@@ -1189,6 +1219,22 @@ var record = {
                     );
                 });
 
+            });
+        },
+        check_ctps: function(telephone_number, company_id, telephone_id) {
+            $.ajax({
+                url: helper.baseUrl + 'cron/check_tps',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    telephone_number: telephone_number,
+                    type: "ctps",
+                    telephone_id: telephone_id,
+                    company_id: company_id
+                }
+            }).done(function (response) {
+                flashalert.warning(response.msg);
+                record.company_panel.load_panel(record.urn, company_id)
             });
         },
         remove: function (id) {

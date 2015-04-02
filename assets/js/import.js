@@ -364,6 +364,7 @@ var importer = {
             if (response.success) {
                 importer.check_contact_telephone_numbers();
                 importer.check_compnay_telephone_numbers();
+                importer.check_tps();
                 flashalert.success("The import was successful");
                 $('#import-progress').html("<span class='green'>Import was completed</span>");
             } else {
@@ -377,14 +378,18 @@ var importer = {
         $.ajax({
             url: helper.baseUrl + 'cron/check_contact_telephone_numbers'
         }).done(function (response) {
-
         });
     },
     check_compnay_telephone_numbers: function() {
         $.ajax({
             url: helper.baseUrl + 'cron/check_company_telephone_numbers'
         }).done(function (response) {
-
+        });
+    },
+    check_tps: function() {
+        $.ajax({
+            url: helper.baseUrl + 'cron/check_all_tps'
+        }).done(function (response) {
         });
     },
     undo_changes: function () {

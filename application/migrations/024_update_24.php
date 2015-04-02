@@ -11,11 +11,11 @@ class Migration_update_24 extends CI_Migration
 
     public function up()
     {
-        $this->firephp->log("starting migration 23");
+        $this->firephp->log("starting migration 24");
 
         //Add the tps and ctps field to the tps table
-        $this->db->query("ALTER TABLE `tps` ADD `tps` TINYINT NOT NULL");
-        $this->db->query("ALTER TABLE `tps` ADD `ctps` TINYINT NOT NULL");
+        $this->db->query("ALTER TABLE `tps` ADD `tps` TINYINT DEFAULT 0 NOT NULL");
+        $this->db->query("ALTER TABLE `tps` ADD `ctps` TINYINT DEFAULT 0 NOT NULL");
 
     }
     public function down()

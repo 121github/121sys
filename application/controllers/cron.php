@@ -415,6 +415,159 @@ HAVING count( doc_hash ) >1";
         echo $output;
     }
 
+
+    /**
+     * Check the tps for an specific telephone number
+     */
+    public function check_tps() {
+
+        //Ajax request (Check the tps table and the API if it is not in tps table)
+        if ($this->input->is_ajax_request()) {
+
+            $form = $this->input->post();
+            $telephone_number = $form['telephone_number'];
+            $type = $form['type'];
+
+            if ($telephone_number && $type) {
+                //Check if the telephone number is in the tps table
+                $tps = $this->check_tps_table($telephone_number, $type);
+
+                $success = false;
+                if (!empty($tps)) {
+                    if ($tps[0][$type]) {
+                        $success = true;
+                    }
+                    else {
+                        $success = false;
+                    }
+
+                }
+                else {
+                    //Check if the api (selectabase API) return successfull data
+                    $api_response = $this->check_tps_api($telephone_number);
+                    $api_response = json_decode($api_response,true);
+
+                    if ($api_response[$type]) {
+                        $success = true;
+                        //Update this telephone_number in the tps table with tps or ctps as true
+                        $this->Cron_model->update_number_to_tps_table(array("telephone" => $telephone_number, $type => 1));
+                    }
+                    else {
+                        $success = false;
+                        //Update this telephone_number in the tps table with tps or ctps as false
+                        $this->Cron_model->update_number_to_tps_table(array("telephone" => $telephone_number, $type => 0));
+                    }
+                }
+                //Update company
+                if (isset($form['company_id'])) {
+                    if (isset($form['telephone_id'])) {
+                        $company = array(
+                            "company_id" => $form['company_id'],
+                            "telephone_id" => $form['telephone_id'],
+                            "telephone_number" => $form['telephone_number'],
+                            "ctps" => ($success?1:0)
+                        );
+                        $company_response = $this->Cron_model->update_company_telephone_numbers(array($company));
+                    }
+                    echo json_encode(array(
+                        "success" => ($tps),
+                        "msg" => ($success?"This number IS ".$type." registerd":"This number (".$telephone_number.") is NOT ".$type." registerd"),
+                        "api_response" => (isset($api_response)?$api_response:"No api request. Founded on the tps table"),
+                        "tps" => (isset($api_response)?$api_response['tps']:$tps[0][$type]),
+                        "ctps" => (isset($api_response)?$api_response['ctps']:$tps[0][$type])
+                    ));
+                }
+                //Update contact
+                else if (isset($form['contact_id'])) {
+                    if (isset($form['telephone_id'])) {
+                        $contact = array(
+                            "contact_id" => $form['contact_id'],
+                            "telephone_id" => $form['telephone_id'],
+                            "telephone_number" => $form['telephone_number'],
+                            "tps" => ($success ? 1 : 0)
+                        );
+                        $contact_response = $this->Cron_model->update_contact_telephone_numbers(array($contact));
+                    }
+                    echo json_encode(array(
+                        "success" => ($tps),
+                        "msg" => ($success?"This number IS ".$type." registerd":"This number (".$telephone_number.") is NOT ".$type." registerd"),
+                        "api_response" => (isset($api_response)?$api_response:"No api request. Founded on the tps table")
+                    ));
+                }
+            }
+            else {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "The telephone_number (".$telephone_number.") or the type (".$type.") does not exist in the request"
+                ));
+            }
+        }
+        else {
+            echo json_encode(array(
+                "success" => false,
+                "msg" => "Error in the request",
+            ));
+        }
+
+    }
+
+    /**
+     * Check the tps for all the telephone numbers (company and contact)
+     * This function just check the tps table not the api
+     *
+     */
+    public function check_all_tps() {
+
+        //COMPANIES
+
+        //TODO: Reset companies ctps with the value in the ctps older than 6 months
+
+        //Get the company telephone numbers with tps field NULL
+        $company_telephone_numbers = $this->Cron_model->get_no_ctps_company_telephone_numbers_in_tps_table();
+        //Update the companies
+        $company_response = true;
+        if (!empty($company_telephone_numbers)) {
+            $company_response = $this->Cron_model->update_company_telephone_numbers($company_telephone_numbers);
+        }
+
+        //CONTACTS
+
+        //TODO: Reset contacts tps with the value in the ctps older than 6 months
+
+        //Get the contact telephone numbers with tps field NULL
+        $contact_telephone_numbers = $this->Cron_model->get_no_tps_contact_telephone_numbers_in_tps_table();
+        //Update the contacts
+        $contact_response = true;
+        if (!empty($contact_telephone_numbers)) {
+            $contact_response = $this->Cron_model->update_contact_telephone_numbers($contact_telephone_numbers);
+        }
+
+        echo json_encode(array(
+            "success" => ($contact_response && $company_response),
+            "count_companies" => count($company_telephone_numbers),
+            "count_contacts" => count($contact_telephone_numbers)
+        ));
+    }
+
+    private function check_tps_table($telephone_number, $type) {
+        return $this->Cron_model->check_tps_by_telephone_number($telephone_number, $type);
+    }
+
+    private function check_tps_api($telephone_number) {
+
+        $username = 'dougf@121customerinsight.co.uk';
+        $api_key = 'LPO892jh@@nmUJ76298';
+
+        $ch = curl_init();
+        curl_setopt ($ch, CURLOPT_URL, 'https://www.selectabase.co.uk/api/v1/tps/'.$telephone_number.'/?format=json&username='.$username.'&api_key='.$api_key);
+        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 0);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return $response;
+    }
+
     /**
      * Generate and save the export data to an csv file temporally
      */
