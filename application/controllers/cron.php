@@ -473,8 +473,7 @@ HAVING count( doc_hash ) >1";
                         "success" => ($tps),
                         "msg" => ($success?"This number IS ".$type." registerd":"This number (".$telephone_number.") is NOT ".$type." registerd"),
                         "api_response" => (isset($api_response)?$api_response:"No api request. Founded on the tps table"),
-                        "tps" => (isset($api_response)?$api_response['tps']:$tps[0][$type]),
-                        "ctps" => (isset($api_response)?$api_response['ctps']:$tps[0][$type])
+                        "ctps" => ($success?1:0)
                     ));
                 }
                 //Update contact
@@ -491,7 +490,8 @@ HAVING count( doc_hash ) >1";
                     echo json_encode(array(
                         "success" => ($tps),
                         "msg" => ($success?"This number IS ".$type." registerd":"This number (".$telephone_number.") is NOT ".$type." registerd"),
-                        "api_response" => (isset($api_response)?$api_response:"No api request. Founded on the tps table")
+                        "api_response" => (isset($api_response)?$api_response:"No api request. Founded on the tps table"),
+                        "tps" => ($success ? 1 : 0)
                     ));
                 }
             }
