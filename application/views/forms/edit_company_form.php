@@ -96,7 +96,7 @@
                 </tbody>
             </table>
         </div>
-        <form class="form-horizontal">
+        <form class="form-horizontal company-phone-form">
             <input name="company_id" type="hidden" value="">
             <input class="item-id" name="telephone_id" type="hidden" value="">
 
@@ -189,22 +189,22 @@
 
 <script>
     function changeNumberFunction() {
-        var company_id = $('form').find('input[name="company_id"]').val();
-        var telephone_number = $('form').find('input[name="telephone_number"]').val();
-        var telephone_id = $('form').find('input[name="telephone_id"]').val();
+        var company_id = $('.company-phone-form').find('input[name="company_id"]').val();
+        var telephone_number = $('.company-phone-form').find('input[name="telephone_number"]').val();
+        var telephone_id = $('.company-phone-form').find('input[name="telephone_id"]').val();
         var ctps = "";
         if (telephone_number.length > 0) {
-            ctps = "<span class='glyphicon glyphicon-question-sign black new-ctps-btn tt pointer' item-company-id='"+company_id+"' item-number-id='"+telephone_id+"' item-number='"+telephone_number+"' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
+            ctps = "<span class='glyphicon glyphicon-question-sign black edit-ctps-btn tt pointer' item-company-id='"+company_id+"' item-number-id='"+telephone_id+"' item-number='"+telephone_number+"' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
             $('select[name="ctps"]').selectpicker('val', "");
         }
         $('.edit-ctps').html(ctps);
     }
 
     function changeCtpsFunction() {
-        var company_id = $('form').find('input[name="company_id"]').val();
-        var telephone_number = $('form').find('input[name="telephone_number"]').val();
-        var telephone_id = $('form').find('input[name="telephone_id"]').val();
-        var ctps_option = $('form').find('select[name="ctps"]').val();
+        var company_id = $('.company-phone-form').find('input[name="company_id"]').val();
+        var telephone_number = $('.company-phone-form').find('input[name="telephone_number"]').val();
+        var telephone_id = $('.company-phone-form').find('input[name="telephone_id"]').val();
+        var ctps_option = $('.company-phone-form').find('select[name="ctps"]').val();
         var ctps = "";
         if (telephone_number.length > 0) {
             if (ctps_option.length == 0) {
@@ -222,14 +222,15 @@
 
     $(document).on('click', '.edit-ctps-btn', function (e) {
         e.preventDefault();
-        check_edit_tps();
+        check_edit_ctps();
     });
 
-    function check_edit_tps() {
-        var company_id = $('form').find('input[name="company_id"]').val();
-        var telephone_number = $('form').find('input[name="telephone_number"]').val();
-        var telephone_id = $('form').find('input[name="telephone_id"]').val();
+    function check_edit_ctps() {
+        var company_id = $('.company-phone-form').find('input[name="company_id"]').val();
+        var telephone_number = $('.company-phone-form').find('input[name="telephone_number"]').val();
+        var telephone_id = $('.company-phone-form').find('input[name="telephone_id"]').val();
 
+        console.log(telephone_number);
         $.ajax({
             url: helper.baseUrl + 'cron/check_tps',
             type: "POST",
@@ -243,11 +244,11 @@
             flashalert.warning(response.msg);
             if (response.ctps == 1) {
                 ctps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS CTPS registered'></span>";
-                $('form').find('select[name="ctps"]').selectpicker('val', 1);
+                $('.company-phone-form').find('select[name="ctps"]').selectpicker('val', 1);
             }
             else {
                 ctps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
-                $('form').find('select[name="ctps"]').selectpicker('val', 0);
+                $('.company-phone-form').find('select[name="ctps"]').selectpicker('val', 0);
             }
             $tab.find('.edit-ctps').html(ctps);
         });

@@ -671,6 +671,11 @@ var record = {
                 $tab.find('form').hide();
                 $tab.find('.table-container').show();
             });
+            /*check tps */
+            $(document).on('click', '.tps-btn', function (e) {
+                e.preventDefault();
+                record.contact_panel.check_tps($(this).attr('item-number'), $(this).attr('item-contact-id'), $(this).attr('item-number-id'));
+            });
 
 
         },
@@ -719,6 +724,7 @@ var record = {
 
             //Set the telephone number input as a number
             $tab.find('form').find('input[name="telephone_number"]').numeric();
+            $tab.find('.edit-tps').html("");
 
         },
         edit_item_form: function ($btn) {
@@ -751,6 +757,23 @@ var record = {
                     $tab.find('.save-contact-address').attr('action', 'edit_address');
                     //Set the telephone number input as a number
                     $tab.find('form').find('input[name="telephone_number"]').numeric();
+
+                    var tps_option = $tab.find('select[name="tps"]').val();
+                    var contact_id = $tab.find('form').find('input[name="contact_id"]').val();
+                    var telephone_id = $tab.find('form input[name="telephone_id"]').val();
+                    var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
+                    var tps = "";
+                    if (tps_option.length == 0) {
+                        tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='"+contact_id+"' item-number-id='"+telephone_id+"' item-number='"+telephone_number+"' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                    }
+                    else if (tps_option == 1) {
+                        tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
+                    }
+                    else {
+                        tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
+                    }
+                    $tab.find('.edit-tps').html(tps);
+
                 } else {
                     flashalert.danger(response.msg);
                 }
@@ -795,7 +818,17 @@ var record = {
                     });
                     $.each(val.telephone, function (dt, tel) {
                         if (tel.tel_name) {
-                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a></dd>";
+                            var tps = "";
+                            if (tel.tel_tps == null) {
+                                tps = "<span class='glyphicon glyphicon-question-sign black tps-btn tt pointer' item-contact-id='"+id+"' item-number-id='"+dt+"' item-number='"+tel.tel_num+"' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                            }
+                            else if (tel.tel_tps == 1) {
+                                tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
+                            }
+                            else {
+                                tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
+                            }
+                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> "+tps+"</dd>";
                         }
                     });
                     $panel.find('.contacts-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
@@ -808,6 +841,22 @@ var record = {
                     );
                 });
 
+            });
+        },
+        check_tps: function(telephone_number, contact_id, telephone_id) {
+            $.ajax({
+                url: helper.baseUrl + 'cron/check_tps',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    telephone_number: telephone_number,
+                    type: "tps",
+                    telephone_id: telephone_id,
+                    contact_id: contact_id
+                }
+            }).done(function (response) {
+                flashalert.warning(response.msg);
+                record.contact_panel.load_panel(record.urn, contact_id)
             });
         },
         remove: function (id) {
@@ -1178,9 +1227,9 @@ var record = {
                     $postcode = "";
                     $.each(val.visible, function (dt, dd) {
                         if (dd && dd != '' && dt != 'Address' && dt != 'Company') {
-						if (dt == 'Company #') {
-                            dd = "<a href='http://companycheck.co.uk/company/" + dd + "' target='blank'>" + dd + "</a>";
-                        }
+                            if (dt == 'Company #') {
+                                dd = "<a href='http://companycheck.co.uk/company/" + dd + "' target='blank'>" + dd + "</a>";
+                            }
                             $company_detail_telephone_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function (key, val) {
@@ -1194,10 +1243,10 @@ var record = {
                         }
                     });
                     $.each(val.telephone, function (dt, tel) {
-                        if (tel.tel_name) {
-                            var ctps = "";
+                        var ctps = "";
+                        if (tel.tel_num.length > 0) {
                             if (tel.tel_tps == null) {
-                                ctps = "<span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='"+id+"' item-number-id='"+dt+"' item-number='"+tel.tel_num+"' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
+                                ctps = "<span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='" + id + "' item-number-id='" + dt + "' item-number='" + tel.tel_num + "' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
                             }
                             else if (tel.tel_tps == 1) {
                                 ctps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS CTPS registered'></span>";
@@ -1205,9 +1254,10 @@ var record = {
                             else {
                                 ctps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
                             }
-                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> "+ctps+"</dd>";
                         }
+                        $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> "+ctps+"</dd>";
                     });
+                    console.log($company_detail_telephone_items);
                     $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#com-collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.visible['Company']).addClass(collapse))
                             //.append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-company-btn').attr('item-id', key).attr('data-target', '#model'))

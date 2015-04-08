@@ -64,10 +64,12 @@
                                        } ?>"
                                        item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?>
                                     </a>
-                                    <?php if ($number['tel_tps'] == NULL): ?>
-                                        <span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='<?php echo $id ?>' item-number-id='<?php echo $number_id ?>' item-number='<?php echo $number['tel_num'] ?>' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>
-                                    <?php else: ?>
-                                        <span class='glyphicon <?php echo ($number['tel_tps']?"glyphicon-exclamation-sign red":"glyphicon-ok-sign green") ?> tt'  data-toggle='tooltip' data-placement='right' title='<?php echo ($number['tel_tps']?"This number IS CTPS registered":"This number is NOT CTPS registerd") ?>'></span>
+                                    <?php if (strlen($number['tel_num'])>0): ?>
+                                        <?php if ($number['tel_tps'] == NULL): ?>
+                                            <span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='<?php echo $id ?>' item-number-id='<?php echo $number_id ?>' item-number='<?php echo $number['tel_num'] ?>' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>
+                                        <?php else: ?>
+                                            <span class='glyphicon <?php echo ($number['tel_tps']?"glyphicon-exclamation-sign red":"glyphicon-ok-sign green") ?> tt'  data-toggle='tooltip' data-placement='right' title='<?php echo ($number['tel_tps']?"This number IS CTPS registered":"This number is NOT CTPS registerd") ?>'></span>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </dd>
                             <?php endforeach; ?>

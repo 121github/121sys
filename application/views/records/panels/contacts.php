@@ -25,9 +25,20 @@
               <?php
 		  }
 	  } ?>
-              <?php foreach($contact['telephone']  as $id=>$number): $this->firephp->log($number['tel_name']); $btn =($number['tel_name']=="Transfer"?"btn btn-info pull-right":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"");$number_text = ($number['tel_name']=="Transfer"?"Transfer":$number['tel_num']); ?>
+              <?php foreach($contact['telephone']  as $number_id=>$number): $this->firephp->log($number['tel_name']); $btn =($number['tel_name']=="Transfer"?"btn btn-info pull-right":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"");$number_text = ($number['tel_name']=="Transfer"?"Transfer":$number['tel_num']); ?>
               <dt><?php echo ($number_text=="Transfer"?"":$number['tel_name']) ?></dt>
-                  <dd><a  <?php echo $style ?>  href="#" class="startcall <?php echo $btn ?> <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number_text ?></a></dd>
+                  <dd>
+                      <a  <?php echo $style ?>
+                          href="#" class="startcall <?php echo $btn ?> <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number_text ?>
+                      </a>
+                      <?php if (strlen($number['tel_num'])>0): ?>
+                          <?php if ($number['tel_tps'] == NULL): ?>
+                              <span class='glyphicon glyphicon-question-sign black tps-btn tt pointer' item-contact-id='<?php echo $id ?>' item-number-id='<?php echo $number_id ?>' item-number='<?php echo $number['tel_num'] ?>' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>
+                          <?php else: ?>
+                              <span class='glyphicon <?php echo ($number['tel_tps']?"glyphicon-exclamation-sign red":"glyphicon-ok-sign green") ?> tt'  data-toggle='tooltip' data-placement='right' title='<?php echo ($number['tel_tps']?"This number IS TPS registered":"This number is NOT TPS registerd") ?>'></span>
+                          <?php endif; ?>
+                      <?php endif; ?>
+                  </dd>
               <?php endforeach; ?>
             </dl>
           </div>
