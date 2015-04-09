@@ -2,6 +2,19 @@
 
 var export_data = {
     init: function() {
+
+
+        $(document).on("click", ".campaign-available-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.available-exports-filter-form').find('input[name="campaign"]').val($(this).attr('id'));
+            $('.available-exports-filter-form').find('input[name="campaign_name"]').val(($(this).html()));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+        });
+
+
         $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
@@ -71,6 +84,11 @@ var export_data = {
             export_data.load_export_report_data($(this).attr('item-id'), $(this).attr('item-name'));
         });
 
+        $(document).on('click', '.export-available-data-btn', function(e) {
+            e.preventDefault();
+            export_data.load_available_export_report_data($(this).attr('item-name'));
+        });
+
         $(document).on('click', '.close-export-report', function(e) {
             e.preventDefault();
             export_data.close_export_report($(this));
@@ -106,7 +124,7 @@ var export_data = {
                             + "</td><td class='description'>"
                             + val.description
                             + "</td><td class='report-export-prog-"+val.export_forms_id+"'>"
-                            + "</td><td class='pull-right'>" +
+                            + "</td><td style='text-align: right'>" +
                                     "<button title='Export to csv' type='submit' class='btn btn-default report-btn' onclick='document.pressed=this.value' value='"+val.export_forms_id+"'><span class='glyphicon glyphicon-export pointer'></span></button>" +
                                     "<span title='View the data before export' class='btn btn-default export-report-btn' item-id='"+ val.export_forms_id+"' item-name='"+ val.name+"'><span class='glyphicon glyphicon-eye-open pointer'></span></span>" +
                                     edit_btn +
@@ -124,6 +142,13 @@ var export_data = {
     onsubmitform: function() {
         $('.filter-form').find('input[name="export_forms_id"]').val(document.pressed);
         document.myform.action = helper.baseUrl + "exports/data_export";
+
+        return true;
+    },
+    onsubmitavailableform: function() {
+        console.log("asdasd");
+        $('.available-exports-filter-form').find('input[name="export_form_name"]').val(document.pressed);
+        document.availableform.action = helper.baseUrl + "exports/data_available_export";
 
         return true;
     },
@@ -263,6 +288,53 @@ var export_data = {
         });
 
         export_data.show_export_report(export_forms_id, name);
+    },
+
+    load_available_export_report_data: function(export_form_name) {
+
+        $('.available-exports-filter-form').find('input[name="export_form_name"]').val(export_form_name);
+
+        $thead = $('.export-report-content .ajax-table').find('thead');
+        $thead.empty();
+        $thead.append("<tr></tr>");
+        $tbody = $('.export-report-content .ajax-table').find('tbody');
+        $tbody.empty();
+
+        $.ajax({
+            url: helper.baseUrl + 'exports/load_available_export_report_data',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.available-exports-filter-form').serialize()
+        }).done(function(response) {
+            if (response.header) {
+                $.each(response.header, function(i, val) {
+                    if (response.header.length) {
+                        $thead
+                            .append("<th style='padding: 5px;'>"+val+"</th>");
+                    }
+                });
+            }
+            if (response.success) {
+                $.each(response.data, function(i, data) {
+                    if (response.data.length) {
+                        $tbody
+                            .append("<tr>");
+                        $.each(data, function(k, val) {
+                            $tbody
+                                .append("<td style='padding: 5px;'>"+val+"</td>");
+                        });
+                        $tbody
+                            .append("</tr>");
+                    }
+                });
+            }
+            else {
+                $tbody
+                    .append("<tr><td>"+data+"</td></tr>");
+            }
+        });
+
+        export_data.show_export_report(null, export_form_name+" - "+$('.available-exports-filter-form').find('input[name="campaign_name"]').val());
     },
 
     show_export_report: function(export_forms_id, name) {
