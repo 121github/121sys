@@ -156,7 +156,7 @@ class Exports extends CI_Controller
 
         switch ($options['export_form_name']) {
             case "contacts-data":
-                $filename = $this->get_filename(str_replace(" ", "","contacts_data"), $options);
+                $result['filename'] = $this->get_filename(str_replace(" ", "","contacts_data"), $options);
                 $result['data'] = $this->Export_model->get_contacts_data($options);
                 $aux = array();
                 $num_company_telephone_numbers = 1;
