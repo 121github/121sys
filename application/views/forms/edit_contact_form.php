@@ -237,6 +237,7 @@
         var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
         var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
         var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
+        var tps = '';
 
         $.ajax({
             url: helper.baseUrl + 'cron/check_tps',
@@ -250,14 +251,15 @@
         }).done(function (response) {
             flashalert.warning(response.msg);
             if (response.tps == 1) {
-                tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
+                tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
                 $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 1);
+                $tab.find('.edit-tps').html(tps);
             }
-            else {
+            else if (response.tps == 0) {
                 tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
                 $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 0);
+                $tab.find('.edit-tps').html(tps);
             }
-            $tab.find('.edit-tps').html(tps);
         });
     }
 

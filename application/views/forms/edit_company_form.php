@@ -229,6 +229,7 @@
         var company_id = $('.company-phone-form').find('input[name="company_id"]').val();
         var telephone_number = $('.company-phone-form').find('input[name="telephone_number"]').val();
         var telephone_id = $('.company-phone-form').find('input[name="telephone_id"]').val();
+        var ctps = '';
 
         console.log(telephone_number);
         $.ajax({
@@ -245,12 +246,13 @@
             if (response.ctps == 1) {
                 ctps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS CTPS registered'></span>";
                 $('.company-phone-form').find('select[name="ctps"]').selectpicker('val', 1);
+                $tab.find('.edit-ctps').html(ctps);
             }
-            else {
+            else if (response.ctps == 0) {
                 ctps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
                 $('.company-phone-form').find('select[name="ctps"]').selectpicker('val', 0);
+                $tab.find('.edit-ctps').html(ctps);
             }
-            $tab.find('.edit-ctps').html(ctps);
         });
     }
 
