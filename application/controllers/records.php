@@ -749,8 +749,9 @@ class Records extends CI_Controller
         
         $this->email->from("noreply@leadcontrol.co.uk", '121 Systems');
         $this->email->subject('Survey Response');
-        $this->email->to($recipients);
-        $this->email->bcc("bradf@121customerinsight.co.uk");
+        $this->email->to($recipients['main']);
+        $this->email->cc($recipients['cc']);
+		$this->email->bcc($recipients['bcc']);
         $msg = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
  <head>

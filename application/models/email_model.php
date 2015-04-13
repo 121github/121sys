@@ -445,6 +445,8 @@ class Email_model extends CI_Model
     public function get_recipients($campaign_id, $outcome_id)
     {
         $recipients = array();
+		$cc = array();
+		$bcc = array();
         $this->db->where(array(
             "outcome_id" => $outcome_id,
             "campaign_id" => $campaign_id
@@ -454,8 +456,17 @@ class Email_model extends CI_Model
         
         $result = $this->db->get("email_triggers")->result_array();
         foreach ($result as $row) {
-            $recipients[$row['name']] = $row['user_email'];
+			if($row['type']=="cc"){
+			$cc[$row['name']] = $row['user_email'];
+			} else if($row['type']=="bcc"){
+			$bcc[$row['name']] = $row['user_email'];
+			} else {
+            $main[$row['name']] = $row['user_email'];
+			}
         }
+		$recipients['main']=$main;
+		$recipients['cc']=$cc;
+		$recipients['bcc']=$bcc;
         return $recipients;
     }
     
