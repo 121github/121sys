@@ -210,7 +210,7 @@ class Survey_model extends CI_Model
     public function get_slider_answers($survey_id)
     {
         $answers = array();
-        $qry     = "select question_id, answer,question_name from survey_answers left join answer_notes using(answer_id) left join questions using(question_id) where survey_id = '$survey_id'";
+        $qry     = "select question_id, answer,question_name, notes from survey_answers left join answer_notes using(answer_id) left join questions using(question_id) where survey_id = '$survey_id'";
         $result  = $this->db->query($qry)->result_array();
         foreach ($result as $row) {
             $answers[$row['question_id']] = array(

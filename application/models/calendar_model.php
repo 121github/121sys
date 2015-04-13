@@ -87,9 +87,7 @@ return '#'.$output;
 		if(!empty($end)){
 			$where .= " and date(`end`) <= '$end' ";
 		}
-		if(isset($_SESSION['current_campaign'])){
-		$where .= "	and campaign_id = ".$_SESSION['current_campaign'];
-		}
+
 		if(isset($options['modal'])){
 					$query = "select appointments.postcode, if(companies.name,'',companies.name) as title,appointment_id,`start`,`end`,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
 		} else {

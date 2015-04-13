@@ -6,7 +6,7 @@
           <select id="campaign-cal-select" name="campaigns[]" multiple class="selectpicker" data-width="100%" data-size="5" title="Select campaigns"  >
             <?php foreach($campaigns as $row): ?>
             <?php if(in_array($row['id'],$_SESSION['campaign_access']['array'])):  ?>
-            <option <?php if(@in_array($row['id'],$_SESSION['calendar-filter']['campaigns'])){ echo "selected"; } else { echo (isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
+            <option <?php if(@in_array($row['id'],$_SESSION['calendar-filter']['campaigns'])){ echo "selected"; } else { echo (@$_SESSION['current_campaign']==$row['id']?"selected":""); } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
             <?php endif ?>
             <?php endforeach; ?>
           </select>
