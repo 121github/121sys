@@ -1,7 +1,6 @@
 var planner = {
     init: function () {
         planner.reload_table('planner-table');
-        //planner.map();
     },
     reload_table: function (table_name) {
         var table = "<table class='table table-striped table-bordered table-hover data-table'>" +
@@ -35,13 +34,14 @@ var planner = {
     },
     populate_table: function (table_name) {
 
-        var directionsDisplay;
+        var directionsDisplay = new google.maps.DirectionsRenderer();
         var directionsService = new google.maps.DirectionsService();
         var map;
         var markers = [];
         var bounds = null;
         var appointments = [];
         var table;
+        var infowindow = new google.maps.InfoWindow();
 
         google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -51,7 +51,7 @@ var planner = {
         /*******************************************************************/
         function getAppointments() {
             table = $('.data-table').DataTable({
-                "dom": '<"top">p<"dt_info"i>rt<"bottom"lp><"clear">',
+                //"dom": '<"top"><"dt_info"iS>rt<"bottom"iS><"clear">',
                 "oLanguage": {
                     "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
                 },
@@ -59,7 +59,9 @@ var planner = {
                 "processing": true,
                 "serverSide": true,
                 //ordering:  false,
-                "iDisplayLength": 10,
+                //"iDisplayLength": 10,
+                "scrollY": "550px",
+                "scrollX": "95%",
                 stateSave: true,
                 responsive: true,
                 "ajax": {
@@ -80,6 +82,8 @@ var planner = {
                         showAppointments();
                     }
                 },
+                "deferRender": true,
+                "dom": "irtiS",
                 "columns": [{
                     "data": "start"
                 }, {
@@ -148,37 +152,95 @@ var planner = {
         /********************** MAP ****************************************/
         /*******************************************************************/
         function initialize() {
-            var lat = 53.499501;
-            var lng = -2.208951;
+            var lat = 53.46755;
+            var lng = -2.276584;
             var myLatlng = new google.maps.LatLng(lat,lng);
+
             var mapOptions = {
                 zoom: 12,
                 center: myLatlng
-                //mapTypeId: google.maps.MapTypeId.TERRAIN
-            }
+            };
+
             map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-            google.maps.event.addListener(map, 'zoom_changed', function () {
-                google.maps.event.addListenerOnce(map, 'bounds_changed', function (e) {
-                    //bounds = getBounds();
-
-                    table.draw();
-                });
-            });
-
-            google.maps.event.addListener(map, 'dragend', function () {
-                //bounds = getBounds();
-
-                table.draw();
-            });
 
             //Wait until the map is loaded
             setTimeout(function(){
                 getAppointments();
             }, 3000);
 
+            google.maps.event.addListener(map, 'zoom_changed', function () {
+                google.maps.event.addListenerOnce(map, 'bounds_changed', function (e) {
+                    table.draw();
+                });
+            });
+
+            google.maps.event.addListener(map, 'dragend', function () {
+                table.draw();
+            });
+
+            google.maps.event.addListener(map, "click", function(){
+                infowindow.close();
+            });
+
+
+            //$(".appointment-btn").on("click", function () {
+            //    getDirections("M15 4JR");
+            //});
+
+            $(document).on('click', '.appointment-btn', function () {
+                getDirections($(this).attr('item-postcode'));
+            });
+
+            directionsDisplay.setMap(map);
+            directionsDisplay.setPanel(document.getElementById("directionsPanel"));
 
         }
+
+        function getDirections(destination) {
+            var start = "Manchester";
+            var dest = destination;
+            var request = {
+                origin: start,
+                destination: dest,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            directionsService.route(request, function (result, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(result);
+                }
+            });
+        }
+
+        //function setLocation(myLatlng, title, content) {
+        //
+        //    // HTML5 geolocation
+        //    if(navigator.geolocation) {
+        //        navigator.geolocation.getCurrentPosition(function(position) {
+        //            myLatlng = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+        //            title = "Current Location";
+        //            content = "You are here!";
+        //            setLocation(myLatlng,title,content);
+        //        });
+        //    }
+        //
+        //    map.setCenter(myLatlng);
+        //    var marker = new google.maps.Marker({
+        //        position: myLatlng,
+        //        map: map,
+        //        title: title
+        //    });
+        //    var infowindow = new google.maps.InfoWindow({
+        //        content: content
+        //    });
+        //    google.maps.event.addListener(marker, 'click', function() {
+        //        infowindow.open(map,marker);
+        //    });
+        //
+        //    //Wait until the map is loaded
+        //    setTimeout(function(){
+        //        getAppointments();
+        //    }, 1000);
+        //}
 
         //Get current bounds
         function getBounds() {
@@ -204,10 +266,14 @@ var planner = {
 
         // Add a marker to the map and push to the array.
         function addMarker(value) {
+            var marker_color = intToARGB(hashCode( value.attendee ));
+            var marker_text_color = "FFFFFF";
+            var character = (value.attendee).substr(0,1);
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(value.lat,value.lng),
                 map: map,
-                title: value.name
+                title: value.name,
+                icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
             });
 
             var contentString =
@@ -220,20 +286,38 @@ var planner = {
                         '<p><b>Attendee: </b>' + value.attendee + '</p>' +
                         '<p><b>Date added: </b>' + value.date_added + '</p>' +
                         '<p><b>Postcode: </b>' + value.postcode + '(' + value.lat + ',' + value.lng + ')' + '</p>' +
-                        '<p><b>Website: </b><a taget="_blank" href="' + value.website + '"/>' + value.website + '</p>' +
+                        '<p><b>Website: </b><a taget="__blank" href="' + value.website + '"/>' + value.website + '</p>' +
+                        '<p><b>Navigate: </b><a class="appointment-btn" item-postcode="'+value.postcode+'" href="#"/>GO</p>' +
                     '</div>'+
                 '</div>';
 
-
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString
-            });
-
             google.maps.event.addListener(marker, 'click', function() {
+                infowindow.close();
+                infowindow.setContent(contentString);
                 infowindow.open(map,marker);
             });
             markers.push(marker);
         }
+
+        // Hash any string into an integer value
+        function hashCode(str) {
+            var hash = 0;
+            for (var i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return hash;
+        }
+
+        // Convert an int to hexadecimal with a max length
+        // of six characters.
+        function intToARGB(i) {
+            var h = ((i>>24)&0xFF).toString(16) +
+                ((i>>16)&0xFF).toString(16) +
+                ((i>>8)&0xFF).toString(16) +
+                (i&0xFF).toString(16);
+            return h.substring(0, 6);
+        }
+
 
         // Sets the map on all markers in the array.
         function setAllMap(map) {

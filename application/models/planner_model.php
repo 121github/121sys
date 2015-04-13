@@ -33,12 +33,13 @@ class Planner_model extends CI_Model
                     com.name,
                     title,
                     u.name attendee,
+                    u.user_id as attendee_id,
                     date_format(a.`date_added`,'%d/%m/%y') date_added,
                     postcode,
                     lat,
                     lng,
                     appointment_id,
-                    com.website
+                    IFNULL(com.website,'') as website
                 from appointments a
                   left join appointment_attendees aa using(appointment_id)
                   left join users u on u.user_id = aa.user_id

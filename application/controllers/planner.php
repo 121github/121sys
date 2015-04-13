@@ -28,10 +28,12 @@ class Planner extends CI_Controller
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
-                'daterangepicker-bs3.css'
+                'daterangepicker-bs3.css',
+                '../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css'
             ),
             'javascript' => array(
                 'planner/planner.js',
+                'plugins/DataTables/extensions/Scroller/js/dataTables.scroller.min.js'
             )
         );
         $this->template->load('default', 'dashboard/planner.php', $data);
