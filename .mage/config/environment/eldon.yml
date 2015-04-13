@@ -1,0 +1,23 @@
+#production
+deployment:
+  user: samba
+  from: /var/lib/jenkins/jobs/121Sys/workspace/
+  to: /var/www
+  excludes:
+    - upload
+releases:
+  enabled: true
+  max: 10
+  symlink: 121sys_eldon
+  directory: releases/121sys_releases/121sys_eldon
+hosts:
+    - 10.10.1.13
+tasks:
+  pre-deploy:
+  on-deploy:
+    - uploadFolder
+    - prepareEldonDeployment
+    - permissionsGroup
+  post-release:
+    - databaseBackup: {user: 121sys_eldon, pass: 8ntxf6WXvmCVyRss, host: localhost, database: 121sys_eldon}
+  post-deploy:

@@ -67,14 +67,15 @@ class Exports extends CI_Controller
     }
 
     /*
-    Data export
+    Data for custom export
     */
     public function data_export()
     {
         if ($this->input->post()) {
             $options             = array();
-            $options['from']     = ($this->input->post('date_from') ? $this->input->post('date_from') : "2014-01-01");
-            $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : "2015-01-01");
+            $nowDate = new \DateTime('now');
+            $options['from']     = ($this->input->post('date_from') ? $this->input->post('date_from') : "2014-07-02");
+            $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : $nowDate->format('Y-m-d'));
             $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
             $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
             $options['export_forms_id'] = ($this->input->post('export_forms_id') ? $this->input->post('export_forms_id') : "");
@@ -93,17 +94,18 @@ class Exports extends CI_Controller
         }
     }
 
-
     //Load the data for the report
     public function load_export_report_data() {
 
         if ($this->input->post()) {
             $options             = array();
+            $nowDate = new \DateTime('now');
             $options['from']     = ($this->input->post('date_from') ? $this->input->post('date_from') : "2014-01-01");
-            $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : "2015-01-01");
+            $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : $nowDate->format('Y-m-d'));
             $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
             $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
             $options['export_forms_id'] = ($this->input->post('export_forms_id') ? $this->input->post('export_forms_id') : "");
+
 
             $export_form = $this->Export_model->get_export_forms_by_id($options['export_forms_id']);
 
@@ -124,6 +126,154 @@ class Exports extends CI_Controller
             }
         }
     }
+
+    /*
+    Data for available export
+    */
+    public function data_available_export()
+    {
+        if ($this->input->post()) {
+            $options             = array();
+            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
+            $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+            $options['export_form_name'] = ($this->input->post('export_form_name') ? $this->input->post('export_form_name') : "");
+
+            $result = $this->get_data_available_export($options);
+
+            //Export the data to a csv file
+            $this->export2csv($result['data'], $result['filename'], $result['headers']);
+        }
+    }
+
+    /**
+     * Get the available export data
+     */
+    private function get_data_available_export($options) {
+        $result = array();
+
+        $result['filename'] = $this->get_filename(str_replace(" ", "","no_results"), $options);
+        $result['headers'] = ("no_results");
+
+        switch ($options['export_form_name']) {
+            case "contacts-data":
+                $result['filename'] = $this->get_filename(str_replace(" ", "","contacts_data"), $options);
+                $result['data'] = $this->Export_model->get_contacts_data($options);
+                $aux = array();
+                $num_company_telephone_numbers = 1;
+                $num_contact_telephone_numbers = 1;
+                foreach ($result['data'] as $val) {
+
+                    $company_telephone_array = explode(',',$val['company_telephone_number']);
+                    $i = 1;
+                    if ($company_telephone_array) {
+                        foreach ($company_telephone_array as $company_telephone_number) {
+                            $val['company_telephone'.($i>1?"_".$i:"")] = ($company_telephone_number?$company_telephone_number:'-');
+                            $num_company_telephone_numbers = ($i>$num_company_telephone_numbers?$i:$num_company_telephone_numbers);
+                            $i++;
+                        }
+                        unset($val['company_telephone_number']);
+                    }
+
+                    $contact_telephone_array = explode(',',$val['contact_telephone_number']);
+                    $i = 1;
+                    if ($contact_telephone_array) {
+                        foreach ($contact_telephone_array as $contact_telephone_number) {
+                            $val['contact_telephone'.($i>1?"_".$i:"")] = ($contact_telephone_number?$contact_telephone_number:'-');
+                            $num_contact_telephone_numbers = ($i>$num_contact_telephone_numbers?$i:$num_contact_telephone_numbers);
+                            $i++;
+                        }
+                        unset($val['contact_telephone_number']);
+                    }
+
+                    array_push($aux,$val);
+                }
+
+                $result['data'] = $aux;
+
+
+                $aux = array();
+                foreach($result['data'] as $val) {
+                    $aux_val = array();
+
+                    $aux_val['campaign_name'] = $val['campaign_name'];
+                    $aux_val['company_name'] = $val['company_name'];
+                    $aux_val['add1'] = $val['add1'];
+                    $aux_val['add2'] = $val['add2'];
+                    $aux_val['add3'] = $val['add3'];
+                    $aux_val['postcode'] = $val['postcode'];
+                    $aux_val['county'] = $val['county'];
+                    $aux_val['country'] = $val['country'];
+
+                    for ($i=1;$i<=$num_company_telephone_numbers;$i++) {
+                        if (!isset($val['company_telephone'.($i>1?"_".$i:"")])) {
+                            $aux_val['company_telephone'.($i>1?"_".$i:"")] = '-';
+                        }
+                        else {
+                            $aux_val['company_telephone'.($i>1?"_".$i:"")] = $val['company_telephone'.($i>1?"_".$i:"")];
+                        }
+                    }
+
+                    $aux_val['title'] = $val['title'];
+                    $aux_val['fullname'] = $val['fullname'];
+                    $aux_val['position'] = $val['position'];
+                    $aux_val['email'] = $val['email'];
+
+                    for ($i=1;$i<=$num_contact_telephone_numbers;$i++) {
+                        if (!isset($val['contact_telephone'.($i>1?"_".$i:"")])) {
+                            $aux_val['contact_telephone'.($i>1?"_".$i:"")] = '-';
+                        }
+                        else {
+                            $aux_val['contact_telephone'.($i>1?"_".$i:"")] = $val['contact_telephone'.($i>1?"_".$i:"")];
+                        }
+                    }
+
+                    array_push($aux, $aux_val);
+                }
+
+                $result['data'] = $aux;
+
+
+                $company_telephone_header = array();
+                for ($i=1;$i<=$num_company_telephone_numbers;$i++) {
+                    array_push($company_telephone_header,'company_telephone'.($i>1?"_".$i:""));
+                }
+                $contact_telephone_header = array();
+                for ($i=1;$i<=$num_contact_telephone_numbers;$i++) {
+                    array_push($contact_telephone_header,'contact_telephone'.($i>1?"_".$i:""));
+                }
+                $result['headers'] = ("campaign_name;company_name;add1;add2;add3;postcode;county;country;".implode(';',$company_telephone_header).";title;fullname;position;email;".implode(';',$contact_telephone_header));
+
+                $result['headers'] = explode(";",$result['headers']);
+
+                break;
+        }
+
+        return $result;
+    }
+
+    //Load the data for the report
+    public function load_available_export_report_data() {
+
+        if ($this->input->post()) {
+            $options             = array();
+            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
+            $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+            $options['export_form_name'] = ($this->input->post('export_form_name') ? $this->input->post('export_form_name') : "");
+
+            $result = $this->get_data_available_export($options);
+
+            $this->firephp->log($result);
+
+
+            echo json_encode(array(
+                "success" => true,
+                "data" => $result['data'],
+                "header" => $result['headers']
+            ));
+        }
+    }
+
+
 
 
     //Save or update an export form

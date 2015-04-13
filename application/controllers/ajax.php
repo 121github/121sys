@@ -391,7 +391,8 @@ class Ajax extends CI_Controller
         if ($this->input->is_ajax_request()) {
 			$data = $this->input->post();
 			$data['telephone_number'] = numbers_only($data['telephone_number']);
-            if ($this->db->insert('contact_telephone', array_filter($data))):
+            $data['tps'] = ($data['tps'] == NULL?NULL:$data['tps']);
+            if ($this->db->insert('contact_telephone', $data)):
 				$data['telephone_id'] = $this->db->insert_id();
 				$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
 				$this->Audit_model->log_phone_insert($data,$urn);
@@ -410,7 +411,8 @@ class Ajax extends CI_Controller
         if ($this->input->is_ajax_request()) {
 			$data = $this->input->post();
 			$data['telephone_number'] = numbers_only($data['telephone_number']);
-            if ($this->db->insert('company_telephone', array_filter($data))):
+            $data['ctps'] = ($data['ctps'] == NULL?NULL:$data['ctps']);
+            if ($this->db->insert('company_telephone', $data)):
 			$data['telephone_id'] = $this->db->insert_id();
 			$urn = $this->db->get_where("companies",array("company_id"=>$data['company_id']))->row()->urn;
 			$this->Audit_model->log_cophone_insert($data,$urn);

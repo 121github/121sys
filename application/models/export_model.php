@@ -135,4 +135,53 @@ class Export_model extends CI_Model
         return $results;
 
     }
+
+    /**
+     *
+     * Get the contacts data
+     *
+     */
+    public function get_contacts_data($form) {
+
+        $where = " where contacts.contact_id is not null and companies.company_id is not null  ";
+
+        if (isset($form['campaign']) && !empty($form['campaign'])) {
+            $where .= " and records.campaign_id = '" . $form['campaign'] . "' ";
+            //$where .= " and records.campaign_id = 13";
+
+        }
+
+        $qry = "select
+                  IFNULL(campaigns.campaign_name,'-') as campaign_name,
+                  IFNULL(companies.name,'-') as company_name,
+                  IFNULL(company_addresses.add1,'-') as add1,
+                  IFNULL(company_addresses.add2,'-') as add2,
+                  IFNULL(company_addresses.add3,'-') as add3,
+                  IFNULL(company_addresses.postcode,'-') as postcode,
+                  IFNULL(company_addresses.county,'-') as county,
+                  IFNULL(company_addresses.country,'-') as country,
+                  GROUP_CONCAT(DISTINCT company_telephone.telephone_number separator ',') as company_telephone_number,
+                  IFNULL(contacts.title,'-') as title,
+                  IFNULL(contacts.fullname,'-') as fullname,
+                  IFNULL(contacts.position,'-') as position,
+                  IFNULL(contacts.email,'-') as email,
+                  GROUP_CONCAT(DISTINCT ct.telephone_number separator ',') as contact_telephone_number
+                from records
+                  inner join campaigns using (campaign_id)
+                  inner join companies using (urn)
+                  left join company_addresses using (company_id)
+                  left join company_telephone using (company_id)
+                  left join contacts using (urn)
+                  left join contact_addresses ca ON (ca.contact_id = contacts.contact_id)
+                  left join contact_telephone ct ON (ct.contact_id = contacts.contact_id) ";
+
+        $qry .= $where;
+
+        $qry .= " group by contacts.contact_id
+                  order by records.urn";
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
+    }
 }

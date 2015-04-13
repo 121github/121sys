@@ -292,7 +292,7 @@ class Cron_model extends CI_Model
      * Get the wrong contact telephone numbers
      */
     public function get_wrong_contact_telephone_numbers() {
-        $qry    = "select contact_id, telephone_number
+        $qry    = "select contact_id, telephone_id, telephone_number
                   from contact_telephone
                   where
                       telephone_number like '%+%' or
@@ -311,7 +311,7 @@ class Cron_model extends CI_Model
      */
     public function update_contact_telephone_numbers($contacts) {
 
-        $result = $this->db->update_batch("contact_telephone", $contacts, 'contact_id');
+        $result = $this->db->update_batch("contact_telephone", $contacts, 'telephone_id');
 
         $this->db->trans_complete();
 
@@ -322,7 +322,7 @@ class Cron_model extends CI_Model
      * Get the wrong company telephone numbers
      */
     public function get_wrong_company_telephone_numbers() {
-        $qry    = "select company_id, telephone_number
+        $qry    = "select company_id, telephone_id, telephone_number
                   from company_telephone
                   where
                       telephone_number like '%+%' or
@@ -341,11 +341,74 @@ class Cron_model extends CI_Model
      */
     public function update_company_telephone_numbers($companies) {
 
-        $result = $this->db->update_batch("company_telephone", $companies, 'company_id');
+        $this->db->update_batch("company_telephone", $companies, 'telephone_id');
 
         $this->db->trans_complete();
 
         return $this->db->trans_status();
     }
-    
+
+    /**
+     * Check tps by telephone_number.
+     *
+     * return true if the telephone number exist in the table or false in other case
+     */
+    public function check_tps_by_telephone_number ($telephone_number, $type) {
+        $qry    = "select *
+                  from tps
+                  where telephone like '%".$telephone_number."%'
+                  and tps.date_updated >= NOW()-INTERVAL 6 MONTH";
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
+    }
+
+    /**
+     * Get the contact telephone_numbers
+     */
+    public function get_no_tps_contact_telephone_numbers_in_tps_table() {
+        $qry    = "select ct.contact_id, ct.telephone_id, ct.telephone_number, tps.tps
+                  from contact_telephone ct
+                  inner join tps ON (ct.telephone_number = tps.telephone)
+                  where ct.tps is null
+                  and tps.date_updated >= NOW()-INTERVAL 6 MONTH";
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
+    }
+
+    /**
+     * Get the company telephone_numbers
+     */
+    public function get_no_ctps_company_telephone_numbers_in_tps_table() {
+        $qry    = "select ct.company_id, ct.telephone_id, ct.telephone_number, tps.ctps
+                  from company_telephone ct
+                  inner join tps ON (ct.telephone_number = tps.telephone)
+                  where ct.ctps is null
+                  and tps.date_updated >= NOW()-INTERVAL 6 MONTH";
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
+    }
+
+    /**
+     * Add telephone_number to the tps table (if already exist update the date_updated
+     */
+    public function update_number_to_tps_table($data) {
+
+        $update = "";
+        foreach($data as $key => $val) {
+            $update .= ",".$key."='".$val."'";
+        }
+
+        $sql = $this->db->insert_string('tps', $data) . ' ON DUPLICATE KEY UPDATE date_updated=NOW()'.$update;
+        $this->db->trans_complete();
+
+        $result =  $this->db->query($sql);
+
+        return $result;
+    }
 }

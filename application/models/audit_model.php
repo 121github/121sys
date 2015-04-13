@@ -553,6 +553,7 @@ class Audit_model extends CI_Model {
         $diff = array_diff($data, $original);
         //$this->firephp->log($original[0]);
         $log_id = NULL;
+        $audit_id = NULL;
 
         //if something has changed we log the change
         if (count($diff) > 0) {
