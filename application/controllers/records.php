@@ -576,7 +576,8 @@ class Records extends CI_Controller
                         $send_email          = true;
                         $survey_triggers[]   = array(
                             "question" => $slider_answers[$q]['question'],
-                            "answer" => $slider_answers[$q]['answer']
+                            "answer" => $slider_answers[$q]['answer'],
+							"notes" => $slider_answers[$q]['notes']
                         );
                     }
                 }
@@ -588,7 +589,8 @@ class Records extends CI_Controller
                         $send_email          = true;
                         $survey_triggers[]   = array(
                             "question" => $row['question_name'],
-                            "answer" => $row['option_name']
+                            "answer" => $row['option_name'],
+							"notes" => $row['notes']
                         );
                     }
                 }
@@ -767,7 +769,7 @@ class Records extends CI_Controller
         $msg .= "<table width='100%' style='text-align: center;font-family: Arial, Helvetica, sans-serif; border-spacing: 0;border-collapse: collapse;'>" . "<tr>" . "<th style='border-bottom: 2px solid #ddd;'>Question</th>" . "<th style='border-bottom: 2px solid #ddd;'>Answer</th>" . "<th style='border-bottom: 2px solid #ddd;'>Notes</th>" . "</tr>";
         
         foreach ($survey_triggers as $row) {
-            $msg .= "<tr style='background-color: $bgColor'>" . "<td style='border-bottom: 1px solid #ddd;'>" . $row['question'] . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . $row['answer'] . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . (!empty($notes) ? $notes : "-") . "</td>" . "</tr>";
+            $msg .= "<tr style='background-color: $bgColor'>" . "<td style='border-bottom: 1px solid #ddd;'>" . $row['question'] . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . $row['answer'] . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . (!empty($row['notes']) ? $row['notes'] : "-") . "</td>" . "</tr>";
         }
         $msg .= "</table>";
         $msg .= "<p>Contact Name: <b>" . $contact_name . "<b>";

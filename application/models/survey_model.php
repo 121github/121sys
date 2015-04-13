@@ -210,12 +210,13 @@ class Survey_model extends CI_Model
     public function get_slider_answers($survey_id)
     {
         $answers = array();
-        $qry     = "select question_id, answer,question_name from survey_answers left join questions using(question_id) where survey_id = '$survey_id'";
+        $qry     = "select question_id, answer,question_name from survey_answers left join answer_notes using(answer_id) left join questions using(question_id) where survey_id = '$survey_id'";
         $result  = $this->db->query($qry)->result_array();
         foreach ($result as $row) {
             $answers[$row['question_id']] = array(
                 "answer" => $row['answer'],
-                "question" => $row['question_name']
+                "question" => $row['question_name'],
+				"notes" => $row['notes']
             );
         }
         return $answers;
@@ -237,13 +238,14 @@ class Survey_model extends CI_Model
     public function get_option_answers($survey_id)
     {
         $answers = array();
-        $qry     = "select option_id, question_name, survey_answers.question_id,option_name from survey_answers left join answers_to_options using(answer_id) left join questions using(question_id) left join question_options using(option_id) where survey_id = '$survey_id'";
+        $qry     = "select option_id, question_name, survey_answers.question_id,option_name from survey_answers left join answers_to_options using(answer_id) left join answer_notes using(answer_id) left join questions using(question_id) left join question_options using(option_id) where survey_id = '$survey_id'";
         $result  = $this->db->query($qry)->result_array();
         foreach ($result as $row) {
             $answers[$row['question_id']] = array(
                 "question" => $row['question_name'],
                 "option_id" => $row['option_id'],
-                "option_name" => $row['option_name']
+                "option_name" => $row['option_name'],
+				"notes" => $row['notes']
             );
         }
         return $answers;
