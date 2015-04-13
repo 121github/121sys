@@ -5,9 +5,11 @@ if (!defined('BASEPATH'))
 
 function contains($str, array $arr)
 {
+	$found = array();
     foreach($arr as $a) {
-        if (stripos($str,$a) !== false) return $a;
+        if (stripos($str,$a) !== false) $found[] = $a;
     }
+	if(count($found>0)){ return $found; }
     return false;
 }
  

@@ -289,19 +289,27 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
         $this->template->load('default', 'files/scanner.php', $data);
         
     }
-    
+    public function scantest(){
+		$file =  $this->scanfile(FCPATH . "upload/cv/2015-01-28/Abdul Parappil (7365989).doc", "Abdul Parappil (7365989).doc");
+	}
     
     public function scanall()
     {
-        $directory = FCPATH . "upload\cv";
-        $files     = array_diff(scandir($directory), array(
+        $directory = FCPATH . "upload/cv";
+        $folders     = array_diff(scandir($directory), array(
             '..',
             '.'
         ));
-        print_r($files);
         
-        foreach ($files as $file) {
-            $this->scanfile($directory . "/" . $file, $file);
+        
+        foreach ($folders as $folder) {
+			$files     = array_diff(scandir($directory."/".$folder), array(
+            '..',
+            '.'
+        ));
+			foreach($files as $file){
+            $this->scanfile($directory."/".$folder . "/" . $file, $file);
+			}
         }
     }
     
@@ -375,20 +383,23 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
             "National Account Manager",
             "Business Development Manager",
             "Commercial Manager",
-            "Commercial Director"
+            "Commercial Director",
+			"management"
         );
         
         $this->load->helper('scan');
         $result = contains($doctxt, $joblist);
+        $csv = "";
+ 		if($result){
+		$list = implode('\, ', $result);
+		$csv .= "$file,$list\n";
+		}
         
-        if ($result) {
-            $industry = array(
-                "management"
-            );
-            $final    = contains($doctxt, $industry);
-            echo $file . " => " . $final;
-        }
-        
+header("Content-type: text/csv");
+header("Content-Disposition: attachment; filename=file.csv");
+header("Pragma: no-cache");
+header("Expires: 0");
+echo $csv;		
     }
     
     public function fix_db()

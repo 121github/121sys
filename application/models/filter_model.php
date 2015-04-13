@@ -65,6 +65,7 @@ class Filter_model extends CI_Model
     
     public function create_query_filter($filter, $use = false)
     {
+	
 		$filter_options["urn"]              = array(
             "table" => "records",
             "type" => "id",
@@ -290,6 +291,16 @@ class Filter_model extends CI_Model
             "type" => "",
             "alias" => ""
         );
+		$filter_options["no_phone_tel"]              = array(
+            "table" => "contact_telephone",
+            "type" => "",
+            "alias" => "cont.telephone_number"
+        );
+		$filter_options["no_company_tel"]              = array(
+            "table" => "company_telephone",
+            "type" => "",
+            "alias" => "comt.telephone_number"
+        );
         $qry                                = "";
         $special                            = "";
 		$parked								= "";
@@ -453,7 +464,7 @@ class Filter_model extends CI_Model
                     if (!isset($join['contact_addresses'])) {
                         $join['contact_addresses'] = " left join contact_addresses cona on con.contact_id = cona.contact_id left join locations con_pc on coma.location_id = con_pc.location_id";
                     }
-					$this->firephp->log($join);
+
                 }
                 
                 //if the filter field has a type of 'id' then it requires an exact match
@@ -518,6 +529,13 @@ class Filter_model extends CI_Model
                     }
                 }
                 
+				if($field=="no_phone_tel"&&@$filter['no_phone_tel']=="1"){
+				$where .= " and con.urn not in (select distinct urn from contacts inner join contact_telephone using(contact_id)) ";	
+				}
+				if($field=="no_company_tel"&&@$filter['no_company_tel']=="1"){
+				$where .= "  and comt.telephone_number is null ";	
+				}
+				
                 if ($field == 'postcode' && count($filter[$field])) {
                     $distance = ($filter['distance']) ? $filter['distance'] : 0;
                     
@@ -617,6 +635,7 @@ class Filter_model extends CI_Model
             }
             
         }
+		$this->firephp->log($filter);
         return $filter;
     }
     

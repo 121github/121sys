@@ -2,7 +2,10 @@
 var filter = {
     init: function () {
 		filter.count_records();
-		
+			$(document).on('click','.no-number',function(){
+				filter.set_no_number($(this));
+				filter.count_records();
+			});
 		$(document).on('change','.sector-select',function(){
 			filter.load_subsectors($(this).val());
 		});
@@ -64,6 +67,8 @@ var filter = {
 		$(document).on('click','.clear-filter',function(e){
 			e.preventDefault()
 			$(document).off('change', 'select');
+			$('input[type="hidden"]').remove();
+			$('.no-number').removeClass('btn-danger').closest('.form-group').find('input').prop('disabled',false);
 			$('input[type="text"], input[type="select"]:not(.record-status,#campaign-select)').val('');
 			$('.selectpicker:not(.record-status,#campaign-select)').selectpicker('deselectAll');
 			$('.record-status').selectpicker('val',1);
@@ -197,6 +202,27 @@ var filter = {
 				$('.copy_records_error').show();
 			}
 		});
+	},
+	set_no_number:function($btn){
+		var type = $btn.attr('data-type');
+				if($btn.hasClass('btn-danger')){
+				$btn.removeClass('btn-danger').closest('.form-group').find('input').val('').prop('disabled',false);
+				$btn.closest('.form-group').find('.no-number-input').remove();
+				if(type=="company"){
+					$btn.closest('.form-group').find('input').attr('name','company_phone');
+				} else {
+					$btn.closest('.form-group').find('input').attr('name','phone');
+				}
+
+				} else {
+			$btn.addClass('btn-danger').closest('.form-group').find('input').val('Records without a '+type+' telephone number').prop('disabled',true);
+			$btn.closest('.form-group').find('input').removeAttr('name');	
+			if(type=="company"){
+					$btn.closest('.form-group').append('<input type="hidden" class="no-number-input" value="1" name="no_company_tel" />');
+				} else {
+					$btn.closest('.form-group').append('<input type="hidden" class="no-number-input" value="1" name="no_phone_tel" />');
+				}
+				}
 	},
 	load_subsectors:function(sectors){
 		$.ajax({

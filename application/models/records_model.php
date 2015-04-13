@@ -900,7 +900,7 @@ class Records_model extends CI_Model
         $result  = $this->db->get("email_triggers")->result_array();
 		$email_triggers = array();
 		foreach($result as $row){
-			if(!empty($row['user_email'])){
+			if(!empty($row['user_email'])&&!empty($row['template_id'])){
 		$email_triggers[$row['template_id']][] = array("name"=>$row['name'],"email"=>$row['user_email']);
 			}
 		}

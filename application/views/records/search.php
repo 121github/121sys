@@ -214,10 +214,15 @@
                 <label>Name</label>
                 <input <?php if(@isset($_SESSION['filter']['values']['fullname'])){ echo "value='".$_SESSION['filter']['values']['fullname']."'"; } ?> name="fullname" type="text" class="form-control" placeholder="Enter all or part of the contact's name">
               </div>
-              <div class="form-group">
-                <label>Phone</label>
-                <input <?php if(@isset($_SESSION['filter']['values']['phone'])){ echo "value='".$_SESSION['filter']['values']['phone']."'"; } ?> name="phone" type="text" class="form-control" placeholder="Enter all or part of a phone number">
-              </div>
+             <div class="form-group">  
+               <label>Contact Phone</label>
+               <div class="input-group">
+      <input type="text" name="phone" class="form-control"  <?php if(@isset($_SESSION['filter']['values']['phone'])){ echo "value='".$_SESSION['filter']['values']['phone']."'"; } ?> placeholder="Enter all or part of a phone number">
+      <span class="input-group-btn">
+        <button class="btn btn-default no-number" data-type="contact" type="button">No Numbers</button>
+      </span>
+    </div>
+          </div>  
               <div class="form-group">
                 <label>Job/Position</label>
                 <input name="position" <?php if(@isset($_SESSION['filter']['values']['position'])){ echo "value='".$_SESSION['filter']['values']['position']."'"; } ?> type="text" class="form-control" placeholder="Enter all or part of the job title">
@@ -271,10 +276,16 @@
                 <label>Company Name</label>
                 <input <?php if(@isset($_SESSION['filter']['values']['coname'])){ echo "value='".$_SESSION['filter']['values']['coname']."'"; } ?> name="coname" type="text" class="form-control" placeholder="Enter all or part of the company name">
               </div>
-              <div class="form-group">
-                <label>Company Phone</label>
-                <input <?php if(@isset($_SESSION['filter']['values']['company_phone'])){ echo "value='".$_SESSION['filter']['values']['company_phone']."'"; } ?> name="company_phone" type="text" class="form-control" placeholder="Enter all or part of a phone number">
-              </div>
+             <div class="form-group">  
+               <label>Company Phone</label>
+               <div class="input-group">
+      <input type="text" name="company_phone" class="form-control"  <?php if(@isset($_SESSION['filter']['values']['company_phone'])){ echo "value='".$_SESSION['filter']['values']['company_phone']."'"; } ?> placeholder="Enter all or part of a phone number">
+      <span class="input-group-btn">
+        <button class="btn btn-default no-number" data-type="company"  type="button">No Numbers</button>
+      </span>
+    </div>
+          </div>    
+           
               <div class="form-group">
                 <label>Sector</label>
                 <select  name="sector_id[]" class="selectpicker sector-select" data-width="100%" data-size="5" multiple  title="Any">
