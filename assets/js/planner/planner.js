@@ -38,10 +38,12 @@ var planner = {
         var directionsService = new google.maps.DirectionsService();
         var map;
         var markers = [];
+        var markerLocation;
         var bounds = null;
         var appointments = [];
         var table;
         var infowindow = new google.maps.InfoWindow();
+        var geocoder = new google.maps.Geocoder();
 
         google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -51,15 +53,12 @@ var planner = {
         /*******************************************************************/
         function getAppointments() {
             table = $('.data-table').DataTable({
-                //"dom": '<"top"><"dt_info"iS>rt<"bottom"iS><"clear">',
                 "oLanguage": {
                     "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
                 },
                 "autoWidth": false,
                 "processing": true,
                 "serverSide": true,
-                //ordering:  false,
-                //"iDisplayLength": 10,
                 "scrollY": "550px",
                 "scrollX": "95%",
                 stateSave: true,
@@ -158,10 +157,30 @@ var planner = {
 
             var mapOptions = {
                 zoom: 12,
-                center: myLatlng
+                center: myLatlng,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.LEFT_BOTTOM
+                },
+                zoomControl: true,
+                zoomControlOptions: {
+                    style: google.maps.ZoomControlStyle.SMALL,
+                    position: google.maps.ControlPosition.LEFT_TOP
+                },
+                panControl: false,
+                scaleControl: true,
+                streetViewControl: true,
+                streetViewControlOptions: {
+                    position: google.maps.ControlPosition.LEFT_TOP
+                }
             };
 
             map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+            $('.map-form').find('input[name="postcode"]').val("M5 3EZ");
+            $('.map-form').find('input[name="travel-mode"]').val("DRIVING");
+            codeAddress();
 
             //Wait until the map is loaded
             setTimeout(function(){
@@ -170,7 +189,9 @@ var planner = {
 
             google.maps.event.addListener(map, 'zoom_changed', function () {
                 google.maps.event.addListenerOnce(map, 'bounds_changed', function (e) {
-                    table.draw();
+                    if (typeof table != 'undefined') {
+                        table.draw();
+                    }
                 });
             });
 
@@ -183,64 +204,147 @@ var planner = {
             });
 
 
-            //$(".appointment-btn").on("click", function () {
-            //    getDirections("M15 4JR");
-            //});
-
             $(document).on('click', '.appointment-btn', function () {
-                getDirections($(this).attr('item-postcode'));
+                $('.map-form').find('input[name="destination"]').val($(this).attr('item-postcode'));
+                var destination = $('.map-form').find('input[name="destination"]').val();
+                getDirections(destination);
             });
 
-            directionsDisplay.setMap(map);
-            directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+            $(document).on('click', '.change-directions-btn', function () {
+                $('.map-form').find('input[name="travel-mode"]').val($(this).attr('item-mode'));
+                var destination = $('.map-form').find('input[name="destination"]').val();
+                getDirections(destination);
+            });
+
+            $(document).on('click', '.close-directions-btn', function () {
+                removeDirections();
+            });
+
+            $(document).on('click', '.get-location-btn', function () {
+                removeDirections();
+                codeAddress();
+                //Wait until the map is loaded
+                setTimeout(function(){
+                    table.draw();
+                }, 2000);
+            });
+
+            $(document).on('click', '.get-current-location-btn', function () {
+                removeDirections();
+                codeCurrentAddress();
+            });
+
+            $(document).on('click', '.show-directionsPanel-btn', function () {
+                showDirections();
+            });
+
+            $(document).on('click', '.close-directionsPanel', function () {
+                hideDirections();
+            });
 
         }
 
-        function getDirections(destination) {
-            var start = "Manchester";
-            var dest = destination;
-            var request = {
-                origin: start,
-                destination: dest,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-            directionsService.route(request, function (result, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                    directionsDisplay.setDirections(result);
+        function codeAddress() {
+            var address = $('.map-form').find('input[name="postcode"]').val();
+            if (typeof markerLocation != 'undefined') {
+                markerLocation.setMap(null);
+            }
+            geocoder.geocode({'address': address}, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    map.setCenter(results[0].geometry.location);
+                    map.setZoom(12);
+                    markerLocation = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    });
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
                 }
             });
         }
 
-        //function setLocation(myLatlng, title, content) {
-        //
-        //    // HTML5 geolocation
-        //    if(navigator.geolocation) {
-        //        navigator.geolocation.getCurrentPosition(function(position) {
-        //            myLatlng = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-        //            title = "Current Location";
-        //            content = "You are here!";
-        //            setLocation(myLatlng,title,content);
-        //        });
-        //    }
-        //
-        //    map.setCenter(myLatlng);
-        //    var marker = new google.maps.Marker({
-        //        position: myLatlng,
-        //        map: map,
-        //        title: title
-        //    });
-        //    var infowindow = new google.maps.InfoWindow({
-        //        content: content
-        //    });
-        //    google.maps.event.addListener(marker, 'click', function() {
-        //        infowindow.open(map,marker);
-        //    });
-        //
-        //    //Wait until the map is loaded
-        //    setTimeout(function(){
-        //        getAppointments();
-        //    }, 1000);
-        //}
+        function codeCurrentAddress() {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    if (typeof markerLocation != 'undefined') {
+                        markerLocation.setMap(null);
+                    }
+                    var address = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+                    map.setCenter(address);
+                    map.setZoom(12);
+                    markerLocation = new google.maps.Marker({
+                        map: map,
+                        position: address
+                    });
+                    $('.map-form').find('input[name="postcode"]').val('');
+                    //Wait until the map is loaded
+                    setTimeout(function(){
+                        table.draw();
+                    }, 2000);
+                });
+            }
+        }
+
+        function getDirections(destination) {
+            var start = markerLocation.getPosition();
+            var dest = destination;
+            var travelMode = $('.map-form').find('input[name="travel-mode"]').val();
+
+            $('.change-directions-btn').fadeTo( "fast" , 0.4);
+            $('.'+travelMode).fadeTo( "fast" , 1);
+
+            var request = {
+                origin: start,
+                destination: dest,
+                travelMode: google.maps.DirectionsTravelMode[travelMode],
+                transitOptions: {
+                    routingPreference: google.maps.TransitRoutePreference.FEWER_TRANSFERS
+                },
+                unitSystem: google.maps.UnitSystem.IMPERIAL
+            };
+            directionsService.route(request, function (result, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    $('.route-info').html(
+                        result.routes[0].legs[0].distance.text +': ' +
+                        result.routes[0].legs[0].duration.text +' ' +
+                        '<span style="font-size: 15px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
+                    directionsDisplay.setDirections(result);
+                }
+            });
+            directionsDisplay.setMap(map);
+            $('.directions-menu').show();
+            directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+        }
+
+        function removeDirections() {
+            directionsDisplay.setMap(null);
+            $('.directions-menu').hide();
+        }
+
+        function showDirections() {
+            var pagewidth = $(window).width() / 2;
+            var moveto = pagewidth - 250;
+            $('<div class="modal-backdrop directionsPanel in"></div>').appendTo(document.body).hide().fadeIn();
+            $('.directionsPanel-container').find('.directionsPanel-panel').show();
+            $('.directionsPanel-content').show();
+            $('.directionsPanel-container').fadeIn()
+            $('.directionsPanel-container').animate({
+                width: '600px',
+                left: '1%',
+                top: '10%'
+            }, 1000);
+        }
+
+        function hideDirections() {
+            $('.modal-backdrop.directionsPanel').fadeOut();
+            $('.directionsPanel-container').fadeOut(500, function () {
+                $('.directionsPanel-content').show();
+                $('.alert').addClass('hidden');
+            });
+            $('.directionsPanel-container').fadeOut(500, function () {
+                $('.directionsPanel-content').show();
+            });
+        }
 
         //Get current bounds
         function getBounds() {
@@ -286,8 +390,8 @@ var planner = {
                         '<p><b>Attendee: </b>' + value.attendee + '</p>' +
                         '<p><b>Date added: </b>' + value.date_added + '</p>' +
                         '<p><b>Postcode: </b>' + value.postcode + '(' + value.lat + ',' + value.lng + ')' + '</p>' +
-                        '<p><b>Website: </b><a taget="__blank" href="' + value.website + '"/>' + value.website + '</p>' +
-                        '<p><b>Navigate: </b><a class="appointment-btn" item-postcode="'+value.postcode+'" href="#"/>GO</p>' +
+                        '<p><b>Website: </b><a taget="__blank" href="' + value.website + '">' + value.website + '</a></p>' +
+                        '<p><b>Navigate: </b><a class="appointment-btn" item-postcode="'+value.postcode+'" href="#"/>GO!</a></p>' +
                     '</div>'+
                 '</div>';
 
@@ -355,111 +459,7 @@ var planner = {
                 }
             });
         }
-    },
-
-
-    map: function() {
-//        var directionsDisplay;
-//        var directionsService = new google.maps.DirectionsService();
-//        var map;
-//
-//        function initialize() {
-//            var lat = 53.499501;
-//            var lng = -2.208951;
-//            var myLatlng = new google.maps.LatLng(lat,lng);
-//            var mapOptions = {
-//                zoom: 12,
-//                center: myLatlng
-//            }
-//            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-//
-////        if ({{ postcodeDest|json_encode|raw }}) {
-////            var destination = {{ postcodeDest|json_encode|raw }};
-////            var origin = {{ (appointment.appointmentDetail.address.postcode ~ "," ~ appointment.appointmentDetail.address.town ~ "," ~ appointment.appointmentDetail.address.country)|json_encode|raw }};
-////            directionsDisplay = new google.maps.DirectionsRenderer();
-////            calcRoute(origin, destination);
-////            directionsDisplay.setMap(map);
-////        }
-////        else {
-////
-////            var marker = new google.maps.Marker({
-////                position: myLatlng,
-////                map: map,
-////                title: '{{ appointment.appointmentDetail.title }}'
-////            });
-////
-////            var infowindow = new google.maps.InfoWindow({
-////                content: '<span><b>Appointment</b><br></span>Recruiter'
-////            });
-////
-////            google.maps.event.addListener(marker, 'click', function() {
-////                infowindow.open(map,marker);
-////            });
-////        }
-//
-//            var marker = new google.maps.Marker({
-//                position: map.getCenter(),
-//                map: map,
-//                title: 'Click to zoom'
-//            });
-//
-//            //google.maps.event.addListener(map, 'zoom_changed', function() {
-//            //    var zoomLevel = map.getZoom();
-//            //    //map.setCenter(myLatLng);
-//            //    //infowindow.setContent('Zoom: ' + zoomLevel);
-//            //    console.log(marker.getPosition());
-//            //});
-//            //google.maps.event.addListener(map, "rightclick", function(event) {
-//            //    var lat = event.latLng.lat();
-//            //    var lng = event.latLng.lng();
-//            //    // populate yor box/field with lat, lng
-//            //    alert("Lat=" + lat + "; Lng=" + lng);
-//            //});
-//
-//            google.maps.event.addListener(map, 'zoom_changed', function () {
-//                google.maps.event.addListenerOnce(map, 'bounds_changed', function (e) {
-//                    //my_zoom_handler(); // do your job here
-//                    var ne = map.getBounds().getNorthEast();
-//                    var sw = map.getBounds().getSouthWest();
-//                    var bounds = map.getBounds();
-//                    if(bounds.contains(marker.position)) {
-//                        console.log("Marker"+ marker.position +" - matched");
-//                    }
-//                    //planner.reload_table('planner-table', bounds);
-//                    table.draw();
-//                });
-//            });
-//
-//            google.maps.event.addListener(map, 'dragend', function () {
-//                //google.maps.event.addListenerOnce(map, 'bounds_changed', function (e) {
-//                //my_zoom_handler(); // do your job here
-//                var ne = map.getBounds().getNorthEast();
-//                var sw = map.getBounds().getSouthWest();
-//                var bounds = map.getBounds();
-//                if(bounds.contains(marker.position)) {
-//                    console.log("Marker"+ marker.position +" - matched");
-//                }
-//                //});
-//            });
-//        }
-//
-//        function calcRoute(start, end) {
-//            var request = {
-//                origin:start,
-//                destination:end,
-//                travelMode: google.maps.TravelMode.DRIVING
-//            };
-//
-//            directionsService.route(request, function(response, status) {
-//                if (status == google.maps.DirectionsStatus.OK) {
-//                    directionsDisplay.setDirections(response);
-//                }
-//            });
-//        }
-//
-//        google.maps.event.addDomListener(window, 'load', initialize);
     }
-
 }
 
 var modal = {
