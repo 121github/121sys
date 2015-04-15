@@ -39,7 +39,8 @@ class Planner_model extends CI_Model
                     lat,
                     lng,
                     appointment_id,
-                    IFNULL(com.website,'') as website
+                    IFNULL(com.website,'') as website,
+                    records.urn
                 from appointments a
                   left join appointment_attendees aa using(appointment_id)
                   left join users u on u.user_id = aa.user_id
@@ -73,7 +74,6 @@ class Planner_model extends CI_Model
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
         $where = " where campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
-
         //Check the bounds of the map
         if ($options['bounds']) {
             $where .= " and lat < ".$options['bounds']['neLat']." and lat > ".$options['bounds']['swLat']." and lng < ".$options['bounds']['neLng']." and lng > ".$options['bounds']['swLng']." ";
@@ -88,17 +88,4 @@ class Planner_model extends CI_Model
         }
         return $where;
     }
-
-    public function appointment_modal($id)
-    {
-        $qry = "select * from appointments a left join users u on u.user_id = a.created_by where appointment_id = " . intval($id) . " group by appointment_id";
-        return $this->db->query($qry)->row_array();
-    }
-
-    public function appointment_attendees($id)
-    {
-        $qry = "select name from appointment_attendees left join users using(user_id) where appointment_id = " . intval($id);
-        return $this->db->query($qry)->result_array();
-    }
-
 }

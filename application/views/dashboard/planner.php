@@ -26,26 +26,17 @@
                         </div>
                     </div>
                     <div class="form-group input-group-sm directions-menu" style="display: none">
-                        <div class="row" style="margin-top: 5px">
-                            <div class="col-lg-4"></div>
-                            <div class="col-lg-1">
+                        <div class="row" style="margin-top: 5px; text-align: right">
+                            <div class="col-lg-12" style="font-size: 11px;">
                                 <span style="opacity: 0.4; filter: alpha(opacity=40);" class="change-directions-btn DRIVING pointer" item-mode="DRIVING"><img width="20px;" src="assets/img/icons/car.png"/></span>
-                            </div>
-                            <div class="col-lg-1">
                                 <span style="opacity: 0.4; filter: alpha(opacity=40);" class="change-directions-btn TRANSIT pointer" item-mode="TRANSIT"><img width="20px;" src="assets/img/icons/train.png"/></span>
-                            </div>
-                            <div class="col-lg-1">
                                 <span style="opacity: 0.4; filter: alpha(opacity=40);" class="change-directions-btn BICYCLING pointer" item-mode="BICYCLING"><img width="20px;" src="assets/img/icons/cycle.png"/></span>
-                            </div>
-                            <div class="col-lg-1">
                                 <span style="opacity: 0.4; filter: alpha(opacity=40);" class="change-directions-btn WALKING pointer" item-mode="WALKING"><img width="20px;" src="assets/img/icons/walking.png"/></span>
-                            </div>
-                            <div class="col-lg-1" style="font-size: 11px;">
                                 <span class="close-directions-btn glyphicon glyphicon-remove"></span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-11">
+                            <div class="col-lg-12">
                                 <div class="route-info"></div>
                             </div>
                         </div>
@@ -78,15 +69,13 @@
         position: absolute;
         top: 28px;
         right: 55px;
-        width: 35%;
+        width: 50%;
     }
     .route-info {
         font-weight:bold;
         font-size: 10px;
         text-align: right;
-        background-color: white;
-        width: 59%;
-        float: right;
+        color: green;
     }
 </style>
 

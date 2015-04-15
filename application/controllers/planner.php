@@ -59,17 +59,4 @@ class Planner extends CI_Controller
             echo json_encode($data);
         }
     }
-
-    public function planner_modal()
-    {
-        $id = $this->input->post('id');
-        $planner = $this->Planner_model->planner_modal($id);
-        $attendees = $this->Planner_model->planner_attendees($id);
-        $formatted_date = date('D jS M Y', strtotime($planner['date_added']));
-        $planner['date_formatted'] = $formatted_date;
-        $result['planner'] = $planner;
-        $result['attendees'] = $attendees;
-        echo json_encode(array("success" => true, "data" => $result));
-    }
-
 }

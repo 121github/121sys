@@ -27,10 +27,6 @@ var planner = {
 
         $('#planner-table').html(table);
         planner.populate_table(table_name);
-
-        $(document).on('click', '.data-table tbody tr', function () {
-            modal.show_planner($(this).attr('data-id'));
-        });
     },
     populate_table: function (table_name) {
 
@@ -56,11 +52,13 @@ var planner = {
                 "oLanguage": {
                     "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
                 },
+                "dom": "irtiS",
                 "autoWidth": false,
                 "processing": true,
                 "serverSide": true,
                 "scrollY": "550px",
                 "scrollX": "95%",
+                "bScrollCollapse": true,
                 stateSave: true,
                 responsive: true,
                 "ajax": {
@@ -82,7 +80,6 @@ var planner = {
                     }
                 },
                 "deferRender": true,
-                "dom": "irtiS",
                 "columns": [{
                     "data": "start"
                 }, {
@@ -102,6 +99,7 @@ var planner = {
                 ],
                 "createdRow": function (row, data, dataIndex) {
                     $(row).attr('data-id', data['planner_id']);
+                    $(row).attr('postcode', data['postcode']);
                     $(row).addClass('pointer');
                     if (data['change_type'] == "delete") {
                         $(row).addClass('danger');
@@ -242,6 +240,25 @@ var planner = {
                 hideDirections();
             });
 
+            //Start animation in the map for the appointment selected in the table
+            $(document).on('mouseenter', '.data-table tbody tr', function () {
+                animateAppointment($(this).attr('postcode'));
+                $(this).css('color', 'green');
+            });
+
+            //Start animation in the map for the appointment deselected in the table
+            $(document).on('mouseleave', '.data-table tbody tr', function () {
+                removeAppointmentAnimation($(this).attr('postcode'));
+                $(this).css('color', 'black');
+            });
+
+
+            //Start animation in the map for the appointment deselected in the table
+            $(document).on('click', '.data-table tbody tr', function () {
+                openInfoWindow($(this).attr('postcode'));
+                $(this).css('color', 'green');
+            });
+
         }
 
         function codeAddress() {
@@ -368,38 +385,90 @@ var planner = {
             });
         }
 
+        //Animate an appointments icon
+        function animateAppointment(postcode) {
+            $.each(markers, function(index, marker) {
+                if (marker.postcode == postcode) {
+                    if (marker.getAnimation() != null) {
+                        marker.setAnimation(null);
+                    } else {
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                    }
+                }
+            });
+        }
+
+        //Remove appointment animation icon
+        function removeAppointmentAnimation(postcode) {
+            $.each(markers, function(index, marker) {
+                if (marker.postcode == postcode) {
+                    if (marker.getAnimation() != null) {
+                        marker.setAnimation(null);
+                    }
+                }
+            });
+        }
+
+        //Open infowindow for a marker
+        function openInfoWindow(postcode) {
+            var contentString = "";
+            $.each(markers, function(index, marker) {
+                if (marker.postcode == postcode) {
+                    infowindow.close();
+                    infowindow.setContent(marker.content);
+                    infowindow.open(map,marker);
+                }
+            });
+        }
+
         // Add a marker to the map and push to the array.
         function addMarker(value) {
             var marker_color = intToARGB(hashCode( value.attendee ));
             var marker_text_color = "FFFFFF";
             var character = (value.attendee).substr(0,1);
+            var contentString =
+                '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h2 id="firstHeading" class="firstHeading">'+value.name+'</h2>'+
+                '<div id="bodyContent">'+
+                '<p><b>Start: </b>' + value.start + '</p>'+
+                '<p><b>Attendee: </b>' + value.attendee + '</p>' +
+                '<p><b>Date added: </b>' + value.date_added + '</p>' +
+                '<p><b>Postcode: </b>' + value.postcode + '(' + value.lat + ',' + value.lng + ')' + '</p>' +
+                '<p><b>Website: </b><a taget="__blank" href="' + value.website + '">' + value.website + '</a></p>' +
+                '<p>' +
+                    '<span><a class="btn btn-success appointment-btn" item-postcode="'+value.postcode+'" href="#">Navigate </a></span>' +
+                    '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
+                '</p>' +
+                '</div>'+
+                '</div>';
+
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(value.lat,value.lng),
                 map: map,
                 title: value.name,
+                postcode: value.postcode,
+                content: contentString,
                 icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
             });
-
-            var contentString =
-                '<div id="content">'+
-                    '<div id="siteNotice">'+
-                    '</div>'+
-                    '<h2 id="firstHeading" class="firstHeading">'+value.name+'</h2>'+
-                    '<div id="bodyContent">'+
-                        '<p><b>Start: </b>' + value.start + '</p>'+
-                        '<p><b>Attendee: </b>' + value.attendee + '</p>' +
-                        '<p><b>Date added: </b>' + value.date_added + '</p>' +
-                        '<p><b>Postcode: </b>' + value.postcode + '(' + value.lat + ',' + value.lng + ')' + '</p>' +
-                        '<p><b>Website: </b><a taget="__blank" href="' + value.website + '">' + value.website + '</a></p>' +
-                        '<p><b>Navigate: </b><a class="appointment-btn" item-postcode="'+value.postcode+'" href="#"/>GO!</a></p>' +
-                    '</div>'+
-                '</div>';
 
             google.maps.event.addListener(marker, 'click', function() {
                 infowindow.close();
                 infowindow.setContent(contentString);
                 infowindow.open(map,marker);
             });
+
+            //Show in the table the appointment selected in the map
+            google.maps.event.addListener(marker, 'mouseover', function() {
+                $('.data-table tbody').find("[postcode='"+marker.postcode+"']").css('color','green');
+            });
+
+            //Hide in the table the appointment deselected in the map
+            google.maps.event.addListener(marker, 'mouseout', function() {
+                $('.data-table tbody').find("[postcode='"+marker.postcode+"']").css('color','black');
+            });
+
             markers.push(marker);
         }
 
@@ -459,45 +528,5 @@ var planner = {
                 }
             });
         }
-    }
-}
-
-var modal = {
-    default_buttons: function () {
-        $('#modal').find('.modal-footer .btn').remove();
-        $('#modal').find('.modal-footer').append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
-        $('#modal').find('.modal-footer').append('<button class="btn btn-primary confirm-modal" type="button">Confirm</button>');
-    },
-    clear_buttons: function () {
-        $('#modal').find('.modal-footer .btn').remove();
-    },
-    show_planner: function (id) {
-        $('.modal-title').text('planner #' + id);
-        $.ajax({
-            url: helper.baseUrl + 'planner/planner_modal',
-            type: "POST",
-            dataType: "JSON",
-            data: {id: id}
-        }).done(function (response) {
-            if (response.success) {
-                var modal_html = "";
-                modal_html += "<p>planner was set for <b>" + response.data.planner.date_formatted + "</b></p>";
-                modal_html += "<p><ul>";
-                modal_html += "<li><b>Title:</b> " + response.data.planner.title + "</li>"
-                modal_html += "<li><b>Notes:</b> " + response.data.planner.text + "</li>"
-                modal_html += "</ul></p>";
-                $('#modal').find('.modal-body').html(modal_html);
-                modal.clear_buttons();
-                $('#modal').find('.modal-footer').append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
-                $('#modal').find('.modal-footer').append('<a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + response.data.planner.urn + '">View Record</a>');
-                modal.show_modal();
-            }
-        });
-    },
-    show_modal: function () {
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
     }
 }
