@@ -790,7 +790,9 @@ class Search extends CI_Controller
         $contact_list = "0";
         foreach ($contacts as $contact_id => $contact) {
             array_push($contacts_to_copy, $contact['contacts']);
+			if(!empty($contact_id)){
             $contact_list .= ", ".$contact_id;
+			}
         }
         $contact_list = "(".$contact_list.")";
 
