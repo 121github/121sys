@@ -1,18 +1,38 @@
 
-      <div class="row">
-        <div class="col-lg-12">
-          <h1 class="page-header">Appointments</h1>
-        </div>
-        <!-- /.col-lg-12 --> 
-      </div>
       <!-- /.row -->
+      <div class="row">
+      <div class="col-lg-6 col-md-6">
      <div class="row">
     <div class="col-lg-12 col-md-12">
-       <div id="appointment-table">
-          </div>
+      <!-- start .panel -->
+    <div class="panel panel-primary">
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Appointments
+            <!-- <div class="pull-right action-buttons">
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-cog" style="margin-right: 0px;"></span>
+                            </button>
+                            <ul class="dropdown-menu slidedown">
+                                <li><a href="#" class="modal-set-columns"><span class="glyphicon glyphicon-list "></span> Columns</a></li>
+                                <li><a href="#" class="modal-set-location"><span class="glyphicon glyphicon-map-marker "></span> Set Location</a></li>
+                                <li><a href="#" class="modal-reset-table"><span class="glyphicon glyphicon-remove-circle"></span> Reset</a></li>
+                            </ul>
+                        </div>
+                    </div>-->
+            </div>
+            <div class="panel-body">
+       <div id="appointment-table"></div>
+       </div>
+       </div>
+        <!-- end .panel -->
        </div>
         
     </div>
+</div>
+<div class="col-lg-6 col-md-6">
+<!-- map here -->
+</div>
+</div>
 
 <script>
 $(document).ready(function(){
@@ -78,11 +98,12 @@ var appointment = {
     populate_table: function(table_name) {
 	
         var table = $('.data-table').DataTable({
-            "dom": '<"top">p<"dt_info"i>rt<"bottom"lp><"clear">',
+            "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"bottom"lp><"clear">',
             "oLanguage": {
                 "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
             },
             "autoWidth": false,
+			"scrollX": true,
             "processing": true,
             "serverSide": true,
             //ordering:  false,

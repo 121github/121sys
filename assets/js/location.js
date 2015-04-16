@@ -156,3 +156,7 @@ $(document).on('blur', '.current_postcode_input', function(e) {
 		getAddressByPostcode(postcode);
 	}
 });
+
+var location = {
+
+}

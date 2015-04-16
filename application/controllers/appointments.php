@@ -29,7 +29,8 @@ public function index(){
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
-            )
+            ),
+			'javascript' => array("modals.js","location.js")
         );
         $this->template->load('default', 'dashboard/appointments.php', $data);
 }

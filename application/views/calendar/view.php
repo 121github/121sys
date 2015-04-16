@@ -29,16 +29,16 @@
           <p>
           <label>Maximum Distance</label>
           <select name="distance" class="distance-select form-control" >
-          <option value="1" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >1 Mile</option>
-          <option value="5" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >5 Mile</option>
-          <option value="10" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >10 Mile</option>
-          <option value="15" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >15 Mile</option>
-          <option value="20" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >20 Mile</option>
-          <option value="30" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >30 Mile</option>
-          <option value="50" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?>> 50 Mile</option>
-          <option value="100" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >100 Mile</option>
-           <option value="200" <?php if(@!empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >200 Mile</option>
-                    <option value="" <?php if(@empty($_SESSION['calendar-filter']['distance'])){ echo "selected"; } ?> >Any Distance</option>
+          <option value="1" <?php if(@$_SESSION['calendar-filter']['distance']==1){ echo "selected"; } ?> >1 Mile</option>
+          <option value="5" <?php if(@$_SESSION['calendar-filter']['distance']==5){ echo "selected"; } ?> >5 Mile</option>
+          <option value="10" <?php if(@$_SESSION['calendar-filter']['distance']==10){ echo "selected"; } ?> >10 Mile</option>
+          <option value="15" <?php if(@$_SESSION['calendar-filter']['distance']==15){ echo "selected"; } ?> >15 Mile</option>
+          <option value="20" <?php if(@$_SESSION['calendar-filter']['distance']==20){ echo "selected"; } ?> >20 Mile</option>
+          <option value="30" <?php if(@$_SESSION['calendar-filter']['distance']==30){ echo "selected"; } ?> >30 Mile</option>
+          <option value="50" <?php if(@$_SESSION['calendar-filter']['distance']==50){ echo "selected"; } ?>> 50 Mile</option>
+          <option value="100" <?php if(@$_SESSION['calendar-filter']['distance']==100){ echo "selected"; } ?> >100 Mile</option>
+           <option value="200" <?php if(@$_SESSION['calendar-filter']['distance']==200){ echo "selected"; } ?> >200 Mile</option>
+                    <option value="1500" <?php if(@$_SESSION['calendar-filter']['distance']==1500){ echo "selected"; } ?> >Any Distance</option>
           </select>
           </p>
           </div>

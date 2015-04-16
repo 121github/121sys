@@ -119,6 +119,7 @@
 				$options += "<option value='"+v.id+"'>"+v.name+"</options>";
 			});
 			$('#user-select').html($options).selectpicker('refresh');
+			calendar.view();
 		})
 		});
 		
