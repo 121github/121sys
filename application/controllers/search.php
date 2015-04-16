@@ -727,7 +727,9 @@ class Search extends CI_Controller
     	$company_list = "0";
     	foreach ($companies as $company_id => $company) {
     		array_push($companies_to_copy, $company['companies']);
-    		$company_list .= ", ".$company_id;
+    		if(!empty($company_id)){
+				$company_list .= ", ".$company_id;
+			}
     	}
     	$company_list = "(".$company_list.")";
     	
