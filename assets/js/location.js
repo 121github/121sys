@@ -157,6 +157,3 @@ $(document).on('blur', '.current_postcode_input', function(e) {
 	}
 });
 
-var location = {
-
-}
