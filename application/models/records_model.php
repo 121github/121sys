@@ -822,10 +822,15 @@ class Records_model extends CI_Model
         $this->db->delete("record_details");
     }
     
-    public function delete_appointment($id)
-    {   
-        $this->db->where("appointment_id", $id);
+    public function delete_appointment($data)
+    {
+        $this->db->where("appointment_id", $data['appointment_id']);
+
         $this->db->set("status", '0');
+        $this->db->set("cancellation_reason", $data['cancellation_reason']);
+        $this->db->set("updated_by", $_SESSION['user_id']);
+        $this->db->set("date_updated", date('Y-m-d H:i:s'));
+
         $this->db->update("appointments");
     }
     

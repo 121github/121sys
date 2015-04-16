@@ -706,8 +706,9 @@ class Records extends CI_Controller
     public function delete_appointment()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
-			$this->Audit_model->log_appointment_delete($this->input->post('id'));
-            $this->Records_model->delete_appointment($this->input->post('id'));
+            $data = $this->input->post();
+            $this->Audit_model->log_appointment_delete($data['appointment_id']);
+            $this->Records_model->delete_appointment($data);
             
             //return success to page
             echo json_encode(array(
@@ -718,7 +719,6 @@ class Records extends CI_Controller
             exit;
         }
     }
-    
     
     //this function is triggered during the update if the question trigger is below the answer or if an option on a multiple choise is set as a trigger. It sends the email with a list of all teh answers that triggered it. The email is sent to the recipients in the trigger_recipients table for the trigger with the survey outcome. If it does not exist then it does not get sent.
     public function survey_alert($survey, $survey_triggers)

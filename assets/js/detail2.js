@@ -2374,7 +2374,7 @@ var record = {
             var table = "<div class='table-responsive'><table class='table table-striped table-condensed'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th><th>Options</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
                 if (data.length) {
-                    table += '<tr><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><button class="btn btn-default btn-xs edit-appointment" item-id="' + val.appointment_id + '">Edit</button> <button class="btn btn-default btn-xs del-appointment" item-id="' + val.appointment_id + '">Delete</button></td></tr>';
+                    table += '<tr><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><button class="btn btn-default btn-xs edit-appointment" item-id="' + val.appointment_id + '">Edit</button> <button class="btn btn-default btn-xs del-appointment" item-id="' + val.appointment_id + '">Cancel</button></td></tr>';
                 }
             });
             $panel.append(table + "</tbody></table></div>");
@@ -2444,24 +2444,25 @@ var record = {
                 }
             });
         },
-        remove: function (id) {
+        remove: function (id, cancellation_reason) {
             $.ajax({
                 url: helper.baseUrl + 'records/delete_appointment',
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    id: id,
+                    appointment_id: id,
+                    cancellation_reason: cancellation_reason,
                     urn: record.urn
                 }
             }).done(function (response) {
                 record.appointment_panel.load_appointments();
                 if (response.success) {
-                    flashalert.success("Appointment was deleted");
+                    flashalert.success("Appointment was cancelled");
                 } else {
-                    flashalert.danger("Unable to delete user. Contact administrator");
+                    flashalert.danger("Unable to cancel the appointment. Contact administrator");
                 }
             }).fail(function (response) {
-                flashalert.danger("Unable to delete user. Contact administrator");
+                flashalert.danger("Unable to cancel the appointment. Contact administrator");
             });
 
         }
@@ -2786,14 +2787,39 @@ var modal = {
         });
     },
     delete_appointment: function (id) {
-        $('.modal-title').text('Confirm Delete');
+        $('.modal-title').text('Confirm Cancellation');
+        $('.confirm-modal').prop('disabled', true);
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this appointment?');
+        }).find('.modal-body').html(
+            'Are you sure you want to cancel this appointment?' +
+            '<div style="margin-top: 5px;">' +
+                '<form padding:10px 20px;" class="form-horizontal appointment-cancellation-form">' +
+                    '<input name="cancellation_reason" placeholder="Cancellation Reason..."/>' +
+                '</form>' +
+            '</div>'
+        );
+        $('.appointment-cancellation-form').find('input[name="cancellation_reason"]').bind('input', function() {
+            var cancellation_reason = $(this).val();
+            if (cancellation_reason) {
+                $('.confirm-modal').prop('disabled', false);
+            }
+            else {
+                $('.confirm-modal').prop('disabled', true);
+            }
+        });
+        $('.close-modal').on('click', function (e) {
+            $('.confirm-modal').prop('disabled', false);
+        });
+        $('.modal-header').find('.close').on('click', function (e) {
+            $('.confirm-modal').prop('disabled', false);
+        });
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
-            record.appointment_panel.remove(id);
+            var cancellation_reason = $('.appointment-cancellation-form').find('input[name="cancellation_reason"]').val();
+            record.appointment_panel.remove(id, cancellation_reason);
+            $('.confirm-modal').prop('disabled', false);
             $('#modal').modal('toggle');
         });
     },
