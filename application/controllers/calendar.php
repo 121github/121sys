@@ -110,6 +110,7 @@ class Calendar extends CI_Controller
 		$users = (isset($_SESSION['users'])?$_SESSION['users']:"");	
 		}
 		
+		if(!empty($postcode)&&!empty($_POST['distance'])){
 		$postcode = postcodeCheckFormat($postcode);
 		if($postcode==NULL&&!empty($_POST['distance'])){
 		echo json_encode(array("error"=>"Postcode","msg"=>"Postcode is not valid"));
@@ -121,7 +122,7 @@ class Calendar extends CI_Controller
 		} else {
 		$distance = (isset($_SESSION['distance'])?$_SESSION['distance']:"");	
 		}
-		
+		}
 			if(!empty($_POST['campaigns'])){
 		$campaigns = $_POST['campaigns'];	
 		} else {
