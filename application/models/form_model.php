@@ -321,4 +321,10 @@ class Form_model extends CI_Model
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
+
+    public function get_appointment_rule_reasons()
+    {
+        $qry = "select reason_id id, reason name from appointment_rule_reasons order by reason";
+        return $this->db->query($qry)->result_array();
+    }
 }
