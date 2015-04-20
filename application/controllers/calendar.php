@@ -31,7 +31,6 @@ class Calendar extends CI_Controller
         $users = array();
         if (in_array("search campaigns", $_SESSION['permissions'])) {
             $campaigns = $this->Form_model->get_calendar_campaigns();
-            $appointment_rule_reasons = $this->Form_model->get_appointment_rule_reasons();
             $users = isset($_SESSION['current_campaign']) ? $this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])) : "";
             $disable_campaign_filter = false;
         }
@@ -57,7 +56,6 @@ class Calendar extends CI_Controller
             'date' => date('Y-m-d'),
             'campaigns' => $campaigns,
             'users' => $users,
-            'appointment_rule_reasons' => $appointment_rule_reasons,
             'css' => array(
                 'calendar.css',
             )
@@ -210,6 +208,22 @@ class Calendar extends CI_Controller
     }
 
     /**
+     * Delete an appointment rule
+     */
+    public function delete_appointment_rule() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $results = $this->Calendar_model->delete_appointment_rule($form['appointment_rules_id']);
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "msg" => (!empty($results)) ? "Appointment Rules removed successfully" : "ERROR: Appointment Rules NOT removed successfully!"
+            ));
+        }
+    }
+
+    /**
      * Get appointment rules
      */
     public function get_appointment_rules() {
@@ -227,6 +241,35 @@ class Calendar extends CI_Controller
             echo json_encode(array(
                 "success" => (!empty($appointment_rules)),
                 "data" => $appointment_rules
+            ));
+        }
+
+    }
+
+    /**
+     * Get appointment rules by date
+     */
+    public function get_appointment_rules_by_date() {
+        if ($this->input->is_ajax_request()) {
+            $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date(to_mysql_datetime($this->input->post('date')));
+
+            echo json_encode(array(
+                "success" => (!empty($appointment_rules)),
+                "data" => $appointment_rules
+            ));
+        }
+
+    }
+
+    /**
+     * Get appointment rule reasons
+     */
+    public function get_appointment_rule_reasons() {
+        if ($this->input->is_ajax_request()) {
+            $appointment_rule_reasons = $this->Form_model->get_appointment_rule_reasons();
+
+            echo json_encode(array(
+                "data" => $appointment_rule_reasons
             ));
         }
 
