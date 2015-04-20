@@ -127,7 +127,7 @@ $filetype="ogg";
  $filetype="ogg";
     }
 
-echo json_encode(array("success"=>true,"filename"=>$path."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
+echo json_encode(array("success"=>true,"filename"=>$remotepath."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
 
 
 }
