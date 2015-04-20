@@ -130,7 +130,7 @@ class Calendar_model extends CI_Model
      * Add new appointment rule
      */
     public function add_appointment_rule($data) {
-        return $this->db->insert_batch('appointment_rules', $data);
+        return $this->db->insert("appointment_rules", $data);
     }
 
     /**

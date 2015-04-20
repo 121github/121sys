@@ -93,4 +93,20 @@ class Appointments_model extends CI_Model
         return (!empty($results));
     }
 
+
+    /**
+     *
+     * Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
+     *
+     */
+    public function checkNoAppointmentForTheDayBlocked($attendee_id, $blockDay) {
+
+        $qry = "select * from appointments left join appointment_attendees using(appointment_id) where user_id = ".$attendee_id." and '".to_mysql_datetime($blockDay)."' >= date(start) and '".to_mysql_datetime($blockDay)."' <= date(end)";
+
+        $results = $this->db->query($qry)->result_array();
+
+        //Return true if $results is not empty, because there is at least one appointment where the block day is between the start and the end date schedulled
+        return (!empty($results));
+    }
+
 }

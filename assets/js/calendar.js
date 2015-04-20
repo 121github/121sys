@@ -114,7 +114,7 @@ $(document).ready(function () {
                 data: {date: block_day}
             }).done(function (response) {
                 if (response.success) {
-                    var rules = '<table class="table ajax-table"><thead><tr><th>Attendee</th><th>Reason</th><th>Options</th></tr></thead><tbody>';
+                    var rules = '<div><h4>'+block_day+'</h4></div><table class="table ajax-table"><thead><tr><th>Attendee</th><th>Reason</th><th>Options</th></tr></thead><tbody>';
                     $.each(response.data, function (key, value) {
                         rules +=
                             '<tr>' +
@@ -158,7 +158,7 @@ $(document).ready(function () {
                 data: {campaigns: $('#campaign-cal-select').val()}
             }).done(function (response) {
                 $('#modal').find('.attendee-select').empty();
-                var $options = "";
+                var $options = '<option value="">Choose an attendee...</option>';
                 $.each(response.data, function (k, v) {
                     $options += "<option value='" + v.id + "'>" + v.name + "</options>";
                 });
@@ -313,7 +313,7 @@ $(document).ready(function () {
                             '</p>' +
                             '<p>' +
                             '<label>Attendees<span class="attendee-error" style="color: red; display: none"> Select an agent</span></label>' +
-                            '<select name="attendees[]" class="attendee-select" title="Select attendees" multiple data-width="100%" required>' +
+                            '<select name="user_id" class="attendee-select" title="Select attendee" data-width="100%" required>' +
                             '</select>' +
                             '</p>' +
                             '</form>' +

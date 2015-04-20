@@ -12,6 +12,7 @@ class Calendar extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Calendar_model');
         $this->load->model('Form_model');
+        $this->load->model('Appointments_model');
     }
 
     public function get_calendar_users()
@@ -184,26 +185,24 @@ class Calendar extends CI_Controller
     public function add_appointment_rule() {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
+            $form['block_day'] = to_mysql_datetime($form['block_day']);
 
-            $appointment_rules = array();
-            $attendees = $this->input->post('attendees');
-            if (!empty($form)) {
-                foreach($attendees as $attendee_id){
-                    array_push($appointment_rules,array(
-                        "reason_id" => $form['reason_id'],
-                        "other_reason" => $form['other_reason'],
-                        "user_id" => $attendee_id,
-                        "block_day" => to_mysql_datetime($form['block_day'])
-                    ));
-                }
+            //Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
+            if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'])) {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "ERROR: You can not block this day for this attendee. The attendee has at least one appointment scheduled. Reschedule the appointment and block the day after that."
+                ));
+                exit(0);
             }
+            else {
+                $results = $this->Calendar_model->add_appointment_rule($form);
 
-            $results = $this->Calendar_model->add_appointment_rule($appointment_rules);
-
-            echo json_encode(array(
-                "success" => (!empty($results)),
-                "msg" => (!empty($results)) ? "Appointment Rules added successfully" : "ERROR: Appointment Rules NOT added successfully!"
-            ));
+                echo json_encode(array(
+                    "success" => (!empty($results)),
+                    "msg" => (!empty($results)) ? "Appointment Rules added successfully" : "ERROR: Appointment Rules NOT added successfully!"
+                ));
+            }
         }
     }
 
