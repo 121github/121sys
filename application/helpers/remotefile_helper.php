@@ -7,9 +7,9 @@ function loadFile($url) {
     curl_setopt($ch, CURLOPT_URL, $url);
 	
 	//debugging curl
-	curl_setopt($ch, CURLOPT_VERBOSE, true);
-	$verbose = fopen('php://temp', 'rw+');	
-	curl_setopt($ch, CURLOPT_STDERR, $verbose);
+	//curl_setopt($ch, CURLOPT_VERBOSE, true);
+	//$verbose = fopen('php://temp', 'rw+');	
+	//curl_setopt($ch, CURLOPT_STDERR, $verbose);
 	
     $data = curl_exec($ch);
     curl_close($ch);
