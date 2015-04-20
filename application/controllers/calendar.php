@@ -116,13 +116,14 @@ class Calendar extends CI_Controller
 		echo json_encode(array("error"=>"Postcode","msg"=>"Postcode is not valid"));
 		exit;
 		}
+		}
 		
 		if(!empty($_POST['distance'])){
 		$distance = $_POST['distance'];	
 		} else {
 		$distance = (isset($_SESSION['distance'])?$_SESSION['distance']:"");	
 		}
-		}
+		
 			if(!empty($_POST['campaigns'])){
 		$campaigns = $_POST['campaigns'];	
 		} else {

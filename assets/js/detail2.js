@@ -1244,7 +1244,7 @@ var record = {
                     });
                     $.each(val.telephone, function (dt, tel) {
                         var ctps = "";
-                        if (tel.tel_num.length > 0) {
+                        if (tel.tel_num) {
                             if (tel.tel_tps == null) {
                                 ctps = "<span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='" + id + "' item-number-id='" + dt + "' item-number='" + tel.tel_num + "' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
                             }

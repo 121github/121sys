@@ -727,9 +727,7 @@ class Search extends CI_Controller
     	$company_list = "0";
     	foreach ($companies as $company_id => $company) {
     		array_push($companies_to_copy, $company['companies']);
-    		if(!empty($company_id)){
-				$company_list .= ", ".$company_id;
-			}
+    		$company_list .= ", ".$company_id;
     	}
     	$company_list = "(".$company_list.")";
     	
@@ -790,9 +788,7 @@ class Search extends CI_Controller
         $contact_list = "0";
         foreach ($contacts as $contact_id => $contact) {
             array_push($contacts_to_copy, $contact['contacts']);
-			if(!empty($contact_id)){
             $contact_list .= ", ".$contact_id;
-			}
         }
         $contact_list = "(".$contact_list.")";
 

@@ -1,11 +1,11 @@
  <div class="row">
         <div class="col-lg-12">
-          <h1 class="page-header">Campaign Admin</h1>
+          <h1 class="page-header">Campaign User Access</h1>
         </div>
         <!-- /.col-lg-12 --> 
       </div>
       
-        <div class="panel panel-primary campaign-access">
+       <div class="panel panel-primary campaign-access">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Campaign User Access           
             </div>
             <!-- /.panel-heading -->
@@ -49,3 +49,12 @@ Users</td><td></td><td>Campaign Access</td></tr>
 
 </div>
 </div>
+<script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
+<!-- SB Admin Scripts - Include with every page --> 
+<script src="<?php echo base_url() ?>assets/js/sb-admin.js"></script> 
+<script>
+$(document).ready(function(){
+	admin.init();
+	admin.campaigns.init();
+});
+</script>

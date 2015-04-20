@@ -44,12 +44,12 @@ class Contacts_model extends CI_Model
             }
             if ($result['address_id']) {
                 $contact['address'][$result['address_id']] = array(
-                    "add1" => $result['add1'],
+                    "add1" => !empty($result['add1'])?$result['add1']:'',
                     "add2" => $result['add2'],
                     "add3" => $result['add3'],
                     "county" => $result['county'],
                     "country" => $result['country'],
-                    "postcode" => $result['postcode'],
+                    "postcode" => !empty($result['postcode'])?$result['postcode']:'',
                     "primary" => $result['primary'],
                     "address_id" => $result['address_id']
                 );

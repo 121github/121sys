@@ -91,10 +91,10 @@ $port = "8016";
 }
 $file34 = str_replace("xml","wav",str_replace("/mnt/16recordings/","",str_replace("/mnt/34recordings/","",$filename)));
 $file = str_replace("/","\\",$file34);
-$path = "http://recordings.121leads.co.uk:$port/";
+$path = "http://recordings.121leads.co.uk/";
+$remotepath = "http://recordings.121leads.co.uk:$port/";
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
-
 //the old way was a bit slow
 //$context = stream_context_create(array('http' => array('header'=>'Connection: close')));
 //file_get_contents($conversion_path,false,$context);
@@ -126,7 +126,7 @@ $filetype="ogg";
 
 $path = "http://recordings.121leads.co.uk:$port/";
 
-echo json_encode(array("success"=>true,"filename"=>$path."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
+echo json_encode(array("success"=>true,"filename"=>$remotepath."temp/".$id.".". $filetype,"response"=>$response,"filetype"=>$filetype));
 
 
 }
