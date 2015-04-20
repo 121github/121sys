@@ -86,12 +86,12 @@ $id = intval($this->uri->segment('3'));
 $filename = base64_decode($this->uri->segment('4'));
 if(strpos($filename,"34recordings")!==false){
 $port = "8034";	
-$path = "http://recordings.121leads.co.uk:$port/";
-$remotepath = "http://recordings.121leads.co.uk:$port/";
+$path = "http://recordings.121system.com:$port/";
+$remotepath = "http://recordings.121system.com:$port/";
 } else {
 $port = "8016";	
-$path = "http://recordings16.121leads.co.uk/";
-$remotepath = "http://recordings16.121leads.co.uk:$port/";
+$path = "http://recordings16.121system.com/";
+$remotepath = "http://recordings16.121system.com:$port/";
 }
 $file34 = str_replace("xml","wav",str_replace("/mnt/16recordings/","",str_replace("/mnt/34recordings/","",$filename)));
 $file = str_replace("/","\\",$file34);
