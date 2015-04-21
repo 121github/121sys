@@ -369,11 +369,11 @@ class Email extends CI_Controller
                 $tmp_path = strstr('./'.$tmp_path, 'upload');
                 $file_path = strstr('./'.$attachment['path'], 'upload');
                 //Create tmp dir if it does not exist
-                if (!file_exists($tmp_path)) {
+                if (@!file_exists($tmp_path)) {
                     mkdir($tmp_path, 0777, true);
                 }
 
-                if (!copy($file_path,$tmp_path.$attachment['name'])) {
+                if (@!copy($file_path,$tmp_path.$attachment['name'])) {
                     return false;
                 }
                 else {
