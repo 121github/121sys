@@ -122,10 +122,16 @@ class Email extends CI_Controller
 		if ($this->input->is_ajax_request()) {
 			$data = $this->input->post();
 			$data['ip_address'] = $_SERVER['REMOTE_ADDR'];
+			//check the email address
+			$this->load->helper('email');
+			if(!valid_email($data['email_address'])){
+			echo json_encode(array("success"=>false,"msg"=>"That is not a valid email address"));	
+			}
+			
 			if($this->Email_model->unsubscribe($data)){
-			echo json_encode(array("success"=>true));
+			echo json_encode(array("success"=>true,"msg"=>"Your email address has been removed from the mailing list"));
 			} else {
-			echo json_encode(array("success"=>false));	
+			echo json_encode(array("success"=>false,"msg"=>"There was a problem removing your email. Please make sure you are using the unbsubscribe link in the email you recieved"));	
 			}
 		} else 
 		{
@@ -145,7 +151,7 @@ class Email extends CI_Controller
 		  $data = array(
     			'msg' => "The company you tried to unsubscribe from does not exist on our system",
     			'title' => 'Invalid email');
-		$this->template->load('default', 'error/display.php', $data);
+		$this->template->load('default', 'errors/display.php', $data);
 	}
 		}
 	}
@@ -345,7 +351,7 @@ class Email extends CI_Controller
     	
 		//unsubscribe link
 		if($template['template_unsubscribe'] == "1"){
-			$form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10px;color:#ccc'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
+			$form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:7;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
 		};
     	$this->email->initialize($config);
     			

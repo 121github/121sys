@@ -30,9 +30,10 @@ $(document).ready(function(){
 		data: $('#form').serialize()
 		}).done(function(response){
 			if(response.success){
-			$('.result-text').removeClass('alert-danger').addClass('alert-success').text("Your email address has been removed from the mailing list");	
+			$('.result-text').removeClass('alert-danger').addClass('alert-success').text(response.msg);	
+			$('#unsubscribe-btn').prop('disabled',true);
 			} else {
-			$('.result-text').removeClass('alert-success').addClass('alert-danger').text("There was a problem removing your email. Please make sure you are using the unbsubscribe link in the email you recieved");
+			$('.result-text').removeClass('alert-success').addClass('alert-danger').text(response.msg);
 			}
 		});
 	});
