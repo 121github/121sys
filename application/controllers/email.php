@@ -324,6 +324,7 @@ class Email extends CI_Controller
 	
     private function send ($form) {
     	
+		
     	$this->load->library('email');
     	
     	$config = array("smtp_host"=>"mail.121system.com",
@@ -344,13 +345,10 @@ class Email extends CI_Controller
     	
 		//unsubscribe link
 		if($template['template_unsubscribe'] == "1"){
-			$form['body'] .= "<hr><p style='font-size:7px;color:#ccc'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/emails/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
+			$form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10px;color:#ccc'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
 		};
-		$this->firephp->log($form);
     	$this->email->initialize($config);
-    	
-		
-		
+    			
     	$this->email->from($form['send_from']);
     	$this->email->to($form['send_to']);
     	$this->email->cc($form['cc']);
