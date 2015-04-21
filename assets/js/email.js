@@ -44,6 +44,8 @@ var email = {
     validate_email_input: function() {
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+//"//i don't know 
+
         var validation = true;
 
         var send_to = ($('input[name="send_to"]').val().replace(" ","")).split(",");
