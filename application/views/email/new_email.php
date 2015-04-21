@@ -17,7 +17,8 @@
 			<input type="hidden" name="urn" value="<?php echo $urn ?>" />
 			<input type="hidden" name="template_id" value="<?php echo $template_id ?>" />
 			<input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id'] ?>" />
-			
+			<div class="row">
+            <div class="col-xs-8 col-sm-8">
 			<div class="form-group input-group-sm">		
 				<p>
 					<span class="glyphicon glyphicon-question-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="Add more than one address separated by comas"></span>
@@ -28,6 +29,22 @@
 					value="<?php echo $template['template_from']; ?>"				
 				/>
 			</div>
+            </div>
+             <div class="col-xs-4 col-sm-4">
+<div class="form-group pull-right">
+ <label for="type">Include unsubscribe button</label>
+ <br>
+            <div class="btn-group" data-toggle="buttons">
+  <label class="btn btn-info btn-sm <?php if($template['template_unsubscribe']=="1"){ echo "active"; } ?>">
+    <input type="radio" name="template_unsubscribe" value="1" autocomplete="off" id="unsubscribe-yes" <?php if($template['template_unsubscribe']=="1"){ echo "checked"; } ?> >Yes
+  </label>
+  <label class="btn btn-info btn-sm <?php if($template['template_unsubscribe']=="0"){ echo "active"; } ?>">
+    <input type="radio" name="template_unsubscribe" value="0" autocomplete="off" id="unsubscribe-no" <?php if($template['template_unsubscribe']=="0"){ echo "checked"; } ?>>No
+  </label>
+</div>
+</div>
+    </div>
+    </div>
 			<div class="form-group input-group-sm">	
 				<p>
 					<span class="glyphicon glyphicon-question-sign tt" data-toggle="tooltip" data-html="true" data-placement="top" title="Add more than one address separated by comas"></span>

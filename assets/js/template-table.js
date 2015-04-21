@@ -49,6 +49,8 @@ var template = {
 										+ val.template_name
 									+ "</td><td class='template_from' style='display:none;'>"
 										+ val.template_from
+									+ "</td><td class='template_unsubscribe' style='display:none;'>"
+										+ val.template_unsubscribe
 									+ "</td><td class='template_to' style='display:none;'>"
 										+ val.template_to
 									+ "</td><td class='template_cc' style='display:none;'>"
@@ -100,6 +102,13 @@ var template = {
         $('form').find('input[name="template_cc"]').val(row.find('.template_cc').text());
         $('form').find('input[name="template_bcc"]').val(row.find('.template_bcc').text());
         $('form').find('input[name="template_subject"]').val(row.find('.template_subject').text());
+		if(row.find('.template_unsubscribe').text()=="1"){
+			$('form').find('#unsubscribe-yes').prop('checked',true).parent().addClass('active');
+			$('form').find('#unsubscribe-no').prop('checked',false).parent().removeClass('active');
+		} else {
+			$('form').find('#unsubscribe-no').prop('checked',true).parent().addClass('active');
+			$('form').find('#unsubscribe-yes').prop('checked',false).parent().removeClass('active');
+		}
         $('#summernote').code(row.find('.template_body').html());
         
         var data = {id : $('form').find('input[name="template_id"]').val()};

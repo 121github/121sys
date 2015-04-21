@@ -9,12 +9,7 @@ class Email extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        if ($this->uri->segment(2) == "image") {
-            $this->load->model('User_model');
-            $this->User_model->validate_login('admin', md5('12183c'));
-        }
-        user_auth_check();
-        $this->_campaigns = campaign_access_dropdown();;
+		$this->load->model('User_model');
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
         $this->load->model('Email_model');
@@ -23,6 +18,8 @@ class Email extends CI_Controller
     //this function returns a json array of email data for a given record id
     public function get_emails()
     {
+		$this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
     	if ($this->input->is_ajax_request()) {
     		$urn = intval($this->input->post('urn'));
             $limit = (intval($this->input->post('limit')))?intval($this->input->post('limit')):NULL;
@@ -39,6 +36,8 @@ class Email extends CI_Controller
     //this function returns a json array of email data for a given filter parameters
     public function get_emails_by_filter()
     {
+		$this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
             $emails = $this->Email_model->get_emails_by_filter($form);
@@ -53,6 +52,8 @@ class Email extends CI_Controller
     //this function returns a json array of email data for a given record id
     public function get_email()
     {
+		$this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
     	if ($this->input->is_ajax_request()) {
     		$email_id = intval($this->input->post('email_id'));
     
@@ -70,6 +71,8 @@ class Email extends CI_Controller
     //load all the fields into a new email form
     public function create()
     {
+		$this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
     	$urn             = intval($this->uri->segment(4));
     	$template_id     = intval($this->uri->segment(3));
     	$placeholder_data = $this->Email_model->get_placeholder_data($urn);
@@ -111,11 +114,45 @@ class Email extends CI_Controller
     	);
     
     	$this->template->load('default', 'email/new_email.php', $data);
-    
+  
     }
     
+	public function unsubscribe(){
+		if ($this->input->is_ajax_request()) {
+			$data = $this->input->post();
+			$data['ip_address'] = $_SERVER['REMOTE_ADDR'];
+			if($this->Email_model->unsubscribe($data)){
+			echo json_encode(array("success"=>true));
+			} else {
+			echo json_encode(array("success"=>false));	
+			}
+		} else 
+		{
+	$template_id = base64_decode($this->uri->segment(3));
+	$urn = 	base64_decode($this->uri->segment(4));
+	
+	$client_id = $this->Records_model->get_client_from_urn($urn);
+	$check = $this->Email_model->check_email_history($template_id,$urn);
+	if($check){
+	  $data = array(
+    			'urn' => $urn,
+    			'title' => 'Unsubscribe',
+				'client_id'=>$client_id,
+				'urn'=>$urn);
+			$this->template->load('default', 'email/unsubscribe.php', $data);
+	} else {
+		  $data = array(
+    			'msg' => "The company you tried to unsubscribe from does not exist on our system",
+    			'title' => 'Invalid email');
+		$this->template->load('default', 'error/display.php', $data);
+	}
+		}
+	}
+	
     //Get the contacts
     public function get_contacts() {
+		$this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
     	if ($this->input->is_ajax_request()) {
     		$urn = intval($this->input->post('urn'));
     		
@@ -139,6 +176,8 @@ class Email extends CI_Controller
     
     //Send an email
     public function send_email() {
+		$this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
     	$form = $this->input->post();
 
 		
@@ -165,6 +204,7 @@ class Email extends CI_Controller
     	$form['cc'] = implode(",", $cc);
     	$bcc = array_unique(explode(",", $form['bcc']));
     	$form['bcc'] = implode(",", $bcc);
+		
         //Attachments
         $attachmentsForm = array();
         if (!empty($form['template_attachments'])) {
@@ -255,6 +295,8 @@ class Email extends CI_Controller
     }
     
 	public function trigger_email(){
+		$this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
 		if(isset($_SESSION['email_triggers'])){
 			$urn = intval($this->input->post('urn'));
 		
@@ -271,7 +313,7 @@ class Email extends CI_Controller
 		foreach($placeholder_data[0] as $key => $val){
 			$form['body'] = str_replace("[$key]",$val,$form['body']);
 			}
-		}
+		}		
 			$this->send($form);
 		}	
 		}
@@ -299,8 +341,15 @@ class Email extends CI_Controller
     	}
     	$config['mailtype'] = 'html';
     	
+		//unsubscribe link
+		if($template['template_unsubscribe'] == "1"){
+			$form['body'] .= "<hr><p style='font-size:7px;color:#ccc'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/emails/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
+		};
+		$this->firephp->log($form);
     	$this->email->initialize($config);
     	
+		
+		
     	$this->email->from($form['send_from']);
     	$this->email->to($form['send_to']);
     	$this->email->cc($form['cc']);
@@ -308,6 +357,8 @@ class Email extends CI_Controller
     	$this->email->subject($form['subject']);
     	$this->email->message($form['body']);
 
+
+		
         $tmp_path = '';
         $user_id = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
 		if(isset($form['template_attachments'])&&count($form['template_attachments'])>0){
@@ -374,6 +425,8 @@ class Email extends CI_Controller
     
     //Delete email from the history
     public function delete_email() {
+		$this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
     	if ($this->input->is_ajax_request()) {
     		$email_id = intval($this->input->post('email_id'));
     	
@@ -388,6 +441,9 @@ class Email extends CI_Controller
     //Check if the email was received and opened
     public function image()
     {
+		//log the user in temperarily
+        $this->User_model->validate_login('admin', md5('12183c'));
+        user_auth_check();
        // Create an image, 1x1 pixel in size
         $im=imagecreate(1,1);
 

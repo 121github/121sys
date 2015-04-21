@@ -12,6 +12,12 @@ class Records_model extends CI_Model
             $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
 	
+	public function get_client_from_urn($urn){
+	$this->db->join("records","campaigns.campaign_id=records.campaign_id","left");
+	$this->db->where("urn",$urn);
+	return $this->db->get("campaigns")->row()->client_id;
+	}
+	
 		public function get_campaign_from_urn($urn){
 	$this->db->select('campaign_id');
 	$this->db->where('urn',$urn);

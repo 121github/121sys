@@ -80,6 +80,18 @@ class Email_model extends CI_Model
         return $this->db->get()->result_array();
     }
     
+	 public function check_email_history($template_id,$urn){
+		$this->db->where(array("template_id"=>$template_id,"urn"=>$urn));
+		$result = $this->db->get("email_history"); 
+		if($result->num_rows()){
+		return true;
+		}
+	 }
+	
+	
+	public function unsubscribe($data){
+	return $this->db->replace("email_unsubscribe",$data);		
+	}
     /**
      * Get a template
      *
