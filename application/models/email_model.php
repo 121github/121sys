@@ -88,6 +88,15 @@ class Email_model extends CI_Model
 		}
 	 }
 	
+	public function check_unsubscribed($sent_to,$client){
+		$list = explode(",",$send_to);
+		foreach($list as $email){
+			$this->db->where(array("email_address"=>$email,"client_id"=>$client));
+			if($this->db->get("email_unsubscribe")->num_rows()){
+			return $email;
+			}
+		}
+	}
 	
 	public function unsubscribe($data){
 	return $this->db->replace("email_unsubscribe",$data);		

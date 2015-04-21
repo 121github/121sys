@@ -244,6 +244,14 @@ class Email extends CI_Controller
         }
 
         $msg = "";
+		$client = $this->Records_model->get_client_from_urn($form['urn']);
+		if($this->Email_model->check_unsubscribed($form['send_to'],$client)){
+			echo json_encode(array(
+    			"success" => false,
+                "msg" => "One or more emails have unsubscribed from these emails, unable to send"
+    	));
+		exit;
+		}
 
     	//Save the email in the history table
         unset($form['template_attachments']);
@@ -251,7 +259,7 @@ class Email extends CI_Controller
         $response = ($email_id)?true:false;
 
         if (!$response) {
-            $msg = "ERROR saving the email history. The email was not sent.";
+            $msg = "Error saving the email history. The email was not sent.";
         }
         else {
             if (!empty($attachmentsForm)) {
@@ -262,7 +270,7 @@ class Email extends CI_Controller
                 $form['template_attachments'] = $attachmentsForm;
 
                 if (!$response) {
-                    $msg = "ERROR saving the attachments in the email history table. The email was not sent.";
+                    $msg = "Error saving the attachments in the email history table. The email was not sent.";
                 }
             }
 
@@ -290,7 +298,7 @@ class Email extends CI_Controller
                 }
                 else {
                     $response = false;
-                    $msg = "ERROR: The email was not sent. Please, check that the attached are still in the server or talk with your Administrator";
+                    $msg = "The email was not sent. Please, check that the attached are still in the server or talk with your Administrator";
                 }
             }
         }
