@@ -73,6 +73,7 @@ class Email extends CI_Controller
     {
 		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
+		$this->_campaigns = campaign_access_dropdown();
     	$urn             = intval($this->uri->segment(4));
     	$template_id     = intval($this->uri->segment(3));
     	$placeholder_data = $this->Email_model->get_placeholder_data($urn);
