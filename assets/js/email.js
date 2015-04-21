@@ -98,20 +98,22 @@ var email = {
     },
     send_email: function ($btn) {
 
-        $("button[type=submit]").attr('disabled', 'disabled');
         $('textarea[name="body"]').html(btoa($('#summernote').code()));
         $.ajax({
             url: helper.baseUrl + "email/send_email",
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize()
+            data: $('form').serialize(),
+			beforeSend:function(){
+			$("button[type=submit]").hide().parent().append('<img id="pending-send" src="'+helper.baseUrl+'assets/img/ajax-loader.gif" />');	
+			}
         }).done(function (response) {
             if (response.success) {
                 flashalert.success(response.msg);
                 window.history.back();
             }
             else {
-                $("button[type=submit]").attr('disabled', false);
+                $("button[type=submit]").show().parent().find('#pending-send').remove();
                 flashalert.danger(response.msg);
             }
         });
