@@ -17,6 +17,7 @@ class Records extends CI_Controller
         $this->load->model('Survey_model');
         $this->load->model('Form_model');
 		$this->load->model('Audit_model');
+        $this->load->model('Appointments_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
     
@@ -59,8 +60,12 @@ class Records extends CI_Controller
             'page' => 'list_records',
             'title' => 'List Records',
             'columns' => $visible_columns,
+            'css' => array(
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css'
+            ),
             'javascript' => array(
-                'view.js'
+                'view.js',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
@@ -669,6 +674,17 @@ class Records extends CI_Controller
                     "success" => false,
                     "msg" => "You must add an attendee"
                 ));
+                exit(0);
+            }
+            //Check if the attendee has a block_day between the start and the end date
+            else {
+                if ($this->Appointments_model->checkDayBlocked($data['attendees'][0],$data['start'],$data['end'])) {
+                    echo json_encode(array(
+                        "success" => false,
+                        "msg" => "The attendee has one or more days blocked between the start and the end dates"
+                    ));
+                    exit(0);
+                }
             }
             
             if ($data['postcode'] === NULL) {

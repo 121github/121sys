@@ -114,46 +114,9 @@
             </div>
             <div class="modal-body" style="height: 400px"></div>
             <div class="modal-footer">
+                <div role="tabpanel">
+                </div>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div style="display:none" id="appointment-rule-modal">
-    <div role="tabpanel">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation"><a href="#rules" aria-controls="rules" role="tab" data-toggle="tab">Rules</a></li>
-            <li role="presentation" class="active"><a href="#add-rule" aria-controls="add-rule" role="tab" data-toggle="tab">Add Rule</a></li>
-        </ul>
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane" id="rules">
-
-            </div>
-            <div role="tabpanel" class="tab-pane active" id="add-rule">
-                <form class="appointment-rule-form form-horizontal">
-                    <p><label>Block Day<span class="block-day-error" style="color: red; display: none"> Select a block day</span></label>
-                        <input name="block_day" value="" placeholder="Add the block day..." class="form-control block-day"/>
-                    </p>
-                    <p><label>Reason<span class="reason-error" style="color: red; display: none"> Select a reason</span></label>
-                        <select name="reason_id" class="reason-select" title="Choose the reason..." data-width="100%" required>
-                            <option value="">Choose a reason...</option>
-                            <?php foreach($appointment_rule_reasons as $appointment_rule_reason): ?>
-                                <option value="<?php echo $appointment_rule_reason['id'] ?>"><?php echo $appointment_rule_reason['name'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </p>
-                    <p class="other_reason"><label>Other Reason</label>
-                        <input name="other_reason" placeholder="Other reason..." value="" class="form-control"/>
-                    </p>
-                    <p>
-                        <label>Attendees<span class="attendee-error" style="color: red; display: none"> Select an agent</span></label>
-                        <select name="attendees[]" class="attendee-select" title="Select attendees" multiple data-width="100%" required>
-                            <?php foreach($users as $attendee): ?>
-                                <option value="<?php echo $attendee['id'] ?>"><?php echo $attendee['name'] ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </p>
-                </form>
             </div>
         </div>
     </div>

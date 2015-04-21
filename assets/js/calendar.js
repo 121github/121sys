@@ -21,6 +21,11 @@ $(document).ready(function () {
         modal.addAppointmentRule($(this).attr('item-day'));
     });
 
+    //Remove appointment rule
+    $(document).on('click', '.del-rule-btn', function () {
+        appointment_rules.delAppointmentRules($(this).attr('item-id'),$(this).attr('item-date'));
+    });
+
     var options = {
         events_source: function (start, end) {
             var events = [];
@@ -63,18 +68,21 @@ $(document).ready(function () {
                     .html('<a href="' + val.url + '">' + val.title + '</a>')
                     .appendTo(list);
             });
-            options.loadAppointmentRules();
         },
         onAfterViewLoad: function (view) {
             $('.page-header h3').text(this.getTitle());
             $('.btn-group button').removeClass('active');
             $('button[data-calendar-view="' + view + '"]').addClass('active');
+            appointment_rules.loadAppointmentRules();
         },
         classes: {
             months: {
                 general: 'label'
             }
-        },
+        }
+    };
+
+    var appointment_rules = {
         loadAppointmentRules: function() {
             $.ajax({
                 url: helper.baseUrl + 'calendar/get_appointment_rules',
@@ -86,22 +94,99 @@ $(document).ready(function () {
                         var title = '<table>';
                         $.each(value, function (i, rule) {
                             title += "<tr>" +
-                                        "<td style='text-align: left;'>"+rule.name+"</td>" +
-                                        "<td style='text-align: right;'>"+rule.reason+"</td>" +
-                                     "</tr>";
+                                "<td style='text-align: left;'>"+rule.name+"</td>" +
+                            "</tr>";
                         });
                         title += '</table>';
 
                         $('.cal-month-day').find('.block-day-btn.'+key).css('color','red').attr('item-rules',value.length).attr('data-original-title',title).show();
+                        $('.cal-week-box').find('.block-day-btn.'+key).css('color','red').attr('item-rules',value.length).attr('data-original-title',title).show();
+                        $('#cal-day-box').find('.block-day-btn.'+key).css('color','red').attr('item-rules',value.length).attr('data-original-title',title).show();
                     });
                 }
-            })
+            });
+        },
+        loadAppointmentRulesByDate: function(block_day) {
+            $.ajax({
+                url: helper.baseUrl + 'calendar/get_appointment_rules_by_date',
+                type: "POST",
+                dataType: "JSON",
+                data: {date: block_day}
+            }).done(function (response) {
+                if (response.success) {
+                    var rules = '<div><h4>'+block_day+'</h4></div><table class="table ajax-table"><thead><tr><th>Attendee</th><th>Reason</th><th>Options</th></tr></thead><tbody>';
+                    $.each(response.data, function (key, value) {
+                        rules +=
+                            '<tr>' +
+                            '<td>' + value.name + '</td>' +
+                            '<td>' + value.reason + '</td>' +
+                            '<td><span class="glyphicon glyphicon-remove del-rule-btn" item-id="' + value.appointment_rules_id + '" item-date="' + block_day + '"></span></td>' +
+                            '</tr>';
+                    });
+                    rules += '</tbody></table>';
+                    $('#modal').find('.rules-per-day').html(rules);
+                }
+                else {
+                    $('#modal').find('.rules-per-day').html("No rules created...");
+                    $('#modal').find('.nav-tabs a[href="#addrule"]').tab('show');
+                    $('.cal-month-day').find('.block-day-btn.'+block_day).css('color','black').attr('item-rules','').attr('data-original-title','').hide();
+                    $('.cal-week-box').find('.block-day-btn.'+block_day).css('color','black').attr('item-rules','').attr('data-original-title','').show();
+                    $('#cal-day-box').find('.block-day-btn.'+block_day).css('color','black').attr('item-rules','').attr('data-original-title','').show();
+
+                }
+            });
+        },
+        loadAppointmentRulesReasons: function() {
+            $.ajax({
+                url: helper.baseUrl + 'calendar/get_appointment_rule_reasons',
+                type: "POST",
+                dataType: "JSON"
+            }).done(function (response) {
+                $('#modal').find('.reason-select').empty();
+                var $options = '<option value="">Choose a reason...</option>';
+                $.each(response.data, function (k, v) {
+                    $options += "<option value='" + v.id + "'>" + v.name + "</options>";
+                });
+                $('#modal').find('.reason-select').html($options).selectpicker('refresh');
+            });
+        },
+        loadAppointmentRulesAttendees: function() {
+            $.ajax({
+                url: helper.baseUrl + 'calendar/get_calendar_users',
+                type: "POST",
+                dataType: "JSON",
+                data: {campaigns: $('#campaign-cal-select').val()}
+            }).done(function (response) {
+                $('#modal').find('.attendee-select').empty();
+                var $options = '<option value="">Choose an attendee...</option>';
+                $.each(response.data, function (k, v) {
+                    $options += "<option value='" + v.id + "'>" + v.name + "</options>";
+                });
+                $('#modal').find('.attendee-select').html($options).selectpicker('refresh');
+            });
+        },
+        delAppointmentRules: function(appointment_rules_id,date) {
+            $.ajax({
+                url: helper.baseUrl + 'calendar/delete_appointment_rule',
+                type: "POST",
+                dataType: "JSON",
+                data: {appointment_rules_id: appointment_rules_id}
+            }).done(function (response) {
+                if (response.success) {
+                    flashalert.success(response.msg);
+                    appointment_rules.loadAppointmentRulesByDate(date);
+                    appointment_rules.loadAppointmentRules();
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
         }
     };
 
     var calendar = $('#calendar').calendar(options);
 
-    options.loadAppointmentRules();
+    appointment_rules.loadAppointmentRules();
 
     $('.btn-group button[data-calendar-nav]').each(function () {
         var $this = $(this);
@@ -204,24 +289,47 @@ $(document).ready(function () {
             $('#modal').modal({
                 backdrop: 'static',
                 keyboard: false
-            }).find('.modal-body').empty().html($('#appointment-rule-modal').html());
+            }).find('.modal-body').empty().html(
+                    '<ul class="nav nav-tabs" role="tablist">' +
+                        '<li role="presentation" class="active"><a href="#apprules" aria-controls="apprules" role="tab" data-toggle="tab">Rules</a></li>' +
+                        '<li role="presentation"><a href="#addrule" aria-controls="addrule" role="tab" data-toggle="tab">Add rule</a></li>' +
+                    '</ul>' +
 
-            $.ajax({
-                url: helper.baseUrl + 'calendar/get_calendar_users',
-                type: "POST",
-                dataType: "JSON",
-                data: {campaigns: $('#campaign-cal-select').val()}
-            }).done(function (response) {
-                $('#modal').find('.attendee-select').empty();
-                var $options = "";
-                $.each(response.data, function (k, v) {
-                    $options += "<option value='" + v.id + "'>" + v.name + "</options>";
-                });
-                $('#modal').find('.attendee-select').html($options).selectpicker('refresh');
-            });
+                    '<div class="tab-content">' +
+                        '<div role="tabpanel" class="tab-pane active" id="apprules">' +
+                            '<div class="rules-per-day"></div>' +
+                        '</div>' +
+                        '<div role="tabpanel" class="tab-pane" id="addrule">' +
+                            '<form class="appointment-rule-form form-horizontal">' +
+                            '<p><label>Block Day<span class="block-day-error" style="color: red; display: none"> Select a block day</span></label>' +
+                            '<input name="block_day" value="" placeholder="Add the block day..." class="form-control block-day"/>' +
+                            '</p>' +
+                            '<p><label>Reason<span class="reason-error" style="color: red; display: none"> Select a reason</span></label>' +
+                            '<select name="reason_id" class="reason-select" title="Choose the reason..." data-width="100%" required>' +
+                            '</select>' +
+                            '</p>' +
+                            '<p class="other_reason"><label>Other Reason</label>' +
+                            '<input name="other_reason" placeholder="Other reason..." value="" class="form-control"/>' +
+                            '</p>' +
+                            '<p>' +
+                            '<label>Attendees<span class="attendee-error" style="color: red; display: none"> Select an agent</span></label>' +
+                            '<select name="user_id" class="attendee-select" title="Select attendee" data-width="100%" required>' +
+                            '</select>' +
+                            '</p>' +
+                            '</form>' +
+                        '</div>' +
+                    '</div>'
+            );
 
-            $('#modal').find('.reason-select').selectpicker();
-            //$('#modal').find('.attendee-select').selectpicker();
+            //Add the rules
+            appointment_rules.loadAppointmentRulesByDate(block_day);
+
+            //Get the reasons options
+            appointment_rules.loadAppointmentRulesReasons();
+
+            //Get the attendees options
+            appointment_rules.loadAppointmentRulesAttendees();
+
             $('#modal').find('.block-day').datetimepicker({
                 pickTime: false,
                 format: 'DD/MM/YYYY'
@@ -274,8 +382,10 @@ $(document).ready(function () {
                     }).done(function (response) {
                         if (response.success) {
                             flashalert.success(response.msg);
-                            $('#modal').modal('toggle');
-                            options.loadAppointmentRules();
+                            //$('#modal').modal('toggle');
+                            appointment_rules.loadAppointmentRules();
+                            appointment_rules.loadAppointmentRulesByDate(block_day);
+                            $('#modal').find('.nav-tabs a[href="#apprules"]').tab('show');
                         }
                         else {
                             flashalert.danger(response.msg);

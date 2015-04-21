@@ -94,7 +94,7 @@ class Calendar_model extends CI_Model
             $query = "select appointments.postcode, if(companies.name,'',companies.name) as title,appointment_id,`start`,`end`,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
         } else {
             $query = "select appointments.urn,appointment_id,campaign_name,title,text,`start`,`end`,postcode,if(appointments.`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
-            $this->firephp->log($query);
+            //$this->firephp->log($query);
         }
         $array = array();
         $users = array();
@@ -130,7 +130,15 @@ class Calendar_model extends CI_Model
      * Add new appointment rule
      */
     public function add_appointment_rule($data) {
-        return $this->db->insert_batch('appointment_rules', $data);
+        return $this->db->insert("appointment_rules", $data);
+    }
+
+    /**
+     * Delete an appointment rule
+     */
+    public function delete_appointment_rule($appointment_rules_id) {
+        $this->db->where("appointment_rules_id", $appointment_rules_id);
+        return $this->db->delete("appointment_rules");
     }
 
     /**
@@ -141,6 +149,19 @@ class Calendar_model extends CI_Model
                 from appointment_rules
                 inner join appointment_rule_reasons using (reason_id)
                 inner join users using (user_id)";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Get appointment rules by date
+     */
+    public function get_appointment_rules_by_date($block_day) {
+        $qry = "select appointment_rules_id, reason_id, block_day, other_reason, users.name, reason
+                from appointment_rules
+                inner join appointment_rule_reasons using (reason_id)
+                inner join users using (user_id)
+                where block_day = '".$block_day."'";
 
         return $this->db->query($qry)->result_array();
     }

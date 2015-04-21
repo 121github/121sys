@@ -12,6 +12,7 @@ class Calendar extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Calendar_model');
         $this->load->model('Form_model');
+        $this->load->model('Appointments_model');
     }
 
     public function get_calendar_users()
@@ -31,7 +32,6 @@ class Calendar extends CI_Controller
         $users = array();
         if (in_array("search campaigns", $_SESSION['permissions'])) {
             $campaigns = $this->Form_model->get_calendar_campaigns();
-            $appointment_rule_reasons = $this->Form_model->get_appointment_rule_reasons();
             $users = isset($_SESSION['current_campaign']) ? $this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])) : "";
             $disable_campaign_filter = false;
         }
@@ -57,7 +57,6 @@ class Calendar extends CI_Controller
             'date' => date('Y-m-d'),
             'campaigns' => $campaigns,
             'users' => $users,
-            'appointment_rule_reasons' => $appointment_rule_reasons,
             'css' => array(
                 'calendar.css',
             )
@@ -186,25 +185,39 @@ class Calendar extends CI_Controller
     public function add_appointment_rule() {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
+            $form['block_day'] = to_mysql_datetime($form['block_day']);
 
-            $appointment_rules = array();
-            $attendees = $this->input->post('attendees');
-            if (!empty($form)) {
-                foreach($attendees as $attendee_id){
-                    array_push($appointment_rules,array(
-                        "reason_id" => $form['reason_id'],
-                        "other_reason" => $form['other_reason'],
-                        "user_id" => $attendee_id,
-                        "block_day" => to_mysql_datetime($form['block_day'])
-                    ));
-                }
+            //Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
+            if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'])) {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "ERROR: You can not block this day for this attendee. The attendee has at least one appointment scheduled. Reschedule the appointment and block the day after that."
+                ));
+                exit(0);
             }
+            else {
+                $results = $this->Calendar_model->add_appointment_rule($form);
 
-            $results = $this->Calendar_model->add_appointment_rule($appointment_rules);
+                echo json_encode(array(
+                    "success" => (!empty($results)),
+                    "msg" => (!empty($results)) ? "Appointment Rules added successfully" : "ERROR: Appointment Rules NOT added successfully!"
+                ));
+            }
+        }
+    }
+
+    /**
+     * Delete an appointment rule
+     */
+    public function delete_appointment_rule() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $results = $this->Calendar_model->delete_appointment_rule($form['appointment_rules_id']);
 
             echo json_encode(array(
                 "success" => (!empty($results)),
-                "msg" => (!empty($results)) ? "Appointment Rules added successfully" : "ERROR: Appointment Rules NOT added successfully!"
+                "msg" => (!empty($results)) ? "Appointment Rules removed successfully" : "ERROR: Appointment Rules NOT removed successfully!"
             ));
         }
     }
@@ -227,6 +240,35 @@ class Calendar extends CI_Controller
             echo json_encode(array(
                 "success" => (!empty($appointment_rules)),
                 "data" => $appointment_rules
+            ));
+        }
+
+    }
+
+    /**
+     * Get appointment rules by date
+     */
+    public function get_appointment_rules_by_date() {
+        if ($this->input->is_ajax_request()) {
+            $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date(to_mysql_datetime($this->input->post('date')));
+
+            echo json_encode(array(
+                "success" => (!empty($appointment_rules)),
+                "data" => $appointment_rules
+            ));
+        }
+
+    }
+
+    /**
+     * Get appointment rule reasons
+     */
+    public function get_appointment_rule_reasons() {
+        if ($this->input->is_ajax_request()) {
+            $appointment_rule_reasons = $this->Form_model->get_appointment_rule_reasons();
+
+            echo json_encode(array(
+                "data" => $appointment_rule_reasons
             ));
         }
 
