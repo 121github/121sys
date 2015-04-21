@@ -125,7 +125,8 @@ class Email extends CI_Controller
 			//check the email address
 			$this->load->helper('email');
 			if(!valid_email($data['email_address'])){
-			echo json_encode(array("success"=>false,"msg"=>"That is not a valid email address"));	
+			echo json_encode(array("success"=>false,"msg"=>"That is not a valid email address"));
+			exit;	
 			}
 			
 			if($this->Email_model->unsubscribe($data)){
