@@ -272,9 +272,8 @@ class User_model extends CI_Model
 
     public function get_user_by_username($username) {
         $qry = "SELECT * FROM users WHERE username='$username'";
-        $results = $this->db->query($qry)->result_array();
-
-        return $results;
+		$this->db->where('username',$username);
+        return $this->db->get('users')->result_array();
     }
 
     public function get_user_by_id($user_id) {
@@ -283,17 +282,15 @@ class User_model extends CI_Model
                 LEFT JOIN user_roles using (role_id)
                 LEFT JOIN user_groups using (group_id)
                 LEFT JOIN teams using (team_id)
-                WHERE user_id='$user_id'";
+                WHERE user_id='".intval($user_id)."'";
         $results = $this->db->query($qry)->result_array();
 
         return $results;
     }
 
     public function get_user_by_reset_pass_token($reset_pass_token) {
-        $qry = "SELECT * FROM users WHERE reset_pass_token='$reset_pass_token'";
-        $results = $this->db->query($qry)->result_array();
-
-        return $results;
+		$this->db->where('reset_pass_token',$reset_pass_token);
+		return $this->db->get('users')->result_array();
     }
 
     public function update_user($user_id, $form)
