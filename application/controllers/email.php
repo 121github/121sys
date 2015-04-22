@@ -18,7 +18,6 @@ class Email extends CI_Controller
     //this function returns a json array of email data for a given record id
     public function get_emails()
     {
-		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
     	if ($this->input->is_ajax_request()) {
     		$urn = intval($this->input->post('urn'));
@@ -36,7 +35,6 @@ class Email extends CI_Controller
     //this function returns a json array of email data for a given filter parameters
     public function get_emails_by_filter()
     {
-		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
@@ -52,7 +50,6 @@ class Email extends CI_Controller
     //this function returns a json array of email data for a given record id
     public function get_email()
     {
-		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
     	if ($this->input->is_ajax_request()) {
     		$email_id = intval($this->input->post('email_id'));
@@ -71,7 +68,6 @@ class Email extends CI_Controller
     //load all the fields into a new email form
     public function create()
     {
-		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
 		$this->_campaigns = campaign_access_dropdown();
     	$urn             = intval($this->uri->segment(4));
@@ -159,7 +155,6 @@ class Email extends CI_Controller
 	
     //Get the contacts
     public function get_contacts() {
-		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
     	if ($this->input->is_ajax_request()) {
     		$urn = intval($this->input->post('urn'));
@@ -184,7 +179,6 @@ class Email extends CI_Controller
     
     //Send an email
     public function send_email() {
-		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
     	$form = $this->input->post();
 
@@ -249,7 +243,7 @@ class Email extends CI_Controller
 		if($this->Email_model->check_unsubscribed($form['send_to'],$client)){
 			echo json_encode(array(
     			"success" => false,
-                "msg" => "One or more emails have unsubscribed from these emails, unable to send"
+                "msg" => "One or more emails have unsubscribed, unable to send"
     	));
 		exit;
 		}
@@ -311,7 +305,6 @@ class Email extends CI_Controller
     }
     
 	public function trigger_email(){
-		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
 		if(isset($_SESSION['email_triggers'])){
 			$urn = intval($this->input->post('urn'));
@@ -439,7 +432,6 @@ class Email extends CI_Controller
     
     //Delete email from the history
     public function delete_email() {
-		$this->User_model->validate_login('admin', md5('12183c'));
         user_auth_check();
     	if ($this->input->is_ajax_request()) {
     		$email_id = intval($this->input->post('email_id'));
@@ -455,9 +447,7 @@ class Email extends CI_Controller
     //Check if the email was received and opened
     public function image()
     {
-		//log the user in temperarily
-        $this->User_model->validate_login('admin', md5('12183c'));
-        user_auth_check();
+
        // Create an image, 1x1 pixel in size
         $im=imagecreate(1,1);
 
