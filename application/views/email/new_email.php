@@ -35,11 +35,11 @@
  <label for="type">Include unsubscribe button</label>
  <br>
             <div class="btn-group" data-toggle="buttons">
-  <label class="btn btn-info btn-sm <?php if($template['template_unsubscribe']=="1"){ echo "active"; } ?>">
-    <input type="radio" name="template_unsubscribe" value="1" autocomplete="off" id="unsubscribe-yes" <?php if($template['template_unsubscribe']=="1"){ echo "checked"; } ?> >Yes
+  <label class="btn btn-info btn-sm <?php if(@$template['template_unsubscribe']=="1"){ echo "active"; } ?>">
+    <input type="radio" name="template_unsubscribe" value="1" autocomplete="off" id="unsubscribe-yes" <?php if(@$template['template_unsubscribe']=="1"){ echo "checked"; } ?> >Yes
   </label>
-  <label class="btn btn-info btn-sm <?php if($template['template_unsubscribe']=="0"){ echo "active"; } ?>">
-    <input type="radio" name="template_unsubscribe" value="0" autocomplete="off" id="unsubscribe-no" <?php if($template['template_unsubscribe']=="0"){ echo "checked"; } ?>>No
+  <label class="btn btn-info btn-sm <?php if(@$template['template_unsubscribe']=="0"){ echo "active"; } ?>">
+    <input type="radio" name="template_unsubscribe" value="0" autocomplete="off" id="unsubscribe-no" <?php if(@$template['template_unsubscribe']=="0"){ echo "checked"; } ?>>No
   </label>
 </div>
 </div>
