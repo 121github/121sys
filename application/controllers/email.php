@@ -352,7 +352,7 @@ class Email extends CI_Controller
     	$config['mailtype'] = 'html';
     	
 		//unsubscribe link
-		if($template['template_unsubscribe'] == "1"){
+		if($form['template_unsubscribe'] == "1"){
 			$form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
 		};
     	$this->email->initialize($config);
