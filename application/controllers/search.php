@@ -507,6 +507,7 @@ class Search extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
 
+            //TODO Get also the company email if there are no contacts email addresses
             $contact_emails = $this->Filter_model->get_contact_emails_by_urn_list($form['urn_list']);
 
             $template = $this->Email_model->get_template($form['template_id']);
