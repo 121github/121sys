@@ -342,7 +342,7 @@ class Email extends CI_Controller
 		$output .= "Sending pending emails... \n\n";
 
 		//Get the oldest 50 mails pending to be sent
-		$pending_emails = $this->Email_model->get_pending_emails(50);
+		$pending_emails = $this->Email_model->get_pending_emails(3);
 
 		foreach($pending_emails as $email) {
 
@@ -368,8 +368,6 @@ class Email extends CI_Controller
 				$email['template_attachments'] = $attachments;
 
 				$result = $this->send($email);
-
-				unset($email['template_attachments']);
 
 				//Save the email_history
 				if ($result) {
@@ -405,6 +403,9 @@ class Email extends CI_Controller
 						$this->Email_model->insert_attachment_by_email_id($email_id, $attachment);
 					}
 					$output .= "sent to ".$email['send_to']."\n\n";
+				}
+				else {
+					$output .= "not sent: ERROR from the email server \n\n";
 				}
 			}
 			else {
@@ -460,30 +461,30 @@ class Email extends CI_Controller
         $tmp_path = '';
         $user_id = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
 		if(isset($form['template_attachments'])&&count($form['template_attachments'])>0){
-        foreach ($form['template_attachments'] as $attachment) {
-            if (strlen($attachment['path'])>0) {
-                $tmp_path = substr($attachment['path'], 0, strripos($attachment['path'], "/")+1)."tmp_".$user_id."/";
-                $tmp_path = strstr('./'.$tmp_path, 'upload');
-                $file_path = strstr('./'.$attachment['path'], 'upload');
-                //Create tmp dir if it does not exist
-                if (@!file_exists($tmp_path)) {
-                    mkdir($tmp_path, 0777, true);
-                }
+			foreach ($form['template_attachments'] as $attachment) {
+				if (strlen($attachment['path'])>0) {
+					$tmp_path = substr($attachment['path'], 0, strripos($attachment['path'], "/")+1)."tmp_".$user_id."/";
+					$tmp_path = strstr('./'.$tmp_path, 'upload');
+					$file_path = strstr('./'.$attachment['path'], 'upload');
+					//Create tmp dir if it does not exist
+					if (@!file_exists($tmp_path)) {
+						mkdir($tmp_path, 0777, true);
+					}
 
-                if (@!copy($file_path,$tmp_path.$attachment['name'])) {
-                    return false;
-                }
-                else {
-                    $this->email->attach($tmp_path.$attachment['name']);
-                }
-            }
-        }
+					if (@!copy($file_path,$tmp_path.$attachment['name'])) {
+						return false;
+					}
+					else {
+						$this->email->attach($tmp_path.$attachment['name']);
+					}
+				}
+			}
 		}
         $result = $this->email->send();
-    	//$this->email->print_debugger();
-    	$this->email->clear();
+    	$this->email->print_debugger();
+		$this->email->clear(TRUE);
 
-        //Remove tmp dir
+		//Remove tmp dir
         if (file_exists($tmp_path)) {
             $this->removeDirectory($tmp_path);
         }
