@@ -369,6 +369,8 @@ class Email extends CI_Controller
 
 				$result = $this->send($email);
 
+				unset($email['template_attachments']);
+
 				//Save the email_history
 				if ($result) {
 					//Update the email_history status to 1 and the pending field to 0
