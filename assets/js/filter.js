@@ -27,7 +27,7 @@ var filter = {
 			filter.count_records();
 		});
 
-		$(document).on('change','select:not(#campaign-select,.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select)',function(e){
+		$(document).on('change','select:not(#campaign-select,.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_template_select,.actions_campaign_select)',function(e){
 			filter.count_records();
 		});
 
@@ -116,6 +116,32 @@ var filter = {
 			filter.replace_ownership(urn_list, ownership_ar);
 		});
 
+		$(document).on('click', '.send-email', function(e) {
+			$('.actions-content').fadeOut(1000, function() {
+				//Get the templates for the campaigns selected
+				$.ajax({
+					url: helper.baseUrl + 'search/get_templates_by_campaign_ids',
+					type: "POST",
+					dataType: "JSON",
+					data: {campaign_ids: $('.campaigns_select').val()}
+				}).done(function (response) {
+					var $options = '<option value="" >Nothing selected</option>';
+					$.each(response.data, function (k, v) {
+						$options += "<option value='" + v.id + "'>" + v.name + "</options>";
+					});
+					$('#actions_template_select').html($options);
+					$('.actions_template_select').selectpicker('refresh');
+				});
+				$('.send-email-form').fadeIn(1000);
+			});
+		});
+		$(document).on('click', '.actions-send-email-btn', function(e) {
+			e.preventDefault();
+			var urn_list = filter.get_urn_list();
+			var template_id = $('.actions_template_select').val();
+			filter.send_email(urn_list, template_id);
+		});
+
 		$(document).on('click', '.copy-records', function(e) {
 			$('.actions-content').fadeOut(1000, function() {
 				$('.copy-records-form').fadeIn(1000)
@@ -167,6 +193,15 @@ var filter = {
 			else {
 				$('.actions-ownership-add-btn').prop('disabled', true);
 				$('.actions-ownership-replace-btn').prop('disabled', true);
+			}
+		});
+		$('.actions_template_select').on('change', function(){
+			var selected = $('.actions_template_select option:selected').val();
+			if (selected) {
+				$('.actions-send-email-btn').prop('disabled', false);
+			}
+			else {
+				$('.actions-send-email-btn').prop('disabled', true);
 			}
 		});
 		$('.actions_campaign_select').on('change', function(){
@@ -286,6 +321,7 @@ var filter = {
 				$('.actions-filter').prop('disabled', true);
 				$('.change-parkedcode').prop('disabled', true);
 				$('.change-ownership').prop('disabled', true);
+				$('.send-email').prop('disabled', true);
 				if ($('.campaigns_select').val() && $('.campaigns_select').val().length == 1 ) {
 					$('.copy-records').prop('disabled', true);
 				}
@@ -296,6 +332,7 @@ var filter = {
 				$('.actions-filter').prop('disabled', false);
 				$('.change-parkedcode').prop('disabled', false);
 				$('.change-ownership').prop('disabled', false);
+				$('.send-email').prop('disabled', false);
 				if ($('.campaigns_select').val() && $('.campaigns_select').val().length == 1 ) {
 					$('.copy-records').prop('disabled', false);
 				}
@@ -335,8 +372,8 @@ var filter = {
 		$('.actions-parkedcode-btn').prop('disabled', true);
 		$('.actions-ownership-add-btn').prop('disabled', true);
 		$('.actions-ownership-replace-btn').prop('disabled', true);
+		$('.actions-send-email-btn').prop('disabled', true);
 		$('.actions-copy-btn').prop('disabled', true);
-
 	},
 	close_actions: function() {
 		$('.modal-backdrop.actions').fadeOut();
@@ -346,11 +383,13 @@ var filter = {
 		});
 		$('.edit-parkedcode-form').hide();
 		$('.edit-ownership-form').hide();
+		$('.send-email-form').hide();
 		$('.copy-records-form').hide();
 	},
 	close_edit_actions: function() {
 		$('.edit-parkedcode-form').hide();
 		$('.edit-ownership-form').hide();
+		$('.send-email-form').hide();
 		$('.copy-records-form').hide();
 		$('.actions-content').fadeIn(1000);
 	},
@@ -363,13 +402,16 @@ var filter = {
 		$('.change-parkedcode-result').html("");
 		$('.change-ownership-result').html("");
 		$('.copy-records-result').html("");
+		$('.send-email-result').html("");
 
 		$(".edit-parkedcode-form").trigger("reset");
 		$(".edit-ownership-form").trigger("reset");
+		$(".send-email-form").trigger("reset");
 		$(".copy-records-form").trigger("reset");
 		$('.actions_parked_code_select').selectpicker('render');
 		$('.actions_ownership_select').selectpicker('render');
 		$('.actions_campaign_select').selectpicker('render');
+		$('.actions_template_select').selectpicker('render');
 
 	},
 	get_urn_list: function() {
@@ -466,6 +508,29 @@ var filter = {
 			else {
 				flashalert.danger(response.msg);
 				$('.change-ownership-result').html("Error").css('color', 'red');
+			}
+			$('.saving').html("");
+			filter.close_edit_actions();
+		});
+	},
+	send_email : function(urn_list, template_id) {
+		$.ajax({
+			url: helper.baseUrl + 'search/send_email',
+			type: "POST",
+			dataType: "JSON",
+			data: {'urn_list': urn_list, 'template_id': template_id},
+			beforeSend: function(){
+				$('.saving').html("<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />");
+				$('.actions-send-email-btn').prop('disabled', true);
+			}
+		}).done(function(response) {
+			if (response.success) {
+				flashalert.success(response.msg);
+				$('.send-email-result').html("Success").css('color', 'green');
+			}
+			else {
+				flashalert.danger(response.msg);
+				$('.send-email-result').html("Error").css('color', 'red');
 			}
 			$('.saving').html("");
 			filter.close_edit_actions();

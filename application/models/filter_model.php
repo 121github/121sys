@@ -1162,7 +1162,7 @@ class Filter_model extends CI_Model
     	 
     	return $this->db->query($qry)->result_array();
     }
-    
+
     public function get_companies_inserted($company_list, $company_id_from) {
     	$qry = "select company_id, company_copied
 				from companies
@@ -1179,5 +1179,21 @@ class Filter_model extends CI_Model
 				and contact_id >= ".$contact_id_from;
 
         return $this->db->query($qry)->result_array();
+    }
+
+
+    /**************************************************************/
+    /*************** SEND EMAIL ACTION ****************************/
+    /**************************************************************/
+    public function get_contact_emails_by_urn_list($urn_list) {
+        $qry = "select GROUP_CONCAT(DISTINCT email separator ',') as email_addresses, urn
+            from contacts
+            where urn IN ".$urn_list." and email is not null
+            group by urn";
+        return $this->db->query($qry)->result_array();
+    }
+
+    public function schedule_emails_to_send($data) {
+        return $this->db->insert_batch('email_history', $data);
     }
 }

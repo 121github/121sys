@@ -19,6 +19,12 @@
                       Add/Replace the ownership <span style="font-weight: bold" class="change-ownership-result pull-right"></span>
                   </li>
 
+                  <li class="list-group-item" style="font-weight: bold;">EMAIL</li>
+                  <li class="list-group-item">
+                      <button class="btn send-email btn-success" style="width:130px">Send</button>
+                      Send email <span style="font-weight: bold" class="send-email-result pull-right"></span>
+                  </li>
+
                   <li class="list-group-item" style="font-weight: bold;">CAMPAIGN</li>
                   <li class="list-group-item">
                       <button class="btn copy-records btn-warning" style="width:130px">Copy</button>
@@ -34,6 +40,7 @@
         </div>
         <?php $this->view('forms/actions_edit_parkedcode_form.php'); ?>
         <?php $this->view('forms/actions_edit_ownership_form.php'); ?>
+        <?php $this->view('forms/actions_send_email_form.php'); ?>
         <?php $this->view('forms/actions_copy_records_form.php'); ?>
     </div>
 </div>

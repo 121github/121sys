@@ -290,6 +290,21 @@ class Form_model extends CI_Model
         $this->db->where("c.campaign_id", $campaign_id);
         return $this->db->get()->result_array();
     }
+    /**
+     * Get a template by campaign ids
+     *
+     * @param $campaign_ids
+     * @return Template
+     */
+    public function get_templates_by_campaign_ids($campaign_ids)
+    {
+        $this->db->select("t.template_id id,t.template_name name");
+        $this->db->from("email_templates t");
+        $this->db->join("email_template_to_campaigns c", "c.template_id = t.template_id");
+        $this->db->where_in("c.campaign_id", $campaign_ids);
+
+        return $this->db->get()->result_array();
+    }
     public function get_users_in_role($role_id)
     {
         $this->db->select('user_id id,name');

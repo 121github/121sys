@@ -292,7 +292,8 @@ class Email_model extends CI_Model
                       e.read_confirmed_date,
                       e.status,
                       u.*,
-                      t.*
+                      t.*,
+                      e.pending
 		    	from email_history e
 		    	inner join users u ON (u.user_id = e.user_id)
 		    	inner join email_templates t ON (t.template_id = e.template_id)
@@ -416,7 +417,8 @@ class Email_model extends CI_Model
                       e.read_confirmed_date,
                       e.status,
                       u.*,
-                      t.*
+                      t.*,
+                      e.pending
 		    	from email_history e
 		    	inner join users u ON (u.user_id = e.user_id)
 		    	inner join email_templates t ON (t.template_id = e.template_id)
@@ -489,6 +491,42 @@ class Email_model extends CI_Model
 		$recipients['cc']=$cc;
 		$recipients['bcc']=$bcc;
         return $recipients;
+    }
+
+
+    /**
+     * Get pending emails
+     */
+    public function get_pending_emails($num_emails) {
+        $qry    = "select
+                      template_id,
+                      email_id,
+                      template_name,
+                      template_hostname,
+                      template_username,
+                      template_password,
+                      template_port,
+                      template_encryption,
+                      email_templates.template_unsubscribe,
+                      body,
+                      subject,
+                      send_from,
+                      send_to,
+                      cc,
+                      bcc,
+                      urn,
+                      user_id,
+                      status,
+                      pending
+                    from email_history
+                    inner join email_templates using(template_id)
+                    where pending=1
+                    order by email_id asc
+                    limit 0,".$num_emails;
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
     }
     
 }

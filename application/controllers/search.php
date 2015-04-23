@@ -17,6 +17,7 @@ class Search extends CI_Controller
         $this->load->model('Company_model');
         $this->load->model('Contacts_model');
         $this->load->model('Records_model');
+        $this->load->model('Email_model');
     }
     //this function returns all subsectors for the selected sectors
 	public function get_subsectors(){
@@ -45,9 +46,10 @@ class Search extends CI_Controller
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();
+        $email_templates  = array();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'pageId' => 'Search',
+            'pageId' => 'Search',
 			'page'=>"search",
             'title' => 'Search',
             'campaigns' => $campaigns,
@@ -61,6 +63,7 @@ class Search extends CI_Controller
             'subsectors' => $subsectors,
             'status' => $status,
 			'parked_codes' => $parked_codes,
+            'email_templates' => $email_templates,
             'groups' => $groups,
             'javascript' => array(
                 'filter.js',
@@ -482,6 +485,55 @@ class Search extends CI_Controller
             echo json_encode(array(
                 "success" => ($results),
                 "msg" => ($results?"Ownership(s) replaced successfully":"ERROR: Ownership(s) not replaced successfully!")
+            ));
+        }
+    }
+
+    public function get_templates_by_campaign_ids() {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $results = $this->Form_model->get_templates_by_campaign_ids($form['campaign_ids']);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "data" => $results
+            ));
+        }
+    }
+
+    public function send_email()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $contact_emails = $this->Filter_model->get_contact_emails_by_urn_list($form['urn_list']);
+
+            $template = $this->Email_model->get_template($form['template_id']);
+
+            $emails = array();
+            foreach($contact_emails as $value) {
+                array_push($emails, array(
+                    "subject" => $template['template_subject'],
+                    "body" => $template['template_body'],
+                    "send_from" => $template['template_from'],
+                    "send_to" => $value['email_addresses'],
+                    "cc" => '',
+                    "bcc" => '',
+                    "user_id" => $_SESSION['user_id'],
+                    "urn" => $value['urn'],
+                    "template_id" => $template['template_id'],
+                    "read_confirmed" => 0,
+                    "status" => 0,
+                    "pending" => 1
+                ));
+            }
+
+            $results = $this->Filter_model->schedule_emails_to_send($emails);
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "msg" => (!empty($results)?"Email(s) scheduled to be sent successfully":"ERROR: Email(s) not scheduled to be sent successfully!")
             ));
         }
     }

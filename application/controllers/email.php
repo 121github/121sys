@@ -329,7 +329,96 @@ class Email extends CI_Controller
 		}
 		unset($_SESSION['email_triggers']);
 	}
-	
+
+	/**
+	 *
+	 * Send pending emails
+	 *
+	 *
+	 */
+	public function send_pending_emails() {
+
+		$output = "";
+		$output .= "Sending pending emails... \n\n";
+
+		//Get the oldest 50 mails pending to be sent
+		$pending_emails = $this->Email_model->get_pending_emails(50);
+
+		foreach($pending_emails as $email) {
+
+			$client = $this->Records_model->get_client_from_urn($email['urn']);
+			$email_id = $email['email_id'];
+
+			$output .= $email['urn']."... ";
+
+			//Remove the addresses that are unsubscribed for this client
+			$email_addresses = explode(',',str_replace(' ', '', $email['send_to']));
+			$send_to_ar = array();
+			foreach($email_addresses as $value) {
+				//Check if this email is unsubscribed for the client before send the email
+				if(!$this->Email_model->check_unsubscribed($value,$client)){
+					array_push($send_to_ar,$value);
+				}
+			}
+
+			if (!empty($send_to_ar)) {
+				$email['send_to'] = implode(',',$send_to_ar);
+
+				$attachments = $this->Email_model->get_attachments_by_template_id($email['template_id']);
+				$email['template_attachments'] = $attachments;
+
+				$result = $this->send($email);
+
+				//Save the email_history
+				if ($result) {
+					//Update the email_history status to 1 and the pending field to 0
+					$email_history = array(
+						'email_id' => $email_id,
+						'send_to' => $email['send_to'],
+						'status' => 1,
+						'pending' => 0,
+					);
+					$this->Email_model->update_email_history($email_history);
+
+					//If the status was 1, create a new email_history
+					if ($email['status']) {
+						$email_history = array(
+							'body' => $email['body'],
+							'subject' => $email['subject'],
+							'send_from' => $email['send_from'],
+							'send_to' => $email['send_to'],
+							'cc' => $email['cc'],
+							'bcc' => $email['bcc'],
+							'user_id' => $email['user_id'],
+							'urn' => $email['urn'],
+							'template_id' => $email['template_id'],
+							'template_unsubscribe' => $email['template_unsubscribe'],
+							'status' => 1,
+							'pending' => 0,
+						);
+						$email_id = $this->Email_model->add_new_email_history($email_history);
+					}
+					//Add the attachments to the email_history_attachments table
+					foreach($attachments as $attachment) {
+						$this->Email_model->insert_attachment_by_email_id($email_id, $attachment);
+					}
+					$output .= "sent to ".$email['send_to']."\n\n";
+				}
+			}
+			else {
+				//Update the email_history the pending field to 0. We did not send the email because is unsubscribed for this client
+				$email_history = array(
+					'email_id' => $email_id,
+					'pending' => 0,
+				);
+				$this->Email_model->update_email_history($email_history);
+				$output .= "not sent: email addresses unsubscribed \n\n";
+			}
+		}
+
+		echo $output;
+	}
+
     private function send ($form) {
     	
 		
@@ -353,11 +442,11 @@ class Email extends CI_Controller
     	
 		//unsubscribe link
 		if($form['template_unsubscribe'] == "1"){
-			$form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
+			$form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10px;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
 		};
     	$this->email->initialize($config);
-    			
-    	$this->email->from($form['send_from']);
+
+		$this->email->from($form['send_from']);
     	$this->email->to($form['send_to']);
     	$this->email->cc($form['cc']);
     	$this->email->bcc($form['bcc']);

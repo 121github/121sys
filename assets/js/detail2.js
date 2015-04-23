@@ -1744,7 +1744,7 @@ var record = {
                 dataType: "JSON",
                 data: {email_id: email_id}
             }).done(function (response) {
-                var message = (response.data.status == true) ? "<th colspan='2' style='color:green'>This email was sent successfuly</th>" : "<th colspan='2' style='color:red'>This email was not sent</th>"
+                var message = (response.data.status == true) ? "<th colspan='2' style='color:green'>"+((response.data.pending)?"Pending to (re)send automatically...":"This email was sent successfuly")+"</th>" : "<th colspan='2' style='color:red'>"+((response.data.pending)?"Pending to send automatically...":"This email was not sent")+"</th>"
                 var status = (response.data.status == true) ? "Yes" : "No";
                 var read_confirmed = (response.data.read_confirmed == 1) ? "Yes " + " (" + response.data.read_confirmed_date + ")" : "No";
                 var $tbody = $('.email-view-table').find('tbody');
@@ -1781,7 +1781,7 @@ var record = {
                 "<td colspan=2 class='body'>" + response.data.body + "</td>" +
                 "</tr>" +
                 "<th>Sent</th>" +
-                "<td class='status'>" + status + "</td>" +
+                "<td class='status'>" + status + ((response.data.pending)?" (Pending to (re)send automatically...)":"") + "</td>" +
                 "</tr>" +
                 "<th>Read Confirmed</th>" +
                 "<td class='read_confirmed'>" + read_confirmed + "</td>" +
@@ -1839,7 +1839,8 @@ var record = {
                             $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="1" item-id="' + val.email_id + '" title="Delete email" ></span>';
                         }
                         $view_option = '<span class="glyphicon glyphicon-eye-open ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
-                        body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+                        $pending_option = '<span class="glyphicon glyphicon-repeat pull-right resend-email-btn pointer '+((val.pending)?'green':'grey')+'"  item-id="' + val.email_id + ' item-pending="' + val.pending + '" title="'+((val.pending)?"Pending to send...":"Resend email")+'"></span>';
+                        body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $pending_option + '</td><td>' + $delete_option + '</td></tr>';
                     });
                     $thead.append('<tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr>');
                     $tbody.append(body);
@@ -1874,7 +1875,8 @@ var record = {
                                 $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="0" item-id="' + val.email_id + '" title="Delete email" ></span>';
                             }
                             $view_option = '<span class="glyphicon glyphicon-eye-open ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
-                            $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+                            $pending_option = '<span class="glyphicon glyphicon-repeat pull-right resend-email-btn pointer '+((val.pending)?'green':'grey')+'"  item-id="' + val.email_id + ' item-pending="' + val.pending + '" title="'+((val.pending)?"Pending to send...":"Resend email")+'"></span>';
+                            $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $pending_option + '</td><td>' + $delete_option + '</td></tr>';
                         }
                         k++;
                     });
