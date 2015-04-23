@@ -342,7 +342,7 @@ class Email extends CI_Controller
 		$output .= "Sending pending emails... \n\n";
 
 		//Get the oldest 50 mails pending to be sent
-		$pending_emails = $this->Email_model->get_pending_emails(3);
+		$pending_emails = $this->Email_model->get_pending_emails(50);
 
 		foreach($pending_emails as $email) {
 
