@@ -19,7 +19,7 @@ class Survey_model extends CI_Model
     //function to return all the questions in a specific survey reference. This is used load the questions into a new survey.
     public function get_questions($survey_ref)
     {
-        $qry = "select * from questions left join question_options using(question_id) left join questions_to_categories using(question_cat_id) where survey_info_id= '$survey_ref' order by sort,option_id";
+        $qry = "select * from questions q left join question_options o using(question_id) left join questions_to_categories using(question_cat_id) where survey_info_id= '$survey_ref' order by q.sort,o.sort, option_id";
         return $this->db->query($qry)->result_array();
     }
     
@@ -91,7 +91,7 @@ class Survey_model extends CI_Model
     //function to return all the data relating to survey id. This is used on the edit survey page because it returns all the questions and the associated answers.
     public function get_existing_survey($survey)
     {
-        $qry = "select survey_name, question_cat_id, question_cat_name, surveys.survey_info_id, {$this->name_field} client_name,contact_id,user_id,date_format(completed_date,'%d/%m/%y') completed_date,completed,date_format(surveys.date_created,'%d/%m/%y'), surveys.date_created, survey_id,surveys.urn,answer_id,question_id,answer,answer_notes.notes,question_name,other,question_script,question_guide,questions.sort,nps_question,multiple,option_name,question_options.option_id, answers_to_options.option_id as oid from surveys left join surveys_to_campaigns using(survey_info_id) left join survey_info using(survey_info_id) left join survey_answers using(survey_id) left join questions using(question_id) left join questions_to_categories using(question_cat_id) left join question_options using(question_id) left join answers_to_options using(answer_id) left join answer_notes using(answer_id)   left join contacts using(contact_id) where survey_id = '$survey' and campaign_id in({$_SESSION['campaign_access']['list']}) order by questions.sort";
+        $qry = "select survey_name, question_cat_id, question_cat_name, surveys.survey_info_id, {$this->name_field} client_name,contact_id,user_id,date_format(completed_date,'%d/%m/%y') completed_date,completed,date_format(surveys.date_created,'%d/%m/%y'), surveys.date_created, survey_id,surveys.urn,answer_id,question_id,answer,answer_notes.notes,question_name,other,question_script,question_guide,questions.sort,nps_question,multiple,option_name,question_options.option_id, answers_to_options.option_id as oid from surveys left join surveys_to_campaigns using(survey_info_id) left join survey_info using(survey_info_id) left join survey_answers using(survey_id) left join questions using(question_id) left join questions_to_categories using(question_cat_id) left join question_options using(question_id) left join answers_to_options using(answer_id) left join answer_notes using(answer_id)   left join contacts using(contact_id) where survey_id = '$survey' and campaign_id in({$_SESSION['campaign_access']['list']}) order by questions.sort,question_options.sort";
         return $this->db->query($qry)->result_array();
     }
     
