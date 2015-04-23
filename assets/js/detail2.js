@@ -1839,7 +1839,8 @@ var record = {
                             $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="1" item-id="' + val.email_id + '" title="Delete email" ></span>';
                         }
                         $view_option = '<span class="glyphicon glyphicon-eye-open ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
-                        $pending_option = '<span class="glyphicon glyphicon-repeat pull-right resend-email-btn pointer '+((val.pending==1)?'green':'grey')+'"  item-id="' + val.email_id + ' item-pending="' + val.pending + '" title="'+((val.pending==1)?"Pending to send...":"Resend email")+'"></span>';
+                        //TODO: Add the button to resend an email
+                        $pending_option = '';//'<span class="glyphicon glyphicon-repeat pull-right resend-email-btn pointer '+((val.pending==1)?'green':'grey')+'"  item-id="' + val.email_id + ' item-pending="' + val.pending + '" title="'+((val.pending==1)?"Pending to send...":"Resend email")+'"></span>';
                         body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $pending_option + '</td><td>' + $delete_option + '</td></tr>';
                     });
                     $thead.append('<tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr>');
@@ -1875,7 +1876,8 @@ var record = {
                                 $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="0" item-id="' + val.email_id + '" title="Delete email" ></span>';
                             }
                             $view_option = '<span class="glyphicon glyphicon-eye-open ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
-                            $pending_option = '<span class="glyphicon glyphicon-repeat pull-right resend-email-btn pointer '+((val.pending==1)?'green':'grey')+'"  item-id="' + val.email_id + ' item-pending="' + val.pending + '" title="'+((val.pending==1)?"Pending to send...":"Resend email")+'"></span>';
+                            //TODO: Add the button to resend an email
+                            $pending_option = '';//'<span class="glyphicon glyphicon-repeat pull-right resend-email-btn pointer '+((val.pending==1)?'green':'grey')+'"  item-id="' + val.email_id + ' item-pending="' + val.pending + '" title="'+((val.pending==1)?"Pending to send...":"Resend email")+'"></span>';
                             $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $pending_option + '</td><td>' + $delete_option + '</td></tr>';
                         }
                         k++;
