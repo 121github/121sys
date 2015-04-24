@@ -81,6 +81,11 @@ class Email extends CI_Controller
 		
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
+			if($key=="fullname"){ 
+			$val = str_replace("Mr ","",$val);
+			$val = str_replace("Mrs ","",$val);
+			$val = str_replace("Mrs ","",$val);
+			 }
 			$template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
 					}
 		}
@@ -194,6 +199,11 @@ class Email extends CI_Controller
 		$placeholder_data[0]['comments'] = $last_comment;
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
+			if($key=="fullname"){ 
+			$val = str_replace("Mr ","",$val);
+			$val = str_replace("Mrs ","",$val);
+			$val = str_replace("Mrs ","",$val);
+			 }
 			$body = str_replace("[$key]",$val,$form['body']);
 					}
 		}
@@ -320,6 +330,11 @@ class Email extends CI_Controller
 		$placeholder_data['recipient_name'] = $details['name'];
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
+						if($key=="fullname"){ 
+			$val = str_replace("Mr ","",$val);
+			$val = str_replace("Mrs ","",$val);
+			$val = str_replace("Mrs ","",$val);
+			 }
 			$form['body'] = str_replace("[$key]",$val,$form['body']);
 			}
 		}		
