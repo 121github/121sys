@@ -13,7 +13,7 @@ class Migration_update_32 extends CI_Migration
     {
         $this->firephp->log("starting migration 32");
 
-		$this->db->query("ALTER TABLE `email_history` ADD `cron_code` INT( 20 ) NOT NULL");
+		$this->db->query("ALTER TABLE `email_history` ADD `cron_code` INT NULL DEFAULT NULL");
 	}
 
     public function down()
