@@ -68,7 +68,7 @@ class Records_model extends CI_Model
 		$owner = $query->row(0)->user_id;	
 		break;
 		}
-		$this->firephp->log($this->db->last_query());
+		//$this->firephp->log($this->db->last_query());
 		}
 		if(empty($owner)&&in_array("set call outcomes",$_SESSION['permissions'])){
 		$this->db->replace("ownership",array("user_id"=>$user_id,"urn"=>$urn));
@@ -200,7 +200,7 @@ class Records_model extends CI_Model
         
         $qry .= $order;
         $qry .= "  limit $start,$length";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         $records = $this->db->query($qry)->result_array();
         
         return $records;
@@ -295,7 +295,7 @@ class Records_model extends CI_Model
             //if any order has been set then we should apply it here
             $order = (isset($_SESSION['filter']['order']) && $options['draw'] == "1" ? $_SESSION['filter']['order'] : " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn");
             $navqry .= $order;
-           $this->firephp->log($navqry);
+           //$this->firephp->log($navqry);
             $navigation = $this->db->query($navqry)->result_array();
             
             foreach ($navigation as $navurn):

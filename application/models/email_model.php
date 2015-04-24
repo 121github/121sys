@@ -492,7 +492,12 @@ class Email_model extends CI_Model
 		$recipients['bcc']=$bcc;
         return $recipients;
     }
-
+	
+	public function set_email_outcome($urn){
+		//just sets an email sent outcome id where an email was sent
+		$this->db->where("urn",$urn);
+		$this->db->update('records',array("outcome_id"=>84));
+	}
 
     /**
      * Get pending emails
@@ -523,6 +528,8 @@ class Email_model extends CI_Model
                     where pending=1";
 					if($cron_code){
 					 $qry    .= " and cron_code = '".$cron_code."'";
+					} else {
+					 $qry    .= " and cron_code is null";
 					}
                     $qry    .= " order by email_id asc
                     limit 0,".$num_emails;

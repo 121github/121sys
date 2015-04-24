@@ -405,6 +405,7 @@ class Email extends CI_Controller
 							);
 							$email_id = $this->Email_model->add_new_email_history($email_history);
 						}
+						$this->Email_model->set_email_outcome($email['urn']);
 						//Add the attachments to the email_history_attachments table
 						foreach($attachments as $attachment) {
 							$this->Email_model->insert_attachment_by_email_id($email_id, $attachment);

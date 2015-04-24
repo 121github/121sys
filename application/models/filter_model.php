@@ -166,9 +166,9 @@ class Filter_model extends CI_Model
             "type" => "range",
             "alias" => "con.dob"
         );
-        $filter_options["email"]            = array(
+        $filter_options["contact_email"]            = array(
             "table" => "contacts",
-            "type" => "id",
+            "type" => "like",
             "alias" => "con.email"
         );
         $filter_options["phone"]            = array(

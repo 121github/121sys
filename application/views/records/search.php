@@ -248,7 +248,7 @@
               </div>
               <div class="form-group">
                 <label>Email Address</label>
-                <input <?php if(@isset($_SESSION['filter']['values']['email'])){ echo "value='".$_SESSION['filter']['values']['email']."'"; } ?> name="email" type="text" class="form-control" placeholder="Enter the contact email address">
+                <input <?php if(@isset($_SESSION['filter']['values']['email'])){ echo "value='".$_SESSION['filter']['values']['email']."'"; } ?> name="contact_email" type="text" class="form-control" placeholder="Enter the contact email address">
               </div>
               <div class="form-group">
                 <label>Address</label>
