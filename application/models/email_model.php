@@ -497,7 +497,7 @@ class Email_model extends CI_Model
     /**
      * Get pending emails
      */
-    public function get_pending_emails($num_emails) {
+    public function get_pending_emails($num_emails,$cron_code=false) {
         $qry    = "select
                       template_id,
                       email_id,
@@ -520,8 +520,11 @@ class Email_model extends CI_Model
                       pending
                     from email_history
                     inner join email_templates using(template_id)
-                    where pending=1
-                    order by email_id asc
+                    where pending=1";
+					if($cron_code){
+					 $qry    .= " and cron_code = '".$cron_code."'";
+					}
+                    $qry    .= " order by email_id asc
                     limit 0,".$num_emails;
 
         $result = $this->db->query($qry)->result_array();

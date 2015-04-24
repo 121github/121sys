@@ -511,9 +511,18 @@ class Search extends CI_Controller
             $contact_emails = $this->Filter_model->get_contact_emails_by_urn_list($form['urn_list']);
 
             $template = $this->Email_model->get_template($form['template_id']);
-
+	
+			$code = time();
             $emails = array();
             foreach($contact_emails as $value) {
+				//insert placeholder data into template
+				$placeholder_data = $this->Email_model->get_placeholder_data($value['urn']);
+				if(count($placeholder_data)){
+				foreach($placeholder_data[0] as $key => $val){
+				 $template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
+					}
+				}
+				//create the insert array
                 array_push($emails, array(
                     "subject" => $template['template_subject'],
                     "body" => $template['template_body'],
@@ -526,7 +535,8 @@ class Search extends CI_Controller
                     "template_id" => $template['template_id'],
                     "read_confirmed" => 0,
                     "status" => 0,
-                    "pending" => 1
+                    "pending" => 1,
+					"cron_code" => $code
                 ));
             }
 
@@ -534,7 +544,8 @@ class Search extends CI_Controller
 
             echo json_encode(array(
                 "success" => (!empty($results)),
-                "msg" => (!empty($results)?"Email(s) scheduled to be sent successfully":"ERROR: Email(s) not scheduled to be sent successfully!")
+				"croncode"=> $code,
+                "msg" => (!empty($results)?"Email(s) scheduled to be sent successfully":"ERROR: Email(s) not scheduled to be sent")
             ));
         }
     }
