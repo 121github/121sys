@@ -509,23 +509,24 @@ class Search extends CI_Controller
 
             //TODO Get also the company email if there are no contacts email addresses
             $contact_emails = $this->Filter_model->get_contact_emails_by_urn_list($form['urn_list']);
-
-            $template = $this->Email_model->get_template($form['template_id']);
-	
+			$template = $this->Email_model->get_template($form['template_id']);
 			$code = time();
             $emails = array();
             foreach($contact_emails as $value) {
+				$body = $template['template_body'];
 				//insert placeholder data into template
 				$placeholder_data = $this->Email_model->get_placeholder_data($value['urn']);
+
 				if(count($placeholder_data)){
 				foreach($placeholder_data[0] as $key => $val){
-				 $template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
+				 $body = str_replace("[$key]",$val,$body);
 					}
 				}
+				
 				//create the insert array
                 array_push($emails, array(
                     "subject" => $template['template_subject'],
-                    "body" => $template['template_body'],
+                    "body" => $body,
                     "send_from" => $template['template_from'],
                     "send_to" => $value['email_addresses'],
                     "cc" => '',
