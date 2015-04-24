@@ -343,7 +343,6 @@ class Email extends CI_Controller
 
 		//Get the oldest 50 mails pending to be sent
 		$pending_emails = $this->Email_model->get_pending_emails(50);
-
 		if (!empty($pending_emails)) {
 			foreach($pending_emails as $email) {
 
@@ -352,6 +351,16 @@ class Email extends CI_Controller
 
 				$output .= $email['urn']."... ";
 
+				//fill in placeholder data
+				$last_comment = $this->Records_model->get_last_comment($email['urn']);
+				$placeholder_data = $this->Email_model->get_placeholder_data($email['urn']);
+				$placeholder_data[0]['comments'] = $last_comment;
+				if(count($placeholder_data)){
+				foreach($placeholder_data[0] as $key => $val){
+				 $body = str_replace("[$key]",$val,$email['body']);
+					}
+				}
+				$email['body'] = $body;
 				//Remove the addresses that are unsubscribed for this client
 				$email_addresses = explode(',',str_replace(' ', '', $email['send_to']));
 				$send_to_ar = array();
