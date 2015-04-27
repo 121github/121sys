@@ -466,7 +466,7 @@ class Email_model extends CI_Model
     }
     
 	public function set_record_history($data){
-	$qry = "insert into history set campaign_id = (select campaign_id from records where urn = '".$data['urn']."'), urn='".$data['urn']."', contact=now(),description='Batch email sent',outcome_id = 84, comments = (select template_name from email_templates where template_id = '".$data['template_id']."'),user_id = '".$data['user_id']."')";	
+	$qry = "insert into history set campaign_id = (select campaign_id from records where urn = '".$data['urn']."'), urn='".$data['urn']."', contact=now(),description='Batch email sent',outcome_id = 84, comments = (select template_name from email_templates where template_id = '".$data['template_id']."'),user_id = '".$data['user_id']."'";	
 	$this->db->query($qry);
 	}
 	
