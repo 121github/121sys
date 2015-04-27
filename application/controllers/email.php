@@ -84,7 +84,8 @@ class Email extends CI_Controller
 			if($key=="fullname"){ 
 			$val = str_replace("Mr ","",$val);
 			$val = str_replace("Mrs ","",$val);
-			$val = str_replace("Mrs ","",$val);
+			$val = str_replace("Miss ","",$val);
+			$val = str_replace("Ms ","",$val);
 			 }
 			$template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
 					}
