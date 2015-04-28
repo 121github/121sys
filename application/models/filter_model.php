@@ -374,7 +374,7 @@ class Filter_model extends CI_Model
                             case "sent":
                                 $email_where .= $or." eh.status = 1";
                                 break;
-								case "pending":
+							case "pending":
                                 $email_where .= $or." eh.pending = 1";
                                 break;
                             case "read":
@@ -787,6 +787,9 @@ class Filter_model extends CI_Model
             }
             else if ($array['emails'] == "sent") {
                 $email_qry = " and email_history.`status` = 1";
+            }
+			else if ($array['emails'] == "pending") {
+                $email_qry = " and email_history.`pending` = 1";
             }
             else if ($array['emails'] == "unsent") {
                 $email_qry = " and email_history.`status` = 0";
