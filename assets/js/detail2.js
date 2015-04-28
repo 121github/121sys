@@ -1830,8 +1830,8 @@ var record = {
 
                 if (response.data.length > 0) {
                     $.each(response.data, function (key, val) {
-                        var status = (val.status != true) ? "glyphicon-time red" : (val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "");
-                        var message = (val.status != true) ? "Email pending to send" :(val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
+                        var status = (val.pending == 1) ? "glyphicon-time red" : ((val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "glyphicon-eye-open"));
+                        var message = (val.pending == 1) ? "Email pending to send" :(val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
                         var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                         var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                         var $delete_option = "";
@@ -1865,8 +1865,8 @@ var record = {
                     var k = 0;
                     $.each(response.data, function (key, val) {
                         if (k <= record.limit - 1) {
-                            var status = (val.status != true) ? "glyphicon-time red" : (val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "");
-                            var message = (val.status != true) ? "Email pending to send" :(val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
+                            var status = (val.pending == 1) ? "glyphicon-time red" : ((val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "glyphicon-eye-open"));
+                            var message = (val.pending == 1) ? "Email pending to send" :(val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
                             var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                             var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                             var $delete_option = "";
