@@ -542,7 +542,7 @@ class Search extends CI_Controller
             }
 
             $results = $this->Filter_model->schedule_emails_to_send($emails);
-
+			$this->Email_model->remove_title($code);
             echo json_encode(array(
                 "success" => (!empty($results)),
 				"croncode"=> $code,

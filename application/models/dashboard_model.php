@@ -409,7 +409,7 @@ $this->firephp->log($qry);
 		$where .= " and records.campaign_id = '{$filter['campaign']}'";	
 		$camp_url = "/campaign/{$filter['campaign']}";
 		}
-			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() $where";	
+			$qry_all = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and `status` =1 $where";	
 			$all = $this->db->query($qry_all)->row()->num;
 			$all_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/sent'.$camp_url.$user_url;
 			
@@ -417,9 +417,13 @@ $this->firephp->log($qry);
 			$read = $this->db->query($qry_read)->row()->num;
 			$read_url = base_url().'search/custom/records/read-date/'.date('Y-m-d').'/emails/read'.$camp_url.$user_url;
 			
-			$qry_unsent = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and `status` = 0 $where";
+			$qry_unsent = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and `status` = 0 and pending = 0 $where";
 			$unsent = $this->db->query($qry_unsent)->row()->num;
 			$unsent_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/unsent'.$camp_url.$user_url;
+			
+						$qry_pending = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and pending = 1 $where";
+			$pending = $this->db->query($qry_unsent)->row()->num;
+			$pending_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/pending'.$camp_url.$user_url;
 			
 			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where date(read_confirmed_date) = curdate() and read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
 			$new = $this->db->query($qry_new)->row()->num;

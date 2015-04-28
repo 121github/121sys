@@ -36,7 +36,7 @@ var dashboard = {
             dataType: "JSON",
             data: $('.emails-filter').serialize(),
         }).done(function (response) {
-            $('.email-stats').html("<ul><li><a href='"+response.data.new_url+"'>"+response.data.new+"</a> new emails read</li><li><a href='"+response.data.read_url+"'>"+response.data.read+"</a> emails read today "+"</li><li><a href='"+response.data.all_url+"'>"+response.data.all+"</a> emails sent today</li><li><a href='"+response.data.unsent_url+"'>"+response.data.unsent+"</a> failed emails today</li><li><a href='"+response.data.sentall_url+"'>"+response.data.sentall+"</a> emails sent anytime</li><li><a href='"+response.data.readall_url+"'>"+response.data.readall+"</a> emails read anytime</li></ul>");
+            $('.email-stats').html("<ul><li><a href='"+response.data.new_url+"'>"+response.data.new+"</a> new emails read</li><li><a href='"+response.data.read_url+"'>"+response.data.read+"</a> emails read today "+"</li><li><a href='"+response.data.all_url+"'>"+response.data.all+"</a> emails sent today</li><li><a href='"+response.data.pending_url+"'>"+response.data.pending+"</a> emails pending today</li><li><a href='"+response.data.unsent_url+"'>"+response.data.unsent+"</a> failed emails today</li><li><a href='"+response.data.sentall_url+"'>"+response.data.sentall+"</a> emails sent anytime</li><li><a href='"+response.data.readall_url+"'>"+response.data.readall+"</a> emails read anytime</li></ul>");
         });
     },
 	/* the function for the outcomes panel on the main dashboard */

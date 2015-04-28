@@ -374,6 +374,9 @@ class Filter_model extends CI_Model
                             case "sent":
                                 $email_where .= $or." eh.status = 1";
                                 break;
+								case "pending":
+                                $email_where .= $or." eh.pending = 1";
+                                break;
                             case "read":
                                 $email_where .= $or." eh.read_confirmed = 1";
                                 break;

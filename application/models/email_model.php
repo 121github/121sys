@@ -470,6 +470,17 @@ class Email_model extends CI_Model
 	$this->db->query($qry);
 	}
 	
+	public function remove_title($croncode){
+	$mr = "update email_history set body = replace(body,'Dear Mr','Dear') where cron_code = '$croncode'";
+	$this->db->query($mr);
+	$miss = "update email_history set body = replace(body,'Dear Miss','Dear') where cron_code = '$croncode'";
+	$this->db->query($miss);
+	$mrs = "update email_history set body = replace(body,'Dear Mrs','Dear') where cron_code = '$croncode'";
+	$this->db->query($mrs);
+	$ms = "update email_history set body = replace(body,'Dear Ms','Dear') where cron_code = '$croncode'";
+	$this->db->query($ms);
+	}
+	
     public function get_recipients($campaign_id, $outcome_id)
     {
         $recipients = array();
