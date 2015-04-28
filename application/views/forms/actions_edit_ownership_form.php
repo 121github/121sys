@@ -7,6 +7,9 @@
             <?php endforeach; ?>
         </select>
     </div>
+    <div>
+        <span class="actions-ownership-select-msg" style="color: red">No users selected. Click on the replace button to remove all the ownerships for this records!!</span>
+    </div>
 
     <div class="form-actions">
         <span class="marl btn btn-default close-edit-actions-btn">Back</span>

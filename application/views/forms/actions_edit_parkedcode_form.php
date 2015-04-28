@@ -4,6 +4,7 @@
         <p>Please set the parked code for these records</p>
         <select class="selectpicker actions_parked_code_select" name="parked_code">
             <option value="" >Nothing selected</option>
+            <option value="NULL" >Unparked</option>
             <?php foreach($parked_codes as $row): ?>
                 <option value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
             <?php endforeach; ?>
