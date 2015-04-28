@@ -329,6 +329,8 @@ class Search extends CI_Controller
     public function save_parked_code() {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
+
+            //Update the parked code
             $results = $this->Filter_model->save_parked_code($form);
 
             if ($results) {
@@ -467,25 +469,33 @@ class Search extends CI_Controller
 
             $this->Filter_model->remove_ownership_by_urn_list($urn_list);
 
-            $aux = array();
-            foreach($urn_list_ar as $urn) {
-                foreach($ownership_list as $ownership) {
-                    if ($urn > 0) {
-                        array_push($aux, array(
-                            'urn' => $urn,
-                            'user_id' => $ownership
-                        ));
+            if (!empty($ownership_list)) {
+                $aux = array();
+                foreach($urn_list_ar as $urn) {
+                    foreach($ownership_list as $ownership) {
+                        if ($urn > 0) {
+                            array_push($aux, array(
+                                'urn' => $urn,
+                                'user_id' => $ownership
+                            ));
+                        }
                     }
                 }
+                $form = $aux;
+
+                $results = $this->Filter_model->add_ownership($form);
+
+                echo json_encode(array(
+                    "success" => ($results),
+                    "msg" => ($results?"Ownership(s) replaced successfully":"ERROR: Ownership(s) not replaced successfully!")
+                ));
             }
-            $form = $aux;
-
-            $results = $this->Filter_model->add_ownership($form);
-
-            echo json_encode(array(
-                "success" => ($results),
-                "msg" => ($results?"Ownership(s) replaced successfully":"ERROR: Ownership(s) not replaced successfully!")
-            ));
+            else {
+                echo json_encode(array(
+                    "success" => true,
+                    "msg" => "Ownership(s) removed successfully"
+                ));
+            }
         }
     }
 

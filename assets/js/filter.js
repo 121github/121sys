@@ -188,11 +188,11 @@ var filter = {
 			var selected = $('.actions_ownership_select option:selected').val();
 			if (selected) {
 				$('.actions-ownership-add-btn').prop('disabled', false);
-				$('.actions-ownership-replace-btn').prop('disabled', false);
+				//$('.actions-ownership-replace-btn').prop('disabled', false);
 			}
 			else {
 				$('.actions-ownership-add-btn').prop('disabled', true);
-				$('.actions-ownership-replace-btn').prop('disabled', true);
+				//$('.actions-ownership-replace-btn').prop('disabled', true);
 			}
 		});
 		$('.actions_template_select').on('change', function(){
@@ -371,7 +371,7 @@ var filter = {
 
 		$('.actions-parkedcode-btn').prop('disabled', true);
 		$('.actions-ownership-add-btn').prop('disabled', true);
-		$('.actions-ownership-replace-btn').prop('disabled', true);
+		$('.actions-ownership-replace-btn').prop('disabled', false);
 		$('.actions-send-email-btn').prop('disabled', true);
 		$('.actions-copy-btn').prop('disabled', true);
 	},
@@ -387,6 +387,7 @@ var filter = {
 		$('.copy-records-form').hide();
 	},
 	close_edit_actions: function() {
+		$('.actions-ownership-replace-btn').prop('disabled', false);
 		$('.edit-parkedcode-form').hide();
 		$('.edit-ownership-form').hide();
 		$('.send-email-form').hide();
@@ -396,7 +397,7 @@ var filter = {
 	reload_actions: function() {
 		$('.actions-parkedcode-btn').prop('disabled', true);
 		$('.actions-ownership-add-btn').prop('disabled', true);
-		$('.actions-ownership-replace-btn').prop('disabled', true);
+		$('.actions-ownership-replace-btn').prop('disabled', false);
 		$('.actions-copy-btn').prop('disabled', true);
 
 		$('.change-parkedcode-result').html("");

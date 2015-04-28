@@ -1103,6 +1103,9 @@ class Filter_model extends CI_Model
     	}
     }
 
+    /**************************************************************/
+    /*************** ADD/REPLACE OWNERSHIPS ***********************/
+    /**************************************************************/
     public function add_ownership($form) {
         return $this->db->insert_batch('ownership', $form);
     }
