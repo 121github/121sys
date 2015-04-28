@@ -493,7 +493,7 @@ class Email extends CI_Controller
 		if(isset($form['template_attachments'])&&count($form['template_attachments'])>0){
 			foreach ($form['template_attachments'] as $attachment) {
 				if (strlen($attachment['path'])>0) {
-					$tmp_path = substr($attachment['path'], 0, strripos($attachment['path'], "/")+1)."tmp_".$user_id."/";
+					$tmp_path = substr($attachment['path'], 0, strripos($attachment['path'], "/")+1)."tmp_".$user_id.uniqid()."/";
 					$tmp_path = strstr('./'.$tmp_path, 'upload');
 					$file_path = strstr('./'.$attachment['path'], 'upload');
 					//Create tmp dir if it does not exist
