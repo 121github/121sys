@@ -280,6 +280,7 @@ public function get_audit_data($options){
                 $name name,
                 count(*) as email_sent_count,
                 if(email_read_count is null,0,email_read_count) email_read_count,
+				if(email_pending_count is null,0,email_pending_count) email_pending_count,
                 if(email_unsent_count is null,0,email_unsent_count) email_unsent_count
         from email_history eh left join users using(user_id) 
           $joins
@@ -288,7 +289,7 @@ public function get_audit_data($options){
           left join (select count(*) email_unsent_count,$group_by gb_2 from email_history eh $joins where eh.status = 0 and pending = 0 $where group by $group_by) euc on euc.gb_2 = $group_by
         where eh.status=1 $where
 		group by $group_by ";
-
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 
