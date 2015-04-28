@@ -284,6 +284,7 @@ public function get_audit_data($options){
         from email_history eh left join users using(user_id) 
           $joins
           left join (select count(*) email_read_count,$group_by gb from email_history eh $joins where eh.read_confirmed = 1 $where group by $group_by) erc on erc.gb = $group_by
+		   left join (select count(*) email_pending_count,$group_by gb from email_history eh $joins where eh.pending = 1 $where group by $group_by) epc on epc.gb = $group_by
           left join (select count(*) email_unsent_count,$group_by gb_2 from email_history eh $joins where eh.status = 0 $where group by $group_by) euc on euc.gb_2 = $group_by
         where eh.status=1 $where
 		group by $group_by ";

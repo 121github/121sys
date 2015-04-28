@@ -87,6 +87,7 @@
                         <th class="success">Emails Sent</th>
 						<th class="success">Emails Read</th>
                         <th class="success">Percent Read</th>
+                        <th class="warning">Pending</th>
                         <th class="danger">Emails Unsent</th>
                         <th class="danger">Percent Unsent</th>
 

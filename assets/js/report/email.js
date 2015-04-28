@@ -140,7 +140,10 @@ var email = {
                                 "<a href='" + val.emails_read_url + "' style='font-size:10px;color:black;'> (See records...)</a>"
                                 + "</td><td class='percent_read' style='color:green;'>"
                                 + val.percent_read
-                                + "</td><td class='emails_unsent'>"
+                                + "</td><td class='emails_pending'>"
+                                + 	"<a href='#' class='show-emails-btn' email-sent='0' style='color: orange; font-weight: bold;'>"+ val.emails_pending + "</a>" +
+                                "<a href='" + val.emails_pending_url + "' style='font-size:10px; color:black;'> (See records...)</a>"
+								+ "</td><td class='emails_unsent'>"
                                 + 	"<a href='#' class='show-emails-btn' email-sent='0' style='color: red; font-weight: bold;'>"+ val.emails_unsent + "</a>" +
                                 "<a href='" + val.emails_unsent_url + "' style='font-size:10px; color:black;'> (See records...)</a>"
 								+ "</td><td class='percent_unsent' style='color:red;'>"
