@@ -433,7 +433,7 @@ $this->firephp->log($qry);
 			$readall = $this->db->query($qry_readall)->row()->num;
 			$readall_url = base_url().'search/custom/records/emails/read'.$camp_url.$user_url;
 			
-			$qry_sentall = "select count(distinct urn) num from email_history left join records using(urn) where 1 $where";	
+			$qry_sentall = "select count(distinct urn) num from email_history left join records using(urn) where status = 1 $where";	
 			$sentall = $this->db->query($qry_sentall)->row()->num;
 			$sentall_url = base_url().'search/custom/records/emails/sent'.$camp_url.$user_url;
 			
