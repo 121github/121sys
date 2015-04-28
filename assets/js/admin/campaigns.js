@@ -222,6 +222,7 @@ var admin = {
             }).done(function(response) {
                 $tbody = $('.campaign-panel').find('tbody');
                 $tbody.empty();
+                var $options = '<option value="">Select a campaign</option>';
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
                         $tbody.append("<tr>" +
@@ -243,8 +244,14 @@ var admin = {
                                     "</td><td class='end_date'>" + val.end_date +
                                     "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn'  item-id='" + val.campaign_id + "'>Delete</button>" +
                                 "</td></tr>");
+
+                        $options += "<option value='" + val.campaign_id + "'>" + val.campaign_name + "</options>";
                     }
                 });
+                $('.campaign-access').find('#campaign-select-options').html($options);
+                $('.campaign-access').find('.campaign-select').selectpicker('refresh');
+
+                $('.campaign-access').find('.campaignlist-select').html($options);
             });
         },
         edit: function($btn) {
