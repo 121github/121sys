@@ -188,10 +188,12 @@ var filter = {
 			var selected = $('.actions_ownership_select option:selected').val();
 			if (selected) {
 				$('.actions-ownership-add-btn').prop('disabled', false);
+				$('.actions-ownership-select-msg').hide();
 				//$('.actions-ownership-replace-btn').prop('disabled', false);
 			}
 			else {
 				$('.actions-ownership-add-btn').prop('disabled', true);
+				$('.actions-ownership-select-msg').show();
 				//$('.actions-ownership-replace-btn').prop('disabled', true);
 			}
 		});
