@@ -422,7 +422,7 @@ $this->firephp->log($qry);
 			$unsent_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/unsent'.$camp_url.$user_url;
 			
 						$qry_pending = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and pending = 1 $where";
-			$pending = $this->db->query($qry_unsent)->row()->num;
+			$pending = $this->db->query($qry_pending)->row()->num;
 			$pending_url = base_url().'search/custom/records/sent-email-from/'.date('Y-m-d').'/emails/pending'.$camp_url.$user_url;
 			
 			$qry_new = "select count(distinct urn) num from email_history left join records using(urn) where date(read_confirmed_date) = curdate() and read_confirmed = 1 and read_confirmed_date > records.date_updated $where";	
