@@ -468,6 +468,7 @@ class Reports extends CI_Controller
                     $aux[$row['id']]['sql'] = $row['sql'];
                     $aux[$row['id']]['name'] = $row['name'];
                     $aux[$row['id']]['emails_read'] = $row['email_read_count'];
+					$aux[$row['id']]['emails_pending'] = $row['email_pending_count'];
                     $aux[$row['id']]['emails_unsent'] = $row['email_unsent_count'];
                     $aux[$row['id']]['emails_sent'] = $row['email_sent_count'];
                 }
@@ -510,6 +511,8 @@ class Reports extends CI_Controller
                     "name" => $row['name'],
                     "emails_read" => $emails_read,
                     "emails_read_url" => $emailUrl . "/emails/read",
+					"emails_pending" => $emails_pending,
+                    "emails_pending_url" => $emailUrl . "/emails/pending",
                     "emails_unsent" => $emails_unsent,
                     "emails_unsent_url" => $emailUrl . "/emails/unsent",
                     "emails_sent" => $row['emails_sent'],
@@ -535,6 +538,8 @@ class Reports extends CI_Controller
                 "name" => "",
                 "emails_read" => $totalEmailsRead,
                 "emails_read_url" => $url . "/emails/read",
+				"emails_pending" => $totalEmailsRead,
+                "emails_pending_url" => $url . "/emails/pending",
                 "emails_unsent" => $totalEmailUnsent,
                 "emails_unsent_url" => $url . "/emails/unsent",
                 "emails_sent" => $totalEmailSent,
