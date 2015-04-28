@@ -492,6 +492,7 @@ class Reports extends CI_Controller
             foreach ($aux as $id => $row) {
                 $emails_read = (array_key_exists('emails_read', $row)) ? $row['emails_read'] : 0;
                 $emails_unsent = (array_key_exists('emails_unsent', $row)) ? $row['emails_unsent'] : 0;
+				  $emails_pending = (array_key_exists('emails_pending', $row)) ? $row['emails_pending'] : 0;
                 //create the click through hyperlinks
                 if ($group == "contact") {
                     $emailUrl = $url . "/sent-email-date/" . $row['sql'];
