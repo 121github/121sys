@@ -50,8 +50,8 @@ var dashboard = {
             $('.outcome-stats').empty();
             var $outcomes = "";
 			var campaign = "";
-			if($(this).closest('form').find('[name="campaign"]').val()>0){
-			var campaign = "/campaign/"+$(this).closest('form').find('[name="campaign"]').val();
+			if($('.outcomes-filter').find('[name="campaign"]').val()!=''){
+			var campaign = "/campaign/"+$('.outcomes-filter').find('[name="campaign"]').val();
 			}
 			if(response.data.length>0){
             $.each(response.data, function (i, val) {
