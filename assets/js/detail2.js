@@ -1830,18 +1830,16 @@ var record = {
 
                 if (response.data.length > 0) {
                     $.each(response.data, function (key, val) {
-                        var status = (val.status != true) ? "red" : ((val.read_confirmed == 1) ? "green" : "");
-                        var message = (val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
+                        var status = (val.status != true) ? "glyphicon-time red" : (val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "");
+                        var message = (val.status != true) ? "Email pending to send" :(val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
                         var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                         var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                         var $delete_option = "";
                         if (record.permissions['delete emails'] > 0) {
                             $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="1" item-id="' + val.email_id + '" title="Delete email" ></span>';
                         }
-                        $view_option = '<span class="glyphicon glyphicon-eye-open ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
-                        //TODO: Add the button to resend an email
-                        $pending_option = '';//'<span class="glyphicon glyphicon-repeat pull-right resend-email-btn pointer '+((val.pending==1)?'green':'grey')+'"  item-id="' + val.email_id + ' item-pending="' + val.pending + '" title="'+((val.pending==1)?"Pending to send...":"Resend email")+'"></span>';
-                        body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $pending_option + '</td><td>' + $delete_option + '</td></tr>';
+                        $view_option = '<span class="glyphicon ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
+                        body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                     });
                     $thead.append('<tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr>');
                     $tbody.append(body);
@@ -1867,18 +1865,16 @@ var record = {
                     var k = 0;
                     $.each(response.data, function (key, val) {
                         if (k <= record.limit - 1) {
-                            var status = (val.status != true) ? "red" : ((val.read_confirmed == 1) ? "green" : "");
-                            var message = (val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
+                            var status = (val.status != true) ? "glyphicon-time red" : (val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "");
+                            var message = (val.status != true) ? "Email pending to send" :(val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
                             var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                             var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                             var $delete_option = "";
                             if (record.permissions['delete email'] > 0) {
                                 $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="0" item-id="' + val.email_id + '" title="Delete email" ></span>';
                             }
-                            $view_option = '<span class="glyphicon glyphicon-eye-open ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
-                            //TODO: Add the button to resend an email
-                            $pending_option = '';//'<span class="glyphicon glyphicon-repeat pull-right resend-email-btn pointer '+((val.pending==1)?'green':'grey')+'"  item-id="' + val.email_id + ' item-pending="' + val.pending + '" title="'+((val.pending==1)?"Pending to send...":"Resend email")+'"></span>';
-                            $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $pending_option + '</td><td>' + $delete_option + '</td></tr>';
+                            $view_option = '<span class="glyphicon ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
+                            $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                         }
                         k++;
                     });
