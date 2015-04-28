@@ -399,8 +399,14 @@ class Email extends CI_Controller
 							'email_id' => $email_id,
 							'send_to' => $email['send_to'],
 							'status' => 1,
-							'pending' => 0,
+							'pending' => 0
 						);
+						//If the status was 0, don't update the sent_date
+						if (!$email['status']) {
+							$nowDate = new \DateTime('now');
+							$email_history['sent_date'] = $nowDate->format('Y-m-d H:i:s');
+						}
+
 						$this->Email_model->update_email_history($email_history);
 
 						//If the status was 1, create a new email_history
