@@ -437,6 +437,6 @@ $this->firephp->log($qry);
 			$sentall = $this->db->query($qry_sentall)->row()->num;
 			$sentall_url = base_url().'search/custom/records/emails/sent'.$camp_url.$user_url;
 			
-			return array("new"=>$new,"new_url"=>$new_url,"all"=>$all,"all_url"=>$all_url,"read"=>$read,"read_url"=>$read_url,"unsent"=>$unsent,"unsent_url"=>$unsent_url,"readall"=>$readall,"readall_url"=>$readall_url,"sentall"=>$sentall,"sentall_url"=>$sentall_url);
+			return array("new"=>$new,"new_url"=>$new_url,"all"=>$all,"all_url"=>$all_url,"read"=>$read,"read_url"=>$read_url,"unsent"=>$unsent,"pending"=>$pending,"pending_url"=>$pending_url,"unsent_url"=>$unsent_url,"readall"=>$readall,"readall_url"=>$readall_url,"sentall"=>$sentall,"sentall_url"=>$sentall_url);
 	}
 }
