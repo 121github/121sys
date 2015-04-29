@@ -1956,19 +1956,33 @@ var suppression = {
                 data: $('#suppression-form').serialize()
             }).done(function(response) {
                 if (response.success) {
-                    flashalert.success(response.msg);
                     //Reload suppression table
                     suppression.load_suppression();
                     //Close suppression form
                     suppression.close_suppression();
-
-
+                    //Suppress the records with this telephone number in their contacts or company details
+                    suppression.check_suppressed_records();
+                    flashalert.success(response.msg);
                 }
                 else {
                     flashalert.danger(response.msg);
                 }
             });
         }
+    },
+    check_suppressed_records: function() {
+        $.ajax({
+            url: helper.baseUrl + 'cron/check_suppressed_records',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if (response.num_records_suppressed>0) {
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
     }
 }
 

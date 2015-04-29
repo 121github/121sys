@@ -608,7 +608,16 @@ class Cron extends CI_Controller
 
         $output .= $num_records_suppressed." Records affected \n\n";
 
-        echo $output;
+        if ($this->input->is_ajax_request()) {
+            echo json_encode(array(
+                "success" => true,
+                "num_records_suppressed" => $num_records_suppressed,
+                "msg" => $num_records_suppressed." records suppressed"
+            ));
+        }
+        else {
+            echo $output;
+        }
     }
 
 
