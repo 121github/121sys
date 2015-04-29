@@ -37,6 +37,7 @@ class Cron extends CI_Controller
      */
     public function daily_ration()
     {
+        echo "Daily Ration...\n\n";
         $update_records = 0;
         $campaigns = $this->Form_model->get_campaigns();
         foreach ($campaigns as $campaign) {
@@ -54,12 +55,12 @@ class Cron extends CI_Controller
                 }
 
                 if (intval($update_records) >= 0) {
-                    echo $update_records . " records from campaign " . $campaign['name'] . " were made available for calling<br>";
+                    echo $update_records . " records from campaign " . $campaign['name'] . " were made available for calling\n";
                 } else {
-                    echo "No records available for dialing in " . $campaign['name'] . " !<br>";
+                    echo "No records available for dialing in " . $campaign['name'] . " !\n";
                 }
             } else {
-                echo "No records updated for the campaign " . $campaign['name'] . ". The renewal_date field is not set for the campaign " . $campaign['name'] . " !<br>";
+                echo "No records updated for the campaign " . $campaign['name'] . ". The renewal_date field is not set for the campaign " . $campaign['name'] . " !\n";
             }
         }
     }
