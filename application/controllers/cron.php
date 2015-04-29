@@ -37,7 +37,7 @@ class Cron extends CI_Controller
      */
     public function daily_ration()
     {
-        echo "Daily Ration...\n\n";
+        echo "\nDaily Ration...\n\n";
         $update_records = 0;
         $campaigns = $this->Form_model->get_campaigns();
         foreach ($campaigns as $campaign) {
@@ -55,12 +55,12 @@ class Cron extends CI_Controller
                 }
 
                 if (intval($update_records) >= 0) {
-                    echo $update_records . " records from campaign " . $campaign['name'] . " were made available for calling\n";
+                    echo "- ".$update_records . " records from campaign " . $campaign['name'] . " were made available for calling\n\n";
                 } else {
-                    echo "No records available for dialing in " . $campaign['name'] . " !\n";
+                    echo "- No records available for dialing in " . $campaign['name'] . " !\n\n";
                 }
             } else {
-                echo "No records updated for the campaign " . $campaign['name'] . ". The renewal_date field is not set for the campaign " . $campaign['name'] . " !\n";
+                echo "- No records updated for the campaign " . $campaign['name'] . ". The renewal_date field is not set for the campaign " . $campaign['name'] . " !\n\n";
             }
         }
     }
@@ -113,6 +113,8 @@ class Cron extends CI_Controller
      */
     public function send_exports_to_users()
     {
+        echo "\nSend exports to users...\n\n";
+
         $export_users = $this->Export_model->get_export_users();
 
         $exports = array();
@@ -136,20 +138,20 @@ class Cron extends CI_Controller
 
             //Export the data to a csv file
             if ($this->save_export_to_csv($result, $dirname, $filename, $headers)) {
-                echo "The file " . $filename . ".csv was exported to a csv file" . " !<br>";
+                echo "The file " . $filename . ".csv was exported to a csv file" . " !\n";
                 //Send the file to the users
                 if ($this->send_file_exported_by_email($dirname, $filename, $export['users'])) {
                     //Delete the temp file
                     if (unlink($dirname . $filename . ".csv")) {
-                        echo "The file " . $filename . ".csv was sent to the user/s selected" . " !<br>";
+                        echo "The file " . $filename . ".csv was sent to the user/s selected" . " !\n";
                     } else {
-                        echo "The file " . $filename . ".csv was sent to the user/s selected, but the temp file was not deleted" . " !<br>";
+                        echo "The file " . $filename . ".csv was sent to the user/s selected, but the temp file was not deleted" . " !\n";
                     }
                 } else {
-                    echo "Error sending the file " . $filename . ".csv to the user/s selected" . " !<br>";
+                    echo "Error sending the file " . $filename . ".csv to the user/s selected" . " !\n";
                 }
             } else {
-                echo "Error exporting the data to the csv file " . $filename . ".csv !<br>";
+                echo "Error exporting the data to the csv file " . $filename . ".csv !\n";
             }
         }
 
