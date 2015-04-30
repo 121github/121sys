@@ -1015,7 +1015,7 @@ class Database_model extends CI_Model
         $db = $this->db->database;
         $username = $this->db->username;
         $password = $this->db->password;
-        exec("mysql -u " . $username . " -p" . $password . " -h localhost $db < " . $_SERVER['DOCUMENT_ROOT'] . "/uk_postcodes.sql", $output);
+        exec("mysql -u " . $username . " -p" . $password . " -h localhost $db < " . $_SERVER['DOCUMENT_ROOT'] . "/upload/uk_postcodes.sql", $output);
 
         return "success";
     }
