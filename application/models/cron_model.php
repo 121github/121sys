@@ -411,4 +411,23 @@ class Cron_model extends CI_Model
 
         return $result;
     }
+
+    /**
+     * Suppress the records with this telephone number in their contacts or company details
+     */
+    public function suppress_records () {
+        $qry = "update records rec
+                  LEFT JOIN companies com USING (urn)
+                  LEFT JOIN company_telephone comt USING (company_id)
+                  LEFT JOIN contacts con USING (urn)
+                  LEFT JOIN contact_telephone cont USING (contact_id)
+                  INNER JOIN suppression sup ON (sup.telephone_number = cont.telephone_number or sup.telephone_number = comt.telephone_number)
+                  LEFT JOIN suppression_by_campaign supc ON (sup.suppression_id = supc.suppression_id)
+                set parked_code = 4
+                  WHERE (supc.campaign_id = rec.campaign_id OR supc.campaign_id IS NULL) AND (rec.parked_code <> 4 or rec.parked_code is NULL)";
+
+        $update = $this->db->query($qry);
+
+        return $this->db->affected_rows();
+    }
 }
