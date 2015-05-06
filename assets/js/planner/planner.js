@@ -202,7 +202,7 @@ var planner = {
             });
 
 
-            $(document).on('click', '.appointment-btn', function () {
+            $(document).on('click', '.record-btn', function () {
                 $('.map-form').find('input[name="destination"]').val($(this).attr('item-postcode'));
                 var destination = $('.map-form').find('input[name="destination"]').val();
                 getDirections(destination);
@@ -438,7 +438,7 @@ var planner = {
                 '<p><b>Postcode: </b>' + value.postcode + '(' + value.lat + ',' + value.lng + ')' + '</p>' +
                 '<p><b>Website: </b><a taget="__blank" href="' + value.website + '">' + value.website + '</a></p>' +
                 '<p>' +
-                    '<span><a class="btn btn-success appointment-btn" item-postcode="'+value.postcode+'" href="#">Navigate </a></span>' +
+                    '<span><a class="btn btn-success record-btn" item-postcode="'+value.postcode+'" href="#">Navigate </a></span>' +
                     '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
                 '</p>' +
                 '</div>'+

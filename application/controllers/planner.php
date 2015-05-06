@@ -43,10 +43,6 @@ class Planner extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
 
-            $bounds = $this->input->post('bounds');
-
-
-
             $records = $this->Planner_model->planner_data(false, $this->input->post());
             $count = count($records);
 
