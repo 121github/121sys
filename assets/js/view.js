@@ -115,11 +115,10 @@ var view = {
                     {"data": "name"},
                     {"data": "fullname"},
                     {"data": "outcome"},
-                    {"data": "date_updated"},
                     {"data": "nextcall"}
                 ],
                 "columnDefs": [{
-                    "targets": [0, 1, 2, 3, 4, 5],
+                    "targets": [0, 1, 2, 3, 4],
                     "data": null,
                     "defaultContent": "-"
                 }],
@@ -497,7 +496,7 @@ var view = {
                 '<p><b>Next Call: </b>' + (value.nextcall?value.nextcall:'') + '</p>' +
                 '<p><b>Last Updated: </b>' + (value.date_updated?value.date_updated:'') + '</p>' +
                 '<p><b>Postcode: </b>' + (value.postcode?(value.postcode + '(' + (value.lat?value.lat:'-') + ',' + (value.lng?value.lng:'-') + ')'):'') + '</p>' +
-                '<p><b>Website: </b><a taget="__blank" href="' + value.website + '">' + value.website + '</a></p>' +
+                '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
                 '<p>' +
                 '<span><a class="btn btn-success record-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>' +
                 '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
@@ -605,7 +604,7 @@ var modal = {
             '<p><b>Next Call: </b>' + (value.nextcall?value.nextcall:'') + '</p>' +
             '<p><b>Last Updated: </b>' + (value.date_updated?value.date_updated:'') + '</p>' +
             '<p><b>Postcode: </b>' + (value.postcode?(value.postcode + '(' + (value.lat?value.lat:'-') + ',' + (value.lng?value.lng:'-') + ')'):'') + '</p>' +
-            '<p><b>Website: </b><a taget="__blank" href="' + value.website + '">' + value.website + '</a></p>' +
+            '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
             '</div>' +
             '</div>';
         modal_html += contentString;

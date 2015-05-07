@@ -43,10 +43,6 @@ class Records extends CI_Controller
             "header" => "Outcome"
         );
         $visible_columns[] = array(
-            "column" => "date_updated",
-            "header" => "Last Updated"
-        );
-        $visible_columns[] = array(
             "column" => "nextcall",
             "header" => "Next Call"
         );
