@@ -33,7 +33,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="col-lg-6 map-view">
+            <div class="col-lg-6 map-view" style="display: none">
                 <h1 class="planner-map">
                     <div id="map-canvas"
                          style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>

@@ -288,12 +288,8 @@ var view = {
                 $(this).css('color', 'green');
             });
 
-            setTimeout(function () {
-                $(".map-view").hide();
-            }, 3000);
-            //$(".record-view").removeClass("col-lg-12").addClass("col-lg-6");
 
-
+            //Show map button actions
             $('#map-view-toggle').change(function() {
                 if ($(this).prop('checked')) {
                     if (device_type == ('default')) {
@@ -303,8 +299,10 @@ var view = {
                     else {
                         $(".record-view").find('table').find('tbody').hide();
                         $(".map-view").show();
-
                     }
+                    //Reload the map
+                    google.maps.event.trigger(map, 'resize');
+                    map.setCenter(markerLocation.getPosition());
                 }
                 else {
                     if (device_type == ('default')) {
