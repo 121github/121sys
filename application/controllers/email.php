@@ -263,7 +263,7 @@ class Email extends CI_Controller
         unset($form['template_attachments']);
         $email_id = $this->Email_model->add_new_email_history($form);
         $response = ($email_id)?true:false;
-
+		$form['email_id'] = $email_id;
         if (!$response) {
             $msg = "Error saving the email history. The email was not sent.";
         }
@@ -283,8 +283,7 @@ class Email extends CI_Controller
             if ($response) {
                 //Add the tracking image to know if the email is read
                 $form_to_send = $form;
-                $form_to_send['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?id=".$email_id."'>";
-
+             
                 $webform = $this->Email_model->get_webform_id($placeholder_data[0]['campaign_id']);
                 //if a webform placeholder is in the email create the link
                 $url = "http://www.121system.com/webforms/remote/".$placeholder_data[0]['campaign_id']."/".$urn."/".$webform."/".$email_id;
@@ -321,14 +320,16 @@ class Email extends CI_Controller
 			$urn = intval($this->input->post('urn'));
 		
 		foreach($_SESSION['email_triggers'] as $template_id => $recipients){
-			foreach($recipients as $details){
+			foreach($recipients['email'] as $name => $email_address){
 			//create the form structure to pass to the send function
 			$form = $this->Email_model->template_to_form($template_id);
-			$form['send_to'] = $details['email'];
+			$form['send_to'] = $email_address;
+			$form['bcc'] = $recipients['bcc'];
+			$form['cc'] = $recipients['cc'];
 		$last_comment = $this->Records_model->get_last_comment($urn);
 		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
 		$placeholder_data[0]['comments'] = $last_comment;
-		$placeholder_data['recipient_name'] = $details['name'];
+		$placeholder_data['recipient_name'] = $name;
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
 						if($key=="fullname"){ 
@@ -484,8 +485,10 @@ class Email extends CI_Controller
 			$form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10px;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/".base64_encode($form['template_id'])."/".base64_encode($form['urn'])."'>unsubscribe</a></p>";
 			
 		};
+		if(isset($form['email_id'])){
 		$form['body'] .= "<br><img style='display:none;' src='http://www.121system.com/email/image?id=".$form['email_id']."'>";
-    	$this->email->initialize($config);
+		}
+		    	$this->email->initialize($config);
 
 		$this->email->from($form['send_from']);
     	$this->email->to($form['send_to']);

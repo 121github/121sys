@@ -104,10 +104,13 @@ class Calendar extends CI_Controller
         if ($this->input->post('urn') && !$this->input->post('postcode')) {
             $postcode = $this->Calendar_model->get_postcode_from_urn($this->input->post('urn'));
         }
-
-        $start = isset($_POST['startDate']) ? date('Y-m-d h:i:s', ($_POST['startDate'] / 1000)) : date('Y-m-d h:i:s');
-        $end = isset($_POST['endDate']) ? date('Y-m-d h:i:s', ($_POST['endDate'] / 1000)) : date('2040-m-d h:i:s');
-
+if(isset($_POST['startDate'])){
+        $start = !empty($_POST['startDate']) ? date('Y-m-d h:i:s', ($_POST['startDate'] / 1000)) : date('Y-m-d h:i:s');
+        $end = !empty($_POST['endDate']) ? date('Y-m-d h:i:s', ($_POST['endDate'] / 1000)) : date('2040-m-d h:i:s');
+} else {
+	 $start = "";
+	 $end = "";
+}
         if (!empty($_POST['users'])) {
             $users = $_POST['users'];
         } else {

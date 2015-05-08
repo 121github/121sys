@@ -1923,7 +1923,10 @@ var record = {
             });
             $(document).on('click', '.edit-survey-btn', function (e) {
                 e.preventDefault();
-                //record.surveys_panel.load_survey($(this).attr('item-id'));
+                window.location.href = helper.baseUrl + "survey/edit/" + $(this).attr('item-id');
+            });
+			  $(document).on('click', '.eye-survey-btn', function (e) {
+                e.preventDefault();
                 window.location.href = helper.baseUrl + "survey/edit/" + $(this).attr('item-id');
             });
             $(document).on('click', '.del-survey-btn', function (e) {
@@ -2296,23 +2299,6 @@ var record = {
     appointment_panel: {
         //initalize the group specific buttons 
         init: function () {
-            $(document).on('click', '.new-appointment', function () {
-                record.appointment_panel.create();
-            });
-            $(document).on('click', '.save-appointment', function (e) {
-                e.preventDefault();
-                if ($(this).closest('form')[0].checkValidity()) {
-                    record.appointment_panel.save($(this));
-                } else {
-                    flashalert.danger("Please complete all form fields");
-                }
-            });
-            $(document).on('click', '.edit-appointment', function () {
-                record.appointment_panel.edit($(this).attr('item-id'));
-            });
-            $(document).on('click', '.del-appointment', function () {
-                modal.delete_appointment($(this).attr('item-id'));
-            });
             $(document).on('click', '.close-appointment', function (e) {
                 e.preventDefault();
                 record.appointment_panel.hide_edit_form();
@@ -2374,96 +2360,10 @@ var record = {
             var table = "<div class='table-responsive'><table class='table table-striped table-condensed'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th><th>Options</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
                 if (data.length) {
-                    table += '<tr><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><button class="btn btn-default btn-xs edit-appointment" item-id="' + val.appointment_id + '">Edit</button> <button class="btn btn-default btn-xs del-appointment" item-id="' + val.appointment_id + '">Cancel</button></td></tr>';
+                    table += '<tr><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><button class="btn btn-default btn-xs" data-modal="edit-appointment" data-event-id="' + val.appointment_id + '">Edit</button> <button class="btn btn-default btn-xs" data-modal="delete-appointment" data-event-id="' + val.appointment_id + '">Cancel</button></td></tr>';
                 }
             });
             $panel.append(table + "</tbody></table></div>");
-
-        },
-        load_form: function (data, id) {
-            var $form = $('.appointment-panel').find('form');
-            $form.find('input[name="urn"]').val(record.urn);
-            $form.find('input[name="appointment_id"]').val(id);
-            $form.find('input[name="title"]').val(data[0].title);
-            $form.find('input[name="text"]').val(data[0].text);
-            $form.find('input[name="start"]').data("DateTimePicker").setDate(data[0].start);
-            $form.find('input[name="end"]').data("DateTimePicker").setDate(data[0].end);
-            $form.find('input[name="postcode"]').val(data[0].postcode);
-            //$form.find('.attendeepicker').selectpicker('val',data.attendees).selectpicker('render');
-            $('.datetime').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm'
-            });
-        },
-        //edit a group
-        edit: function (id) {
-            $('.appointment-panel').find('.panel-content').fadeOut(function () {
-                $.ajax({
-                    url: helper.baseUrl + "ajax/get_appointment",
-                    type: "POST",
-                    dataType: "JSON",
-                    data: {
-                        urn: record.urn,
-                        id: id
-                    }
-                }).done(function (response) {
-                    record.appointment_panel.load_form(response.data, id);
-                    $('.appointment-panel').find('form').fadeIn();
-                });
-            });
-        },
-        //add a new group
-        create: function () {
-            var $form = $('.appointment-panel').find('form');
-            $form.trigger('reset');
-            $form.find('input[type="hidden"]').not('input[name="urn"]').val('');
-            $form.find('input[name="urn"]').val(record.urn);
-            $('.appointment-panel').find('.panel-content').fadeOut(1000, function () {
-                $form.fadeIn();
-            });
-        },
-        //save a group
-        save: function ($btn) {
-            $.ajax({
-                url: helper.baseUrl + 'records/save_appointment',
-                type: "POST",
-                dataType: "JSON",
-                data: $btn.closest('form').serialize()
-            }).done(function (response) {
-                if (response.success) {
-                    record.appointment_panel.load_appointments();
-                    record.appointment_panel.hide_edit_form();
-                    //$('.record-panel').find('.outcomepicker').find('li.disabled').each(function () {
-                    //    $(this).removeClass('disabled');
-                    //});
-                    //$('.record-panel').find('.outcomepicker').find('option:disabled').each(function () {
-                    //    $(this).prop('disabled', false);
-                    //});
-                    flashalert.success("Appointment saved");
-                } else {
-                    flashalert.danger(response.msg);
-                }
-            });
-        },
-        remove: function (id, cancellation_reason) {
-            $.ajax({
-                url: helper.baseUrl + 'records/delete_appointment',
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    appointment_id: id,
-                    cancellation_reason: cancellation_reason,
-                    urn: record.urn
-                }
-            }).done(function (response) {
-                record.appointment_panel.load_appointments();
-                if (response.success) {
-                    flashalert.success("Appointment was cancelled");
-                } else {
-                    flashalert.danger("Unable to cancel the appointment. Contact administrator");
-                }
-            }).fail(function (response) {
-                flashalert.danger("Unable to cancel the appointment. Contact administrator");
-            });
 
         }
     },
@@ -2786,45 +2686,8 @@ var modal = {
             $('#modal').modal('toggle');
         });
     },
-    delete_appointment: function (id) {
-        $('.modal-title').text('Confirm Cancellation');
-        $('.confirm-modal').prop('disabled', true);
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').html(
-            'Are you sure you want to cancel this appointment?' +
-            '<div style="margin-top: 5px;">' +
-                '<form padding:10px 20px;" class="form-horizontal appointment-cancellation-form">' +
-                    '<input name="cancellation_reason" placeholder="Cancellation Reason..."/>' +
-                '</form>' +
-            '</div>'
-        );
-        $('.appointment-cancellation-form').find('input[name="cancellation_reason"]').bind('input', function() {
-            var cancellation_reason = $(this).val();
-            if (cancellation_reason) {
-                $('.confirm-modal').prop('disabled', false);
-            }
-            else {
-                $('.confirm-modal').prop('disabled', true);
-            }
-        });
-        $('.close-modal').on('click', function (e) {
-            $('.confirm-modal').prop('disabled', false);
-        });
-        $('.modal-header').find('.close').on('click', function (e) {
-            $('.confirm-modal').prop('disabled', false);
-        });
-        $(".confirm-modal").off('click').show();
-        $('.confirm-modal').on('click', function (e) {
-            var cancellation_reason = $('.appointment-cancellation-form').find('input[name="cancellation_reason"]').val();
-            record.appointment_panel.remove(id, cancellation_reason);
-            $('.confirm-modal').prop('disabled', false);
-            $('#modal').modal('toggle');
-        });
-    },
     call_player: function (url, filetype) {
-        $(document).off("hidden.bs.modal").on("hidden.bs.modal", function () {
+        $(document).one("click",".close-modal,.close", function () {
             wavesurfer.destroy();
             $('#modal').find('.modal-body').empty();
         });

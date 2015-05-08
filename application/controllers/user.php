@@ -148,8 +148,8 @@ class User extends CI_Controller
             //$this->form_validation->set_error_delimiters('<div class=\'error\'>', '</div>');
             
             $this->form_validation->set_rules('current_pass', 'current password', 'trim|required|strtolower|md5');
-            $this->form_validation->set_rules('new_pass', 'new password', 'trim|required|strtolower|min_length[5]|matches[conf_pass]');
-            $this->form_validation->set_rules('conf_pass', 'confirm password', 'trim|required|strtolower|min_length[5]');
+            $this->form_validation->set_rules('new_pass', 'new password', 'trim|required|min_length[5]|matches[conf_pass]');
+            $this->form_validation->set_rules('conf_pass', 'confirm password', 'trim|required|min_length[5]');
             
             
             

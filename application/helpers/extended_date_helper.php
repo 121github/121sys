@@ -30,7 +30,7 @@ if ( !function_exists('to_mysql_datetime') )
 			$parts = explode(" ", $datetime);
 			$date=$parts[0];
 			if(isset($parts[1])&&!empty($parts[1])){
-			$time=$parts[1];
+			$time=$parts[1].":00";
 			}
             $pieces = explode('/', $date);
 			$result = $pieces[2] . '-' . $pieces[1] . '-' . $pieces[0] . " " . $time;

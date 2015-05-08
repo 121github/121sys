@@ -299,6 +299,7 @@ class Search extends CI_Controller
         );
         
         $data = array(
+			'page' => 'Search',
             'campaign_access' => $this->_campaigns,
 			'pageId' => 'Search',
             'title' => 'Search',

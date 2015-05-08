@@ -1,53 +1,113 @@
-      <form style="display:none; padding:10px 20px;" class="form-horizontal">
+      <form style="padding:0 20px;" id="appointment-form" class="form-horizontal">
       <input type="hidden" name="appointment_id">
-        <input name="urn" type="hidden" value="">
+        <input type="hidden" name="urn"  >
+          <div class="row">
+        <div class="col-xs-12 col-sm-6">
         <div class="form-group input-group-sm">
-          <p>Please enter a title for the appoinment</p>
-<input type="text" class="form-control" name="title" placeholder="Eg: Meeting with Joe Bloggs" required/>
+          <p>Please enter a title for the appoinment <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="Try to include the company or contact name"></span></p>
+<input type="text" class="form-control" name="title" style="width:95%"  placeholder="Eg: Meeting with Joe Bloggs" required/>
+        </div>
+        </div>
+           <div class="col-xs-12 col-sm-6">
+             <div class="form-group input-group-sm">
+          <p>Please choose the appointment type</p>
+<select name="appointment_type_id" class="selectpicker typepicker" title="Choose a type" data-width="95%" required>
+ <?php foreach($types as $type): ?>
+ <option 
+ <?php if($type['name']=="Telephone"){ echo "data-icon='glyphicon-phone'"; } ?>
+ <?php if($type['name']=="Face to face"){ echo "data-icon='glyphicon-user'"; } ?>
+  value="<?php echo $type['id'] ?>"><?php echo $type['name'] ?></option>
+ <?php endforeach; ?>
+</select>
+        </div>
+        </div>
         </div>
                 <div class="form-group input-group-sm">
-          <p>Please enter a description including the location</p>
-<input type="text" class="form-control" name="text" placeholder="Location, special requirments, purpose. Eg: Quote, Presentation, Proposal" required/>
+          <p>Please enter a description including the location <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="Please note additional info or special requirements here"></span></p>
+<input type="text" class="form-control" name="text" placeholder="Eg: Appointment with director at HQ to offer our services" required/>
         </div>
+        
+        <div class="row">
+        <div class="col-xs-12 col-sm-6">
                 <div class="form-group input-group-sm">
           <p>Please set the start time</p>
-<input type="text" class="form-control datetime startpicker" name="start" placeholder="Enter the start time" required/>
+<input type="text" style="width:95%" class="form-control datetime startpicker" name="start" placeholder="Enter the start time" required/>
         </div>
+        </div>
+    
+         <div class="col-xs-12 col-sm-6">
                 <div class="form-group input-group-sm">
           <p>Please set the end time</p>
-<input type="text" class="form-control datetime endpicker" name="end" placeholder="Enter the end time" required/>
+<input type="text"  style="width:100%" class="form-control datetime endpicker" name="end" placeholder="Enter the end time" required/>
+        </div>
+        </div>
         </div>
                 <div class="form-group input-group-sm">
-          <p>Please add the attendees</p>
-<select name="attendees[]" class="selectpicker attendeepicker" title="Choose the attendees" data-width="100%" required>
+          <p>Please choose the attendee <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="This person will recieve an email alert of the appointment"></span></p>
+<select name="attendees[]" id="attendee-select" class="selectpicker attendeepicker" title="Choose the attendees" data-width="100%" required>
  <?php foreach($attendees as $attendee): ?>
  <option value="<?php echo $attendee['user_id'] ?>"><?php echo $attendee['name'] ?></option>
  <?php endforeach; ?>
 </select>
         </div>
-        
+          <div class="row" id="select-appointment-address">
+     
+        <div class="col-lg-12">
                                 <div class="form-group input-group-sm">
           <p>Please select the address the appointment will take place</p>
-<select class="selectpicker addresspicker" title="Choose the address" data-width="100%">
+<select name="address" class="selectpicker addresspicker" id="addresspicker" title="Choose the address" data-width="100%">
  <?php foreach($addresses as $address): 
- $add = $address['name'];
- $add .= (!empty($address['add1'])?", ".$address['add1']:"");
+ $add = ($address['type']=="company"?$address['name'].", ":"");
+ $add .= (!empty($address['add1'])?$address['add1']:"");
   $add .= (!empty($address['postcode'])?", ".$address['postcode']:" - This address has no postcode!");
  ?>
- <option value="<?php echo $address['postcode'] ?>"><?php echo $add ?></option>
+ <option <?php if(empty($address['postcode'])){ echo "disabled"; } ?> value="<?php echo $add ."|". $address['postcode'] ?>"><?php echo $add ?></option>
  <?php endforeach; ?>
-   <option value="">Other</option>
-</select>
+ <option value="Other">Other</option>
+</select>&nbsp;
+
+
         </div>
-        
-                        <div class="form-group input-group-sm">
-          <p>Or enter the postcode manually</p>
-          <?php $postcode = ""; if(count($addresses)=="1"){$postcode = $addresses[0]['postcode']; } ?>
-<input type="text" class="form-control" name="postcode" placeholder="Postcode of the appointment location" required value="<?php echo $postcode ?>"/>
         </div>
-                               
-        <div class="form-actions pull-right">
-         <button class="marl btn btn-default close-appointment">Cancel</button>
-         <button type="submit" class="marl btn btn-primary save-appointment">Save</button>
+    </div>
+     </form>
+         <div id="add-appointment-address" style="display:none">
+       <p>Please enter the address that the appointment will take place</p>
+          <div class="col-sm-12"> 
+       <div class="row">
+      <div class="col-sm-6"> 
+        <div class="form-group  input-group-sm">
+<input name="add1" class="form-control" type="text" style="width:95%" placeholder="First line of address" />
+</div>
+</div>
+    <div class="col-sm-6"> 
+ <div class="form-group  input-group-sm">
+<input name="add2" class="form-control" type="text" style="width:95%" placeholder="Second line of address" />
+</div>
+</div>
+</div>
+ <div class="row">
+    <div class="col-sm-6"> 
+ <div class="form-group  input-group-sm">
+<input name="add3" class="form-control" type="text" style="width:95%" placeholder="Third line of address" />
+ </div>
+ </div>
+     <div class="col-sm-6"> 
+ <div class="form-group  input-group-sm">
+<input name="county" class="form-control" type="text" style="width:95%" placeholder="County" />
+ </div>
+ </div>
+ </div>
+  <div class="row">
+     <div class="col-sm-6"> 
+ <div class="form-group  input-group-sm">
+<input name="new_postcode" class="form-control" type="text" style="width:95%" placeholder="Postcode" />
+</div>
+</div>
+    <div class="col-sm-6"><button class="btn btn-default btn-sm" id="cancel-add-address">Cancel</button> <button class="btn btn-info btn-sm" id="confirm-add-address" >Confirm</button> 
+    </div>
+    </div>
         </div>
-      </form>
+        </div>
+                             
+     

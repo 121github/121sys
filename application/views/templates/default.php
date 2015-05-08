@@ -162,7 +162,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <li <?php echo @($page == 'planner' ? "class=Selected'" : "") ?>><a
                         href="<?php echo base_url() ?>planner">Planner</a></li>
             <?php } ?>
-            <?php if (@in_array('Surveys', $_SESSION['campaign_features']) && in_array("search surveys", $_SESSION['permissions'])) { ?>
+            <?php if (@in_array('Surveys', $_SESSION['campaign_features']) && in_array("view surveys", $_SESSION['permissions']) || in_array("view surveys", $_SESSION['permissions']) && in_array("mix campaigns", $_SESSION['permissions'])) { ?>
                 <li <?php if ($this->uri->segment(1) == "survey") {
                     echo "Selected";
                 } ?>><a href="<?php echo base_url(); ?>survey/view">View Surveys</a></li>
@@ -450,6 +450,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/mmenu/jquery.mmenu.min.all.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';

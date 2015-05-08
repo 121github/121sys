@@ -23,6 +23,23 @@ class Ajax extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
     
+	public function validate_postcode(){
+		   if ($this->input->is_ajax_request()) {
+            $postcode = $this->input->post('postcode');
+            if(validate_postcode($postcode)){
+            echo json_encode(array(
+                "success" => true,
+                "postcode" =>  postcodeFormat($postcode)
+            ));
+			} else {
+			echo json_encode(array(
+                "success" => false,
+                "msg" =>  "Postcode is not valid"
+            ));	
+			}
+        }
+	}
+	
     public function get_table_columns()
     {
         $array                  = array();

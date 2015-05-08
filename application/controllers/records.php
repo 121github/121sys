@@ -226,6 +226,8 @@ class Records extends CI_Controller
             $data['addresses'] = $addresses;
             $attendees         = $this->Records_model->get_attendees(false, $campaign_id);
             $data['attendees'] = $attendees;
+			$types         = $this->Records_model->get_appointment_types(false, $campaign_id);
+            $data['types'] = $types;
         }
         
         //get the users if we need the ownership feature is on
@@ -668,7 +670,10 @@ class Records extends CI_Controller
     {
         if ($this->input->is_ajax_request() && $this->_access) {
             $data             = $this->input->post();
-            $data['postcode'] = postcodeCheckFormat($data['postcode']);
+			$address_field = explode('|',$data['address']);
+			$data['address'] = $address_field[0];
+			$postcode = $address_field[1];
+            $data['postcode'] = postcodeCheckFormat($postcode);
             if (!isset($data['attendees'])) {
                 echo json_encode(array(
                     "success" => false,
@@ -699,9 +704,8 @@ class Records extends CI_Controller
 				$this->Audit_model->log_appointment_insert($data);
 				$id = $this->Records_model->save_appointment($data);
 				} else {
-                $id = $this->Records_model->save_appointment($data);
-				$data['appointment_id'] = $id;
 				$this->Audit_model->log_appointment_update($data);
+				$id = $this->Records_model->save_appointment($data);
 				}
                 echo json_encode(array(
                     "success" => true

@@ -1153,6 +1153,10 @@ if(!String.prototype.formatNum) {
 			self.activecell = $('[data-cal-date]', cell).text();
 			$('#cal-slide-tick').addClass('tick' + tick_position).show();
 			slider.slideDown('fast', function() {
+	$('#cal-slide-box').on('click','a.event-item',function(e){
+		e.preventDefault();
+		modals.view_appointment($(this).attr('data-event-id'));
+	});
 				$('body').one('click', function() {
 					slider.slideUp('fast');
 					self.activecell = 0;

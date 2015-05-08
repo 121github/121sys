@@ -556,14 +556,29 @@ class Records_model extends CI_Model
     }
 	
     public function get_addresses($urn=""){
-	  $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,county,postcode from contacts left join contact_addresses using(contact_id) where urn = '$urn'";
+	  $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,county,postcode from contact_addresses inner join contacts using(contact_id) where urn = '$urn'";
 	  $addresses = $this->db->query($qry)->result_array();
-	  $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,county,postcode from companies left join company_addresses using(company_id) where urn = '$urn'";	
+	  $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,county,postcode from company_addresses inner join companies using(company_id) where urn = '$urn'";	
 	  $companies = $this->db->query($qry)->result_array();
 	  foreach($companies as $row){
 		  $addresses[] = $row;
 	  }
+	  	  $qry = "select 'appointment' as `type`,name,address_id id,add1,add2,add3,county,postcode from appointment_addresses where urn = '$urn'";	
+	  $appointments = $this->db->query($qry)->result_array();
+	  foreach($appointments as $row){
+		  $appointments[] = $row;
+	  }
 	  return $addresses;
+	}
+	
+	public function get_appointment_types($urn=false,$campaign=false){
+	if($urn){
+		$qry = "select appointment_type_id id,appointment_type name from appointment_types at left join records using(campaign_id) where (urn = '$urn' or at.campaign_id is null)";
+	} else {
+		$qry = "select appointment_type_id id,appointment_type name from appointment_types where (campaign_id = '$campaign' or campaign_id is null)";
+	}
+		$result = $this->db->query($qry)->result_array();
+		return $result;
 	}
 	
     public function save_ownership($urn, $owners)
@@ -881,6 +896,7 @@ class Records_model extends CI_Model
             );
 			$post['location_id']=NULL;
             $post['date_updated'] = date('Y-m-d H:i:s');
+			$post['updated_by'] = $_SESSION['user_id'];
             $this->db->update("appointments", $post);
 			return $post['appointment_id'];
         } else {
@@ -904,6 +920,9 @@ class Records_model extends CI_Model
 	
 	//when a record is update this function is ran to see if an email should be sent to anyone
 		 public function get_email_triggers($campaign_id,$outcome_id){
+			 $cc = array();
+			 $bcc = array();
+			 $main = array();
 		 $this->db->join("email_trigger_recipients", "email_triggers.trigger_id = email_trigger_recipients.trigger_id","left");
 		 $this->db->join("users", "users.user_id = email_trigger_recipients.user_id","left");
 		 $this->db->where("outcome_id", $outcome_id);
@@ -912,7 +931,14 @@ class Records_model extends CI_Model
 		$email_triggers = array();
 		foreach($result as $row){
 			if(!empty($row['user_email'])&&!empty($row['template_id'])){
-		$email_triggers[$row['template_id']][] = array("name"=>$row['name'],"email"=>$row['user_email']);
+				if($row['type']=="cc"){
+				$cc[$row['name']] = $row['user_email'];
+				} else if($row['type']=="bcc"){
+				$bcc[$row['name']] = $row['user_email'];
+				} else {
+            	$main[$row['name']] = $row['user_email'];
+				}
+		$email_triggers[$row['template_id']] = array("cc"=>$cc,"email"=>$main,"bcc"=>$bcc);
 			}
 		}
 		$_SESSION['email_triggers'] = $email_triggers;

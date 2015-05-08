@@ -186,7 +186,7 @@ $(document).ready(function () {
 
     var calendar = $('#calendar').calendar(options);
 
-    appointment_rules.loadAppointmentRules();
+    //appointment_rules.loadAppointmentRules();
 
     $('.btn-group button[data-calendar-nav]').each(function () {
         var $this = $(this);

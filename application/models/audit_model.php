@@ -160,6 +160,7 @@ class Audit_model extends CI_Model {
 
 //contact updated
     public function log_contact_update($data = array(),$urn=NULL) {
+		$audit_id = NULL;
         $id = $data['contact_id'];
         $qry = "SELECT * from contacts WHERE contact_id = '$id'";
         $original = $this->db->query($qry)->row_array();
@@ -279,8 +280,9 @@ class Audit_model extends CI_Model {
         //compare the new data with the old data to see what has changed
         $diff = array_diff($data, $original);
         //$this->firephp->log($original[0]);
-        $log_id = NULL;
-
+        $audit_id = NULL;
+		$this->firephp->log($data);
+		$this->firephp->log($original);
         //if something has changed we log the change
         if (count($diff) > 0) {
             $details = array(
@@ -415,7 +417,7 @@ class Audit_model extends CI_Model {
         //compare the new data with the old data to see what has changed
         $diff = array_diff($data, $original);
         //$this->firephp->log($original[0]);
-        $log_id = NULL;
+        $audit_id = NULL;
 		$this->firephp->log($diff);
         //if something has changed we log the change
         if (count($diff) > 0) {
@@ -462,7 +464,7 @@ class Audit_model extends CI_Model {
         //compare the new data with the old data to see what has changed
         $diff = array_diff($data, $original);
         //$this->firephp->log($original[0]);
-        $log_id = NULL;
+        $audit_id = NULL;
 
         //if something has changed we log the change
         if (count($diff) > 0) {
@@ -507,7 +509,7 @@ class Audit_model extends CI_Model {
         //compare the new data with the old data to see what has changed
         $diff = array_diff($data, $original);
         //$this->firephp->log($original[0]);
-        $log_id = NULL;
+        $audit_id = NULL;
 
         //if something has changed we log the change
         if (count($diff) > 0) {
@@ -552,7 +554,6 @@ class Audit_model extends CI_Model {
         //compare the new data with the old data to see what has changed
         $diff = array_diff($data, $original);
         //$this->firephp->log($original[0]);
-        $log_id = NULL;
         $audit_id = NULL;
 
         //if something has changed we log the change

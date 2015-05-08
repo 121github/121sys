@@ -58,7 +58,7 @@ class Calendar_model extends CI_Model
             $select_distance .= ",(((ACOS(SIN((" .
                 $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .
                 $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
-                $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60) AS distance";
+                $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515) AS distance";
 
             if (isset($coords['lat']) && isset($coords['lng'])) {
 
@@ -111,7 +111,7 @@ class Calendar_model extends CI_Model
             $array[$k]['attendeelist'] = (!empty($attendees) ? $attendees : "No Attendees!");
             $array[$k]['color'] = $this->genColorCodeFromText($attendees);
         }
-        //$this->firephp->log($array);
+        //$this->firephp->log($query);
         return $array;
     }
 

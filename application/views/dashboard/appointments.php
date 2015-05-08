@@ -57,17 +57,7 @@ default_buttons: function () {
             data: {id:id}
         }).done(function (response) {
 			if(response.success){
-			var modal_html="";
-			modal_html += "<p>Appointment was set for <b>"+response.data.appointment.date_formatted+"</b></p>";
-			modal_html += "<p><ul>";
-			modal_html += "<li><b>Title:</b> "+response.data.appointment.title+"</li>"
-			modal_html += "<li><b>Notes:</b> "+response.data.appointment.text+"</li>"
-			modal_html += "</ul></p>";
-			$('#modal').find('.modal-body').html(modal_html);
-			modal.clear_buttons();
-			$('#modal').find('.modal-footer').append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
-			$('#modal').find('.modal-footer').append('<a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + response.data.appointment.urn + '">View Record</a>');
-		    modal.show_modal();
+			modals.view_appointment(id);
 			}
 		});
 },
