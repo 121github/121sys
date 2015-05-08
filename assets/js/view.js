@@ -267,17 +267,7 @@ var view = {
                 hideDirections();
             });
 
-            //Start animation in the map for the marker selected in the table
-            $(document).on('mouseenter', '.data-table tbody tr', function () {
-                animateMarker($(this).attr('postcode'));
-                $(this).css('color', 'green');
-            });
-
-            //Start animation in the map for the marker deselected in the table
-            $(document).on('mouseleave', '.data-table tbody tr', function () {
-                removeMarkerAnimation($(this).attr('postcode'));
-                $(this).css('color', 'black');
-            });
+            
 
 
             //Start animation in the map for the marker deselected in the table
@@ -292,11 +282,22 @@ var view = {
             //Show map button actions
             $('#map-view-toggle').change(function() {
                 if ($(this).prop('checked')) {
+					   $(document).on('mouseenter', '.data-table tbody tr', function () {
+                animateMarker($(this).attr('postcode'));
+                $(this).css('color', 'green');
+            });
+
+            //Start animation in the map for the marker deselected in the table
+            $(document).on('mouseleave', '.data-table tbody tr', function () {
+                removeMarkerAnimation($(this).attr('postcode'));
+                $(this).css('color', 'black');
+            });
                     if (device_type == ('default')) {
                         $(".record-view").removeClass("col-lg-12").addClass("col-lg-6");
                         $(".map-view").show();
                     }
                     else {
+
                         $(".record-view").find('table').find('tbody').hide();
                         $(".map-view").show();
                     }
@@ -305,7 +306,10 @@ var view = {
                     map.setCenter(markerLocation.getPosition());
                 }
                 else {
-                    if (device_type == ('default')) {
+					   $(document).off('mouseenter', '.data-table tbody tr');
+  					$(document).off('mouseleave', '.data-table tbody tr');
+            //Start animation in the map for the marker deselected in the table
+                             if (device_type == ('default')) {
                         $(".record-view").removeClass("col-lg-6").addClass("col-lg-12");
                         $(".map-view").hide();
                     }
@@ -438,10 +442,12 @@ var view = {
 
         //Show the records in the map
         function showRecords() {
+			if($('#map-view-toggle').prop('checked')){
             deleteMarkers();
             $.each(records, function (index, value) {
                 addMarker(value);
             });
+			}
         }
 
         //Animate a marker icon
@@ -521,7 +527,8 @@ var view = {
             });
 
             //Show in the table the record selected in the map
-            google.maps.event.addListener(marker, 'mouseover', function () {
+           
+		    google.maps.event.addListener(marker, 'mouseover', function () {
                 $('.data-table tbody').find("[postcode='" + marker.postcode + "']").css('color', 'green');
             });
 
