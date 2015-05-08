@@ -38,7 +38,7 @@
                     <div class="directions-btn">
                         <form class="form-horizontal map-form">
                             <div class="row">
-                                <div class="col-lg-10">
+                                <div class="col-lg-10 col-sm-10">
                                     <div class="input-group">
                                         <input hidden name="travel-mode">
                                         <input hidden name="destination">
@@ -55,7 +55,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="col-lg-1">
+                                <div class="col-lg-1 col-sm-1">
                                     <span class='glyphicon glyphicon-exclamation-sign red pointer btn-sm'
                                           data-toggle='tooltip' data-placement='left'
                                           title='The records without postcode are no shown in the map!!'></span>
