@@ -3,9 +3,9 @@
 $(document).ready(function () {
     view.init();
 
-    $('.map-form').on("keyup keypress", function(e) {
+    $('.map-form').on("keyup keypress", function (e) {
         var code = e.keyCode || e.which;
-        if (code  == 13) {
+        if (code == 13) {
             e.preventDefault();
             return false;
         }
@@ -267,8 +267,6 @@ var view = {
                 hideDirections();
             });
 
-            
-
 
             //Start animation in the map for the marker deselected in the table
             $(document).on('click', '.data-table tbody tr', function () {
@@ -280,18 +278,18 @@ var view = {
 
 
             //Show map button actions
-            $('#map-view-toggle').change(function() {
+            $('#map-view-toggle').change(function () {
                 if ($(this).prop('checked')) {
-					   $(document).on('mouseenter', '.data-table tbody tr', function () {
-                animateMarker($(this).attr('postcode'));
-                $(this).css('color', 'green');
-            });
+                    $(document).on('mouseenter', '.data-table tbody tr', function () {
+                        animateMarker($(this).attr('postcode'));
+                        $(this).css('color', 'green');
+                    });
 
-            //Start animation in the map for the marker deselected in the table
-            $(document).on('mouseleave', '.data-table tbody tr', function () {
-                removeMarkerAnimation($(this).attr('postcode'));
-                $(this).css('color', 'black');
-            });
+                    //Start animation in the map for the marker deselected in the table
+                    $(document).on('mouseleave', '.data-table tbody tr', function () {
+                        removeMarkerAnimation($(this).attr('postcode'));
+                        $(this).css('color', 'black');
+                    });
                     if (device_type == ('default')) {
                         $(".record-view").removeClass("col-lg-12").addClass("col-lg-6");
                         $(".map-view").show();
@@ -306,10 +304,10 @@ var view = {
                     map.setCenter(markerLocation.getPosition());
                 }
                 else {
-					   $(document).off('mouseenter', '.data-table tbody tr');
-  					$(document).off('mouseleave', '.data-table tbody tr');
-            //Start animation in the map for the marker deselected in the table
-                             if (device_type == ('default')) {
+                    $(document).off('mouseenter', '.data-table tbody tr');
+                    $(document).off('mouseleave', '.data-table tbody tr');
+                    //Start animation in the map for the marker deselected in the table
+                    if (device_type == ('default')) {
                         $(".record-view").removeClass("col-lg-6").addClass("col-lg-12");
                         $(".map-view").hide();
                     }
@@ -442,12 +440,12 @@ var view = {
 
         //Show the records in the map
         function showRecords() {
-			if($('#map-view-toggle').prop('checked')){
-            deleteMarkers();
-            $.each(records, function (index, value) {
-                addMarker(value);
-            });
-			}
+            if ($('#map-view-toggle').prop('checked')) {
+                deleteMarkers();
+                $.each(records, function (index, value) {
+                    addMarker(value);
+                });
+            }
         }
 
         //Animate a marker icon
@@ -497,12 +495,12 @@ var view = {
                 '</div>' +
                 '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
                 '<div id="bodyContent">' +
-                '<p><b>Comapny: </b>' + (value.name?value.name:'') + '</p>' +
-                '<p><b>Contact: </b>' + (value.fullname?value.fullname:'') + '</p>' +
-                '<p><b>Outcome: </b>' + (value.outcome?value.outcome:'') + '</p>' +
-                '<p><b>Next Call: </b>' + (value.nextcall?value.nextcall:'') + '</p>' +
-                '<p><b>Last Updated: </b>' + (value.date_updated?value.date_updated:'') + '</p>' +
-                '<p><b>Postcode: </b>' + (value.postcode?(value.postcode + '(' + (value.lat?value.lat:'-') + ',' + (value.lng?value.lng:'-') + ')'):'') + '</p>' +
+                '<p><b>Comapny: </b>' + (value.name ? value.name : '') + '</p>' +
+                '<p><b>Contact: </b>' + (value.fullname ? value.fullname : '') + '</p>' +
+                '<p><b>Outcome: </b>' + (value.outcome ? value.outcome : '') + '</p>' +
+                '<p><b>Next Call: </b>' + (value.nextcall ? value.nextcall : '') + '</p>' +
+                '<p><b>Last Updated: </b>' + (value.date_updated ? value.date_updated : '') + '</p>' +
+                '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
                 '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
                 '<p>' +
                 '<span><a class="btn btn-success record-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>' +
@@ -527,8 +525,8 @@ var view = {
             });
 
             //Show in the table the record selected in the map
-           
-		    google.maps.event.addListener(marker, 'mouseover', function () {
+
+            google.maps.event.addListener(marker, 'mouseover', function () {
                 $('.data-table tbody').find("[postcode='" + marker.postcode + "']").css('color', 'green');
             });
 
@@ -595,23 +593,23 @@ var modal = {
     clear_buttons: function () {
         $('#modal').find('.modal-footer .btn').remove();
     },
-    show_record:function(value){
+    show_record: function (value) {
         $('.modal-title').html('<h3 style="color: grey" id="firstHeading" class="firstHeading">URN: ' + value.urn + " [" + value.campaign_name + ']</h3>');
-        var modal_html="";
+        var modal_html = "";
         var contentString =
             '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
             '<div id="bodyContent">' +
             '<p class="pull-right">' +
-                '<span><a class="btn btn-success record-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>' +
+            '<span><a class="btn btn-success record-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>' +
             '</p>' +
-            '<p><b>Comapny: </b>' + (value.name?value.name:'') + '</p>' +
-            '<p><b>Contact: </b>' + (value.fullname?value.fullname:'') + '</p>' +
-            '<p><b>Outcome: </b>' + (value.outcome?value.outcome:'') + '</p>' +
-            '<p><b>Next Call: </b>' + (value.nextcall?value.nextcall:'') + '</p>' +
-            '<p><b>Last Updated: </b>' + (value.date_updated?value.date_updated:'') + '</p>' +
-            '<p><b>Postcode: </b>' + (value.postcode?(value.postcode + '(' + (value.lat?value.lat:'-') + ',' + (value.lng?value.lng:'-') + ')'):'') + '</p>' +
+            '<p><b>Comapny: </b>' + (value.name ? value.name : '') + '</p>' +
+            '<p><b>Contact: </b>' + (value.fullname ? value.fullname : '') + '</p>' +
+            '<p><b>Outcome: </b>' + (value.outcome ? value.outcome : '') + '</p>' +
+            '<p><b>Next Call: </b>' + (value.nextcall ? value.nextcall : '') + '</p>' +
+            '<p><b>Last Updated: </b>' + (value.date_updated ? value.date_updated : '') + '</p>' +
+            '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
             '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
             '</div>' +
             '</div>';
