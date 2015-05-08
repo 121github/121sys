@@ -4,15 +4,13 @@
         Record List
         <div class="pull-right">
             <div class="btn-group">
-                <input type="checkbox" id="map-view-toggle" data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View"  data-toggle="toggle">
+                <input type="checkbox" id="map-view-toggle"
+                       data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"
+                       data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-toggle="toggle">
             </div>
         </div>
     </div>
     <div class="panel-body">
-        <div class="row">
-            <div class="col-lg-6 info-details"></div>
-            <div class="col-lg-6 info-paginate"></div>
-        </div>
         <div class="row">
             <div class="col-lg-12 record-view">
                 <table class="table table-striped table-bordered data-table">
@@ -40,22 +38,27 @@
                     <div class="directions-btn">
                         <form class="form-horizontal map-form">
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-10">
                                     <div class="input-group">
                                         <input hidden name="travel-mode">
                                         <input hidden name="destination">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default get-current-location-btn" type="button">
-                                        <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
-                                    </button>
-                               </span>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default get-current-location-btn" type="button">
+                                                <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
+                                            </button>
+                                        </span>
                                         <input type="text" class="form-control" name="postcode"
                                                placeholder="Postcode..."
                                                title="Enter the location"/>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default get-location-btn" type="button">Go!</button>
-                               </span>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default get-location-btn" type="button">Go!</button>
+                                        </span>
                                     </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <span class='glyphicon glyphicon-exclamation-sign red pointer btn-sm'
+                                          data-toggle='tooltip' data-placement='left'
+                                          title='The records without postcode are no shown in the map!!'></span>
                                 </div>
                             </div>
                             <div class="form-group input-group-sm directions-menu" style="display: none">

@@ -281,7 +281,6 @@ class Records_model extends CI_Model
 			"com.name",
             "fullname",
             "outcome",
-            "date_format(r.date_updated,'%d/%m/%y %H:%i')",
             "date_format(r.nextcall,'%d/%m/%y %H:%i')",
             "rand()"
         );
@@ -290,7 +289,6 @@ class Records_model extends CI_Model
 			"com.name",
             "fullname",
             "outcome",
-            "r.date_updated",
             "r.nextcall",
             "rand()"
         );

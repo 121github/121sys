@@ -57,6 +57,7 @@ function table_columns() {
 
 var view = {
     init: function () {
+        $('[data-toggle="tooltip"]').tooltip();
         view.populate_table();
     },
     populate_table: function (table_name) {

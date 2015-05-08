@@ -69,9 +69,11 @@ class Records extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
 
-            $records = $this->Records_model->get_records($this->input->post());
-            $nav     = $this->Records_model->get_nav($this->input->post());
-            
+            $options = $this->input->post();
+
+            $records = $this->Records_model->get_records($options);
+            $nav     = $this->Records_model->get_nav($options);
+
             foreach ($records as $k => $v) {
                 //Options
                 $records[$k]["options"] = "<a href='" . base_url() . "records/detail/" . $v['urn'] . "'>View</a>";
