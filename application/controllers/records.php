@@ -43,16 +43,8 @@ class Records extends CI_Controller
             "header" => "Outcome"
         );
         $visible_columns[] = array(
-            "column" => "date_updated",
-            "header" => "Last Updated"
-        );
-        $visible_columns[] = array(
             "column" => "nextcall",
             "header" => "Next Call"
-        );
-        $visible_columns[] = array(
-            "column" => "options",
-            "header" => "Options"
         );
         
         $data = array(
@@ -65,7 +57,8 @@ class Records extends CI_Controller
             ),
             'javascript' => array(
                 'view.js',
-                'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+                'modals.js'
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
@@ -76,12 +69,42 @@ class Records extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
 
-            $records = $this->Records_model->get_records($this->input->post());
-            $nav     = $this->Records_model->get_nav($this->input->post());
-            
+            $options = $this->input->post();
+
+            $records = $this->Records_model->get_records($options);
+            $nav     = $this->Records_model->get_nav($options);
+
             foreach ($records as $k => $v) {
+                //Options
                 $records[$k]["options"] = "<a href='" . base_url() . "records/detail/" . $v['urn'] . "'>View</a>";
+
+                //Location
+                if ($records[$k]["company_location"]) {
+                    $postcode_ar = explode(',',$records[$k]["company_location"]);
+                }
+                else if ($records[$k]["contact_location"]) {
+                    $postcode_ar = explode(',',$records[$k]["contact_location"]);
+                }
+                if (!empty($postcode_ar)) {
+                    $postcode = substr($postcode_ar[0],0,stripos($postcode_ar[0],'('));
+                    $location = explode('/',substr($postcode_ar[0],stripos($postcode_ar[0],'(')));
+                    $records[$k]["postcode"] = $postcode;
+                    $records[$k]["lat"] = substr($location[0],1);
+                    $records[$k]["lng"] = substr($location[1],0,strlen($location[1])-1);
+                }
+                else {
+                    $records[$k]["postcode"] = NULL;
+                    $records[$k]["lat"] = NULL;
+                    $records[$k]["lng"] = NULL;
+                }
+
+                //Attendee
+                $records[$k]["attendee"] = ($records[$k]['name']?$records[$k]['name']:($records[$k]['fullname']?$records[$k]['fullname']:NULL));
+
+                //Website
+                $records[$k]["website"] = ($records[$k]['company_website']?$records[$k]['company_website']:($records[$k]['contact_website']?$records[$k]['contact_website']:''));
             }
+
             
             $data = array(
                 "draw" => $this->input->post('draw'),

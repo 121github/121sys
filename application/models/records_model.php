@@ -84,6 +84,14 @@ class Records_model extends CI_Model
 		
 		return $this->db->query($qry)->result_array();
 	}
+
+    public function get_records_by_urn($urn) {
+        $qry = "SELECT *
+				from records
+				WHERE urn = ".$urn;
+
+        return $this->db->query($qry)->result_array();
+    }
 	
 	public function get_record_details_by_urn_list($urn_list) {
 		$qry = "SELECT *
@@ -152,7 +160,6 @@ class Records_model extends CI_Model
 			"com.name",
             "fullname",
             "outcome",
-            "date_format(r.date_updated,'%d/%m/%y %H:%i')",
             "date_format(r.nextcall,'%d/%m/%y %H:%i')",
             "rand()"
         );
@@ -162,20 +169,34 @@ class Records_model extends CI_Model
 			"com.name",
             "fullname",
             "outcome",
-            "r.date_updated",
             "r.nextcall",
             "rand()"
         );
         
         $join = array();
-        $qry  = "select r.urn, outcome, if(com.name is null,'na',com.name) name, fullname, campaign_name, date_format(r.date_updated,'%d/%m/%y') date_updated,date_format(nextcall,'%d/%m/%y') nextcall from records r ";
+        $qry  = "select r.urn,
+                      outcome,
+                      if(com.name is null,'na',com.name) name,
+                      fullname,
+                      campaign_name,
+                      com.website as company_website,
+                      con.website as contact_website,
+                      date_format(r.date_updated,'%d/%m/%y') date_updated,
+                      date_format(nextcall,'%d/%m/%y') nextcall,
+                      GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')') separator ',') as company_location,
+                      GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')') separator ',') as contact_location
+                from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
         }
         //these joins are mandatory for sorting by name, outcome or campaign
 		$join['companies']  = " left join companies com on com.urn = r.urn ";
+        $join['company_addresses']  = " left join company_addresses coma on coma.company_id = com.company_id ";
+        $join['company_locations']  = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
         $join['contacts']  = " left join contacts con on con.urn = r.urn ";
+        $join['contact_addresses']  = " left join contact_addresses cona on cona.contact_id = con.contact_id ";
+        $join['contact_locations']  = " left JOIN locations contact_locations ON (cona.location_id = contact_locations.location_id) ";
         $join['outcomes']  = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
 		$join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
@@ -209,7 +230,16 @@ class Records_model extends CI_Model
 	public function get_where($options,$table_columns){
 		//the default condition in ever search query to stop people viewing campaigns they arent supposed to!
 		$where = " where 1 ";
-		
+
+        //Check the bounds of the map
+        if ($options['bounds'] && $options['map']=='true') {
+            $where .= " and (
+                    (company_locations.lat < ".$options['bounds']['neLat']." and company_locations.lat > ".$options['bounds']['swLat']." and company_locations.lng < ".$options['bounds']['neLng']." and company_locations.lng > ".$options['bounds']['swLng'].")
+                      or
+                    (contact_locations.lat < ".$options['bounds']['neLat']." and contact_locations.lat > ".$options['bounds']['swLat']." and contact_locations.lng < ".$options['bounds']['neLng']." and contact_locations.lng > ".$options['bounds']['swLng'].")
+                  )";
+        }
+
 	     //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause
@@ -251,7 +281,6 @@ class Records_model extends CI_Model
 			"com.name",
             "fullname",
             "outcome",
-            "date_format(r.date_updated,'%d/%m/%y %H:%i')",
             "date_format(r.nextcall,'%d/%m/%y %H:%i')",
             "rand()"
         );
@@ -260,7 +289,6 @@ class Records_model extends CI_Model
 			"com.name",
             "fullname",
             "outcome",
-            "r.date_updated",
             "r.nextcall",
             "rand()"
         );
@@ -273,7 +301,11 @@ class Records_model extends CI_Model
         
         //these joins are mandatory for sorting by name, outcome or campaign
 		$join['companies']  = " left join companies com on com.urn = r.urn ";
+        $join['company_addresses']  = " left join company_addresses coma on coma.company_id = com.company_id ";
+        $join['company_locations']  = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
         $join['contacts']  = " left join contacts con on con.urn = r.urn ";
+        $join['contact_addresses']  = " left join contact_addresses cona on cona.contact_id = con.contact_id ";
+        $join['contact_locations']  = " left JOIN locations contact_locations ON (cona.location_id = contact_locations.location_id) ";
         $join['outcomes']  = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
 		$join['ownership'] = " left join ownership ow on ow.urn = r.urn ";

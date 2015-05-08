@@ -1,4 +1,34 @@
 
+var device_type;
+
+$(window).ready(function() {
+    setDevice($(window).width());
+});
+
+$(window).resize(function() {
+    setDevice($(window).width());
+});
+
+function setDevice(width) {
+
+    if (width <= 480){
+        device_type = "mobile";
+    }
+    else if (width <= 767){
+        device_type = "mobile2";
+    }
+    else if (width <= 980){
+        device_type = "tablet";
+    }
+    else if (width <= 1200){
+        device_type = "tablet2";
+    }
+    else {
+        device_type = "default";
+    }
+}
+
+
 function addLeadingZero(num) {
     if (num < 10) {
         return "0" + num;
