@@ -30,7 +30,23 @@ class Appointments_model extends CI_Model
             "postcode"
         );
 
-        $qry = "select date_format(`start`,'%d/%m/%y %H:%i') start,com.name,title,u.name attendee,date_format(a.`date_added`,'%d/%m/%y') date_added,postcode,appointment_id from appointments a left join appointment_attendees aa using(appointment_id) left join users u on u.user_id = aa.user_id left join records using(urn) left join companies com using(urn) ";
+        $qry = "select
+                  date_format(`start`,'%d/%m/%y %H:%i') start,
+                  com.name,
+                  title,
+                  u.name attendee,
+                  date_format(a.`date_added`,'%d/%m/%y') date_added,
+                  postcode,
+                  lat,
+                  lng,
+                  appointment_id,
+                  urn
+                from appointments a
+                  left join appointment_attendees aa using(appointment_id)
+                  left join users u on u.user_id = aa.user_id
+                  left join records using(urn)
+                  left join companies com using(urn)
+                  left join locations loc using(location_id) ";
         $where = $this->get_where($options, $table_columns);
         $qry .= $where;
         $qry .= " group by appointment_id";
@@ -60,6 +76,11 @@ class Appointments_model extends CI_Model
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
         $where = " where campaign_id in({$_SESSION['campaign_access']['list']}) ";
+
+        //Check the bounds of the map
+        if ($options['bounds'] && $options['map']=='true') {
+            $where .= " and (lat < ".$options['bounds']['neLat']." and lat > ".$options['bounds']['swLat']." and lng < ".$options['bounds']['neLng']." and lng > ".$options['bounds']['swLng'].") ";
+        }
 
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
