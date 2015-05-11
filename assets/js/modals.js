@@ -180,6 +180,26 @@ create_appointment:function(urn){
 		modals.load_modal(mheader,mbody,mfooter);
 	});	
 },
+appointment_outcome_html: function(id){
+	/*
+	$.ajax({url:helper.baseUrl+'ajax/appointment_outcome_options',
+	data:"POST",
+	dataType:"JSON",
+	data:{id:id}
+	}).done(function(response){
+		var outcome_options = "";
+		$.each(response.outcomes,function(k,v){
+		 outcome_options += '<option value="'+k+'">'+v+'</option>';	
+		});
+		
+	var mbody = '<form class="form-horizontal appointment-outcome-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="'+id+'" /><div class="form-group"><label>Please select the outcome of the appointment?</label><select class="selectpicker" name="appointment_outcome">'+outcome_options+'</select></div>';
+	
+	mbody += '<div class="form-group"><label>Please leave comments or feedback on the appointment</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="How"/></textarea></div></div></form>';
+	var mfooter = '<button data-modal="edit-appointment" data-event-id="'+id+'" class="btn btn-default pull-left"  type="button">Back</button> <button class="btn btn-primary pull-right delete-appointment" type="button">Confirm</button>';
+	modals.load_modal(mheader,mbody,mfooter);
+	
+	});*/
+            },
 delete_appointment_html: function (id) {
 	var mheader = 'Confirm Cancellation';
 	var mbody = '<form class="form-horizontal appointment-cancellation-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="'+id+'" /><div class="form-group"><label>Are you sure you want to cancel this appointment?</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="Please give a reason for the cancellation"/></textarea></div></div></form>';

@@ -89,6 +89,7 @@ var view = {
                 "scrollX": true,
                 "processing": true,
                 "serverSide": true,
+				"pagingType": "full",
                 stateSave: true,
                 "iDisplayLength": 10,
                 responsive: true,
@@ -294,6 +295,7 @@ var view = {
                     if (device_type == ('default')) {
                         $(".record-view").removeClass("col-lg-12").addClass("col-lg-6");
                         $(".map-view").show();
+						 $(".record-view").find('table').find('tbody').show();
                     }
                     else {
 
