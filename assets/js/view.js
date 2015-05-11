@@ -85,7 +85,8 @@ var view = {
                     "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
                 },
                 "dom": '<"top">p<"dt_info"i>rt<"clear">',
-                "bAutoWidth": false,
+				"autoWidth": true,
+				"scrollX": true,
                 "processing": true,
                 "serverSide": true,
                 stateSave: true,

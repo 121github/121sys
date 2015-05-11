@@ -35,10 +35,13 @@
                 <h1 class="planner-map">
                     <div id="map-canvas"
                          style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
+                               
+                                          
                     <div class="directions-btn">
                         <form class="form-horizontal map-form">
                             <div class="row">
-                                <div class="col-lg-10 col-sm-10">
+                                <div class="col-lg-12 col-sm-12">
+                                <span style="position:absolute;top:0px;right:-20px; padding:5px; font-size:14px" class='glyphicon glyphicon-exclamation-sign red pointer' data-toggle='tooltip' data-placement='left' title='Records without a postcode are not shown on the map'></span>
                                     <div class="input-group">
                                         <input hidden name="travel-mode">
                                         <input hidden name="destination">
@@ -54,11 +57,6 @@
                                             <button class="btn btn-default get-location-btn" type="button">Go!</button>
                                         </span>
                                     </div>
-                                </div>
-                                <div class="col-lg-1 col-sm-1">
-                                    <span class='glyphicon glyphicon-exclamation-sign red pointer btn-sm'
-                                          data-toggle='tooltip' data-placement='left'
-                                          title='The records without postcode are no shown in the map!!'></span>
                                 </div>
                             </div>
                             <div class="form-group input-group-sm directions-menu" style="display: none">
