@@ -20,7 +20,7 @@ class Migration_update_3 extends CI_Migration
     $this->db->query("ALTER TABLE `suppression` DROP `campaign_id`");
 
     //Add suppressed parked_code
-    $this->db->query("INSERT INTO `park_codes` (parked_code, park_reason) VALUES (4,'Suppressed')");
+    //$this->db->query("INSERT INTO `park_codes` (parked_code, park_reason) VALUES (4,'Suppressed')");
 
     //Create suppression_by_campaign table
     $this->db->query("CREATE TABLE suppression_by_campaign
@@ -38,7 +38,7 @@ class Migration_update_3 extends CI_Migration
     $this->db->query("ALTER TABLE `suppression` ADD `campaign_id` INT(11) NOT NULL");
     $this->db->query("ALTER TABLE `suppression` ADD INDEX `campaign_id`");
 
-    $this->db->query("DELETE FROM `park_codes` WHERE parked_code = 4");
+    //$this->db->query("DELETE FROM `park_codes` WHERE parked_code = 4");
 
     $this->db->query("DROP TABLE suppression_by_campaign");
   }
