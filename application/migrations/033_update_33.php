@@ -24,7 +24,7 @@ class Migration_update_33 extends CI_Migration
   PRIMARY KEY (`appointment_type_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3") ;
 
-$this->db->query("INSERT INTO `appointment_types` (`appointment_type_id`, `appointment_type`, `campaign_id`) VALUES
+$this->db->query("INSERT ignore INTO `appointment_types` (`appointment_type_id`, `appointment_type`, `campaign_id`) VALUES
 (1, 'Face to face', NULL),
 (2, 'Telephone', NULL)");
 
