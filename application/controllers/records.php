@@ -502,28 +502,7 @@ class Records extends CI_Controller
                     ));
                     exit;
                 }
-                if ($triggers["set_status"] && $update_array["pending_manager"] == "") {
-                    //if the outcome triggers a status update do it now
-                    $this->Records_model->set_status($update_array['urn'], $triggers["set_status"]);
-                }
-                if ($triggers['set_progress'] && $update_array["pending_manager"] == "") {
-                    $this->Records_model->set_progress($update_array['urn'], $triggers["set_progress"]);
-                    //if the outcome triggers a progress update do it now
-                }
-                if (intval($triggers["delay_hours"]) > 0) {
-                    if (!in_array("keep records", $_SESSION['permissions'])) {
-                        //delete all owners so it can get called back by anyone (answer machines etc)
-                        $this->Records_model->save_ownership($update_array['urn'], array());
-                    }
-					//This is now done using javascipt to change the input box when a delayed outcome is selected so we dont need to change it in the array. If we wanted to force a nextcall
-                    $delay                    = $triggers['delay_hours'];
-                    $update_array['nextcall'] = date('Y-m-d H:i', strtotime("+$delay hours"));
-                }
-                
-                if ($triggers["no_history"] == "1") {
-                    $no_history = true;
-                }
-                //the survey_complete ID is 60 on this system
+				 //the survey_complete ID is 60 on this system
                 if ($update_array['outcome_id'] == 60) {
                     
                     $survey_outcome = true;
@@ -549,6 +528,28 @@ class Records extends CI_Controller
                     }
                     
                 }
+                if ($triggers["set_status"] && $update_array["pending_manager"] == "") {
+                    //if the outcome triggers a status update do it now
+                    $this->Records_model->set_status($update_array['urn'], $triggers["set_status"]);
+                }
+                if ($triggers['set_progress'] && $update_array["pending_manager"] == "") {
+                    $this->Records_model->set_progress($update_array['urn'], $triggers["set_progress"]);
+                    //if the outcome triggers a progress update do it now
+                }
+                if (intval($triggers["delay_hours"]) > 0) {
+                    if (!in_array("keep records", $_SESSION['permissions'])) {
+                        //delete all owners so it can get called back by anyone (answer machines etc)
+                        $this->Records_model->save_ownership($update_array['urn'], array());
+                    }
+					//This is now done using javascipt to change the input box when a delayed outcome is selected so we dont need to change it in the array. If we wanted to force a nextcall
+                    $delay                    = $triggers['delay_hours'];
+                    $update_array['nextcall'] = date('Y-m-d H:i', strtotime("+$delay hours"));
+                }
+                
+                if ($triggers["no_history"] == "1") {
+                    $no_history = true;
+                }
+               
                 
             }
             if (isset($update_array['xfer_campaign'])) {

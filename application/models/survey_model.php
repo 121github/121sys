@@ -238,7 +238,7 @@ class Survey_model extends CI_Model
     public function get_option_answers($survey_id)
     {
         $answers = array();
-        $qry     = "select option_id, question_name, survey_answers.question_id,option_name from survey_answers left join answers_to_options using(answer_id) left join answer_notes using(answer_id) left join questions using(question_id) left join question_options using(option_id) where survey_id = '$survey_id'";
+        $qry     = "select option_id, question_name, survey_answers.question_id,option_name,an.notes from survey_answers left join answers_to_options using(answer_id) left join answer_notes an using(answer_id) left join questions using(question_id) left join question_options using(option_id) where survey_id = '$survey_id'";
         $result  = $this->db->query($qry)->result_array();
         foreach ($result as $row) {
             $answers[$row['question_id']] = array(
