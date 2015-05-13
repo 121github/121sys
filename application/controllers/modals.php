@@ -15,6 +15,15 @@ class Modals extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 
+	public function view_record(){
+		if ($this->input->is_ajax_request()) {
+		$data = array();
+		$urn = intval($this->input->post('urn'));
+		$data = $this->Modal_model->view_record($urn);
+		echo json_encode(array("success"=>true,"data"=>$data));
+		}
+	}
+
     public function view_appointment()
     {
 		if ($this->input->is_ajax_request()) {

@@ -1,6 +1,10 @@
 // JavaScript Document
 var modals = {
 	init:function(){
+			$(document).on('click','[data-modal="view-record"]',function(e){
+		e.preventDefault();
+		modals.view_record($(this).attr('data-urn'));
+	});
 		$(document).on('click','.modal-set-location',function(e){
 			e.preventDefault();
 		modals.set_location();
@@ -21,6 +25,10 @@ var modals = {
 		e.preventDefault();
 		modals.view_appointment($(this).attr('data-event-id'));
 	});
+	$(document).on('click','[data-modal="view-appointment"]',function(e){
+		e.preventDefault();
+		modals.view_appointment($(this).attr('data-event-id'));
+	});
 	$(document).on('click','[data-modal="edit-appointment"]',function(e){
 		e.preventDefault();
 		modals.view_appointment($(this).attr('data-event-id'),true);
@@ -29,6 +37,7 @@ var modals = {
 		e.preventDefault();
 		modals.delete_appointment_html($(this).attr('data-event-id'),true);
 	});
+	
 	$(document).on('click','[data-modal="create-appointment"]',function(e){
 		e.preventDefault();
 		modals.create_appointment($(this).attr('data-urn'));
@@ -132,13 +141,16 @@ view_appointment_html:function(data){
 	});
 	}
 	var mheader = "Appointment #"+data.appointment_id;
-	var mbody = "<table class='table'><tbody><tr><th>Company</th><td>"+data.coname+"</td></tr><tr><th>Date</th><td>"+data.starttext+"</td></tr><tr><th>Title</th><td>"+data.title+"</td></tr><tr><th>Notes</th><td>"+data.text+"</td></tr><tr><th>Attendees</th><td>"+attendees+"</td></tr>";
+	var mbody = "<table class='table'><tbody><tr><th>Company</th><td>"+data.coname+"</td></tr><tr><th>Date</th><td>"+data.starttext+"</td></tr><tr><th>Title</th><td>"+data.title+"</td></tr><tr><th>Notes</th><td>"+data.text+"</td></tr><tr><th>Attendees</th><td>"+attendees+"</td></tr><tr><th>Type</th><td>"+data.appointment_type+"</td></tr>";
 	if(data.distance&&data.current_postcode){
 	mbody += "<tr><th>Distance</th><td>"+Number(data.distance).toFixed(2)+" Miles from "+data.current_postcode+"</td></tr>";
 	}
 	mbody += "</tbody></table>";
 	mbody += "This appointment was set by <b>"+data.created_by+"</b> on <b>"+data.date_added+"</b>";
-	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" data-modal="edit-appointment" data-event-id="'+data.appointment_id+'" >Edit Appointment</a> <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a> <a target="_blank" class="btn btn-info pull-right" href="'+ mapLink + '?q=' + data.postcode + '",+UK">View Map</a>';
+	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" data-modal="edit-appointment" data-event-id="'+data.appointment_id+'" >Edit Appointment</a> <a target="_blank" class="btn btn-info pull-right" href="'+ mapLink + '?q=' + data.postcode + '",+UK">View Map</a>';
+	if(data.urn != $('#urn').val()){
+	' <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
+	}
 	if(data.distance){
 	mfooter += '<a target="_blank" class="btn btn-info pull-right" href="'+mapLink + '?zoom=2&saddr=' + data.current_postcode + '&daddr=' + data.postcode+'">Navigate</a>';
 	}
@@ -154,6 +166,17 @@ edit_appointment_html:function(data){
 		var mbody = '<div class="row"><div class="col-lg-12">'+response+'</div></div>';
 		var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-event-id="'+data.appointment_id+'" type="button">Delete</button>';
 		$mbody = $(mbody);
+		//check if the appointment address is already in the dropdown and if not, add it.
+		var option_exists = false;
+		$.each($mbody.find('#addresspicker option'),function(){
+			if($(this).val()==data.address+'|'+data.postcode){
+				option_exists = true;
+			}
+		});
+		if(!option_exists){
+		$mbody.find('#addresspicker').prepend('<option value="'+data.address+'|'+data.postcode+'">'+data.address+'</option>');
+		}
+		//cycle through the rest of the fields and set them in the form
 		$.each(data,function(k,v){
 			$mbody.find('[name="'+k+'"]').val(v);
 			if(k=="type"){
@@ -163,7 +186,8 @@ edit_appointment_html:function(data){
 				$.each(v,function(i,user_id){
 				$mbody.find('#attendee-select option[value="'+user_id+'"]').prop('selected',true);
 				});
-			}	
+			}
+			$mbody.find('#addresspicker option[value="'+data.address+'|'+data.postcode+'"]').prop('selected',true);	
 		});
 		modals.load_modal(mheader,$mbody,mfooter);
 	});	
@@ -304,8 +328,20 @@ reset_table:function(){
             modal.show_modal();
         }
 },
-record:function(){
-	/* add the modal code here */
+view_record:function(urn){
+	$.ajax({ url:helper.baseUrl+'modals/view_record',
+	type:"POST",
+	dataType:"JSON",
+	data:{urn:urn}
+	}).done(function(response){
+		modals.view_record_html(response.data);
+	});
+},
+view_record_html:function(data){
+	var mheader = "View Record #"+data.urn;
+	var mbody = '<div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table"><tr><th>Campaign</th><td>'+data.campaign_name+'</td></tr><tr><th>Name</th><td>'+data.name+'</td></tr><tr><th>Ownership</th><td>'+data.owners+'</td></tr><tr><th>Comments</th><td>'+data.comments+'</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table"><tr><th>Record Status</th><td>'+data.status_name+'</td></tr><tr><th>Last Outcome</th><td>'+data.outcome+'</td></tr><tr><th>Next Action</th><td>'+data.nextcall+'</td></tr><tr><th>Last Action</th><td>'+data.lastcall+'</td></tr></table></div></div>';
+	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
+		modals.load_modal(mheader,mbody,mfooter);
 },
 company:function(){
 	/* add the modal code here */
@@ -329,5 +365,3 @@ calendar:function(){
 	/* add the modal code here */
 },
 }
-
-modals.init();

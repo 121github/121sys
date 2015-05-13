@@ -2307,24 +2307,8 @@ var record = {
                 e.preventDefault();
                 modal.show_calendar(record.urn);
             });
-            $(document).on('change', '.addresspicker', function () {
-                if ($(this).val().length > 0) {
-                    $(this).closest('form').find('input[name="postcode"]').val($(this).val());
-                }
-            });
-            //this function automatically sets the end date for the appointment 1 hour ahead of the start date
-            $(".startpicker").on("dp.hide", function (e) {
-                var m = moment(e.date, "DD\MM\YYYY H:m");
-                $('.endpicker').data("DateTimePicker").setMinDate(e.date);
-                $('.endpicker').data("DateTimePicker").setDate(m.add('hours', 1).format('DD\MM\YYYY H:m'));
-            });
             //start the function to load the groups into the table
             record.appointment_panel.load_appointments();
-        },
-        hide_edit_form: function () {
-            $('.appointment-panel').find('form').fadeOut(1000, function () {
-                $('.panel-content').fadeIn();
-            });
         },
         //this function reloads the groups into the table body
         load_appointments: function () {
@@ -2357,10 +2341,10 @@ var record = {
             var $panel = $('.appointment-panel').find('.panel-content');
             $panel.empty();
 
-            var table = "<div class='table-responsive'><table class='table table-striped table-condensed'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th><th>Options</th></tr></thead><tbody>";
+            var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
                 if (data.length) {
-                    table += '<tr><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><button class="btn btn-default btn-xs" data-modal="edit-appointment" data-event-id="' + val.appointment_id + '">Edit</button> <button class="btn btn-default btn-xs" data-modal="delete-appointment" data-event-id="' + val.appointment_id + '">Cancel</button></td></tr>';
+                    table += '<tr  data-modal="view-appointment" data-event-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
                 }
             });
             $panel.append(table + "</tbody></table></div>");

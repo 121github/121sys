@@ -126,7 +126,8 @@ var view = {
                     "defaultContent": "-"
                 }],
                 "createdRow": function (row, data, dataIndex) {
-                    $(row).attr('urn', data['urn']);
+                    $(row).attr('data-urn', data['urn']);
+					$(row).attr('data-modal', 'view-record');
                     $(row).attr('postcode', data['postcode']);
                     $(row).addClass('pointer');
                     if (data['change_type'] == "delete") {
@@ -268,16 +269,6 @@ var view = {
             $(document).on('click', '.close-directionsPanel', function () {
                 hideDirections();
             });
-
-
-            //Start animation in the map for the marker deselected in the table
-            $(document).on('click', '.data-table tbody tr', function () {
-                //openInfoWindow($(this).attr('postcode'));
-                var record = records[$(this).attr('data-id')];
-                modal.show_record(record);
-                $(this).css('color', 'green');
-            });
-
 
             //Show map button actions
             $('#map-view-toggle').change(function () {
@@ -586,8 +577,9 @@ var view = {
     }
 }
 
-
+/*
 var modal = {
+	  
     default_buttons: function () {
         $('#modal').find('.modal-footer .btn').remove();
         $('#modal').find('.modal-footer').append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
@@ -596,7 +588,7 @@ var modal = {
     clear_buttons: function () {
         $('#modal').find('.modal-footer .btn').remove();
     },
-    show_record: function (value) {
+  show_record: function (value) {
         $('.modal-title').html('<h3 style="color: grey" id="firstHeading" class="firstHeading">URN: ' + value.urn + " [" + value.campaign_name + ']</h3>');
         var modal_html = "";
         var contentString =
@@ -629,4 +621,5 @@ var modal = {
             keyboard: false
         });
     }
-}
+	
+}*/
