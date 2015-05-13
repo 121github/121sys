@@ -49,7 +49,7 @@ class User extends CI_Controller
                         if ($_SESSION['role'] == 4) {
                             redirect('dashboard');
                         } else if ($_SESSION['role'] == 9) {
-                            redirect('files/manager');
+                            redirect('records/detail/0');
                         } else {
                             redirect('dashboard');
                         }

@@ -100,11 +100,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <li><a href="#">Home</a></li>
             <?php if (in_array("use callpot", $_SESSION['permissions'])) {
                 if (isset($_SESSION['current_campaign'])) { ?>
-                    <li><a href="<?php echo base_url(); ?>records/detail">Start Calling</a></li>
+                    <li><a href="<?php echo base_url(); ?>records/detail"><?php if($_SESSION['role']=="9"){ echo "Start Survey"; }  else { echo "Start Calling"; } ?></a></li>
                 <?php } else { ?>
                     <li><a href="#" style="color:red">You must select a campaign</a></li>
                 <?php }
             } ?>
+            <?php  if($_SESSION['role']<>"9"){ ?>
             <li><a href="#mm-1">Dashboard</a>
                 <ul>
                     <li <?php echo @($page == 'favorites_dash' ? "class=Selected'" : "") ?>><a
@@ -407,6 +408,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 
 
             <li class="Spacer"><a href="<?php echo base_url(); ?>user/account" class="hreflink">My Account</a></li>
+            <?php } //if role is survey only ?>
             <li><a href="<?php echo base_url(); ?>user/logout" class="hreflink">Logout</a></li>
         </ul>
     <?php } ?>

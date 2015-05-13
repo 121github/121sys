@@ -55,11 +55,11 @@
           <?php $text = ""; $color=""; 
 		  if($details['record']['record_status']=="3"){ 
 		  $color =  "red"; 
-		  $text = "This record has been removed with an outcome of ".$details['record']['outcome']. $deadtext;
+		  $text = "This record has been removed with an outcome of ".$details['record']['outcome'].". ". $deadtext;
 		  } 
 		  else if($details['record']['record_status']=="4"){ 
 		  $color = "green";
-		  $text = "This record has been completed with an outcome of ".$details['record']['outcome']. $deadtext; 
+		  $text = "This record has been completed with an outcome of ".$details['record']['outcome'].". ". $deadtext; 
 		   }
 		   if(!empty($details['record']['park_reason'])){
 		  $color =  "red"; 

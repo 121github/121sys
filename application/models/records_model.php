@@ -1124,7 +1124,8 @@ class Records_model extends CI_Model
 
     public function updated_recently($urn)
     {
-        $qry = "select urn from records where urn = '$urn' and date_updated > subdate(now(),interval 10 minute)";
+		//added status and parked code because they should be able to skip records that they cannot update
+        $qry = "select urn from records where urn = '$urn' and (date_updated > subdate(now(),interval 10 minute) or record_status <> '1' or parked_code is not null)";
         if ($this->db->query($qry)->num_rows() > 0) {
             return true;
         } else {
