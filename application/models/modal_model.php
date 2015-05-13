@@ -9,9 +9,19 @@ class Modal_model extends CI_Model
         
     }
 	public function view_record($urn){
-		$qry = "select r.urn,r.nextcall,status_name,campaign_name,if(outcome is null,'New',outcome) outcome,if(comments is null,'n/a',comments) comments ,if(com.name,com.name,con.fullname) name, if(r.date_updated is null,'n/a',date_format(r.date_updated,'%D %M %Y')) lastcall, date_format(r.nextcall,'%D %M %Y') nextcall from records r left join status_list sl on sl.record_status_id = r.record_status left join campaigns using(campaign_id) left join contacts con using(urn) left join companies com using(urn) left join outcomes using(outcome_id) left join (select max(history_id) mhid,urn from history where comments <> '' group by urn) mhis using(urn) left join history h on h.history_id = mhis.mhid where r.urn = '$urn'";
+		$qry = "select r.urn,r.nextcall,u.name owner,status_name,campaign_name,if(outcome is null,'New',outcome) outcome,if(comments is null,'n/a',comments) comments ,if(com.name is not null,com.name,con.fullname) name, if(r.date_updated is null,'n/a',date_format(r.date_updated,'%D %M %y')) lastcall, date_format(r.nextcall,'%D %M %y') nextcall from records r left join ownership using(urn) left join users u using(user_id) left join status_list sl on sl.record_status_id = r.record_status left join campaigns using(campaign_id) left join contacts con using(urn) left join companies com using(urn) left join outcomes using(outcome_id) left join (select max(history_id) mhid,urn from history where comments <> '' group by urn) mhis using(urn) left join history h on h.history_id = mhis.mhid where r.urn = '$urn'";
+		return $this->db->query($qry)->result_array();
+	}
+	
+		public function view_history($urn){
+		$qry = "select name,if(outcome_id is null,pd.description,outcome) outcome, date_format(contact,'%D %M %Y %H:%i') contact, comments from history left join progress_description pd using(progress_id) left join users using(user_id) left join outcomes using(outcome_id) where urn = '$urn' order by contact desc limit 5";
 		$this->firephp->log($qry);
-		return $this->db->query($qry)->row_array();
+		return $this->db->query($qry)->result_array();
+	}
+	
+			public function view_appointments($urn){
+		$qry = "select appointment_id, title, `text`, date_format(start,'%D %M %Y') `date`,start sqlstart, date_format(start,'%h:%i %p') `time`,address,u.name,status,cancellation_reason from appointments a left join users u on u.user_id = a.created_by where urn = '$urn' order by start desc limit 5";
+		return $this->db->query($qry)->result_array();
 	}
 	
 	public function view_appointment($id,$postcode=false){

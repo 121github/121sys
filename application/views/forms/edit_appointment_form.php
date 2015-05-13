@@ -1,6 +1,6 @@
       <form style="padding:0 20px;" id="appointment-form" class="form-horizontal">
       <input type="hidden" name="appointment_id">
-        <input type="hidden" name="urn"  >
+      <input type="hidden" name="urn" value="<?php echo $urn ?>">
           <div class="row">
         <div class="col-xs-12 col-sm-6">
         <div class="form-group input-group-sm">

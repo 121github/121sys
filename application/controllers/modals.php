@@ -18,8 +18,33 @@ class Modals extends CI_Controller
 	public function view_record(){
 		if ($this->input->is_ajax_request()) {
 		$data = array();
+		$ownership = array();
 		$urn = intval($this->input->post('urn'));
-		$data = $this->Modal_model->view_record($urn);
+		$record = $this->Modal_model->view_record($urn);
+		foreach($record as $row){
+		$data=$row;
+		if($row['owner']){
+		$ownership[$row['owner']] = $row['owner'];	
+		}
+		}
+		if(count($ownership)){
+		$data['ownership'] = implode(", ",$ownership);
+		} else {
+		$data['ownership'] = "-";	
+		}
+		$history = $this->Modal_model->view_history($urn);
+		$data['history'] = $history;
+		$appointments = $this->Modal_model->view_appointments($urn);
+		foreach($appointments as $k => $appointment){
+		if($appointment['status'] == "1" && strtotime($appointment['sqlstart']) < strtotime(date('Y-m-d H:i'))){	
+		$appointments[$k]['status'] = "<span class='glyphicon glyphicon-time orange'></span>";
+		} else if($appointment['status'] == "1" && strtotime($appointment['sqlstart']) > strtotime(date('Y-m-d H:i'))){
+		$appointments[$k]['status'] = "<span class='glyphicon glyphicon-ok green'></span>";	
+		} else if($appointment['status'] == "0"){
+		$appointments[$k]['status'] = "<span class='glyphicon glyphicon-remove red'></span>";	
+		}
+		}
+		$data['appointments'] = $appointments;
 		echo json_encode(array("success"=>true,"data"=>$data));
 		}
 	}
@@ -58,7 +83,7 @@ class Modals extends CI_Controller
         $attendees         = $this->Records_model->get_attendees(false, $campaign_id);
 		$types         = $this->Records_model->get_appointment_types(false, $campaign_id);
 		
-	    $this->load->view('forms/edit_appointment_form.php',array("attendees"=>$attendees,"addresses"=>$addresses,"types"=>$types)); 	
+	    $this->load->view('forms/edit_appointment_form.php',array("urn"=>$urn,"attendees"=>$attendees,"addresses"=>$addresses,"types"=>$types)); 	
 		}
 	}
 }

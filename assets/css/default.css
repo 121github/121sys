@@ -115,8 +115,10 @@ display:none;
 	overflow-y:scroll
 }
 .red { color:red }
+.orange { color:orange }
 .green { color:green }
 .yellow { color:yellow }
+.blue { color:blue }
 .visible { overflow:visible !important }
 .record-count { width:50px; display:inline-block }
 

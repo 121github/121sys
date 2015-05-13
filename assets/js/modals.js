@@ -80,7 +80,11 @@ var modals = {
 		dataType:"JSON"
 	}).done(function(response){
 		if(response.success){
-		flashalert.success('Appointment was saved');	
+		flashalert.success('Appointment was saved');
+		$('.close-modal').trigger('click');
+		if(record.urn){
+		record.appointment_panel.load_appointments();
+		}
 		} else {
 		flashalert.danger('Appointment was not saved');		
 		}
@@ -198,7 +202,7 @@ create_appointment:function(urn){
 	dataType:'html',
 	data: { urn:urn }
 	}).done(function(response){
-		var mheader = "Create Appointment";	
+		var mheader = "Create Appointment";
 		var mbody = '<div class="row"><div class="col-lg-12">'+response+'</div></div>';
 		var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right save-appointment" type="button">Save</button>';
 		modals.load_modal(mheader,mbody,mfooter);
@@ -291,6 +295,7 @@ load_modal:function(mheader,mbody,mfooter){
                 $('.endpicker').data("DateTimePicker").setMinDate(e.date);
                 $('.endpicker').data("DateTimePicker").setDate(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
             });
+		$("#modal").find("#tabs").tab();
 },
 	
 columns:function(columns){
@@ -339,7 +344,36 @@ view_record:function(urn){
 },
 view_record_html:function(data){
 	var mheader = "View Record #"+data.urn;
-	var mbody = '<div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table"><tr><th>Campaign</th><td>'+data.campaign_name+'</td></tr><tr><th>Name</th><td>'+data.name+'</td></tr><tr><th>Ownership</th><td>'+data.owners+'</td></tr><tr><th>Comments</th><td>'+data.comments+'</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table"><tr><th>Record Status</th><td>'+data.status_name+'</td></tr><tr><th>Last Outcome</th><td>'+data.outcome+'</td></tr><tr><th>Next Action</th><td>'+data.nextcall+'</td></tr><tr><th>Last Action</th><td>'+data.lastcall+'</td></tr></table></div></div>';
+	var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li></ul><div class="tab-content">';
+	//records tab
+	mbody += '<div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table"><tr><th>Campaign</th><td>'+data.campaign_name+'</td></tr><tr><th>Name</th><td>'+data.name+'</td></tr><tr><th>Ownership</th><td>'+data.ownership+'</td></tr><tr><th>Comments</th><td>'+data.comments+'</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table"><tr><th>Record Status</th><td>'+data.status_name+'</td></tr><tr><th>Last Outcome</th><td>'+data.outcome+'</td></tr><tr><th>Last Action</th><td>'+data.lastcall+'</td></tr><tr><th>Next Action</th><td>'+data.nextcall+'</td></tr></table></div></div></div>';
+	//history tab
+	mbody += '<div role="tabpanel" class="tab-pane" id="tab-history">'
+	if(data.history.length>0){
+	mbody += '<table class="table table-striped table-condensed"><thead><tr><th>Outcome</th><th>Date</th><th>User</th><th>Comments</th></tr></thead><tbody>';
+	$.each(data.history,function(k,row){
+	mbody += '<tr><td>'+row.outcome+'</td><td>'+row.contact+'</td><td>'+row.name+'</td><td>'+row.comments+'</td></tr>';
+	});
+	mbody += '</tbody></table>';
+	} else {
+	mbody += '<p>This record has not been updated yet</p>';	
+	}
+	mbody += '</div>'
+	//appointments tab	
+	mbody += '<div role="tabpanel" class="tab-pane" id="tab-apps">';
+	if(data.appointments.length>0){
+	mbody += '<table class="table table-striped table-condensed"><thead><tr><th>Date</th><th>Time</th><th>Title</th><th>Set by</th><th>Status</th></tr></thead><tbody>';
+	$.each(data.appointments,function(k,row){
+		mbody += '<tr><td>'+row.date+'</td><td>'+row.time+'</td><td>'+row.title+'</td><td>'+row.name+'</td><td>'+row.status+'</td></tr>';
+	
+	});
+	mbody += '</tbody></table>';
+	} else {
+	mbody += '<p>No appointments have been set</p>';	
+	}
+	mbody += '</div>';
+	
+	 mbody += '</div>';
 	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
 		modals.load_modal(mheader,mbody,mfooter);
 },
