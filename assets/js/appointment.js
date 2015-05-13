@@ -98,11 +98,11 @@ var appointment = {
                     "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
                 },
                 "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"clear">',
-                "bAutoWidth": false,
                 "autoWidth": false,
                 "scrollX": true,
                 "processing": true,
                 "serverSide": true,
+                "pagingType": "full",
                 stateSave: true,
                 "iDisplayLength": 10,
                 responsive: true,

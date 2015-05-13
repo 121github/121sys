@@ -31,7 +31,8 @@ class Appointments extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css',
-                'plugins/bootstrap-toggle/bootstrap-toggle.min.css'
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+                'map.css'
             ),
             'javascript' => array(
                 "modals.js",
