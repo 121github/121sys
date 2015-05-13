@@ -69,7 +69,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <?php } ?>
 
     <?php if (!isset($_SESSION['permissions']) || count($_SESSION['campaign_access']['array']) < 3 || in_array("mix campaigns", $_SESSION['permissions'])) { ?>
-        <a href="#" class="navbar-brand pull-right"><img style="margin-top:-5px;"
+        <a href="#" class="navbar-brand pull-right"><img style="margin-top:-5px; width:100%"
                                                          src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
     <?php } else { ?>
         <span style="position:absolute;top:8px; right:20px">
@@ -443,7 +443,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         class="close close-alert">&times;</span></div>
 <div class="page-danger alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
-<script src="<?php echo base_url(); ?>assets/js/lib/jquery.mobile.touch.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
