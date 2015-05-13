@@ -1,6 +1,10 @@
+#small-logo { display:none }
 @media (max-width: 478px) {
-  #small-logo {
+  #big-logo {
     display: none !important;
+  }
+  #small-logo {
+    display: block !important;
   }
 }
 

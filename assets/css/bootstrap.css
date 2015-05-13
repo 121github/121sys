@@ -5797,11 +5797,5 @@ button.close {
   }
 }
 /*added by brad to hide the logo when the screen gets too small*/
-@media (max-width: 950px) {
-	.navbar-brand { display:none }
-}
-/*added by brad to bring back the logo when the nav menu toggles to a drop down*/
-@media (max-width: 768px) {
-	.navbar-brand { display:block }
-}
+
 /*# sourceMappingURL=bootstrap.css.map */
