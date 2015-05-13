@@ -53,7 +53,8 @@ class Records extends CI_Controller
             'title' => 'List Records',
             'columns' => $visible_columns,
             'css' => array(
-                'plugins/bootstrap-toggle/bootstrap-toggle.min.css'
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+				'map.css'
             ),
             'javascript' => array(
                 'view.js',

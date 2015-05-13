@@ -12,7 +12,7 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-lg-12 record-view">
+            <div class="col-lg-12 record-view" style="overflow:visible">
                 <table class="table table-striped table-bordered data-table">
                     <thead>
                     <tr>
@@ -33,10 +33,18 @@
             </div>
             <div class="col-lg-6 map-view" style="display: none">
                 <h1 class="planner-map">
+                <div class="map-wrapper"> 
                     <div id="map-canvas"
                          style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
-                               
-                                          
+    <i class="top"></i>
+    <i class="right"></i>
+    <i class="bottom"></i>
+    <i class="left"></i>
+    <i class="top left"></i>
+    <i class="top right"></i>
+    <i class="bottom left"></i>
+    <i class="bottom right"></i>
+                            </div>              
                     <div class="directions-btn">
                         <form class="form-horizontal map-form">
                             <div class="row">

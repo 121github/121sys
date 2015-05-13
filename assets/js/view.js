@@ -79,7 +79,7 @@ var view = {
         /*******************************************************************/
         /********************** GET and PRINT THE RECORDS *************/
         /*******************************************************************/
-        function getRecords() {
+       function getRecords() {
             table = $('.data-table').DataTable({
                 "oLanguage": {
                     "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
@@ -90,9 +90,9 @@ var view = {
                 "processing": true,
                 "serverSide": true,
 				"pagingType": "full",
-                stateSave: true,
+                
+				"responsive":true,
                 "iDisplayLength": 10,
-                responsive: true,
                 "ajax": {
                     url: helper.baseUrl + "records/process_view",
                     type: 'POST',
