@@ -1,11 +1,11 @@
 // JavaScript Document
 var modals = {
 	init:function(){
-			$(document).on('click','[data-modal="view-record"]',function(e){
+			$(document).on('tap click','[data-modal="view-record"]',function(e){
 		e.preventDefault();
 		modals.view_record($(this).attr('data-urn'));
 	});
-		$(document).on('click','.modal-set-location',function(e){
+		$(document).on('tap click','.modal-set-location',function(e){
 			e.preventDefault();
 		modals.set_location();
 	});
@@ -13,11 +13,11 @@ var modals = {
 		e.preventDefault();
 		modals.save_appointment($('#appointment-form').serialize());
 	});
-	$(document).on('click','.modal-set-columns',function(e){
+	$(document).on('tap click','.modal-set-columns',function(e){
 		e.preventDefault();
 		modals.set_columns();
 	});
-	$(document).on('click','.modal-reset-table',function(e){
+	$(document).on('tap click','.modal-reset-table',function(e){
 		e.preventDefault();
 		modals.reset_table();
 	});	
@@ -25,20 +25,20 @@ var modals = {
 		e.preventDefault();
 		modals.view_appointment($(this).attr('data-event-id'));
 	});
-	$(document).on('click','[data-modal="view-appointment"]',function(e){
+	$(document).on('tap click','[data-modal="view-appointment"]',function(e){
 		e.preventDefault();
 		modals.view_appointment($(this).attr('data-event-id'));
 	});
-	$(document).on('click','[data-modal="edit-appointment"]',function(e){
+	$(document).on('tap click','[data-modal="edit-appointment"]',function(e){
 		e.preventDefault();
 		modals.view_appointment($(this).attr('data-event-id'),true);
 	});
-	$(document).on('click','[data-modal="delete-appointment"]',function(e){
+	$(document).on('tap click','[data-modal="delete-appointment"]',function(e){
 		e.preventDefault();
 		modals.delete_appointment_html($(this).attr('data-event-id'),true);
 	});
 	
-	$(document).on('click','[data-modal="create-appointment"]',function(e){
+	$(document).on('tap click','[data-modal="create-appointment"]',function(e){
 		e.preventDefault();
 		modals.create_appointment($(this).attr('data-urn'));
 	});

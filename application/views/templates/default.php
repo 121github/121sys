@@ -443,6 +443,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         class="close close-alert">&times;</span></div>
 <div class="page-danger alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
+<script src="<?php echo base_url(); ?>assets/js/lib/jquery.mobile.touch.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
