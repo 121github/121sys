@@ -33,29 +33,33 @@
             </div>
             <div class="col-lg-6 map-view" style="display: none">
                 <h1 class="planner-map">
-                <div class="map-wrapper"> 
-                    <div id="map-canvas"
-                         style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
-    <i class="top"></i>
-    <i class="right"></i>
-    <i class="bottom"></i>
-    <i class="left"></i>
-    <i class="top left"></i>
-    <i class="top right"></i>
-    <i class="bottom left"></i>
-    <i class="bottom right"></i>
-                            </div>              
+                    <div class="map-wrapper">
+                        <div id="map-canvas" style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
+                        <i class="top"></i>
+                        <i class="right"></i>
+                        <i class="bottom"></i>
+                        <i class="left"></i>
+                        <i class="top left"></i>
+                        <i class="top right"></i>
+                        <i class="bottom left"></i>
+                        <i class="bottom right"></i>
+                    </div>
                     <div class="directions-btn">
                         <form class="form-horizontal map-form">
                             <div class="row">
                                 <div class="col-lg-12 col-sm-12">
-                                <span style="position:absolute;top:0px;right:-20px; padding:5px; font-size:14px" class='glyphicon glyphicon-exclamation-sign red pointer' data-toggle='tooltip' data-placement='left' title='Records without a postcode are not shown on the map'></span>
+                                    <span style="position:absolute;top:0px;right:-20px; padding:5px; font-size:14px"
+                                          class='glyphicon glyphicon-exclamation-sign red pointer' data-toggle='tooltip'
+                                          data-placement='left'
+                                          title='Records without a postcode are not shown on the map'></span>
+
                                     <div class="input-group">
                                         <input hidden name="travel-mode">
                                         <input hidden name="destination">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default get-current-location-btn" type="button">
-                                                <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
+                                                <span style="font-size: 15px"
+                                                      class="glyphicon glyphicon-map-marker"></span>
                                             </button>
                                         </span>
                                         <input type="text" class="form-control" name="postcode"
