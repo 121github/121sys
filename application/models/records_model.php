@@ -187,6 +187,10 @@ class Records_model extends CI_Model
 
         $join = array();
         $qry = "select r.urn,
+                      date_format(rp.start_date,'%d/%m/%Y') planner_date,
+                      rp.user_id planner_user_id,
+                      rp.record_planner_id,
+                      rpu.name planner_user,
                       outcome,
                       if(com.name is null,'na',com.name) name,
                       fullname,
@@ -195,14 +199,16 @@ class Records_model extends CI_Model
                       con.website as contact_website,
                       date_format(r.date_updated,'%d/%m/%y') date_updated,
                       date_format(nextcall,'%d/%m/%y') nextcall,
-                      GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')') separator ',') as company_location,
-                      GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')') separator ',') as contact_location
+                      GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location,
+                      GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location
                 from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
         }
         //these joins are mandatory for sorting by name, outcome or campaign
+        $join['record_planner'] = " left join record_planner rp on rp.urn = r.urn ";
+        $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
         $join['companies'] = " left join companies com on com.urn = r.urn ";
         $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
         $join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
@@ -1133,6 +1139,24 @@ class Records_model extends CI_Model
         }
     }
 
+    /**
+     * Save a record planner
+     */
+    public function save_record_planner($record_planner) {
+
+        $record_planner_id = $record_planner['record_planner_id'];
+        unset($record_planner['record_planner_id']);
+
+        if ($record_planner_id) {
+            //Update the record planner
+            $this->db->where('record_planner_id', $record_planner_id);
+            return $this->db->update('record_planner', $record_planner);
+        }
+        else {
+            //Insert a new record planner
+            return $this->db->insert('record_planner', $record_planner);
+        }
+    }
 }
 
 ?>

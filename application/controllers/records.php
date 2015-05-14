@@ -81,22 +81,25 @@ class Records extends CI_Controller
 
                 //Location
                 if ($records[$k]["company_location"]) {
-                    $postcode_ar = explode(',',$records[$k]["company_location"]);
+                    $location_ar = explode(',',$records[$k]["company_location"]);
                 }
                 else if ($records[$k]["contact_location"]) {
-                    $postcode_ar = explode(',',$records[$k]["contact_location"]);
+                    $location_ar = explode(',',$records[$k]["contact_location"]);
                 }
-                if (!empty($postcode_ar)) {
+                if (!empty($location_ar)) {
+                    $postcode_ar = explode("|",$location_ar[0]);
                     $postcode = substr($postcode_ar[0],0,stripos($postcode_ar[0],'('));
                     $location = explode('/',substr($postcode_ar[0],stripos($postcode_ar[0],'(')));
                     $records[$k]["postcode"] = $postcode;
                     $records[$k]["lat"] = substr($location[0],1);
                     $records[$k]["lng"] = substr($location[1],0,strlen($location[1])-1);
+                    $records[$k]["location_id"] = $postcode_ar[1];
                 }
                 else {
                     $records[$k]["postcode"] = NULL;
                     $records[$k]["lat"] = NULL;
                     $records[$k]["lng"] = NULL;
+                    $records[$k]["location_id"] = NULL;
                 }
 
                 //Attendee
@@ -105,13 +108,13 @@ class Records extends CI_Controller
                 //Website
                 $records[$k]["website"] = ($records[$k]['company_website']?$records[$k]['company_website']:($records[$k]['contact_website']?$records[$k]['contact_website']:''));
             }
-
             
             $data = array(
                 "draw" => $this->input->post('draw'),
                 "recordsTotal" => count($nav),
                 "recordsFiltered" => count($nav),
-                "data" => $records
+                "data" => $records,
+                "planner_permission" => (in_array("planner", $_SESSION['permissions']))
             );
             echo json_encode($data);
         }
@@ -934,6 +937,23 @@ class Records extends CI_Controller
         } else {
             echo json_encode(array(
                 "success" => false
+            ));
+        }
+    }
+
+    public function save_record_planner() {
+        if ($this->input->is_ajax_request()) {
+            $record_planner = $this->input->post();
+            $record_planner['user_id'] = $_SESSION['user_id'];
+
+            $record_planner['start_date'] = to_mysql_datetime($record_planner['start_date']);
+
+            //Save the record planner
+            $result = $this->Records_model->save_record_planner($record_planner);
+
+            echo json_encode(array(
+                "success" => ($result),
+                "msg" => ($result?"Record planner save successfully!":"ERROR: Record planner NOT save successfully!!")
             ));
         }
     }

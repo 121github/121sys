@@ -72,6 +72,7 @@ var view = {
         var table;
         var infowindow = new google.maps.InfoWindow();
         var geocoder = new google.maps.Geocoder();
+        var planner_permission = false;
 
         google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -105,11 +106,12 @@ var view = {
                         d.bounds = getBounds();
                         d.map = $('#map-view-toggle').prop('checked');
                     },
-                    complete: function () {
+                    complete: function (d) {
                         $('.dt_info').show();
                         $('.tt').tooltip();
                         //Show the records in the map
                         showRecords();
+                        planner_permission = d.responseJSON.planner_permission;
                     }
                 },
                 "deferRender": true,
@@ -269,6 +271,46 @@ var view = {
             $(document).on('click', '.close-directionsPanel', function () {
                 hideDirections();
             });
+
+
+            //Planner form
+            $(document).on('click', '.planner-btn', function () {
+                var urn = $(this).attr('item-urn');
+                var planner_date = $(this).attr('item-planner-date');
+                var today_date = new Date();
+                today_date = today_date.getUTCDate()+"/"+(today_date.getUTCMonth()+1)+"/"+today_date.getFullYear();
+                $('#bodyContent_'+urn).hide();
+                $('#formContent_'+urn).show();
+
+                $('.date').datetimepicker({
+                    format: 'DD/MM/YYYY',
+                    pickTime: false,
+                    defaultDate: (planner_date.length > 0?planner_date:today_date)
+                });
+            });
+
+            //Cancel planner form
+            $(document).on('click', '.cancel-planner-btn', function () {
+                var urn = $(this).attr('item-urn');
+
+                $('#bodyContent_'+urn).show();
+                $('#formContent_'+urn).hide();
+            });
+
+            //Save planner
+            $(document).on('click', '.save-planner-btn', function () {
+                savePlanner($(this));
+            });
+
+
+            //Start animation in the map for the marker deselected in the table
+            //$(document).on('click', '.data-table tbody tr', function () {
+            //    //openInfoWindow($(this).attr('postcode'));
+            //    var record = records[$(this).attr('data-id')];
+            //    modal.show_record(record);
+            //    $(this).css('color', 'green');
+            //});
+
 
             //Show map button actions
             $('#map-view-toggle').change(function () {
@@ -480,27 +522,53 @@ var view = {
 
         // Add a marker to the map and push to the array.
         function addMarker(value) {
-            var marker_color = intToARGB(hashCode(value.attendee));
-            var marker_text_color = "FFFFFF";
-            var character = (value.attendee).substr(0, 1);
+            var marker_color = "|"+intToARGB(hashCode(value.attendee));
+            var marker_text_color = "|FFFFFF";
+            var character = "|"+(value.attendee).substr(0, 1);
+            var pin_style = (((planner_permission == true))&&(value.record_planner_id)?"pin_star":"pin");
+            var star_color = (((planner_permission == true))&&(value.record_planner_id)?"|FCEF04":"");
+            var map_pin_style = "d_map_xpin_letter";
+
+
+            var planner_info = '';
+            if (planner_permission == true) {
+                planner_info =
+                    '<b>Planner: </b>' +
+                    '<span style="margin-right: 5px;">' + (value.record_planner_id?(value.planner_user + ' on ' + value.planner_date):'') + '</span>' +
+                    '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="'+value.urn+'" item-planner-date="'+(value.planner_date?value.planner_date:'')+'"></a>';
+            }
+
             var contentString =
                 '<div id="content">' +
-                '<div id="siteNotice">' +
-                '</div>' +
-                '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
-                '<div id="bodyContent">' +
-                '<p><b>Comapny: </b>' + (value.name ? value.name : '') + '</p>' +
-                '<p><b>Contact: </b>' + (value.fullname ? value.fullname : '') + '</p>' +
-                '<p><b>Outcome: </b>' + (value.outcome ? value.outcome : '') + '</p>' +
-                '<p><b>Next Call: </b>' + (value.nextcall ? value.nextcall : '') + '</p>' +
-                '<p><b>Last Updated: </b>' + (value.date_updated ? value.date_updated : '') + '</p>' +
-                '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
-                '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
-                '<p>' +
-                '<span><a class="btn btn-success record-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>' +
-                '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
-                '</p>' +
-                '</div>' +
+                    '<div id="siteNotice">' +
+                    '</div>' +
+                    '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
+                    '<div id="bodyContent_'+value.urn+'">' +
+                        '<p><b>Company: </b>' + (value.name ? value.name : '') + '</p>' +
+                        '<p><b>Contact: </b>' + (value.fullname ? value.fullname : '') + '</p>' +
+                        '<p><b>Outcome: </b>' + (value.outcome ? value.outcome : '') + '</p>' +
+                        '<p><b>Next Call: </b>' + (value.nextcall ? value.nextcall : '') + '</p>' +
+                        '<p><b>Last Updated: </b>' + (value.date_updated ? value.date_updated : '') + '</p>' +
+                        '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
+                        '<p style="display: none;">' + value.location_id + '</p>' +
+                        '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
+                        '<p>' + planner_info + '</p>' +
+                        '<p>' +
+                        '<span><a class="btn btn-success btn-sm record-btn" item-postcode="' + value.postcode + '" href="#"><span class="glyphicon glyphicon-road"></span> Navigate </a></span>' +
+                        '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
+                        '</p>' +
+                    '</div>' +
+                    '<div id="formContent_'+value.urn+'" style="display:none;">' +
+                        '<form class="planner-form-'+value.urn+'">' +
+                            '<div class="form-group input-group-sm">' +
+                                '<p>Planning Date: </p><input type="text" class="form-control date" name="date" placeholder="Enter the planning date" required/>' +
+                            '</div>' +
+                            '<p>' +
+                                '<span><a class="btn btn-default btn-sm cancel-planner-btn" item-urn="'+value.urn+'" href="#">Cancel</a></span>' +
+                                '<span class="pull-right"><a class="btn btn-primary btn-sm save-planner-btn" item-urn="'+value.urn+'" item-postcode="'+value.postcode+'" item-location-id="'+value.location_id+'" item-record-planner-id="'+(value.record_planner_id?value.record_planner_id:'')+'" href="#">Save</a></span>' +
+                            '</p>' +
+                        '</form>' +
+                    '</div>'
                 '</div>';
 
             var marker = new google.maps.Marker({
@@ -509,7 +577,7 @@ var view = {
                 title: value.name,
                 postcode: value.postcode,
                 content: contentString,
-                icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
+                icon: "http://chart.apis.google.com/chart?chst="+map_pin_style+"&chld=" + pin_style + character + marker_color + marker_text_color + star_color
             });
 
             google.maps.event.addListener(marker, 'click', function () {
@@ -573,6 +641,37 @@ var view = {
         function deleteMarkers() {
             clearMarkers();
             markers = [];
+        }
+
+        //Save record planner
+        function savePlanner(btn) {
+            var urn = btn.attr('item-urn');
+            var postcode = btn.attr('item-postcode');
+            var location_id = btn.attr('item-location-id');
+            var record_planner_id = btn.attr('item-record-planner-id');
+            var planner_date = $('.planner-form-'+urn).find('input[name="date"]').val();
+
+            $.ajax({
+                url: helper.baseUrl + 'records/save_record_planner',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    'urn': urn,
+                    'postcode': postcode,
+                    'location_id': location_id,
+                    'start_date': planner_date,
+                    'record_planner_id': record_planner_id
+                }
+            }).done(function (response) {
+                if (response.success) {
+                    flashalert.success(response.msg);
+                    var currentPage = table.page();
+                    table.page(currentPage).draw(false);
+                } else {
+                    flashalert.danger(response.msg);
+                }
+            });
+
         }
     }
 }
