@@ -311,4 +311,9 @@ class User_model extends CI_Model
 
         return $results;
     }
+	
+	public function campaign_name($id){
+	$this->db->where("campaign_id",$id);
+	return $this->db->get("campaigns")->row()->campaign_name;	
+	}
 }

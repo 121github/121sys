@@ -1,4 +1,8 @@
-#small-logo { display:none }
+table.data-table {
+  max-width: none !important;
+}
+#DataTables_Table_0 { width:auto !important }
+#small-logo { display:none; }
 @media (max-width: 478px) {
   #big-logo {
     display: none !important;

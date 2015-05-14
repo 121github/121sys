@@ -1,7 +1,7 @@
 
     <div class="row">
       <div class="col-lg-12">
-        <h1 class="page-header">Dashboard</h1>
+        <h1 class="page-header">Dashboard <small><?php echo @$_SESSION['current_campaign_name'] ?></small></h1>
       </div>
       <!-- /.col-lg-12 --> 
     </div>
@@ -12,7 +12,7 @@
         <!-- /.panel -->
         <div class="panel panel-primary call-history">
           <div class="panel-heading"> 
-          <i class="fa fa-bar-chart-o fa-fw"></i>Latest Call History
+          <i class="fa fa-bar-chart-o fa-fw"></i>Latest Call History</span>
             <div class="pull-right">
                          <form class="history-filter" data-func="history_panel">
             	  <input type="hidden" name="date_from" value="">
@@ -21,6 +21,7 @@
                   <input type="hidden" name="team">
                   <input type="hidden" name="agent">
                   <input type="hidden" name="source">
+                  <?php if(!isset($_SESSION['current_campaign'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" > <span class="glyphicon glyphicon-filter"></span> Campaign</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -31,6 +32,7 @@
 	                    <li><a class="filter" data-ref="campaign" style="color: green;">All campaigns</a> </li>
 	                  </ul>
                   </div>
+                  <?php } ?>
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
@@ -103,6 +105,7 @@
                   <input type="hidden" name="agent">
                   <input type="hidden" name="source">
                   <input type="hidden" name="comments">
+                  <?php if(!isset($_SESSION['current_campaign'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" > <span class="glyphicon glyphicon-filter"></span> Campaign</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -113,6 +116,7 @@
 	                    <li><a class="filter" data-ref="campaign" style="color: green;">All campaigns</a> </li>
 	                  </ul>
                   </div>
+                  <?php } ?>
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
@@ -172,6 +176,7 @@
                   <input type="hidden" name="team">
                   <input type="hidden" name="agent">
                   <input type="hidden" name="source">
+                  <?php if(!isset($_SESSION['current_campaign'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" > <span class="glyphicon glyphicon-filter"></span> Campaign</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -182,6 +187,7 @@
 	                    <li><a class="filter" data-ref="campaign" style="color: green;">All campaigns</a> </li>
 	                  </ul>
                   </div>
+                  <?php } ?>
                   <!-- doesnt fit on panel
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
@@ -232,6 +238,7 @@
                   <input type="hidden" name="team">
                   <input type="hidden" name="agent">
                   <input type="hidden" name="source">
+                  <?php if(!isset($_SESSION['current_campaign'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" > <span class="glyphicon glyphicon-filter"></span> Campaign</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -242,6 +249,7 @@
 	                    <li><a class="filter" data-ref="campaign" style="color: green;">All campaigns</a> </li>
 	                  </ul>
                   </div>
+                  <?php } ?>
                   <!-- doesnt fit on panel
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
@@ -292,6 +300,7 @@
                   <input type="hidden" name="team">
                   <input type="hidden" name="agent">
                   <input type="hidden" name="source">
+                  <?php if(!isset($_SESSION['current_campaign'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" > <span class="glyphicon glyphicon-filter"></span> Campaign</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -302,6 +311,7 @@
 	                    <li><a class="filter" data-ref="campaign" style="color: green;">All campaigns</a> </li>
 	                  </ul>
                   </div>
+                  <?php } ?>
                    <!-- doesnt fit on panel
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">

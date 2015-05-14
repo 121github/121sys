@@ -1,5 +1,5 @@
 
-<table class="table table-striped data-table table-bordered">  
+<table class="table table-striped data-table table-bordered table-hover">  
         <thead> 
           <?php foreach($columns as $col){ ?>
   <th><?php echo $col['header'] ?></th>
@@ -20,13 +20,14 @@
 	  $(document).ready( function () {
 	
 var table = $('.data-table').DataTable({
-		"dom": '<"top">p<"dt_info"i>rt<"bottom"lp><"clear">',
+	 "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"bottom"l><"clear">',
 		"oLanguage": {
             "sProcessing": "<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif'>"
         },
-		"bAutoWidth": false,
+		"bAutoWidth": true,
 	 	"processing": true,
         "serverSide": true,
+		"scrollX": true,
    		//ordering:  false,
 		"iDisplayLength": 10,
 		stateSave: true,
@@ -36,14 +37,17 @@ var table = $('.data-table').DataTable({
 					$('.dt_info').hide();  
 				  },
 				  complete:function(){ $('.dt_info').show(); }
-		 		},                                                                                                                                       
+		 		},                                                                                                                                   "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('data-urn', data['urn']);
+					$(row).attr('data-modal', 'view-record');
+					$(row).addClass('pointer');
+				},
 		"columns": [                                                                                           
             { "data": "campaign_name"},
             { "data": "fullname" },
             { "data": "outcome" },
             { "data": "date_updated" },
-            { "data": "nextcall" },
-            { "data": "options" }
+            { "data": "nextcall" }
         ],
 		"columnDefs": [{
    			 "targets": [0,1,2,3,4],

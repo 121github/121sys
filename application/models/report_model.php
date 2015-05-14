@@ -76,7 +76,7 @@ public function get_audit_data($options){
         $team = isset($options['team']) ? $options['team'] : "";
         $source = $options['source'];
 
-        $where = " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $where = "";
         if (!empty($date_from)) {
             $where .= " and date(contact) >= '$date_from' ";
         }
@@ -118,7 +118,7 @@ public function get_audit_data($options){
 
         $qry .= $where;
         $qry .= " group by history.outcome_id order by count desc ";
-        $this->firephp->log($qry);
+        //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 

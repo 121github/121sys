@@ -293,10 +293,6 @@ class Search extends CI_Controller
             "column" => "nextcall",
             "header" => "Next Call"
         );
-        $visible_columns[]                 = array(
-            "column" => "options",
-            "header" => "Options"
-        );
         
         $data = array(
 			'page' => 'Search',

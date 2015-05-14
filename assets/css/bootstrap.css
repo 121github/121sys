@@ -564,7 +564,7 @@ a.bg-danger:hover {
 }
 .page-header {
   padding-bottom: 9px;
-  margin: 40px 0 20px;
+  margin: 20px 0 20px;
   border-bottom: 1px solid #eee;
 }
 ul,
@@ -3017,6 +3017,7 @@ input[type="button"].btn-block {
   min-width: 160px;
   padding: 5px 0;
   margin: 2px 0 0;
+  color:#333;
   font-size: 14px;
   list-style: none;
   background-color: #fff;

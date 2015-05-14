@@ -310,9 +310,9 @@ class User extends CI_Controller
     
     
     /* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
-    public function current_campaign($camp_id="")
+    public function current_campaign($camp_id=false)
     {
-        $campaign = (empty($camp_id)?intval($this->uri->segment(3)):$camp_id);
+        $campaign = ($camp_id?intval($this->uri->segment(3)):$camp_id);
         $user_id  = $_SESSION['user_id'];
         if ($campaign > "0") {
             if (in_array($campaign, $_SESSION['campaign_access']['array'])) {
@@ -327,7 +327,7 @@ class User extends CI_Controller
                 */
                 //reset the permissions
                 $this->User_model->set_permissions();
-                //this function lets you add and remove permisisons based on the selected campaign rather than user role! :)
+                //this function lets you add and remove permissions based on the selected campaign rather than user role! :)
                 
 				$campaign_permissions = $this->User_model->campaign_permissions($campaign);
                 foreach ($campaign_permissions as $row) {
@@ -340,6 +340,7 @@ class User extends CI_Controller
                 }
 				
                 $_SESSION['current_campaign'] = $campaign;
+				$_SESSION['current_campaign_name'] = $this->User_model->campaign_name($campaign);
 				$this->set_campaign_features();
 				$this->apply_default_filter();
 				if(!in_array("use callpot",$_SESSION['permissions'])||!in_array("list records",$_SESSION['permissions'])||!in_array("search records",$_SESSION['permissions'])){

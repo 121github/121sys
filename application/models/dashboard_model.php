@@ -63,7 +63,7 @@ class Dashboard_model extends CI_Model
 
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= "  group by urn order by records.date_updated asc";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     
@@ -103,7 +103,7 @@ class Dashboard_model extends CI_Model
         }
 		$qry .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by h.outcome_id order by count desc ";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
 
     }
@@ -266,7 +266,7 @@ class Dashboard_model extends CI_Model
 		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		
         $qry .= " group by urn order by nextcall asc limit 50";
-        $this->firephp->log($qry);
+        //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 	
@@ -296,7 +296,7 @@ class Dashboard_model extends CI_Model
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by nextcall asc";
-$this->firephp->log($qry);
+//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
     public function agent_activity($filter)

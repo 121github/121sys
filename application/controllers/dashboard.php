@@ -242,6 +242,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter  = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results = $this->Dashboard_model->get_history($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['contact']));
@@ -260,6 +263,9 @@ class Dashboard extends CI_Controller
         if ($this->input->is_ajax_request()) {
 			$data = array();
             $filter  = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results = $this->Dashboard_model->get_outcomes($filter);
             foreach ($results as $k => $row) {
                 $data[] = array(
@@ -280,6 +286,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $data     = $this->Dashboard_model->system_stats($filter);
             echo json_encode(array(
                 "success" => true,
@@ -293,6 +302,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $data     = $this->Dashboard_model->get_comments($filter);
             echo json_encode(array(
                 "success" => true,
@@ -307,6 +319,9 @@ class Dashboard extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $this->load->model('Records_model');
             $filter = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $data     = $this->Dashboard_model->get_urgent($filter);
             foreach ($data as $k => $v) {
                 $comment                  = $this->Records_model->get_last_comment($v['urn']);
@@ -327,6 +342,9 @@ class Dashboard extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $this->load->model('Records_model');
             $filter = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $data     = $this->Dashboard_model->get_pending($filter);
             foreach ($data as $k => $v) {
                 $comment                  = $this->Records_model->get_last_comment($v['urn']);
@@ -346,6 +364,9 @@ class Dashboard extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $this->load->model('Records_model');
             $filter = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $data     = $this->Dashboard_model->get_appointments($filter);
             foreach ($data as $k => $v) {
                 $comment                  = $this->Records_model->get_last_comment($v['urn']);
@@ -364,6 +385,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $data     = $this->Dashboard_model->get_favorites($filter);
             echo json_encode(array(
                 "success" => true,
@@ -378,6 +402,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter  = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results = $this->Dashboard_model->missed_callbacks($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
@@ -396,6 +423,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
            $filter  = $this->input->post();
+		   if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results = $this->Dashboard_model->upcoming_callbacks($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
@@ -414,6 +444,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
           $filter  = $this->input->post();
+		  if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results = $this->Dashboard_model->client_progress($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
@@ -433,6 +466,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
         $filter  = $this->input->post();
+		if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results = $this->Dashboard_model->nbf_progress($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
@@ -452,7 +488,9 @@ class Dashboard extends CI_Controller
         $this->load->helper('date');
         if ($this->input->is_ajax_request()) {
             $filter  = $this->input->post();
-			$this->firephp->log($filter);
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results  = $this->Dashboard_model->agent_activity($filter);
             $now      = time();
             foreach ($results as $k => $row) {
@@ -473,6 +511,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter  = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results  = $this->Dashboard_model->agent_success($filter);
             $now      = time();
             foreach ($results as $k => $row) {
@@ -491,6 +532,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
               $filter  = $this->input->post();
+			  if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results  = $this->Dashboard_model->agent_data($filter);
             $now      = time();
             foreach ($results as $k => $row) {
@@ -510,6 +554,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
               $filter  = $this->input->post();
+			  if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results = $this->Dashboard_model->all_callbacks($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
@@ -528,6 +575,9 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
               $filter  = $this->input->post();
+			  if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
             $results = $this->Dashboard_model->timely_callbacks($filter);
             foreach ($results as $k => $row) {
                 $results[$k]['time'] = date('g:i a', strtotime($row['nextcall']));
@@ -601,6 +651,9 @@ class Dashboard extends CI_Controller
     public function get_email_stats(){
 		if ($this->input->is_ajax_request()) {
     		$filter = $this->input->post();
+			if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
 			$stats = $this->Dashboard_model->get_email_stats($filter);
 			echo json_encode(array("success"=>true,"data"=>$stats));
 			exit;

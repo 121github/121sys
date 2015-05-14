@@ -67,17 +67,15 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <a href="#menu" class="navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
     <?php } ?>
-
-    <?php if (!isset($_SESSION['permissions']) || count($_SESSION['campaign_access']['array']) < 3 || in_array("mix campaigns", $_SESSION['permissions'])) { ?>
-        <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px; margin-right:5px;"
+        <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
              src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png"><img id="big-logo" style="margin-top:-5px; width:100%"
                                                          src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
-    <?php } else { ?>
-        <span style="position:absolute;top:8px; right:20px">
-        <img id="small-logo" style="margin-top:-10px; margin-right:5px;"
-             src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png">
-        <?php if (isset($campaign_access) && count($campaign_access) > 0) { ?>
-            <select class="selectpicker" id="campaign-select">
+</div>
+<nav id="menu" class="mm-menu mm--horizontal mm-offcanvas">
+    <?php if (isset($_SESSION['permissions'])) { ?>
+        <ul>
+               <?php if (isset($campaign_access) && count($campaign_access) > 0) { ?><li style="padding:0 20px;">
+            <select id="campaign-select" data-width="100%">
                 <option value="">Select a campaign to begin</option>
                 <?php foreach ($campaign_access as $client => $camp_array) { ?>
                     <optgroup label="<?php echo $client ?>">
@@ -89,24 +87,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     </optgroup>
                 <?php } ?>
             </select>
-
-            </span>
+            </li>
         <?php } ?>
-    <?php } ?>
-
-</div>
-<nav id="menu" class="mm-menu mm--horizontal mm-offcanvas">
-    <?php if (isset($_SESSION['permissions'])) { ?>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <?php if (in_array("use callpot", $_SESSION['permissions'])) {
-                if (isset($_SESSION['current_campaign'])) { ?>
+            <?php if (in_array("mix campaigns", $_SESSION['permissions'])||isset($_SESSION['current_campaign'])) {
+                 ?>
                     <li><a href="<?php echo base_url(); ?>records/detail"><?php if($_SESSION['role']=="9"){ echo "Start Survey"; }  else { echo "Start Calling"; } ?></a></li>
-                <?php } else { ?>
-                    <li><a href="#" style="color:red">You must select a campaign</a></li>
-                <?php }
-            } ?>
-            <?php  if($_SESSION['role']<>"9"){ ?>
+                    <?php if($_SESSION['role']<>9){ ?>
             <li><a href="#mm-1">Dashboard</a>
                 <ul>
                     <li <?php echo @($page == 'favorites_dash' ? "class=Selected'" : "") ?>><a
@@ -403,13 +389,15 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                 href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
                     </ul>
                 </li>
+                  <?php  } ?>
             <?php } ?>
-
+ 				<?php } else { ?>
+                    <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
+                <?php  } ?>
 
 
 
             <li class="Spacer"><a href="<?php echo base_url(); ?>user/account" class="hreflink">My Account</a></li>
-            <?php } //if role is survey only ?>
             <li><a href="<?php echo base_url(); ?>user/logout" class="hreflink">Logout</a></li>
         </ul>
     <?php } ?>
@@ -458,7 +446,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
 modals.init();
-
     <?php if(isset($_SESSION['user_id'])){ ?>
     check_session();
     var refreshIntervalId;
@@ -510,10 +497,10 @@ modals.init();
 </script>
 
 <script type="text/javascript">
-    $(function () {
-        $('nav#menu').mmenu();
-
-    });
+	$(document).ready(function(){
+	$('nav#menu').mmenu();
+	$('#campaign-select').selectpicker();
+	});
 </script>
 <?php //load specific javascript files set in the controller
 if (isset($javascript)):
