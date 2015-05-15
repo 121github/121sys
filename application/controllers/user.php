@@ -343,20 +343,14 @@ class User extends CI_Controller
 				$_SESSION['current_campaign_name'] = $this->User_model->campaign_name($campaign);
 				$this->set_campaign_features();
 				$this->apply_default_filter();
-				if(!in_array("use callpot",$_SESSION['permissions'])||!in_array("list records",$_SESSION['permissions'])||!in_array("search records",$_SESSION['permissions'])){
-					//if the campain does not use the call pot jusr send them to the dashboard
-				echo json_encode(array("location"=>"dashboard"));	
-				}
             }
         } else {
-            if (!in_array("all campaigns", $_SESSION['permissions'])) {
+            	unset($_SESSION['current_campaign_name']);
                 unset($_SESSION['current_campaign']);
                 unset($_SESSION['campaign_features']);
                 /* no longer logging in realtime 
                 $this->User_model->close_hours();
                 */
-                echo "no campaign selected";
-            }
         }
     }
     

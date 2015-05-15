@@ -11,6 +11,7 @@ class Appointments extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+		check_page_permissions('view appointments');
         $this->_campaigns = campaign_access_dropdown();
         $this->load->model('User_model');
         $this->load->model('Records_model');
@@ -38,6 +39,7 @@ class Appointments extends CI_Controller
                 "modals.js",
                 "location.js",
                 "appointment.js",
+				"map.js",
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
             )
         );
@@ -55,7 +57,8 @@ class Appointments extends CI_Controller
                 "draw" => $this->input->post('draw'),
                 "recordsTotal" => $count,
                 "recordsFiltered" => $count,
-                "data" => $records
+                "data" => $records,
+				"current_postcode"=>isset($_SESSION['current_postcode'])?$_SESSION['current_postcode']:false
             );
             echo json_encode($data);
         }

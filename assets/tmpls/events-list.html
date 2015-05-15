@@ -4,7 +4,7 @@
 		<% _.each(events, function(event) { %>
 			<li>
 				<span class="pull-left event <%= event['class'] %>"></span>&nbsp;
-				<a href="#" data-modal='view-appointment' data-event-id="<%= event.id %>"
+				<a href="#" data-modal='view-appointment' data-id="<%= event.id %>" data-event-id="<%= event.id %>"
 					data-event-class="<%= event['class'] %>" class="event-item">
 					<%= event.starttime %> - <%= event.endtime %> <%= event.title %> <span style='color:grey'><%= event.text %></span> <%= event.statusinline %></a>
 			</li>

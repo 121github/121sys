@@ -1,6 +1,5 @@
 $(document).ready(function () {
     "use strict";
-
     //Show appointment rules button
     $(document).on('mouseenter', '.cal-month-day', function () {
         var day = $(this).attr('item-day');
@@ -253,7 +252,9 @@ $(document).ready(function () {
             calendar.view();
         })
     });
-
+	//load the available attendee options when the page loads
+	$('#campaign-cal-select').trigger('change');
+	
     $(document).on('click', '#distance-cal-button', function (e) {
         e.preventDefault();
         modal.distance();

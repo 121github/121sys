@@ -12,9 +12,10 @@ function getLocation() {
 
 
 function getLocationSuccess(position) {
-    
-    $('.geolocation-error').hide();
-    
+    //store in localstorage
+	localStorage.lat = position.coords.latitude;
+	localStorage.lng = position.coords.longitude;
+	
     var postcode = null,
         locality = null,
         exit     = 0,
@@ -26,6 +27,7 @@ function getLocationSuccess(position) {
         region: 'GB'
     },
     function(result, status) {
+
     	if (status === 'OK') {
             for(var i = 0, length = result.length; i < length; i++) {
                 //each result has an address with multiple parts (it's all in the reference)
@@ -34,6 +36,8 @@ function getLocationSuccess(position) {
                     //if the address component has postal code then write it out
                     if(component.types[0] === 'postal_code') {
                         postcode = component.long_name;
+						localStorage.current_postcode = postcode;
+						localStorage.removeItem("location_error");
                         exit++;
                     }
                     if(component.types[0] === 'locality') {
@@ -97,7 +101,13 @@ function getLocationError(error){
             errMsg = 'Request timeout';
             break;
     }
-    $('.geolocation-error').text(errMsg).show();
+    localStorage.removeItem("current_postcode");
+	localStorage.removeItem("lat");
+	localStorage.removeItem("lng");
+	localStorage.location_error = errMsg;
+	if(localStorage.location_error){
+	flashalert.warning('Geolocation failure: '+localStorage.location_error);	
+	}
 }
 
 $(document).on('click', '.locate-postcode', function(e) {

@@ -4,7 +4,7 @@
         Record List
         <div class="pull-right">
             <div class="btn-group">
-                <input type="checkbox" id="map-view-toggle"
+                <input style="display:none" type="checkbox" id="map-view-toggle"
                        data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"
                        data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-toggle="toggle">
             </div>
@@ -12,7 +12,10 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-lg-12 record-view" style="overflow:visible">
+       
+            <div id="table-wrapper" class="col-lg-12 record-view" style="overflow:visible">
+            
+            <img class="table-loading" style="display:none; position:absolute; z-index:999; top:50%; left:50%; margin-left:-150px" src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
                 <table class="table table-striped table-bordered data-table">
                     <thead>
                     <tr>

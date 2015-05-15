@@ -74,6 +74,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <nav id="menu" class="mm-menu mm--horizontal mm-offcanvas">
     <?php if (isset($_SESSION['permissions'])) { ?>
         <ul>
+        <li><a class="mm-title"><small><span class="text-primary"><?php echo date('l jS F') ?></span> - Welcome <?php echo $_SESSION['name'] ?></small></a></li>
                <?php if (isset($campaign_access) && count($campaign_access) > 0) { ?><li style="padding:0 20px;">
             <select id="campaign-select" data-width="100%">
                 <option value="">Select a campaign to begin</option>

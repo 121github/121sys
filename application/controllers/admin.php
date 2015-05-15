@@ -36,6 +36,7 @@ class Admin extends CI_Controller
 	}
 	
 	public function files(){
+		check_page_permissions('admin files');
 		$folders = $this->File_model->get_folders();
 		$users = $this->Form_model->get_users();
 		$data = array( 
@@ -130,6 +131,7 @@ class Admin extends CI_Controller
     //this controller loads the view for the user page
     public function users()
     {
+		check_page_permissions('admin users');
 		$options['teams']  = $this->Form_model->get_teams();
         $options['roles']  = $this->Form_model->get_roles();
         $options['groups'] = $this->Form_model->get_all_groups();
@@ -172,6 +174,7 @@ class Admin extends CI_Controller
     //this loads the user management view  
     public function campaigns()
     {
+		check_page_permissions('campaign setup');
         $options['types']     = $this->Form_model->get_campaign_types(false);
         $options['features']  = $this->Form_model->get_campaign_features();
         $options['clients']   = $this->Form_model->get_clients();
@@ -199,6 +202,7 @@ class Admin extends CI_Controller
 	
 	    public function campaign_access()
     {
+		check_page_permissions('campaign access');
         $options['types']     = $this->Form_model->get_campaign_types(false);
         $options['features']  = $this->Form_model->get_campaign_features();
         $options['clients']   = $this->Form_model->get_clients();
@@ -460,6 +464,7 @@ $this->firephp->log($backup_form['months_num']);
     //this loads the logs view  
     public function logs()
     {
+		check_page_permissions('view logs');
         $logs = $this->Admin_model->get_logs();
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -477,6 +482,7 @@ $this->firephp->log($backup_form['months_num']);
     //roles page functions
     public function roles()
     {
+		check_page_permissions('admin roles');
         $roles            = $this->Admin_model->get_roles();
         $permissions_data = $this->Admin_model->get_permissions();
         foreach ($permissions_data as $row) {
@@ -551,6 +557,7 @@ $this->firephp->log($backup_form['months_num']);
     //this loads the groups view  
     public function groups()
     {
+		check_page_permissions('admin groups');
         $data = array(
             'campaign_access' => $this->_campaigns,
 'pageId' => 'Admin',
@@ -588,6 +595,7 @@ $this->firephp->log($backup_form['months_num']);
     /* team page functions */
     public function teams()
     {
+		check_page_permissions('admin teams');
         $groups   = $this->Form_model->get_groups();
         $managers = $this->Form_model->get_managers();
         $data     = array(
@@ -708,7 +716,7 @@ $this->firephp->log($backup_form['months_num']);
     /* campaign fields page functions */
     public function campaign_fields()
     {
-	
+	check_page_permissions('campaign fields');
     	$campaigns = $this->Form_model->get_campaigns();
     	$data     = array(
     			'campaign_access' => $this->_campaigns,

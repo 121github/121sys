@@ -1,6 +1,6 @@
       <div class="row">
         <div class="col-lg-12">
-          <h1 class="page-header">Callbacks</h1>
+          <h1 class="page-header">Callbacks <small><?php echo @$_SESSION['current_campaign_name'] ?></small></h1>
         </div>
         <!-- /.col-lg-12 --> 
       </div>
@@ -22,7 +22,7 @@
 			      <input type="hidden" name="colname">
 			      
 			      <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo (!empty($btntext)?$btntext:"Today"); ?> </span></button></div>
-			      
+			       <?php if(!isset($_SESSION['current_campaign'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
@@ -33,6 +33,7 @@
 	                    <li><a class="filter" ref="#" style="color: green;" data-ref="campaign">All campaigns</a> </li>
 	                  </ul>
                   </div>
+                  <?php } ?>
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>

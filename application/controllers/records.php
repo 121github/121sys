@@ -57,9 +57,12 @@ class Records extends CI_Controller
 				'map.css'
             ),
             'javascript' => array(
+				"location.js",
+				'map.js',
                 'view.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
-                'modals.js'
+                'modals.js',
+				
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
@@ -126,7 +129,7 @@ class Records extends CI_Controller
             if (!isset($_SESSION['current_campaign'])) {
                 redirect('error/campaign');
             }
-            //if the campaign does not have search enable and the user does not have search permissions then they are given a record
+            //if no urn is entered into the url then we allocate one
             $urn       = $this->Records_model->get_record();
             $automatic = true;
             //unsetting navigation array because it's not needed when users are using the automated method

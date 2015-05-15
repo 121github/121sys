@@ -164,6 +164,10 @@ class User_model extends CI_Model
         foreach ($role_permissions as $row) {
             $_SESSION['permissions'][$row['permission_id']] = $row['permission_name'];
         }
+		//admin should always be allowed to edit role permissions to prevent being locked out
+		if($_SESSION['role']=="1"){
+			 $_SESSION['permissions']['admin'] = 'admin roles';
+		}
         
     }
     

@@ -2,20 +2,27 @@
     <div class="page-header">
         <div class="pull-right form-inline">
             <div class="form-inline pull-right" style="padding-left:20px">
-                <div class="form-group" <?php if ($disable_campaign){ ?>style="display:none"<?php } ?>>
-                    <select id="campaign-cal-select" name="campaigns[]" multiple class="selectpicker" data-width="100%"
+            
+                <div  class="form-group">
+                    <select id="campaign-cal-select" <?php if ($disable_campaign||isset($_SESSION['current_campaign'])){ ?>disabled<?php } ?> name="campaigns[]" multiple class="selectpicker" data-width="100%"
                             data-size="5" title="Select campaigns">
-                        <?php foreach ($campaigns as $row): ?>
-                            <?php if (in_array($row['id'], $_SESSION['campaign_access']['array'])): ?>
-                                <option <?php if (@in_array($row['id'], $_SESSION['calendar-filter']['campaigns'])) {
+                        <?php 
+						//this part select the global campaign if they have one selected, if not it will select any that has previously been selected in the filter
+						foreach ($campaigns as $row): ?><option
+                            <?php if(!isset($_SESSION['current_campaign'])) { 
+							if (in_array($row['id'], $_SESSION['campaign_access']['array'])): ?>
+                                 <?php if (@in_array($row['id'], $_SESSION['calendar-filter']['campaigns'])) {
                                     echo "selected";
-                                } else {
+                                } endif;
+							}
+								else { 
                                     echo(@$_SESSION['current_campaign'] == $row['id'] ? "selected" : "");
                                 } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
-                            <?php endif ?>
+                         
                         <?php endforeach; ?>
                     </select>
                 </div>
+        
                 <div class="form-group">
                     <select id="user-select" name="users[]" multiple class="selectpicker" data-width="100%"
                             data-size="5" title="Select attendees">

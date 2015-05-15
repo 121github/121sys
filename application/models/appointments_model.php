@@ -16,7 +16,6 @@ class Appointments_model extends CI_Model
         $table_columns = array(
             "start",
             "com.name",
-            "title",
             "u.name",
             "date_format(a.`date_added`,'%d/%m/%y')",
             "postcode"
@@ -24,7 +23,6 @@ class Appointments_model extends CI_Model
         $order_columns = array(
             "start",
             "com.name",
-            "title",
             "u.name",
             "a.date_added",
             "postcode"
@@ -33,13 +31,13 @@ class Appointments_model extends CI_Model
         $qry = "select
                   date_format(`start`,'%d/%m/%y %H:%i') start,
                   com.name,
-                  title,
                   u.name attendee,
                   date_format(a.`date_added`,'%d/%m/%y') date_added,
                   postcode,
                   lat,
                   lng,
                   appointment_id,
+				  title,
                   urn
                 from appointments a
                   left join appointment_attendees aa using(appointment_id)
@@ -76,7 +74,9 @@ class Appointments_model extends CI_Model
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
         $where = " where campaign_id in({$_SESSION['campaign_access']['list']}) ";
-
+		if(isset($_SESSION['current_campaign'])){
+			 $where .= " and campaign_id = '".$_SESSION['current_campaign']."' ";
+		}
         //Check the bounds of the map
         if ($options['bounds'] && $options['map']=='true') {
             $where .= " and (lat < ".$options['bounds']['neLat']." and lat > ".$options['bounds']['swLat']." and lng < ".$options['bounds']['neLng']." and lng > ".$options['bounds']['swLng'].") ";

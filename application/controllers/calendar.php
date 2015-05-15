@@ -9,6 +9,7 @@ class Calendar extends CI_Controller
     {
         parent::__construct();
         user_auth_check(false);
+		check_page_permissions('full calendar');
         $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Calendar_model');
         $this->load->model('Form_model');
@@ -30,12 +31,12 @@ class Calendar extends CI_Controller
     public function index()
     {
         $users = array();
-        if (in_array("search campaigns", $_SESSION['permissions'])) {
+        if (in_array("mix campaigns", $_SESSION['permissions'])) {
             $campaigns = $this->Form_model->get_calendar_campaigns();
             $users = isset($_SESSION['current_campaign']) ? $this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])) : "";
             $disable_campaign_filter = false;
         }
-        if (!in_array("search campaigns", $_SESSION['permissions'])) {
+        if (!in_array("mix campaigns", $_SESSION['permissions'])) {
             $users = isset($_SESSION['current_campaign']) ? $this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])) : "";
             $campaigns = $this->Form_model->get_calendar_campaigns();
             $disable_campaign_filter = true;

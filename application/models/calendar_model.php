@@ -76,7 +76,9 @@ class Calendar_model extends CI_Model
                 $where .= " )";
             }
         }
-
+		if (isset($_SESSION['current_campaign'])) {
+            $where .= " and campaign_id = '".$_SESSION['current_campaign']."'";
+        }
         if (!empty($options['campaigns'])) {
             $where .= " and campaign_id in(" . implode(",", $options['campaigns']) . ")";
         }

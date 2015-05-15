@@ -50,7 +50,7 @@
  <?php endforeach; ?>
 </select>
         </div>
-          <div class="row" id="select-appointment-address">
+          <div class="row" id="select-appointment-address" <?php if(count($addresses)==0){ echo 'style="display:none"'; } ?>>
      
         <div class="col-lg-12">
                                 <div class="form-group input-group-sm">
@@ -71,7 +71,7 @@
         </div>
     </div>
      </form>
-         <div id="add-appointment-address" style="display:none">
+         <div id="add-appointment-address" <?php if(count($addresses)>0){ echo 'style="display:none"'; } ?> >
        <p>Please enter the address that the appointment will take place</p>
           <div class="col-sm-12"> 
        <div class="row">

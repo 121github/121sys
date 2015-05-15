@@ -10,7 +10,6 @@ class Files extends CI_Controller
     {
         parent::__construct();
         user_auth_check(false);
-        //check_page_permissions("view files");
         $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Docscanner_model');
         $this->load->model('File_model');
@@ -31,6 +30,7 @@ class Files extends CI_Controller
     public function manager()
     {
         user_auth_check(false);
+		check_page_permissions("view files");
  $user_folders = $this->File_model->get_folders();
 /*
         $folder_name  = $folder ? $user_folders[$folder]['folder_name'] : false;

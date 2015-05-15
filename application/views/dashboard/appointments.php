@@ -1,10 +1,17 @@
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header">Appointments <small><?php echo @$_SESSION['current_campaign_name'] ?></small></h1>
+      </div>
+      <!-- /.col-lg-12 --> 
+    </div>
+
 <div class="panel panel-primary">
     <div class="panel-heading">
         <i class="fa fa-bar-chart-o fa-fw"></i>
-        Appointments
+        Appointments 
         <div class="pull-right">
             <div class="btn-group">
-                <input type="checkbox" id="map-view-toggle"
+                <input type="checkbox" style="display:none" id="map-view-toggle"
                        data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"
                        data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-toggle="toggle">
             </div>
@@ -12,7 +19,7 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-lg-12 appointment-view" id="appointment-table"></div>
+            <div class="col-lg-12 appointment-view" id="table-wrapper"></div>
             <div class="col-lg-6 map-view" style="display: none">
                 <h1 class="planner-map">
                     <div class="map-wrapper">
@@ -111,3 +118,4 @@
         color: green;
     }
 </style>
+

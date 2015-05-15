@@ -23,19 +23,19 @@ var modals = {
 	});	
 	$('#cal-slide-box').on('click','a',function(e){
 		e.preventDefault();
-		modals.view_appointment($(this).attr('data-event-id'));
+		modals.view_appointment($(this).attr('data-id'));
 	});
 	$(document).on('click','[data-modal="view-appointment"]',function(e){
 		e.preventDefault();
-		modals.view_appointment($(this).attr('data-event-id'));
+		modals.view_appointment($(this).attr('data-id'));
 	});
 	$(document).on('click','[data-modal="edit-appointment"]',function(e){
 		e.preventDefault();
-		modals.view_appointment($(this).attr('data-event-id'),true);
+		modals.view_appointment($(this).attr('data-id'),true);
 	});
 	$(document).on('click','[data-modal="delete-appointment"]',function(e){
 		e.preventDefault();
-		modals.delete_appointment_html($(this).attr('data-event-id'),true);
+		modals.delete_appointment_html($(this).attr('data-id'),true);
 	});
 	
 	$(document).on('click','[data-modal="create-appointment"]',function(e){
@@ -124,7 +124,7 @@ view_appointment:function(id,edit){
 		modals.view_appointment_html(response.data);
 			}
 		} else {
-		flashalert.dancer(response.msg);	
+		flashalert.danger(response.msg);	
 		}
 	});
 },
@@ -151,7 +151,7 @@ view_appointment_html:function(data){
 	}
 	mbody += "</tbody></table>";
 	mbody += "This appointment was set by <b>"+data.created_by+"</b> on <b>"+data.date_added+"</b>";
-	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" data-modal="edit-appointment" data-event-id="'+data.appointment_id+'" >Edit Appointment</a> <a target="_blank" class="btn btn-info pull-right" href="'+ mapLink + '?q=' + data.postcode + '",+UK">View Map</a>';
+	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="'+data.appointment_id+'" >Edit Appointment</a> <a target="_blank" class="btn btn-info pull-right" href="'+ mapLink + '?q=' + data.postcode + '",+UK">View Map</a>';
 	if(data.urn != $('#urn').val()){
 	' <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
 	}
@@ -168,7 +168,7 @@ edit_appointment_html:function(data){
 	}).done(function(response){
 		var mheader = "Edit Appointment #"+data.appointment_id;
 		var mbody = '<div class="row"><div class="col-lg-12">'+response+'</div></div>';
-		var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-event-id="'+data.appointment_id+'" type="button">Delete</button>';
+		var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="'+data.appointment_id+'" type="button">Delete</button>';
 		$mbody = $(mbody);
 		//check if the appointment address is already in the dropdown and if not, add it.
 		var option_exists = false;
@@ -231,7 +231,7 @@ appointment_outcome_html: function(id){
 delete_appointment_html: function (id) {
 	var mheader = 'Confirm Cancellation';
 	var mbody = '<form class="form-horizontal appointment-cancellation-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="'+id+'" /><div class="form-group"><label>Are you sure you want to cancel this appointment?</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="Please give a reason for the cancellation"/></textarea></div></div></form>';
-	var mfooter = '<button data-modal="edit-appointment" data-event-id="'+id+'" class="btn btn-default pull-left"  type="button">Back</button> <button class="btn btn-primary pull-right delete-appointment" type="button">Confirm</button>';
+	var mfooter = '<button data-modal="edit-appointment" data-id="'+id+'" class="btn btn-default pull-left"  type="button">Back</button> <button class="btn btn-primary pull-right delete-appointment" type="button">Confirm</button>';
 	modals.load_modal(mheader,mbody,mfooter);
             },
 confirm_other_appointment_address:function(){
@@ -346,13 +346,13 @@ view_record_html:function(data){
 	var mheader = "View Record #"+data.urn;
 	var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li></ul><div class="tab-content">';
 	//records tab
-	mbody += '<div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table"><tr><th>Campaign</th><td>'+data.campaign_name+'</td></tr><tr><th>Name</th><td>'+data.name+'</td></tr><tr><th>Ownership</th><td>'+data.ownership+'</td></tr><tr><th>Comments</th><td>'+data.comments+'</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table"><tr><th>Record Status</th><td>'+data.status_name+'</td></tr><tr><th>Last Outcome</th><td>'+data.outcome+'</td></tr><tr><th>Last Action</th><td>'+data.lastcall+'</td></tr><tr><th>Next Action</th><td>'+data.nextcall+'</td></tr></table></div></div></div>';
+	mbody += '<div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table"><tr><th>Campaign</th><td>'+data.campaign_name+'</td></tr><tr><th>Name</th><td>'+data.name+'</td></tr><tr><th>Ownership</th><td>'+data.ownership+'</td></tr><tr><th>Comments</th><td class="small">'+data.comments+'</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table"><tr><th>Record Status</th><td>'+data.status_name+'</td></tr><tr><th>Last Outcome</th><td>'+data.outcome+'</td></tr><tr><th>Last Action</th><td>'+data.lastcall+'</td></tr><tr><th>Next Action</th><td>'+data.nextcall+'</td></tr></table></div></div></div>';
 	//history tab
 	mbody += '<div role="tabpanel" class="tab-pane" id="tab-history">'
 	if(data.history.length>0){
 	mbody += '<table class="table table-striped table-condensed"><thead><tr><th>Outcome</th><th>Date</th><th>User</th><th>Comments</th></tr></thead><tbody>';
 	$.each(data.history,function(k,row){
-	mbody += '<tr><td>'+row.outcome+'</td><td>'+row.contact+'</td><td>'+row.name+'</td><td>'+row.comments+'</td></tr>';
+	mbody += '<tr class="small"><td>'+row.outcome+'</td><td>'+row.contact+'</td><td>'+row.name+'</td><td>'+row.comments+'</td></tr>';
 	});
 	mbody += '</tbody></table>';
 	} else {
@@ -364,7 +364,7 @@ view_record_html:function(data){
 	if(data.appointments.length>0){
 	mbody += '<table class="table table-striped table-condensed"><thead><tr><th>Date</th><th>Time</th><th>Title</th><th>Set by</th><th>Status</th></tr></thead><tbody>';
 	$.each(data.appointments,function(k,row){
-		mbody += '<tr><td>'+row.date+'</td><td>'+row.time+'</td><td>'+row.title+'</td><td>'+row.name+'</td><td>'+row.status+'</td></tr>';
+		mbody += '<tr class="small"><td>'+row.date+'</td><td>'+row.time+'</td><td>'+row.title+'</td><td>'+row.name+'</td><td>'+row.status+'</td></tr>';
 	
 	});
 	mbody += '</tbody></table>';

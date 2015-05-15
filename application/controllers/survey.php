@@ -10,6 +10,7 @@ class Survey extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+		check_page_permissions('view surveys');
 $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Survey_model');
         $this->load->model('Records_model');

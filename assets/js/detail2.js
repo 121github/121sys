@@ -2344,7 +2344,7 @@ var record = {
             var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
                 if (data.length) {
-                    table += '<tr  data-modal="view-appointment" data-event-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
+                    table += '<tr  data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
                 }
             });
             $panel.append(table + "</tbody></table></div>");
