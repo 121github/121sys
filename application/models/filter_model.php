@@ -638,7 +638,7 @@ class Filter_model extends CI_Model
             }
             
         }
-		$this->firephp->log($filter);
+		//$this->firephp->log($filter);
         return $filter;
     }
     
@@ -655,7 +655,7 @@ class Filter_model extends CI_Model
         if ($table == "records") {
             $table_columns = array(
                 "campaigns.campaign_name",
-                "fullname",
+                "if(companies.name is null,fullname,companies.name)",
                 "outcome",
                 "date_format(records.date_updated,'%d/%m/%y %H:%i')",
                 "date_format(records.nextcall,'%d/%m/%y %H:%i')",
@@ -663,13 +663,13 @@ class Filter_model extends CI_Model
             );
 			 $order_columns = array(
                 "campaigns.campaign_name",
-                "fullname",
+                "if(companies.name is null,fullname,companies.name)",
                 "outcome",
                 "records.date_updated",
                 "records.nextcall",
                 "rand()"
             );
-            $qry           = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join data_sources on data_sources.source_id = records.source_id";
+            $qry           = "select campaigns.campaign_name,$table.urn,if(companies.name is null,fullname,companies.name) fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join companies companies on companies.urn = records.urn left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join data_sources on data_sources.source_id = records.source_id";
 
             $group_by      = " group by records.urn";
 			
@@ -683,7 +683,7 @@ class Filter_model extends CI_Model
             $join_records  = " left join records on records.urn = history.urn ";
             $table_columns = array(
                 "campaigns.campaign_name",
-                "fullname",
+                "if(companies.name is null,fullname,companies.name)",
                 "outcome",
                 "date_format(contact,'%d/%m/%y %H:%i')",
                 "date_format(history.nextcall,'%d/%m/%y %H:%i')",
@@ -691,13 +691,13 @@ class Filter_model extends CI_Model
             );
 						 $order_columns = array(
                 "campaigns.campaign_name",
-                "fullname",
+                "if(companies.name is null,fullname,companies.name)",
                 "outcome",
                 "contact",
                 "history.nextcall",
                 "rand()"
             );
-            $qry  = "select campaigns.campaign_name,$table.urn,fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
+            $qry  = "select campaigns.campaign_name,$table.urn,if(companies.name is null,fullname,companies.name),$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join companies companies on companies.urn = records.urn left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
             $group_by = " group by history.history_id ";
             
             
@@ -751,12 +751,6 @@ class Filter_model extends CI_Model
         if (in_array("postcode", $fields)) {
             $qry .= " left join contact_addresses cona on cona.contact_id = contacts.contact_id ";
         }
-
-        //company_name
-        if (in_array("coname", $fields)) {
-            $qry .= " left join companies companies on companies.urn = records.urn ";
-        }
-
 
         //company_telephone
         if (in_array("company-telephone-number", $fields)) {
@@ -1021,7 +1015,7 @@ class Filter_model extends CI_Model
         
         $qry .= $group_by;
         $qry .= " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];
         $data = $this->db->query($qry)->result_array();
