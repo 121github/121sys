@@ -446,7 +446,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
+<?php if(isset($_SESSION['permissions'])){ ?>
 helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
+<?php } ?>
 modals.init();
     <?php if(isset($_SESSION['user_id'])){ ?>
     check_session();
