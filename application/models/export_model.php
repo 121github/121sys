@@ -165,8 +165,11 @@ class Export_model extends CI_Model
                   IFNULL(contacts.fullname,'-') as fullname,
                   IFNULL(contacts.position,'-') as position,
                   IFNULL(contacts.email,'-') as email,
-                  GROUP_CONCAT(DISTINCT ct.telephone_number separator ',') as contact_telephone_number
+                  GROUP_CONCAT(DISTINCT ct.telephone_number separator ',') as contact_telephone_number,
+                  outcomes.outcome,
+                  records.dials
                 from records
+                  left join outcomes using(outcome_id)
                   inner join campaigns using (campaign_id)
                   inner join companies using (urn)
                   left join company_addresses using (company_id)

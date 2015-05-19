@@ -227,6 +227,9 @@ class Exports extends CI_Controller
                         }
                     }
 
+                    $aux_val['outcome'] = $val['outcome'];
+                    $aux_val['dials'] = $val['dials'];
+
                     array_push($aux, $aux_val);
                 }
 
@@ -241,7 +244,7 @@ class Exports extends CI_Controller
                 for ($i=1;$i<=$num_contact_telephone_numbers;$i++) {
                     array_push($contact_telephone_header,'contact_telephone'.($i>1?"_".$i:""));
                 }
-                $result['headers'] = ("campaign_name;company_name;add1;add2;add3;postcode;county;country;".implode(';',$company_telephone_header).";title;fullname;position;email;".implode(';',$contact_telephone_header));
+                $result['headers'] = ("campaign_name;company_name;add1;add2;add3;postcode;county;country;".implode(';',$company_telephone_header).";title;fullname;position;email;".implode(';',$contact_telephone_header).";outcome;dials");
 
                 $result['headers'] = explode(";",$result['headers']);
 

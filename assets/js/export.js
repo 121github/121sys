@@ -146,7 +146,6 @@ var export_data = {
         return true;
     },
     onsubmitavailableform: function() {
-        console.log("asdasd");
         $('.available-exports-filter-form').find('input[name="export_form_name"]').val(document.pressed);
         document.availableform.action = helper.baseUrl + "exports/data_available_export";
 
