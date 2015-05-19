@@ -69,7 +69,7 @@ class Dashboard_model extends CI_Model
     
     public function get_history($filter = array())
     {
-        $qry = "select contact, u.name, campaign_name, if(h.outcome_id is null,if(pd.description is null,'No Action Required',pd.description),outcome) as outcome, history_id, comments,urn from history h left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join campaigns using(campaign_id) left join users u using(user_id) where 1 ";
+        $qry = "select contact, u.name, campaign_name, if(h.outcome_id is null,if(pd.description is null,'No Action Required',pd.description),outcome) as outcome, history_id,urn,if(com.name is null,fullname,com.name) cname from history h left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join campaigns using(campaign_id) left join users u using(user_id) left join contacts using(urn) left join companies com using(urn) where 1 ";
         //if a filter is selected then we just return history from that campaign, otehrwize get all the history
         if (!empty($filter['campaign'])) {
             $qry .= " and h.campaign_id = '{$filter['campaign']}'";
@@ -267,7 +267,7 @@ class Dashboard_model extends CI_Model
 		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		
         $qry .= " group by urn order by nextcall asc limit 50";
-        //$this->firephp->log($qry);
+        $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 	

@@ -10,7 +10,7 @@ $(document).ajaxStop(function () {
 });
 
 var record = {
-    init: function (urn, role, campaign, permissions) {
+    init: function (urn, role, campaign) {
         /* Initialize all the jquery widgets */
         $(".close-alert").click(function () {
             $(this).closest('.alert').addClass('hidden');
@@ -30,7 +30,6 @@ var record = {
         this.urn = urn;
         this.role = role;
         this.campaign = campaign;
-        this.permissions = permissions;
         this.limit = 6;
         var data = [];
         window.history.pushState(data, "Record Details-" + record.urn, helper.baseUrl + 'records/detail/' + record.urn);
@@ -155,11 +154,11 @@ var record = {
                         //Use the k var only to know if there are more than x records
                         var k = 0;
                         $.each(response.data, function (i, val) {
-                            if (record.permissions['edit history'] > 0) {
-                                $edit_btn = '<span class="glyphicon glyphicon-pencil pull-right edit-history-btn" item-modal="0" item-id="' + val.history_id + '"></span>';
+                            if (helper.permissions['edit history'] > 0) {
+                                $edit_btn = '<span class="glyphicon glyphicon-pencil pointerpull-right edit-history-btn" item-modal="0" item-id="' + val.history_id + '"></span>';
                             }
-                            if (record.permissions['delete history'] > 0) {
-                                $delete_btn = '<span class="glyphicon glyphicon-trash pull-right del-history-btn marl" data-target="#modal" item-modal="0" item-id="' + val.history_id + '" title="Delete history"></span>';
+                            if (helper.permissions['delete history'] > 0) {
+                                $delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right del-history-btn marl" data-target="#modal" item-modal="0" item-id="' + val.history_id + '" title="Delete history"></span>';
                             }
                             if (k <= record.limit - 1) {
                                 $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
@@ -214,11 +213,11 @@ var record = {
 
                 if (response.data.length > 0) {
                     $.each(response.data, function (i, val) {
-                        if (record.permissions['edit history'] > 0) {
-                            $edit_btn = '<span class="glyphicon glyphicon-pencil pull-right edit-history-btn" item-modal="1" item-id="' + val.history_id + '"></span>';
+                        if (helper.permissions['edit history'] > 0) {
+                            $edit_btn = '<span class="glyphicon glyphicon-pencil pointer pull-right edit-history-btn" item-modal="1" item-id="' + val.history_id + '"></span>';
                         }
-                        if (record.permissions['delete history'] > 0) {
-                            $delete_btn = '<span class="glyphicon glyphicon-trash pull-right del-history-btn marl" data-target="#modal" item-modal="1" item-id="' + val.history_id + '" title="Delete history"></span>';
+                        if (helper.permissions['delete history'] > 0) {
+                            $delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right del-history-btn marl" data-target="#modal" item-modal="1" item-id="' + val.history_id + '" title="Delete history"></span>';
                         }
                         $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
                     });
@@ -834,7 +833,7 @@ var record = {
                     $panel.find('.contacts-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.name.fullname).addClass(collapse))
                             .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-contact-btn').attr('item-id', key).attr('data-target', '#model'))
-                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pull-right edit-contact-btn').attr('item-id', key))
+                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right edit-contact-btn').attr('item-id', key))
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal contact-detail-list').append($contact_detail_list_items).append($contact_detail_telephone_items))
                         )
@@ -986,7 +985,7 @@ var record = {
                             } else {
                                 var $tps = "<span class='glyphicon glyphicon-question-sign tt'  data-toggle='tooltip' data-placement='right' title='TPS Status is unknown'></span>"
                             }
-                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $tps + "</td><td><span class='glyphicon glyphicon-trash pull-right del-item-btn' action='delete_phone' item-id='" + val.tel_id + "'></span><span class='glyphicon glyphicon-pencil pull-right contact-item-btn' action='edit_phone' item-id='" + val.tel_id + "'></span></td></tr>";
+                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $tps + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right del-item-btn' action='delete_phone' item-id='" + val.tel_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right contact-item-btn' action='edit_phone' item-id='" + val.tel_id + "'></span></td></tr>";
                             $panel.find('#phone tbody').append($phone);
                         });
                     } else {
@@ -1003,7 +1002,7 @@ var record = {
                             } else {
                                 $primary = "";
                             }
-                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td><span class='glyphicon glyphicon-trash pull-right del-item-btn' action='delete_address' item-id='" + val.address_id + "'></span><span class='glyphicon glyphicon-pencil pull-right contact-item-btn' action='edit_address' item-id='" + val.address_id + "'></span></td></tr>"
+                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td><span class='glyphicon glyphicon-trash pull-right del-item-btn' action='delete_address' item-id='" + val.address_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right contact-item-btn' action='edit_address' item-id='" + val.address_id + "'></span></td></tr>"
                             $panel.find('#address tbody').append($address);
                         });
                     } else {
@@ -1260,8 +1259,8 @@ var record = {
                     $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#com-collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.visible['Company']).addClass(collapse))
                             //.append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-company-btn').attr('item-id', key).attr('data-target', '#model'))
-                            .append($('<span/>').addClass('glyphicon glyphicon-search pull-right search-company-btn').attr('item-id', key))
-                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pull-right edit-company-btn').attr('item-id', key))
+                            .append($('<span/>').addClass('glyphicon glyphicon-search pointer pull-right search-company-btn').attr('item-id', key))
+                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right edit-company-btn').attr('item-id', key))
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal company-detail-list').append($company_detail_list_items).append($company_detail_telephone_items))
                         )
@@ -1417,7 +1416,7 @@ var record = {
                             } else {
                                 var $ctps = "<span class='glyphicon glyphicon-question-sign tt'  data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown'></span>"
                             }
-                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $ctps + "</td><td><span class='glyphicon glyphicon-trash pull-right del-item-btn' action='delete_cophone' item-id='" + val.tel_id + "'></span><span class='glyphicon glyphicon-pencil pull-right company-item-btn' action='edit_cophone' item-id='" + val.tel_id + "'></span></td></tr>";
+                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $ctps + "</td><td><span class='glyphicon glyphicon-trash pull-right pointer del-item-btn' action='delete_cophone' item-id='" + val.tel_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right company-item-btn' action='edit_cophone' item-id='" + val.tel_id + "'></span></td></tr>";
                             $panel.find('#cophone tbody').append($phone);
                         });
                     } else {
@@ -1434,7 +1433,7 @@ var record = {
                             } else {
                                 $primary = "";
                             }
-                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td><span class='glyphicon glyphicon-trash pull-right del-item-btn' action='delete_coaddress' item-id='" + val.address_id + "'></span><span class='glyphicon glyphicon-pencil pull-right company-item-btn' action='edit_coaddress' item-id='" + val.address_id + "'></span></td></tr>"
+                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td><span class='glyphicon glyphicon-trash pull-right pointer del-item-btn' action='delete_coaddress' item-id='" + val.address_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right company-item-btn' action='edit_coaddress' item-id='" + val.address_id + "'></span></td></tr>"
                             $panel.find('#coaddress tbody').append($address);
                         });
                     } else {
@@ -1835,7 +1834,7 @@ var record = {
                         var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                         var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                         var $delete_option = "";
-                        if (record.permissions['delete emails'] > 0) {
+                        if (helper.permissions['delete emails'] > 0) {
                             $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="1" item-id="' + val.email_id + '" title="Delete email" ></span>';
                         }
                         $view_option = '<span class="glyphicon ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
@@ -1870,7 +1869,7 @@ var record = {
                             var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                             var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                             var $delete_option = "";
-                            if (record.permissions['delete email'] > 0) {
+                            if (helper.permissions['delete email'] > 0) {
                                 $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-email-btn marl" data-target="#modal" item-modal="0" item-id="' + val.email_id + '" title="Delete email" ></span>';
                             }
                             $view_option = '<span class="glyphicon ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
@@ -2002,10 +2001,10 @@ var record = {
                         var $delete = "";
                         var $options = "";
 
-                        if (record.permissions['delete surveys'] > 0) {
-                            $options = '<span class="glyphicon glyphicon-trash pull-right del-survey-btn" data-target="#modal" item-id="' + key + '" ></span><span class="glyphicon glyphicon-pencil pull-right edit-survey-btn"  item-id="' + key + '"></span>';
+                        if (helper.permissions['delete surveys'] > 0) {
+                            $options = '<span class="glyphicon glyphicon-trash pointer pull-right del-survey-btn" data-target="#modal" item-id="' + key + '" ></span><span class="glyphicon glyphicon-pencil pointer pull-right edit-survey-btn"  item-id="' + key + '"></span>';
                         }
-                        if (record.permissions['edit surveys'] > 0 || !val.locked) {
+                        if (helper.permissions['edit surveys'] > 0 || !val.locked) {
                             $options = '<span class="glyphicon glyphicon-edit pull-right edit-survey-btn pointer"  item-id="' + key + '"></span>';
                         }
                         if ($options == "") {
@@ -2029,7 +2028,7 @@ var record = {
     additional_info: {
         init: function () {
             $(document).on("click", ".add-detail-btn", function () {
-                $(this).removeClass('glyphicon-pencil add-detail-btn').addClass('glyphicon-remove close-custom');
+                $(this).removeClass('glyphicon-pencil pointer add-detail-btn').addClass('glyphicon-remove close-custom');
                 $('.custom-panel').find('.panel-content').fadeOut(function () {
                     $('.custom-panel').find('form')[0].reset();
                     $('.custom-panel').find('form input').not('input[name="urn"]').val('');
@@ -2135,7 +2134,7 @@ var record = {
                     }
                     detail_id = row.id;
                 });
-                tbody += '<td><span class="glyphicon glyphicon-trash pull-right del-detail-btn marl" data-target="#modal" item-id="' + detail_id + '" ></span> <span class="glyphicon glyphicon-pencil pull-right edit-detail-btn"  item-id="' + detail_id + '"></span></td><tr>';
+                tbody += '<td><span class="glyphicon glyphicon-trash pointer pull-right del-detail-btn marl" data-target="#modal" item-id="' + detail_id + '" ></span> <span class="glyphicon glyphicon-pencil pointer pull-right edit-detail-btn"  item-id="' + detail_id + '"></span></td><tr>';
             });
             table += thead + '</thead>' + tbody + '<tbody></table></div>';
             $panel.append(table);
@@ -2210,7 +2209,7 @@ var record = {
             $panel.find('.edit-panel').fadeOut(1000, function () {
                 $panel.find('.panel-content').fadeIn(1000, function () {
 
-                    $panel.find('.glyphicon-remove').removeClass('glyphicon-remove close-owner').addClass('glyphicon-pencil edit-owner');
+                    $panel.find('.glyphicon-remove').removeClass('glyphicon-remove close-owner').addClass('glyphicon-pencil pointer edit-owner');
 
                 });
             });

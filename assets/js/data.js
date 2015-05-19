@@ -955,8 +955,8 @@ var outcomes = {
                             " style='vertical-align: middle'>"
                             + (val.keep_record==1?"<span class='glyphicon glyphicon-ok btn-sm'></span>":'-')
                             + "</td><td class=''>" +
-                                "<span title='Edit export form' class='btn edit-outcome-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.outcome_id+"'></span>" +
-                                "<span title='Delete export form' class='btn del-outcome-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.outcome_id+"'></span>"
+                                "<span title='Edit export form' class='btn edit-outcome-btn glyphicon glyphicon-pencil pointer pointer btn-sm' item-id='"+ val.outcome_id+"'></span>" +
+                                "<span title='Delete export form' class='btn del-outcome-btn glyphicon glyphicon-remove pointer pointer btn-sm' item-id='"+ val.outcome_id+"'></span>"
                             + "</td></tr>");
                     }
                 });
@@ -1246,8 +1246,8 @@ var triggers = {
                             + "</td><td class='email_template' style='vertical-align: middle'>"
                             + (val.template?val.template:'-')
                             + "</td><td class=''  style='text-align: right'>" +
-                            "<span title='Edit email trigger' class='btn edit-email-trigger-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.trigger_id+"'></span>" +
-                            "<span title='Delete email trigger' class='btn del-email-trigger-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.trigger_id+"'></span>"
+                            "<span title='Edit email trigger' class='btn edit-email-trigger-btn glyphicon glyphicon-pencil pointer btn-sm' item-id='"+ val.trigger_id+"'></span>" +
+                            "<span title='Delete email trigger' class='btn del-email-trigger-btn glyphicon glyphicon-remove pointer btn-sm' item-id='"+ val.trigger_id+"'></span>"
                             + "</td></tr>");
                     }
                 });
@@ -1280,8 +1280,8 @@ var triggers = {
                             + "</td><td class='ownership_outcome' style='vertical-align: middle'>"
                             + (val.outcome?val.outcome:'-')
                             + "</td><td class=''  style='text-align: right'>" +
-                            "<span title='Edit ownership trigger' class='btn edit-ownership-trigger-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.trigger_id+"'></span>" +
-                            "<span title='Delete ownership trigger' class='btn del-ownership-trigger-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.trigger_id+"'></span>"
+                            "<span title='Edit ownership trigger' class='btn edit-ownership-trigger-btn glyphicon glyphicon-pencil pointer btn-sm' item-id='"+ val.trigger_id+"'></span>" +
+                            "<span title='Delete ownership trigger' class='btn del-ownership-trigger-btn glyphicon glyphicon-remove pointer btn-sm' item-id='"+ val.trigger_id+"'></span>"
                             + "</td></tr>");
                     }
                 });
@@ -2032,8 +2032,8 @@ var parkcode = {
                             + "</td><td class='park_reason' style='vertical-align: middle'>"
                             + (val.park_reason?val.park_reason:'-')
                             + "</td><td style='text-align: right'>" +
-                            "<span title='Edit export form' class='btn edit-parkcode-btn glyphicon glyphicon-pencil btn-sm' item-id='"+ val.parked_code+"'></span>" +
-                            "<span title='Delete export form' class='btn del-parkcode-btn glyphicon glyphicon-remove btn-sm' item-id='"+ val.parked_code+"'></span>"
+                            "<span title='Edit export form' class='btn edit-parkcode-btn glyphicon pointer glyphicon-pencil btn-sm' item-id='"+ val.parked_code+"'></span>" +
+                            "<span title='Delete export form' class='btn del-parkcode-btn glyphicon pointer glyphicon-remove btn-sm' item-id='"+ val.parked_code+"'></span>"
                             + "</td></tr>");
                     }
                 });

@@ -84,8 +84,7 @@ body { overflow-y:scroll;
 .form-restore_password input[type="password"] {
     margin-bottom: 10px;
 }
-
-.edit-btn,.glyphicon-pencil,.glyphicon-remove,.glyphicon-plus,.glyphicon-trash,.favorite-btn,.urgent-btn,.pointer { cursor:pointer !important }
+.pointer { cursor:pointer !important }
 .favorite-btn:hover,.urgent-btn:hover {
 color:	#428bca
 }

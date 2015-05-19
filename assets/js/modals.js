@@ -9,6 +9,14 @@ var modals = {
 			e.preventDefault();
 		modals.set_location();
 	});
+	$(document).on('click','.save-planner',function(e){
+			e.preventDefault();
+		modals.save_planner($(this).attr('data-urn'));
+	});
+		$(document).on('click','.remove-from-planner',function(e){
+			e.preventDefault();
+		modals.remove_from_planner($(this).attr('data-urn'));
+	});
 		$(document).on('click','.save-appointment',function(e){
 		e.preventDefault();
 		modals.save_appointment($('#appointment-form').serialize());
@@ -289,6 +297,7 @@ load_modal:function(mheader,mbody,mfooter){
 		 $('#modal').find('.selectpicker').selectpicker();
          $('#modal').find('.tt').tooltip();
 		 $('#modal').find('.datetime').datetimepicker({format: 'DD/MM/YYYY HH:mm'});
+		 $('#modal').find('.datepicker').datetimepicker({format: 'DD/MM/YYYY',  pickTime: false});
 		 	 //this function automatically sets the end date for the appointment 1 hour ahead of the start date
             $(".startpicker").on("dp.hide", function (e) {
                 var m = moment(e.date, "DD\MM\YYYY HH:mm");
@@ -324,6 +333,34 @@ set_location:function(){
         }
 	
 },
+save_planner:function(urn){
+	$.ajax({ url: helper.baseUrl+'planner/add_record',
+	data:{urn:urn, date:$('#planner_date').val(), postcode:$('#planner_address').val() },
+	type:"POST",
+	dataType:"JSON"
+	}).done(function(response){
+		if(response.success){
+		flashalert.success(response.msg);	
+		$('#modal').find('#planner_status').text('This record is in your journey planner. You can remove or reschedule it below').addClass('text-success');
+		$('#modal').find('.remove-from-planner').show();
+		} else {
+		flashalert.danger(response.msg);	
+		}
+	});
+},
+remove_from_planner:function(urn){
+		$.ajax({ url: helper.baseUrl+'planner/remove_record',
+	data:{urn:urn},
+	type:"POST",
+	dataType:"JSON"
+	}).done(function(response){
+		if(response.success){
+		flashalert.success(response.msg);
+		$('#modal').find('#planner_status').text('This record is not in your journey planner. You can add it below').removeClass('text-success');
+		$('#modal').find('.remove-from-planner').hide();
+		}
+	});
+},
 reset_table:function(){
 	modals.default_buttons();
 	 $('.modal-title').text('Reset table');
@@ -344,9 +381,18 @@ view_record:function(urn){
 },
 view_record_html:function(data){
 	var mheader = "View Record #"+data.urn;
-	var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li></ul><div class="tab-content">';
+	var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li>';
+	
+	if(data.custom_info.length>0){
+	mbody += '<li><a role="tab" data-toggle="tab" href="#tab-custom">'+data.custom_panel_name+'</a></li>';
+	}
+	if (helper.permissions['planner'] > 0) {
+	mbody += '<li><a role="tab" data-toggle="tab" href="#tab-planner">Planner</a></li>';	
+	}
+	
+	mbody += '</ul><div class="tab-content">';
 	//records tab
-	mbody += '<div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table"><tr><th>Campaign</th><td>'+data.campaign_name+'</td></tr><tr><th>Name</th><td>'+data.name+'</td></tr><tr><th>Ownership</th><td>'+data.ownership+'</td></tr><tr><th>Comments</th><td class="small">'+data.comments+'</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table"><tr><th>Record Status</th><td>'+data.status_name+'</td></tr><tr><th>Last Outcome</th><td>'+data.outcome+'</td></tr><tr><th>Last Action</th><td>'+data.lastcall+'</td></tr><tr><th>Next Action</th><td>'+data.nextcall+'</td></tr></table></div></div></div>';
+	mbody += '<div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table small"><tr><th>Campaign</th><td>'+data.campaign_name+'</td></tr><tr><th>Name</th><td>'+data.name+'</td></tr><tr><th>Ownership</th><td>'+data.ownership+'</td></tr><tr><th>Comments</th><td>'+data.comments+'</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table small"><tr><th>Record Status</th><td>'+data.status_name+'</td></tr><tr><th>Parked Status</th><td>'+data.parked+'</td></tr><tr><th>Last Outcome</th><td>'+data.outcome+'</td></tr><tr><th>Last Action</th><td>'+data.lastcall+'</td></tr><tr><th>Next Action</th><td>'+data.nextcall+'</td></tr></table></div></div></div>';
 	//history tab
 	mbody += '<div role="tabpanel" class="tab-pane" id="tab-history">'
 	if(data.history.length>0){
@@ -373,8 +419,69 @@ view_record_html:function(data){
 	}
 	mbody += '</div>';
 	
+	if(data.custom_info.length>0){
+	mbody += '<div role="tabpanel" class="tab-pane" id="tab-custom">';
+	//build the custom table
+	  var table = "<div class='table-responsive'><table class='table table-striped table-condensed'>";
+            var thead, detail_id;
+            var tbody = "<tbody>";
+            var contents = "";
+            $.each(data.custom_info, function (k, detail) {
+                tbody += "<tr>";
+                thead = "<thead><tr>";
+                $.each(detail, function (i, row) {
+                    thead += "<th>" + row.name + "</th>";
+                    if (row.formatted) {
+                        tbody += "<td class='" + row.code + "'>" + row.formatted + "</td>";
+                    } else {
+                        tbody += "<td class='" + row.code + "'>" + row.value + "</td>";
+                    }
+                    detail_id = row.id;
+                });
+	tbody += "</tr>";
+	
+	});
+	  table += thead + '</thead>' + tbody + '<tbody></table></div>';
+      mbody += table;
+	mbody += '</div>';
+	}
+	if (helper.permissions['planner'] > 0) {
+		var planner_form = "";
+		if(data.addresses.length>0){
+			planner_form = '<div class="form-group"><label>Select Address</label><br>';
+			planner_form += '<select class="selectpicker" data-width="100%" id="planner_address">';
+			$.each(data.addresses,function(k,address){
+				if(data.planner_postcode==address.postcode){
+					var selected = "selected";
+				} else {
+				var selected = "";	
+				}
+			planner_form += '<option '+selected+' value="'+address.postcode+'">'+address.address+'</option>';	
+			});
+			planner_form += '<select></div>';
+			
+			planner_form += '<div class="form-group"><label>Select Date</label><input value="'+data.planner_date+'" class="form-control datepicker" id="planner_date" placeholder="Choose date..." /></div>';
+			planner_form +=	' <button class="marl btn btn-info pull-right save-planner" data-urn="'+data.urn+'" href="#">Save to planner</button> ';
+			} else {
+			planner_form += '<p class="text-danger">You cannot add this record to the journey planner because it has no address</p>'	
+			}
+		
+		mbody += '<div role="tabpanel" class="tab-pane" id="tab-planner">';
+			if(data.planner_id){
+				mbody += '<p id="planner_status" class="text-success">This record is in your journey planner. You can remove or reschedule it below</p>';
+				mbody += planner_form;
+				mbody += ' <button class="btn btn-danger pull-right remove-from-planner" data-urn="'+data.urn+'" href="#">Remove from planner</button> ';
+			} else {
+			mbody += '<p id="planner_status">This record is not in your journey planner. You can add it below</p>';
+			mbody += planner_form;
+			mbody += ' <button style="display:none" class="btn btn-danger pull-right remove-from-planner" data-urn="'+data.urn+'" href="#">Remove from planner</button> ';
+			}
+		
+	}
+	
+	
 	 mbody += '</div>';
-	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
+	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</button>';
 		modals.load_modal(mheader,mbody,mfooter);
 },
 company:function(){

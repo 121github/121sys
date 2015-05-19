@@ -1,9 +1,9 @@
   <div class="panel panel-primary record-panel">
       <div class="panel-heading">Record Details
         <?php if($details['record']['favorite']){ ?>
-        <span class="pull-right favorite-btn" action="remove"><span class="glyphicon glyphicon-star yellow"></span> Remove from favourites</span>
+        <span class="pull-right favorite-btn pointer" action="remove"><span class="glyphicon glyphicon-star yellow"></span> Remove from favourites</span>
         <?php } else { ?>
-        <span class="pull-right favorite-btn" action="add"><span class="glyphicon glyphicon-star-empty"></span> Add to favourites</span>
+        <span class="pull-right favorite-btn pointer" action="add"><span class="glyphicon glyphicon-star-empty"></span> Add to favourites</span>
         <?php } ?>
       </div>
       <div class="panel-body">
@@ -72,9 +72,9 @@
           <div class="form-group">
             <?php if(in_array("urgent flag",$_SESSION['permissions'])){ ?>
             <?php if($details['record']['urgent']){ ?>
-            <span class="urgent-btn" action="remove"><span class="red glyphicon glyphicon-flag"></span> Unflag as urgent</span>
+            <span class="urgent-btn pointer" action="remove"><span class="red glyphicon glyphicon-flag"></span> Unflag as urgent</span>
             <?php } else { ?>
-            <span class="urgent-btn" action="add"><span class="glyphicon glyphicon-flag"></span> Flag as urgent</span>
+            <span class="urgent-btn pointer" action="add"><span class="glyphicon glyphicon-flag"></span> Flag as urgent</span>
             <?php } ?>
             <?php } else  { 
 			if(in_array("urgent dropdown",$_SESSION['permissions'])){ ?>

@@ -60,7 +60,7 @@ public function get_audit_data($options){
         } else {
             $qry_filter = "";
         }
-        $qry = "SELECT survey_name,sa.question_id,surveys.survey_info_id,question_name,question_script,count(sa.question_id) count,avg(answer) average,t.tens,IF(low_score is null,'0',low_score) low_score from surveys left join survey_info using(survey_info_id) left join surveys_to_campaigns usign(survey_info_id) left join survey_answers sa using(survey_id) left join questions using(question_id) 
+        $qry = "SELECT survey_name,sa.question_id,surveys.survey_info_id,question_name,question_script,count(sa.question_id) count,avg(answer) average,t.tens,IF(low_score is null,'0',low_score) low_score from surveys left join survey_info using(survey_info_id) left join surveys_to_campaigns using(survey_info_id) left join survey_answers sa using(survey_id) left join questions using(question_id) 
 	 left join (select question_id,count(*) tens from survey_answers left join questions using(question_id) where answer = 10 and answer is not null $qry_filter group by question_id) t on t.question_id = sa.question_id
 	  left join (select question_id,count(*) low_score from survey_answers left join questions using(question_id) where answer < 4 and answer is not null $qry_filter group by question_id) l on l.question_id = sa.question_id 
 	 where answer is not null and campaign_id in({$_SESSION['campaign_access']['list']}) $qry_filter group by sa.question_id ";

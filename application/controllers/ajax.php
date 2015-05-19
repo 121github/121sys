@@ -694,7 +694,7 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
 			$id = intval($this->input->post('id'));
-						$urn = $this->db->query("select urn from contacts left join contact_addresses using(contact_id) where address_id = '$id'")->row()->urn;
+						$urn = $this->db->query("select urn from companies left join company_addresses using(company_id) where address_id = '$id'")->row()->urn;
 			$this->Audit_model->log_phone_delete($id,$urn);
 			
             $this->db->where(array('address_id'=>$id));

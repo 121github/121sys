@@ -1,4 +1,4 @@
-<div class="panel-heading">Attachments<span class="glyphicon glyphicon-remove pull-right close-attachment-all"></span></div>
+<div class="panel-heading">Attachments<span class="glyphicon glyphicon-remove pointer pull-right close-attachment-all"></span></div>
 <div class="panel-body" style="overflow: scroll; height: 500px;">
     <div class="attachment-all-panel">
         <div class="attachment-all-content">

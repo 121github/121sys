@@ -17,6 +17,7 @@ class Modals extends CI_Controller
 
 	public function view_record(){
 		if ($this->input->is_ajax_request()) {
+			$this->load->model('Records_model');
 		$data = array();
 		$ownership = array();
 		$urn = intval($this->input->post('urn'));
@@ -45,6 +46,21 @@ class Modals extends CI_Controller
 		}
 		}
 		$data['appointments'] = $appointments;
+		//add in the custom fields
+		$additional_info = $this->Records_model->get_additional_info($urn, $data['campaign_id']);
+		$data['custom_info'] = $additional_info;
+		$all_addresses = $this->Records_model->get_addresses($urn);
+		$addresses = array();
+		 foreach($all_addresses as $k=>$address): 
+		 if(!empty($address['postcode'])){
+ 			$add = ($address['type']=="company"?$address['name'].", ":"");
+ 			$add .= (!empty($address['add1'])?$address['add1'].", ":"");
+			$add .= (!empty($address['postcode'])?$address['postcode']:"");
+			$addresses[] = array("postcode"=>$address['postcode'],"address"=>$add);
+		}
+ 			endforeach;
+		$data['addresses'] = $addresses;
+		
 		echo json_encode(array("success"=>true,"data"=>$data));
 		}
 	}

@@ -92,10 +92,10 @@
         $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
-                    'Todays': [moment(), moment()],
-                    'Tomorrow': [moment().add('days', 1), moment().add('days', 1)],
+                    'Todays': [moment().startOf('day'), moment().endOf('day')],
+                    'Tomorrow': [moment().add('days', 1).startOf('day'), moment().add('days', 1).endOf('day')],
                     'Missed': [moment('2014-01-01'), moment()],
-                    'Upcoming': [moment(),moment('2025-01-01')]
+                    'Upcoming': [moment(),moment().add('years', 5)]
                 },
                 format: 'DD/MM/YYYY HH:mm',
                 minDate: "02/07/2014",

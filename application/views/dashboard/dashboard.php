@@ -68,12 +68,12 @@
                 <table class="table table-bordered table-hover table-striped">
                   <thead>
                     <tr>
-                      <th>Campaign name</th>
+                      <th>Campaign</th>
+                      <th>Name</th>
                       <th>Date</th>
                       <th>Time</th>
                       <th>User</th>
                       <th>Outcome</th>
-                      <th>View</th>
                     </tr>
                   </thead>
                   <tbody>

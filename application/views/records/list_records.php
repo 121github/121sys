@@ -89,7 +89,7 @@
                                     <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                           class="change-directions-btn WALKING pointer" item-mode="WALKING"><img
                                             width="20px;" src="../assets/img/icons/walking.png"/></span>
-                                        <span class="close-directions-btn glyphicon glyphicon-remove"></span>
+                                        <span class="close-directions-btn glyphicon glyphicon-remove pointer"></span>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -102,7 +102,7 @@
                     </div>
                     <div class="panel panel-primary directionsPanel-container">
                         <div class="panel-heading">Route<span
-                                class="glyphicon glyphicon-remove pull-right close-directionsPanel"></span></div>
+                                class="glyphicon glyphicon-remove pointer pull-right close-directionsPanel"></span></div>
                         <div class="panel-body" style="font-size: 12px; overflow: scroll; height: 500px;">
                             <div class="directionsPanel-panel">
                                 <div class="directionsPanel-content">

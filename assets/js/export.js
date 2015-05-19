@@ -108,8 +108,8 @@ var export_data = {
             if (response.success) {
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
-                        var edit_btn = (response.edit_permission?"<span title='Edit export form' class='btn btn-default edit-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon glyphicon-pencil'></span></span>":"");
-                        var del_btn = (response.edit_permission?"<span title='Delete export form' class='btn btn-default del-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon glyphicon-remove'></span></span>":"");
+                        var edit_btn = (response.edit_permission?"<span title='Edit export form' class='btn btn-default edit-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon pointer glyphicon-pencil'></span></span>":"");
+                        var del_btn = (response.edit_permission?"<span title='Delete export form' class='btn btn-default del-btn' item-id='"+ val.export_forms_id+"'><span class='glyphicon pointer glyphicon-remove'></span></span>":"");
                         $tbody
                             .append("<tr><td style='display: none'>"
                                 + "<span class='export_forms_id' style='display: none'>"+(val.export_forms_id?val.export_forms_id:'')+"</span>"

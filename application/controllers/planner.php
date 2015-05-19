@@ -55,4 +55,38 @@ class Planner extends CI_Controller
             echo json_encode($data);
         }
     }
+	
+	public function add_record(){
+		 if ($this->input->is_ajax_request()&&$this->_access) {
+			 $postcode = $this->input->post('postcode');
+			 if(validate_postcode($postcode)){
+			 $urn = $this->input->post('urn');
+			 $date = to_mysql_datetime($this->input->post('date'));
+			 if(strtotime($date)<strtotime('today')){
+			 echo json_encode(array("success"=>false,"msg"=>"You can only plan for the future!"));	
+			 exit; 
+			 }
+			 $this->Planner_model->add_record($urn,$date,$postcode);
+			 echo json_encode(array("success"=>true,"msg"=>"Planner was updated"));
+			  exit; 
+			 } else {
+			 echo json_encode(array("success"=>false,"msg"=>"Postcode is invalid")); 
+			  exit; 
+			 }
+		 } else {
+			echo "denied"; 
+ 			exit;
+		 }
+	}
+	
+		public function remove_record(){
+		 if ($this->input->is_ajax_request()&&$this->_access) {
+			 $urn = $this->input->post('urn');
+			 $this->Planner_model->remove_record($urn); 
+			 echo json_encode(array("success"=>true,"msg"=>"Planner was updated"));
+		 } else {
+			echo "denied"; 
+ 			exit;
+		 }
+	}
 }

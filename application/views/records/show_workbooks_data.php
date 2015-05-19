@@ -1,4 +1,4 @@
-<div class="panel-heading">Workbooks Data<span class="glyphicon glyphicon-remove pull-right close-workbooks"></span></div>
+<div class="panel-heading">Workbooks Data<span class="glyphicon glyphicon-remove pointer pull-right close-workbooks"></span></div>
 <div class="panel-body" style="overflow: scroll; height: 500px;">
     <div class="workbooks-panel">
         <div class="workbooks-content">

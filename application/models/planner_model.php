@@ -88,4 +88,15 @@ class Planner_model extends CI_Model
         }
         return $where;
     }
+	
+	public function add_record($urn,$date,$postcode){
+	$qry = "replace into record_planner set urn = '$urn', user_id = '".$_SESSION['user_id']."',start_date = '$date', postcode ='$postcode', location_id = (select postcode_id from uk_postcodes where postcode = '$postcode')";	
+	$this->db->query($qry);
+	}
+	
+		public function remove_record($urn){
+	$this->db->where(array("urn"=>$urn,"user_id"=>$_SESSION['user_id']));
+		$this->db->delete("record_planner");
+	}
+	
 }

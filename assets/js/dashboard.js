@@ -24,7 +24,7 @@ var dashboard = {
             $tbody.empty();
             $.each(response.data, function (i, val) {
                 if (response.data.length) {
-                    $tbody.append("<tr><td>" + val.campaign_name + "</td><td>" + val.date + "</td><td>" + val.time + "</td><td>" + val.name + "</td><td>" + val.outcome + "</td><td><a href='" + helper.baseUrl + 'records/detail/' + val.urn + "'><span class='glyphicon glyphicon-play'></span></a></td></tr>");
+                    $tbody.append("<tr class='pointer' data-modal='view-record' data-urn='"+ val.urn +"'><td>" + val.campaign_name + "</td><td>" + val.cname + "</td><td>" + val.date + "</td><td>" + val.time + "</td><td>" + val.name + "</td><td>" + val.outcome + "</td></tr>");
                 }
             });
         });
@@ -193,10 +193,10 @@ var dashboard = {
             dataType: "JSON",
             data: $('.callbacks-filter').serialize(),
 			beforeSend: function(){
-			            $('.timely-callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
+			            $('.callbacks').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');	
 			}
         }).done(function (response) {
-            $('.timely-callbacks').empty();
+            $('.callbacks').empty();
             var $row = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
@@ -206,9 +206,9 @@ var dashboard = {
                     else {
                         comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
                     }
-                    $row += '<tr><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td><a href="'+helper.baseUrl+'records/detail/' + val.urn + '"><span class="glyphicon glyphicon-play"></span></a></td><td>'+comments+'</td></tf></tr>';
+                    $row += '<tr class="pointer" data-modal="view-record" data-urn="'+val.urn+'"><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td>' +comments+ '</td></tr>';
                 });
-                $('.callbacks').html('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>View</th><th></th></thead><tbody>' + $row + '</tbody></table></div>');
+                $('.callbacks').html('<div class="table-responsive"><table class="table table-hover table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>Comments</th></thead><tbody>' + $row + '</tbody></table></div>');
                 $('.tt').tooltip();
             } else {
                 $('.callbacks').html('<p>' + response.msg + '</p>');

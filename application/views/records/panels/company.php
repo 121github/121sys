@@ -2,7 +2,7 @@
     <div class="panel-heading">
         <h4 class="panel-title"> Company Details
             <?php if (in_array("add companies", $_SESSION['permissions'])){ ?><!--Not using this feature yet. Need to clear the company id value in form if we start using it--><span
-                class="glyphicon glyphicon-plus pull-right add-company-btn" style="display:none"></span><?php } ?>
+                class="glyphicon glyphicon-plus pointer pull-right add-company-btn" style="display:none"></span><?php } ?>
         </h4>
     </div>
     <div class="form-container">
@@ -24,7 +24,7 @@
                     <!-- <span class="glyphicon glyphicon-trash pull-right del-company-btn" data-target="#modal" item-id="--><?php //echo $id ?><!--"></span>-->
                     <?php if (in_array("edit companies", $_SESSION['permissions'])) { ?>
                         <span class="glyphicon glyphicon-search pointer pull-right search-company-btn" item-id="<?php echo $id ?>"></span>
-                        <span class="glyphicon glyphicon-pencil pull-right edit-company-btn" item-id="<?php echo $id ?>"></span>
+                        <span class="glyphicon glyphicon-pencil pointer pull-right edit-company-btn" item-id="<?php echo $id ?>"></span>
                     <?php } ?>
                     <div id="com-collapse-<?php echo $id ?>" class="panel-collapse collapse <?php if ($x == 1) {
                         echo "in";
