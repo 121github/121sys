@@ -23,7 +23,7 @@
                             <li><a class="interest-filter" ref="#">Show All</a></li>
                         </ul>
                     </div>
-                    </div><? } ?></div>
+                    </div><?php } ?></div>
             <div class="panel-body favorites-panel">
                 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
             </div>
@@ -45,7 +45,7 @@
                             <li><a class="interest-filter" ref="#">Show All</a></li>
                         </ul>
                     </div>
-                    </div><? } ?>
+                    </div><?php } ?>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body interest-panel">
@@ -84,7 +84,7 @@
                             <li><a class="interest-filter" ref="#">Show All</a></li>
                         </ul>
                     </div>
-                    </div><? } ?>
+                    </div><?php } ?>
             </div>
 
 
@@ -108,7 +108,7 @@
                             <li><a class="interest-filter" ref="#">Show All</a></li>
                         </ul>
                     </div>
-                    </div><? } ?>
+                    </div><?php } ?>
             </div>
             <div class="panel-body appointments-panel">
                 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
