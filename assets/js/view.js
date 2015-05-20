@@ -43,7 +43,7 @@ var view_records = {
                 },
                 data: function(d) {
                     d.extra_field = false;
-                    d.bounds = maps.getBounds();
+                    d.bounds = (maps.temp_bounds?maps.temp_bounds:maps.getBounds());
                     d.map = $('#map-view-toggle').prop('checked');
                 },
                 complete: function(d) {
@@ -53,6 +53,7 @@ var view_records = {
                     maps.showItems();
                     maps.current_postcode = d.responseJSON.current_postcode;
                     planner_permission = d.responseJSON.planner_permission;
+                    maps.temp_bounds = null;
                 }
             },
             "deferRender": true,
