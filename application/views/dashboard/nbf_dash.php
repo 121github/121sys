@@ -9,17 +9,9 @@
       <div class="row">
         <div class="col-lg-8">
                   <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites</div>
-              <div class="panel-body favorites-panel">
-             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
-        </div>
-        
-           <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Interest Nows
-              <div class="pull-right">
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>My Favorites     <?php if(!isset($_SESSION['current_campaign'])){ ?> <div class="pull-right">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
+                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Campaign <span class="caret"></span> </button>
                   <ul class="dropdown-menu pull-right" role="menu">
                     <?php foreach($campaigns as $row): ?>
                     <li><a href="#" class="interest-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
@@ -28,7 +20,26 @@
                     <li><a class="interest-filter" ref="#">Show All</a> </li>
                   </ul>
                 </div>
-              </div>
+              </div><? } ?></div>
+              <div class="panel-body favorites-panel">
+             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
+            </div>
+        </div>
+        
+           <div class="panel panel-primary">
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Interest Nows
+            <?php if(!isset($_SESSION['current_campaign'])){ ?> <div class="pull-right">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Campaign <span class="caret"></span> </button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                    <?php foreach($campaigns as $row): ?>
+                    <li><a href="#" class="interest-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                    <?php endforeach ?>
+                    <li class="divider"></li>
+                    <li><a class="interest-filter" ref="#">Show All</a> </li>
+                  </ul>
+                </div>
+              </div><? } ?>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body interest-panel">
@@ -43,20 +54,56 @@
 </div>
 <div class="col-lg-4">
                   <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Pending</div>
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Pending <?php if(!isset($_SESSION['current_campaign'])){ ?> <div class="pull-right">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Campaign <span class="caret"></span> </button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                    <?php foreach($campaigns as $row): ?>
+                    <li><a href="#" class="interest-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                    <?php endforeach ?>
+                    <li class="divider"></li>
+                    <li><a class="interest-filter" ref="#">Show All</a> </li>
+                  </ul>
+                </div>
+              </div><? } ?>
+              </div>
               <div class="panel-body pending-panel">
              <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
         </div>
         
                 <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Urgent</div>
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Urgent <?php if(!isset($_SESSION['current_campaign'])){ ?> <div class="pull-right">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Campaign <span class="caret"></span> </button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                    <?php foreach($campaigns as $row): ?>
+                    <li><a href="#" class="interest-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                    <?php endforeach ?>
+                    <li class="divider"></li>
+                    <li><a class="interest-filter" ref="#">Show All</a> </li>
+                  </ul>
+                </div>
+              </div><? } ?>
+              </div>
               <div class="panel-body urgent-panel">
 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
             </div>
                             <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Appointments</div>
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Appointments <?php if(!isset($_SESSION['current_campaign'])){ ?> <div class="pull-right">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Campaign <span class="caret"></span> </button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                    <?php foreach($campaigns as $row): ?>
+                    <li><a href="#" class="interest-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
+                    <?php endforeach ?>
+                    <li class="divider"></li>
+                    <li><a class="interest-filter" ref="#">Show All</a> </li>
+                  </ul>
+                </div>
+              </div><? } ?>
+              </div>
               <div class="panel-body appointments-panel">
 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>

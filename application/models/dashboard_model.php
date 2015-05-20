@@ -14,7 +14,7 @@ class Dashboard_model extends CI_Model
     public function get_urgent($filter = "")
     {
         $qry = "select urn,fullname,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from records left join contacts using(urn) where urgent = 1 ";
-        if (!empty($filter)) {
+          if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = '$filter'";
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
@@ -25,7 +25,7 @@ class Dashboard_model extends CI_Model
 	    public function get_appointments($filter = "")
     {
         $qry = "select urn,if(companies.name is null,fullname,name) as fullname,date_format(`start`,'%d/%m/%y %H:%i') start_date from records left join appointments using(urn) left join appointment_attendees using(appointment_id) left join contacts using(urn) left join companies using(urn) where appointments.start > subdate(now(),interval 3 day) and user_id = '{$_SESSION['user_id']}' ";
-        if (!empty($filter)) {
+          if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = '$filter'";
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
@@ -36,7 +36,7 @@ class Dashboard_model extends CI_Model
 	    public function get_pending($filter = "")
     {
         $qry = "select urn,if(companies.name is null,fullname,name) as fullname,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from records left join contacts using(urn) left join companies using(urn) where record_status = 2 ";
-        if (!empty($filter)) {
+          if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = '$filter'";
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
@@ -85,7 +85,7 @@ class Dashboard_model extends CI_Model
         }
 
 		$qry .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= " order by history_id desc limit 10";
+        $qry .= " group by history_id order by history_id desc limit 10";
         return $this->db->query($qry)->result_array();
     }
     
