@@ -357,7 +357,7 @@ var maps = {
         var map_pin_style = "d_map_xpin_letter";
 
 
-        var planner_info = '';
+        var planner_info = false;
         if (planner_permission == true) {
             planner_info =
                 '<b>Planner: </b>' +
@@ -369,17 +369,16 @@ var maps = {
             '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
-            '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
+            '<h4 id="firstHeading" class="firstHeading">' + value.name + '</h4>' +
             '<div id="bodyContent_' + value.urn + '">' +
-            '<p><b>Company: </b>' + (value.name ? value.name : '') + '</p>' +
-            '<p><b>Contact: </b>' + (value.fullname ? value.fullname : '') + '</p>' +
-            '<p><b>Outcome: </b>' + (value.outcome ? value.outcome : '') + '</p>' +
-            '<p><b>Next Call: </b>' + (value.nextcall ? value.nextcall : '') + '</p>' +
-            '<p><b>Last Updated: </b>' + (value.date_updated ? value.date_updated : '') + '</p>' +
-            '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
-            '<p style="display: none;">' + value.location_id + '</p>' +
-            '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
-            '<p>' + planner_info + '</p>' +
+			 (value.name?'<p><b>Company: </b>' +value.name + '</p>': '')+
+			  (value.fullname?'<p><b>Contact: </b>' +value.fullname + '</p>': '')+
+			   (value.outcome?'<p><b>Outcome: </b>' +value.outcome + '</p>': '')+
+			    (value.nextcall?'<p><b>Next Call: </b>' +value.nextcall + '</p>': '')+
+				 (value.date_updated?'<p><b>Last Updated: </b>' +value.date_updated + '</p>': '')+
+				  (value.postcode?'<p><b>Postcode: </b>' +value.postcode + '</p>': '')+
+			  (value.website?'<p><b>Website: </b>' +value.website + '</p>': '')+
+            (planner_info?'<p>' + planner_info + '</p>':'') +
             '<p>' +
             '<span><a class="btn btn-success btn-sm record-btn" item-postcode="' + value.postcode + '" href="#"><span class="glyphicon glyphicon-road"></span> Navigate </a></span>' +
             '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
@@ -413,20 +412,25 @@ var maps = {
         var marker_color = maps.intToARGB(maps.hashCode(value.name));
         var marker_text_color = "FFFFFF";
         var character = (value.name).substr(0, 1);
+		var navbtn = false;
+		if(typeof localStorage.current_postcode!="undefined"){
+		navbtn =   '<p>' +
+            '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';	
+		}
         var contentString =
             '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
-            '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
+            '<h4 id="firstHeading" class="firstHeading">' + value.name + '</h4>' +
             '<div id="bodyContent">' +
-            '<p><b>Company: </b>' + (value.name ? value.name : '') + '</p>' +
-            '<p><b>Date: </b>' + (value.start ? value.start : '') + '</p>' +
-            '<p><b>Title: </b>' + (value.title ? value.title : '') + '</p>' +
-            '<p><b>Attendees: </b>' + (value.attendee ? value.attendee : '') + '</p>' +
-            '<p><b>Set on: </b>' + (value.date_added ? value.date_added : '') + '</p>' +
-            '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
-            '<p>' +
-            '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>' +
+            (value.name?'<p><b>Company: </b>' +value.name + '</p>': '')+
+			(value.start?'<p><b>Date: </b>' +value.start + '</p>': '')+
+			(value.title?'<p><b>Title: </b>' +value.title + '</p>': '')+
+			(value.attendee?'<p><b>Attendees: </b>' +value.attendee + '</p>': '')+
+			(value.date_added?'<p><b>Created on: </b>' +value.date_added + '</p>': '')+
+			(value.postcode?'<p><b>Postcode: </b>' +value.postcode + '</p>': '') +
+			(navbtn?navbtn:'')+
+          
             '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
             '</p>' +
             '</div>' +
