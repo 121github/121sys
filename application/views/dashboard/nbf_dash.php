@@ -61,7 +61,7 @@
              <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>
         </div>
-        
+           <?php } ?>
                 <div class="panel panel-primary">
             <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Urgent <?php if(!isset($_SESSION['current_campaign'])){ ?> <div class="pull-right">
                 <div class="btn-group">
@@ -76,7 +76,7 @@
                 </div>
               </div><? } ?>
               </div>
-              <?php } ?>
+           
               
               <div class="panel-body urgent-panel">
 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />

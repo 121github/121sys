@@ -481,7 +481,7 @@ view_record_html:function(data){
 	
 	
 	 mbody += '</div>';
-	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</button>';
+	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
 		modals.load_modal(mheader,mbody,mfooter);
 },
 company:function(){
