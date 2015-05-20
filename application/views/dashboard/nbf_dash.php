@@ -53,19 +53,9 @@
 
 </div>
 <div class="col-lg-4">
+<?php if(@$_SESSION['current_campaign']==3){ ?>
                   <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Pending <?php if(!isset($_SESSION['current_campaign'])){ ?> <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Campaign <span class="caret"></span> </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <?php foreach($campaigns as $row): ?>
-                    <li><a href="#" class="interest-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
-                    <?php endforeach ?>
-                    <li class="divider"></li>
-                    <li><a class="interest-filter" ref="#">Show All</a> </li>
-                  </ul>
-                </div>
-              </div><? } ?>
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Pending
               </div>
               <div class="panel-body pending-panel">
              <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
@@ -86,6 +76,8 @@
                 </div>
               </div><? } ?>
               </div>
+              <?php } ?>
+              
               <div class="panel-body urgent-panel">
 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
             </div>

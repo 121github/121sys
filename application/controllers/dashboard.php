@@ -342,9 +342,6 @@ class Dashboard extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $this->load->model('Records_model');
             $filter = $this->input->post();
-			if(isset($_SESSION['current_campaign'])){
-			$filter['campaign'] =  $_SESSION['current_campaign'];
-			}
             $data     = $this->Dashboard_model->get_pending($filter);
             foreach ($data as $k => $v) {
                 $comment                  = $this->Records_model->get_last_comment($v['urn']);

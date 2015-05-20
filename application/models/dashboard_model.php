@@ -36,9 +36,6 @@ class Dashboard_model extends CI_Model
 	    public function get_pending($filter = "")
     {
         $qry = "select urn,if(companies.name is null,fullname,name) as fullname,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from records left join contacts using(urn) left join companies using(urn) where record_status = 2 ";
-          if (!empty($filter['campaign'])) {
-            $qry .= " and campaign_id = '$filter'";
-        }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by records.date_updated asc";
         return $this->db->query($qry)->result_array();
