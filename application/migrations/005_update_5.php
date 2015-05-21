@@ -16,8 +16,8 @@ class Migration_update_5 extends CI_Migration
 
         //add new permissions
         $this->db->query("alter table record_planner add unique(user_id,urn)"); 
-		 $this->db->query("INSERT ignore INTO `121sys`.`permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'use timer', 'System')");
-		 	 $this->db->query("INSERT INTO `121sys`.`role_permissions` (`role_id`, `permission_id`) VALUES ('5', '129')");
+		 $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'use timer', 'System')");
+		 	 $this->db->query("INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('5', '129')");
 	}
 	
 }
