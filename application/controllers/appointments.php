@@ -57,8 +57,7 @@ class Appointments extends CI_Controller
                 "draw" => $this->input->post('draw'),
                 "recordsTotal" => $count,
                 "recordsFiltered" => $count,
-                "data" => $records,
-				"current_postcode"=>isset($_SESSION['current_postcode'])?$_SESSION['current_postcode']:false
+                "data" => $records
             );
             echo json_encode($data);
         }

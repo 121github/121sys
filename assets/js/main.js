@@ -1,4 +1,3 @@
-
 var device_type;
 
 $(window).ready(function() {
@@ -23,6 +22,17 @@ function debounce(func, wait, immediate) {
 		if (callNow) func.apply(context, args);
 	};
 };
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
+} 
 
 function setDevice(width) {
 
@@ -248,14 +258,15 @@ $(document).ready(function () {
     }
 
 });
+
 /* ==========================================================================
  BROWSER
  ========================================================================== */
 var browser = {
 	
     init: function () {
-        if ($.browser.msie) {
-             $('.modal-title').text('Old browser detected');
+        if ($.browser.msie) {			
+  $('.modal-title').text('Old browser detected');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false

@@ -404,7 +404,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <?php } ?>
 
 </nav>
-<div class="container-fluid"> <?php echo $body; ?></div>
+<div class="container-fluid">
+<?php echo $body; ?></div>
 <!-- /content -->
 
 <!-- Modal -->
@@ -448,6 +449,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
 <?php if(isset($_SESSION['permissions'])){ ?>
 helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
+helper.current_postcode = false;
+<?php } ?>
+<?php if(@!empty($_SESSION['current_postcode'])){ ?>
+helper.current_postcode = "<?php echo $_SESSION['current_postcode'] ?>";	
 <?php } ?>
 modals.init();
     <?php if(isset($_SESSION['user_id'])){ ?>

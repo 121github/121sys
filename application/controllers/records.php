@@ -701,6 +701,14 @@ class Records extends CI_Controller
     {
         if ($this->input->is_ajax_request() && $this->_access) {
             $data             = $this->input->post();
+			if(!isset($data['address'])){
+				echo json_encode(array(
+                    "success" => false,
+                    "msg" => "You must confirm the address"
+                ));
+                exit;
+			}
+			
 			$address_field = explode('|',$data['address']);
 			$data['address'] = $address_field[0];
 			$postcode = $address_field[1];

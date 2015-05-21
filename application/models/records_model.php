@@ -201,6 +201,7 @@ class Records_model extends CI_Model
                       con.website as contact_website,
                       date_format(r.date_updated,'%d/%m/%y') date_updated,
                       date_format(nextcall,'%d/%m/%y') nextcall,
+					  r.urn marker_id,
                       GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location,
                       GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location
                 from records r ";

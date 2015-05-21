@@ -4,7 +4,6 @@
 /*******************************************************************/
 var maps = {
     initialize: function(map_type) {
-        getLocation();
         this.map_type = map_type;
         this.directionsDisplay = new google.maps.DirectionsRenderer();
         this.directionsService = new google.maps.DirectionsService();
@@ -20,9 +19,9 @@ var maps = {
         this.uk_lat = 54.9830568815027;
         this.uk_lng = -4.331033059374933;
         this.default_zoom = 6
-        if (typeof localStorage.lat != "undefined" && typeof localStorage.lng != "undefined") {
-            this.lat = localStorage.lat;
-            this.lng = localStorage.lng;
+        if (getCookie('lat') && getCookie('lng')) {
+            this.lat = getCookie('lat');
+            this.lng = getCookie('lng');
             var default_zoom = 12;
         } else {
             this.lat = maps.uk_lat;
@@ -53,8 +52,7 @@ var maps = {
         };
 
         map = new google.maps.Map(document.getElementById('map-canvas'), maps.mapOptions);
-
-
+	
         $('.map-form').on("keyup keypress", function(e) {
             var code = e.keyCode || e.which;
             if (code == 13) {
@@ -70,21 +68,32 @@ var maps = {
 
         $('#map-view-toggle').change(function() {
             if ($(this).prop('checked')) {
-                $(document).on('mouseenter', '.data-table tbody tr', function() {
-                    maps.animateMarker($(this).attr('postcode'));
+				
+				if(getCookie('location_error')){ 
+	var location_error = '<div class="alert alert-danger" role="alert">'+
+ '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> '+
+  '<span class="sr-only">Error: </span>'+
+ getCookie('location_error')+' Please contact support for assistance</div>'
+$('.container-fluid').prepend(location_error);
+        }
+		if (getCookie('current_postcode')) {
+            $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
+        }
+				
+           $(document).on('mouseenter', '.data-table tbody tr', function() {
+                    maps.animateMarker($(this).attr('data-id'));
                     $(this).css('color', 'green');
-                });
+			});
 
                 //Start animation in the map for the marker deselected in the table
                 $(document).on('mouseleave', '.data-table tbody tr', function() {
-                    maps.removeMarkerAnimation($(this).attr('postcode'));
+                    maps.removeMarkerAnimation($(this).attr('data-id'));
                     $(this).css('color', 'black');
                 });
                 if (device_type == ('default')) {
                     $("#table-wrapper").removeClass("col-lg-12").addClass("col-lg-6");
                     $(".map-view").show();
                 } else {
-
                     $("#table-wrapper").find('table').find('tbody').hide();
                     $(".map-view").show();
                 }
@@ -105,8 +114,9 @@ var maps = {
                     $(".map-view").hide();
                     removeDirections();
                 }
+
             }
-            map_table_reload();
+             map_table_reload();
         });
 
         $(document).on('click', '.get-location-btn', function() {
@@ -148,9 +158,6 @@ var maps = {
             maps.hideDirections();
         });
 
-        if (typeof localStorage.current_postcode != "undefined") {
-            $('.map-form').find('input[name="postcode"]').val(localStorage.current_postcode);
-        }
         $('.map-form').find('input[name="travel-mode"]').val("DRIVING");
 
         var bounds_changer = debounce(function() {
@@ -174,6 +181,7 @@ var maps = {
         if (address == "") {
             map.setCenter(maps.myLatlng);
             map.setZoom(maps.default_zoom);
+			helper.current_postcode = false;
             var has_postcode = false
         } else {
             if (typeof maps.markerLocation != 'undefined') {
@@ -210,7 +218,7 @@ var maps = {
                     map: map,
                     position: address
                 });
-                $('.map-form').find('input[name="postcode"]').val(localStorage.current_postcode);
+                $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
                 //Wait until the map is loaded
                 setTimeout(function() {
                     map_table_reload();
@@ -314,9 +322,9 @@ var maps = {
     },
 
     //Animate a marker icon
-    animateMarker: function(postcode) {
+    animateMarker: function(id) {
         $.each(maps.markers, function(index, marker) {
-            if (marker.postcode == postcode) {
+            if (marker.id == id) {
                 if (marker.getAnimation() != null) {
                     marker.setAnimation(null);
                 } else {
@@ -327,9 +335,9 @@ var maps = {
     },
 
     //Remove marker animation icon
-    removeMarkerAnimation: function(postcode) {
+    removeMarkerAnimation: function(id) {
         $.each(maps.markers, function(index, marker) {
-            if (marker.postcode == postcode) {
+            if (marker.id == id) {
                 if (marker.getAnimation() != null) {
                     marker.setAnimation(null);
                 }
@@ -356,7 +364,7 @@ var maps = {
         var star_color = (((planner_permission == true)) && (value.record_planner_id) ? "|FCEF04" : "");
         var map_pin_style = "d_map_xpin_letter";
 
-
+var navbtn = false;
         var planner_info = false;
         if (planner_permission == true) {
             planner_info =
@@ -364,7 +372,10 @@ var maps = {
                 '<span style="margin-right: 5px;">' + (value.record_planner_id ? (value.planner_user + ' on ' + value.planner_date) : '') + '</span>' +
                 '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.planner_date ? value.planner_date : '') + '"></a>';
         }
-
+if(helper.current_postcode){
+		navbtn =   '<p>' +
+            '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';	
+		}
         var contentString =
             '<div id="content">' +
             '<div id="siteNotice">' +
@@ -378,9 +389,8 @@ var maps = {
 				 (value.date_updated?'<p><b>Last Updated: </b>' +value.date_updated + '</p>': '')+
 				  (value.postcode?'<p><b>Postcode: </b>' +value.postcode + '</p>': '')+
 			  (value.website?'<p><b>Website: </b>' +value.website + '</p>': '')+
-            (planner_info?'<p>' + planner_info + '</p>':'') +
-            '<p>' +
-            '<span><a class="btn btn-success btn-sm record-btn" item-postcode="' + value.postcode + '" href="#"><span class="glyphicon glyphicon-road"></span> Navigate </a></span>' +
+            (planner_info?'<p>' + planner_info + '</p>':'') + '<p>'+
+			  (navbtn?navbtn: '')+
             '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
             '</p>' +
             '</div>' +
@@ -402,6 +412,7 @@ var maps = {
             map: map,
             title: value.name,
             postcode: value.postcode,
+			id:value.marker_id,
             content: contentString,
             icon: "http://chart.apis.google.com/chart?chst=" + map_pin_style + "&chld=" + pin_style + character + marker_color + marker_text_color + star_color
         });
@@ -413,7 +424,7 @@ var maps = {
         var marker_text_color = "FFFFFF";
         var character = (value.name).substr(0, 1);
 		var navbtn = false;
-		if(typeof localStorage.current_postcode!="undefined"){
+		if(helper.current_postcode){
 		navbtn =   '<p>' +
             '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';	
 		}
@@ -428,9 +439,8 @@ var maps = {
 			(value.title?'<p><b>Title: </b>' +value.title + '</p>': '')+
 			(value.attendee?'<p><b>Attendees: </b>' +value.attendee + '</p>': '')+
 			(value.date_added?'<p><b>Created on: </b>' +value.date_added + '</p>': '')+
-			(value.postcode?'<p><b>Postcode: </b>' +value.postcode + '</p>': '') +
+			(value.postcode?'<p><b>Postcode: </b>' +value.postcode + '</p>': '') + '<p>'+
 			(navbtn?navbtn:'')+
-          
             '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
             '</p>' +
             '</div>' +
@@ -442,6 +452,7 @@ var maps = {
             title: value.name,
             postcode: value.postcode,
             content: contentString,
+			id:value.marker_id,
             icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
         });
         maps.setMarker(marker);

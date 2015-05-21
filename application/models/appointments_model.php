@@ -38,7 +38,8 @@ class Appointments_model extends CI_Model
                   lng,
                   appointment_id,
 				  title,
-                  urn
+                  urn,
+				  appointment_id marker_id
                 from appointments a
                   left join appointment_attendees aa using(appointment_id)
                   left join users u on u.user_id = aa.user_id

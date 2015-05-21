@@ -1,7 +1,7 @@
 /* ==========================================================================
    LOCATION
  ========================================================================== */
-
+getLocation();
 function getLocation() {
 	if (navigator.geolocation) {
         return navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError);
@@ -13,8 +13,8 @@ function getLocation() {
 
 function getLocationSuccess(position) {
     //store in localstorage
-	localStorage.lat = position.coords.latitude;
-	localStorage.lng = position.coords.longitude;
+	document.cookie = "lat="+position.coords.latitude;
+	document.cookie = "lng="+position.coords.longitude;
 	
     var postcode = null,
         locality = null,
@@ -36,8 +36,8 @@ function getLocationSuccess(position) {
                     //if the address component has postal code then write it out
                     if(component.types[0] === 'postal_code') {
                         postcode = component.long_name;
-						localStorage.current_postcode = postcode;
-						localStorage.removeItem("location_error");
+						document.cookie = "current_postcode="+postcode;
+						document.cookie = "location_error==;expires=Thu, 01 Jan 1970 00:00:00 UTC";
                         exit++;
                     }
                     if(component.types[0] === 'locality') {
@@ -101,10 +101,11 @@ function getLocationError(error){
             errMsg = 'Request timeout';
             break;
     }
-    localStorage.removeItem("current_postcode");
-	localStorage.removeItem("lat");
-	localStorage.removeItem("lng");
-	localStorage.location_error = errMsg;
+    document.cookie = "current_postcode=;expires=Thu, 01 Jan 1970 00:00:00 UTC";
+	document.cookie = "lat=;expires=Thu, 01 Jan 1970 00:00:00 UTC";
+	document.cookie = "lng=;expires=Thu, 01 Jan 1970 00:00:00 UTC";
+ 	document.cookie = "location_error="+errMsg;
+
 	if(localStorage.location_error){
 	flashalert.warning('Geolocation failure: '+localStorage.location_error);	
 	}

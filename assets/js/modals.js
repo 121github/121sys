@@ -90,11 +90,11 @@ var modals = {
 		if(response.success){
 		flashalert.success('Appointment was saved');
 		$('.close-modal').trigger('click');
-		if(record.urn){
+		if(typeof record!=="undefined"){
 		record.appointment_panel.load_appointments();
 		}
 		} else {
-		flashalert.danger('Appointment was not saved');		
+		flashalert.danger(response.msg);		
 		}
 		});	
 },
@@ -154,8 +154,8 @@ view_appointment_html:function(data){
 	}
 	var mheader = "Appointment #"+data.appointment_id;
 	var mbody = "<table class='table'><tbody><tr><th>Company</th><td>"+data.coname+"</td></tr><tr><th>Date</th><td>"+data.starttext+"</td></tr><tr><th>Title</th><td>"+data.title+"</td></tr><tr><th>Notes</th><td>"+data.text+"</td></tr><tr><th>Attendees</th><td>"+attendees+"</td></tr><tr><th>Type</th><td>"+data.appointment_type+"</td></tr>";
-	if(data.distance&&data.current_postcode){
-	mbody += "<tr><th>Distance</th><td>"+Number(data.distance).toFixed(2)+" Miles from "+data.current_postcode+"</td></tr>";
+	if(data.distance&&helper.current_postcode){
+	mbody += "<tr><th>Distance</th><td>"+Number(data.distance).toFixed(2)+" Miles from "+helper.current_postcode+"</td></tr>";
 	}
 	mbody += "</tbody></table>";
 	mbody += "This appointment was set by <b>"+data.created_by+"</b> on <b>"+data.date_added+"</b>";
@@ -163,8 +163,8 @@ view_appointment_html:function(data){
 	if(data.urn != $('#urn').val()){
 	' <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
 	}
-	if(data.distance){
-	mfooter += '<a target="_blank" class="btn btn-info pull-right" href="'+mapLink + '?zoom=2&saddr=' + data.current_postcode + '&daddr=' + data.postcode+'">Navigate</a>';
+	if(data.distance&&helper.current_postcode){
+	mfooter += '<a target="_blank" class="btn btn-info pull-right" href="'+mapLink + '?zoom=2&saddr=' + helper.current_postcode + '&daddr=' + data.postcode+'">Navigate</a>';
 	}
 	modals.load_modal(mheader,mbody,mfooter)
 },
@@ -296,7 +296,7 @@ load_modal:function(mheader,mbody,mfooter){
         }
 		 $('#modal').find('.selectpicker').selectpicker();
          $('#modal').find('.tt').tooltip();
-		 $('#modal').find('.datetime').datetimepicker({format: 'DD/MM/YYYY HH:mm'});
+		$('#modal').find('.datetime').datetimepicker({format: 'DD/MM/YYYY HH:mm'});
 		 $('#modal').find('.datepicker').datetimepicker({format: 'DD/MM/YYYY',  pickTime: false});
 		 	 //this function automatically sets the end date for the appointment 1 hour ahead of the start date
             $(".startpicker").on("dp.hide", function (e) {

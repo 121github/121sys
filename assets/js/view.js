@@ -74,6 +74,7 @@ var view_records = {
             }],
             "createdRow": function(row, data, dataIndex) {
                 $(row).attr('data-urn', data.urn);
+				$(row).attr('data-id', data.urn);
                 $(row).attr('data-modal', 'view-record');
                 $(row).attr('postcode', data['postcode']);
                 $(row).addClass('pointer');
