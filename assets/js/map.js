@@ -12,6 +12,7 @@ var maps = {
         this.markers = [];
         this.markerLocation;
         this.bounds = null;
+        this.temp_bounds = null;
         this.items = [];
         this.table;
         this.infowindow = new google.maps.InfoWindow();
@@ -158,6 +159,36 @@ $('.container-fluid').prepend(location_error);
             maps.hideDirections();
         });
 
+        //Planner form
+        $(document).on('click', '.planner-btn', function () {
+            var urn = $(this).attr('item-urn');
+            var planner_date = $(this).attr('item-planner-date');
+            var today_date = new Date();
+            today_date = today_date.getUTCDate()+"/"+(today_date.getUTCMonth()+1)+"/"+today_date.getFullYear();
+            $('#bodyContent_'+urn).hide();
+            $('#formContent_'+urn).show();
+
+            $('.date').datetimepicker({
+                format: 'DD/MM/YYYY',
+                pickTime: false,
+                defaultDate: (planner_date.length > 0?planner_date:today_date)
+            });
+        });
+
+        //Cancel planner form
+        $(document).on('click', '.cancel-planner-btn', function () {
+            var urn = $(this).attr('item-urn');
+
+            $('#bodyContent_'+urn).show();
+            $('#formContent_'+urn).hide();
+        });
+
+        //Save planner
+        $(document).on('click', '.save-planner-btn', function () {
+            maps.savePlanner($(this));
+        });
+
+
         $('.map-form').find('input[name="travel-mode"]').val("DRIVING");
 
         var bounds_changer = debounce(function() {
@@ -297,13 +328,14 @@ $('.container-fluid').prepend(location_error);
         swLat = (bounds_obj) ? bounds_obj.getSouthWest().lat() : null;
         swLng = (bounds_obj) ? bounds_obj.getSouthWest().lng() : null;
 
-        bounds = {
+        maps.bounds = {
             'neLat': neLat,
             'neLng': neLng,
             'swLat': swLat,
             'swLng': swLng
         };
-        return bounds;
+
+        return maps.bounds;
     },
 
     //Show the items in the map
@@ -346,16 +378,17 @@ $('.container-fluid').prepend(location_error);
     },
 
     //Open infowindow for a marker
-    openInfoWindow: function(postcode) {
-        var contentString = "";
-        $.each(maps.markers, function(index, marker) {
-            if (marker.postcode == postcode) {
-                maps.infowindow.close();
-                maps.infowindow.setContent(marker.content);
-                maps.infowindow.open(map, marker);
-            }
-        });
-    },
+    //openInfoWindow: function(postcode) {
+    //    maps.temp_bounds = maps.getBounds();
+    //    var contentString = "";
+    //    $.each(maps.markers, function(index, marker) {
+    //        if (marker.postcode == postcode) {
+    //            maps.infowindow.close();
+    //            maps.infowindow.setContent(marker.content);
+    //            maps.infowindow.open(map, marker);
+    //        }
+    //    });
+    //},
     addRecordMarker: function(value) {
         var marker_color = "|" + maps.intToARGB(maps.hashCode(value.attendee));
         var marker_text_color = "|FFFFFF";
@@ -520,6 +553,37 @@ if(helper.current_postcode){
         maps.clearMarkers();
         maps.markers = [];
 
+    },
+
+    //Save record planner
+    savePlanner: function(btn) {
+        var urn = btn.attr('item-urn');
+        var postcode = btn.attr('item-postcode');
+        var location_id = btn.attr('item-location-id');
+        var record_planner_id = btn.attr('item-record-planner-id');
+        var planner_date = $('.planner-form-' + urn).find('input[name="date"]').val();
+
+        $.ajax({
+            url: helper.baseUrl + 'records/save_record_planner',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                'urn': urn,
+                'postcode': postcode,
+                'location_id': location_id,
+                'start_date': planner_date,
+                'record_planner_id': record_planner_id
+            }
+        }).done(function (response) {
+            if (response.success) {
+                flashalert.success(response.msg);
+                maps.temp_bounds = maps.bounds
+                var currentPage = view_records.table.page();;
+                view_records.table.page(currentPage).draw(false);
+            } else {
+                flashalert.danger(response.msg);
+            }
+        });
     }
 
 }
