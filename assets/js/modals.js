@@ -297,7 +297,7 @@ load_modal:function(mheader,mbody,mfooter){
 		 $('#modal').find('.selectpicker').selectpicker();
          $('#modal').find('.tt').tooltip();
 		$('#modal').find('.datetime').datetimepicker({format: 'DD/MM/YYYY HH:mm'});
-		 $('#modal').find('.datepicker').datetimepicker({format: 'DD/MM/YYYY',  pickTime: false});
+		 $('#modal').find('.dateonly').datetimepicker({format: 'DD/MM/YYYY',  pickTime: false});
 		 	 //this function automatically sets the end date for the appointment 1 hour ahead of the start date
             $(".startpicker").on("dp.hide", function (e) {
                 var m = moment(e.date, "DD\MM\YYYY HH:mm");
@@ -460,7 +460,7 @@ view_record_html:function(data){
 			});
 			planner_form += '<select></div>';
 			
-			planner_form += '<div class="form-group"><label>Select Date</label><input value="'+data.planner_date+'" class="form-control datepicker" id="planner_date" placeholder="Choose date..." /></div>';
+			planner_form += '<div class="form-group"><label>Select Date</label><input value="'+data.planner_date+'" class="form-control dateonly" id="planner_date" placeholder="Choose date..." /></div>';
 			planner_form +=	' <button class="marl btn btn-info pull-right save-planner" data-urn="'+data.urn+'" href="#">Save to planner</button> ';
 			} else {
 			planner_form += '<p class="text-danger">You cannot add this record to the journey planner because it has no address</p>'	
