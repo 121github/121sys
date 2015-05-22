@@ -14,56 +14,42 @@ class Planner_model extends CI_Model
     public function planner_data($count = false, $options = false)
     {
         $table_columns = array(
-            "start",
+            "date_format(rp.`start_date`,'%d/%m/%y')",
             "com.name",
             "u.name",
-            "date_format(a.`date_added`,'%d/%m/%y')",
-            "postcode"
-        );
-        $order_columns = array(
-            "start",
-            "com.name",
-            "u.name",
-            "a.date_added",
+            "distance",
+            "time",
             "postcode"
         );
 
         $qry = "select
-                    date_format(`start`,'%d/%m/%y %H:%i') start,
-                    com.name,
-                    title,
-                    u.name attendee,
+                    date_format(rp.`start_date`,'%d/%m/%Y') start,
+                    if(com.name is null,'na',com.name) name,
+                    fullname,
+                    u.name user,
                     u.user_id as attendee_id,
-                    date_format(a.`date_added`,'%d/%m/%y') date_added,
                     postcode,
                     lat,
                     lng,
-                    appointment_id,
-                    IFNULL(com.website,'') as website,
-                    records.urn
-                from appointments a
-                  left join appointment_attendees aa using(appointment_id)
-                  left join users u on u.user_id = aa.user_id
+                    rp.record_planner_id,
+                    rp.location_id,
+                    outcome,
+                    records.urn,
+                    date_format(records.date_updated,'%d/%m/%y') date_updated,
+                    date_format(records.nextcall,'%d/%m/%y') nextcall,
+                    com.website as company_website,
+                    con.website as contact_website
+                from record_planner rp
+                  left join users u on u.user_id = rp.user_id
                   left join records using(urn)
                   left join companies com using(urn)
-                  left join locations using(location_id)";
+                  left join contacts con using(urn)
+                  left join locations using(location_id)
+                  inner join outcomes using(outcome_id)";
 
         $where = $this->get_where($options, $table_columns);
         $qry .= $where;
-        $qry .= " group by appointment_id";
-
-        $start = $options['start'];
-        $length = $options['length'];
-        if (isset($_SESSION['appointment_table']['order']) && $options['draw'] == "1") {
-            $order = $_SESSION['appointment_table']['order'];
-        } else {
-            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-            unset($_SESSION['appointment_table']['order']);
-            unset($_SESSION['appointment_table']['values']['order']);
-        }
-
-        $qry .= $order;
-        $qry .= "  limit $start,$length";
+        $qry .= "  group by record_planner_id order by case when rp.order_num is not null then rp.order_num else record_planner_id end asc ";
 
         $result = $this->db->query($qry)->result_array();
         return $result;
@@ -74,42 +60,46 @@ class Planner_model extends CI_Model
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
         $where = " where campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
-        //Check the bounds of the map
-        if ($options['bounds']) {
-            $where .= " and lat < ".$options['bounds']['neLat']." and lat > ".$options['bounds']['swLat']." and lng < ".$options['bounds']['neLng']." and lng > ".$options['bounds']['swLng']." ";
+        //User
+        $where .= " and rp.user_id = {$_SESSION['user_id']} ";
+
+        //Date
+        if ($options['date']) {
+            $where .= " and date(rp.start_date) = '" . $options['date'] . "' ";
         }
 
-        //check the tabel header filter
-        foreach ($options['columns'] as $k => $v) {
-            //if the value is not empty we add it to the where clause
-            if ($v['search']['value'] <> "") {
-                $where .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
-            }
+        //Check the bounds of the map
+        if ($options['map'] == 'true' && $options['bounds']) {
+            $where .= " and lat < " . $options['bounds']['neLat'] . " and lat > " . $options['bounds']['swLat'] . " and lng < " . $options['bounds']['neLng'] . " and lng > " . $options['bounds']['swLng'] . " ";
         }
+
         return $where;
     }
 
-    public function add_record($urn,$date,$postcode){
-        $this->db->where("postcode",$postcode);
+    public function add_record($urn, $date, $postcode)
+    {
+        $this->db->where("postcode", $postcode);
         $check_location = $this->db->get("uk_postcodes");
-        if($check_location->num_rows()){
+        if ($check_location->num_rows()) {
             $location_id = $check_location->row()->postcode_id;
         } else {
             $coords = postcode_to_coords($postcode);
-            $this->db->insert("uk_postcodes",array("postcode"=>$postcode,"lat"=>$coords['lat'],"lng"=>$coords['lng']));
+            $this->db->insert("uk_postcodes", array("postcode" => $postcode, "lat" => $coords['lat'], "lng" => $coords['lng']));
             $location_id = $this->db->insert_id();
-            $this->db->insert("locations",array("location_id"=>$location_id,"lat"=>$coords['lat'],"lng"=>$coords['lng']));
+            $this->db->insert("locations", array("location_id" => $location_id, "lat" => $coords['lat'], "lng" => $coords['lng']));
         }
-        $qry = "replace into record_planner set urn = '$urn', user_id = '".$_SESSION['user_id']."',start_date = '$date', postcode ='$postcode', location_id = '$location_id'";
+        $qry = "replace into record_planner set urn = '$urn', user_id = '" . $_SESSION['user_id'] . "',start_date = '$date', postcode ='$postcode', location_id = '$location_id'";
         $this->db->query($qry);
     }
-	
-		public function remove_record($urn){
-	$this->db->where(array("urn"=>$urn,"user_id"=>$_SESSION['user_id']));
-		$this->db->delete("record_planner");
-	}
 
-    public function save_record_order($record_list, $user_id, $date) {
+    public function remove_record($urn)
+    {
+        $this->db->where(array("urn" => $urn, "user_id" => $_SESSION['user_id']));
+        $this->db->delete("record_planner");
+    }
+
+    public function save_record_order($record_list, $user_id, $date)
+    {
         //Reset the order as null for this user and on this date
         $data = array(
             'order_num' => null
@@ -121,7 +111,7 @@ class Planner_model extends CI_Model
         //Set the order for the record_planners for this user and on this date
         $data = array();
         foreach ($record_list as $order_num => $record_planner_id) {
-            array_push($data,array(
+            array_push($data, array(
                 'record_planner_id' => $record_planner_id,
                 'order_num' => $order_num
             ));
@@ -130,5 +120,4 @@ class Planner_model extends CI_Model
         $this->db->where('date(start_date)', $date);
         $this->db->update_batch('record_planner', $data, 'record_planner_id');
     }
-	
 }
