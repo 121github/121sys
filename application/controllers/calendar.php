@@ -30,6 +30,13 @@ class Calendar extends CI_Controller
     //this loads the data management view
     public function index()
     {
+		if(!isset($_SESSION['calendar-filter'])){
+			$_SESSION['calendar-filter']['distance'] = 1500;
+			if(isset($_COOKIE['current_postcode'])){
+			$_SESSION['calendar-filter']['postcode'] = $_COOKIE['current_postcode'];
+			}
+		}
+		
         $users = array();
         if (in_array("mix campaigns", $_SESSION['permissions'])) {
             $campaigns = $this->Form_model->get_calendar_campaigns();
@@ -115,7 +122,7 @@ if(isset($_POST['startDate'])){
         if (!empty($_POST['users'])) {
             $users = $_POST['users'];
         } else {
-            $users = (isset($_SESSION['users']) ? $_SESSION['users'] : "");
+            $users = (isset($_SESSION['calendar-filter']['users']) ? $_SESSION['calendar-filter']['users'] : "");
         }
 
         if (!empty($postcode) && !empty($_POST['distance'])) {
@@ -128,12 +135,12 @@ if(isset($_POST['startDate'])){
         if (!empty($_POST['distance'])) {
             $distance = $_POST['distance'];
         } else {
-            $distance = (isset($_SESSION['distance']) ? $_SESSION['distance'] : "");
+            $distance = (isset($_SESSION['calendar-filter']['distance']) ? $_SESSIO['calendar-filter']['distance'] : "1500");
         }
         if (!empty($_POST['campaigns'])) {
             $campaigns = $_POST['campaigns'];
         } else {
-            $campaigns = (isset($_SESSION['campaigns']) ? $_SESSION['campaigns'] : "");
+            $campaigns = (isset($_SESSION['calendar-filter']['campaigns']) ? $_SESSION['calendar-filter']['campaigns'] : "");
         }
 
         $options = array("start" => $start, "end" => $end, "users" => $users, "campaigns" => $campaigns, "postcode" => $postcode, "distance" => $distance);
