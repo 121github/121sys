@@ -190,7 +190,6 @@ class Exports extends CI_Controller
 
                 $result['data'] = $aux;
 
-
                 $aux = array();
                 foreach($result['data'] as $val) {
                     $aux_val = array();
@@ -234,7 +233,6 @@ class Exports extends CI_Controller
                 }
 
                 $result['data'] = $aux;
-
 
                 $company_telephone_header = array();
                 for ($i=1;$i<=$num_company_telephone_numbers;$i++) {

@@ -29,11 +29,18 @@ class Planner extends CI_Controller
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css',
-                '../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css'
+                '../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+                'map.css',
+                'daterangepicker-bs3.css'
             ),
             'javascript' => array(
+                'modals.js',
                 'planner/planner.js',
-                'plugins/DataTables/extensions/Scroller/js/dataTables.scroller.min.js'
+                'plugins/DataTables/extensions/Scroller/js/dataTables.scroller.min.js',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
             )
         );
         $this->template->load('default', 'dashboard/planner.php', $data);
@@ -44,12 +51,13 @@ class Planner extends CI_Controller
         if ($this->input->is_ajax_request()) {
 
             $records = $this->Planner_model->planner_data(false, $this->input->post());
-            $count = count($records);
+
+            foreach ($records as $k => $v) {
+                //Website
+                $records[$k]["website"] = ($records[$k]['company_website']?$records[$k]['company_website']:($records[$k]['contact_website']?$records[$k]['contact_website']:''));
+            }
 
             $data = array(
-                "draw" => $this->input->post('draw'),
-                "recordsTotal" => $count,
-                "recordsFiltered" => $count,
                 "data" => $records
             );
             echo json_encode($data);
@@ -79,7 +87,7 @@ class Planner extends CI_Controller
 		 }
 	}
 	
-		public function remove_record(){
+    public function remove_record(){
 		 if ($this->input->is_ajax_request()&&$this->_access) {
 			 $urn = $this->input->post('urn');
 			 $this->Planner_model->remove_record($urn); 
@@ -89,4 +97,25 @@ class Planner extends CI_Controller
  			exit;
 		 }
 	}
+
+    public function save_record_order() {
+        if ($this->input->is_ajax_request()) {
+
+            $record_list = $this->input->post('record_list');
+            $date = $this->input->post('date');
+            $user_id = $_SESSION['user_id'];
+
+            $this->Planner_model->save_record_order($record_list, $user_id, $date);
+
+            echo json_encode(array(
+                "success"=>true,
+                "msg"=>"Planner was updated"
+            ));
+
+        } else {
+
+            echo "denied";
+            exit;
+        }
+    }
 }
