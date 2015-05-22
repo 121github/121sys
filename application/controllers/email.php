@@ -326,6 +326,7 @@ class Email extends CI_Controller
 			$form['send_to'] = $email_address;
 			$form['bcc'] = $recipients['bcc'];
 			$form['cc'] = $recipients['cc'];
+			$form['urn'] = $urn; 
 		$last_comment = $this->Records_model->get_last_comment($urn);
 		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
 		$placeholder_data[0]['comments'] = $last_comment;
