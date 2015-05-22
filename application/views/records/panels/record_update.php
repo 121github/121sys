@@ -91,7 +91,7 @@
             <!-- need to add js to get this button working and set park code to null in record table -->
             <button type="button" class="btn btn-default pull-right unpark-record marl">Unpark Record</button>
 			<?php } ?>
-            <?php if($details['record']['record_status']=="3"&&in_array("reset records",$_SESSION['permissions'])){ ?>
+            <?php if(($details['record']['record_status']=="3"||$details['record']['record_status']=="4")&&in_array("reset records",$_SESSION['permissions'])){ ?>
             <button type="button" class="btn btn-default pull-right reset-record marl">Reset Record</button>
             <?php } ?>
             <?php if($details['record']['record_status']=="2"||$details['record']['record_status']=="1"&&empty($details['record']['park_reason'])){ ?>
