@@ -704,6 +704,7 @@ class Records extends CI_Controller
     {
         if ($this->input->is_ajax_request() && $this->_access) {
             $data             = $this->input->post();
+			//check the address
 			if(!isset($data['address'])||$data['address']=="Other"){
 				echo json_encode(array(
                     "success" => false,
@@ -716,6 +717,7 @@ class Records extends CI_Controller
 			$data['address'] = $address_field[0];
 			$postcode = $address_field[1];
             $data['postcode'] = postcodeCheckFormat($postcode);
+			//check the attendees
             if (!isset($data['attendees'])) {
                 echo json_encode(array(
                     "success" => false,
@@ -724,7 +726,6 @@ class Records extends CI_Controller
                 exit(0);
             }
             //Check if the attendee has a block_day between the start and the end date
-            else {
                 if ($this->Appointments_model->checkDayBlocked($data['attendees'][0],$data['start'],$data['end'])) {
                     echo json_encode(array(
                         "success" => false,
@@ -732,17 +733,20 @@ class Records extends CI_Controller
                     ));
                     exit(0);
                 }
-            }
             
+            //check the postcode
             if ($data['postcode'] === NULL) {
                 echo json_encode(array(
                     "success" => false,
                     "msg" => "You must set a valid UK Postcode"
                 ));
 				exit;
-            } else {
+            } 
+			
 				$data['start'] = to_mysql_datetime($data['start']);
         		$data['end']   = to_mysql_datetime($data['end']);
+				
+				//check the date
 				if(strtotime($data['start'])<strtotime('now')||strtotime($data['end'])<strtotime('now')){
 					echo json_encode(array(
                     "success" => false,
@@ -764,10 +768,6 @@ class Records extends CI_Controller
 				$this->load->model('Locations_model');
 				//set the location id on the appointment
 				$this->Locations_model->set_location_id($data['postcode']);
-            }
-            
-            
-            
         } else {
             echo "Denied";
             exit;
