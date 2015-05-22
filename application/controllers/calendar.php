@@ -119,7 +119,7 @@ if(isset($_POST['startDate'])){
 	 $start = "";
 	 $end = "";
 }
-        if (!empty($_POST['users'])) {
+        if (isset($_POST['users'])) {
             $users = $_POST['users'];
         } else {
             $users = (isset($_SESSION['calendar-filter']['users']) ? $_SESSION['calendar-filter']['users'] : "");
@@ -137,7 +137,7 @@ if(isset($_POST['startDate'])){
         } else {
             $distance = (isset($_SESSION['calendar-filter']['distance']) ? $_SESSIO['calendar-filter']['distance'] : "1500");
         }
-        if (!empty($_POST['campaigns'])) {
+        if (isset($_POST['campaigns'])) {
             $campaigns = $_POST['campaigns'];
         } else {
             $campaigns = (isset($_SESSION['calendar-filter']['campaigns']) ? $_SESSION['calendar-filter']['campaigns'] : "");

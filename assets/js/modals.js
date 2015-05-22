@@ -152,18 +152,21 @@ view_appointment_html:function(data){
 		attendees += val;
 	});
 	}
-	var mheader = "Appointment #"+data.appointment_id;
+	var mheader = "Appointment #"+data.appointment_id+" <small>"+data.campaign_name+"</small>";
 	var mbody = "<table class='table'><tbody><tr><th>Company</th><td>"+data.coname+"</td></tr><tr><th>Date</th><td>"+data.starttext+"</td></tr><tr><th>Title</th><td>"+data.title+"</td></tr><tr><th>Notes</th><td>"+data.text+"</td></tr><tr><th>Attendees</th><td>"+attendees+"</td></tr><tr><th>Type</th><td>"+data.appointment_type+"</td></tr>";
 	if(data.distance&&helper.current_postcode){
 	mbody += "<tr><th>Distance</th><td>"+Number(data.distance).toFixed(2)+" Miles from "+helper.current_postcode+"</td></tr>";
 	}
 	mbody += "</tbody></table>";
 	mbody += "This appointment was set by <b>"+data.created_by+"</b> on <b>"+data.date_added+"</b>";
-	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="'+data.appointment_id+'" >Edit Appointment</a> <a target="_blank" class="btn btn-info pull-right" href="'+ mapLink + '?q=' + data.postcode + '",+UK">View Map</a>';
+	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="'+data.appointment_id+'" >Edit Appointment</a> ';
 	if(data.urn != $('#urn').val()){
-	' <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
+	mfooter += ' <a class="btn btn-primary pull-right" href="'+helper.baseUrl+'records/detail/'+data.urn+'">View Record</a>';
 	}
-	if(data.distance&&helper.current_postcode){
+	if(getCookie('current_postcode')){
+		mfooter += '<a target="_blank" class="btn btn-info pull-right" href="'+ mapLink + '?q=' + data.postcode + '",+UK">View Map</a>';
+	}
+	if(data.distance&&getCookie('current_postcode')){
 	mfooter += '<a target="_blank" class="btn btn-info pull-right" href="'+mapLink + '?zoom=2&saddr=' + helper.current_postcode + '&daddr=' + data.postcode+'">Navigate</a>';
 	}
 	modals.load_modal(mheader,mbody,mfooter)

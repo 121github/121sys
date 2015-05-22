@@ -33,7 +33,7 @@ class Modal_model extends CI_Model
               $coords['lat'] . "*PI()/180)) * COS((lo.lat*PI()/180)) * COS(((" .
               $coords['lng'] . "- lo.lng)*PI()/180))))*180/PI())*60*1.1515) distance";
 		}
-	$query = "select u.user_id,c.name coname,appointment_id,urn,title,text,date_format(start,'%d/%m/%Y %H:%i') start,date_format(start,'%W %D %M %Y %l:%i%p') starttext,date_format(end,'%d/%m/%Y %H:%i') end,postcode,a.status,(select name from users where user_id = a.created_by) created_by,date_format(date_added,'%d/%m/%Y') date_added, u.name attendee, appointment_type, appointment_type_id as `type`, address  $distance_query from appointments a left join appointment_types using(appointment_type_id) left join locations lo using(location_id) left join appointment_attendees aa using(appointment_id) left join users u on u.user_id = aa.user_id left join companies c using(urn) where appointment_id = '$id' ";
+	$query = "select u.user_id,c.name coname,campaign_name,appointment_id,urn,title,text,date_format(start,'%d/%m/%Y %H:%i') start,date_format(start,'%W %D %M %Y %l:%i%p') starttext,date_format(end,'%d/%m/%Y %H:%i') end,postcode,a.status,(select name from users where user_id = a.created_by) created_by,date_format(a.date_added,'%d/%m/%Y') date_added, u.name attendee, appointment_type, appointment_type_id as `type`, address  $distance_query from appointments a left join records using(urn) left join campaigns using(campaign_id) left join appointment_types using(appointment_type_id) left join locations lo using(location_id) left join appointment_attendees aa using(appointment_id) left join users u on u.user_id = aa.user_id left join companies c using(urn) where appointment_id = '$id' ";
 	return $this->db->query($query)->result_array();
 	}
 	

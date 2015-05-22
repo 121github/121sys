@@ -90,7 +90,17 @@ class Planner_model extends CI_Model
     }
 	
 	public function add_record($urn,$date,$postcode){
-	$qry = "replace into record_planner set urn = '$urn', user_id = '".$_SESSION['user_id']."',start_date = '$date', postcode ='$postcode', location_id = (select postcode_id from uk_postcodes where postcode = '$postcode')";	
+	$this->db->where("postcode",$postcode);
+	$check_location = $this->db->get("uk_postcodes");
+	if($check_location->num_rows()){
+	$location_id = $check_location->row()->postcode_id;
+	} else {
+	$coords = postcode_to_coords($postcode);
+	$this->db->insert("uk_postcodes",array("postcode"=>$postcode,"lat"=>$coords['lat'],"lng"=>$coords['lng']));
+	$location_id = $this->db->insert_id();
+	$this->db->insert("locations",array("location_id"=>$location_id,"lat"=>$coords['lat'],"lng"=>$coords['lng']));
+	}
+	$qry = "replace into record_planner set urn = '$urn', user_id = '".$_SESSION['user_id']."',start_date = '$date', postcode ='$postcode', location_id = '$location_id'";	
 	$this->db->query($qry);
 	}
 	

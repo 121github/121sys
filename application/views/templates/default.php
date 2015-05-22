@@ -92,7 +92,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php } ?>
             <?php if (in_array("mix campaigns", $_SESSION['permissions'])||isset($_SESSION['current_campaign'])) {
                  ?>
-                    <li><a href="<?php echo base_url(); ?>records/detail"><?php if($_SESSION['role']=="9"){ echo "Start Survey"; }  else { echo "Start Calling"; } ?></a></li>
+                    <?php if(isset($_SESSION['current_campaign'])){ ?><li><a href="<?php echo base_url(); ?>records/detail"><?php if($_SESSION['role']=="9"){ echo "Start Survey"; }  else { echo "Start Calling"; } ?></a></li>
+                    <?php } ?>
                     <?php if($_SESSION['role']<>9){ ?>
             <li><a href="#mm-1">Dashboard</a>
                 <ul>

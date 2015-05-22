@@ -164,7 +164,10 @@ class Records extends CI_Controller
         $campaign                     = $this->Records_model->get_campaign($urn);
         $campaign_id                  = $campaign['campaign_id'];
         $campaign_layout              = $campaign['record_layout'];
+		//if they dont have permission to mix campaigns then the global campaign is set the one they selected so when they hit next it will be the right one
+		if(!in_array("mix campaigns",$_SESSION['permissions'])){
         $_SESSION['current_campaign'] = $campaign_id;
+		}
         //get the features for the campaign and put the ID's into an array
         $campaign_features            = $this->Form_model->get_campaign_features($campaign_id);
         //get the panels for the different features. These panels will be laoded in the view if they have been selected on the campaign
