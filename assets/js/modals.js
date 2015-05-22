@@ -382,6 +382,11 @@ view_record:function(urn){
 		modals.view_record_html(response.data);
 	});
 },
+ default_buttons: function () {
+        $('#modal').find('.modal-footer .btn').remove();
+        $('#modal').find('.modal-footer').append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
+        $('#modal').find('.modal-footer').append('<button class="btn btn-primary confirm-modal" type="button">Confirm</button>');
+    },
 view_record_html:function(data){
 	var mheader = "View Record #"+data.urn;
 	var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li>';

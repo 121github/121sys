@@ -263,6 +263,7 @@ $(document).ready(function () {
 
     var modal = {
         distance: function () {
+			modals.default_buttons();
             $('.modal-title').text('Set maximum distance');
             $('#modal').modal({
                 backdrop: 'static',
@@ -286,6 +287,7 @@ $(document).ready(function () {
             });
         },
         addAppointmentRule: function(block_day) {
+			modals.default_buttons();
             $('.modal-title').text('Add appointment rule');
             $('#modal').modal({
                 backdrop: 'static',
