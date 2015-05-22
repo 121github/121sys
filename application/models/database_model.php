@@ -652,7 +652,13 @@ class Database_model extends CI_Model
                         (118, 'database', 'Admin'),
                         (119, 'campaign access', 'Admin'),
                         (120, 'campaign setup', 'Admin'),
-                        (121, 'planner', 'Records')");
+                        (121, 'planner', 'Records'),
+                        (122, 'admin groups', 'Admin'),
+                        (123, 'campaign fields', 'Admin'),
+                        (124, 'admin teams', 'Admin'),
+                        (125, 'admin roles', 'Admin'),
+                        (126, 'admin users', 'Admin'),
+                        (127, 'use timer', 'System')");
 
         if ($this->db->_error_message()) {
             return "permissions";
@@ -747,6 +753,12 @@ class Database_model extends CI_Model
                         (1, 119),
                         (1, 120),
                         (1, 121),
+                        (1, 122),
+                        (1, 123),
+                        (1, 124),
+                        (1, 125),
+                        (1, 126),
+                        (1, 127),
                         (2, 1),
                         (2, 3),
                         (2, 4),
@@ -921,6 +933,7 @@ class Database_model extends CI_Model
                         (5, 90),
                         (5, 99),
                         (5, 108),
+                        (5, 127),
                         (6, 2),
                         (6, 4),
                         (6, 5),
