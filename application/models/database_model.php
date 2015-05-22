@@ -1819,7 +1819,7 @@ class Database_model extends CI_Model
             //Appointments
             $days = rand(0, 90);
             $time = time() + $days * 24 * 3600;
-            $time_end = time() + $days * 25 * 3600;
+            $time_end = time() + $days * 24 * 3600 + 3600;
             $date = date($datestring, $time);
             $date_end = date($datestring, $time_end);
             $appointment = array(
