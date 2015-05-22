@@ -704,7 +704,7 @@ class Records extends CI_Controller
     {
         if ($this->input->is_ajax_request() && $this->_access) {
             $data             = $this->input->post();
-			if(!isset($data['address'])){
+			if(!isset($data['address'])||$data['address']=="Other"){
 				echo json_encode(array(
                     "success" => false,
                     "msg" => "You must confirm the address"
@@ -743,7 +743,6 @@ class Records extends CI_Controller
             } else {
 				$data['start'] = to_mysql_datetime($data['start']);
         		$data['end']   = to_mysql_datetime($data['end']);
-				
 				if(strtotime($data['start'])<strtotime('now')||strtotime($data['end'])<strtotime('now')){
 					echo json_encode(array(
                     "success" => false,
