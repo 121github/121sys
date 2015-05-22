@@ -45,6 +45,7 @@ class Email_model extends CI_Model
 			$form['send_to'] = "";
 			$form['cc'] = $row['template_cc'];
 			$form['bcc'] = $row['template_bcc'];
+			$form['template_unsubscribe'] = $row['template_unsubscribe'];
 		}
 		return $form;
 		
