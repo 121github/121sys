@@ -88,25 +88,47 @@ class Planner_model extends CI_Model
         }
         return $where;
     }
-	
-	public function add_record($urn,$date,$postcode){
-	$this->db->where("postcode",$postcode);
-	$check_location = $this->db->get("uk_postcodes");
-	if($check_location->num_rows()){
-	$location_id = $check_location->row()->postcode_id;
-	} else {
-	$coords = postcode_to_coords($postcode);
-	$this->db->insert("uk_postcodes",array("postcode"=>$postcode,"lat"=>$coords['lat'],"lng"=>$coords['lng']));
-	$location_id = $this->db->insert_id();
-	$this->db->insert("locations",array("location_id"=>$location_id,"lat"=>$coords['lat'],"lng"=>$coords['lng']));
-	}
-	$qry = "replace into record_planner set urn = '$urn', user_id = '".$_SESSION['user_id']."',start_date = '$date', postcode ='$postcode', location_id = '$location_id'";	
-	$this->db->query($qry);
-	}
+
+    public function add_record($urn,$date,$postcode){
+        $this->db->where("postcode",$postcode);
+        $check_location = $this->db->get("uk_postcodes");
+        if($check_location->num_rows()){
+            $location_id = $check_location->row()->postcode_id;
+        } else {
+            $coords = postcode_to_coords($postcode);
+            $this->db->insert("uk_postcodes",array("postcode"=>$postcode,"lat"=>$coords['lat'],"lng"=>$coords['lng']));
+            $location_id = $this->db->insert_id();
+            $this->db->insert("locations",array("location_id"=>$location_id,"lat"=>$coords['lat'],"lng"=>$coords['lng']));
+        }
+        $qry = "replace into record_planner set urn = '$urn', user_id = '".$_SESSION['user_id']."',start_date = '$date', postcode ='$postcode', location_id = '$location_id'";
+        $this->db->query($qry);
+    }
 	
 		public function remove_record($urn){
 	$this->db->where(array("urn"=>$urn,"user_id"=>$_SESSION['user_id']));
 		$this->db->delete("record_planner");
 	}
+
+    public function save_record_order($record_list, $user_id, $date) {
+        //Reset the order as null for this user and on this date
+        $data = array(
+            'order_num' => null
+        );
+        $this->db->where('user_id', $user_id);
+        $this->db->where('date(start_date)', $date);
+        $this->db->update('record_planner', $data);
+
+        //Set the order for the record_planners for this user and on this date
+        $data = array();
+        foreach ($record_list as $order_num => $record_planner_id) {
+            array_push($data,array(
+                'record_planner_id' => $record_planner_id,
+                'order_num' => $order_num
+            ));
+        }
+        $this->db->where('user_id', $user_id);
+        $this->db->where('date(start_date)', $date);
+        $this->db->update_batch('record_planner', $data, 'record_planner_id');
+    }
 	
 }

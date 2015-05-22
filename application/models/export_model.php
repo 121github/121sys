@@ -183,7 +183,10 @@ class Export_model extends CI_Model
         $qry .= " group by contacts.contact_id
                   order by records.urn";
 
+        $this->firephp->log($qry);
         $result = $this->db->query($qry)->result_array();
+        $this->firephp->log($result);
+        exit(0);
 
         return $result;
     }

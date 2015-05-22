@@ -120,6 +120,7 @@
 </div>
     <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
+
     <!-- Page-Level Plugin Scripts - Dashboard -->
     <script src="<?php echo base_url() ?>assets/js/plugins/morris/raphael-2.1.0.min.js"></script>
     <script src="<?php echo base_url() ?>assets/js/plugins/morris/morris.js"></script>
