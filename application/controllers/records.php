@@ -739,9 +739,19 @@ class Records extends CI_Controller
                     "success" => false,
                     "msg" => "You must set a valid UK Postcode"
                 ));
+				exit;
             } else {
 				$data['start'] = to_mysql_datetime($data['start']);
         		$data['end']   = to_mysql_datetime($data['end']);
+				
+				if(strtotime($data['start'])<strtotime('now')||strtotime($data['end'])<strtotime('now')){
+					echo json_encode(array(
+                    "success" => false,
+                    "msg" => "Appointment date is not valid"
+                ));
+				exit;
+				}
+				
 				if(empty($data['appointment_id'])){
 				$this->Audit_model->log_appointment_insert($data);
 				$id = $this->Records_model->save_appointment($data);
