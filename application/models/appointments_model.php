@@ -74,7 +74,7 @@ class Appointments_model extends CI_Model
     private function get_where($options, $table_columns)
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
-        $where = " where `status` = 1 and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $where = " where a.`status` = 1 and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		if(isset($_SESSION['current_campaign'])){
 			 $where .= " and campaign_id = '".$_SESSION['current_campaign']."' ";
 		}
