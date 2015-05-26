@@ -50,7 +50,6 @@ var appointment = {
                     $('.tt').tooltip();
                     //Show the appointments in the map
                     maps.showItems();
-                    maps.current_postcode = d.responseJSON.current_postcode;
                 }
             },
             "deferRender": true,
