@@ -1,17 +1,17 @@
 <?php
-$domain = explode('121sys', $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])[0];
+$domain = explode('121system.com', $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])[0];
 switch ($domain) {
-	case '121webhost/':
+	case 'www.':
 		define('ENVIRONMENT', 'production');
 		$session_name = '121sys';
 		break;
 
-	case '121webhost/test_env/':
+	case 'test.':
 		define('ENVIRONMENT', 'testing');
 		$session_name = '121sys_test';
 		break;
 
-	case '121webhost/accept_env/':
+	case 'accept.':
 		define('ENVIRONMENT', 'acceptance');
 		$session_name = '121sys_accept';
 		break;
