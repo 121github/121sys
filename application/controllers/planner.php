@@ -118,4 +118,27 @@ class Planner extends CI_Controller
             exit;
         }
     }
+
+    public function save_record_route() {
+        if ($this->input->is_ajax_request()) {
+
+            $record_list = $this->input->post('record_list');
+            $date = $this->input->post('date');
+            $user_id = $_SESSION['user_id'];
+
+            $this->firephp->log($record_list);
+
+            //$this->Planner_model->save_record_order($record_list, $user_id, $date);
+
+            echo json_encode(array(
+                "success"=>true,
+                "msg"=>"Planner was updated"
+            ));
+
+        } else {
+
+            echo "denied";
+            exit;
+        }
+    }
 }

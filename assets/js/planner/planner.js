@@ -278,7 +278,7 @@ var planner = {
                     }
                 });
                 saveRecordOrder(record_list_route);
-                getDirections(markerLocation.getPosition(), waypts);
+                getDirections(markerLocation.getPosition(), waypts,record_list_route);
             });
 
             //Show map button actions
@@ -310,9 +310,32 @@ var planner = {
                     date: $('.filter-form').find('input[name="date"]').val()
                 }
             }).done(function (response) {
+                if (response.success) {
 
+                } else {
+
+                }
             });
         }
+
+        function saveRecordRoute(record_list_route) {
+            $.ajax({
+                url: helper.baseUrl + "planner/save_record_route",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    record_list: record_list_route,
+                    date: $('.filter-form').find('input[name="date"]').val()
+                }
+            }).done(function (response) {
+                if (response.success) {
+
+                } else {
+
+                }
+            });
+        }
+
         function showMap(btn) {
             if (btn.prop('checked')) {
                 $(document).on('mouseenter', '.record-planner-heading', function () {
@@ -395,7 +418,7 @@ var planner = {
             }
         }
 
-        function getDirections(destination, waypoints) {
+        function getDirections(destination, waypoints, record_list_ord) {
             var start = markerLocation.getPosition();
             var dest = destination;
             var travelMode = $('.map-form').find('input[name="travel-mode"]').val();
@@ -416,11 +439,21 @@ var planner = {
             };
             directionsService.route(request, function (result, status) {
                 if (status == google.maps.DirectionsStatus.OK) {
+                    var total_duration = 0;
+                    var total_distance = 0;
+                    //var record_list_route = [];
+                    //Iterate the routes
+                    $.each(result.routes[0].legs, function (index, route) {
+                        //record_list_route.push(route);
+                        total_duration = total_duration + parseInt(route.duration.value);
+                        total_distance = total_distance + parseInt(route.distance.value);
+                    });
                     $('.route-info').html(
-                        result.routes[0].legs[0].distance.text + ': ' +
-                        result.routes[0].legs[0].duration.text + ' ' +
+                        (Math.ceil((total_distance/1000)/1.2)) + ' miles : ' +
+                        (Math.ceil(total_duration/60)) + 'min ' +
                         '<span style="font-size: 15px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
                     directionsDisplay.setDirections(result);
+                    //saveRecordRoute(record_list_route);
                 }
             });
             directionsDisplay.setMap(map);
