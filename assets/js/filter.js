@@ -2,6 +2,20 @@
 var filter = {
     init: function () {
 		filter.count_records();
+		$('select:not(.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select)').change(function(){
+				filter.count_records();
+			});
+		
+		$(document).on('click', '.locate-postcode', function(e) {
+    e.preventDefault();
+    getLocation();
+	setTimeout(function(){
+		if(getCookie('current_postcode')){
+			$('.current_postcode_input').val(getCookie('current_postcode')).trigger('change');
+		}
+				}, 2000);
+});
+		
 			$(document).on('click','.no-number',function(){
 				filter.set_no_number($(this));
 				filter.count_records();
@@ -24,10 +38,6 @@ var filter = {
 		});
 
 		$(document).on('click','input[type="checkbox"]:not(.all_campaigns_checkbox)',function(){
-			filter.count_records();
-		});
-
-		$(document).on('change','select:not(#campaign-select,.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_template_select,.actions_campaign_select)',function(e){
 			filter.count_records();
 		});
 
@@ -58,25 +68,20 @@ var filter = {
 		});
 
 		$('.actions-container').hide();
-
+		
+		//clear the date box buttons
 		$(document).on('click','.clear-input',function(e){
 			$(this).closest('.input-group').find('input').val('');
-			filter.count_records();
+		filter.count_records();
 		});
 
 		$(document).on('click','.clear-filter',function(e){
 			e.preventDefault()
-			$(document).off('change', 'select');
-			$('input[type="hidden"]').remove();
 			$('.no-number').removeClass('btn-danger').closest('.form-group').find('input').prop('disabled',false);
-			$('input[type="text"], input[type="select"]:not(.record-status,#campaign-select)').val('');
-			$('.selectpicker:not(.record-status,#campaign-select)').selectpicker('deselectAll');
-			$('.record-status').selectpicker('val',1);
-			$('input[type="checkbox"]').prop('checked',false);
-			filter.count_records(true);
-			$(document).on('change', 'select:not(.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select)',function(){
-				filter.count_records();
-			});
+			$('form')[0].reset();
+			$('.record-status').selectpicker('render');
+			$('input[type="text"],input[type="hidden"], input[type="select"]:not(.record-status,#campaign-select)').val('');
+			filter.count_records();
 			$('.copy-records').prop('disabled', true);
 			$('.copy_records_error').show();
 		});
@@ -287,7 +292,7 @@ var filter = {
         }).done(function(response) {
 			if(!response.success){
 				$('.filter-form').find('input[name="postcode"]').val('')
-				flashalert.danger("The postcode does not exist or the connection with Google Maps fails: "+response.error);
+				flashalert.danger("The postcode does not exist or the connection with Google Maps failed: "+response.error);
 			}
 			else {
 				$('.filter-form').find('input[name="lat"]').val(response.coords.lat);
@@ -316,6 +321,7 @@ var filter = {
 				$('.record-count').html("<img src='"+helper.baseUrl+"assets/img/ajax-load-black.gif' />");
 			}
 		}).done(function(response) {
+			filter.filter_display();
 			if(response.data<1){
 				$('button[type="submit"]').prop('disabled', true);
 				$('.record-count').text(response.data).css('color','red');
@@ -560,6 +566,37 @@ var filter = {
 			}
 			$('.saving').html("");
 			filter.close_edit_actions();
+		});
+	},
+	filter_display:function(){		
+	var filter_options = "";
+	$.ajax({ url:helper.baseUrl+'search/filter_display',
+	data: $('#filter-form').serializeArray(),
+	dataType:"JSON",
+	type:"POST"
+	}).done(function(response){
+	$.each(response,function(k,v){
+		filter_options += "<div style='float:left; width:200px'>";
+				if(v.value.length>0){
+					var title = v.name;
+					if(v.name="Distance"){
+						
+					}
+				filter_options += "<strong>"+title+"</strong>";
+				if(typeof v.value==="string"){
+					filter_options += "<ul><li>"+v.value+"</li></ul>";
+				} else {
+				filter_options += "<ul>";
+					$.each(v.value,function(x,id){
+					filter_options += "<li>"+$('#'+v.field+' option[value="'+id+'"]').text()+"</li>";	
+					});
+				filter_options += "</ul>";
+				}
+				filter_options += "<hr>";
+				}
+				filter_options += "</div>";
+			});
+		$('#filter-panel .panel-body').html(filter_options);
 		});
 	}
 }

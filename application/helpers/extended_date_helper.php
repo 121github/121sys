@@ -234,6 +234,13 @@ function elapsed_time($seconds = 1) {
   }
 } 
 
+
+function validateDate($date)
+{
+    $d = strtotime($date);
+    return $date == date('Y-m-d',$d);
+}
+
 }
 /* End of file extended_date_helper.php */
 /* Location: ./application/helpers/extended_date_helper.php */

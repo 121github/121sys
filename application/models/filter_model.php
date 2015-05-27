@@ -542,7 +542,7 @@ class Filter_model extends CI_Model
                 if ($field == 'postcode' && count($filter[$field])) {
                     $distance = ($filter['distance']) ? $filter['distance'] : 0;
                     
-                    if (isset($filter['lat']) && isset($filter['lng'])) {
+                    if (isset($filter['lat']) && isset($filter['lng'])&& $filter['distance']>"0") {
                         
                         $where .= " and ( ";
                         //Distance from the company or the contacts addresses
@@ -568,7 +568,9 @@ class Filter_model extends CI_Model
 						)*180/PI())*160*0.621371192)) <= " . $distance . ")";
                         
                         $where .= " ))";
-                    }
+                    } else {
+						$where .= " and (coma.postcode like '".$filter['postcode']."%' or cona.postcode like '".$filter['postcode']."%') ";
+					}
                     
                 }
                 
@@ -697,7 +699,7 @@ class Filter_model extends CI_Model
                 "history.nextcall",
                 "rand()"
             );
-            $qry  = "select campaigns.campaign_name,$table.urn,if(companies.name is null,fullname,companies.name),$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join companies companies on companies.urn = records.urn left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
+            $qry  = "select campaigns.campaign_name,$table.urn,if(companies.name is null,fullname,companies.name) fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join companies companies on companies.urn = records.urn left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
             $group_by = " group by history.history_id ";
             
             
@@ -1018,6 +1020,7 @@ class Filter_model extends CI_Model
 		//$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];
+		$this->firephp->log($qry);
         $data = $this->db->query($qry)->result_array();
         return array(
             "count" => $count,

@@ -19,6 +19,76 @@ class Search extends CI_Controller
         $this->load->model('Records_model');
         $this->load->model('Email_model');
     }
+		public function filter_display(){
+			$mappings = array("campaign_id"=>"Campaign name",
+			"source_id"=>"Data source",
+			"client_id"=>"Client name",
+			"campaign_type_id"=>"Campaign type",
+			"urn"=>"URN",
+			"client_ref"=>"Client reference",
+			"outcome_id"=>"Outcome",
+			"progress_id"=>"Progress",
+			"record_status"=>"Record status",
+			"parked_code"=>"Parked code",
+			"group_id"=>"Group ownership",
+			"user_id"=>"User ownership",
+			"nextcall"=>"Nextcall date",
+			"lastcall"=>"Lastcall date",
+			"created_on"=>"Created date",
+			"contact_id"=>"Contact ID",
+			"fullname"=>"Contact name",
+			"phone"=>"Contact phone",
+			"position"=>"Contact position",
+			"dob"=>"Contact DOB",
+			"contact_email"=>"Contact email",
+			"address"=>"Contact address",
+			"company_id"=>"Company ID",
+			"coname"=>"Company Name",
+			"company_phone"=>"Company phone",
+			"sector_id"=>"Sector",
+			"subsector_id"=>"Subsector",
+			"turnover"=>"Turnover",
+			"employees"=>"Employees",
+			"postcode"=>"Postcode",
+			"distance"=>"Distance",
+			"new_only"=>"New records only",
+			"dials"=>"Number of dials",
+			"survey"=>"With survey only",
+			"favorites"=>"Favorites only",
+			"urgent"=>"Urgent only",
+			"email"=>"Email filter",
+			);
+			
+			//unset hidden values (we dont want them in the list)
+			unset($_POST['lat']);
+			unset($_POST['lng']);
+			
+			foreach($_POST as $k=>$v){
+			//unset any empty arrays eg date ranges
+			if(is_array($v)){
+				if(empty($v[0])){
+				unset($_POST[$k][0]);
+				}
+				if(empty($v[1])){
+				unset($_POST[$k][1]);
+				}
+			}
+			}
+			array_filter($_POST);
+
+			$data=array();
+			foreach($_POST as $k=>$v){
+			if(empty($v)){
+			unset($_POST[$k]); continue;	
+			}
+			$data[$k] = array("field"=>$k,"name"=>$mappings[$k],"value"=>$v);
+			}
+			
+		echo json_encode($data);	
+		
+	}
+
+	
     //this function returns all subsectors for the selected sectors
 	public function get_subsectors(){
 		$sectors = $this->input->post('sectors');
@@ -30,6 +100,7 @@ class Search extends CI_Controller
     public function search_form()
     {
 	check_page_permissions("search records");
+	
         $campaigns      = $this->Form_model->get_user_campaigns();
         $clients        = $this->Form_model->get_clients();
         $users          = $this->Form_model->get_users();
@@ -46,6 +117,9 @@ class Search extends CI_Controller
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();
+		
+		
+
         $email_templates  = array();
         $data = array(
             'campaign_access' => $this->_campaigns,

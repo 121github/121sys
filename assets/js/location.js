@@ -29,6 +29,7 @@ function getLocationSuccess(position) {
     function(result, status) {
 
     	if (status === 'OK') {
+		
             for(var i = 0, length = result.length; i < length; i++) {
                 //each result has an address with multiple parts (it's all in the reference)
                 for(var j = 0; j < result[i].address_components.length; j++) {
@@ -36,8 +37,6 @@ function getLocationSuccess(position) {
                     //if the address component has postal code then write it out
                     if(component.types[0] === 'postal_code') {
                         postcode = component.long_name;
-						document.cookie = "current_postcode="+postcode;
-						document.cookie = "location_error==;expires=Thu, 01 Jan 1970 00:00:00 UTC";
                         exit++;
                     }
                     if(component.types[0] === 'locality') {
@@ -62,7 +61,8 @@ function getLocationSuccess(position) {
                 }
             }
             if(postcode !== null){
-            	$('.current_postcode_input').val(postcode).trigger('change');
+				document.cookie = "current_postcode="+postcode;
+				document.cookie = "location_error==;expires=Thu, 01 Jan 1970 00:00:00 UTC";
                 //$('.current_postcode').text(postcode);
 //                $.ajax({
 //                    url: helper.baseUrl + 'planner/store_postcode',
@@ -111,13 +111,6 @@ function getLocationError(error){
 	}
 }
 
-$(document).on('click', '.locate-postcode', function(e) {
-    e.preventDefault();
-    getLocation();
-});
-
-
-
 function getAddressByPostcode(postcode){
   if(postcode.length >= 5 && typeof google != 'undefined'){
     var addr = {};
@@ -164,7 +157,7 @@ $(document).on('blur', '.current_postcode_input', function(e) {
     e.preventDefault();
     var postcode = $('.current_postcode_input')[0].value; 
 	if (postcode) {
-		getAddressByPostcode(postcode);
+		//getAddressByPostcode(postcode);
 	}
 });
 

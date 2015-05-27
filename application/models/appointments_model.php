@@ -14,18 +14,18 @@ class Appointments_model extends CI_Model
     public function appointment_data($count = false, $options = false)
     {
         $table_columns = array(
-            "start",
+            "date_format(a.`start`,'%d/%m/%y H:i')",
             "com.name",
             "u.name",
             "date_format(a.`date_added`,'%d/%m/%y')",
             "postcode"
         );
         $order_columns = array(
-            "start",
+            "a.start",
             "com.name",
             "u.name",
             "a.date_added",
-            "postcode"
+            "a.postcode"
         );
 
         $qry = "select
@@ -67,6 +67,7 @@ class Appointments_model extends CI_Model
 
         $qry .= $order;
         $qry .= "  limit $start,$length";
+		$this->firephp->log($qry);
         $result = $this->db->query($qry)->result_array();
         return $result;
     }

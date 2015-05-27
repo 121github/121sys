@@ -2603,6 +2603,7 @@ var modal = {
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').text('Are you sure you want to delete this contact?');
+		 modals.default_buttons();
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.contact_panel.remove(id);
@@ -2615,6 +2616,7 @@ var modal = {
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').text('Are you sure you want to delete this?');
+		 modals.default_buttons();
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.additional_info.remove(id);
@@ -2627,6 +2629,7 @@ var modal = {
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').text('Are you sure you want to delete this company?');
+		 modals.default_buttons();
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.company_panel.remove(id);
@@ -2639,6 +2642,7 @@ var modal = {
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').text('Are you sure you want to delete this email?');
+		 modals.default_buttons();
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.email_panel.remove_email(email_id, modal);
@@ -2651,6 +2655,7 @@ var modal = {
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').text('Are you sure you want to delete this attachment?');
+		 modals.default_buttons();
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.attachment_panel.delete_attachment(attachment_id);
@@ -2663,6 +2668,7 @@ var modal = {
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').text('Are you sure you want to delete this survey and all the answers?');
+		 modals.default_buttons();
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.surveys_panel.remove(id);
@@ -2680,6 +2686,7 @@ var modal = {
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').html('<div id="waveform"></div><div class="controls"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info" href="' + url.replace("ogg", "mp3") + '">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>');
+		 modals.default_buttons();
         modal.wavesurfer(url.replace('ogg', 'mp3'));
     },
     wavesurfer: function (fileurl) {
@@ -2753,6 +2760,7 @@ var modal = {
             backdrop: 'static',
             keyboard: false
         }).find('.modal-body').text('Are you sure you want to delete this history record?');
+		 modals.default_buttons();
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.history_panel.remove_history(history_id, modal);
@@ -2766,6 +2774,7 @@ var modal = {
             keyboard: false
         }).find('.modal-body').html('<p>You have set this record as a dead line but the history shows it has been dialed previously. There may be a telephony issue or we could be at full dialing capacity. Please try to dial again and confirm it\'s an actual dead line. If this is a B2B record please search for the company telephone number online and update the record with the correct number<p><p>Click confirm if you are sure this is a dead line otherwise click cancel</p>');
         $(".confirm-modal").off('click').show();
+		 modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
             record.update_panel.save($btn);
             $('#modal').modal('toggle');
