@@ -584,17 +584,23 @@ var filter = {
 					var title = v.name;
 					if(v.name=="Distance"){
 						v.value = "Within "+v.value+" mile(s)";
-					}
+					} else if(v.name=="Nextcall date"||v.name=="Lastcall date"||v.name=="Creation date"||v.name=="Contact DOB"){
+						v.value[0] = "From "+v.value[0];
+						v.value[1] = "To "+v.value[1];
+					} else if(v.name=="Turnover"||v.name=="Employees"){
+						v.value[0] = "More than "+v.value[0];
+						v.value[1] = "Less than "+v.value[1];
+					} 
 				filter_options += "<strong>"+title+"</strong>";
 				if(typeof v.value==="string"){
 					filter_options += "<ul><li>"+v.value+"</li></ul>";
 				} else {
 				filter_options += "<ul>";
-					$.each(v.value,function(x,id){
+					$.each(v.value,function(x,newval){
 						if($('#'+v.field).prop('multiple')){
-					filter_options += "<li>"+$('#'+v.field+' option[value="'+id+'"]').text()+"</li>";	
+					filter_options += "<li>"+$('#'+v.field+' option[value="'+newval+'"]').text()+"</li>";	
 						} else {
-					filter_options += "<li>"+$('input#'+v.field+'-'+x).val()+"</li>";			
+					filter_options += "<li>"+newval+"</li>";			
 						}
 					});
 				filter_options += "</ul>";
