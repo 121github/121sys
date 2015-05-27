@@ -40,7 +40,8 @@ class Planner extends CI_Controller
                 'plugins/DataTables/extensions/Scroller/js/dataTables.scroller.min.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'lib/moment.js',
-                'lib/daterangepicker.js'
+                'lib/daterangepicker.js',
+                'plugins/touch-punch/jquery-ui-touch-punch.js'
             )
         );
         $this->template->load('default', 'dashboard/planner.php', $data);
@@ -98,27 +99,9 @@ class Planner extends CI_Controller
 		 }
 	}
 
-    public function save_record_order() {
-        if ($this->input->is_ajax_request()) {
-
-            $record_list = $this->input->post('record_list');
-            $date = $this->input->post('date');
-            $user_id = $_SESSION['user_id'];
-
-            $this->Planner_model->save_record_order($record_list, $user_id, $date);
-
-            echo json_encode(array(
-                "success"=>true,
-                "msg"=>"Planner was updated"
-            ));
-
-        } else {
-
-            echo "denied";
-            exit;
-        }
-    }
-
+    /**
+     * Save the record route and the order selected/optimized
+     */
     public function save_record_route() {
         if ($this->input->is_ajax_request()) {
 
@@ -126,9 +109,8 @@ class Planner extends CI_Controller
             $date = $this->input->post('date');
             $user_id = $_SESSION['user_id'];
 
-            $this->firephp->log($record_list);
-
-            //$this->Planner_model->save_record_order($record_list, $user_id, $date);
+            $this->Planner_model->save_record_order($record_list, $user_id, $date);
+            $this->Planner_model->save_record_route($record_list, $user_id, $date);
 
             echo json_encode(array(
                 "success"=>true,
