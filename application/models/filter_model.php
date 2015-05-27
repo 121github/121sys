@@ -489,7 +489,8 @@ class Filter_model extends CI_Model
                             "eless" => "<=",
                             "emore" => ">="
                         );
-                        $operator  = (in_array($parts[1], $operators) ? $operators[$parts[1]] : "=");
+						
+                        $operator  = (array_key_exists($parts[1], $operators) ? $operators[$parts[1]] : "=");
                         if ($data == "zero") {
                             $val = "0";
                         }
@@ -621,6 +622,7 @@ class Filter_model extends CI_Model
                 unset($_SESSION['current_campaign']);
             }
         }
+		$this->firephp->log($qry);
         return $qry;
         
     }

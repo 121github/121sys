@@ -33,8 +33,8 @@ class Search extends CI_Controller
 			"group_id"=>"Group ownership",
 			"user_id"=>"User ownership",
 			"nextcall"=>"Nextcall date",
-			"lastcall"=>"Lastcall date",
-			"created_on"=>"Created date",
+			"date_updated"=>"Lastcall date",
+			"date_added"=>"Created date",
 			"contact_id"=>"Contact ID",
 			"fullname"=>"Contact name",
 			"phone"=>"Contact phone",
@@ -70,11 +70,8 @@ class Search extends CI_Controller
 			foreach($_POST as $k=>$v){
 			//unset any empty arrays eg date ranges
 			if(is_array($v)){
-				if(empty($v[0])){
-				unset($_POST[$k][0]);
-				}
-				if(empty($v[1])){
-				unset($_POST[$k][1]);
+				if(empty($v[0])&&empty($v[1])){
+				unset($_POST[$k][0]); unset($_POST[$k][1]);
 				}
 			}
 			}

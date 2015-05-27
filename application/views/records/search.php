@@ -409,7 +409,7 @@
               </div>
               <div class="form-group">
                 <label>Order results by</label>
-                <select name="order" class="selectpicker" data-width="100%" data-dropupAuto="false" data-size="5">
+                <select id="order" name="order" class="selectpicker" data-width="100%" data-dropupAuto="false" data-size="5">
                   <option value="" >None</option>
                   <option <?php if(@$_SESSION['filter']['values']['order']=="random"){ echo "selected"; } ?> value="random" >Random</option>
                   <option <?php if(@$_SESSION['filter']['values']['order']=="nextcall"){ echo "selected"; } ?> value="nextcall" >Nextcall</option>
@@ -422,7 +422,7 @@
               </div>
               <div class="form-group">
                 <label>Order direction</label>
-                <select name="order_direction" class="selectpicker" data-width="100%" data-dropupAuto="false" data-size="2">
+                <select id="order_direction" name="order_direction" class="selectpicker" data-width="100%" data-dropupAuto="false" data-size="2">
                   <option value="" >Ascending</option>
                   <option value="desc" >Descending</option>
                 </select>
