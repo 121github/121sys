@@ -4,9 +4,9 @@
 </div>
 <div class="row">
  <div class="col-sm-3 col-xs-12">
-  <div class="panel panel-info" id="filter-panel">
+  <div class="panel panel-info" id="filter-panel" >
     <div class="panel-heading">Your search options</div>
-     <div class="panel-body ">
+     <div class="panel-body" style="overflow-x:auto">
      No filters have been applied. You can use search options on this page to find records matching a specific critera
      </div>
  </div>
@@ -147,14 +147,14 @@
                 <div class="row">
                   <div class="col-md-6 col-sm-6">
                     <div class="input-group">
-                      <input id="nextcall-from" <?php if(@isset($_SESSION['filter']['values']['nextcall'][0])){ echo "value='".$_SESSION['filter']['values']['nextcall'][0]."'"; } ?> name="nextcall[0]" type="text" class="form-control date" placeholder="Date from">
+                      <input id="nextcall-0" <?php if(@isset($_SESSION['filter']['values']['nextcall'][0])){ echo "value='".$_SESSION['filter']['values']['nextcall'][0]."'"; } ?> name="nextcall[0]" type="text" class="form-control date" placeholder="Date from">
                       <span class="input-group-btn">
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span></div>
                   </div>
                   <div class="col-md-6 col-sm-6">
                     <div class="input-group">
-                      <input id="nextcall-to" <?php if(@isset($_SESSION['filter']['values']['nextcall'][1])){ echo "value='".$_SESSION['filter']['values']['nextcall'][1]."'"; } ?> name="nextcall[1]" type="text" class="form-control date" placeholder="Date to">
+                      <input id="nextcall-1" <?php if(@isset($_SESSION['filter']['values']['nextcall'][1])){ echo "value='".$_SESSION['filter']['values']['nextcall'][1]."'"; } ?> name="nextcall[1]" type="text" class="form-control date" placeholder="Date to">
                       <span class="input-group-btn">
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span> </div>
@@ -166,14 +166,14 @@
                 <div class="row">
                   <div class="col-md-6 col-sm-6">
                     <div class="input-group">
-                      <input id="lastcall-from" <?php if(@isset($_SESSION['filter']['values']['date_updated'][0])){ echo "value='".$_SESSION['filter']['values']['date_updated'][0]."'";  } ?> name="date_updated[0]" type="text" class="form-control date" placeholder="Date from">
+                      <input id="lastcall-0" <?php if(@isset($_SESSION['filter']['values']['date_updated'][0])){ echo "value='".$_SESSION['filter']['values']['date_updated'][0]."'";  } ?> name="date_updated[0]" type="text" class="form-control date" placeholder="Date from">
                       <span class="input-group-btn">
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span></div>
                   </div>
                   <div class="col-md-6 col-sm-6">
                     <div class="input-group">
-                      <input id="lastcall-to" <?php if(@isset($_SESSION['filter']['values']['date_updated'][1])){ echo "value='".$_SESSION['filter']['values']['date_updated'][1]."'"; } ?> name="date_updated[1]" type="text" class="form-control date" placeholder="Date to">
+                      <input id="lastcall-1" <?php if(@isset($_SESSION['filter']['values']['date_updated'][1])){ echo "value='".$_SESSION['filter']['values']['date_updated'][1]."'"; } ?> name="date_updated[1]" type="text" class="form-control date" placeholder="Date to">
                       <span class="input-group-btn">
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span></div>
@@ -185,14 +185,14 @@
                 <div class="row">
                   <div class="col-md-6 col-sm-6">
                     <div class="input-group">
-                      <input id="creation-from" <?php if(@isset($_SESSION['filter']['values']['date_added'][0])){ echo "value='".$_SESSION['filter']['values']['date_added'][0]."'"; } ?> name="date_added[0]" type="text" class="form-control date" placeholder="Date from">
+                      <input id="creation-0" <?php if(@isset($_SESSION['filter']['values']['date_added'][0])){ echo "value='".$_SESSION['filter']['values']['date_added'][0]."'"; } ?> name="date_added[0]" type="text" class="form-control date" placeholder="Date from">
                       <span class="input-group-btn">
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span></div>
                   </div>
                   <div class="col-md-6 col-sm-6">
                     <div class="input-group">
-                      <input id="creation-to" <?php if(@isset($_SESSION['filter']['values']['date_added'][1])){ echo "value='".$_SESSION['filter']['values']['date_added'][1]."'"; } ?> name="date_added[1]" type="text" class="form-control date" placeholder="Date to">
+                      <input id="creation-1" <?php if(@isset($_SESSION['filter']['values']['date_added'][1])){ echo "value='".$_SESSION['filter']['values']['date_added'][1]."'"; } ?> name="date_added[1]" type="text" class="form-control date" placeholder="Date to">
                       <span class="input-group-btn">
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span> </div>
@@ -239,14 +239,14 @@
                 <div class="row">
                   <div class="col-md-6 col-sm-6">
                     <div class="input-group">
-                      <input id="dob-from" <?php if(@isset($_SESSION['filter']['values']['dob'][0])){  echo "value='".$_SESSION['filter']['values']['dob'][0]."'"; } ?> name="dob[0]" type="text" class="form-control dob" placeholder="Date from">
+                      <input id="dob-0" <?php if(@isset($_SESSION['filter']['values']['dob'][0])){  echo "value='".$_SESSION['filter']['values']['dob'][0]."'"; } ?> name="dob[0]" type="text" class="form-control dob" placeholder="Date from">
                       <span class="input-group-btn">
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span> </div>
                   </div>
                   <div class="col-md-6 col-sm-6">
                     <div class="input-group">
-                      <input id="dob-to" <?php if(@isset($_SESSION['filter']['values']['dob'][1])){  echo "value='".$_SESSION['filter']['values']['dob'][1]."'";; } ?> name="dob[1]" type="text" class="form-control dob" placeholder="Date to">
+                      <input id="dob-1" <?php if(@isset($_SESSION['filter']['values']['dob'][1])){  echo "value='".$_SESSION['filter']['values']['dob'][1]."'";; } ?> name="dob[1]" type="text" class="form-control dob" placeholder="Date to">
                       <span class="input-group-btn">
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span> </div>
@@ -303,7 +303,7 @@
               </div>
               <div class="form-group">
                 <label>Subsector</label>
-                <select id="subsector_id" name="subsector_id[]" id="subsector-select" class="selectpicker subsector-select" data-width="100%" data-size="5" multiple  title="Any">
+                <select name="subsector_id[]" id="subsector-id" class="selectpicker subsector-select" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($subsectors as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['subsector_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
@@ -313,10 +313,10 @@
                 <label>Turnover</label>
                 <div class="row">
                   <div class="col-md-6 col-sm-6">
-                    <input <?php if(@isset($_SESSION['filter']['values']['turnover'][0])){ echo $_SESSION['filter']['values']['turnover'][0]; } ?> name="turnover[0]" type="text" class="form-control" placeholder="From">
+                    <input id="turnover-0" <?php if(@isset($_SESSION['filter']['values']['turnover'][0])){ echo $_SESSION['filter']['values']['turnover'][0]; } ?> name="turnover[0]" type="text" class="form-control" placeholder="From">
                   </div>
                   <div class="col-md-6 col-sm-6">
-                    <input <?php if(@isset($_SESSION['filter']['values']['turnover'][1])){ echo $_SESSION['filter']['values']['turnover'][1]; } ?> name="turnover[1]" type="text" class="form-control" placeholder="To">
+                    <input id="turnover-1" <?php if(@isset($_SESSION['filter']['values']['turnover'][1])){ echo $_SESSION['filter']['values']['turnover'][1]; } ?> name="turnover[1]" type="text" class="form-control" placeholder="To">
                   </div>
                 </div>
               </div>
@@ -324,10 +324,10 @@
                 <label>Employees</label>
                 <div class="row">
                   <div class="col-md-6 col-sm-6">
-                    <input id="employees-from" <?php if(@isset($_SESSION['filter']['values']['employees'][0])){ echo $_SESSION['filter']['values']['employees'][0]; } ?> name="employees[0]" type="text" class="form-control" placeholder="From">
+                    <input id="employees-0" <?php if(@isset($_SESSION['filter']['values']['employees'][0])){ echo $_SESSION['filter']['values']['employees'][0]; } ?> name="employees[0]" type="text" class="form-control" placeholder="From">
                   </div>
                   <div class="col-md-6 col-sm-6">
-                    <input id="employees-to" <?php if(@isset($_SESSION['filter']['values']['employees'][1])){ echo $_SESSION['filter']['values']['employees'][1]; } ?> name="employees[1]" type="text" class="form-control" placeholder="To">
+                    <input id="employees-1" <?php if(@isset($_SESSION['filter']['values']['employees'][1])){ echo $_SESSION['filter']['values']['employees'][1]; } ?> name="employees[1]" type="text" class="form-control" placeholder="To">
                   </div>
                 </div>
               </div>

@@ -57,6 +57,10 @@ class Search extends CI_Controller
 			"favorites"=>"Favorites only",
 			"urgent"=>"Urgent only",
 			"email"=>"Email filter",
+			"no_company_tel"=>"Companies without numbers",
+			"no_phone_tel"=>"Contacts without numbers",
+			"order"=>"Order by",
+			"order_direction"=>"Order direction"
 			);
 			
 			//unset hidden values (we dont want them in the list)

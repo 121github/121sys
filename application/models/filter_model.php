@@ -532,10 +532,10 @@ class Filter_model extends CI_Model
                     }
                 }
                 
-				if($field=="no_phone_tel"&&@$filter['no_phone_tel']=="1"){
+				if($field=="no_phone_tel"&&@$filter['no_phone_tel']=="on"){
 				$where .= " and con.urn not in (select distinct urn from contacts inner join contact_telephone using(contact_id)) ";	
 				}
-				if($field=="no_company_tel"&&@$filter['no_company_tel']=="1"){
+				if($field=="no_company_tel"&&@$filter['no_company_tel']=="on"){
 				$where .= "  and comt.telephone_number is null ";	
 				}
 				

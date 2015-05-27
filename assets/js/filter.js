@@ -260,9 +260,9 @@ var filter = {
 			$btn.addClass('btn-danger').closest('.form-group').find('input').val('Records without a '+type+' telephone number').prop('disabled',true);
 			$btn.closest('.form-group').find('input').removeAttr('name');	
 			if(type=="company"){
-					$btn.closest('.form-group').append('<input type="hidden" class="no-number-input" value="1" name="no_company_tel" />');
+					$btn.closest('.form-group').append('<input type="hidden" class="no-number-input" value="on" name="no_company_tel" />');
 				} else {
-					$btn.closest('.form-group').append('<input type="hidden" class="no-number-input" value="1" name="no_phone_tel" />');
+					$btn.closest('.form-group').append('<input type="hidden" class="no-number-input" value="on" name="no_phone_tel" />');
 				}
 				}
 	},
@@ -573,10 +573,13 @@ var filter = {
 	$.ajax({ url:helper.baseUrl+'search/filter_display',
 	data: $('#filter-form').serializeArray(),
 	dataType:"JSON",
-	type:"POST"
+	type:"POST",
+	beforeSend: function(){
+		//$('#filter-panel .panel-body').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');
+	}
 	}).done(function(response){
 	$.each(response,function(k,v){
-		filter_options += "<div style='float:left; width:200px'>";
+		filter_options += "<div style='float:left; width:200px; padding:4px 0; border-bottom: 1px dashed #ccc'>";
 				if(v.value.length>0){
 					var title = v.name;
 					if(v.name=="Distance"){
@@ -588,15 +591,19 @@ var filter = {
 				} else {
 				filter_options += "<ul>";
 					$.each(v.value,function(x,id){
+						if($('#'+v.field).prop('multiple')){
 					filter_options += "<li>"+$('#'+v.field+' option[value="'+id+'"]').text()+"</li>";	
+						} else {
+					filter_options += "<li>"+$('input#'+v.field+'-'+x).val()+"</li>";			
+						}
 					});
 				filter_options += "</ul>";
 				}
-				filter_options += "<hr>";
 				}
 				filter_options += "</div>";
 			});
-		$('#filter-panel .panel-body').html(filter_options);
+		$('#filter-panel .panel-body').html(filter_options).append('<div id="filter-display-count" style="float:left; width:200px; padding:10px 0 5px">Records found: </div>');
+		$('.record-count:first').clone().appendTo('#filter-display-count');
 		});
 	}
 }
