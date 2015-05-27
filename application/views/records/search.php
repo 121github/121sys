@@ -5,7 +5,7 @@
 <div class="row">
  <div class="col-sm-3 col-xs-12">
   <div class="panel panel-info" id="filter-panel">
-    <div class="panel-heading">Search</div>
+    <div class="panel-heading">Your search options</div>
      <div class="panel-body ">
      No filters have been applied. You can use search options on this page to find records matching a specific critera
      </div>

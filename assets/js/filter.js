@@ -579,8 +579,8 @@ var filter = {
 		filter_options += "<div style='float:left; width:200px'>";
 				if(v.value.length>0){
 					var title = v.name;
-					if(v.name="Distance"){
-						
+					if(v.name=="Distance"){
+						v.value = "Within "+v.value+" mile(s)";
 					}
 				filter_options += "<strong>"+title+"</strong>";
 				if(typeof v.value==="string"){
