@@ -52,7 +52,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <p>Please complete the following questions and click save</p>
 
     <form id="form" style="padding-bottom:50px;">
-        <label>Temporary or perminant contracts? <span class="glyphicon glyphicon-question-sign tt"
+        <label>Temporary or permanant contracts? <span class="glyphicon glyphicon-question-sign tt"
                                                        data-toggle="tooltip" data-placement="right"
                                                        title="Whether or not the recruitment company places `temps` i.e. Contracts for a fixed duration rather than placing permenant employees, some business will do both!"></span></label>
 
@@ -68,10 +68,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <div class="radio">
             <label>
                 <input type="checkbox" name="answers[a1][]" id="optionsRadios2"
-                       value="perminant" <?php if (@strpos($values['a1'], "perminant") !== false) {
+                       value="permanant" <?php if (@strpos($values['a1'], "permanant") !== false) {
                     echo "checked";
                 } ?>>
-                Perminant
+                Permanant
             </label>
         </div>
 
@@ -280,7 +280,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <label for="contractors">Number of temp contractors <span class="glyphicon glyphicon-question-sign tt"
                                                                       data-toggle="tooltip" data-width="500"
                                                                       data-html="true" data-placement="right"
-                                                                      title="the number of contractors out on a week to week basis on temp contracts, not the number registered with them. Not including any perminants."></span></label>
+                                                                      title="the number of contractors out on a week to week basis on temp contracts, not the number registered with them. Not including any permanants."></span></label>
             <input name="answers[a4]" class="form-control" id="contractors"
                    placeholder="Enter the number of temp contractors" value="<?php echo @$values['a4'] ?>">
         </div>

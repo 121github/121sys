@@ -16,6 +16,12 @@ var filter = {
 				}, 2000);
 });
 		
+		$(document).on('click','.remove-filter-selection',function(){
+			var field = $(this).attr('data-field');
+			$('select#'+field).selectpicker('val',[]);
+			$('input[name="'+field+'"]').val();
+		});
+		
 			$(document).on('click','.no-number',function(){
 				filter.set_no_number($(this));
 				filter.count_records();
@@ -591,7 +597,7 @@ var filter = {
 						v.value[0] = "More than "+v.value[0];
 						v.value[1] = "Less than "+v.value[1];
 					} 
-				filter_options += "<strong>"+title+"</strong>";
+				filter_options += "<strong>"+title+" <span data-field='"+v.field+"' class='remove-filter-selection glyphicon glyphicon-remove pointer red small'></span></strong>";
 				if(typeof v.value==="string"){
 					filter_options += "<ul><li>"+v.value+"</li></ul>";
 				} else {
