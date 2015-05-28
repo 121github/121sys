@@ -53,6 +53,11 @@ var maps = {
         };
 
         map = new google.maps.Map(document.getElementById('map-canvas'), maps.mapOptions);
+
+        maps.markerLocation = new google.maps.Marker({
+            map: map,
+            position: maps.myLatlng
+        });
 	
         $('.map-form').on("keyup keypress", function(e) {
             var code = e.keyCode || e.which;
@@ -263,7 +268,7 @@ $('.container-fluid').prepend(location_error);
                 $('.route-info').html(
                     result.routes[0].legs[0].distance.text + ': ' +
                     result.routes[0].legs[0].duration.text + ' ' +
-                    '<span style="font-size: 15px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
+                    '<span style="font-size: 25px; margin-right: 12px; margin-left: 11px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
                 maps.directionsDisplay.setDirections(result);
             }
         });
@@ -388,7 +393,7 @@ var navbtn = false;
                 '<span style="margin-right: 5px;">' + (value.record_planner_id ? (value.planner_user + ' on ' + value.planner_date) : '') + '</span>' +
                 '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.planner_date ? value.planner_date : '') + '"></a>';
         }
-if(helper.current_postcode){
+if($('.map-form').find('input[name="postcode"]').val().length > 0){
 		navbtn =   '<p>' +
             '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';	
 		}

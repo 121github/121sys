@@ -79,17 +79,17 @@
                                     <div class="col-lg-12 col-md-12" style="font-size: 11px;">
                                     <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                           class="change-directions-btn DRIVING pointer" item-mode="DRIVING"><img
-                                            width="20px;" src="../assets/img/icons/car.png"/></span>
+                                            width="25px;" src="../assets/img/icons/car.png"/></span>
                                     <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                           class="change-directions-btn TRANSIT pointer" item-mode="TRANSIT"><img
-                                            width="20px;" src="../assets/img/icons/train.png"/></span>
+                                            width="25px;" src="../assets/img/icons/train.png"/></span>
                                     <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                           class="change-directions-btn BICYCLING pointer" item-mode="BICYCLING"><img
-                                            width="20px;" src="../assets/img/icons/cycle.png"/></span>
+                                            width="25px;" src="../assets/img/icons/cycle.png"/></span>
                                     <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                           class="change-directions-btn WALKING pointer" item-mode="WALKING"><img
-                                            width="20px;" src="../assets/img/icons/walking.png"/></span>
-                                        <span class="close-directions-btn glyphicon glyphicon-remove pointer"></span>
+                                            width="25px;" src="../assets/img/icons/walking.png"/></span>
+                                        <span class="close-directions-btn btn-lg glyphicon glyphicon-remove pointer"></span>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -133,7 +133,7 @@
 
     .route-info {
         font-weight: bold;
-        font-size: 10px;
+        font-size: 14px;
         text-align: right;
         color: green;
     }

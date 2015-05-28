@@ -158,7 +158,7 @@ class Planner_model extends CI_Model
         }
 
         //Delete the routes for the record planners in the list
-        $this->db->where('record_planner_id IN ('.implode(",",$record_planner_ids).')');
+        $this->db->where("record_planner_id IN ('".implode(",",$record_planner_ids)."')");
         $this->db->delete('record_planner_route');
 
         //Save the routes for the record planners in the list

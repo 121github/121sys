@@ -41,7 +41,8 @@ class Planner extends CI_Controller
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'plugins/touch-punch/jquery-ui-touch-punch.js'
+                'plugins/touch-punch/jquery-ui-touch-punch.js',
+                'location.js'
             )
         );
         $this->template->load('default', 'dashboard/planner.php', $data);
