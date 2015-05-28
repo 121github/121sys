@@ -71,9 +71,32 @@ var planner = {
                         records.push(val);
                         var color = 'default';
                         var route = '';
+                        var travelIcon = "";
                         if (val.duration) {
+
+                            if (val.travel_mode == "DRIVING") {
+                                travelIcon = "car";
+                            }
+
+                            switch(val.travel_mode) {
+                                case "DRIVING":
+                                    travelIcon = "car";
+                                    break;
+                                case "BICYCLING":
+                                    travelIcon = "cycle";
+                                    break;
+                                case "WALKING":
+                                    travelIcon = "walking";
+                                    break;
+                                default:
+                                    travelIcon = "";
+                            }
+
                             route =
                                 '<div class="route-header col-lg-12" style="text-align: right;">' +
+                                    '<span style="opacity: 0.4; filter: alpha(opacity=40); margin-right: 5px;" class="change-directions-btn DRIVING pointer" item-mode="DRIVING">' +
+                                        '<img width="15px;" src="assets/img/icons/'+travelIcon+'.png"/>' +
+                                    '</span>' +
                                     '<span>' +
                                         (Math.ceil((val.distance/1000)/1.2)) + ' miles - ' +
                                         (toHHMMSS(val.duration)) +
@@ -448,28 +471,6 @@ var planner = {
             });
         }
 
-        //function codeCurrentAddress() {
-        //    if (navigator.geolocation) {
-        //        navigator.geolocation.getCurrentPosition(function (position) {
-        //            if (typeof markerLocation != 'undefined') {
-        //                markerLocation.setMap(null);
-        //            }
-        //            var address = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        //            map.setCenter(address);
-        //            map.setZoom(12);
-        //            markerLocation = new google.maps.Marker({
-        //                map: map,
-        //                position: address
-        //            });
-        //            $('.map-form').find('input[name="postcode"]').val('');
-        //            //Wait until the map is loaded
-        //            setTimeout(function () {
-        //                getRecords();
-        //            }, 2000);
-        //        });
-        //    }
-        //}
-
         function calcRoute() {
             panelList = $('#draggablePanelList');
             var record_list_route = [];
@@ -549,7 +550,8 @@ var planner = {
                             'end_lat': route.end_location.A,
                             'end_lng': route.end_location.F,
                             'distance': route.distance.value,
-                            'duration': route.duration.value
+                            'duration': route.duration.value,
+                            'travel_mode': travelMode
                         };
                         record_list_route.push(data_route);
                         total_duration = total_duration + parseInt(route.duration.value);
