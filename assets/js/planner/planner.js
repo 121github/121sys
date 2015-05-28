@@ -75,8 +75,8 @@ var planner = {
                             route =
                                 '<div class="route-header col-lg-12" style="text-align: right;">' +
                                     '<span>' +
-                                        (Math.ceil((val.distance/1000)/1.2)) + ' miles : ' +
-                                        (Math.ceil(val.duration/60)) + 'min ' +
+                                        (Math.ceil((val.distance/1000)/1.2)) + ' miles - ' +
+                                        (toHHMMSS(val.duration)) +
                                     '</span>' +
                                 '</div>';
                         }
@@ -556,8 +556,8 @@ var planner = {
                         total_distance = total_distance + parseInt(route.distance.value);
                     });
                     $('.route-info').html(
-                        (Math.ceil((total_distance/1000)/1.2)) + ' miles : ' +
-                        (Math.ceil(total_duration/60)) + 'min ' +
+                        (Math.ceil((total_distance/1000)/1.2)) + ' miles - ' +
+                        (toHHMMSS(total_duration)) +
                         '<span style="font-size: 25px; margin-right: 12px; margin-left: 11px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
                     directionsDisplay.setDirections(result);
                     saveRecordRoute(record_list_route);
