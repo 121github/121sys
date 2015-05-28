@@ -23,7 +23,7 @@
                     <div class="panel-body">
                         <form class="directions-form">
                             <div>
-                                <input type="checkbox" id="optimized"/> Optimized route
+                                <input type="checkbox" name="optimized"  id="optimized"/> Optimized route
                             </div>
                             <div class="btn-group">
                                 <div class="input-group">
@@ -58,7 +58,9 @@
                 <div class="panel panel-default planner-data">
                     <div class="panel-body">
                         <!-- Bootstrap 3 panel list. -->
-                        <ul id="draggablePanelList" class="list-unstyled"></ul>
+                        <ul id="draggablePanelList" class="list-unstyled">
+                            <img src=' <?php echo base_url(); ?>assets/img/ajax-loader-bar.gif'>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -102,9 +104,6 @@
                                     <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                           class="change-directions-btn DRIVING pointer" item-mode="DRIVING"><img
                                             width="20px;" src="assets/img/icons/car.png"/></span>
-                                    <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                          class="change-directions-btn TRANSIT pointer" item-mode="TRANSIT"><img
-                                            width="20px;" src="assets/img/icons/train.png"/></span>
                                     <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                           class="change-directions-btn BICYCLING pointer" item-mode="BICYCLING"><img
                                             width="20px;" src="assets/img/icons/cycle.png"/></span>

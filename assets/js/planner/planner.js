@@ -47,6 +47,8 @@ var planner = {
             records = [];
             $('.dt_info').hide();
 
+            //$('#draggablePanelList').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>");
+
             $.ajax({
                 url: helper.baseUrl + "planner/planner_data",
                 type: "POST",
@@ -59,28 +61,81 @@ var planner = {
             }).done(function (response) {
 
                 var body = '';
-                $.each(response.data, function (k, val) {
-                    records.push(val);
-                    body +=
-                        '<div class="row">' +
-                            '<div class="col-lg-1">' +
-                                '<a class="" data-toggle="collapse" data-parent="#accordion" href="#collapse_'+val.record_planner_id+'" aria-expanded="false" aria-controls="#collapse_"'+val.record_planner_id+'">' +
-                                    '<span class="glyphicon glyphicon-plus pointer"></span>' +
-                                '</a>' +
-                            '</div>' +
-                            '<div class="col-lg-11">' +
-                                '<li class="panel panel-default" postcode="'+val.postcode+'" record-planner-id="'+val.record_planner_id+'">' +
+                if (response.data.length > 0) {
+                    $.each(response.data, function (k, val) {
+                        records.push(val);
+                        var color = 'default';
+                        var route = '';
+                        if (val.duration) {
+                            route =
+                                '<div class="route-header col-lg-12" style="text-align: right; color: green">' +
+                                    '<span>' +
+                                        (Math.ceil((val.distance/1000)/1.2)) + ' miles : ' +
+                                        (Math.ceil(val.duration/60)) + 'min ' +
+                                    '</span>' +
+                                '</div>';
+                        }
+                        if (k < 8) {
+                            color = 'success';
+                        }
+
+                        body +=
+                            '<div class="row">' +
+                                '<div class="col-lg-1">' +
+                                    '<p data-toggle="collapse" data-parent="#accordion" data-target="#collapse_'+val.record_planner_id+'" >' +
+                                        '<span class="glyphicon glyphicon-plus pointer"></span>' +
+                                    '</p>' +
+                                '</div>' +
+                                '<div class="col-lg-11">' +
+                                    '<li class="panel panel-'+color+'" postcode="'+val.postcode+'" record-planner-id="'+val.record_planner_id+'">' +
                                         '<div class="panel-heading record-planner-heading pointer" data-modal="view-record" data-urn="'+val.urn+'" record-planner-id="'+val.record_planner_id+'">' +
-                                            '<span>' + val.name + '</span>' +
-                                            '<span class="pull-right">' + val.postcode + '</span>' +
+                                            '<div class="row">' +
+                                                '<div class="col-lg-9">' +
+                                                    '<span>' + val.name + '</span>' +
+                                                '</div>' +
+                                                '<div class="col-lg-3" style="text-align: right">' +
+                                                    '<span>' + val.postcode + '</span>' +
+                                                '</div>' +
+                                                route +
+                                            '</div>' +
                                         '</div>' +
-                                    '<div class="panel-body collapse" id="collapse_'+val.record_planner_id+'">' +
-                                        '<div class="panel-body">Content ...</div>' +
-                                    '</div>' +
-                                '</li>' +
-                            '</div>' +
-                        '</div>';
-                });
+                                        '<div class="panel-body collapse" id="collapse_'+val.record_planner_id+'">' +
+                                            '<div class="panel-body">' +
+                                                '<div class="row">' +
+                                                    '<div class="col-lg-12 col-sm-12">' +
+                                                        '<p><b>Company: </b>' + (val.name ? val.name : '') + '</p>' +
+                                                        '<p><b>Contact: </b>' + (val.fullname ? val.fullname : '') + '</p>' +
+                                                        '<p><b>Outcome: </b>' + (val.outcome ? val.outcome : '') + '</p>' +
+                                                        '<p><b>Next Call: </b>' + (val.nextcall ? val.nextcall : '') + '</p>' +
+                                                        '<p><b>Last Updated: </b>' + (val.date_updated ? val.date_updated : '') + '</p>' +
+                                                        '<p><b>Postcode: </b>' + (val.postcode ? (val.postcode + '(' + (val.lat ? val.lat : '-') + ',' + (val.lng ? val.lng : '-') + ')') : '') + '</p>' +
+                                                        '<p><b>Website: </b><a target="_blank" href="' + val.website + '">' + val.website + '</a></p>' +
+                                                        '<p><b>Planner: </b>' + (val.record_planner_id?(val.user + ' on ' + val.start):'') + '</p>' +
+                                                    '</div>' +
+                                                '</div>' +
+
+                                            '</div>' +
+                                        '</div>' +
+                                    '</li>' +
+                                '</div>' +
+                            '</div>';
+
+
+
+
+                        //$('#collapse_'+val.record_planner_id).on('shown.bs.collapse', function () {
+                        //    console.log($(this).find('.glyphicon'));
+                        //    $('.info_'+val.record_planner_id).toggleClass('glyphicon-folder-open glyphicon-plus');
+                        //});
+
+                        //$('.info-record-planner').click(function(){
+                        //    $(this).toggleClass('glyphicon-folder-open glyphicon-plus');
+                        //});
+                    });
+                }
+                else {
+                    body = 'There are no records planned for today!';
+                }
                 $('#draggablePanelList').html(body);
                 showRecords();
 
@@ -152,8 +207,7 @@ var planner = {
 
             $(document).on('click', '.change-directions-btn', function () {
                 $('.map-form').find('input[name="travel-mode"]').val($(this).attr('item-mode'));
-                var destination = $('.map-form').find('input[name="destination"]').val();
-                getDirections(destination);
+                calcRoute();
             });
 
             $(document).on('click', '.close-directions-btn', function () {
@@ -250,7 +304,15 @@ var planner = {
                         $('.panel', panelList).each(function(index, elem) {
                             var $listItem = $(elem),
                                 newIndex = $listItem.index();
+                            $(elem).find('.record-planner-heading').toggleClass('panel-default panel-success');
+                            if (index < 8) {
+                                $(elem).removeClass("panel-default").addClass("panel-success");
+                            }
+                            else {
+                                $(elem).removeClass("panel-success").addClass("panel-default");
+                            }
                         });
+                        $('.route-header').hide();
                     }
                 });
             });
@@ -258,27 +320,7 @@ var planner = {
             //Generate route
             $(document).on("click", '.calc-route-btn', function(e) {
                 e.preventDefault();
-                var record_list_route = [];
-                var waypts = [];
-                //Open map view
-                if (!$('#map-view-toggle').prop('cheched')) {
-                    $('#map-view-toggle').bootstrapToggle('on')
-                    showMap($('#map-view-toggle'));
-                }
-                removeDirections();
-                $('.panel', panelList).each(function(index, elem) {
-                    var postcode = $(elem).attr('postcode');
-                    var record_planner_id = $(elem).attr('record-planner-id');
-                    if (index < 8) {
-                        waypts.push({
-                            location:postcode,
-                            stopover:true
-                        });
-                        record_list_route[index] = record_planner_id;
-                    }
-                });
-                saveRecordOrder(record_list_route);
-                getDirections(markerLocation.getPosition(), waypts,record_list_route);
+                calcRoute();
             });
 
             //Show map button actions
@@ -300,31 +342,13 @@ var planner = {
 
         }
 
-        function saveRecordOrder(record_list_route) {
-            $.ajax({
-                url: helper.baseUrl + "planner/save_record_order",
-                type: "POST",
-                dataType: "JSON",
-                data: {
-                    record_list: record_list_route,
-                    date: $('.filter-form').find('input[name="date"]').val()
-                }
-            }).done(function (response) {
-                if (response.success) {
-
-                } else {
-
-                }
-            });
-        }
-
         function saveRecordRoute(record_list_route) {
             $.ajax({
                 url: helper.baseUrl + "planner/save_record_route",
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    record_list: record_list_route,
+                    record_list: $.parseJSON(JSON.stringify(record_list_route)),
                     date: $('.filter-form').find('input[name="date"]').val()
                 }
             }).done(function (response) {
@@ -418,6 +442,35 @@ var planner = {
             }
         }
 
+        function calcRoute() {
+            panelList = $('#draggablePanelList');
+            var record_list_route = [];
+            var waypts = [];
+            //Open map view
+            if (!$('#map-view-toggle').prop('cheched')) {
+                $('#map-view-toggle').bootstrapToggle('on')
+                showMap($('#map-view-toggle'));
+            }
+            removeDirections();
+            $('.panel', panelList).each(function(index, elem) {
+                var postcode = $(elem).attr('postcode');
+                var record_planner_id = $(elem).attr('record-planner-id');
+                if (index < 8) {
+                    waypts.push({
+                        //location: new google.maps.LatLng(lat, lng),
+                        location: postcode,
+                        stopover: true
+                    });
+                    record_list_route[index] = {
+                        record_planner_id: record_planner_id,
+                        postcode: postcode
+                    };
+
+                }
+            });
+            getDirections(markerLocation.getPosition(), waypts,record_list_route);
+        }
+
         function getDirections(destination, waypoints, record_list_ord) {
             var start = markerLocation.getPosition();
             var dest = destination;
@@ -426,11 +479,13 @@ var planner = {
             $('.change-directions-btn').fadeTo("fast", 0.4);
             $('.' + travelMode).fadeTo("fast", 1);
 
+            console.log(travelMode);
+
             var request = {
                 origin: start,
                 destination: dest,
                 waypoints: waypoints,
-                optimizeWaypoints: true,
+                optimizeWaypoints: ($('.directions-form').find('input[name="optimized"]').prop('checked')),
                 travelMode: google.maps.DirectionsTravelMode[travelMode],
                 transitOptions: {
                     routingPreference: google.maps.TransitRoutePreference.FEWER_TRANSFERS
@@ -441,10 +496,23 @@ var planner = {
                 if (status == google.maps.DirectionsStatus.OK) {
                     var total_duration = 0;
                     var total_distance = 0;
-                    //var record_list_route = [];
+                    var record_list_route = [];
+                    var waypoint_order = result.routes[0].waypoint_order;
                     //Iterate the routes
                     $.each(result.routes[0].legs, function (index, route) {
-                        //record_list_route.push(route);
+                        var data_route = {
+                            'order_num': index,
+                            'record_planner': record_list_ord[waypoint_order[index]],
+                            'start_add': route.start_address,
+                            'start_lat': route.start_location.A,
+                            'start_lng': route.start_location.F,
+                            'end_add': route.end_address,
+                            'end_lat': route.end_location.A,
+                            'end_lng': route.end_location.F,
+                            'distance': route.distance.value,
+                            'duration': route.duration.value
+                        };
+                        record_list_route.push(data_route);
                         total_duration = total_duration + parseInt(route.duration.value);
                         total_distance = total_distance + parseInt(route.distance.value);
                     });
@@ -453,7 +521,8 @@ var planner = {
                         (Math.ceil(total_duration/60)) + 'min ' +
                         '<span style="font-size: 15px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
                     directionsDisplay.setDirections(result);
-                    //saveRecordRoute(record_list_route);
+                    saveRecordRoute(record_list_route);
+                    getRecords();
                 }
             });
             directionsDisplay.setMap(map);
@@ -546,24 +615,24 @@ var planner = {
             var marker_color = intToARGB(hashCode(value.name));
             var marker_text_color = "FFFFFF";
             var character = (value.name).substr(0, 1);
-            var contentString =
-                '<div id="content">' +
-                '<div id="siteNotice">' +
-                '</div>' +
-                '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
-                '<div id="bodyContent">' +
-                '<p><b>Comapny: </b>' + (value.name ? value.name : '') + '</p>' +
-                '<p><b>Date: </b>' + (value.start ? value.start : '') + '</p>' +
-                '<p><b>User: </b>' + (value.user ? value.user : '') + '</p>' +
-                '<p><b>Distance: </b></p>' +
-                '<p><b>Time: </b></p>' +
-                '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
-                '<p>' +
-                '<span><a class="btn btn-success record-planner-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>' +
-                '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
-                '</p>' +
-                '</div>' +
-                '</div>';
+            //var contentString =
+            //    '<div id="content">' +
+            //    '<div id="siteNotice">' +
+            //    '</div>' +
+            //    '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
+            //    '<div id="bodyContent">' +
+            //    '<p><b>Comapny: </b>' + (value.name ? value.name : '') + '</p>' +
+            //    '<p><b>Date: </b>' + (value.start ? value.start : '') + '</p>' +
+            //    '<p><b>User: </b>' + (value.user ? value.user : '') + '</p>' +
+            //    '<p><b>Distance: </b></p>' +
+            //    '<p><b>Time: </b></p>' +
+            //    '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
+            //    '<p>' +
+            //    '<span><a class="btn btn-success record-planner-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>' +
+            //    '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
+            //    '</p>' +
+            //    '</div>' +
+            //    '</div>';
 
 
             var planner_info =
@@ -624,7 +693,6 @@ var planner = {
             //Show in the table the record selected in the map
 
             google.maps.event.addListener(marker, 'mouseover', function () {
-                console.log(marker.record_planner_id);
                 $('.record-planner-heading').find("[record-planner-id='" + marker.record_planner_id + "']").css('color', 'green');
             });
 
