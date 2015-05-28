@@ -19,12 +19,20 @@ var filter = {
         $(document).on('click', '.remove-filter-selection', function() {
             var field = $(this).attr('data-field');
             if ($('select#' + field).prop('multiple')) {
-                $('select#' + field).selectpicker('val', []);
+                $('select#' + field).selectpicker('val', []).selectpicker('refresh');
             } else {
                 $('select#' + field).val('').selectpicker('refresh');
             }
-            $('input[name="' + field + '"]').val();
+			if($('[name="' + field + '"]').is(':checkbox')){
+			$('input[name="' + field + '"]').prop('checked',false);
+			} else {
+            $('input[name="' + field + '"]').val('');
+			$('input[name="' + field + '[0]"]').val('');
+			$('input[name="' + field + '[1]"]').val('');
+			}
+
 			$(this).closest('div').remove();
+			filter.count_records();
         });
 
         $(document).on('click', '.no-number', function() {
@@ -600,6 +608,7 @@ var filter = {
                 //$('#filter-panel .panel-body').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" /> ');
             }
         }).done(function(response) {
+			var remove_btn = "";
             $.each(response, function(k, v) {
                 filter_options += "<div style='float:left; width:200px; padding:4px 0; border-bottom: 1px dashed #ccc'>";
                 if (v.value.length > 0) {
@@ -613,14 +622,18 @@ var filter = {
                         v.value[0] = v.value[1]!==""?"More than " + v.value[0]:"";
                         v.value[1] = v.value[1]!==""?"Less than " + v.value[1]:"";
                     }
-                    filter_options += "<strong>" + title + " <span data-field='" + v.field + "' class='remove-filter-selection glyphicon glyphicon-remove pointer red small'></span></strong>";
+					if(v.removable){
+					remove_btn = " <span data-field='" + v.field + "' class='remove-filter-selection glyphicon glyphicon-remove pointer red small'></span>";	
+					}
+
+                    filter_options += "<strong>" + title + remove_btn+"</strong>";
                     if (typeof v.value === "string") {
                         filter_options += "<ul><li>" + v.value + "</li></ul>";
                     } else {
                         filter_options += "<ul>";
                         $.each(v.value, function(x, newval) {
 							if(newval!==""){
-                            if ($('#' + v.field).prop('multiple')) {
+                            if ($('#' + v.field).is("select")) {
                                 filter_options += "<li>" + $('#' + v.field + ' option[value="' + newval + '"]').text() + "</li>";
                             } else {
                                 filter_options += "<li>" + newval + "</li>";

@@ -20,47 +20,47 @@ class Search extends CI_Controller
         $this->load->model('Email_model');
     }
 		public function filter_display(){
-			$mappings = array("campaign_id"=>"Campaign name",
-			"source_id"=>"Data source",
-			"client_id"=>"Client name",
-			"campaign_type_id"=>"Campaign type",
-			"urn"=>"URN",
-			"client_ref"=>"Client reference",
-			"outcome_id"=>"Outcome",
-			"progress_id"=>"Progress",
-			"record_status"=>"Record status",
-			"parked_code"=>"Parked code",
-			"group_id"=>"Group ownership",
-			"user_id"=>"User ownership",
-			"nextcall"=>"Nextcall date",
-			"date_updated"=>"Lastcall date",
-			"date_added"=>"Created date",
-			"contact_id"=>"Contact ID",
-			"fullname"=>"Contact name",
-			"phone"=>"Contact phone",
-			"position"=>"Contact position",
-			"dob"=>"Contact DOB",
-			"contact_email"=>"Contact email",
-			"address"=>"Contact address",
-			"company_id"=>"Company ID",
-			"coname"=>"Company Name",
-			"company_phone"=>"Company phone",
-			"sector_id"=>"Sector",
-			"subsector_id"=>"Subsector",
-			"turnover"=>"Turnover",
-			"employees"=>"Employees",
-			"postcode"=>"Postcode",
-			"distance"=>"Distance",
-			"new_only"=>"New records only",
-			"dials"=>"Number of dials",
-			"survey"=>"With survey only",
-			"favorites"=>"Favorites only",
-			"urgent"=>"Urgent only",
-			"email"=>"Email filter",
-			"no_company_tel"=>"Companies without numbers",
-			"no_phone_tel"=>"Contacts without numbers",
-			"order"=>"Order by",
-			"order_direction"=>"Order direction"
+			$mappings = array("campaign_id"=>array("name"=>"Campaign name","remove"=>in_array("mix campaigns",$_SESSION['permissions'])?true:false),
+			"source_id"=>array("name"=>"Data source"),
+			"client_id"=>array("name"=>"Client name"),
+			"campaign_type_id"=>array("name"=>"Campaign type"),
+			"urn"=>array("name"=>"URN"),
+			"client_ref"=>array("name"=>"Client reference"),
+			"outcome_id"=>array("name"=>"Outcome"),
+			"progress_id"=>array("name"=>"Progress"),
+			"record_status"=>array("name"=>"Record status",in_array("search dead",$_SESSION['permissions'])?true:false),
+			"parked_code"=>array("name"=>"Parked code"),
+			"group_id"=>array("name"=>"Group ownership",in_array("search groups",$_SESSION['permissions'])?true:false),
+			"user_id"=>array("name"=>"User ownership","remove"=>in_array("search any owner",$_SESSION['permissions'])?true:false),
+			"nextcall"=>array("name"=>"Nextcall date"),
+			"date_updated"=>array("name"=>"Lastcall date"),
+			"date_added"=>array("name"=>"Created date"),
+			"contact_id"=>array("name"=>"Contact ID"),
+			"fullname"=>array("name"=>"Contact name"),
+			"phone"=>array("name"=>"Contact phone"),
+			"position"=>array("name"=>"Contact position"),
+			"dob"=>array("name"=>"Contact DOB"),
+			"contact_email"=>array("name"=>"Contact email"),
+			"address"=>array("name"=>"Contact address"),
+			"company_id"=>array("name"=>"Company ID"),
+			"coname"=>array("name"=>"Company Name"),
+			"company_phone"=>array("name"=>"Company phone"),
+			"sector_id"=>array("name"=>"Sector"),
+			"subsector_id"=>array("name"=>"Subsector"),
+			"turnover"=>array("name"=>"Turnover"),
+			"employees"=>array("name"=>"Employees"),
+			"postcode"=>array("name"=>"Postcode"),
+			"distance"=>array("name"=>"Distance"),
+			"new_only"=>array("name"=>"New records only"),
+			"dials"=>array("name"=>"Number of dials"),
+			"survey"=>array("name"=>"With survey only"),
+			"favorites"=>array("name"=>"Favorites only"),
+			"urgent"=>array("name"=>"Urgent only"),
+			"email"=>array("name"=>"Email filter"),
+			"no_company_tel"=>array("name"=>"Companies without numbers"),
+			"no_phone_tel"=>array("name"=>"Contacts without numbers"),
+			"order"=>array("name"=>"Order by"),
+			"order_direction"=>array("name"=>"Order direction")
 			);
 			
 			//unset hidden values (we dont want them in the list)
@@ -82,7 +82,10 @@ class Search extends CI_Controller
 			if(empty($v)){
 			unset($_POST[$k]); continue;	
 			}
-			$data[$k] = array("field"=>$k,"name"=>$mappings[$k],"value"=>$v);
+			if(!isset($mappings[$k]['remove'])){
+				$mappings[$k]['remove']=true;
+			}
+			$data[$k] = array("field"=>$k,"name"=>$mappings[$k]['name'],"value"=>$v,"removable"=>$mappings[$k]['remove']?true:false);
 			}
 			
 		echo json_encode($data);	
