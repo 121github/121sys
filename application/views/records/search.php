@@ -361,7 +361,7 @@
                 <label>Distance <span class="distance"> 0</span></label>
                 <input <?php if(@isset($_SESSION['filter']['values']['distance'])){ echo "value='".$_SESSION['filter']['values']['distance']."'"; } ?> name="distance" type="text" id="slide_id" class="form-control slider" data-slider-min="0" data-slider-max="300" data-slider-step="5" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="before" data-slider-formater="zerona">
               </div>
-              <button type="submit" class="btn btn-default pull-right">View Records</button>
+              <button type="submit" class="btn btn-default pull-right submit-filter">View Records</button>
               Found: <span class="record-count"></span> </div>
           </div>
         </div>
@@ -440,7 +440,28 @@
           </div>
         </div>
      
+
+    
+            <!---------------------->
+        <!--  CUSTOM FILTER -->
+        <!---------------------->
+        <div class="panel panel-primary">
+          <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
+            <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Custom Field Filter</h4>
+          </div>
+          <div id="collapseSix" class="panel-collapse collapse">
+            <div class="panel-body">
+<div id="custom_fields">
+
+</div>
+              <button type="submit" class="btn btn-default pull-right submit-filter">View Records</button>
+              Found: <span class="record-count"></span> </div>
+          </div>
+        </div>
+     
     </div>
+    
+    
   </div>
 </div>
  </form>

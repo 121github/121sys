@@ -1,8 +1,9 @@
 // JavaScript Document
 var filter = {
     init: function() {
+		filter.custom_fields_panel()
         filter.count_records();
-        $('select:not(.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select)').change(function() {
+        $(document).on('change','select:not(#campaign-select,.actions_parked_code_select, .actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select)',function() {
             filter.count_records();
         });
 
@@ -250,9 +251,15 @@ var filter = {
         $('.campaigns_select').on('change', function() {
             var num_selected = $('.campaigns_select').val();
             if (num_selected && num_selected.length == 1) {
+				$('#custom_fields').closest('.panel').find('.panel-heading').removeAttr('style');
                 $('.copy-records').prop('disabled', false);
                 $('.copy_records_error').hide();
+				filter.filter_display();
+				filter.custom_fields_panel();
             } else {
+				$('#custom_fields').html("<p class='text-danger'><span class='glyphicon glyphicon-glyphicon glyphicon-exclamation-sign'></span> You can only search the custom fields on an individual campaign. Please select a single campaign from the campaign filter options</p>");	
+				
+				$('#custom_fields').closest('.panel').find('.panel-heading').css('background','#ccc');
                 $('.copy-records').prop('disabled', true);
                 $('.copy_records_error').show();
             }
@@ -648,5 +655,57 @@ var filter = {
             $('#filter-panel .panel-body').html(filter_options).append('<div id="filter-display-count" style="float:left; width:200px; padding:10px 0 5px">Records found: </div>');
             $('.record-count:first').clone().appendTo('#filter-display-count');
         });
-    }
+    },
+	custom_fields_panel:function(){
+		$('#custom_fields').empty().hide();
+	$.ajax({ 
+		url:helper.baseUrl+'search/get_custom_fields',
+		dataType:"JSON",
+		data:{ campaign:$('#campaign_id').val() },
+		type:"POST"
+	}).done(function(response){
+		var custom_form = "";
+		$.each(response,function(k,v){
+			
+			if(v.options){
+				custom_form += '<div class="form-group"><label style="display:block">'+v.field_name+'</label>';
+			custom_form += '<select id="'+v.field_name+'" name="'+v.field+'">';
+			custom_form += '<option value="">Any</option>';
+			 $.each(v.options,function(id,data){
+				 custom_form += '<option value="'+data.option+'">'+data.option+'</option>';
+			 });
+			custom_form += '</select>';
+			} else if(v.type=="date"||v.type=="datetime"||v.type=="number"){
+				custom_form += '<div class="form-group">'+
+                '<label>'+v.field_name+'</label>'+
+                '<div class="row">'+
+                  '<div class="col-md-6 col-sm-6">'+
+                    '<div class="input-group">'+
+                      '<input id="'+v.field_name+'-0" name="'+v.field+'[0]" type="text" class="form-control '+v.type+'" placeholder="from">'+
+                      '<span class="input-group-btn">'+
+                      '<button class="btn btn-default clear-input" type="button">Clear</button>'+
+                      '</span> </div>'+
+                  '</div>'+
+                  '<div class="col-md-6 col-sm-6">'+
+                    '<div class="input-group">'+
+                      '<input id="'+v.field_name+'-1" name="'+v.field+'[1]" type="text" class="form-control '+v.type+'" placeholder="to">'+
+                      '<span class="input-group-btn">'+
+                      '<button class="btn btn-default clear-input" type="button">Clear</button>'+
+                      '</span> </div>'+
+                  '</div>'+
+               '</div>'+
+              '</div>'
+				}
+			else {
+			custom_form += '<div class="form-group"><label style="display:block">'+v.field_name+'</label>';
+			custom_form += '<input class="form-control" name="'+v.field+'" />';
+			}
+			custom_form += '</div>';
+		});
+		$('#custom_fields').prepend(custom_form).show();
+		$('#custom_fields select').selectpicker();
+		renew_js();
+	});
+	}
+	
 }

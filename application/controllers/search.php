@@ -19,6 +19,32 @@ class Search extends CI_Controller
         $this->load->model('Records_model');
         $this->load->model('Email_model');
     }
+	
+		public function get_custom_fields(){
+		$campaigns = $this->input->post('campaign');
+		$this->load->model('Admin_model');
+		$fields = $this->Admin_model->get_custom_fields($campaigns[0]);
+		foreach($fields as $k=>$v){
+		if($v['is_select']=="1"){
+			$options = 	$this->Filter_model->get_custom_options($v['field'],$campaigns[0]);
+			$fields[$k]['options'] = $options;
+		}
+			if (strpos($v['field'], "c") !== false) {
+                       $fields[$k]["type"] = "varchar";
+                    } else if (substr($v['field'], 1, 1) == "t") {
+                      $fields[$k]["type"] = "datetime";
+                    } else if (strpos($v['field'], "n") !== false) {
+                      $fields[$k]["type"] = "number";
+                    } else {
+                      $fields[$k]["type"] = "date";
+                    }
+			
+		
+		}
+		echo json_encode($fields);
+	}
+	
+	
 		public function filter_display(){
 			$mappings = array("campaign_id"=>array("name"=>"Campaign name","remove"=>in_array("mix campaigns",$_SESSION['permissions'])?true:false),
 			"source_id"=>array("name"=>"Data source"),
@@ -63,6 +89,15 @@ class Search extends CI_Controller
 			"order_direction"=>array("name"=>"Order direction")
 			);
 			
+			if(count($this->input->post('campaign_id'))=="1"){
+				$this->load->model('Admin_model');
+				$campaigns = $this->input->post('campaign_id');
+				$fields = $this->Admin_model->get_custom_fields($campaigns[0]);
+				foreach($fields as $field){
+					$mappings[$field['field']] = array("name"=>$field['field_name']);
+				}
+			}
+			
 			//unset hidden values (we dont want them in the list)
 			unset($_POST['lat']);
 			unset($_POST['lng']);
@@ -104,7 +139,7 @@ class Search extends CI_Controller
     public function search_form()
     {
 	check_page_permissions("search records");
-	
+	/*
         $campaigns      = $this->Form_model->get_user_campaigns();
         $clients        = $this->Form_model->get_clients();
         $users          = $this->Form_model->get_users();
@@ -121,10 +156,25 @@ class Search extends CI_Controller
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();
-		
-		
-
+		*/
+		    $campaigns      = $this->Form_model->get_user_campaigns();
+        $clients        = array();
+        $users          = array();
+        $outcomes       = array();
+        $progress       = array();
+        $sectors        = array();
+		$selected_sectors = array();
+		if(isset($_SESSION['filter']['values']['sector_id'])){
+		$selected_sectors = $_SESSION['filter']['values']['sector_id'];	
+		}
+        $subsectors     = array();
+        $status         = array();
+		$parked_codes   = array();
+        $groups         = array();
+        $sources        = array();
+        $campaign_types = array();
         $email_templates  = array();
+
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Search',

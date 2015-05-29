@@ -37,6 +37,12 @@ class Filter_model extends CI_Model
 );
     }
 
+public function get_custom_options($field,$campaign){
+$this->db->select('id,option');
+$this->db->where(array("campaign_id"=>$campaign,"field"=>$field));
+return $this->db->get('record_details_options')->result_array();	
+}
+
 
     public function count_records($filter)
     {
@@ -301,6 +307,71 @@ class Filter_model extends CI_Model
             "type" => "",
             "alias" => "comt.telephone_number"
         );
+		$filter_options["c1"]              = array(
+            "table" => "record_details",
+            "type" => "like",
+            "alias" => "rd.c1"
+        );
+		$filter_options["c2"]              = array(
+            "table" => "record_details",
+            "type" => "like",
+            "alias" => "rd.c2"
+        );
+		$filter_options["c3"]              = array(
+            "table" => "record_details",
+            "type" => "like",
+            "alias" => "rd.c3"
+        );
+		$filter_options["c4"]              = array(
+            "table" => "record_details",
+            "type" => "like",
+            "alias" => "rd.c4"
+        );
+		$filter_options["c5"]              = array(
+            "table" => "record_details",
+            "type" => "like",
+            "alias" => "rd.c5"
+        );
+		$filter_options["d1"]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "date_format(rd.d1,'%d/%m/%Y')"
+        );
+		$filter_options["d2"]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "date_format(rd.d2,'%d/%m/%Y')"
+        );
+		$filter_options["d3"]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "date_format(rd.d3,'%d/%m/%Y')"
+        );
+		$filter_options["dt1"]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "date_format(rd.dt1,'%d/%m/%Y %H:%i')"
+        );
+		$filter_options["dt2"]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "date_format(rd.dt2,'%d/%m/%Y %H:%i')"
+        );
+		$filter_options["n1"]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "rd.n1"
+        );
+		$filter_options["n2"]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "rd.n2"
+        );
+		$filter_options["n3"]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "rd.n3"
+        );
         $qry                                = "";
         $special                            = "";
 		$parked								= "";
@@ -414,6 +485,9 @@ class Filter_model extends CI_Model
                 }
                 
                 /* join any additional tables if they are required */
+				 if ($filter_options[$field]['table'] == "record_details") {
+                    $join['record_details'] = " left join record_details rd on rd.urn = r.urn ";
+                }
 				 if ($filter_options[$field]['table'] == "outcomes") {
                     $join['contacts'] = " left join outcomes on outcomes.outcome_id = r.outcome_id";
                 }
