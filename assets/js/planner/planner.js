@@ -109,10 +109,10 @@ var planner = {
 
                         body +=
                             '<div class="row record-planner-item">' +
-                                '<div class="col-lg-1">' +
+                                '<div class="col-lg-1 col-sm-1">' +
                                     '<span class="glyphicon glyphicon-plus pointer" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_'+val.record_planner_id+'" ></span>' +
                                 '</div>' +
-                                '<div class="col-lg-10">' +
+                                '<div class="col-lg-10 col-sm-10">' +
                                     '<li class="panel panel-'+color+'" postcode="'+val.postcode+'" record-planner-id="'+val.record_planner_id+'">' +
                                         '<div class="panel-heading record-planner-heading pointer" data-modal="view-record" data-urn="'+val.urn+'" record-planner-id="'+val.record_planner_id+'">' +
                                             '<div class="row">' +
@@ -144,7 +144,7 @@ var planner = {
                                         '</div>' +
                                     '</li>' +
                                 '</div>' +
-                                '<div class="col-lg-1">' +
+                                '<div class="col-lg-1 col-sm-1">' +
                                     '<span class="glyphicon glyphicon-arrow-up green pointer goup-btn"></span>' +
                                     '<span class="glyphicon glyphicon-arrow-down red pointer godown-btn"></span>' +
                                 '</div>' +
