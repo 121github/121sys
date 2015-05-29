@@ -13,6 +13,11 @@ $(document).ready(function () {
         onstyle: 'success',
         size: 'mini'
     });
+
+    $('#optimized').bootstrapToggle({
+        onstyle: 'success',
+        size: 'mini'
+    });
 });
 
 var planner = {
@@ -66,12 +71,35 @@ var planner = {
                         records.push(val);
                         var color = 'default';
                         var route = '';
+                        var travelIcon = "";
                         if (val.duration) {
+
+                            if (val.travel_mode == "DRIVING") {
+                                travelIcon = "car";
+                            }
+
+                            switch(val.travel_mode) {
+                                case "DRIVING":
+                                    travelIcon = "car";
+                                    break;
+                                case "BICYCLING":
+                                    travelIcon = "cycle";
+                                    break;
+                                case "WALKING":
+                                    travelIcon = "walking";
+                                    break;
+                                default:
+                                    travelIcon = "";
+                            }
+
                             route =
-                                '<div class="route-header col-lg-12" style="text-align: right; color: green">' +
+                                '<div class="route-header col-lg-12" style="text-align: right;">' +
+                                    '<span style="opacity: 0.4; filter: alpha(opacity=40); margin-right: 5px;" class="change-directions-btn DRIVING pointer" item-mode="DRIVING">' +
+                                        '<img width="15px;" src="assets/img/icons/'+travelIcon+'.png"/>' +
+                                    '</span>' +
                                     '<span>' +
-                                        (Math.ceil((val.distance/1000)/1.2)) + ' miles : ' +
-                                        (Math.ceil(val.duration/60)) + 'min ' +
+                                        (Math.ceil((val.distance/1000)/1.2)) + ' miles - ' +
+                                        (toHHMMSS(val.duration)) +
                                     '</span>' +
                                 '</div>';
                         }
@@ -80,13 +108,11 @@ var planner = {
                         }
 
                         body +=
-                            '<div class="row">' +
-                                '<div class="col-lg-1">' +
-                                    '<p data-toggle="collapse" data-parent="#accordion" data-target="#collapse_'+val.record_planner_id+'" >' +
-                                        '<span class="glyphicon glyphicon-plus pointer"></span>' +
-                                    '</p>' +
+                            '<div class="row record-planner-item">' +
+                                '<div class="col-lg-1 col-sm-1">' +
+                                    '<span class="glyphicon glyphicon-plus pointer" data-toggle="collapse" data-parent="#accordion" data-target="#collapse_'+val.record_planner_id+'" ></span>' +
                                 '</div>' +
-                                '<div class="col-lg-11">' +
+                                '<div class="col-lg-10 col-sm-10">' +
                                     '<li class="panel panel-'+color+'" postcode="'+val.postcode+'" record-planner-id="'+val.record_planner_id+'">' +
                                         '<div class="panel-heading record-planner-heading pointer" data-modal="view-record" data-urn="'+val.urn+'" record-planner-id="'+val.record_planner_id+'">' +
                                             '<div class="row">' +
@@ -118,6 +144,10 @@ var planner = {
                                         '</div>' +
                                     '</li>' +
                                 '</div>' +
+                                '<div class="col-lg-1 col-sm-1">' +
+                                    '<span class="glyphicon glyphicon-arrow-up green pointer goup-btn"></span>' +
+                                    '<span class="glyphicon glyphicon-arrow-down red pointer godown-btn"></span>' +
+                                '</div>' +
                             '</div>';
 
 
@@ -134,7 +164,12 @@ var planner = {
                     });
                 }
                 else {
-                    body = 'There are no records planned for today!';
+                    body = '<div>No waypoints have been added on this day!</div>' +
+                           '<div>' +
+                                '<span class="glyphicon glyphicon-question-sign">' +
+                                    '<a href="'+helper.baseUrl+'records/view"> You can add records to the planner to create waypoints </a>' +
+                                '</span>' +
+                            '</div>';
                 }
                 $('#draggablePanelList').html(body);
                 showRecords();
@@ -202,7 +237,8 @@ var planner = {
             $(document).on('click', '.record-planner-btn', function () {
                 $('.map-form').find('input[name="destination"]').val($(this).attr('item-postcode'));
                 var destination = $('.map-form').find('input[name="destination"]').val();
-                getDirections(destination);
+                var origin = markerLocation.getPosition();
+                getDirections(origin, destination);
             });
 
             $(document).on('click', '.change-directions-btn', function () {
@@ -225,15 +261,31 @@ var planner = {
 
             $(document).on('click', '.get-current-location-btn', function () {
                 removeDirections();
-                codeCurrentAddress();
+                var current_postcode = getCookie("current_postcode");
+                if (current_postcode.length == 0) {
+                    getLocation();
+                    current_postcode = getCookie("current_postcode");
+                }
+                $('.map-form').find('input[name="postcode"]').val(current_postcode);
+                codeAddress(12);
             });
 
             $(document).on('click', '.get-origin-location-btn', function () {
-                $('.directions-form').find('input[name="origin"]').val('M5 3EZ');
+                var current_postcode = getCookie("current_postcode");
+                if (current_postcode.length == 0) {
+                    getLocation();
+                    current_postcode = getCookie("current_postcode");
+                }
+                $('.directions-form').find('input[name="origin"]').val(current_postcode);
             });
 
             $(document).on('click', '.get-destination-location-btn', function () {
-                $('.directions-form').find('input[name="destination"]').val('M5 3EZ');
+                var current_postcode = getCookie("current_postcode");
+                if (current_postcode.length == 0) {
+                    getLocation();
+                    current_postcode = getCookie("current_postcode");
+                }
+                $('.directions-form').find('input[name="destination"]').val(current_postcode);
             });
 
             $(document).on('click', '.show-directionsPanel-btn', function () {
@@ -313,9 +365,26 @@ var planner = {
                             }
                         });
                         $('.route-header').hide();
+                        removeDirections();
                     }
                 });
             });
+
+            $(document).on("click", '.goup-btn', function(e) {
+                e.preventDefault();
+                $(this).parents('.record-planner-item').insertBefore($(this).parents('.record-planner-item').prev());
+                $('.route-header').hide();
+                removeDirections();
+            });
+
+            $(document).on("click", '.godown-btn', function(e) {
+                e.preventDefault();
+                $(this).parents('.record-planner-item').insertAfter($(this).parents('.record-planner-item').next());
+                $('.route-header').hide();
+                removeDirections();
+
+            });
+
 
             //Generate route
             $(document).on("click", '.calc-route-btn', function(e) {
@@ -420,28 +489,6 @@ var planner = {
             });
         }
 
-        function codeCurrentAddress() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    if (typeof markerLocation != 'undefined') {
-                        markerLocation.setMap(null);
-                    }
-                    var address = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    map.setCenter(address);
-                    map.setZoom(12);
-                    markerLocation = new google.maps.Marker({
-                        map: map,
-                        position: address
-                    });
-                    $('.map-form').find('input[name="postcode"]').val('');
-                    //Wait until the map is loaded
-                    setTimeout(function () {
-                        getRecords();
-                    }, 2000);
-                });
-            }
-        }
-
         function calcRoute() {
             panelList = $('#draggablePanelList');
             var record_list_route = [];
@@ -468,18 +515,29 @@ var planner = {
 
                 }
             });
-            getDirections(markerLocation.getPosition(), waypts,record_list_route);
+
+            //Get the origin and the destination
+            var origin = markerLocation.getPosition();
+            var destination = markerLocation.getPosition();
+
+            if ($('.directions-form').find('input[name="origin"]').val().length > 0) {
+                origin = $('.directions-form').find('input[name="origin"]').val();
+            }
+
+            if ($('.directions-form').find('input[name="destination"]').val().length > 0) {
+                destination = $('.directions-form').find('input[name="destination"]').val();
+            }
+
+            getDirections(origin, destination, waypts,record_list_route);
         }
 
-        function getDirections(destination, waypoints, record_list_ord) {
-            var start = markerLocation.getPosition();
+        function getDirections(origin, destination, waypoints, record_list_ord) {
+            var start = origin;
             var dest = destination;
             var travelMode = $('.map-form').find('input[name="travel-mode"]').val();
 
             $('.change-directions-btn').fadeTo("fast", 0.4);
             $('.' + travelMode).fadeTo("fast", 1);
-
-            console.log(travelMode);
 
             var request = {
                 origin: start,
@@ -510,16 +568,17 @@ var planner = {
                             'end_lat': route.end_location.A,
                             'end_lng': route.end_location.F,
                             'distance': route.distance.value,
-                            'duration': route.duration.value
+                            'duration': route.duration.value,
+                            'travel_mode': travelMode
                         };
                         record_list_route.push(data_route);
                         total_duration = total_duration + parseInt(route.duration.value);
                         total_distance = total_distance + parseInt(route.distance.value);
                     });
                     $('.route-info').html(
-                        (Math.ceil((total_distance/1000)/1.2)) + ' miles : ' +
-                        (Math.ceil(total_duration/60)) + 'min ' +
-                        '<span style="font-size: 15px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
+                        (Math.ceil((total_distance/1000)/1.2)) + ' miles - ' +
+                        (toHHMMSS(total_duration)) +
+                        '<span style="font-size: 25px; margin-right: 12px; margin-left: 11px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
                     directionsDisplay.setDirections(result);
                     saveRecordRoute(record_list_route);
                     getRecords();

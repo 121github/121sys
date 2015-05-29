@@ -53,6 +53,11 @@ var maps = {
         };
 
         map = new google.maps.Map(document.getElementById('map-canvas'), maps.mapOptions);
+
+        maps.markerLocation = new google.maps.Marker({
+            map: map,
+            position: maps.myLatlng
+        });
 	
         $('.map-form').on("keyup keypress", function(e) {
             var code = e.keyCode || e.which;
@@ -148,7 +153,13 @@ $('.container-fluid').prepend(location_error);
 
         $(document).on('click', '.get-current-location-btn', function() {
             maps.removeDirections();
-            maps.codeCurrentAddress();
+            var current_postcode = getCookie("current_postcode");
+            if (current_postcode.length == 0) {
+                getLocation();
+                current_postcode = getCookie("current_postcode");
+            }
+            $('.map-form').find('input[name="postcode"]').val(current_postcode);
+            maps.codeAddress(12);
         });
 
         $(document).on('click', '.show-directionsPanel-btn', function() {
@@ -235,29 +246,6 @@ $('.container-fluid').prepend(location_error);
         }
     },
 
-    codeCurrentAddress: function() {
-        getLocation();
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                if (typeof maps.markerLocation != 'undefined') {
-                    maps.markerLocation.setMap(null);
-                }
-                var address = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                map.setCenter(address);
-                map.setZoom(12);
-                maps.markerLocation = new google.maps.Marker({
-                    map: map,
-                    position: address
-                });
-                $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
-                //Wait until the map is loaded
-                setTimeout(function() {
-                    map_table_reload();
-                }, 2000);
-            });
-        }
-    },
-
     getDirections: function(destination) {
         var start = maps.markerLocation.getPosition();
         var dest = destination;
@@ -280,7 +268,7 @@ $('.container-fluid').prepend(location_error);
                 $('.route-info').html(
                     result.routes[0].legs[0].distance.text + ': ' +
                     result.routes[0].legs[0].duration.text + ' ' +
-                    '<span style="font-size: 15px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
+                    '<span style="font-size: 25px; margin-right: 12px; margin-left: 11px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
                 maps.directionsDisplay.setDirections(result);
             }
         });
@@ -405,7 +393,7 @@ var navbtn = false;
                 '<span style="margin-right: 5px;">' + (value.record_planner_id ? (value.planner_user + ' on ' + value.planner_date) : '') + '</span>' +
                 '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.planner_date ? value.planner_date : '') + '"></a>';
         }
-if(helper.current_postcode){
+if($('.map-form').find('input[name="postcode"]').val().length > 0){
 		navbtn =   '<p>' +
             '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';	
 		}

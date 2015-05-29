@@ -46,7 +46,8 @@ class Planner_model extends CI_Model
                     rpr.end_lat,
                     rpr.end_lng,
                     rpr.distance,
-                    rpr.duration
+                    rpr.duration,
+                    rpr.travel_mode
                 from record_planner rp
                   left join users u on u.user_id = rp.user_id
                   left join records using(urn)
@@ -54,7 +55,7 @@ class Planner_model extends CI_Model
                   left join contacts con using(urn)
                   left join locations using(location_id)
                   left join record_planner_route rpr using(record_planner_id)
-                  inner join outcomes using(outcome_id)";
+                  left join outcomes using(outcome_id)";
 
         $where = $this->get_where($options, $table_columns);
         $qry .= $where;
@@ -152,14 +153,17 @@ class Planner_model extends CI_Model
                     'end_lat' => $record['end_lat'],
                     'end_lng' => $record['end_lng'],
                     'distance' => $record['distance'],
-                    'duration' => $record['duration']
+                    'duration' => $record['duration'],
+                    'travel_mode' => $record['travel_mode']
                 ));
             }
         }
 
         //Delete the routes for the record planners in the list
-        $this->db->where('record_planner_id IN ('.implode(",",$record_planner_ids).')');
-        $this->db->delete('record_planner_route');
+        if (!empty($record_planner_ids)) {
+            $this->db->where("record_planner_id IN (".implode(",",$record_planner_ids).")");
+            $this->db->delete('record_planner_route');
+        }
 
         //Save the routes for the record planners in the list
         if (!empty($data)) {

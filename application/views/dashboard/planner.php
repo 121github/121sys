@@ -1,7 +1,7 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
         <i class="fa fa-bar-chart-o fa-fw"></i>
-        Record planner
+        Journey planner
         <div class="pull-right">
             <form class="filter-form">
                 <div class="btn-group">
@@ -22,44 +22,50 @@
                 <div class="panel panel-default planner-options">
                     <div class="panel-body">
                         <form class="directions-form">
-                            <div>
-                                <input type="checkbox" name="optimized"  id="optimized"/> Optimized route
-                            </div>
-                            <div class="btn-group">
-                                <div class="input-group">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default get-origin-location-btn" type="button">
-                                            <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
-                                        </button>
-                                    </span>
-                                    <input type="text" class="form-control" name="origin"
-                                           placeholder="Origin..."
-                                           title="Enter the origin"/>
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12" style="margin-bottom: 10px;">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default get-origin-location-btn" type="button">
+                                                <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
+                                            </button>
+                                        </span>
+                                            <input type="text" class="form-control" name="origin"
+                                                   placeholder="Origin..."
+                                                   title="Enter the origin"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="btn-group">
-                                <div class="input-group">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default get-destination-location-btn" type="button">
-                                            <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
-                                        </button>
-                                    </span>
-                                    <input type="text" class="form-control" name="destination"
-                                           placeholder="Destination..."
-                                           title="Enter the destination"/>
+                                <div class="col-lg-6 col-sm-12" style="margin-bottom: 10px;">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default get-destination-location-btn" type="button">
+                                                <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
+                                            </button>
+                                        </span>
+                                            <input type="text" class="form-control" name="destination"
+                                                   placeholder="Destination..."
+                                                   title="Enter the destination"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="btn-group">
-                                <button class="btn btn-success btn-sm calc-route-btn">Go!</button>
+                                <div class="col-lg-6">
+                                    <div>
+                                        <input type="checkbox" id="optimized" name="optimized"
+                                               data-on="<i class='glyphicon glyphicon-ok'></i> Optimized route"
+                                               data-off="<i class='glyphicon glyphicon-remove'></i> Optimize route?" data-toggle="toggle">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6" style="text-align: right">
+                                    <button class="btn btn-success btn-sm calc-route-btn">Get Route!</button>
+                                </div>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="panel panel-default planner-data">
-                    <div class="panel-body">
+                    <div class="panel-body blocktext" style="min-height: 500px;">
                         <!-- Bootstrap 3 panel list. -->
                         <ul id="draggablePanelList" class="list-unstyled">
-                            <img src=' <?php echo base_url(); ?>assets/img/ajax-loader-bar.gif'>
+                                <img src=' <?php echo base_url(); ?>assets/img/ajax-loader-bar.gif'>
                         </ul>
                     </div>
                 </div>
@@ -101,16 +107,16 @@
                             <div class="form-group input-group-sm directions-menu" style="display: none">
                                 <div class="row" style="margin-top: 5px; text-align: right">
                                     <div class="col-lg-12 col-md-12" style="font-size: 11px;">
-                                    <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                          class="change-directions-btn DRIVING pointer" item-mode="DRIVING"><img
-                                            width="20px;" src="assets/img/icons/car.png"/></span>
-                                    <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                          class="change-directions-btn BICYCLING pointer" item-mode="BICYCLING"><img
-                                            width="20px;" src="assets/img/icons/cycle.png"/></span>
-                                    <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                          class="change-directions-btn WALKING pointer" item-mode="WALKING"><img
-                                            width="20px;" src="assets/img/icons/walking.png"/></span>
-                                        <span class="close-directions-btn glyphicon glyphicon-remove"></span>
+                                        <span style="opacity: 0.4; filter: alpha(opacity=40);"
+                                              class="change-directions-btn DRIVING pointer" item-mode="DRIVING"><img
+                                                width="25px;" src="assets/img/icons/car.png"/></span>
+                                        <span style="opacity: 0.4; filter: alpha(opacity=40);"
+                                              class="change-directions-btn BICYCLING pointer" item-mode="BICYCLING"><img
+                                                width="25px;" src="assets/img/icons/cycle.png"/></span>
+                                        <span style="opacity: 0.4; filter: alpha(opacity=40);"
+                                              class="change-directions-btn WALKING pointer" item-mode="WALKING"><img
+                                                width="25px;" src="assets/img/icons/walking.png"/></span>
+                                        <span class="close-directions-btn btn-lg glyphicon glyphicon-remove pointer"></span>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -122,8 +128,8 @@
                         </form>
                     </div>
                     <div class="panel panel-primary directionsPanel-container">
-                        <div class="panel-heading">Route<span
-                                class="glyphicon glyphicon-remove pull-right close-directionsPanel"></span></div>
+                        <div class="panel-heading" style="font-size: 20px">Route<span
+                                class="glyphicon glyphicon-remove pull-right btn-sm pointer close-directionsPanel"></span></div>
                         <div class="panel-body" style="font-size: 12px; overflow: scroll; height: 500px;">
                             <div class="directionsPanel-panel">
                                 <div class="directionsPanel-content">
@@ -154,7 +160,7 @@
 
     .route-info {
         font-weight: bold;
-        font-size: 10px;
+        font-size: 14px;
         text-align: right;
         color: green;
     }

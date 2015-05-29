@@ -43,6 +43,11 @@ switch ($domain) {
         $session_name = '121sys_eldon';
         break;
 
+	case 'demo.':
+		define('ENVIRONMENT', 'production');
+		$session_name = '121sys_demo';
+		break;
+
 	default:
 		define('ENVIRONMENT', 'development');
 		$session_name = '121sys_dev';
