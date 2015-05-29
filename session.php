@@ -17,8 +17,13 @@ switch ($domain) {
 		break;
 
 	case 'eldon.':
-		define('ENVIRONMENT', 'production');
+		define('ENVIRONMENT', 'eldon_production');
 		$session_name = '121sys_eldon';
+		break;
+
+	case 'demo.':
+		define('ENVIRONMENT', 'demo');
+		$session_name = '121sys_demo';
 		break;
 
 	default:
