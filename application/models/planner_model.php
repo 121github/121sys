@@ -55,7 +55,7 @@ class Planner_model extends CI_Model
                   left join contacts con using(urn)
                   left join locations using(location_id)
                   left join record_planner_route rpr using(record_planner_id)
-                  inner join outcomes using(outcome_id)";
+                  left join outcomes using(outcome_id)";
 
         $where = $this->get_where($options, $table_columns);
         $qry .= $where;
