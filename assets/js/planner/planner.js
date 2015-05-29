@@ -292,10 +292,6 @@ var planner = {
                 showDirections();
             });
 
-            $(document).on('click', '.close-directionsPanel', function () {
-                hideDirections();
-            });
-
 
             //Planner form
             $(document).on('click', '.planner-btn', function () {
@@ -353,19 +349,7 @@ var planner = {
                     // Omit this to make then entire <li>...</li> draggable.
                     handle: '.record-planner-heading',
                     update: function() {
-                        $('.panel', panelList).each(function(index, elem) {
-                            var $listItem = $(elem),
-                                newIndex = $listItem.index();
-                            $(elem).find('.record-planner-heading').toggleClass('panel-default panel-success');
-                            if (index < 8) {
-                                $(elem).removeClass("panel-default").addClass("panel-success");
-                            }
-                            else {
-                                $(elem).removeClass("panel-success").addClass("panel-default");
-                            }
-                        });
-                        $('.route-header').hide();
-                        removeDirections();
+                        updateRecordPlannerList();
                     }
                 });
             });
@@ -373,16 +357,13 @@ var planner = {
             $(document).on("click", '.goup-btn', function(e) {
                 e.preventDefault();
                 $(this).parents('.record-planner-item').insertBefore($(this).parents('.record-planner-item').prev());
-                $('.route-header').hide();
-                removeDirections();
+                updateRecordPlannerList();
             });
 
             $(document).on("click", '.godown-btn', function(e) {
                 e.preventDefault();
                 $(this).parents('.record-planner-item').insertAfter($(this).parents('.record-planner-item').next());
-                $('.route-header').hide();
-                removeDirections();
-
+                updateRecordPlannerList();
             });
 
 
@@ -397,18 +378,20 @@ var planner = {
                 showMap($('#map-view-toggle'));
                 getRecords();
             });
+        }
 
-
-
-            //var myTitle = document.createElement('span');
-            //myTitle.style.color = 'black';
-            //myTitle.className = 'btn btn-sm glyphicon glyphicon-chevron-left';
-            //myTitle.innerHTML = 'Hello';
-            //var myTextDiv = document.createElement('div');
-            //myTextDiv.appendChild(myTitle);
-            //
-            //map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(myTextDiv);
-
+        function updateRecordPlannerList() {
+            panelList = $('#draggablePanelList');
+            $('.panel', panelList).each(function(index, elem) {
+                if (index < 8) {
+                    $(elem).removeClass("panel-default").addClass("panel-success");
+                }
+                else {
+                    $(elem).removeClass("panel-success").addClass("panel-default");
+                }
+            });
+            $('.route-header').hide();
+            removeDirections();
         }
 
         function saveRecordRoute(record_list_route) {
@@ -595,28 +578,10 @@ var planner = {
         }
 
         function showDirections() {
-            var pagewidth = $(window).width() / 2;
-            var moveto = pagewidth - 250;
-            $('<div class="modal-backdrop directionsPanel in"></div>').appendTo(document.body).hide().fadeIn();
-            $('.directionsPanel-container').find('.directionsPanel-panel').show();
-            $('.directionsPanel-content').show();
-            $('.directionsPanel-container').fadeIn()
-            $('.directionsPanel-container').animate({
-                width: '600px',
-                left: '1%',
-                top: '10%'
-            }, 1000);
-        }
-
-        function hideDirections() {
-            $('.modal-backdrop.directionsPanel').fadeOut();
-            $('.directionsPanel-container').fadeOut(500, function () {
-                $('.directionsPanel-content').show();
-                $('.alert').addClass('hidden');
-            });
-            $('.directionsPanel-container').fadeOut(500, function () {
-                $('.directionsPanel-content').show();
-            });
+            var mheader = $('.directionsPanel-container').find('.panel-heading').html();
+            var mbody = $('.directionsPanel-container').find('.panel-body').html();
+            var mfooter = '';
+            modals.load_modal(mheader, mbody, mfooter);
         }
 
         //Get current bounds

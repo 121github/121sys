@@ -3,7 +3,7 @@
 /********************** MAP ****************************************/
 /*******************************************************************/
 var maps = {
-    initialize: function(map_type) {
+    initialize: function (map_type) {
         this.map_type = map_type;
         this.directionsDisplay = new google.maps.DirectionsRenderer();
         this.directionsService = new google.maps.DirectionsService();
@@ -58,8 +58,8 @@ var maps = {
             map: map,
             position: maps.myLatlng
         });
-	
-        $('.map-form').on("keyup keypress", function(e) {
+
+        $('.map-form').on("keyup keypress", function (e) {
             var code = e.keyCode || e.which;
             if (code == 13) {
                 e.preventDefault();
@@ -72,27 +72,27 @@ var maps = {
             size: 'mini',
         }).show().bootstrapToggle('off');
 
-        $('#map-view-toggle').change(function() {
+        $('#map-view-toggle').change(function () {
             if ($(this).prop('checked')) {
-				
-				if(getCookie('location_error')){ 
-	var location_error = '<div class="alert alert-danger" role="alert">'+
- '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> '+
-  '<span class="sr-only">Error: </span>'+
- getCookie('location_error')+' Please contact support for assistance</div>'
-$('.container-fluid').prepend(location_error);
-        }
-		if (getCookie('current_postcode')) {
-            $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
-        }
-				
-           $(document).on('mouseenter', '.data-table tbody tr', function() {
+
+                if (getCookie('location_error')) {
+                    var location_error = '<div class="alert alert-danger" role="alert">' +
+                        '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ' +
+                        '<span class="sr-only">Error: </span>' +
+                        getCookie('location_error') + ' Please contact support for assistance</div>'
+                    $('.container-fluid').prepend(location_error);
+                }
+                if (getCookie('current_postcode')) {
+                    $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
+                }
+
+                $(document).on('mouseenter', '.data-table tbody tr', function () {
                     maps.animateMarker($(this).attr('data-id'));
                     $(this).css('color', 'green');
-			});
+                });
 
                 //Start animation in the map for the marker deselected in the table
-                $(document).on('mouseleave', '.data-table tbody tr', function() {
+                $(document).on('mouseleave', '.data-table tbody tr', function () {
                     maps.removeMarkerAnimation($(this).attr('data-id'));
                     $(this).css('color', 'black');
                 });
@@ -122,36 +122,36 @@ $('.container-fluid').prepend(location_error);
                 }
 
             }
-             map_table_reload();
+            map_table_reload();
         });
 
-        $(document).on('click', '.get-location-btn', function() {
+        $(document).on('click', '.get-location-btn', function () {
             maps.removeDirections();
             maps.codeAddress(12);
             //Wait until the map is loaded
-            setTimeout(function() {
+            setTimeout(function () {
                 map_table_reload();
             }, 2000);
         });
 
         $('[data-toggle="tooltip"]').tooltip();
-        $(document).on('click', '.appointment-btn', function() {
+        $(document).on('click', '.appointment-btn', function () {
             $('.map-form').find('input[name="destination"]').val($(this).attr('item-postcode'));
             var destination = $('.map-form').find('input[name="destination"]').val();
             maps.getDirections(destination);
         });
 
-        $(document).on('click', '.change-directions-btn', function() {
+        $(document).on('click', '.change-directions-btn', function () {
             $('.map-form').find('input[name="travel-mode"]').val($(this).attr('item-mode'));
             var destination = $('.map-form').find('input[name="destination"]').val();
             maps.getDirections(destination);
         });
 
-        $(document).on('click', '.close-directions-btn', function() {
+        $(document).on('click', '.close-directions-btn', function () {
             maps.removeDirections();
         });
 
-        $(document).on('click', '.get-current-location-btn', function() {
+        $(document).on('click', '.get-current-location-btn', function () {
             maps.removeDirections();
             var current_postcode = getCookie("current_postcode");
             if (current_postcode.length == 0) {
@@ -162,12 +162,8 @@ $('.container-fluid').prepend(location_error);
             maps.codeAddress(12);
         });
 
-        $(document).on('click', '.show-directionsPanel-btn', function() {
+        $(document).on('click', '.show-directionsPanel-btn', function () {
             maps.showDirections();
-        });
-
-        $(document).on('click', '.close-directionsPanel', function() {
-            maps.hideDirections();
         });
 
         //Planner form
@@ -175,14 +171,14 @@ $('.container-fluid').prepend(location_error);
             var urn = $(this).attr('item-urn');
             var planner_date = $(this).attr('item-planner-date');
             var today_date = new Date();
-            today_date = today_date.getUTCDate()+"/"+(today_date.getUTCMonth()+1)+"/"+today_date.getFullYear();
-            $('#bodyContent_'+urn).hide();
-            $('#formContent_'+urn).show();
+            today_date = today_date.getUTCDate() + "/" + (today_date.getUTCMonth() + 1) + "/" + today_date.getFullYear();
+            $('#bodyContent_' + urn).hide();
+            $('#formContent_' + urn).show();
 
             $('.date').datetimepicker({
                 format: 'DD/MM/YYYY',
                 pickTime: false,
-                defaultDate: (planner_date.length > 0?planner_date:today_date)
+                defaultDate: (planner_date.length > 0 ? planner_date : today_date)
             });
         });
 
@@ -190,8 +186,8 @@ $('.container-fluid').prepend(location_error);
         $(document).on('click', '.cancel-planner-btn', function () {
             var urn = $(this).attr('item-urn');
 
-            $('#bodyContent_'+urn).show();
-            $('#formContent_'+urn).hide();
+            $('#bodyContent_' + urn).show();
+            $('#formContent_' + urn).hide();
         });
 
         //Save planner
@@ -202,28 +198,28 @@ $('.container-fluid').prepend(location_error);
 
         $('.map-form').find('input[name="travel-mode"]').val("DRIVING");
 
-        var bounds_changer = debounce(function() {
+        var bounds_changer = debounce(function () {
             map_table_reload();
         }, 500);
 
-        google.maps.event.addListener(map, 'zoom_changed', function() {
+        google.maps.event.addListener(map, 'zoom_changed', function () {
             google.maps.event.addListenerOnce(map, 'bounds_changed', bounds_changer);
         });
-        google.maps.event.addListener(map, 'dragend', function() {
+        google.maps.event.addListener(map, 'dragend', function () {
             map_table_reload();
         });
 
-        google.maps.event.addListener(map, "click", function() {
+        google.maps.event.addListener(map, "click", function () {
             maps.infowindow.close();
         });
 
     },
-    codeAddress: function(zoom) {
+    codeAddress: function (zoom) {
         var address = $('.map-form').find('input[name="postcode"]').val();
         if (address == "") {
             map.setCenter(maps.myLatlng);
             map.setZoom(maps.default_zoom);
-			helper.current_postcode = false;
+            helper.current_postcode = false;
             var has_postcode = false
         } else {
             if (typeof maps.markerLocation != 'undefined') {
@@ -231,7 +227,7 @@ $('.container-fluid').prepend(location_error);
             }
             maps.geocoder.geocode({
                 'address': address
-            }, function(results, status) {
+            }, function (results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     map.setCenter(results[0].geometry.location);
                     map.setZoom(zoom);
@@ -246,7 +242,7 @@ $('.container-fluid').prepend(location_error);
         }
     },
 
-    getDirections: function(destination) {
+    getDirections: function (destination) {
         var start = maps.markerLocation.getPosition();
         var dest = destination;
         var travelMode = $('.map-form').find('input[name="travel-mode"]').val();
@@ -263,7 +259,7 @@ $('.container-fluid').prepend(location_error);
             },
             unitSystem: google.maps.UnitSystem.IMPERIAL
         };
-        maps.directionsService.route(request, function(result, status) {
+        maps.directionsService.route(request, function (result, status) {
             if (status == google.maps.DirectionsStatus.OK) {
                 $('.route-info').html(
                     result.routes[0].legs[0].distance.text + ': ' +
@@ -277,38 +273,20 @@ $('.container-fluid').prepend(location_error);
         maps.directionsDisplay.setPanel(document.getElementById("directionsPanel"));
     },
 
-    removeDirections: function() {
+    removeDirections: function () {
         maps.directionsDisplay.setMap(null);
         $('.directions-menu').hide();
     },
 
-    showDirections: function() {
-        var pagewidth = $(window).width() / 2;
-        var moveto = pagewidth - 250;
-        $('<div class="modal-backdrop directionsPanel in"></div>').appendTo(document.body).hide().fadeIn();
-        $('.directionsPanel-container').find('.directionsPanel-panel').show();
-        $('.directionsPanel-content').show();
-        $('.directionsPanel-container').fadeIn()
-        $('.directionsPanel-container').animate({
-            width: '600px',
-            left: '1%',
-            top: '10%'
-        }, 1000);
-    },
-
-    hideDirections: function() {
-        $('.modal-backdrop.directionsPanel').fadeOut();
-        $('.directionsPanel-container').fadeOut(500, function() {
-            $('.directionsPanel-content').show();
-            $('.alert').addClass('hidden');
-        });
-        $('.directionsPanel-container').fadeOut(500, function() {
-            $('.directionsPanel-content').show();
-        });
+    showDirections: function () {
+        var mheader = $('.directionsPanel-container').find('.panel-heading').html();
+        var mbody = $('.directionsPanel-container').find('.panel-body').html();
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
     },
 
     //Get current bounds
-    getBounds: function() {
+    getBounds: function () {
         var bounds_obj = map.getBounds();
 
         neLat = (bounds_obj) ? bounds_obj.getNorthEast().lat() : null;
@@ -327,10 +305,10 @@ $('.container-fluid').prepend(location_error);
     },
 
     //Show the items in the map
-    showItems: function() {
+    showItems: function () {
         if ($('#map-view-toggle').prop('checked')) {
             maps.deleteMarkers();
-            $.each(maps.items, function(index, value) {
+            $.each(maps.items, function (index, value) {
                 if (maps.map_type == "appointments") {
                     maps.addAppointmentMarker(value);
                 }
@@ -342,8 +320,8 @@ $('.container-fluid').prepend(location_error);
     },
 
     //Animate a marker icon
-    animateMarker: function(id) {
-        $.each(maps.markers, function(index, marker) {
+    animateMarker: function (id) {
+        $.each(maps.markers, function (index, marker) {
             if (marker.id == id) {
                 if (marker.getAnimation() != null) {
                     marker.setAnimation(null);
@@ -355,8 +333,8 @@ $('.container-fluid').prepend(location_error);
     },
 
     //Remove marker animation icon
-    removeMarkerAnimation: function(id) {
-        $.each(maps.markers, function(index, marker) {
+    removeMarkerAnimation: function (id) {
+        $.each(maps.markers, function (index, marker) {
             if (marker.id == id) {
                 if (marker.getAnimation() != null) {
                     marker.setAnimation(null);
@@ -377,7 +355,7 @@ $('.container-fluid').prepend(location_error);
     //        }
     //    });
     //},
-    addRecordMarker: function(value) {
+    addRecordMarker: function (value) {
         var marker_color = "|" + maps.intToARGB(maps.hashCode(value.attendee));
         var marker_text_color = "|FFFFFF";
         var character = "|" + (value.attendee).substr(0, 1);
@@ -385,7 +363,7 @@ $('.container-fluid').prepend(location_error);
         var star_color = (((planner_permission == true)) && (value.record_planner_id) ? "|FCEF04" : "");
         var map_pin_style = "d_map_xpin_letter";
 
-var navbtn = false;
+        var navbtn = false;
         var planner_info = false;
         if (planner_permission == true) {
             planner_info =
@@ -393,25 +371,25 @@ var navbtn = false;
                 '<span style="margin-right: 5px;">' + (value.record_planner_id ? (value.planner_user + ' on ' + value.planner_date) : '') + '</span>' +
                 '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.planner_date ? value.planner_date : '') + '"></a>';
         }
-if($('.map-form').find('input[name="postcode"]').val().length > 0){
-		navbtn =   '<p>' +
-            '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';	
-		}
+        if ($('.map-form').find('input[name="postcode"]').val().length > 0) {
+            navbtn = '<p>' +
+                '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';
+        }
         var contentString =
             '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
             '<h4 id="firstHeading" class="firstHeading">' + value.name + '</h4>' +
             '<div id="bodyContent_' + value.urn + '">' +
-			 (value.name?'<p><b>Company: </b>' +value.name + '</p>': '')+
-			  (value.fullname?'<p><b>Contact: </b>' +value.fullname + '</p>': '')+
-			   (value.outcome?'<p><b>Outcome: </b>' +value.outcome + '</p>': '')+
-			    (value.nextcall?'<p><b>Next Call: </b>' +value.nextcall + '</p>': '')+
-				 (value.date_updated?'<p><b>Last Updated: </b>' +value.date_updated + '</p>': '')+
-				  (value.postcode?'<p><b>Postcode: </b>' +value.postcode + '</p>': '')+
-			  (value.website?'<p><b>Website: </b>' +value.website + '</p>': '')+
-            (planner_info?'<p>' + planner_info + '</p>':'') + '<p>'+
-			  (navbtn?navbtn: '')+
+            (value.name ? '<p><b>Company: </b>' + value.name + '</p>' : '') +
+            (value.fullname ? '<p><b>Contact: </b>' + value.fullname + '</p>' : '') +
+            (value.outcome ? '<p><b>Outcome: </b>' + value.outcome + '</p>' : '') +
+            (value.nextcall ? '<p><b>Next Call: </b>' + value.nextcall + '</p>' : '') +
+            (value.date_updated ? '<p><b>Last Updated: </b>' + value.date_updated + '</p>' : '') +
+            (value.postcode ? '<p><b>Postcode: </b>' + value.postcode + '</p>' : '') +
+            (value.website ? '<p><b>Website: </b>' + value.website + '</p>' : '') +
+            (planner_info ? '<p>' + planner_info + '</p>' : '') + '<p>' +
+            (navbtn ? navbtn : '') +
             '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
             '</p>' +
             '</div>' +
@@ -433,35 +411,35 @@ if($('.map-form').find('input[name="postcode"]').val().length > 0){
             map: map,
             title: value.name,
             postcode: value.postcode,
-			id:value.marker_id,
+            id: value.marker_id,
             content: contentString,
             icon: "http://chart.apis.google.com/chart?chst=" + map_pin_style + "&chld=" + pin_style + character + marker_color + marker_text_color + star_color
         });
-		 maps.setMarker(marker);
+        maps.setMarker(marker);
     },
     // Add a marker to the map and push to the array.
-    addAppointmentMarker: function(value) {
+    addAppointmentMarker: function (value) {
         var marker_color = maps.intToARGB(maps.hashCode(value.name));
         var marker_text_color = "FFFFFF";
         var character = (value.name).substr(0, 1);
-		var navbtn = false;
-		if(helper.current_postcode){
-		navbtn =   '<p>' +
-            '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';	
-		}
+        var navbtn = false;
+        if($('.map-form').find('input[name="postcode"]').val().length > 0){
+            navbtn = '<p>' +
+                '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';
+        }
         var contentString =
             '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
             '<h4 id="firstHeading" class="firstHeading">' + value.name + '</h4>' +
             '<div id="bodyContent">' +
-            (value.name?'<p><b>Company: </b>' +value.name + '</p>': '')+
-			(value.start?'<p><b>Date: </b>' +value.start + '</p>': '')+
-			(value.title?'<p><b>Title: </b>' +value.title + '</p>': '')+
-			(value.attendee?'<p><b>Attendees: </b>' +value.attendee + '</p>': '')+
-			(value.date_added?'<p><b>Created on: </b>' +value.date_added + '</p>': '')+
-			(value.postcode?'<p><b>Postcode: </b>' +value.postcode + '</p>': '') + '<p>'+
-			(navbtn?navbtn:'')+
+            (value.name ? '<p><b>Company: </b>' + value.name + '</p>' : '') +
+            (value.start ? '<p><b>Date: </b>' + value.start + '</p>' : '') +
+            (value.title ? '<p><b>Title: </b>' + value.title + '</p>' : '') +
+            (value.attendee ? '<p><b>Attendees: </b>' + value.attendee + '</p>' : '') +
+            (value.date_added ? '<p><b>Created on: </b>' + value.date_added + '</p>' : '') +
+            (value.postcode ? '<p><b>Postcode: </b>' + value.postcode + '</p>' : '') + '<p>' +
+            (navbtn ? navbtn : '') +
             '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
             '</p>' +
             '</div>' +
@@ -473,13 +451,13 @@ if($('.map-form').find('input[name="postcode"]').val().length > 0){
             title: value.name,
             postcode: value.postcode,
             content: contentString,
-			id:value.marker_id,
+            id: value.marker_id,
             icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
         });
         maps.setMarker(marker);
     },
-    setMarker: function(marker) {
-        google.maps.event.addListener(marker, 'click', function() {
+    setMarker: function (marker) {
+        google.maps.event.addListener(marker, 'click', function () {
             maps.infowindow.close();
             maps.infowindow.setContent(marker.content);
             maps.infowindow.open(map, marker);
@@ -487,12 +465,12 @@ if($('.map-form').find('input[name="postcode"]').val().length > 0){
 
         //Show in the table the appointment selected in the map
 
-        google.maps.event.addListener(marker, 'mouseover', function() {
+        google.maps.event.addListener(marker, 'mouseover', function () {
             $('.data-table tbody').find("[postcode='" + marker.postcode + "']").css('color', 'green');
         });
 
         //Hide in the table the appointment deselected in the map
-        google.maps.event.addListener(marker, 'mouseout', function() {
+        google.maps.event.addListener(marker, 'mouseout', function () {
             $('.data-table tbody').find("[postcode='" + marker.postcode + "']").css('color', 'black');
         });
 
@@ -500,7 +478,7 @@ if($('.map-form').find('input[name="postcode"]').val().length > 0){
     },
 
     // Hash any string into an integer value
-    hashCode: function(str) {
+    hashCode: function (str) {
         var hash = 0;
         for (var i = 0; i < str.length; i++) {
             hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -510,7 +488,7 @@ if($('.map-form').find('input[name="postcode"]').val().length > 0){
 
     // Convert an int to hexadecimal with a max length
     // of six characters.
-    intToARGB: function(i) {
+    intToARGB: function (i) {
         var h = ((i >> 24) & 0xFF).toString(16) +
             ((i >> 16) & 0xFF).toString(16) +
             ((i >> 8) & 0xFF).toString(16) +
@@ -520,31 +498,31 @@ if($('.map-form').find('input[name="postcode"]').val().length > 0){
 
 
     // Sets the map on all markers in the array.
-    setAllMap: function(map) {
+    setAllMap: function (map) {
         for (var i = 0; i < maps.markers.length; i++) {
             maps.markers[i].setMap(map);
         }
     },
 
     // Removes the markers from the map, but keeps them in the array.
-    clearMarkers: function() {
+    clearMarkers: function () {
         maps.setAllMap(null);
     },
 
     // Shows any markers currently in the array.
-    showMarkers: function() {
+    showMarkers: function () {
         maps.setAllMap(map);
     },
 
     // Deletes all markers in the array by removing references to them.
-    deleteMarkers: function() {
+    deleteMarkers: function () {
         maps.clearMarkers();
         maps.markers = [];
 
     },
 
     //Save record planner
-    savePlanner: function(btn) {
+    savePlanner: function (btn) {
         var urn = btn.attr('item-urn');
         var postcode = btn.attr('item-postcode');
         var location_id = btn.attr('item-location-id');
@@ -566,7 +544,8 @@ if($('.map-form').find('input[name="postcode"]').val().length > 0){
             if (response.success) {
                 flashalert.success(response.msg);
                 maps.temp_bounds = maps.bounds
-                var currentPage = view_records.table.page();;
+                var currentPage = view_records.table.page();
+                ;
                 view_records.table.page(currentPage).draw(false);
             } else {
                 flashalert.danger(response.msg);
