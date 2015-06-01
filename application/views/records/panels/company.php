@@ -2,17 +2,8 @@
     <div class="panel-heading">
         <h4 class="panel-title"> Company Details
             <?php if (in_array("add companies", $_SESSION['permissions'])){ ?><!--Not using this feature yet. Need to clear the company id value in form if we start using it--><span
-                class="glyphicon glyphicon-plus pointer pull-right add-company-btn" style="display:none"></span><?php } ?>
+                class="glyphicon glyphicon-plus pointer pull-right" data-modal="add_company" data-urn="<?php echo $details['record']["urn"] ?>" style="display:none"></span><?php } ?>
         </h4>
-    </div>
-    <div class="form-container">
-        <?php $this->view('forms/edit_company_form.php', array("urn" => $details['record']["urn"])) ?>
-    </div>
-    <div class="search-container">
-        <?php $this->view('forms/search_company_form.php', array("urn" => $details['record']["urn"])) ?>
-    </div>
-    <div class="get-company-container">
-        <?php $this->view('forms/get_company_form.php', array("urn" => $details['record']["urn"])) ?>
     </div>
     <!-- List group -->
     <?php if (isset($details['company'])) { ?>
@@ -23,8 +14,8 @@
                     <a data-toggle="collapse" data-parent="#accordion" href="#com-collapse-<?php echo $id ?>"> <?php echo $company["Company Name"]; ?></a>
                     <!-- <span class="glyphicon glyphicon-trash pull-right del-company-btn" data-target="#modal" item-id="--><?php //echo $id ?><!--"></span>-->
                     <?php if (in_array("edit companies", $_SESSION['permissions'])) { ?>
-                        <span class="glyphicon glyphicon-search pointer pull-right search-company-btn" item-id="<?php echo $id ?>"></span>
-                        <span class="glyphicon glyphicon-pencil pointer pull-right edit-company-btn" item-id="<?php echo $id ?>"></span>
+                        <span class="glyphicon glyphicon-search pointer pull-right marl search-company-btn" data-urn = "<?php echo $details['record']["urn"] ?>" data-id="<?php echo $id ?>"></span>
+                        <span class="glyphicon glyphicon-pencil pointer pull-right" data-modal="edit-company" data-id="<?php echo $id ?>"></span>
                     <?php } ?>
                     <div id="com-collapse-<?php echo $id ?>" class="panel-collapse collapse <?php if ($x == 1) {
                         echo "in";

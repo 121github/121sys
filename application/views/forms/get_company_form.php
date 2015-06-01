@@ -1,8 +1,9 @@
+ <div class="get-company-container">
 <div class="tab-content">
     <div class="tab-pane active" id="coget">
         <a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img style="margin-bottom: 5px;" height="40px;" src="<?php echo base_url(); ?>assets/img/companieshouse.png"></a>
         <form class="form-horizontal update-company-form">
-            <input name="urn" type="hidden" value="<?php echo $urn ?>">
+            <input name="urn" type="hidden" value="">
             <input name="company_id" type="hidden" value="">
 
             <div class="form-group input-group-sm">
@@ -70,4 +71,5 @@
             </div>
         </form>
     </div>
+</div>
 </div>

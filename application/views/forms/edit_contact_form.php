@@ -9,7 +9,7 @@
 <div class="tab-content">
     <div class="tab-pane active" id="general">
         <form class="form-horizontal">
-            <input name="urn" type="hidden" value="<?php echo $urn ?>">
+            <input name="urn" type="hidden" value="">
             <input name="contact_id" type="hidden" value="">
             <?php if ($_SESSION['config']['use_fullname']): ?>
                 <div class="form-group input-group-sm">
@@ -82,11 +82,7 @@
                               style="height:5em"></textarea>
                 </div>
             </div>
-            <div class="form-actions pull-right">
-                <span class="alert-success hidden">Contact details saved</span>
-                <button type="submit" class="btn btn-primary save-contact-general">Save changes</button>
-                <button class="btn btn-default close-contact-btn">Close</button>
-            </div>
+
         </form>
     </div>
     <div class="tab-pane" id="phone">
@@ -131,10 +127,6 @@
                 </div>
                 <div class="col-md-1 edit-tps"></div>
             </div>
-            <div class="form-actions pull-right">
-                <button type="submit" class="btn btn-primary save-contact-phone" action="add_phone">Add number</button>
-                <button class="btn btn-default close-contact-btn">Close</button>
-            </div>
         </form>
     </div>
     <div class="tab-pane" id="address">
@@ -155,7 +147,7 @@
                 </tbody>
             </table>
         </div>
-        <form class="form-horizontal">
+        <form class="form-horizontal contact-address-form">
             <input class="item-id" name="address_id" type="hidden" value="">
             <input name="contact_id" type="hidden" value="">
 
@@ -185,11 +177,6 @@
                     <option value="1">Yes</option>
                     <option value="0">No</option>
                 </select>
-            </div>
-            <div class="form-actions pull-right">
-                <button type="submit" class="btn btn-primary save-contact-address" action="add_address">Add Address
-                </button>
-                <button class="btn btn-default close-contact-btn">Close</button>
             </div>
         </form>
     </div>

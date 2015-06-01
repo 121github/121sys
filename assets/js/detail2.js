@@ -626,7 +626,7 @@ var record = {
             /* initialize the edit contact buttons */
             $(document).on('click', '.edit-contact-btn', function (e) {
                 e.preventDefault();
-                record.contact_panel.edit_form($(this).attr('item-id'));
+                contact_modal.contact_modal(record.urn,$(this).attr('item-id'));
             });
             /* initialize the delete contact buttons */
             $(document).on('click', '.del-contact-btn', function (e) {
@@ -641,35 +641,16 @@ var record = {
             /*initialize the save contact button*/
             $(document).on('click', '.save-contact-general', function (e) {
                 e.preventDefault();
-                record.contact_panel.save_contact($(this));
+                //record.contact_panel.save_contact($(this));
             });
             /*initialize the add item button for phone or address*/
-            $(document).on('click', '.contact-add-item', function (e) {
-                e.preventDefault();
-                record.contact_panel.new_item_form($(this));
-            });
+            
             /*initialize the edit item buttons for phone or address*/
-            $(document).on('click', '.contact-item-btn', function (e) {
-                e.preventDefault();
-                record.contact_panel.edit_item_form($(this));
-            });
-            /*initialize the delete item buttons for phone or address*/
-            $(document).on('click', '.contact-panel .del-item-btn', function (e) {
-                e.preventDefault();
-                record.contact_panel.delete_item($(this));
-            });
+        
+           
             /*save the new phone or address*/
-            $(document).on('click', '.save-contact-phone,.save-contact-address', function (e) {
-                e.preventDefault();
-                record.contact_panel.save_item($(this));
-            });
-            /*initialize the cancel button on the add/edit contact phone/address form*/
-            $(document).on('click', '.hide-item-form', function (e) {
-                e.preventDefault();
-                $tab = $(this).closest('.tab-pane');
-                $tab.find('form').hide();
-                $tab.find('.table-container').show();
-            });
+
+
             /*check tps */
             $(document).on('click', '.tps-btn', function (e) {
                 e.preventDefault();
@@ -832,8 +813,8 @@ var record = {
                     });
                     $panel.find('.contacts-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.name.fullname).addClass(collapse))
-                            .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-contact-btn').attr('item-id', key).attr('data-target', '#model'))
-                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right edit-contact-btn').attr('item-id', key))
+                            .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right').attr('data-id', key).attr('data-modal', 'delete_contact'))
+                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right').attr('data-id', key).attr('data-modal','edit-contact'))
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal contact-detail-list').append($contact_detail_list_items).append($contact_detail_telephone_items))
                         )
@@ -888,7 +869,7 @@ var record = {
             }, 1000);
         },
         add_form: function () {
-            var $panel = $(record.contact_panel.config.panel);
+            var $panel = $('#modal');
             $('.tab[href="#general"]').tab('show');
 
             $panel.find('.panel-title span').removeClass('glyphicon-plus add-contact-btn').addClass('glyphicon-remove close-contact-btn');
@@ -905,8 +886,22 @@ var record = {
                 $panel.find('.form-container').fadeIn(1000).find('.save-contact-general').attr('action', 'add_contact');
             });
         },
-        edit_form: function (id) {
-            var $panel = $(record.contact_panel.config.panel);
+		contact_modal:function(urn,id){
+			$.ajax({url:helper.baseUrl+'modals/edit_contact_form',
+	type:"POST",
+	dataType:"HTML",
+	data:{urn:urn,id:id}
+	}).done(function(response){
+		var mheader = "Edit contact";
+		var mfooter = '<span class="alert-success hidden">Contact details saved</span><button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
+		modals.load_modal(mheader,response,mfooter);
+		record.contact_panel.edit_form(id);
+		$('.modal-body').css('padding:0px');
+	});
+			
+		},
+        edit_form: function (id) {			
+            var $panel = $('#modal');
             $('.tab[href="#general"]').tab('show');
             $panel.find('.tab-alert').hide();
             $panel.find('tbody').empty();
@@ -916,7 +911,7 @@ var record = {
             });
             record.contact_panel.load_tabs(id);
             $panel.find('.panel-title span').removeClass('glyphicon-plus add-contact-btn').addClass('glyphicon-remove close-contact-btn');
-            record.contact_panel.animate_panel();
+            //record.contact_panel.animate_panel();
             $panel.find('.list-group').fadeOut(1000, function () {
                 $panel.find('.form-container').fadeIn(1000).find('.save-contact-general').attr('action', 'save_contact');
             });
@@ -952,7 +947,7 @@ var record = {
             $panel.find('.panel-title span').removeClass('glyphicon-remove close-contact-btn').addClass('glyphicon-plus add-contact-btn');
         },
         load_tabs: function (contact, item_form) {
-            var $panel = $(record.contact_panel.config.panel);
+            var $panel = $('#modal');
             if (item_form) {
                 $panel.find('#' + item_form + ' form').hide();
                 $panel.find('#' + item_form + ' .table-container').show();
@@ -1022,19 +1017,12 @@ var record = {
             this.config = {
                 panel: '.company-panel'
             };
-            /*initialize the add company button*/
-            $(document).on('click', '.add-company-btn', function (e) {
-                e.preventDefault();
-                //record.company_panel.add_form();
-            });
-            /* initialize the edit company buttons */
-            $(document).on('click', '.edit-company-btn', function (e) {
-                e.preventDefault();
-                record.company_panel.edit_form($(this).attr('item-id'));
-            });
+  
             $(document).on('click', '.search-company-btn', function (e) {
                 e.preventDefault();
-                record.company_panel.search_form($(this).attr('item-id'));
+				var id = $(this).attr('data-id');
+				var urn = $(this).attr('data-urn');
+                record.company_panel.search_form(id,urn);
             });
             $(document).on('click', '.search-company-action', function (e) {
                 e.preventDefault();
@@ -1056,48 +1044,7 @@ var record = {
                 e.preventDefault();
                 record.company_panel.update_company();
             });
-			/*initialize the delete item buttons for phone or address*/
-            $(document).on('click', '.company-panel .del-item-btn', function (e) {
-                e.preventDefault();
-                record.company_panel.delete_item($(this));
-            });
-            /* initialize the delete company buttons */
-            $(document).on('click', '.del-company-btn', function (e) {
-                e.preventDefault();
-                modal.delete_company($(this).attr('item-id'));
-            });
-            /* initialize the close company buttons */
-            $(document).on('click', '.close-company-btn', function (e) {
-                e.preventDefault();
-                record.company_panel.close_panel();
-            });
-            /*initialize the save company button*/
-            $(document).on('click', '.save-company-general', function (e) {
-                e.preventDefault();
-                record.company_panel.save_company($(this));
-            });
-            /*initialize the add item button for phone or address*/
-            $(document).on('click', '.company-add-item', function (e) {
-                e.preventDefault();
-                record.company_panel.new_item_form($(this));
-            });
-            /*initialize the edit item buttons for phone or address*/
-            $(document).on('click', '.company-item-btn', function (e) {
-                e.preventDefault();
-                record.company_panel.edit_item_form($(this));
-            });
-            /*save the new phone or address*/
-            $(document).on('click', '.save-company-phone,.save-company-address', function (e) {
-                e.preventDefault();
-                record.company_panel.save_item($(this));
-            });
-            /*initialize the cancel button on the add/edit company phone/address form*/
-            $(document).on('click', '.hide-item-form', function (e) {
-                e.preventDefault();
-                $tab = $(this).closest('.tab-pane');
-                $tab.find('form').hide();
-                $tab.find('.table-container').show();
-            });
+
             /*check ctps */
             $(document).on('click', '.ctps-btn', function (e) {
                 e.preventDefault();
@@ -1445,28 +1392,32 @@ var record = {
 
             });
         },
-        search_form: function (id) {
-            var $panel = $(record.company_panel.config.panel);
-            $panel.find('#cosearchresult .table-container table').hide();
+        search_form: function (id,urn) {
+			$.ajax({ url:helper.baseUrl+'modals/load_company_search',
+			dataType:"HTML"
+			}).done(function(response){
+				var mheader = "Companies House API";
+				var $panel = $(response);
+				var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+			
             $('.result-pagination').empty();
             $('.searchresult-tab').find('.num-results').html("");
             $('.nav-tabs a[href="#cosearch"]').tab('show');
             $('.tab[href="#search"]').tab('show');
             $panel.find('.tab-alert').hide();
             $panel.find('tbody').empty();
+			$panel.find('#cosearchresult .table-container table').hide();
             $panel.find('.searchresult-tab').show();
-            $panel.find('.search-company-form').find('input[name="company_id"]').each(function () {
-                $(this).val(id);
-            });
+            $panel.find('input[name="company_id"]').val(id);
+			$panel.find('input[name="urn"]').val(urn);
             record.company_panel.load_search_tabs(id);
-            $panel.find('.panel-title span').removeClass('glyphicon-plus add-company-btn').addClass('glyphicon-remove close-company-btn').show();
-            record.company_panel.animate_panel();
-            $panel.find('.list-group').fadeOut(1000, function () {
-                $panel.find('.search-container').fadeIn(1000);
-            });
+			modals.load_modal(mheader,$panel,mfooter);
+			$('.modal-body').css('padding', '0px');
+			});
+   
         },
         search_company: function (start_index) {
-            var $panel = $(record.company_panel.config.panel);
+            var $panel = $('#modal');
             var $form = $panel.find('.search-company-form');
             var name = $form.find('input[name="name"]').val();
             var conumber = $form.find('input[name="conumber"]').val();
@@ -1528,7 +1479,7 @@ var record = {
             });
         },
         load_search_tabs: function (company) {
-            var $panel = $(record.company_panel.config.panel);
+            var $panel = $('#modal');
             $.ajax({
                 url: helper.baseUrl + "ajax/get_company",
                 type: "POST",
@@ -2921,3 +2872,75 @@ var workbooks = {
         });
     }
 }
+
+
+
+
+    function changeContactNumberFunction() {
+        var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
+        var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
+        var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
+        var tps = "";
+        if (telephone_number.length > 0) {
+            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+            $('select[name="tps"]').selectpicker('val', "");
+        }
+        $('.edit-tps').html(tps);
+    }
+
+    function changeTpsFunction() {
+        var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
+        var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
+        var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
+        var tps_option = $('.contact-phone-form').find('select[name="tps"]').val();
+        var tps = "";
+        if (telephone_number.length > 0) {
+            if (tps_option.length == 0) {
+                tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+            }
+            else if (tps_option == 1) {
+                tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
+            }
+            else {
+                tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
+            }
+            $tab.find('.edit-tps').html(tps);
+        }
+    }
+
+    $(document).on('click', '.edit-tps-btn', function (e) {
+        e.preventDefault();
+        check_edit_tps();
+    });
+
+    function check_edit_tps() {
+        var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
+        var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
+        var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
+        var tps = '';
+
+        $.ajax({
+            url: helper.baseUrl + 'cron/check_tps',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                telephone_number: telephone_number,
+                type: "tps",
+                contact_id: contact_id
+            }
+        }).done(function (response) {
+            flashalert.warning(response.msg);
+            if (response.tps == 1) {
+                tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 1);
+                $tab.find('.edit-tps').html(tps);
+            }
+            else if (response.tps == 0) {
+                tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
+                $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 0);
+                $tab.find('.edit-tps').html(tps);
+            }
+        });
+    }
+
+

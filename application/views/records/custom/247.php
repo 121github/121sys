@@ -118,7 +118,7 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
 		record.update_panel.init();
 		//initializing the panels for this campaign
 		<?php if(in_array(2,$features)){ ?>
-        record.company_panel.init();
+        modals.company_panel.init();
 		<?php } ?>
 		<?php if(in_array(4,$features)){ ?>
         record.sticky_note.init();

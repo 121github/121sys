@@ -1,15 +1,15 @@
 <ul class="nav nav-tabs" style=" background:#eee; width:100%;">
-    <li class="active"><a href="#cogeneral" class="tab" data-toggle="tab">General</a></li>
+    <li class="active"><a href="#general" class="tab" data-toggle="tab">General</a></li>
     <li class="tab-alert">You must create the company before adding phone numbers</li>
-    <li class="phone-tab"><a href="#cophone" class="tab" data-toggle="tab">Phone Numbers</a></li>
-    <li class="address-tab"><a href="#coaddress" class="tab" data-toggle="tab">Addresses</a></li>
+    <li class="phone-tab"><a href="#phone" class="tab" data-toggle="tab">Phone Numbers</a></li>
+    <li class="address-tab"><a href="#address" class="tab" data-toggle="tab">Addresses</a></li>
 </ul>
 
 <!-- Tab panes -->
 <div class="tab-content">
-    <div class="tab-pane active" id="cogeneral">
+    <div class="tab-pane active" id="general">
         <form class="form-horizontal">
-            <input name="urn" type="hidden" value="<?php echo $urn ?>">
+            <input name="urn" type="hidden" value="">
             <input name="company_id" type="hidden" value="">
 
             <div class="form-group input-group-sm">
@@ -71,14 +71,10 @@
                     <input name="date_of_creation" placeholder="Date of Creation" type='text' class="form-control date" value=""/>
                 </div>
             </div>
-            <div class="form-actions pull-right">
-                <span class="alert-success hidden">Company details saved</span>
-                <button class="btn btn-primary save-company-general">Save changes</button>
-                <button class="btn btn-default close-company-btn">Close</button>
-            </div>
+           
         </form>
     </div>
-    <div class="tab-pane" id="cophone">
+    <div class="tab-pane" id="phone">
         <div class="table-container">
             <p class="pull-right"><a href="#" class="company-add-item">Add phone number</a>
 
@@ -121,14 +117,10 @@
                 </div>
                 <div class="col-md-1 edit-ctps"></div>
             </div>
-            <div class="form-actions pull-right">
-                <button type="submit" class="btn btn-primary save-company-phone" action="add_cophone">Add number
-                </button>
-                <button class="btn btn-default close-company-btn">Close</button>
-            </div>
+
         </form>
     </div>
-    <div class="tab-pane" id="coaddress">
+    <div class="tab-pane" id="address">
         <div class="table-container">
             <p class="pull-right"><a href="#" class="company-add-item">Add another address</a>
 
@@ -146,7 +138,7 @@
                 </tbody>
             </table>
         </div>
-        <form class="form-horizontal">
+        <form class="form-horizontal company-address-form">
             <input class="item-id" name="address_id" type="hidden" value="">
             <input name="company_id" type="hidden" value="">
 
@@ -176,11 +168,6 @@
                     <option value="1">Yes</option>
                     <option value="0">No</option>
                 </select>
-            </div>
-            <div class="form-actions pull-right">
-                <button type="submit" class="btn btn-primary save-company-address" action="add_coaddress">Add Address
-                </button>
-                <button class="btn btn-default close-company-btn">Close</button>
             </div>
         </form>
     </div>

@@ -15,6 +15,23 @@ class Modals extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 
+	public function load_company_search(){
+	  $this->load->view('forms/search_company_form.php');
+	   $this->load->view('forms/get_company_form.php');
+	}
+
+	public function load_contact_form(){
+			if ($this->input->is_ajax_request()) {
+	$this->load->view('forms/edit_contact_form.php');
+			}
+	}
+
+	public function load_company_form(){
+			if ($this->input->is_ajax_request()) {
+	$this->load->view('forms/edit_company_form.php');
+			}
+	}
+
 	public function view_record(){
 		if ($this->input->is_ajax_request()) {
 			$this->load->model('Records_model');

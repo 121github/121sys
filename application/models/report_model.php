@@ -48,7 +48,7 @@ public function get_audit_data($options){
     {
         $qry = "SELECT survey_name,l.question_id,surveys.survey_info_id,count(distinct survey_id) count,avg(answer) average_nps,tens,low_score from surveys left join survey_info using(survey_info_id) left join surveys_to_campaigns using(survey_info_id) left join survey_answers using(survey_id) left join questions using(question_id)
 	 left join (select surveys.survey_info_id,count(*) tens from surveys left join survey_answers using(survey_id) left join questions using(question_id) where answer = 10 and answer is not null and nps_question = 1 group by surveys.survey_info_id) t on t.survey_info_id = surveys.survey_info_id
-	 left join (select surveys.survey_info_id,question_id,count(*) low_score from surveys left join survey_answers using(survey_id) left join questions using(question_id) where answer < 4 and answer is not null and nps_question = 1 group by surveys.survey_info_id) l on l.survey_info_id = surveys.survey_info_id where nps_question = 1 and campaign_id in({$_SESSION['campaign_access']['list']})
+	 left join (select surveys.survey_info_id,question_id,count(*) low_score from surveys left join survey_answers using(survey_id) left join questions using(question_id) where answer < 7 and answer is not null and nps_question = 1 group by surveys.survey_info_id) l on l.survey_info_id = surveys.survey_info_id where nps_question = 1 and campaign_id in({$_SESSION['campaign_access']['list']})
 	 group by surveys.survey_info_id";
         return $this->db->query($qry)->result_array();
     }
@@ -62,7 +62,7 @@ public function get_audit_data($options){
         }
         $qry = "SELECT survey_name,sa.question_id,surveys.survey_info_id,question_name,question_script,count(sa.question_id) count,avg(answer) average,t.tens,IF(low_score is null,'0',low_score) low_score from surveys left join survey_info using(survey_info_id) left join surveys_to_campaigns using(survey_info_id) left join survey_answers sa using(survey_id) left join questions using(question_id) 
 	 left join (select question_id,count(*) tens from survey_answers left join questions using(question_id) where answer = 10 and answer is not null $qry_filter group by question_id) t on t.question_id = sa.question_id
-	  left join (select question_id,count(*) low_score from survey_answers left join questions using(question_id) where answer < 4 and answer is not null $qry_filter group by question_id) l on l.question_id = sa.question_id 
+	  left join (select question_id,count(*) low_score from survey_answers left join questions using(question_id) where answer < 7 and answer is not null $qry_filter group by question_id) l on l.question_id = sa.question_id 
 	 where answer is not null and campaign_id in({$_SESSION['campaign_access']['list']}) $qry_filter group by sa.question_id ";
         return $this->db->query($qry)->result_array();
     }

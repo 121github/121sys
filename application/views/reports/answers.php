@@ -26,12 +26,12 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body answers_panel">
-             <table class="table table-striped table-responsive"><thead><th>Survey</th><th>Completed</th><th>Average NPS</th><th>Perfect 10</th><th>Below 4</th></thead><tbody>
+             <table class="table table-striped table-responsive"><thead><th>Survey</th><th>Completed</th><th>Average NPS</th><th>Perfect 10</th><th>Below 7</th></thead><tbody>
              <?php 
 			 foreach($answers as $row){
 				//create the url for the click throughs
 				$perfects = base_url()."search/custom/records/question/".$row['question_id']."/survey/".$row['survey_info_id']."/score/10";
-				$lows = base_url()."search/custom/records/question/".$row['question_id']."/survey/".$row['survey_info_id']."/score/4:less";
+				$lows = base_url()."search/custom/records/question/".$row['question_id']."/survey/".$row['survey_info_id']."/score/7:less";
 				?>
                 <tr><td><?php echo $row['survey_name'] ?></td><td><?php echo $row['count'] ?></td><td><?php echo $row['average_nps'] ?></td><td><a href="<?php echo $perfects ?>"><?php echo ($row['tens']?$row['tens']:"0") ?></a></td><td><a href="<?php echo $lows ?>"><?php echo ($row['low_score']?$row['low_score']:"0") ?></a></td></tr>
                 <?php 

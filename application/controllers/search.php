@@ -139,7 +139,7 @@ class Search extends CI_Controller
     public function search_form()
     {
 	check_page_permissions("search records");
-	/*
+
         $campaigns      = $this->Form_model->get_user_campaigns();
         $clients        = $this->Form_model->get_clients();
         $users          = $this->Form_model->get_users();
@@ -156,24 +156,6 @@ class Search extends CI_Controller
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();
-		*/
-		    $campaigns      = $this->Form_model->get_user_campaigns();
-        $clients        = array();
-        $users          = array();
-        $outcomes       = array();
-        $progress       = array();
-        $sectors        = array();
-		$selected_sectors = array();
-		if(isset($_SESSION['filter']['values']['sector_id'])){
-		$selected_sectors = $_SESSION['filter']['values']['sector_id'];	
-		}
-        $subsectors     = array();
-        $status         = array();
-		$parked_codes   = array();
-        $groups         = array();
-        $sources        = array();
-        $campaign_types = array();
-        $email_templates  = array();
 
         $data = array(
             'campaign_access' => $this->_campaigns,

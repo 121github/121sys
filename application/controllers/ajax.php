@@ -22,7 +22,8 @@ class Ajax extends CI_Controller
 		$this->load->helper('misc');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
-    
+    	
+	
 	public function validate_postcode(){
 		   if ($this->input->is_ajax_request()) {
             $postcode = $this->input->post('postcode');
@@ -436,7 +437,7 @@ class Ajax extends CI_Controller
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($data['company_id']),
-                    "type" => "cophone"
+                    "type" => "phone"
                 ));
             endif;
         }
@@ -473,7 +474,7 @@ class Ajax extends CI_Controller
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($this->input->post('id')),
-                    "type" => "cophone"
+                    "type" => "phone"
                 ));
             endif;
         }
@@ -574,7 +575,7 @@ class Ajax extends CI_Controller
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($data['company_id']),
-                    "type" => "coaddress"
+                    "type" => "address"
                 ));
             endif;
         }
@@ -661,7 +662,7 @@ class Ajax extends CI_Controller
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($data['company_id']),
-                    "type" => "coaddress"
+                    "type" => "address"
                 ));
             endif;
         }
@@ -702,7 +703,7 @@ class Ajax extends CI_Controller
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($this->input->post('company')),
-                    "type" => "coaddress"
+                    "type" => "address"
                 ));
             endif;
         }

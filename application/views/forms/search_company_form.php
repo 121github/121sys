@@ -1,3 +1,4 @@
+<div class="search-container">
 <ul class="nav nav-tabs" style=" background:#eee; width:100%;">
     <li class="active"><a href="#cosearch" class="tab" data-toggle="tab">Search</a></li>
     <li class="searchresult-tab"><a href="#cosearchresult" class="tab" data-toggle="tab">Results <span class="num-results">0</span></a></li>
@@ -8,7 +9,7 @@
     <div class="tab-pane active" id="cosearch">
         <a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img style="margin-bottom: 5px;" height="40px;" src="<?php echo base_url(); ?>assets/img/companieshouse.png"></a>
         <form class="form-horizontal search-company-form">
-            <input name="urn" type="hidden" value="<?php echo $urn ?>">
+            <input name="urn" type="hidden" value="">
             <input name="company_id" type="hidden" value="">
 
             <div class="form-group input-group-sm">
@@ -25,10 +26,7 @@
                     <input name="conumber" placeholder="Company number" type='text' class="form-control" value=""/>
                 </div>
             </div>
-            <div class="form-actions pull-right">
-                <span class="btn btn-primary search-company-action">Search</span>
-                <span class="btn btn-default close-company-btn">Close</span>
-            </div>
+
         </form>
     </div>
     <div class="tab-pane" id="cosearchresult">
@@ -48,4 +46,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>
