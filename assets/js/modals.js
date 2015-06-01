@@ -1,78 +1,80 @@
 // JavaScript Document
 var modals = {
-    init: function() {
-        $(document).on('click', '[data-modal="view-record"]', function(e) {
+    init: function () {
+        $("#modal").draggable();
+        $(document).on('click', '[data-modal="view-record"]', function (e) {
             e.preventDefault();
             modals.view_record($(this).attr('data-urn'));
         });
-        $(document).on('click', '[data-modal="edit-contact"]', function(e) {
+        $(document).on('click', '[data-modal="edit-contact"]', function (e) {
             e.preventDefault();
-            modals.contacts.contact_form('edit', $(this).attr('data-id'),'general');
+            modals.contacts.contact_form('edit', $(this).attr('data-id'), 'general');
         });
-        $(document).on('click', '[data-modal="add-contact"]', function(e) {
+        $(document).on('click', '[data-modal="add-contact"]', function (e) {
             e.preventDefault();
-            modals.contacts.contact_form('add', $(this).attr('data-urn'),'general');
+            modals.contacts.contact_form('add', $(this).attr('data-urn'), 'general');
         });
-		$(document).on('click', '[data-modal="edit-company"]', function(e) {
+        $(document).on('click', '[data-modal="edit-company"]', function (e) {
             e.preventDefault();
-            modals.companies.company_form('edit', $(this).attr('data-id'),'general');
+            modals.companies.company_form('edit', $(this).attr('data-id'), 'general');
         });
-        $(document).on('click', '[data-modal="add-company"]', function(e) {
+        $(document).on('click', '[data-modal="add-company"]', function (e) {
             e.preventDefault();
-            modals.companies.company_form('add', $(this).attr('data-urn'),'general');
+            modals.companies.company_form('add', $(this).attr('data-urn'), 'general');
         });
-        $(document).on('click', '.modal-set-location', function(e) {
+        $(document).on('click', '.modal-set-location', function (e) {
             e.preventDefault();
             modals.set_location();
         });
-        $(document).on('click', '.save-planner', function(e) {
+        $(document).on('click', '.save-planner', function (e) {
             e.preventDefault();
             modals.save_planner($(this).attr('data-urn'));
         });
-        $(document).on('click', '.remove-from-planner', function(e) {
+        $(document).on('click', '.remove-from-planner', function (e) {
             e.preventDefault();
             modals.remove_from_planner($(this).attr('data-urn'));
         });
-        $(document).on('click', '.save-appointment', function(e) {
+        $(document).on('click', '.save-appointment', function (e) {
             e.preventDefault();
             modals.save_appointment($('#appointment-form').serialize());
         });
-        $(document).on('click', '.modal-set-columns', function(e) {
+        $(document).on('click', '.modal-set-columns', function (e) {
             e.preventDefault();
             modals.set_columns();
         });
-        $(document).on('click', '.modal-reset-table', function(e) {
+        $(document).on('click', '.modal-reset-table', function (e) {
             e.preventDefault();
             modals.reset_table();
         });
-        $('#cal-slide-box').on('click', 'a', function(e) {
+        $('#cal-slide-box').on('click', 'a', function (e) {
             e.preventDefault();
             modals.view_appointment($(this).attr('data-id'));
         });
-        $(document).on('click', '[data-modal="view-appointment"]', function(e) {
+        $(document).on('click', '[data-modal="view-appointment"]', function (e) {
             e.preventDefault();
             modals.view_appointment($(this).attr('data-id'));
         });
-        $(document).on('click', '[data-modal="edit-appointment"]', function(e) {
+        $(document).on('click', '[data-modal="edit-appointment"]', function (e) {
             e.preventDefault();
             modals.view_appointment($(this).attr('data-id'), true);
         });
-        $(document).on('click', '[data-modal="delete-appointment"]', function(e) {
+        $(document).on('click', '[data-modal="delete-appointment"]', function (e) {
             e.preventDefault();
             modals.delete_appointment_html($(this).attr('data-id'), true);
         });
 
-        $(document).on('click', '[data-modal="create-appointment"]', function(e) {
+        $(document).on('click', '[data-modal="create-appointment"]', function (e) {
             e.preventDefault();
             modals.create_appointment($(this).attr('data-urn'));
         });
-        $(document).on('click', '#modal #cancel-add-address', function(e) {;
+        $(document).on('click', '#modal #cancel-add-address', function (e) {
+            ;
             e.preventDefault();
             $('#add-appointment-address').hide();
             $('#select-appointment-address').show();
             $('.addresspicker').selectpicker('val', $('#addresspicker option:first').val());
         });
-        $(document).on('change', '.addresspicker', function(e) {
+        $(document).on('change', '.addresspicker', function (e) {
             if ($(this).val() == "Other") {
                 $('#add-appointment-address').show();
                 $('#select-appointment-address').hide();
@@ -82,11 +84,11 @@ var modals = {
                 $('#select-appointment-address').show();
             }
         });
-        $(document).on('click', '#modal #confirm-add-address', function(e) {
+        $(document).on('click', '#modal #confirm-add-address', function (e) {
             e.preventDefault();
             modals.confirm_other_appointment_address();
         });
-        $(document).on('click', '.delete-appointment', function(e) {
+        $(document).on('click', '.delete-appointment', function (e) {
             var cancellation_reason = $('.appointment-cancellation-form').find('textarea[name="cancellation_reason"]').val();
             var id = $('#modal #appointment-id').val();
             if (cancellation_reason.length < 5) {
@@ -97,13 +99,13 @@ var modals = {
             }
         });
     },
-    save_appointment: function(data) {
+    save_appointment: function (data) {
         $.ajax({
             url: helper.baseUrl + 'records/save_appointment',
             data: data,
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
+        }).done(function (response) {
             if (response.success) {
                 flashalert.success('Appointment was saved');
                 $('.close-modal').trigger('click');
@@ -115,7 +117,7 @@ var modals = {
             }
         });
     },
-    delete_appointment: function(id, cancellation_reason) {
+    delete_appointment: function (id, cancellation_reason) {
         $.ajax({
             url: helper.baseUrl + 'records/delete_appointment',
             type: "POST",
@@ -125,18 +127,18 @@ var modals = {
                 cancellation_reason: cancellation_reason,
                 urn: record.urn
             }
-        }).done(function(response) {
+        }).done(function (response) {
             record.appointment_panel.load_appointments();
             if (response.success) {
                 flashalert.success("Appointment was cancelled");
             } else {
                 flashalert.danger("Unable to cancel the appointment. Contact administrator");
             }
-        }).fail(function(response) {
+        }).fail(function (response) {
             flashalert.danger("Unable to cancel the appointment. Contact administrator");
         });
     },
-    view_appointment: function(id, edit) {
+    view_appointment: function (id, edit) {
         $.ajax({
             url: helper.baseUrl + 'modals/view_appointment',
             type: "POST",
@@ -144,7 +146,7 @@ var modals = {
                 id: id
             },
             dataType: 'JSON'
-        }).done(function(response) {
+        }).done(function (response) {
             if (response.success) {
                 if (edit) {
                     modals.edit_appointment_html(response.data);
@@ -156,7 +158,7 @@ var modals = {
             }
         });
     },
-    view_appointment_html: function(data) {
+    view_appointment_html: function (data) {
         platform = navigator.platform,
             mapLink = 'http://maps.google.com/';
         if (platform === 'iPad' || platform === 'iPhone' || platform === 'iPod') {
@@ -165,7 +167,7 @@ var modals = {
 
         if (data.attendee_names.length > 0) {
             var attendees = "";
-            $.each(data.attendee_names, function(i, val) {
+            $.each(data.attendee_names, function (i, val) {
                 if (i > 0) {
                     attendees += ", "
                 }
@@ -191,7 +193,7 @@ var modals = {
         }
         modals.load_modal(mheader, mbody, mfooter)
     },
-    edit_appointment_html: function(data) {
+    edit_appointment_html: function (data) {
         $.ajax({
             url: helper.baseUrl + 'modals/edit_appointment',
             type: 'POST',
@@ -199,14 +201,14 @@ var modals = {
             data: {
                 urn: data.urn
             }
-        }).done(function(response) {
+        }).done(function (response) {
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
             var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Delete</button>';
             $mbody = $(mbody);
             //check if the appointment address is already in the dropdown and if not, add it.
             var option_exists = false;
-            $.each($mbody.find('#addresspicker option'), function() {
+            $.each($mbody.find('#addresspicker option'), function () {
                 if ($(this).val() == data.address + '|' + data.postcode) {
                     option_exists = true;
                 }
@@ -215,13 +217,13 @@ var modals = {
                 $mbody.find('#addresspicker').prepend('<option value="' + data.address + '|' + data.postcode + '">' + data.address + '</option>');
             }
             //cycle through the rest of the fields and set them in the form
-            $.each(data, function(k, v) {
+            $.each(data, function (k, v) {
                 $mbody.find('[name="' + k + '"]').val(v);
                 if (k == "type") {
                     $mbody.find('[name="appointment_type_id"]').val(v);
                 }
                 if (k == "attendees") {
-                    $.each(v, function(i, user_id) {
+                    $.each(v, function (i, user_id) {
                         $mbody.find('#attendee-select option[value="' + user_id + '"]').prop('selected', true);
                     });
                 }
@@ -230,7 +232,7 @@ var modals = {
             modals.load_modal(mheader, $mbody, mfooter);
         });
     },
-    create_appointment: function(urn) {
+    create_appointment: function (urn) {
         $.ajax({
             url: helper.baseUrl + 'modals/edit_appointment',
             type: 'POST',
@@ -238,40 +240,40 @@ var modals = {
             data: {
                 urn: urn
             }
-        }).done(function(response) {
+        }).done(function (response) {
             var mheader = "Create Appointment";
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
             var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right save-appointment" type="button">Save</button>';
             modals.load_modal(mheader, mbody, mfooter);
         });
     },
-    appointment_outcome_html: function(id) {
+    appointment_outcome_html: function (id) {
         /*
-	$.ajax({url:helper.baseUrl+'ajax/appointment_outcome_options',
-	data:"POST",
-	dataType:"JSON",
-	data:{id:id}
-	}).done(function(response){
-		var outcome_options = "";
-		$.each(response.outcomes,function(k,v){
-		 outcome_options += '<option value="'+k+'">'+v+'</option>';	
-		});
-		
-	var mbody = '<form class="form-horizontal appointment-outcome-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="'+id+'" /><div class="form-group"><label>Please select the outcome of the appointment?</label><select class="selectpicker" name="appointment_outcome">'+outcome_options+'</select></div>';
-	
-	mbody += '<div class="form-group"><label>Please leave comments or feedback on the appointment</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="How"/></textarea></div></div></form>';
-	var mfooter = '<button data-modal="edit-appointment" data-event-id="'+id+'" class="btn btn-default pull-left"  type="button">Back</button> <button class="btn btn-primary pull-right delete-appointment" type="button">Confirm</button>';
-	modals.load_modal(mheader,mbody,mfooter);
-	
-	});*/
+         $.ajax({url:helper.baseUrl+'ajax/appointment_outcome_options',
+         data:"POST",
+         dataType:"JSON",
+         data:{id:id}
+         }).done(function(response){
+         var outcome_options = "";
+         $.each(response.outcomes,function(k,v){
+         outcome_options += '<option value="'+k+'">'+v+'</option>';
+         });
+
+         var mbody = '<form class="form-horizontal appointment-outcome-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="'+id+'" /><div class="form-group"><label>Please select the outcome of the appointment?</label><select class="selectpicker" name="appointment_outcome">'+outcome_options+'</select></div>';
+
+         mbody += '<div class="form-group"><label>Please leave comments or feedback on the appointment</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="How"/></textarea></div></div></form>';
+         var mfooter = '<button data-modal="edit-appointment" data-event-id="'+id+'" class="btn btn-default pull-left"  type="button">Back</button> <button class="btn btn-primary pull-right delete-appointment" type="button">Confirm</button>';
+         modals.load_modal(mheader,mbody,mfooter);
+
+         });*/
     },
-    delete_appointment_html: function(id) {
+    delete_appointment_html: function (id) {
         var mheader = 'Confirm Cancellation';
         var mbody = '<form class="form-horizontal appointment-cancellation-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="' + id + '" /><div class="form-group"><label>Are you sure you want to cancel this appointment?</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="Please give a reason for the cancellation"/></textarea></div></div></form>';
         var mfooter = '<button data-modal="edit-appointment" data-id="' + id + '" class="btn btn-default pull-left"  type="button">Back</button> <button class="btn btn-primary pull-right delete-appointment" type="button">Confirm</button>';
         modals.load_modal(mheader, mbody, mfooter);
     },
-    confirm_other_appointment_address: function() {
+    confirm_other_appointment_address: function () {
         var new_postcode = $('#modal').find('[name="new_postcode"]').val();
         $.ajax({
             url: helper.baseUrl + 'ajax/validate_postcode',
@@ -280,7 +282,7 @@ var modals = {
             },
             dataType: 'JSON',
             type: 'POST'
-        }).done(function(response) {
+        }).done(function (response) {
             //if postcode is valid
             if (response.success) {
                 var new_address = "";
@@ -311,17 +313,17 @@ var modals = {
             }
         });
     },
-    show_modal: function() {
+    show_modal: function () {
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
         })
     },
-    clear_footer: function() {
+    clear_footer: function () {
         $('#modal').find('.modal-footer').empty();
     },
-    load_modal: function(mheader, mbody, mfooter) {
-		$('.modal-body').css('padding', '20px');
+    load_modal: function (mheader, mbody, mfooter) {
+        $('.modal-body').css('padding', '20px');
         $('#modal').find('.modal-title').html(mheader);
         $('#modal').find('.modal-body').html(mbody);
         $('#modal').find('.modal-footer').html(mfooter);
@@ -338,7 +340,7 @@ var modals = {
             pickTime: false
         });
         //this function automatically sets the end date for the appointment 1 hour ahead of the start date
-        $(".startpicker").on("dp.hide", function(e) {
+        $(".startpicker").on("dp.hide", function (e) {
             var m = moment(e.date, "DD\MM\YYYY HH:mm");
             $('.endpicker').data("DateTimePicker").setMinDate(e.date);
             $('.endpicker').data("DateTimePicker").setDate(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
@@ -346,7 +348,7 @@ var modals = {
         $("#modal").find("#tabs").tab();
     },
 
-    columns: function(columns) {
+    columns: function (columns) {
         modals.default_buttons();
         $('.modal-title').text('Select columns to display');
         $('#modal').find('.modal-body').html($form);
@@ -355,13 +357,13 @@ var modals = {
             modals.show_modal();
         }
     },
-    set_location: function() {
+    set_location: function () {
 
         modals.default_buttons();
         $('.modal-title').text('Set location');
         $('#modal').find('.modal-body').html('<p>You must set a location to calculate distances and journey times</p><div class="form-group"><label>Enter Postcode</label><div class="input-group"><input type="text" class="form-control current_postcode_input" placeholder="Enter a postcode..."><div class="input-group-addon pointer btn locate-postcode"><span class="glyphicon glyphicon-map-marker"></span> Use my location</div></div>');
         $(".confirm-modal").off('click');
-        $('.confirm-modal').on('click', function(e) {
+        $('.confirm-modal').on('click', function (e) {
             var postcode_saved = location.store_location($('.current_postcode_input').val());
             if (postcode_saved) {
                 $('#modal').modal('toggle');
@@ -372,7 +374,7 @@ var modals = {
         }
 
     },
-    save_planner: function(urn) {
+    save_planner: function (urn) {
         $.ajax({
             url: helper.baseUrl + 'planner/add_record',
             data: {
@@ -382,7 +384,7 @@ var modals = {
             },
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
+        }).done(function (response) {
             if (response.success) {
                 flashalert.success(response.msg);
                 $('#modal').find('#planner_status').text('This record is in your journey planner. You can remove or reschedule it below').addClass('text-success');
@@ -392,7 +394,7 @@ var modals = {
             }
         });
     },
-    remove_from_planner: function(urn) {
+    remove_from_planner: function (urn) {
         $.ajax({
             url: helper.baseUrl + 'planner/remove_record',
             data: {
@@ -400,7 +402,7 @@ var modals = {
             },
             type: "POST",
             dataType: "JSON"
-        }).done(function(response) {
+        }).done(function (response) {
             if (response.success) {
                 flashalert.success(response.msg);
                 $('#modal').find('#planner_status').text('This record is not in your journey planner. You can add it below').removeClass('text-success');
@@ -408,7 +410,7 @@ var modals = {
             }
         });
     },
-    reset_table: function() {
+    reset_table: function () {
         modals.default_buttons();
         $('.modal-title').text('Reset table');
         $('#modal').find('.modal-body').html('<p>This will clear any filters that have been set on the table</p><p>Are you sure you want to reset the table filters?</p>');
@@ -417,7 +419,7 @@ var modals = {
             modal.show_modal();
         }
     },
-    view_record: function(urn) {
+    view_record: function (urn) {
         $.ajax({
             url: helper.baseUrl + 'modals/view_record',
             type: "POST",
@@ -425,20 +427,20 @@ var modals = {
             data: {
                 urn: urn
             }
-        }).done(function(response) {
+        }).done(function (response) {
             modals.view_record_html(response.data);
         });
     },
-    default_buttons: function() {
+    default_buttons: function () {
         $('#modal').find('.modal-footer').empty();
         $('#modal').find('.modal-footer').append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
         $('#modal').find('.modal-footer').append('<button class="btn btn-primary confirm-modal" type="button">Confirm</button>');
     },
-    update_footer: function(content) {
+    update_footer: function (content) {
         $('#modal').find('.modal-footer').empty();
         $('#modal').find('.modal-footer').html(content);
     },
-    view_record_html: function(data) {
+    view_record_html: function (data) {
         var mheader = "View Record #" + data.urn;
         var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li>';
 
@@ -456,7 +458,7 @@ var modals = {
         mbody += '<div role="tabpanel" class="tab-pane" id="tab-history">'
         if (data.history.length > 0) {
             mbody += '<table class="table table-striped table-condensed"><thead><tr><th>Outcome</th><th>Date</th><th>User</th><th>Comments</th></tr></thead><tbody>';
-            $.each(data.history, function(k, row) {
+            $.each(data.history, function (k, row) {
                 mbody += '<tr class="small"><td>' + row.outcome + '</td><td>' + row.contact + '</td><td>' + row.name + '</td><td>' + row.comments + '</td></tr>';
             });
             mbody += '</tbody></table>';
@@ -464,11 +466,11 @@ var modals = {
             mbody += '<p>This record has not been updated yet</p>';
         }
         mbody += '</div>'
-            //appointments tab	
+        //appointments tab
         mbody += '<div role="tabpanel" class="tab-pane" id="tab-apps">';
         if (data.appointments.length > 0) {
             mbody += '<table class="table table-striped table-condensed"><thead><tr><th>Date</th><th>Time</th><th>Title</th><th>Set by</th><th>Status</th></tr></thead><tbody>';
-            $.each(data.appointments, function(k, row) {
+            $.each(data.appointments, function (k, row) {
                 mbody += '<tr class="small"><td>' + row.date + '</td><td>' + row.time + '</td><td>' + row.title + '</td><td>' + row.name + '</td><td>' + row.status + '</td></tr>';
 
             });
@@ -485,10 +487,10 @@ var modals = {
             var thead, detail_id;
             var tbody = "<tbody>";
             var contents = "";
-            $.each(data.custom_info, function(k, detail) {
+            $.each(data.custom_info, function (k, detail) {
                 tbody += "<tr>";
                 thead = "<thead><tr>";
-                $.each(detail, function(i, row) {
+                $.each(detail, function (i, row) {
                     thead += "<th>" + row.name + "</th>";
                     if (row.formatted) {
                         tbody += "<td class='" + row.code + "'>" + row.formatted + "</td>";
@@ -509,7 +511,7 @@ var modals = {
             if (data.addresses.length > 0) {
                 planner_form = '<div class="form-group"><label>Select Address</label><br>';
                 planner_form += '<select class="selectpicker" data-width="100%" id="planner_address">';
-                $.each(data.addresses, function(k, address) {
+                $.each(data.addresses, function (k, address) {
                     if (data.planner_postcode == address.postcode) {
                         var selected = "selected";
                     } else {
@@ -547,62 +549,62 @@ var modals = {
 
     contacts: {
 
-        init: function() {
-			 $(document).on('click', '.save-contact-general', function(e) {
-            e.preventDefault();
-            modals.contacts.save_contact();
-        });
-			 /* loads the form for a new phone or address to be added*/
-            $(document).on('click', '.contact-add-item', function(e) {
+        init: function () {
+            $(document).on('click', '.save-contact-general', function (e) {
+                e.preventDefault();
+                modals.contacts.save_contact();
+            });
+            /* loads the form for a new phone or address to be added*/
+            $(document).on('click', '.contact-add-item', function (e) {
                 e.preventDefault();
                 modals.contacts.new_item_form();
             });
-			 /*save the new phone or address*/
+            /*save the new phone or address*/
             $(document).on('click', '.save-contact-phone,.save-contact-address', function (e) {
                 e.preventDefault();
-				var action = $(this).attr('data-action');
+                var action = $(this).attr('data-action');
                 modals.contacts.save_item(action);
             });
-			 /*when a tab is changed we should reset the tab content*/
-			 $(document).on('click', '#modal .nav-tabs li a', function(e) {
+            /*when a tab is changed we should reset the tab content*/
+            $(document).on('click', '#modal .nav-tabs li a', function (e) {
                 e.preventDefault();
-				var tabname = $(this).attr('href');
+                var tabname = $(this).attr('href');
                 modals.contacts.change_tab(tabname);
             });
-			 /*initialize the delete item buttons for phone */
+            /*initialize the delete item buttons for phone */
             $(document).on('click', '[data-modal="delete-contact-phone"]', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
-				var cid = $(this).attr('contact-id');
-                modals.contacts.confirm_delete_phone(id,cid);
+                var id = $(this).attr('data-id');
+                var cid = $(this).attr('contact-id');
+                modals.contacts.confirm_delete_phone(id, cid);
             });
-			/*initialize the delete item buttons for address*/
+            /*initialize the delete item buttons for address*/
             $(document).on('click', '[data-modal="delete-contact-address"]', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
-				var cid = $(this).attr('contact-id');
-                modals.contacts.confirm_delete_address(id,cid);
+                var id = $(this).attr('data-id');
+                var cid = $(this).attr('contact-id');
+                modals.contacts.confirm_delete_address(id, cid);
             });
-			 /* go back to the phone tab for the contact if they cancel the delete action */
+            /* go back to the phone tab for the contact if they cancel the delete action */
             $(document).on('click', '.cancel-delete-phone', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
+                var id = $(this).attr('data-id');
                 modals.contacts.contact_form('edit', id, 'phone');
             });
-			/* go back to the ddress for the contact if they cancel the delete action */
+            /* go back to the ddress for the contact if they cancel the delete action */
             $(document).on('click', '.cancel-delete-address', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
+                var id = $(this).attr('data-id');
                 modals.contacts.contact_form('edit', id, 'address');
             });
-			 $(document).on('click', '.contact-item-btn', function (e) {
+            $(document).on('click', '.contact-item-btn', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
-				var action = $(this).attr('data-action');
-                modals.contacts.edit_item_form(id,action);
+                var id = $(this).attr('data-id');
+                var action = $(this).attr('data-action');
+                modals.contacts.edit_item_form(id, action);
             });
             /*initialize the cancel button on the add/edit contact phone/address form*/
-            $(document).on('click', '.cancel-add-item', function(e) {
+            $(document).on('click', '.cancel-add-item', function (e) {
                 e.preventDefault();
                 $tab = $('#modal').find('.tab-pane.active');
                 $tab.find('form').hide();
@@ -611,7 +613,7 @@ var modals = {
                 modals.update_footer('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
             });
         },
-		edit_item_form: function (id,action) {
+        edit_item_form: function (id, action) {
             $tab = $('#modal').find('.tab-pane.active');
             $tab.find('.item-id').val(id);
             if (action == "edit_address") {
@@ -627,14 +629,14 @@ var modals = {
                     id: id
                 }
             }).done(function (response) {
-			var mfooter = '<button class="btn btn-default cancel-add-item pull-left" type="button">Cancel</button>';
-            if (action == "edit_phone") {
-                mfooter += '<button type="submit" class="btn btn-primary save-contact-phone" data-action="edit_phone">Save Number</button>';
-            } else if (action == "edit_address") {
-                mfooter += '<button type="submit" class="btn btn-primary save-contact-address" data-action="edit_address">Save Address</button>';
-            }
-				modals.update_footer(mfooter);
-				
+                var mfooter = '<button class="btn btn-default cancel-add-item pull-left" type="button">Cancel</button>';
+                if (action == "edit_phone") {
+                    mfooter += '<button type="submit" class="btn btn-primary save-contact-phone" data-action="edit_phone">Save Number</button>';
+                } else if (action == "edit_address") {
+                    mfooter += '<button type="submit" class="btn btn-primary save-contact-address" data-action="edit_address">Save Address</button>';
+                }
+                modals.update_footer(mfooter);
+
                 if (response.success) {
                     $.each(response, function (key, val) {
                         $tab.find('form input[name="' + key + '"]').val(val);
@@ -642,53 +644,53 @@ var modals = {
                     });
                     $tab.find('.table-container').hide();
                     $tab.find('form').show();
-					if(action == "edit_phone") {
-                    //Set the telephone number input as a number
-                    $tab.find('form').find('input[name="telephone_number"]').numeric();
+                    if (action == "edit_phone") {
+                        //Set the telephone number input as a number
+                        $tab.find('form').find('input[name="telephone_number"]').numeric();
 
-                    var tps_option = $tab.find('select[name="tps"]').val();
-                    var contact_id = $tab.find('form').find('input[name="contact_id"]').val();
-                    var telephone_id = $tab.find('form input[name="telephone_id"]').val();
-                    var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
-                    var tps = "";
-                    if (tps_option.length == 0) {
-                        tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='"+contact_id+"' item-number-id='"+telephone_id+"' item-number='"+telephone_number+"' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                        var tps_option = $tab.find('select[name="tps"]').val();
+                        var contact_id = $tab.find('form').find('input[name="contact_id"]').val();
+                        var telephone_id = $tab.find('form input[name="telephone_id"]').val();
+                        var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
+                        var tps = "";
+                        if (tps_option.length == 0) {
+                            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                        }
+                        else if (tps_option == 1) {
+                            tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
+                        }
+                        else {
+                            tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
+                        }
+                        $tab.find('.edit-tps').html(tps);
                     }
-                    else if (tps_option == 1) {
-                        tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
-                    }
-                    else {
-                        tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
-                    }
-                    $tab.find('.edit-tps').html(tps);
-					}
                 } else {
                     flashalert.danger(response.msg);
                 }
             });
 
         },
-		confirm_delete_phone:function(phone_id,contact_id){
-			var mheader = "Delete phone number";
-			var mbody  = "Are you sure you want to delete this number?";
-			var mfooter = '<button class="btn btn-default pull-left cancel-delete-phone" data-id="'+contact_id+'" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
+        confirm_delete_phone: function (phone_id, contact_id) {
+            var mheader = "Delete phone number";
+            var mbody = "Are you sure you want to delete this number?";
+            var mfooter = '<button class="btn btn-default pull-left cancel-delete-phone" data-id="' + contact_id + '" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
 
-			modals.load_modal(mheader,mbody,mfooter);
-			$('.confirm-delete').click(function(){
-				modals.contacts.delete_item(phone_id,contact_id,'delete_phone');
-			});	
-		},
-		confirm_delete_address:function(address_id,contact_id){
-			var mheader = "Delete contact address";
-			var mbody  = "Are you sure you want to delete this address?";
-			var mfooter = '<button class="btn btn-default pull-left cancel-delete-address" data-id="'+contact_id+'" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
+            modals.load_modal(mheader, mbody, mfooter);
+            $('.confirm-delete').click(function () {
+                modals.contacts.delete_item(phone_id, contact_id, 'delete_phone');
+            });
+        },
+        confirm_delete_address: function (address_id, contact_id) {
+            var mheader = "Delete contact address";
+            var mbody = "Are you sure you want to delete this address?";
+            var mfooter = '<button class="btn btn-default pull-left cancel-delete-address" data-id="' + contact_id + '" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
 
-			modals.load_modal(mheader,mbody,mfooter);
-			$('.confirm-delete').click(function(){
-				modals.contacts.delete_item(address_id,contact_id,'delete_address');
-			});	
-		},
-		   delete_item: function (id,contact_id,action) {
+            modals.load_modal(mheader, mbody, mfooter);
+            $('.confirm-delete').click(function () {
+                modals.contacts.delete_item(address_id, contact_id, 'delete_address');
+            });
+        },
+        delete_item: function (id, contact_id, action) {
             $.ajax({
                 url: helper.baseUrl + 'ajax/' + action,
                 type: "POST",
@@ -698,14 +700,14 @@ var modals = {
                     contact: contact_id
                 }
             }).done(function (response) {
-                 modals.contacts.contact_form('edit', contact_id, response.type);
-				 flashalert.success("Contact details were updated");
-				 if(typeof record !== "undefined"){
-                record.contact_panel.load_panel(record.urn, response.id);
-				 }
+                modals.contacts.contact_form('edit', contact_id, response.type);
+                flashalert.success("Contact details were updated");
+                if (typeof record !== "undefined") {
+                    record.contact_panel.load_panel(record.urn, response.id);
+                }
             });
         },
-        new_item_form: function() {
+        new_item_form: function () {
             $tab = $('#modal').find('.tab-pane.active');
             var type = $tab.attr('id');
             $tab.find('.table-container').hide();
@@ -727,7 +729,7 @@ var modals = {
             modals.update_footer(mfooter);
 
         },
-		 save_item: function (action) {
+        save_item: function (action) {
             $.ajax({
                 url: helper.baseUrl + 'ajax/' + action,
                 type: "POST",
@@ -736,55 +738,55 @@ var modals = {
             }).done(function (response) {
                 if (response.success) {
                     modals.contacts.load_tabs(response.id, response.type);
-					if(typeof record !== "undefined"){
-                    record.contact_panel.load_panel(record.urn, response.id);
-					}
+                    if (typeof record !== "undefined") {
+                        record.contact_panel.load_panel(record.urn, response.id);
+                    }
                 } else {
                     flashalert.danger(response.msg);
                 }
             });
         },
-        contact_form: function(type, id, tab) {
+        contact_form: function (type, id, tab) {
             modals.contacts.init()
             $.ajax({
                 url: helper.baseUrl + 'modals/load_contact_form',
                 type: "POST",
                 dataType: "HTML"
-            }).done(function(response) {
+            }).done(function (response) {
                 if (type == "edit") {
                     var mheader = "Edit contact";
                 } else {
                     var mheader = "Create contact";
                 }
-                
+
                 $mbody = $(response);
 
                 if (type == "edit") {
                     $mbody.find('.tab-alert').hide();
                     $mbody.find('tbody').empty();
                     $mbody.find('.phone-tab,.address-tab').show();
-					$mbody.find('input[name="contact_id"]').val(id);
-					var mfooter = "";
+                    $mbody.find('input[name="contact_id"]').val(id);
+                    var mfooter = "";
                 } else {
                     $mbody.find('input[name="urn"]').val(id);
                     $mbody.find('.phone-tab,.address-tab').hide();
                     $mbody.find('.tab-alert').show();
                     $mbody.find('.table-container').hide();
-					var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
+                    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
                 }
 
                 modals.load_modal(mheader, $mbody, mfooter);
-				//dont want padding with tabs
+                //dont want padding with tabs
                 $('.modal-body').css('padding', '0px');
                 if (type == "edit") {
-                    modals.contacts.load_tabs(id,tab);
+                    modals.contacts.load_tabs(id, tab);
                 }
 
             });
         },
-        load_tabs: function(id, item_form) {
+        load_tabs: function (id, item_form) {
             var $panel = $('#modal');
-            if (item_form!=="general") {
+            if (item_form !== "general") {
                 $panel.find('#' + item_form + ' form').hide();
                 $panel.find('#' + item_form + ' .table-container').show();
             } else {
@@ -798,11 +800,11 @@ var modals = {
                 data: {
                     id: id
                 }
-            }).done(function(response) {
+            }).done(function (response) {
                 if (response.success) {
-					var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
-					modals.update_footer(mfooter);
-                    $.each(response.data.general, function(key, val) {
+                    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
+                    modals.update_footer(mfooter);
+                    $.each(response.data.general, function (key, val) {
                         $panel.find('#general [name="' + key + '"]').val(val);
                     });
 
@@ -810,7 +812,7 @@ var modals = {
                         $panel.find('#phone tbody').empty();
                         $panel.find('#phone .table-container,#phone .table-container table').show();
                         $panel.find('#phone .none-found').hide();
-                        $.each(response.data.telephone, function(key, val) {
+                        $.each(response.data.telephone, function (key, val) {
                             if (val.tel_tps == "0") {
                                 var $tps = "<span style='color:green' class='glyphicon glyphicon-ok-sign tt'  data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
                             } else if (val.tel_tps == "1") {
@@ -818,7 +820,7 @@ var modals = {
                             } else {
                                 var $tps = "<span class='glyphicon glyphicon-question-sign tt'  data-toggle='tooltip' data-placement='right' title='TPS Status is unknown'></span>"
                             }
-                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $tps + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right' data-modal='delete-contact-phone' contact-id='"+response.data.general.contact_id+"' data-id='" + val.tel_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right contact-item-btn' data-action='edit_phone' data-id='" + val.tel_id + "'></span></td></tr>";
+                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $tps + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right' data-modal='delete-contact-phone' contact-id='" + response.data.general.contact_id + "' data-id='" + val.tel_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right contact-item-btn' data-action='edit_phone' data-id='" + val.tel_id + "'></span></td></tr>";
                             $panel.find('#phone tbody').append($phone);
                         });
                     } else {
@@ -829,13 +831,13 @@ var modals = {
                         $panel.find('#address tbody').empty();
                         $panel.find('#address .table-container, #address .table-container table').show();
                         $panel.find('#address .none-found').hide();
-                        $.each(response.data.address, function(key, val) {
+                        $.each(response.data.address, function (key, val) {
                             if (val.primary == 1) {
                                 var $primary = "<span class='glyphicon glyphicon-ok-sign'></span>";
                             } else {
                                 $primary = "";
                             }
-                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right del-item-btn' data-modal='delete-contact-address' contact-id='"+response.data.general.contact_id+"' data-id='" + val.address_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right contact-item-btn' data-action='edit_address' data-id='" + val.address_id + "'></span></td></tr>"
+                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right del-item-btn' data-modal='delete-contact-address' contact-id='" + response.data.general.contact_id + "' data-id='" + val.address_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right contact-item-btn' data-action='edit_address' data-id='" + val.address_id + "'></span></td></tr>"
                             $panel.find('#address tbody').append($address);
                         });
                     } else {
@@ -844,36 +846,36 @@ var modals = {
                     }
                 }
                 $('.tt').tooltip();
-				$panel.find('.tab[href="#'+item_form+'"]').tab('show');
+                $panel.find('.tab[href="#' + item_form + '"]').tab('show');
             });
 
         },
-        save_contact: function() {
+        save_contact: function () {
             var $form = $('#modal #general').find('form');
-			if($form.find('input[name="contact_id"]').val()==""){
-			var action = "add_contact";	
-			} else {
-			var action = "save_contact";		
-			}
+            if ($form.find('input[name="contact_id"]').val() == "") {
+                var action = "add_contact";
+            } else {
+                var action = "save_contact";
+            }
             $.ajax({
                 url: helper.baseUrl + "ajax/" + action,
                 type: "POST",
                 dataType: "JSON",
                 data: $form.serialize()
-            }).done(function(response) {
+            }).done(function (response) {
                 flashalert.success("Contact details saved");
                 //change the add box to an edit box
                 if (action == "add_contact") {
                     $('#modal').find('input[name="contact_id"]').val(response.id);
                     $('.phone-tab,.address-tab').show();
-					$('#phone,#address').find('.table-container table').hide();
+                    $('#phone,#address').find('.table-container table').hide();
                     $('.tab-alert').hide();
                 }
                 record.contact_panel.load_panel(record.urn, response.id);
             });
 
         },
-        change_tab: function(tab) {
+        change_tab: function (tab) {
             modals.clear_footer();
             var buttons = "";
             if (tab == "#general") {
@@ -882,7 +884,7 @@ var modals = {
             } else {
                 buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 $('#modal').find('.table-container').show();
-				$('#modal').find('.contact-phone-form,.contact-address-form').hide();
+                $('#modal').find('.contact-phone-form,.contact-address-form').hide();
                 modals.update_footer(buttons);
             }
 
@@ -892,62 +894,62 @@ var modals = {
     },
 
     companies: {
-              init: function() {
-				  		 $(document).on('click', '.save-company-general', function(e) {
-            e.preventDefault();
-            modals.companies.save_company();
-        });
-			 /* loads the form for a new phone or address to be added*/
-            $(document).on('click', '.company-add-item', function(e) {
+        init: function () {
+            $(document).on('click', '.save-company-general', function (e) {
+                e.preventDefault();
+                modals.companies.save_company();
+            });
+            /* loads the form for a new phone or address to be added*/
+            $(document).on('click', '.company-add-item', function (e) {
                 e.preventDefault();
                 modals.companies.new_item_form();
             });
-			 /*save the new phone or address*/
+            /*save the new phone or address*/
             $(document).on('click', '.save-company-phone,.save-company-address', function (e) {
                 e.preventDefault();
-				var action = $(this).attr('data-action');
+                var action = $(this).attr('data-action');
                 modals.companies.save_item(action);
             });
-			 /*when a tab is changed we should reset the tab content*/
-			 $(document).on('click', '#modal .nav-tabs li a', function(e) {
+            /*when a tab is changed we should reset the tab content*/
+            $(document).on('click', '#modal .nav-tabs li a', function (e) {
                 e.preventDefault();
-				var tabname = $(this).attr('href');
+                var tabname = $(this).attr('href');
                 modals.companies.change_tab(tabname);
             });
-			 /*initialize the delete item buttons for phone */
+            /*initialize the delete item buttons for phone */
             $(document).on('click', '[data-modal="delete-company-phone"]', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
-				var cid = $(this).attr('company-id');
-                modals.companies.confirm_delete_phone(id,cid);
+                var id = $(this).attr('data-id');
+                var cid = $(this).attr('company-id');
+                modals.companies.confirm_delete_phone(id, cid);
             });
-			/*initialize the delete item buttons for address*/
+            /*initialize the delete item buttons for address*/
             $(document).on('click', '[data-modal="delete-company-address"]', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
-				var cid = $(this).attr('company-id');
-                modals.companies.confirm_delete_address(id,cid);
+                var id = $(this).attr('data-id');
+                var cid = $(this).attr('company-id');
+                modals.companies.confirm_delete_address(id, cid);
             });
-			 /* go back to the phone tab for the company if they cancel the delete action */
+            /* go back to the phone tab for the company if they cancel the delete action */
             $(document).on('click', '.cancel-delete-cophone', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
+                var id = $(this).attr('data-id');
                 modals.companies.company_form('edit', id, 'phone');
             });
-			/* go back to the ddress for the company if they cancel the delete action */
+            /* go back to the ddress for the company if they cancel the delete action */
             $(document).on('click', '.cancel-delete-coaddress', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
+                var id = $(this).attr('data-id');
                 modals.companies.company_form('edit', id, 'address');
             });
-			 $(document).on('click', '.company-item-btn', function (e) {
+            $(document).on('click', '.company-item-btn', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
-				var action = $(this).attr('data-action');
-                modals.companies.edit_item_form(id,action);
+                var id = $(this).attr('data-id');
+                var action = $(this).attr('data-action');
+                modals.companies.edit_item_form(id, action);
             });
             /*initialize the cancel button on the add/edit company phone/address form*/
-            $(document).on('click', '.cancel-add-item', function(e) {
+            $(document).on('click', '.cancel-add-item', function (e) {
                 e.preventDefault();
                 $tab = $('#modal').find('.tab-pane.active');
                 $tab.find('form').hide();
@@ -956,7 +958,7 @@ var modals = {
                 modals.update_footer('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
             });
         },
-		edit_item_form: function (id,action) {
+        edit_item_form: function (id, action) {
             $tab = $('#modal').find('.tab-pane.active');
             $tab.find('.item-id').val(id);
             if (action == "edit_coaddress") {
@@ -972,14 +974,14 @@ var modals = {
                     id: id
                 }
             }).done(function (response) {
-			var mfooter = '<button class="btn btn-default cancel-add-item pull-left" type="button">Cancel</button>';
-            if (action == "edit_cophone") {
-                mfooter += '<button type="submit" class="btn btn-primary save-company-phone" data-action="edit_cophone">Save Number</button>';
-            } else if (action == "edit_coaddress") {
-                mfooter += '<button type="submit" class="btn btn-primary save-company-address" data-action="edit_coaddress">Save Address</button>';
-            }
-				modals.update_footer(mfooter);
-				
+                var mfooter = '<button class="btn btn-default cancel-add-item pull-left" type="button">Cancel</button>';
+                if (action == "edit_cophone") {
+                    mfooter += '<button type="submit" class="btn btn-primary save-company-phone" data-action="edit_cophone">Save Number</button>';
+                } else if (action == "edit_coaddress") {
+                    mfooter += '<button type="submit" class="btn btn-primary save-company-address" data-action="edit_coaddress">Save Address</button>';
+                }
+                modals.update_footer(mfooter);
+
                 if (response.success) {
                     $.each(response, function (key, val) {
                         $tab.find('form input[name="' + key + '"]').val(val);
@@ -987,53 +989,53 @@ var modals = {
                     });
                     $tab.find('.table-container').hide();
                     $tab.find('form').show();
-					if(action == "edit_cophone") {
-                    //Set the telephone number input as a number
-                    $tab.find('form').find('input[name="telephone_number"]').numeric();
+                    if (action == "edit_cophone") {
+                        //Set the telephone number input as a number
+                        $tab.find('form').find('input[name="telephone_number"]').numeric();
 
-                    var tps_option = $tab.find('select[name="tps"]').val();
-                    var company_id = $tab.find('form').find('input[name="company_id"]').val();
-                    var telephone_id = $tab.find('form input[name="telephone_id"]').val();
-                    var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
-                    var tps = "";
-                    if (tps_option.length == 0) {
-                        tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-company-id='"+contact_id+"' item-number-id='"+telephone_id+"' item-number='"+telephone_number+"' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                        var tps_option = $tab.find('select[name="tps"]').val();
+                        var company_id = $tab.find('form').find('input[name="company_id"]').val();
+                        var telephone_id = $tab.find('form input[name="telephone_id"]').val();
+                        var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
+                        var tps = "";
+                        if (tps_option.length == 0) {
+                            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-company-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                        }
+                        else if (tps_option == 1) {
+                            tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
+                        }
+                        else {
+                            tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
+                        }
+                        $tab.find('.edit-tps').html(tps);
                     }
-                    else if (tps_option == 1) {
-                        tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
-                    }
-                    else {
-                        tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
-                    }
-                    $tab.find('.edit-tps').html(tps);
-					}
                 } else {
                     flashalert.danger(response.msg);
                 }
             });
 
         },
-		confirm_delete_phone:function(phone_id,company_id){
-			var mheader = "Delete phone number";
-			var mbody  = "Are you sure you want to delete this number?";
-			var mfooter = '<button class="btn btn-default pull-left cancel-delete-phone" data-id="'+company_id+'" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
+        confirm_delete_phone: function (phone_id, company_id) {
+            var mheader = "Delete phone number";
+            var mbody = "Are you sure you want to delete this number?";
+            var mfooter = '<button class="btn btn-default pull-left cancel-delete-phone" data-id="' + company_id + '" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
 
-			modals.load_modal(mheader,mbody,mfooter);
-			$('.confirm-delete').click(function(){
-				modals.companies.delete_item(phone_id,company_id,'delete_cophone');
-			});	
-		},
-		confirm_delete_address:function(address_id,company_id){
-			var mheader = "Delete company address";
-			var mbody  = "Are you sure you want to delete this address?";
-			var mfooter = '<button class="btn btn-default pull-left cancel-delete-address" data-id="'+company_id+'" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
+            modals.load_modal(mheader, mbody, mfooter);
+            $('.confirm-delete').click(function () {
+                modals.companies.delete_item(phone_id, company_id, 'delete_cophone');
+            });
+        },
+        confirm_delete_address: function (address_id, company_id) {
+            var mheader = "Delete company address";
+            var mbody = "Are you sure you want to delete this address?";
+            var mfooter = '<button class="btn btn-default pull-left cancel-delete-address" data-id="' + company_id + '" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
 
-			modals.load_modal(mheader,mbody,mfooter);
-			$('.confirm-delete').click(function(){
-				modals.companies.delete_item(address_id,company_id,'delete_coaddress');
-			});	
-		},
-		   delete_item: function (id,company_id,action) {
+            modals.load_modal(mheader, mbody, mfooter);
+            $('.confirm-delete').click(function () {
+                modals.companies.delete_item(address_id, company_id, 'delete_coaddress');
+            });
+        },
+        delete_item: function (id, company_id, action) {
             $.ajax({
                 url: helper.baseUrl + 'ajax/' + action,
                 type: "POST",
@@ -1043,14 +1045,14 @@ var modals = {
                     company: company_id
                 }
             }).done(function (response) {
-                 modals.companies.company_form('edit', company_id, response.type);
-				 flashalert.success("Company details were updated");
-				 if(typeof record !== "undefined"){
-                record.company_panel.load_panel(record.urn, response.id);
-				 }
+                modals.companies.company_form('edit', company_id, response.type);
+                flashalert.success("Company details were updated");
+                if (typeof record !== "undefined") {
+                    record.company_panel.load_panel(record.urn, response.id);
+                }
             });
         },
-        new_item_form: function() {
+        new_item_form: function () {
             $tab = $('#modal').find('.tab-pane.active');
             var type = $tab.attr('id');
             $tab.find('.table-container').hide();
@@ -1072,7 +1074,7 @@ var modals = {
             modals.update_footer(mfooter);
 
         },
-		 save_item: function (action) {
+        save_item: function (action) {
             $.ajax({
                 url: helper.baseUrl + 'ajax/' + action,
                 type: "POST",
@@ -1081,55 +1083,55 @@ var modals = {
             }).done(function (response) {
                 if (response.success) {
                     modals.companies.load_tabs(response.id, response.type);
-					if(typeof record !== "undefined"){
-                    record.company_panel.load_panel(record.urn, response.id);
-					}
+                    if (typeof record !== "undefined") {
+                        record.company_panel.load_panel(record.urn, response.id);
+                    }
                 } else {
                     flashalert.danger(response.msg);
                 }
             });
         },
-        company_form: function(type, id, tab) {
+        company_form: function (type, id, tab) {
             modals.companies.init()
             $.ajax({
                 url: helper.baseUrl + 'modals/load_company_form',
                 type: "POST",
                 dataType: "HTML"
-            }).done(function(response) {
+            }).done(function (response) {
                 if (type == "edit") {
                     var mheader = "Edit company";
                 } else {
                     var mheader = "Create company";
                 }
-                
+
                 $mbody = $(response);
 
                 if (type == "edit") {
                     $mbody.find('.tab-alert').hide();
                     $mbody.find('tbody').empty();
                     $mbody.find('.phone-tab,.address-tab').show();
-					$mbody.find('input[name="company_id"]').val(id);
-					var mfooter = "";
+                    $mbody.find('input[name="company_id"]').val(id);
+                    var mfooter = "";
                 } else {
                     $mbody.find('input[name="urn"]').val(id);
                     $mbody.find('.phone-tab,.address-tab').hide();
                     $mbody.find('.tab-alert').show();
                     $mbody.find('.table-container').hide();
-					var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
+                    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
                 }
 
                 modals.load_modal(mheader, $mbody, mfooter);
-				//dont want padding with tabs
+                //dont want padding with tabs
                 $('.modal-body').css('padding', '0px');
                 if (type == "edit") {
-                    modals.companies.load_tabs(id,tab);
+                    modals.companies.load_tabs(id, tab);
                 }
 
             });
         },
-        load_tabs: function(id, item_form) {
+        load_tabs: function (id, item_form) {
             var $panel = $('#modal');
-            if (item_form!=="general") {
+            if (item_form !== "general") {
                 $panel.find('#' + item_form + ' form').hide();
                 $panel.find('#' + item_form + ' .table-container').show();
             } else {
@@ -1143,11 +1145,11 @@ var modals = {
                 data: {
                     id: id
                 }
-            }).done(function(response) {
+            }).done(function (response) {
                 if (response.success) {
-					var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
-					modals.update_footer(mfooter);
-                    $.each(response.data.general, function(key, val) {
+                    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
+                    modals.update_footer(mfooter);
+                    $.each(response.data.general, function (key, val) {
                         $panel.find('#general [name="' + key + '"]').val(val);
                     });
 
@@ -1155,7 +1157,7 @@ var modals = {
                         $panel.find('#phone tbody').empty();
                         $panel.find('#phone .table-container,#phone .table-container table').show();
                         $panel.find('#phone .none-found').hide();
-                        $.each(response.data.telephone, function(key, val) {
+                        $.each(response.data.telephone, function (key, val) {
                             if (val.tel_tps == "0") {
                                 var $tps = "<span style='color:green' class='glyphicon glyphicon-ok-sign tt'  data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
                             } else if (val.tel_tps == "1") {
@@ -1163,7 +1165,7 @@ var modals = {
                             } else {
                                 var $tps = "<span class='glyphicon glyphicon-question-sign tt'  data-toggle='tooltip' data-placement='right' title='TPS Status is unknown'></span>"
                             }
-                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $tps + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right' data-modal='delete-company-phone' company-id='"+response.data.general.company_id+"' data-id='" + val.tel_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right company-item-btn' data-action='edit_cophone' data-id='" + val.tel_id + "'></span></td></tr>";
+                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $tps + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right' data-modal='delete-company-phone' company-id='" + response.data.general.company_id + "' data-id='" + val.tel_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right company-item-btn' data-action='edit_cophone' data-id='" + val.tel_id + "'></span></td></tr>";
                             $panel.find('#phone tbody').append($phone);
                         });
                     } else {
@@ -1174,13 +1176,13 @@ var modals = {
                         $panel.find('#address tbody').empty();
                         $panel.find('#address .table-container, #address .table-container table').show();
                         $panel.find('#address .none-found').hide();
-                        $.each(response.data.address, function(key, val) {
+                        $.each(response.data.address, function (key, val) {
                             if (val.primary == 1) {
                                 var $primary = "<span class='glyphicon glyphicon-ok-sign'></span>";
                             } else {
                                 $primary = "";
                             }
-                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right del-item-btn' data-modal='delete-company-address' company-id='"+response.data.general.company_id+"' data-id='" + val.address_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right company-item-btn' data-action='edit_coaddress' data-id='" + val.address_id + "'></span></td></tr>"
+                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td><span class='glyphicon glyphicon-trash pointer pull-right del-item-btn' data-modal='delete-company-address' company-id='" + response.data.general.company_id + "' data-id='" + val.address_id + "'></span><span class='glyphicon glyphicon-pencil pointer pull-right company-item-btn' data-action='edit_coaddress' data-id='" + val.address_id + "'></span></td></tr>"
                             $panel.find('#address tbody').append($address);
                         });
                     } else {
@@ -1189,36 +1191,36 @@ var modals = {
                     }
                 }
                 $('.tt').tooltip();
-				$panel.find('.tab[href="#'+item_form+'"]').tab('show');
+                $panel.find('.tab[href="#' + item_form + '"]').tab('show');
             });
 
         },
-        save_company: function() {
+        save_company: function () {
             var $form = $('#modal #general').find('form');
-			if($form.find('input[name="company_id"]').val()==""){
-			var action = "add_company";	
-			} else {
-			var action = "save_company";		
-			}
+            if ($form.find('input[name="company_id"]').val() == "") {
+                var action = "add_company";
+            } else {
+                var action = "save_company";
+            }
             $.ajax({
                 url: helper.baseUrl + "ajax/" + action,
                 type: "POST",
                 dataType: "JSON",
                 data: $form.serialize()
-            }).done(function(response) {
+            }).done(function (response) {
                 flashalert.success("Company details saved");
                 //change the add box to an edit box
                 if (action == "add_company") {
                     $('#modal').find('input[name="company_id"]').val(response.id);
                     $('.phone-tab,.address-tab').show();
-					$('#phone,#address').find('.table-container table').hide();
+                    $('#phone,#address').find('.table-container table').hide();
                     $('.tab-alert').hide();
                 }
                 record.company_panel.load_panel(record.urn, response.id);
             });
 
         },
-        change_tab: function(tab) {
+        change_tab: function (tab) {
             modals.clear_footer();
             var buttons = "";
             if (tab == "#general") {
@@ -1227,7 +1229,7 @@ var modals = {
             } else {
                 buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 $('#modal').find('.table-container').show();
-				$('#modal').find('.company-phone-form,.company-address-form').hide();
+                $('#modal').find('.company-phone-form,.company-address-form').hide();
                 modals.update_footer(buttons);
             }
 
@@ -1235,19 +1237,19 @@ var modals = {
     },
 
 
-    company_tel: function() {
+    company_tel: function () {
         /* add the modal code here */
     },
-    contact_tel: function() {
+    contact_tel: function () {
         /* add the modal code here */
     },
-    company_address: function() {
+    company_address: function () {
         /* add the modal code here */
     },
-    contact_address: function() {
+    contact_address: function () {
         /* add the modal code here */
     },
-    calendar: function() {
+    calendar: function () {
         /* add the modal code here */
     },
 }
