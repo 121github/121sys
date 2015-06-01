@@ -19,7 +19,9 @@ var maps = {
         this.geocoder = new google.maps.Geocoder();
         this.uk_lat = 54.9830568815027;
         this.uk_lng = -4.331033059374933;
-        this.default_zoom = 6
+        this.default_zoom = 6;
+        this.panelList = $('#draggablePanelList');
+
         if (getCookie('lat') && getCookie('lng')) {
             this.lat = getCookie('lat');
             this.lng = getCookie('lng');
@@ -67,61 +69,18 @@ var maps = {
             }
         });
 
+        $('#optimized').bootstrapToggle({
+            onstyle: 'success',
+            size: 'mini'
+        });
+
         $('#map-view-toggle').bootstrapToggle({
             onstyle: 'success',
             size: 'mini',
         }).show().bootstrapToggle('off');
 
         $('#map-view-toggle').change(function () {
-            if ($(this).prop('checked')) {
-
-                if (getCookie('location_error')) {
-                    var location_error = '<div class="alert alert-danger" role="alert">' +
-                        '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ' +
-                        '<span class="sr-only">Error: </span>' +
-                        getCookie('location_error') + ' Please contact support for assistance</div>'
-                    $('.container-fluid').prepend(location_error);
-                }
-                if (getCookie('current_postcode')) {
-                    $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
-                }
-
-                $(document).on('mouseenter', '.data-table tbody tr', function () {
-                    maps.animateMarker($(this).attr('data-id'));
-                    $(this).css('color', 'green');
-                });
-
-                //Start animation in the map for the marker deselected in the table
-                $(document).on('mouseleave', '.data-table tbody tr', function () {
-                    maps.removeMarkerAnimation($(this).attr('data-id'));
-                    $(this).css('color', 'black');
-                });
-                if (device_type == ('default')) {
-                    $("#table-wrapper").removeClass("col-lg-12").addClass("col-lg-6");
-                    $(".map-view").show();
-                } else {
-                    $("#table-wrapper").find('table').find('tbody').hide();
-                    $(".map-view").show();
-                }
-                //Reload the map
-                var currCenter = map.getCenter();
-                google.maps.event.trigger(map, 'resize');
-                map.setCenter(currCenter);
-            } else {
-                $(document).off('mouseenter', '.data-table tbody tr');
-                $(document).off('mouseleave', '.data-table tbody tr');
-                //Start animation in the map for the marker deselected in the table
-                if (device_type == ('default')) {
-                    $("#table-wrapper").removeClass("col-lg-6").addClass("col-lg-12");
-                    $(".map-view").hide();
-                    $('table').removeAttr('style')
-                } else {
-                    $("#table-wrapper").find('table').find('tbody').show();
-                    $(".map-view").hide();
-                    removeDirections();
-                }
-
-            }
+            maps.showMap($(this));
             map_table_reload();
         });
 
@@ -138,13 +97,22 @@ var maps = {
         $(document).on('click', '.appointment-btn', function () {
             $('.map-form').find('input[name="destination"]').val($(this).attr('item-postcode'));
             var destination = $('.map-form').find('input[name="destination"]').val();
-            maps.getDirections(destination);
+            var origin = maps.markerLocation.getPosition();
+            maps.getDirections(origin, destination);
+        });
+
+        $(document).on('click', '.record-planner-btn', function () {
+            $('.map-form').find('input[name="destination"]').val($(this).attr('item-postcode'));
+            var destination = $('.map-form').find('input[name="destination"]').val();
+            var origin = maps.markerLocation.getPosition();
+            maps.getDirections(origin, destination);
         });
 
         $(document).on('click', '.change-directions-btn', function () {
             $('.map-form').find('input[name="travel-mode"]').val($(this).attr('item-mode'));
             var destination = $('.map-form').find('input[name="destination"]').val();
-            maps.getDirections(destination);
+            var origin = maps.markerLocation.getPosition();
+            maps.getDirections(origin, destination);
         });
 
         $(document).on('click', '.close-directions-btn', function () {
@@ -160,6 +128,24 @@ var maps = {
             }
             $('.map-form').find('input[name="postcode"]').val(current_postcode);
             maps.codeAddress(12);
+        });
+
+        $(document).on('click', '.get-origin-location-btn', function () {
+            var current_postcode = getCookie("current_postcode");
+            if (current_postcode.length == 0) {
+                getLocation();
+                current_postcode = getCookie("current_postcode");
+            }
+            $('.directions-form').find('input[name="origin"]').val(current_postcode);
+        });
+
+        $(document).on('click', '.get-destination-location-btn', function () {
+            var current_postcode = getCookie("current_postcode");
+            if (current_postcode.length == 0) {
+                getLocation();
+                current_postcode = getCookie("current_postcode");
+            }
+            $('.directions-form').find('input[name="destination"]').val(current_postcode);
         });
 
         $(document).on('click', '.show-directionsPanel-btn', function () {
@@ -213,7 +199,164 @@ var maps = {
             maps.infowindow.close();
         });
 
+
+        if (maps.map_type == 'planner') {
+            //Date range
+            $('.daterange').daterangepicker({
+                    opens: "left",
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    format: 'DD/MM/YYYY',
+                    startDate: moment()
+                },
+                function(start, end, element) {
+                    var $btn = this.element;
+                    $btn.find('.date-text').html(start.format('MMMM D'));
+                    $btn.closest('.filter-form').find('input[name="date"]').val(start.format('YYYY-MM-DD'));
+                    map_table_reload();
+                });
+            $(document).on("click", '.daterange', function(e) {
+                e.preventDefault();
+            });
+
+            //Drag and drop
+            jQuery(function($) {
+                maps.panelList.sortable({
+                    // Only make the .panel-heading child elements support dragging.
+                    // Omit this to make then entire <li>...</li> draggable.
+                    handle: '.record-planner-heading',
+                    update: function() {
+                        maps.updateRecordPlannerList();
+                    }
+                });
+            });
+
+            $(document).on("click", '.goup-btn', function(e) {
+                e.preventDefault();
+                $(this).parents('.record-planner-item').insertBefore($(this).parents('.record-planner-item').prev());
+                maps.updateRecordPlannerList();
+            });
+
+            $(document).on("click", '.godown-btn', function(e) {
+                e.preventDefault();
+                $(this).parents('.record-planner-item').insertAfter($(this).parents('.record-planner-item').next());
+                maps.updateRecordPlannerList();
+            });
+
+
+            //Generate route
+            $(document).on("click", '.calc-route-btn', function(e) {
+                e.preventDefault();
+                maps.calcRoute();
+            });
+        }
     },
+
+    showMap: function(btn){
+        if (btn.prop('checked')) {
+            if (getCookie('location_error')) {
+                var location_error = '<div class="alert alert-danger" role="alert">' +
+                    '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ' +
+                    '<span class="sr-only">Error: </span>' +
+                    getCookie('location_error') + ' Please contact support for assistance</div>'
+                $('.container-fluid').prepend(location_error);
+            }
+            if (getCookie('current_postcode')) {
+                $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
+            }
+
+            $(document).on('mouseenter', '.data-table tbody tr', function () {
+                maps.animateMarker($(this).attr('data-id'));
+                $(this).css('color', 'green');
+            });
+
+            //Start animation in the map for the marker deselected in the table
+            $(document).on('mouseleave', '.data-table tbody tr', function () {
+                maps.removeMarkerAnimation($(this).attr('data-id'));
+                $(this).css('color', 'black');
+            });
+            if (device_type == ('default')) {
+                $("#table-wrapper").removeClass("col-lg-12").addClass("col-lg-6");
+                $(".map-view").show();
+            } else {
+                $("#table-wrapper").find('table').find('tbody').hide();
+                $(".map-view").show();
+            }
+            //Reload the map
+            var currCenter = map.getCenter();
+            google.maps.event.trigger(map, 'resize');
+            map.setCenter(currCenter);
+        } else {
+            $(document).off('mouseenter', '.data-table tbody tr');
+            $(document).off('mouseleave', '.data-table tbody tr');
+            //Start animation in the map for the marker deselected in the table
+            if (device_type == ('default')) {
+                $("#table-wrapper").removeClass("col-lg-6").addClass("col-lg-12");
+                $(".map-view").hide();
+                $('table').removeAttr('style')
+            } else {
+                $("#table-wrapper").find('table').find('tbody').show();
+                $(".map-view").hide();
+                maps.removeDirections();
+            }
+        }
+    },
+
+    calcRoute: function() {
+        maps.panelList = $('#draggablePanelList');
+        var record_list_route = [];
+        var waypts = [];
+        //Open map view
+        if (!$('#map-view-toggle').prop('cheched')) {
+            $('#map-view-toggle').bootstrapToggle('on')
+            maps.showMap($('#map-view-toggle'));
+        }
+        maps.removeDirections();
+        $('.panel', maps.panelList).each(function(index, elem) {
+            var postcode = $(elem).attr('postcode');
+            var record_planner_id = $(elem).attr('record-planner-id');
+            if (index < 8) {
+                waypts.push({
+                    //location: new google.maps.LatLng(lat, lng),
+                    location: postcode,
+                    stopover: true
+                });
+                record_list_route[index] = {
+                    record_planner_id: record_planner_id,
+                    postcode: postcode
+                };
+
+            }
+        });
+        //Get the origin and the destination
+        var origin = maps.markerLocation.getPosition();
+        var destination = maps.markerLocation.getPosition();
+
+        if ($('.directions-form').find('input[name="origin"]').val().length > 0) {
+            origin = $('.directions-form').find('input[name="origin"]').val();
+        }
+
+        if ($('.directions-form').find('input[name="destination"]').val().length > 0) {
+            destination = $('.directions-form').find('input[name="destination"]').val();
+        }
+
+        maps.getDirections(origin, destination, waypts,record_list_route);
+    },
+
+    updateRecordPlannerList: function() {
+        panelList = $('#draggablePanelList');
+        $('.panel', panelList).each(function(index, elem) {
+            if (index < 8) {
+                $(elem).removeClass("panel-default").addClass("panel-success");
+            }
+            else {
+                $(elem).removeClass("panel-success").addClass("panel-default");
+            }
+        });
+        $('.route-header').hide();
+        maps.removeDirections();
+    },
+
     codeAddress: function (zoom) {
         var address = $('.map-form').find('input[name="postcode"]').val();
         if (address == "") {
@@ -242,8 +385,8 @@ var maps = {
         }
     },
 
-    getDirections: function (destination) {
-        var start = maps.markerLocation.getPosition();
+    getDirections: function (origin,destination, waypoints, record_list_ord) {
+        var start = origin;
         var dest = destination;
         var travelMode = $('.map-form').find('input[name="travel-mode"]').val();
 
@@ -253,6 +396,8 @@ var maps = {
         var request = {
             origin: start,
             destination: dest,
+            waypoints: waypoints,
+            optimizeWaypoints: ($('.directions-form').find('input[name="optimized"]').prop('checked')),
             travelMode: google.maps.DirectionsTravelMode[travelMode],
             transitOptions: {
                 routingPreference: google.maps.TransitRoutePreference.FEWER_TRANSFERS
@@ -261,11 +406,40 @@ var maps = {
         };
         maps.directionsService.route(request, function (result, status) {
             if (status == google.maps.DirectionsStatus.OK) {
+                var total_duration = 0;
+                var total_distance = 0;
+                var record_list_route = [];
+                var waypoint_order = result.routes[0].waypoint_order;
+                //Iterate the routes
+                $.each(result.routes[0].legs, function (index, route) {
+                    var data_route = {
+                        'order_num': index,
+                        'record_planner': record_list_ord[waypoint_order[index]],
+                        'start_add': route.start_address,
+                        'start_lat': route.start_location.A,
+                        'start_lng': route.start_location.F,
+                        'end_add': route.end_address,
+                        'end_lat': route.end_location.A,
+                        'end_lng': route.end_location.F,
+                        'distance': route.distance.value,
+                        'duration': route.duration.value,
+                        'travel_mode': travelMode
+                    };
+                    record_list_route.push(data_route);
+                    total_duration = total_duration + parseInt(route.duration.value);
+                    total_distance = total_distance + parseInt(route.distance.value);
+                });
                 $('.route-info').html(
-                    result.routes[0].legs[0].distance.text + ': ' +
-                    result.routes[0].legs[0].duration.text + ' ' +
+                    (Math.ceil((total_distance/1000)/1.2)) + ' miles - ' +
+                    (toHHMMSS(total_duration)) +
                     '<span style="font-size: 25px; margin-right: 12px; margin-left: 11px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
                 maps.directionsDisplay.setDirections(result);
+                if (maps.map_type =='planner') {
+                    maps.saveRecordRoute(record_list_route);
+                    setTimeout(function () {
+                        map_table_reload();
+                    }, 2000);
+                }
             }
         });
         maps.directionsDisplay.setMap(map);
@@ -314,6 +488,9 @@ var maps = {
                 }
                 if (maps.map_type == "records") {
                     maps.addRecordMarker(value);
+                }
+                if (maps.map_type == "planner") {
+                    maps.addPlannerMarker(value);
                 }
             });
         }
@@ -456,6 +633,65 @@ var maps = {
         });
         maps.setMarker(marker);
     },
+
+    // Add a marker to the map and push to the array.
+    addPlannerMarker: function(value) {
+        var marker_color = maps.intToARGB(maps.hashCode(value.name));
+        var marker_text_color = "FFFFFF";
+        var character = (value.name).substr(0, 1);
+
+        var planner_info =
+            '<b>Planner: </b>' +
+            '<span style="margin-right: 5px;">' + (value.record_planner_id?(value.user + ' on ' + value.start):'') + '</span>' +
+            '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="'+value.urn+'" item-planner-date="'+(value.start?value.start:'')+'"></a>';
+
+
+        var contentString =
+            '<div id="content">' +
+            '<div id="siteNotice">' +
+            '</div>' +
+            '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
+            '<div id="bodyContent_'+value.urn+'">' +
+            '<p><b>Company: </b>' + (value.name ? value.name : '') + '</p>' +
+            '<p><b>Contact: </b>' + (value.fullname ? value.fullname : '') + '</p>' +
+            '<p><b>Outcome: </b>' + (value.outcome ? value.outcome : '') + '</p>' +
+            '<p><b>Next Call: </b>' + (value.nextcall ? value.nextcall : '') + '</p>' +
+            '<p><b>Last Updated: </b>' + (value.date_updated ? value.date_updated : '') + '</p>' +
+            '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
+            '<p style="display: none;">' + value.location_id + '</p>' +
+            '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
+            '<p>' + planner_info + '</p>' +
+            '<p>' +
+            '<span><a class="btn btn-success btn-sm record-btn" item-postcode="' + value.postcode + '" href="#"><span class="glyphicon glyphicon-road"></span> Navigate </a></span>' +
+            '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
+            '</p>' +
+            '</div>' +
+            '<div id="formContent_'+value.urn+'" style="display:none;">' +
+            '<form class="planner-form-'+value.urn+'">' +
+            '<div class="form-group input-group-sm">' +
+            '<p>Planning Date: </p><input type="text" class="form-control date" name="date" placeholder="Enter the planning date" required/>' +
+            '</div>' +
+            '<p>' +
+            '<span><a class="btn btn-default btn-sm cancel-planner-btn" item-urn="'+value.urn+'" href="#">Cancel</a></span>' +
+            '<span class="pull-right"><a class="btn btn-primary btn-sm save-planner-btn" item-urn="'+value.urn+'" item-postcode="'+value.postcode+'" item-location-id="'+value.location_id+'" item-record-planner-id="'+(value.record_planner_id?value.record_planner_id:'')+'" href="#">Save</a></span>' +
+            '</p>' +
+            '</form>' +
+            '</div>'
+        '</div>';
+
+        var marker = new google.maps.Marker({
+            record_planner_id: value.record_planner_id,
+            position: new google.maps.LatLng(value.lat, value.lng),
+            map: map,
+            title: value.name,
+            postcode: value.postcode,
+            content: contentString,
+            icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
+        });
+
+        maps.setMarker(marker);
+    },
+
     setMarker: function (marker) {
         google.maps.event.addListener(marker, 'click', function () {
             maps.infowindow.close();
@@ -543,12 +779,35 @@ var maps = {
         }).done(function (response) {
             if (response.success) {
                 flashalert.success(response.msg);
-                maps.temp_bounds = maps.bounds
-                var currentPage = view_records.table.page();
-                ;
-                view_records.table.page(currentPage).draw(false);
+                if (maps.map_type == 'planner') {
+                    map_table_reload();
+                }
+                else {
+                    maps.temp_bounds = maps.bounds
+                    var currentPage = view_records.table.page();
+                    ;
+                    view_records.table.page(currentPage).draw(false);
+                }
             } else {
                 flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    saveRecordRoute: function(record_list_route) {
+        $.ajax({
+            url: helper.baseUrl + "planner/save_record_route",
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                record_list: $.parseJSON(JSON.stringify(record_list_route)),
+                date: $('.filter-form').find('input[name="date"]').val()
+            }
+        }).done(function (response) {
+            if (response.success) {
+
+            } else {
+
             }
         });
     }
