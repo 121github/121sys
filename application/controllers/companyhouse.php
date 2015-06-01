@@ -120,11 +120,9 @@ class Companyhouse extends CI_Controller
 
         $num_per_page = ($num_per_page?'\&num='.$num_per_page:'');
         $start_index = ($start_index?'\&startIndex='.$start_index:'');
-		$url = $this->url.'/search/companies?q='.$search.$num_per_page.$start_index;
-       // $response = exec('curl -XGET -u '.$url);
-	    $this->load->helper('remotefile');
-		$response = loadFile($url,$this->api_key);
-		$this->firephp->log($response);
+
+        $response = exec('curl -XGET -u '.$this->api_key.': '.$this->url.'/search/companies?q='.$search.$num_per_page.$start_index);
+
         return $response;
     }
 
