@@ -140,10 +140,8 @@ class Planner_model extends CI_Model
     {
         //Prepare the data
         $data = array();
-        $record_planner_ids = array();
         foreach ($record_list as $order_num => $record) {
             if (isset($record['record_planner'])) {
-                array_push($record_planner_ids,$record['record_planner']['record_planner_id']);
                 array_push($data, array(
                     'record_planner_id' => $record['record_planner']['record_planner_id'],
                     'start_add' => $record['start_add'],
@@ -159,11 +157,9 @@ class Planner_model extends CI_Model
             }
         }
 
-        //Delete the routes for the record planners in the list
-        if (!empty($record_planner_ids)) {
-            $this->db->where("record_planner_id IN (".implode(",",$record_planner_ids).")");
-            $this->db->delete('record_planner_route');
-        }
+        //Delete the routes for the user and date
+        $qry = "delete rpr from record_planner_route rpr inner join record_planner rp using(record_planner_id) where rp.user_id=".$user_id." and date(rp.start_date) ='".$date."'";
+        $this->db->query($qry);
 
         //Save the routes for the record planners in the list
         if (!empty($data)) {

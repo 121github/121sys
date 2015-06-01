@@ -101,9 +101,10 @@
                         </form>
                     </div>
                     <div class="panel panel-primary directionsPanel-container">
-                        <div class="panel-heading">Route<span
-                                class="glyphicon glyphicon-remove pointer pull-right close-directionsPanel"></span></div>
-                        <div class="panel-body" style="font-size: 12px; overflow: scroll; height: 500px;">
+                        <div class="panel-heading">
+                            Route
+                        </div>
+                        <div class="panel-body" style="font-size: 12px; overflow: auto; height: 500px;">
                             <div class="directionsPanel-panel">
                                 <div class="directionsPanel-content">
                                     <div id="directionsPanel"></div>

@@ -18,7 +18,7 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-lg-12 planner-view">
+            <div class="col-lg-12 planner-view" id="table-wrapper">
                 <div class="panel panel-default planner-options">
                     <div class="panel-body">
                         <form class="directions-form">
@@ -62,9 +62,9 @@
                     </div>
                 </div>
                 <div class="panel panel-default planner-data">
-                    <div class="panel-body blocktext" style="min-height: 500px;">
+                    <div class="panel-body blocktext" style="max-height: 650px;">
                         <!-- Bootstrap 3 panel list. -->
-                        <ul id="draggablePanelList" class="list-unstyled">
+                        <ul id="draggablePanelList" class="list-unstyled" style="height: 650px; overflow: auto;">
                                 <img src=' <?php echo base_url(); ?>assets/img/ajax-loader-bar.gif'>
                         </ul>
                     </div>
@@ -128,9 +128,10 @@
                         </form>
                     </div>
                     <div class="panel panel-primary directionsPanel-container">
-                        <div class="panel-heading" style="font-size: 20px">Route<span
-                                class="glyphicon glyphicon-remove pull-right btn-sm pointer close-directionsPanel"></span></div>
-                        <div class="panel-body" style="font-size: 12px; overflow: scroll; height: 500px;">
+                        <div class="panel-heading" style="font-size: 20px">
+                            Route
+                        </div>
+                        <div class="panel-body" style="font-size: 12px; overflow: auto; height: 500px;">
                             <div class="directionsPanel-panel">
                                 <div class="directionsPanel-content">
                                     <div id="directionsPanel"></div>
