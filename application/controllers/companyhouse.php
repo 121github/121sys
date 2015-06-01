@@ -29,6 +29,8 @@ class Companyhouse extends CI_Controller
             $response = $this->search($search, $num_per_page, $start_index);
 
             echo $response;
+			
+		
         }
     }
 

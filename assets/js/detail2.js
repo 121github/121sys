@@ -1435,23 +1435,23 @@ var record = {
                 dataType: "JSON",
                 data: {'search': search, 'num_per_page': num_results, 'start_index': start_index}
             }).done(function (response) {
-                $('.searchresult-tab').find('.num-results').html((response.totalResults < 200?response.totalResults:'> 200'));
+                $('.searchresult-tab').find('.num-results').html((response.total_results < 200?response.total_results:'> 200'));
                 $('.nav-tabs a[href="#cosearchresult"]').tab('show');
-                var tbody = $panel.find('#cosearchresult .table-container table tbody');
+                var tbody = $('#modal').find('#cosearchresult .table-container table tbody');
                 tbody.empty();
-                if (response.totalResults>0) {
-                    response.totalResults = (response.totalResults < 200?response.totalResults:199);
-                    $panel.find('#cosearchresult .table-container table').show();
+                if (response.total_results>0) {
+                    response.total_results = (response.total_results < 200?response.total_results:199);
+                    $('#modal').find('#cosearchresult .table-container table').show();
                     $.each(response.items, function (key, val) {
-                        tbody.append("<tr class='pointer' item-number='"+val.number.replace('<strong>','').replace('</strong>','')+"'>" +
-                                "<td>"+val.name+"</td>" +
-                                "<td>"+val.number+"</td>" +
-                                "<td>"+val.status+"</td>" +
-                                "<td>"+val.date+"</td>" +
+                        tbody.append("<tr class='pointer' item-number='"+val.description_values.company_number.replace('<strong>','').replace('</strong>','')+"'>" +
+                                "<td>"+val.title+"</td>" +
+                                "<td>"+val.description_values.company_number+"</td>" +
+                                "<td>"+val.description_values.company_status+"</td>" +
+                                "<td>"+val.date_of_creation+"</td>" +
                             "</tr>");
                     });
-                    if (response.totalResults>num_results) {
-                        var num_pages = Math.ceil(response.totalResults/num_results);
+                    if (response.total_results>num_results) {
+                        var num_pages = Math.ceil(response.total_results/num_results);
                         var prev = (response.page_number==1?'disabled':'search-next-company-action');
                         var next = (response.page_number==num_pages?'disabled':'search-next-company-action');
 
@@ -1474,7 +1474,7 @@ var record = {
                     }
                 }
                 else {
-                    $panel.find('#cosearchresult .table-container table').hide();
+                     $('#modal').find('#cosearchresult .table-container table').hide();
                 }
             });
         },
@@ -1497,7 +1497,7 @@ var record = {
             });
         },
         get_company: function (company_no) {
-            var $panel = $(record.company_panel.config.panel);
+            var $panel = $('#modal');
             var form = $('.update-company-form');
 
             $panel.find('.search-container').fadeOut(1000, function () {
