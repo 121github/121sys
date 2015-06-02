@@ -132,7 +132,7 @@ var importer = {
             url: helper.baseUrl + 'import/check_import',
             type: "POST",
             dataType: "JSON",
-            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val() + '&type=' + $('#campaign option:selected').attr('ctype')+ '&ignore_tel=' + $('[name="ignore_tel"]').val()
+            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val() + '&type=' + $('#campaign option:selected').attr('ctype')
         }).done(function (response) {
             if (response.success) {
                 importer.start_import();

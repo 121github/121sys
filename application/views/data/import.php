@@ -122,7 +122,7 @@
                                         </select>
                                     </div>-->
                                                     <div id="ignore-tel" style="display:none" class="form-group input-group-sm pull-left marl">
-                                         <p>Require telephone numbers</p>
+                                         <p>Require telephone</p>
                                         <select style="display:none"  name="ignore_tel" class="selectpicker" data-width="150px"><option value="0" selected >Yes</option><option value="1">No</option></select>
                                         </div>
                                     <div class="form-group input-group-sm pull-left">
