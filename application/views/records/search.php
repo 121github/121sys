@@ -445,7 +445,7 @@
             <!---------------------->
         <!--  CUSTOM FILTER -->
         <!---------------------->
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" style="overflow:visible">
           <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
             <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Custom Field Filter</h4>
           </div>
