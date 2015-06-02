@@ -698,7 +698,7 @@ var filter = {
 				}
 			else {
 			custom_form += '<div class="form-group"><label style="display:block">'+v.field_name+'</label>';
-			custom_form += '<input class="form-control" name="'+v.field+'" />';
+			custom_form += '<input class="form-control" type="text" name="'+v.field+'" />';
 			}
 			custom_form += '</div>';
 		});
