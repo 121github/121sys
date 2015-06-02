@@ -231,7 +231,7 @@ class User_model extends CI_Model
     
     public function get_positives($campaign, $user_id)
     {
-		$qry = "select outcome,count(*) count from history left join outcomes using(outcome_id) where campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate() and `positive` = 1 group by outcome_id";
+		$qry = "select outcome,count(*) count from history inner join outcomes using(outcome_id) where campaign_id = '$campaign' and user_id = '$user_id' and date(contact) = curdate() and `positive` = 1 group by outcome_id";
 
         $query = $this->db->query($qry);
             return $query->result_array();

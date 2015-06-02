@@ -20,7 +20,7 @@
            <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-minus"></div>Campaign Filter Options</h4>
           </div>
           <div id="collapseZero" class="panel-collapse collapse in">
-            <div class="panel-body">
+            <div class="panel-body" style="display:none">
             <div class="form-group">
          
                 <label style="display:block">Campaign</label>
@@ -508,5 +508,7 @@ $(document).ready(function(){
 	    filter.check_distance();
 		},300);
 	});
+	
+	$('#collapseZero').find('.panel-body').show();
 });
 </script> 

@@ -653,7 +653,6 @@ $this->db->query($renewals);
 	//echo $array['name'] .": ". $ref.";<br>";
 	$this->db->query($update);
 	$find_removed ="select urn from companies left join records using(urn) left join company_addresses using(company_id) where campaign_id = '$campaign_id' and concat(substring(companies.name, 1, 4 ),add1,postcode) = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
-	echo ";<br>";
 	foreach($this->db->query($find_removed)->result_array() as $row){
 		$this->db->query("delete from records where urn = '{$row['urn']}'");
 		$this->db->query("delete from contacts where urn = '{$row['urn']}'");
@@ -686,7 +685,6 @@ $this->db->query($renewals);
 	//echo $array['name'] .": ". $ref.";<br>";
 	$this->db->query($update);
 	$find_removed ="select urn from companies left join records using(urn) left join company_addresses using(company_id) where campaign_id = '$campaign_id' and companies.name = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
-	echo ";<br>";
 	foreach($this->db->query($find_removed)->result_array() as $row){
 		$this->db->query("delete from records where urn = '{$row['urn']}'");
 		$this->db->query("delete from contacts where urn = '{$row['urn']}'");

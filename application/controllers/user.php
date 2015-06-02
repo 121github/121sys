@@ -284,7 +284,6 @@ class User extends CI_Controller
 		
 
         $cross_transfers = $this->User_model->get_cross_transfers_by_campaign_destination($campaign,$user_id);
-		$this->firephp->log($positives);
 		$footer_stats["Records Worked"] = $worked;
 		foreach($positives as $row){
 		if($row['outcome']=="Transfer"){
