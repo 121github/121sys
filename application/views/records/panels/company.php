@@ -14,7 +14,7 @@
                     <a data-toggle="collapse" data-parent="#accordion" href="#com-collapse-<?php echo $id ?>"> <?php echo $company["Company Name"]; ?></a>
                     <!-- <span class="glyphicon glyphicon-trash pull-right del-company-btn" data-target="#modal" item-id="--><?php //echo $id ?><!--"></span>-->
                     <?php if (in_array("edit companies", $_SESSION['permissions'])) { ?>
-                        <span class="glyphicon glyphicon-search pointer pull-right marl search-company-btn" data-urn = "<?php echo $details['record']["urn"] ?>" data-id="<?php echo $id ?>"></span>
+                        <span class="glyphicon glyphicon-search pointer pull-right marl" data-urn = "<?php echo $details['record']["urn"] ?>" data-id="<?php echo $id ?>" data-modal="search-company"></span>
                         <span class="glyphicon glyphicon-pencil pointer pull-right" data-modal="edit-company" data-id="<?php echo $id ?>"></span>
                     <?php } ?>
                     <div id="com-collapse-<?php echo $id ?>" class="panel-collapse collapse <?php if ($x == 1) {

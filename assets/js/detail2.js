@@ -813,7 +813,7 @@ var record = {
                     });
                     $panel.find('.contacts-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.name.fullname).addClass(collapse))
-                            .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right').attr('data-id', key).attr('data-modal', 'delete_contact'))
+                            .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right marl').attr('data-id', key).attr('data-modal', 'delete_contact'))
                             .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right').attr('data-id', key).attr('data-modal','edit-contact'))
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal contact-detail-list').append($contact_detail_list_items).append($contact_detail_telephone_items))
@@ -1018,7 +1018,7 @@ var record = {
                 panel: '.company-panel'
             };
   
-            $(document).on('click', '.search-company-btn', function (e) {
+            $(document).on('click', '[data-modal="search-company"]', function (e) {
                 e.preventDefault();
 				var id = $(this).attr('data-id');
 				var urn = $(this).attr('data-urn');
@@ -1206,8 +1206,8 @@ var record = {
                     $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#com-collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.visible['Company']).addClass(collapse))
                             //.append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-company-btn').attr('item-id', key).attr('data-target', '#model'))
-                            .append($('<span/>').addClass('glyphicon glyphicon-search pointer pull-right search-company-btn').attr('item-id', key))
-                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right edit-company-btn').attr('item-id', key))
+                            .append($('<span/>').addClass('glyphicon glyphicon-search pointer marl pull-right').attr('data-id', key).attr('data-modal', 'search-company'))
+                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right').attr('data-id', key).attr('data-modal', 'edit-company'))
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal company-detail-list').append($company_detail_list_items).append($company_detail_telephone_items))
                         )
@@ -1488,7 +1488,7 @@ var record = {
             }).done(function (response) {
                 if (response.success) {
                     $.each(response.data.general, function (key, val) {
-                        $panel.find('#cosearch input[name="' + key + '"]').val(val);
+                        $panel.find('input[name="' + key + '"]').val(val);
                     });
                     $panel.find('#cosearchresult .table-container table').hide();
                     $panel.find('#cosearchresult .none-found').show();
@@ -1509,6 +1509,8 @@ var record = {
                 dataType: "JSON",
                 data: { 'company_no': company_no }
             }).done(function (response) {
+				var mfooter = '<button class="btn btn-default pull-left back-company-btn">Back</button> <button class="btn btn-primary update-company-action pull-right">Update</button>';
+				modals.update_footer(mfooter);
                 form.find('input[name="company_id"]').val($('.search-company-form').find('input[name="company_id"]').val());
                 form.find('input[name="company_name"]').val(response.company_name);
                 form.find('input[name="company_number"]').val(response.company_number);
@@ -1549,9 +1551,11 @@ var record = {
             });
         },
         close_get_company: function () {
-            var $panel = $(record.company_panel.config.panel);
+            var $panel = $('#modal');
             $panel.find('.get-company-container').fadeOut(1000, function () {
                 $panel.find('.search-container').fadeIn(1000);
+				var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+				modals.update_footer(mfooter);
             });
         },
         update_company: function (start_index) {

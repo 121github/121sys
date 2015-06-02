@@ -578,6 +578,16 @@ $this->db->query($renewals);
 	public function check_import(){
 		$type = $this->input->post('type');
 		$fields= $this->input->post('field');
+		if($this->input->post('merge')==4){
+			if(!in_array("merge_column",$fields)){
+			$error ="You have not specified a merge column";	
+			}
+		}
+		if($this->input->post('ignore_tel')=="1"){
+		$ignoreTel = true;		
+		} else {
+		$ignoreTel = false;	
+		}
 		$error="";
 		if($type=="B2B"){
 			if(!in_array("company_name",$fields)){
@@ -589,7 +599,7 @@ $this->db->query($renewals);
 			$tel = true;
 			}
 			}
-			if(!$tel){
+			if(!$tel||!$ignoreTel){
 			$error ="B2B campaigns require a telephone number";		
 			}
 		}
@@ -600,7 +610,7 @@ $this->db->query($renewals);
 			$tel = true;
 			}
 			}
-			if(!$tel){
+			if(!$tel||$ignoreTel){
 			$error ="B2C campaigns require a contact telephone number";		
 			}
 		}
@@ -655,6 +665,41 @@ $this->db->query($renewals);
 	}
 	echo json_encode(array("success"=>true));
 	}
+	
+	//this function is used to merge contacts for when a record has multiple contacts
+	public function merge_dupe_companies_exact(){
+		if ($this->input->is_ajax_request()) {
+			$show = false;
+				$campaign_id = $this->input->post('campaign');
+		} else {
+			$show=true;
+			intval($this->uri->segment(3));
+		}
+	$qry = "select name,urn,companies.name as dupe from companies left join records using(urn) left join company_addresses using(company_id) where campaign_id = $campaign_id group by companies.name having count(companies.name) > 1 ";
+	$array = $this->db->query($qry)->result_array();
+	$dupes = array();
+	foreach($array as $row){
+		$dupes[$row['dupe']]=array("name"=>$row['name'],"urn"=>$row['urn']);
+	}
+	foreach($dupes as $ref => $array){
+	$update = "update contacts left join records using(urn) left join companies using(urn) left join company_addresses using(company_id) set contacts.urn = {$array['urn']} where campaign_id = '$campaign_id' and companies.name = '".addslashes($ref)."'";
+	//echo $array['name'] .": ". $ref.";<br>";
+	$this->db->query($update);
+	$find_removed ="select urn from companies left join records using(urn) left join company_addresses using(company_id) where campaign_id = '$campaign_id' and companies.name = '".addslashes($ref)."' and urn <> '{$array['urn']}'";
+	echo ";<br>";
+	foreach($this->db->query($find_removed)->result_array() as $row){
+		$this->db->query("delete from records where urn = '{$row['urn']}'");
+		$this->db->query("delete from contacts where urn = '{$row['urn']}'");
+		$this->db->query("delete from companies where urn = '{$row['urn']}'");
+		$this->db->query("delete from client_refs where urn = '{$row['urn']}'");
+		$this->db->query("delete from record_details where urn = '{$row['urn']}'");
+			}
+	
+	}
+	echo json_encode(array("success"=>true));
+	}
+	
+	
 	
 	public function merge_by_client_refs(){
 		if(intval($this->uri->segment(3))>0){

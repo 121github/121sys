@@ -99,8 +99,9 @@
                                         <select name="merge" class="selectpicker" id="merge-options" data-width="150px">
                                          	<option value="">Do not merge</option>
                                             <option value="1">Merge by client ref</option>
-                                            <option value="2">Merge by company</option>
-                                            <option value="3">Merge by merge column</option>
+                                            <option value="2">Merge by company &amp; address</option>
+                                            <option value="3">Merge by company name (exact)</option>
+                                            <option value="4">Merge by merge column</option>
                                             <!--<option value="3">Merge by dupe column</option>-->
                                         </select>
                                     </div>
@@ -120,9 +121,14 @@
                                             <option value="YY-MM-DD">YY-MM-DD</option>
                                         </select>
                                     </div>-->
+                                                    <div id="ignore-tel" style="display:none" class="form-group input-group-sm pull-left marl">
+                                         <p>Require telephone numbers</p>
+                                        <select style="display:none"  name="ignore_tel" class="selectpicker" data-width="150px"><option value="0" selected >Yes</option><option value="1">No</option></select>
+                                        </div>
                                     <div class="form-group input-group-sm pull-left">
                                         <p id='import-progress'>&nbsp;</p>
                                         <button class="btn btn-success pull-right pull-left marl" id="import">Import</button> <button class="btn btn-default pull-left goto-step-2 marl">Back</button>
+                            
                                     </div>
                                     <div style="clear:both"></div>
                                     <div style="overflow-x:scroll">

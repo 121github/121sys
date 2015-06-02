@@ -65,10 +65,6 @@
             <div style="border-bottom: 1px solid grey; margin-bottom: 10px;">OFFICERS (Select the officers to add in the contacts)</div>
             <div class="company-officers"></div>
 
-            <div class="form-actions pull-right">
-                <span class="btn btn-primary update-company-action">Update</span>
-                <span class="btn btn-default back-company-btn">Back</span>
-            </div>
         </form>
     </div>
 </div>

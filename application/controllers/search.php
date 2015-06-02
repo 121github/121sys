@@ -21,12 +21,17 @@ class Search extends CI_Controller
     }
 	
 		public function get_custom_fields(){
-		$campaigns = $this->input->post('campaign');
+		if(is_array($this->input->post('campaign'))){
+		$campaign = $campaigns[0];
+		} else {
+		$campaign = $this->input->post('campaign');
+		}
+		
 		$this->load->model('Admin_model');
-		$fields = $this->Admin_model->get_custom_fields($campaigns[0]);
+		$fields = $this->Admin_model->get_custom_fields($campaign);
 		foreach($fields as $k=>$v){
 		if($v['is_select']=="1"){
-			$options = 	$this->Filter_model->get_custom_options($v['field'],$campaigns[0]);
+			$options = 	$this->Filter_model->get_custom_options($v['field'],$campaign);
 			$fields[$k]['options'] = $options;
 		}
 			if (strpos($v['field'], "c") !== false) {

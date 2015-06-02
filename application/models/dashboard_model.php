@@ -301,7 +301,7 @@ class Dashboard_model extends CI_Model
     {
 		$qry_filter = "";
         if (!empty($filter['campaign'])) {
-            $qry_filter .= " and campaign_id = '{$filter['campaign']}'";
+            $qry_filter .= " and campaigns.campaign_id = '{$filter['campaign']}'";
         }
 		if (!empty($filter['team'])) {
             $qry_filter .= " and h.team_id = '{$filter['team']}'";

@@ -132,11 +132,12 @@ var importer = {
             url: helper.baseUrl + 'import/check_import',
             type: "POST",
             dataType: "JSON",
-            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val() + '&type=' + $('#campaign option:selected').attr('ctype')
+            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val() + '&type=' + $('#campaign option:selected').attr('ctype')+ '&ignore_tel=' + $('[name="ignore_tel"]').val()
         }).done(function (response) {
             if (response.success) {
                 importer.start_import();
             } else {
+				$('#ignore-tel').show();
                 $('#import-progress').html("<span class='red'>" + response.msg + "</span>");
                 flashalert.danger(response.msg);
             }
@@ -340,7 +341,9 @@ var importer = {
             var merge_path = "merge_by_client_refs"
         } else if ($('#merge-options').val() == "2") {
             var merge_path = "merge_dupe_companies";
-        } else if ($('#merge-options').val() == "3") {
+		} else if ($('#merge-options').val() == "3") {
+            var merge_path = "merge_dupe_companies_exact";
+        } else if ($('#merge-options').val() == "4") {
             var merge_path = "merge_by_merge_column";
         }
         $.ajax({
