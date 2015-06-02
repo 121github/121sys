@@ -28,14 +28,7 @@ class Companyhouse extends CI_Controller
 
             $response = $this->search($search, $num_per_page, $start_index);
 
-            //echo $response;
-			
-			echo '{"items":[{"url":"\/company\/02104126","description":"02104126 - Incorporated on 26 February 1987","markdown_description"
-:"**02104126** - Incorporated on 26 February 1987","title":"CASTLEMEAD INSURANCE BROKERS LIMITED","description_identifier"
-:"ltd-active","description_values":{"company_number":"02104126","company_status":"active","company_type"
-:"ltd"},"date_of_creation":"1987-02-26","snippet":"Castlemead House, St. Johns Road, Bristol BS3 1AL"
-,"kind":"searchresults#company","markdown_title":"**CASTLEMEAD** **INSURANCE** **BROKERS** LIMITED"}
-],"total_results":1,"items_per_page":20,"page_number":1,"kind":"search#","start_index":0}';
+            echo $response;
         }
     }
 
@@ -49,9 +42,8 @@ class Companyhouse extends CI_Controller
 
             $response = $this->get($company_no);
 
-            //echo $response;
-			 $json = json_encode('{"undeliverable_registered_office_address":false,"date_of_creation":"1987-02-26","accounts":{"next_due":"2015-09-30","last_accounts":{"made_up_to":"2013-12-31","type":"total-exemption-small"},"next_made_up_to":"2014-12-31","accounting_reference_date":{"day":"31","month":"12"},"overdue":false},"company_number":"02104126","sic_codes":["65120"],"registered_office_address":{"address_line_1":"Castlemead House","address_line_2":"St. Johns Road","locality":"Bristol","postal_code":"BS3 1AL"},"annual_return":{"next_due":"2016-03-15","next_made_up_to":"2016-02-16","overdue":false,"last_made_up_to":"2015-02-16"},"jurisdiction":"england-wales","last_full_members_list_date":"2015-02-16","has_been_liquidated":false,"company_name":"CASTLEMEAD INSURANCE BROKERS LIMITED","type":"ltd","officer_summary":{"resigned_count":11,"active_count":5,"officers":[{"date_of_birth":"1974-03-27","name":"BEECH, Rachael","appointed_on":"2006-12-13","officer_role":"secretary"},{"name":"BEECH, Rachael","date_of_birth":"1974-03-27","officer_role":"director","appointed_on":"2007-05-01"},{"officer_role":"director","appointed_on":"2003-10-01","name":"FROST, Nicholas","date_of_birth":"1974-05-29"},{"appointed_on":"1998-01-05","officer_role":"director","date_of_birth":"1967-06-22","name":"GAMLIN, Clive George"},{"appointed_on":"2003-10-01","officer_role":"director","date_of_birth":"1976-03-01","name":"INGLEBY, Richard James"}]},"etag":"fd90cf1a26939548188f60840b815615d1bc4a0c","company_status":"active","has_insolvency_history":false,"has_charges":true,"can_file":true}');
-echo json_decode($json);
+            echo $response;
+
 
         }
     }
