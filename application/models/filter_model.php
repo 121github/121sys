@@ -696,7 +696,7 @@ return $this->db->get('record_details_options')->result_array();
                 unset($_SESSION['current_campaign']);
             }
         }
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $qry;
         
     }
@@ -1096,7 +1096,7 @@ return $this->db->get('record_details_options')->result_array();
 		//$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         $data = $this->db->query($qry)->result_array();
         return array(
             "count" => $count,

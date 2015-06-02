@@ -22,8 +22,7 @@ class Search extends CI_Controller
 	
 		public function get_custom_fields(){
                 $campaigns = $this->input->post('campaign');
-		if(is_array($campaigns)){
-                
+		if(is_array($campaigns)){         
 		$campaign = $campaigns[0];
 		} else {
 		$campaign = $this->input->post('campaign');
@@ -906,7 +905,7 @@ class Search extends CI_Controller
         }
         $new_urn_list = $aux;
 
-        $this->firephp->log($new_urn_list);
+        //$this->firephp->log($new_urn_list);
 
         return $new_urn_list;
     }
