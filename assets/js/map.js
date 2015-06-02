@@ -265,16 +265,28 @@ var maps = {
                 $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
             }
 
+            //Start animation in the map for the marker selected in the table
             $(document).on('mouseenter', '.data-table tbody tr', function () {
                 maps.animateMarker($(this).attr('data-id'));
                 $(this).css('color', 'green');
             });
 
-            //Start animation in the map for the marker deselected in the table
+            $(document).on('mouseenter', 'li .record-planner-heading', function () {
+                maps.animateMarker($(this).attr('data-urn'));
+                $(this).css('font-weight', 'bold');
+            });
+
+            //End animation in the map for the marker deselected in the table
             $(document).on('mouseleave', '.data-table tbody tr', function () {
                 maps.removeMarkerAnimation($(this).attr('data-id'));
                 $(this).css('color', 'black');
             });
+
+            $(document).on('mouseleave', 'li .record-planner-heading', function () {
+                maps.removeMarkerAnimation($(this).attr('data-urn'));
+                $(this).css('font-weight', 'normal');
+            });
+
             if (device_type == ('default')) {
                 $("#table-wrapper").removeClass("col-lg-12").addClass("col-lg-6");
                 $(".map-view").show();
@@ -686,6 +698,7 @@ var maps = {
             title: value.name,
             postcode: value.postcode,
             content: contentString,
+            id: value.urn,
             icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
         });
 
@@ -703,11 +716,13 @@ var maps = {
 
         google.maps.event.addListener(marker, 'mouseover', function () {
             $('.data-table tbody').find("[postcode='" + marker.postcode + "']").css('color', 'green');
+            $('li').find("[data-urn='" + marker.id + "']").css('font-weight', 'bold');
         });
 
         //Hide in the table the appointment deselected in the map
         google.maps.event.addListener(marker, 'mouseout', function () {
             $('.data-table tbody').find("[postcode='" + marker.postcode + "']").css('color', 'black');
+            $('li').find("[data-urn='" + marker.id + "']").css('font-weight', 'normal');
         });
 
         maps.markers.push(marker);
