@@ -599,7 +599,7 @@ $this->db->query($renewals);
 			$tel = true;
 			}
 			}
-			if(!$tel||$ignoreTel){
+			if(!$tel&&!$ignoreTel){
 			$error ="B2B campaigns require a telephone number";		
 			}
 		}
@@ -610,7 +610,7 @@ $this->db->query($renewals);
 			$tel = true;
 			}
 			}
-			if(!$tel||$ignoreTel){
+			if(!$tel&&!$ignoreTel){
 			$error ="B2C campaigns require a contact telephone number";		
 			}
 		}
