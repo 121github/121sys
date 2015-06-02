@@ -21,7 +21,9 @@ class Search extends CI_Controller
     }
 	
 		public function get_custom_fields(){
-		if(is_array($this->input->post('campaign'))){
+                $campaigns = $this->input->post('campaign');
+		if(is_array($campaigns)){
+                
 		$campaign = $campaigns[0];
 		} else {
 		$campaign = $this->input->post('campaign');
