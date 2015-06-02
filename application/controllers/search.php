@@ -157,11 +157,12 @@ class Search extends CI_Controller
 		}
         $subsectors     = $this->Form_model->get_subsectors($selected_sectors);
         $status         = $this->Form_model->get_status_list();
-		$parked_codes   = $this->Form_model->get_parked_codes();
+	$parked_codes   = $this->Form_model->get_parked_codes();
         $groups         = $this->Form_model->get_groups();
         $sources        = $this->Form_model->get_sources();
         $campaign_types = $this->Form_model->get_campaign_types();
-
+        $email_templates = array();
+        
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Search',

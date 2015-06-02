@@ -28,12 +28,12 @@
 									
 									<div id="company" style="display: none;">
 										<p><label>Company Name</label></p>
-										<input type="text" name="company_name" id="company_name" class="form-control" style="width:200px;  placeholder="Enter the name of the company" />
+										<input type="text" name="company_name" id="company_name" class="form-control" style="width:200px;"  placeholder="Enter the name of the company" />
 									</div>
 									
 									<div id="contact" style="display: none;">
 										<p><label>Contact Name</label></p>
-										<input type="text" name="contact_name" id="contact_name" class="form-control" style="width:200px;  placeholder="Enter the name of the contact" />
+										<input type="text" name="contact_name" id="contact_name" class="form-control" style="width:200px;"  placeholder="Enter the name of the contact" />
 									</div>
 								</div>
 								
