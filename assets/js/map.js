@@ -209,35 +209,35 @@ var maps = {
                     format: 'DD/MM/YYYY',
                     startDate: moment()
                 },
-                function(start, end, element) {
+                function (start, end, element) {
                     var $btn = this.element;
                     $btn.find('.date-text').html(start.format('MMMM D'));
                     $btn.closest('.filter-form').find('input[name="date"]').val(start.format('YYYY-MM-DD'));
                     map_table_reload();
                 });
-            $(document).on("click", '.daterange', function(e) {
+            $(document).on("click", '.daterange', function (e) {
                 e.preventDefault();
             });
 
             //Drag and drop
-            jQuery(function($) {
+            jQuery(function ($) {
                 maps.panelList.sortable({
                     // Only make the .panel-heading child elements support dragging.
                     // Omit this to make then entire <li>...</li> draggable.
                     handle: '.record-planner-heading',
-                    update: function() {
+                    update: function () {
                         maps.updateRecordPlannerList();
                     }
                 });
             });
 
-            $(document).on("click", '.goup-btn', function(e) {
+            $(document).on("click", '.goup-btn', function (e) {
                 e.preventDefault();
                 $(this).parents('.record-planner-item').insertBefore($(this).parents('.record-planner-item').prev());
                 maps.updateRecordPlannerList();
             });
 
-            $(document).on("click", '.godown-btn', function(e) {
+            $(document).on("click", '.godown-btn', function (e) {
                 e.preventDefault();
                 $(this).parents('.record-planner-item').insertAfter($(this).parents('.record-planner-item').next());
                 maps.updateRecordPlannerList();
@@ -245,14 +245,14 @@ var maps = {
 
 
             //Generate route
-            $(document).on("click", '.calc-route-btn', function(e) {
+            $(document).on("click", '.calc-route-btn', function (e) {
                 e.preventDefault();
                 maps.calcRoute();
             });
         }
     },
 
-    showMap: function(btn){
+    showMap: function (btn) {
         if (btn.prop('checked')) {
             if (getCookie('location_error')) {
                 var location_error = '<div class="alert alert-danger" role="alert">' +
@@ -292,6 +292,7 @@ var maps = {
                 $(".map-view").show();
             } else {
                 $("#table-wrapper").find('table').find('tbody').hide();
+                $("#table-wrapper").find('.planner-data').hide();
                 $(".map-view").show();
             }
             //Reload the map
@@ -308,13 +309,14 @@ var maps = {
                 $('table').removeAttr('style')
             } else {
                 $("#table-wrapper").find('table').find('tbody').show();
+                $("#table-wrapper").find('.planner-data').show();
                 $(".map-view").hide();
                 maps.removeDirections();
             }
         }
     },
 
-    calcRoute: function() {
+    calcRoute: function () {
         maps.panelList = $('#draggablePanelList');
         var record_list_route = [];
         var waypts = [];
@@ -324,7 +326,7 @@ var maps = {
             maps.showMap($('#map-view-toggle'));
         }
         maps.removeDirections();
-        $('.panel', maps.panelList).each(function(index, elem) {
+        $('.panel', maps.panelList).each(function (index, elem) {
             var postcode = $(elem).attr('postcode');
             var record_planner_id = $(elem).attr('record-planner-id');
             if (index < 8) {
@@ -352,12 +354,12 @@ var maps = {
             destination = $('.directions-form').find('input[name="destination"]').val();
         }
 
-        maps.getDirections(origin, destination, waypts,record_list_route);
+        maps.getDirections(origin, destination, waypts, record_list_route);
     },
 
-    updateRecordPlannerList: function() {
+    updateRecordPlannerList: function () {
         panelList = $('#draggablePanelList');
-        $('.panel', panelList).each(function(index, elem) {
+        $('.panel', panelList).each(function (index, elem) {
             if (index < 8) {
                 $(elem).removeClass("panel-default").addClass("panel-success");
             }
@@ -397,7 +399,7 @@ var maps = {
         }
     },
 
-    getDirections: function (origin,destination, waypoints, record_list_ord) {
+    getDirections: function (origin, destination, waypoints, record_list_ord) {
         var start = origin;
         var dest = destination;
         var travelMode = $('.map-form').find('input[name="travel-mode"]').val();
@@ -442,11 +444,11 @@ var maps = {
                     total_distance = total_distance + parseInt(route.distance.value);
                 });
                 $('.route-info').html(
-                    (Math.ceil((total_distance/1000)/1.2)) + ' miles - ' +
+                    (Math.ceil((total_distance / 1000) / 1.2)) + ' miles - ' +
                     (toHHMMSS(total_duration)) +
                     '<span style="font-size: 25px; margin-right: 12px; margin-left: 11px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
                 maps.directionsDisplay.setDirections(result);
-                if (maps.map_type =='planner') {
+                if (maps.map_type == 'planner') {
                     maps.saveRecordRoute(record_list_route);
                     setTimeout(function () {
                         map_table_reload();
@@ -612,7 +614,7 @@ var maps = {
         var marker_text_color = "FFFFFF";
         var character = (value.name).substr(0, 1);
         var navbtn = false;
-        if($('.map-form').find('input[name="postcode"]').val().length > 0){
+        if ($('.map-form').find('input[name="postcode"]').val().length > 0) {
             navbtn = '<p>' +
                 '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';
         }
@@ -647,15 +649,15 @@ var maps = {
     },
 
     // Add a marker to the map and push to the array.
-    addPlannerMarker: function(value) {
+    addPlannerMarker: function (value) {
         var marker_color = maps.intToARGB(maps.hashCode(value.name));
         var marker_text_color = "FFFFFF";
         var character = (value.name).substr(0, 1);
 
         var planner_info =
             '<b>Planner: </b>' +
-            '<span style="margin-right: 5px;">' + (value.record_planner_id?(value.user + ' on ' + value.start):'') + '</span>' +
-            '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="'+value.urn+'" item-planner-date="'+(value.start?value.start:'')+'"></a>';
+            '<span style="margin-right: 5px;">' + (value.record_planner_id ? (value.user + ' on ' + value.start) : '') + '</span>' +
+            '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.start ? value.start : '') + '"></a>';
 
 
         var contentString =
@@ -663,7 +665,7 @@ var maps = {
             '<div id="siteNotice">' +
             '</div>' +
             '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
-            '<div id="bodyContent_'+value.urn+'">' +
+            '<div id="bodyContent_' + value.urn + '">' +
             '<p><b>Company: </b>' + (value.name ? value.name : '') + '</p>' +
             '<p><b>Contact: </b>' + (value.fullname ? value.fullname : '') + '</p>' +
             '<p><b>Outcome: </b>' + (value.outcome ? value.outcome : '') + '</p>' +
@@ -678,14 +680,14 @@ var maps = {
             '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
             '</p>' +
             '</div>' +
-            '<div id="formContent_'+value.urn+'" style="display:none;">' +
-            '<form class="planner-form-'+value.urn+'">' +
+            '<div id="formContent_' + value.urn + '" style="display:none;">' +
+            '<form class="planner-form-' + value.urn + '">' +
             '<div class="form-group input-group-sm">' +
             '<p>Planning Date: </p><input type="text" class="form-control date" name="date" placeholder="Enter the planning date" required/>' +
             '</div>' +
             '<p>' +
-            '<span><a class="btn btn-default btn-sm cancel-planner-btn" item-urn="'+value.urn+'" href="#">Cancel</a></span>' +
-            '<span class="pull-right"><a class="btn btn-primary btn-sm save-planner-btn" item-urn="'+value.urn+'" item-postcode="'+value.postcode+'" item-location-id="'+value.location_id+'" item-record-planner-id="'+(value.record_planner_id?value.record_planner_id:'')+'" href="#">Save</a></span>' +
+            '<span><a class="btn btn-default btn-sm cancel-planner-btn" item-urn="' + value.urn + '" href="#">Cancel</a></span>' +
+            '<span class="pull-right"><a class="btn btn-primary btn-sm save-planner-btn" item-urn="' + value.urn + '" item-postcode="' + value.postcode + '" item-location-id="' + value.location_id + '" item-record-planner-id="' + (value.record_planner_id ? value.record_planner_id : '') + '" href="#">Save</a></span>' +
             '</p>' +
             '</form>' +
             '</div>'
@@ -809,7 +811,7 @@ var maps = {
         });
     },
 
-    saveRecordRoute: function(record_list_route) {
+    saveRecordRoute: function (record_list_route) {
         $.ajax({
             url: helper.baseUrl + "planner/save_record_route",
             type: "POST",
