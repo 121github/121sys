@@ -1,5 +1,5 @@
 // JavaScript Document
-$(document).ready(function() {
+$(document).ready(function () {
     maps.initialize("appointments");
     appointment.init();
 });
@@ -9,18 +9,18 @@ function map_table_reload() {
 }
 
 var appointment = {
-    init: function() {
+    init: function () {
         this.table;
         appointment.reload_table();
     },
-    reload_table: function() {
+    reload_table: function () {
         var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></thead>";
         table += "<tfoot><tr><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
 
         $('#table-wrapper').html(table);
         appointment.populate_table();
     },
-    populate_table: function(table_name) {
+    populate_table: function (table_name) {
         appointment.table = $('.data-table').DataTable({
             "oLanguage": {
                 "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
@@ -36,16 +36,16 @@ var appointment = {
             "ajax": {
                 url: helper.baseUrl + "appointments/appointment_data",
                 type: 'POST',
-                beforeSend: function() {
+                beforeSend: function () {
                     $('.dt_info').hide();
-                    maps.appointments = [];
+                    maps.items = [];
                 },
-                data: function(d) {
+                data: function (d) {
                     d.extra_field = false;
                     d.bounds = maps.getBounds();
                     d.map = $('#map-view-toggle').prop('checked');
                 },
-                complete: function(d) {
+                complete: function (d) {
                     $('.dt_info').show();
                     $('.tt').tooltip();
                     //Show the appointments in the map
@@ -69,7 +69,7 @@ var appointment = {
                 "data": null,
                 "defaultContent": "-"
             }],
-            "createdRow": function(row, data, dataIndex) {
+            "createdRow": function (row, data, dataIndex) {
                 $(row).attr('data-id', data['appointment_id']);
                 $(row).attr('data-modal', 'view-appointment');
                 $(row).attr('postcode', data['postcode']);
@@ -83,7 +83,7 @@ var appointment = {
 
         //filterable columns
         // Setup - adds search input boxes to the footer row
-        $('.data-table tfoot th').each(function() {
+        $('.data-table tfoot th').each(function () {
             var title = $('.data-table thead th').eq($(this).index()).text();
             if (title == "Options") {
                 $(this).html('');
@@ -94,9 +94,9 @@ var appointment = {
         });
 
         // Apply the search
-        appointment.table.columns().eq(0).each(function(colIdx) {
+        appointment.table.columns().eq(0).each(function (colIdx) {
 
-            var run_filter = debounce(function() {
+            var run_filter = debounce(function () {
                 appointment.table.column(colIdx).search(this.value).draw();
             }, 1000);
 
@@ -106,7 +106,7 @@ var appointment = {
 
         //this moves the search input boxes to the top of the table
         var r = $('.data-table tfoot tr');
-        r.find('th').each(function() {
+        r.find('th').each(function () {
             $(this).css('padding', 8);
         });
         $('.data-table thead').append(r);
