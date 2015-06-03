@@ -170,6 +170,7 @@ class Records_model extends CI_Model
     public function get_records($options)
     {
         $table_columns = array(
+            "record_color",
             "campaign_name",
             "com.name",
             "fullname",
@@ -179,6 +180,7 @@ class Records_model extends CI_Model
         );
 
         $order_columns = array(
+            "record_color",
             "campaign_name",
             "com.name",
             "fullname",
@@ -203,7 +205,8 @@ class Records_model extends CI_Model
                       date_format(nextcall,'%d/%m/%y') nextcall,
 					  r.urn marker_id,
                       GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location,
-                      GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location
+                      GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location,
+                      r.record_color
                 from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
@@ -299,6 +302,7 @@ class Records_model extends CI_Model
     public function get_nav($options = "")
     {
         $table_columns = array(
+            "record_color",
             "campaign_name",
             "com.name",
             "fullname",
@@ -307,6 +311,7 @@ class Records_model extends CI_Model
             "rand()"
         );
         $order_columns = array(
+            "record_color",
             "campaign_name",
             "com.name",
             "fullname",

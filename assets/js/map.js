@@ -426,20 +426,22 @@ var maps = {
                 var waypoint_order = result.routes[0].waypoint_order;
                 //Iterate the routes
                 $.each(result.routes[0].legs, function (index, route) {
-                    var data_route = {
-                        'order_num': index,
-                        'record_planner': record_list_ord[waypoint_order[index]],
-                        'start_add': route.start_address,
-                        'start_lat': route.start_location.A,
-                        'start_lng': route.start_location.F,
-                        'end_add': route.end_address,
-                        'end_lat': route.end_location.A,
-                        'end_lng': route.end_location.F,
-                        'distance': route.distance.value,
-                        'duration': route.duration.value,
-                        'travel_mode': travelMode
-                    };
-                    record_list_route.push(data_route);
+                    if (maps.map_type == 'planner') {
+                        var data_route = {
+                            'order_num': index,
+                            'record_planner': record_list_ord[waypoint_order[index]],
+                            'start_add': route.start_address,
+                            'start_lat': route.start_location.A,
+                            'start_lng': route.start_location.F,
+                            'end_add': route.end_address,
+                            'end_lat': route.end_location.A,
+                            'end_lng': route.end_location.F,
+                            'distance': route.distance.value,
+                            'duration': route.duration.value,
+                            'travel_mode': travelMode
+                        };
+                        record_list_route.push(data_route);
+                    }
                     total_duration = total_duration + parseInt(route.duration.value);
                     total_distance = total_distance + parseInt(route.distance.value);
                 });
@@ -547,7 +549,7 @@ var maps = {
     //    });
     //},
     addRecordMarker: function (value) {
-        var marker_color = "|" + maps.intToARGB(maps.hashCode(value.attendee));
+        var marker_color = "|" + (value.record_color?value.record_color:maps.intToARGB(maps.hashCode(value.attendee)));
         var marker_text_color = "|FFFFFF";
         var character = "|" + (value.attendee).substr(0, 1);
         var pin_style = (((planner_permission == true)) && (value.record_planner_id) ? "pin_star" : "pin");
