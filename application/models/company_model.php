@@ -12,6 +12,15 @@ class Company_model extends CI_Model
 
     }
     
+	public function update_subsectors($subsectors,$company){
+		$this->db->where('company_id',$company);	
+		$this->db->delete('company_subsectors');
+		
+		foreach($subsectors as $subsector){
+			$this->db->insert("company_subsectors",array("company_id"=>$company,"subsector_id"=>$subsector));	
+		}
+	}
+	
     public function get_company($id)
     {
         $qry     = "select *,c.description as codescription,ct.description as ctdescription, date_format(c.date_of_creation,'%d/%m/%Y') date_of_creation from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) where company_id = '$id'";

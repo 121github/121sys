@@ -7,7 +7,7 @@
 <!-- Tab panes -->
 <div class="tab-content">
     <div class="tab-pane active" id="cosearch">
-        <a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img style="margin-bottom: 5px;" height="40px;" src="<?php echo base_url(); ?>assets/img/companieshouse.png"></a>
+         <p class="text-info"><span class="glyphicon glyphicon-question-sign"></span> Enter a company name and/or company number to search the Companies House database for details</p>
         <form class="form-horizontal search-company-form">
             <input name="urn" type="hidden" value="">
             <input name="company_id" type="hidden" value="">
@@ -30,7 +30,7 @@
         </form>
     </div>
     <div class="tab-pane" id="cosearchresult">
-        <a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img style="margin-bottom: 5px;" height="40px;" src="<?php echo base_url(); ?>assets/img/companieshouse.png"></a>
+    <p class="text-info"><span class="glyphicon glyphicon-info-sign"></span> This is live data from Companies House<br /></p>
         <div class="table-container">
             <table class="table table-hover search-table">
                 <thead>

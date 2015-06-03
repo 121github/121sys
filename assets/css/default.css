@@ -101,11 +101,6 @@ display:none;
     border-right: 1px solid #ddd;
     padding: 10px;
 }
-
-.search-container { margin-bottom:40px;  }
-
-.get-company-container { display:none; margin-bottom:40px;  }
-
 .nav-tabs {
     margin-bottom: 0;
 }
@@ -248,3 +243,4 @@ div.tooltip-inner {
   -o-transition: all 1s ease-in-out;
   transition: all 1s ease-in-out;
 }
+.search-panels .panel{ overflow:visible !important }

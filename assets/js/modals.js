@@ -1,7 +1,6 @@
 // JavaScript Document
 var modals = {
     init: function () {
-        $("#modal").draggable();
         $(document).on('click', '[data-modal="view-record"]', function (e) {
             e.preventDefault();
             modals.view_record($(this).attr('data-urn'));
@@ -322,7 +321,15 @@ var modals = {
     clear_footer: function () {
         $('#modal').find('.modal-footer').empty();
     },
-    load_modal: function (mheader, mbody, mfooter) {
+    load_modal: function (mheader, mbody, mfooter, fixed_modal) {
+		if(fixed_modal&&$("#modal").hasClass('ui-draggable')){
+				$("#modal").draggable('disable')
+		} else {
+			$("#modal").draggable({
+    handle: ".modal-header,.modal-footer"
+			});
+		}
+		
         $('.modal-body').css('padding', '20px');
         $('#modal').find('.modal-title').html(mheader);
         $('#modal').find('.modal-body').html(mbody);
@@ -339,6 +346,11 @@ var modals = {
             format: 'DD/MM/YYYY',
             pickTime: false
         });
+		$('#modal').find('.dateyears').datetimepicker({
+        pickTime: false,
+        viewMode: 'years',
+        format: 'DD/MM/YYYY'
+    	});
         //this function automatically sets the end date for the appointment 1 hour ahead of the start date
         $(".startpicker").on("dp.hide", function (e) {
             var m = moment(e.date, "DD\MM\YYYY HH:mm");

@@ -297,9 +297,9 @@ var filter = {
         }).done(function(response) {
             var option_data = "";
             $.each(response, function(i, val) {
-                option_data += '<option val="' + val.id + '">' + val.name + '</option>';
+                option_data += '<option value="' + val.id + '">' + val.name + '</option>';
             });
-            $('#subsector-select').html(option_data);
+            $('#subsector_id').html(option_data);
             $('.subsector-select').selectpicker('refresh');
         });
 

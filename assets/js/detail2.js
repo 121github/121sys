@@ -813,7 +813,7 @@ var record = {
                     });
                     $panel.find('.contacts-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.name.fullname).addClass(collapse))
-                            .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right marl').attr('data-id', key).attr('data-modal', 'delete_contact'))
+                            .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right pointer marl').attr('data-id', key).attr('data-modal', 'delete-contact'))
                             .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right').attr('data-id', key).attr('data-modal','edit-contact'))
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal contact-detail-list').append($contact_detail_list_items).append($contact_detail_telephone_items))
@@ -850,7 +850,7 @@ var record = {
             }).done(function (response) {
                 if (response.success) {
                     $('.contacts-list').find('li[item-id="' + id + '"]').remove();
-                    flashalert.warning("Contact was deleted");
+                    flashalert.success("Contact was deleted");
                 }
                 ;
             });
@@ -1243,7 +1243,7 @@ var record = {
             }).done(function (response) {
                 if (response.success) {
                     $('.company-list').find('li[item-id="' + id + '"]').remove();
-                    flashalert.warning("company was deleted");
+                    flashalert.success("company was deleted");
                 }
                 ;
             });
@@ -1396,7 +1396,7 @@ var record = {
 			$.ajax({ url:helper.baseUrl+'modals/load_company_search',
 			dataType:"HTML"
 			}).done(function(response){
-				var mheader = "Companies House API";
+				var mheader = '<a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img src="'+helper.baseUrl+'assets/img/companieshouse.png"></a>';
 				var $panel = $(response);
 				var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 			
@@ -1509,6 +1509,25 @@ var record = {
                 dataType: "JSON",
                 data: { 'company_no': company_no }
             }).done(function (response) {
+					$.ajax({url:helper.baseUrl+'companyhouse/sic_to_subsectors',
+					dataType:"JSON",
+					type:"POST",
+					data:{ sic_codes:response.sic_codes }
+				}).done(function(sics){
+					var sic_options = "";
+					$.each(sics,function(i,row){
+						sic_options += '<optgroup label="'+i+'">';
+						$.each(row,function(i,v){
+						sic_options += '<option selected value="'+v.subsector_id+'">'+v.subsector_name+'</option>';
+						});
+						
+					});
+					$('#sic_codes').append(sic_options);
+					$('#sic_codes').selectpicker();
+				});
+				$('.sic_codes').change(function(){
+						$('.sic_codes').selectpicker('selectAll');
+					});
 				var mfooter = '<button class="btn btn-default pull-left back-company-btn">Back</button> <button class="btn btn-primary update-company-action pull-right">Update</button>';
 				modals.update_footer(mfooter);
                 form.find('input[name="company_id"]').val($('.search-company-form').find('input[name="company_id"]').val());
@@ -1516,7 +1535,7 @@ var record = {
                 form.find('input[name="company_number"]').val(response.company_number);
                 form.find('input[name="date_of_creation"]').val(response.date_of_creation);
                 form.find('input[name="company_status"]').val(response.company_status);
-
+			
                 if (response.registered_office_address) {
                     form.find('input[name="postal_code"]').val(response.registered_office_address.postal_code);
                     form.find('input[name="address_line_1"]').val(response.registered_office_address.address_line_1);
@@ -1525,7 +1544,7 @@ var record = {
                 }
                 $('.company-officers').empty();
                 var i = 1;
-                var officers_table = '<table class="table">' +
+                var officers_table = '<table class="small table-condensed table">' +
                         '<thead>' +
                             '<th></th>' +
                             '<th>Name</th>' +
@@ -1935,7 +1954,7 @@ var record = {
             }).done(function (response) {
                 if (response.success) {
                     record.surveys_panel.load_panel();
-                    flashalert.warning("Survey was deleted");
+                    flashalert.success("Survey was deleted");
                 }
                 ;
             });
@@ -2019,7 +2038,7 @@ var record = {
                 }
             }).done(function (response) {
                 record.additional_info.load_panel();
-                flashalert.warning("Selected information was deleted");
+                flashalert.success("Selected information was deleted");
             });
         },
         edit: function (id) {
@@ -2241,12 +2260,10 @@ var record = {
                     id: $(this).attr('script-id')
                 }
             }).done(function (response) {
-                $('#modal').modal({
-                    backdrop: 'static',
-                    keyboard: false
-                }).find('.modal-body').html(response.data.script);
-                $('#modal').find('.modal-title').text(response.data.script_name);
-                $(".confirm-modal").hide();
+				var mheader=response.data.script_name;
+				var mbody=response.data.script;
+				var mfooter='<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+               modals.load_modal(mheader,mbody,mfooter); 
             });
         });
     },
@@ -2502,7 +2519,7 @@ var record = {
                     record.attachment_panel.close_all_attachments();
                     record.attachment_panel.show_all_attachments();
                     record.attachment_panel.load_panel();
-                    flashalert.warning("Attachment was deleted");
+                    flashalert.success("Attachment was deleted");
                 }
                 ;
             });
@@ -2541,108 +2558,98 @@ $(document).on('click', '.nav-btn', function (e) {
  ========================================================================== */
 var modal = {
     confirm_move: function (moveUrl) {
-        $('.modal-title').text('Are you sure?');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').text('You have not updated the record. Do you really want to continue?');
-        $(".confirm-modal").off('click').show();
-        $('.confirm-modal').on('click', function (e) {
+        var mheader = 'Are you sure?';
+		var mbody = 'You have not updated the record. Do you really want to continue?';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
+		modals.default_buttons();
+		$('.confirm-modal').on('click', function (e) {
             window.location.href = moveUrl
             $('#modal').modal('toggle');
         });
+        
     },
     delete_contact: function (id) {
-        $('.modal-title').text('Confirm Delete');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this contact?');
-		 modals.default_buttons();
-        $(".confirm-modal").off('click').show();
-        $('.confirm-modal').on('click', function (e) {
+		var mheader = 'Confirm Delete';
+		var mbody = 'Are you sure you want to delete this contact?';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
+		modals.default_buttons();
+		 $('.confirm-modal').on('click', function (e) {
             record.contact_panel.remove(id);
             $('#modal').modal('toggle');
         });
     },
     delete_additional_item: function (id) {
-        $('.modal-title').text('Confirm Delete');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this?');
+		var mheader = 'Confirm Delete';
+		var mbody = 'Are you sure you want to delete this?';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
 		 modals.default_buttons();
-        $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.additional_info.remove(id);
             $('#modal').modal('toggle');
         });
     },
     delete_company: function (id) {
-        $('.modal-title').text('Confirm Delete');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this company?');
+		var mheader = 'Confirm Delete';
+		var mbody = 'Are you sure you want to delete this company?';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
 		 modals.default_buttons();
-        $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.company_panel.remove(id);
             $('#modal').modal('toggle');
         });
     },
     delete_email: function (email_id, modal) {
-        $('.modal-title').text('Confirm Delete');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this email?');
+		var mheader = 'Confirm Delete';
+		var mbody = 'Are you sure you want to delete this email?';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
 		 modals.default_buttons();
-        $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
-            record.email_panel.remove_email(email_id, modal);
+             record.email_panel.remove_email(email_id, modal);
             $('#modal').modal('toggle');
         });
     },
     delete_attachment: function (attachment_id) {
-        $('.modal-title').text('Confirm Delete');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this attachment?');
+				var mheader = 'Confirm Delete';
+		var mbody = 'Are you sure you want to delete this attachment?';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
 		 modals.default_buttons();
-        $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
-            record.attachment_panel.delete_attachment(attachment_id);
+             record.attachment_panel.delete_attachment(attachment_id);
             $('#modal').modal('toggle');
         });
     },
     delete_survey: function (id) {
-        $('.modal-title').text('Confirm Delete');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this survey and all the answers?');
+		var mheader = 'Confirm Delete';
+		var mbody = 'Are you sure you want to delete this survey and all the answers?';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
 		 modals.default_buttons();
-        $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
-            record.surveys_panel.remove(id);
+           record.surveys_panel.remove(id);
             $('#modal').modal('toggle');
         });
     },
     call_player: function (url, filetype) {
+		var mheader = 'Call Playback';
+		var mbody = '<div id="waveform"></div><div class="controls"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info" href="' + url.replace("ogg", "mp3") + '">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>';
+		var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+		modals.load_modal(mheader,mbody,mfooter);
         $(document).one("click",".close-modal,.close", function () {
             wavesurfer.destroy();
             $('#modal').find('.modal-body').empty();
         });
-        $(".confirm-modal").hide();
-        $('.modal-title').text('Call Playback');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').html('<div id="waveform"></div><div class="controls"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info" href="' + url.replace("ogg", "mp3") + '">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>');
-		 modals.default_buttons();
-        modal.wavesurfer(url.replace('ogg', 'mp3'));
+		
+        $(document).one("click",".close-modal,.close", function () {
+            wavesurfer.destroy();
+            $('#modal').find('.modal-body').empty();
+        });
+		modal.wavesurfer(url.replace('ogg', 'mp3'));
     },
     wavesurfer: function (fileurl) {
         // Create an instance
@@ -2710,40 +2717,35 @@ var modal = {
         });
     },
     delete_history: function (history_id, modal) {
-        $('.modal-title').text('Confirm Delete');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this history record?');
+		var mheader = 'Confirm Delete';
+		var mbody = 'Are you sure you want to delete this history record?';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
 		 modals.default_buttons();
-        $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             record.history_panel.remove_history(history_id, modal);
             $('#modal').modal('toggle');
         });
     },
     dead_line: function ($btn) {
-        $('.modal-title').text('Confirm Dead Line');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').html('<p>You have set this record as a dead line but the history shows it has been dialed previously. There may be a telephony issue or we could be at full dialing capacity. Please try to dial again and confirm it\'s an actual dead line. If this is a B2B record please search for the company telephone number online and update the record with the correct number<p><p>Click confirm if you are sure this is a dead line otherwise click cancel</p>');
-        $(".confirm-modal").off('click').show();
+				var mheader = 'Confirm Dead Line';
+		var mbody = '<p>You have set this record as a dead line but the history shows it has been dialed previously. There may be a telephony issue or we could be at full dialing capacity. Please try to dial again and confirm it\'s an actual dead line. If this is a B2B record please search for the company telephone number online and update the record with the correct number<p><p>Click confirm if you are sure this is a dead line otherwise click cancel</p>';
+		var mfooter = '';
+		modals.load_modal(mheader,mbody,mfooter);
 		 modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
-            record.update_panel.save($btn);
+             record.update_panel.save($btn);
             $('#modal').modal('toggle');
         });
     },
     show_calendar: function (urn) {
-        $(".confirm-modal").hide();
-        var d = new Date();
+		var mheader = 'Confirm Dead Line';
+		var mbody = '<img id="modal-loading" src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif"/><div class="responsive-calendar" style="display:none"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div';
+		var mfooter = '<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button> <button class="btn btn-primary submit-cal pull-right" type="button">Update</button> <input class="form-control pull-right marl" style="width:130px" value="" name="postcode" id="cal-postcode" placeholder="Postcode"/> <select class="cal-range selectpicker" data-width="130px"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="100">100 Miles</option><option value="150">150 Miles</option><option value="">Any Distance</option></select>';
+		modals.load_modal(mheader,mbody,mfooter);
+         var d = new Date();
         var time = d.getTime();
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        }).find('.modal-body').html('<img id="modal-loading" src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif"/><div class="responsive-calendar" style="display:none"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div>');
-        $('#modal').find('.modal-footer').html('<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button> <button class="btn btn-primary submit-cal pull-right" type="button">Update</button> <input class="form-control pull-right marl" style="width:130px" value="" name="postcode" id="cal-postcode" placeholder="Postcode"/> <select class="cal-range selectpicker" data-width="130px"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="100">100 Miles</option><option value="150">150 Miles</option><option value="">Any Distance</option></select>');
+
         $('#modal').find('.cal-range').selectpicker();
         $('#modal').find('.submit-cal').on('click', function () {
             modal.configure_calendar(urn, $('#modal').find('.cal-range').val(), $('#cal-postcode').val(), true);

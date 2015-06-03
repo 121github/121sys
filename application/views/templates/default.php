@@ -410,7 +410,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <!-- /content -->
 
 <!-- Modal -->
-<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal" style="overflow:hidden" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

@@ -12,7 +12,7 @@
  </div>
  </div>
   <div class="col-sm-9 col-xs-12">
-    <div class="panel-group" id="accordion">
+    <div class="panel-group search-panels" id="accordion">
       <?php if(in_array("search campaigns",$_SESSION['permissions'])){ 
 	  if(count($campaigns)>1||count($campaign_types)>1||count($clients)>1||count($sources)>1){ ?>
         <div class="panel panel-primary visible">
@@ -303,7 +303,7 @@
               </div>
               <div class="form-group">
                 <label>Subsector</label>
-                <select name="subsector_id[]" id="subsector-id" class="selectpicker subsector-select" data-width="100%" data-size="5" multiple  title="Any">
+                <select id="subsector_id"  name="subsector_id[]" class="selectpicker subsector-select" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($subsectors as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['subsector_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
@@ -445,7 +445,7 @@
             <!---------------------->
         <!--  CUSTOM FILTER -->
         <!---------------------->
-        <div class="panel panel-primary" style="overflow:visible">
+        <div class="panel panel-primary">
           <div class="panel-heading pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
             <h4 class="panel-title"><div class="pull-right glyphicon glyphicon-plus"></div>Custom Field Filter</h4>
           </div>

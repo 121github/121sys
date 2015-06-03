@@ -68,7 +68,7 @@
             <div class='form-group input-group-sm' data-picktime="false">
                 <label class="col-sm-3 control-label">Date of Creation</label>
                 <div class="col-sm-9">
-                    <input name="date_of_creation" placeholder="Date of Creation" type='text' class="form-control date" value=""/>
+                    <input name="date_of_creation" placeholder="Date of Creation" type='text' class="form-control dateyears" value=""/>
                 </div>
             </div>
            

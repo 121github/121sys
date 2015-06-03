@@ -16,6 +16,20 @@ class Companyhouse extends CI_Controller
         $this->url = 'https://api.companieshouse.gov.uk';
     }
 
+public function sic_to_subsectors(){
+	      if ($this->input->is_ajax_request()) {
+			  $sectors = array();
+	$sic_codes = $this->input->post('sic_codes');
+	$sic_list = ",".implode(",",$sic_codes);
+	$query = "select subsector_id,sector_name,subsector_name from subsectors inner join sectors using(sector_id) where subsector_id in('' $sic_list)";
+	$result = $this->db->query($query)->result_array();
+	foreach($result as $row){
+	$sectors[$row['sector_name']][] = array("subsector_id"=>$row['subsector_id'],"subsector_name"=>$row['subsector_name']); 	
+	}
+	echo json_encode($sectors);
+		  }
+}
+
     /**
      *
      */
@@ -29,6 +43,7 @@ class Companyhouse extends CI_Controller
             $response = $this->search($search, $num_per_page, $start_index);
 
             echo $response;
+			
         }
     }
 
@@ -43,15 +58,15 @@ class Companyhouse extends CI_Controller
             $response = $this->get($company_no);
 
             echo $response;
-
-
         }
     }
 
     public function update_company() {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
-
+			$subsectors = $form['subsector_id'];
+			unset($form['subsector_id']);
+			
             if (@!empty($form["date_of_creation"])) {
                 $form["date_of_creation"] = to_mysql_datetime($form["date_of_creation"]);
             }
@@ -66,6 +81,7 @@ class Companyhouse extends CI_Controller
                 'date_of_creation' => $form['date_of_creation']
             );
 
+			
             //Prepare the address
             $company_address = array(
                 'company_id' => $form['company_id'],
@@ -87,7 +103,8 @@ class Companyhouse extends CI_Controller
 
             //Update the company
             if ($response = $this->Company_model->update_company($company)) {
-
+				
+				$this->Company_model->update_subsectors($subsectors,$company['company_id']);
                 //Insert a new address for the company
                 $company_address_id = $this->Company_model->save_company_address($company_address);
 

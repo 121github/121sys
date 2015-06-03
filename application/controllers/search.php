@@ -95,14 +95,17 @@ class Search extends CI_Controller
 			"order_direction"=>array("name"=>"Order direction")
 			);
 			
-			if(count($this->input->post('campaign_id'))=="1"){
+		$campaigns = $this->input->post('campaign');
+		if(is_array($campaigns)){         
+		$campaign = $campaigns[0];
+		} else {
+		$campaign = $this->input->post('campaign');
+		}
 				$this->load->model('Admin_model');
-				$campaigns = $this->input->post('campaign_id');
-				$fields = $this->Admin_model->get_custom_fields($campaigns[0]);
+				$fields = $this->Admin_model->get_custom_fields($campaign);
 				foreach($fields as $field){
 					$mappings[$field['field']] = array("name"=>$field['field_name']);
 				}
-			}
 			
 			//unset hidden values (we dont want them in the list)
 			unset($_POST['lat']);

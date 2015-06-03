@@ -303,7 +303,9 @@ $this->db->query("INSERT ignore INTO `sectors` VALUES ('33', ' Activities of ext
 (50400, 'H', 'Inland freight water transport', 20),
 (50300, 'H', 'Inland passenger water transport', 20),
 (50200, 'H', 'Sea and coastal freight water transport', 20),
-(50100, 'H', 'Sea and coastal passenger water transport', 20),
+(50100, 'H', 'Sea and coastal passenger water transport', 20)");
+
+$this->db->query("INSERT ignore INTO `subsectors` (`subsector_id`, `section`, `subsector_name`, `sector_id`) VALUES
 (49500, 'H', 'Transport via pipeline', 20),
 (49420, 'H', 'Removal services', 20),
 (49410, 'H', 'Freight transport by road', 20),
@@ -382,7 +384,7 @@ $this->db->query("INSERT ignore INTO `sectors` VALUES ('33', ' Activities of ext
 (46460, 'G', 'Wholesale of pharmaceutical goods', 19),
 (46450, 'G', 'Wholesale of perfume and cosmetics', 19),
 (46440, 'G', 'Wholesale of china and glassware and cleaning materials', 19),
-(46439, 'G', 'Wholesale of radio, television goods &amp; electrical household appliances (other than records, tapes, CD''s &amp; video tapes and the equipment used for playing them) ', 19),
+(46439, 'G', 'Wholesale of radio, television goods &amp; electrical household appliances', 19),
 (46431, 'G', 'Wholesale of audio tapes, records, CDs and video tapes and the equipment on which these are played', 19),
 (46420, 'G', 'Wholesale of clothing and footwear', 19),
 (46410, 'G', 'Wholesale of textiles', 19),
@@ -482,7 +484,8 @@ $this->db->query("INSERT ignore INTO `sectors` VALUES ('33', ' Activities of ext
 (31020, 'C', 'Manufacture of kitchen furniture', 15),
 (31010, 'C', 'Manufacture of office and shop furniture', 15),
 (30990, 'C', 'Manufacture of other transport equipment n.e.c.', 15),
-(30920, 'C', 'Manufacture of bicycles and invalid carriages', 15),
+(30920, 'C', 'Manufacture of bicycles and invalid carriages', 15)");
+$this->db->query("INSERT ignore INTO `subsectors` (`subsector_id`, `section`, `subsector_name`, `sector_id`) VALUES
 (30910, 'C', 'Manufacture of motorcycles', 15),
 (30400, 'C', 'Manufacture of military fighting vehicles', 15),
 (30300, 'C', 'Manufacture of air and spacecraft and related machinery', 15),
@@ -553,7 +556,8 @@ $this->db->query("INSERT ignore INTO `sectors` VALUES ('33', ' Activities of ext
 (25730, 'C', 'Manufacture of tools', 15),
 (25720, 'C', 'Manufacture of locks and hinges', 15),
 (25710, 'C', 'Manufacture of cutlery', 15),
-(25620, 'C', 'Machining', 15),
+(25620, 'C', 'Machining', 15)");
+$this->db->query("INSERT ignore INTO `subsectors` (`subsector_id`, `section`, `subsector_name`, `sector_id`) VALUES
 (25610, 'C', 'Treatment and coating of metals', 15),
 (25500, 'C', 'Forging, pressing, stamping and roll-forming of metal; powder metallurgy', 15),
 (25400, 'C', 'Manufacture of weapons and ammunition', 15),
@@ -772,44 +776,9 @@ $this->db->query("INSERT ignore INTO `sectors` VALUES ('33', ' Activities of ext
 (1140, 'A', 'Growing of sugar cane', 13),
 (1130, 'A', 'Growing of vegetables and melons, roots and tubers', 13),
 (1120, 'A', 'Growing of rice', 13),
-(1110, 'A', 'Growing of cereals (except rice), leguminous crops and oil seeds', 13);");
+(1110, 'A', 'Growing of cereals (except rice), leguminous crops and oil seeds', 13)");
         
-        $this->db->query("update company_subsectors set subsector_id = 66220 where subsector_id = 239");
-        $this->db->query("update company_subsectors set subsector_id = 66220 where subsector_id = 235");
-        $this->db->query("update company_subsectors set subsector_id = 92000 where subsector_id = 149");
-        $this->db->query("update company_subsectors set subsector_id = 49410 where subsector_id = 173");
-        $this->db->query("update company_subsectors set subsector_id = 73110 where subsector_id = 184");
-        $this->db->query("update company_subsectors set subsector_id = 64910 where subsector_id = 83");
-        $this->db->query("update company_subsectors set subsector_id = 11050 where subsector_id = 22");
-        $this->db->query("update company_subsectors set subsector_id = 65300 where subsector_id = 81");
-        $this->db->query("update company_subsectors set subsector_id = 80100 where subsector_id = 172");
-        $this->db->query("update company_subsectors set subsector_id = 62020 where subsector_id = 221");
-        $this->db->query("update company_subsectors set subsector_id = 45111 where subsector_id = 127");
-        $this->db->query("update company_subsectors set subsector_id = 64999 where subsector_id = 56");
-        $this->db->query("update company_subsectors set subsector_id = 47910 where subsector_id = 54");
-        $this->db->query("update company_subsectors set subsector_id = 56210 where subsector_id = 180");
-        $this->db->query("update company_subsectors set subsector_id = 47910 where subsector_id = 55");
-        $this->db->query("update company_subsectors set subsector_id = 32990 where subsector_id = 51");
-        $this->db->query("update company_subsectors set subsector_id = 93290 where subsector_id = 182");
-        $this->db->query("update company_subsectors set subsector_id = null where subsector_id = 187");
-        $this->db->query("update company_subsectors set subsector_id = 41100 where subsector_id = 110");
-        $this->db->query("update company_subsectors set subsector_id = null where subsector_id = 134");
-        $this->db->query("update company_subsectors set subsector_id = 94120 where subsector_id = 79");
-         $this->db->query("update company_subsectors set subsector_id = 86900 where subsector_id = 82");
-          $this->db->query("update company_subsectors set subsector_id = 69102 where subsector_id = 156");
-           $this->db->query("update company_subsectors set subsector_id = 45111 where subsector_id = 240");
-            $this->db->query("update company_subsectors set subsector_id = null where subsector_id = 188");
-             $this->db->query("update company_subsectors set subsector_id = null where subsector_id = 183");
-             $this->db->query("update company_subsectors set subsector_id = 27400 where subsector_id = 50");
-             $this->db->query("update company_subsectors set subsector_id = null where subsector_id = 122");
-             $this->db->query("update company_subsectors set subsector_id = 35130 where subsector_id = 224");
-              $this->db->query("update company_subsectors set subsector_id = null where subsector_id = 169");
-               $this->db->query("update company_subsectors set subsector_id = null where subsector_id = 32");
-                $this->db->query("update company_subsectors set subsector_id = null where subsector_id = 102");
-                    $this->db->query("delete from company_subsectors where subsector_id < 250"); 
-                    
-                           $this->db->query("delete from subsectors where subsector_id < 250"); 
-                            $this->db->query("delete from sectors where section is null"); 
+	
                 
     }
 

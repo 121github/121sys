@@ -26,7 +26,7 @@ class Contacts_model extends CI_Model
                 "urn" => $result['urn'],
                 "fullname" => $result['fullname'],
                 "position" => $result['position'],
-                "dob" => $result['dob'],
+                "dob" => date('d/m/Y',strtotime($result['dob'])),
                 "website" => $result['website'],
                 "linkedin" => $result['linkedin'],
                 "facebook" => $result['facebook'],
@@ -151,7 +151,9 @@ class Contacts_model extends CI_Model
 	
 
 	public function save_contact ($form) {
-		$this->db->insert("contacts", $form);
+		$insert_query = $this->db->insert_string("contacts", $form);
+		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$insert_query);
+		$this->db->query($insert_query);
 		$insert_id = $this->db->insert_id();
 		$this->db->trans_complete();
 	

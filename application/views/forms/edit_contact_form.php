@@ -41,7 +41,7 @@
                 <label class="col-sm-2 control-label">DOB</label>
 
                 <div class="col-sm-10">
-                    <input name="dob" placeholder="Date of birth" type='text' class="form-control dob" value=""/>
+                    <input name="dob" placeholder="Date of birth" type='text' class="form-control dateyears" value=""/>
                 </div>
             </div>
             <div class="form-group input-group-sm">
