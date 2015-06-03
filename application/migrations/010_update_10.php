@@ -12,6 +12,7 @@ class Migration_update_10 extends CI_Migration
 
     public function up()
     {
+
 		$this->db->query("alter table contacts add unique(urn,fullname,dob)");		
 			$this->db->query("alter table `company_addresses` add unique(company_id,add1,add2,postcode)");
 			
@@ -73,7 +74,15 @@ class Migration_update_10 extends CI_Migration
                     
                            $this->db->query("delete from subsectors where subsector_id < 250"); 
                             $this->db->query("delete from sectors where section is null"); 		
-			
+			     //add travelMode
+        $this->db->query("ALTER TABLE `records` ADD `record_color` VARCHAR(6) NULL DEFAULT NULL");
 	}
+
+
+    public function down()
+    {
+        $this->db->query("ALTER TABLE `records` DROP `record_color`");
+    }
+
 	
 }

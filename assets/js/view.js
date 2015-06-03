@@ -15,8 +15,8 @@ var view_records = {
         view_records.reload_table();
     },
     reload_table: function() {
-        var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Campaign</th><th>Company</th><th>Contact</th><th>Outcome</th><th>Next Action</th></tr></thead>";
-        table += "<tfoot><tr><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
+        var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Color</th><th>Campaign</th><th>Company</th><th>Contact</th><th>Outcome</th><th>Next Action</th></tr></thead>";
+        table += "<tfoot><tr><th></th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
 
         $('#table-wrapper').html(table);
         view_records.populate_table();
@@ -58,6 +58,17 @@ var view_records = {
             },
             "deferRender": true,
             "columns": [{
+                "data": "record_color", render:function(e) {
+                    if(e==null||!e.length){
+                        return '&nbsp;';
+                    } else {
+                        return '<span class="glyphicon glyphicon-map-marker" style="font-size:25px; color:#'+e+'">&nbsp;</span>';
+                    }
+                }
+                //"data": "record_color", render:function(e) {
+                //    return e;
+                //}
+            }, {
                 "data": "campaign_name"
             }, {
                 "data": "name"
@@ -69,7 +80,7 @@ var view_records = {
                 "data": "nextcall"
             }],
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4],
+                "targets": [0, 1, 2, 3, 4, 5],
                 "data": null,
                 "defaultContent": "-"
             }],
@@ -91,7 +102,7 @@ var view_records = {
         // Setup - adds search input boxes to the footer row
         $('.data-table tfoot th').each(function() {
             var title = $('.data-table thead th').eq($(this).index()).text();
-            if (title == "Options") {
+            if (title == "Options" || title == "Color") {
                 $(this).html('');
             } else {
                 var search_val = view_records.table.column($(this).index()).search();
