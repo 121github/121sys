@@ -578,7 +578,7 @@ var modals = {
                 modals.contacts.save_item(action);
             });
             /*when a tab is changed we should reset the tab content*/
-            $(document).on('click', '#modal .nav-tabs li a', function (e) {
+            $(document).on('click', '#modal .nav-tabs .phone-tab a,#modal .nav-tabs .address-tab a', function (e) {
                 e.preventDefault();
                 var tabname = $(this).attr('href');
                 modals.contacts.change_tab(tabname);
@@ -924,12 +924,7 @@ var modals = {
                 var action = $(this).attr('data-action');
                 modals.companies.save_item(action);
             });
-            /*when a tab is changed we should reset the tab content*/
-            $(document).on('click', '#modal .nav-tabs li a', function (e) {
-                e.preventDefault();
-                var tabname = $(this).attr('href');
-                modals.companies.change_tab(tabname);
-            });
+            
             /*initialize the delete item buttons for phone */
             $(document).on('click', '[data-modal="delete-company-phone"]', function (e) {
                 e.preventDefault();
