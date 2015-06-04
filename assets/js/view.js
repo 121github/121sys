@@ -12,10 +12,22 @@ function map_table_reload() {
 var view_records = {
     init: function() {
         this.table;
+
+        $(document).on("click", ".group-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $(this).closest('form').find('input[name="group"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            maps.colour_by = $('.filter-form').find('input[name="group"]').val();
+            view_records.reload_table();
+        });
+
         view_records.reload_table();
     },
     reload_table: function() {
-        var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Color</th><th>Campaign</th><th>Company</th><th>Contact</th><th>Outcome</th><th>Next Action</th></tr></thead>";
+        var table = "<table width='100%' class='table small table-striped table-bordered table-hover data-table'><thead><tr><th>Color</th><th>Campaign</th><th>Company</th><th>Contact</th><th>Outcome</th><th>Next Action</th></tr></thead>";
         table += "<tfoot><tr><th></th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
 
         $('#table-wrapper').html(table);
@@ -45,6 +57,7 @@ var view_records = {
                     d.extra_field = false;
                     d.bounds = (maps.temp_bounds?maps.temp_bounds:maps.getBounds());
                     d.map = $('#map-view-toggle').prop('checked');
+                    d.group = $('.filter-form').find('input[name="group"]').val();
                 },
                 complete: function(d) {
                     $('.dt_info').show();
@@ -59,15 +72,12 @@ var view_records = {
             "deferRender": true,
             "columns": [{
                 "data": "record_color", render:function(e) {
-                    if(e==null||!e.length){
+                    if(!e){
                         return '&nbsp;';
                     } else {
-                        return '<span class="glyphicon glyphicon-map-marker" style="font-size:25px; color:#'+e+'">&nbsp;</span>';
+                        return '<span class="glyphicon glyphicon-map-marker" style="font-size:25px; color: '+e+'">&nbsp;</span>';
                     }
                 }
-                //"data": "record_color", render:function(e) {
-                //    return e;
-                //}
             }, {
                 "data": "campaign_name"
             }, {
@@ -102,11 +112,15 @@ var view_records = {
         // Setup - adds search input boxes to the footer row
         $('.data-table tfoot th').each(function() {
             var title = $('.data-table thead th').eq($(this).index()).text();
-            if (title == "Options" || title == "Color") {
+            if (title == "Color") {
+                var disable = "disabled";
+            }
+
+            if (title == "Options") {
                 $(this).html('');
             } else {
                 var search_val = view_records.table.column($(this).index()).search();
-                $(this).html('<input class="dt-filter form-control" placeholder="Filter..." value="' + search_val[0] + '" />');
+                $(this).html('<input class="dt-filter input-sm form-control" placeholder="Filter..." '+disable+' value="' + search_val[0] + '" />');
             }
         });
 
