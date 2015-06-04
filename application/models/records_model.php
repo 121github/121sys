@@ -11,6 +11,102 @@ class Records_model extends CI_Model
         parent::__construct();
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
+	
+	public function find_related_records($urn,$campaign=false){
+		$qry = "select companies.name,companies.website,concat(add1,postcode) address,comt.telephone_number company_telephone,cont.telephone_number contact_telephone,concat(fullname,dob) contact from records left join companies using(urn) left join company_addresses using(company_id) left join contacts using(urn) left join company_telephone comt using(company_id) left join contact_telephone cont using(contact_id) where urn = '$urn'";
+		if($campaign){
+			$qry .= " and campaign_id = '$campaign'";
+		}
+		  $qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		 $result = $this->db->query($qry)->result_array();
+		 $original = array();
+		 foreach($result as $row){
+			  if($row['name']){
+			 $original['name'] = $row['name'];
+			   }
+			   if($row['website']){
+			 $original['website'] = $row['website'];
+			   }
+			  if($row['contact']){
+			 $original['contacts'][$row['contact']] = $row['contact'];
+			  }
+			 if($row['address']){
+			 $original['addresses'][$row['address']] = $row['address'];
+			 }
+			 if($row['company_telephone']||$row['contact_telephone']){
+			 $original['numbers'][$row['company_telephone']] = $row['company_telephone'];
+			 $original['numbers'][$row['contact_telephone']] = $row['contact_telephone'];
+			 }
+		 }
+		//now look for matches using the data from the original
+		$matches = array();
+				foreach($original as $k=>$v){
+					if($k=="name"){
+						$name = str_ireplace("limited","",$v);
+						$name = str_ireplace("ltd","",$name);
+						$name = str_ireplace("plc","",$name);
+						$name = str_ireplace(" ","",$name);
+	$query = "select urn,'company name' matched_on from companies where replace(replace(replace(name,'limited',''),'ltd',''),' ','') = '$name' and urn <> $urn";
+	$co_matches = $this->db->query($query)->result_array();
+	array_push($matches,$co_matches);
+			}
+			if($k=="website"){
+	$query = "select urn, 'website' matched_on from companies where website = '$v' and urn <> $urn";
+	$website_matches = $this->db->query($query)->result_array();
+	array_push($matches,$website_matches);
+			}
+					if($k=="contacts"){
+							foreach($v as $contact){
+	$query = "select urn,'contact name' matched_on from contacts where fullname = '$contact' and urn <> $urn";
+	$contact_matches = $this->db->query($query)->result_array();
+	array_push($matches,$contact_matches);
+							}
+			}
+					if($k=="addresses"){
+						foreach($v as $address){
+	$query = "select urn,'address' matched_on from companies inner join company_addresses where concat(add1,postcode) = '$address' and urn <> $urn";
+	$address_matches = $this->db->query($query)->result_array();
+	array_push($matches,$address_matches);
+						}
+			}
+					if($k=="numbers"){
+						foreach($v as $number){
+	$query = "select urn,'company telephone' matched_on from records left join companies using(urn) inner join company_telephone using(company_id) where telephone_number = '$number' and urn <> $urn";
+	$q =$this->db->query($query);
+	if($q->num_rows()){
+	$company_matches = $q->result_array();
+	array_push($matches,$company_matches);
+	} else {
+	$query = "select urn,'contact telephone' matched_on from records left join contacts using(urn) inner join contact_telephone using(contact_id) where telephone_number = '$number' and urn <> $urn";
+	$contact_matches = $this->db->query($query)->result_array();
+	array_push($matches,$contact_matches);
+	}
+						}
+			}
+		}
+		$urns = array();
+		$matched_on = array();
+		foreach($matches as $k=>$match){
+			if(!empty($match[0]['urn'])){
+		$urns[] = $match[0]['urn'];	
+		$matched_on[$match[0]['urn']] = $match[0]['matched_on'];
+			}
+		}
+		$this->firephp->log($urns);
+		//now return all the data from related/similar records found
+		if(count($urns)>0){
+		$urn_list = ",".implode(',',$urns);
+		} else {
+		$urn_list = "";	
+		}
+		$query = "select campaign_name,urn,name,status_name from records left join companies using(urn) left join status_list on record_status_id = record_status left join campaigns using(campaign_id) where urn in('' $urn_list)";
+		$data = $this->db->query($query)->result_array();
+		foreach($data as $k=>$row){
+		$data[$k]['matched_on']=$matched_on[$row['urn']];	
+		}
+		echo json_encode(array("success"=>true,"data"=>$data));
+		exit;
+	}
 
     public function get_client_from_urn($urn)
     {

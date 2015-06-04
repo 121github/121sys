@@ -21,6 +21,16 @@ class Records extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
     
+	public function related_records(){
+	  if ($this->input->is_ajax_request()) {
+			$campaign = $this->input->post('campaign');
+			$urn = $this->input->post('urn');
+			$result = $this->Records_model->find_related_records($urn,$campaign);
+			echo json_encode(array("success"=>true,"data"=>$result,"msg"=>"No matches were found"));
+	  }
+		
+	}
+	
     //list the records in the callpot
     
     public function view()

@@ -147,7 +147,12 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
         <?php if(in_array(13,$features)){ ?>
         record.attachment_panel.init();
         <?php } ?>
-
+		<?php if(in_array(14,$features)){ ?>
+        //record.attachment_panel.init();
+        <?php } ?>
+		<?php if(in_array(15,$features)){ ?>
+        record.related_panel.init();
+        <?php } ?>
     });
 </script>
 <?php endif; ?>

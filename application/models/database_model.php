@@ -10,6 +10,34 @@ class Database_model extends CI_Model
         parent::__construct();
     }
 
+public function remove_dupes($table,$field1=false,$field2=false,$field3=false){
+	$concat=array();
+			if($field1){
+			$concat[]=$field1;
+			} else {
+			return "At least 1 field is required";	
+			}
+			if($field2){
+			$concat[]=$field2;
+			}
+			if($field3){
+			$concat[]=$field3;
+			}
+			
+			$fields = implode(",",$concat);
+			$query = "SELECT concat( $fields ) ref , count( * ) count
+FROM `$table`
+GROUP BY concat( $fields )
+HAVING count( concat( $fields ) ) >1";
+$result = $this->db->query($query)->result_array();
+foreach($result as $row){
+$remove = $row['count']-1;
+$delete = "delete from $table where concat($fields) = '".addslashes($row['ref'])."' limit $remove";	
+$this->firephp->log($delete);
+	$this->db->query($delete);
+}
+
+}
     /**
      * Get the version
      *

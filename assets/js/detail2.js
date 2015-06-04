@@ -2324,6 +2324,45 @@ var record = {
 
         }
     },
+	 related_panel: {
+        init: function () {
+            record.related_panel.load_panel();
+            $(document).on('change', '.related-campaigns', function (e) {
+                e.preventDefault();
+                record.recordings_panel.load_panel($(this).val())
+            })
+        },
+        load_panel: function (campaign) {
+            var $panel = $('.related-panel');
+            $.ajax({
+                url: helper.baseUrl + "records/related_records",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: record.urn,
+					campaign: campaign
+                },
+                beforeSend: function () {
+                    $panel.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+                }
+            }).fail(function () {
+                $panel.html($('<p/>').text("No similar records could be found"));
+            }).done(function (response) {
+                $panel.empty();
+                $body = "";
+                if (response.data.length > 0) {
+                    $.each(response.data, function (i, val) {
+                       
+                        $body += '<tr class="pointer" data-modal="view-record" data-urn='+val.urn+'><td>' + val.campaign_name + '</td><td>' + val.name + '</td><td>' + val.status_name + '</td><td>' + val.matched_on + '</td></tr>';
+                    });
+                    $panel.html('<div class="table-responsive"><table class="table table-hover table-striped table-condensed"><thead><tr><th>Campaign</th><th>Company</th><th>Status</th><th>Matched on</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                } else {
+                    $panel.html($('<p/>').text(response.msg));
+                }
+
+            });
+        }
+	 },
     recordings_panel: {
         init: function () {
             record.recordings_panel.load_panel();
