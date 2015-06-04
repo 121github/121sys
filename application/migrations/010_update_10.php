@@ -12,7 +12,7 @@ class Migration_update_10 extends CI_Migration
 
     public function up()
     {
-
+ $this->firephp->log("starting migration 10");
 		$this->db->query("alter table contacts add unique(urn,fullname,dob)");		
 			$this->db->query("alter table `company_addresses` add unique(company_id,add1,add2,postcode)");
 			
