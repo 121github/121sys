@@ -1,6 +1,13 @@
 // JavaScript Document
 var email = {
     init: function (urn) {
+		if(getCookie('placeholder_error')){
+		var key = getCookie('placeholder_error');
+		var mheader = "Missing placeholder data";
+		var mbody = "<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> The <strong>"+key+"</strong> placeholder was found in this email template but there is no data for this field. Please check this email carefully as will need to be edited where the missing placeholder is.</p>"	
+		var mfooter = '<button data-dismiss="modal" class="btn btn-primary close-modal pull-right" type="button">Ok</button>';
+		modals.load_modal(mheader,mbody,mfooter);	
+		}
         this.urn = urn;
         $('.selectpicker').selectpicker({title: "Please select"});
         $('.tt').tooltip();

@@ -89,9 +89,12 @@ class Email extends CI_Controller
 			 }
 						 if(strpos($template['template_body'],"[$key]")!==false){
 				 if(empty($val)){
-					$cookie = "The \"$key\" placeholder was found in this email template but there is no data for this field.  Please check this email carefully as it may need to be edited where the missing placeholder is.";
-					setcookie("placeholder_error", $cookie, time() + (60), "/");
-					$template['template_body'] = str_replace("<span style=\"color:red\">[$key]</span>",$val,$template['template_body']);
+					setcookie("placeholder_error", $key, time() + (60), "/");
+					if($key=="start"){
+					$template['template_body'] = str_replace("[$key]","<span style=\"color:red\">** NO APPOINTMENT FOUND **</span>",$template['template_body']);	
+					} else {
+					$template['template_body'] = str_replace("[$key]","<span style=\"color:red\">** [$key] WAS EMPTY **</span>",$template['template_body']);
+					}
 				 } else {
 			$template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
 				 }
