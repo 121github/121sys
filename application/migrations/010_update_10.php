@@ -34,9 +34,11 @@ class Migration_update_10 extends CI_Migration
   ADD CONSTRAINT `record_keywords_ibfk_1` FOREIGN KEY (`urn`) REFERENCES `records` (`urn`) ON DELETE CASCADE ON UPDATE CASCADE
 ");
 
-			
-		$this->db->query("insert ignore into record_keywords (select urn,subsector_name from subsectors left join company_subsectors using(subsector_id) left join companies using(company_id) where subsector_id < 250)");
-		$this->db->query("insert ignore into record_keywords (select urn,sector_name from subsectors left join company_subsectors using(subsector_id) left join companies using(company_id) left join sectors using(sector_id) where sector_id < 13)");
+				$this->db->query("insert ignore into keywords (select keyword_id,subsector_name from subsectors left join company_subsectors using(subsector_id) left join companies using(company_id) where subsector_id < 250)");
+						$this->db->query("insert ignore into keywords (select keyword_id,subsector_name from subsectors left join company_subsectors using(subsector_id) left join companies using(company_id) left join keywords on keyword = subsector_name where subsector_id < 250)");
+							
+		$this->db->query("insert ignore into record_keywords (select urn,keyword_id from subsectors left join company_subsectors using(subsector_id) left join companies using(company_id) where subsector_id < 250)");
+		$this->db->query("insert ignore into record_keywords (select urn,keyword_id from subsectors left join company_subsectors using(subsector_id) left join companies using(company_id) left join sectors using(sector_id) left join keywords on keyword = sector_name where sector_id < 13)");
 		
         $this->db->query("update company_subsectors set subsector_id = 66220 where subsector_id = 239");
         $this->db->query("update company_subsectors set subsector_id = 66220 where subsector_id = 235");
