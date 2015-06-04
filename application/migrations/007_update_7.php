@@ -15,7 +15,7 @@ class Migration_update_7 extends CI_Migration
         $this->firephp->log("starting migration 7");
 
         //Create record planner table route
-        $this->db->query("CREATE TABLE `record_planner_route` (
+        $this->db->query("CREATE TABLE if not exists `record_planner_route` (
           `record_planner_route_id` int(11) NOT NULL AUTO_INCREMENT,
           `record_planner_id` int NOT NULL,
           `start_add` VARCHAR(255) NOT NULL,
