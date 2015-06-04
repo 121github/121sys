@@ -87,7 +87,12 @@ class Email extends CI_Controller
 			$val = str_replace("Miss ","",$val);
 			$val = str_replace("Ms ","",$val);
 			 }
+			 if(strpos($template['template_body'],"[$key]")!==false){
+				 if(empty($val)){
+					$_COOKIE['placeholder_error'] = "The \"$key\" placeholder was found in this email template but there is no data for this field.  Please check this email carefully as it may need to be edited where the missing placeholder is.";
+				 } else {
 			$template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
+				 }
 					}
 		}
 	
