@@ -21,6 +21,8 @@ var maps = {
         this.uk_lng = -4.331033059374933;
         this.default_zoom = 6;
         this.panelList = $('#draggablePanelList');
+        this.colour_by = null;
+
 
         if (getCookie('lat') && getCookie('lng')) {
             this.lat = getCookie('lat');
@@ -498,22 +500,76 @@ var maps = {
     showItems: function () {
         if ($('#map-view-toggle').prop('checked')) {
             maps.deleteMarkers();
-            $.each(maps.items, function (index, value) {
+            var legend_ar = [];
+            $.each(maps.items, function (i, item) {
                 if (maps.map_type == "appointments") {
-                    maps.addAppointmentMarker(value);
+                    maps.addAppointmentMarker(item);
                 }
-                if (maps.map_type == "records") {
-                    maps.addRecordMarker(value);
+                else if (maps.map_type == "records") {
+                    maps.addRecordMarker(item);
                 }
-                if (maps.map_type == "planner") {
-                    maps.addPlannerMarker(value);
+                else if (maps.map_type == "planner") {
+                    maps.addPlannerMarker(item);
+                }
+
+                //Get colour legend if it is filtered by colour
+                if (maps.colour_by) {
+                    var colour = item.record_color;
+                    $.each(item, function (key, value) {
+                        if (key.indexOf(maps.colour_by) === 0) {
+                            legend_ar[colour] = (value?value:'-');
+                        }
+                    });
                 }
             });
+            //Show colour legend if it is filtered by colour
+            map.controls[google.maps.ControlPosition.LEFT_TOP].clear();
+            if (maps.colour_by) {
+                var showLegendDiv = document.createElement('div');
+                var legendControl = new maps.showLegend(showLegendDiv, map, legend_ar);
+                map.controls[google.maps.ControlPosition.LEFT_TOP].push(showLegendDiv);
+            }
         }
     },
 
+    //Show colour legend if it is filtered by colour
+    showLegend: function(showLegendDiv, map,legend_data) {
+        showLegendDiv.style.padding = '5px';
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = 'white';
+        controlUI.style.opacity = '0.8';
+        controlUI.style.filter = 'alpha(opacity=80)';
+        controlUI.style.border='1px solid';
+        //controlUI.style.cursor = 'pointer';
+        controlUI.style.textAlign = 'center';
+            showLegendDiv.appendChild(controlUI);
+        var controlText = document.createElement('div');
+        controlText.style.fontFamily='Arial,sans-serif';
+        controlText.style.fontSize='12px';
+        controlText.style.paddingLeft = '4px';
+        controlText.style.paddingRight = '4px';
+        var content = '<table>';
+        console.log(legend_data);
+        for (var key in legend_data) {
+            console.log(key);
+            console.log(legend_data[key]);
+            content += '<tr>' +
+                            '<td><span class="glyphicon glyphicon-map-marker" style="font-size:25px; color: '+key+'"></span></td>' +
+                            '<td title="'+legend_data[key]+'" style="padding-left: 5px; text-align: left;">'+legend_data[key].substr(0,30)+(legend_data[key].length > 30?'...':'')+'</td>' +
+                        '</tr>';
+        }
+        content += '</table>';
+        controlText.innerHTML = content;
+        controlUI.appendChild(controlText);
+
+        // Setup click-event listener: simply set the map to London
+        //google.maps.event.addDomListener(controlUI, 'click', function() {
+        //
+        //});
+    },
+
     //Animate a marker icon
-    animateMarker: function (id) {
+    animateMarker: function(id) {
         $.each(maps.markers, function (index, marker) {
             if (marker.id == id) {
                 if (marker.getAnimation() != null) {
@@ -549,7 +605,7 @@ var maps = {
     //    });
     //},
     addRecordMarker: function (value) {
-        var marker_color = "|" + (value.record_color?value.record_color:maps.intToARGB(maps.hashCode(value.attendee)));
+        var marker_color = "|" + (value.record_color?(value.record_color).substr(1):maps.intToARGB(maps.hashCode(value.attendee)));
         var marker_text_color = "|FFFFFF";
         var character = "|" + (value.attendee).substr(0, 1);
         var pin_style = (((planner_permission == true)) && (value.record_planner_id) ? "pin_star" : "pin");

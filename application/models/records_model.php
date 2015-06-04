@@ -302,7 +302,9 @@ class Records_model extends CI_Model
 					  r.urn marker_id,
                       GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location,
                       GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location,
-                      r.record_color
+                      r.record_color,
+                      ow.user_id ownership_id,
+                      owu.name ownership
                 from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
@@ -320,6 +322,7 @@ class Records_model extends CI_Model
         $join['outcomes'] = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
         $join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
+        $join['ownership_name'] = " left join users owu on ow.user_id = owu.user_id ";
 
         foreach ($join as $join_query) {
             $qry .= $join_query;

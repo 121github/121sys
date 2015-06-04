@@ -71,8 +71,7 @@ class Records extends CI_Controller
 				'map.js',
                 'view.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
-                'modals.js',
-				
+                'modals.js'
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
@@ -120,6 +119,9 @@ class Records extends CI_Controller
 
                 //Website
                 $records[$k]["website"] = ($records[$k]['company_website']?$records[$k]['company_website']:($records[$k]['contact_website']?$records[$k]['contact_website']:''));
+
+                //Record color
+                $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"]+rand(0,100))));
             }
             
             $data = array(

@@ -3,19 +3,36 @@
         <i class="fa fa-bar-chart-o fa-fw"></i>
         Record List
         <div class="pull-right">
-            <div class="btn-group">
-                <input style="display:none" type="checkbox" id="map-view-toggle"
-                       data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"
-                       data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-toggle="toggle">
-            </div>
+            <form class="filter-form">
+                <div class="btn-group">
+                    <input type="hidden" name="group">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Colour By</button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="#" class="group-filter" id="campaign_name">Campaign</a></li>
+                        <li><a href="#" class="group-filter" id="name">Company</a></li>
+                        <li><a href="#" class="group-filter" id="fullname">Contact</a></li>
+                        <li><a href="#" class="group-filter" id="outcome">Outcome</a></li>
+                        <li><a href="#" class="group-filter" id="ownership">Ownership</a></li>
+                        <li class="divider"></li>
+                        <li><a class="group-filter" ref="#" style="color: green;">Colour by</a> </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <input style="display:none" type="checkbox" id="map-view-toggle"
+                           data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"
+                           data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-toggle="toggle">
+                </div>
+            </form>
         </div>
     </div>
     <div class="panel-body">
         <div class="row">
-       
+
             <div id="table-wrapper" class="col-lg-12 record-view" style="overflow:visible">
-            
-            <img class="table-loading" style="display:none; position:absolute; z-index:999; top:50%; left:50%; margin-left:-150px" src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
+
+                <img class="table-loading"
+                     style="display:none; position:absolute; z-index:999; top:50%; left:50%; margin-left:-150px"
+                     src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
                 <table class="table table-striped table-bordered data-table">
                     <thead>
                     <tr>
@@ -37,7 +54,8 @@
             <div class="col-lg-6 map-view" style="display: none">
                 <h1 class="planner-map">
                     <div class="map-wrapper">
-                        <div id="map-canvas" style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
+                        <div id="map-canvas"
+                             style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
                         <i class="top"></i>
                         <i class="right"></i>
                         <i class="bottom"></i>
@@ -89,7 +107,8 @@
                                     <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                           class="change-directions-btn WALKING pointer" item-mode="WALKING"><img
                                             width="25px;" src="../assets/img/icons/walking.png"/></span>
-                                        <span class="close-directions-btn btn-lg glyphicon glyphicon-remove pointer"></span>
+                                        <span
+                                            class="close-directions-btn btn-lg glyphicon glyphicon-remove pointer"></span>
                                     </div>
                                 </div>
                                 <div class="row">
