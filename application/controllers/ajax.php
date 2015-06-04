@@ -397,7 +397,7 @@ class Ajax extends CI_Controller
                 echo json_encode(array(
 				"success"=>true,
                     "id" => intval($data['company_id']),
-                    "type" => "cophone"
+                    "type" => "phone"
                 ));
             endif;
         }

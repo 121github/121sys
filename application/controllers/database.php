@@ -14,6 +14,35 @@ class Database extends CI_Controller
         $this->load->model('Database_model');
     }
 
+	public function remove_dupes(){
+		$table=$this->uri->segment(3);
+			$field1=$this->uri->segment(4);
+			$field2=$this->uri->segment(5);
+			$field3=$this->uri->segment(6);
+			$concat=array();
+			if(!empty($field1)){
+			$concat[]=$field1;
+			}
+			if(!empty($field2)){
+			$concat[]=$field2;
+			}
+			if(!empty($field3)){
+			$concat[]=$field3;
+			}
+			
+			$fields = implode(",",$concat);
+			$query = "SELECT concat( $fields ) ref , count( * ) count
+FROM `$table`
+GROUP BY concat( $fields )
+HAVING count( concat( $fields ) ) >1";
+$result = $this->db->query($query)->result_array();
+foreach($result as $row){
+$remove = $row['count']-1;
+echo $delete = "delete from $table where concat($fields) = '".addslashes($row['ref'])."' limit $remove";	
+echo ";<br>";	
+}
+	}
+
 
     public function index()
     {

@@ -759,7 +759,6 @@ var modals = {
             });
         },
         contact_form: function (type, id, tab) {
-            modals.contacts.init()
             $.ajax({
                 url: helper.baseUrl + 'modals/load_contact_form',
                 type: "POST",
@@ -799,12 +798,16 @@ var modals = {
         load_tabs: function (id, item_form) {
             var $panel = $('#modal');
             if (item_form !== "general") {
+	 var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 $panel.find('#' + item_form + ' form').hide();
                 $panel.find('#' + item_form + ' .table-container').show();
             } else {
+							   var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
                 $panel.find('#phone form, #address form').hide();
                 $panel.find('#phone .table-container,#address .table-container').show();
+				$panel.find('.save-contact-general').remove();
             }
+			  modals.update_footer(mfooter);
             $.ajax({
                 url: helper.baseUrl + "ajax/get_contact",
                 type: "POST",
@@ -814,8 +817,7 @@ var modals = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
-                    modals.update_footer(mfooter);
+
                     $.each(response.data.general, function (key, val) {
                         $panel.find('#general [name="' + key + '"]').val(val);
                     });
@@ -1005,13 +1007,13 @@ var modals = {
                         //Set the telephone number input as a number
                         $tab.find('form').find('input[name="telephone_number"]').numeric();
 
-                        var tps_option = $tab.find('select[name="tps"]').val();
+                        var tps_option = $tab.find('select[name="ctps"]').val();
                         var company_id = $tab.find('form').find('input[name="company_id"]').val();
                         var telephone_id = $tab.find('form input[name="telephone_id"]').val();
                         var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
                         var tps = "";
                         if (tps_option.length == 0) {
-                            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-company-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-company-id='" + company_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
                         }
                         else if (tps_option == 1) {
                             tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
@@ -1104,7 +1106,6 @@ var modals = {
             });
         },
         company_form: function (type, id, tab) {
-            modals.companies.init()
             $.ajax({
                 url: helper.baseUrl + 'modals/load_company_form',
                 type: "POST",
@@ -1144,12 +1145,16 @@ var modals = {
         load_tabs: function (id, item_form) {
             var $panel = $('#modal');
             if (item_form !== "general") {
+				 var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 $panel.find('#' + item_form + ' form').hide();
                 $panel.find('#' + item_form + ' .table-container').show();
             } else {
+			var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
                 $panel.find('#phone form, #address form').hide();
                 $panel.find('#phone .table-container,#address .table-container').show();
             }
+			console.log(mfooter);
+			modals.update_footer(mfooter);
             $.ajax({
                 url: helper.baseUrl + "ajax/get_company",
                 type: "POST",
@@ -1159,8 +1164,6 @@ var modals = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
-                    modals.update_footer(mfooter);
                     $.each(response.data.general, function (key, val) {
                         $panel.find('#general [name="' + key + '"]').val(val);
                     });

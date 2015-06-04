@@ -31,7 +31,7 @@ class Migration_update_10 extends CI_Migration
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 	$this->db->query("ALTER TABLE `record_keywords`
   ADD CONSTRAINT `record_keywords_ibfk_2` FOREIGN KEY (`keyword_id`) REFERENCES `keywords` (`keyword_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `record_keywords_ibfk_1` FOREIGN KEY (`urn`) REFERENCES `records` (`urn`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `record_keywords_ibfk_1` FOREIGN KEY (`urn`) REFERENCES `records` (`urn`) ON DELETE CASCADE ON UPDATE CASCADE
 ");
 
 			

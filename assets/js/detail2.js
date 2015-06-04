@@ -26,6 +26,8 @@ var record = {
             e.preventDefault();
             record.start_call();
         });
+		modals.contacts.init();
+		modals.companies.init();
         /* Initialize all the panel functions for the record details page */
         this.urn = urn;
         this.role = role;
