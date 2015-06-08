@@ -477,8 +477,6 @@ class Cron_model extends CI_Model
         $this->db->query($qry);
         $num_records_affected += $this->db->affected_rows();
 
-        $this->firephp->log($num_records_affected);
-
         return $num_records_affected;
     }
 }
