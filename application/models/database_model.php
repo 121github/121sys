@@ -1062,13 +1062,13 @@ $this->firephp->log($delete);
         }
 
         //Dumping data for table `appointment_types`
-        $this->db->query("INSERT INTO `appointment_types` (`appointment_type`, `campaign_id`) VALUES
-				('Face to face', NULL),
-				('Telephone', NULL)");
-
-        if ($this->db->_error_message()) {
-            return "appointment_types";
-        }
+//        $this->db->query("INSERT INTO `appointment_types` (`appointment_type`, `campaign_id`) VALUES
+//				('Face to face', NULL),
+//				('Telephone', NULL)");
+//
+//        if ($this->db->_error_message()) {
+//            return "appointment_types";
+//        }
 
         return "success";
     }
