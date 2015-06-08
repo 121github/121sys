@@ -454,7 +454,7 @@ class Cron_model extends CI_Model
         $qry = "update records rec
                   LEFT JOIN record_details rd using (urn)
                 set rec.record_color = 'ffd700'
-                  WHERE rd.c1 = 'Gold' AND rec.record_color is not null";
+                  WHERE rd.c1 = 'Gold' AND rec.record_color is null";
 
         $this->db->query($qry);
         $num_records_affected += $this->db->affected_rows();
@@ -463,7 +463,7 @@ class Cron_model extends CI_Model
         $qry = "update records rec
                   LEFT JOIN record_details rd using (urn)
                 set rec.record_color = 'c0c0c0'
-                  WHERE rd.c1 = 'Silver' AND rec.record_color is not null";
+                  WHERE rd.c1 = 'Silver' AND rec.record_color is null";
 
         $this->db->query($qry);
         $num_records_affected += $this->db->affected_rows();
@@ -472,7 +472,7 @@ class Cron_model extends CI_Model
         $qry = "update records rec
                   LEFT JOIN record_details rd using (urn)
                 set rec.record_color = 'cd7f32'
-                  WHERE rd.c1 = 'Bronze' AND rec.record_color is not null";
+                  WHERE rd.c1 = 'Bronze' AND rec.record_color is null";
 
         $this->db->query($qry);
         $num_records_affected += $this->db->affected_rows();
