@@ -625,6 +625,37 @@ class Cron extends CI_Controller
 
 
     //################################################################################################
+    //################################### ELDON functions ######################################
+    //################################################################################################
+
+    /**
+     * Colour the Eldon records by Category
+     */
+    public function eldon_coloured_by_category()
+    {
+        $output = "";
+        $output .= "\nColour the Eldorn records by Category... ";
+
+
+        //Update the colour of the records by category when the record_color is null
+        $num_records_updated = $this->Cron_model->eldon_coloured_by_category();
+
+        $output .= $num_records_updated." Records affected \n\n";
+
+        if ($this->input->is_ajax_request()) {
+            echo json_encode(array(
+                "success" => true,
+                "num_records_colored" => $num_records_updated,
+                "msg" => $num_records_updated." records colored"
+            ));
+        }
+        else {
+            echo $output;
+        }
+    }
+
+
+    //################################################################################################
     //################################### PRIVATE functions ##########################################
     //################################################################################################
 
