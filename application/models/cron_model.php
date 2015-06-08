@@ -468,6 +468,15 @@ class Cron_model extends CI_Model
         $this->db->query($qry);
         $num_records_affected += $this->db->affected_rows();
 
+        //Platinum
+        $qry = "update records rec
+                  LEFT JOIN record_details rd using (urn)
+                set rec.record_color = 'e5e4e2'
+                  WHERE rd.c1 = 'Platinum' AND rec.record_color is null";
+
+        $this->db->query($qry);
+        $num_records_affected += $this->db->affected_rows();
+
         //Bronze
         $qry = "update records rec
                   LEFT JOIN record_details rd using (urn)
