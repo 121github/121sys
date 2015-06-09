@@ -14,6 +14,10 @@ class Modals extends CI_Controller
         $this->load->model('Modal_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+	
+	public function merge_record(){
+	  $this->load->view('forms/merge_record.php');
+	}
 
 	public function load_company_search(){
 	  $this->load->view('forms/search_company_form.php');

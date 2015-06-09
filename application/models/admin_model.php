@@ -87,10 +87,12 @@ class Admin_model extends CI_Model
         //then add the new ones
         if (isset($form['features'])) {
             foreach ($form['features'] as $feature) {
-                $this->db->insert("campaigns_to_features", array(
+                $insert_string = $this->db->insert_string("campaigns_to_features", array(
                     "campaign_id" => $form['campaign_id'],
                     "feature_id" => $feature
                 ));
+				$insert_query = str_replace('INSERT INTO', 'INSERT IGNORE INTO', $insert_string);
+				$this->db->query($insert_query);
             }
         }
     }

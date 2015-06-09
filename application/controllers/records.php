@@ -725,6 +725,14 @@ class Records extends CI_Controller
                 exit;
 			}
 			
+			if(empty($data['contact_id'])){
+				echo json_encode(array(
+                    "success" => false,
+                    "msg" => "You must set the contact"
+                ));
+                exit;
+			}
+			
 			$address_field = explode('|',$data['address']);
 			$data['address'] = $address_field[0];
 			$postcode = $address_field[1];

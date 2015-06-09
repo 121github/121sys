@@ -12,6 +12,14 @@ class Form_model extends CI_Model
             $this->user_id = $_SESSION['user_id'];
         }
     }
+	
+	public function get_contacts($urn){
+		//this is used to get the available contacts in the appoitnment form
+		$this->db->select("contact_id id,fullname name");
+		$this->db->where("urn",$urn);
+		return $this->db->get('contacts')->result_array();
+	}
+	
     public function get_custom_views()
     {
         $directory = APPPATH . 'views/records/custom';

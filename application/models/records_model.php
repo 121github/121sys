@@ -46,25 +46,43 @@ class Records_model extends CI_Model
 						$name = str_ireplace("ltd","",$name);
 						$name = str_ireplace("plc","",$name);
 						$name = str_ireplace(" ","",$name);
-	$query = "select urn,'company name' matched_on from companies where replace(replace(replace(name,'limited',''),'ltd',''),' ','') = '$name' and urn <> $urn";
+						
+	$query = "select urn,'company name' matched_on from companies left join records using(urn) where replace(replace(replace(name,'limited',''),'ltd',''),' ','') = '$name' and urn <> $urn";
+	if($campaign){
+			$query .= " and campaign_id = '$campaign'";
+		}
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 	$co_matches = $this->db->query($query)->result_array();
 	array_push($matches,$co_matches);
 			}
 			if($k=="website"){
-	$query = "select urn, 'website' matched_on from companies where website = '$v' and urn <> $urn";
+	$query = "select urn, 'website' matched_on from companies left join records using(urn) where website = '$v' and urn <> $urn";
+	if($campaign){
+			$query .= " and campaign_id = '$campaign'";
+		}
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 	$website_matches = $this->db->query($query)->result_array();
 	array_push($matches,$website_matches);
 			}
 					if($k=="contacts"){
 							foreach($v as $contact){
-	$query = "select urn,'contact name' matched_on from contacts where fullname = '$contact' and urn <> $urn";
+	$query = "select urn,'contact name' matched_on from contacts left join records using(urn) where fullname = '$contact' and urn <> $urn";
+	if($campaign){
+			$query .= " and campaign_id = '$campaign'";
+		}
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 	$contact_matches = $this->db->query($query)->result_array();
 	array_push($matches,$contact_matches);
 							}
 			}
 					if($k=="addresses"){
 						foreach($v as $address){
-	$query = "select urn,'address' matched_on from companies inner join company_addresses where concat(add1,postcode) = '$address' and urn <> $urn";
+	$query = "select urn,'address' matched_on from companies left join records using(urn) inner join company_addresses using(company_id) where concat(add1,postcode) = '$address' and urn <> $urn";
+	if($campaign){
+			$query .= " and campaign_id = '$campaign'";
+		}
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		  $this->firephp->log($query);
 	$address_matches = $this->db->query($query)->result_array();
 	array_push($matches,$address_matches);
 						}
@@ -72,12 +90,20 @@ class Records_model extends CI_Model
 					if($k=="numbers"){
 						foreach($v as $number){
 	$query = "select urn,'company telephone' matched_on from records left join companies using(urn) inner join company_telephone using(company_id) where telephone_number = '$number' and urn <> $urn";
+	if($campaign){
+			$query .= " and campaign_id = '$campaign'";
+		}
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 	$q =$this->db->query($query);
 	if($q->num_rows()){
 	$company_matches = $q->result_array();
 	array_push($matches,$company_matches);
 	} else {
 	$query = "select urn,'contact telephone' matched_on from records left join contacts using(urn) inner join contact_telephone using(contact_id) where telephone_number = '$number' and urn <> $urn";
+	if($campaign){
+			$query .= " and campaign_id = '$campaign'";
+		}
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 	$contact_matches = $this->db->query($query)->result_array();
 	array_push($matches,$contact_matches);
 	}
@@ -92,7 +118,6 @@ class Records_model extends CI_Model
 		$matched_on[$match[0]['urn']] = $match[0]['matched_on'];
 			}
 		}
-		$this->firephp->log($urns);
 		//now return all the data from related/similar records found
 		if(count($urns)>0){
 		$urn_list = ",".implode(',',$urns);
@@ -100,12 +125,15 @@ class Records_model extends CI_Model
 		$urn_list = "";	
 		}
 		$query = "select campaign_name,urn,name,status_name from records left join companies using(urn) left join status_list on record_status_id = record_status left join campaigns using(campaign_id) where urn in('' $urn_list)";
+		if($campaign){
+			$query .= " and campaign_id = '$campaign'";
+		}
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$data = $this->db->query($query)->result_array();
 		foreach($data as $k=>$row){
 		$data[$k]['matched_on']=$matched_on[$row['urn']];	
 		}
-		echo json_encode(array("success"=>true,"data"=>$data));
-		exit;
+		return $data;
 	}
 
     public function get_client_from_urn($urn)
@@ -496,7 +524,7 @@ class Records_model extends CI_Model
 
     public function get_details($urn, $features)
     {
-        $select = "select r.urn,c.contact_id,fullname,c.email,c.notes,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
+        $select = "select r.urn,c.contact_id,if(fullname = '','No Name',fullname) fullname,c.email,c.notes,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
         $from = " from records r ";
         $from .= "  left join outcomes o using(outcome_id) left join progress_description pd using(progress_id) ";
         $from .= "  left join park_codes pc using(parked_code) ";
@@ -1036,6 +1064,9 @@ class Records_model extends CI_Model
         $attendees = $post['attendees'];
         unset($post['attendees']);
 		
+		if($post['contact_id']=='other'){
+			$post['contact_id']=NULL;
+		}
 		
         if (!empty($post['appointment_id'])) {
             $this->db->where("appointment_id", $post['appointment_id']);

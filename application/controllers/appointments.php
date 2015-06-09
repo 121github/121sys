@@ -75,4 +75,12 @@ class Appointments extends CI_Controller
         echo json_encode(array("success" => true, "data" => $result));
     }
 
+	public function get_contacts(){
+		if ($this->input->is_ajax_request()) {
+			$urn = $this->input->post('urn');
+			$result = $this->Form_model->get_contacts($urn);
+			echo json_encode($result);
+		}
+	}
+
 }

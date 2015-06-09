@@ -42,13 +42,25 @@
         </div>
         </div>
         </div>
+        <div class="row">
+        <div class="col-xs-12 col-xs-6">
                 <div class="form-group input-group-sm">
-          <p>Please choose the attendee <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="This person will recieve an email alert of the appointment"></span></p>
-<select name="attendees[]" id="attendee-select" class="selectpicker attendeepicker" title="Choose the attendees" data-width="100%" required>
+          <p>Please choose the attendee <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="The person the appointment is being set for. This person will recieve an automated email notification of the appointment"></span></p>
+<select name="attendees[]" id="attendee-select" class="selectpicker attendeepicker" title="Choose the attendees" data-width="95%" required>
  <?php foreach($attendees as $attendee): ?>
  <option value="<?php echo $attendee['user_id'] ?>"><?php echo $attendee['name'] ?></option>
  <?php endforeach; ?>
 </select>
+        </div>
+        </div>
+               <div class="col-xs-12 col-xs-6">
+                <div class="form-group input-group-sm">
+          <p>Please choose the Contact <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="The person the appointment is with. You should send them a confirmation email manually if required"></span></p>
+<select name="contact_id" id="contact-select" class="contactpicker" title="Choose the contact" data-width="100%" required>
+</select>
+        </div>
+        </div> 
+        
         </div>
           <div class="row" id="select-appointment-address" <?php if(count($addresses)==0){ echo 'style="display:none"'; } ?>>
      
