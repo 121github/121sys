@@ -11,7 +11,7 @@ class Merge_model extends CI_Model
 	
 	public function merge_company_preview($options){
 		$preview=array();
-		$query = "select * from companies where urn ='".$options['source']."' and name  in(select name from companies where urn = '".$options['target']."')";
+		$query = "select * from companies where urn ='".$options['source']."' and name in(select name from companies where urn = '".$options['target']."')";
 		$existing = $this->db->query($query)->result_array();
 		$data=array();
 		foreach($existing as $row){

@@ -81,8 +81,7 @@ class Records_model extends CI_Model
 	if($campaign){
 			$query .= " and campaign_id = '$campaign'";
 		}
-		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
-		  $this->firephp->log($query);
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) "; 
 	$address_matches = $this->db->query($query)->result_array();
 	array_push($matches,$address_matches);
 						}

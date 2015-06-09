@@ -204,6 +204,7 @@ var modals = {
             if (response.success) {
                 if (edit) {
                     modals.edit_appointment_html(response.data);
+					$('.modal-body').css('overflow', 'visible');
                 } else {
                     modals.view_appointment_html(response.data);
                 }
