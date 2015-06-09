@@ -30,7 +30,7 @@
     <div class="input-group">
     <select name="company_details" class="selectpicker">
     <option value="1">Ignore</option>
-     <option value="2">Fill the blanks</option>
+     <option selected value="2">Fill the blanks</option>
       <option value="3">Overwrite</option>
     </select>
     </div>
@@ -39,7 +39,7 @@
     <div class="input-group">
     <select name="contact_details" class="selectpicker">
     <option value="1">Ignore</option>
-     <option value="2">Fill the blanks</option>
+     <option selected value="2">Fill the blanks</option>
       <option value="3">Overwrite</option>
     </select>
     </div>
