@@ -19,12 +19,14 @@ There was a problem while finding the selected record details. Maybe it does not
     <?php endif ?>
     
     <?php //this is the agent navigation which brings single records in they can only go +/-1 record at a time and they must update the record before they can move on
-	if($automatic||empty($nav['next'])&&in_array("set call outcomes",$_SESSION['permissions'])): ?>
+	if(isset($_SESSION['current_campaign'])):
+	if($automatic||empty($nav['next'])&&in_array("use callpot",$_SESSION['permissions'])): ?>
     <?php if(isset($_SESSION['prev'])&&!empty($_SESSION['prev'])&&$_SESSION['prev']!=$details['record']['urn']): ?>
     <a type="button" class="btn btn-default btn-lg" href="<?php echo base_url()."records/detail/".$_SESSION['prev'] ?>">Previous</a>
     <?php endif ?>  
     <a type="button" class="btn btn-default btn-lg <?php if(!isset($_SESSION['next'])&&!$allow_skip||empty($_SESSION['next'])&&!$allow_skip){ echo "nav-btn"; } ?>" href="<?php echo base_url()."records/detail/".(isset($_SESSION['next'])?$_SESSION['next']:"0") ?>">Next</a>
-    <?php endif ?>
+    <?php endif;
+	endif; ?>
     </span></h2>
 </div>
 

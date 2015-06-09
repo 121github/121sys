@@ -54,13 +54,27 @@ $this->_campaigns = campaign_access_dropdown();
 	/**
 	 * Get the templates
 	 */
-	public function template_data()
+	public function all_template_data()
 	{
 		if ($this->input->is_ajax_request()) {
 			$templateList = $this->Email_model->get_templates();
 			echo json_encode(array(
 					"success" => true,
 					"data" => $templateList,
+					"msg" => "Nothing found"
+			));
+			exit;
+		}
+	}
+	
+		public function template_data()
+	{
+		if ($this->input->is_ajax_request()) {
+			$id = $this->input->post('id');
+			$template = $this->Email_model->get_template($id);
+			echo json_encode(array(
+					"success" => true,
+					"data" => $template,
 					"msg" => "Nothing found"
 			));
 			exit;

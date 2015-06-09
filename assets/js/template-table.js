@@ -34,7 +34,7 @@ var template = {
     //this function reloads the groups into the table body
     load_templates: function() {
     	$.ajax({
-            url: helper.baseUrl + 'templates/template_data',
+            url: helper.baseUrl + 'templates/all_template_data',
             type: "POST",
             dataType: "JSON"
         }).done(function(response) {
@@ -47,21 +47,7 @@ var template = {
 										+ val.template_id
 									+ "</td><td class='template_name'>"
 										+ val.template_name
-									+ "</td><td class='template_from' style='display:none;'>"
-										+ val.template_from
-									+ "</td><td class='template_unsubscribe' style='display:none;'>"
-										+ val.template_unsubscribe
-									+ "</td><td class='template_to' style='display:none;'>"
-										+ val.template_to
-									+ "</td><td class='template_cc' style='display:none;'>"
-										+ val.template_cc
-									+ "</td><td class='template_bcc' style='display:none;'>"
-										+ val.template_bcc
-									+ "</td><td class='template_subject' style='display:none;'>"
-										+ val.template_subject
-									+ "</td><td class='template_body' style='display:none;'>"
-										+ val.template_body
-									+ "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn' item-id='"
+									+ "</td><td><button class='btn btn-default btn-xs edit-btn' data-id='"+val.template_id+"' >Edit</button> <button class='btn btn-default btn-xs del-btn' item-id='"
 										+ val.template_id
 									+ "'>Delete</button></td></tr>");
                 }
@@ -92,24 +78,30 @@ var template = {
     },
 	//edit a template
     edit: function($btn) {
-    	$("button[type=submit]").attr('disabled',false);
+		var id = $btn.attr('data-id');
+		$.ajax({  url: helper.baseUrl + 'templates/template_data',
+            data: { id:id },
+			type:"POST",
+			dataType:"JSON",
+		}).done(function(result){
+			    	$("button[type=submit]").attr('disabled',false);
     	$('#attachments').fadeOut();
         var row = $btn.closest('tr');
-        $('form').find('input[name="template_id"]').val(row.find('.template_id').text());
-        $('form').find('input[name="template_name"]').val(row.find('.template_name').text());
-        $('form').find('input[name="template_from"]').val(row.find('.template_from').text());
-        $('form').find('input[name="template_to"]').val(row.find('.template_to').text());
-        $('form').find('input[name="template_cc"]').val(row.find('.template_cc').text());
-        $('form').find('input[name="template_bcc"]').val(row.find('.template_bcc').text());
-        $('form').find('input[name="template_subject"]').val(row.find('.template_subject').text());
-		if(row.find('.template_unsubscribe').text()=="1"){
+        $('form').find('input[name="template_id"]').val(result.data.template_id);
+        $('form').find('input[name="template_name"]').val(result.data.template_name);
+        $('form').find('input[name="template_from"]').val(result.data.template_from);
+        $('form').find('input[name="template_to"]').val(result.data.template_to);
+        $('form').find('input[name="template_cc"]').val(result.data.template_cc);
+        $('form').find('input[name="template_bcc"]').val(result.data.template_bcc);
+        $('form').find('input[name="template_subject"]').val(result.data.template_subject);
+		if(result.data.template_unsubscribe=="1"){
 			$('form').find('#unsubscribe-yes').prop('checked',true).parent().addClass('active');
 			$('form').find('#unsubscribe-no').prop('checked',false).parent().removeClass('active');
 		} else {
 			$('form').find('#unsubscribe-no').prop('checked',true).parent().addClass('active');
 			$('form').find('#unsubscribe-yes').prop('checked',false).parent().removeClass('active');
 		}
-        $('#summernote').code(row.find('.template_body').html());
+        $('#summernote').code(result.data.template_body);
         
         var data = {id : $('form').find('input[name="template_id"]').val()};
         
@@ -129,9 +121,8 @@ var template = {
         });
         
         template.load_attachments();
-        
-        
-        
+		});
+       
     },
 	//add a new template
     create: function() {
