@@ -1,40 +1,42 @@
-	<?php
+<?php
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
+
 /*  This page contains functiosn to populate dropdown menus on forms and filters. The queries simply return each id and value in the table in the format id=>name */
+
 class Cron_model extends CI_Model
 {
     function __construct()
     {
         parent::__construct();
-        
+
     }
-    
+
     public function clear_hours()
     {
         $this->db->query("truncate table hours_logged");
     }
-    
+
     public function update_hours($agents)
     {
         foreach ($agents as $agent) {
-            $qry   = "select sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time))) duration,campaign_id from hours_logged where user_id = '{$agent['id']}' and date(`start_time`)=curdate()  group by campaign_id having duration > 1";
+            $qry = "select sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time))) duration,campaign_id from hours_logged where user_id = '{$agent['id']}' and date(`start_time`)=curdate()  group by campaign_id having duration > 1";
             $query = $this->db->query($qry);
             if ($query->num_rows()) {
-                
+
                 $campaigns = $query->result_array();
                 foreach ($campaigns as $row) {
-                    $qry    = "update hours set duration = '{$row['duration']}',`date`=now() where user_id = '{$agent['id']}' and campaign_id = {$row['campaign_id']}";
+                    $qry = "update hours set duration = '{$row['duration']}',`date`=now() where user_id = '{$agent['id']}' and campaign_id = {$row['campaign_id']}";
                     $update = $this->db->query($qry);
                     if ($this->db->affected_rows() == 0) {
-                        $qry    = "insert into hours set duration = '{$row['duration']}',user_id = '{$agent['id']}',campaign_id = {$row['campaign_id']},exception =0,`date`=now()";
+                        $qry = "insert into hours set duration = '{$row['duration']}',user_id = '{$agent['id']}',campaign_id = {$row['campaign_id']},exception =0,`date`=now()";
                         $insert = $this->db->query($qry);
                     }
                 }
             }
         }
     }
-    
+
     public function set_daily_ration_renewals($campaign_id, $renewal_date_field, $daily_data, $min_quote_days, $max_quote_days)
     {
         $where = "";
@@ -47,13 +49,13 @@ class Cron_model extends CI_Model
         if (!$min_quote_days and !$max_quote_days) {
             $where .= "0";
         }
-        
-		//first we set them all out of date
-		$qry = "update records r left join record_details rd using(urn)
-                set parked_code = 6 where r.campaign_id = " . $campaign_id ." and (r.parked_code is null or r.parked_code=1)";
-		$this->db->query($qry);
-		
-		//now we set all records that are in date to rationed	
+
+        //first we set them all out of date
+        $qry = "update records r left join record_details rd using(urn)
+                set parked_code = 6 where r.campaign_id = " . $campaign_id . " and (r.parked_code is null or r.parked_code=1)";
+        $this->db->query($qry);
+
+        //now we set all records that are in date to rationed
         $qry = "update records
                 set parked_code = 1 where urn in
                     (select * from
@@ -64,8 +66,8 @@ class Cron_model extends CI_Model
                         and (r.parked_code is null or r.parked_code=6)
                         and r.campaign_id = " . $campaign_id . $where . ")
                     as urn)";
-		
-		//now we unpark the daily amount that are rationed so they are available for calling		
+
+        //now we unpark the daily amount that are rationed so they are available for calling
         $qry = "update records
                 set parked_code = null where urn in
                     (select * from
@@ -78,15 +80,15 @@ class Cron_model extends CI_Model
                         and r.campaign_id = " . $campaign_id . $where . "
                         limit " . $daily_data . ")
                     as urn)";
-        
+
         $update = $this->db->query($qry);
-        
+
         return $this->db->affected_rows();
     }
-	
-	  public function set_daily_ration_records($campaign_id, $daily_data)
+
+    public function set_daily_ration_records($campaign_id, $daily_data)
     {
-		//if there is no renewal date we dont need to remove any records, we just add in the daily amount	
+        //if there is no renewal date we dont need to remove any records, we just add in the daily amount
         $qry = "update records
                 set parked_code = null where urn in
                     (select * from
@@ -97,12 +99,12 @@ class Cron_model extends CI_Model
                         and r.campaign_id = " . $campaign_id . "
                         limit " . $daily_data . ")
                     as urn)";
-        
+
         $update = $this->db->query($qry);
-        
+
         return $this->db->affected_rows();
     }
-    
+
     public function update_locations_table()
     {
         $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
@@ -111,188 +113,189 @@ class Cron_model extends CI_Model
         $this->db->join("locations", "locations.location_id=company_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("company_addresses")->result_array();
-		$this->firephp->log("Find all company postcodes without a location ID:" . $this->db->last_query());
-        $status    = "Company Postcodes found: " . count($postcodes) . "\r\n";
+        $this->firephp->log("Find all company postcodes without a location ID:" . $this->db->last_query());
+        $status = "Company Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			 file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
+            file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update company_addresses set postcode = null where company_id = '{$row['company_id']}'";
                 $this->db->query($qry);
             } else {
-				$qry = "update company_addresses set postcode = '$formatted_postcode' where company_id = '{$row['company_id']}'";
+                $qry = "update company_addresses set postcode = '$formatted_postcode' where company_id = '{$row['company_id']}'";
                 $this->db->query($qry);
             }
         }
-        
+
         //2. insert all contact locations
         $this->db->select("postcode,contact_id");
         $this->db->join("locations", "locations.location_id=contact_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("contact_addresses")->result_array();
-		$this->firephp->log("Find all contact postcodes without a location ID:" . $this->db->last_query());
+        $this->firephp->log("Find all contact postcodes without a location ID:" . $this->db->last_query());
         $status .= "Contact Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			  file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
+            file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update contact_addresses set postcode = null where contact_id = '{$row['contact_id']}'";
                 $this->db->query($qry);
             } else {
-				$qry = "update contact_addresses set postcode = '$formatted_postcode' where contact_id = '{$row['contact_id']}'";
+                $qry = "update contact_addresses set postcode = '$formatted_postcode' where contact_id = '{$row['contact_id']}'";
                 $this->db->query($qry);
             }
         }
-        
-        
+
+
         //3. insert all appointment location
         $this->db->select("postcode,appointment_id");
         $this->db->join("locations", "locations.location_id=appointments.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("appointments")->result_array();
         $status .= "Appointment Postcodes found: " . count($postcodes) . "\r\n";
-		$this->firephp->log($status);
+        $this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             //check valid format
             $formatted_postcode = postcodeCheckFormat($row['postcode']);
-			 file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
+            file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update appointments set postcode = null where appointment_id = '{$row['appointment_id']}'";
                 $this->db->query($qry);
             } else {
-				$qry = "update appointments set postcode = '$formatted_postcode' where appointment_id = '{$row['appointment_id']}'";
+                $qry = "update appointments set postcode = '$formatted_postcode' where appointment_id = '{$row['appointment_id']}'";
                 $this->db->query($qry);
-              
+
             }
         }
-        
+
     }
+
     public function update_location_ids()
     {
-		 $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
+        $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
         //1.1 update location ids
-        $qry       = "select postcode from company_addresses where location_id is null and postcode is not null";
+        $qry = "select postcode from company_addresses where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
         $status = "NULL Company IDs found: " . count($postcodes) . "\r\n";
-		$this->firephp->log($status);
+        $this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
-			$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
-			if($this->db->query($qry)->num_rows()){
-            $pc = $this->db->query($qry)->row_array();
-			$q1 = "insert ignore into locations set location_id='{$pc['postcode_id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
-			$this->firephp->log($q1);
-			$this->db->query($q1);	
-			$q2 = "update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'";
-            $this->firephp->log($q2);
-			$this->db->query($q2);
-			}
+            $qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
+            if ($this->db->query($qry)->num_rows()) {
+                $pc = $this->db->query($qry)->row_array();
+                $q1 = "insert ignore into locations set location_id='{$pc['postcode_id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
+                $this->firephp->log($q1);
+                $this->db->query($q1);
+                $q2 = "update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'";
+                $this->firephp->log($q2);
+                $this->db->query($q2);
+            }
         }
-        
+
         //2.1 update location ids
-        $qry       = "select postcode from contact_addresses where location_id is null and postcode is not null";
+        $qry = "select postcode from contact_addresses where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
         $status .= "NULL Contact IDs found: " . count($postcodes) . "\r\n";
-		$this->firephp->log($status);
+        $this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
-			$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
-			if($this->db->query($qry)->num_rows()){
-   $pc = $this->db->query($qry)->row_array();	
-						$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");
-            $this->db->query("update contact_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
-			}
+            $qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
+            if ($this->db->query($qry)->num_rows()) {
+                $pc = $this->db->query($qry)->row_array();
+                $this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");
+                $this->db->query("update contact_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
+            }
         }
-        
-        
+
+
         //3.1 update location ids
-        $qry       = "select postcode from appointments where location_id is null and postcode is not null";
+        $qry = "select postcode from appointments where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
         $status .= "NULL Appointment IDs found: " . count($postcodes) . "\r\n";
-		$this->firephp->log($status);
+        $this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
-           	$qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
-			if($this->db->query($qry)->num_rows()){
-   $pc = $this->db->query($qry)->row_array();
-			$this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");
-            $this->db->query("update appointments set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
+            $qry = "select postcode_id,lat,lng from uk_postcodes where postcode = '{$row['postcode']}'";
+            if ($this->db->query($qry)->num_rows()) {
+                $pc = $this->db->query($qry)->row_array();
+                $this->db->query("insert ignore into locations set location_id = {$pc['postcode_id']},lat='{$pc['lat']}',lng='{$pc['lng']}'");
+                $this->db->query("update appointments set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'");
+            }
         }
-		}
     }
-    
-    
+
+
     public function update_locations_with_google()
     {
-         $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
+        $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
         //1.2 use google to update the rest
         $this->db->select("postcode,company_id");
         $this->db->join("locations", "locations.location_id=company_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("company_addresses")->result_array();
         $status = "Company Postcodes found [google search]: " . count($postcodes) . "\r\n";
-		$this->firephp->log($status);
+        $this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
-            
+
             if (!isset($response['error'])) {
-				file_put_contents($file, $status . $response['lat']);
+                file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
-        
-        
-        
+
+
         //2.2 use google to update the rest
         $this->db->select("postcode,contact_id");
         $this->db->join("locations", "locations.location_id=contact_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("contact_addresses")->result_array();
         $status .= "Contact Postcodes found [google search]: " . count($postcodes) . "\r\n";
-		$this->firephp->log($status);
+        $this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
-			 
+
             if (!isset($response['error'])) {
-				 file_put_contents($file, $status . $response['lat']);
+                file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
-        
+
         //3.2 use google to update the rest
         $this->db->select("postcode,appointment_id");
         $this->db->join("locations", "locations.location_id=appointments.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("appointments")->result_array();
         $status .= "Appointment Postcodes found [google search]: " . count($postcodes) . "\r\n";
-		$this->firephp->log($status);
+        $this->firephp->log($status);
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
             $response = postcode_to_coords($row['postcode']);
-			 
+
             if (!isset($response['error'])) {
-				 file_put_contents($file, $status . $response['lat']);
+                file_put_contents($file, $status . $response['lat']);
                 $this->db->query("insert ignore into uk_postcodes set postcode='{$row['postcode']}',lat = '{$response['lat']}',lng = '{$response['lng']}'");
             }
         }
-        
+
     }
 
     /**
      * Get the wrong contact telephone numbers
      */
-    public function get_wrong_contact_telephone_numbers() {
-        $qry    = "select contact_id, telephone_id, telephone_number
+    public function get_wrong_contact_telephone_numbers()
+    {
+        $qry = "select contact_id, telephone_id, telephone_number
                   from contact_telephone
                   where
                       telephone_number like '%+%' or
@@ -309,7 +312,8 @@ class Cron_model extends CI_Model
     /**
      * Update the contact telephone numbers with the right numbers
      */
-    public function update_contact_telephone_numbers($contacts) {
+    public function update_contact_telephone_numbers($contacts)
+    {
 
         $result = $this->db->update_batch("contact_telephone", $contacts, 'telephone_id');
 
@@ -321,8 +325,9 @@ class Cron_model extends CI_Model
     /**
      * Get the wrong company telephone numbers
      */
-    public function get_wrong_company_telephone_numbers() {
-        $qry    = "select company_id, telephone_id, telephone_number
+    public function get_wrong_company_telephone_numbers()
+    {
+        $qry = "select company_id, telephone_id, telephone_number
                   from company_telephone
                   where
                       telephone_number like '%+%' or
@@ -339,7 +344,8 @@ class Cron_model extends CI_Model
     /**
      * Update the company telephone numbers with the right numbers
      */
-    public function update_company_telephone_numbers($companies) {
+    public function update_company_telephone_numbers($companies)
+    {
 
         $this->db->update_batch("company_telephone", $companies, 'telephone_id');
 
@@ -353,10 +359,11 @@ class Cron_model extends CI_Model
      *
      * return true if the telephone number exist in the table or false in other case
      */
-    public function check_tps_by_telephone_number ($telephone_number, $type) {
-        $qry    = "select *
+    public function check_tps_by_telephone_number($telephone_number, $type)
+    {
+        $qry = "select *
                   from tps
-                  where telephone like '%".$telephone_number."%'
+                  where telephone like '%" . $telephone_number . "%'
                   and tps.date_updated >= NOW()-INTERVAL 6 MONTH";
 
         $result = $this->db->query($qry)->result_array();
@@ -367,8 +374,9 @@ class Cron_model extends CI_Model
     /**
      * Get the contact telephone_numbers
      */
-    public function get_no_tps_contact_telephone_numbers_in_tps_table() {
-        $qry    = "select ct.contact_id, ct.telephone_id, ct.telephone_number, tps.tps
+    public function get_no_tps_contact_telephone_numbers_in_tps_table()
+    {
+        $qry = "select ct.contact_id, ct.telephone_id, ct.telephone_number, tps.tps
                   from contact_telephone ct
                   inner join tps ON (ct.telephone_number = tps.telephone)
                   where ct.tps is null
@@ -382,8 +390,9 @@ class Cron_model extends CI_Model
     /**
      * Get the company telephone_numbers
      */
-    public function get_no_ctps_company_telephone_numbers_in_tps_table() {
-        $qry    = "select ct.company_id, ct.telephone_id, ct.telephone_number, tps.ctps
+    public function get_no_ctps_company_telephone_numbers_in_tps_table()
+    {
+        $qry = "select ct.company_id, ct.telephone_id, ct.telephone_number, tps.ctps
                   from company_telephone ct
                   inner join tps ON (ct.telephone_number = tps.telephone)
                   where ct.ctps is null
@@ -397,17 +406,18 @@ class Cron_model extends CI_Model
     /**
      * Add telephone_number to the tps table (if already exist update the date_updated
      */
-    public function update_number_to_tps_table($data) {
+    public function update_number_to_tps_table($data)
+    {
 
         $update = "";
-        foreach($data as $key => $val) {
-            $update .= ",".$key."='".$val."'";
+        foreach ($data as $key => $val) {
+            $update .= "," . $key . "='" . $val . "'";
         }
 
-        $sql = $this->db->insert_string('tps', $data) . ' ON DUPLICATE KEY UPDATE date_updated=NOW()'.$update;
+        $sql = $this->db->insert_string('tps', $data) . ' ON DUPLICATE KEY UPDATE date_updated=NOW()' . $update;
         $this->db->trans_complete();
 
-        $result =  $this->db->query($sql);
+        $result = $this->db->query($sql);
 
         return $result;
     }
@@ -415,7 +425,8 @@ class Cron_model extends CI_Model
     /**
      * Suppress the records with this telephone number in their contacts or company details
      */
-    public function suppress_records () {
+    public function suppress_records()
+    {
         $qry = "update records rec
                   LEFT JOIN companies com USING (urn)
                   LEFT JOIN company_telephone comt USING (company_id)
@@ -429,5 +440,52 @@ class Cron_model extends CI_Model
         $update = $this->db->query($qry);
 
         return $this->db->affected_rows();
+    }
+
+
+    /**
+     * Colour the Eldon records by Category
+     */
+    public function eldon_coloured_by_category()
+    {
+        $num_records_affected = 0;
+
+        //Gold
+        $qry = "update records rec
+                  LEFT JOIN record_details rd using (urn)
+                set rec.record_color = 'ffd700'
+                  WHERE rd.c1 = 'Gold' AND rec.record_color is null";
+
+        $this->db->query($qry);
+        $num_records_affected += $this->db->affected_rows();
+
+        //Silver
+        $qry = "update records rec
+                  LEFT JOIN record_details rd using (urn)
+                set rec.record_color = 'c0c0c0'
+                  WHERE rd.c1 = 'Silver' AND rec.record_color is null";
+
+        $this->db->query($qry);
+        $num_records_affected += $this->db->affected_rows();
+
+        //Platinum
+        $qry = "update records rec
+                  LEFT JOIN record_details rd using (urn)
+                set rec.record_color = 'e5e4e2'
+                  WHERE rd.c1 = 'Platinum' AND rec.record_color is null";
+
+        $this->db->query($qry);
+        $num_records_affected += $this->db->affected_rows();
+
+        //Bronze
+        $qry = "update records rec
+                  LEFT JOIN record_details rd using (urn)
+                set rec.record_color = 'cd7f32'
+                  WHERE rd.c1 = 'Bronze' AND rec.record_color is null";
+
+        $this->db->query($qry);
+        $num_records_affected += $this->db->affected_rows();
+
+        return $num_records_affected;
     }
 }

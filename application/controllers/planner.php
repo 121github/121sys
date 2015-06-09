@@ -43,7 +43,8 @@ class Planner extends CI_Controller
                 'lib/daterangepicker.js',
                 'plugins/touch-punch/jquery-ui-touch-punch.js',
                 'location.js',
-                'map.js'
+                'map.js',
+                'plugins/fontawesome-markers/fontawesome-markers.min.js'
             )
         );
         $this->template->load('default', 'dashboard/planner.php', $data);
