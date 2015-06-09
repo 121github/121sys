@@ -67,6 +67,7 @@ class Email_model extends CI_Model
     {
         $this->db->select("*");
         $this->db->from("email_templates t");
+		$this->db->order_by("template_name");
         return $this->db->get()->result_array();
     }
     
