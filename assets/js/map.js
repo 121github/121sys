@@ -605,12 +605,9 @@ var maps = {
     //    });
     //},
     addRecordMarker: function (value) {
-        var marker_color = "|" + (value.record_color?(value.record_color).substr(1):maps.intToARGB(maps.hashCode(value.attendee)));
-        var marker_text_color = "|FFFFFF";
-        var character = "|" + (value.attendee).substr(0, 1);
-        var pin_style = (((planner_permission == true)) && (value.record_planner_id) ? "pin_star" : "pin");
-        var star_color = (((planner_permission == true)) && (value.record_planner_id) ? "|FCEF04" : "");
-        var map_pin_style = "d_map_xpin_letter";
+        var marker_color = "#" + (value.record_color?(value.record_color).substr(1):maps.intToARGB(maps.hashCode(value.attendee)));
+        var marker_icon = (((planner_permission == true)) && (value.record_planner_id)?fontawesome.markers.FLAG:fontawesome.markers.MAP_MARKER);
+        var marker_scale = (((planner_permission == true)) && (value.record_planner_id)?0.4:0.5);
 
         var navbtn = false;
         var planner_info = false;
@@ -662,15 +659,23 @@ var maps = {
             postcode: value.postcode,
             id: value.marker_id,
             content: contentString,
-            icon: "http://chart.apis.google.com/chart?chst=" + map_pin_style + "&chld=" + pin_style + character + marker_color + marker_text_color + star_color
+            icon: {
+                path: marker_icon,
+                scale: marker_scale,
+                strokeWeight: 0.2,
+                strokeColor: 'black',
+                strokeOpacity: 1,
+                fillColor: marker_color,
+                fillOpacity: 0.9,
+            },
         });
         maps.setMarker(marker);
     },
     // Add a marker to the map and push to the array.
     addAppointmentMarker: function (value) {
-        var marker_color = maps.intToARGB(maps.hashCode(value.name));
-        var marker_text_color = "FFFFFF";
-        var character = (value.name).substr(0, 1);
+        var marker_color = "#" + maps.intToARGB(maps.hashCode(value.name));
+        var marker_icon = fontawesome.markers.MAP_MARKER;
+
         var navbtn = false;
         if ($('.map-form').find('input[name="postcode"]').val().length > 0) {
             navbtn = '<p>' +
@@ -701,16 +706,23 @@ var maps = {
             postcode: value.postcode,
             content: contentString,
             id: value.marker_id,
-            icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
+            icon: {
+                path: marker_icon,
+                scale: 0.5,
+                strokeWeight: 0.2,
+                strokeColor: 'black',
+                strokeOpacity: 1,
+                fillColor: marker_color,
+                fillOpacity: 0.9,
+            },
         });
         maps.setMarker(marker);
     },
 
     // Add a marker to the map and push to the array.
     addPlannerMarker: function (value) {
-        var marker_color = maps.intToARGB(maps.hashCode(value.name));
-        var marker_text_color = "FFFFFF";
-        var character = (value.name).substr(0, 1);
+        var marker_color = "#" + maps.intToARGB(maps.hashCode(value.name));
+        var marker_icon = fontawesome.markers.FLAG;
 
         var planner_info =
             '<b>Planner: </b>' +
@@ -759,7 +771,15 @@ var maps = {
             postcode: value.postcode,
             content: contentString,
             id: value.urn,
-            icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + character + "|" + marker_color + "|" + marker_text_color
+            icon: {
+                path: marker_icon,
+                scale: 0.4,
+                strokeWeight: 0.2,
+                strokeColor: 'black',
+                strokeOpacity: 1,
+                fillColor: marker_color,
+                fillOpacity: 0.9,
+            },
         });
 
         maps.setMarker(marker);

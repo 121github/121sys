@@ -71,7 +71,8 @@ class Records extends CI_Controller
 				'map.js',
                 'view.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
-                'modals.js'
+                'modals.js',
+                'plugins/fontawesome-markers/fontawesome-markers.min.js'
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
