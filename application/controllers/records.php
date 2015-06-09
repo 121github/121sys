@@ -21,6 +21,15 @@ class Records extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
     
+	public function save_related_records(){
+		//$query = "select urn from records inner join companies using(urn) left join contacts using(urn) left join contact_telephone cont using(contact_id) left join company_telephone comt using(company_id) where cont.telephone_number is not null or comt.telephone_number is not null group by urn";
+		$query = "select urn from records where campaign_id = 18";
+		$urns = $this->db->query($query)->result_array();
+		foreach($urns as $urn){
+			$this->Records_model->find_related_records($urn['urn']);
+		}
+	}
+	
 	public function related_records(){
 	  if ($this->input->is_ajax_request()) {
 			$campaign = $this->input->post('campaign');

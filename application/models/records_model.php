@@ -47,7 +47,7 @@ class Records_model extends CI_Model
 						$name = str_ireplace("plc","",$name);
 						$name = str_ireplace(" ","",$name);
 						
-	$query = "select urn,'company name' matched_on from companies left join records using(urn) where replace(replace(replace(name,'limited',''),'ltd',''),' ','') = '$name' and urn <> $urn";
+	$query = "select urn,'company name' matched_on from companies left join records using(urn) where replace(replace(replace(name,'limited',''),'ltd',''),' ','') = '".addslashed($name)."' and urn <> $urn";
 	if($campaign){
 			$query .= " and campaign_id = '$campaign'";
 		}
@@ -56,7 +56,7 @@ class Records_model extends CI_Model
 	array_push($matches,$co_matches);
 			}
 			if($k=="website"){
-	$query = "select urn, 'website' matched_on from companies left join records using(urn) where website = '$v' and urn <> $urn";
+	$query = "select urn, 'website' matched_on from companies left join records using(urn) where website = '".addslashed($v)."' and urn <> $urn";
 	if($campaign){
 			$query .= " and campaign_id = '$campaign'";
 		}
@@ -66,7 +66,7 @@ class Records_model extends CI_Model
 			}
 					if($k=="contacts"){
 							foreach($v as $contact){
-	$query = "select urn,'contact name' matched_on from contacts left join records using(urn) where fullname = '$contact' and urn <> $urn";
+	$query = "select urn,'contact name' matched_on from contacts left join records using(urn) where fullname = '".addslashed($contact)."' and urn <> $urn";
 	if($campaign){
 			$query .= " and campaign_id = '$campaign'";
 		}
@@ -115,6 +115,10 @@ class Records_model extends CI_Model
 			if(!empty($match[0]['urn'])){
 		$urns[] = $match[0]['urn'];	
 		$matched_on[$match[0]['urn']] = $match[0]['matched_on'];
+		//add to the related records table (testing)
+		$insert_query = $this->db->insert_string("related_records",array("source"=>$match[0]['urn'],"target"=>$urn,"matched_on"=>$match[0]['matched_on']));
+		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$insert_query);
+		$this->db->query($insert_query);
 			}
 		}
 		//now return all the data from related/similar records found
