@@ -335,7 +335,9 @@ class Records_model extends CI_Model
                       GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location,
                       r.record_color,
                       ow.user_id ownership_id,
-                      owu.name ownership
+                      owu.name ownership,
+                      r.map_icon,
+                      camp.map_icon as campaign_map_icon
                 from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
@@ -527,7 +529,7 @@ class Records_model extends CI_Model
 
     public function get_details($urn, $features)
     {
-        $select = "select r.urn,c.contact_id,if(fullname = '','No Name',fullname) fullname,c.email,c.notes,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
+        $select = "select r.urn, r.map_icon, c.contact_id,if(fullname = '','No Name',fullname) fullname,c.email,c.notes,c.linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
         $from = " from records r ";
         $from .= "  left join outcomes o using(outcome_id) left join progress_description pd using(progress_id) ";
         $from .= "  left join park_codes pc using(parked_code) ";
@@ -663,7 +665,8 @@ class Records_model extends CI_Model
                     "campaign" => $result['campaign_name'],
                     "favorite" => $favorite,
                     "reset_date" => $result['reset_date'],
-                    "custom_name" => $result['custom_panel_name']
+                    "custom_name" => $result['custom_panel_name'],
+                    "map_icon" => $result['map_icon']
                 );
             endforeach;
         }
@@ -1298,6 +1301,20 @@ class Records_model extends CI_Model
             //Insert a new record planner
             return $this->db->insert('record_planner', $record_planner);
         }
+    }
+
+
+    /**
+     * Set record icon map
+     */
+    public function set_icon($record) {
+
+        $urn = $record['urn'];
+        unset($record['urn']);
+
+        //Update the icon
+        $this->db->where('urn', $urn);
+        return $this->db->update('records', $record);
     }
 }
 

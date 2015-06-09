@@ -26,8 +26,8 @@ var record = {
             e.preventDefault();
             record.start_call();
         });
-		modals.contacts.init();
-		modals.companies.init();
+        modals.contacts.init();
+        modals.companies.init();
         /* Initialize all the panel functions for the record details page */
         this.urn = urn;
         this.role = role;
@@ -35,6 +35,11 @@ var record = {
         this.limit = 6;
         var data = [];
         window.history.pushState(data, "Record Details-" + record.urn, helper.baseUrl + 'records/detail/' + record.urn);
+
+        // Map iconpicker
+        $('#map-icon').on('change', function (e) {
+            record.setIcon(e.icon);
+        });
     },
     start_call: function () {
         $('#defaultCountdown').countdown('destroy');
@@ -67,6 +72,23 @@ var record = {
             $('#timeropened').hide();
             $('#timerclosed').hide();
             $('#defaultCountdown').countdown('destroy');
+        });
+    },
+    setIcon: function (icon) {
+        $.ajax({
+            url: helper.baseUrl + 'records/set_icon',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                'map_icon': ((icon.length>0 && icon != 'empty')?icon:null),
+                'urn': record.urn
+            }
+        }).done(function (response) {
+            if (response.success) {
+                flashalert.success(response.msg);
+            } else {
+                flashalert.danger(response.msg);
+            }
         });
     },
     sticky_note: {
@@ -292,10 +314,10 @@ var record = {
             comments_input = "<div class='form-group input-group-sm'><p>Comments</p><textarea class='form-control ' placeholder='Enter the comments here' rows='3' name='comments'>" + data.comments + "</textarea></div>";
 
             form += date_input +
-            user_input +
-            outcome_input +
-            progress_input +
-            comments_input;
+                user_input +
+                outcome_input +
+                progress_input +
+                comments_input;
 
 
             $form.append(form + "<button class='btn btn-primary pull-right marl save-history-btn' item-modal='" + modal + "'>Save</button> <button class='btn btn-default pull-right close-history-btn' item-modal='" + modal + "'>Cancel</button>");
@@ -513,19 +535,19 @@ var record = {
                             data: {urn: record.urn}
                         });
                     }
-					if (response.function_triggers) {
-						$.each(response.function_triggers,function(i,path){
+                    if (response.function_triggers) {
+                        $.each(response.function_triggers, function (i, path) {
                             $.ajax({
                                 url: helper.baseUrl + path + '/' + record.urn,
                                 type: "POST",
                                 dataType: "JSON",
                                 data: {urn: record.urn}
-                            }).done(function(function_trigger_response) {
+                            }).done(function (function_trigger_response) {
                                 if (function_trigger_response.function_name == "workbooks") {
                                     record.additional_info.load_panel();
                                 }
                             });
-						});
+                        });
                     }
                     record.update_panel.init();
                     $('textarea[name="comments"]').val('');
@@ -615,7 +637,7 @@ var record = {
     },
     //contact_panel_functions
     contact_panel: {
-		
+
         init: function () {
             this.config = {
                 panel: '.contact-panel'
@@ -628,7 +650,7 @@ var record = {
             /* initialize the edit contact buttons */
             $(document).on('click', '.edit-contact-btn', function (e) {
                 e.preventDefault();
-                contact_modal.contact_modal(record.urn,$(this).attr('item-id'));
+                contact_modal.contact_modal(record.urn, $(this).attr('item-id'));
             });
             /* initialize the delete contact buttons */
             $(document).on('click', '.del-contact-btn', function (e) {
@@ -646,10 +668,10 @@ var record = {
                 //record.contact_panel.save_contact($(this));
             });
             /*initialize the add item button for phone or address*/
-            
+
             /*initialize the edit item buttons for phone or address*/
-        
-           
+
+
             /*save the new phone or address*/
 
 
@@ -746,7 +768,7 @@ var record = {
                     var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
                     var tps = "";
                     if (tps_option.length == 0) {
-                        tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='"+contact_id+"' item-number-id='"+telephone_id+"' item-number='"+telephone_number+"' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                        tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
                     }
                     else if (tps_option == 1) {
                         tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
@@ -785,7 +807,7 @@ var record = {
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function (dt, dd) {
-                        if (dd && dd != '' && dd.length>0 && dt != 'Address') {
+                        if (dd && dd != '' && dd.length > 0 && dt != 'Address') {
                             $contact_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function (key, val) {
@@ -802,7 +824,7 @@ var record = {
                         if (tel.tel_name) {
                             var tps = "";
                             if (tel.tel_tps == null) {
-                                tps = "<span class='glyphicon glyphicon-question-sign black tps-btn tt pointer' item-contact-id='"+id+"' item-number-id='"+dt+"' item-number='"+tel.tel_num+"' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+                                tps = "<span class='glyphicon glyphicon-question-sign black tps-btn tt pointer' item-contact-id='" + id + "' item-number-id='" + dt + "' item-number='" + tel.tel_num + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
                             }
                             else if (tel.tel_tps == 1) {
                                 tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
@@ -810,13 +832,13 @@ var record = {
                             else {
                                 tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
                             }
-                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> "+tps+"</dd>";
+                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> " + tps + "</dd>";
                         }
                     });
                     $panel.find('.contacts-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.name.fullname).addClass(collapse))
                             .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right pointer marl').attr('data-id', key).attr('data-modal', 'delete-contact'))
-                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right').attr('data-id', key).attr('data-modal','edit-contact'))
+                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right').attr('data-id', key).attr('data-modal', 'edit-contact'))
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal contact-detail-list').append($contact_detail_list_items).append($contact_detail_telephone_items))
                         )
@@ -825,7 +847,7 @@ var record = {
 
             });
         },
-        check_tps: function(telephone_number, contact_id, telephone_id) {
+        check_tps: function (telephone_number, contact_id, telephone_id) {
             $.ajax({
                 url: helper.baseUrl + 'cron/check_tps',
                 type: "POST",
@@ -888,21 +910,22 @@ var record = {
                 $panel.find('.form-container').fadeIn(1000).find('.save-contact-general').attr('action', 'add_contact');
             });
         },
-		contact_modal:function(urn,id){
-			$.ajax({url:helper.baseUrl+'modals/edit_contact_form',
-	type:"POST",
-	dataType:"HTML",
-	data:{urn:urn,id:id}
-	}).done(function(response){
-		var mheader = "Edit contact";
-		var mfooter = '<span class="alert-success hidden">Contact details saved</span><button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
-		modals.load_modal(mheader,response,mfooter);
-		record.contact_panel.edit_form(id);
-		$('.modal-body').css('padding:0px');
-	});
-			
-		},
-        edit_form: function (id) {			
+        contact_modal: function (urn, id) {
+            $.ajax({
+                url: helper.baseUrl + 'modals/edit_contact_form',
+                type: "POST",
+                dataType: "HTML",
+                data: {urn: urn, id: id}
+            }).done(function (response) {
+                var mheader = "Edit contact";
+                var mfooter = '<span class="alert-success hidden">Contact details saved</span><button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
+                modals.load_modal(mheader, response, mfooter);
+                record.contact_panel.edit_form(id);
+                $('.modal-body').css('padding:0px');
+            });
+
+        },
+        edit_form: function (id) {
             var $panel = $('#modal');
             $('.tab[href="#general"]').tab('show');
             $panel.find('.tab-alert').hide();
@@ -1019,12 +1042,12 @@ var record = {
             this.config = {
                 panel: '.company-panel'
             };
-  
+
             $(document).on('click', '[data-modal="search-company"]', function (e) {
                 e.preventDefault();
-				var id = $(this).attr('data-id');
-				var urn = $(this).attr('data-urn');
-                record.company_panel.search_form(id,urn);
+                var id = $(this).attr('data-id');
+                var urn = $(this).attr('data-urn');
+                record.company_panel.search_form(id, urn);
             });
             $(document).on('click', '.search-company-action', function (e) {
                 e.preventDefault();
@@ -1136,7 +1159,7 @@ var record = {
                     var telephone_number = $tab.find('form').find('input[name="telephone_number"]').val();
                     var ctps = "";
                     if (ctps_option.length == 0) {
-                        ctps = "<span class='glyphicon glyphicon-question-sign black edit-ctps-btn tt pointer' item-company-id='"+company_id+"' item-number-id='"+telephone_id+"' item-number='"+telephone_number+"' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
+                        ctps = "<span class='glyphicon glyphicon-question-sign black edit-ctps-btn tt pointer' item-company-id='" + company_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
                     }
                     else if (ctps_option == 1) {
                         ctps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS CTPS registered'></span>";
@@ -1203,7 +1226,7 @@ var record = {
                                 ctps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
                             }
                         }
-                        $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> "+ctps+"</dd>";
+                        $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> " + ctps + "</dd>";
                     });
                     $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
                             .append($('<a/>').attr('href', '#com-collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.visible['Company']).addClass(collapse))
@@ -1218,7 +1241,7 @@ var record = {
 
             });
         },
-        check_ctps: function(telephone_number, company_id, telephone_id) {
+        check_ctps: function (telephone_number, company_id, telephone_id) {
             $.ajax({
                 url: helper.baseUrl + 'cron/check_tps',
                 type: "POST",
@@ -1394,41 +1417,42 @@ var record = {
 
             });
         },
-        search_form: function (id,urn) {
-			$.ajax({ url:helper.baseUrl+'modals/load_company_search',
-			dataType:"HTML"
-			}).done(function(response){
-				var mheader = '<a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img src="'+helper.baseUrl+'assets/img/companieshouse.png"></a>';
-				var $panel = $(response);
-				var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-			
-            $('.result-pagination').empty();
-            $('.searchresult-tab').find('.num-results').html("");
-            $('.nav-tabs a[href="#cosearch"]').tab('show');
-            $('.tab[href="#search"]').tab('show');
-            $panel.find('.tab-alert').hide();
-            $panel.find('tbody').empty();
-			$panel.find('#cosearchresult .table-container table').hide();
-            $panel.find('.searchresult-tab').show();
-            $panel.find('input[name="company_id"]').val(id);
-			$panel.find('input[name="urn"]').val(urn);
-            record.company_panel.load_search_tabs(id);
-			modals.load_modal(mheader,$panel,mfooter);
-			$('.modal-body').css('padding', '0px');
-			});
-   
+        search_form: function (id, urn) {
+            $.ajax({
+                url: helper.baseUrl + 'modals/load_company_search',
+                dataType: "HTML"
+            }).done(function (response) {
+                var mheader = '<a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img src="' + helper.baseUrl + 'assets/img/companieshouse.png"></a>';
+                var $panel = $(response);
+                var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+
+                $('.result-pagination').empty();
+                $('.searchresult-tab').find('.num-results').html("");
+                $('.nav-tabs a[href="#cosearch"]').tab('show');
+                $('.tab[href="#search"]').tab('show');
+                $panel.find('.tab-alert').hide();
+                $panel.find('tbody').empty();
+                $panel.find('#cosearchresult .table-container table').hide();
+                $panel.find('.searchresult-tab').show();
+                $panel.find('input[name="company_id"]').val(id);
+                $panel.find('input[name="urn"]').val(urn);
+                record.company_panel.load_search_tabs(id);
+                modals.load_modal(mheader, $panel, mfooter);
+                $('.modal-body').css('padding', '0px');
+            });
+
         },
         search_company: function (start_index) {
             var $panel = $('#modal');
             var $form = $panel.find('.search-company-form');
             var name = $form.find('input[name="name"]').val();
             var conumber = $form.find('input[name="conumber"]').val();
-            var search = name+(name.length==0?"":" ")+conumber;
-			if(conumber.length>0){
-			var search = conumber;	
-			}
+            var search = name + (name.length == 0 ? "" : " ") + conumber;
+            if (conumber.length > 0) {
+                var search = conumber;
+            }
             var num_results = 5;
-            start_index = (start_index?start_index:0);
+            start_index = (start_index ? start_index : 0);
             $('.result-pagination').empty();
 
             $.ajax({
@@ -1437,46 +1461,46 @@ var record = {
                 dataType: "JSON",
                 data: {'search': search, 'num_per_page': num_results, 'start_index': start_index}
             }).done(function (response) {
-                $('.searchresult-tab').find('.num-results').html((response.total_results < 200?response.total_results:'> 200'));
+                $('.searchresult-tab').find('.num-results').html((response.total_results < 200 ? response.total_results : '> 200'));
                 $('.nav-tabs a[href="#cosearchresult"]').tab('show');
                 var tbody = $('#modal').find('#cosearchresult .table-container table tbody');
                 tbody.empty();
-                if (response.total_results>0) {
-                    response.total_results = (response.total_results < 200?response.total_results:199);
+                if (response.total_results > 0) {
+                    response.total_results = (response.total_results < 200 ? response.total_results : 199);
                     $('#modal').find('#cosearchresult .table-container table').show();
                     $.each(response.items, function (key, val) {
-                        tbody.append("<tr class='pointer' item-number='"+val.description_values.company_number.replace('<strong>','').replace('</strong>','')+"'>" +
-                                "<td>"+val.title+"</td>" +
-                                "<td>"+val.description_values.company_number+"</td>" +
-                                "<td>"+val.description_values.company_status+"</td>" +
-                                "<td>"+val.date_of_creation+"</td>" +
+                        tbody.append("<tr class='pointer' item-number='" + val.description_values.company_number.replace('<strong>', '').replace('</strong>', '') + "'>" +
+                            "<td>" + val.title + "</td>" +
+                            "<td>" + val.description_values.company_number + "</td>" +
+                            "<td>" + val.description_values.company_status + "</td>" +
+                            "<td>" + val.date_of_creation + "</td>" +
                             "</tr>");
                     });
-                    if (response.total_results>num_results) {
-                        var num_pages = Math.ceil(response.total_results/num_results);
-                        var prev = (response.page_number==1?'disabled':'search-next-company-action');
-                        var next = (response.page_number==num_pages?'disabled':'search-next-company-action');
+                    if (response.total_results > num_results) {
+                        var num_pages = Math.ceil(response.total_results / num_results);
+                        var prev = (response.page_number == 1 ? 'disabled' : 'search-next-company-action');
+                        var next = (response.page_number == num_pages ? 'disabled' : 'search-next-company-action');
 
                         var pagination = '';
                         pagination += '<ul class="pagination">';
-                        pagination += '<li class="'+prev+'" item-start-index="0"><a href="#">'+"<<"+'</a></li>';
-                        pagination += '<li class="'+prev+'" item-start-index="'+Math.ceil((response.page_number-2)*num_results)+'"><a href="#">'+"<"+'</a></li>';
+                        pagination += '<li class="' + prev + '" item-start-index="0"><a href="#">' + "<<" + '</a></li>';
+                        pagination += '<li class="' + prev + '" item-start-index="' + Math.ceil((response.page_number - 2) * num_results) + '"><a href="#">' + "<" + '</a></li>';
 
-                        for(var i = 1; i <= num_pages; i++) {
-                            var active = ((response.page_number) == i?'active':'');
-                            var num_pages_view = ((1==response.page_number || response.page_number==num_pages)?6:4);
+                        for (var i = 1; i <= num_pages; i++) {
+                            var active = ((response.page_number) == i ? 'active' : '');
+                            var num_pages_view = ((1 == response.page_number || response.page_number == num_pages) ? 6 : 4);
                             if (i > (response.page_number - num_pages_view) && i < (response.page_number + num_pages_view)) {
-                                pagination += '<li class="search-next-company-action '+active+'" item-start-index="'+Math.ceil((i-1)*num_results)+'"><a href="#">'+i+'</a></li>';
+                                pagination += '<li class="search-next-company-action ' + active + '" item-start-index="' + Math.ceil((i - 1) * num_results) + '"><a href="#">' + i + '</a></li>';
                             }
                         }
-                        pagination +=  '<li class="'+next+'" item-start-index="'+Math.ceil((response.page_number)*num_results)+'"><a href="#">'+">"+'</a></li>';
-                        pagination +=  '<li class="'+next+'" item-start-index="'+Math.ceil((num_pages-1)*num_results)+'"><a href="#">'+">>"+'</a></li>';
+                        pagination += '<li class="' + next + '" item-start-index="' + Math.ceil((response.page_number) * num_results) + '"><a href="#">' + ">" + '</a></li>';
+                        pagination += '<li class="' + next + '" item-start-index="' + Math.ceil((num_pages - 1) * num_results) + '"><a href="#">' + ">>" + '</a></li>';
                         pagination += '</ul>';
                         $('.result-pagination').append(pagination);
                     }
                 }
                 else {
-                     $('#modal').find('#cosearchresult .table-container table').hide();
+                    $('#modal').find('#cosearchresult .table-container table').hide();
                 }
             });
         },
@@ -1486,7 +1510,7 @@ var record = {
                 url: helper.baseUrl + "ajax/get_company",
                 type: "POST",
                 dataType: "JSON",
-                data: { id: company }
+                data: {id: company}
             }).done(function (response) {
                 if (response.success) {
                     $.each(response.data.general, function (key, val) {
@@ -1509,35 +1533,36 @@ var record = {
                 url: helper.baseUrl + "companyhouse/get_company",
                 type: "POST",
                 dataType: "JSON",
-                data: { 'company_no': company_no }
+                data: {'company_no': company_no}
             }).done(function (response) {
-					$.ajax({url:helper.baseUrl+'companyhouse/sic_to_subsectors',
-					dataType:"JSON",
-					type:"POST",
-					data:{ sic_codes:response.sic_codes }
-				}).done(function(sics){
-					var sic_options = "";
-					$.each(sics,function(i,row){
-						sic_options += '<optgroup label="'+i+'">';
-						$.each(row,function(i,v){
-						sic_options += '<option selected value="'+v.subsector_id+'">'+v.subsector_name+'</option>';
-						});
-						
-					});
-					$('#sic_codes').append(sic_options);
-					$('#sic_codes').selectpicker();
-				});
-				$('.sic_codes').change(function(){
-						$('.sic_codes').selectpicker('selectAll');
-					});
-				var mfooter = '<button class="btn btn-default pull-left back-company-btn">Back</button> <button class="btn btn-primary update-company-action pull-right">Update</button>';
-				modals.update_footer(mfooter);
+                $.ajax({
+                    url: helper.baseUrl + 'companyhouse/sic_to_subsectors',
+                    dataType: "JSON",
+                    type: "POST",
+                    data: {sic_codes: response.sic_codes}
+                }).done(function (sics) {
+                    var sic_options = "";
+                    $.each(sics, function (i, row) {
+                        sic_options += '<optgroup label="' + i + '">';
+                        $.each(row, function (i, v) {
+                            sic_options += '<option selected value="' + v.subsector_id + '">' + v.subsector_name + '</option>';
+                        });
+
+                    });
+                    $('#sic_codes').append(sic_options);
+                    $('#sic_codes').selectpicker();
+                });
+                $('.sic_codes').change(function () {
+                    $('.sic_codes').selectpicker('selectAll');
+                });
+                var mfooter = '<button class="btn btn-default pull-left back-company-btn">Back</button> <button class="btn btn-primary update-company-action pull-right">Update</button>';
+                modals.update_footer(mfooter);
                 form.find('input[name="company_id"]').val($('.search-company-form').find('input[name="company_id"]').val());
                 form.find('input[name="company_name"]').val(response.company_name);
                 form.find('input[name="company_number"]').val(response.company_number);
                 form.find('input[name="date_of_creation"]').val(response.date_of_creation);
                 form.find('input[name="company_status"]').val(response.company_status);
-			
+
                 if (response.registered_office_address) {
                     form.find('input[name="postal_code"]').val(response.registered_office_address.postal_code);
                     form.find('input[name="address_line_1"]').val(response.registered_office_address.address_line_1);
@@ -1547,23 +1572,23 @@ var record = {
                 $('.company-officers').empty();
                 var i = 1;
                 var officers_table = '<table class="small table-condensed table">' +
-                        '<thead>' +
-                            '<th></th>' +
-                            '<th>Name</th>' +
-                            '<th>Position</th>' +
-                            '<th>DOB</th>' +
-                        '</thead>' +
-                        '<tbody>';
+                    '<thead>' +
+                    '<th></th>' +
+                    '<th>Name</th>' +
+                    '<th>Position</th>' +
+                    '<th>DOB</th>' +
+                    '</thead>' +
+                    '<tbody>';
                 var officer_val = '';
-                    $.each(response.officer_summary.officers, function (key, val) {
-                    officer_val = val.name+'_'+val.officer_role+'_'+(val.date_of_birth?val.date_of_birth:'');
-                    var checkbox = ((val.name.length>0)&&(val.officer_role.length>0)&&(val.date_of_birth)?'<input type="checkbox" name="officer['+i+']" value="'+officer_val+'">':'');
-                    officers_table += '<tr class="'+(checkbox?'success':'danger')+'">' +
-                                '<td>'+checkbox+'</td>' +
-                                '<td>' + val.name + '</td>' +
-                                '<td>' + val.officer_role + '</td>' +
-                                '<td>' + (val.date_of_birth?val.date_of_birth:'') + '</td>' +
-                            '</tr>';
+                $.each(response.officer_summary.officers, function (key, val) {
+                    officer_val = val.name + '_' + val.officer_role + '_' + (val.date_of_birth ? val.date_of_birth : '');
+                    var checkbox = ((val.name.length > 0) && (val.officer_role.length > 0) && (val.date_of_birth) ? '<input type="checkbox" name="officer[' + i + ']" value="' + officer_val + '">' : '');
+                    officers_table += '<tr class="' + (checkbox ? 'success' : 'danger') + '">' +
+                        '<td>' + checkbox + '</td>' +
+                        '<td>' + val.name + '</td>' +
+                        '<td>' + val.officer_role + '</td>' +
+                        '<td>' + (val.date_of_birth ? val.date_of_birth : '') + '</td>' +
+                        '</tr>';
                     i++;
                 });
                 officers_table += '</tbody></table>';
@@ -1575,8 +1600,8 @@ var record = {
             var $panel = $('#modal');
             $panel.find('.get-company-container').fadeOut(1000, function () {
                 $panel.find('.search-container').fadeIn(1000);
-				var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-				modals.update_footer(mfooter);
+                var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                modals.update_footer(mfooter);
             });
         },
         update_company: function (start_index) {
@@ -1719,56 +1744,56 @@ var record = {
                 dataType: "JSON",
                 data: {email_id: email_id}
             }).done(function (response) {
-                var message = (response.data.status == true) ? "<th colspan='2' style='color:green'>"+((response.data.pending==1)?"Pending to (re)send automatically...":"This email was sent successfuly")+"</th>" : "<th colspan='2' style='color:red'>"+((response.data.pending==1)?"Pending to send automatically...":"This email was not sent")+"</th>"
+                var message = (response.data.status == true) ? "<th colspan='2' style='color:green'>" + ((response.data.pending == 1) ? "Pending to (re)send automatically..." : "This email was sent successfuly") + "</th>" : "<th colspan='2' style='color:red'>" + ((response.data.pending == 1) ? "Pending to send automatically..." : "This email was not sent") + "</th>"
                 var status = (response.data.status == true) ? "Yes" : "No";
                 var read_confirmed = (response.data.read_confirmed == 1) ? "Yes " + " (" + response.data.read_confirmed_date + ")" : "No";
                 var $tbody = $('.email-view-table').find('tbody');
                 $tbody.empty();
                 body = "<tr>" +
-                message +
-                "</tr>" +
-                "<th>Sent Date</th>" +
-                "<td class='sent_date'>" + response.data.sent_date + "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<th>From</th>" +
-                "<td class='from'>" + response.data.send_from + "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<th>To</th>" +
-                "<td class='to'>" + response.data.send_to + "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<th>CC</th>" +
-                "<td class='cc'>" + response.data.cc + "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<th>BCC</th>" +
-                "<td class='bcc'>" + response.data.bcc + "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<th>Subject</th>" +
-                "<td class='subject'>" + response.data.subject + "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<th colspan=2>Body</th>" +
-                "</tr>" +
-                "<td colspan=2 class='body'>" + response.data.body + "</td>" +
-                "</tr>" +
-                "<th>Sent</th>" +
-                "<td class='status'>" + status + ((response.data.pending==1)?" (Pending to (re)send automatically...)":"") + "</td>" +
-                "</tr>" +
-                "<th>Read Confirmed</th>" +
-                "<td class='read_confirmed'>" + read_confirmed + "</td>" +
-                "</tr>"
+                    message +
+                    "</tr>" +
+                    "<th>Sent Date</th>" +
+                    "<td class='sent_date'>" + response.data.sent_date + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<th>From</th>" +
+                    "<td class='from'>" + response.data.send_from + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<th>To</th>" +
+                    "<td class='to'>" + response.data.send_to + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<th>CC</th>" +
+                    "<td class='cc'>" + response.data.cc + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<th>BCC</th>" +
+                    "<td class='bcc'>" + response.data.bcc + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<th>Subject</th>" +
+                    "<td class='subject'>" + response.data.subject + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                    "<th colspan=2>Body</th>" +
+                    "</tr>" +
+                    "<td colspan=2 class='body'>" + response.data.body + "</td>" +
+                    "</tr>" +
+                    "<th>Sent</th>" +
+                    "<td class='status'>" + status + ((response.data.pending == 1) ? " (Pending to (re)send automatically...)" : "") + "</td>" +
+                    "</tr>" +
+                    "<th>Read Confirmed</th>" +
+                    "<td class='read_confirmed'>" + read_confirmed + "</td>" +
+                    "</tr>"
                 if (response.attachments.length > 0) {
                     body += "<tr>" +
-                    "<th colspan=2>Attachments</th>" +
-                    "</tr>";
+                        "<th colspan=2>Attachments</th>" +
+                        "</tr>";
                     $.each(response.attachments, function (key, val) {
                         body += "<tr>" +
-                        "<td colspan='2' class='attachments'><a target='_blank' href='" + val.path + "'>" + val.name + "</td>" +
-                        "</tr>";
+                            "<td colspan='2' class='attachments'><a target='_blank' href='" + val.path + "'>" + val.name + "</td>" +
+                            "</tr>";
                     });
                 }
                 $tbody
@@ -1806,7 +1831,7 @@ var record = {
                 if (response.data.length > 0) {
                     $.each(response.data, function (key, val) {
                         var status = (val.pending == 1) ? "glyphicon-time red" : ((val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "glyphicon-eye-open"));
-                        var message = (val.pending == 1) ? "Email pending to send" :(val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
+                        var message = (val.pending == 1) ? "Email pending to send" : (val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
                         var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                         var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                         var $delete_option = "";
@@ -1841,7 +1866,7 @@ var record = {
                     $.each(response.data, function (key, val) {
                         if (k <= record.limit - 1) {
                             var status = (val.pending == 1) ? "glyphicon-time red" : ((val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "glyphicon-eye-open"));
-                            var message = (val.pending == 1) ? "Email pending to send" :(val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
+                            var message = (val.pending == 1) ? "Email pending to send" : (val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
                             var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
                             var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                             var $delete_option = "";
@@ -1900,7 +1925,7 @@ var record = {
                 e.preventDefault();
                 window.location.href = helper.baseUrl + "survey/edit/" + $(this).attr('item-id');
             });
-			  $(document).on('click', '.eye-survey-btn', function (e) {
+            $(document).on('click', '.eye-survey-btn', function (e) {
                 e.preventDefault();
                 window.location.href = helper.baseUrl + "survey/edit/" + $(this).attr('item-id');
             });
@@ -2262,10 +2287,10 @@ var record = {
                     id: $(this).attr('script-id')
                 }
             }).done(function (response) {
-				var mheader=response.data.script_name;
-				var mbody=response.data.script;
-				var mfooter='<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-               modals.load_modal(mheader,mbody,mfooter); 
+                var mheader = response.data.script_name;
+                var mbody = response.data.script;
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                modals.load_modal(mheader, mbody, mfooter);
             });
         });
     },
@@ -2324,7 +2349,7 @@ var record = {
 
         }
     },
-	 related_panel: {
+    related_panel: {
         init: function () {
             record.related_panel.load_panel();
             $(document).on('change', '.related-campaigns', function (e) {
@@ -2340,7 +2365,7 @@ var record = {
                 dataType: "JSON",
                 data: {
                     urn: record.urn,
-					campaign: campaign
+                    campaign: campaign
                 },
                 beforeSend: function () {
                     $panel.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
@@ -2352,8 +2377,8 @@ var record = {
                 $body = "";
                 if (response.data.length > 0) {
                     $.each(response.data, function (i, val) {
-                       
-                        $body += '<tr class="pointer" data-modal="view-record" data-urn='+val.urn+'><td>' + val.campaign_name + '</td><td>' + val.name + '</td><td>' + val.status_name + '</td><td>' + val.matched_on + '</td></tr>';
+
+                        $body += '<tr class="pointer" data-modal="view-record" data-urn=' + val.urn + '><td>' + val.campaign_name + '</td><td>' + val.name + '</td><td>' + val.status_name + '</td><td>' + val.matched_on + '</td></tr>';
                     });
                     $panel.html('<div class="table-responsive"><table class="table table-hover table-striped table-condensed"><thead><tr><th>Campaign</th><th>Company</th><th>Status</th><th>Matched on</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
@@ -2362,7 +2387,7 @@ var record = {
 
             });
         }
-	 },
+    },
     recordings_panel: {
         init: function () {
             record.recordings_panel.load_panel();
@@ -2465,12 +2490,12 @@ var record = {
                             var remove_btn = '<span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="' + val.attachment_id + '" title="Delete attachment"></span>';
                             var download_btn = '<a style="color:black;" href="' + val.path + '"><span class="glyphicon glyphicon-download-alt"></span></a>';
                             body += '<tr class="' + val.attachment_id + '">' +
-                            '<td>' + val.name +
-                            '</td><td>' + val.date +
-                            '</td><td>' + val.user +
-                            '</td><td>' + download_btn +
-                            '</td><td>' + remove_btn +
-                            '</td></tr>';
+                                '<td>' + val.name +
+                                '</td><td>' + val.date +
+                                '</td><td>' + val.user +
+                                '</td><td>' + download_btn +
+                                '</td><td>' + remove_btn +
+                                '</td></tr>';
                         }
                         k++;
                     });
@@ -2522,12 +2547,12 @@ var record = {
                         var remove_btn = '<span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="' + val.attachment_id + '" title="Delete attachment"></span>';
                         var download_btn = '<a style="color:black;" href="' + val.path + '"><span class="glyphicon glyphicon-download-alt"></span></a>';
                         body += '<tr class="' + val.attachment_id + '">' +
-                        '<td>' + val.name +
-                        '</td><td>' + val.date +
-                        '</td><td>' + val.user +
-                        '</td><td>' + download_btn +
-                        '</td><td>' + remove_btn +
-                        '</td></tr>';
+                            '<td>' + val.name +
+                            '</td><td>' + val.date +
+                            '</td><td>' + val.user +
+                            '</td><td>' + download_btn +
+                            '</td><td>' + remove_btn +
+                            '</td></tr>';
                     });
                     $thead.append('<tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr>');
                     $tbody.append(body);
@@ -2600,97 +2625,97 @@ $(document).on('click', '.nav-btn', function (e) {
 var modal = {
     confirm_move: function (moveUrl) {
         var mheader = 'Are you sure?';
-		var mbody = 'You have not updated the record. Do you really want to continue?';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		modals.default_buttons();
-		$('.confirm-modal').on('click', function (e) {
+        var mbody = 'You have not updated the record. Do you really want to continue?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
+        $('.confirm-modal').on('click', function (e) {
             window.location.href = moveUrl
             $('#modal').modal('toggle');
         });
-        
+
     },
     delete_contact: function (id) {
-		var mheader = 'Confirm Delete';
-		var mbody = 'Are you sure you want to delete this contact?';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		modals.default_buttons();
-		 $('.confirm-modal').on('click', function (e) {
+        var mheader = 'Confirm Delete';
+        var mbody = 'Are you sure you want to delete this contact?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
+        $('.confirm-modal').on('click', function (e) {
             record.contact_panel.remove(id);
             $('#modal').modal('toggle');
         });
     },
     delete_additional_item: function (id) {
-		var mheader = 'Confirm Delete';
-		var mbody = 'Are you sure you want to delete this?';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		 modals.default_buttons();
+        var mheader = 'Confirm Delete';
+        var mbody = 'Are you sure you want to delete this?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
             record.additional_info.remove(id);
             $('#modal').modal('toggle');
         });
     },
     delete_company: function (id) {
-		var mheader = 'Confirm Delete';
-		var mbody = 'Are you sure you want to delete this company?';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		 modals.default_buttons();
+        var mheader = 'Confirm Delete';
+        var mbody = 'Are you sure you want to delete this company?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
             record.company_panel.remove(id);
             $('#modal').modal('toggle');
         });
     },
     delete_email: function (email_id, modal) {
-		var mheader = 'Confirm Delete';
-		var mbody = 'Are you sure you want to delete this email?';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		 modals.default_buttons();
+        var mheader = 'Confirm Delete';
+        var mbody = 'Are you sure you want to delete this email?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
-             record.email_panel.remove_email(email_id, modal);
+            record.email_panel.remove_email(email_id, modal);
             $('#modal').modal('toggle');
         });
     },
     delete_attachment: function (attachment_id) {
-				var mheader = 'Confirm Delete';
-		var mbody = 'Are you sure you want to delete this attachment?';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		 modals.default_buttons();
+        var mheader = 'Confirm Delete';
+        var mbody = 'Are you sure you want to delete this attachment?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
-             record.attachment_panel.delete_attachment(attachment_id);
+            record.attachment_panel.delete_attachment(attachment_id);
             $('#modal').modal('toggle');
         });
     },
     delete_survey: function (id) {
-		var mheader = 'Confirm Delete';
-		var mbody = 'Are you sure you want to delete this survey and all the answers?';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		 modals.default_buttons();
+        var mheader = 'Confirm Delete';
+        var mbody = 'Are you sure you want to delete this survey and all the answers?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
-           record.surveys_panel.remove(id);
+            record.surveys_panel.remove(id);
             $('#modal').modal('toggle');
         });
     },
     call_player: function (url, filetype) {
-		var mheader = 'Call Playback';
-		var mbody = '<div id="waveform"></div><div class="controls"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info" href="' + url.replace("ogg", "mp3") + '">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>';
-		var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-		modals.load_modal(mheader,mbody,mfooter);
-        $(document).one("click",".close-modal,.close", function () {
+        var mheader = 'Call Playback';
+        var mbody = '<div id="waveform"></div><div class="controls"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info" href="' + url.replace("ogg", "mp3") + '">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>';
+        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+        modals.load_modal(mheader, mbody, mfooter);
+        $(document).one("click", ".close-modal,.close", function () {
             wavesurfer.destroy();
             $('#modal').find('.modal-body').empty();
         });
-		
-        $(document).one("click",".close-modal,.close", function () {
+
+        $(document).one("click", ".close-modal,.close", function () {
             wavesurfer.destroy();
             $('#modal').find('.modal-body').empty();
         });
-		modal.wavesurfer(url.replace('ogg', 'mp3'));
+        modal.wavesurfer(url.replace('ogg', 'mp3'));
     },
     wavesurfer: function (fileurl) {
         // Create an instance
@@ -2758,33 +2783,33 @@ var modal = {
         });
     },
     delete_history: function (history_id, modal) {
-		var mheader = 'Confirm Delete';
-		var mbody = 'Are you sure you want to delete this history record?';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		 modals.default_buttons();
+        var mheader = 'Confirm Delete';
+        var mbody = 'Are you sure you want to delete this history record?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
             record.history_panel.remove_history(history_id, modal);
             $('#modal').modal('toggle');
         });
     },
     dead_line: function ($btn) {
-				var mheader = 'Confirm Dead Line';
-		var mbody = '<p>You have set this record as a dead line but the history shows it has been dialed previously. There may be a telephony issue or we could be at full dialing capacity. Please try to dial again and confirm it\'s an actual dead line. If this is a B2B record please search for the company telephone number online and update the record with the correct number<p><p>Click confirm if you are sure this is a dead line otherwise click cancel</p>';
-		var mfooter = '';
-		modals.load_modal(mheader,mbody,mfooter);
-		 modals.default_buttons();
+        var mheader = 'Confirm Dead Line';
+        var mbody = '<p>You have set this record as a dead line but the history shows it has been dialed previously. There may be a telephony issue or we could be at full dialing capacity. Please try to dial again and confirm it\'s an actual dead line. If this is a B2B record please search for the company telephone number online and update the record with the correct number<p><p>Click confirm if you are sure this is a dead line otherwise click cancel</p>';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
-             record.update_panel.save($btn);
+            record.update_panel.save($btn);
             $('#modal').modal('toggle');
         });
     },
     show_calendar: function (urn) {
-		var mheader = 'Confirm Dead Line';
-		var mbody = '<img id="modal-loading" src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif"/><div class="responsive-calendar" style="display:none"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div';
-		var mfooter = '<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button> <button class="btn btn-primary submit-cal pull-right" type="button">Update</button> <input class="form-control pull-right marl" style="width:130px" value="" name="postcode" id="cal-postcode" placeholder="Postcode"/> <select class="cal-range selectpicker" data-width="130px"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="100">100 Miles</option><option value="150">150 Miles</option><option value="">Any Distance</option></select>';
-		modals.load_modal(mheader,mbody,mfooter);
-         var d = new Date();
+        var mheader = 'Confirm Dead Line';
+        var mbody = '<img id="modal-loading" src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif"/><div class="responsive-calendar" style="display:none"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div';
+        var mfooter = '<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button> <button class="btn btn-primary submit-cal pull-right" type="button">Update</button> <input class="form-control pull-right marl" style="width:130px" value="" name="postcode" id="cal-postcode" placeholder="Postcode"/> <select class="cal-range selectpicker" data-width="130px"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="100">100 Miles</option><option value="150">150 Miles</option><option value="">Any Distance</option></select>';
+        modals.load_modal(mheader, mbody, mfooter);
+        var d = new Date();
         var time = d.getTime();
 
         $('#modal').find('.cal-range').selectpicker();
@@ -2876,7 +2901,7 @@ var workbooks = {
                     '<tr><th>Assigned To</th><td>' + val.assigned_to + '</td></tr>' +
                     '<tr><th>Organisation</th><td>' + val.organisation + '</td></tr>' +
                     '<tr><th>Industry</th><td>' + val.industry + '</td></tr>' +
-                    '<tr><th>Website</th><td><a href="http://'+val.website+'" target="_blank">' + val.website + '</a></td></tr>' +
+                    '<tr><th>Website</th><td><a href="http://' + val.website + '" target="_blank">' + val.website + '</a></td></tr>' +
                     '<tr><th>Street Address</th><td>' + val.street_address + '</td></tr>' +
                     '<tr><th>Town/City</th><td>' + val.town_city + '</td></tr>' +
                     '<tr><th>County/State</th><td>' + val.county_state + '</td></tr>' +
@@ -2894,7 +2919,7 @@ var workbooks = {
                     '<tr><th>No Of Contractors</th><td>' + val.no_of_contractors + '</td></tr>' +
                     '<tr><th>Ave. Contract Rate</th><td>' + val.ave_contract_rate + '</td></tr>' +
                     '<tr><th>How Contractors Work</th><td>' + val.how_contractors_work + '</td></tr>' +
-                    //'<tr><th>Main Competitor</th><td>' + val.main_competitor + '</td></tr>' +
+                        //'<tr><th>Main Competitor</th><td>' + val.main_competitor + '</td></tr>' +
                     '<tr><th>Uses a PSL</th><td>' + val.uses_a_psl + '</td></tr>' +
                     '<tr><th>PSL Review Date</th><td>' + val.psl_review_date + '</td></tr>' +
                     '<tr><th>PSL Review Person</th><td>' + val.psl_review_person + '</td></tr>' +
@@ -2921,73 +2946,71 @@ var workbooks = {
 }
 
 
-
-
-    function changeContactNumberFunction() {
-        var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
-        var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
-        var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
-        var tps = "";
-        if (telephone_number.length > 0) {
-            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
-            $('select[name="tps"]').selectpicker('val', "");
-        }
-        $('.edit-tps').html(tps);
+function changeContactNumberFunction() {
+    var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
+    var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
+    var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
+    var tps = "";
+    if (telephone_number.length > 0) {
+        tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+        $('select[name="tps"]').selectpicker('val', "");
     }
+    $('.edit-tps').html(tps);
+}
 
-    function changeTpsFunction() {
-        var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
-        var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
-        var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
-        var tps_option = $('.contact-phone-form').find('select[name="tps"]').val();
-        var tps = "";
-        if (telephone_number.length > 0) {
-            if (tps_option.length == 0) {
-                tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
-            }
-            else if (tps_option == 1) {
-                tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
-            }
-            else {
-                tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
-            }
+function changeTpsFunction() {
+    var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
+    var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
+    var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
+    var tps_option = $('.contact-phone-form').find('select[name="tps"]').val();
+    var tps = "";
+    if (telephone_number.length > 0) {
+        if (tps_option.length == 0) {
+            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+        }
+        else if (tps_option == 1) {
+            tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
+        }
+        else {
+            tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
+        }
+        $tab.find('.edit-tps').html(tps);
+    }
+}
+
+$(document).on('click', '.edit-tps-btn', function (e) {
+    e.preventDefault();
+    check_edit_tps();
+});
+
+function check_edit_tps() {
+    var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
+    var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
+    var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
+    var tps = '';
+
+    $.ajax({
+        url: helper.baseUrl + 'cron/check_tps',
+        type: "POST",
+        dataType: "JSON",
+        data: {
+            telephone_number: telephone_number,
+            type: "tps",
+            contact_id: contact_id
+        }
+    }).done(function (response) {
+        flashalert.warning(response.msg);
+        if (response.tps == 1) {
+            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
+            $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 1);
             $tab.find('.edit-tps').html(tps);
         }
-    }
-
-    $(document).on('click', '.edit-tps-btn', function (e) {
-        e.preventDefault();
-        check_edit_tps();
+        else if (response.tps == 0) {
+            tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
+            $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 0);
+            $tab.find('.edit-tps').html(tps);
+        }
     });
-
-    function check_edit_tps() {
-        var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
-        var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
-        var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
-        var tps = '';
-
-        $.ajax({
-            url: helper.baseUrl + 'cron/check_tps',
-            type: "POST",
-            dataType: "JSON",
-            data: {
-                telephone_number: telephone_number,
-                type: "tps",
-                contact_id: contact_id
-            }
-        }).done(function (response) {
-            flashalert.warning(response.msg);
-            if (response.tps == 1) {
-                tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
-                $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 1);
-                $tab.find('.edit-tps').html(tps);
-            }
-            else if (response.tps == 0) {
-                tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
-                $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 0);
-                $tab.find('.edit-tps').html(tps);
-            }
-        });
-    }
+}
 
 
