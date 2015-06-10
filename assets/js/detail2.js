@@ -646,12 +646,6 @@ var record = {
                 e.preventDefault();
                 modal.delete_contact($(this).attr('item-id'));
             });
-
-            /*initialize the save contact button*/
-            $(document).on('click', '.save-contact-general', function (e) {
-                e.preventDefault();
-                //record.contact_panel.save_contact($(this));
-            });
             /*check tps */
             $(document).on('click', '.tps-btn', function (e) {
                 e.preventDefault();
