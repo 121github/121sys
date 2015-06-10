@@ -11,11 +11,23 @@ function map_table_reload() {
 var appointment = {
     init: function () {
         this.table;
+
+        $(document).on("click", ".group-filter", function(e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $(this).closest('form').find('input[name="group"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
+            maps.colour_by = $('.filter-form').find('input[name="group"]').val();
+            appointment.reload_table();
+        });
+
         appointment.reload_table();
     },
     reload_table: function () {
-        var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></thead>";
-        table += "<tfoot><tr><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
+        var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Color</th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></thead>";
+        table += "<tfoot><tr><th></th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
 
         $('#table-wrapper').html(table);
         appointment.populate_table();
@@ -44,6 +56,7 @@ var appointment = {
                     d.extra_field = false;
                     d.bounds = maps.getBounds();
                     d.map = $('#map-view-toggle').prop('checked');
+                    d.group = $('.filter-form').find('input[name="group"]').val();
                 },
                 complete: function (d) {
                     $('.dt_info').show();
@@ -54,6 +67,20 @@ var appointment = {
             },
             "deferRender": true,
             "columns": [{
+                "data": "record_color",
+                "orderable": false,
+                render:function(e) {
+                    var element_ar = e.split('/');
+                    var color = element_ar[0];
+                    var icon = element_ar[1];
+
+                    if(!icon){
+                        return '&nbsp;';
+                    } else {
+                        return '<span class="fa '+icon+'" style="font-size:20px; color: '+color+'">&nbsp;</span>';
+                    }
+                }
+            }, {
                 "data": "start"
             }, {
                 "data": "name"
@@ -65,7 +92,7 @@ var appointment = {
                 "data": "postcode"
             }],
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4],
+                "targets": [0, 1, 2, 3, 4, 5],
                 "data": null,
                 "defaultContent": "-"
             }],
