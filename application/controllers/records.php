@@ -132,10 +132,16 @@ class Records extends CI_Controller
 
                 //Record color
                 $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"]+rand(0,100))));
+                $records[$k]["record_color_map"] = $records[$k]["record_color"];
+                //Add the icon to the record color
+                $map_icon = ((in_array("planner", $_SESSION['permissions']) && $records[$k]['record_planner_id'])?'fa-flag':($records[$k]['map_icon']?$records[$k]['map_icon']:($records[$k]['campaign_map_icon']?$records[$k]['campaign_map_icon']:'fa-map-marker')));
+                $records[$k]["record_color"] .= '/'.$map_icon;
 
                 //Map Icon
                 $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['map_icon']))):NULL);
                 $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['campaign_map_icon']))):NULL);
+
+
             }
             
             $data = array(

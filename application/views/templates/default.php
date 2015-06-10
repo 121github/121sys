@@ -24,6 +24,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/default.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/mmenu/jquery.mmenu.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/mmenu/addons/jquery.mmenu.labels.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/font-awesome.css">
+
     <style>
         .navbar-toggle {
             display: block;

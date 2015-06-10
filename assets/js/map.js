@@ -605,19 +605,22 @@ var maps = {
     //    });
     //},
     addRecordMarker: function (value) {
-        var marker_color = "#" + (value.record_color?(value.record_color).substr(1):maps.intToARGB(maps.hashCode(value.attendee)));
+        var marker_color = "#" + (value.record_color_map?(value.record_color_map).substr(1):maps.intToARGB(maps.hashCode(value.attendee)));
         var marker_icon = fontawesome.markers.MAP_MARKER;
+        var marker_scale = 0.4;
 
         if (((planner_permission == true)) && (value.record_planner_id)) {
             marker_icon = fontawesome.markers.FLAG;
+            marker_scale = 0.3;
         }
         else if (value.map_icon) {
             marker_icon = eval("fontawesome.markers."+value.map_icon);
+            marker_scale = 0.3;
         }
         else if (value.campaign_map_icon) {
             marker_icon = eval("fontawesome.markers."+value.campaign_map_icon);
+            marker_scale = 0.3;
         }
-        var marker_scale = (((planner_permission == true)) && (value.record_planner_id)?0.4:0.5);
 
         var navbtn = false;
         var planner_info = false;

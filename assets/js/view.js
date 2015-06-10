@@ -71,11 +71,17 @@ var view_records = {
             },
             "deferRender": true,
             "columns": [{
-                "data": "record_color", render:function(e) {
-                    if(!e){
+                "data": "record_color",
+                "orderable": false,
+                render:function(e) {
+                    var element_ar = e.split('/');
+                    var color = element_ar[0];
+                    var icon = element_ar[1];
+
+                    if(!icon){
                         return '&nbsp;';
                     } else {
-                        return '<span class="glyphicon glyphicon-map-marker" style="font-size:25px; color: '+e+'">&nbsp;</span>';
+                        return '<span class="fa '+icon+'" style="font-size:20px; color: '+color+'">&nbsp;</span>';
                     }
                 }
             }, {
