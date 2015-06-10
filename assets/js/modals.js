@@ -1230,7 +1230,7 @@ var modals = {
                 $panel.find('#' + item_form + ' form').hide();
                 $panel.find('#' + item_form + ' .table-container').show();
             } else {
-			var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
+			var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
                 $panel.find('#phone form, #address form').hide();
                 $panel.find('#phone .table-container,#address .table-container').show();
             }

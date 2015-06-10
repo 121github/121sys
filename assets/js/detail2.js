@@ -615,51 +615,20 @@ var record = {
     },
     //contact_panel_functions
     contact_panel: {
-		
         init: function () {
             this.config = {
                 panel: '.contact-panel'
             };
-            /*initialize the add contact button*/
-            $(document).on('click', '.add-contact-btn', function (e) {
-                e.preventDefault();
-                record.contact_panel.add_form();
-            });
-            /* initialize the edit contact buttons */
-            $(document).on('click', '.edit-contact-btn', function (e) {
-                e.preventDefault();
-                contact_modal.contact_modal(record.urn,$(this).attr('item-id'));
-            });
             /* initialize the delete contact buttons */
             $(document).on('click', '.del-contact-btn', function (e) {
                 e.preventDefault();
                 modal.delete_contact($(this).attr('item-id'));
             });
-            /* initialize the close contact buttons */
-            $(document).on('click', '.close-contact-btn', function (e) {
-                e.preventDefault();
-                record.contact_panel.close_panel();
-            });
-            /*initialize the save contact button*/
-            $(document).on('click', '.save-contact-general', function (e) {
-                e.preventDefault();
-                //record.contact_panel.save_contact($(this));
-            });
-            /*initialize the add item button for phone or address*/
-            
-            /*initialize the edit item buttons for phone or address*/
-        
-           
-            /*save the new phone or address*/
-
-
             /*check tps */
             $(document).on('click', '.tps-btn', function (e) {
                 e.preventDefault();
                 record.contact_panel.check_tps($(this).attr('item-number'), $(this).attr('item-contact-id'), $(this).attr('item-number-id'));
             });
-
-
         },
         save_item: function ($btn) {
             var id = $btn.attr('item-id');
