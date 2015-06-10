@@ -132,6 +132,10 @@ class Records extends CI_Controller
 
                 //Record color
                 $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"]+rand(0,100))));
+
+                //Map Icon
+                $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['map_icon']))):NULL);
+                $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['campaign_map_icon']))):NULL);
             }
             
             $data = array(
@@ -245,6 +249,7 @@ class Records extends CI_Controller
             "xfer_campaigns" => $xfers,
             "progress_options" => $progress_options,
             "automatic" => $automatic,
+            "map_icon" => $details['record']['map_icon'],
             "javascript" => array(
                 "detail2.js",
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
@@ -256,12 +261,16 @@ class Records extends CI_Controller
                 'plugins/countdown/jquery.countdown.min.js',
                 'plugins/responsive-calendar/0.8/responsive-calendar.js',
                 'lib/jquery.numeric.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
 				//'lib/wavsurfer.js'
             ),
             'css' => array(
                 'plugins/jqfileupload/jquery.fileupload.css',
                 'plugins/countdown/jquery.countdown.css',
-                'plugins/responsive-calendar/responsive-calendar.css'
+                'plugins/responsive-calendar/responsive-calendar.css',
+                'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
             'nav' => array(
                 'prev' => $prev,
@@ -1007,6 +1016,27 @@ class Records extends CI_Controller
             echo json_encode(array(
                 "success" => ($result),
                 "msg" => ($result?"Record planner save successfully!":"ERROR: Record planner NOT save successfully!!")
+            ));
+        }
+    }
+
+    /**
+     * Update icon
+     */
+    public function set_icon()
+    {
+        if ($this->input->is_ajax_request()) {
+            $record = $this->input->post();
+
+
+            $record['map_icon'] = getFontAwesomeIconFromAlias($record['map_icon']);
+
+            $record['map_icon'] = (strlen($record['map_icon']) > 0 ?$record['map_icon']: NULL);
+            $result = $this->Records_model->set_icon($record);
+
+            echo json_encode(array(
+                "success" => ($result),
+                "msg" => ($result?"Icon was updated!":"ERROR: Icon could not be set. Please contact support@121customerinsight.co.uk!!")
             ));
         }
     }

@@ -14,6 +14,34 @@ var admin = {
             admin.hide_edit_form();
         });
 
+        // Map iconpicker
+        $('#map-icon').iconpicker({
+            align: 'center', // Only in div tag
+            arrowClass: 'btn-success',
+            arrowPrevIconClass: 'glyphicon glyphicon-chevron-left',
+            arrowNextIconClass: 'glyphicon glyphicon-chevron-right',
+            cols: 5,
+            footer: true,
+            header: true,
+            icon: '',
+            iconset: 'fontawesome',
+            labelHeader: '{0} of {1} pages',
+            labelFooter: '{0} - {1} of {2} icons',
+            placement: 'bottom', // Only in button tag
+            rows: 5,
+            search: true,
+            searchText: 'Search',
+            selectedClass: 'btn-success',
+            unselectedClass: ''
+        });
+
+        $('#map-icon').on('change', function(e) {
+            var map_icon = ((e.icon.length>0 && e.icon != "empty")?e.icon:'');
+            $('form').find('input[name="map_icon"]').val(map_icon);
+        });
+
+
+
     },
 	    hide_edit_form: function() {
         $('form').fadeOut(1000, function() {
@@ -236,6 +264,7 @@ var admin = {
                                             "<span class='hidden max_quote_days'>" + (val.max_quote_days?val.max_quote_days:'') + "</span>" +
                                             "<span class='hidden months_ago'>" + (val.months_ago?val.months_ago:'') + "</span>" +
                                             "<span class='hidden months_num'>" + (val.months_num?val.months_num:'') + "</span>" +
+                                            "<span class='hidden map_icon'>" + (val.map_icon?val.map_icon:'empty') + "</span>" +
                                     "</td><td>" + val.client_name +
                                             "<span class='hidden client_id'>" + val.client_id + "</span>" +
                                     "</td><td>" + val.campaign_status_text +
@@ -258,6 +287,7 @@ var admin = {
             var row = $btn.closest('tr');
             var min_quote_days = $('form').find('input[name="min_quote_days"]');
             var max_quote_days = $('form').find('input[name="max_quote_days"]');
+            var map_icon = row.find('.map_icon').text();
 
             $('form').find('input[name="campaign_id"]').val(row.find('.campaign_id').text());
             $('form').find('input[name="custom_panel_name"]').val(row.find('.custom_panel_name').text());
@@ -272,7 +302,12 @@ var admin = {
             max_quote_days.val(row.find('.max_quote_days').text());
             $('form').find('input[name="months_ago"]').val(row.find('.months_ago').text());
             $('form').find('input[name="months_num"]').val(row.find('.months_num').text());
+            $('form').find('input[name="map_icon"]').val(((map_icon!="empty" && map_icon.length>0)?map_icon:''));
 
+            //Icon picker
+            if (map_icon.length > 0) {
+                $('#map-icon').iconpicker('setIcon', map_icon);
+            }
 
             admin.campaigns.get_features(row.find('.campaign_id').text());
 

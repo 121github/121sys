@@ -28,6 +28,7 @@ class Form_model extends CI_Model
             '.'
         ));
     }
+
     public function users_in_group($group_id, $campaign)
     {
         $this->db->select("user_id id,name");

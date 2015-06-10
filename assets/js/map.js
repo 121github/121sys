@@ -606,7 +606,17 @@ var maps = {
     //},
     addRecordMarker: function (value) {
         var marker_color = "#" + (value.record_color?(value.record_color).substr(1):maps.intToARGB(maps.hashCode(value.attendee)));
-        var marker_icon = (((planner_permission == true)) && (value.record_planner_id)?fontawesome.markers.FLAG:fontawesome.markers.MAP_MARKER);
+        var marker_icon = fontawesome.markers.MAP_MARKER;
+
+        if (((planner_permission == true)) && (value.record_planner_id)) {
+            marker_icon = fontawesome.markers.FLAG;
+        }
+        else if (value.map_icon) {
+            marker_icon = eval("fontawesome.markers."+value.map_icon);
+        }
+        else if (value.campaign_map_icon) {
+            marker_icon = eval("fontawesome.markers."+value.campaign_map_icon);
+        }
         var marker_scale = (((planner_permission == true)) && (value.record_planner_id)?0.4:0.5);
 
         var navbtn = false;
