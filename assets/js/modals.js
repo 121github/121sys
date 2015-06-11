@@ -95,6 +95,10 @@ var modals = {
             e.preventDefault();
             modals.preview_merge();
         });
+		 $(document).on('click', '#start-merge', function (e) {
+            e.preventDefault();
+            modals.start_merge();
+        });
         $(document).on('click', '.delete-appointment', function (e) {
             var cancellation_reason = $('.appointment-cancellation-form').find('textarea[name="cancellation_reason"]').val();
             var id = $('#modal #appointment-id').val();
@@ -115,12 +119,30 @@ var modals = {
         }).done(function (html) {
                 var mheader = "Merge data";
 				var mbody = html;
-				var mfooter = "";
+				var mfooter = '<button class="btn btn-default pull-left" data-modal="view-record" data-urn="' + urn + '" >Back</button> <button class="btn btn-primary pull-right" id="start-merge" disabled>Start Merge</button> ';;
 				modals.load_modal(mheader,mbody,mfooter);
 				$('[name="source"]').val(urn);
 				$('[name="target"]').val(target);
 				$('.modal-body').css('padding', '0');
         });
+	},
+	start_merge:function(){
+		$.ajax({
+            url: helper.baseUrl + 'merge/merge_launch',
+            data: $('#merge-form').serialize(),
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+			if(response.success){
+				if(typeof record !== "undefined"){
+				record.company_panel.load_panel(record.urn);	
+				record.contact_panel.load_panel(record.urn);	
+			}
+				flashalert.success('Merge Successful');	
+				$('#modal').modal('hide');
+				
+			};
+		})
 	},
 		preview_merge:function(){
 		$.ajax({
@@ -130,7 +152,12 @@ var modals = {
             dataType: "JSON"
         }).done(function (response) {
 			var contents = '';
+			if(response.length==0){
+				contents = 'There is nothing to merge at the moment. All fields are in sync';
+			} else {
+			
 			$.each(response,function(type,actions){
+				
 				$.each(actions,function(action,data){
 					var this_type = type;
 					if(type=="companies"&&data.length=="1"){
@@ -150,7 +177,9 @@ var modals = {
 			
 			});
 			});
+			}
 			$('#merge-preview').html(contents);
+			$('#start-merge').prop('disabled',false);
         });
 	},
     save_appointment: function (data) {

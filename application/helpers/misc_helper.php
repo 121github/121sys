@@ -3,6 +3,27 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+function array_non_empty_items($input) {
+    // If it is an element, then just return it
+    if (!is_array($input)) {
+      return $input;
+    }
+
+    $non_empty_items = array();
+
+    foreach ($input as $key => $value) {
+      // Ignore empty cells
+      if($value) {
+        // Use recursion to evaluate cells
+        $non_empty_items[$key] = array_non_empty_items($value);
+      }
+    }
+
+    // Finally return the array without empty items
+    return $non_empty_items;
+  }
+
+
 function linkedin_id_from_url($url)
 {
     //if an ID is given then we just return the ID;

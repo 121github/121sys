@@ -33,10 +33,12 @@ class Records_model extends CI_Model
 			 if($row['address']){
 			 $original['addresses'][$row['address']] = $row['address'];
 			 }
-			 if($row['company_telephone']||$row['contact_telephone']){
-			 $original['numbers'][$row['company_telephone']] = $row['company_telephone'];
-			 $original['numbers'][$row['contact_telephone']] = $row['contact_telephone'];
+			 if($row['company_telephone']){
+			 $original['company_numbers'][$row['company_telephone']] = $row['company_telephone'];
 			 }
+			 if($row['contact_telephone']){
+			   $original['contact_numbers'][$row['contact_telephone']] = $row['contact_telephone'];
+			  }
 		 }
 		//now look for matches using the data from the original
 		$matches = array();
@@ -86,7 +88,7 @@ class Records_model extends CI_Model
 	array_push($matches,$address_matches);
 						}
 			}
-					if($k=="numbers"){
+					if($k=="company_numbers"){
 						foreach($v as $number){
 	$query = "select urn,'company telephone' matched_on from records left join companies using(urn) inner join company_telephone using(company_id) where telephone_number = '$number' and urn <> $urn";
 	if($campaign){
@@ -97,7 +99,10 @@ class Records_model extends CI_Model
 	if($q->num_rows()){
 	$company_matches = $q->result_array();
 	array_push($matches,$company_matches);
-	} else {
+	} 
+						}
+	if($k=="contact_numbers"){
+		foreach($v as $number){
 	$query = "select urn,'contact telephone' matched_on from records left join contacts using(urn) inner join contact_telephone using(contact_id) where telephone_number = '$number' and urn <> $urn";
 	if($campaign){
 			$query .= " and campaign_id = '$campaign'";

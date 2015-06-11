@@ -13,6 +13,12 @@ class Database extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Database_model');
     }
+//misc db functions
+
+//clean contact names
+public function clean_contact_names(){
+$this->db->query("update contacts set fullname = trim(replace(fullname,'  ',' '))");
+}
 
 	public function remove_dupes(){
 		$table=$this->uri->segment(3);
