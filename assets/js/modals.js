@@ -7,7 +7,14 @@ var modals = {
         });
         $(document).on('click', '[data-modal="view-record"]', function (e) {
             e.preventDefault();
-            modals.view_record($(this).attr('data-urn'));
+			var clicked_urn = $(this).attr('data-urn');
+            setTimeout(function(){ 
+			modals.view_record(clicked_urn);
+			},500);
+        });
+		$(document).on('dblclick', '[data-modal="view-record"]', function (e) {
+            e.preventDefault();
+            window.location.href= helper.baseUrl+'records/detail/'+$(this).attr('data-urn');
         });
         $(document).on('click', '[data-modal="edit-contact"]', function (e) {
             e.preventDefault();
@@ -170,6 +177,10 @@ var modals = {
 				$.each(data,function(k,v){
 					contents += '<ul>'
 					$.each(v,function(field,value){
+						if(field=="telephone_number"){
+						field=v.description;
+						delete v.description;
+						}
 					contents += '<li>'+field + ' => ' + value + '</li>';
 				});
 					contents += '</ul>'

@@ -13,12 +13,12 @@ class Merge_model extends CI_Model
 	
 	public function merge_company_preview($options){
 		$preview=array();
-		$query = "select * from companies where urn ='".$options['source']."' and name in(select name from companies where urn = '".$options['target']."')";
+		$query = "select company_id,name,description,conumber,turnover,employees,website,email,status from companies where urn ='".$options['source']."' and name in(select name from companies where urn = '".$options['target']."')";
 		$existing = $this->db->query($query)->result_array();
 		$data=array();
 		foreach($existing as $row){
 				//get the target company
-				$query = "select * from companies where name='".$row['name']."' and urn ='".$options['target']."'";
+				$query = "select company_id,name,description,conumber,turnover,employees,website,email,status from companies where name='".$row['name']."' and urn ='".$options['target']."'";
 				$target_row = $this->db->query($query)->row_array();
 					foreach($target_row as $k=>$v){
 						$company_id = $target_row['company_id'];
@@ -41,13 +41,13 @@ class Merge_model extends CI_Model
 	public function merge_contact_preview($options){
 		$preview=array();
 		//contact details preview
-				$query = "select * from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','')  in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";		//$this->firephp->log($query);
+				$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','')  in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";		//$this->firephp->log($query);
 		$existing = $this->db->query($query)->result_array();
 		$data=array();
 		foreach($existing as $row){
 			$source_contact = $row['contact_id'];
 				//get the target company
-				$query = "select * from contacts where replace(replace(fullname,'Mr ',''),'Mrs ','')=replace(replace('".$row['fullname']."','Mr ',''),'Mrs ','') and urn ='".$options['target']."'";
+				$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where replace(replace(fullname,'Mr ',''),'Mrs ','')=replace(replace('".$row['fullname']."','Mr ',''),'Mrs ','') and urn ='".$options['target']."'";
 				$target_row = $this->db->query($query)->row_array();
 					foreach($target_row as $k=>$v){
 						$contact_id = $target_row['contact_id'];
@@ -69,7 +69,7 @@ class Merge_model extends CI_Model
 			$preview['updated'][] = $data;	
 		}
 		
-		$query = "select * from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','') not in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";
+		$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','') not in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";
 			$new_rows = $this->db->query($query)->result_array();
 			foreach($new_rows as $newrow){
 				foreach($newrow as $k=>$v){
@@ -82,7 +82,6 @@ class Merge_model extends CI_Model
 				}
 				$newrow['source_contact'] = $newrow['contact_id'];
 				unset($newrow['contact_id']);
-				$newrow['urn'] = $options['target'];
 			$preview['added'][] = $newrow;
 			}
 		return $preview;
@@ -148,12 +147,12 @@ class Merge_model extends CI_Model
 
 	public function merge_company($options){
 		$preview=array();
-		$query = "select * from companies where urn ='".$options['source']."' and name in(select name from companies where urn = '".$options['target']."')";
+		$query = "select company_id,name,description,conumber,turnover,employees,website,email,status from companies where urn ='".$options['source']."' and name in(select name from companies where urn = '".$options['target']."')";
 		$existing = $this->db->query($query)->result_array();
 		foreach($existing as $row){
 			$data=array();
 				//get the target company
-				$query = "select * from companies where name='".$row['name']."' and urn ='".$options['target']."'";
+				$query = "select company_id,name,description,conumber,turnover,employees,website,email,status from companies where name='".$row['name']."' and urn ='".$options['target']."'";
 				$target_row = $this->db->query($query)->row_array();
 					foreach($target_row as $k=>$v){
 						$company_id = $target_row['company_id'];
@@ -165,8 +164,7 @@ class Merge_model extends CI_Model
 					}
 					
 			unset($data['company_id']);
-			unset($data['urn']);
-			unset($data['fullname']);
+
 			if(!empty($data)){
 			$data['company_id'] = $company_id;
 			$this->db->where("company_id",$data['company_id']);
@@ -181,13 +179,13 @@ class Merge_model extends CI_Model
 	public function merge_contact($options){
 		$preview=array();
 		//contact details preview
-				$query = "select * from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','')  in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";		//$this->firephp->log($query);
+				$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','')  in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";		//$this->firephp->log($query);
 		$existing = $this->db->query($query)->result_array();
 		foreach($existing as $row){
 			$data=array();
 			$source_contact = $row['contact_id'];
 				//get the target company
-				$query = "select * from contacts where replace(replace(fullname,'Mr ',''),'Mrs ','')=replace(replace('".$row['fullname']."','Mr ',''),'Mrs ','') and urn ='".$options['target']."'";
+				$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where replace(replace(fullname,'Mr ',''),'Mrs ','')=replace(replace('".$row['fullname']."','Mr ',''),'Mrs ','') and urn ='".$options['target']."'";
 				$target_row = $this->db->query($query)->row_array();
 					foreach($target_row as $k=>$v){
 						$contact_id = $target_row['contact_id'];
@@ -206,7 +204,7 @@ class Merge_model extends CI_Model
 			$this->merge_tel($options,$source_contact,$contact_id);	
 		}
 		
-		$query = "select * from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','') not in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";
+		$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','') not in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";
 			$new_rows = $this->db->query($query)->result_array();
 			foreach($new_rows as $newrow){
 				$source_contact = $newrow['contact_id'];
@@ -214,9 +212,6 @@ class Merge_model extends CI_Model
 				 if(empty($v)){
 					unset($newrow[$k]); 
 				 }
-				 unset($newrow['title']);
-				  unset($newrow['firstname']);
-				   unset($newrow['lastname']);
 				}
 				unset($newrow['contact_id']);
 				$newrow['urn'] = $options['target'];
