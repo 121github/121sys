@@ -14,6 +14,7 @@ class Appointments_model extends CI_Model
     public function appointment_data($count = false, $options = false)
     {
         $table_columns = array(
+            "record_color",
             "date_format(a.`start`,'%d/%m/%y H:i')",
             "com.name",
             "u.name",
@@ -21,6 +22,7 @@ class Appointments_model extends CI_Model
             "postcode"
         );
         $order_columns = array(
+            "record_color",
             "a.start",
             "com.name",
             "u.name",
@@ -38,14 +40,24 @@ class Appointments_model extends CI_Model
                   lng,
                   appointment_id,
 				  title,
-                  urn,
-				  appointment_id marker_id
+                  records.urn,
+				  appointment_id marker_id,
+				  records.record_color,
+				  records.map_icon,
+                  camp.map_icon as campaign_map_icon,
+                  ow.user_id ownership_id,
+                  owu.name ownership,
+                  outcome
                 from appointments a
                   left join appointment_attendees aa using(appointment_id)
                   left join users u on u.user_id = aa.user_id
                   left join records using(urn)
+                  left join campaigns camp using(campaign_id)
                   left join companies com using(urn)
-                  left join locations loc using(location_id) ";
+                  left join locations loc using(location_id)
+                  left join ownership ow on ow.urn = records.urn
+                  left join users owu on ow.user_id = owu.user_id
+                  left join outcomes o on o.outcome_id = records.outcome_id ";
         $where = $this->get_where($options, $table_columns);
         $qry .= $where;
         $qry .= " group by appointment_id";

@@ -514,7 +514,8 @@ var maps = {
 
                 //Get colour legend if it is filtered by colour
                 if (maps.colour_by) {
-                    var colour = item.record_color;
+                    var colour_ar = item.record_color.split('/');
+                    var colour = colour_ar[0];
                     $.each(item, function (key, value) {
                         if (key.indexOf(maps.colour_by) === 0) {
                             legend_ar[colour] = (value?value:'-');
@@ -548,17 +549,14 @@ var maps = {
         controlText.style.fontSize='12px';
         controlText.style.paddingLeft = '4px';
         controlText.style.paddingRight = '4px';
-        var content = '<table>';
-        console.log(legend_data);
+        var content = '<table><thead><tr><th></th><th>'+maps.colour_by.toUpperCase()+'</th></tr></thead><tbody>';
         for (var key in legend_data) {
-            console.log(key);
-            console.log(legend_data[key]);
             content += '<tr>' +
-                            '<td><span class="glyphicon glyphicon-map-marker" style="font-size:25px; color: '+key+'"></span></td>' +
+                            '<td><span class="fa fa-circle" style="font-size:20px; color: '+key+'"></span></td>' +
                             '<td title="'+legend_data[key]+'" style="padding-left: 5px; text-align: left;">'+legend_data[key].substr(0,30)+(legend_data[key].length > 30?'...':'')+'</td>' +
                         '</tr>';
         }
-        content += '</table>';
+        content += '</tbody></table>';
         controlText.innerHTML = content;
         controlUI.appendChild(controlText);
 
@@ -605,19 +603,22 @@ var maps = {
     //    });
     //},
     addRecordMarker: function (value) {
-        var marker_color = "#" + (value.record_color?(value.record_color).substr(1):maps.intToARGB(maps.hashCode(value.attendee)));
+        var marker_color = "#" + (value.record_color_map?(value.record_color_map).substr(1):maps.intToARGB(maps.hashCode(value.attendee)));
         var marker_icon = fontawesome.markers.MAP_MARKER;
+        var marker_scale = 0.4;
 
         if (((planner_permission == true)) && (value.record_planner_id)) {
             marker_icon = fontawesome.markers.FLAG;
+            marker_scale = 0.3;
         }
         else if (value.map_icon) {
             marker_icon = eval("fontawesome.markers."+value.map_icon);
+            marker_scale = 0.3;
         }
         else if (value.campaign_map_icon) {
             marker_icon = eval("fontawesome.markers."+value.campaign_map_icon);
+            marker_scale = 0.3;
         }
-        var marker_scale = (((planner_permission == true)) && (value.record_planner_id)?0.4:0.5);
 
         var navbtn = false;
         var planner_info = false;
@@ -683,8 +684,20 @@ var maps = {
     },
     // Add a marker to the map and push to the array.
     addAppointmentMarker: function (value) {
-        var marker_color = "#" + maps.intToARGB(maps.hashCode(value.name));
+        //var marker_color = "#" + maps.intToARGB(maps.hashCode(value.name));
+        //var marker_icon = fontawesome.markers.MAP_MARKER;
+        var marker_color = "#" + (value.record_color_map?(value.record_color_map).substr(1):maps.intToARGB(maps.hashCode(value.name)));
         var marker_icon = fontawesome.markers.MAP_MARKER;
+        var marker_scale = 0.4;
+
+        if (value.map_icon) {
+            marker_icon = eval("fontawesome.markers."+value.map_icon);
+            marker_scale = 0.3;
+        }
+        else if (value.campaign_map_icon) {
+            marker_icon = eval("fontawesome.markers."+value.campaign_map_icon);
+            marker_scale = 0.3;
+        }
 
         var navbtn = false;
         if ($('.map-form').find('input[name="postcode"]').val().length > 0) {
@@ -718,7 +731,7 @@ var maps = {
             id: value.marker_id,
             icon: {
                 path: marker_icon,
-                scale: 0.5,
+                scale: marker_scale,
                 strokeWeight: 0.2,
                 strokeColor: 'black',
                 strokeOpacity: 1,
@@ -732,7 +745,7 @@ var maps = {
     // Add a marker to the map and push to the array.
     addPlannerMarker: function (value) {
         var marker_color = "#" + maps.intToARGB(maps.hashCode(value.name));
-        var marker_icon = fontawesome.markers.FLAG;
+        var marker_icon = fontawesome.markers.MAP_MARKER;
 
         var planner_info =
             '<b>Planner: </b>' +

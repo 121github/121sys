@@ -1,20 +1,36 @@
-    <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header">Appointments <small><?php echo @$_SESSION['current_campaign_name'] ?></small></h1>
-      </div>
-      <!-- /.col-lg-12 --> 
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Appointments
+            <small><?php echo @$_SESSION['current_campaign_name'] ?></small>
+        </h1>
     </div>
+    <!-- /.col-lg-12 -->
+</div>
 
 <div class="panel panel-primary">
     <div class="panel-heading">
         <i class="fa fa-bar-chart-o fa-fw"></i>
-        Appointments 
+        Appointments
         <div class="pull-right">
-            <div class="btn-group">
-                <input type="checkbox" style="display:none" id="map-view-toggle"
-                       data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"
-                       data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-toggle="toggle">
-            </div>
+            <form class="filter-form">
+                <div class="btn-group">
+                    <input type="hidden" name="group">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Colour By</button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="#" class="group-filter" id="name">Company</a></li>
+                        <li><a href="#" class="group-filter" id="attendee">Attendee</a></li>
+                        <li><a href="#" class="group-filter" id="outcome">Outcome</a></li>
+                        <li><a href="#" class="group-filter" id="ownership">Ownership</a></li>
+                        <li class="divider"></li>
+                        <li><a class="group-filter" ref="#" style="color: green;">Colour by</a> </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <input type="checkbox" style="display:none" id="map-view-toggle"
+                           data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"
+                           data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-toggle="toggle">
+                </div>
+            </form>
         </div>
     </div>
     <div class="panel-body">
@@ -23,7 +39,8 @@
             <div class="col-lg-6 map-view" style="display: none">
                 <h1 class="planner-map">
                     <div class="map-wrapper">
-                        <div id="map-canvas" style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
+                        <div id="map-canvas"
+                             style="position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
                         <i class="top"></i>
                         <i class="right"></i>
                         <i class="bottom"></i>
@@ -42,7 +59,8 @@
                                         <input hidden name="destination">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default get-current-location-btn" type="button">
-                                                <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
+                                                <span style="font-size: 15px"
+                                                      class="glyphicon glyphicon-map-marker"></span>
                                             </button>
                                         </span>
                                         <input type="text" class="form-control" name="postcode"
