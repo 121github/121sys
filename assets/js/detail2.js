@@ -12,17 +12,17 @@ $(document).ajaxStop(function () {
 var record = {
     init: function (urn, role, campaign) {
         /* Initialize all the jquery widgets */
-        $(".close-alert").click(function () {
+        $("span.close-alert").click(function () {
             $(this).closest('.alert').addClass('hidden');
             $(this).closest('.alert-text').text('');
         });
         /*initialize the call when the agent calls */
-        $(document).on('click', '.startcall', function (e) {
+        $(document).on('click', 'dd a.startcall', function (e) {
             e.preventDefault();
             window.location.href = $(this).attr('item-url');
         });
         /*initialize the timer when the agent calls */
-        $(document).on('click', '.starttimer', function (e) {
+        $(document).on('click', 'dd a.starttimer', function (e) {
             e.preventDefault();
             record.start_call();
         });
@@ -60,15 +60,15 @@ var record = {
             }
         }, 1000);
 
-        $('.closetimer').click(function () {
+        $('#closetimer').click(function () {
             $('#timeropened').fadeOut('slow');
             $('#timerclosed').fadeIn('slow');
         });
-        $('.opentimer').click(function () {
+        $('#opentimer').click(function () {
             $('#timeropened').fadeIn('slow');
             $('#timerclosed').fadeOut('slow');
         });
-        $('.stoptimer').click(function () {
+        $('#stoptimer').click(function () {
             $('#timeropened').hide();
             $('#timerclosed').hide();
             $('#defaultCountdown').countdown('destroy');
@@ -94,7 +94,7 @@ var record = {
     sticky_note: {
         init: function () {
             /*initialize the save notes button*/
-            $(document).on('click', '.save-notes', function (e) {
+            $(document).on('click', '#save-sticky', function (e) {
                 e.preventDefault();
                 record.sticky_note.save($(this).prev('span'));
             });
@@ -105,7 +105,7 @@ var record = {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    'notes': $('.sticky-notes').val(),
+                    'notes': $('#sticky-notes').val(),
                     'urn': record.urn
                 }
             }).done(function (response) {
@@ -124,33 +124,38 @@ var record = {
         init: function () {
             record.history_panel.load_panel();
 
-            $(document).on('click', '.show-all-history-btn', function (e) {
+            $(document).on('click', '#show-all-history-btn', function (e) {
                 e.preventDefault();
-                record.history_panel.show_all_history($(this));
+                record.history_panel.load_all_history_panel();
             });
-            $(document).on('click', '.close-history-all', function (e) {
+            $(document).on('click', '#close-history-all', function (e) {
                 e.preventDefault();
                 record.history_panel.close_all_history($(this));
             });
-            $(document).on('click', '.edit-history-btn', function (e) {
+            $(document).on('click', '#edit-history-btn', function (e) {
                 e.preventDefault();
                 record.history_panel.edit_history($(this).attr('item-id'), $(this).attr('item-modal'));
             });
-            $(document).on("click", ".close-history-btn", function (e) {
+            $(document).on("click", "#close-history-btn", function (e) {
                 e.preventDefault();
                 var modal = $(this).attr('item-modal');
                 var panel = (modal == "1" ? '.history-all-panel' : '.history-panel');
                 var content = (modal == "1" ? '.history-all-content' : '.panel-content');
-                $(panel).find('.glyphicon-remove').removeClass('glyphicon-remove close-history-btn');
+                $(panel).find('.glyphicon-remove').removeClass('glyphicon-remove');
                 $(panel).find('form').fadeOut(function () {
                     $(panel).find(content).fadeIn()
                 });
             });
-            $(document).on("click", ".save-history-btn", function (e) {
+            $(document).on("click", "#save-history-btn", function (e) {
                 e.preventDefault();
-                record.history_panel.update_history($(this).attr('item-modal'));
+                record.history_panel.update_history($(this).attr('data-modal'));
             });
-            $(document).on('click', '.del-history-btn', function (e) {
+			$(document).on("click", "#edit-history-back", function (e) {
+                e.preventDefault();
+				$('#edit-history-container').fadeOut(function(){ $('#all-history-container').fadeIn(); modal_body.css('overflow','auto') });
+            });
+			
+            $(document).on('click', '#del-history-btn', function (e) {
                 e.preventDefault();
                 modal.delete_history($(this).attr('item-id'), $(this).attr('item-modal'));
             });
@@ -179,10 +184,10 @@ var record = {
                         var k = 0;
                         $.each(response.data, function (i, val) {
                             if (helper.permissions['edit history'] > 0) {
-                                $edit_btn = '<span class="glyphicon glyphicon-pencil pointerpull-right edit-history-btn" item-modal="0" item-id="' + val.history_id + '"></span>';
+                                $edit_btn = '<span class="glyphicon glyphicon-pencil pointer pull-right" id="edit-history-btn" item-modal="0" item-id="' + val.history_id + '"></span>';
                             }
                             if (helper.permissions['delete history'] > 0) {
-                                $delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right del-history-btn marl" data-target="#modal" item-modal="0" item-id="' + val.history_id + '" title="Delete history"></span>';
+                                $delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right marl" data-target="#modal" id="del-history-btn" item-modal="0" item-id="' + val.history_id + '" title="Delete history"></span>';
                             }
                             if (k <= record.limit - 1) {
                                 $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
@@ -190,7 +195,7 @@ var record = {
                             k++;
                         });
                         if (k > record.limit - 1) {
-                            $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right show-all-history-btn marl" data-target="#modal" title="Show All" >Show All</span></a></td></tr>';
+                            $body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right marl" data-target="#modal" title="Show All" id="show-all-history-btn">Show All</span></a></td></tr>';
                         }
                         $('.history-panel').find('.panel-content').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
 
@@ -202,21 +207,8 @@ var record = {
             });
 
         },
-        show_all_history: function (btn) {
-            var pagewidth = $(window).width() / 2;
-            var moveto = pagewidth - 250;
-            $('<div class="modal-backdrop all-history in"></div>').appendTo(document.body).hide().fadeIn();
-            $('.history-all-container').find('.attachment-all-panel').show();
-            $('.history-all-content').show();
-            $('.history-all-container').fadeIn()
-            $('.history-all-container').animate({
-                width: '600px',
-                left: moveto,
-                top: '10%'
-            }, 1000);
-            record.history_panel.load_all_history_panel();
-        },
         load_all_history_panel: function () {
+			modal_body.css('overflow','auto');
             //Get attachment data
             $.ajax({
                 url: helper.baseUrl + "ajax/get_history",
@@ -226,47 +218,30 @@ var record = {
                     urn: record.urn
                 }
             }).done(function (response) {
-                var $thead = $('.history-all-table').find('thead');
-                $thead.empty();
-
-                var $tbody = $('.history-all-table').find('tbody');
-                $tbody.empty();
-                var $body = "";
-                var $edit_btn = "";
-                var $delete_btn = "";
+               var edit_btn = "",delete_btn = "",mheader = "Showing all history",mfooter='<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 
                 if (response.data.length > 0) {
+					var mbody = '<div id="edit-history-container" style="display:none"></div><div id="all-history-container">';
+					 mbody += '<table class="table table-striped"><thead><tr><th>Name</th><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>';
                     $.each(response.data, function (i, val) {
                         if (helper.permissions['edit history'] > 0) {
-                            $edit_btn = '<span class="glyphicon glyphicon-pencil pointer pull-right edit-history-btn" item-modal="1" item-id="' + val.history_id + '"></span>';
+                            edit_btn = '<span class="glyphicon glyphicon-pencil pointer pull-right" id="edit-history-btn" item-modal="1" item-id="' + val.history_id + '"></span>';
                         }
                         if (helper.permissions['delete history'] > 0) {
-                            $delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right del-history-btn marl" data-target="#modal" item-modal="1" item-id="' + val.history_id + '" title="Delete history"></span>';
+                            delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right marl" data-target="#modal" id="del-history-btn" item-modal="1" item-id="' + val.history_id + '" title="Delete history"></span>';
                         }
-                        $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
+
+                        mbody += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + edit_btn + '</td><td>' + delete_btn + '</td></tr>';
                     });
-                    $thead.append('<tr><th>Name</th><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr>');
-                    $tbody.append($body);
+                   
+                    mbody += '</tbody></table></div>';
+					modals.load_modal(mheader,mbody,mfooter);
                 } else {
-                    $tbody.append('<p>This record has no history information yet</p>');
+                    flashalert.danger('This record has no history information yet');
                 }
             });
         },
-        close_all_history: function () {
-            $('.modal-backdrop.all-history').fadeOut();
-            $('.history-container').fadeOut(500, function () {
-                $('.history-content').show();
-                $('.history-select-form')[0].reset();
-                $('.alert').addClass('hidden');
-            });
-            $('.history-all-container').fadeOut(500, function () {
-                $('.history-all-content').show();
-            });
-        },
         edit_history: function (id, modal) {
-            var panel = (modal == "1" ? '.history-all-panel' : '.history-panel');
-            var content = (modal == "1" ? '.history-all-content' : '.panel-content');
-            $(panel).find(content).fadeOut(function () {
                 $.ajax({
                     url: helper.baseUrl + "ajax/get_history_by_id",
                     type: "POST",
@@ -277,18 +252,12 @@ var record = {
                 }).done(function (response) {
                     record.history_panel.load_history_form(response.data, response.outcomes, response.progress_list, id, modal);
                 });
-                $(panel).find('form').fadeIn();
-            });
-
         },
         load_history_form: function (data, outcomes, progress_list, id, modal) {
-            var panel = (modal == "1" ? '.history-all-panel' : '.history-panel');
-            var $form = $(panel).find('form');
-            $form.empty();
-            $form.append("<input type='hidden' name='history_id' value='" + id + "'/>");
-            var form = "";
-            var $select_outcome = "<option value=''>No action required</option>";
-            var $select_progress = "<option value=''>No action required</option>";
+            var form = '<form>';
+            form += "<input type='hidden' name='history_id' value='" + id + "'/>";
+
+            var select_outcome = "<option value=''>No action required</option>", select_progress = "<option value=''>No action required</option>";
 
             var disabled = (record.role == 1 ? "" : "disabled");
 
@@ -297,7 +266,7 @@ var record = {
                 if (data.outcome == outcome['name']) {
                     selected = "selected";
                 }
-                $select_outcome += "<option " + selected + " value='" + outcome['id'] + "'>" + outcome['name'] + "</option>";
+                select_outcome += "<option " + selected + " value='" + outcome['id'] + "'>" + outcome['name'] + "</option>";
             });
 
             $.each(progress_list, function (key, progress) {
@@ -305,12 +274,12 @@ var record = {
                 if (data.progress == progress['name']) {
                     selected = "selected";
                 }
-                $select_progress += "<option " + selected + " value='" + progress['id'] + "'>" + progress['name'] + "</option>";
+                select_progress += "<option " + selected + " value='" + progress['id'] + "'>" + progress['name'] + "</option>";
             });
             date_input = "<div class='form-group input-group-sm'><p>" + data.contact + "</p></div>";
             user_input = "<div class='form-group input-group-sm'><p>" + data.name + "</p></div>";
-            outcome_input = (data.outcome_id) ? "<div class='form-group input-group-sm'><p>Outcome</p><select name='outcome_id' class='selectpicker_outcome'  " + disabled + ">" + $select_outcome + "</select></div>" : "";
-            progress_input = (data.progress_id) ? "<div class='form-group input-group-sm'><p>Progress</p><select name='progress_id' class='selectpicker_progress'  " + disabled + ">" + $select_progress + "</select></div>" : "";
+            outcome_input = (data.outcome_id) ? "<div class='form-group input-group-sm'><p>Outcome</p><select name='outcome_id' id='selectpicker_outcome' class='selectpicker_outcome'  " + disabled + ">" + select_outcome + "</select></div>" : "";
+            progress_input = (data.progress_id) ? "<div class='form-group input-group-sm'><p>Progress</p><select name='progress_id' id='selectpicker_progress' class='selectpicker_progress'  " + disabled + ">" + select_progress + "</select></div>" : "";
             comments_input = "<div class='form-group input-group-sm'><p>Comments</p><textarea class='form-control ' placeholder='Enter the comments here' rows='3' name='comments'>" + data.comments + "</textarea></div>";
 
             form += date_input +
@@ -319,27 +288,31 @@ var record = {
                 progress_input +
                 comments_input;
 
-
-            $form.append(form + "<button class='btn btn-primary pull-right marl save-history-btn' item-modal='" + modal + "'>Save</button> <button class='btn btn-default pull-right close-history-btn' item-modal='" + modal + "'>Cancel</button>");
-            $('.selectpicker_outcome').selectpicker();
-            $('.selectpicker_progress').selectpicker();
+			form += '</form>';
+			$form = $(form);
+			$form.find('select').selectpicker();
+			
+			if(modal=="0"){
+				var mheader="Edit History",mbody="<div id='edit-history-container'></div><div id='all-history-container'></div>",mfooter='<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button>';
+			modals.load_modal(mheader,mbody,mfooter);	
+			} else {
+			 var mfooter = "<button class='btn btn-primary pull-right marl' id='save-history-btn'>Save</button> <button class='btn btn-default pull-left' id='edit-history-back'>Back</button>";
+			modals.update_footer(mfooter);	
+			}
+			$('#all-history-container').fadeOut(function(){ 
+				$('#edit-history-container').html($form).fadeIn();
+				modal_body.css('overflow','visible');
+			});
         },
         update_history: function (modal) {
-            var panel = (modal == "1" ? '.history-all-panel' : '.history-panel');
-            var content = (modal == "1" ? '.history-all-content' : '.panel-content');
             $.ajax({
                 url: helper.baseUrl + "ajax/update_history",
                 type: "POST",
                 dataType: "JSON",
-                data: $(panel).find('form').serialize()
+                data: $('#modal').find('form').serialize()
             }).done(function (response) {
-                if (modal == "1") {
-                    record.history_panel.load_all_history_panel();
-                }
+				$('#modal').modal('hide');
                 record.history_panel.load_panel();
-                $(panel).find('form').fadeOut(function () {
-                    $(panel).find(content).fadeIn()
-                });
                 flashalert.success(response.msg);
 
             });
@@ -475,14 +448,9 @@ var record = {
                 record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
             });
 
-            $(document).on('click', '.view-workbooks-data', function (e) {
+            $(document).on('click', 'td a span.view-workbooks-data', function (e) {
                 e.preventDefault();
                 workbooks.view_workbooks_data($(this).attr('item-id'));
-            });
-
-            $(document).on('click', '.close-workbooks', function (e) {
-                e.preventDefault();
-                workbooks.close_workbooks_data();
             });
         },
         disabled_btn: function (old_outcome, outcome, old_nextcall, nextcall, old_comments, comments) {
@@ -642,12 +610,12 @@ var record = {
                 panel: '.contact-panel'
             };
             /* initialize the delete contact buttons */
-            $(document).on('click', '.del-contact-btn', function (e) {
+            $(document).on('click', 'span.del-contact-btn', function (e) {
                 e.preventDefault();
                 modal.delete_contact($(this).attr('item-id'));
             });
             /*check tps */
-            $(document).on('click', '.tps-btn', function (e) {
+            $(document).on('click', 'span.tps-btn', function (e) {
                 e.preventDefault();
                 record.contact_panel.check_tps($(this).attr('item-number'), $(this).attr('item-contact-id'), $(this).attr('item-number-id'));
             });
@@ -890,7 +858,7 @@ var record = {
                 var mfooter = '<span class="alert-success hidden">Contact details saved</span><button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
                 modals.load_modal(mheader, response, mfooter);
                 record.contact_panel.edit_form(id);
-                $('.modal-body').css('padding:0px');
+               modal_body.css('padding:0px');
             });
 
         },
@@ -1156,8 +1124,8 @@ var record = {
                 $panel.find('.company-list').empty();
                 $.each(response.data, function (key, val) {
                     var show = "";
-                    var collapse = "collapsed"
-                    if (key == id) {
+                    var collapse = "collapsed";
+                    if (key == id||typeof id == "undefined") {
                         show = "in";
                         collapse = "";
                     }
@@ -1407,7 +1375,7 @@ var record = {
                 $panel.find('input[name="urn"]').val(urn);
                 record.company_panel.load_search_tabs(id);
                 modals.load_modal(mheader, $panel, mfooter);
-                $('.modal-body').css('padding', '0px');
+                modal_body.css('padding', '0px');
             });
 
         },
@@ -2677,12 +2645,12 @@ var modal = {
         modals.load_modal(mheader, mbody, mfooter);
         $(document).one("click", ".close-modal,.close", function () {
             wavesurfer.destroy();
-            $('#modal').find('.modal-body').empty();
+            modal_body.empty();
         });
 
         $(document).one("click", ".close-modal,.close", function () {
             wavesurfer.destroy();
-            $('#modal').find('.modal-body').empty();
+            modal_body.empty();
         });
         modal.wavesurfer(url.replace('ogg', 'mp3'));
     },
@@ -2789,9 +2757,9 @@ var modal = {
     },
     configure_calendar: function (urn, distance, postcode, renew) {
         if (distance) {
-            $('.modal-title').text('Scheduled appointments within ' + distance + ' miles of ' + postcode)
+            modal_header.text('Scheduled appointments within ' + distance + ' miles of ' + postcode)
         } else {
-            $('.modal-title').text('Scheduled appointments')
+            modal_header.text('Scheduled appointments')
         }
         $.ajax({
             url: helper.baseUrl + 'calendar/get_events',
@@ -2806,7 +2774,7 @@ var modal = {
                 flashalert.danger(response.msg);
             }
             if (response.postcode && distance) {
-                $('.modal-title').text('Scheduled appointments within ' + distance + ' miles of ' + response.postcode)
+               modal_header.text('Scheduled appointments within ' + distance + ' miles of ' + response.postcode)
                 $('#cal-postcode').val(response.postcode);
             }
             if (renew) {
@@ -2830,17 +2798,6 @@ var modal = {
 var workbooks = {
 
     view_workbooks_data: function (lead_id) {
-        var pagewidth = $(window).width() / 2;
-        var moveto = pagewidth - 250;
-        $('<div class="modal-backdrop workbooks in"></div>').appendTo(document.body).hide().fadeIn();
-        $('.workbooks-container').find('.workbooks-panel').show();
-        $('.workbooks-content').show();
-        $('.workbooks-container').fadeIn()
-        $('.workbooks-container').animate({
-            width: '600px',
-            left: moveto,
-            top: '10%'
-        }, 1000);
         //Get workbooks data
         $.ajax({
             url: helper.baseUrl + 'workbooks/get_lead',
@@ -2848,13 +2805,10 @@ var workbooks = {
             type: "POST",
             data: {'lead_id': lead_id}
         }).done(function (response) {
-            var $tbody = $('.workbooks-table').find('tbody');
-            $tbody.empty();
-            var body = "";
-
+			var mheader="Workbooks Data",mbody =   '<table class="table table-striped"><tbody>'
             if (response.success) {
                 var val = response.data;
-                body =
+                mbody +=
                     '<tr><th>Id</th><td>' + val.id + '</td></tr>' +
                     '<tr><th>Lock Version</th><td>' + val.lock_version + '</td></tr>' +
                     '<tr><th>Created At</th><td>' + val.created_at + '</td></tr>' +
@@ -2896,20 +2850,12 @@ var workbooks = {
                     '<tr><th>Annual Revenue</th><td>' + val.annual_revenue + '</td></tr>' +
                     '<tr><th>Turnover Band</th><td>' + val.turnover_band + '</td></tr>' +
                     '<tr><th>Industry Description</th><td>' + val.industry_description + '</td></tr>';
-                $tbody.append(body);
+					
+					mbody += '</tbody></table>'; 
             } else {
-                $tbody.append('<p>The lead does not exist in workbooks</p>');
+               mbody = '<p>The lead does not exist in workbooks</p>';
             }
-        });
-    },
-    close_workbooks_data: function () {
-        $('.modal-backdrop.workbooks').fadeOut();
-        $('.workbooks-container').fadeOut(500, function () {
-            $('.workbooks-content').show();
-            $('.alert').addClass('hidden');
-        });
-        $('.workbooks-container').fadeOut(500, function () {
-            $('.workbooks-content').show();
+			modals.load_modal(mheader,mbody,mfooter);
         });
     }
 }

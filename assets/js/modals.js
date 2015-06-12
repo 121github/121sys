@@ -1,6 +1,9 @@
 // JavaScript Document
 var modals = {
     init: function () {
+		 modal_footer = $('#modal').find('.modal-footer');
+		 modal_header = $('#modal').find('.modal-title');
+		 modal_body = $('#modal').find('.modal-body');
 		$(document).on('click', '[data-modal="merge-record"]', function (e) {
             e.preventDefault();
             modals.merge_record($(this).attr('data-urn'),$(this).attr('data-merge-target'));
@@ -12,9 +15,9 @@ var modals = {
 			modals.view_record(clicked_urn);
 			},500);
         });
-		$(document).on('dblclick', '[data-modal="view-record"]', function (e) {
+		$(document).on('dblclick', '[data-modal="view-record"],[data-modal="view-appointment"]', function (e) {
             e.preventDefault();
-            window.location.href= helper.baseUrl+'records/detail/'+$(this).attr('data-urn');
+           window.location.href= helper.baseUrl+'records/detail/'+$(this).attr('data-urn');
         });
         $(document).on('click', '[data-modal="edit-contact"]', function (e) {
             e.preventDefault();
@@ -44,17 +47,9 @@ var modals = {
             e.preventDefault();
             modals.remove_from_planner($(this).attr('data-urn'));
         });
-        $(document).on('click', '.save-appointment', function (e) {
+        $(document).on('click', '#save-appointment', function (e) {
             e.preventDefault();
             modals.save_appointment($('#appointment-form').serialize());
-        });
-        $(document).on('click', '.modal-set-columns', function (e) {
-            e.preventDefault();
-            modals.set_columns();
-        });
-        $(document).on('click', '.modal-reset-table', function (e) {
-            e.preventDefault();
-            modals.reset_table();
         });
         $('#cal-slide-box').on('click', 'a', function (e) {
             e.preventDefault();
@@ -62,7 +57,11 @@ var modals = {
         });
         $(document).on('click', '[data-modal="view-appointment"]', function (e) {
             e.preventDefault();
-            modals.view_appointment($(this).attr('data-id'));
+			var clicked_id = $(this).attr('data-id');
+            setTimeout(function(){ 
+			modals.view_appointment(clicked_id);
+			},500);
+            
         });
         $(document).on('click', '[data-modal="edit-appointment"]', function (e) {
             e.preventDefault();
@@ -94,13 +93,16 @@ var modals = {
                 $('#select-appointment-address').show();
             }
         });
-        $(document).on('click', '#modal #confirm-add-address', function (e) {
+        $(document).on('click', '#confirm-add-address', function (e) {
             e.preventDefault();
             modals.confirm_other_appointment_address();
         });
-		 $(document).on('click', '#load-preview', function (e) {
-            e.preventDefault();
+		 $(document).on('click', '#load-preview', function () {
             modals.preview_merge();
+			modal_body.css('overflow', 'auto');
+        });
+		 $(document).on('click', '#load-options', function (e) {
+         modal_body.css('overflow', 'visible');
         });
 		 $(document).on('click', '#start-merge', function (e) {
             e.preventDefault();
@@ -130,7 +132,7 @@ var modals = {
 				modals.load_modal(mheader,mbody,mfooter);
 				$('[name="source"]').val(urn);
 				$('[name="target"]').val(target);
-				$('.modal-body').css('padding', '0');
+				modal_body.css('padding', '0').css('overflow', 'visible');
         });
 	},
 	start_merge:function(){
@@ -244,7 +246,7 @@ var modals = {
             if (response.success) {
                 if (edit) {
                     modals.edit_appointment_html(response.data);
-					$('.modal-body').css('overflow', 'visible');
+					modal_body.css('overflow', 'visible');
                 } else {
                     modals.view_appointment_html(response.data);
                 }
@@ -299,7 +301,7 @@ var modals = {
         }).done(function (response) {
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Delete</button>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Delete</button>';
             $mbody = $(mbody);
             //check if the appointment address is already in the dropdown and if not, add it.
             var option_exists = false;
@@ -362,7 +364,7 @@ var modals = {
         }).done(function (response) {
             var mheader = "Create Appointment";
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right save-appointment" type="button">Save</button>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
             modals.load_modal(mheader, mbody, mfooter);
 			modals.appointment_contacts(urn);
         });
@@ -440,7 +442,7 @@ var modals = {
         })
     },
     clear_footer: function () {
-        $('#modal').find('.modal-footer').empty();
+        modal_footer.empty();
     },
     load_modal: function (mheader, mbody, mfooter, fixed_modal) {
 		if(fixed_modal&&$("#modal").hasClass('ui-draggable')){
@@ -451,10 +453,10 @@ var modals = {
 			});
 		}
 		
-        $('.modal-body').css('padding', '20px');
-        $('#modal').find('.modal-title').html(mheader);
-        $('#modal').find('.modal-body').html(mbody);
-        $('#modal').find('.modal-footer').html(mfooter);
+        modal_body.css('padding', '20px');
+        modal_header.html(mheader);
+       modal_body.html(mbody);
+        modal_footer.html(mfooter);
         if (!$('#modal').hasClass('in')) {
             modals.show_modal();
         }
@@ -483,8 +485,8 @@ var modals = {
 
     columns: function (columns) {
         modals.default_buttons();
-        $('.modal-title').text('Select columns to display');
-        $('#modal').find('.modal-body').html($form);
+        modal_header.text('Select columns to display');
+        modal_body.html($form);
 
         if (!$('#modal').hasClass('in')) {
             modals.show_modal();
@@ -493,8 +495,8 @@ var modals = {
     set_location: function () {
 
         modals.default_buttons();
-        $('.modal-title').text('Set location');
-        $('#modal').find('.modal-body').html('<p>You must set a location to calculate distances and journey times</p><div class="form-group"><label>Enter Postcode</label><div class="input-group"><input type="text" class="form-control current_postcode_input" placeholder="Enter a postcode..."><div class="input-group-addon pointer btn locate-postcode"><span class="glyphicon glyphicon-map-marker"></span> Use my location</div></div>');
+        modal_header.text('Set location');
+         modal_body.html('<p>You must set a location to calculate distances and journey times</p><div class="form-group"><label>Enter Postcode</label><div class="input-group"><input type="text" class="form-control current_postcode_input" placeholder="Enter a postcode..."><div class="input-group-addon pointer btn locate-postcode"><span class="glyphicon glyphicon-map-marker"></span> Use my location</div></div>');
         $(".confirm-modal").off('click');
         $('.confirm-modal').on('click', function (e) {
             var postcode_saved = location.store_location($('.current_postcode_input').val());
@@ -545,8 +547,8 @@ var modals = {
     },
     reset_table: function () {
         modals.default_buttons();
-        $('.modal-title').text('Reset table');
-        $('#modal').find('.modal-body').html('<p>This will clear any filters that have been set on the table</p><p>Are you sure you want to reset the table filters?</p>');
+        modal_header.text('Reset table');
+         modal_body.html('<p>This will clear any filters that have been set on the table</p><p>Are you sure you want to reset the table filters?</p>');
 
         if (!$('#modal').hasClass('in')) {
             modal.show_modal();
@@ -565,13 +567,13 @@ var modals = {
         });
     },
     default_buttons: function () {
-        $('#modal').find('.modal-footer').empty();
-        $('#modal').find('.modal-footer').append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
-        $('#modal').find('.modal-footer').append('<button class="btn btn-primary confirm-modal" type="button">Confirm</button>');
+        modal_footer.empty();
+      modal_footer.append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
+        modal_footer.append('<button class="btn btn-primary confirm-modal" type="button">Confirm</button>');
     },
     update_footer: function (content) {
-        $('#modal').find('.modal-footer').empty();
-        $('#modal').find('.modal-footer').html(content);
+       modal_footer.empty();
+       modal_footer.html(content);
     },
     view_record_html: function (data) {
         var mheader = "View Record #" + data.urn;
@@ -681,7 +683,7 @@ var modals = {
 		}
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>' + merge_btn;
         modals.load_modal(mheader, mbody, mfooter);
-		$('.modal-body').css('padding:0px');
+		modal_body.css('padding:0px');
     },
 
 
@@ -914,7 +916,7 @@ var modals = {
 
                 modals.load_modal(mheader, $mbody, mfooter);
                 //dont want padding with tabs
-                $('.modal-body').css('padding', '0px');
+               modal_body.css('padding', '0px');
                 if (type == "edit") {
                     modals.contacts.load_tabs(id, tab);
                 }
@@ -1256,7 +1258,7 @@ var modals = {
 
                 modals.load_modal(mheader, $mbody, mfooter);
                 //dont want padding with tabs
-                $('.modal-body').css('padding', '0px');
+               modal_body.css('padding', '0px');
                 if (type == "edit") {
                     modals.companies.load_tabs(id, tab);
                 }
@@ -1274,7 +1276,6 @@ var modals = {
                 $panel.find('#phone form, #address form').hide();
                 $panel.find('#phone .table-container,#address .table-container').show();
             }
-			console.log(mfooter);
 			modals.update_footer(mfooter);
             $.ajax({
                 url: helper.baseUrl + "ajax/get_company",

@@ -121,7 +121,6 @@ class User extends CI_Controller
 					}
 					if (!isset($_SESSION['filter']['values']['team_id'])) {	
                     if (in_array("view own team", $_SESSION['permissions'])&&!empty($_SESSION['team'])) {
-						$this->firephp->log("test".$_SESSION['team']);
                     $filter['team_id'][] = $_SESSION['team'];
                     }
 

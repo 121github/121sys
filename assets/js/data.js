@@ -2154,8 +2154,7 @@ var parkcode = {
 var modal = {
 
     restore_campaign_backup: function($btn) {
-        var row = $btn.closest('tr');
-        $('.modal-title').text('Confirm Restore Backup - '+row.find('.name').text()+'');
+        var row = $btn.closest('tr');modal_header.text('Confirm Restore Backup - '+row.find('.name').text()+'');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
@@ -2167,8 +2166,7 @@ var modal = {
         });
     },
 
-    remove_outcome: function(outcome_id) {
-        $('.modal-title').text('Confirm Delete');
+    remove_outcome: function(outcome_id) {modal_header.text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
@@ -2181,7 +2179,7 @@ var modal = {
     },
 
     remove_email_trigger: function(trigger_id) {
-        $('.modal-title').text('Confirm Delete');
+       modal_header.text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
@@ -2194,7 +2192,7 @@ var modal = {
     },
 
     remove_ownership_trigger: function(trigger_id) {
-        $('.modal-title').text('Confirm Delete');
+       modal_header.text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
@@ -2207,7 +2205,7 @@ var modal = {
     },
 
     remove_duplicates: function(btn) {
-        $('.modal-title').text('Confirm Delete');
+       modal_header.text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
@@ -2220,7 +2218,7 @@ var modal = {
     },
 
     remove_parkcode: function(parked_code) {
-        $('.modal-title').text('Confirm Delete');
+       modal_header.text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false

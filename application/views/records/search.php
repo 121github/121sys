@@ -295,7 +295,7 @@
            
               <div class="form-group">
                 <label>Sector</label>
-                <select id="sector_id" name="sector_id[]" class="selectpicker sector-select" data-width="100%" data-size="5" multiple  title="Any">
+                <select id="sector_id" name="sector_id[]" data-live-search="true" class="selectpicker sector-select" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($sectors as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['sector_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>
@@ -303,7 +303,7 @@
               </div>
               <div class="form-group">
                 <label>Subsector</label>
-                <select id="subsector_id"  name="subsector_id[]" class="selectpicker subsector-select" data-width="100%" data-size="5" multiple  title="Any">
+                <select id="subsector_id"  name="subsector_id[]" data-live-search="true" class="selectpicker subsector-select" data-width="100%" data-size="5" multiple  title="Any">
                   <?php foreach($subsectors as $row): ?>
                   <option <?php if(@in_array($row['id'],$_SESSION['filter']['values']['subsector_id'])){ echo "selected"; } ?> value="<?php echo $row['id'] ?>" ><?php echo $row['name'] ?></option>
                   <?php endforeach; ?>

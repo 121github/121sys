@@ -287,7 +287,7 @@ var email = {
 var modal = {
 
     add_contact: function (option) {
-        $('.modal-title').text('Add Contact');
+       modal_header.text('Add Contact');
         //Get the contacts
         var urn = $('form').find('input[name="urn"]').val();
         var contacts;
@@ -306,13 +306,14 @@ var modal = {
                     i += 1;
                 });
                 contacts += '</tbody></table>';
-                $('.modal-body').append(contacts);
+                modal_body.append(contacts);
             }
         });
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').text('Select the contact that you want to add').append('<br /><br />').append(contacts);
+        })
+		modal_body.text('Select the contact that you want to add').append('<br /><br />').append(contacts);
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function (e) {
             $('#modal').modal('toggle');

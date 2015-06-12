@@ -58,7 +58,7 @@ class Appointments extends CI_Controller
 
             foreach ($records as $k => $v) {
                 //Record color
-                $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"]+rand(0,100))));
+                $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"].$records[$k]['name'])));
                 $records[$k]["record_color_map"] = $records[$k]["record_color"];
                 //Add the icon to the record color
                 $map_icon = ($records[$k]['map_icon']?$records[$k]['map_icon']:($records[$k]['campaign_map_icon']?$records[$k]['campaign_map_icon']:'fa-map-marker'));

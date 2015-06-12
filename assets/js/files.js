@@ -171,11 +171,12 @@ var files = {
 
 var modal = {
     confirm_delete: function(id) {
-        $('.modal-title').text('Are you sure?');
+        modal_header.text('Are you sure?');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').text('This will perminantly delete the file. Do you want to continue?');
+        })
+		modal_body.text('This will perminantly delete the file. Do you want to continue?');
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
             files.delete_file(id);

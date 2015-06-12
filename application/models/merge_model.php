@@ -15,8 +15,8 @@ class Merge_model extends CI_Model
 		$preview=array();
 		$query = "select company_id,name,description,conumber,turnover,employees,website,email,status from companies where urn ='".$options['source']."' and name in(select name from companies where urn = '".$options['target']."')";
 		$existing = $this->db->query($query)->result_array();
-		$data=array();
 		foreach($existing as $row){
+			$data=array();
 				//get the target company
 				$query = "select company_id,name,description,conumber,turnover,employees,website,email,status from companies where name='".$row['name']."' and urn ='".$options['target']."'";
 				$target_row = $this->db->query($query)->row_array();
@@ -24,7 +24,7 @@ class Merge_model extends CI_Model
 						$company_id = $target_row['company_id'];
 					if($options['company_details']==2&&empty($v)&&!empty($row[$k])){
 						$data[$k]=$row[$k];
-					} else if($options['company_details']==3&&!empty($row[$k])){
+					} else if($options['company_details']==3&&!empty($row[$k])&&$row[$k]!==$v){
 						$data[$k]=$row[$k];
 					}
 					}
@@ -43,8 +43,8 @@ class Merge_model extends CI_Model
 		//contact details preview
 				$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','')  in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";		//$this->firephp->log($query);
 		$existing = $this->db->query($query)->result_array();
-		$data=array();
 		foreach($existing as $row){
+			$data=array();
 			$source_contact = $row['contact_id'];
 				//get the target company
 				$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where replace(replace(fullname,'Mr ',''),'Mrs ','')=replace(replace('".$row['fullname']."','Mr ',''),'Mrs ','') and urn ='".$options['target']."'";
@@ -53,11 +53,10 @@ class Merge_model extends CI_Model
 						$contact_id = $target_row['contact_id'];
 					if($options['contact_details']==2&&empty($v)&&!empty($row[$k])){
 						$data[$k]=$row[$k];
-					} else if($options['contact_details']==3&&!empty($row[$k])){
+					} else if($options['contact_details']==3&&!empty($row[$k])&&$row[$k]!==$v){
 						$data[$k]=$row[$k];
 					}
 					}
-					
 			unset($data['contact_id']);
 			unset($data['urn']);
 			unset($data['title']);
@@ -158,7 +157,7 @@ class Merge_model extends CI_Model
 						$company_id = $target_row['company_id'];
 					if($options['company_details']==2&&empty($v)&&!empty($row[$k])){
 						$data[$k]=$row[$k];
-					} else if($options['company_details']==3&&!empty($row[$k])){
+					} else if($options['company_details']==3&&!empty($row[$k])&&$row[$k]!==$v){
 						$data[$k]=$row[$k];
 					}
 					}
@@ -191,17 +190,17 @@ class Merge_model extends CI_Model
 						$contact_id = $target_row['contact_id'];
 					if($options['contact_details']==2&&empty($v)&&!empty($row[$k])){
 						$data[$k]=$row[$k];
-					} else if($options['contact_details']==3&&!empty($row[$k])){
+					} else if($options['contact_details']==3&&!empty($row[$k])&&$row[$k]!==$v){
 						$data[$k]=$row[$k];
 					}
 					}
 			unset($data['contact_id']);
 			unset($data['urn']);
-			unset($data['fullname']);
-			$data['contact_id'] = $contact_id;
+			if(count($data)>0){
 			$this->db->where("contact_id",$contact_id);
 			$this->db->update("contacts",$data);
 			$this->merge_tel($options,$source_contact,$contact_id);	
+			}
 		}
 		
 		$query = "select contact_id,fullname,gender,position,dob,email,website,linkedin,facebook,notes from contacts where urn ='".$options['source']."' and replace(replace(fullname,'Mr ',''),'Mrs ','') not in(select replace(replace(fullname,'Mr ',''),'Mrs ','') from contacts where urn = '".$options['target']."')";

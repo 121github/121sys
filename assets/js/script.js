@@ -154,11 +154,12 @@ MODALS ON THIS PAGE
 var modal = {
 
     delete_script: function(id) {
-        $('.modal-title').text('Confirm Delete');
+       modal_header.text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this script?');
+        })
+		modal_body.text('Are you sure you want to delete this script?');
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
             script.remove(id);

@@ -22,7 +22,7 @@
               <?php
 		  }
 	  } ?>
-              <?php foreach($contact['telephone']  as $number_id=>$number): $this->firephp->log($number['tel_name']); $btn =($number['tel_name']=="Transfer"?"btn btn-info pull-right":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"");$number_text = ($number['tel_name']=="Transfer"?"Transfer":$number['tel_num']); ?>
+              <?php foreach($contact['telephone']  as $number_id=>$number): $btn =($number['tel_name']=="Transfer"?"btn btn-info pull-right":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"");$number_text = ($number['tel_name']=="Transfer"?"Transfer":$number['tel_num']); ?>
               <dt><?php echo ($number_text=="Transfer"?"":$number['tel_name']) ?></dt>
                   <dd>
                       <a  <?php echo $style ?>

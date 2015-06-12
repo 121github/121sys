@@ -98,6 +98,7 @@ var appointment = {
             }],
             "createdRow": function (row, data, dataIndex) {
                 $(row).attr('data-id', data['appointment_id']);
+				$(row).attr('data-urn', data['urn']);
                 $(row).attr('data-modal', 'view-appointment');
                 $(row).attr('postcode', data['postcode']);
                 $(row).addClass('pointer');

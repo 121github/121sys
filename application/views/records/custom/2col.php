@@ -107,20 +107,6 @@
 <?php } ?>
 <!-- end attachment popup -->
 
-<!-- start history popup -->
-<?php if (in_array('view history', $_SESSION['permissions'])) { ?>
-    <div class="panel panel-primary history-all-container">
-        <?php $this->view('records/show_all_history.php'); ?>
-    </div>
-<?php } ?>
-<!-- end history popup -->
-
-
-<!-- start workbooks popup -->
-<div class="panel panel-primary workbooks-container">
-    <?php $this->view('records/show_workbooks_data.php'); ?>
-</div>
-<!-- end attachment popup -->
 
 <script type="text/javascript">
     $(document).ready(function () {

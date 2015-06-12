@@ -1,4 +1,4 @@
-<div class="panel-heading">History<span class="glyphicon glyphicon-remove pointer pull-right close-history-all"></span></div>
+<div class="panel-heading">History<span id="close-history-all" class="glyphicon glyphicon-remove pointer pull-right"></span></div>
 <div class="panel-body" style="overflow: scroll; height: 500px;">
     <div class="history-all-panel">
         <?php $this->view('forms/edit_history_record.php'); ?>

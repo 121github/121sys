@@ -371,11 +371,12 @@ var export_data = {
 var modal = {
 
     delete_template: function(export_forms_id) {
-        $('.modal-title').text('Confirm Delete');
+       modal_header.text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this export form?');
+        })
+		modal_body.text('Are you sure you want to delete this export form?');
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
             export_data.delete_export_form(export_forms_id);

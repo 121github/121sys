@@ -348,11 +348,12 @@ MODALS ON THIS PAGE
 var modal = {
 
     delete_template: function(id) {
-        $('.modal-title').text('Confirm Delete');
+       modal_header.text('Confirm Delete');
         $('#modal').modal({
             backdrop: 'static',
             keyboard: false
-        }).find('.modal-body').text('Are you sure you want to delete this template?');
+        })
+		modal_body.text('Are you sure you want to delete this template?');
         $(".confirm-modal").off('click').show();
         $('.confirm-modal').on('click', function(e) {
             template.remove(id);

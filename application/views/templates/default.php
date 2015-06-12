@@ -53,12 +53,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 </head>
 <body>
 <div class="img-circle" id="timerclosed" style="display: none;"><span
-        class="glyphicon glyphicon-earphone opentimer pointer"></span> <span
+       id="opentimer" class="glyphicon glyphicon-earphone pointer"></span> <span
         class="glyphicon glyphicon-stop stoptimer pointer"></span></div>
 <div class="img-circle" id="timeropened" style="display: none;">
     <div id="defaultCountdown"></div>
-    <span class="glyphicon glyphicon-earphone closetimer pointer"></span> <span
-        class="glyphicon glyphicon-stop stoptimer pointer"></span></div>
+    <span id="closetimer" class="glyphicon glyphicon-earphone pointer"></span> <span
+        id="stoptimer" class="glyphicon glyphicon-stop pointer"></span></div>
 <?php if ($show_footer) { ?>
     <div class="navbar-inverse footer-stats" style="z-index:1">
         <!--ajax generated footer stats go here -->

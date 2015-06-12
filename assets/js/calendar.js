@@ -225,10 +225,6 @@ $(document).ready(function () {
             modal: val
         });
     });
-    $('#events-modal .modal-header, #events-modal .modal-footer').click(function (e) {
-        //e.preventDefault();
-        //e.stopPropagation();
-    });
 
     $(document).on('change', '#user-select', function (e) {
         e.preventDefault();
@@ -263,12 +259,12 @@ $(document).ready(function () {
 
     var modal = {
         distance: function () {
-			modals.default_buttons();
-            $('.modal-title').text('Set maximum distance');
+			modals.default_buttons();modal_header.text('Set maximum distance');
             $('#modal').modal({
                 backdrop: 'static',
                 keyboard: false
-            }).find('.modal-body').empty().html($('#dist-form').html());
+            })
+			modal_body.empty().html($('#dist-form').html());
             $('#modal').find('.distance-select').selectpicker();
             $(".confirm-modal").off('click').show();
             $('.confirm-modal').on('click', function (e) {
@@ -287,8 +283,7 @@ $(document).ready(function () {
             });
         },
         addAppointmentRule: function(block_day) {
-			modals.default_buttons();
-            $('.modal-title').text('Add appointment rule');
+			modals.default_buttons();modal_header.text('Add appointment rule');
             $('#modal').modal({
                 backdrop: 'static',
                 keyboard: false
