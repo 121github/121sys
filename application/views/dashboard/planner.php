@@ -1,7 +1,6 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i>
-        Journey planner
+        <i class="fa fa-map-marker fa-fw"></i> Journey planner
         <div class="pull-right">
             <form class="filter-form">
                 <div class="btn-group">

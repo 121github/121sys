@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-lg-12">
         <div class="panel panel-primary" id="a_callbacks">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Callbacks 
+          <div class="panel-heading"> <i class="fa fa-phone fa-fw"></i> Callbacks 
             <div class="pull-right">
                <form class="callbacks-filter" data-func="callbacks_panel">
             	<div class="btn-group">

@@ -10,7 +10,7 @@
 
 					<div class="panel panel-primary groups-panel">
 						<div class="panel-heading">
-							<i class="fa fa-bar-chart-o fa-fw"></i>Time list
+							Time list
 							<div class="pull-right">
 								<form class="filter-form" id="filter">
 					                  <div class="btn-group"> 

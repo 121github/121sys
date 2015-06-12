@@ -1,6 +1,6 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i>
+        <i class="fa fa-list fa-fw"></i>
         Record List
         <div class="pull-right">
             <form class="filter-form">

@@ -502,8 +502,11 @@ $this->_campaigns = campaign_access_dropdown();
     //Add record
     public function add_record()
     {
+		if($_SESSION['role']==1){
+		$campaigns = $this->Form_model->get_campaigns();
+		} else {
     	$campaigns = $this->Form_model->get_campaigns_by_user($_SESSION['user_id']);
-    	
+		}
     	$data = array(
     			'campaign_access' => $this->_campaigns,
     			'pageId' => 'Admin',

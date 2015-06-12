@@ -828,10 +828,17 @@ var add_record = {
         $(document).on('change', '#campaign', function () {
             add_record.show_campaign_type();
         });
-        $(document).on("click", ".save-btn", function (e) {
+        $(document).on("click", "#save-btn", function (e) {
             e.preventDefault();
             add_record.save($(this));
         });
+		$(document).on("keyup", "#contact_name,#company_name", function(){
+			if($(this).val()==""){
+			$('#save-btn').prop('disabled',true);	
+			} else {
+			$('#save-btn').prop('disabled',false);	
+			}
+		});
     },
     show_campaign_type: function () {
         var ctype = $('#campaign option:selected').attr('ctype');

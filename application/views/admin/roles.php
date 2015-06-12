@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary roles-panel">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Role Admin
+          <div class="panel-heading">Role Admin
             <div class="pull-right">
               <div class="btn-role">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle add-btn" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> Add Role</button>

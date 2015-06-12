@@ -12,16 +12,43 @@ class Modals extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
         $this->load->model('User_model');
         $this->load->model('Modal_model');
+		$this->load->model('Records_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+		public function new_email_form(){
+			if ($this->input->is_ajax_request()) {
+			$this->load->model('Form_model');
+			$campaign_id = $this->Records_model->get_campaign_from_urn($this->input->post('urn'));
+			$templates = $this->Form_model->get_templates_by_campaign_id($campaign_id);
+            $email_options = array("templates"=>$templates);
+	  $this->load->view('forms/new_email_form.php', $email_options);
+			}
+	}
+	
+		public function view_email(){
+			if ($this->input->is_ajax_request()) {
+	  $this->load->view('email/view_email.php');
+			}
+	}
+	
+		public function show_all_email(){
+			if ($this->input->is_ajax_request()) {
+	  $this->load->view('email/show_all_email.php');
+			}
+	}
+	
 	
 	public function merge_record(){
+		if ($this->input->is_ajax_request()) {
 	  $this->load->view('forms/merge_record.php');
+		}
 	}
 
 	public function load_company_search(){
+		if ($this->input->is_ajax_request()) {
 	  $this->load->view('forms/search_company_form.php');
 	   $this->load->view('forms/get_company_form.php');
+		}
 	}
 
 	public function load_contact_form(){
@@ -113,7 +140,6 @@ class Modals extends CI_Controller
 	}
 	public function edit_appointment(){
 		if ($this->input->is_ajax_request()) {
-		$this->load->model('Records_model');
 		$urn = intval($this->input->post('urn'));
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
 		$addresses         = $this->Records_model->get_addresses($urn);

@@ -6,7 +6,7 @@
       </div>
       
        <div class="panel panel-primary campaign-access">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Campaign User Access           
+            <div class="panel-heading">Campaign User Access           
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">

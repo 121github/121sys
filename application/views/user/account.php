@@ -26,7 +26,7 @@
     <div class="col-md-8 col-sm-12">
         <div class="panel panel-primary" >
             <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i>
+                <i class="fa fa-user fa-fw"></i>
                 Details
             </div>
             <!-- /.panel-heading -->
@@ -91,7 +91,7 @@
     </div>
     <div class="col-md-4 col-sm-12">
         <div class="panel panel-primary" >
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Change Your Password</div>
+            <div class="panel-heading"> <i class="fa fa-unlock-alt fa-fw"></i> Change Your Password</div>
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <form id="pass-form">
@@ -117,7 +117,7 @@
         </div>
         <?php if($_SESSION['role'] == 1): ?>
         <div class="panel panel-primary" >
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Activity</div>
+            <div class="panel-heading"> <i class="fa fa-bell fa-fw"></i>Activity</div>
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <table class="table ajax-table">

@@ -9,7 +9,7 @@
 <div class="row">
         <div class="col-lg-12">
           <div class="panel panel-primary" id="a_favorites">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Favorites 
+            <div class="panel-heading"> <i class="fa fa-star fa-fw"></i> Favorites 
             <div class="pull-right">
               <form class="favorites-filter" data-func="favorites_panel">
             	<div class="btn-group">

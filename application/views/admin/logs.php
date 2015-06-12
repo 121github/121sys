@@ -10,7 +10,7 @@
         <div class="col-lg-12">
           
            <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Logs
+            <div class="panel-heading"> Logs
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body target-data">

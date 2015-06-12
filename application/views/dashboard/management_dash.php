@@ -9,7 +9,7 @@
       <div class="row">
         <div class="col-lg-12">
          <div class="panel panel-primary" id="a_activity">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Activity
+            <div class="panel-heading"> <i class="fa fa-history fa-fw"></i>Agent Activity
               <div class="pull-right">
    <form class="agent-activity-filter" data-func="agent_activity">
             	<div class="btn-group">
@@ -76,7 +76,7 @@
           </div>
           
            <div class="panel panel-primary" id="a_success">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Success Rates
+            <div class="panel-heading"> <i class="fa fa-check fa-fw"></i>Agent Success Rates
               <div class="pull-right">
                <form class="success-filter" data-func="agent_success">
             	<div class="btn-group">
@@ -147,7 +147,7 @@
           
 
         <div class="panel panel-primary" id="a_data">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent  Data
+            <div class="panel-heading"> <i class="fa fa-table fa-fw"></i> Agent  Data
              <div class="pull-right">
                 <form class="agent-data-filter" data-func="agent_data">
             	<div class="btn-group">
@@ -216,7 +216,7 @@
     	</div>
     	
     	<div class="panel panel-primary" id="a_current" style="display: none">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Current Hours (Today)
+            <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> Agent Current Hours (Today)
               <div class="pull-right">
                 <div class="btn-group">
                   <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>

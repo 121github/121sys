@@ -9,7 +9,7 @@
     <div class="col-lg-12">
 
         <div class="panel panel-primary campaign-panel">
-            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Campaigns
+            <div class="panel-heading">Campaigns
                 <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle add-btn"
@@ -46,7 +46,7 @@
 
 
         <div class="panel panel-primary campaign-access">
-            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Campaign User Access
+            <div class="panel-heading">Campaign User Access
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -101,7 +101,7 @@
             </div>
         </div>
         <div class="panel panel-primary campaign-access">
-            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Campaign Outcomes
+            <div class="panel-heading">Campaign Outcomes
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">

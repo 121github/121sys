@@ -10,7 +10,7 @@
                 <div class="col-lg-12">
                     <form name="availableform" method="post" class="available-exports-filter-form" onsubmit="return export_data.onsubmitavailableform();">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Available Exports
+                            <div class="panel-heading"> <i class="fa fa-table fa-fw"></i> Available Exports
                                 <div class="pull-right">
                                     <div class="btn-group">
                                         <input type="hidden" name="campaign" value="<?php echo $campaigns[0]['id']; ?>">
@@ -61,7 +61,7 @@
                 <div class="col-lg-12">
                    <form name="myform" method="post" class="filter-form" onsubmit="return export_data.onsubmitform();">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Custom Exports
+                            <div class="panel-heading"> <i class="fa fa-table fa-fw"></i>Custom Exports
                                 <div class="pull-right">
                                     <div class="btn-group">
                                         <input type="hidden" name="date_from">
@@ -120,7 +120,7 @@
                 <div class="col-lg-12">
                     <form name="edit-export-form" method="post" class="filter-form edit-export-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Custom Exports
+                            <div class="panel-heading"> Custom Exports
                             </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">

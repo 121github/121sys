@@ -85,19 +85,7 @@
 <?php } ?>
 <!-- end survey popup -->
 
-<!-- start email popup -->
-<?php if (in_array(9, $features)) { ?>
-    <div class="panel panel-primary email-container">
-        <?php $this->view('forms/new_email_form.php', $email_options); ?>
-    </div>
-    <div class="panel panel-primary email-view-container">
-        <?php $this->view('email/view_email.php'); ?>
-    </div>
-    <div class="panel panel-primary email-all-container">
-        <?php $this->view('email/show_all_email.php'); ?>
-    </div>
-<?php } ?>
-<!-- end email popup -->
+
 
 <!-- start attachment popup -->
 <?php if (in_array(13, $features)) { ?>

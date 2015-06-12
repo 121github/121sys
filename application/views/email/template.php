@@ -10,7 +10,7 @@
 
 					<div class="panel panel-primary groups-panel">
 						<div class="panel-heading">
-							<i class="fa fa-bar-chart-o fa-fw"></i>Template list
+							<i class="fa fa-envelope-o fa-fw"></i> Template list
 							<div class="pull-right">
 								<div class="btn-group">
 									<button type="button"

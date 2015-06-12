@@ -10,7 +10,7 @@
         <div class="col-lg-12">
           
            <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Answers
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i> Answers
              <div class="pull-right">
                 <div class="btn-group">
                   <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
@@ -43,7 +43,7 @@
           </div>
           
            <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i><span class="panel-title">Answers Chart</span> 
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i> <span class="panel-title">Answers Chart</span> 
              <div class="pull-right">
                 <div class="btn-group">
                   <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>

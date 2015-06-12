@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary teams-panel">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Team Admin
+          <div class="panel-heading"> Team Admin
             <div class="pull-right">
               <div class="btn-team">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle add-btn" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> Add Team</button>

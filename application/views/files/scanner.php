@@ -1,7 +1,7 @@
   <div class="row">
         <div class="col-lg-12">
           <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>File Browser</div>
+            <div class="panel-heading"> <i class="fa fa-file fa-fw"></i>File Browser</div>
             <div class="pull-right">
               <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
@@ -74,7 +74,7 @@ Search 2 (Sectors)
              </div>
           <div class="col-lg-6">
           <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Search Results</div>
+            <div class="panel-heading"> <i class="fa fa-search fa-fw"></i>Search Results</div>
             <div class="panel-body search-panel"> 
             
 

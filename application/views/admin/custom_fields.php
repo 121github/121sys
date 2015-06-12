@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary campaign-access">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Campaign Fields </div>
+          <div class="panel-heading">Campaign Fields </div>
           <!-- /.panel-heading -->
           <div class="panel-body">
             <form class="form-horizontal">

@@ -10,7 +10,7 @@
                 <div class="col-lg-12">
                     <form id="data-form" class="filter-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i>Daily Ration Data
+                            <div class="panel-heading">Daily Ration Data
                                 <div class="pull-right">
                                     <div class="btn-group">
                                         <input type="hidden" name="campaign">
@@ -45,6 +45,7 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                            </div>
                             </div>
                     </form>
                     <!-- /.row -->

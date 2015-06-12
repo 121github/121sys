@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary groups-panel">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Group Admin
+          <div class="panel-heading">Group Admin
             <div class="pull-right">
               <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle add-btn" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> Add Group</button>

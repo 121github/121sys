@@ -9,7 +9,7 @@
         <div class="col-lg-12">
           
            <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Target Report
+            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i> Target Report
              <div class="pull-right">
               <div class="btn-group">
                       <form class="filter-form"> <input type="hidden" name="date_from" value="<?php echo date('Y-m-d') ?>">

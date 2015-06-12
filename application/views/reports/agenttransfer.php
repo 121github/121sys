@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Agent Transfer Report
+          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i> Agent Transfer Report
             <div class="pull-right">
             <form class="filter-form">
               <div class="btn-group"> <input type="hidden" name="date_from" value="<?php echo date('Y-m-d') ?>">

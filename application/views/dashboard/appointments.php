@@ -9,8 +9,7 @@
 
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i>
-        Appointments
+        <i class="fa fa-calendar-o fa-fw"></i> Appointments
         <div class="pull-right">
             <form class="filter-form">
                 <div class="btn-group">

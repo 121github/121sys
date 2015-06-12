@@ -312,14 +312,6 @@ class Records extends CI_Controller
             $data['survey_options']    = $survey_options;
         }
         
-        //get templates for Emails if this feature is turned on
-        if (in_array(9, $features)) {
-            $email_options              = array();
-            $templates                  = $this->Form_model->get_templates_by_campaign_id($campaign_id);
-            $email_options["templates"] = $templates;
-            $data['email_options']      = $email_options;
-        }
-        
         $this->template->load('default', 'records/custom/' . (!empty($campaign_layout) ? $campaign_layout : "2col.php"), $data);
         
     }

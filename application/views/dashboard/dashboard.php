@@ -12,7 +12,7 @@
         <!-- /.panel -->
         <div class="panel panel-primary call-history">
           <div class="panel-heading"> 
-          <i class="fa fa-bar-chart-o fa-fw"></i>Latest Call History</span>
+          <i class="fa fa-history fa-fw"></i> Latest Call History</span>
             <div class="pull-right">
                          <form class="history-filter" data-func="history_panel">
             	  <input type="hidden" name="date_from" value="">
@@ -144,9 +144,9 @@
                  <div class="btn-group">
               <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <i class="glyphicon glyphicon-comment"></i> </button>
               <ul class="dropdown-menu slidedown">
-                <li> <a href="#" id="1" class="filter" data-ref="comments"> <i class="fa fa-refresh fa-fw"></i> Survey Comments </a> </li>
-                <li> <a href="#" id="2" class="filter" data-ref="comments"> <i class="fa fa-check-circle fa-fw"></i> Record Comments </a> </li>
-                <li> <a href="#" id="3" class="filter" data-ref="comments"> <i class="fa fa-times fa-fw"></i> Sticky Notes </a> </li>
+                <li> <a href="#" id="1" class="filter" data-ref="comments"> <i class="fa fa-comment fa-fw"></i> Survey Comments </a> </li>
+                <li> <a href="#" id="2" class="filter" data-ref="comments"> <i class="fa fa-comment fa-fw"></i> Record Comments </a> </li>
+                <li> <a href="#" id="3" class="filter" data-ref="comments"> <i class="fa fa-comment fa-fw"></i> Sticky Notes </a> </li>
                 <li class="divider"></li>
                 <li><a class="filter" data-ref="comments">Show All</a> </li>
               </ul>
@@ -167,7 +167,7 @@
       <div class="col-lg-4">
         <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> System Statistics
+          <div class="panel-heading"> <i class="fa fa-list-alt fa-fw"></i> System Statistics
             <div class="pull-right">
   <form class="stats-filter" data-func="system_stats">
             	  <input type="hidden" name="date_from" value="">
@@ -229,7 +229,7 @@
        <?php } ?> 
           <?php if(in_array("email",$_SESSION['permissions'])){ ?>
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i>Email Statistics
+          <div class="panel-heading"> <i class="fa fa-envelope-o fa-fw"></i> Email Statistics
             <div class="pull-right">
              <form class="emails-filter" data-func="emails_panel">
             	  <input type="hidden" name="date_from" value="">

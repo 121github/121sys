@@ -2,7 +2,7 @@
             <div class="col-md-12 col-lg-12">
             <h3 id="panel-title">Showing all files...</h3>
         <div class="panel panel-primary" id="files-panel">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Files 
+          <div class="panel-heading"> <i class="fa fa-files-o fa-fw"></i> Files 
             <div class="pull-right">
               <div class="btn-group">
                <button type="button" id="upload-btn" class="btn btn-default btn-xs disabled"> <span class="glyphicon glyphicon-file"></span> Upload</button>

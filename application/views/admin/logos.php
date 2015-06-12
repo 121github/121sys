@@ -33,7 +33,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary roles-panel">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Campaign Logos
+          <div class="panel-heading">Campaign Logos
             <div class="pull-right">
               <div class="btn-role">
                 <button type="button" data-toggle="modal" data-target="#uploader" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span> Add Logo</button>

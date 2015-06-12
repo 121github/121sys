@@ -10,7 +10,7 @@
 
 					<div class="panel panel-primary groups-panel">
 						<div class="panel-heading">
-							<i class="fa fa-bar-chart-o fa-fw"></i>Script list
+							<i class="fa fa-comment-o fa-fw"></i> Script list
 							<div class="pull-right">
 								<div class="btn-group">
 									<button type="button"
