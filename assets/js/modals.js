@@ -451,6 +451,13 @@ var modals = {
 			$("#modal").draggable({
     handle: ".modal-header,.modal-footer"
 			});
+		if(device_type!=="default"){
+				$('body').css('overflow','auto');
+				$('#modal').css('position','absolute');
+		} else {
+			$('body').css('overflow','hidden');
+			$('#modal').css('position','fixed');
+		}
 		}
 		
         modal_body.css('padding', '20px');
