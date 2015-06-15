@@ -419,7 +419,9 @@ class Search extends CI_Controller
             'campaign_access' => $this->_campaigns,
 			'pageId' => 'Search',
             'title' => 'Search',
-            'columns' => $visible_columns
+            'columns' => $visible_columns,
+			'javascript' => array('plugins/DataTables/js/jquery.dataTables.min.js',
+				'plugins/DataTables/js/dataTables.bootstrap.js')
         );
         $this->template->load('default', 'records/custom.php', $data);
     }

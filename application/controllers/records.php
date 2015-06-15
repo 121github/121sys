@@ -80,8 +80,9 @@ class Records extends CI_Controller
 				'map.js',
                 'view.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
-                'modals.js',
-                'plugins/fontawesome-markers/fontawesome-markers.min.js'
+                'plugins/fontawesome-markers/fontawesome-markers.min.js',
+				'plugins/DataTables/js/jquery.dataTables.min.js',
+				'plugins/DataTables/js/dataTables.bootstrap.js'
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
@@ -225,11 +226,6 @@ class Records extends CI_Controller
         $outcomes         = $this->Records_model->get_outcomes($campaign_id);		
         $xfers            = $this->Records_model->get_xfers($campaign_id);
         
-        if (isset($details['contacts'])) {
-            foreach ($details['contacts'] as $contact_id => $contact_data) {
-                $survey_options["contacts"][$contact_id] = $contact_data["name"]["fullname"];
-            }
-        }
         $prev = false;
         $next = false;
         if (isset($_SESSION['navigation'])) {
@@ -304,12 +300,6 @@ class Records extends CI_Controller
         if (in_array(5, $features)) {
             $users         = $this->Records_model->get_users(false, $campaign_id);
             $data['users'] = $users;
-        }
-        //get surveys if this feature is turned on
-        if (in_array(11, $features)) {
-            $available_surveys         = $this->Form_model->get_surveys($campaign_id);
-            $survey_options["surveys"] = $available_surveys;
-            $data['survey_options']    = $survey_options;
         }
         
         $this->template->load('default', 'records/custom/' . (!empty($campaign_layout) ? $campaign_layout : "2col.php"), $data);

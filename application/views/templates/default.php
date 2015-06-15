@@ -441,14 +441,17 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-slider.js"></script>
+<?php if(@in_array("datatables",$javascript)){ ?>
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
+<?php } ?>
 <script src="<?php echo base_url(); ?>assets/js/plugins/mmenu/jquery.mmenu.min.all.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
+<?php if(@in_array("map.js",$javascript)){ ?>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<?php } ?>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
 <?php if(isset($_SESSION['permissions'])){ ?>
 helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');

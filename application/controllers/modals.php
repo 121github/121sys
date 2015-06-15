@@ -13,11 +13,11 @@ class Modals extends CI_Controller
         $this->load->model('User_model');
         $this->load->model('Modal_model');
 		$this->load->model('Records_model');
+		$this->load->model('Form_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 		public function new_email_form(){
 			if ($this->input->is_ajax_request()) {
-			$this->load->model('Form_model');
 			$campaign_id = $this->Records_model->get_campaign_from_urn($this->input->post('urn'));
 			$templates = $this->Form_model->get_templates_by_campaign_id($campaign_id);
             $email_options = array("templates"=>$templates);
@@ -37,6 +37,20 @@ class Modals extends CI_Controller
 			}
 	}
 	
+	public function start_survey(){
+		if ($this->input->is_ajax_request()) {
+			$urn = $this->input->post('urn');
+			$contacts = $this->Form_model->get_contacts($urn);
+			foreach($contacts as $row){
+			$survey_options["contacts"][$row['id']] = $row['name'];
+			}
+			$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
+			 $available_surveys         = $this->Form_model->get_surveys($campaign_id);
+            $survey_options["surveys"] = $available_surveys;
+			
+	 $this->load->view('forms/new_survey_form.php', $survey_options);
+		}
+	}
 	
 	public function merge_record(){
 		if ($this->input->is_ajax_request()) {
@@ -119,8 +133,8 @@ class Modals extends CI_Controller
 		$data = array();
 		$id = intval($this->input->post('id'));
 		$postcode= false;
-		if(isset($_SESSION['current_postcode'])){
-		$postcode = postcodeFormat($_SESSION['current_postcode']);
+		if(isset($_COOKIE['current_postcode'])){
+		$postcode = postcodeFormat($_COOKIE['current_postcode']);
 		}
 		$result = $this->Modal_model->view_appointment($id,$postcode);
 		if($result){

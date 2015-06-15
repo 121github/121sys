@@ -1,9 +1,9 @@
   <div class="panel panel-primary record-panel">
       <div class="panel-heading">Record Details
         <?php if($details['record']['favorite']){ ?>
-        <span class="pull-right favorite-btn pointer" action="remove"><span class="glyphicon glyphicon-star yellow"></span> Remove from favourites</span>
+        <span class="pull-right pointer" id="favorite-btn" action="remove"><span class="glyphicon glyphicon-star yellow"></span> Remove from favourites</span>
         <?php } else { ?>
-        <span class="pull-right favorite-btn pointer" action="add"><span class="glyphicon glyphicon-star-empty"></span> Add to favourites</span>
+        <span class="pull-right pointer" id="favorite-btn" action="add"><span class="glyphicon glyphicon-star-empty"></span> Add to favourites</span>
         <?php } ?>
       </div>
       <div class="panel-body">
@@ -72,9 +72,9 @@
           <div class="form-group">
             <?php if(in_array("urgent flag",$_SESSION['permissions'])){ ?>
             <?php if($details['record']['urgent']){ ?>
-            <span class="urgent-btn pointer" action="remove"><span class="red glyphicon glyphicon-flag"></span> Unflag as urgent</span>
+            <span id="urgent-btn" class="pointer" action="remove"><span class="red glyphicon glyphicon-flag"></span> Unflag as urgent</span>
             <?php } else { ?>
-            <span class="urgent-btn pointer" action="add"><span class="glyphicon glyphicon-flag"></span> Flag as urgent</span>
+            <span id="urgent-btn" class="pointer" action="add"><span class="glyphicon glyphicon-flag"></span> Flag as urgent</span>
             <?php } ?>
             <?php } else  { 
 			if(in_array("urgent dropdown",$_SESSION['permissions'])){ ?>
@@ -89,13 +89,13 @@
             <?php } ?>
             <?php if(!empty($details['record']['park_reason'])&&in_array("park records",$_SESSION['permissions'])){ ?>
             <!-- need to add js to get this button working and set park code to null in record table -->
-            <button type="button" class="btn btn-default pull-right unpark-record marl">Unpark Record</button>
+            <button type="button" class="btn btn-default pull-right marl" id="unpark-record">Unpark Record</button>
 			<?php } ?>
             <?php if(($details['record']['record_status']=="3"||$details['record']['record_status']=="4")&&in_array("reset records",$_SESSION['permissions'])){ ?>
-            <button type="button" class="btn btn-default pull-right reset-record marl">Reset Record</button>
+            <button type="button" class="btn btn-default pull-right marl" id="reset-record">Reset Record</button>
             <?php } ?>
             <?php if($details['record']['record_status']=="2"||$details['record']['record_status']=="1"&&empty($details['record']['park_reason'])){ ?>
-            <button type="button" class="btn btn-default pull-right update-record" disabled>Update Record</button>
+            <button type="button" class="btn btn-default pull-right" id="update-record" disabled>Update Record</button>
             <?php } ?>
           </div>
         </form>

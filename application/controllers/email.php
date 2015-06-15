@@ -219,6 +219,15 @@ class Email extends CI_Controller
 			$body = str_replace("[$key]",$val,$form['body']);
 					}
 		}
+		
+		if(strpos($body, "WAS EMPTY")!== false){
+			echo json_encode(array(
+    			"success" => false,
+                "msg" => "You have empty placeholders in the email contents. Please edit it first!"
+    	));
+		exit;
+		}
+		
     	//Delete duplicates email addresses
     	$from = array_unique(explode(",", $form['send_from']));
     	$form['send_from'] = implode(",", $from);

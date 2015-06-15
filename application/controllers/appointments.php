@@ -41,7 +41,9 @@ class Appointments extends CI_Controller
                 "appointment.js",
 				"map.js",
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
-                'plugins/fontawesome-markers/fontawesome-markers.min.js'
+                'plugins/fontawesome-markers/fontawesome-markers.min.js',
+				'plugins/DataTables/js/jquery.dataTables.min.js',
+				'plugins/DataTables/js/dataTables.bootstrap.js'
             )
         );
         $this->template->load('default', 'dashboard/appointments.php', $data);

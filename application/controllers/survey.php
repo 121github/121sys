@@ -110,7 +110,9 @@ $this->_campaigns = campaign_access_dropdown();
             'survey_info_id' => $survey,
             'categories' => $categories,
             "javascript" => array(
-                "survey.js"
+				"lib/bootstrap-slider.js",
+                "survey.js",
+			
             )
         );
         
@@ -171,7 +173,9 @@ $this->_campaigns = campaign_access_dropdown();
             "completed_date" => $completed_date,
             "locked" => $locked,
             "javascript" => array(
-                "survey.js"
+			"lib/bootstrap-slider.js",
+                "survey.js",
+				
             )
         );
         $this->template->load('default', 'survey/edit.php', $data);
@@ -223,6 +227,7 @@ $this->_campaigns = campaign_access_dropdown();
             'title' => 'List Surveys',
             'columns' => $visible_columns,
             'javascript' => array(
+			"lib/bootstrap-slider.js",
                 'survey_view.js'
             ),
 

@@ -70,13 +70,7 @@
 <!-- end row panel -->
 </div>
 <!-- end fluid container -->
-<!-- start survey popup -->
-<?php if (in_array(11, $features)) { ?>
-    <div class="panel panel-primary survey-container">
-        <?php
-        $this->view('forms/new_survey_form.php', $survey_options); ?>
-    </div>
-<?php } ?>
+
 <?php if (in_array(1, $features)) { ?>
     <div class="panel panel-primary xfer-container">
         <?php

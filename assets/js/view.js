@@ -27,7 +27,7 @@ var view_records = {
         view_records.reload_table();
     },
     reload_table: function() {
-        var table = "<table width='100%' class='table small table-striped table-bordered table-hover data-table'><thead><tr><th>Color</th><th>Campaign</th><th>Company</th><th>Contact</th><th>Outcome</th><th>Next Action</th></tr></thead>";
+        var table = "<table width='100%' class='table small table-striped table-bordered table-hover data-table'><thead><tr><th>Icon</th><th>Campaign</th><th>Company</th><th>Contact</th><th>Outcome</th><th>Next Action</th></tr></thead>";
         table += "<tfoot><tr><th></th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
 
         $('#table-wrapper').html(table);
@@ -95,7 +95,9 @@ var view_records = {
             }, {
                 "data": "nextcall"
             }],
-            "columnDefs": [{
+            "columnDefs": [
+			{"width": "20px","targets": 0},
+			{
                 "targets": [0, 1, 2, 3, 4, 5],
                 "data": null,
                 "defaultContent": "-"
@@ -118,15 +120,16 @@ var view_records = {
         // Setup - adds search input boxes to the footer row
         $('.data-table tfoot th').each(function() {
             var title = $('.data-table thead th').eq($(this).index()).text();
-            if (title == "Color") {
-                var disable = "disabled";
-            }
+			var filter_attribute = 'placeholder="Filter..."';
+            if (title == "Icon") {
+                var filter_attribute = "disabled";
+            } 
 
             if (title == "Options") {
                 $(this).html('');
             } else {
                 var search_val = view_records.table.column($(this).index()).search();
-                $(this).html('<input class="dt-filter input-sm form-control" placeholder="Filter..." '+disable+' value="' + search_val[0] + '" />');
+                $(this).html('<input class="dt-filter input-sm form-control" '+filter_attribute+' value="' + search_val[0] + '" />');
             }
         });
 

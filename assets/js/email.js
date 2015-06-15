@@ -15,7 +15,7 @@ var email = {
             e.preventDefault();
 
             if (!email.validate_email_input()) {
-                flashalert.danger("ERROR: The email was not sent. Review the send addresses!");
+                flashalert.danger("The recipient email address is invalid");
             }
             else {
                 if ($('input[name="send_to"]').val() !== '' && $('input[name="send_from"]').val() !== '') {

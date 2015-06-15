@@ -11,6 +11,111 @@ $(document).ajaxStop(function () {
 
 var record = {
     init: function (urn, role, campaign) {
+		 $(document).on('click', '#update-record', function (e) {
+                e.preventDefault();
+                if ($('#outcomepicker').val().length > 0) {
+                    if ($('#outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
+                        modal.dead_line($(this));
+                    } else {
+                        record.update_panel.save($(this));
+                    }
+                } else {
+                    flashalert.danger("You must select a call outcome first");
+                }
+            });
+            $(document).on('click', '#reset-record', function (e) {
+                e.preventDefault();
+                record.update_panel.reset_record($(this));
+            });
+            $(document).on('click', '#unpark-record', function (e) {
+                e.preventDefault();
+                record.update_panel.unpark_record($(this));
+            });
+            $(document).on('click', '#favorite-btn', function (e) {
+                record.update_panel.set_favorite($(this));
+            });
+            $(document).on('click', '#urgent-btn', function (e) {
+                record.update_panel.set_urgent($(this));
+            });
+            $(document).on('click', '.close-xfer', function (e) {
+                e.preventDefault();
+                record.update_panel.close_cross_transfer();
+            });
+            $(document).on('click', '.set-xfer', function (e) {
+                e.preventDefault();
+                var xfer = $('select[name="campaign"]').find('option:selected').text()
+                $('#record-update-form').append($('<input name="xfer_campaign" type="hidden"/>').val($('select[name="campaign"]').val()));
+                $('div.outcomepicker').find('.filter-option').text('Cross Transer: ' + xfer);
+                record.update_panel.close_cross_transfer();
+            });
+            var old_outcome = $('.outcomepicker option:selected').val();
+            var current_outcome = old_outcome;
+            $(document).on('change', '#outcomepicker', function (e) {
+                e.preventDefault();
+                $val = $(this).val();
+                if ($val == 71) {
+                    record.update_panel.cross_transfer();
+                } else {
+                    $('input[name="xfer_campaign"]').remove();
+                }
+                $delay = $('#outcomes').find("option[value='" + $val + "']").attr('delay');
+                //if the selected option has a delay attribute we disable the nextcall and set it as now+the amount of delay. This is for outcomes such as answer machine to give us more control over when agents should try again
+                if ($delay > 0) {
+                    var today = new Date();
+                    var nextcall = new Date().addHours($delay);
+                    var hour = nextcall.getHours();
+                    if (hour > 16) {
+                        var nextcall = moment(today).add(1, 'days').toDate();
+                    }
+
+                    $('#nextcall').val(timestamp_to_uk(nextcall, true));
+                    $('#nextcall').datetimepicker({
+                        format: 'DD/MM/YYYY HH:mm'
+                    });
+                    $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
+                    //$('#nextcall').data("DateTimePicker").setDate(timestamp_to_uk(nextcall,true));
+                }
+                //If the previous outcome had delay, set the date to the old_nextcall
+                else if ($('#outcomes').find("option[value='" + current_outcome + "']").attr('delay')) {
+                    nextcall = old_nextcall;
+                    $('#nextcall').val(nextcall);
+                    $('#nextcall').datetimepicker({
+                        format: 'DD/MM/YYYY HH:mm'
+                    });
+                    $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
+                }
+
+                //Set the new outcome
+                current_outcome = $('#outcomes option:selected').val();
+
+                var outcome = $('#outcomes option:selected').val();
+                var new_nextcall = $('input[name="nextcall"]').val();
+                var comments = $('textarea[name="comments"]').val();
+                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
+            });
+
+            var old_nextcall = $('input[name="nextcall"]').val();
+            var datetimepicker = $('.datetime');
+            datetimepicker.off("dp.hide");
+            datetimepicker.on("dp.hide", function (e) {
+                var new_nextcall = $('input[name="nextcall"]').val();
+                var outcome = $('#outcomes option:selected').val();
+                var comments = $('textarea[name="comments"]').val();
+                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
+            });
+
+            var old_comments = $('textarea[name="comments"]').val();
+            $('textarea[name="comments"]').bind('input propertychange', function () {
+                var new_nextcall = $('input[name="nextcall"]').val();
+                var outcome = $('#outcomes option:selected').val();
+                var comments = $('textarea[name="comments"]').val();
+                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
+            });
+
+            $(document).on('click', 'td a span.view-workbooks-data', function (e) {
+                e.preventDefault();
+                workbooks.view_workbooks_data($(this).attr('item-id'));
+            });
         /* Initialize all the jquery widgets */
         $("span.close-alert").click(function () {
             $(this).closest('.alert').addClass('hidden');
@@ -338,127 +443,14 @@ var record = {
     //update panel functions
     update_panel: {
         init: function () {
-            $(document).off('click', '.update-record');
-            $(document).off('click', '.unpark-record');
-            $(document).off('click', '.reset-record');
-            $(document).off('click', '.favorite-btn');
-            $(document).off('click', '.urgent-btn');
-            $(document).off('click', '.close-xfer');
-            $(document).off('click', '.set-xfer');
-
-            /*initialize the save notes button*/
-            $(document).on('click', '.update-record', function (e) {
-                e.preventDefault();
-                if ($('.outcomepicker').val().length > 0) {
-                    if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
-                        modal.dead_line($(this));
-                    } else {
-                        record.update_panel.save($(this));
-                    }
-                } else {
-                    flashalert.danger("You must select a call outcome first");
-                }
-            });
-            $(document).on('click', '.reset-record', function (e) {
-                e.preventDefault();
-                record.update_panel.reset_record($(this));
-            });
-            $(document).on('click', '.unpark-record', function (e) {
-                e.preventDefault();
-                record.update_panel.unpark_record($(this));
-            });
-            $(document).on('click', '.favorite-btn', function (e) {
-                record.update_panel.set_favorite($(this));
-            });
-            $(document).on('click', '.urgent-btn', function (e) {
-                record.update_panel.set_urgent($(this));
-            });
-            $(document).on('click', '.close-xfer', function (e) {
-                e.preventDefault();
-                record.update_panel.close_cross_transfer();
-            });
-            $(document).on('click', '.set-xfer', function (e) {
-                e.preventDefault();
-                var xfer = $('select[name="campaign"]').find('option:selected').text()
-                $('#record-update-form').append($('<input name="xfer_campaign" type="hidden"/>').val($('select[name="campaign"]').val()));
-                $('div.outcomepicker').find('.filter-option').text('Cross Transer: ' + xfer);
-                record.update_panel.close_cross_transfer();
-            });
-            var old_outcome = $('.outcomepicker option:selected').val();
-            var current_outcome = old_outcome;
-            $(document).on('change', '.outcomepicker', function (e) {
-                e.preventDefault();
-                $val = $(this).val();
-                if ($val == 71) {
-                    record.update_panel.cross_transfer();
-                } else {
-                    $('input[name="xfer_campaign"]').remove();
-                }
-                $delay = $('#outcomes').find("option[value='" + $val + "']").attr('delay');
-                //if the selected option has a delay attribute we disable the nextcall and set it as now+the amount of delay. This is for outcomes such as answer machine to give us more control over when agents should try again
-                if ($delay > 0) {
-                    var today = new Date();
-                    var nextcall = new Date().addHours($delay);
-                    var hour = nextcall.getHours();
-                    if (hour > 16) {
-                        var nextcall = moment(today).add(1, 'days').toDate();
-                    }
-
-                    $('#nextcall').val(timestamp_to_uk(nextcall, true));
-                    $('#nextcall').datetimepicker({
-                        format: 'DD/MM/YYYY HH:mm'
-                    });
-                    $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
-                    //$('#nextcall').data("DateTimePicker").setDate(timestamp_to_uk(nextcall,true));
-                }
-                //If the previous outcome had delay, set the date to the old_nextcall
-                else if ($('#outcomes').find("option[value='" + current_outcome + "']").attr('delay')) {
-                    nextcall = old_nextcall;
-                    $('#nextcall').val(nextcall);
-                    $('#nextcall').datetimepicker({
-                        format: 'DD/MM/YYYY HH:mm'
-                    });
-                    $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
-                }
-
-                //Set the new outcome
-                current_outcome = $('.outcomepicker option:selected').val();
-
-                var outcome = $('.outcomepicker option:selected').val();
-                var new_nextcall = $('input[name="nextcall"]').val();
-                var comments = $('textarea[name="comments"]').val();
-                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
-            });
-
-            var old_nextcall = $('input[name="nextcall"]').val();
-            var datetimepicker = $('.datetime');
-            datetimepicker.off("dp.hide");
-            datetimepicker.on("dp.hide", function (e) {
-                var new_nextcall = $('input[name="nextcall"]').val();
-                var outcome = $('.outcomepicker option:selected').val();
-                var comments = $('textarea[name="comments"]').val();
-                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
-            });
-
-            var old_comments = $('textarea[name="comments"]').val();
-            $('textarea[name="comments"]').bind('input propertychange', function () {
-                var new_nextcall = $('input[name="nextcall"]').val();
-                var outcome = $('.outcomepicker option:selected').val();
-                var comments = $('textarea[name="comments"]').val();
-                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
-            });
-
-            $(document).on('click', 'td a span.view-workbooks-data', function (e) {
-                e.preventDefault();
-                workbooks.view_workbooks_data($(this).attr('item-id'));
-            });
+           
         },
         disabled_btn: function (old_outcome, outcome, old_nextcall, nextcall, old_comments, comments) {
             if (((outcome.length != 0) && (outcome != old_outcome)) || ((nextcall.length != 0) && (nextcall != old_nextcall)) || ((comments.length != 0) && (comments != old_comments))) {
-                $('.update-record').prop('disabled', false);
+                $('#update-record').prop('disabled', false);
             }
             else {
-                $('.update-record').prop('disabled', true);
+                $('#update-record').prop('disabled', true);
             }
         },
         cross_transfer: function () {
@@ -574,8 +566,6 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    $btn.closest('form').find('textarea').val('').css('color', '#555');
-                    $btn.closest('form').find('.selectpicker').selectpicker('val', '').selectpicker('render');
                     flashalert.success(response.msg);
                     location.reload();
                 } else {
@@ -593,8 +583,6 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    $btn.closest('form').find('textarea').val('').css('color', '#555');
-                    $btn.closest('form').find('.selectpicker').selectpicker('val', '').selectpicker('render');
                     flashalert.success(response.msg);
                     location.reload();
                 } else {
@@ -986,29 +974,29 @@ var record = {
                 var urn = $(this).attr('data-urn');
                 record.company_panel.search_form(id, urn);
             });
-            $(document).on('click', '.search-company-action', function (e) {
+            $(document).on('click', '#search-company-action', function (e) {
                 e.preventDefault();
                 record.company_panel.search_company();
             });
-            $(document).on('click', '.search-next-company-action', function (e) {
+            $(document).on('click', 'li.search-next-company-action', function (e) {
                 e.preventDefault();
                 record.company_panel.search_company($(this).attr('item-start-index'));
             });
-            $(document).on('click', '.search-table tr', function (e) {
+            $(document).on('click', '#search-table tr', function (e) {
                 e.preventDefault();
                 record.company_panel.get_company($(this).attr('item-number'));
             });
-            $(document).on('click', '.back-company-btn', function (e) {
+            $(document).on('click', '#back-company-btn', function (e) {
                 e.preventDefault();
                 record.company_panel.close_get_company();
             });
-            $(document).on('click', '.update-company-action', function (e) {
+            $(document).on('click', '#update-company-action', function (e) {
                 e.preventDefault();
                 record.company_panel.update_company();
             });
 
             /*check ctps */
-            $(document).on('click', '.ctps-btn', function (e) {
+            $(document).on('click', 'span.ctps-btn', function (e) {
                 e.preventDefault();
                 record.company_panel.check_ctps($(this).attr('item-number'), $(this).attr('item-company-id'), $(this).attr('item-number-id'));
             });
@@ -1209,88 +1197,7 @@ var record = {
                 }
                 ;
             });
-        },
-        animate_panel: function () {
-            var $panel = $(record.company_panel.config.panel);
-            var width = $panel.css('width');
-            $('<div class="modal-backdrop in"></div>').appendTo(document.body).hide().fadeIn();
-            $panel.css('position', 'fixed').css('z-index', '99999').css('width', width);
-            var pagewidth = $(window).width() / 2;
-            var moveto = pagewidth - 250;
-            $panel.animate({
-                width: '500px',
-                left: moveto,
-                top: '50px'
-            }, 1000);
-        },
-        add_form: function () {
-            var $panel = $(record.company_panel.config.panel);
-            $('.tab[href="#general"]').tab('show');
-
-            $panel.find('.panel-title span').removeClass('glyphicon-plus add-company-btn').addClass('glyphicon-remove close-company-btn').show();
-            $panel.find('form').each(function () {
-                $(this)[0].reset();
-                $(this).show();
-                $(this).find('input[name="contact_id"]').val('');
-            });
-            $panel.find('.phone-tab,.address-tab').hide();
-            $panel.find('.tab-alert').show();
-            $panel.find('.table-container').hide();
-            record.company_panel.animate_panel();
-            $panel.find('.list-group').fadeOut(1000, function () {
-                $panel.find('.form-container').fadeIn(1000).find('.save-company-general').attr('action', 'add_company');
-            });
-        },
-        edit_form: function (id) {
-            var $panel = $(record.company_panel.config.panel);
-            $('.tab[href="#general"]').tab('show');
-            $panel.find('.tab-alert').hide();
-            $panel.find('tbody').empty();
-            $panel.find('.phone-tab,.address-tab').show();
-            $panel.find('input[name="company_id"]').each(function () {
-                $(this).val(id);
-            });
-            record.company_panel.load_tabs(id);
-            $panel.find('.panel-title span').removeClass('glyphicon-plus add-company-btn').addClass('glyphicon-remove close-company-btn').show();
-            record.company_panel.animate_panel();
-            $panel.find('.list-group').fadeOut(1000, function () {
-                $panel.find('.form-container').fadeIn(1000).find('.save-company-general').attr('action', 'save_company');
-            });
-        },
-        save_company: function ($btn) {
-            var action = $btn.attr('action');
-            var $form = $btn.closest('form');
-            var $alert = $btn.prev('span');
-            $.ajax({
-                url: helper.baseUrl + "ajax/" + action,
-                type: "POST",
-                dataType: "JSON",
-                global: false,
-                data: $form.serialize()
-            }).done(function (response) {
-                flashalert.success("company details saved");
-                //change the add box to an edit box
-                if (action == "add_company") {
-                    $btn.attr('action', 'save_company');
-                    $form.closest('.form-container').find('input[name="company_id"]').val(response.id);
-                    $('.phone-tab,.address-tab').show();
-                    $('.tab-alert').hide();
-                }
-                record.company_panel.load_panel(record.urn, response.id);
-
-            });
-        },
-        close_panel: function () {
-            var $panel = $(record.company_panel.config.panel);
-            $panel.find('.form-container').fadeOut(500, function () {
-                $panel.removeAttr('style');
-                $panel.find('.search-container').fadeOut(500);
-                $panel.find('.get-company-container').fadeOut(500);
-                $panel.find('.list-group').fadeIn(500);
-                $('.modal-backdrop').fadeOut();
-            })
-            $panel.find('.panel-title span').removeClass('glyphicon-remove close-company-btn').addClass('glyphicon-plus add-company-btn').hide();
-        },
+        },    
         load_tabs: function (company, item_form) {
             var $panel = $(record.company_panel.config.panel);
             if (item_form) {
@@ -1361,7 +1268,7 @@ var record = {
             }).done(function (response) {
                 var mheader = '<a href="https://www.gov.uk/government/organisations/companies-house" target="_blank" ><img src="' + helper.baseUrl + 'assets/img/companieshouse.png"></a>';
                 var $panel = $(response);
-                var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                var mfooter = '<button class="btn btn-primary pull-right" id="search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 
                 $('.result-pagination').empty();
                 $('.searchresult-tab').find('.num-results').html("");
@@ -1492,7 +1399,7 @@ var record = {
                 $('.sic_codes').change(function () {
                     $('.sic_codes').selectpicker('selectAll');
                 });
-                var mfooter = '<button class="btn btn-default pull-left back-company-btn">Back</button> <button class="btn btn-primary update-company-action pull-right">Update</button>';
+                var mfooter = '<button class="btn btn-default pull-left" id="back-company-btn">Back</button> <button class="btn btn-primary pull-right" id="update-company-action">Update</button>';
                 modals.update_footer(mfooter);
                 form.find('input[name="company_id"]').val($('.search-company-form').find('input[name="company_id"]').val());
                 form.find('input[name="company_name"]').val(response.company_name);
@@ -1537,7 +1444,7 @@ var record = {
             var $panel = $('#modal');
             $panel.find('.get-company-container').fadeOut(1000, function () {
                 $panel.find('.search-container').fadeIn(1000);
-                var mfooter = '<button class="btn btn-primary pull-right search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                var mfooter = '<button class="btn btn-primary pull-right" id="search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 modals.update_footer(mfooter);
             });
         },
@@ -1791,77 +1698,56 @@ var record = {
                 panel: '.surveys-panel'
             };
             record.surveys_panel.load_panel();
-            $(document).on('click', '.new-survey', function (e) {
+            $(document).on('click', '#new-survey', function (e) {
                 e.preventDefault();
                 record.surveys_panel.create();
             });
-            $(document).on('click', '.close-survey', function (e) {
+            $(document).on('click', '#continue-survey', function (e) {
                 e.preventDefault();
-                record.surveys_panel.close_survey($(this));
-            });
-            $(document).on('click', '.continue-survey', function (e) {
-                e.preventDefault();
-                var survey = $(this).closest('form').find('.surveypicker').val();
-                var contact = $(this).closest('form').find('.contactpicker').val();
+                var survey = modal_body.find('#surveypicker').val();
+                var contact = modal_body.find('#contactpicker').val();
                 window.location.href = helper.baseUrl + 'survey/create/' + survey + '/' + record.urn + '/' + contact;
                 //record.surveys_panel.new_survey(); we dont use the popup any more
             });
-            $(document).on('change', '.contactpicker', function (e) {
+            $(document).on('change', '#contactpicker', function (e) {
                 record.surveys_panel.check_contact($(this));
             });
-            $(document).on('click', '.back-survey', function (e) {
-                e.preventDefault();
-                $('.survey-content-2').fadeOut('fast', function () {
-                    $('.survey-content-1').fadeIn();
-                    $('.survey-form').empty();
-                })
-            });
-            $(document).on('click', '.edit-survey-btn', function (e) {
+            $(document).on('click', 'span.edit-survey-btn', function (e) {
                 e.preventDefault();
                 window.location.href = helper.baseUrl + "survey/edit/" + $(this).attr('item-id');
             });
-            $(document).on('click', '.eye-survey-btn', function (e) {
+            $(document).on('click', 'span.eye-survey-btn', function (e) {
                 e.preventDefault();
                 window.location.href = helper.baseUrl + "survey/edit/" + $(this).attr('item-id');
             });
-            $(document).on('click', '.del-survey-btn', function (e) {
+            $(document).on('click', 'span.del-survey-btn', function (e) {
                 e.preventDefault();
                 modal.delete_survey($(this).attr('item-id'));
             });
 
         },
         create: function () {
-            var pagewidth = $(window).width() / 2;
-            var moveto = pagewidth - 250;
-            $('<div class="modal-backdrop in"></div>').appendTo(document.body).hide().fadeIn();
-            $('.survey-container').find('.edit-panel').show();
-            $('.survey-content-1').show();
-            $('.survey-content-2').hide();
-            $('.survey-container').fadeIn()
-            $('.survey-container').animate({
-                width: '500px',
-                left: moveto,
-                top: '10%'
-            }, 1000);
-            $('.surveypicker,.contactpicker').selectpicker();
-        },
-        close_survey: function () {
-            $('.modal-backdrop').fadeOut();
-            $('.survey-container').fadeOut(500, function () {
-                $('.survey-content-1').show();
-                $('.survey-content-2').hide();
-                $('.survey-select-form')[0].reset();
-                $('.alert').addClass('hidden');
-            });
-
+           $.ajax({
+                url: helper.baseUrl + 'modals/start_survey',
+                type: "POST",
+				data: { urn:record.urn },
+                dataType: "HTML"
+		   }).done(function(data){
+			  var $mbody = $(data);
+			  var mheader = "Create Survey"; 
+			  var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="btn btn-primary pull-right" id="continue-survey">Continue</button>';
+		  
+		  $mbody.find('#surveypicker,#contactpicker').selectpicker();
+		  modals.load_modal(mheader,$mbody,mfooter);
+		   });
         },
         check_contact: function ($btn) {
-            if ($('.contactpicker').val() == "") {
-                $('.continue-survey').prop('disabled', true);
+            if ($('#contactpicker').val() == "") {
+                $('#continue-survey').prop('disabled', true);
                 $('.page-danger .alert-text').text('You must add the contact to the record before you can start a survey');
                 $('.page-danger').removeClass('hidden').fadeIn(1000);
             } else {
-                $('.continue-survey').prop('disabled', false);
+                $('#continue-survey').prop('disabled', false);
                 $('.page-danger').fadeOut(1000).addClass('hidden');
             }
         },
@@ -1890,7 +1776,7 @@ var record = {
                     urn: record.urn
                 }
             }).done(function (response) {
-                $('.surveys-panel').empty();
+                $('#surveys-panel').empty();
                 var $body = "";
                 if (response.data) {
                     $.each(response.data, function (key, val) {
@@ -1909,11 +1795,11 @@ var record = {
 
                         $body += '<tr><td>' + val.date_created + '</td><td>' + val.contact_name + '</td><td>' + val.client_name + '</td><td>' + val.answer + '</td><td>' + val.is_completed + '</td><td>' + $options + '</td></tr>';
                     });
-                    $('.surveys-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Date</th><th>Contact</th><th>User</th><th>NPS</th><th>Status</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                    $('#surveys-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Date</th><th>Contact</th><th>User</th><th>NPS</th><th>Status</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
 
                     //alert("show surveys");
                 } else {
-                    $('.surveys-panel').append('<p>No surveys have been created for this record</p>');
+                    $('#surveys-panel').append('<p>No surveys have been created for this record</p>');
                     //alert("no surveys");
                 }
 
@@ -1923,12 +1809,12 @@ var record = {
     //get additional info
     additional_info: {
         init: function () {
-            $(document).on("click", ".add-detail-btn", function () {
+            $(document).on("click", "span.add-detail-btn", function () {
                 $(this).removeClass('glyphicon-pencil pointer add-detail-btn').addClass('glyphicon-remove close-custom');
-                $('.custom-panel').find('.panel-content').fadeOut(function () {
-                    $('.custom-panel').find('form')[0].reset();
-                    $('.custom-panel').find('form input').not('input[name="urn"]').val('');
-                    $('.custom-panel').find('form').fadeIn();
+                $('#custom-panel').find('.panel-content').fadeOut(function () {
+                    $('#custom-panel').find('form')[0].reset();
+                    $('#custom-panel').find('form input').not('input[name="urn"]').val('');
+                    $('#custom-panel').find('form').fadeIn();
                 });
             });
             $(document).on("click", ".del-detail-btn", function () {
@@ -1939,9 +1825,9 @@ var record = {
             });
             $(document).on("click", ".close-custom", function (e) {
                 e.preventDefault();
-                $('.custom-panel').find('.glyphicon-remove').removeClass('glyphicon-remove close-custom').addClass('glyphicon-plus add-detail-btn');
-                $('.custom-panel').find('form').fadeOut(function () {
-                    $('.custom-panel').find('.panel-content').fadeIn()
+                $('#custom-panel').find('.glyphicon-remove').removeClass('glyphicon-remove close-custom').addClass('glyphicon-plus add-detail-btn');
+                $('#custom-panel').find('form').fadeOut(function () {
+                    $('#custom-panel').find('.panel-content').fadeIn()
                 });
             });
             $(document).on("click", ".save-info", function (e) {
@@ -1964,7 +1850,7 @@ var record = {
             });
         },
         edit: function (id) {
-            $('.custom-panel').find('.panel-content').fadeOut(function () {
+            $('#custom-panel').find('.panel-content').fadeOut(function () {
                 $.ajax({
                     url: helper.baseUrl + "ajax/get_details_from_id",
                     type: "POST",
@@ -1976,7 +1862,7 @@ var record = {
                     }
                 }).done(function (response) {
                     record.additional_info.load_form(response.data, id);
-                    $('.custom-panel').find('form').fadeIn();
+                    $('#custom-panel').find('form').fadeIn();
                 });
             });
         },
@@ -1985,11 +1871,11 @@ var record = {
                 url: helper.baseUrl + "ajax/save_additional_info",
                 type: "POST",
                 dataType: "JSON",
-                data: $('.custom-panel').find('form').serialize()
+                data: $('#custom-panel').find('form').serialize()
             }).done(function (response) {
                 record.additional_info.load_panel();
-                $('.custom-panel').find('form').fadeOut(function () {
-                    $('.custom-panel').find('.panel-content').fadeIn()
+                $('#custom-panel').find('form').fadeOut(function () {
+                    $('#custom-panel').find('.panel-content').fadeIn()
                 });
                 flashalert.success(response.msg);
             });
@@ -2007,12 +1893,12 @@ var record = {
                     record.additional_info.load_table(response.data);
                     record.additional_info.load_form(response.data);
                 } else {
-                    $('.custom-panel').find('.panel-content').text("Nothing was found");
+                    $('#custom-panel').find('.panel-content').text("Nothing was found");
                 }
             });
         },
         load_table: function (data) {
-            var $panel = $('.custom-panel').find('.panel-content');
+            var $panel = $('#custom-panel').find('.panel-content');
             $panel.empty();
             var table = "<div class='table-responsive'><table class='table table-striped table-condensed'>";
             var thead, detail_id;
@@ -2036,7 +1922,7 @@ var record = {
             $panel.append(table);
         },
         load_form: function (data, id) {
-            var $form = $('.custom-panel').find('form');
+            var $form = $('#custom-panel').find('form');
             $form.empty();
             $form.append("<input type='hidden' name='urn' value='" + record.urn + "'/>");
             $form.append("<input type='hidden' name='detail_id' value='" + id + "'/>");

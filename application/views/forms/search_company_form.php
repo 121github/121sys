@@ -32,7 +32,7 @@
     <div class="tab-pane" id="cosearchresult">
     <p class="text-info"><span class="glyphicon glyphicon-info-sign"></span> This is live data from Companies House<br /></p>
         <div class="table-container">
-            <table class="table table-hover search-table">
+            <table class="table table-hover" id="search-table">
                 <thead>
                     <th>Name</th>
                     <th>Number</th>

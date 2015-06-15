@@ -26,7 +26,7 @@ var appointment = {
         appointment.reload_table();
     },
     reload_table: function () {
-        var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Color</th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></thead>";
+        var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Icon</th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></thead>";
         table += "<tfoot><tr><th></th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
 
         $('#table-wrapper').html(table);
@@ -91,7 +91,8 @@ var appointment = {
             }, {
                 "data": "postcode"
             }],
-            "columnDefs": [{
+            "columnDefs": [
+			{"width": "20px","targets": 0},{
                 "targets": [0, 1, 2, 3, 4, 5],
                 "data": null,
                 "defaultContent": "-"
@@ -113,11 +114,15 @@ var appointment = {
         // Setup - adds search input boxes to the footer row
         $('.data-table tfoot th').each(function () {
             var title = $('.data-table thead th').eq($(this).index()).text();
+			var filter_attribute = 'placeholder="Filter..."';
+            if (title == "Icon") {
+                var filter_attribute = "disabled";
+            } 
             if (title == "Options") {
                 $(this).html('');
             } else {
                 var search_val = appointment.table.column($(this).index()).search();
-                $(this).html('<input class="dt-filter form-control" placeholder="Filter..." value="' + search_val[0] + '" />');
+                $(this).html('<input class="dt-filter form-control" '+filter_attribute+' value="' + search_val[0] + '" />');
             }
         });
 
