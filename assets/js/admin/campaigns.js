@@ -15,6 +15,7 @@ var admin = {
         });
 
         // Map iconpicker
+		if($('#map-icon').length!==0){
         $('#map-icon').iconpicker({
             align: 'center', // Only in div tag
             arrowClass: 'btn-success',
@@ -40,7 +41,7 @@ var admin = {
             $('form').find('input[name="map_icon"]').val(map_icon);
         });
 
-
+		}
 
     },
 	    hide_edit_form: function() {

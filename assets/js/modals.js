@@ -485,24 +485,16 @@ var modals = {
         $("#modal").find("#tabs").tab();
     },
 	set_size:function(){
+		//this will make the modals mobile responsive :)
 		if($('#modal').hasClass('in')){
 			var height = $(window).height()-20;
 			var mheight = $('.modal-dialog').height();
-			console.log(height);
-			console.log(mheight);
 			if(mheight>height){
 				modal_body.css('height', 'auto');
 				$('body').removeClass('modal-open');
 				$('#modal').css('position','absolute');
 				$('.container-fluid').css('height',mheight+50+'px').css('overflow','hidden');
-			
-				/*$('#modal').css('height','100%');
-				$('.modal-dialog').css('min-height','100%');
-				$('.modal-content').css('min-height','100%');
-				$('.modal-body').css('max-height',height-160+'px');
-				$('.modal-body').css('height','100%');*/
 			} else {
-			 console.log("normal");
 			$('#modal').css('position','fixed');
 			$('body').addClass('modal-open');
 		}
