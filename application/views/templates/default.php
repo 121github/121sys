@@ -79,7 +79,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <li><a class="mm-title"><small><span class="text-primary"><?php echo date('l jS F') ?></span> - Welcome <?php echo $_SESSION['name'] ?></small></a></li>
                <?php if (isset($campaign_access) && count($campaign_access) > 0) { ?><li style="padding:0 20px;">
             <select id="campaign-select" data-width="100%">
-                <option value="">Select a campaign to begin</option>
+                <option value=""><?php echo (in_array("mix campaigns",$_SESSION['permissions'])?"Campaign Filter":"Select a campaign to begin"); ?></option>
                 <?php foreach ($campaign_access as $client => $camp_array) { ?>
                     <optgroup label="<?php echo $client ?>">
                         <?php foreach ($camp_array as $camp) { ?>

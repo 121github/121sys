@@ -28,7 +28,7 @@ var dashboard = {
 			var table = '<div class="table-responsive"><table class="table table-bordered table-hover table-striped"><thead><tr><th>Campaign</th><th>Name</th><th>Date</th><th>Time</th><th>User</th><th>Outcome</th> </tr></thead><tbody>'+tbody+'</tbody></table></div>'
 			$('#latest-history').html(table);
 			} else {
-				
+			'<p>No records have been updated yet</p>';	
 			}
         });
     },
