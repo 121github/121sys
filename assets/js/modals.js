@@ -455,9 +455,14 @@ var modals = {
 				$('body').css('overflow','auto');
 				$('#modal').css('position','absolute');
 		} else {
-			$('body').css('overflow','hidden');
 			$('#modal').css('position','fixed');
+			if(modal_body.height()<499){
+					modal_body.css('overflow', 'visible');
+				} else {
+					modal_body.css('overflow', 'auto');
+				}
 		}
+				
 		}
 		
         modal_body.css('padding', '20px');
@@ -1268,7 +1273,7 @@ var modals = {
                modal_body.css('padding', '0px');
                 if (type == "edit") {
                     modals.companies.load_tabs(id, tab);
-                }
+                }					
 
             });
         },

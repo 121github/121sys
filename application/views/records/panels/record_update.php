@@ -7,7 +7,7 @@
         <?php } ?>
       </div>
       <div class="panel-body">
-        <p class="last-updated">Last Updated: <?php echo (!empty($details['record']['last_update'])?$details['record']['last_update']:"Never") ?></p>
+        <p id="last-updated">Last Updated: <?php echo (!empty($details['record']['last_update'])?$details['record']['last_update']:"Never") ?></p>
         <form id="record-update-form">
         <input type="hidden" name="campaign_id" id="campaign_id" value="<?php echo $details['record']['campaign_id'] ?>"/>
           <input type="hidden" name="urn" id="urn" value="<?php echo $details['record']['urn'] ?>"/>
