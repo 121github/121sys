@@ -9,7 +9,7 @@ var admin = {
     },
     hide_edit_form: function() {
         $('form').fadeOut(1000, function() {
-            $('.ajax-table').fadeIn();
+            $('.folder-data').fadeIn();
         });
     },
 	folders: {
@@ -79,7 +79,7 @@ var admin = {
 			$('.folder-write-users').selectpicker('val',response.users).selectpicker('render');
 			});
 			
-			$('.ajax-table').fadeOut(1000, function() {
+			$('.folder-data').fadeOut(1000, function() {
                 $('form').fadeIn();
             });
         },
@@ -88,7 +88,7 @@ var admin = {
             $('form').trigger('reset');
             $('form').find('input[type="hidden"]').val('');
 
-            $('.ajax-table').fadeOut(1000, function() {
+            $('.folder-data"').fadeOut(1000, function() {
                 $('form').fadeIn();
             });
         },
