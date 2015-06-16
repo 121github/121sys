@@ -10,7 +10,7 @@
                 <div class="col-lg-12">
                     <form id="data-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i>Import Data
+                            <div class="panel-heading"> <i class="fa fa-files-o fa-fw"></i> Import Data
                             </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">

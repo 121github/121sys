@@ -186,8 +186,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                             Codes</a></li>
                                 <?php } ?>
                                 <?php if ($_SESSION['role'] == 1) { ?>
-
-
                                     <li <?php echo @($page == 'users' ? "class='Selected'" : "") ?>>
                                         <a href="<?php echo base_url() ?>admin/users">Users</a>
                                     </li>
