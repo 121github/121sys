@@ -13,8 +13,8 @@ var record = {
     init: function (urn, role, campaign) {
 		 $(document).on('click', '#update-record', function (e) {
                 e.preventDefault();
-                if ($('#outcomepicker').val().length > 0) {
-                    if ($('#outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
+                if ($('.outcomepicker').val().length > 0) {
+                    if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
                         modal.dead_line($(this));
                     } else {
                         record.update_panel.save($(this));
@@ -50,7 +50,7 @@ var record = {
             });
             var old_outcome = $('.outcomepicker option:selected').val();
             var current_outcome = old_outcome;
-            $(document).on('change', '#outcomepicker', function (e) {
+            $(document).on('change', '.outcomepicker', function (e) {
                 e.preventDefault();
                 $val = $(this).val();
                 if ($val == 71) {

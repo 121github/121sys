@@ -485,14 +485,19 @@ var modals = {
         $("#modal").find("#tabs").tab();
     },
 	set_size:function(){
-		console.log("Modal Resized");
 		if(device_type!=="default"){
 			var height = $(window).height()-20;
-				$('#modal').css('height','100%');
+			var mheight = $('#modal').height();
+			if(mheight>height){
+				modal_body.css('height', 'auto');
+				$('body').removeClass('modal-open');
+				$('#modal').css('position','absolute');
+			} 
+				/*$('#modal').css('height','100%');
 				$('.modal-dialog').css('min-height','100%');
 				$('.modal-content').css('min-height','100%');
 				$('.modal-body').css('max-height',height-160+'px');
-				$('.modal-body').css('height','100%');
+				$('.modal-body').css('height','100%');*/
 		} else {
 			$('#modal').css('position','fixed');
 			if(modal_body.height()<499){
