@@ -20,13 +20,16 @@ var dashboard = {
             dataType: "JSON",
             data: $('.history-filter').serialize(),
         }).done(function (response) {
-            $tbody = $('.call-history').find('tbody');
-            $tbody.empty();
+			if(response.data.length>0){
+				var tbody = "";
             $.each(response.data, function (i, val) {
-                if (response.data.length) {
-                    $tbody.append("<tr class='pointer' data-modal='view-record' data-urn='"+ val.urn +"'><td>" + val.campaign_name + "</td><td>" + val.cname + "</td><td>" + val.date + "</td><td>" + val.time + "</td><td>" + val.name + "</td><td>" + val.outcome + "</td></tr>");
-                }
+                    tbody += "<tr class='pointer' data-modal='view-record' data-urn='"+ val.urn +"'><td>" + val.campaign_name + "</td><td>" + val.cname + "</td><td>" + val.date + "</td><td>" + val.time + "</td><td>" + val.name + "</td><td>" + val.outcome + "</td></tr>";
             });
+			var table = '<div class="table-responsive"><table class="table table-bordered table-hover table-striped"><thead><tr><th>Campaign</th><th>Name</th><th>Date</th><th>Time</th><th>User</th><th>Outcome</th> </tr></thead><tbody>'+tbody+'</tbody></table></div>'
+			$('#latest-history').html(table);
+			} else {
+				
+			}
         });
     },
 	    emails_panel: function (filter) {
@@ -73,8 +76,9 @@ var dashboard = {
         }).done(function (response) {
             $('.timeline').empty();
             $timeline = '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Campaign Stats</h4></div><div class="timeline-body"><p><a href="'+response.data.virgin_url+'">' + response.data.virgin + '</a> records have yet to be called.<br><a href="'+response.data.active_url+'">' + response.data.active + '</a> records are in progress<br><a href="'+response.data.parked_url+'">' + response.data.parked + '</a> records have been parked<br><a href="'+response.data.dead_url+'">' + response.data.dead + '</a> records are dead</p></div></div></li>';
-			
+			  if (helper.permissions['set progress'] > 0) {
 			$timeline += '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Follow up Stats</h4></div><div class="timeline-body"><p><a href="'+response.data.pending_url+'">' + response.data.pending + '</a> records are pending.<br><a href="'+response.data.in_progress_url+'">' + response.data.in_progress + '</a> records are in progress<br><a href="'+response.data.completed_url+'">' + response.data.completed + '</a> records have been completed</div></div></li>';
+			  }
 			if(response.data.surveys>0){
 			$timeline += '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Survey Stats</h4></div><div class="timeline-body"><p>' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div></div></li>';
 			}

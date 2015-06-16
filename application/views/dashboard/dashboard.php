@@ -61,37 +61,11 @@
             </div>
           </div>
           <!-- /.panel-heading -->
-          <div class="panel-body">
-            <div class="row">
-              <div class="col-lg-12">
-              <div class="table-responsive">
-                <table class="table table-bordered table-hover table-striped">
-                  <thead>
-                    <tr>
-                      <th>Campaign</th>
-                      <th>Name</th>
-                      <th>Date</th>
-                      <th>Time</th>
-                      <th>User</th>
-                      <th>Outcome</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!--The contents of this table is loaded via an ajax function in dashboard.js -->
-                  </tbody>
-                </table>
-                </div>
-                <!-- /.table-responsive --> 
-              </div>
-              <!-- /.col-lg-4 (nested) -->
-              <div class="col-lg-8">
-                <div id="morris-bar-chart"></div>
-              </div>
-              <!-- /.col-lg-8 (nested) --> 
-            </div>
-            <!-- /.row --> 
-          </div>
+          <div class="panel-body" id="latest-history">
+           
+            <p><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></p>
           <!-- /.panel-body --> 
+        </div>
         </div>
         <!-- /.panel -->
         <div class="panel panel-primary">
