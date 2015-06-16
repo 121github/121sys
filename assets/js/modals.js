@@ -451,17 +451,7 @@ var modals = {
 			$("#modal").draggable({
     handle: ".modal-header,.modal-footer"
 			});
-		if(device_type!=="default"){
-				$('body').css('overflow','auto');
-				$('#modal').css('position','absolute');
-		} else {
-			$('#modal').css('position','fixed');
-			if(modal_body.height()<499){
-					modal_body.css('overflow', 'visible');
-				} else {
-					modal_body.css('overflow', 'auto');
-				}
-		}
+		modals.set_size();
 				
 		}
 		
@@ -494,7 +484,24 @@ var modals = {
         });
         $("#modal").find("#tabs").tab();
     },
-
+	set_size:function(){
+		console.log("Modal Resized");
+		if(device_type!=="default"){
+			var height = $(window).height()-20;
+				$('#modal').css('height','100%');
+				$('.modal-dialog').css('min-height','100%');
+				$('.modal-content').css('min-height','100%');
+				$('.modal-body').css('max-height',height-160+'px');
+				$('.modal-body').css('height','100%');
+		} else {
+			$('#modal').css('position','fixed');
+			if(modal_body.height()<499){
+					modal_body.css('overflow', 'visible');
+				} else {
+					modal_body.css('overflow', 'auto');
+				}
+		}
+	},
     columns: function (columns) {
         modals.default_buttons();
         modal_header.text('Select columns to display');

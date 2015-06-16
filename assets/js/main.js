@@ -51,6 +51,7 @@ function setDevice(width) {
     else {
         device_type = "default";
     }
+	modals.set_size();
 }
 
 
