@@ -10,12 +10,29 @@ class Dashboard_model extends CI_Model
     {
         parent::__construct();
     }
+   
+       public function overdue_visits($filter = "")
+    {
+        $qry = "select urn,users.name owner, c1 as category,campaign_name as type,companies.name,records.date_updated,outcome from records inner join companies using(urn) inner join record_details using(urn) left join ownership using(urn) left join users using(user_id) inner join campaigns using(campaign_id) inner join outcomes using(outcome_id) where records.date_updated < subdate(curdate(),interval 3 month) ";
+          if (!empty($filter['campaign'])) {
+            $qry .= " and campaign_id = '".$filter['campaign']."'";
+        }
+		 if (!empty($filter['agent'])) {
+            $qry .= " and user_id = '".$filter['agent']."'";
+        }
+		if (!in_array("by agent",$_SESSION['permissions'])) {
+            $qry .= " and user_id = '".$_SESSION['user_id']."'";
+        }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry .= "order by records.date_updated asc";
+        return $this->db->query($qry)->result_array();
+    }
     
     public function get_urgent($filter = "")
     {
         $qry = "select urn,fullname,date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from records left join contacts using(urn) where urgent = 1 ";
           if (!empty($filter['campaign'])) {
-            $qry .= " and campaign_id = '$filter'";
+            $qry .= " and campaign_id = '".$filter['campaign']."'";
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by urn order by records.date_updated asc";
@@ -26,7 +43,7 @@ class Dashboard_model extends CI_Model
     {
         $qry = "select urn,if(companies.name is null,fullname,name) as fullname,date_format(`start`,'%d/%m/%y %H:%i') start_date from records left join appointments using(urn) left join appointment_attendees using(appointment_id) left join contacts using(urn) left join companies using(urn) where appointments.start > subdate(now(),interval 3 day) and user_id = '{$_SESSION['user_id']}' ";
           if (!empty($filter['campaign'])) {
-            $qry .= " and campaign_id = '$filter'";
+           $qry .= " and campaign_id = '".$filter['campaign']."'";
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= " group by appointment_id order by `start`";

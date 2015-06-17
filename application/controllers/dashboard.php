@@ -18,7 +18,37 @@ class Dashboard extends CI_Controller
 		unset($_SESSION['navigation']);
     }
     
-   
+       //this laods the user dashboard view  
+    public function eldon()
+    {
+        $campaigns = $this->Form_model->get_user_campaigns();
+        $agents       = $this->Form_model->get_agents();
+        
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
+            'title' => 'Dashboard',
+			'page'=> 'Eldon',
+            'javascript' => array(
+			'dashboards/eldon.js',
+                'charts.js',
+                'dashboard.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+			'agents'=>$agents,
+            'campaigns' => $campaigns,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'dashboard/eldon_dash.php', $data);
+    }
+	
+
+	
     //this laods the user dashboard view  
     public function user_dash()
     {
@@ -656,5 +686,19 @@ class Dashboard extends CI_Controller
 			exit;
 		}
 	}
+	
+		public function overdue_visits(){
+			if ($this->input->is_ajax_request()) {
+		$filter = $this->input->post();
+		if(isset($_SESSION['current_campaign'])){
+			$filter['campaign'] =  $_SESSION['current_campaign'];
+			}
+		$data = $this->Dashboard_model->overdue_visits($filter);
+		foreach($data as $k=>$row){
+		$data[$k]['last_update'] = 	time_elapsed_string($row['date_updated']);
+		}
+		echo json_encode(array("success"=>true,"data"=>$data));
+	}
+		}
     
 }

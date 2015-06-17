@@ -9,7 +9,22 @@ jQuery(document).ready(function() {
 		  focus: true,                 // set focus to editable area after initializing summernote
 		  onImageUpload: function(files, editor, welEditable) {
 	         sendFile(files[0],editor,welEditable);
-	      }
+	      },
+		  onpaste: function(e) {
+            var thisNote = $(this);
+            var updatePastedText = function(someNote){
+                var original = someNote.code();
+                var cleaned = CleanPastedHTML(original); //this is where to call whatever clean function you want. I have mine in a different file, called CleanPastedHTML.
+                someNote.code('').html(cleaned); //this sets the displayed content editor to the cleaned pasted code.
+            };
+            setTimeout(function () {
+                //this kinda sucks, but if you don't do a setTimeout, 
+                //the function is called before the text is really pasted.
+                updatePastedText(thisNote);
+            }, 10);
+
+
+        }
 	});
 });
 

@@ -497,6 +497,7 @@ var modals = {
 			} else {
 			$('#modal').css('position','fixed');
 			$('body').addClass('modal-open');
+			$('.container-fluid').css('height','100%').css('overflow','auto');
 		}
 		}
 	},

@@ -287,9 +287,9 @@ class Admin_model extends CI_Model
         return $this->db->delete("default_hours");
     }
 	
-	public function get_custom_fields($campaign){
+	public function get_custom_fields($campaign=array()){
 		$this->db->select("record_details_fields.id,record_details_fields.field,field_name,is_select,is_visible,is_renewal,sort");
-		$this->db->where("record_details_fields.campaign_id",intval($campaign));
+		$this->db->where_in("record_details_fields.campaign_id",$campaign);
 		$this->db->join("record_details_options",'record_details_options.id=record_details_fields.id','LEFT');
 		$query = $this->db->get("record_details_fields");
 		return $query->result_array();
