@@ -46,15 +46,12 @@
                                 <?php
                                 }
                             } ?>
-                            <?php foreach ($company['telephone'] as $number_id => $number): ?>
-                                <dt><?php echo $number['tel_name'] ?></dt>
+                            <?php foreach ($company['telephone'] as $number_id => $number): $btn =($number['tel_name']=="Transfer"?"btn btn-info pull-right":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"");$number_text = ($number['tel_name']=="Transfer"?"Transfer":$number['tel_num']); ?>
+                                <dt><?php echo ($number_text=="Transfer"?"":$number['tel_name']) ?></dt>
                                 <dd>
-                                    <a href="#"
-                                       class="startcall <?php if (in_array("use timer", $_SESSION['permissions'])) {
-                                           echo "starttimer";
-                                       } ?>"
-                                       item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number['tel_num'] ?>
-                                    </a>
+                                   <a  <?php echo $style ?>
+                          href="#" class="startcall <?php echo $btn ?> <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number_text ?>
+                      </a>
                                     <?php if (strlen($number['tel_num'])>0): ?>
                                         <?php if ($number['tel_tps'] == NULL): ?>
                                             <span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='<?php echo $id ?>' item-number-id='<?php echo $number_id ?>' item-number='<?php echo $number['tel_num'] ?>' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>
