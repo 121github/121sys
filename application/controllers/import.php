@@ -624,6 +624,25 @@ $this->db->query($renewals);
 	//if we need to do anything AFTER the import has ran (eg: formatting/checking tables) we can add it to this function
 	public function tidy_up(){
 		$this->load->model('Cron_model');
+//clean dirty numbers
+$dirty = $this->db->query("SELECT *
+FROM company_telephone
+WHERE telephone_number REGEXP '[[.NUL.]-[.US.]]'")->result_array();
+foreach($dirty as $row){
+echo $query = "update company_telephone set telephone_number = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['telephone_number'])."', description = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['description'])."' where telephone_id = '".$row['telephone_id']."'";	
+
+$this->db->query($query);
+}
+
+$dirty = $this->db->query("SELECT *
+FROM contact_telephone
+WHERE telephone_number REGEXP '[[.NUL.]-[.US.]]'")->result_array();
+foreach($dirty as $row){
+echo $query = "update contact_telephone set telephone_number = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['telephone_number'])."', description = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['description'])."' where telephone_id = '".$row['telephone_id']."'";	
+
+$this->db->query($query);
+
+}
 		echo json_encode(array("success"=>true));
 	}
 	

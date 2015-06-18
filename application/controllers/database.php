@@ -20,6 +20,25 @@ public function clean_contact_names(){
 $this->db->query("update contacts set fullname = trim(replace(fullname,'  ',' '))");
 }
 
+public function clean_numbers(){
+$dirty = $this->db->query("SELECT *
+FROM company_telephone
+WHERE telephone_number REGEXP '[[.NUL.]-[.US.]]'")->result_array();
+foreach($dirty as $row){
+$query = "update company_telephone set telephone_number = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['telephone_number'])."', description = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['description'])."' where telephone_id = '".$row['telephone_id']."'";	
+$this->db->query($query);
+}
+
+$dirty = $this->db->query("SELECT *
+FROM contact_telephone
+WHERE telephone_number REGEXP '[[.NUL.]-[.US.]]'")->result_array();
+foreach($dirty as $row){
+$query = "update contact_telephone set telephone_number = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['telephone_number'])."', description = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['description'])."' where telephone_id = '".$row['telephone_id']."'";	
+$this->db->query($query);
+}
+
+}
+
 	public function remove_dupes(){
 		$table=$this->uri->segment(3);
 			$field1=$this->uri->segment(4);
