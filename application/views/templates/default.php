@@ -120,6 +120,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         <li <?php echo @($page == 'management_dash' ? "class=Selected'" : "") ?>><a
                                 href="<?php echo base_url() ?>dashboard/management">Management Dash</a></li>
                     <?php } ?>
+                    <?php if ($_SESSION['sn']=='eldon.121system.com') { ?>
+                        <li <?php echo @($page == 'eldon_dash' ? "class=Selected'" : "") ?>><a
+                                href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>
+                    <?php } ?>
                 </ul>
             </li>
             <li><a href="#records">Records</a>

@@ -30,11 +30,11 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
 			'page'=> 'Eldon',
             'javascript' => array(
-			'dashboards/eldon.js',
                 'charts.js',
                 'dashboard.js',
                 'lib/moment.js',
-                'lib/daterangepicker.js'
+                'lib/daterangepicker.js',
+				'dashboards/eldon.js',
             ),
 			'agents'=>$agents,
             'campaigns' => $campaigns,
@@ -695,7 +695,7 @@ class Dashboard extends CI_Controller
 			}
 		$data = $this->Dashboard_model->overdue_visits($filter);
 		foreach($data as $k=>$row){
-		$data[$k]['last_update'] = 	time_elapsed_string($row['date_updated']);
+		$data[$k]['last_update'] = 	time_elapsed_string(strtotime($row['date_updated']));
 		}
 		echo json_encode(array("success"=>true,"data"=>$data));
 	}

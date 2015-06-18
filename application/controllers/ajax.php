@@ -869,6 +869,14 @@ class Ajax extends CI_Controller
     public function save_additional_info()
     {
         if ($this->input->is_ajax_request()) {
+			//check if a field is color
+			$where = array("urn"=>$this->input->post('urn'),"field_name"=>"Color"); 
+			$this->db->where($where);
+			$this->db->join("record_details_fields","records.campaign_id=record_details_fields.campaign_id");
+			$result = $this->db->get_where("records",$where)->row_array();
+			if(count($result)>0){
+				$this->Records_model->save_record_color($this->input->post('urn'),$this->input->post($result['field']));	
+			}
             if ($this->Records_model->save_additional_info($this->input->post())) {
                 echo json_encode(array(
                     "success" => true,

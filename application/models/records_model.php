@@ -12,6 +12,12 @@ class Records_model extends CI_Model
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
 	
+	public function save_record_color($urn,$color){
+		$color = color_name_to_hex($color);
+		$this->db->where("urn",$urn);
+		$this->db->update("records",array("record_color"=>$color));
+	}
+	
 	public function find_related_records($urn,$campaign=false){
 		$qry = "select companies.name,companies.website,concat(add1,postcode) address,comt.telephone_number company_telephone,cont.telephone_number contact_telephone,concat(fullname,dob) contact from records left join companies using(urn) left join company_addresses using(company_id) left join contacts using(urn) left join company_telephone comt using(company_id) left join contact_telephone cont using(contact_id) where urn = '$urn'";
 		if($campaign){
