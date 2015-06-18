@@ -78,7 +78,7 @@ class Email extends CI_Controller
 		
 		$placeholder_data = $this->Email_model->get_placeholder_data($urn);
 		$placeholder_data[0]['comments'] = $last_comment;
-		
+				$this->firephp->log($placeholder_data);
 		if(count($placeholder_data)){
 		foreach($placeholder_data[0] as $key => $val){
 			if($key=="fullname"){ 
