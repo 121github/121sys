@@ -28,11 +28,8 @@ class Trackvia extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        user_auth_check(false);
         $this->load->model('Form_model');
         $this->load->model('Trackvia_model');
-
-        $this->_campaigns = campaign_access_dropdown();
 
         // Create a TrackviaApi object with your clientId and secret.
         // The client_id and secret are only used when you need to request a new access token.
@@ -49,34 +46,40 @@ class Trackvia extends CI_Controller
         //SOUTHWAY TABLE
 
         //Book View
+        echo "\nChecking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_BOOK_SURVEY.") view";
         $this->checkView(
             SOUTHWAY_BOOK_SURVEY,
             array(
                 'campaign_id' => 22,
                 'urgent' => NULL,
                 'status' => NULL,
+                'outcome_id' => NULL,
                 'appointment_creation' => false
             )
         );
 
         //Rebook View
+        echo "\nChecking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_REBOOK.") view";
         $this->checkView(
             SOUTHWAY_REBOOK,
             array(
-                'campaign_id' => 25,
+                'campaign_id' => 22,
                 'urgent' => 1,
                 'status' => NULL,
+                'outcome_id' => NULL,
                 'appointment_creation' => false
             )
         );
 
         //Survey Slots View
+        echo "\nChecking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_SURVEY_SLOTS.") view";
         $this->checkView(
             SOUTHWAY_SURVEY_SLOTS,
             array(
-                'campaign_id' => 26,
+                'campaign_id' => 22,
                 'urgent' => NULL,
                 'status' => 4,
+                'outcome_id' => 72,
                 'appointment_creation' => true
             )
         );
@@ -90,6 +93,7 @@ class Trackvia extends CI_Controller
 //                'campaign_id' => 27,
 //                'urgent' => NULL,
 //                'status' => NULL,
+//                'outcome_id' => NULL,
 //                'appointment_creation' => false
 //            )
 //        );
@@ -101,6 +105,7 @@ class Trackvia extends CI_Controller
 //                'campaign_id' => 28,
 //                'urgent' => NULL,
 //                'status' => NULL,
+//                'outcome_id' => NULL,
 //                'appointment_creation' => false
 //            )
 //        );
@@ -115,6 +120,7 @@ class Trackvia extends CI_Controller
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
+        $outcome_id = $options['outcome_id'];
         $appointment_creation = $options['appointment_creation'];
 
 
@@ -131,7 +137,7 @@ class Trackvia extends CI_Controller
         }
         $tv_records = $aux;
 
-        $this->firephp->log(count($tv_records));
+        echo "\n\t\t Total track via records in this view... ".count($tv_records);
 
         //Get the records to be updated in our system
         $records = $this->Trackvia_model->getRecordsByTVIds($tv_record_ids);
@@ -148,53 +154,80 @@ class Trackvia extends CI_Controller
                         'campaign_id' => $campaign_id,
                         'parked_code' => NULL,
                         'urgent' => $urgent,
-                        'record_status' => $status
+                        'record_status' => $status,
+                        'outcome_id' => $outcome_id
                     )
                 );
-
                 //Create appointment if it is needed
-                $fields = $tv_records[$record['client_ref']]['fields'];
-                $planned_survey_date = (isset($fields['Survey date'])?$fields['Survey date']:'');
-                $planned_survey_time = $fields['Survey appt'];
-                switch ($planned_survey_time) {
-                    case "am":
-                        $planned_survey_time = "09:00:00";
-                        break;
-                    case "pm":
-                        $planned_survey_time = "12:00:00";
-                        break;
-                    case "eve":
-                        $planned_survey_time = "16:00:00";
-                        break;
-                    default:
-                        $planned_survey_time = "";
-                        break;
-                }
-
-                $planned_survey_datetime = $planned_survey_date." ".$planned_survey_time;
-
-                //TODO Add appointment if the survey_date is different in both systems
-                if ($appointment_creation && $record['survey_date']!=$planned_survey_datetime) {
-                    //Create a new appointment if it is needed
-
+                if ($appointment_creation) {
+                    $fields = $tv_records[$record['client_ref']]['fields'];
+                    $this->addUpdateAppointment($fields, $record);
                 }
             }
             //Remove from the new_record_ids array the records that already exist on our system
-            unset($new_records_ids[array_search($record['client_ref'],$tv_record_ids)]);
+            //unset($new_records_ids[array_search($record['client_ref'],$tv_record_ids)]);
         }
 
         //Update the records which campaign was changed
-        $this->firephp->log(count($update_records).' updated');
-        $this->Trackvia_model->updateRecords($update_records);
+        echo "\n\t\t Records updated in our system... ".count($update_records)."\n";
+        if (!empty($update_records)) {
+            $this->Trackvia_model->updateRecords($update_records);
+        }
 
         //Create the new records that not exist in our system yet
         $new_records = array();
         foreach($tv_records as $tv_record) {
-            if (array_search($tv_record['id'],$new_records_ids))
-            array_push($new_records,$tv_record);
+            if (array_search($tv_record['id'],$new_records_ids)) {
+                //TODO May be slow with many records
+                //$record_data = $this->tv->getRecord($tv_record['id']);
+                $record = array(
+                    'client_ref' => $tv_record['id'],
+                    'survey_date' => ""
+                );
+
+                //Add the new records to an array
+                array_push($new_records,$record_data);
+
+                //Create appointment if it is needed
+                if ($appointment_creation) {
+                    $fields = $tv_record['fields'];
+                    $this->addUpdateAppointment($fields, $record);
+                }
+            }
+            //TODO Add new records with insert batch
+            //$this->firephp->log(($new_records));
         }
-        //TODO Add the new records in our system
-        //$this->firephp->log(count($new_records_ids));
+
+    }
+
+    /**
+     * Add/Update appointment in our system
+     */
+    public function addUpdateAppointment($fields, $record) {
+        $planned_survey_date = (isset($fields['Survey date'])?$fields['Survey date']:'');
+        $planned_survey_time = $fields['Survey appt'];
+        switch ($planned_survey_time) {
+            case "am":
+                $planned_survey_time = "09:00:00";
+                break;
+            case "pm":
+                $planned_survey_time = "12:00:00";
+                break;
+            case "eve":
+                $planned_survey_time = "16:00:00";
+                break;
+            default:
+                $planned_survey_time = "";
+                break;
+        }
+
+        $planned_survey_datetime = $planned_survey_date." ".$planned_survey_time;
+
+        //TODO Add appointment if the survey_date is different in both systems
+        if ($record['survey_date']!=$planned_survey_datetime) {
+            //Create a new appointment if it is needed
+
+        }
     }
 
     /**

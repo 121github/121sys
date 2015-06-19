@@ -31,7 +31,7 @@ class Trackvia_model extends CI_Model
 
     //Update records in our system
     public function updateRecords($records) {
-
+        return $this->db->update_batch('records', $records, 'urn');
     }
 
 }
