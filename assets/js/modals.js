@@ -272,7 +272,7 @@ var modals = {
             });
         }
         var mheader = "Appointment #" + data.appointment_id + " <small>" + data.campaign_name + "</small>";
-        var mbody = "<table class='table'><tbody><tr><th>Company</th><td>" + data.coname + "</td></tr><tr><th>Date</th><td>" + data.starttext + "</td></tr><tr><th>Title</th><td>" + data.title + "</td></tr><tr><th>Notes</th><td>" + data.text + "</td></tr><tr><th>Attendees</th><td>" + attendees + "</td></tr><tr><th>Type</th><td>" + data.appointment_type + "</td></tr>";
+        var mbody = "<table class='table small'><tbody><tr><th>Company</th><td>" + data.coname + "</td></tr><tr><th>Date</th><td>" + data.starttext + "</td></tr><tr><th>Title</th><td>" + data.title + "</td></tr><tr><th>Notes</th><td>" + data.text + "</td></tr><tr><th>Attendees</th><td>" + attendees + "</td></tr><tr><th>Type</th><td>" + data.appointment_type + "</td></tr><tr><th>Location</th><td>" + data.address + "</td></tr>";
         if (data.distance && helper.current_postcode) {
             mbody += "<tr><th>Distance</th><td>" + Number(data.distance).toFixed(2) + " Miles from " + helper.current_postcode + "</td></tr>";
         }

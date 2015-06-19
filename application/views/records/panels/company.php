@@ -16,6 +16,7 @@
                     <?php if (in_array("edit companies", $_SESSION['permissions'])) { ?>
                         <span class="glyphicon glyphicon-search pointer pull-right marl" data-urn = "<?php echo $details['record']["urn"] ?>" data-id="<?php echo $id ?>" data-modal="search-company"></span>
                         <span class="glyphicon glyphicon-pencil pointer pull-right" data-modal="edit-company" data-id="<?php echo $id ?>"></span>
+              
                     <?php } ?>
                     <div id="com-collapse-<?php echo $id ?>" class="panel-collapse collapse <?php if ($x == 1) {
                         echo "in";
@@ -36,17 +37,17 @@
                                 if ($key == "Address") {
                                     ?>
                                     <dt><?php echo $key ?></dt>
-                                    <dd><a class="pull-right pointer" target="_blank"
-                                           href="https://maps.google.com/maps?q=<?php echo $val['postcode'] ?>,+UK"><span
-                                                class="glyphicon glyphicon-map-marker"></span> Map</a>
+                                    <dd>
                                         <?php foreach ($val as $address_part) {
                                             echo(!empty($address_part) ? $address_part . "<br>" : "");
-                                        }?>
+                                        }?>          <a class="pointer pull-right" style="margin-top:-20px" target="_blank"
+                                           href="https://maps.google.com/maps?q=<?php echo $val['postcode'] ?>,+UK"><span
+                                                class="glyphicon glyphicon-map-marker"></span>Map</a>
                                     </dd>
                                 <?php
                                 }
                             } ?>
-                            <?php foreach ($company['telephone'] as $number_id => $number): $btn =($number['tel_name']=="Transfer"?"btn btn-info pull-right":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:-20px'":"");$number_text = ($number['tel_name']=="Transfer"?"Transfer":$number['tel_num']); ?>
+                            <?php foreach ($company['telephone'] as $number_id => $number): $btn =($number['tel_name']=="Transfer"?"btn btn-info pull-right":""); $style = ($number['tel_name']=="Transfer"?"style='margin-top:10px'":"");$number_text = ($number['tel_name']=="Transfer"?"Transfer":$number['tel_num']); ?>
                                 <dt><?php echo ($number_text=="Transfer"?"":$number['tel_name']) ?></dt>
                                 <dd>
                                    <a  <?php echo $style ?>
@@ -54,9 +55,9 @@
                       </a>
                                     <?php if (strlen($number['tel_num'])>0): ?>
                                         <?php if ($number['tel_tps'] == NULL): ?>
-                                            <span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='<?php echo $id ?>' item-number-id='<?php echo $number_id ?>' item-number='<?php echo $number['tel_num'] ?>' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>
+                                            <span <?php echo(empty($btn)?"":"style='visibility:hidden'") ?> class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='<?php echo $id ?>' item-number-id='<?php echo $number_id ?>' item-number='<?php echo $number['tel_num'] ?>' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>
                                         <?php else: ?>
-                                            <span class='glyphicon <?php echo ($number['tel_tps']?"glyphicon-exclamation-sign red":"glyphicon-ok-sign green") ?> tt'  data-toggle='tooltip' data-placement='right' title='<?php echo ($number['tel_tps']?"This number IS CTPS registered":"This number is NOT CTPS registerd") ?>'></span>
+                                            <span <?php echo(empty($btn)?"":"style='visibility:hidden'") ?> class='glyphicon <?php echo ($number['tel_tps']?"glyphicon-exclamation-sign red":"glyphicon-ok-sign green") ?> tt'  data-toggle='tooltip' data-placement='right' title='<?php echo ($number['tel_tps']?"This number IS CTPS registered":"This number is NOT CTPS registerd") ?>'></span>
                                         <?php endif; ?>
                                     <?php endif; ?>
                                 </dd>
