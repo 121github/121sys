@@ -8,6 +8,7 @@ require_once 'Authentication.php';
 class Api extends EventDispatcher
 {
     const BASE_URL = 'https://api.trackvia.com/';
+
     // URLs for API endpoints
     const DASHBOARDS_URL = 'dashboards';
     const FORMS_URL      = 'forms';
@@ -16,7 +17,6 @@ class Api extends EventDispatcher
     const VIEWS_URL      = 'views';
     const RECORDS_URL    = 'records';
     const SEARCH_URL     = 'search';
-	const OPEN_URL     = 'openapi';
 
     /**
      * Error message received back from api endpoint if access token is expired
@@ -144,7 +144,6 @@ class Api extends EventDispatcher
         $this->authenticate();
 
         $accessToken = $this->auth->getAccessToken();
-		$_SESSION['token'] = $accessToken;
         if (!$accessToken) {
             // should have a token at this point
             // if not, something went wrong
@@ -286,15 +285,6 @@ class Api extends EventDispatcher
         return $this->api($url, 'GET');
     }
 
-
- 
-    public function getViewRecord($viewId,$recordId)
-    {
-        // build the url
-        $url = self::BASE_URL . self::OPEN_URL."/view?user_key=HJcuUq68ZCIkNLamZiIx";// . '/records/' . $recordId;
-		
-        return $this->api($url, 'GET');
-    }
     /**
      * Get Record data back for a record_id.
      * This will provide you with all the column data for a record.
