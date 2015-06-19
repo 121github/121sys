@@ -26,8 +26,8 @@ class Email_model extends CI_Model
 		$user_qry = " ,(select name as user from users where user_id = '{$_SESSION['user_id']}') user,(select user_email from users where user_id = '{$_SESSION['user_id']}') user_email, (select user_telephone from users where user_id = '{$_SESSION['user_id']}') user_telephone ";	
 		}
 		//check if an appointment has been made and use the appointment contact in the placeholder
-		$this->db->where("urn",$urn);
-		if($this->db->count_all_results('appointments')>0){
+		$query = "select urn from appointments where urn = '$urn' and contact_id is not null";
+		if($this->db->query($query)->num_rows()>0){
 		$contact_details =" left join (select urn,max(appointment_id) max_id from appointments where urn='$urn') a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id where records.urn = '$urn'";
 		$attendee = " if(attendees.name is null,'Sir/Madam',attendees.name) attendee ";
 		$appointment_fields = " appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`, ";

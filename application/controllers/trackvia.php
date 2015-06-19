@@ -43,46 +43,12 @@ class Trackvia extends CI_Controller
 
     public function checkTrackviaSystem() {
 
-        //SOUTHWAY TABLE
 
-        //Book View
-        echo "\nChecking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_BOOK_SURVEY.") view";
-        $this->checkView(
-            SOUTHWAY_BOOK_SURVEY,
-            array(
-                'campaign_id' => 22,
-                'urgent' => NULL,
-                'status' => NULL,
-                'outcome_id' => NULL,
-                'appointment_creation' => false
-            )
-        );
-
-        //Rebook View
-        echo "\nChecking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_REBOOK.") view";
-        $this->checkView(
-            SOUTHWAY_REBOOK,
-            array(
-                'campaign_id' => 22,
-                'urgent' => 1,
-                'status' => NULL,
-                'outcome_id' => NULL,
-                'appointment_creation' => false
-            )
-        );
-
-        //Survey Slots View
-        echo "\nChecking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_SURVEY_SLOTS.") view";
-        $this->checkView(
-            SOUTHWAY_SURVEY_SLOTS,
-            array(
-                'campaign_id' => 22,
-                'urgent' => NULL,
-                'status' => 4,
-                'outcome_id' => 72,
-                'appointment_creation' => true
-            )
-        );
+		
+				$test = $this->tv->getViewList();
+				$this->firephp->log($test);
+				exit;
+		
 //
 //        //PRIVATE TABLE
 //
@@ -122,7 +88,7 @@ class Trackvia extends CI_Controller
         $status = $options['status'];
         $outcome_id = $options['outcome_id'];
         $appointment_creation = $options['appointment_creation'];
-
+		$cancelled_appointment = isset($options['cancelled_appointment'])?true:false;
 
         //Get the trackvia records for this view
         $view = $this->tv->getView($view_id);
@@ -133,15 +99,18 @@ class Trackvia extends CI_Controller
         $aux = array();
         foreach($tv_records as $tv_record) {
             array_push($tv_record_ids,$tv_record['id']);
-            $aux[$tv_record['id']] = $tv_record;
+            $aux[md5($tv_record['id'])] = $tv_record;
         }
         $tv_records = $aux;
+		
 
         echo "\n\t\t Total track via records in this view... ".count($tv_records);
 
         //Get the records to be updated in our system
         $records = $this->Trackvia_model->getRecordsByTVIds($tv_record_ids);
-
+		
+											
+				
         //Update the record campaign if it is needed (different campaign) and create a new one if it does not exist yet
         $update_records = array();
         $new_records_ids = $tv_record_ids;
@@ -160,27 +129,34 @@ class Trackvia extends CI_Controller
                 );
                 //Create appointment if it is needed
                 if ($appointment_creation) {
-                    $fields = $tv_records[$record['client_ref']]['fields'];
-                    $this->addUpdateAppointment($fields, $record);
+                    $fields = $tv_records[md5($record['client_ref'])]['fields'];
+                    $this->addUpdateAppointment($fields, $record, $cancelled_appointment);
                 }
             }
             //Remove from the new_record_ids array the records that already exist on our system
-            //unset($new_records_ids[array_search($record['client_ref'],$tv_record_ids)]);
+            if (in_array($record['client_ref'],$new_records_ids)) {
+				unset($tv_records[md5($record['client_ref'])]);
+			}
         }
+
 
         //Update the records which campaign was changed
         echo "\n\t\t Records updated in our system... ".count($update_records)."\n";
         if (!empty($update_records)) {
             $this->Trackvia_model->updateRecords($update_records);
         }
-
         //Create the new records that not exist in our system yet
         $new_records = array();
-        foreach($tv_records as $tv_record) {
-            if (array_search($tv_record['id'],$new_records_ids)) {
-                //TODO May be slow with many records
-                //$record_data = $this->tv->getRecord($tv_record['id']);
-                $record = array(
+
+
+		  foreach($tv_records as $tv_record) {
+				$record_data = array();
+				
+				$record = $this->tv->getViewRecord(SOUTHWAY_ALL_RECORDS,$tv_record['id']);
+				$this->firephp->log($record);
+				exit;
+                //build the record array from the data in the view.
+				$record = array(
                     'client_ref' => $tv_record['id'],
                     'survey_date' => ""
                 );
@@ -191,9 +167,8 @@ class Trackvia extends CI_Controller
                 //Create appointment if it is needed
                 if ($appointment_creation) {
                     $fields = $tv_record['fields'];
-                    $this->addUpdateAppointment($fields, $record);
+                    $this->addUpdateAppointment($fields, $record, $cancelled_appointment);
                 }
-            }
             //TODO Add new records with insert batch
             //$this->firephp->log(($new_records));
         }
@@ -203,8 +178,11 @@ class Trackvia extends CI_Controller
     /**
      * Add/Update appointment in our system
      */
-    public function addUpdateAppointment($fields, $record) {
-        $planned_survey_date = (isset($fields['Survey date'])?$fields['Survey date']:'');
+    public function addUpdateAppointment($fields, $record, $cancelled_appointment = false) {
+		if(isset($fields['Planned Survey Date'])){
+			$sd = explode("T",$fields['Planned Survey Date']);
+		}
+        $planned_survey_date = (isset($fields['Planned Survey Date'])?$sd[0]:'');
         $planned_survey_time = $fields['Survey appt'];
         switch ($planned_survey_time) {
             case "am":
@@ -226,8 +204,11 @@ class Trackvia extends CI_Controller
         //TODO Add appointment if the survey_date is different in both systems
         if ($record['survey_date']!=$planned_survey_datetime) {
             //Create a new appointment if it is needed
-
+			$this->Trackvia_model->create_appointment($fields,$record,$planned_survey_datetime);
         }
+		if($cancelled_appointment){
+			$this->Trackvia_model->cancel_appointment($record['urn'],$planned_survey_datetime);	
+		}
     }
 
     /**
