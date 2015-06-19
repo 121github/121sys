@@ -14,7 +14,7 @@ class Admin_model extends CI_Model
         if (!empty($urn)) {
             $qry .= " and camapign_id = '$campaign'";
         }
-        $qry .= " order by campaign_id desc";
+        $qry .= " order by campaign_name desc";
         return $this->db->query($qry)->result_array();
     }
     public function add_new_campaign($form)

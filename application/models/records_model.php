@@ -555,7 +555,7 @@ class Records_model extends CI_Model
             $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join locations com_pc on com_pc.location_id = coma.location_id left join company_telephone comt using(company_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id)";
         }
         if (in_array(6, $features)) {
-            $select .= " ,sc.script_name,sc.script_id,sc.expandable  ";
+            $select .= " ,sc.script_name,sc.script_id,sc.script,sc.expandable  ";
             $from .= "  left join scripts_to_campaigns using(campaign_id) left join scripts sc using(script_id) ";
         }
         if (in_array(5, $features)) {
@@ -655,6 +655,7 @@ class Records_model extends CI_Model
                         $data['scripts'][$result['script_id']] = array(
                             "script_id" => $result['script_id'],
                             "name" => $result['script_name'],
+							"script" => $result['script'],
                             "expandable" => $result['expandable']
                         );
                     }

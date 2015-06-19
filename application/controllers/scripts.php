@@ -82,8 +82,8 @@ $this->_campaigns = campaign_access_dropdown();
 	public function save_script()
 	{
 		$form = $this->input->post();
-		$this->firephp->log($form['expandable']);
-		$form['expandable'] = ($form['expandable'] == 'on')?1:0;
+
+		$form['expandable'] = (isset($form['expandable']))?1:0;
 		
 		//Check if the user selected any campaign for this script
 		$campaignsForm = array();

@@ -7,7 +7,8 @@
 		  if($data['expandable']): ?>
         <p><a href="#" class="view-script" script-id="<?php echo $data['script_id'] ?>"><?php echo $data['name'] ?></a></p>
         <?php else: ?>
-        <p><?php echo $data['name'] ?></p>
+        <p><b><?php echo $data['name'] ?></b></p>
+         <p><?php echo $data['script'] ?></p>
         <?php 
 		  endif;
 		  endforeach;
