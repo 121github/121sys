@@ -278,12 +278,9 @@ class Sms_model extends CI_Model
 
         $qry = "select e.sms_id,
                       DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
-                      e.subject,
                       e.body,
                       e.send_from,
                       e.send_to,
-                      e.cc,
-                      e.bcc,
                       e.user_id,
                       e.urn,
                       e.template_id,

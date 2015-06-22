@@ -1063,7 +1063,7 @@ class Records_model extends CI_Model
     //get appointmnet data for a given urn
     public function get_appointments($urn, $id = false)
     {
-        $this->db->select("appointments.appointment_id,title,text,start,end,urn,postcode,appointment_attendees.user_id");
+        $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id",false);
         $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
         $this->db->where(array(
             "urn" => $urn,
@@ -1131,8 +1131,8 @@ class Records_model extends CI_Model
         $cc = array();
         $bcc = array();
         $main = array();
-        $this->db->join("email_trigger_recipients", "email_triggers.trigger_id = email_trigger_recipients.trigger_id", "left");
-        $this->db->join("users", "users.user_id = email_trigger_recipients.user_id", "left");
+        $this->db->join("email_trigger_recipients", "email_triggers.trigger_id = email_trigger_recipients.trigger_id", "inner");
+        $this->db->join("users", "users.user_id = email_trigger_recipients.user_id", "inner");
         $this->db->where("outcome_id", $outcome_id);
         $this->db->where("campaign_id", $campaign_id);
         $result = $this->db->get("email_triggers")->result_array();

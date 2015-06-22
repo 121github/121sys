@@ -10,7 +10,36 @@ class Appointments_model extends CI_Model
     {
         parent::__construct();
     }
+	
+	public function slot_availability($urn){
+		$slots = array();
+for($i = 0; $i < 30; $i++){
+    $slots[date("D jS M", strtotime('+'. $i .' days'))] = array('am' => 0,'am_max'=>4,'pm' => 0,'pm_max'=>4, 'eve' => 0,'eve_max'=>3); //set all days as 0 to begin with
+}
 
+		$am = "select date(`start`) start,count(*) from appointments left join records using(urn) where time(`start`) between '08:00:00' and '12:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`) ";
+		$pm = "select date(`start`) start,count(*) from appointments left join records using(urn )where time(`start`) between '12:01:00' and '17:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`)";
+		$eve = "select date(`start`) start,count(*) from appointments left join records using(urn) where time(`start`) between '17:01:00' and '22:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`)";
+		
+		$am_results = $this->db->query($am)->result_array();
+		$pm_results = $this->db->query($pm)->result_array();
+		$eve_results = $this->db->query($eve)->result_array();
+
+		foreach($am_results as $row){
+			$date = date("D jS M", strtotime($row['start']));
+			$slots[$date]['am']++;
+		}
+		foreach($pm_results as $row){
+			$date = date("D jS M", strtotime($row['start']));
+			$slots[$date]['pm']++;
+		}
+		foreach($eve_results as $row){
+			$date = date("D jS M", strtotime($row['start']));
+			$slots[$date]['eve']++;
+		}
+		return $slots;
+	}
+	
     public function appointment_data($count = false, $options = false)
     {
         $table_columns = array(

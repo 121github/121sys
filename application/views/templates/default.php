@@ -129,11 +129,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <li><a href="#records">Records</a>
                 <ul id="records">
                     <?php if (@in_array("search records", $_SESSION['permissions']) || isset($_SESSION['current_campaign']) && isset($_SESSION['search records'])) { ?>
-                        <li <?php if ($page == "search") {
+                        <li <?php if (@$page == "search") {
                             echo "class='Selected'";
                         } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
                     <?php } ?>
-                    <li <?php if ($page == "list_records") {
+                    <li <?php if (@$page == "list_records") {
                         echo "class='Selected'";
                     } ?>><a href="<?php echo base_url(); ?>records/view">List Records</a></li>
                     <?php if (in_array("add records", $_SESSION['permissions'])) { ?>

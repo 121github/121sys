@@ -140,6 +140,12 @@
         <?php if(in_array(15,$features)){ ?>
         record.related_panel.init();
         <?php } ?>
+		<?php if(in_array(16,$features)){ ?>
+        record.sms_panel.init();
+        <?php } ?>
+		<?php if(in_array(17,$features)){ ?>
+        record.appointment_slots_panel.init();
+        <?php } ?>
     });
 </script>
 <?php endif; ?>
