@@ -298,14 +298,15 @@ class Trackvia extends CI_Controller
 		
 		$urn = $this->input->post('urn');
         //Get the record data
-        $data = $this->Trackvia_model->get_appointment($urn);
-		
-        //Track via records
-        //$data = array(
-        //    '' => $record[]
-        //);
+        $app = $this->Trackvia_model->get_appointment($urn);
 
-        $data = array();
+        $data = array(
+		"Planned Survey Date"=>$app['start']."T12:00:00-0600",
+		"Survey appt" => "pm",
+		"Survey Booking Confirmed" => "Y",
+		"Survey booked by" => "121",
+		"Survey Appointment Comments" => "These are test comments"
+	 );
 
         //Update the record
         $this->tv->updateRecord($data['client_ref'],$data);

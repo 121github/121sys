@@ -11,7 +11,7 @@ class Trackvia_model extends CI_Model
     }
 
 	public function get_appointment($urn){
-	$query = "select a.urn,client_ref,date(a.`start`),if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) slot,fullname from records left join (select max(appointment_id) appointment_id, urn from appointments group by urn) ma using(urn) left join appointments a using(appointment_id) inner join contacts on a.contact_id = c.contact_id left join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) where a.urn = '$urn' group by a.appointment_id";
+	$query = "select a.urn,client_ref,date(a.`start`),if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) slot,fullname from records left join (select max(appointment_id) appointment_id, urn from appointments group by urn) ma using(urn) left join appointments a using(appointment_id) inner join contacts using(urn) left join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) where a.urn = '$urn' group by a.appointment_id";
 		return $this->db->query($query)->row_array();
 	}
 
