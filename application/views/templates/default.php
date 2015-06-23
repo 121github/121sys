@@ -173,6 +173,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <?php if (in_array("admin menu", $_SESSION['permissions'])) { ?>
                 <li><a href="#admin">Admin</a>
                     <ul id="admin">
+                     <?php if (in_array("system menu", $_SESSION['permissions'])) { ?>
                         <li><a href="#system">System Config</a>
                             <ul id="system">
                                 <?php if (in_array("database", $_SESSION['permissions'])) { ?>
@@ -211,6 +212,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                         Hours</a></li>
                             </ul>
                         </li>
+                        <?php } ?>
                         <?php if (in_array("data menu", $_SESSION['permissions'])) { ?>
                             <li>
                                 <a href="#data">Data Management</a>
@@ -281,9 +283,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                         <li <?php echo @($page == 'templates' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>templates">Email Templates</a>
                                         </li>
-                                          <li <?php echo @($page == 'templates' ? "class='Selected'" : "") ?>>
+                                          <!--<li <?php echo @($page == 'templates' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>smstemplates">SMS Templates</a>
-                                        </li>
+                                        </li>-->
                                     <?php } ?>
                                     <?php if (in_array("edit scripts", $_SESSION['permissions'])) { ?>
                                         <li <?php echo @($page == 'scripts' ? "class='Selected'" : "") ?>>

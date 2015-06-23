@@ -30,6 +30,10 @@ $this->db->query("CREATE TABLE IF NOT EXISTS `outcome_reason_campaigns` (
 $this->db->query("ALTER TABLE `records` ADD `outcome_reason_id` INT NULL DEFAULT NULL AFTER `outcome_id`, ADD INDEX (`outcome_reason_id`)") ;
 $this->db->query("ALTER TABLE `history` ADD `outcome_reason_id` INT NULL DEFAULT NULL AFTER `outcome_id`, ADD INDEX (`outcome_reason_id`)") ;
 
+$this->db->query("INSERT INTO IGNORE `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'system menu', 'Admin')");
+$id = $this->db->insert_id();
+$this->db->query("INSERT IGNORE INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('1', $id)");
+
 	}
 	
 }
