@@ -287,14 +287,12 @@ class Trackvia extends CI_Controller
 	 
 	 public function test_update(){
 		 //2nd june 2015 eve
-		 $data = array(
-		"Planned Survey Date"=>"2015-06-04T12:00:00-0600",
-		"Survey appt" => "pm",
-		"Survey Booking Confirmed" => "Y",
-		"Survey booked by" => "121",
-		"Survey Appointment Comments" => "These are test comments"
-	 );
-		 $this->tv->updateRecord('3062956934',$data);
+		 
+$test = "5 oak street 8";		 
+		$add1= preg_replace('/[^0-9]/','',$test);
+			$this->firephp->log($add1);
+			$house_number= preg_replace('/[0-9]/','',$test);
+			$this->firephp->log($house_number);
 
 	 }
 	 
@@ -318,7 +316,7 @@ class Trackvia extends CI_Controller
 
     }
 
-	public function no_contact(){
+	public function unable_to_contact(){
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $app = $this->Trackvia_model->get_record($urn);
@@ -338,7 +336,7 @@ class Trackvia extends CI_Controller
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 	}
 
-		public function reject_notification(){
+		public function notified_not_eligible(){
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
@@ -349,28 +347,37 @@ class Trackvia extends CI_Controller
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 	}
 	
-		public function data_captured(){
+		public function review_required(){
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
-		$data = array("Owner / Rented"=>$record['a2'],
-		"Is the property mortgaged" => $record['a6'],
-		"Who is the Mortgage provider" => $record['a7'],
-		"Owner / Tenant Name 1" => $record['contact'],
-		"Is ownership in Joint Names" => $record['a4'],
-		"Owner / Tenant Name 2" => $record['a5'],
-		"Primary Contact (Landline)" => $record['telephone_number'],
-		"Primary Contact (Mobile)" => $record['mobile_number'],
-		"Email address" => $record['email'],
-		"House No." => $record['house_number'],
-		"Address 1" => $record['address_1'],
-		"Address 2" => $record['address_2'],
-		"City" => $record['city'],
-		"PostCode" => $record['PostCode'],
-		"Enquiry Type" => $record['city'],
-		"Date of Enquiry" => $record['date_added'],
-		"Where did you hear about us" => $record['a8'],
-		"Asset Type" => $record['a1'],
+		foreach($record as $k=>$row){
+			$details = $row;
+			if($row['telephone_description']=="Mobile"||preg_match('/^447|^+447^00447|^07/',$row['telephone_number'])){
+				$mobile = $row['telephone_number'];
+			} 
+			$add1= preg_replace('/[0-9]/','',$row['add1']);
+			$house_number= preg_replace('/^[0-9]/','',$row['add1']);
+		}
+		$details['mobile_number'] = $mobile;
+		$data = array("Owner / Rented"=>$details['a2'],
+		"Is the property mortgaged" => $details['a6'],
+		"Who is the Mortgage provider" => $details['a7'],
+		"Owner / Tenant Name 1" => $details['contact'],
+		"Is ownership in Joint Names" => $details['a4'],
+		"Owner / Tenant Name 2" => $details['a5'],
+		"Primary Contact (Landline)" => $details['telephone_number'],
+		"Primary Contact (Mobile)" => $details['mobile_number'],
+		"Email address" => $details['email'],
+		"House No." => $house_number,
+		"Address 1" => $add1,
+		"Address 2" => $details['add_2'],
+		"City" => $details['add3'],
+		"PostCode" => $details['postcode'],
+		"Enquiry Type" => "Telephone Call-in",
+		"Date of Enquiry" => $details['date_added'],
+		"Where did you hear about us" => $details['a8'],
+		"Asset Type" => $details['a1'],
 		);
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
