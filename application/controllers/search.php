@@ -665,7 +665,7 @@ class Search extends CI_Controller
                     "read_confirmed" => 0,
                     "status" => 0,
                     "pending" => 1,
-					"cron_code" => $code
+					"cron_code" => NULL //changing for now to be fixed
                 ));
             }
 

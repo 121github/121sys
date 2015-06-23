@@ -376,10 +376,11 @@ class Email extends CI_Controller
 	 *
 	 */
 	public function send_pending_emails() {
-
+		//$this->Email_model->remove_title();
 		$output = "";
 		$output .= "Sending pending emails... \n\n";
 		$limit = 50;
+		$croncode = false;
 		$campaign = false;
 		if(intval($this->uri->segment(3))>0){
 		$limit = $this->uri->segment(3);
