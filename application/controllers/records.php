@@ -224,6 +224,7 @@ class Records extends CI_Controller
         }
         $progress_options = $this->Form_model->get_progress_descriptions();
         $outcomes         = $this->Records_model->get_outcomes($campaign_id);		
+		$outcome_reasons         = $this->Records_model->get_outcome_reasons($campaign_id);	
         $xfers            = $this->Records_model->get_xfers($campaign_id);
         
         $prev = false;
@@ -245,6 +246,7 @@ class Records extends CI_Controller
             'title' => 'Record Details',
             'details' => $details,
             'outcomes' => $outcomes,
+			'outcome_reasons' => $outcome_reasons,
             "features" => $features,
             "panels" => $panels,
             "allow_skip" => $allow_skip,
@@ -502,6 +504,15 @@ class Records extends CI_Controller
             
             //check the outcome and execute any triggers
             if ($this->input->post('outcome_id')) {
+				if($this->input->post('outcome_reason_id')=="0"&&empty($this->input->post('comments'))){
+					 echo json_encode(array(
+                        "success" => false,
+                        "msg" => "Please note the reason for this outcome"
+                    ));
+                    exit;
+				}
+				
+				
                 //check if an email should be sent for this outcome	
                 $email_triggers = $this->Records_model->get_email_triggers($campaign_id, intval($this->input->post('outcome_id')));
 				//check if any other function should be called
@@ -723,6 +734,7 @@ class Records extends CI_Controller
     {
         if ($this->input->is_ajax_request() && $this->_access) {
             $data             = $this->input->post();
+
 			//check the address
 			if(!isset($data['address'])||$data['address']=="Other"){
 				echo json_encode(array(
@@ -789,9 +801,18 @@ class Records extends CI_Controller
 				$this->Audit_model->log_appointment_update($data);
 				$id = $this->Records_model->save_appointment($data);
 				}
-                echo json_encode(array(
-                    "success" => true
-                ));
+				
+				
+				
+				$response = array("success" => true);
+				
+				//if its a GHS campaign update trackvia
+				if($_SESSION['current_client']=="GHS"){
+					$response["trackvia"] = base_url()."trackvia/add_appointment";
+					$response["urn"] = $data['urn'];
+				}
+                echo json_encode($response);
+				
 				$this->load->model('Locations_model');
 				//set the location id on the appointment
 				$this->Locations_model->set_location_id($data['postcode']);

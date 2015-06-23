@@ -177,7 +177,11 @@ class Records_model extends CI_Model
         $user_id = $_SESSION['user_id'];
         if (intval($campaign)) {
             $priority = array();
-
+            //adding new query to bring up records flagged as urgent for the user
+            $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (nextcall is null or nextcall < now()) and (user_id = '$user_id') and urgent = 1 order by date_updated limit 1";
+			//adding new for urgents unassigned
+			            //adding new query to bring up records flagged as urgent
+            $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (nextcall is null or nextcall < now()) and urgent = 1 order by date_updated limit 1";
             //1st priority is call back DMS and email sents within 10 mins belonging to the user
             $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between now() - interval 10 MINUTE and now() + interval 10 MINUTE and (user_id = '$user_id') and outcome_id in(2,85) order by case when outcome_id = 2 then 1 else 2 end, date_updated limit 1";
             //next priority is any all other DMS and emails belonging to the user
@@ -728,11 +732,16 @@ class Records_model extends CI_Model
 
     public function get_outcomes($campaign)
     {
-        $user_role = $_SESSION['role'];
         $qry = "select outcome_id,outcome,delay_hours,`disabled` from outcomes left join outcomes_to_campaigns using(outcome_id) where campaign_id = '$campaign' and enable_select = 1 order by outcome";
         return $this->db->query($qry)->result_array();
     }
 
+    public function get_outcome_reasons($campaign)
+    {
+        $qry = "select outcome_id,outcome_reason,outcome_reason_id from outcome_reason_campaigns inner join outcome_reasons using(outcome_reason_id) where campaign_id = '$campaign' order by outcome_reason";
+        return $this->db->query($qry)->result_array();
+    }
+	
     public function get_users($urn = "", $campaign_id = "")
     {
         if (empty($urn) && empty($campaign_id)):
@@ -846,8 +855,11 @@ class Records_model extends CI_Model
                 $update_array[] = "urgent";
                 $update_array[] = "progress_id";
             }
+			if(isset($post['outcome_reason_id'])){
+			$update_array[] = "outcome_reason_id";
+			}
             //only change the outcome and increase dial count if they are not just adding notes (outcome_id = 67)
-            if ($post['outcome_id'] <> "67") {
+            if ($post['outcome_id'] <> "67"&&$post['outcome_id'] <> "68") {
                 $update_array[] = "outcome_id";
                 $qry = "update records set dials = dials+1 where urn = '" . intval($post['urn']) . "'";
                 $this->db->query($qry);
@@ -893,6 +905,7 @@ class Records_model extends CI_Model
             "contact",
             "description",
             "outcome_id",
+			"outcome_reason_id",
             "comments",
             "nextcall",
             "user_id",
@@ -1063,7 +1076,7 @@ class Records_model extends CI_Model
     //get appointmnet data for a given urn
     public function get_appointments($urn, $id = false)
     {
-        $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id",false);
+        $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id,cancellation_reason",false);
         $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
         $this->db->where(array(
             "urn" => $urn,

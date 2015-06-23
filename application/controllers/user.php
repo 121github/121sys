@@ -337,8 +337,9 @@ class User extends CI_Controller
                     }
                 }
 				
-                $_SESSION['current_campaign'] = $campaign;
-				$_SESSION['current_campaign_name'] = $this->User_model->campaign_name($campaign);
+                $campaign_row = $this->User_model->campaign_row($campaign);
+				$_SESSION['current_client'] = $campaign_row['client_name'];
+				$_SESSION['current_campaign_name'] = $campaign_row['campaign_name'];
 				$this->set_campaign_features();
 				$this->apply_default_filter();
             }

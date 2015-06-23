@@ -32,18 +32,32 @@
 
 			?>
                <div class="form-group input-group">
-            <select <?php if($details['record']['record_status']=="3"||$details['record']['record_status']=="4"){ echo "disabled"; } ?> name="outcome_id" id="outcomes" class="selectpicker outcomepicker">
+            <select style="visibility:hidden" <?php if($details['record']['record_status']=="3"||$details['record']['record_status']=="4"){ echo "disabled"; } ?> name="outcome_id" id="outcomes" class="selectpicker outcomepicker">
               <option value="">--Select a call outcome--</option>
               <?php foreach($outcomes as $outcome): ?>
               <option <?php if($outcome['disabled']=="1"){ ?> disabled <?php } ?> <?php if(($details['record']['record_status']=="3"||$details['record']['record_status']=="4")&&$outcome['outcome_id']==$details['record']['outcome_id']){ echo "selected"; } ?> value="<?php echo $outcome['outcome_id'] ?>" <?php echo ($outcome['delay_hours']?"delay='".$outcome['delay_hours']."'":"") ?>><?php echo $outcome['outcome'] ?></option>
               <?php endforeach; ?>
             </select>
                </div>
+               
+               <?php if(count($outcome_reasons)>0){ ?>
+                   <div class="form-group input-group">
+            <select style="visibility:hidden" disabled name="outcome_reason_id" id="outcome-reasons" class="selectpicker outcomereasonpicker">
+              <option value="">--Select a reason--</option>
+              <?php foreach($outcome_reasons as $reason): ?>
+              <option  <?php if(($details['record']['record_status']=="3"||$details['record']['record_status']=="4")&&$reason['outcome_reason_id']==$details['record']['outcome_reason_id']){ echo "selected"; } ?> value="<?php echo $reason['outcome_reason_id'] ?>" outcome-id="<?php echo $reason['outcome_id']; ?>"><?php echo $reason['outcome_reason'] ?></option>
+              <?php endforeach; ?>
+               <option value="0">Other - please note</option>
+               <option class="option-hidden" value="na">N/A</option>
+            </select>
+               </div>
+               <?php } ?>
+               
             <?php }
 			
 				if(in_array("set progress",$_SESSION['permissions'])) {  ?>
                    <div class="form-group input-group">
-            <select name="progress_id" id="progress" class="selectpicker outcomepicker">
+            <select style="visibility:hidden" name="progress_id" id="progress" class="selectpicker outcomepicker">
               <option value="">No action required</option>
               <?php foreach($progress_options as $row): ?>
               <option value="<?php echo $row['id'] ?>" <?php if($details['record']['progress_id']==$row['id']){ echo "selected"; } ?> ><?php echo $row['name'] ?></option>

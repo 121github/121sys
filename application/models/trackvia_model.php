@@ -10,8 +10,13 @@ class Trackvia_model extends CI_Model
         
     }
 
+	public function get_record($urn){
+		$query = "select * from records inner join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn' group by urn";
+		return $this->db->query($query)->row_array();
+	}
+
 	public function get_appointment($urn){
-	$query = "select a.urn,client_ref,date(a.`start`),if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) slot,fullname from records left join (select max(appointment_id) appointment_id, urn from appointments group by urn) ma using(urn) left join appointments a using(appointment_id) inner join contacts using(urn) left join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) where a.urn = '$urn' group by a.appointment_id";
+	$query = "select a.urn,a.title,a.`text`,client_ref,date(a.`start`) `date`,if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) slot,fullname from records left join (select max(appointment_id) appointment_id, urn from appointments apps group by urn) ma on ma.urn = records.urn left join appointments a using(appointment_id) inner join contacts on contacts.urn = records.urn left join client_refs on records.urn = client_refs.urn left join record_details on record_details.urn = records.urn left join webform_answers on webform_answers.urn = records.urn where a.urn = '$urn' group by a.appointment_id";
 		return $this->db->query($query)->row_array();
 	}
 
@@ -66,12 +71,12 @@ class Trackvia_model extends CI_Model
 		$app_data .= "$k: $v<br>";
 		}
 		}
-		$this->firephp->log($start);
+
 		$insert = array("urn"=>$records['urn'],"title"=>"Appointment for survey","text"=>"Appointment set for GHS Survey $app_data","start"=>$start,"end"=>date('Y-m-d H:i:s',strtotime("+1 hour",strtotime($start))),"postcode"=>$postcode,"status"=>1,"created_by"=>"1","date_updated"=>NULL,"date_added"=>date('Y-m-d H:i:s'),"updated_by"=>1,"address"=>$address);
 		$insert_query = $this->db->insert_string("appointments",$insert);
 		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$insert_query);
 		$this->db->query($insert_query);
-		$this->firephp->log($insert_query);
+
 	}
 	
 	public function cancel_appointment($urn,$start){

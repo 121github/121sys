@@ -6,7 +6,9 @@
 
 //when all the ajax requests have finished we run the stretch function to align the panels
 $(document).ajaxStop(function () {
+	if(device_type=="default"){
     stretch();
+	}
 });
 
 var record = {
@@ -51,6 +53,7 @@ var record = {
             var old_outcome = $('.outcomepicker option:selected').val();
             var current_outcome = old_outcome;
             $(document).on('change', '.outcomepicker', function (e) {
+				record.update_panel.enable_outcome_reasons($(this).val());
                 e.preventDefault();
                 $val = $(this).val();
                 if ($val == 71) {
@@ -453,6 +456,30 @@ var record = {
                 $('#update-record').prop('disabled', true);
             }
         },
+		enable_outcome_reasons:function(outcome){
+			//unset the reason if the call outcome is changed
+			$('#outcome-reasons').val('');
+			if($('#outcome-reasons option[outcome-id="'+outcome+'"]').length>0){
+				//show if any reasons are linked to the selected outcome and hide any other
+			$('#outcome-reasons option').each(function(){
+				if($(this).attr('outcome-id')==outcome&&$(this).attr('value')!==""||$(this).attr('value')=="na"){
+					$(this).addClass('option-hidden');
+				} else {
+					$(this).removeClass('option-hidden');
+				}
+			});
+			//enable the reason dropdown if required
+			$('#outcome-reasons').prop('disabled',false);
+			} else {
+			//if there are no reasons added we just show "na" and leave it disabled
+			$('#outcome-reasons[value="na"]').removeClass('option-hidden');
+			$('#outcome-reasons').val('na');
+			$('#outcome-reasons').prop('disabled',true);	
+			}
+			//finally refresh the reasons dropdown ui
+			$('#outcome-reasons').selectpicker('refresh');
+			$('.outcomereasonpicker').find('.option-hidden').closest('li').hide();
+		},
         cross_transfer: function () {
             var pagewidth = $(window).width() / 2;
             var moveto = pagewidth - 250;
@@ -1949,7 +1976,9 @@ var record = {
             var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
                 if (data.length) {
-                    table += '<tr  data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
+					var cancel_class = "";
+				if(val.cancellation_reason){ cancel_class='danger' }
+                    table += '<tr class="'+cancel_class+'" data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
                 }
             });
             $panel.append(table + "</tbody></table></div>");

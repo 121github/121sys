@@ -52,6 +52,24 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <p>Please complete the following questions and click save</p>
 
     <form id="form" style="padding-bottom:50px;">
+        <div id="q8-container">
+      <label>Where did you hear about us?</label><br>
+<select name="answers[a8]" class="selectpicker q8-question" data-width="100%"
+                    data-size="5" >
+  <option value='Mail / Leaflet'>Mail / Leaflet</option>
+    <option value='Referral'>Referral</option>
+      <option value='Scaffold Banner'>Scaffold Banner</option>
+        <option value='Newspaper'>Newspaper</option>
+          <option value='Website'>Website</option>
+             <option value='Radio'>Radio</option>
+              <option value='Friend'>Friend</option>
+               <option value='Family'>Family</option>
+                <option value='Facebook'>Facebook</option>
+                 <option value='Neighbour'>Neighbour</option>
+  </select>
+  </div>
+    <hr>
+    
         <label>What type of property is it? <span class="glyphicon glyphicon-question-sign tt"
                                                        data-toggle="tooltip" data-placement="right"
                                                        title="If it's a flat we can not do the install. Please explain the reason (they do not won the roof)"></span></label>
@@ -60,7 +78,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <div class="radio">
             <label>
                 <input class="q1-question" type="radio" name="answers[a1][]" id="optionsRadios1"
-                       value="house"  <?php if (@strpos($values['a1'], "house") !== false) {
+                       value="House"  <?php if (@strpos($values['a1'], "House") !== false) {
                     echo "checked";
                 } ?> />
                 House
@@ -69,7 +87,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <div class="radio">
             <label>
                 <input class="q1-question" type="radio" name="answers[a1][]" id="optionsRadios2"
-                       value="flat" <?php if (@strpos($values['a1'], "flat") !== false) {
+                       value="Flat" <?php if (@strpos($values['a1'], "Flat") !== false) {
                     echo "checked";
                 } ?>>
                 Flat
@@ -78,7 +96,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <div id="q1-alert" class="text-danger" style="display:none">Please explain we cannot install solar panels on flats because they do not own the roof</div>
 <script>
 $(document).on('change','.q1-question',function(){
-	if($(this).val()=="flat"){
+	if($(this).val()=="Flat"){
 		$('#q1-alert').show();
 		$('#q2-container').hide();
 		$('.q6-question').prop('checked',false);
@@ -88,14 +106,14 @@ $(document).on('change','.q1-question',function(){
 	}
 });
 </script>
-<?php if (@$values['a1']=="house"){ ?>
+<?php if (@$values['a1']=="House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q2-container').show();	
 	})
 	</script>
 <?php } ?>
-<?php if (@$values['a1']=="flat"){ ?>
+<?php if (@$values['a1']=="Flat"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q1-alert').show();
@@ -112,25 +130,25 @@ $(document).on('change','.q1-question',function(){
         <div class="radio">
             <label>
                 <input class="q2-question" type="radio" name="answers[a2][]" id="optionsRadios1"
-                       value="owned"  <?php if (@strpos($values['a2'], "owned") !== false) {
+                       value="Home Owner"  <?php if (@strpos($values['a2'], "Home Owner") !== false) {
                     echo "checked";
                 } ?> />
-                Owned
+                Home Owner
             </label>
         </div>
-        <div class="radio">
+              <div class="radio">
             <label>
                 <input class="q2-question" type="radio" name="answers[a2][]" id="optionsRadios2"
-                       value="rented" <?php if (@strpos($values['a2'], "rented") !== false) {
+                       value="Other tenant" <?php if (@strpos($values['a2'], "Other tenant") !== false) {
                     echo "checked";
                 } ?>>
-                Rented
+                Tenant
             </label>
         </div>
  </div>
              <script>
 $(document).on('change','.q2-question',function(){
-	if($(this).val()=="rented"){
+	if($(this).val()!=="Home Owner"){
 			$('#q3-container').show();
 			$('#q4-container').hide();
 		
@@ -143,28 +161,34 @@ $(document).on('change','.q2-question',function(){
 	}
 });
 </script>
-<?php if (@$values['a2']== "rented"&&$values['a1']=="flat"){ ?>
+<?php if (@$values['a2']!== "Home Owner"&&@$values['a1']=="Flat"){ ?>
 	<script>
 	$(document).ready(function(){
 	
 	})
 	</script>
 <?php } ?>
-<?php if (@$values['a2']=="owned"&&$values['a1']=="house"){ ?>
+<?php if (@$values['a2']=="Home Owner"&&@$values['a1']=="House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q4-container').show();	
 	})
 	</script>
 <?php } ?>
-
+<?php if (@$values['a2']=="Other tenant"&&@$values['a1']=="House"){ ?>
+	<script>
+	$(document).ready(function(){
+		$('#q3-container').show();	
+	})
+	</script>
+<?php } ?>
         <div id="q3-container" style="display:none">
       <label>Is it a private tenancy?</label>
                 <div class="radio">
             <label>
                 <input class="q3-question" type="radio" name="answers[a3][]" id="optionsRadios1"
-                       value="yes"  <?php if (@strpos($values['a3'], "yes") !== false) {
-                    echo "yes";
+                       value="Yes"  <?php if (@strpos($values['a3'], "Yes") !== false) {
+                    echo "Yes";
                 } ?> />
                 Yes
             </label>
@@ -172,8 +196,8 @@ $(document).on('change','.q2-question',function(){
         <div class="radio">
             <label>
                 <input class="q3-question" type="radio" name="answers[a3][]" id="optionsRadios2"
-                       value="no" <?php if (@strpos($values['a3'], "no") !== false) {
-                    echo "no";
+                       value="No" <?php if (@strpos($values['a3'], "No") !== false) {
+                    echo "No";
                 } ?>>
                 No
             </label>
@@ -181,7 +205,7 @@ $(document).on('change','.q2-question',function(){
         </div> 
                 <script>
 $(document).on('change','.q3-question',function(){
-	if($(this).val()=="yes"){
+	if($(this).val()=="Yes"){
 			$('#q3-alert2').hide();
 			$('#q3-alert').show();
 	
@@ -192,14 +216,14 @@ $(document).on('change','.q3-question',function(){
 	}
 });
 </script>
-<?php if (@$values['a3']=="yes"&&@$values['a1']=="flat"){ ?>
+<?php if (@$values['a3']=="Yes"&&@$values['a1']=="Flat"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q3-alert').show();
 	})
 	</script>
 <?php } ?>  
-<?php if (@$values['a3']=="no"&&@$values['a1']=="flat"){ ?>
+<?php if (@$values['a3']=="No"&&@$values['a1']=="Flat"){ ?>
 	<script>
 	$(document).ready(function(){
 	$('#q3-alert2').show();
@@ -214,7 +238,7 @@ $(document).on('change','.q3-question',function(){
        <div class="radio">
             <label>
                 <input class="q4-question" type="radio"  name="answers[a4][]" id="optionsRadios1"
-                       value="yes"  <?php if (@strpos($values['a4'], "yes") !== false) {
+                       value="Yes"  <?php if (@strpos($values['a4'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
                Yes
@@ -223,7 +247,7 @@ $(document).on('change','.q3-question',function(){
         <div class="radio">
             <label>
                 <input class="q4-question" type="radio" name="answers[a4][]" id="optionsRadios2"
-                       value="no" <?php if (@strpos($values['a4'], "no") !== false) {
+                       value="No" <?php if (@strpos($values['a4'], "No") !== false) {
                     echo "checked";
                 } ?>>
                 No
@@ -232,16 +256,16 @@ $(document).on('change','.q3-question',function(){
         </div>
                         <script>
 $(document).on('change','.q4-question',function(){
-	if($(this).val()=="yes"){
+	if($(this).val()=="Yes"){
 			$('#q6-container').show();
 			$('#q5-container').show();
 	} else {
 			$('#q6-container').show();
-			$('#q5-container').hisw();
+			$('#q5-container').hide();
 	}
 });
 </script> 
-<?php if (@$values['a4']== "yes"&&@$values['a2']=="owned"&&@$values['a1']=="house"){ ?>
+<?php if (@$values['a4']== "Yes"&&@$values['a2']=="Home Owner"&&@$values['a1']=="House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q6-container').show();
@@ -249,7 +273,7 @@ $(document).on('change','.q4-question',function(){
 	})
 	</script>
 <?php } ?>
-<?php if (@$values['a1']== "house"){ ?>
+<?php if (@$values['a1']== "House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q6-container').show();	
@@ -267,7 +291,7 @@ $(document).on('change','.q4-question',function(){
        <div class="radio">
             <label>
                 <input class="q6-question" type="radio"  name="answers[a6][]" id="optionsRadios1"
-                       value="yes"  <?php if (@strpos($values['a6'], "yes") !== false) {
+                       value="Yes"  <?php if (@strpos($values['a6'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
                Yes
@@ -276,7 +300,7 @@ $(document).on('change','.q4-question',function(){
         <div class="radio">
             <label>
                 <input class="q6-question" type="radio" name="answers[a6][]" id="optionsRadios2"
-                       value="no" <?php if (@strpos($values['a6'], "no") !== false) {
+                       value="No" <?php if (@strpos($values['a6'], "No") !== false) {
                     echo "checked";
                 } ?>>
                 No
@@ -285,7 +309,7 @@ $(document).on('change','.q4-question',function(){
         </div>    
          <script>
 $(document).on('change','.q6-question',function(){
-	if($(this).val()=="yes"){
+	if($(this).val()=="Yes"){
 			$('#q7-container').show();
 	} else {
 			$('#q7-container').hide();
@@ -293,14 +317,14 @@ $(document).on('change','.q6-question',function(){
 	}
 });
 </script> 
-<?php if ($values['a6']=="yes"&&$values['a1']=="house"){ ?>
+<?php if (@$values['a6']=="Yes"&&@$values['a1']=="House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q7-container').show();	
 	})
 	</script>
 <?php } ?>
-<?php if ($values['a6']=="no"&&$values['a1']=="house"){ ?>
+<?php if (@$values['a6']=="No"&&@$values['a1']=="House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#finished').show();	
@@ -311,6 +335,7 @@ $(document).on('change','.q6-question',function(){
       <label>Who is the mortgage provider?</label><br>
 <select name="answers[a7]" class="selectpicker q7-question"  data-live-search="true" data-width="100%"
                     data-size="5" >
+                      <option value=''>Please select a provider</option>
   <option value='Abbey'>Abbey</option>
 <option value='Accord'>Accord</option>
 <option value='Aldermore'>Aldermore</option>
@@ -479,9 +504,10 @@ $(document).on('change','.q7-question',function(){
 		$('#q7-alert').hide();	
 			$('#finished').show();	
 	}
+
 });
 </script> 
-<?php if (@!empty($values['a7'])&&$values['a1']=="house"&&$values['a6']=="yes"){ ?>
+<?php if (@!empty($values['a7'])&&@$values['a1']=="house"&&@$values['a6']=="yes"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('.q7-question').trigger('change');
@@ -490,6 +516,8 @@ $(document).on('change','.q7-question',function(){
 <?php } ?>
    <div class="text-danger" id="q7-alert"  style="display:none">You need to email the homeowner a mortage consent letter which will need to be signed and returned before we can proceed. The details will be in the letter</div>
         <div class="text-success" id="finished"  style="display:none">They have met the initial critera and could be eligible for the offer pending some additional checks. Explain that we will be in touch.</div>
+
+
 
 <hr>
         <a href="<?php echo base_url() . 'records/detail/' . $this->uri->segment(4); ?>" class="btn btn-default">Go

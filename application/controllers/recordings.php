@@ -30,10 +30,10 @@ $recording = array();
 if(count($numbers)>0){
 $number_list = "";
 foreach($numbers as $k =>$number){
-	if($number['description']<>"Transfer"){
-	$number_list .= '"'.trim($number['number']).'",';	
-	} else {
+	if(strpos($number['description'],"Transfer")!==false){
 	$transfer_number = 	trim($number['number']);
+	} else {
+	$number_list .= '"'.trim($number['number']).'",';	
 	}
 }
 }
@@ -56,7 +56,7 @@ if(!empty($transfer_number)){
 $owner = $row['owner']; 	
 $endtime = $row['endtime']; //the endtime of the call is the starttime of the transfer
 $db2->select("id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,server",false);
-$db2->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 3 second and '$endtime' + interval 3 second and calldate = date('$calltime')",null,false);
+$db2->where("replace(servicename,' ','') = '$transfer_number' and owner='$owner' and starttime between '$endtime' - interval 15 second and '$endtime' + interval 15 second and calldate = date('$calltime')",null,false);
 $db2->group_by("calls.id");
 $transfer_query = $db2->get('recordings.calls');
 

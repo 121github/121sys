@@ -320,4 +320,10 @@ class User_model extends CI_Model
 	$this->db->where("campaign_id",$id);
 	return $this->db->get("campaigns")->row()->campaign_name;	
 	}
+	
+		public function campaign_row($id){
+	$this->db->where("campaign_id",$id);
+	$this->db->join("clients","campaigns.client_id=clients.client_id");
+	return $this->db->get("campaigns")->row_array();	
+	}
 }

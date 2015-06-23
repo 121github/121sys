@@ -204,6 +204,10 @@ var modals = {
         }).done(function (response) {
             if (response.success) {
                 flashalert.success('Appointment was saved');
+				if(response.trackvia){
+					console.log("trackvia");
+				$.post(response.trackvia,{ urn: response.urn });	
+				}
                 $('.close-modal').trigger('click');
                 if (typeof record !== "undefined") {
                     record.appointment_panel.load_appointments();
@@ -288,6 +292,9 @@ var modals = {
         if (data.distance && getCookie('current_postcode')) {
             mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?zoom=2&saddr=' + helper.current_postcode + '&daddr=' + data.postcode + '">Navigate</a>';
         }
+		if(data.cancellation_reason){
+		  mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <p class="text-danger">This appointment was cancelled.<br><small>'+data.cancellation_reason+'</small></p>';	
+		}
         modals.load_modal(mheader, mbody, mfooter)
     },
     edit_appointment_html: function (data) {

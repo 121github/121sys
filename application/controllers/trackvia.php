@@ -16,8 +16,11 @@ define('SOUTHWAY_BOOK_SURVEY', '3000718751');
 define('SOUTHWAY_REBOOK', '3000718753');
 define('SOUTHWAY_SURVEY_SLOTS', '3000718736');
 
-define('PRIVATE_INFORM_INELIGIBLE', '');
-define('PRIVATE_RESIDENTIAL', '');
+define('PRIVATE_ALL_RECORDS', '3000718983');
+define('PRIVATE_INFORM_INELIGIBLE', '3000719207');
+define('PRIVATE_BOOK_SURVEY', '3000719204');
+define('PRIVATE_REBOOK', '3000719206');
+define('PRIVATE_SURVEY_SLOTS', '3000719481');
 
 
 if (!defined('BASEPATH'))
@@ -44,7 +47,7 @@ class Trackvia extends CI_Controller
     public function checkTrackviaSystem() {
 		
 		   //SOUTHWAY TABLE
-/*
+
         //Book View
         echo "\nChecking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_BOOK_SURVEY.") view";
         $this->checkView(
@@ -52,14 +55,13 @@ class Trackvia extends CI_Controller
             array(
                 'campaign_id' => 22,
                 'urgent' => NULL,
-                'status' => NULL,
+                'status' => 1,
                 'outcome_id' => NULL,
                 'appointment_creation' => false,
 				'appointment_cancelled' => false,
-				'record_status' => 1
             )
         );
-*/
+
         //Rebook View
         echo "\nChecking the SOUTHWAY_REBOOK(".SOUTHWAY_REBOOK.") view";
         $this->checkView(
@@ -67,11 +69,10 @@ class Trackvia extends CI_Controller
             array(
                 'campaign_id' => 22,
                 'urgent' => 1,
-                'status' => NULL,
+                'status' => 1,
                 'outcome_id' => NULL,
                 'appointment_creation' => true,
 				'appointment_cancelled' => true,
-				'record_status' => 1
             )
         );
 
@@ -85,37 +86,64 @@ class Trackvia extends CI_Controller
                 'status' => 4,
                 'outcome_id' => 72,
                 'appointment_creation' => true,
-				'appointment_cancelled' => false,
-				'record_status' => 4
+				'appointment_cancelled' => false
             )
         );
 			
 //
 //        //PRIVATE TABLE
 //
-//        //Private Residential View
-//        $this->checkView(
-//            PRIVATE_RESIDENTIAL,
-//            array(
-//                'campaign_id' => 27,
-//                'urgent' => NULL,
-//                'status' => NULL,
-//                'outcome_id' => NULL,
-//                'appointment_creation' => false
-//            )
-//        );
-//
-//        //Private Ineligible View
-//        $this->checkView(
-//            PRIVATE_INFORM_INELIGIBLE,
-//            array(
-//                'campaign_id' => 28,
-//                'urgent' => NULL,
-//                'status' => NULL,
-//                'outcome_id' => NULL,
-//                'appointment_creation' => false
-//            )
-//        );
+        //Private Residential View
+        $this->checkView(
+            PRIVATE_BOOK_SURVEY,
+           array(
+               'campaign_id' => 29,
+                'urgent' => NULL,
+                'status' => 1,
+                'outcome_id' => NULL,
+              'appointment_creation' => false,
+			  'appointment_cancelled' => false
+
+            )
+       );
+	   
+	    //Private Residential View
+        $this->checkView(
+            PRIVATE_REBOOK,
+           array(
+               'campaign_id' => 29,
+                'urgent' => 1,
+                'status' => 1,
+                'outcome_id' => NULL,
+              'appointment_creation' => true,
+			  'appointment_cancelled' => true
+            )
+       );
+	   
+	    //Private Residential View
+        $this->checkView(
+            PRIVATE_SURVEY_SLOTS,
+           array(
+               'campaign_id' => 29,
+                'urgent' => NULL,
+                'status' => 4,
+                'outcome_id' => 72,
+              'appointment_creation' => true,
+			   'appointment_cancelled' => false
+            )
+       );
+
+//        //Private Ineligible View/      
+		  $this->checkView(
+            PRIVATE_INFORM_INELIGIBLE,
+            array(
+                'campaign_id' => 28,
+                'urgent' => NULL,
+                'status' => 1,
+                'outcome_id' => NULL,
+                'appointment_creation' => false
+           )
+       );
 
     }
 
@@ -130,13 +158,12 @@ class Trackvia extends CI_Controller
         $outcome_id = $options['outcome_id'];
         $appointment_creation = $options['appointment_creation'];
 		$appointment_cancelled = $options['appointment_cancelled'];
-		$status = $options['record_status'];
+
         //Get the trackvia records for this view
         $view = $this->tv->getView($view_id);
 	
         $tv_records = $view['records'];
 		$this->firephp->log($tv_records);
-		exit;
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
@@ -186,33 +213,10 @@ class Trackvia extends CI_Controller
         if (!empty($update_records)) {
             $this->Trackvia_model->updateRecords($update_records);
         }
-        //Create the new records that not exist in our system yet
-        $new_records = array();
 
-
-		  foreach($tv_records as $tv_record) {
-				$record_data = array();
-				
-				//cannot do this with current api :(
-				//$record = $this->tv->getViewRecord(SOUTHWAY_ALL_RECORDS,$tv_record['id']);
-
-                //build the record array from the data in the view.
-				$record = array(
-                    'client_ref' => $tv_record['id'],
-                    'survey_date' => ""
-                );
-
-                //Add the new records to an array
-                array_push($new_records,$record_data);
-
-                //Create appointment if it is needed
-                if ($appointment_creation) {
-                    $fields = $tv_record['fields'];
-                    $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
-                }
-            //TODO Add new records with insert batch
-            //$this->firephp->log(($new_records));
-        }
+           //TODO Add new records with insert batch
+            $this->firephp->log("Create new records");
+			$this->firephp->log($tv_records);
 
     }
 
@@ -301,19 +305,76 @@ class Trackvia extends CI_Controller
         $app = $this->Trackvia_model->get_appointment($urn);
 
         $data = array(
-		"Planned Survey Date"=>$app['start']."T12:00:00-0600",
-		"Survey appt" => "pm",
+		"Planned Survey Date"=>$app['date']."T12:00:00-0600",
+		"Survey appt" => $app['slot'],
 		"Survey Booking Confirmed" => "Y",
 		"Survey booked by" => "121",
-		"Survey Appointment Comments" => "These are test comments"
-	 );
+		"Survey Appointment Comments" => $app['title'].' : '.$app['text']
+			 );
 
         //Update the record
-        $this->tv->updateRecord($data['client_ref'],$data);
+        $response = $this->tv->updateRecord($app['client_ref'],$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref']));
 
     }
 
+	public function no_contact(){
+		$urn = $this->input->post('urn');
+		 //Get the record data
+        $app = $this->Trackvia_model->get_record($urn);
+		$data = array("Customer not contactable" => "Customer not contactable");
+	
+		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+	}
+	
+		public function not_interested(){
+		$urn = $this->input->post('urn');
+		 //Get the record data
+        $record = $this->Trackvia_model->get_record($urn);
+		$data = array("Customer Refused"=>"Y","Refusal Reason" => $record['outcome_reason']);
+	
+		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+	}
 
-
+		public function reject_notification(){
+		$urn = $this->input->post('urn');
+		 //Get the record data
+        $record = $this->Trackvia_model->get_record($urn);
+		$data = array("Date Owner / Tenant Informed of Rejection"=>date('Y-m-d')."T12:00:00-0600",
+		"Owner / Tenant Informed of Rejection" => "Y");
+	
+		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+	}
+	
+		public function data_captured(){
+		$urn = $this->input->post('urn');
+		 //Get the record data
+        $record = $this->Trackvia_model->get_record($urn);
+		$data = array("Owner / Rented"=>$record['a2'],
+		"Is the property mortgaged" => $record['a6'],
+		"Who is the Mortgage provider" => $record['a7'],
+		"Owner / Tenant Name 1" => $record['contact'],
+		"Is ownership in Joint Names" => $record['a4'],
+		"Owner / Tenant Name 2" => $record['a5'],
+		"Primary Contact (Landline)" => $record['telephone_number'],
+		"Primary Contact (Mobile)" => $record['mobile_number'],
+		"Email address" => $record['email'],
+		"House No." => $record['house_number'],
+		"Address 1" => $record['address_1'],
+		"Address 2" => $record['address_2'],
+		"City" => $record['city'],
+		"PostCode" => $record['PostCode'],
+		"Enquiry Type" => $record['city'],
+		"Date of Enquiry" => $record['date_added'],
+		"Where did you hear about us" => $record['a8'],
+		"Asset Type" => $record['a1'],
+		);
+	
+		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+	}
 
 }

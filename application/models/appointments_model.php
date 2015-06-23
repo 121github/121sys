@@ -13,8 +13,17 @@ class Appointments_model extends CI_Model
 	
 	public function slot_availability($urn){
 		$slots = array();
+		$thresholds = array();
+		//GHS campaign appointment slot thresholds
+		$thresholds["Monday"]= array('am' => 0,'am_max'=>4,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
+		$thresholds["Tuesday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
+		$thresholds["Wednesday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
+		$thresholds["Thursday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
+		$thresholds["Friday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>4, 'eve' => 0,'eve_max'=>0);
+		$thresholds["Saturday"]= array('am' => 0,'am_max'=>5,'pm' => 0,'pm_max'=>0, 'eve' => 0,'eve_max'=>0);
+		
 for($i = 0; $i < 30; $i++){
-    $slots[date("D jS M", strtotime('+'. $i .' days'))] = array('am' => 0,'am_max'=>4,'pm' => 0,'pm_max'=>4, 'eve' => 0,'eve_max'=>3); //set all days as 0 to begin with
+    $slots[date("D jS M", strtotime('+'. $i .' days'))] = $thresholds[date("l", strtotime('+'. $i .' days'))];
 }
 
 		$am = "select date(`start`) start,count(*) from appointments left join records using(urn) where time(`start`) between '08:00:00' and '12:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`) ";
