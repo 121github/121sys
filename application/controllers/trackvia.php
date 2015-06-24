@@ -198,8 +198,6 @@ class Trackvia extends CI_Controller
 		return false;		
 		}
 		
-		$this->firephp->log($tv_records);
-		return false;
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
