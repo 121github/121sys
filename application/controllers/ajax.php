@@ -22,6 +22,7 @@ class Ajax extends CI_Controller
 		$this->load->helper('misc');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+
 	
 	public function validate_postcode(){
 		   if ($this->input->is_ajax_request()) {

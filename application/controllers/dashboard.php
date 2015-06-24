@@ -18,6 +18,35 @@ class Dashboard extends CI_Controller
 		unset($_SESSION['navigation']);
     }
     
+	  //this laods the user dashboard view  
+    public function ghs()
+    {
+        $campaigns = $this->Form_model->get_user_campaigns();
+        $agents       = $this->Form_model->get_agents();
+        
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+'pageId' => 'Dashboard',
+            'title' => 'Dashboard',
+			'page'=> 'ghs_dash',
+            'javascript' => array(
+                'charts.js',
+                'dashboard.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js',
+				'dashboards/ghs.js',
+            ),
+			'agents'=>$agents,
+            'campaigns' => $campaigns,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'dashboard/ghs_dash.php', $data);
+    }
+	
        //this laods the user dashboard view  
     public function eldon()
     {

@@ -504,7 +504,7 @@ class Records extends CI_Controller
             
             //check the outcome and execute any triggers
             if ($this->input->post('outcome_id')) {
-				if($this->input->post('outcome_reason_id')=="0"&&empty($this->input->post('comments'))){
+				if(isset($_POST['outcome_reason_id'])&&$_POST['outcome_reason_id']=="0"&&empty($this->input->post('comments'))){
 					 echo json_encode(array(
                         "success" => false,
                         "msg" => "Please note the reason for this outcome"

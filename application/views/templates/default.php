@@ -1,4 +1,4 @@
-<?php
+<?php 
 $show_footer = false;
 if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['permissions'])) {
     $show_footer = true;
@@ -99,6 +99,14 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     <?php if($_SESSION['role']<>9){ ?>
             <li><a href="#mm-1">Dashboard</a>
                 <ul>
+                    <?php if ($_SESSION['sn']=='eldon.121system.com') { ?>
+                        <li <?php echo @($page == 'eldon_dash' ? "class=Selected'" : "") ?>><a
+                                href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>
+                    <?php } ?>
+                     <?php if ($_SESSION['current_client']=='GHS') { ?>
+                        <li <?php echo @($page == 'ghs_dash' ? "class=Selected'" : "") ?>><a
+                                href="<?php echo base_url() ?>dashboard/ghs">GHS Dash</a></li>
+                    <?php } ?>
                     <li <?php echo @($page == 'favorites_dash' ? "class=Selected'" : "") ?>><a
                             href="<?php echo base_url() ?>dashboard/favorites">Favorites</a></li>
                     <li <?php echo @($page == 'overview' ? "class=Selected'" : "") ?>><a
@@ -119,10 +127,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     <?php if (in_array("management dash", $_SESSION['permissions'])) { ?>
                         <li <?php echo @($page == 'management_dash' ? "class=Selected'" : "") ?>><a
                                 href="<?php echo base_url() ?>dashboard/management">Management Dash</a></li>
-                    <?php } ?>
-                    <?php if ($_SESSION['sn']=='eldon.121system.com') { ?>
-                        <li <?php echo @($page == 'eldon_dash' ? "class=Selected'" : "") ?>><a
-                                href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>
                     <?php } ?>
                 </ul>
             </li>

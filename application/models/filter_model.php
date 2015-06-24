@@ -37,6 +37,28 @@ class Filter_model extends CI_Model
 );
     }
 
+public function search_urn_by_c1($ref){
+	$this->db->select("records.urn");
+	$this->db->where("c1",$ref);
+	$this->db->join("record_details","record_details.urn=records.urn");
+	$query = $this->db->get("records");
+	if($query->num_rows()){
+	return 	$query->row()->urn;
+	}
+	return false;
+}
+
+public function search_urn_by_address($add1,$postcode){
+		$qry = "select urn from records left join contacts using(urn) left join contact_addresses using(contact_id) where postcode = '$postcode' and add1 like '$add1%'";
+		$this->firephp->log($qry);
+		$query = $this->db->query($qry);
+	if($query->num_rows()){
+	return $query->row->urn;
+	}
+	return false;
+}
+
+
 public function get_custom_options($field,$campaign){
 $this->db->select('id,option');
 $this->db->where(array("campaign_id"=>$campaign,"field"=>$field));
