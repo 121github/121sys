@@ -540,8 +540,8 @@ $test = "5 oak street 8";
 		"Asset Type" => $details['a1']
 		);
 	
-		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		$response = $this->tv->updateRecord($details['client_ref'],$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$details['client_ref']));
 	}
 
 }
