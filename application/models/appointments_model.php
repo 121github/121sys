@@ -21,6 +21,7 @@ class Appointments_model extends CI_Model
 		$thresholds["Thursday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
 		$thresholds["Friday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>4, 'eve' => 0,'eve_max'=>0);
 		$thresholds["Saturday"]= array('am' => 0,'am_max'=>5,'pm' => 0,'pm_max'=>0, 'eve' => 0,'eve_max'=>0);
+		$thresholds["Sunday"]= array('am' => 0,'am_max'=>0,'pm' => 0,'pm_max'=>0, 'eve' => 0,'eve_max'=>0);
 		
 for($i = 0; $i < 30; $i++){
     $slots[date("D jS M", strtotime('+'. $i .' days'))] = $thresholds[date("l", strtotime('+'. $i .' days'))];

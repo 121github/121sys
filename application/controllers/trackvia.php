@@ -435,7 +435,7 @@ $test = "5 oak street 8";
 		public function review_required(){
 		$urn = $this->input->post('urn');
 		 //Get the record data
-        $record = $this->Trackvia_model->get_record($urn);
+        $record = $this->Trackvia_model->get_record_rows($urn);
 		foreach($record as $k=>$row){
 			$details = $row;
 			if($row['telephone_description']=="Mobile"||preg_match('/^447|^+447^00447|^07/',$row['telephone_number'])){
