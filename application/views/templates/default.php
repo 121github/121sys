@@ -508,9 +508,9 @@ modals.init();
                 window.location = helper.baseUrl + 'dashboard';
             } else {
                 <?php if($this->uri->segment(2)=="detail"||$this->uri->segment(1)=="error"){ ?>
-                window.location = helper.baseUrl + 'records/detail';
+               window.location = helper.baseUrl + 'records/detail';
                 <?php } else { ?>
-                location.reload();
+               location.reload();
                 <?php } ?>
             }
         });
@@ -522,16 +522,16 @@ modals.init();
 	$(document).ready(function(){
 	<?php if($this->session->flashdata('success')){ ?>
 		flashalert.success('<?php echo $this->session->flashdata('success') ?>');
-	<? } ?>
+	<?php } ?>	
 	<?php if($this->session->flashdata('danger')){ ?>
 		flashalert.success('<?php echo $this->session->flashdata('danger') ?>');
-	<? } ?>
+	<?php } ?>	
 	<?php if($this->session->flashdata('info')){ ?>
 		flashalert.success('<?php echo $this->session->flashdata('info') ?>');
-	<? } ?>	
+	<?php } ?>	
 	<?php if($this->session->flashdata('warning')){ ?>
 		flashalert.success('<?php echo $this->session->flashdata('warning') ?>');
-	<? } ?>	
+	<?php } ?>	
 	$('nav#menu').mmenu();
 	$('#campaign-select').selectpicker();
 	});

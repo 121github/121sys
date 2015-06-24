@@ -263,6 +263,7 @@ class User extends CI_Controller
 		//if the user has been removed from their current campaign we should kick them out by unsetting the current campaign
 		if (@!in_array($_SESSION['current_campaign'], $_SESSION['campaign_access']['array'])) {
             unset($_SESSION['current_campaign']);
+			unset($_SESSION['current_campaign_name']);
             }
 		echo "Session reloaded";
 		}
@@ -340,6 +341,7 @@ class User extends CI_Controller
                 $campaign_row = $this->User_model->campaign_row($campaign);
 				$_SESSION['current_client'] = $campaign_row['client_name'];
 				$_SESSION['current_campaign_name'] = $campaign_row['campaign_name'];
+				$_SESSION['current_campaign'] = $campaign_row['campaign_id'];
 				$this->set_campaign_features();
 				$this->apply_default_filter();
             }
