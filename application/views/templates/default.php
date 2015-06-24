@@ -520,6 +520,18 @@ modals.init();
 
 <script type="text/javascript">
 	$(document).ready(function(){
+	<?php if($this->session->flashdata('success')){ ?>
+		flashalert.success('<?php echo $this->session->flashdata('success') ?>');
+	<? } ?>
+	<?php if($this->session->flashdata('danger')){ ?>
+		flashalert.success('<?php echo $this->session->flashdata('danger') ?>');
+	<? } ?>
+	<?php if($this->session->flashdata('info')){ ?>
+		flashalert.success('<?php echo $this->session->flashdata('info') ?>');
+	<? } ?>	
+	<?php if($this->session->flashdata('warning')){ ?>
+		flashalert.success('<?php echo $this->session->flashdata('warning') ?>');
+	<? } ?>	
 	$('nav#menu').mmenu();
 	$('#campaign-select').selectpicker();
 	});

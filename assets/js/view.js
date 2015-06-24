@@ -44,7 +44,7 @@ var view_records = {
             "processing": true,
             "serverSide": true,
             "pagingType": "full",
-            "iDisplayLength": 10,
+            "iDisplayLength": 50,
             responsive: true,
             "ajax": {
                 url: helper.baseUrl + "records/process_view",
