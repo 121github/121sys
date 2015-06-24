@@ -17,8 +17,8 @@ define('SOUTHWAY_REBOOK', '3000718753');
 define('SOUTHWAY_SURVEY_SLOTS', '3000718736');
 
 define('PRIVATE_ALL_RECORDS', '3000718983');
-define('PRIVATE_INFORM_INELIGIBLE', '3000719207');
 define('PRIVATE_BOOK_SURVEY', '3000719204');
+define('PRIVATE_INFORM_INELIGIBLE', '3000719207');
 define('PRIVATE_REBOOK', '3000719206');
 define('PRIVATE_SURVEY_SLOTS', '3000719481');
 
@@ -163,7 +163,9 @@ class Trackvia extends CI_Controller
         $view = $this->tv->getView($view_id);
 	
         $tv_records = $view['records'];
-		$this->firephp->log($tv_records);
+		if(count($tv_records)=="0"){
+			return false;	
+		}
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
