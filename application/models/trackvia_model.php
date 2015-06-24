@@ -36,7 +36,7 @@ class Trackvia_model extends CI_Model
 				inner join client_refs cr using(urn)
 				left join (select max(appointment_id) appointment_id,urn from appointments group by urn) ma using(urn)
 				left join appointments a on a.appointment_id = ma.appointment_id
-				WHERE cr.client_ref IN (".implode(',',$tv_record_ids).")";
+				WHERE cr.client_ref IN ('',".implode(',',$tv_record_ids).")";
 
         return $this->db->query($qry)->result_array();
     }
