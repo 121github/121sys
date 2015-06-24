@@ -415,7 +415,7 @@ $test = "5 oak street 8";
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
-		$data = array("Customer Refused"=>"Y","Refusal Reason" => $record['outcome_reason']);
+		$data = array("Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelledby"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
