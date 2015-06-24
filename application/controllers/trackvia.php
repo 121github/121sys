@@ -461,7 +461,7 @@ $test = "5 oak street 8";
 
 		foreach($record as $k=>$row){
 			$details = $row;
-			if($row['telephone_description']=="Mobile"||preg_match('/^447|^+447^00447|^07/',$row['telephone_number'])){
+			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07/',$row['telephone_number'])){
 				$mobile = $row['telephone_number'];
 			} 
 			$add1= preg_replace('/[0-9]/','',$row['add1']);
@@ -474,27 +474,28 @@ $test = "5 oak street 8";
 		$data = array("UPRN Pre-fix"=>"PR",
 		"created"=>date('Y-m-d')."T12:00:00-0600",
 		"Date of Enquiry"=>date('Y-m-d')."T12:00:00-0600",
-		"Owner / Rented"=>$details['a2'],
-		"Is the property mortgaged" => $details['a6'],
+		//"Owner / Rented"=>$details['a2'],
+		//"Is the property mortgaged" => $details['a6'],
 		"Who is the Mortgage provider" => $details['a7'],
-		"Owner / Tenant Name 1" => $details['contact'],
-		"Is ownership in Joint Names" => $details['a4'],
+		"Owner / Tenant Name 1" => $details['fullname'],
+		//"Is ownership in Joint Names" => $details['a4'],
 		"Owner / Tenant Name 2" => $details['a5'],
 		"Primary Contact (Landline)" => $details['telephone_number'],
-		"Primary Contact (Mobile)" => $details['mobile_number'],
 		"Email address" => $details['email'],
 		"House No." => $house_number,
 		"Address 1" => $add1,
-		"Address 2" => $details['add_2'],
+		"Address 2" => $details['add2'],
 		"City" => $details['add3'],
 		"PostCode" => $details['postcode'],
-		"Enquiry Type" => "Telephone Call-in",
-		"Date of Enquiry" => $details['date_added'],
-		"Where did you hear about us" => $details['a8'],
+		//"Enquiry Type" => "Telephone Call-in",
+		"Date of Enquiry" => date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600",
+		//"Where did you hear about us" => "",//$details['a8'],
 		"Asset Type" => $details['a1'],
 		"If Other Mortgage Provider, please Input" => $details['a9']
 		);
-		
+		if(isset($mobile)){
+			$data["Primary Contact (Mobile)"] = $mobile;
+		}
 		if(!empty($details['c4'])){
 		$data["Referred by"] = $details['c4'];
 		}
@@ -513,35 +514,37 @@ $test = "5 oak street 8";
         $record = $this->Trackvia_model->get_record_rows($urn);
 		foreach($record as $k=>$row){
 			$details = $row;
-			if($row['telephone_description']=="Mobile"||preg_match('/^447|^+447^00447|^07/',$row['telephone_number'])){
+			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07|^0447/',$row['telephone_number'])){
 				$mobile = $row['telephone_number'];
-			} 
+			}
 			$add1= preg_replace('/[0-9]/','',$row['add1']);
 			$house_number= preg_replace('/^[0-9]/','',$row['add1']);
 		}
-		$details['mobile_number'] = $mobile;
-		$data = array("Owner / Rented"=>$details['a2'],
-		"Is the property mortgaged" => $details['a6'],
+		$data = array(
+		//"Owner / Rented"=>$details['a2'],
+		//"Is the property mortgaged" => $details['a6'],
 		"Who is the Mortgage provider" => $details['a7'],
-		"Owner / Tenant Name 1" => $details['contact'],
-		"Is ownership in Joint Names" => $details['a4'],
+		"Owner / Tenant Name 1" => $details['fullname'],
+		//"Is ownership in Joint Names" => $details['a4'],
 		"Owner / Tenant Name 2" => $details['a5'],
 		"Primary Contact (Landline)" => $details['telephone_number'],
-		"Primary Contact (Mobile)" => $details['mobile_number'],
 		"Email address" => $details['email'],
 		"House No." => $house_number,
 		"Address 1" => $add1,
-		"Address 2" => $details['add_2'],
+		"Address 2" => $details['add2'],
 		"City" => $details['add3'],
 		"PostCode" => $details['postcode'],
-		"Enquiry Type" => "Telephone Call-in",
-		"Date of Enquiry" => $details['date_added'],
-		"Where did you hear about us" => $details['a8'],
+		//"Enquiry Type" => "Telephone Call-in",
+		"Date of Enquiry" => date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600",
+		//"Where did you hear about us" => "",//$details['a8'],
 		"Asset Type" => $details['a1']
 		);
 	
+		if(isset($mobile)){
+			$data["Primary Contact (Mobile)"] = $mobile;
+		}
 		$response = $this->tv->updateRecord($details['client_ref'],$data);
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$details['client_ref']));
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$details['client_ref'],"data"=>$data));
 	}
 
 }
