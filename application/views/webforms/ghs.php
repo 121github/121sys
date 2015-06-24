@@ -231,7 +231,7 @@ $(document).on('change','.q3-question',function(){
 	</script>
 <?php } ?>    
 <div id="q3-alert" class="text-danger" style="display:none">The landlord must contact Global Heat Source directly on 0800 8521247</div>
-<div id="q3-alert2" class="text-danger" style="display:none">We do not have a record of their details. Please ask them to contact GHS direct on 0800 8521247</div>        
+<div id="q3-alert2" class="text-danger" style="display:none">We do not have a record of their details. Please explain we will need to get back to them. (Set the call outcome as <b>Query</b>)</div>        
    
         <div id="q4-container" style="display:none">
       <label>Is the ownership of the property in joint names?</label>
@@ -338,6 +338,7 @@ $(document).on('change','.q6-question',function(){
 <select name="answers[a7]" class="selectpicker q7-question"  data-live-search="true" data-width="100%"
                     data-size="5" >
                       <option value=''>Please select a provider</option>
+                       <option value='Other'>Other</option>
   <option value='Abbey'>Abbey</option>
 <option value='Accord'>Accord</option>
 <option value='Aldermore'>Aldermore</option>
@@ -493,7 +494,12 @@ $(document).on('change','.q6-question',function(){
 <option value='Yorkshire Bank'>Yorkshire Bank</option>
 <option value='Yorkshire Building Society'>Yorkshire Building Society</option>
             </select>
-        </div>  
+            <br>
+             <label>If other, capture the name</label><br>
+        <input type="text" class="form-control" name="answers[a9]" value="<?php echo @$values['a9'] ?>">
+        </div> 
+              
+        
             <script>
 $(document).on('change','.q7-question',function(){
 	var lenders = new Array("BDW Trading","Birmingham building society","Bradford & Bingley","Britannia","Church House Trust","Clysedale Bank","CO-OP","Engage Credit","Future mortgage ltd","GE Money","I Group loans","J Casey & Co","JP Morgan","Kensington Mortgages","Morgan Stanley","Mortgage agency services 1-5","Mortgage agency services limited","Mortgage Express","New Life","Northern rock asset management","Norton Home Loans","Papilio UK Equity Release Mortgages Ltd","Paragon","Paratus","Platform Funding","Preferred mortgages","Principality","Prudential","Redstone","Rooftop Mortgages","Saffron","Skipton","South Pacific","The Mortgage Business PLC","West Bromwich");

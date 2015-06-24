@@ -32,12 +32,12 @@ class Email_model extends CI_Model
 		$attendee = " if(attendees.name is null,'Sir/Madam',attendees.name) attendee ";
 		$appointment_fields = " appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) time_slot, ";
 		} else {
-		$contact_details = " left join contacts using(urn) left join contact_telephone using(contact_id) where records.urn = '$urn'";
+		$contact_details = " left join contacts using(urn) left join contact_telephone using(contact_id) left join contact_addresses using(contact_id) where records.urn = '$urn'";
 		$attendee = " 'Sir/Madam' attendee ";	
 		$appointment_fields = "";	
 		}
 		
-		$qry = "select records.urn,date_format(nextcall,'%d/%m/%Y %H:%i') nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,if(campaign_type_id = 1,fullname,if(fullname is not null,concat(fullname,' from ', companies.name),companies.name)) contact, companies.name  company,records.campaign_id,companies.description,companies.website,companies.conumber,contacts.fullname,contacts.gender,contacts.position,contacts.dob,if(contacts.email is not null,contacts.email,'') email,if(contact_telephone.telephone_number is null,company_telephone.telephone_number,contact_telephone.telephone_number) telephone,$appointment_fields $attendee,c1,c2,c3,c4,c5,d1,d2,dt1,dt2,n1,n2,n3 $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join company_telephone using(company_id) left join record_details using(urn)";
+		$qry = "select records.urn,campaign_name,date_format(nextcall,'%d/%m/%Y %H:%i') nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,if(campaign_type_id = 1,fullname,if(fullname is not null,concat(fullname,' from ', companies.name),companies.name)) contact, companies.name  company,records.campaign_id,companies.description,companies.website,companies.conumber,contacts.fullname,contacts.gender,contacts.position,contacts.dob,if(contacts.email is not null,contacts.email,'') email,if(contact_telephone.telephone_number is null,company_telephone.telephone_number,contact_telephone.telephone_number) telephone,$appointment_fields $attendee,c1,c2,c3,c4,c5,d1,d2,dt1,dt2,n1,n2,n3, concat(add1,' ',add2,', ',postcode) contact_address $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join company_telephone using(company_id) left join record_details using(urn) ";
 		$qry .= $contact_details;
 
         return $this->db->query($qry)->result_array();

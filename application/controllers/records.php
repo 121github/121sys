@@ -568,14 +568,24 @@ class Records extends CI_Controller
                     }
                     
                 }
+				$trigger_updates = array();
                 if ($triggers["set_status"] && $update_array["pending_manager"] == "") {
                     //if the outcome triggers a status update do it now
-                    $this->Records_model->set_status($update_array['urn'], $triggers["set_status"]);
+                    $trigger_updates["record_status"] = $triggers["set_status"];
+                }
+				 if ($triggers["set_parked_code"]) {
+                    //if the outcome triggers a status update do it now
+                     $trigger_updates["parked_code"] = $triggers["set_parked_code"];
+					 $trigger_updates["parked_date"] = date('Y-m-d H:i:s');
                 }
                 if ($triggers['set_progress'] && $update_array["pending_manager"] == "") {
-                    $this->Records_model->set_progress($update_array['urn'], $triggers["set_progress"]);
+                   $trigger_updates["progress_id"] = $triggers["set_progress"];
                     //if the outcome triggers a progress update do it now
                 }
+				if(!empty($trigger_updates)){
+				$this->Records_model->update($update_array['urn'],$trigger_updates);
+				}
+				
                 if (intval($triggers["delay_hours"]) > 0) {
                     if (!in_array("keep records", $_SESSION['permissions'])) {
                         //delete all owners so it can get called back by anyone (answer machines etc)
