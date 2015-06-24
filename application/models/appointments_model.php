@@ -37,15 +37,15 @@ for($i = 0; $i < 30; $i++){
 
 		foreach($am_results as $row){
 			$date = date("D jS M", strtotime($row['start']));
-			$slots[$date]['am']++;
+			@$slots[$date]['am']++;
 		}
 		foreach($pm_results as $row){
 			$date = date("D jS M", strtotime($row['start']));
-			$slots[$date]['pm']++;
+			@$slots[$date]['pm']++;
 		}
 		foreach($eve_results as $row){
 			$date = date("D jS M", strtotime($row['start']));
-			$slots[$date]['eve']++;
+			@$slots[$date]['eve']++;
 		}
 		return $slots;
 	}
