@@ -10,6 +10,17 @@ class Trackvia_model extends CI_Model
         
     }
 
+   public function get_rebookings($campaign = "")
+    {
+        $qry = "select urn,fullname,campaign_name,date_format(a.start,'%d/%m/%y') cancelled_date,if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) cancelled_slot from records left join contacts using(urn) left join appointments a using(urn) left join campaigns using(campaign_id) where urgent = 1 and cancellation_reason is not null";
+          if (!empty($campaign)) {
+            $qry .= " and campaign_id = '".$campaign."'";
+        }
+		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry .= " group by urn order by a.start asc";
+        return $this->db->query($qry)->result_array();
+    }
+
 	public function get_record($urn){
 		$query = "select * from records inner join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn' group by urn";
 		return $this->db->query($query)->result_array();
@@ -82,6 +93,24 @@ class Trackvia_model extends CI_Model
 	public function cancel_appointment($urn,$start){
 		$this->db->where(array("urn"=>$urn,"start"=>$start));
 		$this->db->update("appointments",array("cancellation_reason"=>"Needs rebooking","updated_by"=>1,"date_updated"=>date('Y-m-d H:i:s')));
+	}
+
+	public function add_record($data){
+		$this->db->insert("records",$data);
+		return $this->db->insert_id();
+	}
+	public function add_client_refs($data){
+		$this->db->insert("client_refs",$data);
+	}
+	public function add_contact($data){
+		$this->db->insert("contacts",$data);
+		return $this->db->insert_id();
+	}
+	public function add_address($data){
+		$this->db->insert("contact_addresses",$data);
+	}
+	public function add_telephone($data){
+		$this->db->insert("contact_telephone",$data);
 	}
 
 }

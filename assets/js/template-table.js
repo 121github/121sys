@@ -152,13 +152,12 @@ var template = {
     },
     //save a template
     save: function($btn) {
-    	$('textarea[name="template_body"]').html(btoa($('#summernote').code()));
     	$("button[type=submit]").attr('disabled','disabled');
     	$.ajax({
             url: helper.baseUrl + 'templates/save_template',
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize()
+            data: $('form').serialize()+'&template_body='+$('#summernote').code()
         }).done(function(response) {
         	//Reload template table
             template.load_templates();

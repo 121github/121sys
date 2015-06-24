@@ -258,7 +258,7 @@ $(document).on('change','.q3-question',function(){
 $(document).on('change','.q4-question',function(){
 	if($(this).val()=="Yes"){
 			$('#q6-container').show();
-			$('#q5-container').show();
+			$('#q5-container').show().find('input').val('');
 	} else {
 			$('#q6-container').show();
 			$('#q5-container').hide();
@@ -269,7 +269,7 @@ $(document).on('change','.q4-question',function(){
 	<script>
 	$(document).ready(function(){
 		$('#q6-container').show();
-		$('#q5-container').show();	
+		$('#q5-container').show();
 	})
 	</script>
 <?php } ?>
@@ -311,6 +311,7 @@ $(document).on('change','.q4-question',function(){
 $(document).on('change','.q6-question',function(){
 	if($(this).val()=="Yes"){
 			$('#q7-container').show();
+			$('#hide').show();	
 	} else {
 			$('#q7-container').hide();
 			$('#finished').show();
@@ -321,6 +322,7 @@ $(document).on('change','.q6-question',function(){
 	<script>
 	$(document).ready(function(){
 		$('#q7-container').show();	
+
 	})
 	</script>
 <?php } ?>

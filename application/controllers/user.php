@@ -346,6 +346,7 @@ class User extends CI_Controller
 				$this->apply_default_filter();
             }
         } else {
+			unset($_SESSION['current_client']);
             	unset($_SESSION['current_campaign_name']);
                 unset($_SESSION['current_campaign']);
                 unset($_SESSION['campaign_features']);

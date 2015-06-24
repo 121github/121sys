@@ -44,6 +44,16 @@ class Trackvia extends CI_Controller
         ));
     }
 
+	public function get_rebookings(){
+		if(@$_POST['campaign']){
+			$campaign = $_POST['campaign'];
+		} else {
+		$campaign = "";	
+		}
+	$result = $this->Trackvia_model->get_rebookings($campaign);
+		echo json_encode(array("success"=>true,"data"=>$result));
+	}
+
     public function checkTrackviaSystem() {
 		
 		   //SOUTHWAY TABLE
@@ -59,6 +69,8 @@ class Trackvia extends CI_Controller
                 'outcome_id' => NULL,
                 'appointment_creation' => false,
 				'appointment_cancelled' => false,
+				'record_color'=>' 	0066FF',
+				'source_id' => 34
             )
         );
 
@@ -73,6 +85,8 @@ class Trackvia extends CI_Controller
                 'outcome_id' => NULL,
                 'appointment_creation' => true,
 				'appointment_cancelled' => true,
+				'record_color'=>'0066FF',
+				'source_id' => 35
             )
         );
 
@@ -86,7 +100,9 @@ class Trackvia extends CI_Controller
                 'status' => 4,
                 'outcome_id' => 72,
                 'appointment_creation' => true,
-				'appointment_cancelled' => false
+				'appointment_cancelled' => false,
+				'record_color'=>'00CC00',
+				'source_id' => 37
             )
         );
 			
@@ -102,7 +118,9 @@ class Trackvia extends CI_Controller
                 'status' => 1,
                 'outcome_id' => NULL,
               'appointment_creation' => false,
-			  'appointment_cancelled' => false
+			  'appointment_cancelled' => false,
+			  'record_color'=>'0066FF',
+				'source_id' => 39
 
             )
        );
@@ -116,7 +134,9 @@ class Trackvia extends CI_Controller
                 'status' => 1,
                 'outcome_id' => NULL,
               'appointment_creation' => true,
-			  'appointment_cancelled' => true
+			  'appointment_cancelled' => true,
+			  'record_color'=>'6600FF',
+				'source_id' => 38
             )
        );
 	   
@@ -129,7 +149,9 @@ class Trackvia extends CI_Controller
                 'status' => 4,
                 'outcome_id' => 72,
               'appointment_creation' => true,
-			   'appointment_cancelled' => false
+			  'appointment_cancelled' => false,
+			  'record_color'=>'00CC00',
+				'source_id' => 36
             )
        );
 
@@ -141,7 +163,10 @@ class Trackvia extends CI_Controller
                 'urgent' => NULL,
                 'status' => 1,
                 'outcome_id' => NULL,
-                'appointment_creation' => false
+                'appointment_creation' => false,
+				'appointment_cancelled' => false,
+			 	'record_color'=>'990000',
+				'source_id' => 40
            )
        );
 
@@ -158,13 +183,16 @@ class Trackvia extends CI_Controller
         $outcome_id = $options['outcome_id'];
         $appointment_creation = $options['appointment_creation'];
 		$appointment_cancelled = $options['appointment_cancelled'];
-
+		$record_color = $options['record_color'];
+		$source = $options['source_id'];
         //Get the trackvia records for this view
         $view = $this->tv->getView($view_id);
-	
+		
+		if(isset($view['records'])){
         $tv_records = $view['records'];
-		if(count($tv_records)=="0"){
-			return false;	
+		} else {
+		$this->firephp->log($view);
+		return false;		
 		}
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
@@ -194,7 +222,8 @@ class Trackvia extends CI_Controller
                         'parked_code' => NULL,
                         'urgent' => $urgent,
                         'record_status' => $status,
-                        'outcome_id' => $outcome_id
+                        'outcome_id' => $outcome_id,
+						'record_color' => $record_color
                     )
                 );
                 //Create appointment if it is needed
@@ -216,10 +245,64 @@ class Trackvia extends CI_Controller
             $this->Trackvia_model->updateRecords($update_records);
         }
 
+			$new=array();
            //TODO Add new records with insert batch
-            $this->firephp->log("Create new records");
+		   if(count($tv_records)>0){
+            $this->firephp->log("Creating new records #Source-ID: [$source]");
 			$this->firephp->log($tv_records);
-
+			foreach($tv_records as $record){
+				//add record
+				$data = array("campaign_id"=>$campaign_id,
+				"date_added"=>date('Y-m-d H:i:s'),
+				"record_status"=>$status,
+				"record_color"=>$record_color,
+				"outcome_id"=>$outcome_id,
+				"urgent"=>$urgent,
+				"source_id"=>$source
+				);
+				$urn = $this->Trackvia_model->add_record($data);
+				$new[]=$urn;
+				
+				$data = array("urn"=>$urn,
+				"client_ref"=>$record['id']
+				);
+				$this->Trackvia_model->add_client_refs($data);
+				
+				$data = array("urn"=>$urn,
+				"fullname"=>$record['fields']['Owner / Tenant Name 1'],
+				"email"=>$record['fields']['Email address'],
+				"date_created"=>date('Y-m-d H:i:s'),
+				"primary"=>1);
+				$contact = $this->Trackvia_model->add_contact($data);
+					
+				if(isset($record['fields']['Primary Contact (Landline)'])&&!empty($record['fields']['Primary Contact (Landline)'])){
+				$data = array("contact_id"=>$contact,
+				"description"=>"Landline",
+				"telephone_number"=>$record['fields']['Primary Contact (Landline)']
+				);
+				$this->Trackvia_model->add_telephone($data);
+				}
+							if(isset($record['fields']['Primary Contact (Mobile)'])&&!empty($record['fields']['Primary Contact (Mobile)'])){
+				$data = array("contact_id"=>$contact,
+				"description"=>"Mobile",
+				"telephone_number"=>$record['fields']['Primary Contact (Mobile)']
+				);
+				$this->Trackvia_model->add_telephone($data);
+				}
+					$data = array("contact_id"=>$contact,
+				"add1"=>$record['fields']['House No.']." ".$record['fields']['Address 1'],
+				"add2"=>$record['fields']['Address 2'],
+				"add3"=>$record['fields']['City'],
+				"postcode"=>$record['fields']['PostCode'],
+				"primary"=>1);
+				$this->Trackvia_model->add_address($data);
+				
+				
+			}
+			$this->firephp->log($new);
+		   }
+			
+			
     }
 
     /**
@@ -379,7 +462,7 @@ $test = "5 oak street 8";
 		"Enquiry Type" => "Telephone Call-in",
 		"Date of Enquiry" => $details['date_added'],
 		"Where did you hear about us" => $details['a8'],
-		"Asset Type" => $details['a1'],
+		"Asset Type" => $details['a1']
 		);
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);

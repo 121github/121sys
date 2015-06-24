@@ -24,6 +24,27 @@ search_record:function($btn){
 		$('#search-results').html(results);
 	});
 	
-}
+},
+/* the function for the urgent panel on the client dashboard */
+    urgent_panel: function (filter) {
+        $.ajax({
+            url: helper.baseUrl + 'trackvia/get_rebookings',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.urgent-filter').serialize(),
+        }).done(function (response) {
+            $('.urgent-panel').empty();
+            var $urgents = "";
+            if (response.data.length > 0) {
+                $.each(response.data, function (i, val) {
+                    $urgents += '<li><a class="red tt pointer" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a> <small>'+val.campaign_name+'</small><br><span class="small">Original Survey: ' + val.cancelled_date + ' '+val.cancelled_slot+'</span></li>';
+                });
+                $('.urgent-panel').append('<ul>' + $urgents + '</ul>');
+				$('.tt').tooltip();
+            } else {
+                $('.urgent-panel').append('<p>' + response.msg + '</p>');
+            }
+        });
+    }
 	
 }

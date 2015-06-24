@@ -63,7 +63,7 @@
 <script src="<?php echo base_url() ?>assets/js/sb-admin.js"></script> 
 <script>
 	$(document).ready(function(){
-		dashboard.urgent_panel();
+		ghs.urgent_panel();
 		ghs.init();
 	});
 	</script> 
