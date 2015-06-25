@@ -271,8 +271,8 @@ class Trackvia extends CI_Controller
 				$extra["n1"]=$fields['No. Panels (Desktop)'];
 				$extra["n2"]=$fields['No. Panels (Desktop)']*$savings;
 				}
-				if(!empty($fields['GHS URN'])){
-				$extra["c1"]=$fields['GHS URN'];
+				if(!empty($fields['GHS UPRN'])){
+				$extra["c1"]=$fields['GHS UPRN'];
 				}
 				if(!empty($fields['Referred by'])){
 				$extra["c2"]=$fields['Referred by'];
