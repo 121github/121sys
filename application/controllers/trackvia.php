@@ -86,7 +86,8 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => false,
 				'appointment_cancelled' => false,
 				'record_color'=>'0066FF',
-				'source_id' => 34
+				'source_id' => 34,
+				'savings_per_panel' => 20
             )
         );
 
@@ -102,7 +103,8 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
 				'appointment_cancelled' => true,
 				'record_color'=>'0066FF',
-				'source_id' => 35
+				'source_id' => 35,
+				'savings_per_panel' => 20
             )
         );
 
@@ -118,7 +120,8 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
 				'appointment_cancelled' => false,
 				'record_color'=>'00CC00',
-				'source_id' => 37
+				'source_id' => 37,
+				'savings_per_panel' => 20
             )
         );
 			
@@ -136,7 +139,8 @@ class Trackvia extends CI_Controller
               'appointment_creation' => false,
 			  'appointment_cancelled' => false,
 			  'record_color'=>'0066FF',
-				'source_id' => 39
+				'source_id' => 39,
+				'savings_per_panel' => 30
 
             )
        );
@@ -152,7 +156,8 @@ class Trackvia extends CI_Controller
               'appointment_creation' => true,
 			  'appointment_cancelled' => true,
 			  'record_color'=>'6600FF',
-				'source_id' => 38
+				'source_id' => 38,
+				'savings_per_panel' => 30
             )
        );
 	   
@@ -167,7 +172,8 @@ class Trackvia extends CI_Controller
               'appointment_creation' => true,
 			  'appointment_cancelled' => false,
 			  'record_color'=>'00CC00',
-				'source_id' => 36
+				'source_id' => 36,
+				'savings_per_panel' => 30
             )
        );
 
@@ -182,7 +188,8 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => false,
 				'appointment_cancelled' => false,
 			 	'record_color'=>'990000',
-				'source_id' => 40
+				'source_id' => 40,
+				'savings_per_panel' => 30
            )
        );
 	   
@@ -204,6 +211,7 @@ class Trackvia extends CI_Controller
 		$appointment_cancelled = $options['appointment_cancelled'];
 		$record_color = $options['record_color'];
 		$source = $options['source_id'];
+		$savings = $options['savings_per_panel'];
         //Get the trackvia records for this view
         $view = $this->tv->getView($view_id);
 		
@@ -321,7 +329,8 @@ class Trackvia extends CI_Controller
 				"c2"=>@!empty($record['fields']['Asset Type'])?$record['fields']['Asset Type']:NULL,
 				"c3"=>@!empty($record['fields']['Panel Location (Desktop)'])?$record['fields']['Panel Location (Desktop)']:NULL,
 				"c4"=>@!empty($record['fields']['Referred by'])?$record['fields']['Referred by']:NULL,
-				"n2"=>@!empty($record['fields']['No. Panels (Desktop)'])?$record['fields']['No. Panels (Desktop)']:NULL
+				"n1"=>@!empty($record['fields']['No. Panels (Desktop)'])?$record['fields']['No. Panels (Desktop)']:NULL,
+				"n2"=>@!empty($record['fields']['No. Panels (Desktop)'])?intval($record['fields']['No. Panels (Desktop)'])*$savings:NULL
 				);
 				$this->Trackvia_model->add_record_details($data);
 				//prepare any new contacts
