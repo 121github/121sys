@@ -2,7 +2,7 @@
 
 var ghs = {
 	init:function(){
-		$(document).on('click','#search-address,#search-reference',function(e){
+		$(document).on('click','#search-address,#search-reference,#search-telephone',function(e){
 			e.preventDefault();
 			ghs.search_record($(this));
 		});
@@ -15,12 +15,12 @@ search_record:function($btn){
 	}).done(function(response){
 		var results;
 		if(response.urn){
-		results = "<p><span class='text-success'>Record was found</span>";
+		results = "<p><span class='text-success'>The record was found! </span>";
 		if(response.parked_code){
 			results += "<span class='text-danger'> We are not doing surveys in this area yet</span>"
 		}
 		results += "</p>";
-		results += "<a href='"+helper.baseUrl+"records/detail/"+response.urn+"' class='btn btn-success'>View</a>";
+		results += "<a href='"+helper.baseUrl+"records/detail/"+response.urn+"' class='btn btn-success'>View Record</a>";
 		} else {
 		results = "<p class='text-danger'>No record was found, please create a new record and capture all the contact details. If it's a housing association tenant please update the new record with the call outcome <b>Query</b>. If it's a private tenant please complete the data capture form.</p>"	
 		results += "<a href='"+helper.baseUrl+"data/add_record' class='btn btn-info'>Create New</a>";

@@ -1,22 +1,12 @@
 <div class="row">
-<div class="col-md-6">
 
- <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-exclamation-triangle fa-fw"></i> Rebook (urgent)</div>
-              <div class="panel-body urgent-panel">
-<img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
-        <!-- /.col-lg-4 --> 
-   </div>
- </div>
- 
-  <div class="col-md-6"> 
+  <div class="col-md-8"> 
     <div class="panel panel-primary">
             <div class="panel-heading"> <i class="fa fa-search fa-fw"></i> Search</div>
               <div class="panel-body search-panel">
 
 
-<div class="col-md-3">
+<div class="col-md-4">
 <form class="form">
 <div class="form-group">
 <label>House Number</label>
@@ -32,11 +22,11 @@
 </form>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-4">
 <form>
 <div class="form-group">
 <label>GHS Reference</label>
-<input type="text" class="form-control" placeholder="Enter the GHS Reference eg. SW12345" name="ghs_ref"/>
+<input type="text" class="form-control" placeholder="GHS Reference eg. SW12345" name="ghs_ref"/>
 </div>
 <div class="form-group">
 <button class="btn btn-primary" id="search-reference">Search by reference</button>
@@ -45,14 +35,14 @@
 </div>
 
 
-<div class="col-md-3">
+<div class="col-md-4">
 <form>
 <div class="form-group">
 <label>Telephone</label>
-<input type="text" class="form-control" placeholder="Enter all or part of a phone number" name="telephone"/>
+<input type="text" class="form-control" placeholder="All or part of a number" name="telephone"/>
 </div>
 <div class="form-group">
-<button class="btn btn-primary" id="search-phpne">Search by phone</button>
+<button class="btn btn-primary" id="search-telephone">Search by phone</button>
 </div>
 </form>
 </div>
@@ -67,6 +57,18 @@
 </div>
    </div>
 </div>
+
+<div class="col-md-4">
+
+ <div class="panel panel-primary">
+            <div class="panel-heading"> <i class="fa fa-exclamation-triangle fa-fw"></i> Rebook (urgent)</div>
+              <div class="panel-body urgent-panel">
+<img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
+            </div>
+        <!-- /.col-lg-4 --> 
+   </div>
+ </div>
+ 
 </div>
 
 <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
