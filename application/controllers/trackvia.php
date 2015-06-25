@@ -11,6 +11,8 @@ define('CLIENT_SECRET', 'qhhgy6bbdc0w8gc0kc0kc0k88gw0ko0oskocock0wc8gw48w8');
 define('USERNAME', 'ghsAPI');
 define('PASSWORD', 'global123');
 
+/*
+//Test tables
 define('SOUTHWAY_ALL_RECORDS', '3000718568');
 define('SOUTHWAY_BOOK_SURVEY', '3000718751');
 define('SOUTHWAY_REBOOK', '3000718753');
@@ -21,6 +23,18 @@ define('PRIVATE_BOOK_SURVEY', '3000719204');
 define('PRIVATE_INFORM_INELIGIBLE', '3000719207');
 define('PRIVATE_REBOOK', '3000719206');
 define('PRIVATE_SURVEY_SLOTS', '3000719481');
+*/
+//Live tables
+define('SOUTHWAY_ALL_RECORDS', '3000719193');
+define('SOUTHWAY_BOOK_SURVEY', '3000719114');
+define('SOUTHWAY_REBOOK', '3000719115');
+define('SOUTHWAY_SURVEY_SLOTS', '3000719175');
+
+define('PRIVATE_ALL_RECORDS', '3000719185');
+define('PRIVATE_BOOK_SURVEY', '3000718982');
+define('PRIVATE_INFORM_INELIGIBLE', '3000718985');
+define('PRIVATE_REBOOK', '3000718984');
+define('PRIVATE_SURVEY_SLOTS', '3000719187');
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -197,7 +211,7 @@ class Trackvia extends CI_Controller
 		$this->firephp->log($view);
 		return false;		
 		}
-		
+		$this->firephp->log($tv_records);
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
@@ -219,7 +233,7 @@ class Trackvia extends CI_Controller
         foreach($records as $record) {
 
             //If the campaign had changed or the park_code is "Not Working"
-            if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 2 || $record['urgent'] <> 1)) {
+            if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 7 || $record['urgent'] <> 1)) {
                 array_push($update_records, array(
                         'urn' => $record['urn'],
                         'campaign_id' => $campaign_id,
@@ -535,7 +549,7 @@ $test = "5 oak street 8";
 		"Address 2" => $details['add2'],
 		"City" => $details['add3'],
 		"PostCode" => $details['postcode'],
-		//"Enquiry Type" => "Telephone Call-in",
+		"Enquiry Type" => "Door knock",
 		"Date of Enquiry" => date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600",
 		//"Where did you hear about us" => "",//$details['a8'],
 		"Asset Type" => $details['a1']

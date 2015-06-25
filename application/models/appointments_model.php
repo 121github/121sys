@@ -15,13 +15,13 @@ class Appointments_model extends CI_Model
 		$slots = array();
 		$thresholds = array();
 		//GHS campaign appointment slot thresholds
-		$thresholds["Monday"]= array('am' => 0,'am_max'=>4,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
-		$thresholds["Tuesday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
-		$thresholds["Wednesday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
-		$thresholds["Thursday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>6, 'eve' => 0,'eve_max'=>3);
-		$thresholds["Friday"]= array('am' => 0,'am_max'=>6,'pm' => 0,'pm_max'=>4, 'eve' => 0,'eve_max'=>0);
-		$thresholds["Saturday"]= array('am' => 0,'am_max'=>5,'pm' => 0,'pm_max'=>0, 'eve' => 0,'eve_max'=>0);
-		$thresholds["Sunday"]= array('am' => 0,'am_max'=>0,'pm' => 0,'pm_max'=>0, 'eve' => 0,'eve_max'=>0);
+		$thresholds["Monday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
+		$thresholds["Tuesday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
+		$thresholds["Wednesday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
+		$thresholds["Thursday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
+		$thresholds["Friday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
+		$thresholds["Saturday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
+		$thresholds["Sunday"]= array('am' => 0,'am_max'=>5,'pm' => 0,'pm_max'=>15);
 		
 for($i = 0; $i < 30; $i++){
     $slots[date("D jS M", strtotime('+'. $i .' days'))] = $thresholds[date("l", strtotime('+'. $i .' days'))];

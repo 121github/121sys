@@ -15,7 +15,11 @@ search_record:function($btn){
 	}).done(function(response){
 		var results;
 		if(response.urn){
-		results = "<p class='text-success'>Record was found</p>";
+		results = "<p><span class='text-success'>Record was found</span>";
+		if(response.parked_code){
+			results += "<span class='text-danger'> We are not doing surveys in this area yet</span>"
+		}
+		results += "</p>";
 		results += "<a href='"+helper.baseUrl+"records/detail/"+response.urn+"' class='btn btn-success'>View</a>";
 		} else {
 		results = "<p class='text-danger'>No record was found, please create a new record and capture all the contact details. If it's a housing association tenant please update the new record with the call outcome <b>Query</b>. If it's a private tenant please complete the data capture form.</p>"	
