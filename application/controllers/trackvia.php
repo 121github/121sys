@@ -207,18 +207,14 @@ class Trackvia extends CI_Controller
 		
 		if(isset($view['records'])){
         $tv_records = $view['records'];
+		$this->firephp->log($view_id);
+		$this->firephp->log($view);
 		} else {
+		$this->firephp->log($view_id);
 		$this->firephp->log($view);
 		return false;		
 		}
-		/*
-		if($view_id = 3000719175){
-		$this->firephp->log($tv_records);
-		return false;
-		} else {
-		return false;	
-		}
-		*/
+
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
@@ -235,11 +231,12 @@ class Trackvia extends CI_Controller
 		
         //Update the record campaign if it is needed (different campaign) and create a new one if it does not exist yet
         $update_records = array();
+		$update_extra = array();
         $new_records_ids = $tv_record_ids;
         foreach($records as $record) {
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];			
             //If the campaign had changed or the park_code is "Not Working"
-            if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 7 || $record['urgent'] <> 1 || $record['record_color'] <> "000000" )) {
+            if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 7 || $record['record_status'] != $status || $record['record_color'] != $record_color )) {
                 array_push($update_records, array(
                         'urn' => $record['urn'],
                         'campaign_id' => $campaign_id,
@@ -250,8 +247,9 @@ class Trackvia extends CI_Controller
 						'record_color' => $record_color
                     )
                 );
-				/*
-				$update_extra = array("urn"=>$record['urn']);
+				
+				
+				$extra = array();
 				if(!empty($fields['No. Panels (Desktop)'])){
 				$extra["n2"]=$fields['No. Panels (Desktop)'];
 				}
@@ -264,10 +262,10 @@ class Trackvia extends CI_Controller
 				if(!empty($fields['Property Viable'])){
 				$extra["n1"]=$fields['Property Viable'];
 				}
-				
+				if(!empty($extra)){
+				$extra['urn'] = $record['urn'];
 				array_push($update_extra, $extra);
-				$this->Trackvia_model->update_extra($update_extra);
-				*/
+				}
 				
                 //Create appointment if it is needed
                 if ($appointment_creation) {
@@ -280,13 +278,14 @@ class Trackvia extends CI_Controller
 			}
         }
 
-
         //Update the records which campaign was changed
         echo "\n\t\t Records updated in our system... ".count($update_records)."\n";
         if (!empty($update_records)) {
             $this->Trackvia_model->updateRecords($update_records);
         }
-
+		if(!empty($extra)){
+			$this->Trackvia_model->update_extra($update_extra);
+		}
 			$new=array();
            //TODO Add new records with insert batch
 		   if(count($tv_records)>0){
