@@ -239,7 +239,7 @@ class Trackvia extends CI_Controller
         foreach($records as $record) {
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];			
             //If the campaign had changed or the park_code is "Not Working"
-            if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 7 || $record['urgent'] <> 1)) {
+            if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 7 || $record['urgent'] <> 1 || $record['record_color'] <> "000000" )) {
                 array_push($update_records, array(
                         'urn' => $record['urn'],
                         'campaign_id' => $campaign_id,
@@ -271,7 +271,6 @@ class Trackvia extends CI_Controller
 				
                 //Create appointment if it is needed
                 if ($appointment_creation) {
-                    
                     $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
                 }
             }
