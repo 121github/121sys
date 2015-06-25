@@ -1308,7 +1308,7 @@ var record = {
 				if(response.success){
 				var table ='<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th><th>AM</th><th>PM</th><th>EVE</th></thead><tbody>';
 				$.each(response.data,function(k,v){
-					console.log(v);
+
 					var slot_color="";
 					if(v.am>=v.am_max||v.pm>=v.pm_max||v.eve>=v.eve_max){ 
 					slot_color = 'text-danger';
