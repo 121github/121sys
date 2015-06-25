@@ -271,18 +271,28 @@ class Trackvia extends CI_Controller
 				}
 				if(!empty($fields['Referred by'])){
 				$extra["c2"]=$fields['Referred by'];
+				} else {
+				$extra["c2"] = NULL;
 				}
 				if(!empty($fields['Enquiry type'])){
 				$extra["c3"]=$fields['Enquiry type'];
+				} else {
+				$extra["c3"] = NULL;	
 				}
 				if(!empty($fields['Bluesky FDViable'])){
 				$extra["c4"]=$fields['Bluesky FDViable'];
+				} else {
+				$extra["c4"] = NULL;		
 				}
 				if(!empty($fields['Property Viable'])){
 				$extra["c5"]=$fields['Property Viable'];
+				} else {
+				$extra["c5"] = NULL;		
 				}
 				if(!empty($fields['Reason for Desktop Fail'])){
 				$extra["c6"]=$fields['Reason for Desktop Fail'];
+				} else {
+				$extra["c6"] = NULL;		
 				}
 				if(!empty($extra)){
 				$extra['urn'] = $record['urn'];
