@@ -211,8 +211,14 @@ class Trackvia extends CI_Controller
 		$this->firephp->log($view);
 		return false;		
 		}
-		$this->firephp->log($tv_records[0]);
+		/*
+		if($view_id = 3000719175){
+		$this->firephp->log($tv_records);
 		return false;
+		} else {
+		return false;	
+		}
+		*/
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
@@ -221,7 +227,6 @@ class Trackvia extends CI_Controller
             $aux[md5($tv_record['id'])] = $tv_record;
         }
         $tv_records = $aux;
-		
 
         echo "\n\t\t Total track via records in this view... ".count($tv_records);
 
@@ -316,7 +321,7 @@ class Trackvia extends CI_Controller
 				
 				$data = array("urn"=>$urn,
 				"fullname"=>$record['fields']['Owner / Tenant Name 1'],
-				"email"=>$record['fields']['Email address'],
+				"email"=>@$record['fields']['Email address'],
 				"date_created"=>date('Y-m-d H:i:s'),
 				"notes"=>"Ref# ".$record['id'],
 				"primary"=>1);
@@ -339,7 +344,7 @@ class Trackvia extends CI_Controller
 					$data = array("contact_id"=>$contact,
 				"add1"=>$record['fields']['House No.']." ".$record['fields']['Address 1'],
 				"add2"=>$record['fields']['Address 2'],
-				"add3"=>$record['fields']['City'],
+				"add3"=>@$record['fields']['City'],
 				"postcode"=>$record['fields']['PostCode'],
 				"primary"=>1);
 				$this->Trackvia_model->add_address($data);
