@@ -391,6 +391,12 @@ class Trackvia extends CI_Controller
 				);
 				$this->Trackvia_model->add_telephone($data);
 				}
+				//add transfer
+				$data = array("contact_id"=>$contact,
+				"description"=>"Transfer to GHS",
+				"telephone_number"=>"01228819810"
+				);
+				$this->Trackvia_model->add_telephone($data);
 				//prepare any new telephone addresses
 				$data = array("contact_id"=>$contact,
 				"add1"=>$record['fields']['House No.']." ".$record['fields']['Address 1'],
