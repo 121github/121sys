@@ -263,16 +263,26 @@ class Trackvia extends CI_Controller
 				//organise the record_details update
 				$extra = array();
 				if(!empty($fields['No. Panels (Desktop)'])){
-				$extra["n2"]=$fields['No. Panels (Desktop)'];
+				$extra["n1"]=$fields['No. Panels (Desktop)'];
+				$extra["n2"]=$fields['No. Panels (Desktop)']*$savings;
 				}
 				if(!empty($fields['GHS URN'])){
 				$extra["c1"]=$fields['GHS URN'];
 				}
-				if(!empty($fields['Asset Type'])){
-				$extra["c2"]=$fields['Asset Type'];
+				if(!empty($fields['Referred by'])){
+				$extra["c2"]=$fields['Referred by'];
+				}
+				if(!empty($fields['Enquiry type'])){
+				$extra["c3"]=$fields['Enquiry type'];
+				}
+				if(!empty($fields['Bluesky FDViable'])){
+				$extra["c4"]=$fields['Bluesky FDViable'];
 				}
 				if(!empty($fields['Property Viable'])){
-				$extra["n1"]=$fields['Property Viable'];
+				$extra["c5"]=$fields['Property Viable'];
+				}
+				if(!empty($fields['Reason for Desktop Fail'])){
+				$extra["c6"]=$fields['Reason for Desktop Fail'];
 				}
 				if(!empty($extra)){
 				$extra['urn'] = $record['urn'];
@@ -324,15 +334,29 @@ class Trackvia extends CI_Controller
 				//insert the client refs
 				$this->Trackvia_model->add_client_refs($data);
 				//prepare the record_details
-				$data = array("urn"=>$urn,
-				"c1"=>@!empty($record['fields']['GHS UPRN'])?$record['fields']['GHS UPRN']:NULL,
-				"c2"=>@!empty($record['fields']['Asset Type'])?$record['fields']['Asset Type']:NULL,
-				"c3"=>@!empty($record['fields']['Panel Location (Desktop)'])?$record['fields']['Panel Location (Desktop)']:NULL,
-				"c4"=>@!empty($record['fields']['Referred by'])?$record['fields']['Referred by']:NULL,
-				"n1"=>@!empty($record['fields']['No. Panels (Desktop)'])?$record['fields']['No. Panels (Desktop)']:NULL,
-				"n2"=>@!empty($record['fields']['No. Panels (Desktop)'])?intval($record['fields']['No. Panels (Desktop)'])*$savings:NULL
-				);
+				$data=array();
+				if(!empty($fields['GHS URN'])){
+				$data["c1"]=$fields['GHS URN'];
+				}
+				if(!empty($fields['Referred by'])){
+				$data["c2"]=$fields['Referred by'];
+				}
+				if(!empty($fields['Enquiry type'])){
+				$data["c3"]=$fields['Enquiry type'];
+				}
+				if(!empty($fields['Bluesky FDViable'])){
+				$data["c4"]=$fields['Bluesky FDViable'];
+				}
+				if(!empty($fields['Property Viable'])){
+				$data["c5"]=$fields['Property Viable'];
+				}
+				if(!empty($fields['Reason for Desktop Fail'])){
+				$data["c6"]=$fields['Reason for Desktop Fail'];
+				}
+				if(!empty($data)){
+				$data["urn"]=$urn;
 				$this->Trackvia_model->add_record_details($data);
+				}
 				//prepare any new contacts
 				$data = array("urn"=>$urn,
 				"fullname"=>isset($record['fields']['Owner / Tenant Name 1'])?$record['fields']['Owner / Tenant Name 1']:'',
@@ -515,51 +539,10 @@ $test = "5 oak street 8";
 		$urn = $this->input->post('urn');
 		}
 		$tv_tables = $this->tv_tables;
-		$record = $this->Trackvia_model->get_record_rows($urn);
-
-		foreach($record as $k=>$row){
-			$details = $row;
-			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07/',$row['telephone_number'])){
-				$mobile = $row['telephone_number'];
-			} 
-			$add1= preg_replace('/[0-9]/','',$row['add1']);
-			$house_number= preg_replace('/^[0-9]/','',$row['add1']);
-		}
-		//table id
-		$table_id = $tv_tables["GHS Private"];
-		
-		$details['mobile_number'] = $mobile;
-		$data = array("UPRN Pre-fix"=>"PR",
-		"created"=>date('Y-m-d')."T12:00:00-0600",
-		"Date of Enquiry"=>date('Y-m-d')."T12:00:00-0600",
-		//"Owner / Rented"=>$details['a2'],
-		//"Is the property mortgaged" => $details['a6'],
-		"Who is the Mortgage provider" => $details['a7'],
-		"Owner / Tenant Name 1" => $details['fullname'],
-		//"Is ownership in Joint Names" => $details['a4'],
-		"Owner / Tenant Name 2" => $details['a5'],
-		"Primary Contact (Landline)" => $details['telephone_number'],
-		"Email address" => $details['email'],
-		"House No." => $house_number,
-		"Address 1" => $add1,
-		"Address 2" => $details['add2'],
-		"City" => $details['add3'],
-		"PostCode" => $details['postcode'],
-		//"Enquiry Type" => "Telephone Call-in",
-		"Date of Enquiry" => date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600",
-		//"Where did you hear about us" => "",//$details['a8'],
-		"Asset Type" => $details['a1'],
-		"If Other Mortgage Provider, please Input" => $details['a9']
-		);
-		if(isset($mobile)){
-			$data["Primary Contact (Mobile)"] = $mobile;
-		}
-		if(!empty($details['c4'])){
-		$data["Referred by"] = $details['c4'];
-		}
+		$data = get_record_array($urn);
 		$this->firephp->log($data);
         //Update the record
-        $response = $this->tv->addRecord($table_id,$data);
+        $response = $this->tv->addRecord($tv_tables['GHS Private'],$data);
 		echo $response;
     }
 
@@ -570,39 +553,90 @@ $test = "5 oak street 8";
 		}
 		 //Get the record data
         $record = $this->Trackvia_model->get_record_rows($urn);
+		$data = get_record_array($urn);
+		$client_ref=$data['client_ref'];
+		unset($data['client_ref']);
+		$response = $this->tv->updateRecord($client_ref,$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$client_ref,"data"=>$data));
+	}
+	
+	public function get_record_array($urn){
+			$record = $this->Trackvia_model->get_record_rows($urn);
+
 		foreach($record as $k=>$row){
 			$details = $row;
-			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07|^0447/',$row['telephone_number'])){
+			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07/',$row['telephone_number'])){
 				$mobile = $row['telephone_number'];
-			}
+			} 
 			$add1= preg_replace('/[0-9]/','',$row['add1']);
 			$house_number= preg_replace('/^[0-9]/','',$row['add1']);
 		}
-		$data = array(
-		//"Owner / Rented"=>$details['a2'],
-		//"Is the property mortgaged" => $details['a6'],
-		"Who is the Mortgage provider" => $details['a7'],
-		"Owner / Tenant Name 1" => $details['fullname'],
-		//"Is ownership in Joint Names" => $details['a4'],
-		"Owner / Tenant Name 2" => $details['a5'],
-		"Primary Contact (Landline)" => $details['telephone_number'],
-		"Email address" => $details['email'],
-		"House No." => $house_number,
-		"Address 1" => $add1,
-		"Address 2" => $details['add2'],
-		"City" => $details['add3'],
-		"PostCode" => $details['postcode'],
-		"Enquiry Type" => "Door knock",
-		"Date of Enquiry" => date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600",
-		//"Where did you hear about us" => "",//$details['a8'],
-		"Asset Type" => $details['a1']
-		);
-	
-		if(isset($mobile)){
-			$data["Primary Contact (Mobile)"] = $mobile;
+		
+		$data = array("UPRN Pre-fix"=>"PR",
+		"created"=>date('Y-m-d')."T12:00:00-0600",
+		"Date of Enquiry"=>date('Y-m-d')."T12:00:00-0600");
+		if(!empty($details['a2'])){
+		$data["Owner / Rented"]=$details['a2'];
 		}
-		$response = $this->tv->updateRecord($details['client_ref'],$data);
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$details['client_ref'],"data"=>$data));
+		if(!empty($details['a6'])){
+		$data["Is the property mortgaged"]=$details['a6'];
+		}
+		if(!empty($details['a7'])){
+		$data["Who is the Mortgage provider"]=$details['a7'];
+		}
+		if(!empty($details['fullname'])){
+		$data["Owner / Tenant Name 1"]=$details['fullname'];
+		}
+		if(!empty($details['a4'])){
+		$data["Is ownership in Joint Names"]=$details['a4'];
+		}
+		if(!empty($details['a5'])){
+		$data["Owner / Tenant Name 2"]=$details['a5'];
+		}
+		if(!empty($details['telephone_number'])){
+		$data["Primary Contact (Landline)"]=$details['telephone_number'];
+		}
+		if(!empty($details['email'])){
+		$data["Email address"]=$details['email'];
+		}
+		if(!empty($house_number)){
+		$data["House No."]=$house_number;
+		}
+		if(!empty($add1)){
+		$data["Address 1"]=$add1;
+		}
+		if(!empty($details['add2'])){
+		$data["Address 2"]=$details['add2'];
+		}
+		if(!empty($details['add3'])){
+		$data["City"]=$details['add3'];
+		}
+		if(!empty($details['postcode'])){
+		$data["PostCode"]=$details['postcode'];
+		}
+		if(!empty($details["Telephone Call-in"])){
+		$data["Enquiry Type"]=$details["Telephone Call-in"];
+		}
+		if(!empty($details['date_added'])){
+		$data["Date of Enquiry"]=date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600";
+		}
+		if(!empty($details['a8'])){
+		$data["Where did you hear about us"]=$details['a8'];
+		}
+		if(!empty($details['a1'])){
+		$data["Asset Type"]=$details['a1'];
+		}
+		if(!empty($details['a9'])){
+		$data["If Other Mortgage Provider, please Input"]=$details['a9'];
+		}
+		if(isset($mobile)){
+		$data["Primary Contact (Mobile)"] = $mobile;
+		}
+		if(!empty($details['c4'])){
+		$data["Referred by"] = $details['c4'];
+		}
+		return $data;
+		
 	}
 
 }
