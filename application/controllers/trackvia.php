@@ -451,7 +451,7 @@ class Trackvia extends CI_Controller
         }
 		if($appointment_cancelled){
 			$this->firephp->log("Cancelling appointment that needs rebooking");
-			$this->Trackvia_model->cancel_appointment($record['urn'],$planned_survey_datetime);	
+			$this->Trackvia_model->cancel_appointment($record['urn'],$planned_survey_date);	
 		}
     }
 

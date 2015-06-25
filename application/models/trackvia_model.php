@@ -104,7 +104,8 @@ public function update_extra($data){
 	}
 	
 	public function cancel_appointment($urn,$start){
-		$this->db->where(array("urn"=>$urn,"start"=>$start));
+		$this->db->_protect_identifiers=false;
+		$this->db->where(array("urn"=>$urn,"date(start)"=>$start));
 		$this->db->update("appointments",array("cancellation_reason"=>"Needs rebooking","updated_by"=>1,"date_updated"=>date('Y-m-d H:i:s')));
 	}
 
