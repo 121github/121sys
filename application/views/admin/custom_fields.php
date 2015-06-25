@@ -51,6 +51,10 @@
                         <td><input class="form-control" value="" name="c5[name]" id="c5"/></td>
                         <td><input type="checkbox" class="form-control" name="c5[visible]" id="c5_vis"/></td>
                       </tr>
+                         <tr>
+                        <td><input class="form-control" value="" name="c6[name]" id="c6"/></td>
+                        <td><input type="checkbox" class="form-control" name="c6[visible]" id="c6_vis"/></td>
+                      </tr>
                     </table>
                     <hr />
                     <h4>Custom Date fields</h4>
