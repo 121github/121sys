@@ -1307,7 +1307,7 @@ var record = {
             }).done(function (response) {
 				$('#slots-panel').empty();
 				if(response.success){
-				var table ='<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th><th>AM</th><th>PM</th><th>EVE</th></thead><tbody>';
+				var table ='<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th><th>AM</th><th>PM</th></thead><tbody>';
 				$.each(response.data,function(k,v){
 					var slot_color_am,slot_color_pm,slot_color_eve="";
 					if(v.am>=v.am_max){ 
@@ -1316,10 +1316,7 @@ var record = {
 					if(v.pm>=v.pm_max){ 
 					slot_color_pm = 'text-danger';
 					}
-					if(v.eve>=v.eve_max){ 
-					slot_color_eve = 'text-danger';
-					}
-					table += '<tr><td>'+k+'</td><td class="'+slot_color_am+'" >'+v.am+'</td><td  class="'+slot_color_pm+'">'+v.pm+'</td><td  class="'+slot_color_eve+'">'+v.eve+'</td></tr>'
+					table += '<tr><td>'+k+'</td><td class="'+slot_color_am+'" >'+v.am+'</td><td  class="'+slot_color_pm+'">'+v.pm+'</td></tr>'
 				});
 				table += '</tbody></table></div>';
 				$('#slots-panel').html(table);	
