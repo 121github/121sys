@@ -259,13 +259,12 @@ class Trackvia extends CI_Controller
 						'record_color' => $record_color
                     )
                 );
-				
+
+			}
 				//Create appointment if it is needed
                 if ($appointment_creation) {
                     $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
                 }
-				
-			}
 				//organise the record_details update
 				$extra = array();
 				if(!empty($fields['No. Panels (Desktop)'])){
@@ -346,8 +345,8 @@ class Trackvia extends CI_Controller
 				$this->Trackvia_model->add_client_refs($data);
 				//prepare the record_details
 				$data=array();
-				if(!empty($fields['GHS URN'])){
-				$data["c1"]=$fields['GHS URN'];
+				if(!empty($fields['GHS UPRN'])){
+				$data["c1"]=$fields['GHS UPRN'];
 				}
 				if(!empty($fields['Referred by'])){
 				$data["c2"]=$fields['Referred by'];
