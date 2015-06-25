@@ -47,7 +47,8 @@ class Trackvia_model extends CI_Model
                   r.campaign_id,
                   r.urn,
                   cr.client_ref,
-                  a.start as survey_date,
+                  a.start as survey_datetime,
+				  date(a.start) as survey_date,
                   r.parked_code,
 				  r.record_status,
 				  r.urgent,
@@ -124,7 +125,7 @@ public function update_extra($data){
 	public function add_telephone($data){
 		$this->db->insert("contact_telephone",$data);
 	}
-	public function add_record_details($urn,$data){
+	public function add_record_details($data){
 		$this->db->insert("record_details",$data);
 	}
 

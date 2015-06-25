@@ -72,7 +72,6 @@ class Trackvia extends CI_Controller
 	}
 
     public function checkTrackviaSystem() {
-		
 		   //SOUTHWAY TABLE
 
         //Book View
@@ -86,7 +85,7 @@ class Trackvia extends CI_Controller
                 'outcome_id' => NULL,
                 'appointment_creation' => false,
 				'appointment_cancelled' => false,
-				'record_color'=>' 	0066FF',
+				'record_color'=>'0066FF',
 				'source_id' => 34
             )
         );
@@ -186,6 +185,9 @@ class Trackvia extends CI_Controller
 				'source_id' => 40
            )
        );
+	   
+	   //queries we may want to run after the updates can go here
+	   $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29)");
 
     }
 
@@ -235,8 +237,10 @@ class Trackvia extends CI_Controller
         $new_records_ids = $tv_record_ids;
         foreach($records as $record) {
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];			
-            //If the campaign had changed or the park_code is "Not Working"
+            //If the campaign had changed or the park_code is "Not Working"			
+			
             if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 7 || $record['record_status'] != $status || $record['record_color'] != $record_color )) {
+				//organising the record update data
                 array_push($update_records, array(
                         'urn' => $record['urn'],
                         'campaign_id' => $campaign_id,
@@ -248,7 +252,7 @@ class Trackvia extends CI_Controller
                     )
                 );
 				
-				
+				//organise the record_details update
 				$extra = array();
 				if(!empty($fields['No. Panels (Desktop)'])){
 				$extra["n2"]=$fields['No. Panels (Desktop)'];
@@ -283,16 +287,17 @@ class Trackvia extends CI_Controller
         if (!empty($update_records)) {
             $this->Trackvia_model->updateRecords($update_records);
         }
+		//update the record details
 		if(!empty($extra)){
 			$this->Trackvia_model->update_extra($update_extra);
 		}
 			$new=array();
-           //TODO Add new records with insert batch
+           //Add new records if there are any left in the $tv_records array
 		   if(count($tv_records)>0){
             $this->firephp->log("Creating new records #Source-ID: [$source]");
 			$this->firephp->log($tv_records);
 			foreach($tv_records as $record){
-				//add record
+				//organise the new record data
 				$data = array("campaign_id"=>$campaign_id,
 				"date_added"=>date('Y-m-d H:i:s'),
 				"record_status"=>$status,
@@ -302,13 +307,15 @@ class Trackvia extends CI_Controller
 				"source_id"=>$source
 				);
 				$urn = $this->Trackvia_model->add_record($data);
+				//catch the newly created urns
 				$new[]=$urn;
-				
+				//prepare the new client refs
 				$data = array("urn"=>$urn,
 				"client_ref"=>$record['id']
 				);
+				//insert the client refs
 				$this->Trackvia_model->add_client_refs($data);
-				
+				//prepare the record_details
 				$data = array("urn"=>$urn,
 				"c1"=>@!empty($record['fields']['GHS UPRN'])?$record['fields']['GHS UPRN']:NULL,
 				"c2"=>@!empty($record['fields']['Asset Type'])?$record['fields']['Asset Type']:NULL,
@@ -316,15 +323,16 @@ class Trackvia extends CI_Controller
 				"c4"=>@!empty($record['fields']['Referred by'])?$record['fields']['Referred by']:NULL,
 				"n2"=>@!empty($record['fields']['No. Panels (Desktop)'])?$record['fields']['No. Panels (Desktop)']:NULL
 				);
-				
+				$this->Trackvia_model->add_record_details($data);
+				//prepare any new contacts
 				$data = array("urn"=>$urn,
-				"fullname"=>$record['fields']['Owner / Tenant Name 1'],
-				"email"=>@$record['fields']['Email address'],
+				"fullname"=>isset($record['fields']['Owner / Tenant Name 1'])?$record['fields']['Owner / Tenant Name 1']:'',
+				"email"=>isset($record['fields']['Email address'])?$record['fields']['Email address']:NULL,
 				"date_created"=>date('Y-m-d H:i:s'),
 				"notes"=>"Ref# ".$record['id'],
 				"primary"=>1);
 				$contact = $this->Trackvia_model->add_contact($data);
-				
+				//prepare any new telephone numbers
 				if(isset($record['fields']['Primary Contact (Landline)'])&&!empty($record['fields']['Primary Contact (Landline)'])){
 				$data = array("contact_id"=>$contact,
 				"description"=>"Landline",
@@ -332,14 +340,16 @@ class Trackvia extends CI_Controller
 				);
 				$this->Trackvia_model->add_telephone($data);
 				}
-							if(isset($record['fields']['Primary Contact (Mobile)'])&&!empty($record['fields']['Primary Contact (Mobile)'])){
+				//prepare any new mobile telephone numbers
+				if(isset($record['fields']['Primary Contact (Mobile)'])&&!empty($record['fields']['Primary Contact (Mobile)'])){
 				$data = array("contact_id"=>$contact,
 				"description"=>"Mobile",
 				"telephone_number"=>$record['fields']['Primary Contact (Mobile)']
 				);
 				$this->Trackvia_model->add_telephone($data);
 				}
-					$data = array("contact_id"=>$contact,
+				//prepare any new telephone addresses
+				$data = array("contact_id"=>$contact,
 				"add1"=>$record['fields']['House No.']." ".$record['fields']['Address 1'],
 				"add2"=>$record['fields']['Address 2'],
 				"add3"=>@$record['fields']['City'],
@@ -349,6 +359,7 @@ class Trackvia extends CI_Controller
 				
 				
 			}
+			//show the new urns
 			$this->firephp->log($new);
 		   }
 			
@@ -382,7 +393,7 @@ class Trackvia extends CI_Controller
         $planned_survey_datetime = $planned_survey_date." ".$planned_survey_time;
 
         //TODO Add appointment if the survey_date is different in both systems
-        if ($record['survey_date']!=$planned_survey_datetime) {
+        if ($record['survey_date']!=$planned_survey_date) {
             //Create a new appointment if it is needed
 			$this->firephp->log("Creating appointment");
 			$this->firephp->log($record);

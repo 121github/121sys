@@ -13,7 +13,7 @@
         <small>
             URN: <?php echo $details['record']['urn'] ?> <?php echo(!empty($details['record']['campaign']) ? " [" . $details['record']['campaign'] . "]" : "") ?></small> <?php echo(!empty($details['record']['logo']) ? '<img style="max-height:40px" src="' . base_url() . 'assets/logos/' . $details['record']['logo'] . '" />' : ""); ?>
 
-        <button class="btn btn-info" id="map-icon" data-iconset="fontawesome" data-icon="<?php echo $map_icon ?>"
+        <button class="btn btn-default" id="map-icon" style="color:#<?php echo empty($details['record']['color'])?"000":$details['record']['color'] ?>" data-iconset="fontawesome" data-icon="<?php echo $map_icon ?>"
                 role="iconpicker"></button>
 
       <span class="pull-right">
