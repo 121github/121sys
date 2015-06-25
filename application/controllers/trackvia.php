@@ -317,6 +317,8 @@ class Trackvia extends CI_Controller
         }
 		//update the record details
 		if(!empty($extra)){
+			$this->firephp->log("Updating Details");
+			$this->firephp->log($update_extra);
 			$this->Trackvia_model->update_extra($update_extra);
 		}
 			$new=array();
@@ -450,7 +452,7 @@ class Trackvia extends CI_Controller
 			$this->Locations_model->set_location_id($fields['PostCode']);
         }
 		if($appointment_cancelled){
-			$this->firephp->log("Cancelling appointment that needs rebooking");
+			$this->firephp->log("Cancelling appointment that needs rebooking:". $record['urn']);
 			$this->Trackvia_model->cancel_appointment($record['urn'],$planned_survey_date);	
 		}
     }
