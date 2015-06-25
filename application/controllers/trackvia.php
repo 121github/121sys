@@ -211,7 +211,8 @@ class Trackvia extends CI_Controller
 		$this->firephp->log($view);
 		return false;		
 		}
-		$this->firephp->log($tv_records);
+		$this->firephp->log($tv_records[0]);
+
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
@@ -231,7 +232,7 @@ class Trackvia extends CI_Controller
         $update_records = array();
         $new_records_ids = $tv_record_ids;
         foreach($records as $record) {
-
+			$fields = $tv_records[md5($record['client_ref'])]['fields'];			
             //If the campaign had changed or the park_code is "Not Working"
             if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 7 || $record['urgent'] <> 1)) {
                 array_push($update_records, array(
@@ -244,9 +245,28 @@ class Trackvia extends CI_Controller
 						'record_color' => $record_color
                     )
                 );
+				/*
+				$update_extra = array("urn"=>$record['urn']);
+				if(!empty($fields['No. Panels (Desktop)'])){
+				$extra["n2"]=$fields['No. Panels (Desktop)'];
+				}
+				if(!empty($fields['GHS URN'])){
+				$extra["c1"]=$fields['GHS URN'];
+				}
+				if(!empty($fields['Asset Type'])){
+				$extra["c2"]=$fields['Asset Type'];
+				}
+				if(!empty($fields['Property Viable'])){
+				$extra["n1"]=$fields['Property Viable'];
+				}
+				
+				array_push($update_extra, $extra);
+				$this->Trackvia_model->update_extra($update_extra);
+				*/
+				
                 //Create appointment if it is needed
                 if ($appointment_creation) {
-                    $fields = $tv_records[md5($record['client_ref'])]['fields'];
+                    
                     $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
                 }
             }

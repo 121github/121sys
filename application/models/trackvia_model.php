@@ -10,6 +10,7 @@ class Trackvia_model extends CI_Model
         
     }
 
+
    public function get_rebookings($campaign = "")
     {
         $qry = "select urn,fullname,campaign_name,date_format(a.start,'%d/%m/%y') cancelled_date,if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) cancelled_slot from records left join contacts using(urn) left join appointments a using(urn) left join campaigns using(campaign_id) where urgent = 1 and cancellation_reason is not null";
@@ -60,6 +61,9 @@ class Trackvia_model extends CI_Model
     }
 
 
+public function update_extra($data){
+	  return $this->db->update_batch('record_details', $data, 'urn');
+}
     //Update records in our system
     public function updateRecords($records) {
         return $this->db->update_batch('records', $records, 'urn');
