@@ -18,7 +18,7 @@ search_record:function($btn){
 		results = "<p class='text-success'>Record was found</p>";
 		results += "<a href='"+helper.baseUrl+"records/detail/"+response.urn+"' class='btn btn-success'>View</a>";
 		} else {
-		results = "<p class='text-danger'>No record was found, if this is a housing association tenant they should call 08002483743. If it is a private tenant you can create a new record.</p>"	
+		results = "<p class='text-danger'>No record was found, please create a new record and capture all the contact details. If it's a housing association tenant please update the new record with the call outcome <b>Query</b>. If it's a private tenant please complete the data capture form.</p>"	
 		results += "<a href='"+helper.baseUrl+"data/add_record' class='btn btn-info'>Create New</a>";
 		}
 		$('#search-results').html(results);

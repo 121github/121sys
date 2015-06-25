@@ -462,10 +462,11 @@ var record = {
 			if($('#outcome-reasons option[outcome-id="'+outcome+'"]').length>0){
 				//show if any reasons are linked to the selected outcome and hide any other
 			$('#outcome-reasons option').each(function(){
-				if($(this).attr('outcome-id')==outcome&&$(this).attr('value')!==""||$(this).attr('value')=="na"){
-					$(this).addClass('option-hidden');
+				if($(this).attr('outcome-id')==outcome&&$(this).attr('value')!=="na"||$(this).attr('value')=="0"){
+						$(this).removeClass('option-hidden');
 				} else {
-					$(this).removeClass('option-hidden');
+				
+					$(this).addClass('option-hidden');
 				}
 			});
 			//enable the reason dropdown if required
@@ -1308,12 +1309,17 @@ var record = {
 				if(response.success){
 				var table ='<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th><th>AM</th><th>PM</th><th>EVE</th></thead><tbody>';
 				$.each(response.data,function(k,v){
-
-					var slot_color="";
-					if(v.am>=v.am_max||v.pm>=v.pm_max||v.eve>=v.eve_max){ 
-					slot_color = 'text-danger';
+					var slot_color_am,slot_color_pm,slot_color_eve="";
+					if(v.am>=v.am_max){ 
+					slot_color_am = 'text-danger';
 					}
-					table += '<tr><td>'+k+'</td><td class="'+slot_color+'" >'+v.am+'</td><td  class="'+slot_color+'">'+v.pm+'</td><td  class="'+slot_color+'">'+v.eve+'</td></tr>'
+					if(v.pm>=v.pm_max){ 
+					slot_color_pm = 'text-danger';
+					}
+					if(v.eve>=v.eve_max){ 
+					slot_color_eve = 'text-danger';
+					}
+					table += '<tr><td>'+k+'</td><td class="'+slot_color_am+'" >'+v.am+'</td><td  class="'+slot_color_pm+'">'+v.pm+'</td><td  class="'+slot_color_eve+'">'+v.eve+'</td></tr>'
 				});
 				table += '</tbody></table></div>';
 				$('#slots-panel').html(table);	

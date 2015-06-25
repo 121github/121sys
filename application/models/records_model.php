@@ -12,6 +12,12 @@ class Records_model extends CI_Model
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
 	
+	public function update($urn,$data){
+		$this->db->where("urn",$urn);
+		$this->db->where_in('campaign_id', $_SESSION['campaign_access']['array']);
+		$this->db->update("records",$data);	
+	}
+	
 	public function save_record_color($urn,$color){
 		$color = color_name_to_hex($color);
 		$this->db->where("urn",$urn);

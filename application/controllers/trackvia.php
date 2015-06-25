@@ -22,7 +22,6 @@ define('PRIVATE_INFORM_INELIGIBLE', '3000719207');
 define('PRIVATE_REBOOK', '3000719206');
 define('PRIVATE_SURVEY_SLOTS', '3000719481');
 
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -42,6 +41,10 @@ class Trackvia extends CI_Controller
             'username'      => USERNAME,
             'password'      => PASSWORD
         ));
+		
+		$this->tv_tables = array(
+		"GHS Southway"=>3000283398,
+		"GHS Private"=>3000283421);
     }
 
 	public function get_rebookings(){
@@ -194,6 +197,7 @@ class Trackvia extends CI_Controller
 		$this->firephp->log($view);
 		return false;		
 		}
+		
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
@@ -269,12 +273,21 @@ class Trackvia extends CI_Controller
 				$this->Trackvia_model->add_client_refs($data);
 				
 				$data = array("urn"=>$urn,
+				"c1"=>@!empty($record['fields']['GHS UPRN'])?$record['fields']['GHS UPRN']:NULL,
+				"c2"=>@!empty($record['fields']['Asset Type'])?$record['fields']['Asset Type']:NULL,
+				"c3"=>@!empty($record['fields']['Panel Location (Desktop)'])?$record['fields']['Panel Location (Desktop)']:NULL,
+				"c4"=>@!empty($record['fields']['Referred by'])?$record['fields']['Referred by']:NULL,
+				"n2"=>@!empty($record['fields']['No. Panels (Desktop)'])?$record['fields']['No. Panels (Desktop)']:NULL
+				);
+				
+				$data = array("urn"=>$urn,
 				"fullname"=>$record['fields']['Owner / Tenant Name 1'],
 				"email"=>$record['fields']['Email address'],
 				"date_created"=>date('Y-m-d H:i:s'),
+				"notes"=>"Ref# ".$record['id'],
 				"primary"=>1);
 				$contact = $this->Trackvia_model->add_contact($data);
-					
+				
 				if(isset($record['fields']['Primary Contact (Landline)'])&&!empty($record['fields']['Primary Contact (Landline)'])){
 				$data = array("contact_id"=>$contact,
 				"description"=>"Landline",
@@ -345,27 +358,7 @@ class Trackvia extends CI_Controller
 		}
     }
 
-    /**
-     * Add a trackvia record
-     */
-    public function addTVRecords($record_ids) {
-
-        //Get the record data
-        //$records = $this->Trackvia_model->getRecords($record_ids);
-
-        //Track via records
-        //$data = array(
-        //    '' => $record[]
-        //);
-
-        $table_id = '';
-        $data = array();
-
-        //Update the record
-        $this->tv->addRecord($table_id,$data);
-
-    }
-
+  
     /**
      * Update a trackvia record
      */
@@ -404,7 +397,7 @@ $test = "5 oak street 8";
 	public function unable_to_contact(){
 		$urn = $this->input->post('urn');
 		 //Get the record data
-        $app = $this->Trackvia_model->get_record($urn);
+        $record = $this->Trackvia_model->get_record($urn);
 		$data = array("Customer not contactable" => "Customer not contactable");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
@@ -415,7 +408,7 @@ $test = "5 oak street 8";
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
-		$data = array("Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelledby"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
+		$data = array("Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
@@ -432,41 +425,127 @@ $test = "5 oak street 8";
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 	}
 	
-		public function review_required(){
+	
+			public function already_had_survey(){
 		$urn = $this->input->post('urn');
 		 //Get the record data
-        $record = $this->Trackvia_model->get_record_rows($urn);
+        $record = $this->Trackvia_model->get_record($urn);
+		$data = array("External Survey Completed"=>"Y",
+		"Internal Survey Completed" => "Y");
+	
+		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+	}
+	
+	public function review_required(){
+	$urn = $this->input->post('urn');
+		 //Get the record data
+        $record = $this->Trackvia_model->get_record($urn);
+		//if the record has TV id then we can update or we need to create it
+		if($record['client_ref']){
+			$this->update_tv_record($urn);
+		} else {
+			$this->add_tv_record($urn);
+		}
+	
+	}
+	
+	  /**
+     * Add a trackvia record
+     */
+    public function add_tv_record($urn) {
+		if($this->input->post('urn')){
+		$urn = $this->input->post('urn');
+		}
+		$tv_tables = $this->tv_tables;
+		$record = $this->Trackvia_model->get_record_rows($urn);
+
 		foreach($record as $k=>$row){
 			$details = $row;
-			if($row['telephone_description']=="Mobile"||preg_match('/^447|^+447^00447|^07/',$row['telephone_number'])){
+			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07/',$row['telephone_number'])){
 				$mobile = $row['telephone_number'];
 			} 
 			$add1= preg_replace('/[0-9]/','',$row['add1']);
 			$house_number= preg_replace('/^[0-9]/','',$row['add1']);
 		}
+		//table id
+		$table_id = $tv_tables["GHS Private"];
+		
 		$details['mobile_number'] = $mobile;
-		$data = array("Owner / Rented"=>$details['a2'],
-		"Is the property mortgaged" => $details['a6'],
+		$data = array("UPRN Pre-fix"=>"PR",
+		"created"=>date('Y-m-d')."T12:00:00-0600",
+		"Date of Enquiry"=>date('Y-m-d')."T12:00:00-0600",
+		//"Owner / Rented"=>$details['a2'],
+		//"Is the property mortgaged" => $details['a6'],
 		"Who is the Mortgage provider" => $details['a7'],
-		"Owner / Tenant Name 1" => $details['contact'],
-		"Is ownership in Joint Names" => $details['a4'],
+		"Owner / Tenant Name 1" => $details['fullname'],
+		//"Is ownership in Joint Names" => $details['a4'],
 		"Owner / Tenant Name 2" => $details['a5'],
 		"Primary Contact (Landline)" => $details['telephone_number'],
-		"Primary Contact (Mobile)" => $details['mobile_number'],
 		"Email address" => $details['email'],
 		"House No." => $house_number,
 		"Address 1" => $add1,
-		"Address 2" => $details['add_2'],
+		"Address 2" => $details['add2'],
 		"City" => $details['add3'],
 		"PostCode" => $details['postcode'],
-		"Enquiry Type" => "Telephone Call-in",
-		"Date of Enquiry" => $details['date_added'],
-		"Where did you hear about us" => $details['a8'],
+		//"Enquiry Type" => "Telephone Call-in",
+		"Date of Enquiry" => date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600",
+		//"Where did you hear about us" => "",//$details['a8'],
+		"Asset Type" => $details['a1'],
+		"If Other Mortgage Provider, please Input" => $details['a9']
+		);
+		if(isset($mobile)){
+			$data["Primary Contact (Mobile)"] = $mobile;
+		}
+		if(!empty($details['c4'])){
+		$data["Referred by"] = $details['c4'];
+		}
+		$this->firephp->log($data);
+        //Update the record
+        $response = $this->tv->addRecord($table_id,$data);
+		echo $response;
+    }
+
+	
+		public function update_tv_record($urn){
+		if($this->input->post('urn')){
+		$urn = $this->input->post('urn');
+		}
+		 //Get the record data
+        $record = $this->Trackvia_model->get_record_rows($urn);
+		foreach($record as $k=>$row){
+			$details = $row;
+			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07|^0447/',$row['telephone_number'])){
+				$mobile = $row['telephone_number'];
+			}
+			$add1= preg_replace('/[0-9]/','',$row['add1']);
+			$house_number= preg_replace('/^[0-9]/','',$row['add1']);
+		}
+		$data = array(
+		//"Owner / Rented"=>$details['a2'],
+		//"Is the property mortgaged" => $details['a6'],
+		"Who is the Mortgage provider" => $details['a7'],
+		"Owner / Tenant Name 1" => $details['fullname'],
+		//"Is ownership in Joint Names" => $details['a4'],
+		"Owner / Tenant Name 2" => $details['a5'],
+		"Primary Contact (Landline)" => $details['telephone_number'],
+		"Email address" => $details['email'],
+		"House No." => $house_number,
+		"Address 1" => $add1,
+		"Address 2" => $details['add2'],
+		"City" => $details['add3'],
+		"PostCode" => $details['postcode'],
+		//"Enquiry Type" => "Telephone Call-in",
+		"Date of Enquiry" => date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600",
+		//"Where did you hear about us" => "",//$details['a8'],
 		"Asset Type" => $details['a1']
 		);
 	
-		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		if(isset($mobile)){
+			$data["Primary Contact (Mobile)"] = $mobile;
+		}
+		$response = $this->tv->updateRecord($details['client_ref'],$data);
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$details['client_ref'],"data"=>$data));
 	}
 
 }
