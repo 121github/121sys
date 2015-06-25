@@ -688,7 +688,8 @@ class Records_model extends CI_Model
                     "favorite" => $favorite,
                     "reset_date" => $result['reset_date'],
                     "custom_name" => $result['custom_panel_name'],
-                    "map_icon" => $result['map_icon']
+                    "map_icon" => $result['map_icon'],
+					"color" => $result['record_color']
                 );
             endforeach;
         }
