@@ -41,15 +41,15 @@ public function search_urn_by_c1($ref){
 	$this->db->select("records.urn");
 	$this->db->where("c1",$ref);
 	$this->db->join("record_details","record_details.urn=records.urn");
-	$row = $this->db->get("records")->row_array();
-	return 	json_encode($row);
+	return $this->db->get("records")->row_array();
+
 }
 
 public function search_urn_by_address($add1,$postcode){
 		$qry = "select urn,park_reason,urgent from records left join contacts using(urn) left join contact_addresses using(contact_id) left join park_codes using(parked_code) where postcode = '$postcode' and add1 like '$add1%'";
 		
-		$row = $this->db->query($qry)->row_array();
-	return 	json_encode($row);
+		return $this->db->query($qry)->row_array();
+
 
 }
 
