@@ -1,7 +1,16 @@
 <div class="row">
+<div class="col-md-6">
 
+ <div class="panel panel-primary">
+            <div class="panel-heading"> <i class="fa fa-exclamation-triangle fa-fw"></i> Rebook (urgent)</div>
+              <div class="panel-body urgent-panel">
+<img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
+            </div>
+        <!-- /.col-lg-4 --> 
+   </div>
+ </div>
  
- <div class="col-md-6">  
+  <div class="col-md-6"> 
     <div class="panel panel-primary">
             <div class="panel-heading"> <i class="fa fa-search fa-fw"></i> Search</div>
               <div class="panel-body search-panel">
@@ -42,23 +51,10 @@
 
 </div>
 </div>
-
 </div>
-
-<div class="col-md-6">
- <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-exclamation-triangle fa-fw"></i> Rebook (urgent)</div>
-              <div class="panel-body urgent-panel">
-<img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
-        <!-- /.col-lg-4 --> 
    </div>
- </div>
-
-            </div>
-        <!-- /.col-lg-4 --> 
-   </div>
-      <!-- /.row --> 
+</div>
+</div>
 
 <script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
 
