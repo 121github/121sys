@@ -59,7 +59,7 @@
 	</div>
 	<div class="form-group input-group-sm">	
 		<p>Body</p>
-		<textarea class="form-control" id="summernote" name="template_body"
+		<textarea class="form-control" id="summernote"
 			title="Enter the template body" required ></textarea>
 	</div>
 	<div class="form-group input-group-sm">  

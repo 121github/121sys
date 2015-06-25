@@ -130,8 +130,8 @@ $this->_campaigns = campaign_access_dropdown();
 	public function save_template()
 	{
 		$form = $this->input->post();
-		$form['template_body'] = base64_decode($this->input->post('template_body'));
-		
+		$form['template_body'] = $_POST['template_body'];
+		$this->firephp->log($_POST['template_body']);
 		//Before save the template, check if the image/s used in the template are still in the new body, otherwise, we remove the image/s from the upload/template folder
 		if ($form['template_id']) {
 			$old_template = $this->Email_model->get_template($form['template_id']);
