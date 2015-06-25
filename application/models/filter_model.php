@@ -44,7 +44,11 @@ public function search_urn_by_c1($ref){
 	return $this->db->get("records")->row_array();
 
 }
+public function search_by_contact_phone($phone){
+	$qry = "select  urn,park_reason,urgent from records inner join contacts using(urn) inner join contact_telephone using(contact_id) where telephone number like '%$phone%'";
+	return $this->db->query($qry)->row_array();
 
+}
 public function search_urn_by_address($add1,$postcode){
 		$qry = "select urn,park_reason,urgent from records left join contacts using(urn) left join contact_addresses using(contact_id) left join park_codes using(parked_code) where postcode = '$postcode' and add1 like '$add1%'";
 		

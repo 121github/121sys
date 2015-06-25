@@ -16,7 +16,7 @@
               <div class="panel-body search-panel">
 
 
-<div class="col-md-6">
+<div class="col-md-3">
 <form class="form">
 <div class="form-group">
 <label>House Number</label>
@@ -32,7 +32,7 @@
 </form>
 </div>
 
-<div class="col-md-6">
+<div class="col-md-3">
 <form>
 <div class="form-group">
 <label>GHS Reference</label>
@@ -40,6 +40,19 @@
 </div>
 <div class="form-group">
 <button class="btn btn-primary" id="search-reference">Search by reference</button>
+</div>
+</form>
+</div>
+
+
+<div class="col-md-3">
+<form>
+<div class="form-group">
+<label>Telephone</label>
+<input type="text" class="form-control" placeholder="Enter all or part of a phone number" name="telephone"/>
+</div>
+<div class="form-group">
+<button class="btn btn-primary" id="search-phpne">Search by phone</button>
 </div>
 </form>
 </div>
