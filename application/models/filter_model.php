@@ -48,7 +48,7 @@ public function search_urn_by_c1($ref){
 public function search_urn_by_address($add1,$postcode){
 		$qry = "select urn,park_reason,urgent from records left join contacts using(urn) left join contact_addresses using(contact_id) left join park_codes using(parked_code) where postcode = '$postcode' and add1 like '$add1%'";
 		
-		$query = $this->db->query($qry)->row_array();
+		$row = $this->db->query($qry)->row_array();
 	return 	json_encode($row);
 
 }
