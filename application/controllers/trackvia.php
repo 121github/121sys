@@ -260,6 +260,12 @@ class Trackvia extends CI_Controller
                     )
                 );
 				
+				//Create appointment if it is needed
+                if ($appointment_creation) {
+                    $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
+                }
+				
+			}
 				//organise the record_details update
 				$extra = array();
 				if(!empty($fields['No. Panels (Desktop)'])){
@@ -298,12 +304,7 @@ class Trackvia extends CI_Controller
 				$extra['urn'] = $record['urn'];
 				array_push($update_extra, $extra);
 				}
-				
-                //Create appointment if it is needed
-                if ($appointment_creation) {
-                    $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
-                }
-            }
+
             //Remove from the new_record_ids array the records that already exist on our system
             if (in_array($record['client_ref'],$new_records_ids)) {
 				unset($tv_records[md5($record['client_ref'])]);
