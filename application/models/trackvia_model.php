@@ -130,4 +130,57 @@ public function update_extra($data){
 		$this->db->insert("record_details",$data);
 	}
 
+		
+		
+		public function get_121_counts($name){
+		$pots = array(
+		"GHS Southway Total"=>3000283398,
+		"GHS Private Total"=>3000283421,
+		"GHS Southway survey"=>3000719114,
+		"GHS Southway rebook"=>3000719115,
+		"GHS Southway booked"=>3000719175,
+		"GHS Private survey"=>3000718982,
+		"GHS Private rebook"=>3000718984,
+		"GHS Private booked"=>3000719187,
+		"GHS Private not viable"=>3000718985);
+		
+if($name=="GHS Southway Total"){
+	$qry = "select * from records where campaign_id = 22";
+	return $this->db->query($qry)->num_rows();
+}
+if($name=="GHS Private Total"){
+	$qry = "select * from records where campaign_id in(28,29)";
+	return $this->db->query($qry)->num_rows();
+}
+if($name=="GHS Southway survey"){
+	$qry = "select * from records where source_id = '34' and record_";
+	return $this->db->query($qry)->num_rows();
+}
+if($name=="GHS Southway rebook"){
+	$qry = "select * from records where urn = 22";
+	return $this->db->query($qry)->num_rows();
+}
+if($name=="GHS Southway booked"){
+	$qry = "select * from records where urn = 22";
+	return $this->db->query($qry)->num_rows();
+}
+if($name=="GHS Private survey"){
+	$qry = "select * from records where urn = 22";
+	return $this->db->query($qry)->num_rows();
+}
+	
+if($name=="GHS Private rebook"){
+	$qry = "select * from records where urn = 22";
+	return $this->db->query($qry)->num_rows();
+}
+if($name=="GHS Private booked"){
+	$qry = "select * from records where urn = 22";
+	return $this->db->query($qry)->num_rows();
+}
+if($name=="GHS Private not viable"){
+	$qry = "select * from records where urn = 22";
+	return $this->db->query($qry)->num_rows();
+}	
+}
+
 }

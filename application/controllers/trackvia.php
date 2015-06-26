@@ -57,9 +57,30 @@ class Trackvia extends CI_Controller
         ));
 		
 		$this->tv_tables = array(
-		"GHS Southway"=>3000283398,
-		"GHS Private"=>3000283421);
+		"GHS Southway Total"=>3000283398,
+		"GHS Private Total"=>3000283421,
+		"GHS Southway survey"=>3000719114,
+		"GHS Southway rebook"=>3000719115,
+		"GHS Southway booked"=>3000719175,
+		"GHS Private survey"=>3000718982,
+		"GHS Private rebook"=>3000718984,
+		"GHS Private booked"=>3000719187,
+		"GHS Private not viable"=>3000718985);
     }
+
+	public function get_counts(){
+		$tables = $this->tv_tables;
+		$data = array();
+		foreach($tables as $name => $view_id){
+		$view = $this->tv->getView($view_id);
+		$data[$name]['trackvia'] = $view['record_count'];
+		$data[$name]['121'] = $this->Trackvia_model->get_121_counts($name);	
+		}
+		
+		
+		
+		echo json_encode(array("success"=>true,"data"=>$data));
+	}
 
 	public function get_rebookings(){
 		if(@$_POST['campaign']){
@@ -82,7 +103,7 @@ class Trackvia extends CI_Controller
                 'campaign_id' => 22,
                 'urgent' => NULL,
                 'status' => 1,
-                'outcome_id' => NULL,
+                'outcome_id' => 131,
                 'appointment_creation' => false,
 				'appointment_cancelled' => false,
 				'record_color'=>'0066FF',
@@ -220,11 +241,13 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         $tv_records = $view['records'];
 		$this->firephp->log($view_id);
 		$this->firephp->log($view);
+
 		} else {
 		$this->firephp->log($view_id);
 		$this->firephp->log($view);
 		return false;		
 		}
+		
 
 
         //Get the locator ids (client_ref in our system

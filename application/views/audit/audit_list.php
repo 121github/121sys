@@ -59,8 +59,8 @@ var audit = {
         audit.reload_table('audit-table');
     },
     reload_table: function(table_name) {
-                var table = "<table class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Campaign</th><th>Table</th><th>Type</th><th>User</th><th>Date</th></tr></thead>";
-                table += "<tfoot><tr><th>Campaign</th><th>Table</th><th>Type</th><th>User</th><th>Date</th></tr></tfoot></table>";
+                var table = "<table class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Campaign</th><th>URN</th><th>Table</th><th>Type</th><th>User</th><th>Date</th></tr></thead>";
+                table += "<tfoot><tr><th>Campaign</th><th>URN</th><th>Table</th><th>Type</th><th>User</th><th>Date</th></tr></tfoot></table>";
 
                 $('#audit-table').html(table);
                 audit.populate_table(table_name);
@@ -100,6 +100,8 @@ var audit = {
             },
  "columns": [{
                 "data": "campaign_name"
+            },{
+                "data": "urn"
             }, { 
                 "data": "table_name"
             },  {
@@ -110,7 +112,7 @@ var audit = {
                 "data": "timestamp" 
             }],
             "columnDefs": [{
-                "targets": [0, 1, 2, 3, 4],
+                "targets": [0, 1, 2, 3, 4, 5],
                 "data": null,
                 "defaultContent": "na"
             }

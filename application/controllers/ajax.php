@@ -595,7 +595,8 @@ class Ajax extends CI_Controller
 			echo json_encode(array("success"=>false,"msg"=>"Please enter a valid postcode"));
 			exit;
 			}
-            if ($this->input->post("primary") == "1") {
+            if ($this->input->post("primary") == "1"||empty($this->input->post("primary"))) {
+				$data['primary'] = "1";
                 $this->db->where("contact_id", $data['contact_id']);
                 $this->db->update("contact_addresses", array(
                     "primary" => NULL
@@ -612,6 +613,7 @@ class Ajax extends CI_Controller
                 "contact_id",
                 "primary"
             ), $data))):
+		
 			$data['address_id'] = $this->db->insert_id();
 			$urn = $this->db->get_where("contacts",array("contact_id"=>$data['contact_id']))->row()->urn;
 			$this->Audit_model->log_address_insert($data,$urn);

@@ -23,7 +23,9 @@ public function index(){
 	 $data = array(
             'campaign_access' => $this->_campaigns,
             'page' => 'audit',
-            'title' => 'System Audit'
+            'title' => 'System Audit',
+			'javascript' => array('plugins/DataTables/js/jquery.dataTables.min.js',
+				'plugins/DataTables/js/dataTables.bootstrap.js')
         );
         $this->template->load('default', 'audit/audit_list.php', $data);
 }

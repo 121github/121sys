@@ -116,7 +116,8 @@ $this->_campaigns = campaign_access_dropdown();
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js'
+                'data.js',
+				"lib/bootstrap-slider.js"
             )
         );
         $this->template->load('default', 'data/data_management.php', $data);
