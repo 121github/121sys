@@ -43,7 +43,7 @@ var appointment = {
             "processing": true,
             "serverSide": true,
             "pagingType": "full",
-            "iDisplayLength": 10,
+            "iDisplayLength": 50,
             responsive: true,
             "ajax": {
                 url: helper.baseUrl + "appointments/appointment_data",

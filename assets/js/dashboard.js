@@ -58,7 +58,7 @@ var dashboard = {
 			}
 			if(response.data.length>0){
             $.each(response.data, function (i, val) {
-                $outcomes += '<a href="'+helper.baseUrl+'search/custom/history/outcome/'+val.outcome+'/contact-from/'+response.date+campaign+'" class="list-group-item"><i class="fa fa-comment fa-fw"></i>' + val.outcome + '<span class="pull-right text-muted small"><em>' + val.count + '</em></span></a>';
+                $outcomes += '<a href="'+helper.baseUrl+'search/custom/history/outcome/'+val.outcome+'/contact-from/'+response.date+campaign+'" class="list-group-item">' + val.outcome + '<span class="pull-right text-muted small"><em>' + val.count + '</em></span></a>';
             });
             $('.outcome-stats').append('<div class="list-group">' + $outcomes + '</div>');
 			} else {
