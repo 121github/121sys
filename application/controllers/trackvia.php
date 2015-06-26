@@ -249,7 +249,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];			
             //If the campaign had changed or the park_code is "Not Working"			
 			
-            if (($record['campaign_id'] != $campaign_id) || ($record['parked_code'] == 7 || $record['record_status'] != $status || $record['record_color'] != $record_color )) {
+            if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 ||$record['parked_code'] == 2 || $record['record_status'] != $status || $record['record_color'] != $record_color ) {
 				//organising the record update data
                 array_push($update_records, array(
                         'urn' => $record['urn'],
