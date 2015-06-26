@@ -339,160 +339,160 @@ $(document).on('change','.q6-question',function(){
                     data-size="5" >
                       <option value=''>Please select a provider</option>
                        <option value='Other'>Other</option>
-  <option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Abbey'>Abbey</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Accord'>Accord</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Aldermore'>Aldermore</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Alliance & Leicester'>Alliance & Leicester</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Allied Irish Bank (GB)'>Allied Irish Bank (GB)</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Amber Homeloans Ltd'>Amber Homeloans Ltd</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Ascendon'>Ascendon</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Bank of Ireland'>Bank of Ireland</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Bank of Scotland'>Bank of Scotland</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Barclays Bank'>Barclays Bank</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Barnsley'>Barnsley</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Bath Investment & Building Society'>Bath Investment & Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='BDW Trading'>BDW Trading</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Beverley'>Beverley</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Birmingham building society'>Birmingham building society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Birmingham Midshire'>Birmingham Midshire</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='BM Solutions'>BM Solutions</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Bradford & Bingley'>Bradford & Bingley</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Bristol & West'>Bristol & West</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Britannia'>Britannia</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Buckinghamshire Building Society'>Buckinghamshire Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='C & G Mortgage'>C & G Mortgage</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Cambridge Building Society'>Cambridge Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Capital Home Loans'>Capital Home Loans</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Charter'>Charter</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Chelsea Building Society'>Chelsea Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Cheltenham & Gloucester'>Cheltenham & Gloucester</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Chesham Building Society'>Chesham Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Cheshire Building Society'>Cheshire Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Chorley & District Building Society'>Chorley & District Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Church House Trust'>Church House Trust</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Clysedale Bank'>Clysedale Bank</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='CO-OP'>CO-OP</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Coventry'>Coventry</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Cumberland'>Cumberland</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Darlington Building Society'>Darlington Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Derbyshire'>Derbyshire</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Direct Line'>Direct Line</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Dudley Building Society'>Dudley Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Dunfermline Building Society'>Dunfermline Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Earl Shilton'>Earl Shilton</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Ecology Building Society'>Ecology Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Egg'>Egg</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Engage Credit'>Engage Credit</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Equity Release Mortgages Ltd'>Equity Release Mortgages Ltd</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='First Active'>First Active</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='First Direct'>First Direct</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='First National Bank'>First National Bank</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='First Trust Bank (NI)'>First Trust Bank (NI)</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Furness Building Society'>Furness Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Future mortgage ltd'>Future mortgage ltd</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='GE Money'>GE Money</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='GMAC - RFC'>GMAC - RFC</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='GMAC - RFC Partner'>GMAC - RFC Partner</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Halifax'>Halifax</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Hanley Economic Building Society'>Hanley Economic Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Harpenden Building Society'>Harpenden Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Heritable Bank'>Heritable Bank</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Hinckley & Rugby Building Society'>Hinckley & Rugby Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Holmesdale Building Society'>Holmesdale Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='HSBC'>HSBC</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='I Group loans'>I Group loans</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Infinity'>Infinity</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Intelligent Finance'>Intelligent Finance</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Ipswich Building Society'>Ipswich Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='J Casey & Co'>J Casey & Co</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='JP Morgan'>JP Morgan</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Just Retirement ltd'>Just Retirement ltd</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Kensington Mortgages'>Kensington Mortgages</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Kent Reliance Building Society'>Kent Reliance Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Leeds Building Society'>Leeds Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Leek United'>Leek United</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Lloyds TSB'>Lloyds TSB</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='London Mortgage Co'>London Mortgage Co</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='London Scottish'>London Scottish</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Loughborough'>Loughborough</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Manchester'>Manchester</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Mansfield'>Mansfield</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Market Harborough Building Society'>Market Harborough Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Marsden'>Marsden</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Melton Mowbray'>Melton Mowbray</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Monmouthshire Building Society'>Monmouthshire Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Morgan Stanley'>Morgan Stanley</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Mortgage agency services 1-5'>Mortgage agency services 1-5</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Mortgage agency services limited'>Mortgage agency services limited</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Mortgage Express'>Mortgage Express</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Mortgage Next'>Mortgage Next</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Mortgage Trust'>Mortgage Trust</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Mortgages plc'>Mortgages plc</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='National Counties'>National Counties</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Nationwide Building Society'>Nationwide Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='NatWest'>NatWest</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='New Life'>New Life</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Newbury Building Society'>Newbury Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Newcastle Building Society'>Newcastle Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Northern Bank Ltd'>Northern Bank Ltd</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Northern rock asset management'>Northern rock asset management</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Norton Home Loans'>Norton Home Loans</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Norwich & Peterborough Building Society'>Norwich & Peterborough Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Nottingham Building Society'>Nottingham Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='NRAM'>NRAM</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Oakwood Homes Ltd'>Oakwood Homes Ltd</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Other'>Other</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Papilio UK'>Papilio UK</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Paragon'>Paragon</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Paratus'>Paratus</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Penrith Building Society'>Penrith Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Pink Home Loans'>Pink Home Loans</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Platform Funding'>Platform Funding</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Portman Building Society'>Portman Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Preferred mortgages'>Preferred mortgages</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Premier Mortgage Service'>Premier Mortgage Service</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Principality'>Principality</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Progressive Building Society'>Progressive Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Prudential'>Prudential</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='RBS IP First Active'>RBS IP First Active</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='RBS IP Natwest'>RBS IP Natwest</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='RBS IP One Account'>RBS IP One Account</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='RBS IP Royal Bank Of Scotland'>RBS IP Royal Bank Of Scotland</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Redstone'>Redstone</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Rooftop Mortgages'>Rooftop Mortgages</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Royal Bank of Scotland'>Royal Bank of Scotland</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Saffron'>Saffron</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Santander'>Santander</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Scarborough Building Society'>Scarborough Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Scotland'>Scotland</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Scottish Building Society'>Scottish Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Scottish Widows Bank'>Scottish Widows Bank</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Shepshed Building Society'>Shepshed Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Skipton'>Skipton</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Smile'>Smile</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Southern Pacific'>Southern Pacific</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Stafford Railway'>Stafford Railway</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Standard Life Bank'>Standard Life Bank</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Stroud & Swindon Building Society'>Stroud & Swindon Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Teachers Building Society'>Teachers Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Tesco Personal Finance'>Tesco Personal Finance</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='The Mortgage Business PLC'>The Mortgage Business PLC</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='The Mortgage Works'>The Mortgage Works</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='The One account'>The One account</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Tipton & Coseley'>Tipton & Coseley</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Topez'>Topez</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='TSB'>TSB</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='UBS'>UBS</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='UCB Home Loans'>UCB Home Loans</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Ulster Bank (NI)'>Ulster Bank (NI)</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Universal'>Universal</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Vernon'>Vernon</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='VIRGIN MONEY'>VIRGIN MONEY</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='West Bromwich Building Society'>West Bromwich Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Woolwich Bromwich Building Society'>Woolwich Bromwich Building Society</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Woolwich Mortgage'>Woolwich Mortgage</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Yorkshire Bank'>Yorkshire Bank</option>
-<option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Yorkshire Building Society'>Yorkshire Building Society</option>
+ <option <?php if(@$values['a7']=="Abbey"){ echo "selected"; } ?> value='Abbey'>Abbey</option>
+<option <?php if(@$values['a7']=="Accord"){ echo "selected"; } ?> value='Accord'>Accord</option>
+<option <?php if(@$values['a7']=="Aldermore"){ echo "selected"; } ?> value='Aldermore'>Aldermore</option>
+<option <?php if(@$values['a7']=="Alliance & Leicester"){ echo "selected"; } ?> value='Alliance & Leicester'>Alliance & Leicester</option>
+<option <?php if(@$values['a7']=="Allied Irish Bank (GB)"){ echo "selected"; } ?> value='Allied Irish Bank (GB)'>Allied Irish Bank (GB)</option>
+<option <?php if(@$values['a7']=="Amber Homeloans Ltd"){ echo "selected"; } ?> value='Amber Homeloans Ltd'>Amber Homeloans Ltd</option>
+<option <?php if(@$values['a7']=="Ascendon"){ echo "selected"; } ?> value='Ascendon'>Ascendon</option>
+<option <?php if(@$values['a7']=="Bank of Ireland"){ echo "selected"; } ?> value='Bank of Ireland'>Bank of Ireland</option>
+<option <?php if(@$values['a7']=="Bank of Scotland"){ echo "selected"; } ?> value='Bank of Scotland'>Bank of Scotland</option>
+<option <?php if(@$values['a7']=="Barclays Bank"){ echo "selected"; } ?> value='Barclays Bank'>Barclays Bank</option>
+<option <?php if(@$values['a7']=="Barnsley"){ echo "selected"; } ?> value='Barnsley'>Barnsley</option>
+<option <?php if(@$values['a7']=="Bath Investment & Building Society"){ echo "selected"; } ?> value='Bath Investment & Building Society'>Bath Investment & Building Society</option>
+<option <?php if(@$values['a7']=="BDW Trading"){ echo "selected"; } ?> value='BDW Trading'>BDW Trading</option>
+<option <?php if(@$values['a7']=="Beverley"){ echo "selected"; } ?> value='Beverley'>Beverley</option>
+<option <?php if(@$values['a7']=="Birmingham building society"){ echo "selected"; } ?> value='Birmingham building society'>Birmingham building society</option>
+<option <?php if(@$values['a7']=="Birmingham Midshire"){ echo "selected"; } ?> value='Birmingham Midshire'>Birmingham Midshire</option>
+<option <?php if(@$values['a7']=="BM Solutions"){ echo "selected"; } ?> value='BM Solutions'>BM Solutions</option>
+<option <?php if(@$values['a7']=="Bradford & Bingley"){ echo "selected"; } ?> value='Bradford & Bingley'>Bradford & Bingley</option>
+<option <?php if(@$values['a7']=="Bristol & West"){ echo "selected"; } ?> value='Bristol & West'>Bristol & West</option>
+<option <?php if(@$values['a7']=="Britannia"){ echo "selected"; } ?> value='Britannia'>Britannia</option>
+<option <?php if(@$values['a7']=="Buckinghamshire Building Society"){ echo "selected"; } ?> value='Buckinghamshire Building Society'>Buckinghamshire Building Society</option>
+<option <?php if(@$values['a7']=="C & G Mortgage"){ echo "selected"; } ?> value='C & G Mortgage'>C & G Mortgage</option>
+<option <?php if(@$values['a7']=="Cambridge Building Society"){ echo "selected"; } ?> value='Cambridge Building Society'>Cambridge Building Society</option>
+<option <?php if(@$values['a7']=="Capital Home Loans"){ echo "selected"; } ?> value='Capital Home Loans'>Capital Home Loans</option>
+<option <?php if(@$values['a7']=="Charter"){ echo "selected"; } ?> value='Charter'>Charter</option>
+<option <?php if(@$values['a7']=="Chelsea Building Society"){ echo "selected"; } ?> value='Chelsea Building Society'>Chelsea Building Society</option>
+<option <?php if(@$values['a7']=="Cheltenham & Gloucester"){ echo "selected"; } ?> value='Cheltenham & Gloucester'>Cheltenham & Gloucester</option>
+<option <?php if(@$values['a7']=="Chesham Building Society"){ echo "selected"; } ?> value='Chesham Building Society'>Chesham Building Society</option>
+<option <?php if(@$values['a7']=="Cheshire Building Society"){ echo "selected"; } ?> value='Cheshire Building Society'>Cheshire Building Society</option>
+<option <?php if(@$values['a7']=="Chorley & District Building Society"){ echo "selected"; } ?> value='Chorley & District Building Society'>Chorley & District Building Society</option>
+<option <?php if(@$values['a7']=="Church House Trust"){ echo "selected"; } ?> value='Church House Trust'>Church House Trust</option>
+<option <?php if(@$values['a7']=="Clysedale Bank"){ echo "selected"; } ?> value='Clysedale Bank'>Clysedale Bank</option>
+<option <?php if(@$values['a7']=="CO-OP"){ echo "selected"; } ?> value='CO-OP'>CO-OP</option>
+<option <?php if(@$values['a7']=="Coventry"){ echo "selected"; } ?> value='Coventry'>Coventry</option>
+<option <?php if(@$values['a7']=="Cumberland"){ echo "selected"; } ?> value='Cumberland'>Cumberland</option>
+<option <?php if(@$values['a7']=="Darlington Building Society"){ echo "selected"; } ?> value='Darlington Building Society'>Darlington Building Society</option>
+<option <?php if(@$values['a7']=="Derbyshire"){ echo "selected"; } ?> value='Derbyshire'>Derbyshire</option>
+<option <?php if(@$values['a7']=="Direct Line"){ echo "selected"; } ?> value='Direct Line'>Direct Line</option>
+<option <?php if(@$values['a7']=="Dudley Building Society"){ echo "selected"; } ?> value='Dudley Building Society'>Dudley Building Society</option>
+<option <?php if(@$values['a7']=="Dunfermline Building Society"){ echo "selected"; } ?> value='Dunfermline Building Society'>Dunfermline Building Society</option>
+<option <?php if(@$values['a7']=="Earl Shilton"){ echo "selected"; } ?> value='Earl Shilton'>Earl Shilton</option>
+<option <?php if(@$values['a7']=="Ecology Building Society"){ echo "selected"; } ?> value='Ecology Building Society'>Ecology Building Society</option>
+<option <?php if(@$values['a7']=="Egg"){ echo "selected"; } ?> value='Egg'>Egg</option>
+<option <?php if(@$values['a7']=="Engage Credit"){ echo "selected"; } ?> value='Engage Credit'>Engage Credit</option>
+<option <?php if(@$values['a7']=="Equity Release Mortgages Ltd"){ echo "selected"; } ?> value='Equity Release Mortgages Ltd'>Equity Release Mortgages Ltd</option>
+<option <?php if(@$values['a7']=="First Active"){ echo "selected"; } ?> value='First Active'>First Active</option>
+<option <?php if(@$values['a7']=="First Direct"){ echo "selected"; } ?> value='First Direct'>First Direct</option>
+<option <?php if(@$values['a7']=="First National Bank"){ echo "selected"; } ?> value='First National Bank'>First National Bank</option>
+<option <?php if(@$values['a7']=="First Trust Bank (NI)"){ echo "selected"; } ?> value='First Trust Bank (NI)'>First Trust Bank (NI)</option>
+<option <?php if(@$values['a7']=="Furness Building Society"){ echo "selected"; } ?> value='Furness Building Society'>Furness Building Society</option>
+<option <?php if(@$values['a7']=="Future mortgage ltd"){ echo "selected"; } ?> value='Future mortgage ltd'>Future mortgage ltd</option>
+<option <?php if(@$values['a7']=="GE Money"){ echo "selected"; } ?> value='GE Money'>GE Money</option>
+<option <?php if(@$values['a7']=="GMAC - RFC"){ echo "selected"; } ?> value='GMAC - RFC'>GMAC - RFC</option>
+<option <?php if(@$values['a7']=="GMAC - RFC Partner"){ echo "selected"; } ?> value='GMAC - RFC Partner'>GMAC - RFC Partner</option>
+<option <?php if(@$values['a7']=="Halifax"){ echo "selected"; } ?> value='Halifax'>Halifax</option>
+<option <?php if(@$values['a7']=="Hanley Economic Building Society"){ echo "selected"; } ?> value='Hanley Economic Building Society'>Hanley Economic Building Society</option>
+<option <?php if(@$values['a7']=="Harpenden Building Society"){ echo "selected"; } ?> value='Harpenden Building Society'>Harpenden Building Society</option>
+<option <?php if(@$values['a7']=="Heritable Bank"){ echo "selected"; } ?> value='Heritable Bank'>Heritable Bank</option>
+<option <?php if(@$values['a7']=="Hinckley & Rugby Building Society"){ echo "selected"; } ?> value='Hinckley & Rugby Building Society'>Hinckley & Rugby Building Society</option>
+<option <?php if(@$values['a7']=="Holmesdale Building Society"){ echo "selected"; } ?> value='Holmesdale Building Society'>Holmesdale Building Society</option>
+<option <?php if(@$values['a7']=="HSBC"){ echo "selected"; } ?> value='HSBC'>HSBC</option>
+<option <?php if(@$values['a7']=="I Group loans"){ echo "selected"; } ?> value='I Group loans'>I Group loans</option>
+<option <?php if(@$values['a7']=="Infinity"){ echo "selected"; } ?> value='Infinity'>Infinity</option>
+<option <?php if(@$values['a7']=="Intelligent Finance"){ echo "selected"; } ?> value='Intelligent Finance'>Intelligent Finance</option>
+<option <?php if(@$values['a7']=="Ipswich Building Society"){ echo "selected"; } ?> value='Ipswich Building Society'>Ipswich Building Society</option>
+<option <?php if(@$values['a7']=="J Casey & Co"){ echo "selected"; } ?> value='J Casey & Co'>J Casey & Co</option>
+<option <?php if(@$values['a7']=="JP Morgan"){ echo "selected"; } ?> value='JP Morgan'>JP Morgan</option>
+<option <?php if(@$values['a7']=="Just Retirement ltd"){ echo "selected"; } ?> value='Just Retirement ltd'>Just Retirement ltd</option>
+<option <?php if(@$values['a7']=="Kensington Mortgages"){ echo "selected"; } ?> value='Kensington Mortgages'>Kensington Mortgages</option>
+<option <?php if(@$values['a7']=="Kent Reliance Building Society"){ echo "selected"; } ?> value='Kent Reliance Building Society'>Kent Reliance Building Society</option>
+<option <?php if(@$values['a7']=="Leeds Building Society"){ echo "selected"; } ?> value='Leeds Building Society'>Leeds Building Society</option>
+<option <?php if(@$values['a7']=="Leek United"){ echo "selected"; } ?> value='Leek United'>Leek United</option>
+<option <?php if(@$values['a7']=="Lloyds TSB"){ echo "selected"; } ?> value='Lloyds TSB'>Lloyds TSB</option>
+<option <?php if(@$values['a7']=="London Mortgage Co"){ echo "selected"; } ?> value='London Mortgage Co'>London Mortgage Co</option>
+<option <?php if(@$values['a7']=="London Scottish"){ echo "selected"; } ?> value='London Scottish'>London Scottish</option>
+<option <?php if(@$values['a7']=="Loughborough"){ echo "selected"; } ?> value='Loughborough'>Loughborough</option>
+<option <?php if(@$values['a7']=="Manchester"){ echo "selected"; } ?> value='Manchester'>Manchester</option>
+<option <?php if(@$values['a7']=="Mansfield"){ echo "selected"; } ?> value='Mansfield'>Mansfield</option>
+<option <?php if(@$values['a7']=="Market Harborough Building Society"){ echo "selected"; } ?> value='Market Harborough Building Society'>Market Harborough Building Society</option>
+<option <?php if(@$values['a7']=="Marsden"){ echo "selected"; } ?> value='Marsden'>Marsden</option>
+<option <?php if(@$values['a7']=="Melton Mowbray"){ echo "selected"; } ?> value='Melton Mowbray'>Melton Mowbray</option>
+<option <?php if(@$values['a7']=="Monmouthshire Building Society"){ echo "selected"; } ?> value='Monmouthshire Building Society'>Monmouthshire Building Society</option>
+<option <?php if(@$values['a7']=="Morgan Stanley"){ echo "selected"; } ?> value='Morgan Stanley'>Morgan Stanley</option>
+<option <?php if(@$values['a7']=="Mortgage agency services 1-5"){ echo "selected"; } ?> value='Mortgage agency services 1-5'>Mortgage agency services 1-5</option>
+<option <?php if(@$values['a7']=="Mortgage agency services limited"){ echo "selected"; } ?> value='Mortgage agency services limited'>Mortgage agency services limited</option>
+<option <?php if(@$values['a7']=="Mortgage Express"){ echo "selected"; } ?> value='Mortgage Express'>Mortgage Express</option>
+<option <?php if(@$values['a7']=="Mortgage Next"){ echo "selected"; } ?> value='Mortgage Next'>Mortgage Next</option>
+<option <?php if(@$values['a7']=="Mortgage Trust"){ echo "selected"; } ?> value='Mortgage Trust'>Mortgage Trust</option>
+<option <?php if(@$values['a7']=="Mortgages plc"){ echo "selected"; } ?> value='Mortgages plc'>Mortgages plc</option>
+<option <?php if(@$values['a7']=="'National Counties"){ echo "selected"; } ?> value='National Counties'>National Counties</option>
+<option <?php if(@$values['a7']=="Nationwide Building Society"){ echo "selected"; } ?> value='Nationwide Building Society'>Nationwide Building Society</option>
+<option <?php if(@$values['a7']=="NatWest"){ echo "selected"; } ?> value='NatWest'>NatWest</option>
+<option <?php if(@$values['a7']=="New Life"){ echo "selected"; } ?> value='New Life'>New Life</option>
+<option <?php if(@$values['a7']=="Newbury Building Society"){ echo "selected"; } ?> value='Newbury Building Society'>Newbury Building Society</option>
+<option <?php if(@$values['a7']=="Newcastle Building Society"){ echo "selected"; } ?> value='Newcastle Building Society'>Newcastle Building Society</option>
+<option <?php if(@$values['a7']=="Northern Bank Ltd"){ echo "selected"; } ?> value='Northern Bank Ltd'>Northern Bank Ltd</option>
+<option <?php if(@$values['a7']=="Northern rock asset management"){ echo "selected"; } ?> value='Northern rock asset management'>Northern rock asset management</option>
+<option <?php if(@$values['a7']=="Norton Home Loans"){ echo "selected"; } ?> value='Norton Home Loans'>Norton Home Loans</option>
+<option <?php if(@$values['a7']=="Norwich & Peterborough Building Society"){ echo "selected"; } ?> value='Norwich & Peterborough Building Society'>Norwich & Peterborough Building Society</option>
+<option <?php if(@$values['a7']=="Nottingham Building Society"){ echo "selected"; } ?> value='Nottingham Building Society'>Nottingham Building Society</option>
+<option <?php if(@$values['a7']=="NRAM"){ echo "selected"; } ?> value='NRAM'>NRAM</option>
+<option <?php if(@$values['a7']=="Oakwood Homes Ltd"){ echo "selected"; } ?> value='Oakwood Homes Ltd'>Oakwood Homes Ltd</option>
+<option <?php if(@$values['a7']=="Other"){ echo "selected"; } ?> value='Other'>Other</option>
+<option <?php if(@$values['a7']=="Papilio UK"){ echo "selected"; } ?> value='Papilio UK'>Papilio UK</option>
+<option <?php if(@$values['a7']=="Paragon"){ echo "selected"; } ?> value='Paragon'>Paragon</option>
+<option <?php if(@$values['a7']=="Paratus"){ echo "selected"; } ?> value='Paratus'>Paratus</option>
+<option <?php if(@$values['a7']=="Penrith Building Society"){ echo "selected"; } ?> value='Penrith Building Society'>Penrith Building Society</option>
+<option <?php if(@$values['a7']=="Pink Home Loans"){ echo "selected"; } ?> value='Pink Home Loans'>Pink Home Loans</option>
+<option <?php if(@$values['a7']=="Platform Funding"){ echo "selected"; } ?> value='Platform Funding'>Platform Funding</option>
+<option <?php if(@$values['a7']=="Portman Building Society"){ echo "selected"; } ?> value='Portman Building Society'>Portman Building Society</option>
+<option <?php if(@$values['a7']=="Preferred mortgages"){ echo "selected"; } ?> value='Preferred mortgages'>Preferred mortgages</option>
+<option <?php if(@$values['a7']=="Premier Mortgage Service"){ echo "selected"; } ?> value='Premier Mortgage Service'>Premier Mortgage Service</option>
+<option <?php if(@$values['a7']=="Principality"){ echo "selected"; } ?> value='Principality'>Principality</option>
+<option <?php if(@$values['a7']=="Progressive Building Society"){ echo "selected"; } ?> value='Progressive Building Society'>Progressive Building Society</option>
+<option <?php if(@$values['a7']=="Prudential"){ echo "selected"; } ?> value='Prudential'>Prudential</option>
+<option <?php if(@$values['a7']=="RBS IP First Active"){ echo "selected"; } ?> value='RBS IP First Active'>RBS IP First Active</option>
+<option <?php if(@$values['a7']=="RBS IP Natwest"){ echo "selected"; } ?> value='RBS IP Natwest'>RBS IP Natwest</option>
+<option <?php if(@$values['a7']=="RBS IP One Account"){ echo "selected"; } ?> value='RBS IP One Account'>RBS IP One Account</option>
+<option <?php if(@$values['a7']=="RBS IP Royal Bank Of Scotland"){ echo "selected"; } ?> value='RBS IP Royal Bank Of Scotland'>RBS IP Royal Bank Of Scotland</option>
+<option <?php if(@$values['a7']=="Redstone"){ echo "selected"; } ?> value='Redstone'>Redstone</option>
+<option <?php if(@$values['a7']=="Rooftop Mortgages"){ echo "selected"; } ?> value='Rooftop Mortgages'>Rooftop Mortgages</option>
+<option <?php if(@$values['a7']=="Royal Bank of Scotland"){ echo "selected"; } ?> value='Royal Bank of Scotland'>Royal Bank of Scotland</option>
+<option <?php if(@$values['a7']=="Saffron"){ echo "selected"; } ?> value='Saffron'>Saffron</option>
+<option <?php if(@$values['a7']=="Santander"){ echo "selected"; } ?> value='Santander'>Santander</option>
+<option <?php if(@$values['a7']=="Scarborough Building Society"){ echo "selected"; } ?> value='Scarborough Building Society'>Scarborough Building Society</option>
+<option <?php if(@$values['a7']=="Scotland"){ echo "selected"; } ?> value='Scotland'>Scotland</option>
+<option <?php if(@$values['a7']=="Scottish Building Society"){ echo "selected"; } ?> value='Scottish Building Society'>Scottish Building Society</option>
+<option <?php if(@$values['a7']=="Scottish Widows Bank"){ echo "selected"; } ?> value='Scottish Widows Bank'>Scottish Widows Bank</option>
+<option <?php if(@$values['a7']=="Shepshed Building Society"){ echo "selected"; } ?> value='Shepshed Building Society'>Shepshed Building Society</option>
+<option <?php if(@$values['a7']=="Skipton"){ echo "selected"; } ?> value='Skipton'>Skipton</option>
+<option <?php if(@$values['a7']=="Smile"){ echo "selected"; } ?> value='Smile'>Smile</option>
+<option <?php if(@$values['a7']=="Southern Pacific"){ echo "selected"; } ?> value='Southern Pacific'>Southern Pacific</option>
+<option <?php if(@$values['a7']=="Stafford Railway"){ echo "selected"; } ?> value='Stafford Railway'>Stafford Railway</option>
+<option <?php if(@$values['a7']=="Standard Life Bank"){ echo "selected"; } ?> value='Standard Life Bank'>Standard Life Bank</option>
+<option <?php if(@$values['a7']=="Stroud & Swindon Building Society"){ echo "selected"; } ?> value='Stroud & Swindon Building Society'>Stroud & Swindon Building Society</option>
+<option <?php if(@$values['a7']=="Teachers Building Society"){ echo "selected"; } ?> value='Teachers Building Society'>Teachers Building Society</option>
+<option <?php if(@$values['a7']=="Tesco Personal Finance"){ echo "selected"; } ?> value='Tesco Personal Finance'>Tesco Personal Finance</option>
+<option <?php if(@$values['a7']=="The Mortgage Business PLC"){ echo "selected"; } ?> value='The Mortgage Business PLC'>The Mortgage Business PLC</option>
+<option <?php if(@$values['a7']=="The Mortgage Works"){ echo "selected"; } ?> value='The Mortgage Works'>The Mortgage Works</option>
+<option <?php if(@$values['a7']=="The One account"){ echo "selected"; } ?> value='The One account'>The One account</option>
+<option <?php if(@$values['a7']=="Tipton & Coseley"){ echo "selected"; } ?> value='Tipton & Coseley'>Tipton & Coseley</option>
+<option <?php if(@$values['a7']=="Topez"){ echo "selected"; } ?> value='Topez'>Topez</option>
+<option <?php if(@$values['a7']=="TSB"){ echo "selected"; } ?> value='TSB'>TSB</option>
+<option <?php if(@$values['a7']=="UBS"){ echo "selected"; } ?> value='UBS'>UBS</option>
+<option <?php if(@$values['a7']=="UCB Home Loans"){ echo "selected"; } ?> value='UCB Home Loans'>UCB Home Loans</option>
+<option <?php if(@$values['a7']=="Ulster Bank (NI)"){ echo "selected"; } ?> value='Ulster Bank (NI)'>Ulster Bank (NI)</option>
+<option <?php if(@$values['a7']=="Universal"){ echo "selected"; } ?> value='Universal'>Universal</option>
+<option <?php if(@$values['a7']=="Vernon"){ echo "selected"; } ?> value='Vernon'>Vernon</option>
+<option <?php if(@$values['a7']=="VIRGIN MONEY"){ echo "selected"; } ?> value='VIRGIN MONEY'>VIRGIN MONEY</option>
+<option <?php if(@$values['a7']=="West Bromwich Building Society"){ echo "selected"; } ?> value='West Bromwich Building Society'>West Bromwich Building Society</option>
+<option <?php if(@$values['a7']=="Woolwich Bromwich Building Society"){ echo "selected"; } ?> value='Woolwich Bromwich Building Society'>Woolwich Bromwich Building Society</option>
+<option <?php if(@$values['a7']=="Woolwich Mortgage"){ echo "selected"; } ?> value='Woolwich Mortgage'>Woolwich Mortgage</option>
+<option <?php if(@$values['a7']=="Yorkshire Bank"){ echo "selected"; } ?> value='Yorkshire Bank'>Yorkshire Bank</option>
+<option <?php if(@$values['a7']=="Yorkshire Building Society"){ echo "selected"; } ?> value='Yorkshire Building Society'>Yorkshire Building Society</option>
             </select>
             <br>
              <label>If other, capture the name</label><br>
@@ -523,10 +523,7 @@ $(document).on('change','.q7-question',function(){
 	</script>
 <?php } ?>
    <div class="text-danger" id="q7-alert"  style="display:none">You need to email the homeowner a mortage consent letter which will need to be signed and returned before we can proceed. The details will be in the letter</div>
-        <div class="text-success" id="finished"  style="display:none">They have met the initial critera and could be eligible for the offer pending some additional checks. Explain that we will be in touch.</div>
-
-
-
+        <div class="text-success" id="finished"  style="display:none">They have met the initial critera and could be eligible for the offer. If the <b>Property Viable</b> field is <b>Y</b> you can book an appointment for the survey. If it's empty, then you should select the outcome <b>Desktop Prequal</b></div>
 <hr>
         <a href="<?php echo base_url() . 'records/detail/' . $this->uri->segment(4); ?>" class="btn btn-default">Go
             back</a>

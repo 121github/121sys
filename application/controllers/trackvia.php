@@ -195,7 +195,7 @@ class Trackvia extends CI_Controller
 	   
 	   //queries we may want to run after the updates can go here
 	   $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29)");
-
+$this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29)");
     }
 
     /**
@@ -215,16 +215,19 @@ class Trackvia extends CI_Controller
         //Get the trackvia records for this view
         $view = $this->tv->getView($view_id);
 		
+		if($view_id == '3000718982'){
 		if(isset($view['records'])){
         $tv_records = $view['records'];
 		$this->firephp->log($view_id);
 		$this->firephp->log($view);
+		foreach(
 		} else {
 		$this->firephp->log($view_id);
 		$this->firephp->log($view);
 		return false;		
 		}
-
+		}
+	return false;
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
