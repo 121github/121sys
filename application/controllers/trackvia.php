@@ -57,22 +57,29 @@ class Trackvia extends CI_Controller
         ));
 		
 		$this->tv_tables = array(
-		"GHS Southway Total"=>3000283398,
-		"GHS Private Total"=>3000283421,
-		"GHS Southway survey"=>3000719114,
+		"GHS Southway"=>3000283398,
+		"GHS Private"=>3000283421
+    );
+	$this->tv_views = array(
+	"GHS Southway Total"=>3000719193,
+	"GHS Private Total"=>3000719185,
+	"GHS Southway survey"=>3000719114,
 		"GHS Southway rebook"=>3000719115,
 		"GHS Southway booked"=>3000719175,
 		"GHS Private survey"=>3000718982,
 		"GHS Private rebook"=>3000718984,
 		"GHS Private booked"=>3000719187,
 		"GHS Private not viable"=>3000718985);
-    }
 
+
+	}
+	
 	public function get_counts(){
-		$tables = $this->tv_tables;
+		$tables = $this->tv_views;
 		$data = array();
 		foreach($tables as $name => $view_id){
 		$view = $this->tv->getView($view_id);
+		$this->firephp->log($view);
 		$data[$name]['trackvia'] = $view['record_count'];
 		$data[$name]['one2one'] = $this->Trackvia_model->get_121_counts($name);	
 		}
