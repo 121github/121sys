@@ -52,7 +52,8 @@ class Trackvia_model extends CI_Model
                   r.parked_code,
 				  r.record_status,
 				  r.urgent,
-				  r.record_color
+				  r.record_color,
+				  r.source_id
 				from records r
 				inner join client_refs cr using(urn)
 				left join (select max(appointment_id) appointment_id,urn from appointments group by urn) ma using(urn)

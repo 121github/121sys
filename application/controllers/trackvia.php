@@ -74,7 +74,7 @@ class Trackvia extends CI_Controller
 		foreach($tables as $name => $view_id){
 		$view = $this->tv->getView($view_id);
 		$data[$name]['trackvia'] = $view['record_count'];
-		$data[$name]['121'] = $this->Trackvia_model->get_121_counts($name);	
+		$data[$name]['one2one'] = $this->Trackvia_model->get_121_counts($name);	
 		}
 		echo json_encode(array("success"=>true,"data"=>$data));
 	}
@@ -274,7 +274,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];			
             //If the campaign had changed or the park_code is "Not Working"			
 			
-            if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 ||$record['parked_code'] == 2 || $record['record_status'] != $status || $record['record_color'] != $record_color ) {
+            if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 ||$record['parked_code'] == 2 || $record['record_status'] != $status || $record['record_color'] != $record_color || $record['source_id'] != $source ) {
 				
 			
 				//organising the record update data
