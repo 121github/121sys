@@ -240,16 +240,23 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
         //Get the records to be updated in our system
         $records = $this->Trackvia_model->getRecordsByTVIds($tv_record_ids);
-		
+		if($view_id=="3000718985"){
+			$this->firephp->log($records);	
+			}
         //Update the record campaign if it is needed (different campaign) and create a new one if it does not exist yet
         $update_records = array();
 		$update_extra = array();
         $new_records_ids = $tv_record_ids;
         foreach($records as $record) {
+			
+				
+			
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];			
             //If the campaign had changed or the park_code is "Not Working"			
 			
             if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 ||$record['parked_code'] == 2 || $record['record_status'] != $status || $record['record_color'] != $record_color ) {
+				
+			
 				//organising the record update data
                 array_push($update_records, array(
                         'urn' => $record['urn'],
