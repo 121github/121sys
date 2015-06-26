@@ -215,19 +215,18 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         //Get the trackvia records for this view
         $view = $this->tv->getView($view_id);
 		
-		if($view_id == '3000718982'){
+
 		if(isset($view['records'])){
         $tv_records = $view['records'];
 		$this->firephp->log($view_id);
 		$this->firephp->log($view);
-		foreach(
 		} else {
 		$this->firephp->log($view_id);
 		$this->firephp->log($view);
 		return false;		
 		}
-		}
-	return false;
+
+
         //Get the locator ids (client_ref in our system
         $tv_record_ids = array();
         $aux = array();
@@ -659,5 +658,40 @@ $test = "5 oak street 8";
 		return $data;
 		
 	}
+
+
+	public function find_dupes(){
+		$table=$this->uri->segment(3);
+			$field1=$this->uri->segment(4);
+			$field2=$this->uri->segment(5);
+			$field3=$this->uri->segment(6);
+			$concat=array();
+			if(!empty($field1)){
+			$concat[]=$field1;
+			}
+			if(!empty($field2)){
+			$concat[]=$field2;
+			}
+			if(!empty($field3)){
+			$concat[]=$field3;
+			}
+			
+			
+			$fields = implode(",",$concat);
+			$query = "SELECT urn, concat( $fields ) ref , count( * ) count
+FROM `$table` left join contacts using(contact_id) left join records using(urn) where campaign_id in(22,28,29)
+GROUP BY concat( $fields )
+HAVING count( concat( $fields ) ) >1";
+$result = $this->db->query($query)->result_array();
+foreach($result as $row){
+	echo $row['urn'];
+	echo "<br>";
+$remove = $row['count']-1;
+echo $delete = "delete from $table where concat($fields) = '".addslashes($row['ref'])."' and urn in(select urn from client_refs where client_ref is null) limit $remove";	
+echo ";<br>";	
+}
+	}
+
+
 
 }
