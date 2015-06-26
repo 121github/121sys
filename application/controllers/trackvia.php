@@ -76,9 +76,6 @@ class Trackvia extends CI_Controller
 		$data[$name]['trackvia'] = $view['record_count'];
 		$data[$name]['121'] = $this->Trackvia_model->get_121_counts($name);	
 		}
-		
-		
-		
 		echo json_encode(array("success"=>true,"data"=>$data));
 	}
 
@@ -288,7 +285,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
                         'urgent' => $urgent,
                         'record_status' => $status,
                         'outcome_id' => $outcome_id,
-						'record_color' => $record_color
+						'record_color' => $record_color,
+						'source_id' => $source
                     )
                 );
 

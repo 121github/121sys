@@ -153,32 +153,32 @@ if($name=="GHS Private Total"){
 	return $this->db->query($qry)->num_rows();
 }
 if($name=="GHS Southway survey"){
-	$qry = "select * from records where source_id = '34' and record_";
+	$qry = "select * from records where campaign_id = 22 and source_id = '34' and record_status = 1";
 	return $this->db->query($qry)->num_rows();
 }
 if($name=="GHS Southway rebook"){
-	$qry = "select * from records where urn = 22";
+	$qry = "select * from records where campaign_id = 22 and source_id = '35' and record_status = 1 and urgent = 1";
 	return $this->db->query($qry)->num_rows();
 }
 if($name=="GHS Southway booked"){
-	$qry = "select * from records where urn = 22";
+	$qry = "select * from records where campaign_id = 22 and source_id = '35' and outcome_id = 72 and record_status = 4";
 	return $this->db->query($qry)->num_rows();
 }
 if($name=="GHS Private survey"){
-	$qry = "select * from records where urn = 22";
+	$qry = "select * from records where campaign_id = 29 and source_id = '39' ";
 	return $this->db->query($qry)->num_rows();
 }
 	
 if($name=="GHS Private rebook"){
-	$qry = "select * from records where urn = 22";
+	$qry = "select * from records where campaign_id = 29 and source_id = '38' ";
 	return $this->db->query($qry)->num_rows();
 }
 if($name=="GHS Private booked"){
-	$qry = "select * from records where urn = 22";
+	$qry = "select * from records where campaign_id = 29 and source_id = '36' ";
 	return $this->db->query($qry)->num_rows();
 }
 if($name=="GHS Private not viable"){
-	$qry = "select * from records where urn = 22";
+	$qry = "select * from records where campaign_id = 28 and source_id = '40' ";
 	return $this->db->query($qry)->num_rows();
 }	
 }
