@@ -37,7 +37,6 @@ class Planner extends CI_Controller
             'javascript' => array(
                 'modals.js',
                 'planner/planner.js',
-                'plugins/DataTables/extensions/Scroller/js/dataTables.scroller.min.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'lib/moment.js',
                 'lib/daterangepicker.js',

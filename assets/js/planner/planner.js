@@ -124,9 +124,9 @@ var planner = {
             else {
                 body = '<div>No waypoints have been added on this day!</div>' +
                        '<div>' +
-                            '<span class="glyphicon glyphicon-question-sign">' +
+                            '<span class="glyphicon glyphicon-question-sign"></span> ' +
                                 '<a href="'+helper.baseUrl+'records/view"> You can add records to the planner to create waypoints </a>' +
-                            '</span>' +
+                            '' +
                         '</div>';
             }
             $('#draggablePanelList').html(body);
