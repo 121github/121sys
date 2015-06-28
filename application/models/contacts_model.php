@@ -26,7 +26,6 @@ class Contacts_model extends CI_Model
                 "urn" => $result['urn'],
                 "fullname" => $result['fullname'],
                 "position" => $result['position'],
-                "dob" => date('d/m/Y',strtotime($result['dob'])),
                 "website" => $result['website'],
                 "linkedin" => $result['linkedin'],
                 "facebook" => $result['facebook'],
@@ -34,6 +33,9 @@ class Contacts_model extends CI_Model
                 "email" => $result['email'],
                 "optout" => $result['email_optout']
             );
+			if(!empty($result['dob'])){
+			 $contact['general']["dob"] = date('d/m/Y',strtotime($result['dob']));
+			}
             if ($result['telephone_id']) {
                 $contact['telephone'][$result['telephone_id']] = array(
                     "tel_name" => $result['description'],

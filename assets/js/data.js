@@ -830,15 +830,17 @@ var add_record = {
         });
         $(document).on("click", "#save-btn", function (e) {
             e.preventDefault();
-            add_record.save($(this));
-        });
-		$(document).on("keyup", "#contact_name,#company_name", function(){
-			if($(this).val()==""){
-			$('#save-btn').prop('disabled',true);	
+			if($('#campaign').val()==""){
+				flashalert.danger("Please select a campaign");	
+			} else if($('#campaign option:selected').attr('ctype')=="B2B"&&$('#company_name').val()==""){
+			flashalert.danger("Please enter a company name");
+			} else if($('#campaign option:selected').attr('ctype')=="B2C"&&$('#contact_name').val()==""){
+			flashalert.danger("Please enter a contact name");	
 			} else {
-			$('#save-btn').prop('disabled',false);	
+            add_record.save($(this));
 			}
-		});
+        });
+		$('#campaign').trigger('change');
     },
     show_campaign_type: function () {
         var ctype = $('#campaign option:selected').attr('ctype');
@@ -873,7 +875,10 @@ var add_record = {
                 flashalert.danger("Error saving the record");
             }
 
-        });
+        }).fail(function(){
+			$("button[type=submit]").attr('disabled', false);
+			  flashalert.danger("Error saving the record");
+		});
     }
 }
 

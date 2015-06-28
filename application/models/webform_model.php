@@ -54,10 +54,23 @@ class Webform_model extends CI_Model
 			$answers .= ",`$column` = $a";
 		}
 		}
+		//first we try an insert
+		$qry_start = "insert ignore into ";
+		$qry_end = "webform_answers set updated_by=$user_id,webform_id=$webform_id,urn=$urn $answers";
+		if(!empty($data['complete'])){
+		$qry_end .= ",completed_on=now(),completed_by=".$_SESSION['user_id'];	
+		}
+		$qry = $qry_start.$qry_end;
+		$result = $this->db->query($qry);
+		 //if no insert was done (because the webform exists) then we update 
+		 if($this->db->insert_id()==0){
+			$qry_start = "update ";
+			$qry_where = " where urn = '$urn' and webform_id = '$webform_id' ";
+			$qry = $qry_start.$qry_end.$qry_where;
 
-		$qry = "replace into webform_answers set updated_by=$user_id,webform_id=$webform_id,urn=$urn $answers";
-		$this->firephp->log($qry);
-		return $this->db->query($qry);
+			 $result = $this->db->query($qry); 
+		 }
+		return $result;
 	}
 	
 }

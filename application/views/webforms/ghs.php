@@ -93,7 +93,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 Flat
             </label>
         </div>
-        <div id="q1-alert" class="text-danger" style="display:none">Please explain we cannot install solar panels on flats because they do not own the roof</div>
+        <div id="q1-alert" class="text-danger" style="display:none">Please explain we cannot install solar panels on most flats because they do not own the roof. However if this is a council flat please transfer to GHS and select query as the outcome.</div>
 <script>
 $(document).on('change','.q1-question',function(){
 	if($(this).val()=="Flat"){
@@ -123,7 +123,7 @@ $(document).on('change','.q1-question',function(){
 	</script>
 <?php } ?>
 <div id="q2-container" style="display:none">
-         <label>Is the property owned, mortgaged or rented? <span class="glyphicon glyphicon-question-sign tt"
+         <label>Is the property owned or rented? <span class="glyphicon glyphicon-question-sign tt"
                                                        data-toggle="tooltip" data-placement="right"
                                                        title="If rented we cannot do it without the landlords consent. They must get the landlord to contact us directly 0800 8521247"></span></label>
                                                        
@@ -527,8 +527,11 @@ $(document).on('change','.q7-question',function(){
 <hr>
         <a href="<?php echo base_url() . 'records/detail/' . $this->uri->segment(4); ?>" class="btn btn-default">Go
             back</a>
+        <?php if(@!empty($values['completed_on'])){ ?>
         <button type="submit" id="save-form" class="btn btn-primary">Save form</button>
-
+        <?php } else { ?>
+        <button type="submit" id="complete-form" class="btn btn-primary">Save form</button>
+		<?php } ?>
     </form>
 
 </div>
@@ -577,7 +580,16 @@ $(document).on('change','.q7-question',function(){
                 flashalert.success("Form was saved");
             });
         });
-
+		$(document).on('click', '#complete-form', function (e) {
+            console.log($('#form').serialize());
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                data: $('#form').serialize() + '&save=1&complete=1'
+            }).done(function (response) {
+                flashalert.success("Form was saved");
+            });
+        });
 
 
 

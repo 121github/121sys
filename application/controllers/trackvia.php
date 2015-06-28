@@ -25,6 +25,7 @@ define('PRIVATE_REBOOK', '3000719206');
 define('PRIVATE_SURVEY_SLOTS', '3000719481');
 */
 //Live tables
+
 define('SOUTHWAY_ALL_RECORDS', '3000719193');
 define('SOUTHWAY_BOOK_SURVEY', '3000719114');
 define('SOUTHWAY_REBOOK', '3000719115');
@@ -35,6 +36,7 @@ define('PRIVATE_BOOK_SURVEY', '3000718982');
 define('PRIVATE_INFORM_INELIGIBLE', '3000718985');
 define('PRIVATE_REBOOK', '3000718984');
 define('PRIVATE_SURVEY_SLOTS', '3000719187');
+
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -57,8 +59,10 @@ class Trackvia extends CI_Controller
         ));
 		
 		$this->tv_tables = array(
-		"GHS Southway"=>3000283398,
-		"GHS Private"=>3000283421
+		"GHS Southway"=>3000283129,
+		"GHS Private"=>3000282959,
+		"GHS Private Test"=>3000283421,
+		"GHS Southway Test"=>3000283398
     );
 	$this->tv_views = array(
 	"GHS Southway Total"=>3000719193,
@@ -79,6 +83,7 @@ class Trackvia extends CI_Controller
 		$data = array();
 		foreach($tables as $name => $view_id){
 		$view = $this->tv->getView($view_id);
+		$this->firephp->log($name);
 		$this->firephp->log($view);
 		$data[$name]['trackvia'] = $view['record_count'];
 		$data[$name]['one2one'] = $this->Trackvia_model->get_121_counts($name);	
@@ -96,7 +101,7 @@ class Trackvia extends CI_Controller
 		echo json_encode(array("success"=>true,"data"=>$result));
 	}
 
-    public function checkTrackviaSystem() {
+    public function check_trackvia() {
 		   //SOUTHWAY TABLE
 
         //Book View
@@ -495,20 +500,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
     }
 
   
-    /**
-     * Update a trackvia record
-     */
-	 
-	 public function test_update(){
-		 //2nd june 2015 eve
-		 
-$test = "5 oak street 8";		 
-		$add1= preg_replace('/[^0-9]/','',$test);
-			$this->firephp->log($add1);
-			$house_number= preg_replace('/[0-9]/','',$test);
-			$this->firephp->log($house_number);
-
-	 }
+   
 	 
     public function add_appointment() {
 		
@@ -526,7 +518,17 @@ $test = "5 oak street 8";
 
         //Update the record
         $response = $this->tv->updateRecord($app['client_ref'],$data);
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref']));
+		if(isset($resonse['message'])){
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		} else {
+			$message = "An error occured when adding a new trackvia record\r\n";
+			$message .= "Table ID: ". $tv_table."\r\n";
+			$message .= "Sent Data\r\n";
+			foreach($data as $k=>$v){
+			$message .= "$k: $v\r\n";
+			}
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);	
+		}
 
     }
 
@@ -537,17 +539,58 @@ $test = "5 oak street 8";
 		$data = array("Customer not contactable" => "Customer not contactable");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		if(isset($resonse['message'])){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		} else {
+			$message = "An error occured when adding a new trackvia record\r\n";
+			$message .= "Table ID: ". $tv_table."\r\n";
+			$message .= "Sent Data\r\n";
+			foreach($data as $k=>$v){
+			$message .= "$k: $v\r\n";
+			}
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);	
+		}
 	}
 	
-		public function not_interested(){
+		public function survey_refused(){
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
-		$data = array("Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
+		$data = array("Planned Survey Date"=>"","Survey appt"=>"","Survey Booking Confirmed"=>"","Survey booked by"=>"","Survey Appointment Comments"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		if(isset($resonse['message'])){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		} else {
+			$message = "An error occured when adding a new trackvia record\r\n";
+			$message .= "Table ID: ". $tv_table."\r\n";
+			$message .= "Sent Data\r\n";
+			foreach($data as $k=>$v){
+			$message .= "$k: $v\r\n";
+			}
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);	
+		}
+	}
+	
+	//the fields we update here need confirming, there doesnt appear to be any cancel install fields for us.
+	public function install_refused(){
+		$urn = $this->input->post('urn');
+		 //Get the record data
+        $record = $this->Trackvia_model->get_record($urn);
+		$data = array("Planned Installation date"=>"","Installation Date Confirmed"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
+	
+		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		if(isset($resonse['message'])){
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		} else {
+			$message = "An error occured when adding a new trackvia record\r\n";
+			$message .= "Table ID: ". $tv_table."\r\n";
+			$message .= "Sent Data\r\n";
+			foreach($data as $k=>$v){
+			$message .= "$k: $v\r\n";
+			}
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);	
+		}
 	}
 
 		public function notified_not_eligible(){
@@ -558,7 +601,17 @@ $test = "5 oak street 8";
 		"Owner / Tenant Informed of Rejection" => "Y");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		if(isset($resonse['message'])){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		} else {
+			$message = "An error occured when adding a new trackvia record\r\n";
+			$message .= "Table ID: ". $tv_table."\r\n";
+			$message .= "Sent Data\r\n";
+			foreach($data as $k=>$v){
+			$message .= "$k: $v\r\n";
+			}
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);	
+		}
 	}
 	
 	
@@ -570,7 +623,17 @@ $test = "5 oak street 8";
 		"Internal Survey Completed" => "Y");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
+		if(isset($resonse['message'])){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		} else {
+			$message = "An error occured when adding a new trackvia record\r\n";
+			$message .= "Table ID: ". $tv_table."\r\n";
+			$message .= "Sent Data\r\n";
+			foreach($data as $k=>$v){
+			$message .= "$k: $v\r\n";
+			}
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);	
+		}
 	}
 	
 	public function review_required(){
@@ -578,12 +641,18 @@ $test = "5 oak street 8";
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
 		//if the record has TV id then we can update or we need to create it
-		if($record['client_ref']){
+		if(isset($record['client_ref'])){
+			$this->firephp->log("update tv record");
 			$this->update_tv_record($urn);
 		} else {
+			$this->firephp->log("creating tv record");
 			$this->add_tv_record($urn);
 		}
 	
+	}
+	
+	public function test_update(){
+	$response = $this->tv->updateRecord(false,false);	
 	}
 	
 	  /**
@@ -594,11 +663,32 @@ $test = "5 oak street 8";
 		$urn = $this->input->post('urn');
 		}
 		$tv_tables = $this->tv_tables;
-		$data = get_record_array($urn);
+		$tv_table = $tv_tables['GHS Private Test'];
+		$data = $this->get_record_array($urn);
+		unset($data['client_ref']);
 		$this->firephp->log($data);
+		$this->firephp->log($tv_table);
+		
+		
         //Update the record
-        $response = $this->tv->addRecord($tv_tables['GHS Private'],$data);
-		echo $response;
+        $response = $this->tv->addRecord($tv_table,$data);
+		if(isset($response)){
+			$new_client_ref = $response['records'][0]['id'];
+			$data = array("urn"=>$urn,
+				"client_ref"=>$new_client_ref
+				);
+				$this->Trackvia_model->add_client_refs($data);
+			echo json_encode(array("success"=>true,"msg"=>$response));	
+		} else {
+			$message = "An error occured when adding a new trackvia record\r\n";
+			$message .= "Table ID: ". $tv_table."\r\n";
+			$message .= "Sent Data\r\n";
+			foreach($data as $k=>$v){
+			$message .= "$k: $v\r\n";
+			}
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+		echo json_encode(array("success"=>true,"msg"=>$response['messsage']));	
+		}
     }
 
 	
@@ -607,12 +697,22 @@ $test = "5 oak street 8";
 		$urn = $this->input->post('urn');
 		}
 		 //Get the record data
-        $record = $this->Trackvia_model->get_record_rows($urn);
-		$data = get_record_array($urn);
+		$data = $this->get_record_array($urn);
 		$client_ref=$data['client_ref'];
 		unset($data['client_ref']);
 		$response = $this->tv->updateRecord($client_ref,$data);
+		if(isset($response['message'])){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$client_ref,"data"=>$data));
+		} else {
+			$message = "An error occured when adding a new trackvia record\r\n";
+			$message .= "Client ref: ". $client_ref."\r\n";
+			$message .= "Sent Data\r\n";
+			foreach($data as $k=>$v){
+			$message .= "$k: $v\r\n";
+			}
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+		echo json_encode(array("success"=>true,"msg"=>$response['messsage']));	
+		}
 	}
 	
 	public function get_record_array($urn){
@@ -622,14 +722,13 @@ $test = "5 oak street 8";
 			$details = $row;
 			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07/',$row['telephone_number'])){
 				$mobile = $row['telephone_number'];
-			} 
-			$add1= preg_replace('/[0-9]/','',$row['add1']);
-			$house_number= preg_replace('/^[0-9]/','',$row['add1']);
+			}
+			$add1= trim(preg_replace('/[0-9]/','',$row['add1']));
+			$house_number= trim(preg_replace('/[a-zA-Z]/','',$row['add1']));
 		}
-		
 		$data = array("UPRN Pre-fix"=>"PR",
-		"created"=>date('Y-m-d')."T12:00:00-0600",
 		"Date of Enquiry"=>date('Y-m-d')."T12:00:00-0600");
+		$data['client_ref'] = $details['client_ref'];
 		if(!empty($details['a2'])){
 		$data["Owner / Rented"]=$details['a2'];
 		}
@@ -690,6 +789,7 @@ $test = "5 oak street 8";
 		if(!empty($details['c4'])){
 		$data["Referred by"] = $details['c4'];
 		}
+		
 		return $data;
 		
 	}

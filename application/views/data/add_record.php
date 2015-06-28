@@ -18,7 +18,7 @@
 									<select name="campaign_id" class="selectpicker" id="campaign">
                                     	<option value="">Select the campaign</option>
                                         <?php foreach($campaigns as $row){ ?>
-	                                        <option ctype="<?php echo $row['type'] ?>" value="<?php echo $row['id'] ?>">
+	                                        <option <?php if(isset($_SESSION['current_campaign'])&&$_SESSION['current_campaign']==$row['id']){ echo "selected"; } ?> ctype="<?php echo $row['type'] ?>" value="<?php echo $row['id'] ?>">
 	                                        	<?php echo $row['name'] ?>
 	                                        </option>
                                         <?php } ?>
@@ -44,7 +44,7 @@
 								
 								<!-- SUBMIT AND CANCEL BUTTONS -->
 							    <div class="form-actions pull-left">
-									<button type="submit" class="btn btn-primary" id="save-btn" disabled>Save</button>
+									<button type="submit" class="btn btn-primary" id="save-btn">Save</button>
 								</div>
 							</div>
                             </div>
