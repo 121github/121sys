@@ -227,9 +227,10 @@ $this->_campaigns = campaign_access_dropdown();
             'title' => 'List Surveys',
             'columns' => $visible_columns,
             'javascript' => array(
+				'plugins/DataTables/js/jquery.dataTables.min.js',
 			"lib/bootstrap-slider.js",
                 'survey_view.js',
-				'plugins/DataTables/js/jquery.dataTables.min.js',
+			
             ),
 
         );
