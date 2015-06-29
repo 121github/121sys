@@ -12,6 +12,7 @@ define('USERNAME', 'ghsAPI');
 define('PASSWORD', 'global123');
 
 if($_SESSION['environment']=="acceptance"||$_SESSION['environment']=="test"||$_SESSION['environment']=="development"){
+
 //Test tables
 define('SOUTHWAY_ALL_RECORDS', '3000718568');
 define('SOUTHWAY_BOOK_SURVEY', '3000718751');
@@ -64,7 +65,7 @@ class Trackvia extends CI_Controller
             'username'      => USERNAME,
             'password'      => PASSWORD
         ));
-		
+
 		$this->tv_tables = array(
 		"GHS Southway"=>SOUTHWAY_TABLE,
 		"GHS Private"=>PRIVATE_TABLE
@@ -670,7 +671,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$urn = $this->input->post('urn');
 		}
 		$tv_tables = $this->tv_tables;
-		$tv_table = $tv_tables['GHS Private Test'];
+		$tv_table = $tv_tables['GHS Private'];
 		$data = $this->get_record_array($urn);
 		unset($data['client_ref']);
 		$this->firephp->log($data);
