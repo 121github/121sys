@@ -527,7 +527,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
         //Update the record
         $response = $this->tv->updateRecord($app['client_ref'],$data);
-		if(!empty($resonse)){
+		if(!empty($response)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref']));
 		$this->db->query("update records set urgent=null where urn = '$urn'");
 		} else {
@@ -550,7 +550,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$data = array("Customer not contactable" => "Customer not contactable");
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(!empty($resonse)){
+		if(!empty($response)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
 			$message = " An error occured while updating a record \r\n";
@@ -571,7 +571,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$data = array("Planned Survey Date"=>"","Survey appt"=>"","Survey Booking Confirmed"=>"","Survey booked by"=>"","Survey Appointment Comments"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(!empty($resonse)){
+		if(!empty($response)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
 			$message = " An error occured while updating a record \r\n";
@@ -593,7 +593,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$data = array("Planned Installation date"=>"","Installation Date Confirmed"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(!empty($resonse)){
+		if(!empty($response)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
 			$message = " An error occured while updating a record \r\n";
@@ -615,7 +615,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		"Owner / Tenant Informed of Rejection" => "Y");
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(!empty($resonse)){
+		if(!empty($response)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
 				$message = " An error occured while updating a record \r\n";
@@ -638,7 +638,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		"Internal Survey Completed" => "Y");
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(!empty($resonse)){
+		if(!empty($response)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
 			$message = " An error occured while updating a record \r\n";
@@ -688,7 +688,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
         //Update the record
         $response = $this->tv->addRecord($tv_table,$data);
-		if(!empty($resonse)){
+		$this->firephp->log($response);
+		if(!empty($response)){
 			$new_client_ref = $response['records'][0]['id'];
 			$data = array("urn"=>$urn,
 				"client_ref"=>$new_client_ref
@@ -718,7 +719,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$client_ref=$data['client_ref'];
 		unset($data['client_ref']);
 		$response = $this->tv->updateRecord($client_ref,$data);
-		if(!empty($resonse)){
+		if(!empty($response)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$client_ref,"data"=>$data));
 		} else {
 			$message = "  An error occured when adding a new trackvia record  \r\n";
