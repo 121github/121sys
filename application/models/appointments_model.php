@@ -27,26 +27,29 @@ for($i = 0; $i < 30; $i++){
     $slots[date("D jS M", strtotime('+'. $i .' days'))] = $thresholds[date("l", strtotime('+'. $i .' days'))];
 }
 
-		$am = "select date(`start`) start,count(*) from appointments left join records using(urn) where time(`start`) between '08:00:00' and '12:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`) ";
-		$pm = "select date(`start`) start,count(*) from appointments left join records using(urn )where time(`start`) between '12:01:00' and '17:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`)";
-		$eve = "select date(`start`) start,count(*) from appointments left join records using(urn) where time(`start`) between '17:01:00' and '22:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`)";
+		$am = "select date(`start`) start,count(*) count from appointments left join records using(urn) where time(`start`) between '09:00:00' and '12:59:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`) ";
+		$pm = "select date(`start`) start,count(*) count from appointments left join records using(urn )where time(`start`) between '13:00:00' and '18:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`)";
+		$eve = ""; //not using
 		
 		$am_results = $this->db->query($am)->result_array();
 		$pm_results = $this->db->query($pm)->result_array();
-		$eve_results = $this->db->query($eve)->result_array();
+		//$eve_results = $this->db->query($eve)->result_array();
 
 		foreach($am_results as $row){
 			$date = date("D jS M", strtotime($row['start']));
-			@$slots[$date]['am']++;
+			@$slots[$date]['am']=$row['count'];
 		}
 		foreach($pm_results as $row){
 			$date = date("D jS M", strtotime($row['start']));
-			@$slots[$date]['pm']++;
+			@$slots[$date]['pm']=$row['count'];
 		}
+		/*
 		foreach($eve_results as $row){
 			$date = date("D jS M", strtotime($row['start']));
-			@$slots[$date]['eve']++;
+				$day = date("l", strtotime($row['start']));
+			@$slots[$date][$day]['eve']++;
 		}
+		*/
 		return $slots;
 	}
 	
