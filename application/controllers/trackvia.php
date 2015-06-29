@@ -11,7 +11,7 @@ define('CLIENT_SECRET', 'qhhgy6bbdc0w8gc0kc0kc0k88gw0ko0oskocock0wc8gw48w8');
 define('USERNAME', 'ghsAPI');
 define('PASSWORD', 'global123');
 
-if($_SEESION['environment']=="accept"||$_SEESION['environment']=="test"){
+if($_SEESION['environment']=="acceptance"||$_SEESION['environment']=="test"||$_SEESION['environment']=="development"){
 //Test tables
 define('SOUTHWAY_ALL_RECORDS', '3000718568');
 define('SOUTHWAY_BOOK_SURVEY', '3000718751');
@@ -27,7 +27,7 @@ define('PRIVATE_SURVEY_SLOTS', '3000719481');
 define('PRIVATE_TABLE', '3000283421');
 define('SOUTHWAY_TABLE', '3000283398');
 
-} else if($_SEESION['environment']=="development"){
+} else if($_SEESION['environment']=="production"){
 //Live tables
 
 define('SOUTHWAY_ALL_RECORDS', '3000719193');
