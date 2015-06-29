@@ -11,7 +11,7 @@ define('CLIENT_SECRET', 'qhhgy6bbdc0w8gc0kc0kc0k88gw0ko0oskocock0wc8gw48w8');
 define('USERNAME', 'ghsAPI');
 define('PASSWORD', 'global123');
 
-/*
+if($_SEESION['environment']=="accept"||$_SEESION['environment']=="test"){
 //Test tables
 define('SOUTHWAY_ALL_RECORDS', '3000718568');
 define('SOUTHWAY_BOOK_SURVEY', '3000718751');
@@ -23,7 +23,11 @@ define('PRIVATE_BOOK_SURVEY', '3000719204');
 define('PRIVATE_INFORM_INELIGIBLE', '3000719207');
 define('PRIVATE_REBOOK', '3000719206');
 define('PRIVATE_SURVEY_SLOTS', '3000719481');
-*/
+
+define('PRIVATE_TABLE', '3000283421');
+define('SOUTHWAY_TABLE', '3000283398');
+
+} else if($_SEESION['environment']=="development"){
 //Live tables
 
 define('SOUTHWAY_ALL_RECORDS', '3000719193');
@@ -37,6 +41,9 @@ define('PRIVATE_INFORM_INELIGIBLE', '3000718985');
 define('PRIVATE_REBOOK', '3000718984');
 define('PRIVATE_SURVEY_SLOTS', '3000719187');
 
+define('PRIVATE_TABLE', '3000282959');
+define('SOUTHWAY_TABLE', '3000283129');
+}
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -59,23 +66,20 @@ class Trackvia extends CI_Controller
         ));
 		
 		$this->tv_tables = array(
-		"GHS Southway"=>3000283129,
-		"GHS Private"=>3000282959,
-		"GHS Private Test"=>3000283421,
-		"GHS Southway Test"=>3000283398
+		"GHS Southway"=>SOUTHWAY_TABLE,
+		"GHS Private"=>PRIVATE_TABLE
     );
+	
 	$this->tv_views = array(
-	"GHS Southway Total"=>3000719193,
-	"GHS Private Total"=>3000719185,
-	"GHS Southway survey"=>3000719114,
-		"GHS Southway rebook"=>3000719115,
-		"GHS Southway booked"=>3000719175,
-		"GHS Private survey"=>3000718982,
-		"GHS Private rebook"=>3000718984,
-		"GHS Private booked"=>3000719187,
-		"GHS Private not viable"=>3000718985);
-
-
+	"GHS Southway Total"=>SOUTHWAY_ALL_RECORDS,
+	"GHS Private Total"=>PRIVATE_ALL_RECORDS,
+	"GHS Southway survey"=>SOUTHWAY_BOOK_SURVEY,
+		"GHS Southway rebook"=>SOUTHWAY_REBOOK,
+		"GHS Southway booked"=>SOUTHWAY_SURVEY_SLOTS,
+		"GHS Private survey"=>PRIVATE_BOOK_SURVEY,
+		"GHS Private rebook"=>PRIVATE_REBOOK,
+		"GHS Private booked"=>PRIVATE_SURVEY_SLOTS,
+		"GHS Private not viable"=>PRIVATE_INFORM_INELIGIBLE);
 	}
 	
 	public function get_counts(){
