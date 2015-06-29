@@ -228,7 +228,8 @@ $this->_campaigns = campaign_access_dropdown();
             'columns' => $visible_columns,
             'javascript' => array(
 			"lib/bootstrap-slider.js",
-                'survey_view.js'
+                'survey_view.js',
+				'plugins/DataTables/js/jquery.dataTables.min.js',
             ),
 
         );

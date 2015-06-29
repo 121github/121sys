@@ -77,7 +77,7 @@ $('#update').click(function(e){
 	dataType:"JSON",
 	data:{ urn:$('#urnval').val() }
 	}).done(function(response){
-		$('#response').html(response);
+		$('#response').html(response.message+'<br>ID: '+response.records[0]['id']);
 	});
 });
 

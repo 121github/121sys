@@ -83,6 +83,10 @@ class Trackvia extends CI_Controller
 		"GHS Private rebook"=>PRIVATE_REBOOK,
 		"GHS Private booked"=>PRIVATE_SURVEY_SLOTS,
 		"GHS Private not viable"=>PRIVATE_INFORM_INELIGIBLE);
+		
+		
+		$this->headers = "From: noreply@121system.com" . "\r\n" .
+						"CC: steve.prior@globalheatsource.com";
 	}
 
 	public function get_counts(){
@@ -538,7 +542,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			foreach($data as $k=>$v){
 			$message .= "$k: $v \r\n	";
 			}
-			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		}
 
     }
@@ -560,7 +564,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			foreach($data as $k=>$v){
 			$message .= " $k: $v \r\n";
 			}
-			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		}
 	}
 
@@ -581,7 +585,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			foreach($data as $k=>$v){
 			$message .= " $k: $v \r\n";
 			}
-			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		}
 	}
 
@@ -603,7 +607,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			foreach($data as $k=>$v){
 			$message .= " $k: $v \r\n";
 			}
-			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		}
 	}
 
@@ -625,7 +629,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			foreach($data as $k=>$v){
 			$message .= " $k: $v \r\n";
 			}
-			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		}
 	}
 
@@ -648,7 +652,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			foreach($data as $k=>$v){
 			$message .= "$k: $v\r\n";
 			}
-			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		}
 	}
 
@@ -704,7 +708,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			foreach($data as $k=>$v){
 			$message .= "  $k: $v \r\n";
 			}
-			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		echo json_encode(array("success"=>true,"msg"=>$response['messsage']));
 		}
     }
@@ -729,7 +733,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			foreach($data as $k=>$v){
 			$message .= "  $k: $v  \r\n";
 			}
-			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
+			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		echo json_encode(array("success"=>true,"msg"=>$response['messsage']));
 		}
 	}
