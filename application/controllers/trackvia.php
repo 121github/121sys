@@ -531,11 +531,12 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref']));
 		$this->db->query("update records set urgent=null where urn = '$urn'");
 		} else {
-			$message = "An error occured while saving an appointment\r\n";
-			$message .= "Record ID: ". $app['client_ref']."\r\n";
-			$message .= "Sent Data\r\n";
+			$message = "An error occured while saving an appointment \r\n	";
+			$message .= "  URN: $urn \r\n";
+			$message .= "Record ID: ". $app['client_ref']." \r\n	";
+			$message .= "Sent Data \r\n	";
 			foreach($data as $k=>$v){
-			$message .= "$k: $v\r\n";
+			$message .= "$k: $v \r\n	";
 			}
 			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
 		}
@@ -552,11 +553,12 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured while updating a record\r\n";
-			$message .= "Record ID: ". $record['client_ref']."\r\n";
-			$message .= "Sent Data\r\n";
+			$message = " An error occured while updating a record \r\n";
+			$message .= "  URN: $urn \r\n";
+			$message .= " Record ID: ". $record['client_ref']." \r\n";
+			$message .= " Sent Data \r\n";
 			foreach($data as $k=>$v){
-			$message .= "$k: $v\r\n";
+			$message .= " $k: $v \r\n";
 			}
 			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
 		}
@@ -572,11 +574,12 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured while updating a record\r\n";
-			$message .= "Record ID: ". $record['client_ref']."\r\n";
-			$message .= "Sent Data\r\n";
+			$message = " An error occured while updating a record \r\n";
+			$message .= "  URN: $urn \r\n";
+			$message .= " Record ID: ". $record['client_ref']." \r\n";
+			$message .= " Sent Data \r\n";
 			foreach($data as $k=>$v){
-			$message .= "$k: $v\r\n";
+			$message .= " $k: $v \r\n";
 			}
 			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
 		}
@@ -593,11 +596,12 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured while updating a record\r\n";
-			$message .= "Record ID: ". $record['client_ref']."\r\n";
-			$message .= "Sent Data\r\n";
+			$message = " An error occured while updating a record \r\n";
+			$message .= "  URN: $urn \r\n";
+			$message .= " Record ID: ". $record['client_ref']." \r\n";
+			$message .= " Sent Data \r\n";
 			foreach($data as $k=>$v){
-			$message .= "$k: $v\r\n";
+			$message .= " $k: $v \r\n";
 			}
 			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
 		}
@@ -614,11 +618,12 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-				$message = "An error occured while updating a record\r\n";
-			$message .= "Record ID: ". $record['client_ref']."\r\n";
-			$message .= "Sent Data\r\n";
+				$message = " An error occured while updating a record \r\n";
+				$message .= "  URN: $urn \r\n";
+			$message .= " Record ID: ". $record['client_ref']." \r\n";
+			$message .= " Sent Data \r\n";
 			foreach($data as $k=>$v){
-			$message .= "$k: $v\r\n";
+			$message .= " $k: $v \r\n";
 			}
 			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
 		}
@@ -636,9 +641,10 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured while updating a record\r\n";
-			$message .= "Record ID: ". $record['client_ref']."\r\n";
-			$message .= "Sent Data\r\n";
+			$message = " An error occured while updating a record \r\n";
+			$message .= "  URN: $urn \r\n";
+			$message .= " Record ID: ". $record['client_ref']." \r\n";
+			$message .= " Sent Data \r\n";
 			foreach($data as $k=>$v){
 			$message .= "$k: $v\r\n";
 			}
@@ -690,11 +696,12 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				$this->Trackvia_model->add_client_refs($data);
 			echo json_encode(array("success"=>true,"msg"=>$response));
 		} else {
-			$message = "An error occured when adding a new trackvia record\r\n";
-			$message .= "Table ID: ". $tv_table."\r\n";
-			$message .= "Sent Data\r\n";
+			$message = "  An error occured when adding a new trackvia record \r\n";
+			$message .= "  URN: $urn \r\n";
+			$message .= "  Table ID: ". $tv_table." \r\n";
+			$message .= "  Sent Data \r\n";
 			foreach($data as $k=>$v){
-			$message .= "$k: $v\r\n";
+			$message .= "  $k: $v \r\n";
 			}
 			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
 		echo json_encode(array("success"=>true,"msg"=>$response['messsage']));
@@ -714,11 +721,12 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$client_ref,"data"=>$data));
 		} else {
-			$message = "An error occured when adding a new trackvia record\r\n";
-			$message .= "Client ref: ". $client_ref."\r\n";
-			$message .= "Sent Data\r\n";
+			$message = "  An error occured when adding a new trackvia record  \r\n";
+			$message .= "  URN: $urn \r\n";
+			$message .= "  Client ref: ". $client_ref."  \r\n";
+			$message .= "  Sent Data  \r\n";
 			foreach($data as $k=>$v){
-			$message .= "$k: $v\r\n";
+			$message .= "  $k: $v  \r\n";
 			}
 			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message);
 		echo json_encode(array("success"=>true,"msg"=>$response['messsage']));
