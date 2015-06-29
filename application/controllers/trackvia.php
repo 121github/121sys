@@ -11,7 +11,7 @@ define('CLIENT_SECRET', 'qhhgy6bbdc0w8gc0kc0kc0k88gw0ko0oskocock0wc8gw48w8');
 define('USERNAME', 'ghsAPI');
 define('PASSWORD', 'global123');
 
-if($_SEESION['environment']=="acceptance"||$_SEESION['environment']=="test"||$_SEESION['environment']=="development"){
+if($_SESSION['environment']=="acceptance"||$_SESSION['environment']=="test"||$_SESSION['environment']=="development"){
 //Test tables
 define('SOUTHWAY_ALL_RECORDS', '3000718568');
 define('SOUTHWAY_BOOK_SURVEY', '3000718751');
@@ -27,7 +27,7 @@ define('PRIVATE_SURVEY_SLOTS', '3000719481');
 define('PRIVATE_TABLE', '3000283421');
 define('SOUTHWAY_TABLE', '3000283398');
 
-} else if($_SEESION['environment']=="production"){
+} else if($_SESSION['environment']=="production"){
 //Live tables
 
 define('SOUTHWAY_ALL_RECORDS', '3000719193');
@@ -230,6 +230,8 @@ class Trackvia extends CI_Controller
 	   //queries we may want to run after the updates can go here
 	   $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29)");
 $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29)");
+
+   $this->db->query("update contacts inner join records using(urn) inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29) and records.source_id is not null");
     }
 
     /**
@@ -524,6 +526,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         $response = $this->tv->updateRecord($app['client_ref'],$data);
 		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref']));
+		$this->db->query("update records set urgent=null where urn = '$urn'");
 		} else {
 			$message = "An error occured while saving an appointment\r\n";
 			$message .= "Record ID: ". $app['client_ref']."\r\n";
