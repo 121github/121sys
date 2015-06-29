@@ -4,7 +4,18 @@ var ghs = {
 	init:function(){
 		$(document).on('click','#search-address,#search-reference,#search-telephone',function(e){
 			e.preventDefault();
+			var error = "";
+			$.each($(this).closest('form').find('input'),function(){
+				if($(this).val()==""){
+				error = "Please enter the "+$(this).prev('label').text();	
+				}
+			});
+			if(error==""){
 			ghs.search_record($(this));
+			} else {
+			flashalert.danger(error);
+			}
+
 		});
 	},
 search_record:function($btn){
