@@ -11,6 +11,7 @@ define('CLIENT_SECRET', 'qhhgy6bbdc0w8gc0kc0kc0k88gw0ko0oskocock0wc8gw48w8');
 define('USERNAME', 'ghsAPI');
 define('PASSWORD', 'global123');
 
+
 if($_SESSION['environment']=="acceptance"||$_SESSION['environment']=="test"||$_SESSION['environment']=="development"){
 
 //Test tables
@@ -44,7 +45,8 @@ define('PRIVATE_SURVEY_SLOTS', '3000719187');
 
 define('PRIVATE_TABLE', '3000282959');
 define('SOUTHWAY_TABLE', '3000283129');
-}
+
+//}
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
