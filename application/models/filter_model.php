@@ -519,7 +519,7 @@ return $this->db->get('record_details_options')->result_array();
                     $join['surveys'] = " left join surveys sur on sur.urn = r.urn ";
                 }
                 if ($filter_options[$field]['table'] == "client_refs") {
-                    $join['client_refs'] = " left join client_refs cref on client_refs.urn = r.urn ";
+                    $join['client_refs'] = " left join client_refs cref on cref.urn = r.urn ";
                 }
                 if ($filter_options[$field]['table'] == "campaigns") {
                     $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
