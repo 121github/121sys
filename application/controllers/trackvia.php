@@ -169,6 +169,23 @@ class Trackvia extends CI_Controller
 //
 //        //PRIVATE TABLE
 //
+ //Private Residential View
+        $this->checkView(
+            PRIVATE_ALL_RECORDS,
+           array(
+               'campaign_id' => 29,
+                'urgent' => NULL,
+                'status' => 1,
+                'outcome_id' => NULL,
+              'appointment_creation' => false,
+			  'appointment_cancelled' => false,
+			  'record_color'=>'000000',
+				'source_id' => 41,
+				'savings_per_panel' => 30
+
+            )
+       );
+
         //Private Residential View
         $this->checkView(
             PRIVATE_BOOK_SURVEY,
