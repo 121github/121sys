@@ -727,7 +727,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
 	public function get_record_array($urn){
 			$record = $this->Trackvia_model->get_record_rows($urn);
-
+			$mobile ="";
 		foreach($record as $k=>$row){
 			$details = $row;
 			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07/',$row['telephone_number'])){
@@ -778,8 +778,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($details['postcode'])){
 		$data["PostCode"]=$details['postcode'];
 		}
-		if(!empty($details["Telephone Call-in"])){
-		$data["Enquiry Type"]=$details["Telephone Call-in"];
+		if(!empty($details["c3"])){
+		$data["Enquiry Type"]=$details["c3"];
 		}
 		if(!empty($details['date_added'])){
 		$data["Date of Enquiry"]=date('Y-m-d',strtotime($details['date_added']))."T12:00:00-0600";
@@ -793,7 +793,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($details['a9'])){
 		$data["If Other Mortgage Provider, please Input"]=$details['a9'];
 		}
-		if(isset($mobile)){
+		if(!empty($mobile)){
 		$data["Primary Contact (Mobile)"] = $mobile;
 		}
 		if(!empty($details['c4'])){
