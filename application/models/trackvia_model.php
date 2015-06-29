@@ -30,7 +30,7 @@ class Trackvia_model extends CI_Model
 
 
 	public function get_record_rows($urn){
-		$query = "select * from records inner join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn'";
+		$query = "select * from records left join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn'";
 		return $this->db->query($query)->result_array();
 	}
 
@@ -133,41 +133,32 @@ public function update_extra($data){
 
 		
 		
-		public function get_121_counts($name){
-		
+		public function get_121_counts($name){		
 if($name=="GHS Southway Total"){
 	$qry = "select * from records where campaign_id = 22";
 	return $this->db->query($qry)->num_rows();
-}
-if($name=="GHS Private Total"){
+} else if($name=="GHS Private Total"){
 	$qry = "select * from records where campaign_id in(28,29)";
 	return $this->db->query($qry)->num_rows();
-}
-if($name=="GHS Southway survey"){
-	$qry = "select * from records where campaign_id = 22 and source_id = '34' and record_status = 1";
+} else if($name=="GHS Southway survey"){
+	$qry = "select * from records where campaign_id = 22 and source_id = '34'";
 	return $this->db->query($qry)->num_rows();
-}
-if($name=="GHS Southway rebook"){
-	$qry = "select * from records where campaign_id = 22 and source_id = '35' and record_status = 1 and urgent = 1";
+} else if($name=="GHS Southway rebook"){
+	$qry = "select * from records where campaign_id = 22 and source_id = '35'";
 	return $this->db->query($qry)->num_rows();
-}
-if($name=="GHS Southway booked"){
+} else if($name=="GHS Southway booked"){
 	$qry = "select * from records inner join appointments using(urn) where campaign_id = 22 and source_id = '36' and outcome_id = 72 and record_status = 4 and `start` > now()";
 	return $this->db->query($qry)->num_rows();
-}
-if($name=="GHS Private survey"){
+}  else if($name=="GHS Private survey"){
 	$qry = "select * from records where campaign_id = 29 and source_id = '39' ";
 	return $this->db->query($qry)->num_rows();
-}
-if($name=="GHS Private rebook"){
+} else if($name=="GHS Private rebook"){
 	$qry = "select * from records where campaign_id = 29 and source_id = '38' ";
 	return $this->db->query($qry)->num_rows();
-}
-if($name=="GHS Private booked"){
+} else if($name=="GHS Private booked"){
 	$qry = "select * from records inner join appointments using(urn) where campaign_id = 29 and source_id = '36'  and record_status = 4 and `start` > now()";
 	return $this->db->query($qry)->num_rows();
-}
-if($name=="GHS Private not viable"){
+} else if($name=="GHS Private not viable"){
 	$qry = "select * from records where campaign_id = 28 and source_id = '40' ";
 	return $this->db->query($qry)->num_rows();
 }	

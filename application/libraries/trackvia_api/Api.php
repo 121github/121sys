@@ -300,7 +300,7 @@ class Api extends EventDispatcher
         return $this->api($url, 'GET');
     }
 
-    /**
+ /**
      * Add a new record to a table
      * @param int $id
      * @param array $record
@@ -315,7 +315,6 @@ class Api extends EventDispatcher
         );
         return $this->api($url, 'POST', json_encode($data), 'json');
     }
-
     /**
      * Add more than one record at once to a table. Batch inserts.
      * 
@@ -333,6 +332,7 @@ class Api extends EventDispatcher
         return $this->api($url, 'POST', json_encode($data), 'json');
     }
 
+
     /**
      * Update a single record.
      * 
@@ -342,6 +342,8 @@ class Api extends EventDispatcher
      */
     public function updateRecord($id, $data)
     {
+		$id = "3063002811";
+		$data = array("GHS UPRN"=>"PR99999");
         $url = self::BASE_URL . self::RECORDS_URL .'/'. $id;
         return $this->api($url, 'PUT', json_encode($data), 'json');
     }

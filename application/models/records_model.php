@@ -970,12 +970,13 @@ class Records_model extends CI_Model
 
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
-        $fields_qry = "select `field`,`field_name`,`is_select`,is_renewal,format from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
+        $fields_qry = "select `field`,`field_name`,`is_select`,is_renewal,format,editable from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
         $fields_result = $this->db->query($fields_qry)->result_array();
         $fields = "";
         foreach ($fields_result as $row) {
             $stuff1[$row['field_name']] = $row['field'];
             $renewal[$row['field_name']] = $row['format'];
+			$editable[$row['field_name']] = $row['editable'];
             if ($row['is_select'] == 1) {
                 $this->db->select("id,option");
                 $this->db->where(array(
@@ -988,13 +989,6 @@ class Records_model extends CI_Model
                 }
                 $stuff2[$row['field_name']] = $options;
             }
-            /*			 
-            if (substr($row['field'], 0, 1) == "d") {
-                $sqlfield = "date_format(" . $row['field'] . ",'%Y-%m-%d')";
-            } else {
-                $sqlfield = $row['field'];
-            }
-			*/
 
             $sqlfield = $row['field'];
             $fields .= "$sqlfield" . " as `" . $row['field_name'] . "`,";
@@ -1020,6 +1014,7 @@ class Records_model extends CI_Model
                     $info[$id][$k]["id"] = $detail['detail_id'];
                     $info[$id][$k]["code"] = $stuff1[$k];
                     $info[$id][$k]["name"] = $k;
+					$info[$id][$k]["editable"] = $editable[$k];
                     if (isset($renewal[$k])) {
                         $info[$id][$k]["formatted"] = (!empty($v) ? date($renewal[$k], strtotime($v)) : "-");
                     }
@@ -1298,11 +1293,10 @@ class Records_model extends CI_Model
         $this->db->delete("attachments");
     }
 
-    public function get_webforms($id)
+    public function get_webforms($urn)
     {
-        $this->db->where("campaign_id", $id);
-        $this->db->join("webforms_to_campaigns", "webforms.webform_id = webforms_to_campaigns.webform_id", "LEFT");
-        return $this->db->get("webforms")->result_array();
+		$qry = "select records.campaign_id,webforms.webform_id,webform_name,records.urn,users.name,date_format(completed_on,'%d/%m/%Y %H:%i') completed_on,completed_by,name from records left join campaigns using(campaign_id) left join webforms_to_campaigns using(campaign_id) left join webforms using(webform_id) left join webform_answers on records.urn = webform_answers.urn and webforms.webform_id = webform_answers.webform_id left join users on user_id = completed_by where records.urn = '$urn'";
+        return $this->db->query($qry)->result_array();
     }
 
     public function updated_recently($urn)

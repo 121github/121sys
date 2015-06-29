@@ -1788,10 +1788,15 @@ var record = {
 
                 $.each(detail, function (i, row) {
                     var inputclass = "";
+						var is_disabled = "disabled";
+							if(row.editable=="1"){
+							is_disabled = "";	
+							}
                     if (row.options) {
                         $select = "<div class='form-group input-group-sm'>" + row.name;
-                        $select += '<br><select name="' + row.code + '" class="selectpicker"><option value="">Please select</option>';
+                        $select += '<br><select '+is_disabled+' name="' + row.code + '" class="selectpicker"><option value="">Please select</option>';
                         $.each(row.options, function (option_id, option_val) {
+						
                             if (row.value == option_val) {
                                 var selected = "selected";
                             }
@@ -1809,7 +1814,7 @@ var record = {
                                 row.value = moment(new Date()).format("DD/MM/YYYY");
                             }
                         }
-                        form += " <div class='form-group input-group-sm " + inputclass + "'>" + row.name + "<input class='form-control' name='" + row.code + "' type='text' value='" + row.value + "'/></div>";
+                        form += " <div class='form-group input-group-sm " + inputclass + "'>" + row.name + "<input "+is_disabled+" class='form-control' name='" + row.code + "' type='text' value='" + row.value + "'/></div>";
                     }
                 });
             });

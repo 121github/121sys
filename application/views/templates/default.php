@@ -142,7 +142,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     } ?>><a href="<?php echo base_url(); ?>records/view">List Records</a></li>
                     <?php if (in_array("add records", $_SESSION['permissions'])) { ?>
                         <li <?php echo @($page == 'add_record' ? "class='Selected'" : "") ?>>
-                            <a href="<?php echo base_url() ?>data/add_record">Create
+                            <a href="<?php echo base_url() ?>data/add_record<?php echo isset($_SESSION['current_campaign'])?"/".$_SESSION['current_campaign']:""; ?>">Create
                                 Record</a></li>
                     <?php } ?>
 

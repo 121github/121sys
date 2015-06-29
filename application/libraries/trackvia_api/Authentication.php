@@ -229,7 +229,7 @@ class Authentication extends EventDispatcher
         $httpCode = $this->request->getResponseCode();
 
         if (!$response) {
-            throw new \Exception('Requesting Access Token failed');
+            throw new \Exception('Requesting Access Token failed: $httpCode');
 
             return false;
         }

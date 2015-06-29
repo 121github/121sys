@@ -152,7 +152,12 @@
             <input name="contact_id" type="hidden" value="">
 
             <p>Enter the address details</p>
-
+ <div class="form-group input-group-sm">
+                <select class="form-control selectpicker" placeholder="Is this the primary address?" name="primary">
+                    <option value="1">Primary Address</option>
+                    <option value="0">Secondary Address</option>
+                </select>
+            </div>
             <div class="form-group input-group-sm">
                 <input type="text" class="form-control" placeholder="1st Line of address" name="add1" value="">
             </div>
@@ -171,13 +176,7 @@
             <div class="form-group input-group-sm">
                 <input type="text" class="form-control" placeholder="Postcode" name="postcode" value="">
             </div>
-            <div class="form-group input-group-sm">
-                <select class="form-control selectpicker" placeholder="Is this the primary address?" name="primary">
-                    <option value="">Is this the primary address?</option>
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-            </div>
+           
         </form>
     </div>
 </div>

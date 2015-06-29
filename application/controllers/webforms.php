@@ -27,11 +27,12 @@ class Webforms extends CI_Controller
 		echo "Sorry you have not come to a valid link";	
 		exit;
 		}	
-		
+				
 		if($this->input->post('save')=="1"){
 			$data['answers'] = $this->input->post('answer');
 			$data['urn'] = $urn;
 			$data['id'] = $form;
+			$data['complete'] = $this->input->post('complete');	
 			$this->Webform_model->save_answer($data);
 			exit;
 		}
@@ -49,7 +50,6 @@ class Webforms extends CI_Controller
 		$form = intval($this->uri->segment(5));
 		$path = $this->Webform_model->get_path($form);
 		if(intval($campaign_id)&&intval($urn)&&intval($form)){
-			
 		if($this->input->post('save')=="1"){
 			$answers = $this->input->post('answers');
 			
@@ -67,6 +67,7 @@ class Webforms extends CI_Controller
 			$data['answers'] = $answers;
 			$data['urn'] = $urn;
 			$data['id'] = $form;
+			$data['complete'] = $this->input->post('complete');	
 			$this->Webform_model->save_answer($data);
 			echo "Saved";
 			exit;

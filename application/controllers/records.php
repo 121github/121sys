@@ -284,7 +284,7 @@ class Records extends CI_Controller
         
         //if appointment setting is on we need the available addresses
         if (in_array(14, $features)) {
-            $webforms         = $this->Records_model->get_webforms($campaign_id);
+            $webforms         = $this->Records_model->get_webforms($urn);
             $data['webforms'] = $webforms;
         }
         

@@ -879,7 +879,13 @@ class Ajax extends CI_Controller
 			if(count($result)>0){
 				$this->Records_model->save_record_color($this->input->post('urn'),$this->input->post($result['field']));	
 			}
-            if ($this->Records_model->save_additional_info($this->input->post())) {
+			$info = $this->input->post();
+			foreach($info as $k => $v){
+			if($v=="-"){
+			$info[$k] = NULL;	
+			}
+			}
+            if ($this->Records_model->save_additional_info($info)) {
                 echo json_encode(array(
                     "success" => true,
                     "msg" => "The information has been updated"
