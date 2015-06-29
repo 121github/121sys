@@ -48,7 +48,8 @@
 <form id="form">
 <div class="form-group">
 <select class="selectpicker" id="function">
-<option value="trackvia/review_required">Prequal</option>
+<option value="trackvia/review_required">Send for prequal</option>
+<option value="trackvia/survey_refused">Refused Survey</option>
 </select>
 </div>
 <div class="form-group">
