@@ -522,11 +522,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
         //Update the record
         $response = $this->tv->updateRecord($app['client_ref'],$data);
-		if(isset($resonse['message'])){
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		if(!empty($resonse)){
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref']));
 		} else {
-			$message = "An error occured when adding a new trackvia record\r\n";
-			$message .= "Table ID: ". $tv_table."\r\n";
+			$message = "An error occured while saving an appointment\r\n";
+			$message .= "Record ID: ". $app['client_ref']."\r\n";
 			$message .= "Sent Data\r\n";
 			foreach($data as $k=>$v){
 			$message .= "$k: $v\r\n";
@@ -543,11 +543,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$data = array("Customer not contactable" => "Customer not contactable");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(isset($resonse['message'])){
+		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured when adding a new trackvia record\r\n";
-			$message .= "Table ID: ". $tv_table."\r\n";
+			$message = "An error occured while updating a record\r\n";
+			$message .= "Record ID: ". $record['client_ref']."\r\n";
 			$message .= "Sent Data\r\n";
 			foreach($data as $k=>$v){
 			$message .= "$k: $v\r\n";
@@ -563,11 +563,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$data = array("Planned Survey Date"=>"","Survey appt"=>"","Survey Booking Confirmed"=>"","Survey booked by"=>"","Survey Appointment Comments"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(isset($resonse['message'])){
+		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured when adding a new trackvia record\r\n";
-			$message .= "Table ID: ". $tv_table."\r\n";
+			$message = "An error occured while updating a record\r\n";
+			$message .= "Record ID: ". $record['client_ref']."\r\n";
 			$message .= "Sent Data\r\n";
 			foreach($data as $k=>$v){
 			$message .= "$k: $v\r\n";
@@ -584,11 +584,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$data = array("Planned Installation date"=>"","Installation Date Confirmed"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(isset($resonse['message'])){
+		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured when adding a new trackvia record\r\n";
-			$message .= "Table ID: ". $tv_table."\r\n";
+			$message = "An error occured while updating a record\r\n";
+			$message .= "Record ID: ". $record['client_ref']."\r\n";
 			$message .= "Sent Data\r\n";
 			foreach($data as $k=>$v){
 			$message .= "$k: $v\r\n";
@@ -605,11 +605,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		"Owner / Tenant Informed of Rejection" => "Y");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(isset($resonse['message'])){
+		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured when adding a new trackvia record\r\n";
-			$message .= "Table ID: ". $tv_table."\r\n";
+				$message = "An error occured while updating a record\r\n";
+			$message .= "Record ID: ". $record['client_ref']."\r\n";
 			$message .= "Sent Data\r\n";
 			foreach($data as $k=>$v){
 			$message .= "$k: $v\r\n";
@@ -627,11 +627,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		"Internal Survey Completed" => "Y");
 	
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
-		if(isset($resonse['message'])){
+		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
 		} else {
-			$message = "An error occured when adding a new trackvia record\r\n";
-			$message .= "Table ID: ". $tv_table."\r\n";
+			$message = "An error occured while updating a record\r\n";
+			$message .= "Record ID: ". $record['client_ref']."\r\n";
 			$message .= "Sent Data\r\n";
 			foreach($data as $k=>$v){
 			$message .= "$k: $v\r\n";
@@ -676,7 +676,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		
         //Update the record
         $response = $this->tv->addRecord($tv_table,$data);
-		if(isset($response)){
+		if(!empty($resonse)){
 			$new_client_ref = $response['records'][0]['id'];
 			$data = array("urn"=>$urn,
 				"client_ref"=>$new_client_ref
@@ -705,7 +705,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$client_ref=$data['client_ref'];
 		unset($data['client_ref']);
 		$response = $this->tv->updateRecord($client_ref,$data);
-		if(isset($response['message'])){
+		if(!empty($resonse)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$client_ref,"data"=>$data));
 		} else {
 			$message = "An error occured when adding a new trackvia record\r\n";
