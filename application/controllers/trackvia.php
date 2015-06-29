@@ -806,7 +806,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$data["Primary Contact (Mobile)"] = $mobile;
 		}
 		if(!empty($details['c4'])){
-		$data["Referred by"] = $details['c4'];
+		$data["Referred by"] = $details['c2'];
 		}
 
 		return $data;
