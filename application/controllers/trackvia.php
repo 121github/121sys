@@ -267,7 +267,9 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
      * Test
      */
     public function checkView($view_id,$options) {
-
+		if($view_id<>3000719185){
+		return false;	
+		}
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
@@ -383,7 +385,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         }
 
         //Update the records which campaign was changed
-        echo "\n\t\t Records updated in our system... ".count($update_records)."\n";
+        echo "\n<br>Records updated in our system... ".count($update_records)."\n";
         if (!empty($update_records)) {
             $this->Trackvia_model->updateRecords($update_records);
         }
