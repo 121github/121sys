@@ -677,6 +677,7 @@ class Records_model extends CI_Model
                     "nextcall" => $result['nextcall'],
                     "outcome" => $result['outcome'],
                     "outcome_id" => $result['outcome_id'],
+					"outcome_reason_id" => $result['outcome_reason_id'],
                     "record_status" => $result['record_status'],
                     "progress" => $result['progress'],
                     "progress_id" => $result['progress_id'],
