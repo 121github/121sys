@@ -314,6 +314,9 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$appointments_cancelled_count = 0;
 		$appointments_created_count = 0;
         foreach($records as $record) {
+			//we dont need to update records from the private_all view, only create new ones
+			if($view_id<>"3000719185"){	
+			
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];
             //If the campaign had changed or the park_code is "Not Working"
 
@@ -381,7 +384,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				$extra['urn'] = $record['urn'];
 				array_push($update_extra, $extra);
 				}
-
+			}
             //Remove from the new_record_ids array the records that already exist on our system
             if (in_array($record['client_ref'],$new_records_ids)) {
 				unset($tv_records[md5($record['client_ref'])]);
@@ -415,7 +418,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				"record_color"=>$record_color,
 				"outcome_id"=>$outcome_id,
 				"urgent"=>$urgent,
-				"source_id"=>$source
+				"source_id"=>$source,
+				"parked_code"=>2
 				);
 				$urn = $this->Trackvia_model->add_record($data);
 				//catch the newly created urns
