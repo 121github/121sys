@@ -65,6 +65,30 @@ class Appointments extends CI_Controller
             $count = $this->Appointments_model->appointment_data(true, $options);
 
             foreach ($records as $k => $v) {
+
+                //Location
+                if ($records[$k]["company_location"]) {
+                    $location_ar = explode(',',$records[$k]["company_location"]);
+                }
+                else if ($records[$k]["contact_location"]) {
+                    $location_ar = explode(',',$records[$k]["contact_location"]);
+                }
+                if (!empty($location_ar)) {
+                    $postcode_ar = explode("|",$location_ar[0]);
+                    $postcode = substr($postcode_ar[0],0,stripos($postcode_ar[0],'('));
+                    $location = explode('/',substr($postcode_ar[0],stripos($postcode_ar[0],'(')));
+                    $records[$k]["record_postcode"] = $postcode;
+                    $records[$k]["record_lat"] = substr($location[0],1);
+                    $records[$k]["record_lng"] = substr($location[1],0,strlen($location[1])-1);
+                    $records[$k]["record_location_id"] = $postcode_ar[1];
+                }
+                else {
+                    $records[$k]["record_postcode"] = NULL;
+                    $records[$k]["record_lat"] = NULL;
+                    $records[$k]["record_lng"] = NULL;
+                    $records[$k]["record_location_id"] = NULL;
+                }
+
                 //Record color
                 $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"].$records[$k]['name'])));
                 $records[$k]["record_color_map"] = $records[$k]["record_color"];
@@ -75,13 +99,20 @@ class Appointments extends CI_Controller
                 //Map Icon
                 $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['map_icon']))):NULL);
                 $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['campaign_map_icon']))):NULL);
+
+                //Planner addresses options
+                $records[$k]["planner_addresses"] = array(
+                    $records[$k]["location_id"] => $records[$k]["postcode"],
+                    $records[$k]["record_location_id"] => $records[$k]["record_postcode"]
+                );
             }
 
             $data = array(
                 "draw" => $this->input->post('draw'),
                 "recordsTotal" => $count,
                 "recordsFiltered" => $count,
-                "data" => $records
+                "data" => $records,
+                "planner_permission" => (in_array("planner", $_SESSION['permissions']))
             );
             echo json_encode($data);
         }

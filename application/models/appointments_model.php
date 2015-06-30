@@ -77,29 +77,45 @@ for($i = 0; $i < 30; $i++){
                   com.name,
                   u.name attendee,
                   date_format(a.`date_added`,'%d/%m/%y') date_added,
-                  postcode,
-                  lat,
-                  lng,
-                  appointment_id,
-				  title,
+                  a.postcode,
+                  loc.lat,
+                  loc.lng,
+                  loc.location_id,
+                  a.appointment_id,
+				  a.title,
                   records.urn,
 				  appointment_id marker_id,
 				  records.record_color,
 				  records.map_icon,
+				  GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location,
+                  GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location,
                   camp.map_icon as campaign_map_icon,
                   ow.user_id ownership_id,
                   owu.name ownership,
-                  outcome
+                  outcome,
+                  date_format(rp.start_date,'%d/%m/%Y') planner_date,
+                  rp.user_id planner_user_id,
+                  rp.record_planner_id,
+                  rp.postcode as planner_postcode,
+                  rp.location_id as planner_location_id,
+                  rpu.name planner_user
                 from appointments a
                   left join appointment_attendees aa using(appointment_id)
                   left join users u on u.user_id = aa.user_id
                   left join records using(urn)
                   left join campaigns camp using(campaign_id)
                   left join companies com using(urn)
-                  left join locations loc using(location_id)
+                  left join company_addresses coma on coma.company_id = com.company_id
+                  left join locations company_locations ON (coma.location_id = company_locations.location_id)
+                  left join contacts con on con.urn = records.urn
+                  left join contact_addresses cona on cona.contact_id = con.contact_id
+                  left join locations contact_locations ON (cona.location_id = contact_locations.location_id)
+                  left join locations loc on loc.location_id = a.location_id
                   left join ownership ow on ow.urn = records.urn
                   left join users owu on ow.user_id = owu.user_id
-                  left join outcomes o on o.outcome_id = records.outcome_id ";
+                  left join outcomes o on o.outcome_id = records.outcome_id
+                  left join record_planner rp on rp.urn = records.urn
+                  left join users rpu on rpu.user_id = rp.user_id ";
         $where = $this->get_where($options, $table_columns);
         $qry .= $where;
         $qry .= " group by appointment_id";
@@ -135,7 +151,7 @@ for($i = 0; $i < 30; $i++){
 		}
         //Check the bounds of the map
         if ($options['bounds'] && $options['map']=='true') {
-            $where .= " and (lat < ".$options['bounds']['neLat']." and lat > ".$options['bounds']['swLat']." and lng < ".$options['bounds']['neLng']." and lng > ".$options['bounds']['swLng'].") ";
+            $where .= " and (loc.lat < ".$options['bounds']['neLat']." and loc.lat > ".$options['bounds']['swLat']." and loc.lng < ".$options['bounds']['neLng']." and loc.lng > ".$options['bounds']['swLng'].") ";
         }
 
         //check the tabel header filter

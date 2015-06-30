@@ -622,21 +622,52 @@ var maps = {
 
         var navbtn = false;
         var planner_info = false;
+        var planner_postcode = false;
         if (planner_permission == true) {
             planner_info =
                 '<b>Planner: </b>' +
                 '<span style="margin-right: 5px;">' + (value.record_planner_id ? (value.planner_user + ' on ' + value.planner_date) : '') + '</span>' +
                 '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.planner_date ? value.planner_date : '') + '"></a>';
+            if(value.planner_postcode) {
+                planner_postcode =
+                    '<b>Planner Postcode: </b>' +
+                    '<span style="margin-right: 5px;">' + value.planner_postcode + '</span>';
+            }
         }
         if ($('.map-form').find('input[name="postcode"]').val().length > 0) {
             navbtn = '<p>' +
                 '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';
         }
+
+        var postcode_options = '';
+        $.each(value.planner_addresses, function (k, address) {
+            if (value.planner_postcode == address) {
+                var selected = "selected";
+            } else {
+                var selected = "";
+            }
+            postcode_options += '<option ' + selected + ' value="' + k + '">' + address + '</option>';
+        });
+
+        var planner_form =
+            '<form class="planner-form-' + value.urn + '">' +
+                '<div class="form-group input-group-sm">' +
+                    '<p>Planning Date: </p><input type="text" class="form-control date" name="date" placeholder="Enter the planning date" required/>' +
+                '</div>' +
+                '<div class="form-group input-group-sm">' +
+                    '<p>Planning Postcode: </p><select class="selectpicker" data-width="100%" id="planner_address">' + postcode_options + '</select>' +
+                '</div>' +
+                '<p>' +
+                    '<span><a class="btn btn-default btn-sm cancel-planner-btn" item-urn="' + value.urn + '" href="#">Cancel</a></span>' +
+                    '<span class="pull-right"><a class="btn btn-primary btn-sm save-planner-btn" item-urn="' + value.urn + '" item-record-planner-id="' + (value.record_planner_id ? value.record_planner_id : '') + '" href="#">Save</a></span>' +
+                '</p>' +
+            '</form>';
+
         var contentString =
             '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
-            '<h4 id="firstHeading" class="firstHeading">' + value.name + '</h4>' +
+            '<h4 id="firstHeading" class="firstHeading">' + (value.name ?value.name:'') + '</h4>' +
             '<div id="bodyContent_' + value.urn + '">' +
             (value.name ? '<p><b>Company: </b>' + value.name + '</p>' : '') +
             (value.fullname ? '<p><b>Contact: </b>' + value.fullname + '</p>' : '') +
@@ -646,21 +677,14 @@ var maps = {
             (value.postcode ? '<p><b>Postcode: </b>' + value.postcode + '</p>' : '') +
             (value.website ? '<p><b>Website: </b>' + value.website + '</p>' : '') +
             (planner_info ? '<p>' + planner_info + '</p>' : '') + '<p>' +
+            (planner_postcode ? '<p>' + planner_postcode + '</p>' : '') + '<p>' +
             (navbtn ? navbtn : '') +
             '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
             '</p>' +
             '</div>' +
             '<div id="formContent_' + value.urn + '" style="display:none;">' +
-            '<form class="planner-form-' + value.urn + '">' +
-            '<div class="form-group input-group-sm">' +
-            '<p>Planning Date: </p><input type="text" class="form-control date" name="date" placeholder="Enter the planning date" required/>' +
+                planner_form +
             '</div>' +
-            '<p>' +
-            '<span><a class="btn btn-default btn-sm cancel-planner-btn" item-urn="' + value.urn + '" href="#">Cancel</a></span>' +
-            '<span class="pull-right"><a class="btn btn-primary btn-sm save-planner-btn" item-urn="' + value.urn + '" item-postcode="' + value.postcode + '" item-location-id="' + value.location_id + '" item-record-planner-id="' + (value.record_planner_id ? value.record_planner_id : '') + '" href="#">Save</a></span>' +
-            '</p>' +
-            '</form>' +
-            '</div>'
         '</div>';
 
         var marker = new google.maps.Marker({
@@ -700,25 +724,68 @@ var maps = {
         }
 
         var navbtn = false;
+        var planner_info = false;
+        var planner_postcode = false;
+        if (planner_permission == true) {
+            planner_info =
+                '<b>Planner: </b>' +
+                '<span style="margin-right: 5px;">' + (value.record_planner_id ? (value.planner_user + ' on ' + value.planner_date) : '') + '</span>' +
+                '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.planner_date ? value.planner_date : '') + '"></a>';
+            if(value.planner_postcode) {
+                planner_postcode =
+                    '<b>Planner Postcode: </b>' +
+                    '<span style="margin-right: 5px;">' + value.planner_postcode + '</span>';
+            }
+        }
         if ($('.map-form').find('input[name="postcode"]').val().length > 0) {
             navbtn = '<p>' +
                 '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';
         }
+
+        var postcode_options = '';
+        $.each(value.planner_addresses, function (k, address) {
+            if (value.planner_postcode == address) {
+                var selected = "selected";
+            } else {
+                var selected = "";
+            }
+            postcode_options += '<option ' + selected + ' value="' + k + '">' + address + '</option>';
+        });
+
+        var planner_form =
+            '<form class="planner-form-' + value.urn + '">' +
+            '<div class="form-group input-group-sm">' +
+            '<p>Planning Date: </p><input type="text" class="form-control date" name="date" placeholder="Enter the planning date" required/>' +
+            '</div>' +
+            '<div class="form-group input-group-sm">' +
+            '<p>Planning Postcode: </p><select class="selectpicker" data-width="100%" id="planner_address">' + postcode_options + '</select>' +
+            '</div>' +
+            '<p>' +
+            '<span><a class="btn btn-default btn-sm cancel-planner-btn" item-urn="' + value.urn + '" href="#">Cancel</a></span>' +
+            '<span class="pull-right"><a class="btn btn-primary btn-sm save-planner-btn" item-urn="' + value.urn + '" item-record-planner-id="' + (value.record_planner_id ? value.record_planner_id : '') + '" href="#">Save</a></span>' +
+            '</p>' +
+            '</form>';
+
         var contentString =
             '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
-            '<h4 id="firstHeading" class="firstHeading">' + value.name + '</h4>' +
-            '<div id="bodyContent">' +
+            '<h4 id="firstHeading" class="firstHeading">' + (value.name?value.name:'') + '</h4>' +
+            '<div id="bodyContent_' + value.urn + '">' +
             (value.name ? '<p><b>Company: </b>' + value.name + '</p>' : '') +
             (value.start ? '<p><b>Date: </b>' + value.start + '</p>' : '') +
             (value.title ? '<p><b>Title: </b>' + value.title + '</p>' : '') +
             (value.attendee ? '<p><b>Attendees: </b>' + value.attendee + '</p>' : '') +
             (value.date_added ? '<p><b>Created on: </b>' + value.date_added + '</p>' : '') +
             (value.postcode ? '<p><b>Postcode: </b>' + value.postcode + '</p>' : '') + '<p>' +
+            (planner_info ? '<p>' + planner_info + '</p>' : '') + '<p>' +
+            (planner_postcode ? '<p>' + planner_postcode + '</p>' : '') + '<p>' +
             (navbtn ? navbtn : '') +
             '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
             '</p>' +
+            '</div>' +
+            '<div id="formContent_' + value.urn + '" style="display:none;">' +
+                planner_form +
             '</div>' +
             '</div>';
 
@@ -878,8 +945,8 @@ var maps = {
     //Save record planner
     savePlanner: function (btn) {
         var urn = btn.attr('item-urn');
-        var postcode = btn.attr('item-postcode');
-        var location_id = btn.attr('item-location-id');
+        var postcode = $('.planner-form-'+urn+' .selectpicker option:selected').html();
+        var location_id = $('.planner-form-'+urn+' .selectpicker option:selected').val();
         var record_planner_id = btn.attr('item-record-planner-id');
         var planner_date = $('.planner-form-' + urn).find('input[name="date"]').val();
 
@@ -901,10 +968,15 @@ var maps = {
                     map_table_reload();
                 }
                 else {
-                    maps.temp_bounds = maps.bounds
-                    var currentPage = view_records.table.page();
-                    ;
-                    view_records.table.page(currentPage).draw(false);
+                    if (typeof view_records !== 'undefined') {
+                        maps.temp_bounds = maps.bounds
+                        var currentPage = view_records.table.page();
+                        view_records.table.page(currentPage).draw(false);
+                    }
+                    if (typeof appointment !== 'undefined') {
+                        var currentPage = appointment.table.page();
+                        appointment.table.page(currentPage).draw(false);
+                    }
                 }
             } else {
                 flashalert.danger(response.msg);
