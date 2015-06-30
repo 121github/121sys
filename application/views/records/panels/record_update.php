@@ -39,7 +39,6 @@
               <?php endforeach; ?>
             </select>
                </div>
-               
                <?php if(count($outcome_reasons)>0){ ?>
                    <div class="form-group input-group">
             <select style="visibility:hidden" disabled name="outcome_reason_id" id="outcome-reasons" class="selectpicker outcomereasonpicker">

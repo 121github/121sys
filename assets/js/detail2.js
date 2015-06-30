@@ -298,7 +298,7 @@ var record = {
                                 $delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right marl" data-target="#modal" id="del-history-btn" item-modal="0" item-id="' + val.history_id + '" title="Delete history"></span>';
                             }
                             if (k <= record.limit - 1) {
-                                $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
+                                $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>'+ val.outcome_reason+ ' ' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
                             }
                             k++;
                         });
