@@ -43,7 +43,7 @@
                         <i class="top"></i>
                         <i class="right"></i>
                         <i class="bottom"></i>
-                        <i class="left"></i>
+                        <i claass="left"></i>
                         <i class="top left"></i>
                         <i class="top right"></i>
                         <i class="bottom left"></i>

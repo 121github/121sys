@@ -63,6 +63,7 @@ var appointment = {
                     $('.tt').tooltip();
                     //Show the appointments in the map
                     maps.showItems();
+                    planner_permission = d.responseJSON.planner_permission;
                 }
             },
             "deferRender": true,

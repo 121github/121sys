@@ -337,9 +337,10 @@ class Records_model extends CI_Model
                       date_format(rp.start_date,'%d/%m/%Y') planner_date,
                       rp.user_id planner_user_id,
                       rp.record_planner_id,
+                      rp.postcode as planner_postcode,
                       rpu.name planner_user,
                       outcome,
-                      if(com.name is null,'na',com.name) name,
+                      com.name name,
                       fullname,
                       campaign_name,
                       com.website as company_website,
@@ -353,7 +354,9 @@ class Records_model extends CI_Model
                       ow.user_id ownership_id,
                       owu.name ownership,
                       r.map_icon,
-                      camp.map_icon as campaign_map_icon
+                      camp.map_icon as campaign_map_icon,
+                      app.postcode as appointment_postcode,
+                      app.location_id as appointment_location_id
                 from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
@@ -362,6 +365,7 @@ class Records_model extends CI_Model
         //these joins are mandatory for sorting by name, outcome or campaign
         $join['record_planner'] = " left join record_planner rp on rp.urn = r.urn ";
         $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
+        $join['appointment'] = " left join appointments app on app.urn = r.urn ";
         $join['companies'] = " left join companies com on com.urn = r.urn ";
         $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
         $join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
