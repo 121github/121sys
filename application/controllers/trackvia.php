@@ -113,8 +113,8 @@ class Trackvia extends CI_Controller
 	}
 
     public function check_trackvia() {
-		   //SOUTHWAY TABLE
-
+		   //SOUTHWAY TABLE	   
+   $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id = 22");
         //Book View
         echo "<br>Checking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_BOOK_SURVEY.") view";
         $this->checkView(
@@ -313,10 +313,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$records_found=0;
 		$appointments_cancelled_count = 0;
 		$appointments_created_count = 0;
-        foreach($records as $record) {
-			//we dont need to update records from the private_all view, only create new ones
-			if($view_id<>"3000719185"){	
-			
+        foreach($records as $record) {		
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];
             //If the campaign had changed or the park_code is "Not Working"
 
@@ -384,7 +381,6 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				$extra['urn'] = $record['urn'];
 				array_push($update_extra, $extra);
 				}
-			}
             //Remove from the new_record_ids array the records that already exist on our system
             if (in_array($record['client_ref'],$new_records_ids)) {
 				unset($tv_records[md5($record['client_ref'])]);
