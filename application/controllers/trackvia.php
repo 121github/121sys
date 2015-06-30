@@ -601,7 +601,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
 		if(!empty($response)){
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref'],"data"=>$data));
 		} else {
 			$message = " An error occured while updating a record \r\n";
 			$message .= "  URN: $urn \r\n";
@@ -623,7 +623,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
 		if(!empty($response)){
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref'],"data"=>$data));
 		} else {
 			$message = " An error occured while updating a record \r\n";
 			$message .= "  URN: $urn \r\n";
@@ -645,7 +645,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
 		if(!empty($response)){
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref'],"data"=>$data));
 		} else {
 				$message = " An error occured while updating a record \r\n";
 				$message .= "  URN: $urn \r\n";
@@ -668,7 +668,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
 		if(!empty($response)){
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref']));
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$record['client_ref'],"data"=>$data));
 		} else {
 			$message = " An error occured while updating a record \r\n";
 			$message .= "  URN: $urn \r\n";
