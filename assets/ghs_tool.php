@@ -45,7 +45,7 @@
 <body>
 <div class="row">
 <div class="col-lg-12">
-<form id="form" style="pading:20px">
+<form id="form" style="padding:20px">
 <div class="form-group">
 <select class="selectpicker" id="function">
 <option value="trackvia/review_required">Send for prequal</option>

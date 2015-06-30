@@ -362,11 +362,6 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				} else {
 				$extra["c3"] = NULL;
 				}
-				if(!empty($fields['Bluesky FDViable'])){
-				$extra["c4"]=$fields['Bluesky FDViable'];
-				} else {
-				$extra["c4"] = NULL;
-				}
 				if(!empty($fields['Property Viable'])){
 				$extra["c5"]=$fields['Property Viable'];
 				} else {
@@ -436,9 +431,6 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				}
 				if(!empty($fields['Enquiry type'])){
 				$data["c3"]=$fields['Enquiry type'];
-				}
-				if(!empty($fields['Bluesky FDViable'])){
-				$data["c4"]=$fields['Bluesky FDViable'];
 				}
 				if(!empty($fields['Property Viable'])){
 				$data["c5"]=$fields['Property Viable'];
@@ -834,7 +826,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($mobile)){
 		$data["Primary Contact (Mobile)"] = $mobile;
 		}
-		if(!empty($details['c4'])){
+		if(!empty($details['c2'])){
 		$data["Referred by"] = $details['c2'];
 		}
 
