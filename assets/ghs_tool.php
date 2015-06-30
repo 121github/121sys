@@ -75,10 +75,10 @@ $('#update').click(function(e){
 	$.ajax({
 		url:"https://www.121system.com/"+$('#function').val(),
 	type:"POST",
-	dataType:"JSON",
+	dataType:"HTML",
 	data:{ urn:$('#urnval').val() }
 	}).done(function(response){
-		$('#response').html(response.message+'<br>ID: '+response.records[0]['id']);
+		$('#response').html(response);
 	});
 });
 

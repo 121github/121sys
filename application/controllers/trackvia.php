@@ -553,11 +553,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		"Survey booked by" => "121",
 		"Survey Appointment Comments" => $app['title'].' : '.$app['text']
 			 );
-
+		
         //Update the record
         $response = $this->tv->updateRecord($app['client_ref'],$data);
 		if(!empty($response)){
-		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref']));
+		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref'],"data"=>$data));
 		$this->db->query("update records set urgent=null where urn = '$urn'");
 		} else {
 			$message = "An error occured while saving an appointment \r\n	";
