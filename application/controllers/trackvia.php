@@ -116,7 +116,7 @@ class Trackvia extends CI_Controller
 		   //SOUTHWAY TABLE
 
         //Book View
-        echo "\nChecking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_BOOK_SURVEY.") view";
+        echo "<br>Checking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_BOOK_SURVEY.") view";
         $this->checkView(
             SOUTHWAY_BOOK_SURVEY,
             array(
@@ -133,7 +133,7 @@ class Trackvia extends CI_Controller
         );
 
         //Rebook View
-        echo "\nChecking the SOUTHWAY_REBOOK(".SOUTHWAY_REBOOK.") view";
+        echo "<br>Checking the SOUTHWAY_REBOOK(".SOUTHWAY_REBOOK.") view";
         $this->checkView(
             SOUTHWAY_REBOOK,
             array(
@@ -150,7 +150,7 @@ class Trackvia extends CI_Controller
         );
 
         //Survey Slots View
-        echo "\nChecking the SOUTHWAY_SURVEY_SLOTS(".SOUTHWAY_SURVEY_SLOTS.") view";
+        echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".SOUTHWAY_SURVEY_SLOTS.") view";
         $this->checkView(
             SOUTHWAY_SURVEY_SLOTS,
             array(
@@ -170,6 +170,7 @@ class Trackvia extends CI_Controller
 //        //PRIVATE TABLE
 //
  //Private Residential View
+   echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_ALL_RECORDS.") view";
         $this->checkView(
             PRIVATE_ALL_RECORDS,
            array(
@@ -187,6 +188,7 @@ class Trackvia extends CI_Controller
        );
 
         //Private Residential View
+		 echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_BOOK_SURVEY.") view";
         $this->checkView(
             PRIVATE_BOOK_SURVEY,
            array(
@@ -204,6 +206,7 @@ class Trackvia extends CI_Controller
        );
 
 	    //Private Residential View
+		 echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_REBOOK.") view";
         $this->checkView(
             PRIVATE_REBOOK,
            array(
@@ -220,6 +223,7 @@ class Trackvia extends CI_Controller
        );
 
 	    //Private Residential View
+				 echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_SURVEY_SLOTS.") view";
         $this->checkView(
             PRIVATE_SURVEY_SLOTS,
            array(
@@ -235,7 +239,8 @@ class Trackvia extends CI_Controller
             )
        );
 
-//        //Private Ineligible View/      
+//        //Private Ineligible View/    
+				 echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_INFORM_INELIGIBLE.") view";  
 		  $this->checkView(
             PRIVATE_INFORM_INELIGIBLE,
             array(
@@ -298,21 +303,16 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         }
         $tv_records = $aux;
 
-        echo "\n\t\t Total track via records in this view... ".count($tv_records);
-
+        echo "<br>Total track via records in this view... ".count($tv_records);
         //Get the records to be updated in our system
         $records = $this->Trackvia_model->getRecordsByTVIds($tv_record_ids);
-		if($view_id=="3000718985"){
-			$this->firephp->log($records);
-			}
+		 echo "<br>Matching records found in the calling system... ".count($records);
         //Update the record campaign if it is needed (different campaign) and create a new one if it does not exist yet
         $update_records = array();
 		$update_extra = array();
         $new_records_ids = $tv_record_ids;
+		$records_found=0;
         foreach($records as $record) {
-
-
-
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];
             //If the campaign had changed or the park_code is "Not Working"
 
