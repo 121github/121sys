@@ -170,7 +170,7 @@ class Trackvia extends CI_Controller
 //        //PRIVATE TABLE
 //
  //Private Residential View
-   echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_ALL_RECORDS.") view";
+   echo "<br>Checking the PRIVATE_ALL_RECORDS(".PRIVATE_ALL_RECORDS.") view";
         $this->checkView(
             PRIVATE_ALL_RECORDS,
            array(
@@ -188,7 +188,7 @@ class Trackvia extends CI_Controller
        );
 
         //Private Residential View
-		 echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_BOOK_SURVEY.") view";
+		 echo "<br>Checking the PRIVATE_BOOK_SURVEY(".PRIVATE_BOOK_SURVEY.") view";
         $this->checkView(
             PRIVATE_BOOK_SURVEY,
            array(
@@ -206,7 +206,7 @@ class Trackvia extends CI_Controller
        );
 
 	    //Private Residential View
-		 echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_REBOOK.") view";
+		 echo "<br>Checking the PRIVATE_REBOOK(".PRIVATE_REBOOK.") view";
         $this->checkView(
             PRIVATE_REBOOK,
            array(
@@ -223,7 +223,7 @@ class Trackvia extends CI_Controller
        );
 
 	    //Private Residential View
-				 echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_SURVEY_SLOTS.") view";
+				 echo "<br>Checking the PRIVATE_SURVEY_SLOTS(".PRIVATE_SURVEY_SLOTS.") view";
         $this->checkView(
             PRIVATE_SURVEY_SLOTS,
            array(
@@ -240,7 +240,7 @@ class Trackvia extends CI_Controller
        );
 
 //        //Private Ineligible View/    
-				 echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".PRIVATE_INFORM_INELIGIBLE.") view";  
+				 echo "<br>Checking the PRIVATE_INFORM_INELIGIBLE(".PRIVATE_INFORM_INELIGIBLE.") view";  
 		  $this->checkView(
             PRIVATE_INFORM_INELIGIBLE,
             array(
@@ -267,9 +267,6 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
      * Test
      */
     public function checkView($view_id,$options) {
-		if($view_id<>3000719185){
-		return false;	
-		}
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
@@ -314,6 +311,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$update_extra = array();
         $new_records_ids = $tv_record_ids;
 		$records_found=0;
+		$appointments_cancelled_count = 0;
+		$appointments_created_count = 0;
         foreach($records as $record) {
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];
             //If the campaign had changed or the park_code is "Not Working"
@@ -337,6 +336,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			}
 				//Create appointment if it is needed
                 if ($appointment_creation) {
+					if($appointment_cancelled){
+					$appointments_cancelled_count++;	
+					} else {
+					$appointments_created_count++;
+					}
                     $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
                 }
 				//organise the record_details update
@@ -386,6 +390,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
         //Update the records which campaign was changed
         echo "\n<br>Records updated in our system... ".count($update_records)."\n";
+		
         if (!empty($update_records)) {
             $this->Trackvia_model->updateRecords($update_records);
         }
@@ -395,6 +400,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			$this->firephp->log($update_extra);
 			$this->Trackvia_model->update_extra($update_extra);
 		}
+		
+		echo "\n<br>Records left to create in our system... ".count($tv_records)."\n";
 			$new=array();
            //Add new records if there are any left in the $tv_records array
 		   if(count($tv_records)>0){
@@ -516,12 +523,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         }
 
         $planned_survey_datetime = $planned_survey_date." ".$planned_survey_time;
-
+		
         //TODO Add appointment if the survey_date is different in both systems
         if ($record['survey_date']!=$planned_survey_date) {
             //Create a new appointment if it is needed
-			$this->firephp->log("Creating appointment");
-			$this->firephp->log($record);
+			$created_appointments++;
 			$this->Trackvia_model->create_appointment($fields,$record,$planned_survey_datetime);
 			$this->Locations_model->set_location_id($fields['PostCode']);
         }
