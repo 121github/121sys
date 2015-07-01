@@ -73,23 +73,15 @@
                                           class='glyphicon glyphicon-exclamation-sign red pointer' data-toggle='tooltip'
                                           data-placement='left'
                                           title='Records without a postcode are not shown on the map'></span>
-
-                                    <div class="input-group">
-                                        <input hidden name="travel-mode">
-                                        <input hidden name="destination">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default get-current-location-btn" type="button">
-                                                <span style="font-size: 15px"
-                                                      class="glyphicon glyphicon-map-marker"></span>
-                                            </button>
-                                        </span>
-                                        <input type="text" class="form-control" name="postcode"
+<div class="input-group">
+             <input hidden name="travel-mode">
+                                        <input hidden name="destination">       <span class="pointer btn-default input-group-addon"><span id="show-uk" class="fa fa-globe"></span></span>
+  <span class="pointer btn-default input-group-addon get-current-location-btn"><span class="glyphicon glyphicon-map-marker"></span></span>
+  <input type="text" class="form-control input-sm" name="postcode"
                                                placeholder="Postcode..."
-                                               title="Enter the location"/>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default get-location-btn" type="button">Go!</button>
-                                        </span>
-                                    </div>
+                                               title="Enter the location" />
+  <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
+</div>
                                 </div>
                             </div>
                             <div class="form-group input-group-sm directions-menu" style="display: none">

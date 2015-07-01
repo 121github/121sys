@@ -85,7 +85,7 @@ var maps = {
             maps.showMap($(this));
             map_table_reload();
         });
-
+		
         $(document).on('click', '.get-location-btn', function () {
             maps.removeDirections();
             maps.codeAddress(12);
@@ -94,7 +94,10 @@ var maps = {
                 map_table_reload();
             }, 2000);
         });
-
+		$(document).on('click','#show-uk',function(){
+			$('.map-form').find('input[name="postcode"]').val('');
+			$('.get-location-btn').trigger('click');
+		});
         $('[data-toggle="tooltip"]').tooltip();
         $(document).on('click', '.appointment-btn', function () {
             $('.map-form').find('input[name="destination"]').val($(this).attr('item-postcode'));
@@ -636,7 +639,7 @@ var maps = {
         }
         if ($('.map-form').find('input[name="postcode"]').val().length > 0) {
             navbtn = '<p>' +
-                '<span><a class="btn btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';
+                '<span><a class="btn btn-xs btn-success appointment-btn" item-postcode="' + value.postcode + '" href="#">Navigate </a></span>';
         }
 
         var postcode_options = '';
