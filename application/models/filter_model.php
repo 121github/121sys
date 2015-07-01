@@ -353,6 +353,11 @@ return $this->db->get('record_details_options')->result_array();
             "type" => "like",
             "alias" => "rd.c5"
         );
+        $filter_options["c6"]              = array(
+            "table" => "record_details",
+            "type" => "like",
+            "alias" => "rd.c6"
+        );
 		$filter_options["d1"]              = array(
             "table" => "record_details",
             "type" => "range",
