@@ -134,32 +134,26 @@ public function update_extra($data){
 		
 		
 		public function get_121_counts($name){		
-if($name=="GHS Southway Total"){
-	$qry = "select * from records where campaign_id = 22";
-	return $this->db->query($qry)->num_rows();
-} else if($name=="GHS Private Total"){
-	$qry = "select * from records where campaign_id in(28,29)";
-	return $this->db->query($qry)->num_rows();
-} else if($name=="GHS Southway survey"){
-	$qry = "select * from records where campaign_id = 22 and source_id = '34'";
+if($name=="GHS Southway survey"){
+	$qry = "select urn from records where campaign_id = 22 and source_id = '34'";
 	return $this->db->query($qry)->num_rows();
 } else if($name=="GHS Southway rebook"){
-	$qry = "select * from records where campaign_id = 22 and source_id = '35'";
+	$qry = "select urn from records where campaign_id = 22 and source_id = '35'";
 	return $this->db->query($qry)->num_rows();
 } else if($name=="GHS Southway booked"){
-	$qry = "select * from records inner join appointments using(urn) where campaign_id = 22 and source_id = '36' and outcome_id = 72 and record_status = 4 and `start` > now()";
+	$qry = "select urn from records inner join appointments using(urn) where campaign_id = 22 and source_id = '37' and outcome_id = 72 and record_status = 4 and `start` > now()";
 	return $this->db->query($qry)->num_rows();
 }  else if($name=="GHS Private survey"){
-	$qry = "select * from records where campaign_id = 29 and source_id = '39' ";
+	$qry = "select urn from records where campaign_id = 29 and source_id = '39' ";
 	return $this->db->query($qry)->num_rows();
 } else if($name=="GHS Private rebook"){
-	$qry = "select * from records where campaign_id = 29 and source_id = '38' ";
+	$qry = "select urn from records where campaign_id = 29 and source_id = '38' ";
 	return $this->db->query($qry)->num_rows();
 } else if($name=="GHS Private booked"){
-	$qry = "select * from records inner join appointments using(urn) where campaign_id = 29 and source_id = '36'  and record_status = 4 and `start` > now()";
+	$qry = "select urn from records inner join appointments using(urn) where campaign_id = 29 and source_id = '36'  and record_status = 4 and outcome_id = 72 and `start` > now()";
 	return $this->db->query($qry)->num_rows();
 } else if($name=="GHS Private not viable"){
-	$qry = "select * from records where campaign_id = 28 and source_id = '40' ";
+	$qry = "select urn from records where campaign_id = 28 and source_id = '40' ";
 	return $this->db->query($qry)->num_rows();
 }	
 }

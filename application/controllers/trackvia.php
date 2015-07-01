@@ -84,22 +84,35 @@ class Trackvia extends CI_Controller
 		"GHS Private booked"=>PRIVATE_SURVEY_SLOTS,
 		"GHS Private not viable"=>PRIVATE_INFORM_INELIGIBLE);
 		
-		
+	$this->source_config = array(
+	"GHS Southway survey"=>34,
+		"GHS Southway rebook"=>35,
+		"GHS Southway booked"=>37,
+		"GHS Private survey"=>39,
+		"GHS Private rebook"=>38,
+		"GHS Private booked"=>36,
+		"GHS Private not viable"=>40);	
 		$this->headers = "From: noreply@121system.com" . "\r\n" .
 						"CC: steve.prior@globalheatsource.com";
 	}
 
 	public function get_counts(){
+		$sources =$this->source_config;
 		$tables = $this->tv_views;
 		$data = array();
 		foreach($tables as $name => $view_id){
+		if($view_id<>SOUTHWAY_ALL_RECORDS&&$view_id<>PRIVATE_ALL_RECORDS){
+		if($this->input->post('tv')){
 		$view = $this->tv->getView($view_id);
-		$this->firephp->log($name);
-		$this->firephp->log($view);
-		$data[$name]['trackvia'] = $view['record_count'];
-		$data[$name]['one2one'] = $this->Trackvia_model->get_121_counts($name);
+		$data[$name]=array("source"=>$sources[$name],"trackvia"=>$view['record_count']);
+		} else {
+		$data[$name]=array("source"=>$sources[$name],"trackvia"=> false);	
 		}
-		echo json_encode(array("success"=>true,"data"=>$data));
+		$data[$name]=array("source"=>$sources[$name],"one2one" => $this->Trackvia_model->get_121_counts($name));
+		}
+		}
+		echo json_encode($data);
+		
 	}
 
 	public function get_rebookings(){
@@ -674,6 +687,11 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 			}
 			mail("bradf@121customerinsight.co.uk","Trackvia Update Error",$message,$this->headers );
 		}
+	}
+
+	public function get_urn_from_ghs(){
+		$this->db->where(array("c1"=>$this->input->post('ghsurn')));
+		return $this->db->get("record_details");
 	}
 
 	public function review_required(){

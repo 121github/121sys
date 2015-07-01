@@ -84,8 +84,7 @@ var maps = {
         $('#map-view-toggle').change(function () {
             maps.showMap($(this));
             map_table_reload();
-        });
-		
+        });	
         $(document).on('click', '.get-location-btn', function () {
             maps.removeDirections();
             maps.codeAddress(12);

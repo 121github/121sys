@@ -63,7 +63,7 @@
 </div>
 <div class="form-group">
 <label>Trackvia Record locator</label>
-<input class="form-control" id="tv" disabled placeholder="Not ready yet" name="tv"/>
+<input class="form-control" id="tv" placeholder="Enter GHS URN" name="tv"/><button class="btn btn-default">Get URN</button>
 </div>
 <div class="form-group">
 <button class="btn btn-primary" id="update">Update</button>
@@ -78,16 +78,37 @@
 </div>
 </body>
 <script>
-$('#update').click(function(e){
+$('#get-urn').click(function(e){
 	e.preventDefault();
+	if($('#tv').val()==""){
+		alert("Please enter a ghs-urn first")
+	} else {
+	$.ajax({
+		url:"https://www.121system.com/trackvia/get_urn_from_ghs",
+	type:"POST",
+	dataType:"HTML",
+	data:{ ghsurn:$('#tv').val() }
+	}).done(function(urn){
+	$('#urnval').val(response);
+	});
+	}
+});	
+
+$('#update').click(function(e){
+	e.preventDefault();		
+	if($('#urnval').val()==""){
+		alert("Please enter a urn or press the ghs urn button first")
+	} else {
+	
 	$.ajax({
 		url:"https://www.121system.com/"+$('#function').val(),
 	type:"POST",
 	dataType:"HTML",
-	data:{ urn:$('#urnval').val() ,tv:$('#tv').val() }
+	data:{ urn:$('#urnval').val() }
 	}).done(function(response){
 		$('#response').html(response);
 	});
+	}
 });
 
 </script>

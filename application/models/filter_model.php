@@ -398,6 +398,11 @@ return $this->db->get('record_details_options')->result_array();
             "type" => "range",
             "alias" => "rd.n3"
         );
+		$filter_options["start"]              = array(
+            "table" => "appointments",
+            "type" => "range",
+            "alias" => "a.start"
+        );
         $qry                                = "";
         $special                            = "";
 		$parked								= "";
@@ -773,7 +778,7 @@ return $this->db->get('record_details_options')->result_array();
                 "records.nextcall",
                 "rand()"
             );
-            $qry           = "select campaigns.campaign_name,$table.urn,if(companies.name is null,fullname,companies.name) fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join companies companies on companies.urn = records.urn left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id left join data_sources on data_sources.source_id = records.source_id";
+            $qry           = "select campaigns.campaign_name,$table.urn,if(companies.name is null,fullname,companies.name) fullname,$outcome_selection,date_format($table.nextcall,'%d/%m/%y %H:%i') nextcall, date_format(records.date_updated,'%d/%m/%y %H:%i') date_updated from $table left join companies companies on companies.urn = records.urn left join contacts on records.urn = contacts.urn left join campaigns on $table.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id ";
 
             $group_by      = " group by records.urn";
 			
@@ -801,7 +806,7 @@ return $this->db->get('record_details_options')->result_array();
                 "history.nextcall",
                 "rand()"
             );
-            $qry  = "select campaigns.campaign_name,$table.urn,if(companies.name is null,fullname,companies.name) fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join companies companies on companies.urn = records.urn left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id  ";
+            $qry  = "select campaigns.campaign_name,$table.urn,if(companies.name is null,fullname,companies.name) fullname,$outcome_selection,date_format($table.contact,'%d/%m/%y %H:%i') date_updated, date_format(records.nextcall,'%d/%m/%y %H:%i') nextcall from $table $join_records left join companies companies on companies.urn = records.urn left join contacts on records.urn = contacts.urn left join campaigns on records.campaign_id = campaigns.campaign_id left join outcomes on outcomes.outcome_id = $table.outcome_id left join progress_description on progress_description.progress_id = records.progress_id ";
             $group_by = " group by history.history_id ";
             
             
@@ -812,8 +817,13 @@ return $this->db->get('record_details_options')->result_array();
         }
         
         //only join the status table if we need it
-        if (in_array("source", $fields)) {
+        /*
+		if (in_array("source", $fields)) {
             $qry .= " left join data_sources on data_sources.source_id = records.source_id ";
+        }
+		*/
+		if (in_array("source", $fields)) {
+            $qry .= " left join data_sources using(source_id) ";
         }
         if (in_array("status", $fields)) {
             $qry .= " left join status_list on records.record_status = status_list.record_status_id ";
@@ -1122,7 +1132,7 @@ return $this->db->get('record_details_options')->result_array();
 		//$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];
-		//$this->firephp->log($qry);
+		$this->firephp->log($qry);
         $data = $this->db->query($qry)->result_array();
         return array(
             "count" => $count,

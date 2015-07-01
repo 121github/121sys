@@ -342,7 +342,7 @@ class Search extends CI_Controller
             "coname" => "coname",
             "company-postcode" => "company-postcode",
             "company-telephone-number" => "company-telephone-number",
-            "client-ref" => "client-ref"
+            "client-ref" => "client-ref",
         );
         
         $search_fields_2 = array(

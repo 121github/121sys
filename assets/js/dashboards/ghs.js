@@ -2,6 +2,9 @@
 
 var ghs = {
 	init:function(){
+		$(document).on('click','#refresh-data',function(){
+			ghs.data_panel(true);
+		});
 		$(document).on('click','#search-address,#search-reference,#search-telephone',function(e){
 			e.preventDefault();
 			var error = "";
@@ -60,6 +63,38 @@ search_record:function($btn){
                 $('.urgent-panel').append('<p>' + response.msg + '</p>');
             }
         });
+    },
+	/* the function for the urgent panel on the client dashboard */
+    data_panel: function (tv) {
+        $.ajax({
+            url: helper.baseUrl + 'trackvia/get_counts',
+            type: "POST",
+            dataType: "JSON",
+			data: {tv:tv}
+        }).done(function (response) {
+            $('.data-panel').empty();
+            var $data = "";
+            if (response['GHS Southway survey']) {
+				var table = "<div class='table-responsive'><table class='table table-hover table-striped'><thead><tr><th>Type</th><th>Trackvia</th><th>121System</th></thead><tbody>";
+                $.each(response, function (name, row) {
+					if(name=="GHS Private booked"||name=="GHS Southway booked"){
+						var tt="<span class='fa fa-exclamation-circle tt' data-toggle='tooltip' data-placement='right' title='This click through will show more records because this figure is for future appointments only'></span>";
+					} else {
+						var tt="";
+					}
+					if(row.trackvia){
+					var tv = row.trackvia;
+					} else {
+					var tv = "-";	
+					}
+                    table += '<tr><td>'+name+'</td><td>'+tv+'</td><td><a class="pointer" href="'+helper.baseUrl+'search/custom/records/source/'+row.source+'/">'+row.one2one+'</a> '+tt+'</td></tr>';
+                });
+				table += "</tbody></table>";
+                $('.data-panel').html(table);
+				$('.tt').tooltip();
+            } else {
+                $('.data-panel').append('There was an error retrieving the data');
+            }
+        });
     }
-	
 }
