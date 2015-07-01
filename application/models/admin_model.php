@@ -288,7 +288,7 @@ class Admin_model extends CI_Model
     }
 	
 	public function get_custom_fields($campaign=array()){
-		$this->db->select("record_details_fields.id,record_details_fields.field,field_name,is_select,is_visible,is_renewal,sort");
+		$this->db->select("record_details_fields.id,record_details_fields.field,field_name,is_select,is_visible,is_renewal,editable,sort");
 		$this->db->where_in("record_details_fields.campaign_id",$campaign);
 		$this->db->join("record_details_options",'record_details_options.id=record_details_fields.id','LEFT');
 		$query = $this->db->get("record_details_fields");
@@ -312,7 +312,7 @@ class Admin_model extends CI_Model
 			if(!isset($v['editable'])){
 				$insert["editable"] = 0;
 			}
-			if(isset($v['dropdown'])){
+			if(isset($v['is_select'])){
 				$insert["is_select"] = 1;
 			}
 			if($k=="d1"&&isset($v['renewal'])){

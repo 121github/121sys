@@ -29,7 +29,9 @@
                     <table>
                       <tr>
                         <th>Text field name</th>
-                        <th>Visible</th>
+                        <th> Visible | </th>
+                         <th> | Editable | </th>
+                          <th> | Use Dropdown</th>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="c1[name]" id="c1"/></td>
@@ -72,9 +74,10 @@
                     <h4>Custom Date fields</h4>
                     <table>
                       <tr>
-                        <th>Date field name</th>
-                        <th> Visible | </th>
-                        <th> | Renewal</th>
+                        <th>Date field name </th>
+                        <th> | Visible | </th>
+                        <th> | Renewal | </th>
+                          <th> | Editable </th>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="d1[name]" id="d1"/></td>
@@ -100,8 +103,9 @@
                     <h4>Custom Datetime fields</h4>
                     <table>
                       <tr>
-                        <th>Datetime field name</th>
-                        <th>Visible</th>
+                        <th>Datetime field name | </th>
+                        <th> | Visible | </th>  
+                        <th> | Editable</th>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="dt1[name]" id="dt1"/></td>
@@ -118,8 +122,11 @@
                     <h4>Custom Numeric fields</h4>
                     <table>
                       <tr>
-                        <th>Numeric field name</th>
-                        <th>Visible</th>
+                        <th>Numeric field name | </th>
+                        <th> | Visible | </th>
+                          <th > | Editable | </th>
+                          <th> | Use Dropdown</th>
+                        
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="n1[name]" id="n1"/></td>

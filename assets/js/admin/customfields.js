@@ -21,9 +21,23 @@ var admin = {
 					$('.fields_container').find('#'+row.field).val(row.field_name);
 					if(row.is_visible=="1"){
 					$('.fields_container').find('#'+row.field+'_vis').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_vis').prop('checked',false);	
 					}
 					if(row.is_renewal=="1"){
 					$('.fields_container').find('#'+row.field+'_ren').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_ren').prop('checked',false);	
+					}
+					if(row.editable=="1"){
+					$('.fields_container').find('#'+row.field+'_edi').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_edi').prop('checked',false);	
+					}
+					if(row.is_select=="1"){
+					$('.fields_container').find('#'+row.field+'_sel').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_sel').prop('checked',false);	
 					}
 				});
 				

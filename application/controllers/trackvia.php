@@ -507,13 +507,13 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
                 $planned_survey_time = "09:00:00";
                 break;
             case "pm":
-                $planned_survey_time = "12:00:00";
+                $planned_survey_time = "13:00:00";
                 break;
             case "eve":
-                $planned_survey_time = "16:00:00";
+                $planned_survey_time = "18:00:00";
                 break;
             default:
-                $planned_survey_time = "";
+                $planned_survey_time = "09:00:00";
                 break;
         }
 
