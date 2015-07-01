@@ -14,7 +14,7 @@ define('PASSWORD', 'global123');
 
 if($_SESSION['environment']=="acceptance"||$_SESSION['environment']=="test"||$_SESSION['environment']=="development"){
 
-//Test tables
+//Test tabless
 define('SOUTHWAY_ALL_RECORDS', '3000718568');
 define('SOUTHWAY_BOOK_SURVEY', '3000718751');
 define('SOUTHWAY_REBOOK', '3000718753');
@@ -343,6 +343,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 					}
                     $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
                 }
+
 				//organise the record_details update
 				$extra = array();
 				if(!empty($fields['No. Panels (Desktop)'])){
@@ -351,6 +352,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				}
 				if(!empty($fields['GHS UPRN'])){
 				$extra["c1"]=$fields['GHS UPRN'];
+				echo $fields['GHS UPRN']."<br>";
 				}
 				if(!empty($fields['Referred by'])){
 				$extra["c2"]=$fields['Referred by'];
@@ -359,6 +361,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				}
 				if(!empty($fields['Enquiry type'])){
 				$extra["c3"]=$fields['Enquiry type'];
+				echo $fields['Enquiry type']."<br>";
 				} else {
 				$extra["c3"] = NULL;
 				}

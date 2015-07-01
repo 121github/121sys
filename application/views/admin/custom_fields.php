@@ -34,26 +34,38 @@
                       <tr>
                         <td><input class="form-control" value="" name="c1[name]" id="c1"/></td>
                         <td><input type="checkbox" class="form-control" name="c1[visible]" id="c1_vis"/></td>
+                        <td><input type="checkbox" class="form-control" name="c1[editable]" id="c1_edi"/></td>
+                        <td><input type="checkbox" class="form-control" name="c1[is_select]" id="c1_sel"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="c2[name]" id="c2"/></td>
                         <td><input type="checkbox" class="form-control" name="c2[visible]" id="c2_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="c2[editable]" id="c2_edi"/></td>
+                        <td><input type="checkbox" class="form-control" name="c2[is_select]" id="c2_sel"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="c3[name]" id="c3"/></td>
                         <td><input type="checkbox" class="form-control" name="c3[visible]" id="c3_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="c3[editable]" id="c3_edi"/></td>
+                        <td><input type="checkbox" class="form-control" name="c3[is_select]" id="c3_sel"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="c4[name]" id="c4"/></td>
                         <td><input type="checkbox" class="form-control" name="c4[visible]" id="c4_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="c4[editable]" id="c4_edi"/></td>
+                        <td><input type="checkbox" class="form-control" name="c4[is_select]" id="c4_sel"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="c5[name]" id="c5"/></td>
                         <td><input type="checkbox" class="form-control" name="c5[visible]" id="c5_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="c5[editable]" id="c5_edi"/></td>
+                        <td><input type="checkbox" class="form-control" name="c5[is_select]" id="c5_sel"/></td>
                       </tr>
                          <tr>
                         <td><input class="form-control" value="" name="c6[name]" id="c6"/></td>
                         <td><input type="checkbox" class="form-control" name="c6[visible]" id="c6_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="c6[editable]" id="c6_edi"/></td>
+                        <td><input type="checkbox" class="form-control" name="c6[is_select]" id="c6_sel"/></td>
                       </tr>
                     </table>
                     <hr />
@@ -68,15 +80,19 @@
                         <td><input class="form-control" value="" name="d1[name]" id="d1"/></td>
                         <td><input type="checkbox" class="form-control"  name="d1[visible]" id="d1_vis"/></td>
                         <td><input type="checkbox"  class="form-control" name="d1[renewal]" id="d1_ren"/></td>
+                            <td><input type="checkbox" class="form-control" name="d1[editable]" id="d1_edi"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="d2[name]" id="d2"/></td>
                         <td><input type="checkbox" class="form-control"  name="d2[visible]" id="d2_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="d2[editable]" id="d2_edi"/></td>
+
                         <td></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="d3[name]" id="d3"/></td>
                         <td><input type="checkbox" class="form-control"  name="d3[visible]" id="d3_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="d3[editable]" id="d3_edi"/></td>
                         <td></td>
                       </tr>
                     </table>
@@ -90,10 +106,12 @@
                       <tr>
                         <td><input class="form-control" value="" name="dt1[name]" id="dt1"/></td>
                         <td><input type="checkbox" class="form-control" name="dt1[visible]" id="dt1_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="dt1[editable]" id="dt1_edi"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="dt2[name]" id="dt2"/></td>
                         <td><input type="checkbox" class="form-control" name="dt2[visible]" id="dt2_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="dt2[editable]" id="dt2_edi"/></td>
                       </tr>
                     </table>
                     <hr />
@@ -106,10 +124,14 @@
                       <tr>
                         <td><input class="form-control" value="" name="n1[name]" id="n1"/></td>
                         <td><input type="checkbox" class="form-control"  name="n1[visible]" id="n1_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="n1[editable]" id="n1_edi"/></td>
+                        <td><input type="checkbox" class="form-control" name="n1[is_select]" id="n1_sel"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="n2[name]" id="n2"/></td>
                         <td><input type="checkbox" class="form-control" name="n2[visible]" id="n2_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="n2[editable]" id="n2_edi"/></td>
+                        <td><input type="checkbox" class="form-control" name="n2[is_select]" id="n2_sel"/></td>
                       </tr>
                     </table>
                     <hr />
