@@ -59,11 +59,11 @@
 </div>
 <div class="form-group">
 <label>URN</label>
-<input class="form-control" id="urnval" name="urn"/>
+<input class="form-control" id="urnval" placeholder="Enter urn" name="urn"/>
 </div>
 <div class="form-group">
 <label>Trackvia Record locator</label>
-<input class="form-control" id="tv" placeholder="Enter GHS URN" name="tv"/><button class="btn btn-default">Get URN</button>
+<input class="form-control" id="tv" placeholder="Enter GHS URN" name="tv"/><button id="get-urn" class="btn btn-default">Get URN</button>
 </div>
 <div class="form-group">
 <button class="btn btn-primary" id="update">Update</button>
