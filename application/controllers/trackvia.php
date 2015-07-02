@@ -569,7 +569,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		"Survey appt" => $app['slot'],
 		"Survey Booking Confirmed" => "Y",
 		"Survey booked by" => "121",
-		"Survey Appointment Comments" => $app['title'].' : '.$app['text']
+		"Survey Appointment Comments" => $app['title'].' : '.$app['text'],
+		"Owner Consent to proceed"=>"Y"
 			 );
 		
         //Update the record
@@ -615,7 +616,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
-		$data = array("Planned Survey Date"=>"","Survey appt"=>"","Survey Booking Confirmed"=>"","Survey booked by"=>"","Survey Appointment Comments"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
+		$data = array("Planned Survey Date"=>"","Survey appt"=>"","Survey Booking Confirmed"=>"","Survey booked by"=>"","Survey Appointment Comments"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600","Owner Consent to proceed"=>"N","Date Tenant Notified"=>"today");
 
 		$response = $this->tv->updateRecord($record['client_ref'],$data);
 		if(!empty($response)){
@@ -701,7 +702,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 
 	public function get_urn_from_ghs(){
 		$this->db->where(array("c1"=>$this->input->post('ghsurn')));
-		return $this->db->get("record_details");
+		echo trim($this->db->get("record_details")->row()->urn);
 	}
 
 	public function review_required(){

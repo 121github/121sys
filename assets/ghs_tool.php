@@ -89,7 +89,7 @@ $('#get-urn').click(function(e){
 	dataType:"HTML",
 	data:{ ghsurn:$('#tv').val() }
 	}).done(function(urn){
-	$('#urnval').val(response);
+	$('#urnval').val(urn);
 	});
 	}
 });	
