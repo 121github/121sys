@@ -14,6 +14,7 @@ class Modals extends CI_Controller
         $this->load->model('Modal_model');
 		$this->load->model('Records_model');
 		$this->load->model('Form_model');
+		$this->load->model('Filter_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 		public function new_email_form(){
@@ -161,6 +162,103 @@ class Modals extends CI_Controller
 		$types         = $this->Records_model->get_appointment_types(false, $campaign_id);
 		
 	    $this->load->view('forms/edit_appointment_form.php',array("urn"=>$urn,"attendees"=>$attendees,"addresses"=>$addresses,"types"=>$types)); 	
+		}
+	}
+
+	public function view_filter_options()
+	{
+		if ($this->input->is_ajax_request()) {
+			$data = array();
+			$filter_options= array();
+			if(isset($_SESSION['filter'])){
+				$filter_options = $_SESSION['filter']['values'];
+			}
+
+			$result = $this->filter_display($filter_options);
+
+			if($result){
+				echo json_encode(array("success"=>true,"data"=>$result));
+			} else {
+				echo json_encode(array("success"=>false,"msg"=>"No filters have been applied!","data"=>$result));
+			}
+		}
+	}
+
+	private function filter_display($filter_options){
+		$mappings = array(
+			"campaign_id"=>array("name"=>"Campaign name","remove"=>in_array("mix campaigns",$_SESSION['permissions'])?true:false),
+			"source_id"=>array("name"=>"Data source"),
+			"client_id"=>array("name"=>"Client name"),
+			"campaign_type_id"=>array("name"=>"Campaign type"),
+			"urn"=>array("name"=>"URN"),
+			"client_ref"=>array("name"=>"Client reference"),
+			"outcome_id"=>array("name"=>"Outcome"),
+			"progress_id"=>array("name"=>"Progress"),
+			"record_status"=>array("name"=>"Record status",in_array("search dead",$_SESSION['permissions'])?true:false),
+			"parked_code"=>array("name"=>"Parked code"),
+			"group_id"=>array("name"=>"Group ownership",in_array("search groups",$_SESSION['permissions'])?true:false),
+			"user_id"=>array("name"=>"User ownership","remove"=>in_array("search any owner",$_SESSION['permissions'])?true:false),
+			"nextcall"=>array("name"=>"Nextcall date"),
+			"date_updated"=>array("name"=>"Lastcall date"),
+			"date_added"=>array("name"=>"Created date"),
+			"contact_id"=>array("name"=>"Contact ID"),
+			"fullname"=>array("name"=>"Contact name"),
+			"phone"=>array("name"=>"Contact phone"),
+			"position"=>array("name"=>"Contact position"),
+			"dob"=>array("name"=>"Contact DOB"),
+			"contact_email"=>array("name"=>"Contact email"),
+			"address"=>array("name"=>"Contact address"),
+			"company_id"=>array("name"=>"Company ID"),
+			"coname"=>array("name"=>"Company Name"),
+			"company_phone"=>array("name"=>"Company phone"),
+			"sector_id"=>array("name"=>"Sector"),
+			"subsector_id"=>array("name"=>"Subsector"),
+			"turnover"=>array("name"=>"Turnover"),
+			"employees"=>array("name"=>"Employees"),
+			"postcode"=>array("name"=>"Postcode"),
+			"distance"=>array("name"=>"Distance"),
+			"new_only"=>array("name"=>"New records only"),
+			"dials"=>array("name"=>"Number of dials"),
+			"survey"=>array("name"=>"With survey only"),
+			"favorites"=>array("name"=>"Favorites only"),
+			"urgent"=>array("name"=>"Urgent only"),
+			"email"=>array("name"=>"Email filter"),
+			"no_company_tel"=>array("name"=>"Companies without numbers"),
+			"no_phone_tel"=>array("name"=>"Contacts without numbers"),
+			"order"=>array("name"=>"Order by"),
+			"order_direction"=>array("name"=>"Order direction")
+		);
+
+		$aux = array();
+		foreach($filter_options as $option => $values) {
+			if (isset($mappings[$option])) {
+				$aux[$mappings[$option]['name']]['name'] = $option;
+				$aux[$mappings[$option]['name']]['values'] = $this->Modal_model->get_filter_values($option, $values);
+				$aux[$mappings[$option]['name']]['removable'] = (isset($mappings[$option]['remove'])?$mappings[$option]['remove']:TRUE);
+			}
+			else {
+				$aux[$option]['name'] = $option;
+				$aux[$option]['values'] = $values;
+				$aux[$option]['removable'] = TRUE;
+			}
+		}
+		$filter_options = $aux;
+
+		return $filter_options;
+	}
+
+	public function remove_filter_option() {
+		if ($this->input->is_ajax_request()) {
+
+			$field = $this->input->post('field');
+
+			unset($_SESSION['filter']['values'][$field]);
+
+			$filter = $_SESSION['filter']['values'];
+
+			$this->Filter_model->apply_filter($filter);
+
+			echo json_encode(array("success"=>true));
 		}
 	}
 }

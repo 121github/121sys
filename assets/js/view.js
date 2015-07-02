@@ -67,6 +67,11 @@ var view_records = {
                     maps.current_postcode = d.responseJSON.current_postcode;
                     planner_permission = d.responseJSON.planner_permission;
                     maps.temp_bounds = null;
+
+                    //Show search options if some filter exist
+                    if (view_records.has_filter) {
+                        $('.dataTables_info').append("<span class='glyphicon glyphicon-filter red modal-show-filter-options pointer'></span>");
+                    }
                 }
             },
             "deferRender": true,
@@ -151,6 +156,11 @@ var view_records = {
         });
         $('.data-table thead').append(r);
         $('#search_0').css('text-align', 'center');
+
+
+
+        //If exist filters from the search in the session
+        //$('.dataTables_info').append(' <i class="fa fa-list fa-fw pointer"></i> Search options');
     }
 
 }

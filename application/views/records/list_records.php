@@ -6,7 +6,9 @@
             <form class="filter-form">
                 <div class="btn-group">
                     <input type="hidden" name="group">
-                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Colour By</button>
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span
+                            class="glyphicon glyphicon-filter"></span> Colour By
+                    </button>
                     <ul class="dropdown-menu pull-right" role="menu">
                         <li><a href="#" class="group-filter" id="campaign_name">Campaign</a></li>
                         <li><a href="#" class="group-filter" id="name">Company</a></li>
@@ -14,7 +16,7 @@
                         <li><a href="#" class="group-filter" id="outcome">Outcome</a></li>
                         <li><a href="#" class="group-filter" id="ownership">Ownership</a></li>
                         <li class="divider"></li>
-                        <li><a class="group-filter" ref="#" style="color: green;">Colour by</a> </li>
+                        <li><a class="group-filter" ref="#" style="color: green;">Colour by</a></li>
                     </ul>
                 </div>
                 <div class="btn-group">
@@ -27,9 +29,7 @@
     </div>
     <div class="panel-body">
         <div class="row">
-
             <div id="table-wrapper" class="col-lg-12 record-view" style="overflow:visible">
-
                 <img class="table-loading"
                      style="display:none; position:absolute; z-index:999; top:50%; left:50%; margin-left:-150px"
                      src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
@@ -150,3 +150,12 @@
         color: green;
     }
 </style>
+
+
+<script type="text/javascript">
+
+    $( document ).ready(function() {
+        view_records.has_filter = "<?php echo ((isset($_SESSION['filter']['values']) && !empty($_SESSION['filter']['values']))?true:false) ?>";
+    });
+
+</script>
