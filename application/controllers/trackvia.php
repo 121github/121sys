@@ -102,13 +102,14 @@ class Trackvia extends CI_Controller
 		$data = array();
 		foreach($tables as $name => $view_id){
 		if($view_id<>SOUTHWAY_ALL_RECORDS&&$view_id<>PRIVATE_ALL_RECORDS){
+			$data[$name]= array("source"=>$sources[$name],"one2one"=>$this->Trackvia_model->get_121_counts($name));
 		if($this->input->post('tv')){
 		$view = $this->tv->getView($view_id);
-		$data[$name]=array("source"=>$sources[$name],"trackvia"=>$view['record_count']);
+		$data[$name]["trackvia"]=$view['record_count'];
 		} else {
-		$data[$name]=array("source"=>$sources[$name],"trackvia"=> false);	
+		$data[$name]["trackvia"] = false;	
 		}
-		$data[$name]=array("source"=>$sources[$name],"one2one" => $this->Trackvia_model->get_121_counts($name));
+		
 		}
 		}
 		echo json_encode($data);
