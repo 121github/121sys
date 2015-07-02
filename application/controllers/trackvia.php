@@ -365,7 +365,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				}
 				if(!empty($fields['GHS UPRN'])){
 				$extra["c1"]=$fields['GHS UPRN'];
-				echo $fields['GHS UPRN']."<br>";
+				//echo $fields['GHS UPRN']."<br>";
 				}
 				if(!empty($fields['Referred by'])){
 				$extra["c2"]=$fields['Referred by'];
