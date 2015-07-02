@@ -100,9 +100,9 @@ class Modals extends CI_Controller
 		$data['history'] = $history;
 		$appointments = $this->Modal_model->view_appointments($urn);
 		foreach($appointments as $k => $appointment){
-		if($appointment['status'] == "1" && strtotime($appointment['sqlstart']) < strtotime(date('Y-m-d H:i'))){	
+		if($appointment['status'] == "1" && strtotime($appointment['sqlstart']) < time()){	
 		$appointments[$k]['status'] = "<span class='glyphicon glyphicon-time orange'></span>";
-		} else if($appointment['status'] == "1" && strtotime($appointment['sqlstart']) > strtotime(date('Y-m-d H:i'))){
+		} else if($appointment['status'] == "1" && strtotime($appointment['sqlstart']) > time()){
 		$appointments[$k]['status'] = "<span class='glyphicon glyphicon-ok green'></span>";	
 		} else if($appointment['status'] == "0"){
 		$appointments[$k]['status'] = "<span class='glyphicon glyphicon-remove red'></span>";	

@@ -25,7 +25,7 @@ class Modal_model extends CI_Model
 
     public function view_appointments($urn)
     {
-        $qry = "select appointment_id, title, `text`, date_format(start,'%D %M %Y') `date`,start sqlstart, date_format(start,'%h:%i %p') `time`,address,u.name,status,cancellation_reason from appointments a left join users u on u.user_id = a.created_by where urn = '$urn' order by start desc limit 5";
+        $qry = "select appointment_id, title, `text`, date_format(start,'%D %M %Y') `date`,start sqlstart, date_format(start,'%h:%i %p') `time`,address,if(u.name is null,'system',u.name) name,`status`,cancellation_reason from appointments a left join users u on u.user_id = a.created_by where urn = '$urn' order by start desc limit 5";
         return $this->db->query($qry)->result_array();
     }
 
