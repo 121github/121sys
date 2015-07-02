@@ -55,6 +55,9 @@
 <option value="trackvia/unable_to_contact">Unable to contact</option>
 <option value="trackvia/review_required">Send for desktop prequal</option>
 <option value="trackvia/notified_not_eligible">Notified not eligible</option>
+<option value="trackvia/update_tv_record">Update record in trackvia</option>
+        <option value="trackvia/add_tv_record">Add record to trackvia</option>
+
 </select>
 </div>
 <div class="form-group">

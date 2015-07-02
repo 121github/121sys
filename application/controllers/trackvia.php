@@ -555,7 +555,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		
         //Get the record data
         $app = $this->Trackvia_model->get_appointment($urn);
-
+		if($app['campaign_id']=="29"){
 		//if it doesnt exist on trackvia we should add it first
 		if(empty($app['client_ref'])){
 			$response = $this->add_tv_record($urn);
@@ -563,7 +563,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		} else {
 			$this->update_tv_record($urn);	
 		}
-
+		}
         $data = array(
 		"Planned Survey Date"=>$app['date']."T12:00:00-0600",
 		"Survey appt" => $app['slot'],
