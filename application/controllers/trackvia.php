@@ -358,7 +358,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
                 }
 				
 				if(!empty($fields['Contact Notes'])){
-				array_push($update_notes,$notes = array("urn"=>$record['urn'],"note"=>$fields['Contact Notes'],"updated_by"=>1));
+				array_push($update_notes,array("urn"=>$record['urn'],"note"=>$fields['Contact Notes'],"updated_by"=>1));
 				}
 				//organise the record_details update
 				$extra = array();
