@@ -1,23 +1,23 @@
 // JavaScript Document
 var modals = {
     init: function () {
-		 modal_footer = $('#modal').find('.modal-footer');
-		 modal_header = $('#modal').find('.modal-title');
-		 modal_body = $('#modal').find('.modal-body');
-		$(document).on('click', '[data-modal="merge-record"]', function (e) {
+        modal_footer = $('#modal').find('.modal-footer');
+        modal_header = $('#modal').find('.modal-title');
+        modal_body = $('#modal').find('.modal-body');
+        $(document).on('click', '[data-modal="merge-record"]', function (e) {
             e.preventDefault();
-            modals.merge_record($(this).attr('data-urn'),$(this).attr('data-merge-target'));
+            modals.merge_record($(this).attr('data-urn'), $(this).attr('data-merge-target'));
         });
         $(document).on('click', '[data-modal="view-record"]', function (e) {
             e.preventDefault();
-			var clicked_urn = $(this).attr('data-urn');
-            setTimeout(function(){ 
-			modals.view_record(clicked_urn);
-			},500);
+            var clicked_urn = $(this).attr('data-urn');
+            setTimeout(function () {
+                modals.view_record(clicked_urn);
+            }, 500);
         });
-		$(document).on('dblclick', '[data-modal="view-record"],[data-modal="view-appointment"]', function (e) {
+        $(document).on('dblclick', '[data-modal="view-record"],[data-modal="view-appointment"]', function (e) {
             e.preventDefault();
-           window.location.href= helper.baseUrl+'records/detail/'+$(this).attr('data-urn');
+            window.location.href = helper.baseUrl + 'records/detail/' + $(this).attr('data-urn');
         });
         $(document).on('click', '[data-modal="edit-contact"]', function (e) {
             e.preventDefault();
@@ -57,11 +57,11 @@ var modals = {
         });
         $(document).on('click', '[data-modal="view-appointment"]', function (e) {
             e.preventDefault();
-			var clicked_id = $(this).attr('data-id');
-            setTimeout(function(){ 
-			modals.view_appointment(clicked_id);
-			},500);
-            
+            var clicked_id = $(this).attr('data-id');
+            setTimeout(function () {
+                modals.view_appointment(clicked_id);
+            }, 500);
+
         });
         $(document).on('click', '[data-modal="edit-appointment"]', function (e) {
             e.preventDefault();
@@ -97,14 +97,14 @@ var modals = {
             e.preventDefault();
             modals.confirm_other_appointment_address();
         });
-		 $(document).on('click', '#load-preview', function () {
+        $(document).on('click', '#load-preview', function () {
             modals.preview_merge();
-			modal_body.css('overflow', 'auto');
+            modal_body.css('overflow', 'auto');
         });
-		 $(document).on('click', '#load-options', function (e) {
-         modal_body.css('overflow', 'visible');
+        $(document).on('click', '#load-options', function (e) {
+            modal_body.css('overflow', 'visible');
         });
-		 $(document).on('click', '#start-merge', function (e) {
+        $(document).on('click', '#start-merge', function (e) {
             e.preventDefault();
             modals.start_merge();
         });
@@ -118,83 +118,103 @@ var modals = {
                 $('#modal').modal('toggle');
             }
         });
+
+        $(document).on('click', '.modal-show-filter-options', function (e) {
+            e.preventDefault();
+            modals.view_filter_options();
+        });
+
+        $(document).on('click', '.remove-filter-option', function() {
+            var field = $(this).attr('data-field');
+                $.ajax({
+                    url: helper.baseUrl + 'modals/remove_filter_option',
+                    data: {field: field},
+                    type: "POST",
+                    dataType: "JSON"
+                }).done(function(response) {
+                    $('.modal-header').append("Applying filters... <img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+                    location.reload(true);
+                });
+        });
     },
-	merge_record:function(urn,target){
-		$.ajax({
+    merge_record: function (urn, target) {
+        $.ajax({
             url: helper.baseUrl + 'modals/merge_record',
-            data: {urn:urn,target:target},
+            data: {urn: urn, target: target},
             type: "POST",
             dataType: "HTML"
         }).done(function (html) {
-                var mheader = "Merge data";
-				var mbody = html;
-				var mfooter = '<button class="btn btn-default pull-left" data-modal="view-record" data-urn="' + urn + '" >Back</button> <button class="btn btn-primary pull-right" id="start-merge" disabled>Start Merge</button> ';;
-				modals.load_modal(mheader,mbody,mfooter);
-				$('[name="source"]').val(urn);
-				$('[name="target"]').val(target);
-				modal_body.css('padding', '0').css('overflow', 'visible');
+            var mheader = "Merge data";
+            var mbody = html;
+            var mfooter = '<button class="btn btn-default pull-left" data-modal="view-record" data-urn="' + urn + '" >Back</button> <button class="btn btn-primary pull-right" id="start-merge" disabled>Start Merge</button> ';
+            ;
+            modals.load_modal(mheader, mbody, mfooter);
+            $('[name="source"]').val(urn);
+            $('[name="target"]').val(target);
+            modal_body.css('padding', '0').css('overflow', 'visible');
         });
-	},
-	start_merge:function(){
-		$.ajax({
+    },
+    start_merge: function () {
+        $.ajax({
             url: helper.baseUrl + 'merge/merge_launch',
             data: $('#merge-form').serialize(),
             type: "POST",
             dataType: "JSON"
         }).done(function (response) {
-			if(response.success){
-				if(typeof record !== "undefined"){
-				record.company_panel.load_panel(record.urn);	
-				record.contact_panel.load_panel(record.urn);	
-			}
-				flashalert.success('Merge Successful');	
-				$('#modal').modal('hide');
-				
-			};
-		})
-	},
-		preview_merge:function(){
-		$.ajax({
+            if (response.success) {
+                if (typeof record !== "undefined") {
+                    record.company_panel.load_panel(record.urn);
+                    record.contact_panel.load_panel(record.urn);
+                }
+                flashalert.success('Merge Successful');
+                $('#modal').modal('hide');
+
+            }
+            ;
+        })
+    },
+    preview_merge: function () {
+        $.ajax({
             url: helper.baseUrl + 'merge/merge_preview',
             data: $('#merge-form').serialize(),
             type: "POST",
             dataType: "JSON"
         }).done(function (response) {
-			var contents = '';
-			if(response.length==0){
-				contents = 'There is nothing to merge at the moment. All fields are in sync';
-			} else {
-			
-			$.each(response,function(type,actions){
-				
-				$.each(actions,function(action,data){
-					var this_type = type;
-					if(type=="companies"&&data.length=="1"){
-					this_type="company";	
-					} else if(type=="contacts"&&data.length=="1"){
-					this_type="contact";	
-					}
-				contents += '<h4>'+data.length+' '+this_type+' will be '+action+'</h4>';
-				
-				$.each(data,function(k,v){
-					contents += '<ul>'
-					$.each(v,function(field,value){
-						if(field=="telephone_number"){
-						field=v.description;
-						delete v.description;
-						}
-					contents += '<li>'+field + ' => ' + value + '</li>';
-				});
-					contents += '</ul>'
-				});
-			
-			});
-			});
-			}
-			$('#merge-preview').html(contents);
-			$('#start-merge').prop('disabled',false);
+            var contents = '';
+            if (response.length == 0) {
+                contents = 'There is nothing to merge at the moment. All fields are in sync';
+            } else {
+
+                $.each(response, function (type, actions) {
+
+                    $.each(actions, function (action, data) {
+                        var this_type = type;
+                        if (type == "companies" && data.length == "1") {
+                            this_type = "company";
+                        } else if (type == "contacts" && data.length == "1") {
+                            this_type = "contact";
+                        }
+                        contents += '<h4>' + data.length + ' ' + this_type + ' will be ' + action + '</h4>';
+
+                        $.each(data, function (k, v) {
+                            contents += '<ul>'
+                            $.each(v, function (field, value) {
+                                if (field == "telephone_number") {
+                                    field = v.description;
+                                    delete v.description;
+                                }
+                                contents += '<li>' + field + ' => ' + value + '</li>';
+                            });
+                            contents += '</ul>'
+                        });
+
+                    });
+                });
+            }
+            $('#merge-preview').html(contents);
+            $('#start-merge').prop('disabled', false);
         });
-	},
+    },
     save_appointment: function (data) {
         $.ajax({
             url: helper.baseUrl + 'records/save_appointment',
@@ -204,10 +224,10 @@ var modals = {
         }).done(function (response) {
             if (response.success) {
                 flashalert.success('Appointment was saved');
-				if(response.trackvia){
-					console.log("trackvia");
-				$.post(response.trackvia,{ urn: response.urn });	
-				}
+                if (response.trackvia) {
+                    console.log("trackvia");
+                    $.post(response.trackvia, {urn: response.urn});
+                }
                 $('.close-modal').trigger('click');
                 if (typeof record !== "undefined") {
                     record.appointment_panel.load_appointments();
@@ -250,7 +270,7 @@ var modals = {
             if (response.success) {
                 if (edit) {
                     modals.edit_appointment_html(response.data);
-					modal_body.css('overflow', 'visible');
+                    modal_body.css('overflow', 'visible');
                 } else {
                     modals.view_appointment_html(response.data);
                 }
@@ -292,9 +312,9 @@ var modals = {
         if (data.distance && getCookie('current_postcode')) {
             mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?zoom=2&saddr=' + helper.current_postcode + '&daddr=' + data.postcode + '">Navigate</a>';
         }
-		if(data.cancellation_reason){
-		  mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <p class="text-danger">This appointment was cancelled.<br><small>'+data.cancellation_reason+'</small></p>';	
-		}
+        if (data.cancellation_reason) {
+            mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <p class="text-danger">This appointment was cancelled.<br><small>' + data.cancellation_reason + '</small></p>';
+        }
         modals.load_modal(mheader, mbody, mfooter)
     },
     edit_appointment_html: function (data) {
@@ -334,32 +354,35 @@ var modals = {
                 $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true);
             });
             modals.load_modal(mheader, $mbody, mfooter);
-			modals.appointment_contacts(data.urn,data.contact_id);
+            modals.appointment_contacts(data.urn, data.contact_id);
         });
     },
-	appointment_contacts:function(urn,contact_id){
-		$.ajax({ url: helper.baseUrl + 'appointments/get_contacts',
-		data:{urn:urn },
-		dataType:"JSON",
-		type:"POST",
-		beforeSend:function(){
-			$('#contact-select').hide();
-		},
-		error:function(){
-			$('#contact-select').parent().append('<p class="text-error">Unable to find contacts</p>');
-		},
-		}).done(function(result){
-			$('#contact-select').show();
-			$.each(result,function(k,v){
-				var selected = "";
-				if(v.id==contact_id){ selected = "selected"; }
-				$('#contact-select').append('<option '+selected+' value="'+v.id+'">'+v.name+'</option>');
-			});
-			$('#contact-select').append('<option value="other">Other</option>');
-			$('#contact-select').selectpicker();
-		});
-			
-	},
+    appointment_contacts: function (urn, contact_id) {
+        $.ajax({
+            url: helper.baseUrl + 'appointments/get_contacts',
+            data: {urn: urn},
+            dataType: "JSON",
+            type: "POST",
+            beforeSend: function () {
+                $('#contact-select').hide();
+            },
+            error: function () {
+                $('#contact-select').parent().append('<p class="text-error">Unable to find contacts</p>');
+            },
+        }).done(function (result) {
+            $('#contact-select').show();
+            $.each(result, function (k, v) {
+                var selected = "";
+                if (v.id == contact_id) {
+                    selected = "selected";
+                }
+                $('#contact-select').append('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
+            });
+            $('#contact-select').append('<option value="other">Other</option>');
+            $('#contact-select').selectpicker();
+        });
+
+    },
     create_appointment: function (urn) {
         $.ajax({
             url: helper.baseUrl + 'modals/edit_appointment',
@@ -373,7 +396,7 @@ var modals = {
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
             var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
             modals.load_modal(mheader, mbody, mfooter);
-			modals.appointment_contacts(urn);
+            modals.appointment_contacts(urn);
         });
     },
     appointment_outcome_html: function (id) {
@@ -452,19 +475,19 @@ var modals = {
         modal_footer.empty();
     },
     load_modal: function (mheader, mbody, mfooter, fixed_modal) {
-		if(fixed_modal&&$("#modal").hasClass('ui-draggable')){
-				$("#modal").draggable('disable')
-		} else {
-			$("#modal").draggable({
-    handle: ".modal-header,.modal-footer"
-			});
-		modals.set_size();
-				
-		}
-		
+        if (fixed_modal && $("#modal").hasClass('ui-draggable')) {
+            $("#modal").draggable('disable')
+        } else {
+            $("#modal").draggable({
+                handle: ".modal-header,.modal-footer"
+            });
+            modals.set_size();
+
+        }
+
         modal_body.css('padding', '20px');
         modal_header.html(mheader);
-       modal_body.html(mbody);
+        modal_body.html(mbody);
         modal_footer.html(mfooter);
         if (!$('#modal').hasClass('in')) {
             modals.show_modal();
@@ -478,11 +501,11 @@ var modals = {
             format: 'DD/MM/YYYY',
             pickTime: false
         });
-		$('#modal').find('.dateyears').datetimepicker({
-        pickTime: false,
-        viewMode: 'years',
-        format: 'DD/MM/YYYY'
-    	});
+        $('#modal').find('.dateyears').datetimepicker({
+            pickTime: false,
+            viewMode: 'years',
+            format: 'DD/MM/YYYY'
+        });
         //this function automatically sets the end date for the appointment 1 hour ahead of the start date
         $(".startpicker").on("dp.hide", function (e) {
             var m = moment(e.date, "DD\MM\YYYY HH:mm");
@@ -491,23 +514,23 @@ var modals = {
         });
         $("#modal").find("#tabs").tab();
     },
-	set_size:function(){
-		//this will make the modals mobile responsive :)
-		if($('#modal').hasClass('in')){
-			var height = $(window).height()-20;
-			var mheight = $('.modal-dialog').height();
-			if(mheight>height){
-				modal_body.css('height', 'auto');
-				$('body').removeClass('modal-open');
-				$('#modal').css('position','absolute');
-				$('.container-fluid').css('height',mheight+50+'px').css('overflow','hidden');
-			} else {
-			$('#modal').css('position','fixed');
-			$('body').addClass('modal-open');
-			$('.container-fluid').css('height','100%').css('overflow','auto');
-		}
-		}
-	},
+    set_size: function () {
+        //this will make the modals mobile responsive :)
+        if ($('#modal').hasClass('in')) {
+            var height = $(window).height() - 20;
+            var mheight = $('.modal-dialog').height();
+            if (mheight > height) {
+                modal_body.css('height', 'auto');
+                $('body').removeClass('modal-open');
+                $('#modal').css('position', 'absolute');
+                $('.container-fluid').css('height', mheight + 50 + 'px').css('overflow', 'hidden');
+            } else {
+                $('#modal').css('position', 'fixed');
+                $('body').addClass('modal-open');
+                $('.container-fluid').css('height', '100%').css('overflow', 'auto');
+            }
+        }
+    },
     columns: function (columns) {
         modals.default_buttons();
         modal_header.text('Select columns to display');
@@ -521,7 +544,7 @@ var modals = {
 
         modals.default_buttons();
         modal_header.text('Set location');
-         modal_body.html('<p>You must set a location to calculate distances and journey times</p><div class="form-group"><label>Enter Postcode</label><div class="input-group"><input type="text" class="form-control current_postcode_input" placeholder="Enter a postcode..."><div class="input-group-addon pointer btn locate-postcode"><span class="glyphicon glyphicon-map-marker"></span> Use my location</div></div>');
+        modal_body.html('<p>You must set a location to calculate distances and journey times</p><div class="form-group"><label>Enter Postcode</label><div class="input-group"><input type="text" class="form-control current_postcode_input" placeholder="Enter a postcode..."><div class="input-group-addon pointer btn locate-postcode"><span class="glyphicon glyphicon-map-marker"></span> Use my location</div></div>');
         $(".confirm-modal").off('click');
         $('.confirm-modal').on('click', function (e) {
             var postcode_saved = location.store_location($('.current_postcode_input').val());
@@ -573,7 +596,7 @@ var modals = {
     reset_table: function () {
         modals.default_buttons();
         modal_header.text('Reset table');
-         modal_body.html('<p>This will clear any filters that have been set on the table</p><p>Are you sure you want to reset the table filters?</p>');
+        modal_body.html('<p>This will clear any filters that have been set on the table</p><p>Are you sure you want to reset the table filters?</p>');
 
         if (!$('#modal').hasClass('in')) {
             modal.show_modal();
@@ -593,12 +616,12 @@ var modals = {
     },
     default_buttons: function () {
         modal_footer.empty();
-      modal_footer.append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
+        modal_footer.append('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
         modal_footer.append('<button class="btn btn-primary confirm-modal" type="button">Confirm</button>');
     },
     update_footer: function (content) {
-       modal_footer.empty();
-       modal_footer.html(content);
+        modal_footer.empty();
+        modal_footer.html(content);
     },
     view_record_html: function (data) {
         var mheader = "View Record #" + data.urn;
@@ -702,13 +725,62 @@ var modals = {
 
 
         mbody += '</div>';
-		merge_btn = "";
-		if(typeof record !== "undefined"){
-		merge_btn = ' <button class="btn btn-info pull-right" data-modal="merge-record" data-urn="'+data.urn+'" data-merge-target="'+record.urn+'">Merge</button>';	
-		}
+        merge_btn = "";
+        if (typeof record !== "undefined") {
+            merge_btn = ' <button class="btn btn-info pull-right" data-modal="merge-record" data-urn="' + data.urn + '" data-merge-target="' + record.urn + '">Merge</button>';
+        }
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>' + merge_btn;
         modals.load_modal(mheader, mbody, mfooter);
-		modal_body.css('padding:0px');
+        modal_body.css('padding:0px');
+    },
+    view_filter_options: function () {
+        $.ajax({
+            url: helper.baseUrl + 'modals/view_filter_options',
+            type: "POST",
+            dataType: 'JSON'
+        }).done(function (response) {
+            if (!response.success) {
+                flashalert.danger(response.msg);
+            }
+            modals.view_filter_options_html(response.data);
+        });
+    },
+    view_filter_options_html: function (data) {
+
+        var filter_options = "";
+        filter_options += "<div style='float:right; padding:8px 0;'>"+$('.dataTables_info').text()+"</div>";
+        if (data) {
+            $.each(data, function (i, val) {
+                var remove_btn = "";
+                filter_options += "<div style='width:200px; padding:8px 0; border-bottom: 1px dashed #ccc'>";
+                if(val.removable){
+                    remove_btn = " <span data-field='" + val.name + "' class='remove-filter-option glyphicon glyphicon-remove pointer red small'></span>";
+                }
+                filter_options += "<strong>" + i + remove_btn+"</strong>";
+
+                if (typeof val.values === "string") {
+                    filter_options += "<ul><li>" + val.values + "</li></ul>";
+                } else {
+                    filter_options += "<ul>";
+                    $.each(val.values, function(x, v) {
+                        filter_options += "<li>" + v + "</li>";
+                    });
+                    filter_options += "</ul>";
+                }
+                filter_options += "</div>";
+            });
+        }
+        else {
+            filter_options += "<div>No filters have been applied. You can use search options on this page to find records matching a specific critera</div>";
+        }
+
+        var mheader = "Your search options ";
+        var mbody = filter_options;
+
+        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
+                    '<a class="btn btn-primary pull-right">Clear Filters</a> ';
+
+        modals.load_modal(mheader, mbody, mfooter)
     },
 
 
@@ -941,7 +1013,7 @@ var modals = {
 
                 modals.load_modal(mheader, $mbody, mfooter);
                 //dont want padding with tabs
-               modal_body.css('padding', '0px');
+                modal_body.css('padding', '0px');
                 if (type == "edit") {
                     modals.contacts.load_tabs(id, tab);
                 }
@@ -951,16 +1023,16 @@ var modals = {
         load_tabs: function (id, item_form) {
             var $panel = $('#modal');
             if (item_form !== "general") {
-	 var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 $panel.find('#' + item_form + ' form').hide();
                 $panel.find('#' + item_form + ' .table-container').show();
             } else {
-							   var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-contact-general">Save changes</button>';
                 $panel.find('#phone form, #address form').hide();
                 $panel.find('#phone .table-container,#address .table-container').show();
-				$panel.find('.save-contact-general').remove();
+                $panel.find('.save-contact-general').remove();
             }
-			  modals.update_footer(mfooter);
+            modals.update_footer(mfooter);
             $.ajax({
                 url: helper.baseUrl + "ajax/get_contact",
                 type: "POST",
@@ -1077,7 +1149,7 @@ var modals = {
                 var action = $(this).attr('data-action');
                 modals.companies.save_item(action);
             });
-            
+
             /*initialize the delete item buttons for phone */
             $(document).on('click', '[data-modal="delete-company-phone"]', function (e) {
                 e.preventDefault();
@@ -1283,25 +1355,25 @@ var modals = {
 
                 modals.load_modal(mheader, $mbody, mfooter);
                 //dont want padding with tabs
-               modal_body.css('padding', '0px');
+                modal_body.css('padding', '0px');
                 if (type == "edit") {
                     modals.companies.load_tabs(id, tab);
-                }					
+                }
 
             });
         },
         load_tabs: function (id, item_form) {
             var $panel = $('#modal');
             if (item_form !== "general") {
-				 var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 $panel.find('#' + item_form + ' form').hide();
                 $panel.find('#' + item_form + ' .table-container').show();
             } else {
-			var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-company-general">Save changes</button>';
                 $panel.find('#phone form, #address form').hide();
                 $panel.find('#phone .table-container,#address .table-container').show();
             }
-			modals.update_footer(mfooter);
+            modals.update_footer(mfooter);
             $.ajax({
                 url: helper.baseUrl + "ajax/get_company",
                 type: "POST",
