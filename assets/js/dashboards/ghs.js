@@ -70,8 +70,14 @@ search_record:function($btn){
             url: helper.baseUrl + 'trackvia/get_counts',
             type: "POST",
             dataType: "JSON",
-			data: {tv:tv}
+			data: {tv:tv},
+			beforeSend:function(){
+			if(tv){
+			$('#refresh-data').html('<img src="'+helper.baseUrl+'assets/img/panel-loading.gif" />');
+			}
+			}
         }).done(function (response) {
+			$('#refresh-data').html('<span class="fa fa-refresh"></span>');
             $('.data-panel').empty();
             var $data = "";
             if (response['GHS Southway survey']) {

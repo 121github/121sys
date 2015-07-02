@@ -59,7 +59,7 @@
    
   
   <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-table fa-fw"></i> Data  <span id="refresh-data" class="fa fa-refresh pull-right pointer"></span></div>
+            <div class="panel-heading"> <i class="fa fa-table fa-fw"></i> Data  <span id="refresh-data" class="pull-right pointer"></span></div>
               <div class="panel-body data-panel">
               <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
               </div>
