@@ -752,7 +752,7 @@ class Cron extends CI_Controller
 
         $this->email->from('noreply@121customerinsight.co.uk');
         $this->email->to($email_address);
-        $this->email->bcc("bradf@121customerinsight.co.uk");
+        //$this->email->bcc("bradf@121customerinsight.co.uk");
         $this->email->subject($subject);
         $this->email->message($body);
 
