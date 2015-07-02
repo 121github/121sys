@@ -73,6 +73,7 @@ search_record:function($btn){
 			data: {tv:tv},
 			beforeSend:function(){
 			if(tv){
+				
 			$('#refresh-data').html('<img src="'+helper.baseUrl+'assets/img/panel-loading.gif" />');
 			}
 			}
