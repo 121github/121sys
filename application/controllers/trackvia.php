@@ -273,8 +273,6 @@ class Trackvia extends CI_Controller
 	   //queries we may want to run after the updates can go here
 	   $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29)");
 $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29)");
-
-   $this->db->query("update contacts inner join records using(urn) inner join data_sources using(source_id) set notes = concat(notes,'<br>',source_name) where campaign_id in(22,28,29) and records.source_id is not null");
     }
 
     /**
@@ -359,7 +357,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
                     $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
                 }
 				
-				if(!empty($fields['Contact notes'])){
+				if(!empty($fields['Contact Notes'])){
 				array_push($update_notes,$notes = array("urn"=>$record['urn'],"notes"=>$fields['Contact notes'],"updated_by"=>1));
 				}
 				//organise the record_details update
