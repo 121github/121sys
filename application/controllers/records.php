@@ -65,7 +65,7 @@ class Records extends CI_Controller
             "column" => "nextcall",
             "header" => "Next Call"
         );
-        
+
         $data = array(
             'campaign_access' => $this->_campaigns,
             'page' => 'list_records',
@@ -73,7 +73,9 @@ class Records extends CI_Controller
             'columns' => $visible_columns,
             'css' => array(
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
-				'map.css'
+				'map.css',
+                'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
             'javascript' => array(
 				"location.js",
@@ -82,11 +84,39 @@ class Records extends CI_Controller
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/js/jquery.dataTables.min.js',
-				'plugins/DataTables/js/dataTables.bootstrap.js'
+				'plugins/DataTables/js/dataTables.bootstrap.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
         
+    }
+
+    public function get_used_icons() {
+        //Get icons used so far
+        $icons = $this->Records_model->get_used_icons();
+
+        $aux = array('empty');
+        foreach($icons as $icon) {
+            if ($icon['record_map_icon']) {
+                array_push($aux,$icon['record_map_icon']);
+            }
+            if ($icon['campaign_map_icon']) {
+                array_push($aux,$icon['campaign_map_icon']);
+            }
+        }
+        $icons = array_unique($aux);
+
+        $aux = array();
+        foreach($icons as $icon) {
+            array_push($aux,$icon);
+        }
+        $icons = $aux;
+
+        echo json_encode(array(
+            "icons" => $icons
+        ));
     }
     
     public function process_view()

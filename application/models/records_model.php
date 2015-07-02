@@ -313,7 +313,7 @@ class Records_model extends CI_Model
     public function get_records($options)
     {
         $table_columns = array(
-            "record_color",
+            "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))",
             "campaign_name",
             "com.name",
             "fullname",
@@ -323,7 +323,7 @@ class Records_model extends CI_Model
         );
 
         $order_columns = array(
-            "record_color",
+            "r.date_added",
             "campaign_name",
             "com.name",
             "fullname",
@@ -397,7 +397,6 @@ class Records_model extends CI_Model
 
         $qry .= $order;
         $qry .= "  limit $start,$length";
-        //$this->firephp->log($qry);
         $records = $this->db->query($qry)->result_array();
 
         return $records;
@@ -454,7 +453,7 @@ class Records_model extends CI_Model
     public function get_nav($options = "")
     {
         $table_columns = array(
-            "record_color",
+            "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))",
             "campaign_name",
             "com.name",
             "fullname",
@@ -463,7 +462,7 @@ class Records_model extends CI_Model
             "rand()"
         );
         $order_columns = array(
-            "record_color",
+            "r.date_added",
             "campaign_name",
             "com.name",
             "fullname",
@@ -1342,6 +1341,20 @@ class Records_model extends CI_Model
         //Update the icon
         $this->db->where('urn', $urn);
         return $this->db->update('records', $record);
+    }
+
+    /**
+     * Get used icons
+     */
+    public function get_used_icons() {
+        $qry = "SELECT DISTINCT
+                  r.map_icon    AS record_map_icon,
+                  camp.map_icon AS campaign_map_icon
+                FROM records r
+                  INNER JOIN campaigns camp USING (campaign_id)
+                WHERE r.map_icon IS NOT NULL OR camp.map_icon IS NOT NULL";
+
+        return $this->db->query($qry)->result_array();
     }
 }
 
