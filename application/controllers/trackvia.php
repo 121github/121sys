@@ -552,10 +552,13 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
     public function add_appointment() {
 
 		$urn = $this->input->post('urn');
-		
+
         //Get the record data
         $app = $this->Trackvia_model->get_appointment($urn);
+	
+		//if its a private record then we need to do a few extra bits
 		if($app['campaign_id']=="29"){
+			$update_record = array("source_id"=>36,"record_color"=>"00CC00");
 		//if it doesnt exist on trackvia we should add it first
 		if(empty($app['client_ref'])){
 			$response = $this->add_tv_record($urn);
@@ -563,7 +566,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		} else {
 			$this->update_tv_record($urn);	
 		}
-		}
+		} else if($app['campaign_id']=="28"){ $update_record = array("source_id"=>37,"record_color"=>"00CC00"); }
         $data = array(
 		"Planned Survey Date"=>$app['date']."T12:00:00-0600",
 		"Survey appt" => $app['slot'],
@@ -578,6 +581,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         //Update the record
         $response = $this->tv->updateRecord($app['client_ref'],$data);
 		if(!empty($response)){
+		$this->db->where("urn",$urn);
+		$this->db->update("records",$update_record);
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$app['client_ref'],"data"=>$data));
 		$this->db->query("update records set urgent=null where urn = '$urn'");
 		} else {

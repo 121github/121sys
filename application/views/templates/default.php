@@ -103,7 +103,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         <li <?php echo @($page == 'eldon_dash' ? "class=Selected'" : "") ?>><a
                                 href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>
                     <?php } ?>
-                     <?php if (@$_SESSION['current_client']=='GHS') { ?>
+                     <?php if (in_array("29",$_SESSION['campaign_access']['array'])) { ?>
                         <li <?php echo @($page == 'ghs_dash' ? "class=Selected'" : "") ?>><a
                                 href="<?php echo base_url() ?>dashboard/ghs">GHS Dash</a></li>
                     <?php } ?>
