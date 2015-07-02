@@ -274,7 +274,7 @@ class Trackvia extends CI_Controller
 	   $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29)");
 $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29)");
 
-   $this->db->query("update contacts inner join records using(urn) inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29) and records.source_id is not null");
+   $this->db->query("update contacts inner join records using(urn) inner join data_sources using(source_id) set notes = concat(notes,'<br>',source_name) where campaign_id in(22,28,29) and records.source_id is not null");
     }
 
     /**
@@ -323,6 +323,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         //Update the record campaign if it is needed (different campaign) and create a new one if it does not exist yet
         $update_records = array();
 		$update_extra = array();
+		$update_notes = array();
         $new_records_ids = $tv_record_ids;
 		$records_found=0;
 		$appointments_cancelled_count = 0;
@@ -357,7 +358,10 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 					}
                     $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
                 }
-
+				
+				if(!empty($fields['Contact notes'])){
+				array_push($update_notes,$notes = array("urn"=>$record['urn'],"notes"=>$fields['Contact notes'],"updated_by"=>1));
+				}
 				//organise the record_details update
 				$extra = array();
 				if(!empty($fields['No. Panels (Desktop)'])){
@@ -379,8 +383,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				} else {
 				$extra["c3"] = NULL;
 				}
-				if(!empty($fields['Property Viable'])){
-				$extra["c5"]=$fields['Property Viable'];
+				if(@!empty($fields['Property Status'])){
+				$extra["c5"]=$fields['Property Status'];
 				} else {
 				$extra["c5"] = NULL;
 				}
@@ -404,6 +408,9 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		
         if (!empty($update_records)) {
             $this->Trackvia_model->updateRecords($update_records);
+        }
+		 if (!empty($update_notes)) {
+            $this->Trackvia_model->updateNotes($update_notes);
         }
 		//update the record details
 		if(!empty($extra)){
@@ -449,8 +456,8 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 				if(!empty($fields['Enquiry type'])){
 				$data["c3"]=$fields['Enquiry type'];
 				}
-				if(!empty($fields['Property Viable'])){
-				$data["c5"]=$fields['Property Viable'];
+				if(!empty($fields['Property Status'])){
+				$data["c5"]=$fields['Property Status'];
 				}
 				if(!empty($fields['Reason for Desktop Fail'])){
 				$data["c6"]=$fields['Reason for Desktop Fail'];
