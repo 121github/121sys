@@ -103,8 +103,9 @@ class Trackvia extends CI_Controller
 		foreach($tables as $name => $view_id){
 		if($view_id<>SOUTHWAY_ALL_RECORDS&&$view_id<>PRIVATE_ALL_RECORDS){
 			$data[$name]= array("source"=>$sources[$name],"one2one"=>$this->Trackvia_model->get_121_counts($name));
-		if($this->input->post('tv')){
+		if($this->input->post('tv')||$this->uri->segment(3)=="tv"){
 		$view = $this->tv->getView($view_id);
+		$this->firephp->log($view);
 		$data[$name]["trackvia"]=$view['record_count'];
 		} else {
 		$data[$name]["trackvia"] = false;	
@@ -273,6 +274,9 @@ class Trackvia extends CI_Controller
 	   //queries we may want to run after the updates can go here
 	   $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29)");
 $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29)");
+ $this->db->query("update contacts inner join records using(urn)
+inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29) and records.source_id is not null");
+   
     }
 
     /**
@@ -296,7 +300,6 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         $tv_records = $view['records'];
 		$this->firephp->log($view_id);
 		$this->firephp->log($view);
-
 		} else {
 		$this->firephp->log($view_id);
 		$this->firephp->log($view);
