@@ -156,11 +156,9 @@ class User extends CI_Controller
                 
                 if ($this->User_model->validate_login($_SESSION['user_id'], $this->input->post('current_pass'), true)) {
                     $response = $this->User_model->set_password($this->input->post('new_pass'));
-                    echo json_encode(array(
-                        "success" => true,
-                        "msg" => 'Password was updated'
-                    ));
-                    exit;
+                    $this->session->set_flashdata('success', 'Password was updated');
+					echo 'Logout';
+					exit;
                 } else {
                     echo json_encode(array(
                         "msg" => 'Current password was incorrect'
@@ -168,11 +166,13 @@ class User extends CI_Controller
                     exit;
                 }
                 
-            }
-            echo json_encode(array(
+            }  else {
+				    echo json_encode(array(
                 "msg" => validation_errors()
-            ));
-            exit;
+            		));
+            		exit;	
+				}
+        
         }
 
         $user_id = $_SESSION['user_id'];
