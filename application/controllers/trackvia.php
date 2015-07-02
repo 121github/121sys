@@ -407,9 +407,10 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
         echo "\n<br>Records updated in our system... ".count($update_records)."\n";
 		
         if (!empty($update_records)) {
-            $this->Trackvia_model->updateRecords($update_records);
+		 $this->Trackvia_model->updateRecords($update_records);
         }
 		 if (!empty($update_notes)) {
+			 	$this->firephp->log($update_notes);
             $this->Trackvia_model->updateNotes($update_notes);
         }
 		//update the record details
