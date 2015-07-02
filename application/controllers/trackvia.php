@@ -775,7 +775,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 		if(!empty($response)){
 		echo json_encode(array("success"=>true,"response"=>$response,"ref"=>$client_ref,"data"=>$data));
 		} else {
-			$message = "  An error occured when adding a new trackvia record  \r\n";
+			$message = "  An error occured when updating a trackvia record  \r\n";
 			$message .= "  URN: $urn \r\n";
 			$message .= "  Client ref: ". $client_ref."  \r\n";
 			$message .= "  Sent Data  \r\n";
