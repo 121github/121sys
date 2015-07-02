@@ -984,6 +984,7 @@ class Records_model extends CI_Model
                     "campaign_id" => $campaign
                 ));
                 $option_result = $this->db->get("record_details_options")->result_array();
+				$options = array();
                 foreach ($option_result as $opt) {
                     $options[$opt['id']] = $opt['option'];
                 }
