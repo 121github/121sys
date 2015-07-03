@@ -56,7 +56,7 @@ for($i = 0; $i < 30; $i++){
     public function appointment_data($count = false, $options = false)
     {
         $table_columns = array(
-            "record_color",
+            "CONCAT(IFNULL(records.map_icon,''),IFNULL(camp.map_icon,''))",
             "date_format(a.`start`,'%d/%m/%y H:i')",
             "com.name",
             "u.name",
@@ -64,7 +64,7 @@ for($i = 0; $i < 30; $i++){
             "postcode"
         );
         $order_columns = array(
-            "record_color",
+            "r.date_added",
             "a.start",
             "com.name",
             "u.name",

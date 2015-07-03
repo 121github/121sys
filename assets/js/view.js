@@ -151,14 +151,10 @@ var view_records = {
                 $(this).html('');
             }
             else if (title == "Icon") {
-                //$(this).html('<button id="record-icon" class="btn btn-default btn-xs iconpicker" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:# 0066">');
-
                 $('#record-icon').on('change', function (e) {
                     var icon = (e.icon=='empty'?'':e.icon);
                     view_records.table.column($(this).index()).search(icon).draw();
-
                 });
-
             }
             else {
                 var search_val = view_records.table.column($(this).index()).search();

@@ -24,6 +24,22 @@ var appointment = {
         });
 
         appointment.reload_table();
+
+        //Set icons used for the filter
+        appointment.get_used_icons();
+    },
+    get_used_icons: function() {
+        $.ajax({
+            url: helper.baseUrl + 'records/get_used_icons',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            $('#record-icon').iconpicker('setIconset', {
+                iconClass: 'fa',
+                iconClassFix: '',
+                icons: response.icons
+            });
+        });
     },
     reload_table: function () {
         var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Icon</th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></thead>";
@@ -44,6 +60,7 @@ var appointment = {
             "serverSide": true,
             "pagingType": "full",
             "iDisplayLength": 50,
+            order: [[ 1, "desc" ]],
             responsive: true,
             "ajax": {
                 url: helper.baseUrl + "appointments/appointment_data",
@@ -121,7 +138,15 @@ var appointment = {
             } 
             if (title == "Options") {
                 $(this).html('');
-            } else {
+            }
+            else if (title == "Icon") {
+                $('#record-icon').on('change', function (e) {
+                    var icon = (e.icon=='empty'?'':e.icon);
+                    appointment.table.column($(this).index()).search(icon).draw();
+
+                });
+            }
+            else {
                 var search_val = appointment.table.column($(this).index()).search();
                 $(this).html('<input class="dt-filter form-control" '+filter_attribute+' value="' + search_val[0] + '" />');
             }
