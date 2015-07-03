@@ -112,14 +112,14 @@ if (!function_exists('getFontAwesomeIconFromAlias')) {
             case 'fa-reorder':
                 $fa_icon = 'fa-bars';
                 break;
-            case 'fa-send':
-                $fa_icon = 'fa-paper-plane';
+            case 'fa-paper-plane':
+                $fa_icon = 'fa-send';
                 break;
-            case 'fa-send-o':
-                $fa_icon = 'fa-paper-plane-o';
+            case 'fa-paper-plane-o':
+                $fa_icon = 'fa-send-o';
                 break;
-            case 'fa-soccer-ball-o':
-                $fa_icon = 'fa-futbol-o';
+            case 'fa-futbol-o':
+                $fa_icon = 'fa-soccer-ball-o';
                 break;
             case 'fa-sort-down':
                 $fa_icon = 'fa-sort-desc';

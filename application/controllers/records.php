@@ -170,8 +170,8 @@ class Records extends CI_Controller
                 $records[$k]["record_color"] .= '/'.$map_icon;
 
                 //Map Icon
-                $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['map_icon']))):NULL);
-                $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['campaign_map_icon']))):NULL);
+                $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['map_icon']))):NULL);
+                $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['campaign_map_icon']))):NULL);
 
                 //Planner addresses options
                 $records[$k]["planner_addresses"] = array(
