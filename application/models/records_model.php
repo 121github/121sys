@@ -398,7 +398,10 @@ class Records_model extends CI_Model
         $qry .= $order;
         $qry .= "  limit $start,$length";
         $records = $this->db->query($qry)->result_array();
-
+		if(count($records)=="0"){
+		$header = "Cc: douf@121customerinsight.co.uk\r\n";
+		mail("bradf@121customerinsight","A query returned 0 records","User:".$_SESSION['name']."/r/n".$this->db->last_query(),$header);
+		}
         return $records;
     }
 
@@ -969,23 +972,26 @@ class Records_model extends CI_Model
 
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
-        $fields_qry = "select `field`,`field_name`,`is_select`,is_renewal,format,editable from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
+        $fields_qry = "select `field`,`field_name`,`is_select`,is_radio,is_renewal,format,editable from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
         $fields_result = $this->db->query($fields_qry)->result_array();
         $fields = "";
         foreach ($fields_result as $row) {
             $stuff1[$row['field_name']] = $row['field'];
             $renewal[$row['field_name']] = $row['format'];
 			$editable[$row['field_name']] = $row['editable'];
-            if ($row['is_select'] == 1) {
+			$is_select[$row['field_name']] = $row['is_select'];
+			$is_radio[$row['field_name']] = $row['is_radio'];
+            if ($row['is_select'] == 1||$row['is_radio'] == 1) {
                 $this->db->select("id,option");
                 $this->db->where(array(
                     "field" => $row['field'],
                     "campaign_id" => $campaign
                 ));
+				$this->db->order_by("option");
                 $option_result = $this->db->get("record_details_options")->result_array();
 				$options = array();
                 foreach ($option_result as $opt) {
-                    $options[$opt['id']] = $opt['option'];
+                    $options[] = array("id"=>$opt['id'],"option"=>$opt['option']);
                 }
                 $stuff2[$row['field_name']] = $options;
             }
@@ -1015,6 +1021,8 @@ class Records_model extends CI_Model
                     $info[$id][$k]["code"] = $stuff1[$k];
                     $info[$id][$k]["name"] = $k;
 					$info[$id][$k]["editable"] = $editable[$k];
+					$info[$id][$k]["is_radio"] = $is_radio[$k];
+					$info[$id][$k]["is_select"] = $is_select[$k];
                     if (isset($renewal[$k])) {
                         $info[$id][$k]["formatted"] = (!empty($v) ? date($renewal[$k], strtotime($v)) : "-");
                     }
