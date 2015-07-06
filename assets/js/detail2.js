@@ -1792,7 +1792,7 @@ var record = {
 							if(row.editable=="1"){
 							is_disabled = "";	
 							}
-                    if (row.options) {
+                    if (row.options&&row.is_select) {
                         $select = "<div class='form-group input-group-sm'>" + row.name;
                         $select += '<br><select '+is_disabled+' name="' + row.code + '" class="selectpicker"><option value="">Please select</option>';
                         $.each(row.options, function (option_id, option_val) {
@@ -1804,6 +1804,17 @@ var record = {
                         });
                         $select += "</select></div>";
                         form += $select;
+					} else if (row.options&&row.is_radio){
+						 $radio = "<div class='form-group input-group-sm'>" + row.name;
+						  $radio += '<br>';
+						   $.each(row.options, function (option_id, option_val) {
+                            if (row.value == option_val) {
+                                var selected = "checked";
+                            }
+                            $radio += "<label>"+option_val +" <input "+is_disabled+" name='" + row.code + "' " + selected + " type='radio' value='" + option_val + "' /></label>";
+                        });
+						 $radio += "</div>";
+						  form += $radio;
                     } else {
                         if (row.type != "varchar" && row.type != "number") {
                             inputclass = row.type;

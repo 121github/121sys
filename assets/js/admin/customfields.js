@@ -39,6 +39,11 @@ var admin = {
 					} else {
 					$('.fields_container').find('#'+row.field+'_sel').prop('checked',false);	
 					}
+					if(row.is_radio=="1"){
+					$('.fields_container').find('#'+row.field+'_rad').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_rad').prop('checked',false);	
+					}
 				});
 				
 			}

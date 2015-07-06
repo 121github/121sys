@@ -315,6 +315,9 @@ class Admin_model extends CI_Model
 			if(isset($v['is_select'])){
 				$insert["is_select"] = 1;
 			}
+			if(isset($v['is_radio'])){
+				$insert["is_radio"] = 1;
+			}
 			if($k=="d1"&&isset($v['renewal'])){
 				$insert["is_renewal"] = 1;
 			}
