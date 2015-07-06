@@ -24,7 +24,8 @@ $no_https = array("accept","demo","test");
 	
 $full_url = explode('121system.com', $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 $domain = $full_url[0];
-if(!in_array($domain,$no_https)){
+//if the site has no certificate but they are trying to use https then we redirect to the non-https url
+if(in_array($domain,$no_https)){
 if(isset($_SERVER['HTTPS'])||$_SERVER['SERVER_PORT']==443){
 header("HTTP/1.1 301 Moved Permanently");
 header("Location: http://" .$_SERVER['HTTP_HOST'] . $_SERVER["REQUEST_URI"]);

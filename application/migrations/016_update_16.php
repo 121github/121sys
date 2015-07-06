@@ -27,6 +27,9 @@ $this->db->query("CREATE TABLE IF NOT EXISTS `outcome_reason_campaigns` (
   UNIQUE KEY `campaign_id` (`campaign_id`,`outcome_id`,`outcome_reason_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 
+$this->db->query("ALTER TABLE records DROP COLUMN outcome_reason_id");
+$this->db->query("ALTER TABLE history DROP COLUMN outcome_reason_id");
+
 $this->db->query("ALTER TABLE `records` ADD `outcome_reason_id` INT NULL DEFAULT NULL AFTER `outcome_id`, ADD INDEX (`outcome_reason_id`)") ;
 $this->db->query("ALTER TABLE `history` ADD `outcome_reason_id` INT NULL DEFAULT NULL AFTER `outcome_id`, ADD INDEX (`outcome_reason_id`)") ;
 
