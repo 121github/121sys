@@ -128,8 +128,6 @@ class Sms_model extends CI_Model
 
         $results = $this->db->get()->result_array();
 
-        $this->firephp->log($this->db->last_query());
-
         return $results;
     }
 
