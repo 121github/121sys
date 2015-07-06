@@ -23,6 +23,14 @@ var template = {
             template.cancel();
         });
 
+        //Max length for sms text
+        var maxLength = 160;
+        $('textarea').keyup(function() {
+            var length = $(this).val().length;
+            var length = maxLength-length;
+            $('#chars').text(length);
+        });
+
 
         template.load_templates();
     },
@@ -78,6 +86,8 @@ var template = {
                 $('form').find('#unsubscribe-no').prop('checked', true).parent().addClass('active');
                 $('form').find('#unsubscribe-yes').prop('checked', false).parent().removeClass('active');
             }
+
+            $('#chars').text(160-$('form').find('textarea[name="template_text"]').val().length);
 
             var data = {id: $('form').find('input[name="template_id"]').val()};
 
