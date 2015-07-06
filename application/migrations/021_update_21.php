@@ -12,7 +12,6 @@ class Migration_update_21 extends CI_Migration
     public function up()
     {
         $this->firephp->log("starting migration 21");
-$this->db->query("ALTER TABLE record_details_fields DROP COLUMN is_radio");
         $this->db->query("ALTER TABLE `record_details_fields` ADD `is_radio` INT NULL DEFAULT NULL AFTER `is_select`");
 		
 		$this->db->query("ALTER TABLE `record_details_fields` CHANGE `field_name` `field_name` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL");
