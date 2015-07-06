@@ -291,6 +291,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                             <a href="<?php echo base_url() ?>smstemplates">SMS Templates</a>
                                         </li>-->
                                     <?php } ?>
+                                    <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
+                                        <li <?php echo @($page == 'smstemplates' ? "class='Selected'" : "") ?>>
+                                            <a href="<?php echo base_url() ?>smstemplates">SMS Templates</a>
+                                        </li>
+                                    <?php } ?>
                                     <?php if (in_array("edit scripts", $_SESSION['permissions'])) { ?>
                                         <li <?php echo @($page == 'scripts' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>scripts">Scripts</a>
