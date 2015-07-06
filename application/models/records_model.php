@@ -399,8 +399,8 @@ class Records_model extends CI_Model
         $qry .= "  limit $start,$length";
         $records = $this->db->query($qry)->result_array();
 		if(count($records)=="0"){
-		$header = "Cc: douf@121customerinsight.co.uk\r\n";
-		mail("bradf@121customerinsight","A query returned 0 records","User:".$_SESSION['name']."/r/n".$this->db->last_query(),$header);
+		$header = "Cc: dougf@121customerinsight.co.uk\r\n";
+		mail("bradf@121customerinsightco.uk","A query returned 0 records","User:".$_SESSION['name']."/r/n".$this->db->last_query(),$header);
 		}
         return $records;
     }
