@@ -25,6 +25,22 @@ var view_records = {
         });
 
         view_records.reload_table();
+
+        //Set icons used for the filter
+        view_records.get_used_icons();
+    },
+    get_used_icons: function() {
+        $.ajax({
+            url: helper.baseUrl + 'records/get_used_icons',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            $('#record-icon').iconpicker('setIconset', {
+                iconClass: 'fa',
+                iconClassFix: '',
+                icons: response.icons
+            });
+        });
     },
     reload_table: function() {
         var table = "<table width='100%' class='table small table-striped table-bordered table-hover data-table'><thead><tr><th>Icon</th><th>Campaign</th><th>Company</th><th>Contact</th><th>Outcome</th><th>Next Action</th></tr></thead>";
@@ -46,6 +62,7 @@ var view_records = {
             "pagingType": "full",
             "iDisplayLength": 50,
             responsive: true,
+            order: [[ 0, "desc" ]],
             "ajax": {
                 url: helper.baseUrl + "records/process_view",
                 type: 'POST',
@@ -132,7 +149,14 @@ var view_records = {
 
             if (title == "Options") {
                 $(this).html('');
-            } else {
+            }
+            else if (title == "Icon") {
+                $('#record-icon').on('change', function (e) {
+                    var icon = (e.icon=='empty'?'':e.icon);
+                    view_records.table.column($(this).index()).search(icon).draw();
+                });
+            }
+            else {
                 var search_val = view_records.table.column($(this).index()).search();
                 $(this).html('<input class="dt-filter input-sm form-control" '+filter_attribute+' value="' + search_val[0] + '" />');
             }

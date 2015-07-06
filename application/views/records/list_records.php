@@ -5,6 +5,9 @@
         <div class="pull-right">
             <form class="filter-form">
                 <div class="btn-group">
+                    <button id="record-icon" class="btn btn-default btn-xs iconpicker" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:# 0066">
+                </div>
+                <div class="btn-group">
                     <input type="hidden" name="group">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span
                             class="glyphicon glyphicon-filter"></span> Colour By

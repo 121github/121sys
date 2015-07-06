@@ -39,7 +39,9 @@ class Appointments extends CI_Controller
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
-                'map.css'
+                'map.css',
+                'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
             'javascript' => array(
                 "modals.js",
@@ -49,7 +51,9 @@ class Appointments extends CI_Controller
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/js/jquery.dataTables.min.js',
-				'plugins/DataTables/js/dataTables.bootstrap.js'
+				'plugins/DataTables/js/dataTables.bootstrap.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
             )
         );
         $this->template->load('default', 'dashboard/appointments.php', $data);
@@ -97,8 +101,8 @@ class Appointments extends CI_Controller
                 $records[$k]["record_color"] .= '/'.$map_icon;
 
                 //Map Icon
-                $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['map_icon']))):NULL);
-                $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA-","",str_replace("_","-",strtoupper($records[$k]['campaign_map_icon']))):NULL);
+                $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['map_icon']))):NULL);
+                $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['campaign_map_icon']))):NULL);
 
                 //Planner addresses options
                 $records[$k]["planner_addresses"] = array(
