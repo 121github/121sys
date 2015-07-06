@@ -148,7 +148,7 @@ if($name=="GHS Southway survey"){
 	$qry = "select urn from records where campaign_id = 22 and source_id = '35'";
 	return $this->db->query($qry)->num_rows();
 } else if($name=="GHS Southway booked"){
-	$qry = "select urn from records inner join appointments using(urn) where campaign_id = 22 and source_id = '37' and outcome_id = 72 and record_status = 4 and `start` > now()";
+	$qry = "select urn from records inner join appointments using(urn) where campaign_id = 22 and source_id = '37' and outcome_id = 72 and record_status = 4 and date(`start`) >= curdate()";
 	return $this->db->query($qry)->num_rows();
 }  else if($name=="GHS Private survey"){
 	$qry = "select urn from records where campaign_id = 29 and source_id = '39' ";
@@ -157,7 +157,7 @@ if($name=="GHS Southway survey"){
 	$qry = "select urn from records where campaign_id = 29 and source_id = '38' ";
 	return $this->db->query($qry)->num_rows();
 } else if($name=="GHS Private booked"){
-	$qry = "select urn from records inner join appointments using(urn) where campaign_id = 29 and source_id = '36'  and record_status = 4 and outcome_id = 72 and `start` > now()";
+	$qry = "select urn from records inner join appointments using(urn) where campaign_id = 29 and source_id = '36'  and record_status = 4 and outcome_id = 72 and date(`start`) >= curdate()";
 	return $this->db->query($qry)->num_rows();
 } else if($name=="GHS Private not viable"){
 	$qry = "select urn from records where campaign_id = 28 and source_id = '40' ";
