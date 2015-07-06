@@ -291,7 +291,7 @@ $(document).on('change','.q4-question',function(){
        <div class="radio">
             <label>
                 <input class="q6-question" type="radio"  name="answers[a6][]" id="optionsRadios1"
-                       value="Yes"  <?php if (@strpos($values['a6'], "Yes") !== false) {
+                       value="Y"  <?php if (@strpos($values['a6'], "Y") !== false) {
                     echo "checked";
                 } ?> />
                Yes
@@ -300,7 +300,7 @@ $(document).on('change','.q4-question',function(){
         <div class="radio">
             <label>
                 <input class="q6-question" type="radio" name="answers[a6][]" id="optionsRadios2"
-                       value="No" <?php if (@strpos($values['a6'], "No") !== false) {
+                       value="N" <?php if (@strpos($values['a6'], "N") !== false) {
                     echo "checked";
                 } ?>>
                 No
