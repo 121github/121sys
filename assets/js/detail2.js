@@ -18,7 +18,9 @@ var record = {
                 if ($('.outcomepicker').val().length > 0) {
                     if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
                         modal.dead_line($(this));
-                    } else {
+                    } else if($('.outcomepicker').val() == "120"&& $('.contact-panel').find('#map-link').length > 0){
+						modal.desktop_prequal($(this));
+					} else {
                         record.update_panel.save($(this));
                     }
                 } else {
@@ -668,7 +670,7 @@ var record = {
                                     $postcode = dd.postcode;
                                 }
                             });
-                            $contact_detail_list_items += "<dt>" + dt + "</dt><dd><a class='pull-right pointer' target='_blank' href='https://maps.google.com/maps?q=" + $postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>" + $address + "</dd>";
+                            $contact_detail_list_items += "<dt>" + dt + "</dt><dd><a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + $postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>" + $address + "</dd>";
                         }
 
                     });
@@ -2456,6 +2458,16 @@ var modal = {
         modals.default_buttons();
         $('.confirm-modal').on('click', function (e) {
             record.update_panel.save($btn);
+            $('#modal').modal('toggle');
+        });
+    },
+	 desktop_prequal: function ($btn) {
+        var mheader = 'No Address';
+        var mbody = '<p>You can not send a record to GHS unless you have captured an address!</p>';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();
+        $('.confirm-modal').on('click', function (e) {
             $('#modal').modal('toggle');
         });
     },

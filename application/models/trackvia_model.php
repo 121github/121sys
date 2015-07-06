@@ -133,7 +133,9 @@ public function update_extra($data){
 		$this->db->insert("contact_telephone",$data);
 	}
 	public function add_record_details($data){
-		$this->db->insert("record_details",$data);
+		$insert_query =  $this->db->insert_string("record_details",$data);
+		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$insert_query);
+		$this->db->query($insert_query);
 	}
 
 		
