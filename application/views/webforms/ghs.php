@@ -515,7 +515,7 @@ $(document).on('change','.q7-question',function(){
 
 });
 </script> 
-<?php if (@!empty($values['a7'])&&@$values['a1']=="house"&&@$values['a6']=="yes"){ ?>
+<?php if (@!empty($values['a7'])&&@$values['a1']=="house"&&@$values['a6']=="Y"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('.q7-question').trigger('change');
