@@ -146,6 +146,9 @@
 		<?php if(in_array(17,$features)){ ?>
         record.appointment_slots_panel.init();
         <?php } ?>
+		<?php if(in_array(18,$features)){ ?>
+        record.tasks.init();
+        <?php } ?>
     });
 </script>
 <?php endif; ?>

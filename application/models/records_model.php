@@ -18,10 +18,40 @@ class Records_model extends CI_Model
 		$this->db->update("records",$data);	
 	}
 	
+	public function save_task($data){
+		$data['updated_by'] = $_SESSION['user_id'];
+		$data['updated_on'] = date('Y-m-d H:i:s');
+		$insert_query = $this->db->insert_string("record_tasks",$data);
+		$insert_query = str_replace("INSERT INTO","INSERT IGNORE INTO",$insert_query);
+		$this->db->query($insert_query);
+		if(!$this->db->insert_id()){
+			$this->db->where(array("urn"=>$data['urn'],"task_id"=>$data['task_id']));
+			$this->db->update("record_tasks",$data);
+		}
+	}
+	
 	public function save_record_color($urn,$color){
 		$color = color_name_to_hex($color);
 		$this->db->where("urn",$urn);
 		$this->db->update("records",array("record_color"=>$color));
+	}
+	
+	public function get_campaign_tasks($campaign_id){
+			      $qry = "select * from tasks join campaign_tasks using(task_id) where campaign_id = '$campaign_id'";
+				  return $this->db->query($qry)->result_array();	
+	}
+		public function get_record_tasks($urn){
+			      $qry = "select * from record_tasks where urn = '$urn'";
+				  return $this->db->query($qry)->result_array();	
+	}
+		public function get_task_statues($campaign_id=false){
+			      $qry = "select * from task_status";
+				   return $this->db->query($qry)->result_array();	
+	}
+	
+		public function get_tasks($urn){
+			       $this->db->where("urn", $urn);
+				   $result = $this->db->get("record_tasks")->result_array();	
 	}
 	
 	public function find_related_records($urn,$campaign=false){

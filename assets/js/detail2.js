@@ -204,6 +204,54 @@ var record = {
             }
         });
     },
+	tasks: {
+		init:function(){
+			 record.tasks.load_panel();	
+			 $(document).on('change','.task_statuses',function(){
+				  record.tasks.save($(this));	
+			 });
+		},
+		load_panel:function(){
+		$.ajax({
+            url: helper.baseUrl + 'records/get_campaign_tasks',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                'urn': record.urn
+            },
+			fail:function(){
+				$('#tasks-panel').html('<p>Cannot load tasks</p>');
+			},
+        }).done(function (response) {
+            if (response.success) {
+				var tasks = "";
+                $.each(response.data,function(k,row){
+					tasks += row.task_name + ' <select id="'+row.task_id+'" class="task_statuses">';
+					 $.each(response.statuses,function(i,status){
+						 if(row.task_status_id==status.task_status_id){ var selected="selected" } else { var selected = ""; }
+						tasks += '<option value="'+status.task_status_id+'" '+selected+' >'+status.task_status+'</option>';
+					 });
+					 tasks += '</select><br>';
+				});
+				$('#tasks-panel').html(tasks);
+            } else {
+                flashalert.danger(response.msg);
+            }
+        });
+		},
+		save:function($select){
+			$.ajax({
+            url: helper.baseUrl + 'records/update_record_task',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                'urn': record.urn,
+				'task_id':$select.attr('id'),
+				'task_status_id':$select.val()
+            }
+			});
+		}
+	},
     sticky_note: {
         init: function () {
             /*initialize the save notes button*/

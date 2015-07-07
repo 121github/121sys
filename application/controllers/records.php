@@ -343,6 +343,37 @@ class Records extends CI_Controller
         
     }
     
+	public function update_record_task(){
+		if ($this->input->is_ajax_request() && $this->_access) {
+			$this->Records_model->save_task($this->input->post());		
+		}
+	}
+	
+	public function get_campaign_tasks(){
+		if ($this->input->is_ajax_request() && $this->_access) {
+			$campaign_id = $this->Records_model->get_campaign_from_urn($this->input->post('urn'));
+			 $result = $this->Records_model->get_campaign_tasks($campaign_id);
+			 $tasks = $this->Records_model->get_record_tasks($this->input->post('urn'));
+			 $data = array();
+			 $task_status = array();
+			 $statuses = $this->Records_model->get_task_statues();
+			 foreach($tasks as $task){
+					$task_status[$task['task_id']]=$task['task_status_id']; 
+				 }
+			 foreach($result as $row){
+				$data[$row['task_id']] = $row;
+				$data[$row['task_id']]["task_status_id"]=isset($task_status[$row['task_id']])?$task_status[$row['task_id']]:"";
+			 }
+				echo json_encode(array("success"=>true,"data"=>$data,"statuses"=>$statuses));
+		}
+	}
+	
+	public function get_tasks(){
+		if ($this->input->is_ajax_request() && $this->_access) {
+			 $result = $this->Records_model->get_tasks($this->input->post('urn'));
+			 echo json_encode(array("success"=>true,"data"=>$result));
+		}	
+	}
     /*save sticky note on the details page*/
     public function save_notes()
     {
