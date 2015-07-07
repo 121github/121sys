@@ -15,13 +15,10 @@ var record = {
     init: function (urn, role, campaign) {
 		 $(document).on('click', '#update-record', function (e) {
                 e.preventDefault();
-			 if ($('#custom-panel:contains("Call Direction")')) {
-				if($('#custom-panel:contains("Inbound")').length==0&&$('#custom-panel:contains("Outbound")').length==0){
-				alert("You must set a call direction");
-			  }
-			 }
+			 if ($('#custom-panel:contains("Call Direction")').length>0&&$('#custom-panel:contains("Inbound")').length==0&&$('#custom-panel:contains("Outbound")').length==0) {
 				
-			if ($('.outcomepicker').val().length > 0) {
+				alert("You must set a call direction");
+			  } else if ($('.outcomepicker').val().length > 0) {
                     if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
                         modal.dead_line($(this));
                     } else if($('.outcomepicker').val() == "120"&& $('.contact-panel').find('#map-link').length > 0){
