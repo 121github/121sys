@@ -309,7 +309,7 @@ $(document).on('change','.q4-question',function(){
         </div>    
          <script>
 $(document).on('change','.q6-question',function(){
-	if($(this).val()=="Yes"){
+	if($(this).val()=="Y"){
 			$('#q7-container').show();
 			$('#hide').show();	
 	} else {
@@ -318,7 +318,7 @@ $(document).on('change','.q6-question',function(){
 	}
 });
 </script> 
-<?php if (@$values['a6']=="Yes"&&@$values['a1']=="House"){ ?>
+<?php if (@$values['a6']=="Y"&&@$values['a1']=="House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q7-container').show();	
@@ -326,7 +326,7 @@ $(document).on('change','.q6-question',function(){
 	})
 	</script>
 <?php } ?>
-<?php if (@$values['a6']=="No"&&@$values['a1']=="House"){ ?>
+<?php if (@$values['a6']=="N"&&@$values['a1']=="House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#finished').show();	
