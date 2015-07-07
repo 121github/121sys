@@ -784,7 +784,7 @@ return $this->db->get('record_details_options')->result_array();
 			
 						
 			 //if they dont have permission to view other agent records
-            if (!in_array("search any owner", $_SESSION['permissions'])&&!in_array("search unassigned", $_SESSION['permissions'])) {
+            if (!in_array("search any owner", $_SESSION['permissions'])&&!in_array("search unassigned", $_SESSION['permissions'])&&!in_array("view unassigned", $_SESSION['permissions'])) {
                 $agent .= " and ownership.user_id = '{$_SESSION['user_id']}' ";
             }
 			
