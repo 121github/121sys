@@ -21,7 +21,7 @@ var record = {
 			  } else if ($('.outcomepicker').val().length > 0) {
                     if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
                         modal.dead_line($(this));
-                    } else if($('.outcomepicker').val() == "120"&& $('.contact-panel').find('#map-link').length > 0){
+                    } else if($('.outcomepicker').val() == "120"&& $('.contact-panel').find('#map-link').length==0){
 						modal.desktop_prequal($(this));
 					} else {
                         record.update_panel.save($(this));
