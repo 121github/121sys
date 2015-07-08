@@ -13,6 +13,10 @@ class Migration_update_23 extends CI_Migration
     {
         $this->firephp->log("starting migration 23");
 
+$this->db->query("ALTER TABLE `record_details` ADD UNIQUE (
+`urn`
+)");
+
         $this->db->query("CREATE TABLE IF NOT EXISTS `record_tasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `urn` int(11) NOT NULL,

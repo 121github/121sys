@@ -67,7 +67,7 @@ class Export_model extends CI_Model
         if ($export_form['order_by']) {
             $qry .= " order by ".$export_form['order_by'];
         }
-
+		
         $result = $this->db->query($qry)->result_array();
 
         return $result;
