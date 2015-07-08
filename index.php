@@ -20,7 +20,7 @@
  */
 	//define('ENVIRONMENT', 'development');
 	
-$no_https = array("accept","demo","test");	
+$no_https = array("accept.","demo.","test.");	
 	
 $full_url = explode('121system.com', $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 $domain = $full_url[0];

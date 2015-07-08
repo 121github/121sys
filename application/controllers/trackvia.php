@@ -274,14 +274,14 @@ echo "<br>";
 	foreach($duplicated as $row){
 		echo "#Getting originals...";
 		echo "<br>";
-		$qry = "select *, r.date_updated ru from records r join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id) where add1 = '{$row['add1']}' and postcode = '{$row['postcode']}' and date(r.date_added) = '2015-06-25'";
+		echo $qry = "select *, r.date_updated ru from records r join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id) where add1 = '{$row['add1']}' and postcode = '{$row['postcode']}' and date(r.date_added) = '2015-06-25'";
 		echo ";<br>";
 		$originals = $this->db->query($qry)->result_array();
 	
 		foreach($originals as $original){
 				$o_urn = $original['urn'];
 			echo "#".$row['ru'].":".$original['ru'].";<br>";
-			if(strtotime($row['ru'])>strtotime($original['ru'])){
+			if(!empty($row['ru'])){
 		$todo[$original['urn']] = array("outcome"=>$row['outcome'],"campaign"=>$original['campaign_id']);
 		echo "#updating original from dupe...";	
 		echo "<br>";	
