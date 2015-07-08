@@ -226,12 +226,12 @@ var record = {
             if (response.success) {
 				var tasks = "";
                 $.each(response.data,function(k,row){
-					tasks += row.task_name + ' <select id="'+row.task_id+'" class="task_statuses">';
+					tasks += '<div class="col-sm-6">'+row.task_name+'</div><div class="col-sm-6"><select id="'+row.task_id+'" class="task_statuses">';
 					 $.each(response.statuses,function(i,status){
 						 if(row.task_status_id==status.task_status_id){ var selected="selected" } else { var selected = ""; }
 						tasks += '<option value="'+status.task_status_id+'" '+selected+' >'+status.task_status+'</option>';
 					 });
-					 tasks += '</select><br>';
+					 tasks += '</select></div><br>';
 				});
 				$('#tasks-panel').html(tasks);
             } else {
