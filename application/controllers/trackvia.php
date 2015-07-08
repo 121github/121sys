@@ -264,10 +264,7 @@ public function fix_records(){
 	$todo = array();
 	echo "#Getting affected record...";
 	echo "<br>";
-	echo $qry = "SELECT *, r.date_updated ru
-FROM `records` r left join outcomes using(outcome_id) left join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id)
-WHERE date( r.date_added ) = date( '2015-07-06 17:14:11' )
-AND campaign_id in(22,28,29)";
+	echo $qry = "SELECT *, r.date_updated ru FROM `records` r left join outcomes using(outcome_id) left join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id) WHERE r.date_added like '2015-07-06 17:1%' AND campaign_id in(22,28,29)";
 echo ";<br>";
 echo "<br>";
 	$duplicated = $this->db->query($qry)->result_array();
