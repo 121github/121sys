@@ -48,6 +48,7 @@
 				<!-- /#page-wrapper -->
 
 
+<script src="<?php echo base_url() ?>assets/js/summernote-customize.js"></script>
 <script>
 	$(document).ready(function(){
 		$('.selectpicker').selectpicker();

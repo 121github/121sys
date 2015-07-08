@@ -59,28 +59,9 @@
 	</div>
 	<div class="form-group input-group-sm">	
 		<p>Body</p>
-                    <script src="http://localhost/121sys/assets/js/plugins/tinymce/tinymce.min.js"></script>
-            <script src="http://localhost/121sys/assets/js/plugins/tinymce/jquery.tinymce.min.js"></script>
-                            <script type="text/javascript">
-							$(document).ready(function(){
-		         tinymce.init({
-            selector: "#tinymce",
-			theme: "modern",
-			content_css: helper.baseUrl+"/assets/css/bootstrap.css",
-			height : 500,
-			plugins: [
-         "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
-         "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-         "save table contextmenu directionality emoticons template paste textcolor"
-],
-        });
-		
-							});
-    </script>
-		<textarea class="form-control" id="tinymce"
+		<textarea class="form-control" id="summernote"
 			title="Enter the template body" required ></textarea>
 	</div>
-     
 	<div class="form-group input-group-sm">  
 		<!-- ATTACHMENTS -->
 		<input type="text" class="form-control" name="template_attachments" style="display: none"/>

@@ -13,7 +13,7 @@
 		</h4>
 	</div>
 	<div class="panel-body">
-		<form role="form" action="post">
+		<form role="form" role="form">
 			<input type="hidden" name="urn" value="<?php echo $urn ?>" />
 			<input type="hidden" name="template_id" value="<?php echo $template_id ?>" />
 			<input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id'] ?>" />
@@ -88,32 +88,12 @@
 					value="<?php echo $template['template_subject']; ?>"
 				/>
 			</div>
-                                <script src="http://localhost/121sys/assets/js/plugins/tinymce/tinymce.min.js"></script>
-            <script src="http://localhost/121sys/assets/js/plugins/tinymce/jquery.tinymce.min.js"></script>
-                            <script type="text/javascript">
-							$(document).ready(function(){
-		         tinymce.init({
-            selector: "#tinymce",
-			theme: "modern",
-			content_css: helper.baseUrl+"/assets/css/bootstrap.css",
-			height : 500,
-			plugins: [
-         "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
-         "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-         "save table contextmenu directionality emoticons template paste textcolor"
-]
-        });
-		
-							});
-    </script>
 			<div class="form-group input-group-sm">
-                <textarea class="form-control" id="tinymce"
-                          title="Enter the template body" required >
-
+                <textarea class="form-control" id="summernote" name="body"
+                          title="Enter the template body" required
+                          ><?php echo $template['template_body']; ?>
                 </textarea>
             </div>
-
-
 			<div class="form-group input-group-sm">
 				<!-- ATTACHMENTS -->
 				<input type="text" class="form-control" name="template_attachments" style="display: none"/>
@@ -210,3 +190,4 @@
 	});
 
 </script>
+<script src="<?php echo base_url() ?>assets/js/summernote-customize.js"></script>
