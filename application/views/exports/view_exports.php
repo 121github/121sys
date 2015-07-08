@@ -230,21 +230,21 @@
                 </div>
             <!-- /.row -->
             </div>
-            <div class="panel panel-primary export-report-container">
+            <div class="export-report-container">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <div style="font-size: 18px;"><span class="export-report-name"></span><span class="glyphicon glyphicon-remove pull-right close-export-report"></span></div>
                 </div>
-                <div class="panel-body">
-                    <div class="export-report-panel">
-                        <div class="export-report-content" style="overflow: auto; height: 550px;">
-                            <table class="table ajax-table">
+                <div class="panel-body" style="max-height:500px;overflow:auto">
+                  <div id="export-report" class="table-responsive">
+                            <table class="table table-striped table-responsive" id="export-report-table">
                                 <thead></thead>
                                 <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
+</table>
+</div>
+</div>
                 </div>
-
+</div>
 
     <script>
         $(document).ready(function () {

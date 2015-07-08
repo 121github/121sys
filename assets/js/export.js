@@ -246,10 +246,10 @@ var export_data = {
 
         $('.filter-form').find('input[name="export_forms_id"]').val(export_forms_id);
 
-        $thead = $('.export-report-content .ajax-table').find('thead');
+        $thead = $('#export-report-table').find('thead');
         $thead.empty();
         $thead.append("<tr></tr>");
-        $tbody = $('.export-report-content .ajax-table').find('tbody');
+        $tbody = $('#export-report-table').find('tbody');
         $tbody.empty();
 
         $.ajax({
