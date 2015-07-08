@@ -261,18 +261,31 @@ inner join data_sources using(source_id) set notes = source_name where campaign_
     }
 
 public function fix_records(){
-	$qry = "SELECT *
+	echo "Getting affected record...";
+	echo "<br>";
+	echo $qry = "SELECT *
 FROM `records` r left join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id)
 WHERE date( r.date_added ) = date( '2015-07-06 17:14:11' )
 AND campaign_id =22";
+echo "<br>";
+echo "<br>";
 	$duplicated = $this->db->query($qry)->result_array();
-	foreach($result as $row){
+	foreach($duplicated as $row){
+		echo "Getting originals...";
+		echo "<br>";
 		$qry = "select * from records r join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id) where add1 = '{$row['add1']}' and postcde = '{$row['postcode']}' and date(r.date_added) = '2015-06-25'";
+		echo "<br>";
 		$originals = $this->db->query($qry)->result_array();
 		foreach($originals as $original){
 			$o_urn = $origin['urn'];
+		echo "updating original from dupe...";	
+		echo "update records set record_status = '{$row['record_status']}',outcome_id='{$row['outcome_id']}' ,outcome_id='{$row['outcome_reason_id']}'  where urn = 'o_urn'";	
+		echo "adding history to original...";
+		echo "<br>";
 		$add_history = "insert into history (select '',campaign_id,'$o_urn',loaded,contact,description,outcome_id,outcome_reason_id,comments,nextcall,user_id,role_id,team_id,group_id,contact_id,progress_id,last_survey from history where urn = '{$row['urn']})'";
 		echo $add_history;
+		echo "<br>";
+		echo "adding details to original if missing...";
 		echo "<br>";
 		if(empty($original['c1'])&&!empty($row['c1'])){
 		echo $update_c1 = "update record_details set c1='{$row['c1']}' where urn = $o_urn"; echo "<br>";
