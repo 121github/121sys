@@ -329,19 +329,20 @@ inner join data_sources using(source_id) set notes = source_name where campaign_
 
             if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 ||$record['parked_code'] == 2 || $record['record_status'] != $status || $record['record_color'] != $record_color || $record['source_id'] != $source ) {
 
-
-				//organising the record update data
-                array_push($update_records, array(
+				$update_array = array(
                         'urn' => $record['urn'],
                         'campaign_id' => $campaign_id,
                         'parked_code' => NULL,
                         'urgent' => $urgent,
                         'record_status' => $status,
-                        'outcome_id' => $outcome_id,
 						'record_color' => $record_color,
 						'source_id' => $source
-                    )
-                );
+                    );
+					if(isset($outcome_id)){
+					$update_array['outcome_id'] = $outcome_id;
+					}
+				//organising the record update data
+                array_push($update_records, $update_array);
 
 			}
 				//Create appointment if it is needed
