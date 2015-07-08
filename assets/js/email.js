@@ -104,13 +104,11 @@ var email = {
 
     },
     send_email: function ($btn) {
-
-        $('textarea[name="body"]').html(btoa($('#summernote').code()));
         $.ajax({
             url: helper.baseUrl + "email/send_email",
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize(),
+            data: $('form').serialize()+'&template_body='+tinyMCE.activeEditor.getContent(),
 			beforeSend:function(){
 			$("button[type=submit]").hide().parent().append('<img id="pending-send" src="'+helper.baseUrl+'assets/img/ajax-loader.gif" />');	
 			}

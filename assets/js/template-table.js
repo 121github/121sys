@@ -101,8 +101,8 @@ var template = {
 			$('form').find('#unsubscribe-no').prop('checked',true).parent().addClass('active');
 			$('form').find('#unsubscribe-yes').prop('checked',false).parent().removeClass('active');
 		}
-        $('#summernote').code(result.data.template_body);
-        
+        tinyMCE.activeEditor.setContent(result.data.template_body);
+
         var data = {id : $('form').find('input[name="template_id"]').val()};
         
         $.ajax({
@@ -136,7 +136,7 @@ var template = {
             success: function(data){
             	$("button[type=submit]").attr('disabled',false);
                 $('form').trigger('reset');
-                $('#summernote').code('');
+                $('#tinymce').code('');
                 $('#campaigns_select').selectpicker('val',[]).selectpicker('render');
                 $('form').find('input[type="hidden"]').val('');
                 template.empty_attachment_table();
@@ -157,7 +157,7 @@ var template = {
             url: helper.baseUrl + 'templates/save_template',
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize()+'&template_body='+$('#summernote').code()
+            data: $('form').serialize()+'&template_body='+tinyMCE.activeEditor.getContent()
         }).done(function(response) {
         	//Reload template table
             template.load_templates();

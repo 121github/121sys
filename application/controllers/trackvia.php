@@ -11,27 +11,6 @@ define('CLIENT_SECRET', 'qhhgy6bbdc0w8gc0kc0kc0k88gw0ko0oskocock0wc8gw48w8');
 define('USERNAME', 'ghsAPI');
 define('PASSWORD', 'global123');
 
-
-if($_SESSION['environment']=="acceptance"||$_SESSION['environment']=="test"||$_SESSION['environment']=="development"){
-
-//Test tabless
-define('SOUTHWAY_ALL_RECORDS', '3000718568');
-define('SOUTHWAY_BOOK_SURVEY', '3000718751');
-define('SOUTHWAY_REBOOK', '3000718753');
-define('SOUTHWAY_SURVEY_SLOTS', '3000718736');
-
-define('PRIVATE_ALL_RECORDS', '3000718983');
-define('PRIVATE_BOOK_SURVEY', '3000719204');
-define('PRIVATE_INFORM_INELIGIBLE', '3000719207');
-define('PRIVATE_REBOOK', '3000719206');
-define('PRIVATE_SURVEY_SLOTS', '3000719481');
-
-define('PRIVATE_TABLE', '3000283421');
-define('SOUTHWAY_TABLE', '3000283398');
-
-} else if($_SESSION['environment']=="production"){
-//Live tables
-
 define('SOUTHWAY_ALL_RECORDS', '3000719193');
 define('SOUTHWAY_BOOK_SURVEY', '3000719114');
 define('SOUTHWAY_REBOOK', '3000719115');
@@ -42,6 +21,14 @@ define('PRIVATE_BOOK_SURVEY', '3000718982');
 define('PRIVATE_INFORM_INELIGIBLE', '3000718985');
 define('PRIVATE_REBOOK', '3000718984');
 define('PRIVATE_SURVEY_SLOTS', '3000719187');
+
+if($_SESSION['environment']=="acceptance"||$_SESSION['environment']=="test"||$_SESSION['environment']=="development"){
+
+define('PRIVATE_TABLE', '3000283421');
+define('SOUTHWAY_TABLE', '3000283398');
+
+} else if($_SESSION['environment']=="production"){
+//Live tables
 
 define('PRIVATE_TABLE', '3000282959');
 define('SOUTHWAY_TABLE', '3000283129');

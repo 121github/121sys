@@ -38,7 +38,6 @@ $this->_campaigns = campaign_access_dropdown();
 	
 				'javascript' => array(
 						'template-table.js',
-						'plugins/summernote/summernote.min.js',
 						'plugins/jqfileupload/vendor/jquery.ui.widget.js',
 						'plugins/jqfileupload/jquery.iframe-transport.js',
 						'plugins/jqfileupload/jquery.fileupload.js',
