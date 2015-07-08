@@ -289,7 +289,7 @@ echo "<br>";
 		echo ";<br>";	
 		echo "#adding history to original...";
 		echo "<br>";
-		$add_history = "insert into history (select '',campaign_id,'$o_urn',loaded,contact,description,outcome_id,outcome_reason_id,comments,nextcall,user_id,role_id,team_id,group_id,contact_id,progress_id,last_survey from history where urn = '{$row['urn']})'";
+		$add_history = "insert into history (select '',campaign_id,'$o_urn',loaded,contact,description,outcome_id,outcome_reason_id,comments,nextcall,user_id,role_id,team_id,group_id,contact_id,progress_id,last_survey from history where urn = '{$row['urn']}')";
 		echo $add_history;
 		echo ";<br>";
 		echo "#adding details to original if missing...";
