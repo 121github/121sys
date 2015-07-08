@@ -11,7 +11,7 @@
     <h2>
         View Details
         <small>
-            URN: <?php echo $details['record']['urn'] ?> <?php echo(!empty($details['record']['campaign']) ? " [" . $details['record']['campaign'] . "]" : "") ?></small> <?php echo(!empty($details['record']['logo']) ? '<img style="max-height:40px" src="' . base_url() . 'assets/logos/' . $details['record']['logo'] . '" />' : ""); ?>
+            URN: <?php echo $details['record']['urn'] ?> <?php if(!empty($details['record']['client_ref'])){ ?><span id="client-ref">Ref: <?php echo $details['record']['client_ref'] ?></span><?php } ?> <?php echo(!empty($details['record']['campaign']) ? " [" . $details['record']['campaign'] . "]" : "") ?></small> <?php echo(!empty($details['record']['logo']) ? '<img style="max-height:40px" src="' . base_url() . 'assets/logos/' . $details['record']['logo'] . '" />' : ""); ?>
 
         <button class="btn btn-default" id="map-icon" style="color:#<?php echo empty($details['record']['color'])?"000":$details['record']['color'] ?>" data-iconset="fontawesome" data-icon="<?php echo $map_icon ?>"
                 role="iconpicker"></button>

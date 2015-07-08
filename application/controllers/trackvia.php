@@ -92,7 +92,9 @@ class Trackvia extends CI_Controller
 			$data[$name]= array("source"=>$sources[$name],"one2one"=>$this->Trackvia_model->get_121_counts($name));
 		if($this->input->post('tv')||$this->uri->segment(3)=="tv"){
 		$view = $this->tv->getView($view_id);
-		$this->firephp->log($view);
+		if($this->uri->segment(4)=="debug"){
+		echo "<pre>"; print_r($view); echo "</pre>";
+		}
 		$data[$name]["trackvia"]=$view['record_count'];
 		} else {
 		$data[$name]["trackvia"] = false;	
