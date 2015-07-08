@@ -17,16 +17,16 @@ class Migration_update_23 extends CI_Migration
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `urn` int(11) NOT NULL,
   `task_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `task_status_id` int(11) NOT NULL,
-  `added_on` datetime NOT NULL,
-  `updated_by` int(11) NOT NULL,
-  `updated_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `added_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_by` int(11) DEFAULT NULL,
+  `updated_on` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `urn_2` (`urn`,`task_id`),
   KEY `urn` (`urn`,`task_id`,`user_id`,`task_status_id`),
   KEY `task_status_id` (`task_status_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
 
         $this->db->query("
 CREATE TABLE IF NOT EXISTS `campaign_tasks` (
