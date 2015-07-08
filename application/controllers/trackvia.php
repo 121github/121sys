@@ -272,9 +272,9 @@ echo ";<br>";
 echo "<br>";
 	$duplicated = $this->db->query($qry)->result_array();
 	foreach($duplicated as $row){
-		echo "#Getting originals...";
+		echo "#Getting originals...".$row['urn'];
 		echo "<br>";
-		echo $qry = "select *, r.date_updated ru from records r join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id) where add1 = '{$row['add1']}' and postcode = '{$row['postcode']}' and date(r.date_added) = '2015-06-25'";
+		echo $qry = "select *, r.date_updated ru from records r left join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id) where add1 = '{$row['add1']}' and postcode = '{$row['postcode']}' and date(r.date_added) <> '2015-07-06'";
 		echo ";<br>";
 		$originals = $this->db->query($qry)->result_array();
 	
@@ -283,7 +283,7 @@ echo "<br>";
 			echo "#".$row['ru'].":".$original['ru'].";<br>";
 			if(!empty($row['ru'])){
 		$todo[$original['urn']] = array("outcome"=>$row['outcome'],"campaign"=>$original['campaign_id']);
-		echo "#updating original from dupe...";	
+		echo "#updating original from dupe...".$original['urn'];
 		echo "<br>";	
 		echo "update records set record_status = '{$row['record_status']}',outcome_id=".(empty($row['outcome_id'])?"NULL":$row['outcome_id'])." ,outcome_reason_id=".(empty($row['outcome_reason_id'])?"NULL":$row['outcome_reason_id'])."  where urn = '$o_urn'";
 		echo ";<br>";	
