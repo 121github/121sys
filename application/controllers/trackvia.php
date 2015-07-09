@@ -327,7 +327,7 @@ echo "<br>";
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
-        $outcome_id = $options['outcome_id'];
+        $outcome_id = isset($options['outcome_id'])?$options['outcome_id']:"";
         $appointment_creation = $options['appointment_creation'];
 		$appointment_cancelled = $options['appointment_cancelled'];
 		$record_color = $options['record_color'];
@@ -385,7 +385,7 @@ echo "<br>";
 						'record_color' => $record_color,
 						'source_id' => $source
                     );
-					if(isset($outcome_id)){
+					if(!empty($outcome_id)){
 					$update_array['outcome_id'] = $outcome_id;
 					}
 				//organising the record update data

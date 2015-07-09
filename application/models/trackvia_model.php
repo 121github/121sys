@@ -13,12 +13,12 @@ class Trackvia_model extends CI_Model
 
    public function get_rebookings($campaign = "")
     {
-        $qry = "select urn,fullname,campaign_name,date_format(a.start,'%d/%m/%y') cancelled_date,if(time(`start`)<'12:30:00','am','pm') cancelled_slot from records left join contacts using(urn) left join appointments a using(urn) left join campaigns using(campaign_id) where urgent = 1 and cancellation_reason is not null";
+        $qry = "select urn,fullname,campaign_name,date_format(records.date_added,'%d/%m/%y') lastcall from records left join contacts using(urn) left join appointments a using(urn) left join campaigns using(campaign_id) where urgent = 1 and cancellation_reason is not null";
           if (!empty($campaign)) {
             $qry .= " and campaign_id = '".$campaign."'";
         }
 		$qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry .= " group by urn order by a.start asc";
+        $qry .= " group by urn order by records.date_updated asc";
         return $this->db->query($qry)->result_array();
     }
 

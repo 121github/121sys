@@ -1877,6 +1877,7 @@ var record = {
                                 row.value = moment(new Date()).format("DD/MM/YYYY");
                             }
                         }
+						if(row.value=="-"){ row.value=""; }
                         form += " <div class='form-group input-group-sm " + inputclass + "'>" + row.name + "<input "+is_disabled+" class='form-control' name='" + row.code + "' type='text' value='" + row.value + "'/></div>";
                     }
                 });

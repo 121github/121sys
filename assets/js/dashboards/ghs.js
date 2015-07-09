@@ -31,7 +31,7 @@ search_record:function($btn){
 		if(response.urn){
 		results = "<p><span class='text-success'>The record was found! </span>";
 		if(response.parked_code){
-			results += "<span class='text-danger'> We are not doing surveys in this area yet</span>"
+			results += "<span class='text-danger'> This address is not in the survey booking list!</span>"
 		}
 		results += "</p>";
 		results += "<a href='"+helper.baseUrl+"records/detail/"+response.urn+"' class='btn btn-success'>View Record</a>";
@@ -55,7 +55,7 @@ search_record:function($btn){
             var $urgents = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $urgents += '<li><a class="red tt pointer" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a> <small>'+val.campaign_name+'</small><br><span class="small">Original Survey: ' + val.cancelled_date + ' '+val.cancelled_slot+'</span></li>';
+                    $urgents += '<li><a class="red tt pointer" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a> <small>'+val.campaign_name+'</small><br><span class="small">Last called: ' + val.lastcall + '</span></li>';
                 });
                 $('.urgent-panel').append('<ul>' + $urgents + '</ul>');
 				$('.tt').tooltip();
