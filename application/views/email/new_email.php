@@ -108,7 +108,7 @@
 							});
     </script>
 			<div class="form-group input-group-sm">
-                <textarea class="form-control" id="tinymce" name="template_body"
+                <textarea class="form-control" id="tinymce" name="template_body" value="<?php echo $template['template_body']; ?>"
                           title="Enter the template body" required >
 
                 </textarea>
