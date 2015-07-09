@@ -104,8 +104,7 @@ var email = {
 
     },
     send_email: function ($btn) {
-
-        $('textarea[name="body"]').html(btoa($('#summernote').code()));
+   	$('#tinymce').html(tinyMCE.activeEditor.getContent());
         $.ajax({
             url: helper.baseUrl + "email/send_email",
             type: "POST",
@@ -123,7 +122,10 @@ var email = {
                 $("button[type=submit]").show().parent().find('#pending-send').remove();
                 flashalert.danger(response.msg);
             }
-        });
+        }).fail(function(response){
+				$("button[type=submit]").show().parent().find('#pending-send').remove();
+				flashalert.danger(response.responseText);
+		});;
     },
     add_contact_option: function (id, email, option) {
         content = $('form').find('input[name=' + option + ']').val();
