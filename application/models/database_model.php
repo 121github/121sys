@@ -15,7 +15,7 @@ public function remove_dupes($table,$field1=false,$field2=false,$field3=false){
 			if($field1){
 			$concat[]=$field1;
 			} else {
-			return "At least 1 field is required";	
+			return "At least 1 field is required";
 			}
 			if($field2){
 			$concat[]=$field2;
@@ -23,7 +23,7 @@ public function remove_dupes($table,$field1=false,$field2=false,$field3=false){
 			if($field3){
 			$concat[]=$field3;
 			}
-			
+
 			$fields = implode(",",$concat);
 			$query = "SELECT concat( $fields ) ref , count( * ) count
 FROM `$table`
@@ -32,7 +32,7 @@ HAVING count( concat( $fields ) ) >1";
 $result = $this->db->query($query)->result_array();
 foreach($result as $row){
 $remove = $row['count']-1;
-$delete = "delete from $table where concat($fields) = '".addslashes($row['ref'])."' limit $remove";	
+$delete = "delete from $table where concat($fields) = '".addslashes($row['ref'])."' limit $remove";
 $this->firephp->log($delete);
 	$this->db->query($delete);
 }
@@ -1062,13 +1062,13 @@ $this->firephp->log($delete);
         }
 
         //Dumping data for table `appointment_types`
-        $this->db->query("INSERT INTO `appointment_types` (`appointment_type`, `campaign_id`) VALUES
-				('Face to face', NULL),
-				('Telephone', NULL)");
-
-        if ($this->db->_error_message()) {
-            return "appointment_types";
-        }
+//        $this->db->query("INSERT INTO `appointment_types` (`appointment_type`, `campaign_id`) VALUES
+//				('Face to face', NULL),
+//				('Telephone', NULL)");
+//
+//        if ($this->db->_error_message()) {
+//            return "appointment_types";
+//        }
 
         return "success";
     }
