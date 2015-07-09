@@ -874,7 +874,7 @@ echo "<br>";
 		$data["Is the property mortgaged"]=$details['a6'];
 		}
 		if(!empty($details['a7'])){
-		$data["Who is the Mortgage provider"]=$details['a7'];
+		$data["Who is the Mortgage provider"]=htmlentities($details['a7']);
 		}
 		if(!empty($details['fullname'])){
 		$data["Owner / Tenant Name 1"]=$details['fullname'];
