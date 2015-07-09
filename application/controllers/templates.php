@@ -31,7 +31,6 @@ $this->_campaigns = campaign_access_dropdown();
 				'page'=> 'templates',
 				'css' => array(
 						'dashboard.css',
-						'plugins/summernote/summernote.css',
 						'plugins/fontAwesome/css/font-awesome.css',
 						'plugins/jqfileupload/jquery.fileupload.css',
 				),

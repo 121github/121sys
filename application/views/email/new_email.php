@@ -101,17 +101,15 @@
 			plugins: [
          "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
          "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-         "save table contextmenu directionality emoticons template paste textcolor"
+         "save table contextmenu directionality emoticons template paste textcolor jbimages"
 ]
         });
 		
 							});
     </script>
-			<div class="form-group input-group-sm">
-                <textarea class="form-control" id="tinymce" name="template_body" value="<?php echo $template['template_body']; ?>"
-                          title="Enter the template body" required >
 
-                </textarea>
+			<div class="form-group input-group-sm">
+                <textarea class="form-control" id="tinymce" name="template_body" value="<?php echo $template['template_body']; ?>" title="Enter the template body" required ></textarea>
             </div>
 
 
