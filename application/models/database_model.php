@@ -1850,6 +1850,8 @@ $this->firephp->log($delete);
             $time_end = time() + $days * 24 * 3600 + 3600;
             $date = date($datestring, $time);
             $date_end = date($datestring, $time_end);
+            $contact = $this->db->get_where('contacts', array('urn' => $record->urn))->result();
+
             $appointment = array(
                 'title' => 'Title '.$i,
                 'text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
@@ -1859,7 +1861,8 @@ $this->firephp->log($delete);
                 'postcode' => $postcode['postcode'],
                 'location_id' => $postcode['location_id'],
                 'created_by' => 1,
-                'appointment_type_id' => $appointmentTypeList[array_rand($appointmentTypeList)]->appointment_type_id
+                'appointment_type_id' => $appointmentTypeList[array_rand($appointmentTypeList)]->appointment_type_id,
+                'contact_id' => $contact[0]->contact_id
             );
             $this->db->insert('appointments', $appointment);
 
