@@ -516,7 +516,7 @@ class Sms_model extends CI_Model
                 left join users uat using (user_id)
                 where telephone_number REGEXP '^(447|[[.+.]]447|00447|07)'
                     and template_id = ".$template_id."
-                    and date(start) BETWEEN (CURDATE() - INTERVAL 2 DAY) AND (CURDATE() - INTERVAL 1 DAY)";
+                    and date(start) BETWEEN (CURDATE() + INTERVAL 1 DAY) AND (CURDATE() + INTERVAL 2 DAY)";
 
         $result = $this->db->query($qry)->result_array();
 
