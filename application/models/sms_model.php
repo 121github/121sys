@@ -12,30 +12,31 @@ class Sms_model extends CI_Model
     }
 
 
-    public function get_placeholder_data($urn=NULL){
-		$user_qry="";
-				
-		if(isset($_SESSION['user_id'])){
-		$user_qry = " ,(select name as user from users where user_id = '{$_SESSION['user_id']}') user,(select user_email from users where user_id = '{$_SESSION['user_id']}') user_email, (select user_telephone from users where user_id = '{$_SESSION['user_id']}') user_telephone ";	
-		}
-		//check if an appointment has been made and use the appointment contact in the placeholder
-		$query = "select urn from appointments where urn = '$urn' and contact_id is not null";
-		if($this->db->query($query)->num_rows()>0){
-		$contact_details =" left join (select urn,max(appointment_id) max_id from appointments where urn='$urn') a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id where records.urn = '$urn'";
-		$attendee = " if(attendees.name is null,'Sir/Madam',attendees.name) attendee ";
-		$appointment_fields = " appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) time_slot, ";
-		} else {
-		$contact_details = " left join contacts using(urn) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) where records.urn = '$urn'";
-		$attendee = " 'Sir/Madam' attendee ";	
-		$appointment_fields = "";	
-		}
-		
-		$qry = "select records.urn,campaign_name,date_format(nextcall,'%d/%m/%Y %H:%i') nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,if(campaign_type_id = 1,fullname,if(fullname is not null,concat(fullname,' from ', companies.name),companies.name)) contact, companies.name  company,records.campaign_id,companies.description,companies.website,companies.conumber,contacts.fullname,contacts.gender,contacts.position,contacts.dob,if(contacts.email is not null,contacts.email,'') email,if(contact_telephone.telephone_number is null,company_telephone.telephone_number,contact_telephone.telephone_number) telephone,$appointment_fields $attendee,c1,c2,c3,c4,c5,d1,d2,dt1,dt2,n1,n2,n3, concat(ca.add1,' ',ca.add2,', ',ca.postcode) contact_address $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join company_telephone using(company_id) left join record_details using(urn) ";
-		$qry .= $contact_details;
+    public function get_placeholder_data($urn = NULL)
+    {
+        $user_qry = "";
+
+        if (isset($_SESSION['user_id'])) {
+            $user_qry = " ,(select name as user from users where user_id = '{$_SESSION['user_id']}') user,(select user_email from users where user_id = '{$_SESSION['user_id']}') user_email, (select user_telephone from users where user_id = '{$_SESSION['user_id']}') user_telephone ";
+        }
+        //check if an appointment has been made and use the appointment contact in the placeholder
+        $query = "select urn from appointments where urn = '$urn' and contact_id is not null";
+        if ($this->db->query($query)->num_rows() > 0) {
+            $contact_details = " left join (select urn,max(appointment_id) max_id from appointments where urn='$urn') a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id where records.urn = '$urn'";
+            $attendee = " if(attendees.name is null,'Sir/Madam',attendees.name) attendee ";
+            $appointment_fields = " appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) time_slot, ";
+        } else {
+            $contact_details = " left join contacts using(urn) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) where records.urn = '$urn'";
+            $attendee = " 'Sir/Madam' attendee ";
+            $appointment_fields = "";
+        }
+
+        $qry = "select records.urn,campaign_name,date_format(nextcall,'%d/%m/%Y %H:%i') nextcall,date_format(records.date_updated,'%d/%m/%Y %H:%i') lastcall,outcome,dials,status_name, records.urgent,if(campaign_type_id = 1,fullname,if(fullname is not null,concat(fullname,' from ', companies.name),companies.name)) contact, companies.name  company,records.campaign_id,companies.description,companies.website,companies.conumber,contacts.fullname,contacts.gender,contacts.position,contacts.dob,if(contacts.email is not null,contacts.email,'') email,if(contact_telephone.telephone_number is null,company_telephone.telephone_number,contact_telephone.telephone_number) telephone,$appointment_fields $attendee,c1,c2,c3,c4,c5,d1,d2,dt1,dt2,n1,n2,n3, concat(ca.add1,' ',ca.add2,', ',ca.postcode) contact_address $user_qry from records left join outcomes using(outcome_id) left join campaigns using(campaign_id) left join status_list on record_status = record_status_id left join companies using(urn) left join company_telephone using(company_id) left join record_details using(urn) ";
+        $qry .= $contact_details;
 
         return $this->db->query($qry)->result_array();
-		
-	}
+
+    }
 
     public function template_to_form($template_id)
     {
@@ -218,7 +219,7 @@ class Sms_model extends CI_Model
                       e.template_id,
                       e.read_confirmed,
                       e.read_confirmed_date,
-                      e.status,
+                      e.status_id,
                       u.*,
                       t.*,
                       e.pending
@@ -311,7 +312,7 @@ class Sms_model extends CI_Model
                   eh.template_id,
                   eh.read_confirmed,
                   eh.read_confirmed_date,
-                  eh.status,
+                  eh.status_id,
                   u.*,
                   t.*
             from sms_history eh
@@ -343,7 +344,7 @@ class Sms_model extends CI_Model
                       e.template_id,
                       e.read_confirmed,
                       e.read_confirmed_date,
-                      e.status,
+                      e.status_id,
                       u.*,
                       t.*,
                       e.pending
@@ -374,6 +375,21 @@ class Sms_model extends CI_Model
     }
 
     /**
+     * Add sms's to the history
+     *
+     * @param $sms_histories
+     */
+    public function add_sms_histories($sms_histories)
+    {
+        $result = $this->db->insert_batch('sms_history', $sms_histories);
+
+        $this->db->trans_complete();
+
+        return $result;
+
+    }
+
+    /**
      * Update the status of an sms from the sms history
      *
      * @param Form $form
@@ -382,6 +398,21 @@ class Sms_model extends CI_Model
     {
         $this->db->where("sms_id", $form['sms_id']);
         return $this->db->update("sms_history", $form);
+    }
+
+    /**
+     * Update sms's to the history
+     *
+     * @param $sms_histories
+     */
+    public function update_sms_histories($sms_histories)
+    {
+        $result = $this->db->update_batch('sms_history', $sms_histories,'sms_id');
+
+        $this->db->trans_complete();
+
+        return $result;
+
     }
 
     /**
@@ -449,38 +480,43 @@ class Sms_model extends CI_Model
     /**
      * Get pending sms
      */
-    public function get_pending_sms($num_sms, $cron_code = false)
+    public function get_pending_sms($limit)
+    {
+        $qry = "select *
+            from sms_history
+            where status_id=1
+            limit 0,".$limit;
+
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
+    }
+
+    public function get_remind_appointments($template_id)
     {
         $qry = "select
-                      template_id,
-                      sms_id,
-                      template_name,
-                      template_hostname,
-                      template_username,
-                      template_password,
-                      template_port,
-                      template_encryption,
-                      sms_templates.template_unsubscribe,
-                      body,
-                      subject,
-                      send_from,
-                      send_to,
-                      cc,
-                      bcc,
-                      urn,
-                      user_id,
-                      status,
-                      pending
-                    from sms_history
-                    inner join sms_templates using(template_id)
-                    where pending=1";
-        if ($cron_code) {
-            $qry .= " and cron_code = '" . $cron_code . "'";
-        } else {
-            $qry .= " and cron_code is null";
-        }
-        $qry .= " order by sms_id asc
-                    limit 0," . $num_sms;
+                  DISTINCT CONCAT(appointment_id,'_',telephone_number),
+                  a.appointment_id,
+                  c.fullname as contact,
+                  r.urn,
+                  a.start,
+                  DATE_FORMAT(start,'%d/%m/%Y') as appointment_date,
+                  if(time(start)<'12:30:00','am','pm') time_slot,
+                  telephone_number as sms_number,
+                  template_id,
+                  t.template_text as sms_text
+                from appointments a
+                inner join records r using(urn)
+                inner join contacts c ON (c.contact_id=a.contact_id)
+                inner join contact_telephone ct ON (c.contact_id=ct.contact_id)
+                inner join sms_template_to_campaigns using (campaign_id)
+                inner join sms_templates t using (template_id)
+                left join appointment_attendees aat using (appointment_id)
+                left join users uat using (user_id)
+                where telephone_number REGEXP '^(447|[[.+.]]447|00447|07)'
+                    and template_id = ".$template_id."
+                    and date(start) BETWEEN (CURDATE() - INTERVAL 2 DAY) AND (CURDATE() - INTERVAL 1 DAY)";
 
         $result = $this->db->query($qry)->result_array();
 

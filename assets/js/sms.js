@@ -19,7 +19,7 @@ var sms = {
             }
             else {
                 if ($('input[name="send_to"]').val() !== '') {
-                    email.send_sms($(this));
+                    sms.send_sms($(this));
                 } else {
                     flashalert.danger("Please ensure the <b>to</b> field is populated");
                 }
