@@ -199,8 +199,8 @@ class Email extends CI_Controller
     	$form = $this->input->post();
 
 		
-    	$form['body'] = base64_decode($this->input->post('body'));
-
+    	$form['body'] = $this->input->post('template_body');
+		unset($form['template_body']);
         //Status false by default, before sent the email
         $form['status'] = false;
 				
