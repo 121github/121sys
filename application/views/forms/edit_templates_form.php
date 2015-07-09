@@ -59,8 +59,8 @@
 	</div>
 	<div class="form-group input-group-sm">	
 		<p>Body</p>
-                    <script src="http://localhost/121sys/assets/js/plugins/tinymce/tinymce.min.js"></script>
-            <script src="http://localhost/121sys/assets/js/plugins/tinymce/jquery.tinymce.min.js"></script>
+                    <script src="<?php echo base_url() ?>assets/js/plugins/tinymce/tinymce.min.js"></script>
+            <script src="<?php echo base_url() ?>assets/js/plugins/tinymce/jquery.tinymce.min.js"></script>
                             <script type="text/javascript">
 							$(document).ready(function(){
 		         tinymce.init({
