@@ -38,7 +38,7 @@
 | -------------------------------------------------------------------*/
 
 	
-	$config['img_path'] = "/upload/templates"; // Relative to domain name
+	$config['img_path'] = base_url()."/upload/templates"; // Relative to domain name
 	$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . $config['img_path']; // Physical path. [Usually works fine like this]
 print_r($config);
 
@@ -51,7 +51,7 @@ print_r($config);
 | -------------------------------------------------------------------*/
 
 	
-	$config['allowed_types'] = 'gif|jpg|png';
+	$config['allowed_types'] = 'gif|jpg|png|jpeg';
 
 
 /*-------------------------------------------------------------------

@@ -55,7 +55,7 @@ search_record:function($btn){
             var $urgents = "";
             if (response.data.length > 0) {
                 $.each(response.data, function (i, val) {
-                    $urgents += '<li><a class="red tt pointer" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a> <small>'+val.campaign_name+'</small><br><span class="small">Last called: ' + val.lastcall + '</span></li>';
+                    $urgents += '<li><a class="text-'+val.col+' tt pointer" href="'+helper.baseUrl+'records/detail/' + val.urn + '">' + val.fullname + '</a> <small>'+val.campaign_name+'</small><br><span class="small">Last called: ' + val.lastcall + '</span></li>';
                 });
                 $('.urgent-panel').append('<ul>' + $urgents + '</ul>');
 				$('.tt').tooltip();

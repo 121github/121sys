@@ -374,8 +374,8 @@ echo "<br>";
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];
             //If the campaign had changed or the park_code is "Not Working"
 
-            if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 ||$record['parked_code'] == 2 || $record['record_status'] != $status || $record['record_color'] != $record_color || $record['source_id'] != $source ) {
-
+            if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 ||$record['parked_code'] == 2 ||   $record['record_color'] != $record_color || $record['source_id'] != $source ) {
+if($record['record_status'] <> "3"){
 				$update_array = array(
                         'urn' => $record['urn'],
                         'campaign_id' => $campaign_id,
@@ -391,6 +391,7 @@ echo "<br>";
 				//organising the record update data
                 array_push($update_records, $update_array);
 
+			}
 			}
 				//Create appointment if it is needed
                 if ($appointment_creation) {

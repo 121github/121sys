@@ -13,7 +13,7 @@ class Trackvia_model extends CI_Model
 
    public function get_rebookings($campaign = "")
     {
-        $qry = "select urn,fullname,campaign_name,date_format(records.date_added,'%d/%m/%y') lastcall from records left join contacts using(urn) left join appointments a using(urn) left join campaigns using(campaign_id) where urgent = 1 and cancellation_reason is not null";
+        $qry = "select urn,fullname,campaign_name,if(records.date_updated is null,'Never',date_format(records.date_updated,'%d/%m/%y')) lastcall, if(dials>0,'warning','danger') col from records left join contacts using(urn) left join appointments a using(urn) left join campaigns using(campaign_id) where urgent = 1 and cancellation_reason is not null and record_status = 1";
           if (!empty($campaign)) {
             $qry .= " and campaign_id = '".$campaign."'";
         }
