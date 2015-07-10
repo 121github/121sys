@@ -74,13 +74,11 @@ class Sms extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
         $urn = intval($this->uri->segment(4));
         $template_id = intval($this->uri->segment(3));
-        $placeholder_data = $this->Sms_model->get_placeholder_data($urn);
         $template = $this->Sms_model->get_template($template_id);
         $last_comment = $this->Records_model->get_last_comment($urn);
 
         $placeholder_data = $this->Sms_model->get_placeholder_data($urn);
         $placeholder_data[0]['comments'] = $last_comment;
-        $this->firephp->log($placeholder_data);
         if (count($placeholder_data)) {
             foreach ($placeholder_data[0] as $key => $val) {
                 if ($key == "fullname") {
@@ -89,17 +87,8 @@ class Sms extends CI_Controller
                     $val = str_replace("Miss ", "", $val);
                     $val = str_replace("Ms ", "", $val);
                 }
-                if (strpos($template['template_body'], "[$key]") !== false) {
-                    if (empty($val)) {
-                        setcookie("placeholder_error", $key, time() + (60), "/");
-                        if ($key == "start") {
-                            $template['template_body'] = str_replace("[$key]", "<span style=\"color:red\">** NO APPOINTMENT FOUND **</span>", $template['template_body']);
-                        } else {
-                            $template['template_body'] = str_replace("[$key]", "<span style=\"color:red\">** [$key] WAS EMPTY **</span>", $template['template_body']);
-                        }
-                    } else {
-                        $template['template_body'] = str_replace("[$key]", $val, $template['template_body']);
-                    }
+                if (strpos($template['template_text'], "[$key]") !== false) {
+                    $template['template_text'] = str_replace("[$key]", $val, $template['template_text']);
                 }
             }
         }
@@ -443,9 +432,8 @@ class Sms extends CI_Controller
                     ));
 
                     array_push($sms_histories, array(
-                        "sent_date" => $remind_appointment['start'],
                         "text" => $remind_appointment['sms_text'],
-                        "send_from" => 'cron',
+                        "send_from" => $remind_appointment['sms_from'],
                         "send_to" => $remind_appointment['sms_number'],
                         "user_id" => null,
                         "urn" => $remind_appointment['urn'],

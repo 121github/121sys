@@ -50,6 +50,8 @@ var template = {
                         + val.template_id
                         + "</td><td class='template_name'>"
                         + val.template_name
+                        + "</td><td class='template_from'>"
+                        + val.template_from
                         + "</td><td><button class='btn btn-default btn-xs edit-btn' data-id='" + val.template_id + "' >Edit</button> <button class='btn btn-default btn-xs del-btn' item-id='"
                         + val.template_id
                         + "'>Delete</button></td></tr>");
@@ -78,6 +80,7 @@ var template = {
             var row = $btn.closest('tr');
             $('form').find('input[name="template_id"]').val(result.data.template_id);
             $('form').find('input[name="template_name"]').val(result.data.template_name);
+            $('form').find('input[name="template_from"]').val(result.data.template_from);
             $('form').find('textarea[name="template_text"]').val(result.data.template_text);
             if (result.data.template_unsubscribe == "1") {
                 $('form').find('#unsubscribe-yes').prop('checked', true).parent().addClass('active');
@@ -119,6 +122,7 @@ var template = {
         $('form').trigger('reset');
         $('#campaigns_select').selectpicker('val', []).selectpicker('render');
         $('form').find('input[type="hidden"]').val('');
+        $('#chars').text(160);
 
         $('.ajax-table').fadeOut(1000, function () {
             $('form').fadeIn(1000)
@@ -126,21 +130,29 @@ var template = {
     },
     //save a template
     save: function ($btn) {
-        $("button[type=submit]").attr('disabled', 'disabled');
-        $.ajax({
-            url: helper.baseUrl + 'smstemplates/save_template',
-            type: "POST",
-            dataType: "JSON",
-            data: $('form').serialize()
-        }).done(function (response) {
-            //Reload template table
-            template.load_templates();
-            //Hide edit form
-            template.hide_edit_form();
+        var name = $('form').find('input[name="template_name"]').val();
+        var from = $('form').find('input[name="template_from"]').val();
+
+        if (name.length<=0 || from.length<=0) {
+            flashalert.danger("ERROR: Mandatory fields (name and from) required");
+        }
+        else {
+            $("button[type=submit]").attr('disabled', 'disabled');
+            $.ajax({
+                url: helper.baseUrl + 'smstemplates/save_template',
+                type: "POST",
+                dataType: "JSON",
+                data: $('form').serialize()
+            }).done(function (response) {
+                //Reload template table
+                template.load_templates();
+                //Hide edit form
+                template.hide_edit_form();
 
 
-            flashalert.success("Template saved");
-        });
+                flashalert.success("Template saved");
+            });
+        }
     },
     remove: function (id) {
         $.ajax({

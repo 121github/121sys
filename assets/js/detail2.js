@@ -6,124 +6,124 @@
 
 //when all the ajax requests have finished we run the stretch function to align the panels
 $(document).ajaxStop(function () {
-	if(device_type=="default"){
-    stretch();
-	}
+    if (device_type == "default") {
+        stretch();
+    }
 });
 
 var record = {
     init: function (urn, role, campaign) {
-		 $(document).on('click', '#update-record', function (e) {
-                e.preventDefault();
-			 if ($('#custom-panel:contains("Call Direction")').length>0&&$('#custom-panel:contains("Inbound")').length==0&&$('#custom-panel:contains("Outbound")').length==0) {
-				
-				alert("You must set a call direction");
-			  } else if ($('.outcomepicker').val().length > 0) {
-                    if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
-                        modal.dead_line($(this));
-                    } else if($('.outcomepicker').val() == "120"&& $('.contact-panel').find('#map-link').length==0){
-						modal.desktop_prequal($(this));
-					} else {
-                        record.update_panel.save($(this));
-                    }
+        $(document).on('click', '#update-record', function (e) {
+            e.preventDefault();
+            if ($('#custom-panel:contains("Call Direction")').length > 0 && $('#custom-panel:contains("Inbound")').length == 0 && $('#custom-panel:contains("Outbound")').length == 0) {
+
+                alert("You must set a call direction");
+            } else if ($('.outcomepicker').val().length > 0) {
+                if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
+                    modal.dead_line($(this));
+                } else if ($('.outcomepicker').val() == "120" && $('.contact-panel').find('#map-link').length == 0) {
+                    modal.desktop_prequal($(this));
                 } else {
-                    flashalert.danger("You must select a call outcome first");
+                    record.update_panel.save($(this));
                 }
-            });
-            $(document).on('click', '#reset-record', function (e) {
-                e.preventDefault();
-                record.update_panel.reset_record($(this));
-            });
-            $(document).on('click', '#unpark-record', function (e) {
-                e.preventDefault();
-                record.update_panel.unpark_record($(this));
-            });
-            $(document).on('click', '#favorite-btn', function (e) {
-                record.update_panel.set_favorite($(this));
-            });
-            $(document).on('click', '#urgent-btn', function (e) {
-                record.update_panel.set_urgent($(this));
-            });
-            $(document).on('click', '.close-xfer', function (e) {
-                e.preventDefault();
-                record.update_panel.close_cross_transfer();
-            });
-            $(document).on('click', '.set-xfer', function (e) {
-                e.preventDefault();
-                var xfer = $('select[name="campaign"]').find('option:selected').text()
-                $('#record-update-form').append($('<input name="xfer_campaign" type="hidden"/>').val($('select[name="campaign"]').val()));
-                $('div.outcomepicker').find('.filter-option').text('Cross Transer: ' + xfer);
-                record.update_panel.close_cross_transfer();
-            });
-            var old_outcome = $('.outcomepicker option:selected').val();
-            var current_outcome = old_outcome;
-            $(document).on('change', '.outcomepicker', function (e) {
-				record.update_panel.enable_outcome_reasons($(this).val());
-                e.preventDefault();
-                $val = $(this).val();
-                if ($val == 71) {
-                    record.update_panel.cross_transfer();
-                } else {
-                    $('input[name="xfer_campaign"]').remove();
-                }
-                $delay = $('#outcomes').find("option[value='" + $val + "']").attr('delay');
-                //if the selected option has a delay attribute we disable the nextcall and set it as now+the amount of delay. This is for outcomes such as answer machine to give us more control over when agents should try again
-                if ($delay > 0) {
-                    var today = new Date();
-                    var nextcall = new Date().addHours($delay);
-                    var hour = nextcall.getHours();
-                    if (hour > 16) {
-                        var nextcall = moment(today).add(1, 'days').toDate();
-                    }
-
-                    $('#nextcall').val(timestamp_to_uk(nextcall, true));
-                    $('#nextcall').datetimepicker({
-                        format: 'DD/MM/YYYY HH:mm'
-                    });
-                    $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
-                    //$('#nextcall').data("DateTimePicker").setDate(timestamp_to_uk(nextcall,true));
-                }
-                //If the previous outcome had delay, set the date to the old_nextcall
-                else if ($('#outcomes').find("option[value='" + current_outcome + "']").attr('delay')) {
-                    nextcall = old_nextcall;
-                    $('#nextcall').val(nextcall);
-                    $('#nextcall').datetimepicker({
-                        format: 'DD/MM/YYYY HH:mm'
-                    });
-                    $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
+            } else {
+                flashalert.danger("You must select a call outcome first");
+            }
+        });
+        $(document).on('click', '#reset-record', function (e) {
+            e.preventDefault();
+            record.update_panel.reset_record($(this));
+        });
+        $(document).on('click', '#unpark-record', function (e) {
+            e.preventDefault();
+            record.update_panel.unpark_record($(this));
+        });
+        $(document).on('click', '#favorite-btn', function (e) {
+            record.update_panel.set_favorite($(this));
+        });
+        $(document).on('click', '#urgent-btn', function (e) {
+            record.update_panel.set_urgent($(this));
+        });
+        $(document).on('click', '.close-xfer', function (e) {
+            e.preventDefault();
+            record.update_panel.close_cross_transfer();
+        });
+        $(document).on('click', '.set-xfer', function (e) {
+            e.preventDefault();
+            var xfer = $('select[name="campaign"]').find('option:selected').text()
+            $('#record-update-form').append($('<input name="xfer_campaign" type="hidden"/>').val($('select[name="campaign"]').val()));
+            $('div.outcomepicker').find('.filter-option').text('Cross Transer: ' + xfer);
+            record.update_panel.close_cross_transfer();
+        });
+        var old_outcome = $('.outcomepicker option:selected').val();
+        var current_outcome = old_outcome;
+        $(document).on('change', '.outcomepicker', function (e) {
+            record.update_panel.enable_outcome_reasons($(this).val());
+            e.preventDefault();
+            $val = $(this).val();
+            if ($val == 71) {
+                record.update_panel.cross_transfer();
+            } else {
+                $('input[name="xfer_campaign"]').remove();
+            }
+            $delay = $('#outcomes').find("option[value='" + $val + "']").attr('delay');
+            //if the selected option has a delay attribute we disable the nextcall and set it as now+the amount of delay. This is for outcomes such as answer machine to give us more control over when agents should try again
+            if ($delay > 0) {
+                var today = new Date();
+                var nextcall = new Date().addHours($delay);
+                var hour = nextcall.getHours();
+                if (hour > 16) {
+                    var nextcall = moment(today).add(1, 'days').toDate();
                 }
 
-                //Set the new outcome
-                current_outcome = $('#outcomes option:selected').val();
+                $('#nextcall').val(timestamp_to_uk(nextcall, true));
+                $('#nextcall').datetimepicker({
+                    format: 'DD/MM/YYYY HH:mm'
+                });
+                $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
+                //$('#nextcall').data("DateTimePicker").setDate(timestamp_to_uk(nextcall,true));
+            }
+            //If the previous outcome had delay, set the date to the old_nextcall
+            else if ($('#outcomes').find("option[value='" + current_outcome + "']").attr('delay')) {
+                nextcall = old_nextcall;
+                $('#nextcall').val(nextcall);
+                $('#nextcall').datetimepicker({
+                    format: 'DD/MM/YYYY HH:mm'
+                });
+                $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
+            }
 
-                var outcome = $('#outcomes option:selected').val();
-                var new_nextcall = $('input[name="nextcall"]').val();
-                var comments = $('textarea[name="comments"]').val();
-                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
-            });
+            //Set the new outcome
+            current_outcome = $('#outcomes option:selected').val();
 
-            var old_nextcall = $('input[name="nextcall"]').val();
-            var datetimepicker = $('.datetime');
-            datetimepicker.off("dp.hide");
-            datetimepicker.on("dp.hide", function (e) {
-                var new_nextcall = $('input[name="nextcall"]').val();
-                var outcome = $('#outcomes option:selected').val();
-                var comments = $('textarea[name="comments"]').val();
-                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
-            });
+            var outcome = $('#outcomes option:selected').val();
+            var new_nextcall = $('input[name="nextcall"]').val();
+            var comments = $('textarea[name="comments"]').val();
+            record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
+        });
 
-            var old_comments = $('textarea[name="comments"]').val();
-            $('textarea[name="comments"]').bind('input propertychange', function () {
-                var new_nextcall = $('input[name="nextcall"]').val();
-                var outcome = $('#outcomes option:selected').val();
-                var comments = $('textarea[name="comments"]').val();
-                record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
-            });
+        var old_nextcall = $('input[name="nextcall"]').val();
+        var datetimepicker = $('.datetime');
+        datetimepicker.off("dp.hide");
+        datetimepicker.on("dp.hide", function (e) {
+            var new_nextcall = $('input[name="nextcall"]').val();
+            var outcome = $('#outcomes option:selected').val();
+            var comments = $('textarea[name="comments"]').val();
+            record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
+        });
 
-            $(document).on('click', 'td a span.view-workbooks-data', function (e) {
-                e.preventDefault();
-                workbooks.view_workbooks_data($(this).attr('item-id'));
-            });
+        var old_comments = $('textarea[name="comments"]').val();
+        $('textarea[name="comments"]').bind('input propertychange', function () {
+            var new_nextcall = $('input[name="nextcall"]').val();
+            var outcome = $('#outcomes option:selected').val();
+            var comments = $('textarea[name="comments"]').val();
+            record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
+        });
+
+        $(document).on('click', 'td a span.view-workbooks-data', function (e) {
+            e.preventDefault();
+            workbooks.view_workbooks_data($(this).attr('item-id'));
+        });
         /* Initialize all the jquery widgets */
         $("span.close-alert").click(function () {
             $(this).closest('.alert').addClass('hidden');
@@ -193,7 +193,7 @@ var record = {
             type: "POST",
             dataType: "JSON",
             data: {
-                'map_icon': ((icon.length>0 && icon != 'empty')?icon:null),
+                'map_icon': ((icon.length > 0 && icon != 'empty') ? icon : null),
                 'urn': record.urn
             }
         }).done(function (response) {
@@ -204,54 +204,58 @@ var record = {
             }
         });
     },
-	tasks: {
-		init:function(){
-			 record.tasks.load_panel();	
-			 $(document).on('change','.task_statuses',function(){
-				  record.tasks.save($(this));	
-			 });
-		},
-		load_panel:function(){
-		$.ajax({
-            url: helper.baseUrl + 'records/get_campaign_tasks',
-            type: "POST",
-            dataType: "JSON",
-            data: {
-                'urn': record.urn
-            },
-			fail:function(){
-				$('#tasks-panel').html('<p>Cannot load tasks</p>');
-			},
-        }).done(function (response) {
-            if (response.success) {
-				var tasks = "";
-                $.each(response.data,function(k,row){
-					tasks += '<div class="col-sm-6">'+row.task_name+'</div><div class="col-sm-6"><select id="'+row.task_id+'" class="task_statuses">';
-					 $.each(response.statuses,function(i,status){
-						 if(row.task_status_id==status.task_status_id){ var selected="selected" } else { var selected = ""; }
-						tasks += '<option value="'+status.task_status_id+'" '+selected+' >'+status.task_status+'</option>';
-					 });
-					 tasks += '</select></div><br>';
-				});
-				$('#tasks-panel').html(tasks);
-            } else {
-                flashalert.danger(response.msg);
-            }
-        });
-		},
-		save:function($select){
-			$.ajax({
-            url: helper.baseUrl + 'records/update_record_task',
-            type: "POST",
-            dataType: "JSON",
-            data: {
-                'urn': record.urn,
-				'task_id':$select.attr('id'),
-				'task_status_id':$select.val()
-            }
-			});
-		}
-	},
+    tasks: {
+        init: function () {
+            record.tasks.load_panel();
+            $(document).on('change', '.task_statuses', function () {
+                record.tasks.save($(this));
+            });
+        },
+        load_panel: function () {
+            $.ajax({
+                url: helper.baseUrl + 'records/get_campaign_tasks',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    'urn': record.urn
+                },
+                fail: function () {
+                    $('#tasks-panel').html('<p>Cannot load tasks</p>');
+                },
+            }).done(function (response) {
+                if (response.success) {
+                    var tasks = "";
+                    $.each(response.data, function (k, row) {
+                        tasks += '<div class="col-sm-6">' + row.task_name + '</div><div class="col-sm-6"><select id="' + row.task_id + '" class="task_statuses">';
+                        $.each(response.statuses, function (i, status) {
+                            if (row.task_status_id == status.task_status_id) {
+                                var selected = "selected"
+                            } else {
+                                var selected = "";
+                            }
+                            tasks += '<option value="' + status.task_status_id + '" ' + selected + ' >' + status.task_status + '</option>';
+                        });
+                        tasks += '</select></div><br>';
+                    });
+                    $('#tasks-panel').html(tasks);
+                } else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        },
+        save: function ($select) {
+            $.ajax({
+                url: helper.baseUrl + 'records/update_record_task',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    'urn': record.urn,
+                    'task_id': $select.attr('id'),
+                    'task_status_id': $select.val()
+                }
+            });
+        }
+    },
     sticky_note: {
         init: function () {
             /*initialize the save notes button*/
@@ -311,11 +315,14 @@ var record = {
                 e.preventDefault();
                 record.history_panel.update_history($(this).attr('data-modal'));
             });
-			$(document).on("click", "#edit-history-back", function (e) {
+            $(document).on("click", "#edit-history-back", function (e) {
                 e.preventDefault();
-				$('#edit-history-container').fadeOut(function(){ $('#all-history-container').fadeIn(); modal_body.css('overflow','auto') });
+                $('#edit-history-container').fadeOut(function () {
+                    $('#all-history-container').fadeIn();
+                    modal_body.css('overflow', 'auto')
+                });
             });
-			
+
             $(document).on('click', '#del-history-btn', function (e) {
                 e.preventDefault();
                 modal.delete_history($(this).attr('item-id'), $(this).attr('item-modal'));
@@ -351,7 +358,7 @@ var record = {
                                 $delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right marl" data-target="#modal" id="del-history-btn" item-modal="0" item-id="' + val.history_id + '" title="Delete history"></span>';
                             }
                             if (k <= record.limit - 1) {
-                                $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>'+ val.outcome_reason+ ' ' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
+                                $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.outcome_reason + ' ' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
                             }
                             k++;
                         });
@@ -369,7 +376,7 @@ var record = {
 
         },
         load_all_history_panel: function () {
-			modal_body.css('overflow','auto');
+            modal_body.css('overflow', 'auto');
             //Get attachment data
             $.ajax({
                 url: helper.baseUrl + "ajax/get_history",
@@ -379,11 +386,11 @@ var record = {
                     urn: record.urn
                 }
             }).done(function (response) {
-               var edit_btn = "",delete_btn = "",mheader = "Showing all history",mfooter='<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                var edit_btn = "", delete_btn = "", mheader = "Showing all history", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 
                 if (response.data.length > 0) {
-					var mbody = '<div id="edit-history-container" style="display:none"></div><div id="all-history-container">';
-					 mbody += '<table class="table table-striped"><thead><tr><th>Name</th><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>';
+                    var mbody = '<div id="edit-history-container" style="display:none"></div><div id="all-history-container">';
+                    mbody += '<table class="table table-striped"><thead><tr><th>Name</th><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>';
                     $.each(response.data, function (i, val) {
                         if (helper.permissions['edit history'] > 0) {
                             edit_btn = '<span class="glyphicon glyphicon-pencil pointer pull-right" id="edit-history-btn" item-modal="1" item-id="' + val.history_id + '"></span>';
@@ -394,25 +401,25 @@ var record = {
 
                         mbody += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + edit_btn + '</td><td>' + delete_btn + '</td></tr>';
                     });
-                   
+
                     mbody += '</tbody></table></div>';
-					modals.load_modal(mheader,mbody,mfooter);
+                    modals.load_modal(mheader, mbody, mfooter);
                 } else {
                     flashalert.danger('This record has no history information yet');
                 }
             });
         },
         edit_history: function (id, modal) {
-                $.ajax({
-                    url: helper.baseUrl + "ajax/get_history_by_id",
-                    type: "POST",
-                    dataType: "JSON",
-                    data: {
-                        id: id
-                    }
-                }).done(function (response) {
-                    record.history_panel.load_history_form(response.data, response.outcomes, response.progress_list, id, modal);
-                });
+            $.ajax({
+                url: helper.baseUrl + "ajax/get_history_by_id",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    id: id
+                }
+            }).done(function (response) {
+                record.history_panel.load_history_form(response.data, response.outcomes, response.progress_list, id, modal);
+            });
         },
         load_history_form: function (data, outcomes, progress_list, id, modal) {
             var form = '<form>';
@@ -449,21 +456,21 @@ var record = {
                 progress_input +
                 comments_input;
 
-			form += '</form>';
-			$form = $(form);
-			$form.find('select').selectpicker();
-			
-			if(modal=="0"){
-				var mheader="Edit History",mbody="<div id='edit-history-container'></div><div id='all-history-container'></div>",mfooter='<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button>';
-			modals.load_modal(mheader,mbody,mfooter);	
-			} else {
-			 var mfooter = "<button class='btn btn-primary pull-right marl' id='save-history-btn'>Save</button> <button class='btn btn-default pull-left' id='edit-history-back'>Back</button>";
-			modals.update_footer(mfooter);	
-			}
-			$('#all-history-container').fadeOut(function(){ 
-				$('#edit-history-container').html($form).fadeIn();
-				modal_body.css('overflow','visible');
-			});
+            form += '</form>';
+            $form = $(form);
+            $form.find('select').selectpicker();
+
+            if (modal == "0") {
+                var mheader = "Edit History", mbody = "<div id='edit-history-container'></div><div id='all-history-container'></div>", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button>';
+                modals.load_modal(mheader, mbody, mfooter);
+            } else {
+                var mfooter = "<button class='btn btn-primary pull-right marl' id='save-history-btn'>Save</button> <button class='btn btn-default pull-left' id='edit-history-back'>Back</button>";
+                modals.update_footer(mfooter);
+            }
+            $('#all-history-container').fadeOut(function () {
+                $('#edit-history-container').html($form).fadeIn();
+                modal_body.css('overflow', 'visible');
+            });
         },
         update_history: function (modal) {
             $.ajax({
@@ -472,7 +479,7 @@ var record = {
                 dataType: "JSON",
                 data: $('#modal').find('form').serialize()
             }).done(function (response) {
-				$('#modal').modal('hide');
+                $('#modal').modal('hide');
                 record.history_panel.load_panel();
                 flashalert.success(response.msg);
 
@@ -499,7 +506,7 @@ var record = {
     //update panel functions
     update_panel: {
         init: function () {
-           
+
         },
         disabled_btn: function (old_outcome, outcome, old_nextcall, nextcall, old_comments, comments) {
             if (((outcome.length != 0) && (outcome != old_outcome)) || ((nextcall.length != 0) && (nextcall != old_nextcall)) || ((comments.length != 0) && (comments != old_comments))) {
@@ -509,31 +516,31 @@ var record = {
                 $('#update-record').prop('disabled', true);
             }
         },
-		enable_outcome_reasons:function(outcome){
-			//unset the reason if the call outcome is changed
-			$('#outcome-reasons').val('');
-			if($('#outcome-reasons option[outcome-id="'+outcome+'"]').length>0){
-				//show if any reasons are linked to the selected outcome and hide any other
-			$('#outcome-reasons option').each(function(){
-				if($(this).attr('outcome-id')==outcome&&$(this).attr('value')!=="na"||$(this).attr('value')=="0"){
-						$(this).removeClass('option-hidden');
-				} else {
-				
-					$(this).addClass('option-hidden');
-				}
-			});
-			//enable the reason dropdown if required
-			$('#outcome-reasons').prop('disabled',false);
-			} else {
-			//if there are no reasons added we just show "na" and leave it disabled
-			$('#outcome-reasons[value="na"]').removeClass('option-hidden');
-			$('#outcome-reasons').val('na');
-			$('#outcome-reasons').prop('disabled',true);	
-			}
-			//finally refresh the reasons dropdown ui
-			$('#outcome-reasons').selectpicker('refresh');
-			$('.outcomereasonpicker').find('.option-hidden').closest('li').hide();
-		},
+        enable_outcome_reasons: function (outcome) {
+            //unset the reason if the call outcome is changed
+            $('#outcome-reasons').val('');
+            if ($('#outcome-reasons option[outcome-id="' + outcome + '"]').length > 0) {
+                //show if any reasons are linked to the selected outcome and hide any other
+                $('#outcome-reasons option').each(function () {
+                    if ($(this).attr('outcome-id') == outcome && $(this).attr('value') !== "na" || $(this).attr('value') == "0") {
+                        $(this).removeClass('option-hidden');
+                    } else {
+
+                        $(this).addClass('option-hidden');
+                    }
+                });
+                //enable the reason dropdown if required
+                $('#outcome-reasons').prop('disabled', false);
+            } else {
+                //if there are no reasons added we just show "na" and leave it disabled
+                $('#outcome-reasons[value="na"]').removeClass('option-hidden');
+                $('#outcome-reasons').val('na');
+                $('#outcome-reasons').prop('disabled', true);
+            }
+            //finally refresh the reasons dropdown ui
+            $('#outcome-reasons').selectpicker('refresh');
+            $('.outcomereasonpicker').find('.option-hidden').closest('li').hide();
+        },
         cross_transfer: function () {
             var pagewidth = $(window).width() / 2;
             var moveto = pagewidth - 250;
@@ -839,7 +846,7 @@ var record = {
                 $.each(response.data, function (key, val) {
                     var show = "";
                     var collapse = "collapsed";
-                    if (key == id||typeof id == "undefined") {
+                    if (key == id || typeof id == "undefined") {
                         show = "in";
                         collapse = "";
                     }
@@ -923,7 +930,7 @@ var record = {
                 }
                 ;
             });
-        },    
+        },
         search_form: function (id, urn) {
             $.ajax({
                 url: helper.baseUrl + 'modals/load_company_search',
@@ -1153,24 +1160,25 @@ var record = {
             });
         },
         create: function () {
-			$.ajax({url:helper.baseUrl+'modals/new_sms_form',
-			type:"POST",
-			dataType:"HTML",
-			data:{urn:record.urn},
-			}).done(function(data){
-				var $mbody = $(data),mheader = "Send sms",mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="marl btn btn-primary" disabled id="continue-sms">Continue</button>';
-            $mbody.find('#smstemplatespicker').selectpicker().on('change', function () {
-                var selected = $('#smstemplatespicker option:selected').val();
-                if (selected) {
-                    $('#continue-sms').prop('disabled', false);
-                }
-                else {
-                    $('#continue-sms').prop('disabled', true);
-                }
+            $.ajax({
+                url: helper.baseUrl + 'modals/new_sms_form',
+                type: "POST",
+                dataType: "HTML",
+                data: {urn: record.urn},
+            }).done(function (data) {
+                var $mbody = $(data), mheader = "Send sms", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="marl btn btn-primary" disabled id="continue-sms">Continue</button>';
+                $mbody.find('#smstemplatespicker').selectpicker().on('change', function () {
+                    var selected = $('#smstemplatespicker option:selected').val();
+                    if (selected) {
+                        $('#continue-sms').prop('disabled', false);
+                    }
+                    else {
+                        $('#continue-sms').prop('disabled', true);
+                    }
+                });
+                modals.load_modal(mheader, $mbody, mfooter);
+                modal_body.css('overflow', 'visible');
             });
-			modals.load_modal(mheader,$mbody,mfooter);
-			modal_body.css('overflow','visible');
-			 });
         },
         remove_sms: function (sms_id, modal) {
             $.ajax({
@@ -1191,30 +1199,25 @@ var record = {
             });
         },
         view_sms: function (sms_id) {
-			//Get template data
+            //Get template data
             $.ajax({
                 url: helper.baseUrl + 'modals/view_sms',
                 dataType: "HTML",
-            }).done(function (data){
-				var mheader = "View sms",$mbody =$(data),mfooter='<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-				modals.load_modal(mheader,$mbody,mfooter);
-				record.sms_panel.load_sms_view(sms_id);
-			});
-		},
-			load_sms_view: function (sms_id) {
+            }).done(function (data) {
+                var mheader = "View sms", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                modals.load_modal(mheader, $mbody, mfooter);
+                record.sms_panel.load_sms_view(sms_id);
+            });
+        },
+        load_sms_view: function (sms_id) {
             $.ajax({
                 url: helper.baseUrl + 'sms/get_sms',
                 type: "POST",
                 dataType: "JSON",
                 data: {sms_id: sms_id}
             }).done(function (response) {
-                var message = (response.data.status == true) ? "<th colspan='2' style='color:green'>" + ((response.data.pending == 1) ? "Pending to (re)send automatically..." : "This sms was sent successfuly") + "</th>" : "<th colspan='2' style='color:red'>" + ((response.data.pending == 1) ? "Pending to send automatically..." : "This sms was not sent") + "</th>"
-                var status = (response.data.status == true) ? "Yes" : "No";
-                var read_confirmed = (response.data.read_confirmed == 1) ? "Yes " + " (" + response.data.read_confirmed_date + ")" : "No";
-
-                var tbody = "<tr>" +
-                    message +
-                    "</tr>" +
+                var tbody =
+                    "<tr>" +
                     "<th>Sent Date</th>" +
                     "<td class='sent_date'>" + response.data.sent_date + "</td>" +
                     "</tr>" +
@@ -1227,56 +1230,37 @@ var record = {
                     "<td class='to'>" + response.data.send_to + "</td>" +
                     "</tr>" +
                     "<tr>" +
-                    "<th>CC</th>" +
-                    "<td class='cc'>" + response.data.cc + "</td>" +
+                    "<th>Msg</th>" +
+                    "<td class='body'>" + response.data.text + "</td>" +
                     "</tr>" +
                     "<tr>" +
-                    "<th>BCC</th>" +
-                    "<td class='bcc'>" + response.data.bcc + "</td>" +
+                    "<th>Status</th>" +
+                    "<td class='status'>" + response.data.status + "</td>" +
                     "</tr>" +
                     "<tr>" +
-                    "<th>Subject</th>" +
-                    "<td class='subject'>" + response.data.subject + "</td>" +
-                    "</tr>" +
                     "<tr>" +
-                    "<th colspan=2>Body</th>" +
-                    "</tr>" +
-                    "<td colspan=2 class='body'>" + response.data.body + "</td>" +
-                    "</tr>" +
-                    "<th>Sent</th>" +
-                    "<td class='status'>" + status + ((response.data.pending == 1) ? " (Pending to (re)send automatically...)" : "") + "</td>" +
-                    "</tr>" +
-                    "<th>Read Confirmed</th>" +
-                    "<td class='read_confirmed'>" + read_confirmed + "</td>" +
-                    "</tr>"
-                if (response.attachments.length > 0) {
-                    tbody += "<tr>" +
-                        "<th colspan=2>Attachments</th>" +
-                        "</tr>";
-                    $.each(response.attachments, function (key, val) {
-                        tbody += "<tr>" +
-                            "<td colspan='2' class='attachments'><a target='_blank' href='" + val.path + "'>" + val.name + "</td></tr>";
-                    });
-                }
-              $('#sms-view-table').html(tbody);
+                    "<th>User</th>" +
+                    "<td class='body'>" + (response.data.name?response.data.name:"AUTO") + "</td>" +
+                    "</tr>";
+                $('#sms-view-table').html(tbody);
             });
         },
         show_all_sms: function () {
-			
-			  $.ajax({
+
+            $.ajax({
                 url: helper.baseUrl + "modals/show_all_sms",
                 type: "POST",
                 dataType: "HTML"
-            }).done(function(data){
-				var mheader = "Showing all sms", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-				modals.load_modal(mheader,$mbody,mfooter);
-				record.sms_panel.load_sms();
-			});
-		},
-		load_sms:function(){
+            }).done(function (data) {
+                var mheader = "Showing all sms", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                modals.load_modal(mheader, $mbody, mfooter);
+                record.sms_panel.load_sms();
+            });
+        },
+        load_sms: function () {
             //Get emails data
             $.ajax({
-                url: helper.baseUrl + "email/get_sms_by_urn",
+                url: helper.baseUrl + "sms/get_sms_by_urn",
                 type: "POST",
                 dataType: "JSON",
                 data: {
@@ -1284,21 +1268,19 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.data.length > 0) {
-					var tbody = '';
+                    var tbody = '';
                     $.each(response.data, function (key, val) {
-                        var status = (val.pending == 1) ? "glyphicon-time red" : ((val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "glyphicon-eye-open"));
-                        var message = (val.pending == 1) ? "sms pending to send" : (val.status != true) ? "sms no sent" : ((val.read_confirmed == 1) ? "sms read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting sms read confirmation");
-                        var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
-                        var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
+                        var status = (val.status == "PENDING" ? "glyphicon-time red" : "glyphicon-eye-open green");
+                        var message = (val.status == "PENDING" ? "sms pending to send" : "sms sent ");
                         var $delete_option = "";
                         if (helper.permissions['delete sms'] > 0) {
                             $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-sms-btn marl" data-target="#modal" item-modal="1" item-id="' + val.sms_id + '" title="Delete sms" ></span>';
                         }
                         $view_option = '<span class="glyphicon ' + status + ' pull-right view-sms-btn pointer"  item-id="' + val.sms_id + '" title="' + message + '"></span>';
-                        tbody += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+                        tbody += '<tr><td>' + val.sent_date + '</td><td>' + val.send_from + '</td><td title="' + val.send_to + '" >' + val.send_to + '</td><td title="' + val.text + '" >' + val.text + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                     });
-                    var table = '<thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>'+tbody+'</tbody>';
-					$('#sms-all-table').html(table);
+                    var table = '<thead><tr><th>Date</th><th>From</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + tbody + '</tbody>';
+                    $('#sms-all-table').html(table);
                 } else {
                     modal_body.html('<p>No sms have been sent for this record</p>');
                 }
@@ -1320,37 +1302,34 @@ var record = {
                     //Use the k var only to know if there are more than x records
                     var k = 0;
                     $.each(response.data, function (key, val) {
+                        var status = (val.status == "PENDING" ? "glyphicon-time red" : "glyphicon-eye-open green");
                         if (k <= record.limit - 1) {
-                            var status = (val.pending == 1) ? "glyphicon-time red" : ((val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "glyphicon-eye-open"));
-                            var message = (val.pending == 1) ? "sms pending to send" : (val.status != true) ? "sms no sent" : ((val.read_confirmed == 1) ? "sms read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting sms read confirmation");
-                            var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
-                            var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
                             var $delete_option = "";
                             if (helper.permissions['delete sms'] > 0) {
                                 $delete_option = '<span class="glyphicon glyphicon-trash pull-right pointer del-sms-btn marl" data-target="#modal" item-modal="0" item-id="' + val.sms_id + '" title="Delete sms" ></span>';
                             }
-                            $view_option = '<span class="glyphicon ' + status + ' pull-right view-sms-btn pointer"  item-id="' + val.sms_id + '" title="' + message + '"></span>';
-                            $body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
+                            var $view_option = '<span class="glyphicon '+status+'  pull-right view-sms-btn pointer"  item-id="' + val.sms_id + '" title="' + val.text + '"></span>';
+                            $body += '<tr><td>' + val.sent_date + '</td><td>' + val.send_from + '</td><td title="' + val.send_to + '" >' + val.send_to + '</td><td title="' + val.text + '" >' + val.text + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                         }
                         k++;
                     });
                     if (k > record.limit - 1) {
                         $body += '<tr><td colspan="6"><a href="#"><span class="btn btn-info btn-sm pull-right" id="show-all-sms-btn">Show All</span></a></td></tr>';
                     }
-                    $('#sms-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                    $('#sms-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>From</th><th>To</th><th>Message</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
-                     $('#sms-panel').append('<p>No sms have been sent for this record</p>');
+                    $('#sms-panel').append('<p>No sms have been sent for this record</p>');
                 }
                 ;
             });
         }
     },
-	appointment_slots_panel: {
-		  init: function () {
-			 record.appointment_slots_panel.load_panel();
-		  },
-		  load_panel:function(){
-			   $.ajax({
+    appointment_slots_panel: {
+        init: function () {
+            record.appointment_slots_panel.load_panel();
+        },
+        load_panel: function () {
+            $.ajax({
                 url: helper.baseUrl + "appointments/slot_availability",
                 type: "POST",
                 dataType: "JSON",
@@ -1358,27 +1337,27 @@ var record = {
                     urn: record.urn,
                 }
             }).done(function (response) {
-				$('#slots-panel').empty();
-				if(response.success){
-				var table ='<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th><th>AM</th><th>PM</th></thead><tbody>';
-				$.each(response.data,function(k,v){
-					var slot_color_am,slot_color_pm,slot_color_eve="";
-					if(v.am>=v.am_max){ 
-					slot_color_am = 'text-danger';
-					}
-					if(v.pm>=v.pm_max){ 
-					slot_color_pm = 'text-danger';
-					}
-					table += '<tr><td>'+k+'</td><td class="'+slot_color_am+'" >'+v.am+'</td><td  class="'+slot_color_pm+'">'+v.pm+'</td></tr>'
-				});
-				table += '</tbody></table></div>';
-				$('#slots-panel').html(table);	
-				} else {
-					$('#slots-panel').html('<p>No slots found</p>');		
-				}
-			});
-		  }
-	},
+                $('#slots-panel').empty();
+                if (response.success) {
+                    var table = '<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th><th>AM</th><th>PM</th></thead><tbody>';
+                    $.each(response.data, function (k, v) {
+                        var slot_color_am, slot_color_pm, slot_color_eve = "";
+                        if (v.am >= v.am_max) {
+                            slot_color_am = 'text-danger';
+                        }
+                        if (v.pm >= v.pm_max) {
+                            slot_color_pm = 'text-danger';
+                        }
+                        table += '<tr><td>' + k + '</td><td class="' + slot_color_am + '" >' + v.am + '</td><td  class="' + slot_color_pm + '">' + v.pm + '</td></tr>'
+                    });
+                    table += '</tbody></table></div>';
+                    $('#slots-panel').html(table);
+                } else {
+                    $('#slots-panel').html('<p>No slots found</p>');
+                }
+            });
+        }
+    },
     //emails panel functions
     email_panel: {
         init: function () {
@@ -1409,24 +1388,25 @@ var record = {
             });
         },
         create: function () {
-			$.ajax({url:helper.baseUrl+'modals/new_email_form',
-			type:"POST",
-			dataType:"HTML",
-			data:{urn:record.urn},
-			}).done(function(data){
-				var $mbody = $(data),mheader = "Send Email",mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="marl btn btn-primary" disabled id="continue-email">Continue</button>';
-            $mbody.find('#emailtemplatespicker').selectpicker().on('change', function () {
-                var selected = $('#emailtemplatespicker option:selected').val();
-                if (selected) {
-                    $('#continue-email').prop('disabled', false);
-                }
-                else {
-                    $('#continue-email').prop('disabled', true);
-                }
+            $.ajax({
+                url: helper.baseUrl + 'modals/new_email_form',
+                type: "POST",
+                dataType: "HTML",
+                data: {urn: record.urn},
+            }).done(function (data) {
+                var $mbody = $(data), mheader = "Send Email", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="marl btn btn-primary" disabled id="continue-email">Continue</button>';
+                $mbody.find('#emailtemplatespicker').selectpicker().on('change', function () {
+                    var selected = $('#emailtemplatespicker option:selected').val();
+                    if (selected) {
+                        $('#continue-email').prop('disabled', false);
+                    }
+                    else {
+                        $('#continue-email').prop('disabled', true);
+                    }
+                });
+                modals.load_modal(mheader, $mbody, mfooter);
+                modal_body.css('overflow', 'visible');
             });
-			modals.load_modal(mheader,$mbody,mfooter);
-			modal_body.css('overflow','visible');
-			 });
         },
         remove_email: function (email_id, modal) {
             $.ajax({
@@ -1447,17 +1427,17 @@ var record = {
             });
         },
         view_email: function (email_id) {
-			//Get template data
+            //Get template data
             $.ajax({
                 url: helper.baseUrl + 'modals/view_email',
                 dataType: "HTML",
-            }).done(function (data){
-				var mheader = "View Email",$mbody =$(data),mfooter='<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-				modals.load_modal(mheader,$mbody,mfooter);
-				record.email_panel.load_email_view(email_id);
-			});
-		},
-			load_email_view: function (email_id) {
+            }).done(function (data) {
+                var mheader = "View Email", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                modals.load_modal(mheader, $mbody, mfooter);
+                record.email_panel.load_email_view(email_id);
+            });
+        },
+        load_email_view: function (email_id) {
             $.ajax({
                 url: helper.baseUrl + 'email/get_email',
                 type: "POST",
@@ -1514,22 +1494,22 @@ var record = {
                             "<td colspan='2' class='attachments'><a target='_blank' href='" + val.path + "'>" + val.name + "</td></tr>";
                     });
                 }
-              $('#email-view-table').html(tbody);
+                $('#email-view-table').html(tbody);
             });
         },
         show_all_email: function () {
-			
-			  $.ajax({
+
+            $.ajax({
                 url: helper.baseUrl + "modals/show_all_email",
                 type: "POST",
                 dataType: "HTML"
-            }).done(function(data){
-				var mheader = "Showing all emails", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-				modals.load_modal(mheader,$mbody,mfooter);
-				record.email_panel.load_emails();
-			});
-		},
-		load_emails:function(){
+            }).done(function (data) {
+                var mheader = "Showing all emails", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                modals.load_modal(mheader, $mbody, mfooter);
+                record.email_panel.load_emails();
+            });
+        },
+        load_emails: function () {
             //Get emails data
             $.ajax({
                 url: helper.baseUrl + "email/get_emails",
@@ -1540,7 +1520,7 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.data.length > 0) {
-					var tbody = '';
+                    var tbody = '';
                     $.each(response.data, function (key, val) {
                         var status = (val.pending == 1) ? "glyphicon-time red" : ((val.status != true) ? "glyphicon-eye-open red" : ((val.read_confirmed == 1) ? "glyphicon-eye-open green" : "glyphicon-eye-open"));
                         var message = (val.pending == 1) ? "Email pending to send" : (val.status != true) ? "Email no sent" : ((val.read_confirmed == 1) ? "Email read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting email read confirmation");
@@ -1553,8 +1533,8 @@ var record = {
                         $view_option = '<span class="glyphicon ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
                         tbody += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                     });
-                    var table = '<thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>'+tbody+'</tbody>';
-					$('#email-all-table').html(table);
+                    var table = '<thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + tbody + '</tbody>';
+                    $('#email-all-table').html(table);
                 } else {
                     modal_body.html('<p>No emails have been sent for this record</p>');
                 }
@@ -1637,19 +1617,19 @@ var record = {
 
         },
         create: function () {
-           $.ajax({
+            $.ajax({
                 url: helper.baseUrl + 'modals/start_survey',
                 type: "POST",
-				data: { urn:record.urn },
+                data: {urn: record.urn},
                 dataType: "HTML"
-		   }).done(function(data){
-			  var $mbody = $(data);
-			  var mheader = "Create Survey"; 
-			  var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="btn btn-primary pull-right" id="continue-survey">Continue</button>';
-		  
-		  $mbody.find('#surveypicker,#contactpicker').selectpicker();
-		  modals.load_modal(mheader,$mbody,mfooter);
-		   });
+            }).done(function (data) {
+                var $mbody = $(data);
+                var mheader = "Create Survey";
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="btn btn-primary pull-right" id="continue-survey">Continue</button>';
+
+                $mbody.find('#surveypicker,#contactpicker').selectpicker();
+                modals.load_modal(mheader, $mbody, mfooter);
+            });
         },
         check_contact: function ($btn) {
             if ($('#contactpicker').val() == "") {
@@ -1841,14 +1821,14 @@ var record = {
 
                 $.each(detail, function (i, row) {
                     var inputclass = "";
-						var is_disabled = "disabled";
-							if(row.editable=="1"){
-							is_disabled = "";	
-							}
-                    if (row.options&&row.is_select) {
+                    var is_disabled = "disabled";
+                    if (row.editable == "1") {
+                        is_disabled = "";
+                    }
+                    if (row.options && row.is_select) {
                         $select = "<div class='form-group input-group-sm'>" + row.name;
-                        $select += '<br><select '+is_disabled+' name="' + row.code + '" class="selectpicker"><option value="">Please select</option>';
-                        $.each(row.options, function (o,option) {
+                        $select += '<br><select ' + is_disabled + ' name="' + row.code + '" class="selectpicker"><option value="">Please select</option>';
+                        $.each(row.options, function (o, option) {
                             if (row.value == option.option) {
                                 var selected = "selected";
                             }
@@ -1856,17 +1836,17 @@ var record = {
                         });
                         $select += "</select></div>";
                         form += $select;
-					} else if (row.options&&row.is_radio){
-						 $radio = "<div class='form-group input-group-sm'>" + row.name;
-						  $radio += '<br>';
-						   $.each(row.options, function (o,option) {
+                    } else if (row.options && row.is_radio) {
+                        $radio = "<div class='form-group input-group-sm'>" + row.name;
+                        $radio += '<br>';
+                        $.each(row.options, function (o, option) {
                             if (row.value == option.option) {
                                 var selected = "checked";
                             }
-                            $radio += "<label class='padl' >"+option.option +" <input "+is_disabled+" name='" + row.code + "' " + selected + " type='radio' value='" + option.option + "' /></label>";
+                            $radio += "<label class='padl' >" + option.option + " <input " + is_disabled + " name='" + row.code + "' " + selected + " type='radio' value='" + option.option + "' /></label>";
                         });
-						 $radio += "</div>";
-						  form += $radio;
+                        $radio += "</div>";
+                        form += $radio;
                     } else {
                         if (row.type != "varchar" && row.type != "number") {
                             inputclass = row.type;
@@ -1877,8 +1857,10 @@ var record = {
                                 row.value = moment(new Date()).format("DD/MM/YYYY");
                             }
                         }
-						if(row.value=="-"){ row.value=""; }
-                        form += " <div class='form-group input-group-sm " + inputclass + "'>" + row.name + "<input "+is_disabled+" class='form-control' name='" + row.code + "' type='text' value='" + row.value + "'/></div>";
+                        if (row.value == "-") {
+                            row.value = "";
+                        }
+                        form += " <div class='form-group input-group-sm " + inputclass + "'>" + row.name + "<input " + is_disabled + " class='form-control' name='" + row.code + "' type='text' value='" + row.value + "'/></div>";
                     }
                 });
             });
@@ -2049,9 +2031,11 @@ var record = {
             var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
                 if (data.length) {
-					var cancel_class = "";
-				if(val.cancellation_reason){ cancel_class='danger' }
-                    table += '<tr class="'+cancel_class+'" data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
+                    var cancel_class = "";
+                    if (val.cancellation_reason) {
+                        cancel_class = 'danger'
+                    }
+                    table += '<tr class="' + cancel_class + '" data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
                 }
             });
             $panel.append(table + "</tbody></table></div>");
@@ -2513,7 +2497,7 @@ var modal = {
             $('#modal').modal('toggle');
         });
     },
-	 desktop_prequal: function ($btn) {
+    desktop_prequal: function ($btn) {
         var mheader = 'No Address';
         var mbody = '<p>You can not send a record to GHS unless you have captured an address!</p>';
         var mfooter = '';
@@ -2525,7 +2509,7 @@ var modal = {
     },
     show_calendar: function (urn) {
         var mheader = 'Confirm Dead Line';
-        var mbody = '<img id="modal-loading" src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif"/><div class="responsive-calendar" style="display:none"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div';
+        var mbody = '<img id="modal-loading" src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif"/><div class="responsive-calendar" style="display:none"><div class="controls"><a data-go="prev" class="pull-left"><div class="btn btn-primary">Prev</div></a><h4><span data-head-year=""></span> <span data-head-month=""></span></h4><a data-go="next" class="pull-right"><div class="btn btn-primary">Next</div></a></div><hr/><div class="day-headers"><div class="day header">Mon</div><div class="day header">Tue</div><div class="day header">Wed</div><div class="day header">Thu</div><div class="day header">Fri</div><div class="day header">Sat</div><div class="day header">Sun</div></div><div class="days" data-group="days"></div></div>';
         var mfooter = '<button class="btn btn-default close-modal pull-left" data-dismiss="modal" type="button">Close</button> <button class="btn btn-primary submit-cal pull-right" type="button">Update</button> <input class="form-control pull-right marl" style="width:130px" value="" name="postcode" id="cal-postcode" placeholder="Postcode"/> <select class="cal-range selectpicker" data-width="130px"><option value="5">5 Miles</option><option value="10" selected>10 Miles</option><option value="15">15 Miles</option><option value="20">20 Miles</option><option value="30">30 Miles</option><option value="40">40 Miles</option><option value="50">50 Miles</option><option value="100">100 Miles</option><option value="150">150 Miles</option><option value="">Any Distance</option></select>';
         modals.load_modal(mheader, mbody, mfooter);
         var d = new Date();
@@ -2556,7 +2540,7 @@ var modal = {
                 flashalert.danger(response.msg);
             }
             if (response.postcode && distance) {
-               modal_header.text('Scheduled appointments within ' + distance + ' miles of ' + response.postcode)
+                modal_header.text('Scheduled appointments within ' + distance + ' miles of ' + response.postcode)
                 $('#cal-postcode').val(response.postcode);
             }
             if (renew) {
@@ -2587,7 +2571,7 @@ var workbooks = {
             type: "POST",
             data: {'lead_id': lead_id}
         }).done(function (response) {
-			var mheader="Workbooks Data",mbody =   '<table class="table table-striped"><tbody>'
+            var mheader = "Workbooks Data", mbody = '<table class="table table-striped"><tbody>'
             if (response.success) {
                 var val = response.data;
                 mbody +=
@@ -2632,12 +2616,12 @@ var workbooks = {
                     '<tr><th>Annual Revenue</th><td>' + val.annual_revenue + '</td></tr>' +
                     '<tr><th>Turnover Band</th><td>' + val.turnover_band + '</td></tr>' +
                     '<tr><th>Industry Description</th><td>' + val.industry_description + '</td></tr>';
-					
-					mbody += '</tbody></table>'; 
+
+                mbody += '</tbody></table>';
             } else {
-               mbody = '<p>The lead does not exist in workbooks</p>';
+                mbody = '<p>The lead does not exist in workbooks</p>';
             }
-			modals.load_modal(mheader,mbody,mfooter);
+            modals.load_modal(mheader, mbody, mfooter);
         });
     }
 }
