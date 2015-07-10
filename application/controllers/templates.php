@@ -127,6 +127,7 @@ $this->_campaigns = campaign_access_dropdown();
 	 */
 	public function save_template()
 	{
+		$this->config->set_item('global_xss_filtering', FALSE);
 		$form = $this->input->post();
 		$form['template_body'] = $_POST['template_body'];
 		$this->firephp->log($_POST['template_body']);
