@@ -272,8 +272,13 @@ class Records extends CI_Controller
                 }
             endforeach;
         }
-        
-        
+
+        //Get the campaign_triggers if exists
+        $campaign_triggers = array();
+        if ($campaign['campaign_id']) {
+            $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($campaign['campaign_id']);
+        }
+
         $data = array(
             'campaign_access' => $this->_campaigns,
             'page' => '',
@@ -289,6 +294,7 @@ class Records extends CI_Controller
             "progress_options" => $progress_options,
             "automatic" => $automatic,
             "map_icon" => $details['record']['map_icon'],
+            "campaign_triggers" => $campaign_triggers,
             "javascript" => array(
                 "detail2.js",
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',

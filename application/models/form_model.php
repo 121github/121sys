@@ -351,4 +351,13 @@ class Form_model extends CI_Model
         $qry = "select reason_id id, reason name from appointment_rule_reasons order by reason";
         return $this->db->query($qry)->result_array();
     }
+
+    /**
+     * Get campaign_triggers
+     */
+    public function get_campaign_triggers_by_campaign_id($campaign_id) {
+        $qry = "Select * from campaign_triggers where campaign_id=".$campaign_id;
+
+        return $this->db->query($qry)->result_array();
+    }
 }

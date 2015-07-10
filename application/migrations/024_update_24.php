@@ -11,7 +11,7 @@ class Migration_update_24 extends CI_Migration
 
     public function up()
     {
-        $this->firephp->log("starting migration 23");
+        $this->firephp->log("starting migration 24");
 
 
         $this->db->query("ALTER TABLE `sms_history` CHANGE `body` `text` LONGTEXT");

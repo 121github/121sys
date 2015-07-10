@@ -90,6 +90,14 @@
 <!-- end attachment popup -->
 
 
+<!-- Campaign triggers-->
+<?php if (!empty($campaign_triggers)) { ?>
+    <?php foreach($campaign_triggers as $trigger) { ?>
+        <script src="<?php echo $trigger['path']; ?>"></script>
+    <?php } ?>
+<?php } ?>
+<!-- End of campaign triggers-->
+
 <script type="text/javascript">
     $(document).ready(function () {
         var urn = '<?php echo $details['record']['urn'] ?>';
