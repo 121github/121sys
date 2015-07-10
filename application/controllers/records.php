@@ -768,7 +768,11 @@ class Records extends CI_Controller
                     $this->Records_model->add_xfer($id, $xfer_campaign);
                 }
             }
-            
+            $reached_max = $this->Records_model->check_max_dials($update_array['urn']);
+			if(!empty($reached_max)){
+			//the outcome was changed to maxdials so we need to recheck for any max dial functions on the campaign
+			$function_triggers = $this->Records_model->get_function_triggers($campaign_id,137);
+			}
             //return success to page
             $response = array(
                 "success" => true,

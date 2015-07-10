@@ -12,6 +12,13 @@ class Records_model extends CI_Model
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
 	
+	public function check_max_dials($urn){
+		//checks if a record has had too many non-contactable outcomes and removes it from the pot
+		$qry = "update records r join (select urn,max_dials,count(*) count from history left join outcomes using(outcome_id) left join campaigns using(campaign_id) where delay_hours is not null group by urn)md on md.urn = r.urn set r.outcome_id = 137, r.outcome_reason_id = null, r.record_status = 3 where r.urn = 14171 and max_dials <= count and r.record_status = 1" ;
+		$this->db->query($qry);
+		return $this->db->affected_rows();
+	}
+	
 	public function update($urn,$data){
 		$this->db->where("urn",$urn);
 		$this->db->where_in('campaign_id', $_SESSION['campaign_access']['array']);
