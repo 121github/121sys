@@ -49,6 +49,7 @@
 	$.ajax({
 		url: helper.baseUrl+'search/send_email',
 		type:"POST",
+		dataType:"JSON",
 		data:{ template_id:$('#template_id').val(),urn_list:list.urns }	,
 		beforeSend:function(){ $('#send').hide(); $('#wait').show(); }
 	}).done(function(response){
