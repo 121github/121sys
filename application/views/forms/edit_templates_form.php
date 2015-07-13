@@ -69,6 +69,8 @@
 			content_css: helper.baseUrl+"/assets/css/bootstrap.css",
 			height : 500,
 			paste_data_images: true,
+			relative_urls : false,
+			document_base_url : helper.base_url,
 			toolbar: "undo redo | styleselect | fontsizeselect fontselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | jbimages",
 			fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt 36pt",
 			font_formats: "Andale Mono=andale mono,times;"+
