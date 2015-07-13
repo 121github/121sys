@@ -345,6 +345,7 @@ class Sms extends CI_Controller
 
                 array_push($messages, array(
                     'sms_number' => $sms['send_to'],
+                    'send_from' => $sms['sender_id'],
                     'sms_text' => $sms['text'],
                     'id' => $sms['sms_id'],
                 ));
@@ -427,14 +428,14 @@ class Sms extends CI_Controller
 
                     array_push($messages, array(
                         'sms_number' => $remind_appointment['sms_number'],
+                        'send_from' => $remind_appointment['sms_from'],
                         'sms_text' => $remind_appointment['sms_text'],
                         'id' => $remind_appointment['appointment_id'],
-                        'send_from' => $remind_appointment['sms_from'],
                     ));
 
                     array_push($sms_histories, array(
                         "text" => $remind_appointment['sms_text'],
-                        "send_from" => $remind_appointment['sms_from'],
+                        "sender_id" => $remind_appointment['sender_id'],
                         "send_to" => $remind_appointment['sms_number'],
                         "user_id" => null,
                         "urn" => $remind_appointment['urn'],
@@ -512,11 +513,14 @@ class Sms extends CI_Controller
 //                <Msg ID="'.$message['id'].'" Number="'.$message['sms_number'].'">
 //                    <Text>'.$message['sms_text'].'</Text>
 //                </Msg>';
+//            <Msg ID="'.$message['id'].'" Number="447738982640">
             $xmlData .= '
-                <Msg ID="'.$message['id'].'" Number="447738982640">
+                <Msg ID="'.$message['id'].'" Number="07597637305">
                     <Text>'.$message['sms_text'].'</Text>
                 </Msg>';
         }
+
+        $this->firephp->log($xmlData);
 
         $xmlData .= '
                         </Messages>

@@ -51,7 +51,7 @@ var template = {
                         + "</td><td class='template_name'>"
                         + val.template_name
                         + "</td><td class='template_from'>"
-                        + val.template_from
+                        + val.name
                         + "</td><td><button class='btn btn-default btn-xs edit-btn' data-id='" + val.template_id + "' >Edit</button> <button class='btn btn-default btn-xs del-btn' item-id='"
                         + val.template_id
                         + "'>Delete</button></td></tr>");
@@ -80,7 +80,7 @@ var template = {
             var row = $btn.closest('tr');
             $('form').find('input[name="template_id"]').val(result.data.template_id);
             $('form').find('input[name="template_name"]').val(result.data.template_name);
-            $('form').find('input[name="template_from"]').val(result.data.template_from);
+            $('#sender_select').selectpicker('val', result.data.template_sender_id).selectpicker('render');
             $('form').find('textarea[name="template_text"]').val(result.data.template_text);
             if (result.data.template_unsubscribe == "1") {
                 $('form').find('#unsubscribe-yes').prop('checked', true).parent().addClass('active');
@@ -131,9 +131,8 @@ var template = {
     //save a template
     save: function ($btn) {
         var name = $('form').find('input[name="template_name"]').val();
-        var from = $('form').find('input[name="template_from"]').val();
 
-        if (name.length<=0 || from.length<=0) {
+        if (name.length<=0) {
             flashalert.danger("ERROR: Mandatory fields (name and from) required");
         }
         else {
