@@ -409,6 +409,12 @@ class Ajax extends CI_Controller
         if ($this->input->is_ajax_request()) {
 			$data = $this->input->post();
 			$data['telephone_number'] = numbers_only($data['telephone_number']);
+			$d = preg_replace('/[0-9]/','',$data['description']);
+			if(empty($d)){
+				echo json_encode(array("success"=>false,"msg"=>"The telephone description should be text. Eg Home, Office, Mobile etc"));
+				exit;
+			}
+			
             $data['tps'] = ($data['tps'] == NULL?NULL:$data['tps']);
             if ($this->db->insert('contact_telephone', $data)):
 				$data['telephone_id'] = $this->db->insert_id();
