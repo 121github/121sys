@@ -209,25 +209,24 @@ class Sms_model extends CI_Model
     {
         $limit_ = ($limit) ? "limit " . $offset . "," . $limit : '';
 
-        $qry = "select e.sms_id,
-                      DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
-                      e.body,
-                      e.send_from,
-                      e.send_to,
-                      e.user_id,
-                      e.urn,
-                      e.template_id,
-                      e.read_confirmed,
-                      e.read_confirmed_date,
-                      e.status_id,
+        $qry = "select s.sms_id,
+                      DATE_FORMAT(s.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                      s.text,
+                      s.send_from,
+                      s.send_to,
+                      s.user_id,
+                      s.urn,
+                      s.template_id,
+                      s.status_id,
+                      st.status_reason as status,
                       u.*,
-                      t.*,
-                      e.pending
-		    	from sms_history e
-		    	inner join users u ON (u.user_id = e.user_id)
-		    	inner join sms_templates t ON (t.template_id = e.template_id)
-		    	where e.urn = " . $urn . "
-		    	order by e.sent_date desc
+                      t.*
+		    	from sms_history s
+		    	inner join sms_status st ON (s.status_id = st.sms_status_id)
+		    	left join users u ON (u.user_id = s.user_id)
+		    	inner join sms_templates t ON (t.template_id = s.template_id)
+		    	where s.urn = " . $urn . "
+		    	order by s.sent_date desc
 		    	" . $limit_;
 
         return $this->db->query($qry)->result_array();
@@ -299,29 +298,26 @@ class Sms_model extends CI_Model
             $where .= " and eh.read_confirmed = '$read' ";
         }
 
-        $qry = "select eh.sms_id,
-                  DATE_FORMAT(eh.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
-                  eh.subject,
-                  eh.body,
-                  eh.send_from,
-                  eh.send_to,
-                  eh.cc,
-                  eh.bcc,
-                  eh.user_id,
-                  eh.urn,
-                  eh.template_id,
-                  eh.read_confirmed,
-                  eh.read_confirmed_date,
-                  eh.status_id,
-                  u.*,
-                  t.*
-            from sms_history eh
-            inner join users u ON (u.user_id = eh.user_id)
-            inner join records r ON (r.urn = eh.urn)
+        $qry = "select s.sms_id,
+                      DATE_FORMAT(s.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                      s.text,
+                      s.send_from,
+                      s.send_to,
+                      s.user_id,
+                      s.urn,
+                      s.template_id,
+                      s.status_id,
+                      st.status_reason as status,
+                      u.*,
+                      t.*
+            from sms_history s
+            inner join sms_status st ON (s.status_id = st.sms_status_id)
+		    left join users u ON (u.user_id = s.user_id)
+            inner join records r ON (r.urn = s.urn)
             inner join campaigns c ON (c.campaign_id = r.campaign_id)
-            inner join sms_templates t ON (t.template_id = eh.template_id)
+            inner join sms_templates t ON (t.template_id = s.template_id)
             where 1 $where
-            order by eh.sent_date desc";
+            order by s.sent_date desc";
 
         return $this->db->query($qry)->result_array();
     }
@@ -331,27 +327,23 @@ class Sms_model extends CI_Model
      */
     public function get_sms_by_id($sms_id)
     {
-        $qry = "select e.sms_id,
-                      DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
-                      e.subject,
-                      e.body,
-                      e.send_from,
-                      e.send_to,
-                      e.cc,
-                      e.bcc,
-                      e.user_id,
-                      e.urn,
-                      e.template_id,
-                      e.read_confirmed,
-                      e.read_confirmed_date,
-                      e.status_id,
+        $qry = "select s.sms_id,
+                      DATE_FORMAT(s.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                      s.text,
+                      s.send_from,
+                      s.send_to,
+                      s.user_id,
+                      s.urn,
+                      s.template_id,
+                      s.status_id,
+                      st.status_reason as status,
                       u.*,
-                      t.*,
-                      e.pending
-		    	from sms_history e
-		    	inner join users u ON (u.user_id = e.user_id)
-		    	inner join sms_templates t ON (t.template_id = e.template_id)
-		    	where e.sms_id = " . $sms_id;
+                      t.*
+		    	from sms_history s
+		    	inner join sms_status st ON (s.status_id = st.sms_status_id)
+		    	left join users u ON (u.user_id = s.user_id)
+		    	inner join sms_templates t ON (t.template_id = s.template_id)
+		    	where s.sms_id = " . $sms_id;
 
         $results = $this->db->query($qry)->result_array();
 
@@ -505,7 +497,8 @@ class Sms_model extends CI_Model
                   if(time(start)<'12:30:00','am','pm') time_slot,
                   telephone_number as sms_number,
                   template_id,
-                  t.template_text as sms_text
+                  t.template_text as sms_text,
+                  t.template_from as sms_from
                 from appointments a
                 inner join records r using(urn)
                 inner join contacts c ON (c.contact_id=a.contact_id)

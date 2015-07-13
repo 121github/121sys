@@ -1,6 +1,14 @@
 // JavaScript Document
 var sms = {
     init: function (urn) {
+        //Max length for sms text
+        var maxLength = 160;
+        $('textarea').keyup(function() {
+            var length = $(this).val().length;
+            var length = maxLength-length;
+            $('#chars').text(length);
+        });
+
 		if(getCookie('placeholder_error')){
 		var key = getCookie('placeholder_error');
 		var mheader = "Missing placeholder data";
@@ -39,11 +47,6 @@ var sms = {
         });
 
         $("button[type=submit]").attr('disabled', false);
-
-        //Empty attachment table
-        sms.empty_attachment_table();
-        //start the function to load the groups into the table
-        sms.load_attachments();
     },
     validate_phone: function() {
         var re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;

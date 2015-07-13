@@ -314,6 +314,24 @@ class Form_model extends CI_Model
 
         return $this->db->get()->result_array();
     }
+
+
+    /**
+     * Get a sms template by campaign_id
+     *
+     * @param integer $id
+     * @return Template
+     */
+    public function get_sms_templates_by_campaign_id($campaign_id)
+    {
+        $this->db->select("t.template_id id,t.template_name name");
+        $this->db->from("sms_templates t");
+        $this->db->join("sms_template_to_campaigns c", "c.template_id = t.template_id");
+        $this->db->where("c.campaign_id", $campaign_id);
+        return $this->db->get()->result_array();
+    }
+
+
     public function get_users_in_role($role_id)
     {
         $this->db->select('user_id id,name');
