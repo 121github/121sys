@@ -59,10 +59,15 @@ class Sms_model extends CI_Model
      */
     public function get_templates()
     {
-        $this->db->select("*");
-        $this->db->from("sms_templates t");
-        $this->db->order_by("template_name");
-        return $this->db->get()->result_array();
+        $qry = "select
+                  st.*,
+                  ss.*
+                from sms_templates st
+                inner join sms_sender ss ON (st.template_sender_id = ss.sender_id)
+                order by template_name";
+
+        $results = $this->db->query($qry)->result_array();
+        return $results;
     }
 
     /**
@@ -109,10 +114,14 @@ class Sms_model extends CI_Model
      */
     public function get_template($id)
     {
-        $this->db->select("*");
-        $this->db->where("template_id", $id);
+        $qry = "select
+                  st.*,
+                  ss.*
+                from sms_templates st
+                inner join sms_sender ss ON (st.template_sender_id = ss.sender_id)
+                where st.template_id = ".$id;
 
-        $results = $this->db->get("sms_templates")->result_array();
+        $results = $this->db->query($qry)->result_array();
         return $results[0];
     }
 
@@ -212,7 +221,8 @@ class Sms_model extends CI_Model
         $qry = "select s.sms_id,
                       DATE_FORMAT(s.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
                       s.text,
-                      s.send_from,
+                      s.sender_id,
+                      ss.name as send_from,
                       s.send_to,
                       s.user_id,
                       s.urn,
@@ -223,6 +233,7 @@ class Sms_model extends CI_Model
                       t.*
 		    	from sms_history s
 		    	inner join sms_status st ON (s.status_id = st.sms_status_id)
+		    	inner join sms_sender ss ON (s.sender_id = ss.sender_id)
 		    	left join users u ON (u.user_id = s.user_id)
 		    	inner join sms_templates t ON (t.template_id = s.template_id)
 		    	where s.urn = " . $urn . "
@@ -330,7 +341,8 @@ class Sms_model extends CI_Model
         $qry = "select s.sms_id,
                       DATE_FORMAT(s.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
                       s.text,
-                      s.send_from,
+                      s.sender_id,
+                      ss.name as send_from,
                       s.send_to,
                       s.user_id,
                       s.urn,
@@ -341,6 +353,7 @@ class Sms_model extends CI_Model
                       t.*
 		    	from sms_history s
 		    	inner join sms_status st ON (s.status_id = st.sms_status_id)
+		    	inner join sms_sender ss ON (s.sender_id = ss.sender_id)
 		    	left join users u ON (u.user_id = s.user_id)
 		    	inner join sms_templates t ON (t.template_id = s.template_id)
 		    	where s.sms_id = " . $sms_id;
@@ -498,13 +511,15 @@ class Sms_model extends CI_Model
                   telephone_number as sms_number,
                   template_id,
                   t.template_text as sms_text,
-                  t.template_from as sms_from
+                  t.template_sender_id as sender_id,
+                  s.name as sms_from
                 from appointments a
                 inner join records r using(urn)
                 inner join contacts c ON (c.contact_id=a.contact_id)
                 inner join contact_telephone ct ON (c.contact_id=ct.contact_id)
                 inner join sms_template_to_campaigns using (campaign_id)
                 inner join sms_templates t using (template_id)
+                inner join sms_sender s ON (t.template_sender_id = s.sender_id)
                 left join appointment_attendees aat using (appointment_id)
                 left join users uat using (user_id)
                 where telephone_number REGEXP '^(447|[[.+.]]447|00447|0447|07)'

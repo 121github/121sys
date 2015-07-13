@@ -23,6 +23,7 @@ class Smstemplates extends CI_Controller
     public function index()
     {
         $campaigns = $this->Form_model->get_user_campaigns();
+        $sms_senders = $this->Form_model->get_sms_senders();
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -38,6 +39,7 @@ class Smstemplates extends CI_Controller
                 'sms-templates.js'
             ),
             'campaigns' => $campaigns,
+            'sms_senders' => $sms_senders,
         );
 
         $this->template->load('default', 'sms/template.php', $data);

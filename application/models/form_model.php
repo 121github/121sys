@@ -378,4 +378,13 @@ class Form_model extends CI_Model
 
         return $this->db->query($qry)->result_array();
     }
+
+    /**
+     * Get sms senders
+     */
+    public function get_sms_senders()
+    {
+        $qry = "select sender_id id,name from sms_sender order by name";
+        return $this->db->query($qry)->result_array();
+    }
 }

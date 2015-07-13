@@ -31,8 +31,11 @@
         <div class="col-xs-8">
             <div class="form-group input-group-sm">
                 <p>From</p>
-                <input type="text" class="form-control" name="template_from"
-                       title="from field" required/>
+                <select name="template_sender_id" class="selectpicker" id="sender_select" data-width="100%" data-size="5">
+                    <?php foreach ($sms_senders as $row): ?>
+                        <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
         </div>
     </div>
