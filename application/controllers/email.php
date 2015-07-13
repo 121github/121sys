@@ -15,6 +15,27 @@ class Email extends CI_Controller
         $this->load->model('Email_model');
     }
     
+	
+	
+	public function bulk_email(){
+		if ($this->input->is_ajax_request()&&$this->input->post('list')) {
+		$lines = lines_to_list($this->input->post('list'));
+		echo json_encode(array("count"=>count($lines),"urns"=>"(".implode(",",$lines).")"));
+		exit;
+		}
+		user_auth_check();
+		 $this->load->model('Form_model');
+		$templates = $this->Form_model->get_templates();
+		$data = array(
+    			'title' => 'Bulk Email',
+				'page'=>'bulk-email',
+				'templates' => $templates
+    	);
+    	
+    	$this->template->load('default', 'email/bulk_email.php', $data);
+		
+	}
+	
     //this function returns a json array of email data for a given record id
     public function get_emails()
     {

@@ -3,6 +3,28 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+function lines_to_list($lines=false,$type=false){
+if(strpos($lines,",")!==false){
+	$seperator = ",";
+} else {
+	$seperator = "\n";
+}
+	
+if($type=="backquote"){
+echo $quote = "`";	
+} else if($type=="singlequote"){
+echo $quote = "'";	
+} else if($type=="double"){
+echo $quote = '"';	
+} else {
+$quote = "";	
+}
+
+	
+return explode($seperator,trim($lines));	
+}
+
+
 function color_name_to_hex($color_name)
 {
     // standard 147 HTML color names
