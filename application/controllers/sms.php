@@ -509,15 +509,14 @@ class Sms extends CI_Controller
                     <Messages>';
 
         foreach($messages as $message) {
-//            $xmlData .= '
-//                <Msg ID="'.$message['id'].'" Number="'.$message['sms_number'].'">
-//                    <Text>'.$message['sms_text'].'</Text>
-//                </Msg>';
-//            <Msg ID="'.$message['id'].'" Number="447738982640">
             $xmlData .= '
-                <Msg ID="'.$message['id'].'" Number="07597637305">
+                <Msg ID="'.$message['id'].'" Number="'.$message['sms_number'].'">
                     <Text>'.$message['sms_text'].'</Text>
                 </Msg>';
+//            $xmlData .= '
+//                <Msg ID="'.$message['id'].'" Number="07597637305">
+//                    <Text>'.$message['sms_text'].'</Text>
+//                </Msg>';
         }
 
         $this->firephp->log($xmlData);
