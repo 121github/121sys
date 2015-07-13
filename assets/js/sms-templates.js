@@ -121,6 +121,7 @@ var template = {
         $("button[type=submit]").attr('disabled', false);
         $('form').trigger('reset');
         $('#campaigns_select').selectpicker('val', []).selectpicker('render');
+        $('#sender_select').selectpicker('val', []).selectpicker('render');
         $('form').find('input[type="hidden"]').val('');
         $('#chars').text(160);
 
