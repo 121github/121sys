@@ -857,10 +857,19 @@ if($record['record_status'] <> "3"){
 	public function get_record_array($urn){
 			$record = $this->Trackvia_model->get_record_rows($urn);
 			$mobile ="";
+			$landline = "";
+			$alt_mob = "";
 		foreach($record as $k=>$row){
 			$details = $row;
+			if(!preg_match('/^447|^\+447^00447|^07/',$row['telephone_number'])&&$row['telephone_number']<>'01228819810'){	
+				$landline =  $row['telephone_number'];
+			}
 			if($row['description']=="Mobile"||preg_match('/^447|^\+447^00447|^07/',$row['telephone_number'])){
+				if(empty($mobile)){
 				$mobile = $row['telephone_number'];
+				} else {
+				$alt_mob = $row['telephone_number'];
+				}
 			}
 			$add1= trim(preg_replace('/[0-9]/','',$row['add1']));
 			$house_number= trim(preg_replace('/[a-zA-Z]/','',$row['add1']));
@@ -868,6 +877,9 @@ if($record['record_status'] <> "3"){
 		$data = array("UPRN Pre-fix"=>"PR",
 		"Date of Enquiry"=>date('Y-m-d')."T12:00:00-0600");
 		$data['client_ref'] = $details['client_ref'];
+		if(!empty($alt_mob)){
+		$data["Alternative Contact (Mobile)"] = $alt_mob;	
+		}
 		if(!empty($details['a2'])){
 		$data["Owner / Rented"]=$details['a2'];
 		}
@@ -886,8 +898,8 @@ if($record['record_status'] <> "3"){
 		if(!empty($details['a5'])){
 		$data["Owner / Tenant Name 2"]=$details['a5'];
 		}
-		if(!empty($details['telephone_number'])){
-		$data["Primary Contact (Landline)"]=$details['telephone_number'];
+		if(!empty($landline)){
+		$data["Primary Contact (Landline)"]=$landline;
 		}
 		if(!empty($details['email'])){
 		$data["Email address"]=$details['email'];

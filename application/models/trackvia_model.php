@@ -1,4 +1,4 @@
-	<?php
+<?php
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -30,7 +30,7 @@ class Trackvia_model extends CI_Model
 
 
 	public function get_record_rows($urn){
-		$query = "select * from records left join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join (select * from contact_telephone where description not like 'Transfer%') t using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn'";
+		$query = "select * from records left join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn'";
 		return $this->db->query($query)->result_array();
 	}
 
