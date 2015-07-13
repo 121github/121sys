@@ -32,6 +32,7 @@
             <div class="form-group input-group-sm">
                 <p>From</p>
                 <select name="template_sender_id" class="selectpicker" id="sender_select" data-width="100%" data-size="5">
+                    <option value="">Nothing selected</option>
                     <?php foreach ($sms_senders as $row): ?>
                         <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                     <?php endforeach; ?>
