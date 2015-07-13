@@ -333,6 +333,10 @@ class Ajax extends CI_Controller
         if ($this->input->is_ajax_request()) {
 			$data = $this->input->post();
 			$msg=false;
+			$d = preg_replace('/[0-9]/','',$data['description']);
+			if(empty($d)){
+			$msg = "The telephone description should be text. Eg Home, Office, Mobile etc";
+			}
 			if(empty($data['description'])){
 			$msg = "Description cannot be empty";
 			}
@@ -370,6 +374,10 @@ class Ajax extends CI_Controller
         if ($this->input->is_ajax_request()) {
 			$data = $this->input->post();
 						$msg=false;
+$d = preg_replace('/[0-9]/','',$data['description']);
+			if(empty($d)){
+			$msg = "The telephone description should be text. Eg Home, Office, Mobile etc";
+			}
 			if(empty($data['description'])){
 			$msg = "Description cannot be empty";
 			}
@@ -408,11 +416,21 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
 			$data = $this->input->post();
-			$data['telephone_number'] = numbers_only($data['telephone_number']);
+				$msg=false;
 			$d = preg_replace('/[0-9]/','',$data['description']);
 			if(empty($d)){
-				echo json_encode(array("success"=>false,"msg"=>"The telephone description should be text. Eg Home, Office, Mobile etc"));
-				exit;
+			$msg = "The telephone description should be text. Eg Home, Office, Mobile etc";
+			}
+			if(empty($data['description'])){
+			$msg = "Description cannot be empty";
+			}
+			$data['telephone_number'] = numbers_only($data['telephone_number']);
+			if(empty($data['telephone_number'])){
+			$msg = "Phone number is invalid";
+			}
+			if($msg){
+			echo json_encode(array("success"=>false,"msg"=>$msg));
+			exit;
 			}
 			
             $data['tps'] = ($data['tps'] == NULL?NULL:$data['tps']);
@@ -434,7 +452,22 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
 			$data = $this->input->post();
+				$msg=false;
+			$d = preg_replace('/[0-9]/','',$data['description']);
+			if(empty($d)){
+			$msg = "The telephone description should be text. Eg Home, Office, Mobile etc";
+			}
+			if(empty($data['description'])){
+			$msg = "Description cannot be empty";
+			}
 			$data['telephone_number'] = numbers_only($data['telephone_number']);
+			if(empty($data['telephone_number'])){
+			$msg = "Phone number is invalid";
+			}
+			if($msg){
+			echo json_encode(array("success"=>false,"msg"=>$msg));
+			exit;
+			}
             $data['ctps'] = ($data['ctps'] == NULL?NULL:$data['ctps']);
             if ($this->db->insert('company_telephone', $data)):
 			$data['telephone_id'] = $this->db->insert_id();
