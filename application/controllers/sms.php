@@ -429,6 +429,7 @@ class Sms extends CI_Controller
                         'sms_number' => $remind_appointment['sms_number'],
                         'sms_text' => $remind_appointment['sms_text'],
                         'id' => $remind_appointment['appointment_id'],
+                        'send_from' => $remind_appointment['sms_from'],
                     ));
 
                     array_push($sms_histories, array(
@@ -503,7 +504,7 @@ class Sms extends CI_Controller
         $xmlData = '
         <SMS>
             <Account Name="jon-man@121customerinsight.co.uk" Password="x983kkdi" Test="1" Info="0" JSON="0">
-                <Sender From="one2one" rcpurl="http://test.121system.com/sms/sms_delivery_receipt" ID="Appointment">
+                <Sender From="'.$messages[0]['send_from'].'" rcpurl="http://test.121system.com/sms/sms_delivery_receipt" ID="Appointment">
                     <Messages>';
 
         foreach($messages as $message) {

@@ -507,7 +507,7 @@ class Sms_model extends CI_Model
                 inner join sms_templates t using (template_id)
                 left join appointment_attendees aat using (appointment_id)
                 left join users uat using (user_id)
-                where telephone_number REGEXP '^(447|[[.+.]]447|00447|07)'
+                where telephone_number REGEXP '^(447|[[.+.]]447|00447|0447|07)'
                     and template_id = ".$template_id."
                     and date(start) BETWEEN (CURDATE() + INTERVAL 1 DAY) AND (CURDATE() + INTERVAL 2 DAY)";
 
