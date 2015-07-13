@@ -131,9 +131,11 @@ var template = {
     //save a template
     save: function ($btn) {
         var name = $('form').find('input[name="template_name"]').val();
+        var sender = $('#sender_select').selectpicker().val();
+        var campaigns = $('#campaigns_select').selectpicker().val();
 
-        if (name.length<=0) {
-            flashalert.danger("ERROR: Mandatory fields (name and from) required");
+        if (name.length<=0 || sender.length<=0 || !campaigns) {
+            flashalert.danger("ERROR: Mandatory fields (name, sender and campaign) required");
         }
         else {
             $("button[type=submit]").attr('disabled', 'disabled');
