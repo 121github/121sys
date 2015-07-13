@@ -180,7 +180,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                      <?php if (in_array("system menu", $_SESSION['permissions'])) { ?>
                       <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
                            <li <?php echo @($page == 'bulk-email' ? "class='Selected'" : "") ?>>
-                             <a href="<?php echo base_url() ?>email/">Bulk Email Tool</a></li>
+                             <a href="<?php echo base_url() ?>email/bulk_email">Bulk Email Tool</a></li>
 <?php } ?>
                         <li><a href="#system">System Config</a>
                             <ul id="system">
