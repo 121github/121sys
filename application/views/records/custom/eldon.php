@@ -6,14 +6,16 @@
     There was a problem while finding the selected record details. Maybe it does not exist or has been deleted.
 <?php else: ?>
 <div class="page-header">
-
-
     <h2>
         View Details
         <small>
-            URN: <?php echo $details['record']['urn'] ?> <?php echo(!empty($details['record']['campaign']) ? " [" . $details['record']['campaign'] . "]" : "") ?></small> <?php echo(!empty($details['record']['logo']) ? '<img style="max-height:40px" src="' . base_url() . 'assets/logos/' . $details['record']['logo'] . '" />' : ""); ?>
+            Reference: <span id="dealer-id"><?php echo $details['record']['c4'] ?></span> <?php echo(!empty($details['record']['campaign']) ? " [" . $details['record']['campaign'] . "]" : "") ?></small> <?php echo(!empty($details['record']['logo']) ? '<img style="max-height:40px" src="' . base_url() . 'assets/logos/' . $details['record']['logo'] . '" />' : ""); ?>
 
-        <button class="btn btn-default" id="map-icon" style="color:#<?php echo empty($details['record']['color'])?"000":$details['record']['color'] ?>" data-iconset="fontawesome" data-icon="<?php echo $map_icon ?>"
+        <button class="btn btn-default" id="map-icon" style="color:#<?php echo empty($details['record']['color'])?"000":$details['record']['color'] ?>;   text-shadow:
+   -1px -1px 0 #666,  
+    1px -1px 0 #666,
+    -1px 1px 0 #666,
+     1px 1px 0 #666;" data-iconset="fontawesome" data-icon="<?php echo $map_icon ?>"
                 role="iconpicker"></button>
 
       <span class="pull-right">
@@ -48,44 +50,28 @@
 </div>
 
 <div class="row">
-<div class="col-sm-12">
+<div class="col-lg-6">
 <?php  $this->view('records/panels/custom_info.php', $details); ?>
-</div>
-</div>
-<div class="row">
-<div class="col-sm-4">
 <?php  $this->view('records/panels/company.php', $details); ?>
-<?php  $this->view('records/panels/contacts.php', $details); ?>
+ <span class="stretch-panel">
+<?php  $details['expand_contacts']=true; $this->view('records/panels/contacts.php', $details); ?>
+</span>
 </div>
-<div class="col-sm-4">
+
+<div class="col-lg-6">
 <?php  $this->view('records/panels/record_update.php', $details); ?>
-</div>
-<div class="col-sm-4">
-<?php  $this->view('records/panels/ownership.php', $details); ?>
-<?php  $this->view('records/panels/attachements.php', $details); ?>
+<?php  $this->view('records/panels/tasks.php', $details); ?>
 </div>
 </div>
 
-
-
-    <div class="col-md-6 col-sm-12">
-        <?php foreach ($features as $k => $v) {
-            if (array_key_exists($v, $panels)) {
-                if ($k % 2 == 1) {
-                    $this->view('records/panels/' . $panels[$v], $details);
-                }
-            }
-        } ?>
-    </div>
-    <div class="col-md-6 col-sm-12">
-        <?php foreach ($features as $k => $v) {
-            if (array_key_exists($v, $panels)) {
-                if ($k % 2 == 0) {
-                    $this->view('records/panels/' . $panels[$v], $details);
-                }
-            }
-        } ?>
-    </div>
+<div class="row">
+<div class="col-lg-12">
+<?php  $this->view('records/panels/history.php', $details); ?>
+<?php  $this->view('records/panels/emails.php', $details); ?>
+<?php  $this->view('records/panels/attachments.php', $details); ?>
+</div>
+</div>
+   
 </div>
 <!-- end row panel -->
 </div>

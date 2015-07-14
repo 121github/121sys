@@ -588,9 +588,9 @@ class Records_model extends CI_Model
 
     public function get_details($urn, $features)
     {
-        $select = "select r.urn, cr.client_ref, r.map_icon, r.record_color, c.contact_id,if(fullname = '','No Name',fullname) fullname,c.email,c.notes,linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.outcome_reason_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
+        $select = "select r.urn,c4, cr.client_ref,if(r.map_icon is null,camp.map_icon,r.map_icon) map_icon, r.record_color, c.contact_id,if(fullname = '','No Name',fullname) fullname,c.email,c.notes,linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.outcome_reason_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason ";
         $from = " from records r ";
-		$from .= " left join client_refs cr using(urn) ";
+		$from .= " left join client_refs cr using(urn) left join record_details rd using(urn) ";
         $from .= "  left join outcomes o using(outcome_id) left join progress_description pd using(progress_id) ";
         $from .= "  left join park_codes pc using(parked_code) ";
         $from .= "left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations con_pc on a.location_id = con_pc.location_id left join campaigns camp using(campaign_id) ";
@@ -730,7 +730,8 @@ class Records_model extends CI_Model
                     "reset_date" => $result['reset_date'],
                     "custom_name" => $result['custom_panel_name'],
                     "map_icon" => $result['map_icon'],
-					"color" => $result['record_color']
+					"color" => $result['record_color'],
+					"c4" => $result['c4']
                 );
             endforeach;
         }
