@@ -378,6 +378,7 @@ echo "<br>";
 			if(strpos($k,"Property Stat")!==false){
 				$property_status = $v;	
 			}
+			}
 			
             //If the campaign had changed or the park_code is "Not Working"
 
