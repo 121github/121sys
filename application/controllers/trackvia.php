@@ -324,6 +324,7 @@ echo "<br>";
      * Test
      */
     public function checkView($view_id,$options) {
+		echo "<pre>";
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
@@ -462,6 +463,7 @@ if($record['record_status'] <> "3"){
 		 $this->Trackvia_model->updateRecords($update_records);
         }
 		 if (!empty($update_notes)) {
+			 echo("Updating Notes");
 			print_r($update_notes);
             $this->Trackvia_model->updateNotes($update_notes);
         }
@@ -564,7 +566,7 @@ if($record['record_status'] <> "3"){
 			print_r($new);
 		   }
 
-
+		echo "</pre>";
     }
 
     /**
