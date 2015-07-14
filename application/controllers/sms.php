@@ -433,7 +433,7 @@ class Sms extends CI_Controller
                     }
 
                     array_push($messages, array(
-                        'sms_number' => $remind_appointment['sms_number'],
+                        'sms_number' => format_mobile($remind_appointment['sms_number']),
                         'send_from' => $remind_appointment['sms_from'],
                         'sms_text' => $remind_appointment['sms_text'],
                         'id' => $remind_appointment['appointment_id'],
@@ -442,7 +442,7 @@ class Sms extends CI_Controller
                     array_push($sms_histories, array(
                         "text" => $remind_appointment['sms_text'],
                         "sender_id" => $remind_appointment['sender_id'],
-                        "send_to" => $remind_appointment['sms_number'],
+                        "send_to" => format_mobile($remind_appointment['sms_number']),
                         "user_id" => null,
                         "urn" => $remind_appointment['urn'],
                         "template_id" => $remind_appointment['template_id'],
@@ -451,7 +451,7 @@ class Sms extends CI_Controller
                         "text_local_id" => null
                     ));
 
-                    array_push($numbers,$remind_appointment['sms_number']);
+                    array_push($numbers,format_mobile($remind_appointment['sms_number']));
                 }
 
                 if (!empty($messages)) {
@@ -534,20 +534,22 @@ class Sms extends CI_Controller
                     //Check the variables inside [] in the template and change them with a value
                     preg_match_all('#\[(.*?)\]#', $record['sms_text'], $matches);
                     foreach($matches[0] as $key => $match) {
-                        $record['sms_text'] = str_replace($match,$record[$matches[1][$key]],$record['sms_text']);
+                        if (isset($record[$matches[1][$key]])) {
+                            $record['sms_text'] = str_replace($match,$record[$matches[1][$key]],$record['sms_text']);
+                        }
                     }
 
                     array_push($messages, array(
-                        'sms_number' => $record['sms_number'],
+                        'sms_number' => format_mobile($record['sms_number']),
                         'send_from' => $record['sms_from'],
                         'sms_text' => $record['sms_text'],
-                        'id' => $record['appointment_id'],
+                        'id' => $record['urn'],
                     ));
 
                     array_push($sms_histories, array(
                         "text" => $record['sms_text'],
                         "sender_id" => $record['sender_id'],
-                        "send_to" => $record['sms_number'],
+                        "send_to" => format_mobile($record['sms_number']),
                         "user_id" => null,
                         "urn" => $record['urn'],
                         "template_id" => $record['template_id'],
@@ -556,7 +558,7 @@ class Sms extends CI_Controller
                         "text_local_id" => null
                     ));
 
-                    array_push($numbers,$record['sms_number']);
+                    array_push($numbers,format_mobile($record['sms_number']));
                 }
 
                 if (!empty($messages)) {
@@ -566,8 +568,7 @@ class Sms extends CI_Controller
                         //Save the sms_history
                         if ($response == "OK") {
                             $this->Sms_model->add_sms_histories($sms_histories);
-
-                            $output .= "SMS sent to " . implode(',',$numbers) . "\n\n";
+                            $output .= "SMS sent to " . count($numbers) . " numbers \n\n";
                         } else {
                             $output .= "SMS not sent from the sms server \n\n";
                         }
