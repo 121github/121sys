@@ -393,7 +393,6 @@ class Sms extends CI_Controller
      */
     public function send_appointment_remind_sms()
     {
-
         $output = "";
         $output .= "Sending appointment remind sms...";
 
@@ -616,10 +615,15 @@ class Sms extends CI_Controller
 
     private function sendBulkSms($messages)
     {
+        $test = 1;
+        if (ENVIRONMENT=='production') {
+            $test = 0;
+        }
+
         //Build the xml data
         $xmlData = '
         <SMS>
-            <Account Name="jon-man@121customerinsight.co.uk" Password="x983kkdi" Test="1" Info="0" JSON="0">
+            <Account Name="jon-man@121customerinsight.co.uk" Password="x983kkdi" Test="'.$test.'" Info="0" JSON="0">
                 <Sender From="'.$messages[0]['send_from'].'" rcpurl="https://121system.com/sms/sms_delivery_receipt" ID="Appointment">
                     <Messages>';
 
@@ -628,10 +632,6 @@ class Sms extends CI_Controller
                 <Msg ID="'.$message['id'].'" Number="'.$message['sms_number'].'">
                     <Text>'.$message['sms_text'].'</Text>
                 </Msg>';
-//            $xmlData .= '
-//                <Msg ID="'.$message['id'].'" Number="07597637305">
-//                    <Text>'.$message['sms_text'].'</Text>
-//                </Msg>';
         }
 
         $xmlData .= '
@@ -639,6 +639,7 @@ class Sms extends CI_Controller
                     </Sender>
                 </Account>
             </SMS>';
+
 
         $post = 'data='. urlencode($xmlData);
         $url = "http://www.txtlocal.com/xmlapi.php";
