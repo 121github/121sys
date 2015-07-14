@@ -591,7 +591,10 @@ if($record['record_status'] <> "3"){
 			$created_appointments++;
 			$this->Trackvia_model->create_appointment($fields,$record,$planned_survey_datetime);
 			$this->Locations_model->set_location_id($fields['PostCode']);
-        }
+        } else {
+			$this->firephp->log("Uncancelling appointment that was set:". $record['urn']);
+			$this->Trackvia_model->uncancel_appointment($record['urn'],$planned_survey_date);
+		}
 		if($appointment_cancelled){
 			$this->firephp->log("Cancelling appointment that needs rebooking:". $record['urn']);
 			$this->Trackvia_model->cancel_appointment($record['urn'],$planned_survey_date);
@@ -675,7 +678,7 @@ if($record['record_status'] <> "3"){
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
-		$data = array("Planned Survey Date"=>"","Survey appt"=>"","Survey Booking Confirmed"=>"","Survey booked by"=>"","Survey Appointment Comments"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
+		$data = array("Planned Survey Date"=>"","Survey appt"=>"","Survey Booking Confirmed"=>"","Survey booked by"=>"","Survey Appointment Comments"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => !empty($record['outcome_reason'])?$record['outcome_reason']:$record['comments'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 		
 		if($record['campaign_id']=="29"){
 		$data["Owner Consent to proceed"]="N";
@@ -702,7 +705,7 @@ if($record['record_status'] <> "3"){
 		$urn = $this->input->post('urn');
 		 //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
-		$data = array("Planned Installation date"=>"","Installation Date Confirmed"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => $record['outcome_reason'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
+		$data = array("Planned Installation date"=>"","Installation Date Confirmed"=>"","Customer Cancellation"=>"declined","Customer Cancellation notes" => !empty($record['outcome_reason'])?$record['outcome_reason']:$record['comments'],"Cancelled by"=>"121","Date of Cancellation"=>date('Y-m-d')."T12:00:00-0600");
 		if($record['campaign_id']=="29"){
 		$data["Owner Consent to proceed"]="N";
 		$data["Date Tenant Notified"]="today";	

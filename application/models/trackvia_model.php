@@ -25,7 +25,10 @@ class Trackvia_model extends CI_Model
 
 	public function get_record($urn){
 		$query = "select * from records inner join campaigns using(campaign_id) inner join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn' group by urn";
-		return $this->db->query($query)->row_array();
+		$row = $this->db->query($query)->row_array();
+		$comments = $this->Records_model->get_last_comment($urn);
+		$row['comments'] = $comments;
+		return $row;
 	}
 
 
@@ -101,12 +104,18 @@ public function update_extra($data){
 		$app_data .= "$k: $v<br>";
 		}
 		}
-
+		//check if exists
 		$insert = array("urn"=>$records['urn'],"title"=>"Appointment for survey","text"=>"Appointment set for GHS Survey $app_data","start"=>$start,"end"=>date('Y-m-d H:i:s',strtotime("+1 hour",strtotime($start))),"postcode"=>$postcode,"status"=>1,"created_by"=>"123","date_updated"=>NULL,"date_added"=>date('Y-m-d H:i:s'),"updated_by"=>123,"address"=>$address);
 		$insert_query = $this->db->insert_string("appointments",$insert);
 		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$insert_query);
 		$this->db->query($insert_query);
 
+	}
+	
+	public function uncancel_appointment($urn,$date){
+	$this->db->_protect_identifiers=false;
+	$this->db->where(array("urn"=>$urn,"date(start)"=>$date));
+	$this->db->update("appointments",array("cancellation_reason"=>NULL,"status"=>1));	
 	}
 	
 	public function cancel_appointment($urn,$start){
