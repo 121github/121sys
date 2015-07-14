@@ -411,6 +411,12 @@ class Sms extends CI_Controller
             $currentCredits = $this->textlocal->getBalance();
             if ($currentCredits['sms'] < count($remind_appointments)) {
                 $status = 1;
+                $msg = "There is not enough credits: ".$currentCredits['sms']."\n\n";
+            }
+            //Check if more than 50 sms will be sent
+            else if(count($remind_appointments) > 50) {
+                $status = 1;
+                $msg = "You are trying to send more than 50 text messages. The sms will not be sent and will be stored in the sms_history as pending. Please review the process and run the send_pending_sms process manually.\n\n";
             }
 
             if (!empty($remind_appointments)) {
@@ -464,7 +470,7 @@ class Sms extends CI_Controller
                     else {
                         //Save the sms_history as pending
                         $this->Sms_model->add_sms_histories($sms_histories);
-                        $response = "There is not enough credits: ".$currentCredits['sms']."\n\n";
+                        $response = $msg;
                         echo $output.$response;
                         throw new Exception($response);
                     }
@@ -478,6 +484,114 @@ class Sms extends CI_Controller
         }
         else {
             $output .= "No template id defined. \n\n";
+        }
+
+        $current_balance = $this->textlocal->getBalance();
+        $output .= "Credits available: ".$current_balance['sms'];
+
+        echo $output;
+    }
+
+    /**
+     *
+     * Send sms for records (bulk sms)
+     *
+     *
+     */
+    public function send_sms_records_by_source_id_and_template()
+    {
+        $output = "";
+        $output .= "Sending records sms...";
+
+        $template_id = null;
+        $source_id = null;
+        if (intval($this->uri->segment(3)) > 0) {
+            $template_id = $this->uri->segment(3);
+        }
+        if (intval($this->uri->segment(4)) > 0) {
+            $source_id = $this->uri->segment(4);
+        }
+
+        if ($template_id && $source_id) {
+            //Get the records and the contact number where the records status is 1 for a particular template and source_id
+            $records = $this->Sms_model->get_records_by_source_id_and_template($template_id, $source_id);
+
+            //Check if we have enough credits
+            $status = 2;
+            $currentCredits = $this->textlocal->getBalance();
+            if ($currentCredits['sms'] < count($records)) {
+                $status = 1;
+                $msg = "There is not enough credits: ".$currentCredits['sms']."\n\n";
+            }
+
+            if (!empty($records)) {
+                //Build the messages array to send
+                $messages = array();
+                $sms_histories = array();
+                $numbers = array();
+                foreach($records as $record) {
+
+                    //Check the variables inside [] in the template and change them with a value
+                    preg_match_all('#\[(.*?)\]#', $record['sms_text'], $matches);
+                    foreach($matches[0] as $key => $match) {
+                        $record['sms_text'] = str_replace($match,$record[$matches[1][$key]],$record['sms_text']);
+                    }
+
+                    array_push($messages, array(
+                        'sms_number' => $record['sms_number'],
+                        'send_from' => $record['sms_from'],
+                        'sms_text' => $record['sms_text'],
+                        'id' => $record['appointment_id'],
+                    ));
+
+                    array_push($sms_histories, array(
+                        "text" => $record['sms_text'],
+                        "sender_id" => $record['sender_id'],
+                        "send_to" => $record['sms_number'],
+                        "user_id" => null,
+                        "urn" => $record['urn'],
+                        "template_id" => $record['template_id'],
+                        "status_id" => $status,
+                        "template_unsubscribe" => 0,
+                        "text_local_id" => null
+                    ));
+
+                    array_push($numbers,$record['sms_number']);
+                }
+
+                if (!empty($messages)) {
+
+                    if ($status!=SMS_STATUS_PENDING) {
+                        $response = $this->sendBulkSms($messages);
+                        //Save the sms_history
+                        if ($response == "OK") {
+                            $this->Sms_model->add_sms_histories($sms_histories);
+
+                            $output .= "SMS sent to " . implode(',',$numbers) . "\n\n";
+                        } else {
+                            $output .= "SMS not sent from the sms server \n\n";
+                        }
+                    }
+                    else {
+                        //Save the sms_history as pending
+                        $this->Sms_model->add_sms_histories($sms_histories);
+                        $response = $msg;
+                        echo $output.$response;
+                        throw new Exception($response);
+                    }
+                }
+
+                $output .= $response."\n\n";
+
+            } else {
+                $output .= "No remind appointments sms to be send. \n\n";
+            }
+        }
+        else if (!$template_id) {
+            $output .= "No template id defined. \n\n";
+        }
+        else if (!$source_id) {
+            $output .= "No source id defined. \n\n";
         }
 
         $current_balance = $this->textlocal->getBalance();
@@ -505,21 +619,19 @@ class Sms extends CI_Controller
         $xmlData = '
         <SMS>
             <Account Name="jon-man@121customerinsight.co.uk" Password="x983kkdi" Test="1" Info="0" JSON="0">
-                <Sender From="'.$messages[0]['send_from'].'" rcpurl="http://test.121system.com/sms/sms_delivery_receipt" ID="Appointment">
+                <Sender From="'.$messages[0]['send_from'].'" rcpurl="https://121system.com/sms/sms_delivery_receipt" ID="Appointment">
                     <Messages>';
 
         foreach($messages as $message) {
-//            $xmlData .= '
-//                <Msg ID="'.$message['id'].'" Number="'.$message['sms_number'].'">
-//                    <Text>'.$message['sms_text'].'</Text>
-//                </Msg>';
             $xmlData .= '
-                <Msg ID="'.$message['id'].'" Number="07597637305">
+                <Msg ID="'.$message['id'].'" Number="'.$message['sms_number'].'">
                     <Text>'.$message['sms_text'].'</Text>
                 </Msg>';
+//            $xmlData .= '
+//                <Msg ID="'.$message['id'].'" Number="07597637305">
+//                    <Text>'.$message['sms_text'].'</Text>
+//                </Msg>';
         }
-
-        $this->firephp->log($xmlData);
 
         $xmlData .= '
                         </Messages>
