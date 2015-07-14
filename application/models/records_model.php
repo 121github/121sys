@@ -1128,8 +1128,7 @@ class Records_model extends CI_Model
         $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id,cancellation_reason",false);
         $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
         $this->db->where(array(
-            "urn" => $urn,
-            "status" => "1"
+            "urn" => $urn
         ));
         if ($id) {
             $this->db->where("appointments.appointment_id", $id);
