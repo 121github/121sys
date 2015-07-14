@@ -11,12 +11,16 @@ function map_table_reload() {
 
 var planner = {
     init: function () {
-        planner.reload_table('<th>Postcode</th>-table');
+        planner.reload_table();
+		$(document).on('click','.remove-from-planner,.save-planner',function(){
+			 planner.reload_table();
+		});
+		
     },
-    reload_table: function (table_name) {
+    reload_table: function () {
         planner.populate_table();
     },
-    populate_table: function (table_name) {
+    populate_table: function () {
 
         /*******************************************************************/
         /********************** GET and PRINT THE RECORDS *************/
@@ -85,7 +89,7 @@ var planner = {
                             '<div class="col-lg-10 col-sm-10">' +
                                 '<li class="panel panel-'+color+'" postcode="'+val.postcode+'" record-planner-id="'+val.record_planner_id+'">' +
                                     '<div class="panel-heading record-planner-heading pointer" data-modal="view-record" data-urn="'+val.urn+'" record-planner-id="'+val.record_planner_id+'">' +
-                                        '<div class="row">' +
+                                        '<div class="row" style="color:#333">' +
                                             '<div class="col-lg-9">' +
                                                 '<span>' + val.name + '</span>' +
                                             '</div>' +
