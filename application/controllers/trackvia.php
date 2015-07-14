@@ -452,8 +452,10 @@ if($record['record_status'] <> "3"){
 				} else {
 				$extra["c5"] = NULL;
 				}
-				if(!empty($fields['Reason for Desktop Fail'])){
+				if(!empty($fields['Reason for Desktop Fail'])&&$campaign_id<>22){
 				$extra["c6"]=$fields['Reason for Desktop Fail'];
+				} else if($fields['Int Survey Priority']&&$campaign_id==22){
+				$extra["c6"]=$fields['Int Survey Priority'];
 				} else {
 				$extra["c6"] = NULL;
 				}
