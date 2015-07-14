@@ -77,8 +77,7 @@ public function update_extra($data){
 	
 	//Update notes in our system
     public function updateNotes($notes) {
-         $this->db->insert_update_batch('sticky_notes', $notes);
-		 return $this->db->last_query();
+		 return $this->db->insert_update_batch('sticky_notes', $notes);
     }
 
 	public function create_appointment($fields,$records,$start){

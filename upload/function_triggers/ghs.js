@@ -1,6 +1,8 @@
 // JavaScript Document
 var campaign_function = {
 init:function(){
+	$('#save-sticky').hide();
+	$('#sticky-notes').prop('readonly',true);
 	/*
 $.ajax({
 	

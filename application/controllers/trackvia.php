@@ -424,7 +424,7 @@ if($record['record_status'] <> "3"){
                 }
 				
 				if(!empty($fields['Contact Notes'])){
-				array_push($update_notes,array("urn"=>$record['urn'],"note"=>$fields['Contact Notes'],"updated_by"=>1));
+				array_push($update_notes,array("urn"=>$record['urn'],"note"=>str_replace("<!--tvia_br--><br><!--tvia_br-->","\n",$fields['Contact Notes']),"updated_by"=>1));
 				}
 				//organise the record_details update
 				$extra = array();
