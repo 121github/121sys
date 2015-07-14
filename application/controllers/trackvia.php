@@ -317,7 +317,7 @@ echo "<br>";
 	}
 	
 	}
-	$this->firephp->log($todo);
+	print_r($todo);
 }
 
     /**
@@ -339,11 +339,11 @@ echo "<br>";
 
 		if(isset($view['records'])){
         $tv_records = $view['records'];
-		$this->firephp->log($view_id);
-		$this->firephp->log($view);
+		print_r($view_id);
+		print_r($view);
 		} else {
-		$this->firephp->log($view_id);
-		$this->firephp->log($view);
+		print_r($view_id);
+		print_r($view);
 		return false;
 		}
 
@@ -454,13 +454,13 @@ if($record['record_status'] <> "3"){
 		 $this->Trackvia_model->updateRecords($update_records);
         }
 		 if (!empty($update_notes)) {
-			 	$this->firephp->log($update_notes);
+			print_r($update_notes);
             $this->Trackvia_model->updateNotes($update_notes);
         }
 		//update the record details
 		if(!empty($extra)){
-			$this->firephp->log("Updating Details");
-			$this->firephp->log($update_extra);
+			echo("Updating Details");
+			print_r($update_extra);
 			$this->Trackvia_model->update_extra($update_extra);
 		}
 		
@@ -468,8 +468,8 @@ if($record['record_status'] <> "3"){
 			$new=array();
            //Add new records if there are any left in the $tv_records array
 		   if(count($tv_records)>0){
-            $this->firephp->log("Creating new records #Source-ID: [$source]");
-			$this->firephp->log($tv_records);
+            echo("Creating new records #Source-ID: [$source]");
+			print_r($tv_records);
 			foreach($tv_records as $record){
 				//organise the new record data
 				$data = array("campaign_id"=>$campaign_id,
@@ -553,7 +553,7 @@ if($record['record_status'] <> "3"){
 
 			}
 			//show the new urns
-			$this->firephp->log($new);
+			print_r($new);
 		   }
 
 
@@ -592,11 +592,11 @@ if($record['record_status'] <> "3"){
 			$this->Trackvia_model->create_appointment($fields,$record,$planned_survey_datetime);
 			$this->Locations_model->set_location_id($fields['PostCode']);
         } else {
-			$this->firephp->log("Uncancelling appointment that was set:". $record['urn']);
+			echo("Uncancelling appointment that was set:". $record['urn']);
 			$this->Trackvia_model->uncancel_appointment($record['urn'],$planned_survey_date);
 		}
 		if($appointment_cancelled){
-			$this->firephp->log("Cancelling appointment that needs rebooking:". $record['urn']);
+			echo("Cancelling appointment that needs rebooking:". $record['urn']);
 			$this->Trackvia_model->cancel_appointment($record['urn'],$planned_survey_date);
 		}
     }
@@ -781,10 +781,10 @@ if($record['record_status'] <> "3"){
         $record = $this->Trackvia_model->get_record($urn);
 		//if the record has TV id then we can update or we need to create it
 		if(isset($record['client_ref'])){
-			$this->firephp->log("update tv record");
+			echo("update tv record");
 			$this->update_tv_record($urn);
 		} else {
-			$this->firephp->log("creating tv record");
+			echo("creating tv record");
 			$this->add_tv_record($urn);
 		}
 
@@ -805,13 +805,13 @@ if($record['record_status'] <> "3"){
 		$tv_table = $tv_tables['GHS Private'];
 		$data = $this->get_record_array($urn);
 		unset($data['client_ref']);
-		$this->firephp->log($data);
-		$this->firephp->log($tv_table);
+		print_r($data);
+		print_r($tv_table);
 
 
         //Update the record
         $response = $this->tv->addRecord($tv_table,$data);
-		$this->firephp->log($response);
+		print_r($response);
 		if(!empty($response)){
 			$new_client_ref = $response['records'][0]['id'];
 			$data = array("urn"=>$urn,
