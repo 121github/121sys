@@ -136,7 +136,7 @@ class CI_DB_mysql_driver extends CI_DB {
 * @param     array    the update/insert data
 * @return    string
 */
-function insert_update($table, $values)
+ function _insert_update($table, $values)
 {
     $updatestr = array();
     $keystr    = array();

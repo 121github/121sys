@@ -313,11 +313,10 @@ class User extends CI_Controller
     {
         $campaign = ($camp_id?intval($this->uri->segment(3)):$camp_id);
         $user_id  = $_SESSION['user_id'];
+		 unset($_SESSION['next']);
+         unset($_SESSION['filter']);
         if ($campaign > "0") {
-            if (in_array($campaign, $_SESSION['campaign_access']['array'])) {
-				unset($_SESSION['next']);
-                unset($_SESSION['filter']);
-				
+            if (in_array($campaign, $_SESSION['campaign_access']['array'])) {				
                 /* no longer logging in realtime  
                 if(in_array("log hours",$_SESSION['permissions'])){
                 //start logging the duration on the selected campaign

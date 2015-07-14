@@ -77,7 +77,7 @@ class CI_DB_active_record extends CI_DB_driver {
 * @return    object
 */
 
-public function on_duplicate($table = '', $set = NULL )
+public function insert_update($table = '', $set = NULL )
 {
     if ( ! is_null($set))
     {
@@ -108,7 +108,7 @@ public function on_duplicate($table = '', $set = NULL )
     }
     
         
-    $sql = $this->_duplicate_insert($this->_protect_identifiers($this->dbprefix.$table), $this->ar_set );
+    $sql = $this->_insert_update($this->_protect_identifiers($this->dbprefix.$table), $this->ar_set );
         
     $this->_reset_write();
     return $this->query($sql);
