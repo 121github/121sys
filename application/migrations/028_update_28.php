@@ -28,7 +28,8 @@ class Migration_update_28 extends CI_Migration
         ");
 
         $this->db->query("INSERT IGNORE INTO `sms_sender` (`sender_id`,`name`) VALUES (1,'one2one')");
-        $this->db->query("INSERT IGNORE INTO `sms_sender` (`sender_id`,`name`) VALUES (2,'ghs')");
+        $this->db->query("INSERT IGNORE INTO `sms_sender` (`sender_id`,`name`) VALUES (2,'FreeSolar')");
+        $this->db->query("INSERT IGNORE INTO `sms_sender` (`sender_id`,`name`) VALUES (3,'South way')");
 
 
 

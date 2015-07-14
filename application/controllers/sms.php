@@ -513,7 +513,6 @@ class Sms extends CI_Controller
 //                <Msg ID="'.$message['id'].'" Number="'.$message['sms_number'].'">
 //                    <Text>'.$message['sms_text'].'</Text>
 //                </Msg>';
-//            <Msg ID="'.$message['id'].'" Number="447738982640">
             $xmlData .= '
                 <Msg ID="'.$message['id'].'" Number="07597637305">
                     <Text>'.$message['sms_text'].'</Text>
