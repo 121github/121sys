@@ -370,8 +370,15 @@ echo "<br>";
 		$records_found=0;
 		$appointments_cancelled_count = 0;
 		$appointments_created_count = 0;
+		
         foreach($records as $record) {		
+			$property_status = "";
 			$fields = $tv_records[md5($record['client_ref'])]['fields'];
+			foreach($fields as $k=>$v){
+			if(strpos($k,"Property Stat")!==false){
+				$property_status = $v;	
+			}
+			
             //If the campaign had changed or the park_code is "Not Working"
 
             if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 ||$record['parked_code'] == 2 ||   $record['record_color'] != $record_color || $record['source_id'] != $source ) {
@@ -427,8 +434,8 @@ if($record['record_status'] <> "3"){
 				} else {
 				$extra["c3"] = NULL;
 				}
-				if(@!empty($fields['Property Status'])){
-				$extra["c5"]=$fields['Property Status'];
+				if(@!empty($property_status)){
+				$extra["c5"]=$property_status;
 				} else {
 				$extra["c5"] = NULL;
 				}
