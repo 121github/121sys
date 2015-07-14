@@ -56,7 +56,35 @@ class CI_DB_mysqli_driver extends CI_DB {
 
 	// whether SET NAMES must be used to set the character set
 	var $use_set_names;
-	
+
+function _insert_update($table, $values)
+{
+    $updatestr = array();
+    $keystr    = array();
+    $valstr    = array();
+    
+    foreach($values as $key => $val)
+    {
+        $updatestr[] = $key." = ".$val;
+        $keystr[]    = $key;
+        $valstr[]    = $val;
+    }
+    
+    $sql  = "INSERT INTO ".$this->_escape_table($table)." (".implode(', ',$keystr).") ";
+    $sql .= "VALUES (".implode(', ',$valstr).") ";
+    $sql .= "ON DUPLICATE KEY UPDATE ".implode(', ',$updatestr);
+    
+    return $sql;
+} 
+
+
+function _insert_update_batch($table, $keys, $values)
+  {
+    foreach($keys as $key)
+     $update_fields[] = $key.'=VALUES('.$key.')';
+
+    return "INSERT INTO ".$table." (".implode(', ', $keys).") VALUES ".implode(', ', $values)." ON DUPLICATE KEY UPDATE ".implode(', ', $update_fields);
+  }
 	// --------------------------------------------------------------------
 
 	/**

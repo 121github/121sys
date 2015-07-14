@@ -94,6 +94,7 @@ class Trackvia extends CI_Controller
 		$view = $this->tv->getView($view_id);
 		if($this->uri->segment(4)=="debug"){
 		echo "<pre>"; print_r($view); echo "</pre>";
+		echo "<br>";
 		}
 		$data[$name]["trackvia"]=$view['record_count'];
 		} else {
@@ -121,6 +122,7 @@ class Trackvia extends CI_Controller
    $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id = 22");
         //Book View
         echo "<br>Checking the SOUTHWAY_BOOK_SURVEY(".SOUTHWAY_BOOK_SURVEY.") view";
+		echo "<br>";
         $this->checkView(
             SOUTHWAY_BOOK_SURVEY,
             array(
@@ -137,6 +139,7 @@ class Trackvia extends CI_Controller
 
         //Rebook View
         echo "<br>Checking the SOUTHWAY_REBOOK(".SOUTHWAY_REBOOK.") view";
+		echo "<br>";
         $this->checkView(
             SOUTHWAY_REBOOK,
             array(
@@ -153,6 +156,7 @@ class Trackvia extends CI_Controller
 
         //Survey Slots View
         echo "<br>Checking the SOUTHWAY_SURVEY_SLOTS(".SOUTHWAY_SURVEY_SLOTS.") view";
+		echo "<br>";
         $this->checkView(
             SOUTHWAY_SURVEY_SLOTS,
             array(
@@ -173,6 +177,7 @@ class Trackvia extends CI_Controller
 //
  //Private Residential View
    echo "<br>Checking the PRIVATE_ALL_RECORDS(".PRIVATE_ALL_RECORDS.") view";
+   echo "<br>";
         $this->checkView(
             PRIVATE_ALL_RECORDS,
            array(
@@ -190,6 +195,7 @@ class Trackvia extends CI_Controller
 
         //Private Residential View
 		 echo "<br>Checking the PRIVATE_BOOK_SURVEY(".PRIVATE_BOOK_SURVEY.") view";
+		 echo "<br>";
         $this->checkView(
             PRIVATE_BOOK_SURVEY,
            array(
@@ -207,6 +213,7 @@ class Trackvia extends CI_Controller
 
 	    //Private Residential View
 		 echo "<br>Checking the PRIVATE_REBOOK(".PRIVATE_REBOOK.") view";
+		 echo "<br>";
         $this->checkView(
             PRIVATE_REBOOK,
            array(
@@ -223,6 +230,7 @@ class Trackvia extends CI_Controller
 
 	    //Private Residential View
 				 echo "<br>Checking the PRIVATE_SURVEY_SLOTS(".PRIVATE_SURVEY_SLOTS.") view";
+				 echo "<br>";
         $this->checkView(
             PRIVATE_SURVEY_SLOTS,
            array(
@@ -240,6 +248,7 @@ class Trackvia extends CI_Controller
 
 //        //Private Ineligible View/    
 				 echo "<br>Checking the PRIVATE_INFORM_INELIGIBLE(".PRIVATE_INFORM_INELIGIBLE.") view";  
+				 echo "<br>";
 		  $this->checkView(
             PRIVATE_INFORM_INELIGIBLE,
             array(
@@ -261,7 +270,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
 inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29) and records.source_id is not null");
    $this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 124,outcome_reason_id=16, record_status=3 where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id in(22,28,29)");
     }
-
+/*
 public function fix_records(){
 	$todo = array();
 	echo "#Getting affected record...";
@@ -319,7 +328,7 @@ echo "<br>";
 	}
 	print_r($todo);
 }
-
+/*
     /**
      * Test
      */
@@ -360,9 +369,11 @@ echo "<br>";
         $tv_records = $aux;
 
         echo "<br>Total track via records in this view... ".count($tv_records);
+		echo "<br>";
         //Get the records to be updated in our system
         $records = $this->Trackvia_model->getRecordsByTVIds($tv_record_ids);
 		 echo "<br>Matching records found in the calling system... ".count($records);
+		 echo "<br>";
         //Update the record campaign if it is needed (different campaign) and create a new one if it does not exist yet
         $update_records = array();
 		$update_extra = array();
@@ -432,7 +443,7 @@ if($record['record_status'] <> "3"){
 				}
 				if(!empty($fields['Enquiry type'])){
 				$extra["c3"]=$fields['Enquiry type'];
-				echo $fields['Enquiry type']."<br>";
+				//echo $fields['Enquiry type']."<br>";
 				} else {
 				$extra["c3"] = NULL;
 				}
@@ -458,27 +469,31 @@ if($record['record_status'] <> "3"){
 
         //Update the records which campaign was changed
         echo "\n<br>Records updated in our system... ".count($update_records)."\n";
+		echo "<br>";
 		
         if (!empty($update_records)) {
 		 $this->Trackvia_model->updateRecords($update_records);
         }
 		 if (!empty($update_notes)) {
 			 echo("Updating Notes");
+			 echo "<br>";
 			print_r($update_notes);
-            $this->Trackvia_model->updateNotes($update_notes);
+           echo  $this->Trackvia_model->updateNotes($update_notes);
         }
 		//update the record details
 		if(!empty($extra)){
 			echo("Updating Details");
+			echo "<br>";
 			print_r($update_extra);
 			$this->Trackvia_model->update_extra($update_extra);
 		}
 		
-		echo "\n<br>Records left to create in our system... ".count($tv_records)."\n";
+		echo "\n<br>Records left to create in our system... ".count($tv_records)."\n";echo "<br>";
 			$new=array();
            //Add new records if there are any left in the $tv_records array
 		   if(count($tv_records)>0){
             echo("Creating new records #Source-ID: [$source]");
+			echo "<br>";
 			print_r($tv_records);
 			foreach($tv_records as $record){
 				//organise the new record data
@@ -598,15 +613,16 @@ if($record['record_status'] <> "3"){
         //TODO Add appointment if the survey_date is different in both systems
         if ($record['survey_date']!=$planned_survey_date) {
             //Create a new appointment if it is needed
-			$created_appointments++;
 			$this->Trackvia_model->create_appointment($fields,$record,$planned_survey_datetime);
 			$this->Locations_model->set_location_id($fields['PostCode']);
         } else {
 			echo("Uncancelling appointment that was set:". $record['urn']);
+			echo "<br>";
 			$this->Trackvia_model->uncancel_appointment($record['urn'],$planned_survey_date);
 		}
 		if($appointment_cancelled){
 			echo("Cancelling appointment that needs rebooking:". $record['urn']);
+			echo "<br>";
 			$this->Trackvia_model->cancel_appointment($record['urn'],$planned_survey_date);
 		}
     }
@@ -792,9 +808,11 @@ if($record['record_status'] <> "3"){
 		//if the record has TV id then we can update or we need to create it
 		if(isset($record['client_ref'])){
 			echo("update tv record");
+			echo "<br>";
 			$this->update_tv_record($urn);
 		} else {
 			echo("creating tv record");
+			echo "<br>";
 			$this->add_tv_record($urn);
 		}
 
