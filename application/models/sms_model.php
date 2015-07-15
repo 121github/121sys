@@ -507,7 +507,7 @@ class Sms_model extends CI_Model
                   r.urn,
                   a.start,
                   DATE_FORMAT(start,'%d/%m/%Y') as appointment_date,
-                  if(time(start)<'12:30:00','am','pm') time_slot,
+                  if(time(start)<'12:30:00','08:30 and 12:30','12:30 and 20:00') time_slot,
                   telephone_number as sms_number,
                   template_id,
                   t.template_text as sms_text,
@@ -548,12 +548,30 @@ class Sms_model extends CI_Model
                       inner join contact_telephone ct ON (c.contact_id=ct.contact_id)
                       inner join sms_template_to_campaigns using (campaign_id)
                       inner join sms_templates t using (template_id)
-                      inner join sms_sender s ON (t.template_sender_id = s.sender_id)
-                    where telephone_number REGEXP '^(447|[[.+.]]447|00447|0447|07)'
                           and template_id = ".$template_id."
                           and r.source_id = ".$source_id."
                           and r.record_status = 1
                           and r.urn not IN (select urn from sms_history where template_id = ".$template_id.")";
+//        $qry = "select
+//                      DISTINCT CONCAT(r.urn,'_',telephone_number),
+//                      c.fullname as contact,
+//                      r.urn,
+//                      telephone_number as sms_number,
+//                      template_id,
+//                      t.template_text as sms_text,
+//                      t.template_sender_id as sender_id,
+//                      s.name as sms_from
+//                    from records r
+//                      left join record_details rd using(urn)
+//                      inner join contacts c ON (c.urn=r.urn)
+//                      inner join contact_telephone ct ON (c.contact_id=ct.contact_id)
+//                      inner join sms_template_to_campaigns using (campaign_id)
+//                      inner join sms_templates t using (template_id)
+//                          and template_id = ".$template_id."
+//                          and r.source_id = ".$source_id."
+//                          and r.record_status = 1
+//                          and rd.c6 IN ('1-Int', '2-Int', '3-Int')
+//                          and r.urn not IN (select urn from sms_history where template_id = ".$template_id.")";
 
         $result = $this->db->query($qry)->result_array();
 
