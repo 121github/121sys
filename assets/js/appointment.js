@@ -5,7 +5,7 @@ $(document).ready(function () {
 });
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
 function map_table_reload() {
-    appointment.table.draw();
+    appointment.table.columns.adjust().draw();
 }
 
 var appointment = {
