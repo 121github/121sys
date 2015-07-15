@@ -1270,8 +1270,26 @@ var record = {
                 if (response.data.length > 0) {
                     var tbody = '';
                     $.each(response.data, function (key, val) {
-                        var status = (val.status == "PENDING" ? "glyphicon-time red" : "glyphicon-eye-open green");
-                        var message = (val.status == "PENDING" ? "sms pending to send" : "sms sent ");
+                        var status = "glyphicon-eye-open green";
+                        var message = "sms sent ";
+                        switch(val.status) {
+                            case "PENDING":
+                                status = "glyphicon-time red";
+                                message = "sms pending to send";
+                                break;
+                            case "UNKNOWN":
+                                status = "glyphicon-question-sign orange";
+                                message = "sms sending...";
+                                break;
+                            case "UNDELIVERED":
+                                status = "glyphicon-eye-close red";
+                                message = "sms undelivered";
+                                break;
+                            case "ERROR":
+                                status = "glyphicon-warning-sign red";
+                                message = "sms sent error";
+                                break;
+                        }
                         var $delete_option = "";
                         if (helper.permissions['delete sms'] > 0) {
                             $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-sms-btn marl" data-target="#modal" item-modal="1" item-id="' + val.sms_id + '" title="Delete sms" ></span>';
@@ -1302,13 +1320,32 @@ var record = {
                     //Use the k var only to know if there are more than x records
                     var k = 0;
                     $.each(response.data, function (key, val) {
-                        var status = (val.status == "PENDING" ? "glyphicon-time red" : "glyphicon-eye-open green");
+                        var status = "glyphicon-eye-open green";
+                        var message = "sms sent ";
+                        switch(val.status) {
+                            case "PENDING":
+                                status = "glyphicon-time red";
+                                message = "sms pending to send";
+                                break;
+                            case "UNKNOWN":
+                                status = "glyphicon-question-sign orange";
+                                message = "sms sending...";
+                                break;
+                            case "UNDELIVERED":
+                                status = "glyphicon-eye-close red";
+                                message = "sms undelivered";
+                                break;
+                            case "ERROR":
+                                status = "glyphicon-warning-sign red";
+                                message = "sms sent error";
+                                break;
+                        }
                         if (k <= record.limit - 1) {
                             var $delete_option = "";
                             if (helper.permissions['delete sms'] > 0) {
                                 $delete_option = '<span class="glyphicon glyphicon-trash pull-right pointer del-sms-btn marl" data-target="#modal" item-modal="0" item-id="' + val.sms_id + '" title="Delete sms" ></span>';
                             }
-                            var $view_option = '<span class="glyphicon '+status+'  pull-right view-sms-btn pointer"  item-id="' + val.sms_id + '" title="' + val.text + '"></span>';
+                            var $view_option = '<span class="glyphicon '+status+'  pull-right view-sms-btn pointer"  item-id="' + val.sms_id + '" title="' + message + '"></span>';
                             $body += '<tr><td>' + val.sent_date + '</td><td>' + val.send_from + '</td><td title="' + val.send_to + '" >' + val.send_to + '</td><td title="' + val.text + '" >' + val.text + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                         }
                         k++;
