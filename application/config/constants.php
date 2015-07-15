@@ -49,3 +49,6 @@ define('BACKUP_PATH', DOCROOT.'/backup/121sys/');
 //SMS STATUS
 define('SMS_STATUS_PENDING', 1);
 define('SMS_STATUS_SENT', 2);
+define('SMS_STATUS_UNKNOWN', 3);
+define('SMS_STATUS_UNDELIVERED', 4);
+define('SMS_STATUS_ERROR', 5);
