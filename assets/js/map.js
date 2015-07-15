@@ -358,7 +358,7 @@ var maps = {
             destination = $('.directions-form').find('input[name="destination"]').val();
         }
 
-        maps.getDirections(origin, destination, waypts, record_list_route);
+        maps.getDirections(origin+" UK", destination+" UK", waypts, record_list_route);
     },
 
     updateRecordPlannerList: function () {
@@ -376,7 +376,7 @@ var maps = {
     },
 
     codeAddress: function (zoom) {
-        var address = $('.map-form').find('input[name="postcode"]').val();
+        var address = $('.map-form').find('input[name="postcode"]').val()+" UK";
         if (address == "") {
             map.setCenter(maps.myLatlng);
             map.setZoom(maps.default_zoom);

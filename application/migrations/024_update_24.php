@@ -33,6 +33,9 @@ class Migration_update_24 extends CI_Migration
 
         $this->db->query("INSERT IGNORE INTO `sms_status` (`sms_status_id`,`status_reason`) VALUES (1,'PENDING')");
         $this->db->query("INSERT IGNORE INTO `sms_status` (`sms_status_id`,`status_reason`) VALUES (2,'SENT')");
+        $this->db->query("INSERT IGNORE INTO `sms_status` (`sms_status_id`,`status_reason`) VALUES (3,'UNKNOWN')");
+        $this->db->query("INSERT IGNORE INTO `sms_status` (`sms_status_id`,`status_reason`) VALUES (4,'UNDELIVERED')");
+        $this->db->query("INSERT IGNORE INTO `sms_status` (`sms_status_id`,`status_reason`) VALUES (5,'ERROR')");
 
 
 
