@@ -49,8 +49,8 @@
                                 <div class="col-lg-6">
                                     <div>
                                         <input type="checkbox" id="optimized" name="optimized"
-                                               data-on="<i class='glyphicon glyphicon-ok'></i> Optimized route"
-                                               data-off="<i class='glyphicon glyphicon-remove'></i> Optimize route?" data-toggle="toggle">
+                                               data-on="<i class='glyphicon glyphicon-ok'></i> Fastest Route"
+                                               data-off="<i class='glyphicon glyphicon-remove'></i> Fastest Route?" data-toggle="toggle">
                                     </div>
                                 </div>
                                 <div class="col-lg-6" style="text-align: right">
