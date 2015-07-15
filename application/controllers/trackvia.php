@@ -133,7 +133,7 @@ class Trackvia extends CI_Controller
 				'appointment_cancelled' => false,
 				'record_color'=>'0066FF',
 				'source_id' => 34,
-				'savings_per_panel' => 20
+				'savings_per_panel' => 20,
             )
         );
 
@@ -269,6 +269,7 @@ $this->db->query("update contact_addresses left join contacts using(contact_id) 
  $this->db->query("update contacts inner join records using(urn)
 inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29) and records.source_id is not null");
    $this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 124,outcome_reason_id=16, record_status=3 where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id in(22,28,29)");
+      $this->db->query("update records set urgent = null where source_id not in(38,35) and campaign_id in(22,28,29)");
     }
 /*
 public function fix_records(){

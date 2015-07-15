@@ -88,7 +88,7 @@ var admin = {
             $('form').trigger('reset');
             $('form').find('input[type="hidden"]').val('');
 
-            $('.folder-data"').fadeOut(1000, function() {
+            $('.folder-data').fadeOut(1000, function() {
                 $('form').fadeIn();
             });
         },

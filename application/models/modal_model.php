@@ -9,7 +9,50 @@ class Modal_model extends CI_Model
         parent::__construct();
 
     }
-
+	
+	public function table_fields(){
+	$fields = array("campaign_id"=>array("name"=>"Campaign name","remove"=>in_array("mix campaigns",$_SESSION['permissions'])?true:false),
+			"source_id"=>array("name"=>"Data source"),
+			"client_id"=>array("name"=>"Client name"),
+			"campaign_type_id"=>array("name"=>"Campaign type"),
+			"urn"=>array("name"=>"URN"),
+			"client_ref"=>array("name"=>"Client reference"),
+			"outcome_id"=>array("name"=>"Outcome"),
+			"progress_id"=>array("name"=>"Progress"),
+			"record_status"=>array("name"=>"Record status",in_array("search dead",$_SESSION['permissions'])?true:false),
+			"parked_code"=>array("name"=>"Parked code"),
+			"group_id"=>array("name"=>"Group ownership",in_array("search groups",$_SESSION['permissions'])?true:false),
+			"user_id"=>array("name"=>"User ownership","remove"=>in_array("search any owner",$_SESSION['permissions'])?true:false),
+			"nextcall"=>array("name"=>"Nextcall date"),
+			"date_updated"=>array("name"=>"Lastcall date"),
+			"date_added"=>array("name"=>"Created date"),
+			"fullname"=>array("name"=>"Contact name"),
+			"phone"=>array("name"=>"Contact phone"),
+			"position"=>array("name"=>"Contact position"),
+			"dob"=>array("name"=>"Contact DOB"),
+			"contact_email"=>array("name"=>"Contact email"),
+			"address"=>array("name"=>"Contact address"),
+			"company_id"=>array("name"=>"Company ID"),
+			"coname"=>array("name"=>"Company Name"),
+			"company_phone"=>array("name"=>"Company phone"),
+			"sector_id"=>array("name"=>"Sector"),
+			"subsector_id"=>array("name"=>"Subsector"),
+			"turnover"=>array("name"=>"Turnover"),
+			"employees"=>array("name"=>"Employees"),
+			"postcode"=>array("name"=>"Postcode"),
+			"distance"=>array("name"=>"Distance"),
+			"new_only"=>array("name"=>"New records only"),
+			"dials"=>array("name"=>"Number of dials"),
+			"survey"=>array("name"=>"With survey only"),
+			"favorites"=>array("name"=>"Favorites only"),
+			"urgent"=>array("name"=>"Urgent only"),
+			"email"=>array("name"=>"Email filter"),
+			"no_company_tel"=>array("name"=>"Companies without numbers"),
+			"no_phone_tel"=>array("name"=>"Contacts without numbers"),
+			);	
+		
+	}
+	
     public function view_record($urn)
     {
         $qry = "select planner_id,p.postcode planner_postcode,if(p.start_date is not null,date_format(p.start_date,'%d/%m/%Y'),'') planner_date,r.urn,r.nextcall,u.name owner,status_name,campaign_name,r.campaign_id,if(outcome is null,'New',outcome) outcome,if(comments is null,'n/a',if(length(comments)>70,concat(SUBSTR(comments,1,70),'...'),comments)) comments ,if(com.name is not null,com.name,con.fullname) name, if(r.date_updated is null,'n/a',date_format(r.date_updated,'%D %M %y')) lastcall, if(r.nextcall is null,'n/a',date_format(r.nextcall,'%D %M %y')) nextcall,if(park_reason is null,'n/a',park_reason) parked,custom_panel_name from records r left join ownership using(urn) left join users u using(user_id) left join status_list sl on sl.record_status_id = r.record_status left join campaigns using(campaign_id) left join contacts con using(urn) left join (select record_planner_id planner_id,start_date,postcode,urn from record_planner where user_id = '" . $_SESSION['user_id'] . "') p using(urn) left join companies com using(urn)  left join park_codes using(parked_code) left join outcomes  using(outcome_id) left join (select max(history_id) mhid,urn from history where comments <> '' group by urn) mhis using(urn) left join history h on h.history_id = mhis.mhid where r.urn = '$urn'";

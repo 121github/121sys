@@ -5,7 +5,7 @@
  * Copyright 2013 bootstrap-select
  * Licensed under the MIT license
  */
-
+.no-margin { margin:0 !important }
 .bootstrap-select.btn-group:not(.input-group-btn),
 .bootstrap-select.btn-group[class*="span"] {
     float: none;

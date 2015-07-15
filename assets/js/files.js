@@ -81,7 +81,9 @@ var files = {
         });
     },
     data_table: function(folder_id) {
+		if(folder_id>0){
 		$('.data-table').dataTable().fnDestroy();
+		}
         var table = $('.data-table').DataTable({
             "dom": '<"top">p<"dt_info"i>rt<"bottom"lp><"clear">',
             "oLanguage": {

@@ -6,8 +6,7 @@ if (!defined('BASEPATH'))
 class Search extends CI_Controller
 {
     
-    public function __construct()
-		 
+    public function __construct()	 
     {
         parent::__construct();
         user_auth_check();
@@ -19,6 +18,8 @@ class Search extends CI_Controller
         $this->load->model('Records_model');
         $this->load->model('Email_model');
     }
+	
+	
 	
 		
 	public function search_address(){
