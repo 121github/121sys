@@ -397,8 +397,14 @@ class Sms extends CI_Controller
         $output .= "Sending appointment remind sms...";
 
         $template_id = null;
+        $test = null;
+
         if (intval($this->uri->segment(3)) > 0) {
             $template_id = $this->uri->segment(3);
+        }
+
+        if (intval($this->uri->segment(4)) >= 0) {
+            $test = $this->uri->segment(4);
         }
 
         if ($template_id) {
@@ -456,7 +462,7 @@ class Sms extends CI_Controller
                 if (!empty($messages)) {
 
                     if ($status!=SMS_STATUS_PENDING) {
-                        $response = $this->sendBulkSms($messages);
+                        $response = $this->sendBulkSms($messages, $test);
                         //Save the sms_history
                         if ($response == "OK") {
                             $this->Sms_model->add_sms_histories($sms_histories);
@@ -504,11 +510,17 @@ class Sms extends CI_Controller
 
         $template_id = null;
         $source_id = null;
+        $test = null;
+
         if (intval($this->uri->segment(3)) > 0) {
             $template_id = $this->uri->segment(3);
         }
         if (intval($this->uri->segment(4)) > 0) {
             $source_id = $this->uri->segment(4);
+        }
+
+        if (intval($this->uri->segment(5)) > 0) {
+            $test = $this->uri->segment(5);
         }
 
         if ($template_id && $source_id) {
@@ -563,7 +575,7 @@ class Sms extends CI_Controller
                 if (!empty($messages)) {
 
                     if ($status!=SMS_STATUS_PENDING) {
-                        $response = $this->sendBulkSms($messages);
+                        $response = $this->sendBulkSms($messages, $test);
                         //Save the sms_history
                         if ($response == "OK") {
                             $this->Sms_model->add_sms_histories($sms_histories);
@@ -613,12 +625,14 @@ class Sms extends CI_Controller
         return $response;
     }
 
-    private function sendBulkSms($messages)
+    /**
+     * @param $messages
+     * @param $test false to send texts other case for testing
+     *
+     */
+    private function sendBulkSms($messages, $test)
     {
-        $test = 1;
-        if (ENVIRONMENT=='production') {
-            $test = 0;
-        }
+        $test = ($test == 'false'?0:1);
 
         //Build the xml data
         $xmlData = '
@@ -639,7 +653,6 @@ class Sms extends CI_Controller
                     </Sender>
                 </Account>
             </SMS>';
-
 
         $post = 'data='. urlencode($xmlData);
         $url = "http://www.txtlocal.com/xmlapi.php";
