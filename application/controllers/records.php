@@ -297,6 +297,7 @@ class Records extends CI_Controller
             "campaign_triggers" => $campaign_triggers,
             "javascript" => array(
                 "detail2.js",
+				'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
                 'plugins/jqfileupload/jquery.fileupload.js',
@@ -311,6 +312,7 @@ class Records extends CI_Controller
 				//'lib/wavsurfer.js'
             ),
             'css' => array(
+				'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
                 'plugins/jqfileupload/jquery.fileupload.css',
                 'plugins/countdown/jquery.countdown.css',
                 'plugins/responsive-calendar/responsive-calendar.css',
@@ -361,16 +363,30 @@ class Records extends CI_Controller
 			 $result = $this->Records_model->get_campaign_tasks($campaign_id);
 			 $tasks = $this->Records_model->get_record_tasks($this->input->post('urn'));
 			 $data = array();
-			 $task_status = array();
-			 $statuses = $this->Records_model->get_task_statues();
-			 foreach($tasks as $task){
-					$task_status[$task['task_id']]=$task['task_status_id']; 
-				 }
+			 $selected = array();
+			 $task_statuses = array();
 			 foreach($result as $row){
-				$data[$row['task_id']] = $row;
-				$data[$row['task_id']]["task_status_id"]=isset($task_status[$row['task_id']])?$task_status[$row['task_id']]:"";
+				 $data[$row['task_id']] = $row;
+				if(!empty($row['task_status_id'])){
+				$task_statuses[$row['task_id']][$row['task_status_id']] = $row['task_status'];
+				 }
+				 //find the selected task status from the available options
+				foreach($tasks as $t){
+					if($t['task_status_id']==$row['task_status_id']&&$row['task_id']==$t['task_id']){
+				$selected[$row['task_id']]=$row['task_status_id'];
+					}
+				}
+				//add the selected task status for the drop down menu
+				if(isset($selected[$row['task_id']])){
+				$data[$row['task_id']]["selected"] = $selected[$row['task_id']];
+				}
+				//add the full list of task statuses for the drop down menu
+				if(isset($task_statuses[$row['task_id']])){
+				$data[$row['task_id']]["statuses"] = $task_statuses[$row['task_id']];
+				}
 			 }
-				echo json_encode(array("success"=>true,"data"=>$data,"statuses"=>$statuses));
+			 
+				echo json_encode(array("success"=>true,"data"=>$data));
 		}
 	}
 	

@@ -288,7 +288,7 @@ class Admin_model extends CI_Model
     }
 	
 	public function get_custom_fields($campaign=array()){
-		$this->db->select("record_details_fields.id,record_details_fields.field,field_name,is_select,is_visible,is_renewal,editable,sort");
+		$this->db->select("record_details_fields.id,record_details_fields.field,field_name,is_select,is_visible,is_renewal,editable,sort,is_color,is_client_ref,is_owner");
 		$this->db->where_in("record_details_fields.campaign_id",$campaign);
 		$this->db->join("record_details_options",'record_details_options.id=record_details_fields.id','LEFT');
 		$query = $this->db->get("record_details_fields");
@@ -301,7 +301,6 @@ class Admin_model extends CI_Model
 		
 		$this->db->where('campaign_id',$campaign);
 		$this->db->delete('record_details_fields');
-			
 		foreach($post as $k=>$v){
 		if(!empty($v['name'])){
 			
@@ -317,6 +316,15 @@ class Admin_model extends CI_Model
 			}
 			if(isset($v['is_radio'])){
 				$insert["is_radio"] = 1;
+			}
+			if(isset($v['is_client_ref'])){
+				$insert["is_client_ref"] = 1;
+			}
+			if(isset($v['is_color'])){
+				$insert["is_color"] = 1;
+			}
+			if(isset($v['is_owner'])){
+				$insert["is_owner"] = 1;
 			}
 			if($k=="d1"&&isset($v['renewal'])){
 				$insert["is_renewal"] = 1;

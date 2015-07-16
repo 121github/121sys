@@ -910,7 +910,9 @@ $d = preg_replace('/[0-9]/','',$data['description']);
     public function save_additional_info()
     {
         if ($this->input->is_ajax_request()) {
-			//check if a field is color
+			$urn = $this->input->post('urn');
+
+			/*
 			$where = array("urn"=>$this->input->post('urn'),"field_name"=>"Color"); 
 			$this->db->where($where);
 			$this->db->join("record_details_fields","records.campaign_id=record_details_fields.campaign_id");
@@ -918,8 +920,28 @@ $d = preg_replace('/[0-9]/','',$data['description']);
 			if(count($result)>0){
 				$this->Records_model->save_record_color($this->input->post('urn'),$this->input->post($result['field']));	
 			}
+			*/
 			$info = $this->input->post();
+			$custom_fields = array("c1","c2","c3","c4","c5","c6");
 			foreach($info as $k => $v){
+				//check if its a special field ie-ownership,client_ref or color
+				if(in_array($k,$custom_fields)){
+				$qry = "select is_color,is_owner,is_client_ref from record_details_fields join campaigns 		using(campaign_id) join records using(campaign_id) where urn = '$urn' and field = '$k'";
+				$special_fields = $this->db->query($qry)->result_array();
+				foreach($special_fields as $row){
+					if($row['is_color']==1){
+						$this->Records_model->save_record_color($urn,$k);
+					}
+					if($row['is_owner']==1){
+						 $this->Records_model->save_ownership($urn, array($k));
+					}
+					if($row['is_client_ref']==1){
+						$this->Records_model->insert_client_ref($urn,$k);
+					}
+					
+				}
+				}
+				
 			if($v=="-"){
 			$info[$k] = NULL;	
 			}

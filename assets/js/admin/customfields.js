@@ -44,6 +44,21 @@ var admin = {
 					} else {
 					$('.fields_container').find('#'+row.field+'_rad').prop('checked',false);	
 					}
+					if(row.is_color=="1"){
+					$('.fields_container').find('#'+row.field+'_col').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_col').prop('checked',false);	
+					}
+					if(row.is_owner=="1"){
+					$('.fields_container').find('#'+row.field+'_own').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_own').prop('checked',false);	
+					}
+					if(row.is_client_ref=="1"){
+					$('.fields_container').find('#'+row.field+'_ref').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_ref').prop('checked',false);	
+					}
 				});
 				
 			}

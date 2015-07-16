@@ -207,8 +207,11 @@ var record = {
     tasks: {
         init: function () {
             record.tasks.load_panel();
-            $(document).on('change', '.task_statuses', function () {
-                record.tasks.save($(this));
+            $(document).on('change', 'select.task_status', function () {
+                record.tasks.save('select',$(this));
+            });
+			$(document).on('change', 'input.task_status', function () {
+                record.tasks.save('toggle',$(this));
             });
         },
         load_panel: function () {
@@ -226,32 +229,45 @@ var record = {
                 if (response.success) {
                     var tasks = "";
                     $.each(response.data, function (k, row) {
-                        tasks += '<div class="col-sm-6">' + row.task_name + '</div><div class="col-sm-6"><select id="' + row.task_id + '" class="task_statuses">';
-                        $.each(response.statuses, function (i, status) {
-                            if (row.task_status_id == status.task_status_id) {
+						if(row.statuses){
+                        tasks += '<div class="col-sm-6"><label>' + row.task_name + '</label><br><select class="selectpicker task_status" id="' + row.task_id + '">';
+                        $.each(row.statuses, function (status_id,status) {
+                            if (status_id == row.selected) {
                                 var selected = "selected"
                             } else {
                                 var selected = "";
                             }
-                            tasks += '<option value="' + status.task_status_id + '" ' + selected + ' >' + status.task_status + '</option>';
+                            tasks += '<option value="' + status_id + '" ' + selected + ' >' + status + '</option>';
                         });
-                        tasks += '</select></div><br>';
+                        tasks += '</select></div>';
+						} else {
+						  tasks += '<div class="col-sm-3"><label>' + row.task_name + '</label><br><input id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
+						}
                     });
                     $('#tasks-panel').html(tasks);
+					$('#tasks-panel input[type="checkbox"]').bootstrapToggle({
+            onstyle: 'warning',
+        });
+		$('#tasks-panel select').selectpicker();
                 } else {
                     flashalert.danger(response.msg);
                 }
             });
         },
-        save: function ($select) {
+        save: function (type,element) {
+			if(type=="select"){
+			var value = element.val();	
+			} else {
+			var value = element.prop('checked')?"2":"1"; //2 = Pending, 1==na		
+			}
             $.ajax({
                 url: helper.baseUrl + 'records/update_record_task',
                 type: "POST",
                 dataType: "JSON",
                 data: {
                     'urn': record.urn,
-                    'task_id': $select.attr('id'),
-                    'task_status_id': $select.val()
+                    'task_id': element.attr('id'),
+                    'task_status_id': value
                 }
             });
         }

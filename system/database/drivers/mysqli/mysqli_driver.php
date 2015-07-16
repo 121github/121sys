@@ -70,7 +70,7 @@ function _insert_update($table, $values)
         $valstr[]    = $val;
     }
     
-    $sql  = "INSERT INTO ".$this->_escape_table($table)." (".implode(', ',$keystr).") ";
+    $sql  = "INSERT INTO ".$table." (".implode(', ',$keystr).") ";
     $sql .= "VALUES (".implode(', ',$valstr).") ";
     $sql .= "ON DUPLICATE KEY UPDATE ".implode(', ',$updatestr);
     

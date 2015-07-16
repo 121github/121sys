@@ -26,15 +26,12 @@ class Records_model extends CI_Model
 	}
 	
 	public function save_task($data){
-		$data['updated_by'] = $_SESSION['user_id'];
-		$data['updated_on'] = date('Y-m-d H:i:s');
-		$insert_query = $this->db->insert_string("record_tasks",$data);
-		$insert_query = str_replace("INSERT INTO","INSERT IGNORE INTO",$insert_query);
-		$this->db->query($insert_query);
-		if(!$this->db->insert_id()){
-			$this->db->where(array("urn"=>$data['urn'],"task_id"=>$data['task_id']));
-			$this->db->update("record_tasks",$data);
-		}
+		//save the task status
+		$this->db->insert_update("record_tasks",$data);
+		//save to task history
+			$task_history = $data;
+			$task_history['user_id'] = $_SESSION['user_id'];
+			$this->db->insert("task_history",$task_history);
 	}
 	
 	public function save_record_color($urn,$color){
@@ -44,21 +41,12 @@ class Records_model extends CI_Model
 	}
 	
 	public function get_campaign_tasks($campaign_id){
-			      $qry = "select * from tasks join campaign_tasks using(task_id) where campaign_id = '$campaign_id'";
+			      $qry = "select task_id,task_name,task_status_id,task_status,task_name from campaign_tasks join tasks using(task_id) left join tasks_to_options using(task_id) left join task_status_options using(task_status_id) where campaign_id = '$campaign_id'";
 				  return $this->db->query($qry)->result_array();	
 	}
 		public function get_record_tasks($urn){
-			      $qry = "select * from record_tasks where urn = '$urn'";
+			      $qry = "select task_id,task_status_id from record_tasks where urn = '$urn'";
 				  return $this->db->query($qry)->result_array();	
-	}
-		public function get_task_statues($campaign_id=false){
-			      $qry = "select * from task_status";
-				   return $this->db->query($qry)->result_array();	
-	}
-	
-		public function get_tasks($urn){
-			       $this->db->where("urn", $urn);
-				   $result = $this->db->get("record_tasks")->result_array();	
 	}
 	
 	public function find_related_records($urn,$campaign=false){
@@ -798,7 +786,7 @@ class Records_model extends CI_Model
         elseif (empty($urn) && !empty($campaign_id)):
             $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and user_id in(select user_id from users_to_campaigns where campaign_id = '$campaign_id') ";
         else:
-            $qry = "select user_id,name,user_email,user_telephone from ownership left join users using(user_id) where user_status = 1 and urn = '$urn' and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']}))";
+            $qry = "select user_id,name,user_email,user_telephone from users join users_to_campaigns using(user_id) join records using(campaign_id) where user_status = 1 and urn = '$urn' and campaign_id in({$_SESSION['campaign_access']['list']})";
         endif;
         return $this->db->query($qry)->result_array();
     }
@@ -1012,10 +1000,11 @@ class Records_model extends CI_Model
 
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
-        $fields_qry = "select `field`,`field_name`,`is_select`,is_radio,is_renewal,format,editable from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
+        $fields_qry = "select `field`,`field_name`,`is_select`,is_radio,is_renewal,format,editable,is_owner from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
         $fields_result = $this->db->query($fields_qry)->result_array();
         $fields = "";
         foreach ($fields_result as $row) {
+			$options = array();
             $stuff1[$row['field_name']] = $row['field'];
             $renewal[$row['field_name']] = $row['format'];
 			$editable[$row['field_name']] = $row['editable'];
@@ -1028,11 +1017,18 @@ class Records_model extends CI_Model
                     "campaign_id" => $campaign
                 ));
 				$this->db->order_by("option");
+				if($row['is_owner']=="1"){
+				$is_select[$row['field_name']] = 1;
+				$users = $this->get_users($urn);
+				foreach($users as $user){
+				$options[] = array("id"=>$user['user_id'],"option"=>$user['name']);	
+				}
+				} else {
                 $option_result = $this->db->get("record_details_options")->result_array();
-				$options = array();
                 foreach ($option_result as $opt) {
                     $options[] = array("id"=>$opt['id'],"option"=>$opt['option']);
                 }
+				}
                 $stuff2[$row['field_name']] = $options;
             }
 
@@ -1403,6 +1399,11 @@ class Records_model extends CI_Model
 
         return $this->db->query($qry)->result_array();
     }
+	
+	public function insert_client_ref($urn,$client_ref){
+	$this->db->insert_update("client_refs", array("urn"=>$urn,"client_ref"=>$client_ref));	
+	}
+	
 }
 
 ?>
