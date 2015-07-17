@@ -1981,7 +1981,7 @@ var record = {
         load_panel: function () {
             $panel = $('.ownership-panel');
             $.ajax({
-                url: helper.baseUrl + "ajax/get_ownership",
+                url: helper.baseUrl + "ajax/get_users",
                 type: "POST",
                 dataType: "JSON",
                 data: {

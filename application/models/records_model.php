@@ -786,7 +786,8 @@ class Records_model extends CI_Model
         elseif (empty($urn) && !empty($campaign_id)):
             $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and user_id in(select user_id from users_to_campaigns where campaign_id = '$campaign_id') ";
         else:
-            $qry = "select user_id,name,user_email,user_telephone from users join users_to_campaigns using(user_id) join records using(campaign_id) where user_status = 1 and urn = '$urn' and campaign_id in({$_SESSION['campaign_access']['list']})";
+            $qry = "select user_id,name,user_email,user_telephone from users join users_to_campaigns using(user_id) join records using(campaign_id) join ownership using(urn) where user_status = 1 and urn = '$urn' and campaign_id in({$_SESSION['campaign_access']['list']})";
+			$this->firephp->log($qry);
         endif;
         return $this->db->query($qry)->result_array();
     }
