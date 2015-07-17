@@ -36,10 +36,14 @@
 | $config['img_path'] = '/images/somefolder';
 | 
 | -------------------------------------------------------------------*/
+if($_SERVER['SERVER_PORT']==443){
+$http = "https://";	
+} else {
+$http = "http://";		
+}
 
-	
-	$config['img_path'] = base_url()."/upload/templates"; // Relative to domain name
-	$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . $config['img_path']; // Physical path. [Usually works fine like this]
+	$config['img_path'] = $http.$_SERVER['HTTP_HOST']."/upload/templates"; // Relative to domain name
+	$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . "/upload/templates"; // Physical path. [Usually works fine like this]
 print_r($config);
 
 /*-------------------------------------------------------------------

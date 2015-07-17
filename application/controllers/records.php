@@ -386,7 +386,7 @@ class Records extends CI_Controller
 				}
 			 }
 			 
-				echo json_encode(array("success"=>true,"data"=>$data));
+				echo json_encode(array("success"=>true,"data"=>$data,"count"=>count($data)));
 		}
 	}
 	

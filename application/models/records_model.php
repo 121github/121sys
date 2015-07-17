@@ -1011,12 +1011,6 @@ class Records_model extends CI_Model
 			$is_select[$row['field_name']] = $row['is_select'];
 			$is_radio[$row['field_name']] = $row['is_radio'];
             if ($row['is_select'] == 1||$row['is_radio'] == 1) {
-                $this->db->select("id,option");
-                $this->db->where(array(
-                    "field" => $row['field'],
-                    "campaign_id" => $campaign
-                ));
-				$this->db->order_by("option");
 				if($row['is_owner']=="1"){
 				$is_select[$row['field_name']] = 1;
 				$users = $this->get_users($urn);
@@ -1024,9 +1018,15 @@ class Records_model extends CI_Model
 				$options[] = array("id"=>$user['user_id'],"option"=>$user['name']);	
 				}
 				} else {
+				$this->db->select("id,option");
+                $this->db->where(array(
+                    "field" => $row['field'],
+                    "campaign_id" => $campaign
+                ));
+				$this->db->order_by("option");
                 $option_result = $this->db->get("record_details_options")->result_array();
                 foreach ($option_result as $opt) {
-                    $options[] = array("id"=>$opt['id'],"option"=>$opt['option']);
+                    $options[] = array("id"=>$opt['option'],"option"=>$opt['option']);
                 }
 				}
                 $stuff2[$row['field_name']] = $options;

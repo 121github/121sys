@@ -241,7 +241,12 @@ var record = {
                         });
                         tasks += '</select></div>';
 						} else {
-						  tasks += '<div class="col-sm-3"><label>' + row.task_name + '</label><br><input id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
+							if(response.count>2){
+							var size = "data-width='100%'"; 
+							} else {
+							var size = "";
+							}
+						  tasks += '<div class="col-sm-3"><label>' + row.task_name + '</label><br><input '+size+' id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
 						}
                     });
                     $('#tasks-panel').html(tasks);
@@ -1885,7 +1890,7 @@ var record = {
                             if (row.value == option.option) {
                                 var selected = "selected";
                             }
-                            $select += "<option " + selected + " value='" + option.option + "'>" + option.option + "</option>";
+                            $select += "<option " + selected + " value='" + option.id + "'>" + option.option + "</option>";
                         });
                         $select += "</select></div>";
                         form += $select;
