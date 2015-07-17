@@ -19,6 +19,11 @@
  *
  */
 //define('ENVIRONMENT', 'development');
+$redirect = str_replace("121sys/121sys","121sys",$_SERVER['REQUEST_URI']);
+if(strpos($_SERVER['REQUEST_URI'],"121sys/121sys")!==false){
+	header("location: ".$redirect); 
+	exit;
+}
 
 $no_https = array("accept.", "demo.", "test.");
 

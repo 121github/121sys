@@ -230,7 +230,7 @@ var record = {
                     var tasks = "";
                     $.each(response.data, function (k, row) {
 						if(row.statuses){
-                        tasks += '<div class="col-sm-6"><label>' + row.task_name + '</label><br><select class="selectpicker task_status" id="' + row.task_id + '">';
+                        tasks += '<div class="col-sm-3"><label>' + row.task_name + '</label><br><select class="selectpicker task_status" id="' + row.task_id + '">';
                         $.each(row.statuses, function (status_id,status) {
                             if (status_id == row.selected) {
                                 var selected = "selected"
