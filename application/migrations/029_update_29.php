@@ -65,7 +65,7 @@ $this->db->query("INSERT INTO `task_status_options` (`task_status_id`, `task_sta
 (2, 'Pending'),
 (3, 'Complete')");
 
-$this->db->query("ALTER TABLE `record_details_fields` ADD `is_color` BOOLEAN NULL DEFAULT NULL , ADD `is_owner` BOOLEAN NULL DEFAULT NULL , ADD `is_client_ref` BOOLEAN NULL DEFAULT NULL");
+$this->db->query("ALTER TABLE `record_details_fields` ADD `is_color` BOOLEAN NULL DEFAULT NULL , ADD `is_owner` BOOLEAN NULL DEFAULT NULL , ADD `is_client_ref` BOOLEAN NULL DEFAULT NULL,  ADD `is_radio` BOOLEAN NULL DEFAULT NULL ");
 
 	}
 	

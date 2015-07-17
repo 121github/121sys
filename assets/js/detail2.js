@@ -230,7 +230,7 @@ var record = {
                     var tasks = "";
                     $.each(response.data, function (k, row) {
 						if(row.statuses){
-                        tasks += '<div class="col-sm-3"><label>' + row.task_name + '</label><br><select class="selectpicker task_status" id="' + row.task_id + '">';
+                        tasks += '<div class="col-sm-4"><label>' + row.task_name + '</label><br><select class="selectpicker task_status" id="' + row.task_id + '">';
                         $.each(row.statuses, function (status_id,status) {
                             if (status_id == row.selected) {
                                 var selected = "selected"
@@ -246,7 +246,7 @@ var record = {
 							} else {
 							var size = "";
 							}
-						  tasks += '<div class="col-sm-3"><label>' + row.task_name + '</label><br><input '+size+' id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
+						  tasks += '<div class="col-sm-4"><label>' + row.task_name + '</label><br><input '+size+' id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
 						}
                     });
                     $('#tasks-panel').html(tasks);
@@ -1981,7 +1981,7 @@ var record = {
         load_panel: function () {
             $panel = $('.ownership-panel');
             $.ajax({
-                url: helper.baseUrl + "ajax/get_users",
+                url: helper.baseUrl + "ajax/get_ownership",
                 type: "POST",
                 dataType: "JSON",
                 data: {

@@ -23,6 +23,14 @@ class Ajax extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 
+	public function fix_eldon(){
+	$qry ="select urn,name from record_details left join users on users.name like concat(c3,'%')";
+	$res = $this->db->query($qry)->result_array();
+		foreach($res as $k=>$row){
+		echo "update record_details set c3 = '{$row['name']}' where urn = {$row['urn']};";
+		echo "<br>";	
+		}
+	}
 	
 	public function validate_postcode(){
 		   if ($this->input->is_ajax_request()) {
