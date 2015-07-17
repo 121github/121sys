@@ -802,7 +802,11 @@ $d = preg_replace('/[0-9]/','',$data['description']);
     public function get_ownership()
     {
         if ($this->input->is_ajax_request()) {
-            $owners = $result = $this->Records_model->get_ownership(intval($this->input->post("urn")));
+            $result = $this->Records_model->get_ownership(intval($this->input->post("urn")));
+            $owners = array();
+            foreach ($result as $row) {
+                $owners[] = $row['user_id'];
+            }
             echo json_encode(array(
                 "success" => true,
                 "data" => $owners
