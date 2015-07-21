@@ -1099,7 +1099,7 @@ class Records_model extends CI_Model
 
 	public function get_name_from_user_id($id){
 	$this->db->where("user_id",$id);
-	return $this->db->get('users')->row()->name;	
+ 	return $this->db->get('users')->row()->name;	
 	}
 
     public function save_additional_info($post)

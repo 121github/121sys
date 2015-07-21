@@ -941,9 +941,9 @@ $d = preg_replace('/[0-9]/','',$data['description']);
 						$this->Records_model->save_record_color($urn,$k);
 					}
 					if($row['is_owner']==1){
-						 $this->Records_model->save_ownership($urn, array($k));
-						 if(!empty($k)){
-						 $info[$k] = $this->Records_model->get_name_from_user_id($k);
+						 $this->Records_model->save_ownership($urn, array($v));
+						 if(!empty($v)){
+						 $info[$k] = $this->Records_model->get_name_from_user_id($v);
 						 }
 					}
 					if($row['is_client_ref']==1){
