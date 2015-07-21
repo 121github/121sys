@@ -149,7 +149,11 @@ public function get_audit_data($options){
             $id = "hour(h.contact) `sql`,date_format(h.contact,'%H:00:00')";
             $name = "'All'";
             $hours = 1;
-            //$hours = "1";
+        } else if ($options['group'] == "reason") {
+            $group_by = "h.outcome_reason_id";
+            $id = "outr.outcome_reason_id";
+            $name = "outr.outcome_reason";
+            $hours = 1;
         } else {
             $group_by = "h.campaign_id";
             $id = "c.campaign_id";
@@ -192,11 +196,17 @@ public function get_audit_data($options){
             $where .= " and r.source_id = '$source' ";
         }
 		$where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $joins = " left join users u using(user_id) left join records r using(urn) ";
-        $qry = "select $id id,$name name,if(outcome_count is null,0,outcome_count) outcome_count,if(d.dials is null,'0',d.dials) as total_dials,(select sum(hr.duration)
-		 from hours hr where $hours $hours_where) as duration from history h left join campaigns c using(campaign_id)  $joins left join 
-		(select count(*) outcome_count,$group_by gb from history h $joins where h.outcome_id = $outcome_id $where group by $group_by) oc on oc.gb = $group_by left join
-		(select count(*) dials,$group_by dd from history h $joins where h.outcome_id is not null $where group by $group_by) d on d.dd = $group_by
+        $joins = " left join users u using(user_id) left join records r using(urn) left join outcome_reasons outr ON (outr.outcome_reason_id = h.outcome_reason_id) ";
+        $qry = "select
+                    $id id,
+                    $name name,
+                    if(outcome_count is null,0,outcome_count) outcome_count,
+                    if(d.dials is null,'0',d.dials) as total_dials,
+                    (select sum(hr.duration) from hours hr where $hours $hours_where) as duration
+                from history h
+                left join campaigns c using(campaign_id)  $joins
+                left join (select count(*) outcome_count,$group_by gb from history h $joins where h.outcome_id = $outcome_id $where group by $group_by) oc on oc.gb = $group_by
+                left join (select count(*) dials,$group_by dd from history h $joins where h.outcome_id is not null $where group by $group_by) d on d.dd = $group_by
         where 1 $where
 		group by $group_by ";
 		

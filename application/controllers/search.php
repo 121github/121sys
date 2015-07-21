@@ -344,6 +344,7 @@ class Search extends CI_Controller
             "company-postcode" => "company-postcode",
             "company-telephone-number" => "company-telephone-number",
             "client-ref" => "client-ref",
+            "reason" => "history.outcome_reason_id"
         );
         
         $search_fields_2 = array(
@@ -369,7 +370,8 @@ class Search extends CI_Controller
             "fullname" => "fullname",
             "coname" => "coname",
             "company-postcode" => "company-postcode",
-            "client-ref" => "client-ref"
+            "client-ref" => "client-ref",
+            "reason" => "history.outcome_reason_id"
         );
         $fields          = array();
         $array           = array();
