@@ -187,6 +187,7 @@ class Trackvia extends CI_Controller
               'appointment_creation' => false,
 			  'appointment_cancelled' => false,
 			  'record_color'=>'000000',
+			  'parked_code'=>2,
 				'source_id' => 41,
 				'savings_per_panel' => 30
 
@@ -339,6 +340,7 @@ echo "<br>";
         $urgent = $options['urgent'];
         $status = $options['status'];
         $outcome_id = isset($options['outcome_id'])?$options['outcome_id']:"";
+		$parked_code = isset($options['parked_code'])?$options['parked_code']:"";
         $appointment_creation = $options['appointment_creation'];
 		$appointment_cancelled = $options['appointment_cancelled'];
 		$record_color = $options['record_color'];
@@ -408,6 +410,9 @@ if($record['record_status'] <> "3"){
                     );
 					if(!empty($outcome_id)){
 					$update_array['outcome_id'] = $outcome_id;
+					}
+					if(!empty($parked_code)){
+					$update_array['parked_code'] = $parked_code;
 					}
 				//organising the record update data
                 array_push($update_records, $update_array);
