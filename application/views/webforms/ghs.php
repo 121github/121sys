@@ -62,10 +62,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <option value='Newspaper'>Newspaper</option>
           <option value='Website'>Website</option>
              <option value='Radio'>Radio</option>
-              <option value='Friend'>Friend</option>
-               <option value='Family'>Family</option>
-                <option value='Facebook'>Facebook</option>
-                 <option value='Neighbour'>Neighbour</option>
+               <option value='Facebook'>Facebook</option>
+              <!-- <option value='Family'>Family</option>
+                  <option value='Friend'>Friend</option>
+                 <option value='Neighbour'>Neighbour</option>-->
   </select>
   </div>
     <hr>

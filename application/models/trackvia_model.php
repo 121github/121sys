@@ -24,7 +24,7 @@ class Trackvia_model extends CI_Model
 
 
 	public function get_record($urn){
-		$query = "select * from records inner join campaigns using(campaign_id) inner join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn' group by urn";
+		$query = "select * from records inner join campaigns using(campaign_id) join client_refs using(urn) left join record_details using(urn) left join webform_answers using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) where urn = '$urn' group by urn";
 		$row = $this->db->query($query)->row_array();
 		$comments = $this->Records_model->get_last_comment($urn);
 		$row['comments'] = $comments;

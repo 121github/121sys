@@ -812,9 +812,9 @@ if($record['record_status'] <> "3"){
 	public function review_required(){
 	$urn = $this->input->post('urn');
 		 //Get the record data
-        $record = $this->Trackvia_model->get_record($urn);
+        $this->db->where(array("urn"=>$urn));
 		//if the record has TV id then we can update or we need to create it
-		if(isset($record['client_ref'])){
+		if($this->db->get("client_refs")->num_rows()){
 			echo("update tv record");
 			echo "<br>";
 			$this->update_tv_record($urn);
@@ -823,7 +823,6 @@ if($record['record_status'] <> "3"){
 			echo "<br>";
 			$this->add_tv_record($urn);
 		}
-
 	}
 
 	public function test_update(){

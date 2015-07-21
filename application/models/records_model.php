@@ -50,7 +50,7 @@ class Records_model extends CI_Model
 	}
 	
 	public function find_related_records($urn,$campaign=false){
-		$qry = "select companies.name,companies.website,concat(add1,postcode) address,comt.telephone_number company_telephone,cont.telephone_number contact_telephone,concat(fullname,dob) contact from records left join companies using(urn) left join company_addresses using(company_id) left join contacts using(urn) left join company_telephone comt using(company_id) left join contact_telephone cont using(contact_id) where urn = '$urn'";
+		$qry = "select companies.name,companies.website,concat(coma.add1,coma.postcode) address,concat(cona.add1,cona.postcode) contact_address,comt.telephone_number company_telephone,cont.telephone_number contact_telephone,concat(fullname,dob) contact from records left join companies using(urn) left join company_addresses coma using(company_id) left join contacts using(urn) left join company_telephone comt using(company_id) left join contact_telephone cont using(contact_id) left join contact_addressses using(contact_id)  where urn = '$urn'";
 		if($campaign){
 			$qry .= " and campaign_id = '$campaign'";
 		}
@@ -65,7 +65,7 @@ class Records_model extends CI_Model
 			 $original['website'] = $row['website'];
 			   }
 			  if($row['contact']){
-			 $original['contacts'][$row['contact']] = $row['contact'];
+			 $original['contacts'][$row['contact']] = str_replace(array("Mr","Mrs","Miss"),array("","",""),$row['contact']);
 			  }
 			 if($row['address']){
 			 $original['addresses'][$row['address']] = $row['address'];
@@ -75,6 +75,9 @@ class Records_model extends CI_Model
 			 }
 			 if($row['contact_telephone']){
 			   $original['contact_numbers'][$row['contact_telephone']] = $row['contact_telephone'];
+			  }
+			   if($row['contact_address']){
+			   $original['contact_addresses'][$row['contact_address']] = $row['contact_address'];
 			  }
 		 }
 		//now look for matches using the data from the original
@@ -117,6 +120,17 @@ class Records_model extends CI_Model
 					if($k=="addresses"){
 						foreach($v as $address){
 	$query = "select urn,'address' matched_on from companies left join records using(urn) inner join company_addresses using(company_id) where concat(add1,postcode) = '$address' and urn <> $urn";
+	if($campaign){
+			$query .= " and campaign_id = '$campaign'";
+		}
+		  $query .= " and campaign_id in({$_SESSION['campaign_access']['list']}) "; 
+	$address_matches = $this->db->query($query)->result_array();
+	array_push($matches,$address_matches);
+						}
+			}
+						if($k=="contact_addresses"){
+						foreach($v as $address){
+	$query = "select urn,'address' matched_on from contacts left join records using(urn) inner join contact_addresses using(contact_id) where concat(add1,postcode) = '$address' and urn <> $urn";
 	if($campaign){
 			$query .= " and campaign_id = '$campaign'";
 		}
