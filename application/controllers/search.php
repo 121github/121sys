@@ -243,10 +243,10 @@ class Search extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
 			$filter = $this->input->post();
-			
 			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
+
             $urn_array   = $this->Filter_model->count_records($filter);
 			
             echo json_encode(array(

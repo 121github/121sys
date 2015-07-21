@@ -72,6 +72,7 @@ return $this->db->get('record_details_options')->result_array();
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
         $qry .= $addon;
+		$this->firephp->log($qry);
 		$_SESSION['action_query'] = base64_encode($qry);
 		$result = array(
             "data" => $this->db->query($qry)->result_array()
@@ -93,7 +94,6 @@ return $this->db->get('record_details_options')->result_array();
     
     public function create_query_filter($filter, $use = false)
     {
-	
 		$filter_options["urn"]              = array(
             "table" => "records",
             "type" => "id",
@@ -647,7 +647,7 @@ return $this->db->get('record_details_options')->result_array();
 				}
 				
                 if ($field == 'postcode' && count($filter[$field])) {
-                    $distance = ($filter['distance']) ? $filter['distance'] : 0;
+                    $distance = (isset($filter['distance']) ? $filter['distance'] : 0);
                     
                     if (isset($filter['lat']) && isset($filter['lng'])&& $filter['distance']>"0") {
                         
@@ -696,7 +696,7 @@ return $this->db->get('record_details_options')->result_array();
 		$parked = "";
 		}
 		$where .= $parked;
-		
+
 		//users can see unaassigned records
 		if(@in_array("search unassigned",$_SESSION['permissions'])&&@array_key_exists("view_unassigned",$filter)){
 		$unassigned = " or ow.user_id is null";	

@@ -199,7 +199,7 @@ class Form_model extends CI_Model
     }
     public function get_outcomes()
     {
-        $qry = "select outcome_id id,outcome name from outcomes left join outcomes_to_campaigns using(outcome_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by outcome_id order by outcome";
+        $qry = "select outcome_id id,outcome name from outcomes left join outcomes_to_campaigns using(outcome_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by outcome_id order by outcome ";
         return $this->db->query($qry)->result_array();
     }
     public function get_progress_descriptions()

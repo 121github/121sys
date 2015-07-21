@@ -14,7 +14,7 @@
             </div>
               <div class="panel-body search-panel">
 
-<form class="form">
+<form class="form" id="filter-form")>
 
 <div class="col-xs-12 col-sm-6 col-lg-2">
 <div class="form-group">
@@ -31,7 +31,7 @@
 <div class="col-xs-12 col-sm-6 col-lg-2">
 <div class="form-group">
 <label>Company</label>
-<input type="text" class="form-control" placeholder="Enter company name" name="company"/>
+<input type="text" class="form-control" placeholder="Enter company name" name="coname"/>
 </div>
 </div>
 
@@ -52,23 +52,27 @@
 <div class="col-xs-12 col-sm-6 col-lg-2">
 <div class="form-group">
 <label>Reference number</label>
-<input type="text" class="form-control" placeholder="The 4 digit code" name="c4"/>
+<input type="text" class="form-control" placeholder="The 4 digit code" name="client_ref"/>
 </div>
 </div>
 
-<div class="col-xs-12 col-sm-6 col-lg-1">
+<div class="col-xs-12 col-sm-6 col-lg-2">
 <div class="form-group">
 <label>&nbsp;</label>
 <br />
-<button class="btn btn-primary" id="search">Search</button>
+<button class="btn btn-primary pull-left" id="search">Search</button> <button class="btn marl pull-left btn-default clear-filter">Clear</button>
 </div>
 </div>
 </form>
 <hr>
 
-<div class="row"></div>
+<div class="row">
+
+</div>
 <div class="col-md-12">
 <div id="search-results">
+
+Found: <span class="record-count"></span> <a href="#" class="submit-filter" >View Records</a>
 
 </div>
 </div>
@@ -123,17 +127,20 @@
         </div>
         
 
-<script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
+<script src="<?php echo base_url() ?>assets/js/filter.js"></script> 
 
-<!-- Page-Level Plugin Scripts - Dashboard --> 
-<script src="<?php echo base_url() ?>assets/js/plugins/morris/raphael-2.1.0.min.js"></script> 
-<script src="<?php echo base_url() ?>assets/js/plugins/morris/morris.js"></script> 
-
-<!-- SB Admin Scripts - Include with every page --> 
-<script src="<?php echo base_url() ?>assets/js/sb-admin.js"></script> 
 
 <script>
 $(document).ready(function(){
 	$('.bootstrap-select').css('margin',0);
+		filter.count_records();
+	$(document).on('click','#search',function(e){
+		e.preventDefault();
+		filter.count_records();
+	})
+	$(document).on('click', '.submit-filter', function(e) {
+            e.preventDefault();
+            filter.apply_filter();
+  	});
 });
 </script>
