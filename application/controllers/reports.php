@@ -24,13 +24,13 @@ class Reports extends CI_Controller
         $sources = $this->Form_model->get_sources();
         $agents = $this->Form_model->get_agents();
         $outcomes = $this->Form_model->get_outcomes();
-		
+
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Data Capture',
             'page' => 'data_capture',
-			'campaigns' => $campaigns,
+            'campaigns' => $campaigns,
             'sources' => $sources,
             'team_managers' => $teamManagers,
             'agents' => $agents,
@@ -50,9 +50,6 @@ class Reports extends CI_Controller
     }
 
 
-
-
-
     //this controller loads the view for the targets page on the dashboard
     public function targets()
     {
@@ -61,8 +58,8 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Targets',
-            'page' =>  'targets'
-           ,
+            'page' => 'targets'
+        ,
             'javascript' => array(
                 'charts.js',
                 'report/targets.js',
@@ -95,7 +92,7 @@ class Reports extends CI_Controller
             'pageId' => 'Reports',
             'title' => 'Reports | Answers',
             'page' => 'answers'
-            ,
+        ,
             'javascript' => array(
                 'charts.js',
                 'report/answers.js'
@@ -133,7 +130,6 @@ class Reports extends CI_Controller
     }
 
 
-
     //this is the controller loads the initial view for the activity dashboard
     public function activity()
     {
@@ -147,7 +143,7 @@ class Reports extends CI_Controller
             'pageId' => 'Reports',
             'title' => 'Reports | Activity',
             'page' => 'activity'
-            ,
+        ,
             'javascript' => array(
                 'charts.js',
                 'report/activity.js',
@@ -240,6 +236,8 @@ class Reports extends CI_Controller
             $group = "date";
         } else if ($this->uri->segment(3) == "time") {
             $group = "time";
+        } else if ($this->uri->segment(3) == "outcome_reason") {
+            $group = "reason";
         } else {
             $group = "campaign";
         }
@@ -347,6 +345,9 @@ class Reports extends CI_Controller
                 } else if ($group == "agent") {
                     $allDialsUrl = $url . "/outcome/null:not/user/" . $id;
                     $outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                } else if ($group == "reason") {
+                    $allDialsUrl = $url . "/outcome/null:not/reason/" . $id;
+                    $outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
                 } else {
                     $allDialsUrl = $url . "/outcome/null:not/alldials/" . $id;
                     $outcomesUrl = $url . "/outcome/null:not/campaign/" . $id . "/outcome/" . $form['outcome'];
@@ -373,11 +374,13 @@ class Reports extends CI_Controller
             $totalPercent = ($totalDials) ? number_format((($totalOutcomes) * 100) / $totalDials, 2) : 0;
 
             $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+            $url .= ($group == "reason" ? "/reason/null:not" : "");
 
             array_push($data, array(
                 "id" => "TOTAL",
                 "name" => "",
-                "outcomes" => $totalOutcomes . " (" . $totalOutcomesPercent . "%)",
+                //"outcomes" => $totalOutcomes . " (" . $totalOutcomesPercent . "%)",
+                "outcomes" => $totalOutcomes,
                 "outcomes_url" => $url . "/outcome/$outcome",
                 "total_dials" => $totalDials,
                 "total_dials_url" => $url,
@@ -418,7 +421,7 @@ class Reports extends CI_Controller
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Reports',
             'title' => 'Reports | Email',
-            'page' =>"email_report_$group",
+            'page' => "email_report_$group",
             'javascript' => array(
                 'charts.js',
                 'report/email.js',
@@ -468,7 +471,7 @@ class Reports extends CI_Controller
                     $aux[$row['id']]['sql'] = $row['sql'];
                     $aux[$row['id']]['name'] = $row['name'];
                     $aux[$row['id']]['emails_read'] = $row['email_read_count'];
-					$aux[$row['id']]['emails_pending'] = $row['email_pending_count'];
+                    $aux[$row['id']]['emails_pending'] = $row['email_pending_count'];
                     $aux[$row['id']]['emails_unsent'] = $row['email_unsent_count'];
                     $aux[$row['id']]['emails_sent'] = $row['email_sent_count'];
                 }
@@ -492,7 +495,7 @@ class Reports extends CI_Controller
             foreach ($aux as $id => $row) {
                 $emails_read = (array_key_exists('emails_read', $row)) ? $row['emails_read'] : 0;
                 $emails_unsent = (array_key_exists('emails_unsent', $row)) ? $row['emails_unsent'] : 0;
-				  $emails_pending = (array_key_exists('emails_pending', $row)) ? $row['emails_pending'] : 0;
+                $emails_pending = (array_key_exists('emails_pending', $row)) ? $row['emails_pending'] : 0;
                 //create the click through hyperlinks
                 if ($group == "contact") {
                     $emailUrl = $url . "/sent-email-date/" . $row['sql'];
@@ -512,7 +515,7 @@ class Reports extends CI_Controller
                     "name" => $row['name'],
                     "emails_read" => $emails_read,
                     "emails_read_url" => $emailUrl . "/emails/read",
-					"emails_pending" => $emails_pending,
+                    "emails_pending" => $emails_pending,
                     "emails_pending_url" => $emailUrl . "/emails/pending",
                     "emails_unsent" => $emails_unsent,
                     "emails_unsent_url" => $emailUrl . "/emails/unsent",
@@ -539,7 +542,7 @@ class Reports extends CI_Controller
                 "name" => "",
                 "emails_read" => $totalEmailsRead,
                 "emails_read_url" => $url . "/emails/read",
-				"emails_pending" => $totalEmailsRead,
+                "emails_pending" => $totalEmailsRead,
                 "emails_pending_url" => $url . "/emails/pending",
                 "emails_unsent" => $totalEmailUnsent,
                 "emails_unsent_url" => $url . "/emails/unsent",
@@ -587,7 +590,7 @@ class Reports extends CI_Controller
     //this is the controller loads the initial view for the productivity report
     public function productivity()
     {
-        $agents       = $this->Form_model->get_agents();
+        $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
         $outcomes = $this->Form_model->get_outcomes();
 
@@ -614,38 +617,37 @@ class Reports extends CI_Controller
         $this->template->load('default', 'reports/productivity.php', $data);
     }
 
-public function capture_data(){
+    public function capture_data()
+    {
 
-			$results = $this->Report_model->get_audit_data($this->input->post());
-			   echo json_encode(array(
-                "success" => true,
-                "data" => $results,
-                "msg" => "No results found"
-            ));
-}
+        $results = $this->Report_model->get_audit_data($this->input->post());
+        echo json_encode(array(
+            "success" => true,
+            "data" => $results,
+            "msg" => "No results found"
+        ));
+    }
 
 
     //this controller sends the productivity data back the page in JSON format. It ran when the page loads and any time the filter is changed
     public function productivity_data()
     {
         if ($this->input->is_ajax_request()) {
-            $data    = array();
+            $data = array();
             $data_array = array();
-            $total   = 0;
+            $total = 0;
             $results = $this->Report_model->get_productivity($this->input->post());
             $date_from = $this->input->post("date_from");
-            $date_to   = $this->input->post("date_to");
-            $user      = $this->input->post("agent");
-            $team  = $this->input->post("team");
-
-
+            $date_to = $this->input->post("date_to");
+            $user = $this->input->post("agent");
+            $team = $this->input->post("team");
 
 
             echo json_encode(array(
                 "success" => (!empty($results)),
                 "data" => $results,
                 "total" => $total,
-                "msg" => (empty($results)?"No results found":"")
+                "msg" => (empty($results) ? "No results found" : "")
             ));
         }
     }

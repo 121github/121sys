@@ -378,6 +378,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                 <li <?php echo @($page == 'outcome_report_time' ? "class='Selected'" : "") ?>>
                                     <a href="<?php echo base_url() ?>reports/outcomes/time/1">By
                                         Time</a></li>
+                                <li <?php echo @($page == 'outcome_report_reason' ? "class='Selected'" : "") ?>>
+                                    <a href="<?php echo base_url() ?>reports/outcomes/outcome_reason/1">By
+                                        Outcome Reason</a></li>
                             </ul>
                         </li>
                         <?php if (in_array("productivity", $_SESSION['permissions'])) { ?>
