@@ -15,6 +15,7 @@ class Sms extends CI_Controller
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
         $this->load->model('Sms_model');
+        $this->load->model('Form_model');
 
         $this->textlocal = new textlocal("jon-man@121customerinsight.co.uk","95288bf9c5c1c5339426fc9178bebd025e850c76");
     }
@@ -72,23 +73,42 @@ class Sms extends CI_Controller
     {
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-        $urn = intval($this->uri->segment(4));
-        $template_id = intval($this->uri->segment(3));
-        $template = $this->Sms_model->get_template($template_id);
+
+        $urn = intval($this->uri->segment(3));
+
+        $template_id = intval($this->uri->segment(4));
+
+        $template = null;
+        if ($template_id) {
+            $template = $this->Sms_model->get_template($template_id);
+        }
+
         $last_comment = $this->Records_model->get_last_comment($urn);
 
-        $placeholder_data = $this->Sms_model->get_placeholder_data($urn);
-        $placeholder_data[0]['comments'] = $last_comment;
-        if (count($placeholder_data)) {
-            foreach ($placeholder_data[0] as $key => $val) {
-                if ($key == "fullname") {
-                    $val = str_replace("Mr ", "", $val);
-                    $val = str_replace("Mrs ", "", $val);
-                    $val = str_replace("Miss ", "", $val);
-                    $val = str_replace("Ms ", "", $val);
-                }
-                if (strpos($template['template_text'], "[$key]") !== false) {
-                    $template['template_text'] = str_replace("[$key]", $val, $template['template_text']);
+        $sms_senders = $this->Form_model->get_sms_senders();
+
+        $contact_numbers = $this->Contacts_model->get_mobile_numbers($urn);
+        $aux = array();
+        foreach($contact_numbers as $number) {
+            array_push($aux, format_mobile($number));
+        }
+        $contact_numbers = array_unique($aux);
+
+
+        if ($template) {
+            $placeholder_data = $this->Sms_model->get_placeholder_data($urn);
+            $placeholder_data[0]['comments'] = $last_comment;
+            if (count($placeholder_data)) {
+                foreach ($placeholder_data[0] as $key => $val) {
+                    if ($key == "fullname") {
+                        $val = str_replace("Mr ", "", $val);
+                        $val = str_replace("Mrs ", "", $val);
+                        $val = str_replace("Miss ", "", $val);
+                        $val = str_replace("Ms ", "", $val);
+                    }
+                    if (strpos($template['template_text'], "[$key]") !== false) {
+                        $template['template_text'] = str_replace("[$key]", $val, $template['template_text']);
+                    }
                 }
             }
         }
@@ -101,6 +121,8 @@ class Sms extends CI_Controller
             'urn' => $urn,
             'template_id' => $template_id,
             'template' => $template,
+            'sms_senders' => $sms_senders,
+            'contact_numbers' => $contact_numbers,
             'css' => array(
                 'dashboard.css',
                 'plugins/fontAwesome/css/font-awesome.css',
@@ -159,156 +181,58 @@ class Sms extends CI_Controller
         }
     }
 
-    //Get the contacts
-    public function get_contacts()
-    {
-        user_auth_check();
-        if ($this->input->is_ajax_request()) {
-            $urn = intval($this->input->post('urn'));
-
-            $contacts = $this->Contacts_model->get_contacts($urn);
-
-            $aux = array();
-            foreach ($contacts as $key => $contact) {
-                if ($contact['visible']['Email address']) {
-                    $aux[$key]["name"] = $contact['name']['fullname'];
-                    $aux[$key]["email"] = "";
-                }
-            }
-            $contacts = $aux;
-
-            echo json_encode(array(
-                "success" => true,
-                "data" => $contacts
-            ));
-        }
-    }
-
     //Send an sms
     public function send_sms()
     {
         user_auth_check();
         $form = $this->input->post();
 
+        $sender = ($form['template_sender_id']?$form['template_sender']:null);
+        $numbers = $form['sent_to'];
+        $message = $form['template_text'];
 
-        $form['body'] = base64_decode($this->input->post('body'));
-
-        //Status false by default, before sent the sms
-        $form['status'] = false;
-
-        $urn = intval($this->input->post('urn'));
-        $last_comment = $this->Records_model->get_last_comment($urn);
-        $placeholder_data = $this->Sms_model->get_placeholder_data($urn);
-        $placeholder_data[0]['comments'] = $last_comment;
-        if (count($placeholder_data)) {
-            foreach ($placeholder_data[0] as $key => $val) {
-                if ($key == "fullname") {
-                    $val = str_replace("Mr ", "", $val);
-                    $val = str_replace("Mrs ", "", $val);
-                    $val = str_replace("Mrs ", "", $val);
-                }
-                $body = str_replace("[$key]", $val, $form['body']);
+        //Check if the sender selected exist
+        if ($this->check_sender_name($sender)) {
+            //Check if the message is empty
+            if (strlen(trim($message)) <= 0) {
+                echo json_encode(array(
+                    "data" => array("status" => "error", "msg" => "ERROR: The message is empty")
+                ));
             }
-        }
-
-        if (strpos($body, "WAS EMPTY") !== false) {
-            echo json_encode(array(
-                "success" => false,
-                "msg" => "You have empty placeholders in the sms contents. Please edit it first!"
-            ));
-            exit;
-        }
-
-        //Delete duplicates sms addresses
-        $from = array_unique(explode(",", $form['send_from']));
-        $form['send_from'] = implode(",", $from);
-        $to = array_unique(explode(",", $form['send_to']));
-        $form['send_to'] = implode(",", $to);
-        $cc = array_unique(explode(",", $form['cc']));
-        $form['cc'] = implode(",", $cc);
-        $bcc = array_unique(explode(",", $form['bcc']));
-        $form['bcc'] = implode(",", $bcc);
-
-
-        $msg = "";
-        $client = $this->Records_model->get_client_from_urn($form['urn']);
-        if ($this->Sms_model->check_unsubscribed($form['send_to'], $client)) {
-            echo json_encode(array(
-                "success" => false,
-                "msg" => "One or more sms have unsubscribed, unable to send"
-            ));
-            exit;
-        }
-
-        //Save the sms in the history table
-        unset($form['template_attachments']);
-        $sms_id = $this->Sms_model->add_new_sms_history($form);
-        $response = ($sms_id) ? true : false;
-        $form['sms_id'] = $sms_id;
-        if (!$response) {
-            $msg = "Error saving the sms history. The sms was not sent.";
-        } else {
-
-            if ($response) {
-                //Add the tracking image to know if the sms is read
-                $form_to_send = $form;
+            else {
                 //Send the sms
-                $sms_sent = $this->send($form_to_send);
+                $response = $this->send($numbers, $message, $sender);
 
-                //Update the status in the sms History table
-                if ($sms_sent) {
-                    $form['sms_id'] = $sms_id;
-                    $form['status'] = true;
-                    $this->Sms_model->update_sms_history($form);
-                    $response = true;
-                    $msg = "SMS sent successfully!";
-                } else {
-                    $response = false;
-                    $msg = "The SMS was not sent";
-                }
-            }
-        }
-
-        echo json_encode(array(
-            "success" => $response,
-            "msg" => $msg
-        ));
-    }
-
-    public function trigger_sms()
-    {
-        user_auth_check();
-        if (isset($_SESSION['sms_triggers'])) {
-            $urn = intval($this->input->post('urn'));
-
-            foreach ($_SESSION['sms_triggers'] as $template_id => $recipients) {
-                foreach ($recipients['sms'] as $name => $sms_address) {
-                    //create the form structure to pass to the send function
-                    $form = $this->Sms_model->template_to_form($template_id);
-                    $form['send_to'] = $sms_address;
-                    $form['bcc'] = $recipients['bcc'];
-                    $form['cc'] = $recipients['cc'];
-                    $form['urn'] = $urn;
-                    $last_comment = $this->Records_model->get_last_comment($urn);
-                    $placeholder_data = $this->Sms_model->get_placeholder_data($urn);
-                    $placeholder_data[0]['comments'] = $last_comment;
-                    $placeholder_data['recipient_name'] = $name;
-                    if (count($placeholder_data)) {
-                        foreach ($placeholder_data[0] as $key => $val) {
-                            if ($key == "fullname") {
-                                $val = str_replace("Mr ", "", $val);
-                                $val = str_replace("Mrs ", "", $val);
-                                $val = str_replace("Mrs ", "", $val);
-                            }
-                            $form['body'] = str_replace("[$key]", $val, $form['body']);
-                        }
+                if ($response) {
+                    //Save the sms in the history table
+                    $sms_ar = array();
+                    $user_id = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+                    $status_id = (($response->status === "success")&&($response->test_mode !== TRUE)?SMS_STATUS_SENT:SMS_STATUS_ERROR);
+                    foreach ($numbers as $number) {
+                        array_push($sms_ar, array(
+                            "text" => $message,
+                            "send_to" => $number,
+                            "sender_id" => $form['template_sender_id'],
+                            "user_id" => $user_id,
+                            "urn" => $form['urn'],
+                            "template_id" => $form['template_id'],
+                            "status_id" => $status_id
+                        ));
                     }
-                    $this->firephp->log($form);
-                    $this->send($form);
+
+                    $this->Sms_model->add_sms_histories($sms_ar);
                 }
+
+                echo json_encode(array(
+                    "data" => $response
+                ));
             }
         }
-        unset($_SESSION['sms_triggers']);
+        else {
+            echo json_encode(array(
+                "data" => array("status" => "error", "msg" => "ERROR: The sender selected does not exist")
+            ));
+        }
     }
 
     /**
@@ -618,9 +542,33 @@ class Sms extends CI_Controller
 
     }
 
+    //Check if the sender name exist
+    private function check_sender_name($sender) {
+        //If the sender is null or does not exist on the list, get the default one
+        $sender_names = $this->textlocal->getSenderNames();
+        if (!$sender || !in_array($sender,$sender_names->sender_names)) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    //Get the default sender name
+    private function get_default_sender_name() {
+
+        return $this->textlocal->getSenderNames()->default_sender_name;
+    }
+
     private function send($numbers,$message, $sender = null)
     {
-        $response = $this->textlocal->sendSms($numbers, $message, $sender);
+        $test = (ENVIRONMENT !== "production");
+
+        if (!$sender) {
+            $sender = $this->get_default_sender_name();
+        }
+
+        $response = $this->textlocal->sendSms($numbers, $message, $sender, null, $test);
 
         return $response;
     }

@@ -24,7 +24,7 @@ class Sms_model extends CI_Model
         if ($this->db->query($query)->num_rows() > 0) {
             $contact_details = " left join (select urn,max(appointment_id) max_id from appointments where urn='$urn') a_id using (urn) left join appointments a on a.appointment_id = a_id.max_id left join contacts using(contact_id) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) left join appointment_attendees using(appointment_id) left join appointment_types using(appointment_type_id) left join users attendees on appointment_attendees.user_id = attendees.user_id where records.urn = '$urn'";
             $attendee = " if(attendees.name is null,'Sir/Madam',attendees.name) attendee ";
-            $appointment_fields = " appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(`start`)>'16:00:00','eve',if(time(`start`)<'12:00:00','am','pm')) time_slot, ";
+            $appointment_fields = " appointment_type, if(a.address<>'',a.address,'') address, a.`title`,a.`text`,date_format(`start`,'%d/%m/%Y %H:%i') `start`,a.`end`,a.`date_added`,date_format(`start`,'%d/%m/%Y') `appointment_date`,if(time(start)<'12:30:00','08:30 and 12:30','12:30 and 20:00') time_slot, ";
         } else {
             $contact_details = " left join contacts using(urn) left join contact_telephone using(contact_id) left join contact_addresses ca using(contact_id) where records.urn = '$urn'";
             $attendee = " 'Sir/Madam' attendee ";

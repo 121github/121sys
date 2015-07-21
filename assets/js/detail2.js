@@ -1165,7 +1165,7 @@ var record = {
             $(document).on('click', '#continue-sms', function (e) {
                 e.preventDefault();
                 var template = $('#smstemplatespicker').val();
-                window.location.href = helper.baseUrl + 'sms/create/' + template + '/' + record.urn;
+                window.location.href = helper.baseUrl + 'sms/create/' + record.urn + (template?('/' + template):'');
             });
             $(document).on('click', 'span.del-sms-btn', function (e) {
                 e.preventDefault();
@@ -1187,15 +1187,15 @@ var record = {
                 dataType: "HTML",
                 data: {urn: record.urn},
             }).done(function (data) {
-                var $mbody = $(data), mheader = "Send sms", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="marl btn btn-primary" disabled id="continue-sms">Continue</button>';
+                var $mbody = $(data), mheader = "Send sms", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="marl btn btn-primary" id="continue-sms">Continue</button>';
                 $mbody.find('#smstemplatespicker').selectpicker().on('change', function () {
                     var selected = $('#smstemplatespicker option:selected').val();
-                    if (selected) {
-                        $('#continue-sms').prop('disabled', false);
-                    }
-                    else {
-                        $('#continue-sms').prop('disabled', true);
-                    }
+                    //if (selected) {
+                    //    $('#continue-sms').prop('disabled', false);
+                    //}
+                    //else {
+                    //    $('#continue-sms').prop('disabled', true);
+                    //}
                 });
                 modals.load_modal(mheader, $mbody, mfooter);
                 modal_body.css('overflow', 'visible');
