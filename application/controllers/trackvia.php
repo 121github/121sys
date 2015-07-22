@@ -434,21 +434,21 @@ if($record['record_status'] <> "3"){
 				}
 				//organise the record_details update
 				$extra = array();
-				if(!empty($fields['No. Panels (Desktop)'])){
+				if(!empty($fields['No. Panels (Desktop)'])&&isset($fields['No. Panels (Desktop)'])){
 				$extra["n1"]=$fields['No. Panels (Desktop)'];
 				$extra["n2"]=$fields['No. Panels (Desktop)']*$savings;
 				}
-				if(!empty($fields['GHS UPRN'])){
+				if(!empty($fields['GHS UPRN'])&&isset($fields['GHS UPRN'])){
 				$extra["c1"]=$fields['GHS UPRN'];
 				//echo $fields['GHS UPRN']."<br>";
 				}
-				if(!empty($fields['Referred by'])){
+				if(!empty($fields['Referred by'])&&isset($fields['Referred by'])){
 				$extra["c2"]=$fields['Referred by'];
 				} else {
 				$extra["c2"] = NULL;
 				}
-				if(!empty($fields['Enquiry type'])){
-				$extra["c3"]=$fields['Enquiry type'];
+				if(!empty($fields['Enquiry Type'])&&isset($fields['Enquiry Type'])){
+				$extra["c3"]=$fields['Enquiry Type'];
 				//echo $fields['Enquiry type']."<br>";
 				} else {
 				$extra["c3"] = NULL;
@@ -458,7 +458,7 @@ if($record['record_status'] <> "3"){
 				} else {
 				$extra["c5"] = NULL;
 				}
-				if(!empty($fields['Reason for Desktop Fail'])&&$campaign_id<>22){
+				if(!empty($fields['Reason for Desktop Fail'])&&isset($fields['Reason for Desktop Fail'])&&$campaign_id<>22){
 				$extra["c6"]=$fields['Reason for Desktop Fail'];
 				} else if($fields['Int Survey Priority']&&$campaign_id==22){
 				$extra["c6"]=$fields['Int Survey Priority'];
@@ -525,19 +525,19 @@ if($record['record_status'] <> "3"){
 				$this->Trackvia_model->add_client_refs($data);
 				//prepare the record_details
 				$data=array();
-				if(!empty($fields['GHS UPRN'])){
+				if(!empty($fields['GHS UPRN'])&&isset($fields['GHS UPRN'])){
 				$data["c1"]=$fields['GHS UPRN'];
 				}
-				if(!empty($fields['Referred by'])){
+				if(!empty($fields['Referred by'])&&isset($fields['Referred by'])){
 				$data["c2"]=$fields['Referred by'];
 				}
-				if(!empty($fields['Enquiry type'])){
-				$data["c3"]=$fields['Enquiry type'];
+				if(!empty($fields['Enquiry Type'])&&isset($fields['Enquiry Type'])){
+				$data["c3"]=$fields['Enquiry Type'];
 				}
-				if(!empty($fields['Property Status'])){
+				if(!empty($fields['Property Status'])&&isset($fields['Property Status'])){
 				$data["c5"]=$fields['Property Status'];
 				}
-				if(!empty($fields['Reason for Desktop Fail'])){
+				if(!empty($fields['Reason for Desktop Fail'])&&isset($fields['Reason for Desktop Fail'])){
 				$data["c6"]=$fields['Reason for Desktop Fail'];
 				}
 				if(!empty($data)){
