@@ -133,11 +133,12 @@ public function get_audit_data($options){
 
     public function get_outcome_data($options)
     {
+        $joins = '';
         if ($options['group'] == "agent") {
             $group_by = "h.user_id";
             $id = "h.user_id";
             $name = "u.name";
-            $joins = " left join users u using(user_id) left join records r using(urn) ";
+            //$joins .= " left join users u using(user_id) left join records r using(urn) ";
             $hours = "hr.`user_id` = h.user_id ";
         } else if ($options['group'] == "date") {
             $group_by = "date(contact)";
@@ -153,6 +154,7 @@ public function get_audit_data($options){
             $group_by = "h.outcome_reason_id";
             $id = "outr.outcome_reason_id";
             $name = "outr.outcome_reason";
+            $joins .= " inner join outcome_reasons outr ON (outr.outcome_reason_id = h.outcome_reason_id) ";
             $hours = 1;
         } else {
             $group_by = "h.campaign_id";
@@ -196,7 +198,7 @@ public function get_audit_data($options){
             $where .= " and r.source_id = '$source' ";
         }
 		$where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $joins = " left join users u using(user_id) left join records r using(urn) left join outcome_reasons outr ON (outr.outcome_reason_id = h.outcome_reason_id) ";
+        $joins = " left join users u using(user_id) left join records r using(urn) ".$joins;
         $qry = "select
                     $id id,
                     $name name,
