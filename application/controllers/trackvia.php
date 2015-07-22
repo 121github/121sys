@@ -444,26 +444,18 @@ if($record['record_status'] <> "3"){
 				}
 				if(!empty($fields['Referred by'])&&isset($fields['Referred by'])){
 				$extra["c2"]=$fields['Referred by'];
-				} else {
-				$extra["c2"] = NULL;
 				}
 				if(!empty($fields['Enquiry Type'])&&isset($fields['Enquiry Type'])){
 				$extra["c3"]=$fields['Enquiry Type'];
 				//echo $fields['Enquiry type']."<br>";
-				} else {
-				$extra["c3"] = NULL;
 				}
 				if(@!empty($property_status)){
 				$extra["c5"]=$property_status;
-				} else {
-				$extra["c5"] = NULL;
 				}
 				if(!empty($fields['Reason for Desktop Fail'])&&isset($fields['Reason for Desktop Fail'])&&$campaign_id<>22){
 				$extra["c6"]=$fields['Reason for Desktop Fail'];
-				} else if($fields['Int Survey Priority']&&$campaign_id==22){
+				} else if(!empty($fields['Int Survey Priority'])&&isset($fields['Reason for Desktop Fail'])&&$campaign_id==22){
 				$extra["c6"]=$fields['Int Survey Priority'];
-				} else {
-				$extra["c6"] = NULL;
 				}
 				if(!empty($extra)){
 				$extra['urn'] = $record['urn'];
