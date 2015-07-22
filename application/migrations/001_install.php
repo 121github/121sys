@@ -1111,7 +1111,7 @@ CREATE TABLE IF NOT EXISTS `contacts` (
                           header TEXT NOT NULL,
                           query TEXT NOT NULL,
                           order_by VARCHAR(25) NULL,
-                          group_by VARCHAR(25) NULL,
+                          group_by VARCHAR(50) NULL,
                           date_filter VARCHAR(25),
                           campaign_filter VARCHAR(25),
                       PRIMARY KEY (export_forms_id)
