@@ -501,27 +501,22 @@ $(document).on('change','.q6-question',function(){
               
         
             <script>
-$(document).on('change','.q7-question',function(){
-	var lenders = new Array("BDW Trading","Birmingham building society","Bradford & Bingley","Britannia","Church House Trust","Clysedale Bank","CO-OP","Engage Credit","Future mortgage ltd","GE Money","I Group loans","J Casey & Co","JP Morgan","Kensington Mortgages","Morgan Stanley","Mortgage agency services 1-5","Mortgage agency services limited","Mortgage Express","New Life","Northern rock asset management","Norton Home Loans","Papilio UK Equity Release Mortgages Ltd","Paragon","Paratus","Platform Funding","Preferred mortgages","Principality","Prudential","Redstone","Rooftop Mortgages","Saffron","Skipton","South Pacific","The Mortgage Business PLC","West Bromwich");
+			 lenders = new Array("BDW Trading","Birmingham building society","Bradford & Bingley","Britannia","Church House Trust","Clysedale Bank","CO-OP","Engage Credit","Future mortgage ltd","GE Money","I Group loans","J Casey & Co","JP Morgan","Kensington Mortgages","Morgan Stanley","Mortgage agency services 1-5","Mortgage agency services limited","Mortgage Express","New Life","Northern rock asset management","Norton Home Loans","Papilio UK Equity Release Mortgages Ltd","Paragon","Paratus","Platform Funding","Preferred mortgages","Principality","Prudential","Redstone","Rooftop Mortgages","Saffron","Skipton","South Pacific","The Mortgage Business PLC","West Bromwich");
 
-	var prefered = $.inArray($(this).val(),lenders );
-	if(!prefered){
+$(document).on('change','.q7-question',function(){
+	var preferred = $.inArray($(this).val(),lenders );
+	if(preferred>=0){
 	$('#q7-alert').show();	
 	$('#finished').hide();	
-	} else {
+	}
+	if(preferred=="-1"){
 		$('#q7-alert').hide();	
 			$('#finished').show();	
 	}
-
-});
+})
 </script> 
-<?php if (@!empty($values['a7'])&&@$values['a1']=="house"&&@$values['a6']=="Y"){ ?>
-	<script>
-	$(document).ready(function(){
-		$('.q7-question').trigger('change');
-	})
-	</script>
-<?php } ?>
+
+
    <div class="text-danger" id="q7-alert"  style="display:none">You need to email the homeowner a mortage consent letter which will need to be signed and returned before we can proceed. The details will be in the letter</div>
         <div class="text-success" id="finished"  style="display:none">They have met the initial critera and could be eligible for the offer. If the <b>Property Viable</b> field is <b>Y</b> you can book an appointment for the survey. If it's empty, then you should select the outcome <b>Desktop Prequal</b></div>
 <hr>
