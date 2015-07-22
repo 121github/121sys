@@ -368,4 +368,102 @@ public function get_audit_data($options){
 
         return $this->db->query($qry)->result_array();
     }
+
+    /**
+     * Get sms data
+     */
+    public function get_sms_data($options)
+    {
+        if ($options['group'] == "agent") {
+            $group_by = "sh.user_id";
+            $id = "sh.user_id `sql`, sh.user_id";
+            $name = "u.name";
+        } else if ($options['group'] == "date") {
+            $group_by = "date(sh.sent_date)";
+            $id = "date(sh.sent_date) `sql`,date_format(sh.sent_date,'%d/%m/%y')";
+            $name = "'All'";
+        } else if ($options['group'] == "time") {
+            $group_by = "hour(sh.sent_date)";
+            $id = "hour(sh.sent_date) `sql`,date_format(sh.sent_date,'%H:00:00')";
+            $name = "'All'";
+        } else {
+            $group_by = "c.campaign_id";
+            $id = "c.campaign_id `sql`, c.campaign_id";
+            $name = "campaign_name";
+        }
+
+        $date_from = $options['date_from'];
+        $agent = $options['agent'];
+        $date_to = $options['date_to'];
+        $template = $options['template'];
+        $campaign = $options['campaign'];
+        $team_manager = $options['team'];
+        $source = $options['source'];
+        $hours_where = "";
+        $where = "";
+        if (!empty($date_from)) {
+            $where .= " and date(sh.sent_date) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(sh.sent_date) <= '$date_to' ";
+        }
+        if (!empty($template)) {
+            $where .= " and sh.template_id = '$template' ";
+        }
+        if (!empty($campaign)) {
+            $where .= " and c.campaign_id = '$campaign' ";
+        }
+        if (!empty($team_manager)) {
+            $where .= " and u.team_id = '$team_manager' ";
+        }
+        if (!empty($agent)) {
+            $where .= " and sh.user_id = '$agent' ";
+            $name = "u.name";
+        }
+        if (!empty($source)) {
+            $where .= " and r.source_id = '$source' ";
+        }
+
+        //if the user does not have the agent reporting permission they can only see their own stats
+        if (@!in_array("by agent", $_SESSION['permissions'])) {
+            $where .= " and sh.user_id = '{$_SESSION['user_id']}' ";
+        }
+
+        //if the user does not have the group reporting permission they can only see their own stats
+        if (@!in_array("by group", $_SESSION['permissions'])) {
+            $where .= " and u.group_id = '{$_SESSION['group']}' ";
+        }
+
+        //if the user does not have the group reporting permission they can only see their own stats
+        if (@!in_array("by team", $_SESSION['permissions'])) {
+            $where .= " and u.team_id = '{$_SESSION['team']}' ";
+        }
+        $where .=" and r.campaign_id in({$_SESSION['campaign_access']['list']})";
+        $joins = "
+          inner join records r ON (r.urn = sh.urn)
+          inner join campaigns c ON (c.campaign_id = r.campaign_id)
+          left join users u ON (u.user_id = sh.user_id)";
+
+        $qry = "select $id id,
+                $name name,
+                count(*) as sms_sent_count,
+                if(sms_delivered_count is null,0,sms_delivered_count) sms_delivered_count,
+				if(sms_pending_count is null,0,sms_pending_count) sms_pending_count,
+				if(sms_undelivered_count is null,0,sms_undelivered_count) sms_undelivered_count,
+				if(sms_unknown_count is null,0,sms_unknown_count) sms_unknown_count,
+				if(sms_error_count is null,0,sms_error_count) sms_error_count
+        from sms_history sh
+          left join users using(user_id)
+          $joins
+          left join (select count(*) sms_delivered_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_SENT." $where group by $group_by) ssc on ssc.gb = $group_by
+          left join (select count(*) sms_pending_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_PENDING." $where group by $group_by) spc on spc.gb = $group_by
+          left join (select count(*) sms_undelivered_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_UNDELIVERED." $where group by $group_by) suc on suc.gb = $group_by
+          left join (select count(*) sms_unknown_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_UNKNOWN." $where group by $group_by) sunc on sunc.gb = $group_by
+          left join (select count(*) sms_error_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_ERROR." $where group by $group_by) sec on sec.gb = $group_by
+
+        where 1 $where
+		group by $group_by ";
+        $this->firephp->log($qry);
+        return $this->db->query($qry)->result_array();
+    }
 }

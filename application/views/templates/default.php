@@ -412,6 +412,28 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                                 </ul>
                             </li>
                         <?php } ?>
+                        <?php if (in_array("sms", $_SESSION['permissions'])) { ?>
+                            <li>
+
+                                <a href="#reports-sms">Sms</a>
+                                <ul id="reports-sms">
+                                    <li <?php echo @($page == 'sms_report_campaign' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>reports/sms/campaign/1">By
+                                            Campaign</a></li>
+                                    <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
+                                        <li <?php echo @($page == 'sms_report_agent' ? "class='Selected'" : "") ?>>
+                                            <a href="<?php echo base_url() ?>reports/sms/agent/1">By
+                                                Agent</a></li>
+                                    <?php } ?>
+                                    <li <?php echo @($page == 'sms_report_date' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>reports/sms/date/1">By
+                                            Date</a></li>
+                                    <li <?php echo @($page == 'sms_report_time' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>reports/sms/time/1">By
+                                            Time</a></li>
+                                </ul>
+                            </li>
+                        <?php } ?>
                         <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a
                                 href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
                     </ul>

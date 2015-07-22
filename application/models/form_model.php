@@ -331,6 +331,19 @@ class Form_model extends CI_Model
         return $this->db->get()->result_array();
     }
 
+    /**
+     * Get sms templates
+     */
+    public function get_sms_templates()
+    {
+        if (in_array("all campaigns", $_SESSION['permissions'])) {
+            $qry = "select template_id id,template_name name from sms_templates order by template_name";
+        } else {
+            $qry = "select template_id id,template_name name from sms_templates left join sms_template_to_campaigns using(template_id) where campaign_id in({$_SESSION['campaign_access']['list']}) order by template_name";
+        }
+        return $this->db->query($qry)->result_array();
+    }
+
 
     public function get_users_in_role($role_id)
     {

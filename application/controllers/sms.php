@@ -43,7 +43,7 @@ class Sms extends CI_Controller
         user_auth_check();
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
-            $sms = $this->Email_model->get_sms_by_filter($form);
+            $sms = $this->Sms_model->get_sms_by_filter($form);
 
             echo json_encode(array(
                 "success" => true,

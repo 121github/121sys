@@ -444,7 +444,7 @@ class Reports extends CI_Controller
     }
 
 
-    //this controller sends the campaign appointment report data back the page in JSON format. It ran when the page loads and any time the filter is changed
+    //this controller sends the sms report data back the page in JSON format. It ran when the page loads and any time the filter is changed
     public function email_data()
     {
         if ($this->input->is_ajax_request()) {
@@ -648,6 +648,191 @@ class Reports extends CI_Controller
                 "data" => $results,
                 "total" => $total,
                 "msg" => (empty($results) ? "No results found" : "")
+            ));
+        }
+    }
+
+    //this is the controller loads the initial view for the sms reports
+    public function sms()
+    {
+        if ($this->uri->segment(3) == "campaign") {
+            $group = "campaign";
+        } else if ($this->uri->segment(3) == "agent") {
+            $group = "agent";
+        } else if ($this->uri->segment(3) == "date") {
+            $group = "date";
+        } else if ($this->uri->segment(3) == "time") {
+            $group = "time";
+        } else {
+            $group = "campaign";
+        }
+        $templates = $this->Form_model->get_sms_templates();
+        $campaigns = $this->Form_model->get_user_campaigns();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources = $this->Form_model->get_sources();
+        $agents = $this->Form_model->get_agents();
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Reports',
+            'title' => 'Reports | Sms',
+            'page' => "sms_report_$group",
+            'javascript' => array(
+                'charts.js',
+                'report/sms.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'group' => $group,
+            'templates' => $templates,
+            'campaigns' => $campaigns,
+            'sources' => $sources,
+            'team_managers' => $teamManagers,
+            'agents' => $agents,
+            'css' => array(
+                'dashboard.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+
+        $this->template->load('default', 'reports/sms.php', $data);
+    }
+
+
+    //this controller sends the sms report data back the page in JSON format. It ran when the page loads and any time the filter is changed
+    public function sms_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $data = array();
+
+            $form = $this->input->post();
+            $form["date_from"] = ($this->input->post("date_from")) ? $this->input->post("date_from") : date('Y-m-d', strtotime("2014-07-02"));
+            $form["date_to"] = ($this->input->post("date_to")) ? $this->input->post("date_to") : date('Y-m-d');
+            $results = $this->Report_model->get_sms_data($form);
+
+            $date_from_search = $form["date_from"];
+            $date_to_search = $form["date_to"];
+            $agent_search = $form["agent"];
+            $campaign_search = $form["campaign"];
+            $template_search = $form["template"];
+            $team_search = $form["team"];
+            $source_search = $form["source"];
+            $group = $form["group"];
+
+
+            $aux = array();
+            foreach ($results as $row) {
+                if ($row['sms_sent_count']) {
+                    $aux[$row['id']]['sql'] = $row['sql'];
+                    $aux[$row['id']]['name'] = ($row['name']?$row['name']:($group === 'agent'?'Automatic':''));
+                    $aux[$row['id']]['sms_sent'] = $row['sms_sent_count'];
+                    $aux[$row['id']]['sms_delivered'] = $row['sms_delivered_count'];
+                    $aux[$row['id']]['sms_pending'] = $row['sms_pending_count'];
+                    $aux[$row['id']]['sms_undelivered'] = $row['sms_undelivered_count'];
+                    $aux[$row['id']]['sms_unknown'] = $row['sms_unknown_count'];
+                    $aux[$row['id']]['sms_error'] = $row['sms_error_count'];
+                }
+            }
+
+            $totalSmsSent = 0;
+            $totalSmsDelivered = 0;
+            $totalSmsPending = 0;
+            $totalSmsUndelivered = 0;
+            $totalSmsUnknown = 0;
+            $totalSmsError = 0;
+            $totalSmsUnsent = 0;
+            $url = base_url() . "search/custom/records";
+            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
+            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+            $url .= (!empty($template_search) ? "/template/$template_search" : "");
+            $url .= (!empty($date_from_search) ? "/sent-sms-from/$date_from_search" : "");
+            $url .= (!empty($date_to_search) ? "/sent-sms-to/$date_to_search" : "");
+            $url .= (!empty($team_search) ? "/team/$team_search" : "");
+            $url .= (!empty($source_search) ? "/source/$source_search" : "");
+            if ($group == "date") {
+                $group = "contact";
+            }
+            foreach ($aux as $id => $row) {
+                $sms_sent = (array_key_exists('sms_sent', $row)) ? $row['sms_sent'] : 0;
+                $sms_delivered = (array_key_exists('sms_delivered', $row)) ? $row['sms_delivered'] : 0;
+                $sms_pending = (array_key_exists('sms_pending', $row)) ? $row['sms_pending'] : 0;
+                $sms_undelivered = (array_key_exists('sms_undelivered', $row)) ? $row['sms_undelivered'] : 0;
+                $sms_unknown = (array_key_exists('sms_unknown', $row)) ? $row['sms_unknown'] : 0;
+                $sms_error = (array_key_exists('sms_error', $row)) ? $row['sms_error'] : 0;
+                //create the click through hyperlinks
+                if ($group == "contact") {
+                    $smsUrl = $url . "/sent-sms-date/" . $row['sql'];
+                } else if ($group == "time") {
+                    $smsUrl = $url . "/sent-smss-time/" . $row['sql'];
+                } else if ($group == "agent") {
+                    $smsUrl = $url . "/user-sms-sent-id/" . $id;
+                } else if ($group == "campaign") {
+                    $smsUrl = $url . "/campaign/" . $id;
+                } else {
+                    $smsUrl = $url . "/allsms/" . $id;
+                }
+
+                $data[] = array(
+                    "id" => $id,
+                    "sql" => $row['sql'],
+                    "name" => $row['name'],
+                    "sms_sent" => $sms_sent,
+                    "sms_sent_url" => $smsUrl . "/sms/sent",
+                    "sms_delivered" => $sms_delivered,
+                    "sms_delivered_url" => $smsUrl . "/sms/delivered",
+                    "sms_pending" => $sms_pending,
+                    "sms_pending_url" => $smsUrl . "/sms/pending",
+                    "sms_undelivered" => $sms_undelivered,
+                    "sms_undelivered_url" => $smsUrl . "/sms/undelivered",
+                    "sms_unknown" => $sms_unknown,
+                    "sms_unknown_url" => $smsUrl . "/sms/unknown",
+                    "sms_error" => $sms_error,
+                    "sms_error_url" => $smsUrl . "/sms/error",
+                    "percent_sent" => (($sms_delivered > 0) ? number_format(($sms_delivered * 100) / $sms_sent, 2) : 0) . "%",
+                    "percent_pending" => (($sms_pending+$sms_unknown > 0) ? number_format((($sms_pending+$sms_unknown) * 100) / $sms_sent, 2) : 0) . "%",
+                    "percent_unsent" => (($sms_error+$sms_undelivered > 0) ? number_format((($sms_error+$sms_undelivered) * 100) / $sms_sent, 2) : 0) . "%",
+                    "group" => $group
+                );
+                $totalSmsSent += $sms_sent;
+                $totalSmsDelivered += $sms_delivered;
+                $totalSmsPending += $sms_pending;
+                $totalSmsUndelivered += $sms_undelivered;
+                $totalSmsUnknown += $sms_unknown;
+                $totalSmsError += $sms_error;
+            }
+
+            $totalSmsPendingPercent = ($totalSmsPending||$totalSmsUnknown) ? number_format((($totalSmsPending+$totalSmsUnknown) * 100) / $totalSmsSent, 2) : 0;
+            $totalSmsSentPercent = ($totalSmsDelivered) ? number_format(($totalSmsDelivered * 100) / $totalSmsSent, 2) : 0;
+            $totalSmsUnsentPercent = ($totalSmsError||$totalSmsUndelivered) ? number_format((($totalSmsError+$totalSmsUndelivered) * 100) / $totalSmsSent, 2) : 0;
+
+
+            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+
+            array_push($data, array(
+                "id" => "TOTAL",
+                "sql" => "TOTAL",
+                "name" => "",
+                "sms_sent" => $totalSmsSent,
+                "sms_sent_url" => $url . "/sms/sent",
+                "sms_delivered" => $totalSmsDelivered,
+                "sms_delivered_url" => $url . "/sms/delivered",
+                "sms_pending" => $totalSmsPending,
+                "sms_pending_url" => $url . "/sms/pending",
+                "sms_undelivered" => $totalSmsUndelivered,
+                "sms_undelivered_url" => $url . "/sms/undelivered",
+                "sms_unknown" => $totalSmsUnknown,
+                "sms_unknown_url" => $url . "/sms/unknown",
+                "sms_error" => $totalSmsError,
+                "sms_error_url" => $url . "/sms/error",
+                "percent_sent" => $totalSmsSentPercent . "%",
+                "percent_pending" => $totalSmsPendingPercent . "%",
+                "percent_unsent" => $totalSmsUnsentPercent . "%",
+                "group" => $group
+            ));
+
+            echo json_encode(array(
+                "success" => true,
+                "data" => $data
             ));
         }
     }

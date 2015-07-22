@@ -235,7 +235,7 @@ class Sms_model extends CI_Model
 		    	inner join sms_status st ON (s.status_id = st.sms_status_id)
 		    	inner join sms_sender ss ON (s.sender_id = ss.sender_id)
 		    	left join users u ON (u.user_id = s.user_id)
-		    	inner join sms_templates t ON (t.template_id = s.template_id)
+		    	left join sms_templates t ON (t.template_id = s.template_id)
 		    	where s.urn = " . $urn . "
 		    	order by s.sent_date desc
 		    	" . $limit_;
@@ -258,8 +258,7 @@ class Sms_model extends CI_Model
         $source = $options['source'];
         $id = $options['id'];
         $group = $options['group'];
-        $sent = $options['sent'];
-        $read = $options['read'];
+        $status = $options['status'];
 
         if ($id != "TOTAL") {
             if ($group == "agent") {
@@ -275,19 +274,19 @@ class Sms_model extends CI_Model
 
         $where = "";
         if (!empty($date_from)) {
-            $where .= " and date(eh.sent_date) >= '$date_from' ";
+            $where .= " and date(s.sent_date) >= '$date_from' ";
         }
         if (!empty($date_to)) {
-            $where .= " and date(eh.sent_date) <= '$date_to' ";
+            $where .= " and date(s.sent_date) <= '$date_to' ";
         }
         if (isset($date)) {
-            $where .= " and date(eh.sent_date) = '$date' ";
+            $where .= " and date(s.sent_date) = '$date' ";
         }
         if (isset($hour)) {
-            $where .= " and hour(eh.sent_date) = '$hour' ";
+            $where .= " and hour(s.sent_date) = '$hour' ";
         }
         if (!empty($template)) {
-            $where .= " and eh.template_id = '$template' ";
+            $where .= " and s.template_id = '$template' ";
         }
         if (!empty($campaign)) {
             $where .= " and c.campaign_id = '$campaign' ";
@@ -296,23 +295,42 @@ class Sms_model extends CI_Model
             $where .= " and u.team_id = '$team_manager' ";
         }
         if (!empty($agent)) {
-            $where .= " and eh.user_id = '$agent' ";
+            $where .= " and s.user_id = '$agent' ";
             $name = "u.name";
         }
         if (!empty($source)) {
             $where .= " and r.source_id = '$source' ";
         }
-        if ($sent == 0 || $sent == 1) {
-            $where .= " and eh.status = '$sent' ";
-        }
-        if (!empty($read) && ($sent == 1)) {
-            $where .= " and eh.read_confirmed = '$read' ";
+        if ($status) {
+            $status_id = null;
+            switch($status) {
+                case 'delivered':
+                    $status_id = SMS_STATUS_SENT;
+                    break;
+                case 'pending':
+                    $status_id = SMS_STATUS_PENDING;
+                    break;
+                case 'undelivered':
+                    $status_id = SMS_STATUS_UNDELIVERED;
+                    break;
+                case 'unknown':
+                    $status_id = SMS_STATUS_UNKNOWN;
+                    break;
+                case 'error':
+                    $status_id = SMS_STATUS_ERROR;
+                    break;
+            }
+
+            if ($status_id) {
+                $where .= " and s.status_id = '$status_id' ";
+            }
         }
 
         $qry = "select s.sms_id,
                       DATE_FORMAT(s.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
                       s.text,
-                      s.send_from,
+                      s.sender_id,
+                      ss.name,
                       s.send_to,
                       s.user_id,
                       s.urn,
@@ -323,6 +341,7 @@ class Sms_model extends CI_Model
                       t.*
             from sms_history s
             inner join sms_status st ON (s.status_id = st.sms_status_id)
+            inner join sms_sender ss using (sender_id)
 		    left join users u ON (u.user_id = s.user_id)
             inner join records r ON (r.urn = s.urn)
             inner join campaigns c ON (c.campaign_id = r.campaign_id)
