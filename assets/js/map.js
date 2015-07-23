@@ -376,13 +376,14 @@ var maps = {
     },
 
     codeAddress: function (zoom) {
-        var address = $('.map-form').find('input[name="postcode"]').val()+" UK";
+        var address = $('.map-form').find('input[name="postcode"]').val();
         if (address == "") {
             map.setCenter(maps.myLatlng);
             map.setZoom(maps.default_zoom);
             helper.current_postcode = false;
             var has_postcode = false
         } else {
+			address += " UK"
             if (typeof maps.markerLocation != 'undefined') {
                 maps.markerLocation.setMap(null);
             }
