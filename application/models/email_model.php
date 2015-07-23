@@ -408,6 +408,7 @@ $qry .= " group by urn";
                   eh.read_confirmed,
                   eh.read_confirmed_date,
                   eh.status,
+                  eh.pending,
                   u.*,
                   t.*
             from email_history eh

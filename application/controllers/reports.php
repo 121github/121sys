@@ -478,6 +478,7 @@ class Reports extends CI_Controller
             }
 
             $totalEmailsRead = 0;
+            $totalEmailPending = 0;
             $totalEmailUnsent = 0;
             $totalEmailSent = 0;
             $emails_read = 0;
@@ -522,15 +523,18 @@ class Reports extends CI_Controller
                     "emails_sent" => $row['emails_sent'],
                     "emails_sent_url" => $emailUrl . "/emails/sent",
                     "percent_read" => (($row['emails_sent'] > 0) ? number_format(($emails_read * 100) / ($row['emails_sent']), 2) : 0) . "%",
+                    "percent_pending" => (($emails_pending > 0) ? number_format(($emails_pending * 100) / ($row['emails_sent']), 2) : 0) . "%",
                     "percent_unsent" => (($row['emails_sent'] > 0) ? number_format(($emails_unsent * 100) / ($row['emails_sent']), 2) : 0) . "%",
                     "group" => $group
                 );
                 $totalEmailsRead += $emails_read;
                 $totalEmailUnsent += $emails_unsent;
+                $totalEmailPending += $emails_pending;
                 $totalEmailSent += ($row['emails_sent'] ? $row['emails_sent'] : "0");
             }
 
             $totalEmailsReadPercent = ($totalEmailSent) ? number_format(($totalEmailsRead * 100) / $totalEmailSent, 2) : 0;
+            $totalEmailsPendingPercent = ($totalEmailPending) ? number_format(($totalEmailPending * 100) / $totalEmailSent, 2) : 0;
             $totalEmailsUnsentPercent = ($totalEmailSent) ? number_format(($totalEmailUnsent * 100) / $totalEmailSent, 2) : 0;
 
 
@@ -549,6 +553,7 @@ class Reports extends CI_Controller
                 "emails_sent" => $totalEmailSent,
                 "emails_sent_url" => $url . "/emails/sent",
                 "percent_read" => $totalEmailsReadPercent . "%",
+                "percent_pending" => $totalEmailsPendingPercent . "%",
                 "percent_unsent" => $totalEmailsUnsentPercent . "%",
                 "group" => $group
             ));

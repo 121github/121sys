@@ -82,14 +82,15 @@
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th class="success">#</th>
-						<th class="success">Name</th>
-                        <th class="success">Emails Sent</th>
-						<th class="success">Emails Read</th>
-                        <th class="success">Percent Read</th>
+						<th class="info">#</th>
+						<th class="info">Name</th>
+                        <th class="info">Sent</th>
+						<th class="success">Read</th>
+                        <th class="success">Read(%)</th>
                         <th class="warning">Pending</th>
-                        <th class="danger">Emails Unsent</th>
-                        <th class="danger">Percent Unsent</th>
+                        <th class="danger">Pending(%)</th>
+                        <th class="danger">Unsent</th>
+                        <th class="danger">Unsent(%)</th>
 
 					</tr>
 				</thead>
