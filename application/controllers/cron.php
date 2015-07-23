@@ -27,6 +27,10 @@ class Cron extends CI_Controller
         $this->Cron_model->clear_hours();
     }
 
+    public function clear_planner()
+    {
+        $this->Cron_model->clear_planner();
+    }
 
     //################################################################################################
     //################################### DAILY RATION functions #####################################

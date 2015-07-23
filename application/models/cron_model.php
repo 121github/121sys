@@ -12,6 +12,12 @@ class Cron_model extends CI_Model
 
     }
 
+	public function clear_planner(){
+		//no point having entries in the route planner for days that have lapsed!
+		$qry = "delete from record_planner where date(start_date) < curdate()";
+		$this->db->query($qry);
+	}
+
     public function clear_hours()
     {
         $this->db->query("truncate table hours_logged");
