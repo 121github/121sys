@@ -16,7 +16,7 @@ var view_records = {
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
             maps.colour_by = $('.filter-form').find('input[name="group"]').val();
-            view_records.reload_table();
+            view_records.table.columns.adjust().draw();
         });
 
         view_records.reload_table();
