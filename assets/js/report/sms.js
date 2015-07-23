@@ -280,16 +280,20 @@ var sms = {
                 "</tr>" +
                 "<tr>" +
                 "<th>Msg</th>" +
-                "<td class='body'>" + response.data.text + "</td>" +
+                "<td class='text'>" + response.data.text + "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<tr>" +
+                "<th>User</th>" +
+                "<td class='name'>" + (response.data.name?response.data.name:"AUTO") + "</td>" +
                 "</tr>" +
                 "<tr>" +
                 "<th>Status</th>" +
                 "<td class='status'>" + response.data.status + "</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<tr>" +
-                "<th>User</th>" +
-                "<td class='body'>" + (response.data.name?response.data.name:"AUTO") + "</td>" +
+                "<th>Comments</th>" +
+                "<td class='comments'>" + response.data.comments + "</td>" +
                 "</tr>";
             $('#sms-view-table').html(tbody);
         });

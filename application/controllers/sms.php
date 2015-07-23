@@ -20,6 +20,13 @@ class Sms extends CI_Controller
         $this->textlocal = new textlocal("jon-man@121customerinsight.co.uk","95288bf9c5c1c5339426fc9178bebd025e850c76");
     }
 
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** GETTERS ********************************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+
     //this function returns a json array of sms data for a given record id
     public function get_sms_by_urn()
     {
@@ -68,6 +75,11 @@ class Sms extends CI_Controller
         }
     }
 
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /******CREATE A NEW SMS ************************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     //load all the fields into a new sms form
     public function create()
     {
@@ -142,45 +154,56 @@ class Sms extends CI_Controller
 
     }
 
-    public function unsubscribe()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data = $this->input->post();
-            $data['ip_address'] = $_SERVER['REMOTE_ADDR'];
-            //check the sms address
 
-            if (preg_match('/^[0-9().-]+$/', $data['sms_address'])) {
-                echo json_encode(array("success" => false, "msg" => "That is not a valid sms address"));
-                exit;
-            }
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** UNSUBSCRIBE ****************************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+//    public function unsubscribe()
+//    {
+//        if ($this->input->is_ajax_request()) {
+//            $data = $this->input->post();
+//            $data['ip_address'] = $_SERVER['REMOTE_ADDR'];
+//            //check the sms address
+//
+//            if (preg_match('/^[0-9().-]+$/', $data['sms_address'])) {
+//                echo json_encode(array("success" => false, "msg" => "That is not a valid sms address"));
+//                exit;
+//            }
+//
+//            if ($this->Sms_model->unsubscribe($data)) {
+//                echo json_encode(array("success" => true, "msg" => "Your sms address has been removed from the mailing list"));
+//            } else {
+//                echo json_encode(array("success" => false, "msg" => "There was a problem removing your sms. Please make sure you are using the unbsubscribe link in the sms you recieved"));
+//            }
+//        } else {
+//            $template_id = base64_decode($this->uri->segment(3));
+//            $urn = base64_decode($this->uri->segment(4));
+//
+//            $client_id = $this->Records_model->get_client_from_urn($urn);
+//            $check = $this->Sms_model->check_sms_history($template_id, $urn);
+//            if ($check) {
+//                $data = array(
+//                    'urn' => $urn,
+//                    'title' => 'Unsubscribe',
+//                    'client_id' => $client_id,
+//                    'urn' => $urn);
+//                $this->template->load('default', 'sms/unsubscribe.php', $data);
+//            } else {
+//                $data = array(
+//                    'msg' => "The company you tried to unsubscribe from does not exist on our system",
+//                    'title' => 'Invalid sms');
+//                $this->template->load('default', 'errors/display.php', $data);
+//            }
+//        }
+//    }
 
-            if ($this->Sms_model->unsubscribe($data)) {
-                echo json_encode(array("success" => true, "msg" => "Your sms address has been removed from the mailing list"));
-            } else {
-                echo json_encode(array("success" => false, "msg" => "There was a problem removing your sms. Please make sure you are using the unbsubscribe link in the sms you recieved"));
-            }
-        } else {
-            $template_id = base64_decode($this->uri->segment(3));
-            $urn = base64_decode($this->uri->segment(4));
-
-            $client_id = $this->Records_model->get_client_from_urn($urn);
-            $check = $this->Sms_model->check_sms_history($template_id, $urn);
-            if ($check) {
-                $data = array(
-                    'urn' => $urn,
-                    'title' => 'Unsubscribe',
-                    'client_id' => $client_id,
-                    'urn' => $urn);
-                $this->template->load('default', 'sms/unsubscribe.php', $data);
-            } else {
-                $data = array(
-                    'msg' => "The company you tried to unsubscribe from does not exist on our system",
-                    'title' => 'Invalid sms');
-                $this->template->load('default', 'errors/display.php', $data);
-            }
-        }
-    }
-
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** SEND MANUAL SMS ************************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     //Send an sms
     public function send_sms()
     {
@@ -201,13 +224,15 @@ class Sms extends CI_Controller
             }
             else {
                 //Send the sms
-                $response = $this->send($numbers, $message, $sender);
+                $customID = uniqid($form['urn'].date('now'));
+                $response = $this->send($customID, $numbers, $message, $sender);
 
                 if ($response) {
                     //Save the sms in the history table
                     $sms_ar = array();
                     $user_id = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
-                    $status_id = (($response->status === "success")&&($response->test_mode !== TRUE)?SMS_STATUS_SENT:SMS_STATUS_ERROR);
+                    $status_id = (($response->status === "success")&&($response->test_mode !== TRUE)?SMS_STATUS_UNKNOWN:SMS_STATUS_ERROR);
+                    $comments = (($response->status === "success")&&($response->test_mode !== TRUE)?"Unknown, we have not received a delivery status from the networks.":"Test mode enabled, please disabled it in order to send the text");
                     foreach ($numbers as $number) {
                         array_push($sms_ar, array(
                             "text" => $message,
@@ -216,7 +241,9 @@ class Sms extends CI_Controller
                             "user_id" => $user_id,
                             "urn" => $form['urn'],
                             "template_id" => $form['template_id'],
-                            "status_id" => $status_id
+                            "status_id" => $status_id,
+                            "text_local_id" => $customID,
+                            "comments" => $comments
                         ));
                     }
 
@@ -235,12 +262,11 @@ class Sms extends CI_Controller
         }
     }
 
-    /**
-     *
-     * Send pending smss
-     *
-     *
-     */
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** SEND PENDING SMS ***********************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     public function send_pending_sms()
     {
 
@@ -255,10 +281,12 @@ class Sms extends CI_Controller
         $pending_sms = $this->Sms_model->get_pending_sms($limit);
         if (!empty($pending_sms)) {
             //Check if we have enough credits
-            $status = 2;
+            $status = SMS_STATUS_UNKNOWN;
+            $comments = "Unknown, we have not received a delivery status from the networks.";
             $currentCredits = $this->textlocal->getBalance();
             if ($currentCredits['sms'] < count($pending_sms)) {
-                $status = 1;
+                $status = SMS_STATUS_PENDING;
+                $comments = "There is no enough credits to send the texts. Get more credits and run the send_pending_sms process.";
             }
 
             //Build the messages array to send
@@ -271,13 +299,14 @@ class Sms extends CI_Controller
                     'sms_number' => $sms['send_to'],
                     'send_from' => $sms['sender_id'],
                     'sms_text' => $sms['text'],
-                    'id' => $sms['sms_id'],
+                    'id' => $sms['text_local_id'],
                 ));
 
                 array_push($sms_histories, array(
                     "sms_id" => $sms['sms_id'],
                     "sent_date" => $sms['sent_date'],
-                    "status_id" => $status
+                    "status_id" => $status,
+                    "comments" => $comments
                 ));
 
                 array_push($numbers,$sms['send_to']);
@@ -309,12 +338,12 @@ class Sms extends CI_Controller
         echo $output;
     }
 
-    /**
-     *
-     * Send appointment remind sms
-     *
-     *
-     */
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** SEND APPOINTMENT REMIND SMS ************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     public function send_appointment_remind_sms()
     {
         $output = "";
@@ -336,10 +365,12 @@ class Sms extends CI_Controller
             $remind_appointments = $this->Sms_model->get_remind_appointments($template_id);
 
             //Check if we have enough credits
-            $status = 2;
+            $status = SMS_STATUS_UNKNOWN;
+            $comments = "Unknown, we have not received a delivery status from the networks.";
             $currentCredits = $this->textlocal->getBalance();
             if ($currentCredits['sms'] < count($remind_appointments)) {
-                $status = 1;
+                $status = SMS_STATUS_PENDING;
+                $comments = "There is no enough credits to send the texts. Get more credits and run the send_pending_sms process.";
                 $msg = "There is not enough credits: ".$currentCredits['sms']."\n\n";
             }
             //Check if more than 50 sms will be sent
@@ -361,11 +392,13 @@ class Sms extends CI_Controller
                         $remind_appointment['sms_text'] = str_replace($match,$remind_appointment[$matches[1][$key]],$remind_appointment['sms_text']);
                     }
 
+                    $customID = uniqid($remind_appointment['urn'].date('now'));
+
                     array_push($messages, array(
                         'sms_number' => format_mobile($remind_appointment['sms_number']),
                         'send_from' => $remind_appointment['sms_from'],
                         'sms_text' => $remind_appointment['sms_text'],
-                        'id' => $remind_appointment['appointment_id'],
+                        'id' => $customID,
                     ));
 
                     array_push($sms_histories, array(
@@ -377,7 +410,8 @@ class Sms extends CI_Controller
                         "template_id" => $remind_appointment['template_id'],
                         "status_id" => $status,
                         "template_unsubscribe" => 0,
-                        "text_local_id" => null
+                        "text_local_id" => $customID,
+                        "comments" => $comments
                     ));
 
                     array_push($numbers,format_mobile($remind_appointment['sms_number']));
@@ -421,12 +455,12 @@ class Sms extends CI_Controller
         echo $output;
     }
 
-    /**
-     *
-     * Send sms for records (bulk sms)
-     *
-     *
-     */
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** SEND SMS FOR RECORDS (Bulk Sms) ********************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     public function send_sms_records_by_source_id_and_template()
     {
         $output = "";
@@ -452,10 +486,12 @@ class Sms extends CI_Controller
             $records = $this->Sms_model->get_records_by_source_id_and_template($template_id, $source_id);
 
             //Check if we have enough credits
-            $status = 2;
+            $status = SMS_STATUS_UNKNOWN;
+            $comments = "Unknown, we have not received a delivery status from the networks.";
             $currentCredits = $this->textlocal->getBalance();
             if ($currentCredits['sms'] < count($records)) {
-                $status = 1;
+                $status = SMS_STATUS_PENDING;
+                $comments = "There is no enough credits to send the texts. Get more credits and run the send_pending_sms process.";
                 $msg = "There is not enough credits: ".$currentCredits['sms']."\n\n";
             }
 
@@ -474,11 +510,13 @@ class Sms extends CI_Controller
                         }
                     }
 
+                    $customID = uniqid($record['urn'].date('now'));
+
                     array_push($messages, array(
                         'sms_number' => format_mobile($record['sms_number']),
                         'send_from' => $record['sms_from'],
                         'sms_text' => $record['sms_text'],
-                        'id' => $record['urn'],
+                        'id' => $customID,
                     ));
 
                     array_push($sms_histories, array(
@@ -490,7 +528,8 @@ class Sms extends CI_Controller
                         "template_id" => $record['template_id'],
                         "status_id" => $status,
                         "template_unsubscribe" => 0,
-                        "text_local_id" => null
+                        "text_local_id" => $customID,
+                        "comments" => $comments
                     ));
 
                     array_push($numbers,format_mobile($record['sms_number']));
@@ -536,13 +575,63 @@ class Sms extends CI_Controller
         echo $output;
     }
 
-    //SMS Delivery Receipt
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** SMS Delivery Receipt *******************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     public function sms_delivery_receipt()
     {
+        $status   = $_POST['status'];
+        $customID = $_POST['customID'];
+
+        switch($status) {
+            case "D":
+                $status_id = SMS_STATUS_SENT;
+                $comments = "Message was delivered successfully.";
+                break;
+            case "U":
+                $status_id = SMS_STATUS_UNDELIVERED;
+                $comments = "The message was undelivered.";
+                break;
+            case "P":
+                $status_id = SMS_STATUS_UNKNOWN;
+                $comments = "Message pending, the message is en route.";
+                break;
+            case "I":
+                $status_id = SMS_STATUS_ERROR;
+                $comments = "The number was invalid.";
+                break;
+            case "E":
+                $status_id = SMS_STATUS_ERROR;
+                $comments = "The message has expired.";
+                break;
+            case "?":
+                $status_id = SMS_STATUS_UNKNOWN;
+                $comments = "Unknown, we have not received a delivery status from the networks.";
+                break;
+            default:
+                $status_id = SMS_STATUS_UNKNOWN;
+                $comments = "Unknown, we have not received a delivery status from the networks.";
+                break;
+        }
+
+        //Update the status for the sms_history record
+        $sms_history = array(
+            "text_local_id" => $customID,
+            "status_id" => $status_id,
+            "comments" => $comments
+        );
+        $this->Sms_model->update_sms_history_by_text_local_id($sms_history);
 
     }
 
-    //Check if the sender name exist
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** Check if the sender name exist *********************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     private function check_sender_name($sender) {
         //If the sender is null or does not exist on the list, get the default one
         $sender_names = $this->textlocal->getSenderNames();
@@ -554,25 +643,43 @@ class Sms extends CI_Controller
         }
     }
 
-    //Get the default sender name
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** Get the default sender name ************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     private function get_default_sender_name() {
 
         return $this->textlocal->getSenderNames()->default_sender_name;
     }
 
-    private function send($numbers,$message, $sender = null)
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** Send one sms ***************************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    private function send($customID, $numbers,$message, $sender = null)
     {
+
         $test = (ENVIRONMENT !== "production");
+        $receiptUrl = "https://121system.com/sms/sms_delivery_receipt";
 
         if (!$sender) {
             $sender = $this->get_default_sender_name();
         }
 
-        $response = $this->textlocal->sendSms($numbers, $message, $sender, null, $test);
+        $response = $this->textlocal->sendSms($numbers, $message, $sender, null, $test, $receiptUrl, $customID);
 
         return $response;
     }
 
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** Send bulk sms **************************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
     /**
      * @param $messages
      * @param $test false to send texts other case for testing
@@ -586,7 +693,7 @@ class Sms extends CI_Controller
         $xmlData = '
         <SMS>
             <Account Name="jon-man@121customerinsight.co.uk" Password="x983kkdi" Test="'.$test.'" Info="0" JSON="0">
-                <Sender From="'.$messages[0]['send_from'].'" rcpurl="https://121system.com/sms/sms_delivery_receipt" ID="Appointment">
+                <Sender From="'.$messages[0]['send_from'].'" rcpurl="https://121system.com/sms/sms_delivery_receipt" ID="">
                     <Messages>';
 
         foreach($messages as $message) {
@@ -615,19 +722,14 @@ class Sms extends CI_Controller
 
     }
 
-    //Delete sms from the history
-    public function delete_sms()
-    {
-        user_auth_check();
-        if ($this->input->is_ajax_request()) {
-            $sms_id = intval($this->input->post('sms_id'));
 
-            $result = $this->Email_model->delete_sms($sms_id);
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** Update sms_history status **************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    public function synchronize_sms_history () {
 
-            echo json_encode(array(
-                "success" => $result
-            ));
-        }
     }
 
 
