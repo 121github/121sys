@@ -12,7 +12,7 @@ class Migration_update_32 extends CI_Migration
     {
         $this->firephp->log("starting migration 32");
 
-        $this->db->query("ALTER TABLE `121sys`.sms_history ADD comments TEXT NOT NULL");
+        $this->db->query("ALTER TABLE `sms_history` ADD `comments` TEXT NOT NULL");
 
     }
 
