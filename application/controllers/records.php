@@ -45,26 +45,8 @@ class Records extends CI_Controller
     public function view()
     {
         //this array contains data for the visible columns in the table on the view page
-        $visible_columns[] = array(
-            "column" => "campaign_name",
-            "header" => "Campaign"
-        );
-        $visible_columns[] = array(
-            "column" => "name",
-            "header" => "Company"
-        );
-        $visible_columns[] = array(
-            "column" => "fullname",
-            "header" => "Contact"
-        );
-        $visible_columns[] = array(
-            "column" => "outcome",
-            "header" => "Outcome"
-        );
-        $visible_columns[] = array(
-            "column" => "nextcall",
-            "header" => "Next Call"
-        );
+		/* temperarily getting them from a helper function until we use the database*/
+		$visible_columns = get_visible_columns();
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -85,7 +67,7 @@ class Records extends CI_Controller
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/js/jquery.dataTables.min.js',
 				'plugins/DataTables/js/dataTables.bootstrap.js',
-                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
+		'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
             )
         );
@@ -122,15 +104,22 @@ class Records extends CI_Controller
     public function process_view()
     {
         if ($this->input->is_ajax_request()) {
-
+			
             $options = $this->input->post();
-
+			
+			$visible_columns = get_visible_columns();
+			$options['visible_columns'] = $visible_columns;
+			//check the options
+			foreach($options['columns'] as $k=>$column){
+				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
+					$options['columns'][$k]['search']['value']="";
+				}
+			}
+			
             $records = $this->Records_model->get_records($options);
             $nav     = $this->Records_model->get_nav($options);
 
             foreach ($records as $k => $v) {
-                //Options
-                $records[$k]["options"] = "<a href='" . base_url() . "records/detail/" . $v['urn'] . "'>View</a>";
 
                 //Location
                 if ($records[$k]["company_location"]) {
@@ -167,8 +156,10 @@ class Records extends CI_Controller
 
                 //Add the icon to the record color
                 $map_icon = ((in_array("planner", $_SESSION['permissions']) && $records[$k]['record_planner_id'])?'fa-flag':($records[$k]['map_icon']?$records[$k]['map_icon']:($records[$k]['campaign_map_icon']?$records[$k]['campaign_map_icon']:'fa-map-marker')));
-                $records[$k]["record_color"] .= '/'.$map_icon;
-
+                $records[$k]["color_icon"] = '<span class="fa '.$map_icon.'" style="font-size:20px; color: '.$records[$k]["record_color"].'">&nbsp;</span>';
+				// color dot
+				  $records[$k]["color_dot"] = '<span class="fa fa-circle" style="font-size:20px; color: '.$records[$k]["record_color"].'">&nbsp;</span>';
+				
                 //Map Icon
                 $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['map_icon']))):NULL);
                 $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['campaign_map_icon']))):NULL);

@@ -350,26 +350,9 @@ class Records_model extends CI_Model
 
     //function to list all the records
     public function get_records($options)
-    {
-        $table_columns = array(
-            "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))",
-            "campaign_name",
-            "com.name",
-            "fullname",
-            "outcome",
-            "date_format(r.nextcall,'%d/%m/%y %H:%i')",
-            "rand()"
-        );
-
-        $order_columns = array(
-            "r.date_added",
-            "campaign_name",
-            "com.name",
-            "fullname",
-            "outcome",
-            "r.nextcall",
-            "rand()"
-        );
+{
+        $table_columns = $options['visible_columns']['select'];
+		$order_columns = $options['visible_columns']['order'];
 
         $join = array();
         $qry = "select r.urn,
@@ -1410,8 +1393,8 @@ class Records_model extends CI_Model
                   r.map_icon    AS record_map_icon,
                   camp.map_icon AS campaign_map_icon
                 FROM records r
-                  INNER JOIN campaigns camp USING (campaign_id)
-                WHERE r.map_icon IS NOT NULL OR camp.map_icon IS NOT NULL";
+                  JOIN campaigns camp USING (campaign_id)
+                WHERE campaign_status = 1 and r.map_icon IS NOT NULL OR camp.map_icon IS NOT NULL  and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         return $this->db->query($qry)->result_array();
     }

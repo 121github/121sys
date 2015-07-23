@@ -5,9 +5,6 @@
         <div class="pull-right">
             <form class="filter-form">
                 <div class="btn-group">
-                    <button id="record-icon" class="btn btn-default btn-xs iconpicker" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:# 0066">
-                </div>
-                <div class="btn-group">
                     <input type="hidden" name="group">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span
                             class="glyphicon glyphicon-filter"></span> Colour By
@@ -34,25 +31,7 @@
         <div class="row">
             <div id="table-wrapper" class="col-lg-12 record-view" style="overflow:visible">
                 <img class="table-loading"
-                     style="display:none; position:absolute; z-index:999; top:50%; left:50%; margin-left:-150px"
                      src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
-                <table class="table table-striped table-bordered data-table">
-                    <thead>
-                    <tr>
-                        <?php foreach ($columns as $col) { ?>
-                            <th><?php echo $col['header'] ?></th>
-                        <?php } ?>
-                    </tr>
-                    </thead>
-                    <!--ajax processing puts data in -->
-                    <tfoot>
-                    <tr>
-                        <?php foreach ($columns as $col) { ?>
-                            <th><?php echo $col['header'] ?></th>
-                        <?php } ?>
-                    </tr>
-                    </tfoot>
-                </table>
             </div>
             <div class="col-lg-6 map-view" style="display: none">
                 <h1 class="planner-map">
@@ -156,8 +135,12 @@
 
 
 <script type="text/javascript">
+ table_columns = <?php echo json_encode($columns) ?>;
 
-    $( document ).ready(function() {
+	$(document).ready(function() {
+    maps.initialize("records");
+    view_records.init();
+
         view_records.has_filter = "<?php echo ((isset($_SESSION['filter']['values']) && !empty($_SESSION['filter']['values']))?true:false) ?>";
     });
 

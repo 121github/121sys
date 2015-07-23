@@ -3,6 +3,78 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+function get_visible_columns(){
+		 if ($_SESSION['sn']!='eldon.121system.com') {
+				  $visible_columns['columns'][] = array("data" => "color_icon");
+		$visible_columns['headings'][] = "Icon";
+		$visible_columns['select'][] = "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))";
+		$visible_columns['order'][] = "r.map_icon";
+		
+        $visible_columns['columns'][] = array("data" => "campaign_name");
+		$visible_columns['headings'][] = "Campaign";
+		$visible_columns['select'][] = "campaign_name";
+		$visible_columns['order'][] = "campaign_name";
+		
+		 $visible_columns['columns'][] = array("data" => "name");
+		$visible_columns['headings'][] = "Company";
+		$visible_columns['select'][] = "com.name";
+		$visible_columns['order'][] = "com.name";
+		
+		 $visible_columns['columns'][] = array("data" => "fullname");
+		$visible_columns['headings'][] = "Contact";
+				$visible_columns['select'][] = "fullname";
+		$visible_columns['order'][] = "fullname";
+		
+			 $visible_columns['columns'][] = array("data" => "postcode");
+		$visible_columns['headings'][] = "Company Postcode";
+						$visible_columns['select'][] = "coma.postcode";
+		$visible_columns['order'][] = "coma.postcode";
+		
+		 $visible_columns['columns'][] = array("data" => "client_ref");
+		$visible_columns['headings'][] = "Reference";
+		$visible_columns['select'][] = "client_ref";
+		$visible_columns['order'][] = "client_ref";
+
+		
+		 $visible_columns['columns'][] = array("data" => "nextcall");
+		$visible_columns['headings'][] = "Next Action";
+		$visible_columns['select'][] = "date_format(r.nextcall,'%d/%m/%y %H:%i')";
+		$visible_columns['order'][] = "r.nextcall";	
+		 } else {
+		  $visible_columns['columns'][] = array("data" => "color_icon");
+		$visible_columns['headings'][] = "Icon";
+				$visible_columns['select'][] = "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))";
+		$visible_columns['order'][] = "r.map_icon";
+		
+		
+        $visible_columns['columns'][] = array("data" => "campaign_name");
+		$visible_columns['headings'][] = "Campaign";
+				$visible_columns['select'][] = "campaign_name";
+		$visible_columns['order'][] = "campaign_name";
+		
+		 $visible_columns['columns'][] = array("data" => "name");
+		$visible_columns['headings'][] = "Company";
+		$visible_columns['select'][] = "com.name";
+		$visible_columns['order'][] = "com.name";
+		
+		 $visible_columns['columns'][] = array("data" => "fullname");
+		$visible_columns['headings'][] = "Contact";
+				$visible_columns['select'][] = "fullname";
+		$visible_columns['order'][] = "fullname";
+		
+		 $visible_columns['columns'][] = array("data" => "outcome");
+		$visible_columns['headings'][] = "Outcome";
+						$visible_columns['select'][] = "outcome";
+		$visible_columns['order'][] = "outcome";
+		
+		 $visible_columns['columns'][] = array("data" => "nextcall");
+		$visible_columns['headings'][] = "Next Action";
+		$visible_columns['select'][] = "date_format(r.nextcall,'%d/%m/%y %H:%i')";
+		$visible_columns['order'][] = "r.nextcall";
+		 }	
+return $visible_columns;
+}
+
 function lines_to_list($lines = false, $type = false)
 {
     if (strpos($lines, ",") !== false) {

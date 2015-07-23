@@ -1,9 +1,4 @@
-// JavaScript Document
-// JavaScript Document
-$(document).ready(function() {
-    maps.initialize("records");
-    view_records.init();
-});
+
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
 function map_table_reload() {
 	view_records.table.columns.adjust().draw();
@@ -25,9 +20,6 @@ var view_records = {
         });
 
         view_records.reload_table();
-
-        //Set icons used for the filter
-        view_records.get_used_icons();
     },
     get_used_icons: function() {
         $.ajax({
@@ -35,16 +27,27 @@ var view_records = {
             type: "POST",
             dataType: "JSON"
         }).done(function (response) {
-            $('#record-icon').iconpicker('setIconset', {
+			 $('.record-icon').iconpicker();
+            $('.record-icon').iconpicker('setIconset', {
                 iconClass: 'fa',
                 iconClassFix: '',
                 icons: response.icons
             });
+				$(document).on('change','.record-icon',function (e) {
+                    var icon = (e.icon=='empty'?'Icon':e.icon);
+                    view_records.table.column($(this).index()).search(icon).draw();
+                });
         });
     },
     reload_table: function() {
-        var table = "<table width='100%' class='table small table-striped table-bordered table-hover data-table'><thead><tr><th>Icon</th><th>Campaign</th><th>Company</th><th>Contact</th><th>Outcome</th><th>Next Action</th></tr></thead>";
-        table += "<tfoot><tr><th></th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
+		var headings = "";
+		column_count = new Array();
+		$.each(table_columns.headings,function(i,header){
+			headings += "<th>"+header+"</th>";
+			column_count[i] = i;
+		});
+        var table = "<table width='100%' class='table small table-striped table-bordered table-hover data-table'><thead><tr>"+headings+"</tr></thead>";
+        table += "<tfoot><tr>"+headings+"</tr></tfoot></table>";
 
         $('#table-wrapper').html(table);
         view_records.populate_table();
@@ -55,7 +58,7 @@ var view_records = {
                 "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
             },
             "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"clear">',
-            "autoWidth": true,
+            "width": "100%",
             "scrollX": true,
             "processing": true,
             "serverSide": true,
@@ -92,35 +95,10 @@ var view_records = {
                 }
             },
             "deferRender": true,
-            "columns": [{
-                "data": "record_color",
-                "orderable": false,
-                render:function(e) {
-                    var element_ar = e.split('/');
-                    var color = element_ar[0];
-                    var icon = element_ar[1];
-
-                    if(!icon){
-                        return '&nbsp;';
-                    } else {
-                        return '<span class="fa '+icon+'" style="font-size:20px; color: '+color+'">&nbsp;</span>';
-                    }
-                }
-            }, {
-                "data": "campaign_name"
-            }, {
-                "data": "name"
-            }, {
-                "data": "fullname"
-            }, {
-                "data": "outcome"
-            }, {
-                "data": "nextcall"
-            }],
+            "columns": table_columns.columns,
             "columnDefs": [
-			{"width": "20px","targets": 0},
 			{
-                "targets": [0, 1, 2, 3, 4, 5],
+                "targets": column_count,
                 "data": null,
                 "defaultContent": "-"
             }],
@@ -151,10 +129,9 @@ var view_records = {
                 $(this).html('');
             }
             else if (title == "Icon") {
-                $('#record-icon').on('change', function (e) {
-                    var icon = (e.icon=='empty'?'':e.icon);
-                    view_records.table.column($(this).index()).search(icon).draw();
-                });
+				$icon_btn = $('<button class="btn btn-default btn-sm iconpicker record-icon" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:#0066"></button>');
+				$(this).html($icon_btn);
+				view_records.get_used_icons();
             }
             else {
                 var search_val = view_records.table.column($(this).index()).search();
@@ -165,6 +142,8 @@ var view_records = {
         // Apply the search
         view_records.table.columns().eq(0).each(function(colIdx) {
 
+
+
             var run_filter = debounce(function() {
                 view_records.table.column(colIdx).search(this.value).draw();
             }, 1000);
@@ -173,16 +152,31 @@ var view_records = {
 
         });
 
+      
+
+			
         //this moves the search input boxes to the top of the table
-        var r = $('.data-table tfoot tr');
+       /* var r = $('.data-table tfoot tr').first();
         r.find('th').each(function() {
             $(this).css('padding', 8);
         });
-        $('.data-table thead').append(r);
-        $('#search_0').css('text-align', 'center');
+		
+		     $('.data-table thead').first().append('</tr>');
+        $('.data-table thead').last().append($('.data-table tfoot tr').first())
+		$('.data-table tfoot tr').remove();
+        
+*/
 
+$("div.dataTables_scrollFootInner table tfoot tr").appendTo('div.dataTables_scrollHeadInner table thead');
+
+$('#search_0').css('text-align', 'center');
         //If exist filters from the search in the session
         //$('.dataTables_info').append(' <i class="fa fa-list fa-fw pointer"></i> Search options');
+		
+			
+		
     }
+
+
 
 }
