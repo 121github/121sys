@@ -344,7 +344,14 @@ class Search extends CI_Controller
             "company-postcode" => "company-postcode",
             "company-telephone-number" => "company-telephone-number",
             "client-ref" => "client-ref",
-            "reason" => "history.outcome_reason_id"
+            "reason" => "history.outcome_reason_id",
+            "sent-sms-from" => "sent-sms-from",
+            "sent-sms-to" => "sent-sms-to",
+            "sent-sms-date" => "date(sms_history.sent_date)",
+            "sent-sms-time" => "hour(sms_history.sent_date)",
+            "sms-status" => "sms_history.status_id",
+            "user-sms-sent-id" => "user-sms-sent-id",
+            "template-sms" => "template-sms"
         );
         
         $search_fields_2 = array(

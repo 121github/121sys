@@ -925,6 +925,28 @@ return $this->db->get('record_details_options')->result_array();
             unset($array['user-email-sent-id']);
         }
 
+
+        //only join the sms tables if we need them
+        $sms_qry = "";
+        if (in_array("tempalate-sms", $fields)||in_array("sent-sms-from", $fields)||in_array("sent-sms-to", $fields)) {
+            $qry .= " inner join sms_history on sms_history.urn = records.urn ";
+        }
+
+        if (in_array("sent-sms-from", $fields)) {
+            $sent_date_qry .= " and date(sms_history.sent_date) >= '" . $array['sent-sms-from'] . "'";
+            unset($array['sent-sms-from']);
+        }
+        if (in_array("sent-sms-to", $fields)) {
+            $sent_date_qry .= " and date(sms_history.sent_date) <= '" . $array['sent-sms-to'] . "'";
+            unset($array['sent-sms-to']);
+        }
+
+        $user_sms_sent_qry = '';
+        if (in_array("user-sms-sent-id", $fields)) {
+            $sent_date_qry .= " and sms_history.user_id = '" . $array['user-sms-sent-id'] . "'";
+            unset($array['user-sms-sent-id']);
+        }
+
         //For parked records
         $parked_qry = "";
         if (in_array("parked", $fields)){
