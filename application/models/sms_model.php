@@ -228,6 +228,7 @@ class Sms_model extends CI_Model
                       s.urn,
                       s.template_id,
                       s.status_id,
+                      s.comments,
                       st.status_reason as status,
                       u.*,
                       t.*
@@ -336,6 +337,7 @@ class Sms_model extends CI_Model
                       s.urn,
                       s.template_id,
                       s.status_id,
+                      s.comments,
                       st.status_reason as status,
                       u.*,
                       t.*
@@ -368,6 +370,7 @@ class Sms_model extends CI_Model
                       s.urn,
                       s.template_id,
                       s.status_id,
+                      s.comments,
                       st.status_reason as status,
                       u.*,
                       t.*
@@ -422,6 +425,17 @@ class Sms_model extends CI_Model
     public function update_sms_history($form)
     {
         $this->db->where("sms_id", $form['sms_id']);
+        return $this->db->update("sms_history", $form);
+    }
+
+    /**
+     * Update the status of an sms from the sms history by the customID
+     *
+     * @param Form $form
+     */
+    public function update_sms_history_by_text_local_id($form)
+    {
+        $this->db->where("text_local_id", $form['text_local_id']);
         return $this->db->update("sms_history", $form);
     }
 
