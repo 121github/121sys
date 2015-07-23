@@ -345,6 +345,7 @@ $qry .= " group by urn";
         $group = $options['group'];
         $sent = $options['sent'];
         $read = $options['read'];
+        $pending = $options['pending'];
 
         if ($id != "TOTAL") {
             if ($group == "agent") {
@@ -393,6 +394,9 @@ $qry .= " group by urn";
         if (!empty($read) && ($sent == 1)) {
             $where .= " and eh.read_confirmed = '$read' ";
         }
+        if ($pending == 1) {
+            $where .= " and eh.pending = '$pending' ";
+        }
 
         $qry = "select eh.email_id,
                   DATE_FORMAT(eh.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
@@ -408,6 +412,7 @@ $qry .= " group by urn";
                   eh.read_confirmed,
                   eh.read_confirmed_date,
                   eh.status,
+                  eh.pending,
                   u.*,
                   t.*
             from email_history eh

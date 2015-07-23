@@ -84,7 +84,7 @@ var sms = {
         });
         $(document).on('click', '.show-sms-btn', function (e) {
             e.preventDefault();
-            sms.show_sms($(this), $(this).attr('sms-status'));
+            sms.show_all_sms($(this), $(this).attr('sms-status'));
         });
         $(document).on('click', '.close-sms-all', function (e) {
             e.preventDefault();
@@ -178,18 +178,19 @@ var sms = {
             $('.sms-all-content').show();
         });
     },
+    show_all_sms: function (btn, status) {
+
+        $.ajax({
+            url: helper.baseUrl + "modals/show_all_sms",
+            type: "POST",
+            dataType: "HTML"
+        }).done(function (data) {
+            var mheader = "Showing "+(status?status:'all')+" sms", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+            modals.load_modal(mheader, $mbody, mfooter);
+            sms.show_sms(btn, status);
+        });
+    },
     show_sms: function (btn, status) {
-        var pagewidth = $(window).width() / 2;
-        var moveto = pagewidth - 250;
-        $('<div class="modal-backdrop all-sms in"></div>').appendTo(document.body).hide().fadeIn();
-        $('.sms-all-container').find('.sms-all-panel').show();
-        $('.sms-all-content').show();
-        $('.sms-all-container').fadeIn()
-        $('.sms-all-container').animate({
-            width: '600px',
-            left: moveto,
-            top: '10%'
-        }, 1000);
         //Get sms data
         $.ajax({
             url: helper.baseUrl + "sms/get_sms_by_filter",
@@ -197,46 +198,66 @@ var sms = {
             dataType: "JSON",
             data: $('.filter-form').serialize() + '&id=' + btn.closest('tr').find('.sql').text() + '&status=' + status
         }).done(function (response) {
-            var $thead = $('.sms-all-table').find('thead');
-            $thead.empty();
-
-            var $tbody = $('.sms-all-table').find('tbody');
-            $tbody.empty();
-            var body = "";
+            var tbody = '';
 
             if (response.data.length > 0) {
                 $.each(response.data, function (key, val) {
-                    var status = (val.status != true) ? "red" : ((val.read_confirmed == 1) ? "green" : "");
-                    var message = (val.status != true) ? "Sms no sent" : ((val.read_confirmed == 1) ? "Sms read confirmed " + " (" + val.read_confirmed_date + ")" : "Waiting sms read confirmation");
-                    var send_to = (val.send_to.length > 15) ? val.send_to.substring(0, 15) + '...' : val.send_to;
-                    var subject = (val.subject.length > 20) ? val.subject.substring(0, 20) + '...' : val.subject;
-                    $record_option = '<a href="' + helper.baseUrl + "records/detail/" + val.urn + '"><span class="glyphicon glyphicon-chevron-right pull-right pointer" title="View the record" ></span></a>';
-                    $view_option = '<span class="glyphicon glyphicon-eye-open ' + status + ' pull-right view-sms-btn pointer"  item-id="' + val.sms_id + '" title="' + message + '"></span>';
-                    body += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $record_option + '</td></tr>';
+                    var status = "glyphicon-eye-open green";
+                    var message = "sms sent ";
+                    switch(val.status) {
+                        case "PENDING":
+                            status = "glyphicon-time red";
+                            message = "sms pending to send";
+                            break;
+                        case "UNKNOWN":
+                            status = "glyphicon-question-sign orange";
+                            message = "sms sending...";
+                            break;
+                        case "UNDELIVERED":
+                            status = "glyphicon-eye-close red";
+                            message = "sms undelivered";
+                            break;
+                        case "ERROR":
+                            status = "glyphicon-warning-sign red";
+                            message = "sms sent error";
+                            break;
+                    }
+                    var $delete_option = "";
+                    if (helper.permissions['delete sms'] > 0) {
+                        $delete_option = '<span class="glyphicon glyphicon-trash pull-right del-sms-btn marl" data-target="#modal" item-modal="1" item-id="' + val.sms_id + '" title="Delete sms" ></span>';
+                    }
+                    $view_option = '<span class="glyphicon ' + status + ' pull-right view-sms-btn pointer"  item-id="' + val.sms_id + '" title="' + message + '"></span>';
+                    tbody += '<tr><td>' + val.sent_date + '</td><td>' + val.send_from + '</td><td title="' + val.send_to + '" >' + val.send_to + '</td><td title="' + val.text + '" >' + val.text + '</td><td>' + $view_option + '</td><td>' + $delete_option + '</td></tr>';
                 });
-                $thead.append('<tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr>');
-                $tbody.append(body);
-            } else if ((read == '1') && (sent == '1')) {
-                $tbody.append('<p>No sms read</p>');
-            } else if ((read == '0') && (sent == '1')) {
-                $tbody.append('<p>No sms sent</p>');
-            } else if (sent == '0') {
-                $tbody.append('<p>No sms unsent</p>');
+            } else if (status=='delivered') {
+                tbody =  '<tr><td>No sms delivered</td></tr>';
+            } else if (status=='undelivered') {
+                tbody =  '<tr><td>No sms pending</td></tr>';
+            } else if (status=='pending') {
+                tbody =  '<tr><td>No sms undelivered</td></tr>';
+            } else if (status=='unknown')       {
+                tbody =  '<tr><td>No sms unknown</td></tr>';
+            } else if (status=='error') {
+                tbody =  '<tr><td>No sms with error</td></tr>';
+            } else {
+                $tbody =  '<tr><td>No sms</td></tr>';
             }
+            var table = '<thead><tr><th>Date</th><th>From</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + tbody + '</tbody>';
+            $('#sms-all-table').html(table);
         });
     },
     view_sms: function (sms_id) {
-        var pagewidth = $(window).width() / 2;
-        var moveto = pagewidth - 250;
-        $('<div class="modal-backdrop sms in"></div>').appendTo(document.body).hide().fadeIn();
-        $('.sms-view-container').find('.edit-panel').show();
-        $('.sms-view-content').show();
-        $('.sms-view-container').fadeIn()
-        $('.sms-view-container').animate({
-            width: '600px',
-            left: moveto,
-            top: '10%'
-        }, 1000);
+        //Get template data
+        $.ajax({
+            url: helper.baseUrl + 'modals/view_sms',
+            dataType: "HTML",
+        }).done(function (data) {
+            var mheader = "View sms", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+            modals.load_modal(mheader, $mbody, mfooter);
+            sms.show_sms_view(sms_id);
+        });
+    },
+    show_sms_view: function (sms_id) {
         //Get template data
         $.ajax({
             url: helper.baseUrl + 'sms/get_sms',
@@ -244,14 +265,8 @@ var sms = {
             dataType: "JSON",
             data: {sms_id: sms_id}
         }).done(function (response) {
-            var message = (response.data.status == true) ? "<th colspan='2' style='color:green'>This sms was sent successfuly</th>" : "<th colspan='2' style='color:red'>This sms was not sent</th>"
-            var status = (response.data.status == true) ? "Yes" : "No";
-            var read_confirmed = (response.data.read_confirmed == 1) ? "Yes " + " (" + response.data.read_confirmed_date + ")" : "No";
-            var $tbody = $('.sms-view-table').find('tbody');
-            $tbody.empty();
-            body = "<tr>" +
-                message +
-                "</tr>" +
+            var tbody =
+                "<tr>" +
                 "<th>Sent Date</th>" +
                 "<td class='sent_date'>" + response.data.sent_date + "</td>" +
                 "</tr>" +
@@ -264,51 +279,19 @@ var sms = {
                 "<td class='to'>" + response.data.send_to + "</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<th>CC</th>" +
-                "<td class='cc'>" + response.data.cc + "</td>" +
+                "<th>Msg</th>" +
+                "<td class='body'>" + response.data.text + "</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<th>BCC</th>" +
-                "<td class='bcc'>" + response.data.bcc + "</td>" +
+                "<th>Status</th>" +
+                "<td class='status'>" + response.data.status + "</td>" +
                 "</tr>" +
                 "<tr>" +
-                "<th>Subject</th>" +
-                "<td class='subject'>" + response.data.subject + "</td>" +
-                "</tr>" +
                 "<tr>" +
-                "<th colspan=2>Body</th>" +
-                "</tr>" +
-                "<td colspan=2 class='body'>" + response.data.body + "</td>" +
-                "</tr>" +
-                "<th>Sent</th>" +
-                "<td class='status'>" + status + "</td>" +
-                "</tr>" +
-                "<th>Read Confirmed</th>" +
-                "<td class='read_confirmed'>" + read_confirmed + "</td>" +
-                "</tr>"
-            if (response.attachments.length > 0) {
-                body += "<tr>" +
-                    "<th colspan=2>Attachments</th>" +
-                    "</tr>";
-                $.each(response.attachments, function (key, val) {
-                    body += "<tr>" +
-                        "<td colspan='2' class='attachments'><a target='_blank' href='" + val.path + "'>" + val.name + "</td>" +
-                        "</tr>";
-                });
-            }
-            $tbody
-                .append(body);
-        });
-    },
-    close_sms: function () {
-        $('.modal-backdrop.sms').fadeOut();
-        $('.sms-container').fadeOut(500, function () {
-            $('.sms-content').show();
-            $('.sms-select-form')[0].reset();
-            $('.alert').addClass('hidden');
-        });
-        $('.sms-view-container').fadeOut(500, function () {
-            $('.sms-view-content').show();
+                "<th>User</th>" +
+                "<td class='body'>" + (response.data.name?response.data.name:"AUTO") + "</td>" +
+                "</tr>";
+            $('#sms-view-table').html(tbody);
         });
     }
 }

@@ -330,8 +330,8 @@ class Sms_model extends CI_Model
                       DATE_FORMAT(s.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
                       s.text,
                       s.sender_id,
-                      ss.name,
                       s.send_to,
+                      ss.name as send_from,
                       s.user_id,
                       s.urn,
                       s.template_id,
@@ -345,9 +345,10 @@ class Sms_model extends CI_Model
 		    left join users u ON (u.user_id = s.user_id)
             inner join records r ON (r.urn = s.urn)
             inner join campaigns c ON (c.campaign_id = r.campaign_id)
-            inner join sms_templates t ON (t.template_id = s.template_id)
+            left join sms_templates t ON (t.template_id = s.template_id)
             where 1 $where
             order by s.sent_date desc";
+
 
         return $this->db->query($qry)->result_array();
     }
@@ -374,7 +375,7 @@ class Sms_model extends CI_Model
 		    	inner join sms_status st ON (s.status_id = st.sms_status_id)
 		    	inner join sms_sender ss ON (s.sender_id = ss.sender_id)
 		    	left join users u ON (u.user_id = s.user_id)
-		    	inner join sms_templates t ON (t.template_id = s.template_id)
+		    	left join sms_templates t ON (t.template_id = s.template_id)
 		    	where s.sms_id = " . $sms_id;
 
         $results = $this->db->query($qry)->result_array();

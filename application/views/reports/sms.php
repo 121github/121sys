@@ -126,11 +126,6 @@
             <!-- /.panel-body -->
         </div>
     </div>
-    <div class="panel panel-primary sms-all-container">
-        <?php $this->view('sms/show_all_sms.php'); ?>
-    </div>
-    <div class="panel panel-primary sms-view-container">
-        <?php $this->view('sms/view_sms.php'); ?>
-    </div>
+
 
 

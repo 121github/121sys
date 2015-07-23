@@ -82,14 +82,15 @@
 	          <table class="table ajax-table">
 				<thead>
 					<tr>
-						<th class="success">#</th>
-						<th class="success">Name</th>
-                        <th class="success">Emails Sent</th>
-						<th class="success">Emails Read</th>
-                        <th class="success">Percent Read</th>
+						<th class="info">#</th>
+						<th class="info">Name</th>
+                        <th class="info">Sent</th>
+						<th class="success">Read</th>
+                        <th class="success">Read(%)</th>
                         <th class="warning">Pending</th>
-                        <th class="danger">Emails Unsent</th>
-                        <th class="danger">Percent Unsent</th>
+                        <th class="warning">Pending(%)</th>
+                        <th class="danger">Unsent</th>
+                        <th class="danger">Unsent(%)</th>
 
 					</tr>
 				</thead>
@@ -103,12 +104,6 @@
 		  </div>
           <!-- /.panel-body --> 
         </div>
-      </div>
-      <div class="panel panel-primary email-all-container">
-          <?php $this->view('email/show_all_email.php'); ?>
-      </div>
-      <div class="panel panel-primary email-view-container">
-          <?php $this->view('email/view_email.php'); ?>
       </div>
 
 

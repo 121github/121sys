@@ -478,6 +478,7 @@ class Reports extends CI_Controller
             }
 
             $totalEmailsRead = 0;
+            $totalEmailPending = 0;
             $totalEmailUnsent = 0;
             $totalEmailSent = 0;
             $emails_read = 0;
@@ -522,15 +523,18 @@ class Reports extends CI_Controller
                     "emails_sent" => $row['emails_sent'],
                     "emails_sent_url" => $emailUrl . "/emails/sent",
                     "percent_read" => (($row['emails_sent'] > 0) ? number_format(($emails_read * 100) / ($row['emails_sent']), 2) : 0) . "%",
+                    "percent_pending" => (($emails_pending > 0) ? number_format(($emails_pending * 100) / ($row['emails_sent']), 2) : 0) . "%",
                     "percent_unsent" => (($row['emails_sent'] > 0) ? number_format(($emails_unsent * 100) / ($row['emails_sent']), 2) : 0) . "%",
                     "group" => $group
                 );
                 $totalEmailsRead += $emails_read;
                 $totalEmailUnsent += $emails_unsent;
+                $totalEmailPending += $emails_pending;
                 $totalEmailSent += ($row['emails_sent'] ? $row['emails_sent'] : "0");
             }
 
             $totalEmailsReadPercent = ($totalEmailSent) ? number_format(($totalEmailsRead * 100) / $totalEmailSent, 2) : 0;
+            $totalEmailsPendingPercent = ($totalEmailPending) ? number_format(($totalEmailPending * 100) / $totalEmailSent, 2) : 0;
             $totalEmailsUnsentPercent = ($totalEmailSent) ? number_format(($totalEmailUnsent * 100) / $totalEmailSent, 2) : 0;
 
 
@@ -542,13 +546,14 @@ class Reports extends CI_Controller
                 "name" => "",
                 "emails_read" => $totalEmailsRead,
                 "emails_read_url" => $url . "/emails/read",
-                "emails_pending" => $totalEmailsRead,
+                "emails_pending" => $totalEmailPending,
                 "emails_pending_url" => $url . "/emails/pending",
                 "emails_unsent" => $totalEmailUnsent,
                 "emails_unsent_url" => $url . "/emails/unsent",
                 "emails_sent" => $totalEmailSent,
                 "emails_sent_url" => $url . "/emails/sent",
                 "percent_read" => $totalEmailsReadPercent . "%",
+                "percent_pending" => $totalEmailsPendingPercent . "%",
                 "percent_unsent" => $totalEmailsUnsentPercent . "%",
                 "group" => $group
             ));
@@ -742,9 +747,9 @@ class Reports extends CI_Controller
             $totalSmsError = 0;
             $totalSmsUnsent = 0;
             $url = base_url() . "search/custom/records";
-            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
+            $url .= (!empty($agent_search) ? "/user-sms-sent-id/$agent_search" : "");
             $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($template_search) ? "/template/$template_search" : "");
+            $url .= (!empty($template_search) ? "/template-sms/$template_search" : "");
             $url .= (!empty($date_from_search) ? "/sent-sms-from/$date_from_search" : "");
             $url .= (!empty($date_to_search) ? "/sent-sms-to/$date_to_search" : "");
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
@@ -777,17 +782,17 @@ class Reports extends CI_Controller
                     "sql" => $row['sql'],
                     "name" => $row['name'],
                     "sms_sent" => $sms_sent,
-                    "sms_sent_url" => $smsUrl . "/sms/sent",
+                    "sms_sent_url" => $smsUrl,
                     "sms_delivered" => $sms_delivered,
-                    "sms_delivered_url" => $smsUrl . "/sms/delivered",
+                    "sms_delivered_url" => $smsUrl . "/sms-status/".SMS_STATUS_SENT,
                     "sms_pending" => $sms_pending,
-                    "sms_pending_url" => $smsUrl . "/sms/pending",
+                    "sms_pending_url" => $smsUrl . "/sms-status/".SMS_STATUS_PENDING,
                     "sms_undelivered" => $sms_undelivered,
-                    "sms_undelivered_url" => $smsUrl . "/sms/undelivered",
+                    "sms_undelivered_url" => $smsUrl . "/sms-status/".SMS_STATUS_UNDELIVERED,
                     "sms_unknown" => $sms_unknown,
-                    "sms_unknown_url" => $smsUrl . "/sms/unknown",
+                    "sms_unknown_url" => $smsUrl . "/sms-status/".SMS_STATUS_UNKNOWN,
                     "sms_error" => $sms_error,
-                    "sms_error_url" => $smsUrl . "/sms/error",
+                    "sms_error_url" => $smsUrl . "/sms-status/".SMS_STATUS_ERROR,
                     "percent_sent" => (($sms_delivered > 0) ? number_format(($sms_delivered * 100) / $sms_sent, 2) : 0) . "%",
                     "percent_pending" => (($sms_pending+$sms_unknown > 0) ? number_format((($sms_pending+$sms_unknown) * 100) / $sms_sent, 2) : 0) . "%",
                     "percent_unsent" => (($sms_error+$sms_undelivered > 0) ? number_format((($sms_error+$sms_undelivered) * 100) / $sms_sent, 2) : 0) . "%",
@@ -813,17 +818,17 @@ class Reports extends CI_Controller
                 "sql" => "TOTAL",
                 "name" => "",
                 "sms_sent" => $totalSmsSent,
-                "sms_sent_url" => $url . "/sms/sent",
+                "sms_sent_url" => $url,
                 "sms_delivered" => $totalSmsDelivered,
-                "sms_delivered_url" => $url . "/sms/delivered",
+                "sms_delivered_url" => $url . "/sms-status/".SMS_STATUS_SENT,
                 "sms_pending" => $totalSmsPending,
-                "sms_pending_url" => $url . "/sms/pending",
+                "sms_pending_url" => $url . "/sms-status/".SMS_STATUS_PENDING,
                 "sms_undelivered" => $totalSmsUndelivered,
-                "sms_undelivered_url" => $url . "/sms/undelivered",
+                "sms_undelivered_url" => $url . "/sms-status/".SMS_STATUS_UNDELIVERED,
                 "sms_unknown" => $totalSmsUnknown,
-                "sms_unknown_url" => $url . "/sms/unknown",
+                "sms_unknown_url" => $url . "/sms-status/".SMS_STATUS_UNKNOWN,
                 "sms_error" => $totalSmsError,
-                "sms_error_url" => $url . "/sms/error",
+                "sms_error_url" => $url . "/sms-status/".SMS_STATUS_ERROR,
                 "percent_sent" => $totalSmsSentPercent . "%",
                 "percent_pending" => $totalSmsPendingPercent . "%",
                 "percent_unsent" => $totalSmsUnsentPercent . "%",

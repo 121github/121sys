@@ -77,8 +77,8 @@
                 </div>
             </div>
             <div class="form-group input-group-sm">
-                <p>Text (<span id="chars">320</span> characters remaining...)</p>
-        <textarea class="form-control" title="Enter the sms text" name="template_text" required style="width: 1112px; height: 298px;" maxlength="320">
+                <p>Text (<span id="chars">305</span> characters remaining...)</p>
+        <textarea class="form-control" title="Enter the sms text" name="template_text" required style="width: 1112px; height: 298px;" maxlength="305">
 
         </textarea>
             </div>
@@ -101,7 +101,7 @@
             $('#sender_select').selectpicker('val', <?php echo $template['template_sender_id']; ?>).selectpicker('render');
 
             $('form').find('textarea[name="template_text"]').val("<?php echo $template['template_text']; ?>");
-            $('#chars').text(320-$('form').find('textarea[name="template_text"]').val().length);
+            $('#chars').text(305-$('form').find('textarea[name="template_text"]').val().length);
 
             var text = $("select[name=template_sender_id] option[value='<?php echo $template['template_sender_id']; ?>']").text();
             $('form').find('input[name="template_sender"]').val(text);
