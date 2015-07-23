@@ -4,7 +4,7 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 function get_visible_columns(){
-		 if ($_SESSION['sn']!='eldon.121system.com') {
+		 if ($_SESSION['sn']=='eldon.121system.com') {
 				  $visible_columns['columns'][] = array("data" => "color_icon");
 		$visible_columns['headings'][] = "Icon";
 		$visible_columns['select'][] = "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))";
