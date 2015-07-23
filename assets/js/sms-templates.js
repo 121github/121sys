@@ -24,7 +24,7 @@ var template = {
         });
 
         //Max length for sms text
-        var maxLength = 320;
+        var maxLength = 305;
         $('textarea').keyup(function() {
             var length = $(this).val().length;
             var length = maxLength-length;
@@ -90,7 +90,7 @@ var template = {
                 $('form').find('#unsubscribe-yes').prop('checked', false).parent().removeClass('active');
             }
 
-            $('#chars').text(320-$('form').find('textarea[name="template_text"]').val().length);
+            $('#chars').text(305-$('form').find('textarea[name="template_text"]').val().length);
 
             var data = {id: $('form').find('input[name="template_id"]').val()};
 
@@ -123,7 +123,7 @@ var template = {
         $('#campaigns_select').selectpicker('val', []).selectpicker('render');
         $('#sender_select').selectpicker('val', []).selectpicker('render');
         $('form').find('input[type="hidden"]').val('');
-        $('#chars').text(320);
+        $('#chars').text(305);
 
         $('.ajax-table').fadeOut(1000, function () {
             $('form').fadeIn(1000)

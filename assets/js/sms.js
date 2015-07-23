@@ -2,7 +2,7 @@
 var sms = {
     init: function (urn) {
         //Max length for sms text
-        var maxLength = 320;
+        var maxLength = 305;
         $('textarea').keyup(function() {
             var length = $(this).val().length;
             var length = maxLength-length;
