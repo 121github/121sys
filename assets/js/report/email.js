@@ -186,6 +186,7 @@ var email = {
                     $view_option = '<span class="glyphicon glyphicon-eye-open ' + status + ' pull-right view-email-btn pointer"  item-id="' + val.email_id + '" title="' + message + '"></span>';
                     tbody += '<tr><td>' + val.sent_date + '</td><td>' + val.name + '</td><td title="' + val.send_to + '" >' + send_to + '</td><td title="' + val.subject + '" >' + subject + '</td><td>' + $view_option + '</td><td>' + $record_option + '</td></tr>';
                 });
+                var table = '<thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + tbody + '</tbody>';
                 $('#email-all-table').html(table);
             } else if ((read == '1') && (sent == '1')) {
                 modal_body.html('<p>No emails read</p>');
