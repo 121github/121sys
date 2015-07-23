@@ -546,7 +546,7 @@ class Reports extends CI_Controller
                 "name" => "",
                 "emails_read" => $totalEmailsRead,
                 "emails_read_url" => $url . "/emails/read",
-                "emails_pending" => $totalEmailsRead,
+                "emails_pending" => $totalEmailPending,
                 "emails_pending_url" => $url . "/emails/pending",
                 "emails_unsent" => $totalEmailUnsent,
                 "emails_unsent_url" => $url . "/emails/unsent",
