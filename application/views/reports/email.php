@@ -88,7 +88,7 @@
 						<th class="success">Read</th>
                         <th class="success">Read(%)</th>
                         <th class="warning">Pending</th>
-                        <th class="danger">Pending(%)</th>
+                        <th class="warning">Pending(%)</th>
                         <th class="danger">Unsent</th>
                         <th class="danger">Unsent(%)</th>
 
@@ -104,12 +104,6 @@
 		  </div>
           <!-- /.panel-body --> 
         </div>
-      </div>
-      <div class="panel panel-primary email-all-container">
-          <?php $this->view('email/show_all_email.php'); ?>
-      </div>
-      <div class="panel panel-primary email-view-container">
-          <?php $this->view('email/view_email.php'); ?>
       </div>
 
 

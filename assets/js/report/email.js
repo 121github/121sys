@@ -135,7 +135,7 @@ var email = {
                             + "</td><td class='emails_pending'>"
                             + "<a href='#' class='show-emails-btn' email-sent='0' email-pending='1' style='color: orange; font-weight: bold;'>" + val.emails_pending + "</a>" +
                             "<a href='" + val.emails_pending_url + "' style='font-size:10px; color:black;'> (See records...)</a>"
-                            + "</td><td class='percent_pending' style='color:red;'>"
+                            + "</td><td class='percent_pending' style='color:orange;'>"
                             + val.percent_pending
                             + "</td><td class='emails_unsent'>"
                             + "<a href='#' class='show-emails-btn' email-sent='0' style='color: red; font-weight: bold;'>" + val.emails_unsent + "</a>" +
