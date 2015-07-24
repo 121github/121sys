@@ -8,6 +8,8 @@ var dashboard = {
             $icon = $(this).closest('ul').prev('button').find('span');
             $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
             $(this).closest('form').find('input[name="' + input + '"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color","black");
+            $(this).css("color","green");
             //run the panel function specified in the data-func
             eval("dashboard." + func + "()");
         });
