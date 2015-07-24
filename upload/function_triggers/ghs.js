@@ -10,7 +10,7 @@ email_trigger:function(){
                             type: "POST",
                             data: {urn: record.urn}
                         }).done(function(response){
-							email_panel.load_panel();
+							record.email_panel.load_panel();
 						});
 
 },
@@ -20,7 +20,7 @@ sms_trigger:function(){
                             type: "POST",
                             data: {urn: record.urn}
                         }).done(function(response){
-							sms_panel.load_panel();
+							record.sms_panel.load_panel();
 						});
 }
 }

@@ -624,7 +624,7 @@ var modals = {
         modal_footer.html(content);
     },
     view_record_html: function (data) {
-        var mheader = "View Record #" + data.urn;
+        var mheader = "View Record <small>URN: " + data.urn +"</small>";
         var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li>';
 
         if (data.custom_info.length > 0) {
