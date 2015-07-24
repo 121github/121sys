@@ -382,7 +382,24 @@ class Email extends CI_Controller
 			}
 		}		
 		$this->firephp->log($form);
-			$this->send($form);
+		if($this->send($form)){
+				$email_history = array(
+								'body' => $form['body'],
+								'subject' => $form['subject'],
+								'send_from' => $form['send_from'],
+								'send_to' => $form['send_to'],
+								'cc' => $form['cc'],
+								'bcc' => $form['bcc'],
+								'user_id' => $form['user_id'],
+								'urn' => $form['urn'],
+								'template_id' => $form['template_id'],
+								'template_unsubscribe' => $form['template_unsubscribe'],
+								'status' => 1,
+								'pending' => 0
+							);
+				$email_id = $this->Email_model->add_new_email_history($email_history);	
+			
+		}
 		}	
 		}
 		}
