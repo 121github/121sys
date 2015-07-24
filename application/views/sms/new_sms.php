@@ -78,9 +78,7 @@
             </div>
             <div class="form-group input-group-sm">
                 <p>Text (<span id="chars">305</span> characters remaining...)</p>
-        <textarea class="form-control" title="Enter the sms text" name="template_text" required style="width: 1112px; height: 298px;" maxlength="305">
-
-        </textarea>
+        <textarea class="form-control" title="Enter the message" name="template_text" required style="width: 1112px; height: 298px;" maxlength="305"></textarea>
             </div>
 
             <!-- SUBMIT AND CANCEL BUTTONS -->
