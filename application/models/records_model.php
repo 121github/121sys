@@ -1214,7 +1214,7 @@ class Records_model extends CI_Model
     public function get_sms_triggers($campaign_id, $outcome_id)
     {
         $main = array();
-        $this->db->join("sms_trigger_recipients", "sms_triggers.trigger_id = email_trigger_recipients.trigger_id", "inner");
+        $this->db->join("sms_trigger_recipients", "sms_triggers.trigger_id = sms_trigger_recipients.trigger_id", "inner");
         $this->db->join("users", "users.user_id = sms_trigger_recipients.user_id", "inner");
         $this->db->where("outcome_id", $outcome_id);
         $this->db->where("campaign_id", $campaign_id);
