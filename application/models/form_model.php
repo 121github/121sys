@@ -149,6 +149,12 @@ class Form_model extends CI_Model
         $qry = "select campaign_id id,campaign_name name from campaigns where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 and campaign_id in(select campaign_id from campaigns_to_features where feature_id = 9) group by campaign_id order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
+
+    public function get_user_sms_campaigns()
+    {
+        $qry = "select campaign_id id,campaign_name name from campaigns where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 and campaign_id in(select campaign_id from campaigns_to_features where feature_id = 12) group by campaign_id order by campaign_name";
+        return $this->db->query($qry)->result_array();
+    }
     
     public function get_clients()
     {
