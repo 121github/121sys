@@ -51,17 +51,17 @@ var dashboard = {
     }).done(function (response) {
         $('.sms-stats').html("<ul>" +
                 "<li><a href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today </li>" +
-                "<li><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> emails delivered today " + "</li>" +
-                "<li><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> emails undelivered today " + "</li>" +
-                "<li><a href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> emails pending today " + "</li>" +
-                "<li><a href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> emails unknown today " + "</li>" +
-                "<li><a href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> emails error today " + "</li>" +
-                "<li><a href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> emails sent anytime " + "</li>" +
-                "<li><a href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> emails delivered anytime " + "</li>" +
-                "<li><a href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> emails undelivered anytime " + "</li>" +
-                "<li><a href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> emails pending anytime " + "</li>" +
-                "<li><a href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> emails unknown anytime " + "</li>" +
-                "<li><a href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> emails error anytime " + "</li>" +
+                "<li><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "</li>" +
+                "<li><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "</li>" +
+                "<li><a href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> sms pending today " + "</li>" +
+                "<li><a href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> sms unknown today " + "</li>" +
+                "<li><a href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> sms error today " + "</li>" +
+                "<li><a href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> sms sent anytime " + "</li>" +
+                "<li><a href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> sms delivered anytime " + "</li>" +
+                "<li><a href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> sms undelivered anytime " + "</li>" +
+                "<li><a href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> sms pending anytime " + "</li>" +
+                "<li><a href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> sms unknown anytime " + "</li>" +
+                "<li><a href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> sms error anytime " + "</li>" +
             "</ul>");
     });
 },
