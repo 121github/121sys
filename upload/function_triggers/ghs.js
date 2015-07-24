@@ -2,19 +2,28 @@
 var campaign_function = {
 init:function(){
 	$('#save-sticky').hide();
-	$('#sticky-notes').prop('readonly',true);
-	/*
-$.ajax({
-	
-	
-}).done(function(response){
-	if(response.stage==4){
-		alert("This record has had 4 attempts please send an email this time");	
-	}
-	if(response.stage==3){
-		alert("This record has had 3 attempts please send an sms this time");	
-	}
-});
-*/
-}	
+	$('#sticky-notes').addClass('red').prop('readonly',true);
+},
+email_trigger:function(){
+                        $.ajax({
+                            url: helper.baseUrl + 'email/trigger_email',
+                            type: "POST",
+                            data: {urn: record.urn}
+                        }).done(function(response){
+							email_panel.load_panel();
+						});
+
+},
+sms_trigger:function(){
+	   $.ajax({
+                            url: helper.baseUrl + 'sms/trigger_sms',
+                            type: "POST",
+                            data: {urn: record.urn}
+                        }).done(function(response){
+							sms_panel.load_panel();
+						});
 }
+}
+$(document).ready(function(){
+	campaign_function.init();
+});

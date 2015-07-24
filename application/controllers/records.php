@@ -509,18 +509,6 @@ class Records extends CI_Controller
         return $triggers;
     }
     
-    /*
-    public function check_email_triggers($outcome_id = "",$campaign_id = "")
-    {
-    $this->db->where(array(
-    "outcome_id" => $outcome_id,
-    "campaign_id" => $campaign_id
-    ));
-    if ($this->db->get("email_triggers")->num_rows() > 0) {
-    return true;
-    }
-    }
-    */
     //this will reset a record - outcomes, progress and nextcall will be set to null and the status will be set to live again
     public function reset_record()
     {
@@ -592,7 +580,9 @@ class Records extends CI_Controller
 				}
 				
 				
-                //check if an email should be sent for this outcome	
+                //check if an sms should be sent for this outcome	
+                $sms_triggers = $this->Records_model->get_sms_triggers($campaign_id, intval($this->input->post('outcome_id')));
+				//check if an email should be sent for this outcome	
                 $email_triggers = $this->Records_model->get_email_triggers($campaign_id, intval($this->input->post('outcome_id')));
 				//check if any other function should be called
 				 $function_triggers = $this->Records_model->get_function_triggers($campaign_id, intval($this->input->post('outcome_id')));
@@ -788,6 +778,9 @@ class Records extends CI_Controller
             
             if (isset($email_triggers) && count($email_triggers) > 0) {
                 $response['email_trigger'] = true;
+            }
+			if (isset($email_triggers) && count($email_triggers) > 0) {
+                $response['sms_trigger'] = true;
             }
 			if (isset($function_triggers) && count($function_triggers) > 0) {
                 $response['function_triggers'] = $function_triggers;

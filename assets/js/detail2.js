@@ -604,6 +604,13 @@ var record = {
                             data: {urn: record.urn}
                         });
                     }
+					 if (response.sms_trigger) {
+                        $.ajax({
+                            url: helper.baseUrl + 'sms/trigger_sms',
+                            type: "POST",
+                            data: {urn: record.urn}
+                        });
+                    }
                     if (response.function_triggers) {
                         $.each(response.function_triggers, function (i, path) {
                             $.ajax({
@@ -612,9 +619,9 @@ var record = {
                                 dataType: "JSON",
                                 data: {urn: record.urn}
                             }).done(function (function_trigger_response) {
-                                if (function_trigger_response.function_name == "workbooks") {
-                                    record.additional_info.load_panel();
-                                }
+                                if(function_trigger_response.js_function){
+									eval(function_trigger_response.js_function);
+								}
                             });
                         });
                     }

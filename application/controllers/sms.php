@@ -732,5 +732,9 @@ class Sms extends CI_Controller
 
     }
 
+	public function trigger_sms(){
+	//TODO this isn't working yet it needs finishing
+		
+	}
 
 }

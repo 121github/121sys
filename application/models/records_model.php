@@ -1210,6 +1210,26 @@ class Records_model extends CI_Model
         return $email_triggers;
     }
 
+	    //when a record is update this function is ran to see if an email should be sent to anyone
+    public function get_sms_triggers($campaign_id, $outcome_id)
+    {
+        $main = array();
+        $this->db->join("sms_trigger_recipients", "sms_triggers.trigger_id = email_trigger_recipients.trigger_id", "inner");
+        $this->db->join("users", "users.user_id = sms_trigger_recipients.user_id", "inner");
+        $this->db->where("outcome_id", $outcome_id);
+        $this->db->where("campaign_id", $campaign_id);
+        $result = $this->db->get("sms_triggers")->result_array();
+        $sms_triggers = array();
+        foreach ($result as $row) {
+            if (!empty($row['user_telephone']) && !empty($row['template_id']) && preg_match('/^447|^\+447^00447|^07/',$row['user_telephone'])) {
+                $main[$row['name']] = $row['user_email'];
+                $sms_triggers[$row['template_id']] = array("mobile" => $main);
+            }
+        }
+        $_SESSION['sms_triggers'] = $sms_triggers;
+        return $sms_triggers;
+    }
+
     //when a record is update this function is ran to see if the urn should be sent to any other function
     public function get_function_triggers($campaign_id, $outcome_id)
     {
