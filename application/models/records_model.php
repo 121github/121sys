@@ -780,7 +780,6 @@ class Records_model extends CI_Model
             $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and user_id in(select user_id from users_to_campaigns where campaign_id = '$campaign_id') ";
         else:
             $qry = "SELECT user_id, name, user_email, user_telephone, ownership.urn FROM ownership JOIN users USING (user_id) JOIN records USING ( urn )  where user_status = 1 and urn = '$urn' and campaign_id in({$_SESSION['campaign_access']['list']})";
-			$this->firephp->log($qry);
         endif;
         return $this->db->query($qry)->result_array();
     }

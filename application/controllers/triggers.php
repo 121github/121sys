@@ -18,19 +18,21 @@ class Triggers extends CI_Controller
   //sends an email and sms to the contacts if this is the first no contact outcome for the record , or if it's the 4th attempt they get an sms and an email. Only if they haven't recieved an email or text already in the last 24 hours
 public function ghs_no_contact_notification(){
 	$urn = $this->input->post('urn');
-	$qry="select history_id from history join outcomes using(outcome_id) where delay_hours is not null and urn = '$urn'";
+	$qry="select history_id,campaign_id from history join outcomes using(outcome_id) where delay_hours is not null and urn = '$urn'";
 	$query = $this->db->query($qry);
+	
 	if($query->num_rows()=="1"){
 		if($query->row()->campaign_id ==29){
 					$template_id = "28";
 		} 
-		if($query->row()->campaign_id ==29){
+		if($query->row()->campaign_id ==22){
 					$template_id = "22";
 		} 
 		//FIRST TIME - send email and sms
 		$this->firephp->log($template_id);
 		$email_trigger = $this->Trigger_model->send_email_to_contact($template_id,$urn);
 		$sms_trigger = $this->Trigger_model->send_sms_to_contact($template_id,$urn);
+	
 		$functions = array();
 		if($email_trigger){
 		$functions[] = 	'campaign_functions.email_trigger';

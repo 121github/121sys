@@ -1,5 +1,5 @@
 // JavaScript Document
-var campaign_function = {
+var campaign_functions = {
 init:function(){
 	$('#save-sticky').hide();
 	$('#sticky-notes').addClass('red').prop('readonly',true);
@@ -25,5 +25,5 @@ sms_trigger:function(){
 }
 }
 $(document).ready(function(){
-	campaign_function.init();
+	campaign_functions.init();
 });

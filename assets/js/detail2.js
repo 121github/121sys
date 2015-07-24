@@ -619,8 +619,10 @@ var record = {
                                 dataType: "JSON",
                                 data: {urn: record.urn}
                             }).done(function (function_trigger_response) {
-                                if(function_trigger_response.js_function){
-									eval(function_trigger_response.js_function);
+                                if(function_trigger_response.js_functions.length>0){
+									$.each(function_trigger_response.js_functions,function(i,f){
+									eval(f+'()');
+									});
 								}
                             });
                         });
