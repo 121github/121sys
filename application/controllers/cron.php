@@ -15,6 +15,22 @@ class Cron extends CI_Controller
         $this->load->model('Data_model');
     }
 
+    public function morning_crons()
+    {
+		//set all company/contact telephone numbers where
+        $this->check_suppressed_records();
+		//delete all lapsed entries in the planner
+        $this->clear_planner();
+		//updates and adds postcode co-ordinates and location_id's
+		$this->update_all_locations();
+		//fix and format contact phone numbers
+		$this->check_contact_telephone_numbers();
+		//fix and format company phone numbers
+		$this->check_company_telephone_numbers();
+		//deletes files that are in the upload folder but nowhere in the db!
+		$this->tidy_files();
+    }
+
     public function update_hours()
     {
         $agents = $this->Form_model->get_agents();
@@ -313,7 +329,7 @@ class Cron extends CI_Controller
             $new_telephone_number = str_replace('+44', '0', $new_telephone_number);
             $new_telephone_number = str_replace('+', '00', substr($new_telephone_number, 0, 2)) . substr($new_telephone_number, 2);
             $new_telephone_number = str_replace('(0)', '', $new_telephone_number);
-
+			$new_telephone_number = str_replace(' ', '', $new_telephone_number);
             $new_telephone_number = preg_replace('/[^0-9]/', '', $new_telephone_number);
 
 
@@ -393,7 +409,7 @@ class Cron extends CI_Controller
             $new_telephone_number = str_replace('+44', '0', $new_telephone_number);
             $new_telephone_number = str_replace('+', '00', substr($new_telephone_number, 0, 2)) . substr($new_telephone_number, 2);
             $new_telephone_number = str_replace('(0)', '', $new_telephone_number);
-
+			$new_telephone_number = str_replace(' ', '', $new_telephone_number);
             $new_telephone_number = preg_replace('/[^0-9]/', '', $new_telephone_number);
 
             if (strlen($new_telephone_number) < 7) {
@@ -632,32 +648,7 @@ class Cron extends CI_Controller
     //################################### ELDON functions ######################################
     //################################################################################################
 
-    /**
-     * Colour the Eldon records by Category
-     */
-    public function eldon_coloured_by_category()
-    {
-        $output = "";
-        $output .= "\nColour the Eldorn records by Category... ";
-
-
-        //Update the colour of the records by category when the record_color is null
-        $num_records_updated = $this->Cron_model->eldon_coloured_by_category();
-
-        $output .= $num_records_updated." Records affected \n\n";
-
-        if ($this->input->is_ajax_request()) {
-            echo json_encode(array(
-                "success" => true,
-                "num_records_colored" => $num_records_updated,
-                "msg" => $num_records_updated." records colored"
-            ));
-        }
-        else {
-            echo $output;
-        }
-    }
-
+ 
 
     //################################################################################################
     //################################### PRIVATE functions ##########################################

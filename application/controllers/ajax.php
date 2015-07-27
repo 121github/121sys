@@ -929,7 +929,7 @@ $d = preg_replace('/[0-9]/','',$data['description']);
 				$special_fields = $this->db->query($qry)->result_array();
 				foreach($special_fields as $row){
 					if($row['is_color']==1){
-						$this->Records_model->save_record_color($urn,$k);
+						$this->Records_model->save_record_color($urn,$v);
 					}
 					if($row['is_owner']==1){
 						 $this->Records_model->save_ownership($urn, array($v));

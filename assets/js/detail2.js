@@ -1877,7 +1877,7 @@ var record = {
                     }
                     detail_id = row.id;
                 });
-                tbody += '<td><span class="glyphicon glyphicon-trash pointer pull-right del-detail-btn marl" data-target="#modal" item-id="' + detail_id + '" ></span> <span class="glyphicon glyphicon-pencil pointer pull-right edit-detail-btn"  item-id="' + detail_id + '"></span></td><tr>';
+                tbody += '<td><span class="glyphicon glyphicon-pencil pointer pull-right edit-detail-btn"  item-id="' + detail_id + '"></span></td><tr>';
             });
             table += thead + '</thead>' + tbody + '<tbody></table></div>';
             $panel.append(table);

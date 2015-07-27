@@ -308,6 +308,7 @@ class Cron_model extends CI_Model
                       telephone_number like '%/%' or
                       telephone_number like '%(%' or
                       telephone_number like '%)%' or
+					  telephone_number like '% %' or
                       telephone_number like '%-%' ";
 
         $result = $this->db->query($qry)->result_array();
@@ -340,6 +341,7 @@ class Cron_model extends CI_Model
                       telephone_number like '%/%' or
                       telephone_number like '%(%' or
                       telephone_number like '%)%' or
+					  telephone_number like '% %' or
                       telephone_number like '%-%' ";
 
         $result = $this->db->query($qry)->result_array();
@@ -449,49 +451,4 @@ class Cron_model extends CI_Model
     }
 
 
-    /**
-     * Colour the Eldon records by Category
-     */
-    public function eldon_coloured_by_category()
-    {
-        $num_records_affected = 0;
-
-        //Gold
-        $qry = "update records rec
-                  LEFT JOIN record_details rd using (urn)
-                set rec.record_color = 'ffd700'
-                  WHERE rd.c1 = 'Gold' AND rec.record_color is null";
-
-        $this->db->query($qry);
-        $num_records_affected += $this->db->affected_rows();
-
-        //Silver
-        $qry = "update records rec
-                  LEFT JOIN record_details rd using (urn)
-                set rec.record_color = 'c0c0c0'
-                  WHERE rd.c1 = 'Silver' AND rec.record_color is null";
-
-        $this->db->query($qry);
-        $num_records_affected += $this->db->affected_rows();
-
-        //Platinum
-        $qry = "update records rec
-                  LEFT JOIN record_details rd using (urn)
-                set rec.record_color = 'e5e4e2'
-                  WHERE rd.c1 = 'Platinum' AND rec.record_color is null";
-
-        $this->db->query($qry);
-        $num_records_affected += $this->db->affected_rows();
-
-        //Bronze
-        $qry = "update records rec
-                  LEFT JOIN record_details rd using (urn)
-                set rec.record_color = 'cd7f32'
-                  WHERE rd.c1 = 'Bronze' AND rec.record_color is null";
-
-        $this->db->query($qry);
-        $num_records_affected += $this->db->affected_rows();
-
-        return $num_records_affected;
-    }
 }
