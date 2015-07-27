@@ -336,7 +336,7 @@ var maps = {
             if (index < 8) {
                 waypts.push({
                     //location: new google.maps.LatLng(lat, lng),
-                    location: postcode,
+                    location: postcode + ', UK',
                     stopover: true
                 });
                 record_list_route[index] = {
