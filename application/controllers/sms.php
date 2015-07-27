@@ -786,6 +786,9 @@ class Sms extends CI_Controller
                     echo "\t\t - ".$sms['send_to']."[".$sms['sent_date']."] -> status_id = ".$sms['status_id']." , comments -> ".$sms['comments']." \n";
                 }
             }
+            else {
+                echo "Nothing to update.\n";
+            }
         }
         else {
             echo "No messages found.\n";
