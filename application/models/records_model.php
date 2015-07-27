@@ -385,7 +385,7 @@ class Records_model extends CI_Model
             $join = $_SESSION['filter']['join'];
         }
         //these joins are mandatory for sorting by name, outcome or campaign
-		$join['record_planner'] = " left join client_refs using(urn) ";
+		$join['client_ref'] = " left join client_refs using(urn) ";
         $join['record_planner'] = " left join record_planner rp on rp.urn = r.urn ";
         $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
         $join['appointment'] = " left join appointments app on app.urn = r.urn ";
