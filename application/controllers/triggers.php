@@ -20,19 +20,21 @@ public function ghs_no_contact_notification(){
 	$urn = $this->input->post('urn');
 	$qry="select history_id,campaign_id from history join outcomes using(outcome_id) where delay_hours is not null and urn = '$urn'";
 	$query = $this->db->query($qry);
-	
-	if($query->num_rows()=="1"){
-		if($query->row()->campaign_id ==29){
-					$template_id = "28";
-		} 
+	if($query->num_rows()=="1"||$query->num_rows()=="4"){
 		if($query->row()->campaign_id ==22){
-					$template_id = "22";
+					$email_template_id = "22";
+					$sms_template_id = "2";
 		} 
 		//FIRST TIME - send email and sms
-		$this->firephp->log($template_id);
-		$email_trigger = $this->Trigger_model->send_email_to_contact($template_id,$urn);
-		$sms_trigger = $this->Trigger_model->send_sms_to_contact($template_id,$urn);
-	
+	if($query->num_rows()=="1"){
+		$email_trigger = $this->Trigger_model->send_email_to_contact($email_template_id,$urn);
+		$sms_trigger = $this->Trigger_model->send_sms_to_contact($sms_template_id,$urn);
+	}
+		//FORTH TIME - sms only
+		if($query->num_rows()=="4"){
+		$sms_trigger = $this->Trigger_model->send_sms_to_contact($sms_template_id,$urn);
+		}
+		
 		$functions = array();
 		if($email_trigger){
 		$functions[] = 	'campaign_functions.email_trigger';

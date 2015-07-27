@@ -79,6 +79,8 @@ Found: <span class="record-count"></span> <a href="#" class="submit-filter" >Vie
 </div>
    </div>
       <!-- /.row -->
+     
+      
       <div class="row">
         <div class="col-lg-12">
                   <div class="panel panel-primary">
@@ -106,13 +108,13 @@ Found: <span class="record-count"></span> <a href="#" class="submit-filter" >Vie
                   <?php } ?>
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> User</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($agents as $row): ?>
 	                    <li><a href="#" class="filter" data-ref="agent" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
-	                    <li><a class="filter" data-ref="agent" style="color: green;">All Agents</a> </li>
+	                    <li><a class="filter" data-ref="agent" style="color: green;">All USers</a> </li>
 	                  </ul>
                   </div>
                   <?php } ?>

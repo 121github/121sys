@@ -940,11 +940,6 @@ $d = preg_replace('/[0-9]/','',$data['description']);
 					if($row['is_client_ref']==1){
 						$this->Records_model->insert_client_ref($urn,$k);
 					}
-					/* this is just to check if referral codes are being entered in GHS, it can be deleted once we know its working ok */
-					if($row['field_name']=="Referred By"&&!empty($v)&&$v!=="-"){
-						mail("bradf@121customerinsight.co.uk","Referral Code","Referral by: ".$v."\n URN:".$urn);
-					}
-					/* end GHS referral check */
 					
 				}
 				}

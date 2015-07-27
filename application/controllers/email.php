@@ -381,7 +381,6 @@ class Email extends CI_Controller
 			$form['body'] = str_replace("[$key]",$val,$form['body']);
 			}
 		}		
-		$this->firephp->log($form);
 		if($this->send($form)){
 				$email_history = array(
 								'body' => $form['body'],
@@ -390,7 +389,7 @@ class Email extends CI_Controller
 								'send_to' => $form['send_to'],
 								'cc' => implode(",",$form['cc']),
 								'bcc' => implode(",",$form['bcc']),
-								'user_id' => $form['user_id'],
+								'user_id' => $_SESSION['user_id'],
 								'urn' => $form['urn'],
 								'template_id' => $form['template_id'],
 								'template_unsubscribe' => $form['template_unsubscribe'],

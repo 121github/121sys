@@ -13,7 +13,7 @@ class Dashboard_model extends CI_Model
 
     public function overdue_visits($filter = "")
     {
-        $qry = "select urn,users.name owner, c1 as category,campaign_name as type,companies.name,records.date_updated,outcome from records inner join companies using(urn) inner join record_details using(urn) left join ownership using(urn) left join users using(user_id) inner join campaigns using(campaign_id) inner join outcomes using(outcome_id) where records.date_updated < subdate(curdate(),interval 3 month) ";
+        $qry = "select urn,users.name owner, c1 as category,campaign_name as type,companies.name,records.date_updated,outcome from records inner join companies using(urn) inner join record_details using(urn) left join ownership using(urn) left join users using(user_id) inner join campaigns using(campaign_id) inner join outcomes using(outcome_id) where curdate()>date(nextcall) ";
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = '" . $filter['campaign'] . "'";
         }
