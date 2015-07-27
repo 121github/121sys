@@ -385,7 +385,7 @@ class Records_model extends CI_Model
             $join = $_SESSION['filter']['join'];
         }
         //these joins are mandatory for sorting by name, outcome or campaign
-		$join['client_ref'] = " left join client_refs using(urn) ";
+		$join['client_ref'] = " left join client_refs cr on r.urn=cr.urn ";
         $join['record_planner'] = " left join record_planner rp on rp.urn = r.urn ";
         $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
         $join['appointment'] = " left join appointments app on app.urn = r.urn ";
@@ -474,24 +474,9 @@ class Records_model extends CI_Model
 
     public function get_nav($options = "")
     {
-        $table_columns = array(
-            "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))",
-            "campaign_name",
-            "com.name",
-            "fullname",
-            "outcome",
-            "date_format(r.nextcall,'%d/%m/%y %H:%i')",
-            "rand()"
-        );
-        $order_columns = array(
-            "r.date_added",
-            "campaign_name",
-            "com.name",
-            "fullname",
-            "outcome",
-            "r.nextcall",
-            "rand()"
-        );
+        $table_columns = $options['visible_columns']['select'];
+		$order_columns = $options['visible_columns']['order'];
+		
         $navqry = "select r.urn from records r ";
         $join = array();
         //if any join is required we should apply it here
@@ -500,6 +485,7 @@ class Records_model extends CI_Model
         }
 
         //these joins are mandatory for sorting by name, outcome or campaign
+		$join['client_ref'] = " left join client_refs cr on r.urn=cr.urn ";
         $join['companies'] = " left join companies com on com.urn = r.urn ";
         $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
         $join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
