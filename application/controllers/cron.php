@@ -276,8 +276,16 @@ class Cron extends CI_Controller
 
     public function tidy_files()
     {
+		 //delete files that dont exist in the database
+        $base = FCPATH . "upload/files";
+        $base_folders = array_diff(scandir($base), array(
+            '..',
+            '.'
+        ));
+		
+		foreach($base_folders as $base_folder){
         //delete files that dont exist in the database
-        $directory = FCPATH . "upload/cv";
+        $directory = FCPATH . "upload/files/".$base_folder;
         $folders = array_diff(scandir($directory), array(
             '..',
             '.'
@@ -301,7 +309,7 @@ class Cron extends CI_Controller
             }
         }
     }
-
+	}
 
     //################################################################################################
     //################################### WRONG TELEPHONE NUMBERS functions ##########################

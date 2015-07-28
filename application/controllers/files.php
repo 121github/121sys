@@ -130,7 +130,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
         $this->load->library('zip');
         $file_id = $this->uri->segment(3);
         $result  = $this->get_file_from_id($file_id, true);
-        $file    = FCPATH . "/upload/" . $result['folder_name'] . "/" .$result['subfolder']."/". $result['filename'];
+        $file    = FCPATH . "/upload/files/" . $result['folder_name'] . "/" .$result['subfolder']."/". $result['filename'];
         $this->zip->read_file($file);
         //uncomment the below if you wish to archive downloads in the download folder
         //$zippath = FCPATH . "downloads/".date('ymdhis').$file['filename'].".zip";
@@ -168,7 +168,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
         if ($parts) {
             return $result;
         }
-        $filepath = FCPATH . "/upload/" . $result['folder_name'] . "/" . $result['subfolder'] . "/" . $result['filename'];
+        $filepath = FCPATH . "/upload/files/" . $result['folder_name'] . "/" . $result['subfolder'] . "/" . $result['filename'];
         return $filepath;
     }
     
@@ -183,8 +183,8 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
 		if($user_folders[$folder]['write']=="1"){
 		$folder_name = $user_folders[$folder]['folder_name'];
 		$day = date('Y-m-d');
-		if(!is_dir(FCPATH . "upload/".$folder_name."/".$day)){
-		mkdir(FCPATH . "upload/$folder_name/$day");
+		if(!is_dir(FCPATH . "upload/files/".$folder_name."/".$day)){
+		mkdir(FCPATH . "upload/files/$folder_name/$day");
 		}
 		} else {
 		//display an error
@@ -202,7 +202,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
             
             $tempFile     = $_FILES['file']['tmp_name']; //3
             $originalname = preg_replace("/[^A-Za-z0-9. ]/", '', $_FILES['file']['name']);
-            $targetPath   = FCPATH . "upload/$folder_name/$day"; //4
+            $targetPath   = FCPATH . "upload/files/$folder_name/$day"; //4
             $targetFile   = $targetPath ."/". $originalname; //5
             $filesize     = filesize($tempFile);
 			
@@ -292,12 +292,12 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
         
     }
     public function scantest(){
-		$file =  $this->scanfile(FCPATH . "upload/cv/2015-01-28/Abdul Parappil (7365989).doc", "Abdul Parappil (7365989).doc");
+		$file =  $this->scanfile(FCPATH . "upload/files/cv/2015-01-28/Abdul Parappil (7365989).doc", "Abdul Parappil (7365989).doc");
 	}
     
     public function scanall()
     {
-        $directory = FCPATH . "upload/cv";
+        $directory = FCPATH . "upload/files/cv";
         $folders     = array_diff(scandir($directory), array(
             '..',
             '.'
@@ -407,7 +407,7 @@ echo $csv;
     public function fix_db()
     {
         
-        $folder = FCPATH . "upload/cv";
+        $folder = FCPATH . "upload/files/cv";
         if (!is_dir($folder)) {
             echo "folder not found";
         }
@@ -430,7 +430,7 @@ echo $csv;
             $file2 = str_replace("doc ", ".doc", $file);
             $file3 = str_replace("docx ", ".docx", $file2);
             $file4 = str_replace("..", ".", $file3);
-            rename(FCPATH . "/upload/cv/" . $original, FCPATH . "/upload/cv/" . $file4);
+            rename(FCPATH . "/upload/files/cv/" . $original, FCPATH . "/upload/cv/" . $file4);
             clearstatcache();
             echo $query = "insert into files set filename = '" . addslashes($file4) . "',filesize='" . filesize($folder . "/" . $file4) . "',folder_id = 1,date_added=str_to_date('$filedate','%y%m%d%H%i%s')";
             echo ";<br>";
@@ -441,7 +441,7 @@ echo $csv;
     }
        public function fix_db2(){
 		$files = $this->db->query("select filename,date(date_added) subfolder from files")->result_array();
-		  $folder = FCPATH . "upload/cv";
+		  $folder = FCPATH . "upload/files/cv";
 		foreach( $files as $row){
 			echo $old = $folder."/".$row['filename'];
 			echo $new = $folder."/".$row['subfolder']."/".$row['filename'];
