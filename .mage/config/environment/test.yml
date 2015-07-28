@@ -5,6 +5,7 @@ deployment:
   to: /var/www/html
   excludes:
     - upload
+    - application/logs
 releases:
   enabled: true
   max: 4
@@ -16,6 +17,7 @@ tasks:
   pre-deploy:
   on-deploy:
     - uploadFolder
+    - logFolder
     - prepareTestDeployment
     - permissionsGroup
   post-release:

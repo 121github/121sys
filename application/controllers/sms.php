@@ -578,57 +578,6 @@ class Sms extends CI_Controller
 
     /***********************************************************************************************************/
     /***********************************************************************************************************/
-    /****** SMS Delivery Receipt *******************************************************************************/
-    /***********************************************************************************************************/
-    /***********************************************************************************************************/
-    public function sms_delivery_receipt()
-    {
-        $status   = $_POST['status'];
-        $customID = $_POST['customID'];
-
-        switch($status) {
-            case "D":
-                $status_id = SMS_STATUS_SENT;
-                $comments = "Message was delivered successfully.";
-                break;
-            case "U":
-                $status_id = SMS_STATUS_UNDELIVERED;
-                $comments = "The message was undelivered.";
-                break;
-            case "P":
-                $status_id = SMS_STATUS_UNKNOWN;
-                $comments = "Message pending, the message is en route.";
-                break;
-            case "I":
-                $status_id = SMS_STATUS_ERROR;
-                $comments = "The number was invalid.";
-                break;
-            case "E":
-                $status_id = SMS_STATUS_ERROR;
-                $comments = "The message has expired.";
-                break;
-            case "?":
-                $status_id = SMS_STATUS_UNKNOWN;
-                $comments = "Unknown, we have not received a delivery status from the networks.";
-                break;
-            default:
-                $status_id = SMS_STATUS_UNKNOWN;
-                $comments = "Unknown, we have not received a delivery status from the networks.";
-                break;
-        }
-
-        //Update the status for the sms_history record
-        $sms_history = array(
-            "text_local_id" => $customID,
-            "status_id" => $status_id,
-            "comments" => $comments
-        );
-        $this->Sms_model->update_sms_history_by_text_local_id($sms_history);
-
-    }
-
-    /***********************************************************************************************************/
-    /***********************************************************************************************************/
     /****** Check if the sender name exist *********************************************************************/
     /***********************************************************************************************************/
     /***********************************************************************************************************/
@@ -722,6 +671,42 @@ class Sms extends CI_Controller
 
     }
 
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** SMS Delivery Receipt *******************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    public function sms_delivery_receipt()
+    {
+        if (!isset($_POST['status']) || !isset($_POST['customID'])) {
+            $post = $_POST;
+            $post_content = "";
+            foreach($post as $key => $val) {
+                $post_content .= $key." => ".$val.", ";
+            }
+            $post_content = (!empty($post)?" POST: ".substr($post_content, 0, strlen($post_content)-2):" POST: empty");
+
+            log_message('error', '[Sms Integration TextLocal][Delivery Receipt] Some variable (status or customID) did not contain a value.'. $post_content);
+        }
+        else {
+
+            $status   = $_POST['status'];
+            $customID = $_POST['customID'];
+
+            $response = $this->translateStatus($status);
+
+            $status_id = $response['status_id'];
+            $comments = $response['comments'];
+
+            //Update the status for the sms_history record
+            $sms_history = array(
+                "text_local_id" => $customID,
+                "status_id" => $status_id,
+                "comments" => $comments
+            );
+            $this->Sms_model->update_sms_history_by_text_local_id($sms_history);
+        }
+    }
 
     /***********************************************************************************************************/
     /***********************************************************************************************************/
@@ -730,11 +715,146 @@ class Sms extends CI_Controller
     /***********************************************************************************************************/
     public function synchronize_sms_history () {
 
+        echo "Sync sms history messages... \n";
+
+        //$max_time = time(); // Get sends between now
+        $max_time = strtotime('-5 minutes'); // and a month ago
+        $min_time = strtotime('-7 days'); // and a month ago
+        $limit = 1000;
+        $start = 0;
+
+
+        //Get the messages from text_local
+        $response = $this->textlocal->getAPIMessageHistory($start, $limit, $min_time, $max_time);
+
+
+        if (!empty($response->messages)) {
+
+            echo "\t Found ".$response->total." messages";
+            echo " from ".gmdate("Y-m-d", $min_time)." to ".gmdate("Y-m-d", $max_time)." \n\n";
+
+            //Get the records in our system
+
+            $text_local_ids = array();
+            $sms_message_history_ar = array();
+            foreach($response->messages as $key => $val) {
+                if (isset($val->customID)) {
+                    array_push($text_local_ids, $val->customID);
+                    $translatedStatus = $this->translateStatus($val->status);
+                    $val->status = $translatedStatus['status_id'];
+                    $val->comments = $translatedStatus['comments'];
+                    $sms_message_history_ar[$val->customID] = $val;
+                }
+            }
+
+            $sms_history_ar = $this->Sms_model->get_sms_history_by_text_local_list($text_local_ids);
+
+            //Update the status if it is needed
+            $sms_history_to_update = array();
+            foreach($sms_history_ar as $sms_history) {
+                if ($sms_history['status_id'] != $sms_message_history_ar[$sms_history['text_local_id']]->status) {
+                    $sms_history['status_id'] = $sms_message_history_ar[$sms_history['text_local_id']]->status;
+                    $sms_history['comments'] = $sms_message_history_ar[$sms_history['text_local_id']]->comments;
+
+                    array_push($sms_history_to_update, $sms_history);
+                }
+            }
+            //Update
+            if (!empty($sms_history_to_update)) {
+                $result = $this->Sms_model->update_sms_histories($sms_history_to_update);
+                echo "\t".count($sms_history_to_update)." messages updated from sms history \n";
+                foreach($sms_history_to_update as $sms) {
+                    echo "\t\t - ".$sms['send_to']."[".$sms['sent_date']."] -> status_id = ".$sms['status_id']." , comments -> ".$sms['comments']." \n";
+                }
+            }
+            else {
+                echo "Nothing to update.\n";
+            }
+        }
+        else {
+            echo "No messages found.\n";
+        }
+
     }
 
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** translateStatus from the texlocal status to the status_id in our sysmte ****************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    private function translateStatus($status) {
+        switch($status) {
+            case "D":
+                $status_id = SMS_STATUS_SENT;
+                $comments = "Message was delivered successfully.";
+                break;
+            case "U":
+                $status_id = SMS_STATUS_UNDELIVERED;
+                $comments = "The message was undelivered.";
+                break;
+            case "P":
+                $status_id = SMS_STATUS_UNKNOWN;
+                $comments = "Message pending, the message is en route.";
+                break;
+            case "I":
+                $status_id = SMS_STATUS_ERROR;
+                $comments = "The number was invalid.";
+                break;
+            case "E":
+                $status_id = SMS_STATUS_ERROR;
+                $comments = "The message has expired.";
+                break;
+            case "?":
+                $status_id = SMS_STATUS_UNKNOWN;
+                $comments = "Unknown, we have not received a delivery status from the networks.";
+                break;
+            default:
+                $status_id = SMS_STATUS_UNKNOWN;
+                $comments = "Unknown, we have not received a delivery status from the networks.";
+                break;
+        }
+
+        return array(
+            "status_id" => $status_id,
+            "comments" => $comments
+        );
+    }
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** trigger_sms ****************************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
 	public function trigger_sms(){
 	//TODO this isn't working yet it needs finishing
-		
+
 	}
+
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    /****** Bulk sms Tool **************************************************************************************/
+    /***********************************************************************************************************/
+    /***********************************************************************************************************/
+    public function bulk_sms(){
+        if ($this->input->is_ajax_request()&&$this->input->post('list')) {
+            $lines = lines_to_list($this->input->post('list'));
+            echo json_encode(array("count"=>count($lines),"urns"=>"(".implode(",",$lines).")"));
+            exit;
+        }
+        user_auth_check();
+        $this->load->model('Form_model');
+        $templates = $this->Form_model->get_sms_templates();
+        $sms_senders = $this->Form_model->get_sms_senders();
+        $data = array(
+            'title' => 'Bulk Sms',
+            'page'=>'bulk-sms',
+            'templates' => $templates,
+            'sms_senders' => $sms_senders
+        );
+
+        $this->template->load('default', 'sms/bulk_sms.php', $data);
+
+    }
 
 }

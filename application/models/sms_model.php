@@ -612,4 +612,11 @@ class Sms_model extends CI_Model
         return $result;
     }
 
+    public function get_sms_history_by_text_local_list($text_local_ids) {
+
+        $qry = "select * from sms_history where text_local_id IN ('".implode($text_local_ids,"','")."')";
+
+        return $this->db->query($qry)->result_array();
+    }
+
 }
