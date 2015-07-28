@@ -26,7 +26,7 @@
 				</p>
 				<input type="text" class="form-control" name="send_from"
 					title="Enter the sender" required 
-					value="<?php echo $template['template_from']; ?>"				
+					value="<?php echo !empty($template['template_from'])?$template['template_from']:$_SESSION['email']; ?>"				
 				/>
 			</div>
             </div>

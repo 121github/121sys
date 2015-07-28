@@ -428,7 +428,7 @@ class Records_model extends CI_Model
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
         $where = " where 1 ";
-
+		$where .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
         //Check the bounds of the map
         if ($options['bounds'] && $options['map'] == 'true') {
             $where .= " and (
