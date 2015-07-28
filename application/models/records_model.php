@@ -350,55 +350,57 @@ class Records_model extends CI_Model
 
     //function to list all the records
     public function get_records($options)
-{
+{		
+		$tables = $options['visible_columns']['tables'];
+		//these tables MUSt be joined to the query regardless of the selected columns to allow the map to function
+		$required_tables = array("appointments","contact_locations","company_location","record_planner","record_planner_user");
+		foreach($required_tables as $rt){
+		if(!in_array($rt,$tables)){
+		$tables[] = $rt;
+		}
+		}
+		
         $table_columns = $options['visible_columns']['select'];
 		$order_columns = $options['visible_columns']['order'];
 
         $join = array();
-        $qry = "select r.urn,
-                      date_format(rp.start_date,'%d/%m/%Y') planner_date,
-                      rp.user_id planner_user_id,
-                      rp.record_planner_id,
-                      rp.postcode as planner_postcode,
-                      rpu.name planner_user,
-                      outcome,
-                      com.name name,
-                      fullname,
-                      campaign_name,
-                      com.website as company_website,
-                      con.website as contact_website,
-                      date_format(r.date_updated,'%d/%m/%y') date_updated,
-                      date_format(nextcall,'%d/%m/%y') nextcall,
-					  r.urn marker_id,
-                      GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location,
-                      GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location,
-                      r.record_color,
-                      ow.user_id ownership_id,
-                      owu.name ownership,
-                      r.map_icon,
-                      camp.map_icon as campaign_map_icon,
-                      app.postcode as appointment_postcode,
-                      app.location_id as appointment_location_id
+		//add mandatory column selections here
+		$required_select_columns = array("r.urn",
+		"date_format(rp.start_date,'%d/%m/%Y') planner_date",
+		"rp.user_id planner_user_id",
+		"rp.record_planner_id",
+        "rp.postcode as planner_postcode",
+        "rpu.name planner_user",
+		"r.urn marker_id",
+        "GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location",
+         "GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location",
+          "r.record_color",
+          "ow.user_id ownership_id",
+          "owu.name ownership",
+          "r.map_icon",
+          "camp.map_icon as campaign_map_icon",
+          "app.postcode as appointment_postcode",
+          "app.location_id as appointment_location_id"
+		);
+		//if any of the mandatory columns are missing from the columns array we push them in
+		foreach($required_select_columns as $required){
+			if(!in_array($required,$table_columns)){
+				$table_columns[] = $required;
+			}
+		}
+		//turn the selection array into a list
+		$selections = implode(",",$table_columns);
+        $qry = "select $selections
                 from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
         }
-        //these joins are mandatory for sorting by name, outcome or campaign
-		$join['client_ref'] = " left join client_refs cr on r.urn=cr.urn ";
-        $join['record_planner'] = " left join record_planner rp on rp.urn = r.urn ";
-        $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
-        $join['appointment'] = " left join appointments app on app.urn = r.urn ";
-        $join['companies'] = " left join companies com on com.urn = r.urn ";
-        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
-        $join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
-        $join['contacts'] = " left join contacts con on con.urn = r.urn ";
-        $join['contact_addresses'] = " left join contact_addresses cona on cona.contact_id = con.contact_id ";
-        $join['contact_locations'] = " left JOIN locations contact_locations ON (cona.location_id = contact_locations.location_id) ";
-        $join['outcomes'] = " left join outcomes o on o.outcome_id = r.outcome_id ";
-        $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
-        $join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
-        $join['ownership_name'] = " left join users owu on ow.user_id = owu.user_id ";
+        //
+		$join_array = table_joins();
+		foreach($tables as $table){
+		$join[] = $join_array[$table];
+		}
 
         foreach ($join as $join_query) {
             $qry .= $join_query;
@@ -420,6 +422,7 @@ class Records_model extends CI_Model
 
         $qry .= $order;
         $qry .= "  limit $start,$length";
+		$this->firephp->log($qry);
         $records = $this->db->query($qry)->result_array();
         return $records;
     }

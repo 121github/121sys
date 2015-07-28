@@ -63,6 +63,16 @@ var modals = {
             }, 500);
 
         });
+		$(document).on('click', '[data-modal="choose-columns"]', function (e) {
+            e.preventDefault();
+             modals.column_picker($(this).attr('data-table-id'));
+        });
+		   $(document).on('click', '#save-columns', function (e) {
+            e.preventDefault();
+            modals.save_columns($(this).attr('data-table-id'));
+        })
+		
+		
         $(document).on('click', '[data-modal="edit-appointment"]', function (e) {
             e.preventDefault();
             modals.view_appointment($(this).attr('data-id'), true);
@@ -136,7 +146,46 @@ var modals = {
                     location.reload(true);
                 });
         });
-    },
+    },	
+	column_picker:function(table_id){
+		  $.ajax({
+            url: helper.baseUrl + 'datatables/get_columns',
+			data: { table:table_id },
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+			 var mheader = "Choose the columns to display";
+			 var mbody = "<form id='column-picker-form' ><input type='hidden' name='table' value='"+table_id+"' />";
+			 var mfooter = '<button type="submit" class="btn btn-primary pull-right" id="save-columns">Save</button> <button class="btn btn-default pull-left">Cancel</button>';
+			 $.each(response,function(group,row){
+				mbody += "<h4>"+group+"</h4>";
+				var colpicker = "<select class='selectpicker' name='columns[]' multiple data-width='100%'>";
+				 $.each(row,function(i,column){
+					var selected = "";
+				if(column.selected[column.columns.column_id]){ selected="selected" }
+					colpicker += "<option "+selected+" value='"+column.columns.column_id+"'>"+column.columns.column_title+"</option>";
+				 })
+				 colpicker += "</select>";
+				 mbody += colpicker;
+				 })
+			 mbody += "</form>";
+			 modals.load_modal(mheader, mbody, mfooter, true);
+			 modal_body.css('overflow', 'visible');
+            });
+		
+	},
+	save_columns:function(table_id){
+		 $.ajax({
+            url: helper.baseUrl + 'datatables/save_columns',
+            data: $('#column-picker-form').serialize(),
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+			$('#modal').modal('toggle');
+			flashalert.success("Columns were updated");
+			map_table_reload();
+		});
+	},
     merge_record: function (urn, target) {
         $.ajax({
             url: helper.baseUrl + 'modals/merge_record',
@@ -529,15 +578,6 @@ var modals = {
                 $('body').addClass('modal-open');
                 $('.container-fluid').css('height', '100%').css('overflow', 'auto');
             }
-        }
-    },
-    columns: function (columns) {
-        modals.default_buttons();
-        modal_header.text('Select columns to display');
-        modal_body.html($form);
-
-        if (!$('#modal').hasClass('in')) {
-            modals.show_modal();
         }
     },
     set_location: function () {

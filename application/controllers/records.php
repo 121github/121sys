@@ -45,8 +45,8 @@ class Records extends CI_Controller
     public function view()
     {
         //this array contains data for the visible columns in the table on the view page
-		/* temperarily getting them from a helper function until we use the database*/
-		$visible_columns = get_visible_columns();
+		$this->load->model('Datatables_model');
+		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -75,6 +75,7 @@ class Records extends CI_Controller
         
     }
 
+	
     public function get_used_icons() {
         //Get icons used so far
         $icons = $this->Records_model->get_used_icons();
@@ -104,10 +105,9 @@ class Records extends CI_Controller
     public function process_view()
     {
         if ($this->input->is_ajax_request()) {
-			
             $options = $this->input->post();
-			
-			$visible_columns = get_visible_columns();
+			$this->load->model('Datatables_model');
+			$visible_columns = $this->Datatables_model->get_visible_columns(1);
 			$options['visible_columns'] = $visible_columns;
 			//check the options
 			foreach($options['columns'] as $k=>$column){

@@ -3,76 +3,37 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-function get_visible_columns(){
-		 if ($_SESSION['sn']=='eldon.121system.com') {
-				  $visible_columns['columns'][] = array("data" => "color_icon");
-		$visible_columns['headings'][] = "Icon";
-		$visible_columns['select'][] = "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))";
-		$visible_columns['order'][] = "r.map_icon";
-		
-        $visible_columns['columns'][] = array("data" => "campaign_name");
-		$visible_columns['headings'][] = "Campaign";
-		$visible_columns['select'][] = "campaign_name";
-		$visible_columns['order'][] = "campaign_name";
-		
-		 $visible_columns['columns'][] = array("data" => "name");
-		$visible_columns['headings'][] = "Company";
-		$visible_columns['select'][] = "com.name";
-		$visible_columns['order'][] = "com.name";
-		
-		 $visible_columns['columns'][] = array("data" => "fullname");
-		$visible_columns['headings'][] = "Contact";
-				$visible_columns['select'][] = "fullname";
-		$visible_columns['order'][] = "fullname";
-		
-			 $visible_columns['columns'][] = array("data" => "postcode");
-		$visible_columns['headings'][] = "Company Postcode";
-						$visible_columns['select'][] = "coma.postcode";
-		$visible_columns['order'][] = "coma.postcode";
-		
-		 $visible_columns['columns'][] = array("data" => "client_ref");
-		$visible_columns['headings'][] = "Reference";
-		$visible_columns['select'][] = "client_ref";
-		$visible_columns['order'][] = "client_ref";
-
-		
-		 $visible_columns['columns'][] = array("data" => "nextcall");
-		$visible_columns['headings'][] = "Next Action";
-		$visible_columns['select'][] = "date_format(r.nextcall,'%d/%m/%y %H:%i')";
-		$visible_columns['order'][] = "r.nextcall";	
-		 } else {
-		  $visible_columns['columns'][] = array("data" => "color_icon");
-		$visible_columns['headings'][] = "Icon";
-				$visible_columns['select'][] = "CONCAT(IFNULL(r.map_icon,''),IFNULL(camp.map_icon,''))";
-		$visible_columns['order'][] = "r.map_icon";
-		
-		
-        $visible_columns['columns'][] = array("data" => "campaign_name");
-		$visible_columns['headings'][] = "Campaign";
-				$visible_columns['select'][] = "campaign_name";
-		$visible_columns['order'][] = "campaign_name";
-		
-		 $visible_columns['columns'][] = array("data" => "name");
-		$visible_columns['headings'][] = "Company";
-		$visible_columns['select'][] = "com.name";
-		$visible_columns['order'][] = "com.name";
-		
-		 $visible_columns['columns'][] = array("data" => "fullname");
-		$visible_columns['headings'][] = "Contact";
-				$visible_columns['select'][] = "fullname";
-		$visible_columns['order'][] = "fullname";
-		
-		 $visible_columns['columns'][] = array("data" => "outcome");
-		$visible_columns['headings'][] = "Outcome";
-						$visible_columns['select'][] = "outcome";
-		$visible_columns['order'][] = "outcome";
-		
-		 $visible_columns['columns'][] = array("data" => "nextcall");
-		$visible_columns['headings'][] = "Next Action";
-		$visible_columns['select'][] = "date_format(r.nextcall,'%d/%m/%y %H:%i')";
-		$visible_columns['order'][] = "r.nextcall";
-		 }	
-return $visible_columns;
+function table_joins(){
+		$join = array();
+		$join['client_refs'] = " left join client_refs cref on cref.urn = r.urn ";
+	    $join['record_planner'] = " left join record_planner rp on rp.urn = r.urn ";
+        $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
+        $join['appointments'] = " left join appointments app on app.urn = r.urn ";
+        $join['companies'] = " left join companies com on com.urn = r.urn ";
+        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
+        $join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
+        $join['contacts'] = " left join contacts con on con.urn = r.urn ";
+        $join['contact_addresses'] = " left join contact_addresses cona on cona.contact_id = con.contact_id ";
+        $join['contact_locations'] = " left JOIN locations contact_locations ON (cona.location_id = contact_locations.location_id) ";
+        $join['outcomes'] = " left join outcomes o on o.outcome_id = r.outcome_id ";
+        $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
+        $join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
+        $join['ownership_name'] = " left join users owu on ow.user_id = owu.user_id ";
+		$join['status_list'] = " left join status_list sl on sl.record_status_id = r.record_status ";		
+		$join['parked_codes'] = " left join parked_codes pc on pc.parked_code = r.parked_code ";
+		$join['surveys'] = " left join surveys surv on surv.urn = r.urn ";
+		$join['record_details'] = " left join record_details rd on rd.urn = r.urn ";
+		$join['company_subsectors'] = " left join company_subsectors comsubsec on comsubsec.company_id = com.company_id ";
+		$join['subsectors'] = " left join subsectors subsec on subsec.subsector_id = comsubsec.subsector_id ";		
+		$join['sectors'] = " left join sectors sec on sec.sector_id = subsec.subsector_id ";	
+		$join['contact_telephone']  = " left join contact_telephone cont on cont.contact_id = con.contact_id ";
+		$join['company_telephone'] = " left join company_telephone comt on comt.company_id = com.company_id ";
+		$join['contact_addresses']  = " left join contact_address cona on cona.contact_id = con.contact_id ";
+		$join['company_addresses'] = " left join company_telephone coma on coma.company_id = com.company_id ";
+		$join['data_sources'] = " left join data_sources ds on ds.source_id = r.source_id ";
+		$join['clients'] = " left join clients cli on cli.client_id = camp.client_id ";
+		$join['campaign_types'] = " left join campaign_types campt on campt.campaign_type_id = camp.campaign_type_id ";
+		return $join;
 }
 
 function lines_to_list($lines = false, $type = false)
