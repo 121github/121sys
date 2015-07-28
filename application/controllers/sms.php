@@ -678,53 +678,27 @@ class Sms extends CI_Controller
     /***********************************************************************************************************/
     public function sms_delivery_receipt()
     {
-        $status   = $_POST['status'];
-        $customID = $_POST['customID'];
+        if (!isset($_POST['status']) || !isset($_POST['customID'])) {
+            log_message('error', '[Sms Integration TextLocal][Delivery Receipt] Some variable (status or customID) did not contain a value.');
+        }
+        else {
 
-//        switch($status) {
-//            case "D":
-//                $status_id = SMS_STATUS_SENT;
-//                $comments = "Message was delivered successfully.";
-//                break;
-//            case "U":
-//                $status_id = SMS_STATUS_UNDELIVERED;
-//                $comments = "The message was undelivered.";
-//                break;
-//            case "P":
-//                $status_id = SMS_STATUS_UNKNOWN;
-//                $comments = "Message pending, the message is en route.";
-//                break;
-//            case "I":
-//                $status_id = SMS_STATUS_ERROR;
-//                $comments = "The number was invalid.";
-//                break;
-//            case "E":
-//                $status_id = SMS_STATUS_ERROR;
-//                $comments = "The message has expired.";
-//                break;
-//            case "?":
-//                $status_id = SMS_STATUS_UNKNOWN;
-//                $comments = "Unknown, we have not received a delivery status from the networks.";
-//                break;
-//            default:
-//                $status_id = SMS_STATUS_UNKNOWN;
-//                $comments = "Unknown, we have not received a delivery status from the networks.";
-//                break;
-//        }
+            $status   = $_POST['status'];
+            $customID = $_POST['customID'];
 
-        $response = $this->translateStatus($status);
+            $response = $this->translateStatus($status);
 
-        $status_id = $response['status_id'];
-        $comments = $response['comments'];
+            $status_id = $response['status_id'];
+            $comments = $response['comments'];
 
-        //Update the status for the sms_history record
-        $sms_history = array(
-            "text_local_id" => $customID,
-            "status_id" => $status_id,
-            "comments" => $comments
-        );
-        $this->Sms_model->update_sms_history_by_text_local_id($sms_history);
-
+            //Update the status for the sms_history record
+            $sms_history = array(
+                "text_local_id" => $customID,
+                "status_id" => $status_id,
+                "comments" => $comments
+            );
+            $this->Sms_model->update_sms_history_by_text_local_id($sms_history);
+        }
     }
 
     /***********************************************************************************************************/
