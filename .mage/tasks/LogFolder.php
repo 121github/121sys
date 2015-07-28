@@ -18,7 +18,7 @@ class LogFolder extends AbstractTask
             'chmod 777 ../logs',
             //'setfacl -R -m u:www-data:rwx -m u:\`whoami\`:rwx ../upload',
             //'setfacl -dR -m u:www-data:rwx -m u:\`whoami\`:rwx ../upload',
-            'ln -nsf ../logs application/logs'
+            'ln -nsf ../../logs application/logs'
         );
 
         $command = implode(" && ", $commandList);
