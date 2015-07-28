@@ -679,7 +679,14 @@ class Sms extends CI_Controller
     public function sms_delivery_receipt()
     {
         if (!isset($_POST['status']) || !isset($_POST['customID'])) {
-            log_message('error', '[Sms Integration TextLocal][Delivery Receipt] Some variable (status or customID) did not contain a value.');
+            $post = $_POST;
+            $post_content = "";
+            foreach($post as $key => $val) {
+                $post_content .= $key." => ".$val.", ";
+            }
+            $post_content = (!empty($post)?" POST: ".substr($post_content, 0, strlen($post_content)-2):" POST: empty");
+
+            log_message('error', '[Sms Integration TextLocal][Delivery Receipt] Some variable (status or customID) did not contain a value.'. $post_content);
         }
         else {
 
