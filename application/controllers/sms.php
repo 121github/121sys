@@ -958,7 +958,7 @@ class Sms extends CI_Controller
                                 //$output .= "SMS sent to " . count($numbers) . " numbers \n\n";
                                 echo json_encode(array(
                                     "success" => true,
-                                    "msg" => ($test == 'false'?"SMS sent to " . count($numbers) . " numbers":"Test mode enabled, please disabled it in order to send the text"),
+                                    "msg" => ($test == 'false'?"SMS sent to " . count($numbers) . " numbers":"Test mode enabled, please disabled it in order to send the text. Texts should be sent to " . count($numbers) . " numbers"),
                                     "sms" => $sms_histories,
                                     "test" => ($test == 'false'?0:1)
                                 ));
