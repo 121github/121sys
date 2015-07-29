@@ -82,17 +82,17 @@ class Sms extends CI_Controller
         $count = strlen($text);
 
         switch(TRUE) {
-            case ($text<=160):
+            case ($count<=160):
                 return 1;
-            case ($text>160 && $text<=306):
+            case ($count>160 && $count<=306):
                 return 2;
-            case ($text>306 && $text<=459):
+            case ($count>306 && $count<=459):
                 return 3;
-            case ($text>459 && $text<=612):
+            case ($count>459 && $count<=612):
                 return 4;
-            case ($text>612 && $text<=766):
+            case ($count>612 && $count<=766):
                 return 5;
-            case ($text>766):
+            case ($count>766):
                 return "Message was truncated to 765 characters (5 credits).";
         }
     }
