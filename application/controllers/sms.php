@@ -75,6 +75,7 @@ class Sms extends CI_Controller
         }
     }
 
+
     /***********************************************************************************************************/
     /***********************************************************************************************************/
     /******CREATE A NEW SMS ************************************************************************************/
@@ -678,14 +679,14 @@ class Sms extends CI_Controller
     /***********************************************************************************************************/
     public function sms_delivery_receipt()
     {
-        if (!isset($_POST['status']) || !isset($_POST['customID'])) {
-            $post = $_POST;
-            $post_content = "";
-            foreach($post as $key => $val) {
-                $post_content .= $key." => ".$val.", ";
-            }
-            $post_content = (!empty($post)?" POST: ".substr($post_content, 0, strlen($post_content)-2):" POST: empty");
+        $post = $_POST;
+        $post_content = "";
+        foreach($post as $key => $val) {
+            $post_content .= $key." => ".$val.", ";
+        }
+        $post_content = (!empty($post)?" POST: ".substr($post_content, 0, strlen($post_content)-2):" POST: empty");
 
+        if (!isset($_POST['status']) || !isset($_POST['customID'])) {
             log_message('error', '[Sms Integration TextLocal][Delivery Receipt] Some variable (status or customID) did not contain a value.'. $post_content);
         }
         else {
@@ -855,6 +856,158 @@ class Sms extends CI_Controller
 
         $this->template->load('default', 'sms/bulk_sms.php', $data);
 
+    }
+
+    public function send_bulk_sms() {
+
+//        if ($this->input->is_ajax_request()) {
+//
+//            $template_id = intval($this->input->post('template_id'));
+//            $sender = $this->input->post('sender');
+//            $urns = $this->input->post('urns');
+//
+//            //Validate the urn list format (urn1. urn2, ..., urnN)
+//            if ( preg_match('/^[,0-9]*$/', $urns) ) {
+//
+//                $urn_list = explode(",",$urns);
+//
+//                if ($template_id) {
+//                    $sender_id = intval($this->input->post('template_sender_id'));
+//                    $text = $this->input->post('template_text');
+//                    //Check the variables inside [] in the template and change them with a value if the template_id exist
+////                    if ($template_id) {
+////                        preg_match_all('#\[(.*?)\]#', $text, $matches);
+////                        foreach($matches[0] as $key => $match) {
+////                            if (isset($record[$matches[1][$key]])) {
+////                                $text = str_replace($match,$record[$matches[1][$key]],$text);
+////                            }
+////                        }
+////                    }
+//
+//
+//                }
+//                else {
+//                    $sender_id = intval($this->input->post('sender_id'));
+//                    $text = $this->input->post('text');
+//                }
+//
+////                $placeholder_data = $this->Sms_model->get_placeholder_data();
+////                $this->firephp->log($placeholder_data);
+////                if(count($placeholder_data)){
+////                    foreach($placeholder_data[0] as $key => $val){
+////                        if(strpos($template['template_body'],"[$key]")!==false){
+////                            if(empty($val)){
+////                                setcookie("placeholder_error", $key, time() + (60), "/");
+////                                if($key=="start"){
+////                                    $template['template_body'] = str_replace("[$key]","<span style=\"color:red\">** NO APPOINTMENT FOUND **</span>",$template['template_body']);
+////                                } else {
+////                                    $template['template_body'] = str_replace("[$key]","<span style=\"color:red\">** [$key] WAS EMPTY **</span>",$template['template_body']);
+////                                }
+////                                   } else {
+////                                $template['template_body'] = str_replace("[$key]",$val,$template['template_body']);
+////                            }
+////                        }
+////                    }
+////                }
+//
+//                //Get the records and the contact number where the records status is 1 for a particular urn list
+//                $records = $this->Sms_model->get_records_numbers_by_urn_list($urn_list);
+//
+//                //Check if we have enough credits
+//                $status = SMS_STATUS_UNKNOWN;
+//                $comments = "Unknown, we have not received a delivery status from the networks.";
+//                $currentCredits = $this->textlocal->getBalance();
+//                if ($currentCredits['sms'] < count($records)) {
+//                    $status = SMS_STATUS_PENDING;
+//                    $comments = "There is no enough credits to send the texts. Get more credits and run the send_pending_sms process.";
+//                    $msg = "There is not enough credits: ".$currentCredits['sms']."\n\n";
+//                }
+//
+//                if (!empty($records)) {
+//                    //Build the messages array to send
+//                    $messages = array();
+//                    $sms_histories = array();
+//                    $numbers = array();
+//                    $user_id = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+//
+//                    foreach($records as $record) {
+//
+//                        $customID = uniqid($record['urn'].date('now'));
+//
+//                        array_push($messages, array(
+//                            'sms_number' => format_mobile($record['sms_number']),
+//                            'send_from' => $sender,
+//                            'sms_text' => $text,
+//                            'id' => $customID,
+//                        ));
+//
+//                        array_push($sms_histories, array(
+//                            "text" => $text,
+//                            "sender_id" => $sender_id,
+//                            "send_to" => format_mobile($record['sms_number']),
+//                            "user_id" => $user_id,
+//                            "urn" => $record['urn'],
+//                            "template_id" => $template_id,
+//                            "status_id" => $status,
+//                            "template_unsubscribe" => 0,
+//                            "text_local_id" => $customID,
+//                            "comments" => $comments
+//                        ));
+//
+//                        array_push($numbers,format_mobile($record['sms_number']));
+//                    }
+//
+//                    if (!empty($messages)) {
+//
+//                        if ($status!=SMS_STATUS_PENDING) {
+//                            $test = (ENVIRONMENT !== "production")?"true":"false";
+//                            $response = $this->sendBulkSms($messages, $test);
+//                            //Save the sms_history
+//                            if ($response == "OK") {
+//                                $this->Sms_model->add_sms_histories($sms_histories);
+//                                //$output .= "SMS sent to " . count($numbers) . " numbers \n\n";
+//                                echo json_encode(array(
+//                                    "success" => true,
+//                                    "msg" => "SMS sent to " . count($numbers) . " numbers",
+//                                    "sms" => $sms_histories
+//                                ));
+//                            } else {
+//                                echo json_encode(array(
+//                                    "success" => false,
+//                                    "msg" => "SMS not sent from the sms server",
+//                                    "sms" => array()
+//                                ));
+//                            }
+//                        }
+//                        else {
+//                            //Save the sms_history as pending
+//                            $this->Sms_model->add_sms_histories($sms_histories);
+//                            echo json_encode(array(
+//                                "success" => false,
+//                                "msg" => $msg,
+//                                "sms" => array()
+//                            ));
+//                        }
+//                    }
+//
+//                } else {
+//                    //$output .= "No remind appointments sms to be send. \n\n";
+//                    echo json_encode(array(
+//                        "success" => false,
+//                        "msg" => "There is no numbers for this urn list",
+//                        "sms" => array()
+//                    ));
+//                }
+//            }
+//            else {
+//                echo json_encode(array(
+//                    "success" => false,
+//                    "msg" => "Error in the urn list format (urn1. urn2, ..., urnN)",
+//                    "sms" => array()
+//                ));
+//            }
+//
+//        }
     }
 
 }
