@@ -1,4 +1,4 @@
-<?php 
+<?php
 $show_footer = false;
 if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['permissions'])) {
     $show_footer = true;
@@ -53,7 +53,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 </head>
 <body>
 <div class="img-circle" id="timerclosed" style="display: none;"><span
-       id="opentimer" class="glyphicon glyphicon-earphone pointer"></span> <span
+        id="opentimer" class="glyphicon glyphicon-earphone pointer"></span> <span
         class="glyphicon glyphicon-stop stoptimer pointer"></span></div>
 <div class="img-circle" id="timeropened" style="display: none;">
     <div id="defaultCountdown"></div>
@@ -69,381 +69,397 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <a href="#menu" class="navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
     <?php } ?>
-        <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
-             src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png"><img id="big-logo" style="margin-top:-5px; width:100%"
-                                                         src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
+    <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
+                                                     src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png"><img
+            id="big-logo" style="margin-top:-5px; width:100%"
+            src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
 </div>
 <nav id="menu" class="mm-menu mm--horizontal mm-offcanvas">
     <?php if (isset($_SESSION['permissions'])) { ?>
         <ul>
-        <li><a class="mm-title"><small><span class="text-primary"><?php echo date('l jS F') ?></span> - Welcome <?php echo $_SESSION['name'] ?></small></a></li>
-               <?php if (isset($campaign_access) && count($campaign_access) > 0) { ?><li style="padding:0 20px;">
-            <select id="campaign-select" data-width="100%">
-                <option value=""><?php echo (in_array("mix campaigns",$_SESSION['permissions'])?"Campaign Filter":"Select a campaign to begin"); ?></option>
-                <?php foreach ($campaign_access as $client => $camp_array) { ?>
-                    <optgroup label="<?php echo $client ?>">
-                        <?php foreach ($camp_array as $camp) { ?>
-                            <option <?php if (isset($_SESSION['current_campaign']) && $_SESSION['current_campaign'] == $camp['id']) {
-                                echo "Selected";
-                            } ?> value="<?php echo $camp['id'] ?>"><?php echo $camp['name'] ?></option>
+            <li><a class="mm-title">
+                    <small><span class="text-primary"><?php echo date('l jS F') ?></span> -
+                        Welcome <?php echo $_SESSION['name'] ?></small>
+                </a></li>
+            <?php if (isset($campaign_access) && count($campaign_access) > 0) { ?>
+                <li style="padding:0 20px;">
+                    <select id="campaign-select" data-width="100%">
+                        <option
+                            value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
+                        <?php foreach ($campaign_access as $client => $camp_array) { ?>
+                            <optgroup label="<?php echo $client ?>">
+                                <?php foreach ($camp_array as $camp) { ?>
+                                    <option <?php if (isset($_SESSION['current_campaign']) && $_SESSION['current_campaign'] == $camp['id']) {
+                                        echo "Selected";
+                                    } ?> value="<?php echo $camp['id'] ?>"><?php echo $camp['name'] ?></option>
+                                <?php } ?>
+                            </optgroup>
                         <?php } ?>
-                    </optgroup>
+                    </select>
+                </li>
+            <?php } ?>
+            <?php if (in_array("mix campaigns", $_SESSION['permissions']) || isset($_SESSION['current_campaign'])) {
+                ?>
+                <?php if (isset($_SESSION['current_campaign'])) { ?>
+                    <li><a href="<?php echo base_url(); ?>records/detail"><?php if ($_SESSION['role'] == "9") {
+                                echo "Start Survey";
+                            } else {
+                                echo "Start Calling";
+                            } ?></a></li>
                 <?php } ?>
-            </select>
-            </li>
-        <?php } ?>
-            <?php if (in_array("mix campaigns", $_SESSION['permissions'])||isset($_SESSION['current_campaign'])) {
-                 ?>
-                    <?php if(isset($_SESSION['current_campaign'])){ ?><li><a href="<?php echo base_url(); ?>records/detail"><?php if($_SESSION['role']=="9"){ echo "Start Survey"; }  else { echo "Start Calling"; } ?></a></li>
-                    <?php } ?>
-                    <?php if($_SESSION['role']<>9){ ?>
-            <li><a href="#mm-1">Dashboard</a>
-                <ul>
-                    <?php if ($_SESSION['sn']=='eldon.121system.com') { ?>
-                        <li <?php echo @($page == 'eldon_dash' ? "class=Selected'" : "") ?>><a
-                                href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>
-                    <?php } ?>
-                     <?php if (in_array("29",$_SESSION['campaign_access']['array'])) { ?>
-                        <li <?php echo @($page == 'ghs_dash' ? "class=Selected'" : "") ?>><a
-                                href="<?php echo base_url() ?>dashboard/ghs">GHS Dash</a></li>
-                    <?php } ?>
-                    <li <?php echo @($page == 'favorites_dash' ? "class=Selected'" : "") ?>><a
-                            href="<?php echo base_url() ?>dashboard/favorites">Favorites</a></li>
-                    <li <?php echo @($page == 'overview' ? "class=Selected'" : "") ?>><a
-                            href="<?php echo base_url() ?>dashboard/">Overview</a></li>
-                    <?php if (in_array("client dash", $_SESSION['permissions'])) { ?>
-                        <li <?php echo @($page == 'client_dash' ? "class=Selected'" : "") ?>><a
-                                href="<?php echo base_url() ?>dashboard/client">Client Dashboard</a></li>
+                <?php if ($_SESSION['role'] <> 9) { ?>
+                    <li><a href="#mm-1">Dashboard</a>
+                        <ul>
+                            <?php if ($_SESSION['sn'] == 'eldon.121system.com') { ?>
+                                <li <?php echo @($page == 'eldon_dash' ? "class=Selected'" : "") ?>><a
+                                        href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>
+                            <?php } ?>
+                            <?php if (in_array("29", $_SESSION['campaign_access']['array'])) { ?>
+                                <li <?php echo @($page == 'ghs_dash' ? "class=Selected'" : "") ?>><a
+                                        href="<?php echo base_url() ?>dashboard/ghs">GHS Dash</a></li>
+                            <?php } ?>
+                            <li <?php echo @($page == 'favorites_dash' ? "class=Selected'" : "") ?>><a
+                                    href="<?php echo base_url() ?>dashboard/favorites">Favorites</a></li>
+                            <li <?php echo @($page == 'overview' ? "class=Selected'" : "") ?>><a
+                                    href="<?php echo base_url() ?>dashboard/">Overview</a></li>
+                            <?php if (in_array("client dash", $_SESSION['permissions'])) { ?>
+                                <li <?php echo @($page == 'client_dash' ? "class=Selected'" : "") ?>><a
+                                        href="<?php echo base_url() ?>dashboard/client">Client Dashboard</a></li>
+                            <?php } ?>
+
+                            <?php if (in_array("nbf dash", $_SESSION['permissions'])) { ?>
+                                <li <?php echo @($page == 'nbf_dash' ? "class=Selected'" : "") ?>><a
+                                        href="<?php echo base_url() ?>dashboard/nbf">New Business</a></li>
+                            <?php } ?>
+                            <?php if (in_array("agent dash", $_SESSION['permissions'])) { ?>
+                                <li <?php echo @($page == 'callback_dash' ? "class=Selected'" : "") ?>><a
+                                        href="<?php echo base_url() ?>dashboard/callbacks">Callbacks</a></li>
+                            <?php } ?>
+                            <?php if (in_array("management dash", $_SESSION['permissions'])) { ?>
+                                <li <?php echo @($page == 'management_dash' ? "class=Selected'" : "") ?>><a
+                                        href="<?php echo base_url() ?>dashboard/management">Management Dash</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                    <li><a href="#records">Records</a>
+                        <ul id="records">
+                            <?php if (@in_array("search records", $_SESSION['permissions']) || isset($_SESSION['current_campaign']) && isset($_SESSION['search records'])) { ?>
+                                <li <?php if (@$page == "search") {
+                                    echo "class='Selected'";
+                                } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
+                            <?php } ?>
+                            <li <?php if (@$page == "list_records") {
+                                echo "class='Selected'";
+                            } ?>><a href="<?php echo base_url(); ?>records/view">List Records</a></li>
+                            <?php if (in_array("add records", $_SESSION['permissions'])) { ?>
+                                <li <?php echo @($page == 'add_record' ? "class='Selected'" : "") ?>>
+                                    <a href="<?php echo base_url() ?>data/add_record<?php echo isset($_SESSION['current_campaign']) ? "/" . $_SESSION['current_campaign'] : ""; ?>">Create
+                                        Record</a></li>
+                            <?php } ?>
+
+                        </ul>
+                    </li>
+                    <?php if (in_array("files menu", $_SESSION['permissions'])) { ?>
+                        <li <?php echo @($page == 'files' ? "class=Selected'" : "") ?>><a
+                                href="<?php echo base_url() ?>files/manager">File Storage</a></li>
                     <?php } ?>
 
-                    <?php if (in_array("nbf dash", $_SESSION['permissions'])) { ?>
-                        <li <?php echo @($page == 'nbf_dash' ? "class=Selected'" : "") ?>><a
-                                href="<?php echo base_url() ?>dashboard/nbf">New Business</a></li>
+
+                    <?php if (in_array("view appointments", $_SESSION['permissions'])) { ?>
+                        <li <?php echo @($page == 'appointments' ? "class=Selected'" : "") ?>><a
+                                href="<?php echo base_url() ?>appointments">Appointments</a></li>
                     <?php } ?>
-                    <?php if (in_array("agent dash", $_SESSION['permissions'])) { ?>
-                        <li <?php echo @($page == 'callback_dash' ? "class=Selected'" : "") ?>><a
-                                href="<?php echo base_url() ?>dashboard/callbacks">Callbacks</a></li>
+                    <?php if (in_array("planner", $_SESSION['permissions'])) { ?>
+                        <li <?php echo @($page == 'planner' ? "class=Selected'" : "") ?>><a
+                                href="<?php echo base_url() ?>planner">Planner</a></li>
                     <?php } ?>
-                    <?php if (in_array("management dash", $_SESSION['permissions'])) { ?>
-                        <li <?php echo @($page == 'management_dash' ? "class=Selected'" : "") ?>><a
-                                href="<?php echo base_url() ?>dashboard/management">Management Dash</a></li>
+                    <?php if (@in_array('Surveys', $_SESSION['campaign_features']) && in_array("view surveys", $_SESSION['permissions']) || in_array("view surveys", $_SESSION['permissions']) && in_array("mix campaigns", $_SESSION['permissions'])) { ?>
+                        <li <?php if ($this->uri->segment(1) == "survey") {
+                            echo "Selected";
+                        } ?>><a href="<?php echo base_url(); ?>survey/view">View Surveys</a></li>
                     <?php } ?>
-                </ul>
-            </li>
-            <li><a href="#records">Records</a>
-                <ul id="records">
-                    <?php if (@in_array("search records", $_SESSION['permissions']) || isset($_SESSION['current_campaign']) && isset($_SESSION['search records'])) { ?>
-                        <li <?php if (@$page == "search") {
+                    <?php if (@in_array('full calendar', $_SESSION['permissions']) && in_array("mix campaigns", $_SESSION['permissions']) || @in_array('Appointment Setting', $_SESSION['campaign_features'])) { ?>
+                        <li <?php if ($this->uri->segment(1) == "calendar") {
                             echo "class='Selected'";
-                        } ?>><a href="<?php echo base_url(); ?>search" class="hreflink">Search Records</a></li>
-                    <?php } ?>
-                    <li <?php if (@$page == "list_records") {
-                        echo "class='Selected'";
-                    } ?>><a href="<?php echo base_url(); ?>records/view">List Records</a></li>
-                    <?php if (in_array("add records", $_SESSION['permissions'])) { ?>
-                        <li <?php echo @($page == 'add_record' ? "class='Selected'" : "") ?>>
-                            <a href="<?php echo base_url() ?>data/add_record<?php echo isset($_SESSION['current_campaign'])?"/".$_SESSION['current_campaign']:""; ?>">Create
-                                Record</a></li>
-                    <?php } ?>
-
-                </ul>
-            </li>
-            <?php if (in_array("files menu", $_SESSION['permissions'])) { ?>
-                <li <?php echo @($page == 'files' ? "class=Selected'" : "") ?>><a
-                        href="<?php echo base_url() ?>files/manager">File Storage</a></li>
-            <?php } ?>
-
-
-            <?php if (in_array("view appointments", $_SESSION['permissions'])) { ?>
-                <li <?php echo @($page == 'appointments' ? "class=Selected'" : "") ?>><a
-                        href="<?php echo base_url() ?>appointments">Appointments</a></li>
-            <?php } ?>
-            <?php if (in_array("planner", $_SESSION['permissions'])) { ?>
-                <li <?php echo @($page == 'planner' ? "class=Selected'" : "") ?>><a
-                        href="<?php echo base_url() ?>planner">Planner</a></li>
-            <?php } ?>
-            <?php if (@in_array('Surveys', $_SESSION['campaign_features']) && in_array("view surveys", $_SESSION['permissions']) || in_array("view surveys", $_SESSION['permissions']) && in_array("mix campaigns", $_SESSION['permissions'])) { ?>
-                <li <?php if ($this->uri->segment(1) == "survey") {
-                    echo "Selected";
-                } ?>><a href="<?php echo base_url(); ?>survey/view">View Surveys</a></li>
-            <?php } ?>
-            <?php if (@in_array('full calendar', $_SESSION['permissions']) && in_array("mix campaigns", $_SESSION['permissions']) || @in_array('Appointment Setting', $_SESSION['campaign_features'])) { ?>
-                <li <?php if ($this->uri->segment(1) == "calendar") {
-                    echo "class='Selected'";
-                } ?>><a href="<?php echo base_url(); ?>calendar">Calendar</a></li>
-                <!--<li><a href="<?php echo base_url(); ?>planner">Journey Planner</a></li>
+                        } ?>><a href="<?php echo base_url(); ?>calendar">Calendar</a></li>
+                        <!--<li><a href="<?php echo base_url(); ?>planner">Journey Planner</a></li>
     <li><a href="#">Maps</a></li>-->
-            <?php } ?>
-            <?php if (in_array("admin menu", $_SESSION['permissions'])) { ?>
-                <li><a href="#admin">Admin</a>
-                    <ul id="admin">
-                     <?php if (in_array("system menu", $_SESSION['permissions'])) { ?>
-                      <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
-                           <li <?php echo @($page == 'bulk-email' ? "class='Selected'" : "") ?>>
-                             <a href="<?php echo base_url() ?>email/bulk_email">Bulk Email Tool</a></li>
-<?php } ?>
-                        <li><a href="#system">System Config</a>
-                            <ul id="system">
-                                <?php if (in_array("database", $_SESSION['permissions'])) { ?>
-                                    <li  <?php echo @($page == 'database' ? "class='Selected'" : "") ?>><a
-                                            href="<?php echo base_url() ?>database">Database</a></li>
-                                <?php } ?>
-                                <?php if (in_array("edit outcomes", $_SESSION['permissions'])) { ?>
-                                    <li <?php echo @($page == 'outcomes' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>data/outcomes">Outcomes</a>
-                                    </li>
-                                <?php } ?>
-                                <?php if (in_array("parkcodes", $_SESSION['permissions'])) { ?>
-                                    <li  <?php echo @($page == 'parkcode' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>data/parkcodes">Park
-                                            Codes</a></li>
-                                <?php } ?>
-                                <?php if ($_SESSION['role'] == 1) { ?>
-                                    <li <?php echo @($page == 'users' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>admin/users">Users</a>
-                                    </li>
-                                    <li <?php echo @($page == 'roles' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>admin/roles">Roles</a>
-                                    </li>
-                                    <li <?php echo @($page == 'teams' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>admin/teams">Teams</a>
-                                    </li>
-                                    <li <?php echo @($page == 'groups' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>admin/groups">Groups</a>
-                                    </li>
-                                <?php } ?>
-                                <li <?php echo @($page == 'default_time' ? "class='Selected'" : "") ?>>
-                                    <a href="<?php echo base_url() ?>time/default_time">Default
-                                        Times</a></li>
-                                <li <?php echo @($page == 'default_hours' ? "class='Selected'" : "") ?>>
-                                    <a href="<?php echo base_url() ?>hour/default_hours">Default
-                                        Hours</a></li>
-                            </ul>
-                        </li>
-                        <?php } ?>
-                        <?php if (in_array("data menu", $_SESSION['permissions'])) { ?>
-                            <li>
-                                <a href="#data">Data Management</a>
-                                <ul id="data">
-                                    <?php if (in_array("import data", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'import_data' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>import">Import Data</a>
-                                        </li> <?php } ?>
-                                    <?php if (in_array("export data", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'export_data' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>exports">Export Data</a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php if (in_array("reassign data", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'data_allocation' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>data/management">Data
-                                                Allocation</a></li>
-                                    <?php } ?>
-
-                                    <?php if (in_array("ration data", $_SESSION['permissions'])) { ?>
-                                        <li  <?php echo @($page == 'daily_ration' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>data/daily_ration">Daily
-                                                Ration</a></li>
-                                    <?php } ?>
-                                    <?php if (in_array("archive data", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'backup_restore' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>data/backup_restore">Archive Manager</a>
-                                        </li>
-                                    <?php } ?>
-
-
-                                    <?php if (in_array("duplicates", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'duplicates' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>data/duplicates">Duplicates</a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php if (in_array("suppression", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'suppression' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>data/suppression">Suppression
-                                            </a></li>
-                                    <?php } ?>
-
-                                </ul>
-                            </li>
-                        <?php } ?>
-                        <?php if (in_array("campaign menu", $_SESSION['permissions'])) { ?>
-                            <li>
-                                <a href="#admin-campaigns">Campaign Setup</a>
-                                <ul id="admin-campaigns">
-                                    <?php if (in_array("campaign access", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'campaign_access' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>admin/campaign_access">Campaign
-                                                Access</a></li>
-                                    <?php } ?>
-
-                                    <?php if (in_array("campaign setup", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'campaign_setup' ? "class='Selected'" : "") ?>><a
-                                                href="<?php echo base_url() ?>admin/campaigns">Campaign
-                                                Setup</a></li>
-                                        <li <?php echo @($page == 'custom_fields' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>admin/campaign_fields">Campaign
-                                                Fields</a></li>
-                                        <li <?php echo @($page == 'logos' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>logos">Campaign
-                                                Logos</a></li>
-                                    <?php } ?>
+                    <?php } ?>
+                    <?php if (in_array("admin menu", $_SESSION['permissions'])) { ?>
+                        <li><a href="#admin">Admin</a>
+                            <ul id="admin">
+                                <?php if (in_array("system menu", $_SESSION['permissions'])) { ?>
                                     <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'templates' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>templates">Email Templates</a>
-                                        </li>
-                                          <!--<li <?php echo @($page == 'templates' ? "class='Selected'" : "") ?>>
+                                        <li <?php echo @($page == 'bulk-email' ? "class='Selected'" : "") ?>>
+                                            <a href="<?php echo base_url() ?>email/bulk_email">Bulk Email Tool</a></li>
+                                    <?php } ?>
+                                    <?php if (in_array("send sms", $_SESSION['permissions'])) { ?>
+                                        <li <?php echo @($page == 'bulk-sms' ? "class='Selected'" : "") ?>>
+                                            <a href="<?php echo base_url() ?>sms/bulk_sms">Bulk Sms Tool</a></li>
+                                    <?php } ?>
+                                    <li><a href="#system">System Config</a>
+                                        <ul id="system">
+                                            <?php if (in_array("database", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'database' ? "class='Selected'" : "") ?>><a
+                                                        href="<?php echo base_url() ?>database">Database</a></li>
+                                            <?php } ?>
+                                            <?php if (in_array("edit outcomes", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'outcomes' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>data/outcomes">Outcomes</a>
+                                                </li>
+                                            <?php } ?>
+                                            <?php if (in_array("parkcodes", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'parkcode' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>data/parkcodes">Park
+                                                        Codes</a></li>
+                                            <?php } ?>
+                                            <?php if ($_SESSION['role'] == 1) { ?>
+                                                <li <?php echo @($page == 'users' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>admin/users">Users</a>
+                                                </li>
+                                                <li <?php echo @($page == 'roles' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>admin/roles">Roles</a>
+                                                </li>
+                                                <li <?php echo @($page == 'teams' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>admin/teams">Teams</a>
+                                                </li>
+                                                <li <?php echo @($page == 'groups' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>admin/groups">Groups</a>
+                                                </li>
+                                            <?php } ?>
+                                            <li <?php echo @($page == 'default_time' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>time/default_time">Default
+                                                    Times</a></li>
+                                            <li <?php echo @($page == 'default_hours' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>hour/default_hours">Default
+                                                    Hours</a></li>
+                                        </ul>
+                                    </li>
+                                <?php } ?>
+                                <?php if (in_array("data menu", $_SESSION['permissions'])) { ?>
+                                    <li>
+                                        <a href="#data">Data Management</a>
+                                        <ul id="data">
+                                            <?php if (in_array("import data", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'import_data' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>import">Import Data</a>
+                                                </li> <?php } ?>
+                                            <?php if (in_array("export data", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'export_data' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>exports">Export Data</a>
+                                                </li>
+                                            <?php } ?>
+                                            <?php if (in_array("reassign data", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'data_allocation' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>data/management">Data
+                                                        Allocation</a></li>
+                                            <?php } ?>
+
+                                            <?php if (in_array("ration data", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'daily_ration' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>data/daily_ration">Daily
+                                                        Ration</a></li>
+                                            <?php } ?>
+                                            <?php if (in_array("archive data", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'backup_restore' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>data/backup_restore">Archive
+                                                        Manager</a>
+                                                </li>
+                                            <?php } ?>
+
+
+                                            <?php if (in_array("duplicates", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'duplicates' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>data/duplicates">Duplicates</a>
+                                                </li>
+                                            <?php } ?>
+                                            <?php if (in_array("suppression", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'suppression' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>data/suppression">Suppression
+                                                    </a></li>
+                                            <?php } ?>
+
+                                        </ul>
+                                    </li>
+                                <?php } ?>
+                                <?php if (in_array("campaign menu", $_SESSION['permissions'])) { ?>
+                                    <li>
+                                        <a href="#admin-campaigns">Campaign Setup</a>
+                                        <ul id="admin-campaigns">
+                                            <?php if (in_array("campaign access", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'campaign_access' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>admin/campaign_access">Campaign
+                                                        Access</a></li>
+                                            <?php } ?>
+
+                                            <?php if (in_array("campaign setup", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'campaign_setup' ? "class='Selected'" : "") ?>>
+                                                    <a
+                                                        href="<?php echo base_url() ?>admin/campaigns">Campaign
+                                                        Setup</a></li>
+                                                <li <?php echo @($page == 'custom_fields' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>admin/campaign_fields">Campaign
+                                                        Fields</a></li>
+                                                <li <?php echo @($page == 'logos' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>logos">Campaign
+                                                        Logos</a></li>
+                                            <?php } ?>
+                                            <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'templates' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>templates">Email Templates</a>
+                                                </li>
+                                                <!--<li <?php echo @($page == 'templates' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>smstemplates">SMS Templates</a>
                                         </li>-->
-                                    <?php } ?>
-                                    <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'smstemplates' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>smstemplates">SMS Templates</a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php if (in_array("edit scripts", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'scripts' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>scripts">Scripts</a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php if (in_array("triggers", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'triggers' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>data/triggers">Triggers</a>
-                                        </li>
-                                    <?php } ?>
-                                </ul>
-                            </li>
-                        <?php } ?>
-                        <?php if ($_SESSION['group'] == "1" && $_SESSION['role'] == "1") { ?>
-                            <li <?php echo @($page == 'files' ? "class='Selected'" : "") ?>>
-                                <a href="<?php echo base_url() ?>admin/files">Folder
-                                    Access</a></li>
-
-                        <?php } ?>
-
-                        <?php if (in_array("view hours", $_SESSION['permissions'])) { ?>
-                            <li <?php echo @($page == 'agent_hours' ? "class='Selected'" : "") ?>>
-                                <a href="<?php echo base_url() ?>hour/hours">Agent
-                                    Hours</a></li>
-
-                            <li>
-
-                            <li <?php echo @($page == 'agent_time' ? "class='Selected'" : "") ?>>
-                                <a href="<?php echo base_url() ?>time/agent_time">Agent
-                                    Time</a></li>
-
-                        <?php } ?>
-                        <?php if (in_array("view logs", $_SESSION['permissions'])) { ?>
-                            <li>
-                                <a href="#logs">Logs</a>
-                                <ul id="logs">
-                                    <li <?php echo @($page == 'logs' ? "class='Selected'" : "") ?>><a
-                                            href="<?php echo base_url() ?>admin/logs">Access Logs</a></li>
-                                    <li <?php echo @($page == 'admin_audit' ? "class='Selected'" : "") ?>><a
-                                            href="<?php echo base_url() ?>audit">Data Logs</a></li>
-                                </ul>
-                            </li>
-                        <?php } ?>
-                    </ul>
-
-
-                </li>
-            <?php } ?>
-
-            <?php if (in_array("reports menu", $_SESSION['permissions'])) { ?>
-                <li><a href="#reports">Reports</a>
-                    <ul id="reports">
-                        <?php if (in_array("survey answers", $_SESSION['permissions'])) { ?>
-                            <li <?php echo @($page == 'answers' ? "class='Selected'" : "") ?>>
-                                <a href="<?php echo base_url() ?>reports/answers">Survey
-                                    Answers</a></li>  <?php } ?>
-                        <?php if (in_array("activity", $_SESSION['permissions'])) { ?>
-                            <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>>
-                                <a href="<?php echo base_url() ?>reports/activity">Activity</a>
-                            </li>
-                        <?php } ?>
-                        <li>
-                            <a href="#reports-outcomes">Outcomes</a>
-                            <ul id="reports-outcomes">
-                                <li <?php echo @($page == 'outcome_report_campaign' ? "class='Selected'" : "") ?>>
-                                    <a href="<?php echo base_url() ?>reports/outcomes/campaign/1">By
-                                        Campaign</a></li>
-                                <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
-                                    <li <?php echo @($page == 'outcome_report_agent' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>reports/outcomes/agent/1">By
-                                            Agent</a></li>
+                                            <?php } ?>
+                                            <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'smstemplates' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>smstemplates">SMS Templates</a>
+                                                </li>
+                                            <?php } ?>
+                                            <?php if (in_array("edit scripts", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'scripts' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>scripts">Scripts</a>
+                                                </li>
+                                            <?php } ?>
+                                            <?php if (in_array("triggers", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'triggers' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>data/triggers">Triggers</a>
+                                                </li>
+                                            <?php } ?>
+                                        </ul>
+                                    </li>
                                 <?php } ?>
-                                <li <?php echo @($page == 'outcome_report_date' ? "class='Selected'" : "") ?>>
-                                    <a href="<?php echo base_url() ?>reports/outcomes/date/1">By
-                                        Date</a></li>
-                                <li <?php echo @($page == 'outcome_report_time' ? "class='Selected'" : "") ?>>
-                                    <a href="<?php echo base_url() ?>reports/outcomes/time/1">By
-                                        Time</a></li>
-                                <li <?php echo @($page == 'outcome_report_reason' ? "class='Selected'" : "") ?>>
-                                    <a href="<?php echo base_url() ?>reports/outcomes/outcome_reason/1">By
-                                        Outcome Reason</a></li>
+                                <?php if ($_SESSION['group'] == "1" && $_SESSION['role'] == "1") { ?>
+                                    <li <?php echo @($page == 'files' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>admin/files">Folder
+                                            Access</a></li>
+
+                                <?php } ?>
+
+                                <?php if (in_array("view hours", $_SESSION['permissions'])) { ?>
+                                    <li <?php echo @($page == 'agent_hours' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>hour/hours">Agent
+                                            Hours</a></li>
+
+                                    <li>
+
+                                    <li <?php echo @($page == 'agent_time' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>time/agent_time">Agent
+                                            Time</a></li>
+
+                                <?php } ?>
+                                <?php if (in_array("view logs", $_SESSION['permissions'])) { ?>
+                                    <li>
+                                        <a href="#logs">Logs</a>
+                                        <ul id="logs">
+                                            <li <?php echo @($page == 'logs' ? "class='Selected'" : "") ?>><a
+                                                    href="<?php echo base_url() ?>admin/logs">Access Logs</a></li>
+                                            <li <?php echo @($page == 'admin_audit' ? "class='Selected'" : "") ?>><a
+                                                    href="<?php echo base_url() ?>audit">Data Logs</a></li>
+                                        </ul>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+
+
+                        </li>
+                    <?php } ?>
+
+                    <?php if (in_array("reports menu", $_SESSION['permissions'])) { ?>
+                        <li><a href="#reports">Reports</a>
+                            <ul id="reports">
+                                <?php if (in_array("survey answers", $_SESSION['permissions'])) { ?>
+                                    <li <?php echo @($page == 'answers' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>reports/answers">Survey
+                                            Answers</a></li>  <?php } ?>
+                                <?php if (in_array("activity", $_SESSION['permissions'])) { ?>
+                                    <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>reports/activity">Activity</a>
+                                    </li>
+                                <?php } ?>
+                                <li>
+                                    <a href="#reports-outcomes">Outcomes</a>
+                                    <ul id="reports-outcomes">
+                                        <li <?php echo @($page == 'outcome_report_campaign' ? "class='Selected'" : "") ?>>
+                                            <a href="<?php echo base_url() ?>reports/outcomes/campaign/1">By
+                                                Campaign</a></li>
+                                        <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
+                                            <li <?php echo @($page == 'outcome_report_agent' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>reports/outcomes/agent/1">By
+                                                    Agent</a></li>
+                                        <?php } ?>
+                                        <li <?php echo @($page == 'outcome_report_date' ? "class='Selected'" : "") ?>>
+                                            <a href="<?php echo base_url() ?>reports/outcomes/date/1">By
+                                                Date</a></li>
+                                        <li <?php echo @($page == 'outcome_report_time' ? "class='Selected'" : "") ?>>
+                                            <a href="<?php echo base_url() ?>reports/outcomes/time/1">By
+                                                Time</a></li>
+                                        <li <?php echo @($page == 'outcome_report_reason' ? "class='Selected'" : "") ?>>
+                                            <a href="<?php echo base_url() ?>reports/outcomes/outcome_reason/1">By
+                                                Outcome Reason</a></li>
+                                    </ul>
+                                </li>
+                                <?php if (in_array("productivity", $_SESSION['permissions'])) { ?>
+                                    <li <?php echo @($page == 'productivity' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>reports/productivity">
+                                            Productivity
+                                        </a>
+                                    </li>
+                                <?php } ?>
+                                <?php if (in_array("email", $_SESSION['permissions'])) { ?>
+                                    <li>
+
+                                        <a href="#reports-emails">Emails</a>
+                                        <ul id="reports-emails">
+                                            <li <?php echo @($page == 'email_report_campaign' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>reports/email/campaign/1">By
+                                                    Campaign</a></li>
+                                            <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'email_report_agent' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>reports/email/agent/1">By
+                                                        Agent</a></li>
+                                            <?php } ?>
+                                            <li <?php echo @($page == 'email_report_date' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>reports/email/date/1">By
+                                                    Date</a></li>
+                                            <li <?php echo @($page == 'email_report_time' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>reports/email/time/1">By
+                                                    Time</a></li>
+                                        </ul>
+                                    </li>
+                                <?php } ?>
+                                <?php if (in_array("sms", $_SESSION['permissions'])) { ?>
+                                    <li>
+
+                                        <a href="#reports-sms">Sms</a>
+                                        <ul id="reports-sms">
+                                            <li <?php echo @($page == 'sms_report_campaign' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>reports/sms/campaign/1">By
+                                                    Campaign</a></li>
+                                            <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
+                                                <li <?php echo @($page == 'sms_report_agent' ? "class='Selected'" : "") ?>>
+                                                    <a href="<?php echo base_url() ?>reports/sms/agent/1">By
+                                                        Agent</a></li>
+                                            <?php } ?>
+                                            <li <?php echo @($page == 'sms_report_date' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>reports/sms/date/1">By
+                                                    Date</a></li>
+                                            <li <?php echo @($page == 'sms_report_time' ? "class='Selected'" : "") ?>>
+                                                <a href="<?php echo base_url() ?>reports/sms/time/1">By
+                                                    Time</a></li>
+                                        </ul>
+                                    </li>
+                                <?php } ?>
+                                <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a
+                                        href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
                             </ul>
                         </li>
-                        <?php if (in_array("productivity", $_SESSION['permissions'])) { ?>
-                            <li <?php echo @($page == 'productivity' ? "class='Selected'" : "") ?>>
-                                <a href="<?php echo base_url() ?>reports/productivity">
-                                    Productivity
-                                </a>
-                            </li>
-                        <?php } ?>
-                        <?php if (in_array("email", $_SESSION['permissions'])) { ?>
-                            <li>
-
-                                <a href="#reports-emails">Emails</a>
-                                <ul id="reports-emails">
-                                    <li <?php echo @($page == 'email_report_campaign' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>reports/email/campaign/1">By
-                                            Campaign</a></li>
-                                    <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'email_report_agent' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>reports/email/agent/1">By
-                                                Agent</a></li>
-                                    <?php } ?>
-                                    <li <?php echo @($page == 'email_report_date' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>reports/email/date/1">By
-                                            Date</a></li>
-                                    <li <?php echo @($page == 'email_report_time' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>reports/email/time/1">By
-                                            Time</a></li>
-                                </ul>
-                            </li>
-                        <?php } ?>
-                        <?php if (in_array("sms", $_SESSION['permissions'])) { ?>
-                            <li>
-
-                                <a href="#reports-sms">Sms</a>
-                                <ul id="reports-sms">
-                                    <li <?php echo @($page == 'sms_report_campaign' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>reports/sms/campaign/1">By
-                                            Campaign</a></li>
-                                    <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
-                                        <li <?php echo @($page == 'sms_report_agent' ? "class='Selected'" : "") ?>>
-                                            <a href="<?php echo base_url() ?>reports/sms/agent/1">By
-                                                Agent</a></li>
-                                    <?php } ?>
-                                    <li <?php echo @($page == 'sms_report_date' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>reports/sms/date/1">By
-                                            Date</a></li>
-                                    <li <?php echo @($page == 'sms_report_time' ? "class='Selected'" : "") ?>>
-                                        <a href="<?php echo base_url() ?>reports/sms/time/1">By
-                                            Time</a></li>
-                                </ul>
-                            </li>
-                        <?php } ?>
-                        <li <?php echo @($page == 'audit' ? "class='Selected'" : "") ?>><a
-                                href="<?php echo base_url() ?>audit">Data Capture Logs</a></li>
-                    </ul>
-                </li>
-                  <?php  } ?>
+                    <?php } ?>
+                <?php } ?>
+            <?php } else { ?>
+                <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
             <?php } ?>
- 				<?php } else { ?>
-                    <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
-                <?php  } ?>
-
 
 
             <li class="Spacer"><a href="<?php echo base_url(); ?>user/account" class="hreflink">My Account</a></li>
@@ -453,11 +469,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 
 </nav>
 <div class="container-fluid">
-<?php echo $body; ?></div>
+    <?php echo $body; ?></div>
 <!-- /content -->
 
 <!-- Modal -->
-<div class="modal fade" id="modal" style="overflow:hidden" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal" style="overflow:hidden" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -486,26 +503,26 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.min.js"></script>
-<?php if(@in_array("datatables",$javascript)){ ?>
-<script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
+<?php if (@in_array("datatables", $javascript)) { ?>
+    <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
 <?php } ?>
 <script src="<?php echo base_url(); ?>assets/js/plugins/mmenu/jquery.mmenu.min.all.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
-<?php if(@in_array("map.js",$javascript)||@in_array("location.js",$javascript)){ ?>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <?php } ?>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
-<?php if(isset($_SESSION['permissions'])){ ?>
-helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
-helper.current_postcode = false;
-<?php } ?>
-<?php if(@!empty($_SESSION['current_postcode'])){ ?>
-helper.current_postcode = "<?php echo $_SESSION['current_postcode'] ?>";	
-<?php } ?>
-modals.init();
+    <?php if(isset($_SESSION['permissions'])){ ?>
+    helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
+    helper.current_postcode = false;
+    <?php } ?>
+    <?php if(@!empty($_SESSION['current_postcode'])){ ?>
+    helper.current_postcode = "<?php echo $_SESSION['current_postcode'] ?>";
+    <?php } ?>
+    modals.init();
     <?php if(isset($_SESSION['user_id'])){ ?>
     check_session();
     var refreshIntervalId;
@@ -546,9 +563,9 @@ modals.init();
                 window.location = helper.baseUrl + 'dashboard';
             } else {
                 <?php if($this->uri->segment(2)=="detail"||$this->uri->segment(1)=="error"){ ?>
-               window.location = helper.baseUrl + 'records/detail';
+                window.location = helper.baseUrl + 'records/detail';
                 <?php } else { ?>
-               location.reload();
+                location.reload();
                 <?php } ?>
             }
         });
@@ -557,22 +574,22 @@ modals.init();
 </script>
 
 <script type="text/javascript">
-	$(document).ready(function(){
-	<?php if($this->session->flashdata('success')){ ?>
-		flashalert.success('<?php echo $this->session->flashdata('success') ?>');
-	<?php } ?>	
-	<?php if($this->session->flashdata('danger')){ ?>
-		flashalert.success('<?php echo $this->session->flashdata('danger') ?>');
-	<?php } ?>	
-	<?php if($this->session->flashdata('info')){ ?>
-		flashalert.success('<?php echo $this->session->flashdata('info') ?>');
-	<?php } ?>	
-	<?php if($this->session->flashdata('warning')){ ?>
-		flashalert.success('<?php echo $this->session->flashdata('warning') ?>');
-	<?php } ?>	
-	$('nav#menu').mmenu();
-	$('#campaign-select').selectpicker();
-	});
+    $(document).ready(function () {
+        <?php if($this->session->flashdata('success')){ ?>
+        flashalert.success('<?php echo $this->session->flashdata('success') ?>');
+        <?php } ?>
+        <?php if($this->session->flashdata('danger')){ ?>
+        flashalert.success('<?php echo $this->session->flashdata('danger') ?>');
+        <?php } ?>
+        <?php if($this->session->flashdata('info')){ ?>
+        flashalert.success('<?php echo $this->session->flashdata('info') ?>');
+        <?php } ?>
+        <?php if($this->session->flashdata('warning')){ ?>
+        flashalert.success('<?php echo $this->session->flashdata('warning') ?>');
+        <?php } ?>
+        $('nav#menu').mmenu();
+        $('#campaign-select').selectpicker();
+    });
 </script>
 <?php //load specific javascript files set in the controller
 if (isset($javascript)):
