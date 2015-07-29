@@ -145,7 +145,12 @@
                         }
                     }).done(function (response) {
                         if (response.success) {
-                            flashalert.success(response.msg);
+                            if (response.test) {
+                                flashalert.warning(response.msg);
+                            }
+                            else {
+                                flashalert.success(response.msg);
+                            }
                             $('#send').show();
                             $('#wait').hide();
                             $('form')[0].reset();
