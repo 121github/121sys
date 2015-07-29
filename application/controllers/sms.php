@@ -874,11 +874,11 @@ class Sms extends CI_Controller
 
                 if ($template_id) {
                     $sender_id = intval($this->input->post('template_sender_id'));
-                    $text = $this->input->post('template_text');
+                    $original_text = $this->input->post('template_text');
                 }
                 else {
                     $sender_id = intval($this->input->post('sender_id'));
-                    $text = $this->input->post('text');
+                    $original_text = $this->input->post('text');
                 }
 
                 //Get the records and the contact number where the records status is 1 for a particular urn list
@@ -904,6 +904,7 @@ class Sms extends CI_Controller
                     foreach($records as $record) {
 
                         $customID = uniqid($record['urn'].date('now'));
+                        $text = $original_text;
 
                         //Check the variables inside [] in the template and change them with a value if the template_id exist
                         $placeholder_data = $this->Email_model->get_placeholder_data($record['urn']);
