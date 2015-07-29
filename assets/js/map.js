@@ -672,8 +672,8 @@ var maps = {
             '</div>' +
             '<h4 id="firstHeading" class="firstHeading">' + (value.name ?value.name:'') + '</h4>' +
             '<div id="bodyContent_' + value.urn + '">' +
-            (value.name ? '<p><b>Company: </b>' + value.name + '</p>' : '') +
-            (value.fullname ? '<p><b>Contact: </b>' + value.fullname + '</p>' : '') +
+            (value.company_name ? '<p><b>Company: </b>' + value.company_name + '</p>' : '') +
+            (value.contact_name ? '<p><b>Contact: </b>' + value.contact_name + '</p>' : '') +
             (value.outcome ? '<p><b>Outcome: </b>' + value.outcome + '</p>' : '') +
             (value.nextcall ? '<p><b>Next Call: </b>' + value.nextcall + '</p>' : '') +
             (value.date_updated ? '<p><b>Last Updated: </b>' + value.date_updated + '</p>' : '') +
@@ -682,7 +682,7 @@ var maps = {
             (planner_info ? '<p>' + planner_info + '</p>' : '') + '<p>' +
             (planner_postcode ? '<p>' + planner_postcode + '</p>' : '') + '<p>' +
             (navbtn ? navbtn : '') +
-            '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
+            '<span class="pull-right"><a class="btn btn-primary btn-xs marl" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span> ' +
             '</p>' +
             '</div>' +
             '<div id="formContent_' + value.urn + '" style="display:none;">' +
@@ -733,7 +733,7 @@ var maps = {
             planner_info =
                 '<b>Planner: </b>' +
                 '<span style="margin-right: 5px;">' + (value.record_planner_id ? (value.planner_user + ' on ' + value.planner_date) : '') + '</span>' +
-                '<a href="#" class="btn btn-info btn-sm glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.planner_date ? value.planner_date : '') + '"></a>';
+                '<a href="#" class="btn btn-info btn-xs glyphicon glyphicon-time planner-btn" item-urn="' + value.urn + '" item-planner-date="' + (value.planner_date ? value.planner_date : '') + '"></a>';
             if(value.planner_postcode) {
                 planner_postcode =
                     '<b>Planner Postcode: </b>' +

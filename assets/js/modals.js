@@ -182,8 +182,9 @@ var modals = {
             dataType: "JSON"
         }).done(function(response) {
 			$('#modal').modal('toggle');
+			table_columns = response.columns;
 			flashalert.success("Columns were updated");
-			map_table_reload();
+			full_table_reload();
 		});
 	},
     merge_record: function (urn, target) {

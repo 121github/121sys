@@ -4,6 +4,12 @@ function map_table_reload() {
 	view_records.table.columns.adjust().draw();
 }
 
+function full_table_reload(){
+	view_records.table.destroy();
+	view_records.table.destroy();
+	view_records.reload_table();
+}
+
 var view_records = {
     init: function() {
         this.table;
@@ -32,10 +38,9 @@ var view_records = {
                 iconClass: 'fa',
                 iconClassFix: '',
                 icons: response.icons
-            });
-				$(document).on('change','.record-icon',function (e) {
+            }).change(function (e) {
                     var icon = (e.icon=='empty'?'Icon':e.icon);
-                    view_records.table.column($(this).index()).search(icon).draw();
+                   view_records.table.column($(this).attr('data-index')).search(icon).draw();
                 });
         });
     },
@@ -129,7 +134,7 @@ var view_records = {
                 $(this).html('');
             }
             else if (title == "Icon") {
-				$icon_btn = $('<button class="btn btn-default btn-sm iconpicker record-icon" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:#0066"></button>');
+				$icon_btn = $('<button class="btn btn-default btn-sm iconpicker record-icon" role="iconpicker" data-icon="" data-index="'+$(this).index()+'" data-iconset="fontawesome" style="color:#0066"></button>');
 				$(this).html($icon_btn);
 				view_records.get_used_icons();
             }
@@ -152,29 +157,13 @@ var view_records = {
 
         });
 
-      
+     
 
-			
-        //this moves the search input boxes to the top of the table
-       /* var r = $('.data-table tfoot tr').first();
-        r.find('th').each(function() {
-            $(this).css('padding', 8);
-        });
-		
-		     $('.data-table thead').first().append('</tr>');
-        $('.data-table thead').last().append($('.data-table tfoot tr').first())
-		$('.data-table tfoot tr').remove();
-        
-*/
-
+  
 $("div.dataTables_scrollFootInner table tfoot tr").appendTo('div.dataTables_scrollHeadInner table thead');
 
 $('#search_0').css('text-align', 'center');
-        //If exist filters from the search in the session
-        //$('.dataTables_info').append(' <i class="fa fa-list fa-fw pointer"></i> Search options');
-		
-			
-		
+	
     }
 
 

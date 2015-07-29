@@ -352,15 +352,15 @@ class Records_model extends CI_Model
     public function get_records($options)
 {		
 		$tables = $options['visible_columns']['tables'];
-		//these tables MUSt be joined to the query regardless of the selected columns to allow the map to function
-		$required_tables = array("appointments","contact_locations","company_location","record_planner","record_planner_user");
+		//these tables must be joined to the query regardless of the selected columns to allow the map to function
+		$required_tables = array("record_planner","record_planner_user","ownership","campaigns","contact_locations","company_locations");
 		foreach($required_tables as $rt){
 		if(!in_array($rt,$tables)){
 		$tables[] = $rt;
 		}
 		}
-		
         $table_columns = $options['visible_columns']['select'];
+		$filter_columns = $options['visible_columns']['filter'];
 		$order_columns = $options['visible_columns']['order'];
 
         $join = array();
@@ -375,12 +375,8 @@ class Records_model extends CI_Model
         "GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location",
          "GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location",
           "r.record_color",
-          "ow.user_id ownership_id",
-          "owu.name ownership",
           "r.map_icon",
-          "camp.map_icon as campaign_map_icon",
-          "app.postcode as appointment_postcode",
-          "app.location_id as appointment_location_id"
+          "camp.map_icon as campaign_map_icon"
 		);
 		//if any of the mandatory columns are missing from the columns array we push them in
 		foreach($required_select_columns as $required){
@@ -390,26 +386,38 @@ class Records_model extends CI_Model
 		}
 		//turn the selection array into a list
 		$selections = implode(",",$table_columns);
+
         $qry = "select $selections
                 from records r ";
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
         }
-        //
-		$join_array = table_joins();
+
+        //the joins for all the tables are stored in a helper
+		$table_joins = table_joins();
+		$join_array = join_array();
+
 		foreach($tables as $table){
-		$join[] = $join_array[$table];
+			if(array_key_exists($table,$join_array)){
+			foreach($join_array[$table] as $t){
+			$join[$t] = $table_joins[$t];
+			}
+			} else {
+			$join[$table] = $table_joins[$table];	
+			}
 		}
 
         foreach ($join as $join_query) {
             $qry .= $join_query;
         }
 
-        $qry .= $this->get_where($options, $table_columns);
+        $qry .= $this->get_where($options, $filter_columns);
         $qry .= " group by r.urn";
-        //if any order has been set then we should apply it here
         //$this->firephp->log($qry);
+		$count = $this->db->query($qry)->num_rows();
+		
+		//if any order has been set then we should apply it here
         $start = $options['start'];
         $length = $options['length'];
         if (isset($_SESSION['filter']['order']) && $options['draw'] == "1") {
@@ -422,9 +430,75 @@ class Records_model extends CI_Model
 
         $qry .= $order;
         $qry .= "  limit $start,$length";
-		$this->firephp->log($qry);
         $records = $this->db->query($qry)->result_array();
-        return $records;
+		$records['count'] = $count;
+		$this->firephp->log($qry);
+		return $records;
+    }
+
+    public function get_nav($options)
+{		
+
+		$tables = $options['visible_columns']['tables'];
+		//these tables must be joined to the query regardless of the selected columns to allow the map to function
+		$required_tables = array("appointments","record_planner","record_planner_user","ownership","campaigns","contact_locations","company_locations");
+		foreach($required_tables as $rt){
+		if(!in_array($rt,$tables)){
+		$tables[] = $rt;
+		}
+		}
+        $table_columns = $options['visible_columns']['select'];
+		$filter_columns = $options['visible_columns']['filter'];
+		$order_columns = $options['visible_columns']['order'];
+
+        $join = array();
+
+        $qry = "select r.urn
+                from records r ";
+        //if any join is required we should apply it here
+        if (isset($_SESSION['filter']['join'])) {
+            $join = $_SESSION['filter']['join'];
+        }
+
+        //the joins for all the tables are stored in a helper
+		$table_joins = table_joins();
+		$join_array = join_array();
+
+		foreach($tables as $table){
+			if(array_key_exists($table,$join_array)){
+			foreach($join_array[$table] as $t){
+			$join[$t] = $table_joins[$t];
+			}
+			} else {
+			$join[$table] = $table_joins[$table];	
+			}
+		}
+        foreach ($join as $join_query) {
+            $qry .= $join_query;
+        }
+
+        $qry .= $this->get_where($options, $filter_columns);
+        $qry .= " group by r.urn";
+        //$this->firephp->log($qry);
+		$count = $this->db->query($qry)->num_rows();
+		
+		//if any order has been set then we should apply it here
+        $start = $options['start'];
+        $length = $options['length'];
+        if (isset($_SESSION['filter']['order']) && $options['draw'] == "1") {
+            $order = $_SESSION['filter']['order'];
+        } else {
+            $order = " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn";
+            unset($_SESSION['filter']['order']);
+            unset($_SESSION['filter']['values']['order']);
+        }
+
+        $qry .= $order;
+        $records = $this->db->query($qry)->result_array();
+		$_SESSION['navigation'] = array();
+		foreach($records as $row){
+		$_SESSION['navigation'][] = $row['urn'];
+		}
     }
 
     public function get_where($options, $table_columns)
@@ -445,7 +519,11 @@ class Records_model extends CI_Model
         foreach ($options['columns'] as $k => $v) {
             //if the value is not empty we add it to the where clause
             if ($v['search']['value'] <> "") {
-                $where .= " and " . $table_columns[$k] . " like '%" . $v['search']['value'] . "%' ";
+				if($table_columns[$k]=="map_icon"&&$v['search']['value']=="Icon"){
+					//ignore this
+				} else {
+                $where .= " and " . $table_columns[$k] . " like '%" . addslashes($v['search']['value']) . "%' ";
+				}
             }
         }
 
@@ -456,7 +534,7 @@ class Records_model extends CI_Model
 
         /* users can only see records that have not been parked */
         if (@!in_array("search parked", $_SESSION['permissions'])) {
-            $where .= " and parked_code is null ";
+            $where .= " and r.parked_code is null ";
         }
 
         //users can see unaassigned records
@@ -473,57 +551,6 @@ class Records_model extends CI_Model
         return $where;
 
     }
-
-
-    public function get_nav($options = "")
-    {
-        $table_columns = $options['visible_columns']['select'];
-		$order_columns = $options['visible_columns']['order'];
-		
-        $navqry = "select r.urn from records r ";
-        $join = array();
-        //if any join is required we should apply it here
-        if (isset($_SESSION['filter']['join'])) {
-            $join = $_SESSION['filter']['join'];
-        }
-
-        //these joins are mandatory for sorting by name, outcome or campaign
-		$join['client_ref'] = " left join client_refs cr on r.urn=cr.urn ";
-        $join['companies'] = " left join companies com on com.urn = r.urn ";
-        $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
-        $join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
-        $join['contacts'] = " left join contacts con on con.urn = r.urn ";
-        $join['contact_addresses'] = " left join contact_addresses cona on cona.contact_id = con.contact_id ";
-        $join['contact_locations'] = " left JOIN locations contact_locations ON (cona.location_id = contact_locations.location_id) ";
-        $join['outcomes'] = " left join outcomes o on o.outcome_id = r.outcome_id ";
-        $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
-        $join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
-
-        foreach ($join as $join_query) {
-            $navqry .= $join_query;
-        }
-        $navqry .= $this->get_where($options, $table_columns);
-
-        //group by urn to prevent dupes
-        $navqry .= " group by r.urn";
-
-
-        $_SESSION['navigation'] = array();
-
-        if ($this->db->query($navqry)->num_rows()) {
-            //if any order has been set then we should apply it here
-            $order = (isset($_SESSION['filter']['order']) && $options['draw'] == "1" ? $_SESSION['filter']['order'] : " order by CASE WHEN " . $table_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $table_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'] . ",urn");
-            $navqry .= $order;
-            //$this->firephp->log($navqry);
-            $navigation = $this->db->query($navqry)->result_array();
-
-            foreach ($navigation as $navurn):
-                $_SESSION['navigation'][] = $navurn['urn'];
-            endforeach;
-        }
-        return $_SESSION['navigation'];
-    }
-
 
     public function count_records($options)
     {

@@ -3,24 +3,43 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+function join_array(){
+	$array = array();
+
+	$array['company_addresses'] = array("companies","company_adrdesses");
+	$array['contact_addresses'] = array("contacts","contact_addresses");
+	$array['contact_locations'] = array("contacts","contact_addresses","contact_locations");
+	$array['company_locations'] = array("companies","company_addresses","company_locations");	
+	$array['contact_telephone'] = array("contacts","contact_telephone");
+	$array['company_telephone'] = array("contacts","company_telephone");
+	$array['clients'] = array("campaigns","clients");
+	$array['campaign_types'] = array("campaigns","campaign_types");
+	$array['ownership'] = array("ownership","ownership_users");
+	$array['subsectors'] = array("companies","company_subsectors","subsectors");
+	$array['sectors'] = array("companies","company_subsectors","subsectors","sectors");
+	return $array;
+}
+
 function table_joins(){
 		$join = array();
+		$join['records'] = "";
 		$join['client_refs'] = " left join client_refs cref on cref.urn = r.urn ";
 	    $join['record_planner'] = " left join record_planner rp on rp.urn = r.urn ";
         $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
-        $join['appointments'] = " left join appointments app on app.urn = r.urn ";
+        $join['appointments'] = " left join appointments a on a.urn = r.urn ";
         $join['companies'] = " left join companies com on com.urn = r.urn ";
         $join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
-        $join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
+       
         $join['contacts'] = " left join contacts con on con.urn = r.urn ";
         $join['contact_addresses'] = " left join contact_addresses cona on cona.contact_id = con.contact_id ";
-        $join['contact_locations'] = " left JOIN locations contact_locations ON (cona.location_id = contact_locations.location_id) ";
+		
         $join['outcomes'] = " left join outcomes o on o.outcome_id = r.outcome_id ";
         $join['campaigns'] = " left join campaigns camp on camp.campaign_id = r.campaign_id ";
         $join['ownership'] = " left join ownership ow on ow.urn = r.urn ";
-        $join['ownership_name'] = " left join users owu on ow.user_id = owu.user_id ";
+        $join['ownership_users'] = " left join users owu on ow.user_id = owu.user_id ";
+		$join['history_users'] = " left join users hu on h.user_id = hu.user_id ";
 		$join['status_list'] = " left join status_list sl on sl.record_status_id = r.record_status ";		
-		$join['parked_codes'] = " left join parked_codes pc on pc.parked_code = r.parked_code ";
+		$join['park_codes'] = " left join park_codes pc on pc.parked_code = r.parked_code ";
 		$join['surveys'] = " left join surveys surv on surv.urn = r.urn ";
 		$join['record_details'] = " left join record_details rd on rd.urn = r.urn ";
 		$join['company_subsectors'] = " left join company_subsectors comsubsec on comsubsec.company_id = com.company_id ";
@@ -28,11 +47,13 @@ function table_joins(){
 		$join['sectors'] = " left join sectors sec on sec.sector_id = subsec.subsector_id ";	
 		$join['contact_telephone']  = " left join contact_telephone cont on cont.contact_id = con.contact_id ";
 		$join['company_telephone'] = " left join company_telephone comt on comt.company_id = com.company_id ";
-		$join['contact_addresses']  = " left join contact_address cona on cona.contact_id = con.contact_id ";
-		$join['company_addresses'] = " left join company_telephone coma on coma.company_id = com.company_id ";
+		$join['contact_addresses']  = " left join contact_addresses cona on cona.contact_id = con.contact_id ";
+		$join['company_addresses'] = " left join company_addresses coma on coma.company_id = com.company_id ";
 		$join['data_sources'] = " left join data_sources ds on ds.source_id = r.source_id ";
 		$join['clients'] = " left join clients cli on cli.client_id = camp.client_id ";
 		$join['campaign_types'] = " left join campaign_types campt on campt.campaign_type_id = camp.campaign_type_id ";
+		$join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
+        $join['contact_locations'] = " left JOIN locations contact_locations ON (cona.location_id = contact_locations.location_id) ";
 		return $join;
 }
 
