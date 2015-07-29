@@ -675,7 +675,7 @@ class Search extends CI_Controller
 				 $body = str_replace("[$key]",$val,$body);
 					}
 				}
-				
+
 				//create the insert array
                 array_push($emails, array(
                     "subject" => $template['template_subject'],
@@ -699,7 +699,8 @@ class Search extends CI_Controller
             echo json_encode(array(
                 "success" => (!empty($results)),
 				"croncode"=> $code,
-                "msg" => (!empty($results)?"Email(s) scheduled to be sent successfully":"ERROR: Email(s) not scheduled to be sent")
+                "msg" => (!empty($results)?"Email(s) scheduled to be sent successfully":"ERROR: Email(s) not scheduled to be sent"),
+                "emailcount" => count($contact_emails)
             ));
         }
     }

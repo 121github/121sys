@@ -54,7 +54,7 @@
 		beforeSend:function(){ $('#send').hide(); $('#wait').show(); }
 	}).done(function(response){
 		if(response.success){
-		flashalert.success(list.count+" emails are pending to be sent");
+		flashalert.success(response.emailcount+" emails are pending to be sent");
 		 $('#send').show(); $('#wait').hide();	
 		}
 	});
