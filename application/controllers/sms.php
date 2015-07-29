@@ -68,11 +68,32 @@ class Sms extends CI_Controller
             $sms_id = intval($this->input->post('sms_id'));
 
             $sms = $this->Sms_model->get_sms_by_id($sms_id);
+            $sms['credits'] = $this->get_credits($sms['text']);
 
             echo json_encode(array(
                 "success" => true,
                 "data" => $sms
             ));
+        }
+    }
+
+    //Get the credits used to send an sms for a particular text
+    private function get_credits($text) {
+        $count = strlen($text);
+
+        switch(TRUE) {
+            case ($text<=160):
+                return 1;
+            case ($text>160 && $text<=306):
+                return 2;
+            case ($text>306 && $text<=459):
+                return 3;
+            case ($text>459 && $text<=612):
+                return 4;
+            case ($text>612 && $text<=766):
+                return 5;
+            case ($text>766):
+                return "Message was truncated to 765 characters (5 credits).";
         }
     }
 

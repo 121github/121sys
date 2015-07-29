@@ -224,7 +224,7 @@ var sms = {
                     }
                     $record_option = '<a href="' + helper.baseUrl + "records/detail/" + val.urn + '"><span class="glyphicon glyphicon-chevron-right pull-right pointer" title="View the record" ></span></a>';
                     $view_option = '<span class="glyphicon ' + status + ' pull-right view-sms-btn pointer"  item-id="' + val.sms_id + '" title="' + message + '"></span>';
-                    tbody += '<tr><td>' + val.sent_date + '</td><td>' + val.send_from + '</td><td title="' + val.send_to + '" >' + val.send_to + '</td><td title="' + val.text + '" >' + val.text + '</td><td>' + $view_option + '</td><td>' + $record_option + '</td></tr>';
+                    tbody += '<tr><td>' + val.sent_date + '</td><td>' + val.send_from + '</td><td title="' + val.send_to +'" >' + '</td><td title="' + val.text + '" >' + val.text + '</td><td>' + $view_option + '</td><td>' + $record_option + '</td></tr>';
                 });
             } else if (status=='delivered') {
                 tbody =  '<tr><td>No sms delivered</td></tr>';
@@ -278,6 +278,10 @@ var sms = {
                 "<tr>" +
                 "<th>Msg</th>" +
                 "<td class='text'>" + response.data.text + "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<th>Credits</th>" +
+                "<td class='credits'>" + response.data.credits + "</td>" +
                 "</tr>" +
                 "<tr>" +
                 "<tr>" +
