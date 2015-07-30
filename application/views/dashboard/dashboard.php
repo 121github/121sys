@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">Dashboard
-            <small><?php echo @$_SESSION['current_campaign_name'] ?></small>
+            <small><?php if (isset($_SESSION['current_campaign_name'])) { echo @$_SESSION['current_campaign_name']; } ?></small>
         </h1>
     </div>
     <!-- /.col-lg-12 -->

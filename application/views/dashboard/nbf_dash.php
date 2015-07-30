@@ -59,7 +59,7 @@
 
     </div>
     <div class="col-lg-4">
-        <?php if (@$_SESSION['current_campaign'] == 3) { ?>
+        <?php if (isset($_SESSION['current_campaign']) && @$_SESSION['current_campaign'] == 3) { ?>
             <div class="panel panel-primary">
                 <div class="panel-heading"><i class="fa fa-exclamation-circle fa-fw"></i>Pending
                 </div>

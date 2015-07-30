@@ -1,6 +1,6 @@
       <div class="row">
         <div class="col-lg-12">
-          <h1 class="page-header">Callbacks <small><?php echo @$_SESSION['current_campaign_name'] ?></small></h1>
+          <h1 class="page-header">Callbacks <small><?php if (isset($_SESSION['current_campaign_name'])) { echo @$_SESSION['current_campaign_name']; } ?></small></h1>
         </div>
         <!-- /.col-lg-12 --> 
       </div>
@@ -12,7 +12,7 @@
           <div class="panel-heading"> <i class="fa fa-phone fa-fw"></i> Callbacks 
             <div class="pull-right">
                <form class="callbacks-filter" data-func="callbacks_panel">
-            	<div class="btn-group">
+            	<div class="btn-group">s
             	  <input type="hidden" name="date_from" value="<?php echo (!empty($date_from)?$date_from:date('Y-m-d')); ?>">
                   <input type="hidden" name="date_to" value="<?php echo (!empty($date_to)?$date_to:date('Y-m-d')); ?>">
                   <input type="hidden" name="campaign">
