@@ -77,6 +77,11 @@ class Planner extends CI_Controller
 			 echo json_encode(array("success"=>false,"msg"=>"You can only plan for the future!"));	
 			 exit; 
 			 }
+			 $user_id = $_SESSION['user_id'];
+			 if($this->Planner_model->check_planner($urn,$user_id)){
+				 echo json_encode(array("success"=>false,"msg"=>"Record is already in planner"));	
+				 exit;  
+			 }
 			 $this->Planner_model->add_record($urn,$date,$postcode);
 			 echo json_encode(array("success"=>true,"msg"=>"Planner was updated"));
 			  exit; 

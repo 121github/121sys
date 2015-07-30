@@ -254,6 +254,7 @@ $(document).ready(function () {
     $(document).on('click', '#distance-cal-button', function (e) {
         e.preventDefault();
         modal.distance();
+		 modal_body.css('overflow', 'visible');
     });
 
 
