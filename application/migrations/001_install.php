@@ -1372,6 +1372,14 @@ CREATE TABLE IF NOT EXISTS `contacts` (
        end if;\r\n
 		END");
 
+      //Create table related_records
+      $this->db->query("CREATE TABLE `related_records` (
+        `source` INT(11) NOT NULL,
+        `target` INT(11) NOT NULL,
+        `matched_on` VARCHAR(50) NOT NULL,
+        UNIQUE INDEX `source` (`source`, `target`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1");
+
 
         //Dump the init data
         $this->Database_model->init_data();
