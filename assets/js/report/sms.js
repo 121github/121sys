@@ -135,6 +135,8 @@ var sms = {
                             + "</td><td class='sms_sent'>"
                             + "<a href='#' class='show-sms-btn' style='font-weight: bold; font-size: 19px;'>" + val.sms_sent + "</a>" +
                             "<a href='" + val.sms_sent_url + "' style='font-size:10px;color:black'> (See records...)</a>"
+                            + "</td><td class='credits'>"
+                            + val.credits
                             + "</td><td class='sms_delivered'>"
                             + "<a href='#' class='show-sms-btn' sms-status='delivered' style='color:green; font-weight: bold;'>" + val.sms_delivered + "</a>" +
                             "<a href='" + val.sms_delivered_url + "' style='font-size:10px;color:black'> (See records...)</a>"

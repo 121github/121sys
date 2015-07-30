@@ -730,6 +730,7 @@ class Reports extends CI_Controller
                 if ($row['sms_sent_count']) {
                     $aux[$row['id']]['sql'] = $row['sql'];
                     $aux[$row['id']]['name'] = ($row['name']?$row['name']:($group === 'agent'?'Automatic':''));
+                    $aux[$row['id']]['credits'] = $row['credits'];
                     $aux[$row['id']]['sms_sent'] = $row['sms_sent_count'];
                     $aux[$row['id']]['sms_delivered'] = $row['sms_delivered_count'];
                     $aux[$row['id']]['sms_pending'] = $row['sms_pending_count'];
@@ -740,6 +741,7 @@ class Reports extends CI_Controller
             }
 
             $totalSmsSent = 0;
+            $totalCredits = 0;
             $totalSmsDelivered = 0;
             $totalSmsPending = 0;
             $totalSmsUndelivered = 0;
@@ -759,6 +761,7 @@ class Reports extends CI_Controller
             }
             foreach ($aux as $id => $row) {
                 $sms_sent = (array_key_exists('sms_sent', $row)) ? $row['sms_sent'] : 0;
+                $sms_credits = (array_key_exists('credits', $row)) ? $row['credits'] : 0;
                 $sms_delivered = (array_key_exists('sms_delivered', $row)) ? $row['sms_delivered'] : 0;
                 $sms_pending = (array_key_exists('sms_pending', $row)) ? $row['sms_pending'] : 0;
                 $sms_undelivered = (array_key_exists('sms_undelivered', $row)) ? $row['sms_undelivered'] : 0;
@@ -781,6 +784,7 @@ class Reports extends CI_Controller
                     "id" => $id,
                     "sql" => $row['sql'],
                     "name" => $row['name'],
+                    "credits" => $sms_credits,
                     "sms_sent" => $sms_sent,
                     "sms_sent_url" => $smsUrl,
                     "sms_delivered" => $sms_delivered,
@@ -799,6 +803,7 @@ class Reports extends CI_Controller
                     "group" => $group
                 );
                 $totalSmsSent += $sms_sent;
+                $totalCredits += $sms_credits;
                 $totalSmsDelivered += $sms_delivered;
                 $totalSmsPending += $sms_pending;
                 $totalSmsUndelivered += $sms_undelivered;
@@ -818,6 +823,7 @@ class Reports extends CI_Controller
                 "sql" => "TOTAL",
                 "name" => "",
                 "sms_sent" => $totalSmsSent,
+                "credits" => $totalCredits,
                 "sms_sent_url" => $url,
                 "sms_delivered" => $totalSmsDelivered,
                 "sms_delivered_url" => $url . "/sms-status/".SMS_STATUS_SENT,

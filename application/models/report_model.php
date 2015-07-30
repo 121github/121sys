@@ -12,8 +12,9 @@ class Report_model extends CI_Model
         parent::__construct();
     }
 
-public function get_audit_data($options){
- 			 $date_from = $options['date_from'];
+    public function get_audit_data($options)
+    {
+        $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $campaign = $options['campaign'];
         $user = isset($options['agent']) ? $options['agent'] : "";
@@ -39,9 +40,9 @@ public function get_audit_data($options){
         if (!empty($source)) {
             $where .= " and source_id = '$source' ";
         }
-		$qry = "select campaign_name,table_name,change_type,count(*) from audit left join records using(urn) left join campaigns using(campaign_id) group by campaign_id,table_name,change_type";
-		//not finished
-}
+        $qry = "select campaign_name,table_name,change_type,count(*) from audit left join records using(urn) left join campaigns using(campaign_id) group by campaign_id,table_name,change_type";
+        //not finished
+    }
 
 
     public function all_answers_data()
@@ -197,8 +198,8 @@ public function get_audit_data($options){
         if (!empty($source)) {
             $where .= " and r.source_id = '$source' ";
         }
-		$where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $joins = " left join users u using(user_id) left join records r using(urn) ".$joins;
+        $where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $joins = " left join users u using(user_id) left join records r using(urn) " . $joins;
         $qry = "select
                     $id id,
                     $name name,
@@ -211,7 +212,7 @@ public function get_audit_data($options){
                 left join (select count(*) dials,$group_by dd from history h $joins where h.outcome_id is not null $where group by $group_by) d on d.dd = $group_by
         where 1 $where
 		group by $group_by ";
-		
+
         $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
@@ -282,7 +283,7 @@ public function get_audit_data($options){
         if (@!in_array("by team", $_SESSION['permissions'])) {
             $where .= " and u.team_id = '{$_SESSION['team']}' ";
         }
-		$where .=" and r.campaign_id in({$_SESSION['campaign_access']['list']})";
+        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']})";
         $joins = "
           inner join records r ON (r.urn = eh.urn)
           inner join campaigns c ON (c.campaign_id = r.campaign_id)
@@ -301,7 +302,7 @@ public function get_audit_data($options){
           left join (select count(*) email_unsent_count,$group_by gb_2 from email_history eh $joins where eh.status = 0 and pending = 0 $where group by $group_by) euc on euc.gb_2 = $group_by
         where eh.status=1 $where
 		group by $group_by ";
-		$this->firephp->log($qry);
+        $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 
@@ -345,9 +346,9 @@ public function get_audit_data($options){
         if (@!in_array("by agent", $_SESSION['permissions'])) {
             $where .= " and history.user_id = '{$_SESSION['user_id']}' ";
         }
-		
-		$where .=" and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-				
+
+        $where .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+
         $qry = "select count(*) count, IF(duration,duration,0) as duration, IF(ring_time,ring_time,0) as ring_time, users.ext, users.name as agent, users.user_id as agent_id
                 from history
                   inner join records using(urn)
@@ -357,11 +358,11 @@ public function get_audit_data($options){
                     select  SUM(TIME_TO_SEC(call_log.duration)) as duration, SUM(call_log.ring_time) as ring_time, users.ext as extension
                       FROM call_log
                         inner JOIN users on users.ext = call_log.call_from
-                        where call_log.inbound = 0 ".$where_calls. "
+                        where call_log.inbound = 0 " . $where_calls . "
                       GROUP BY users.user_id
                     ) calls on (users.ext = extension)";
 
-        $qry .= " where 1 ".$where;
+        $qry .= " where 1 " . $where;
 
         $qry .= " GROUP BY users.user_id
                   ORDER BY users.user_id";
@@ -438,7 +439,7 @@ public function get_audit_data($options){
         if (@!in_array("by team", $_SESSION['permissions'])) {
             $where .= " and u.team_id = '{$_SESSION['team']}' ";
         }
-        $where .=" and r.campaign_id in({$_SESSION['campaign_access']['list']})";
+        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']})";
         $joins = "
           inner join records r ON (r.urn = sh.urn)
           inner join campaigns c ON (c.campaign_id = r.campaign_id)
@@ -447,6 +448,7 @@ public function get_audit_data($options){
         $qry = "select $id id,
                 $name name,
                 count(*) as sms_sent_count,
+                credits,
                 if(sms_delivered_count is null,0,sms_delivered_count) sms_delivered_count,
 				if(sms_pending_count is null,0,sms_pending_count) sms_pending_count,
 				if(sms_undelivered_count is null,0,sms_undelivered_count) sms_undelivered_count,
@@ -455,12 +457,12 @@ public function get_audit_data($options){
         from sms_history sh
           left join users using(user_id)
           $joins
-          left join (select count(*) sms_delivered_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_SENT." $where group by $group_by) ssc on ssc.gb = $group_by
-          left join (select count(*) sms_pending_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_PENDING." $where group by $group_by) spc on spc.gb = $group_by
-          left join (select count(*) sms_undelivered_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_UNDELIVERED." $where group by $group_by) suc on suc.gb = $group_by
-          left join (select count(*) sms_unknown_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_UNKNOWN." $where group by $group_by) sunc on sunc.gb = $group_by
-          left join (select count(*) sms_error_count,$group_by gb from sms_history sh $joins where sh.status_id = ".SMS_STATUS_ERROR." $where group by $group_by) sec on sec.gb = $group_by
-
+          left join (select count(*) sms_delivered_count,$group_by gb from sms_history sh $joins where sh.status_id = " . SMS_STATUS_SENT . " $where group by $group_by) ssc on ssc.gb = $group_by
+          left join (select count(*) sms_pending_count,$group_by gb from sms_history sh $joins where sh.status_id = " . SMS_STATUS_PENDING . " $where group by $group_by) spc on spc.gb = $group_by
+          left join (select count(*) sms_undelivered_count,$group_by gb from sms_history sh $joins where sh.status_id = " . SMS_STATUS_UNDELIVERED . " $where group by $group_by) suc on suc.gb = $group_by
+          left join (select count(*) sms_unknown_count,$group_by gb from sms_history sh $joins where sh.status_id = " . SMS_STATUS_UNKNOWN . " $where group by $group_by) sunc on sunc.gb = $group_by
+          left join (select count(*) sms_error_count,$group_by gb from sms_history sh $joins where sh.status_id = " . SMS_STATUS_ERROR . " $where group by $group_by) sec on sec.gb = $group_by
+          left join (select SUM(IF(LENGTH(sh.text)<=160,1,IF(LENGTH(sh.text)<=306,2,IF(LENGTH(sh.text)<=459,3,IF(LENGTH(sh.text)<=612,4,5))))) as credits,$group_by gb from sms_history sh $joins where sh.status_id != " . SMS_STATUS_PENDING . " $where group by $group_by) cred on cred.gb = $group_by
         where 1 $where
 		group by $group_by ";
         $this->firephp->log($qry);

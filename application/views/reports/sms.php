@@ -105,6 +105,7 @@
                         <th class="info">#</th>
                         <th class="info">Name</th>
                         <th class="info">Sent</th>
+                        <th class="info">Credits</th>
                         <th class="success">Delivered</th>
                         <th class="success">Delivered(%)</th>
                         <th class="warning">Pending</th>
