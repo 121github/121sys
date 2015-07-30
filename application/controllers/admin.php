@@ -701,11 +701,15 @@ class Admin extends CI_Controller
         }
 
         if (empty($form['user_id'])) {
-            $response = $this->Admin_model->add_new_user($form);
+            $user_id = $this->Admin_model->add_new_user($form);
+			$this->load->model('Datatables_model');
+			$this->Datatables_model->set_default_columns($user_id);
+			$response=true;
         } else {
             $response = $this->Admin_model->update_user($form);
             $this->User_model->flag_users_for_reload(array($form['user_id']));
         }
+ 		
 
         echo json_encode(array(
             "data" => $response

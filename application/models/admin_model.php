@@ -211,7 +211,8 @@ class Admin_model extends CI_Model
 		if(empty($form['ext'])){
 		$form['ext'] = NULL;
 		}
-        return $this->db->insert("users", $form);
+		$this->db->insert("users", $form);
+        return $this->db->insert_id();
     }
     public function update_user($form)
     {
@@ -223,7 +224,6 @@ class Admin_model extends CI_Model
 		}
         $this->db->where("user_id", $form['user_id']);
         $this->db->update("users", $form);
-		$this->firephp->log($this->db->last_query());
     }
     public function delete_user($id)
     {

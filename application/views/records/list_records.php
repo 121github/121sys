@@ -3,22 +3,27 @@
         <i class="fa fa-list fa-fw"></i>
         Record List
         <div class="pull-right">
-            <form class="filter-form">
-                <div class="btn-group">
-                    <input type="hidden" name="group">
+            <form class="filter-form">    
+                     <div class="btn-group">
+         <button type="button" class="btn btn-default btn-xs" data-modal="choose-columns" data-table-id="1"><span
+                            class="fa fa-table"></span> Columns
+                    </button>
+         </div>
+           <input type="hidden" name="group">                <!--<div class="btn-group">
+                  
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span
                             class="glyphicon glyphicon-filter"></span> Colour By
                     </button>
                     <ul class="dropdown-menu pull-right" role="menu">
                         <li><a href="#" class="group-filter" id="campaign_name">Campaign</a></li>
-                        <li><a href="#" class="group-filter" id="name">Company</a></li>
-                        <li><a href="#" class="group-filter" id="fullname">Contact</a></li>
+                        <li><a href="#" class="group-filter" id="company_name">Company</a></li>
+                        <li><a href="#" class="group-filter" id="contact_name">Contact</a></li>
                         <li><a href="#" class="group-filter" id="outcome">Outcome</a></li>
                         <li><a href="#" class="group-filter" id="ownership">Ownership</a></li>
                         <li class="divider"></li>
                         <li><a class="group-filter" ref="#" style="color: green;">Colour by</a></li>
                     </ul>
-                </div>
+                </div>-->
                 <div class="btn-group">
                     <input style="display:none" type="checkbox" id="map-view-toggle"
                            data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"

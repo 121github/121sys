@@ -45,8 +45,8 @@ class Records extends CI_Controller
     public function view()
     {
         //this array contains data for the visible columns in the table on the view page
-		/* temperarily getting them from a helper function until we use the database*/
-		$visible_columns = get_visible_columns();
+		$this->load->model('Datatables_model');
+		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -75,6 +75,7 @@ class Records extends CI_Controller
         
     }
 
+	
     public function get_used_icons() {
         //Get icons used so far
         $icons = $this->Records_model->get_used_icons();
@@ -104,10 +105,9 @@ class Records extends CI_Controller
     public function process_view()
     {
         if ($this->input->is_ajax_request()) {
-			
             $options = $this->input->post();
-			
-			$visible_columns = get_visible_columns();
+			$this->load->model('Datatables_model');
+			$visible_columns = $this->Datatables_model->get_visible_columns(1);
 			$options['visible_columns'] = $visible_columns;
 			//check the options
 			foreach($options['columns'] as $k=>$column){
@@ -117,10 +117,13 @@ class Records extends CI_Controller
 			}
 			
             $records = $this->Records_model->get_records($options);
-            $nav     = $this->Records_model->get_nav($options);
-
+			$this->Records_model->get_nav($options);
+			$count = $records['count'];
+			unset($records['count']);
+			$nav     = array();
+			
             foreach ($records as $k => $v) {
-
+				$nav[] = $v['urn'];
                 //Location
                 if ($records[$k]["company_location"]) {
                     $location_ar = explode(',',$records[$k]["company_location"]);
@@ -144,14 +147,8 @@ class Records extends CI_Controller
                     $records[$k]["location_id"] = NULL;
                 }
 
-                //Attendee
-                $records[$k]["attendee"] = ($records[$k]['name']?$records[$k]['name']:($records[$k]['fullname']?$records[$k]['fullname']:NULL));
-
-                //Website
-                $records[$k]["website"] = ($records[$k]['company_website']?$records[$k]['company_website']:($records[$k]['contact_website']?$records[$k]['contact_website']:''));
-
-                //Record color
-                $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"].$records[$k]["name"])));
+			  	//Record color
+                $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"])));
                 $records[$k]["record_color_map"] = $records[$k]["record_color"];
 
                 //Add the icon to the record color
@@ -167,14 +164,15 @@ class Records extends CI_Controller
                 //Planner addresses options
                 $records[$k]["planner_addresses"] = array(
                     $records[$k]["location_id"] => $records[$k]["postcode"],
-                    $records[$k]["appointment_location_id"] => $records[$k]["appointment_postcode"]
+                    //$records[$k]["appointment_location_id"] => $records[$k]["appointment_postcode"]
                 );
             }
-            
+						
+            $_SESSION['navigation'][] = $nav;
             $data = array(
                 "draw" => $this->input->post('draw'),
-                "recordsTotal" => count($nav),
-                "recordsFiltered" => count($nav),
+                "recordsTotal" => $count,
+                "recordsFiltered" => $count,
                 "data" => $records,
                 "planner_permission" => (in_array("planner", $_SESSION['permissions']))
             );

@@ -98,13 +98,20 @@ class Planner_model extends CI_Model
             $location_id = $this->db->insert_id();
             $this->db->insert("locations", array("location_id" => $location_id, "lat" => $coords['lat'], "lng" => $coords['lng']));
         }
-        $qry = "replace into record_planner set urn = '$urn', user_id = '" . $_SESSION['user_id'] . "',start_date = '$date', postcode ='$postcode', location_id = '$location_id'";
-        $this->db->query($qry);
+		$data = array("urn"=>$urn,"user_id"=>$_SESSION['user_id'],"start_date"=>$date,"postcode"=>$postcode,"location_id"=>$location_id,"planner_status"=>1);
+		$this->db->insert("record_planner",$data);
     }
-
+		
+	public function check_planner($urn,$user_id){
+	$qry = "select urn from record_planner where planner_status = 1 and urn = '$urn' and user_id = '$user_id'";
+	if($this->db->query($qry)->num_rows()){
+		return true;
+	}	
+	}
+	
     public function remove_record($urn)
     {
-        $this->db->where(array("urn" => $urn, "user_id" => $_SESSION['user_id']));
+        $this->db->where(array("urn" => $urn, "user_id" => $_SESSION['user_id'], "planner_status"=>1));
         $this->db->delete("record_planner");
     }
 
