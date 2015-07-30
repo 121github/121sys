@@ -645,6 +645,7 @@ inner join data_sources using(source_id) set notes = source_name where campaign_
         $app = $this->Trackvia_model->get_appointment($urn);
 
         //if its a private record then we need to do a few extra bits
+        $update_record = array();
         if ($app['campaign_id'] == "29") {
             $update_record = array("source_id" => 36, "record_color" => "00CC00");
             //if it doesnt exist on trackvia we should add it first
@@ -654,7 +655,7 @@ inner join data_sources using(source_id) set notes = source_name where campaign_
             } else {
                 $this->update_tv_record($urn);
             }
-        } else if ($app['campaign_id'] == "28") {
+        } else if ($app['campaign_id'] == "22") {
             $update_record = array("source_id" => 37, "record_color" => "00CC00");
         }
         $data = array(
