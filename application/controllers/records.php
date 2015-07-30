@@ -32,8 +32,8 @@ class Records extends CI_Controller
 	
 	public function related_records(){
 	  if ($this->input->is_ajax_request()) {
+            $urn = $this->input->post('urn');
 			$campaign = $this->Records_model->get_campaign_from_urn($urn);
-			$urn = $this->input->post('urn');
 			$result = $this->Records_model->find_related_records($urn,$campaign);
 			echo json_encode(array("success"=>true,"data"=>$result,"msg"=>"No matches were found"));
 	  }
