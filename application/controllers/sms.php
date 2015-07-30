@@ -131,7 +131,7 @@ class Sms extends CI_Controller
 
 
         if ($template) {
-            $placeholder_data = $this->Sms_model->get_placeholder_data($urn);
+            $placeholder_data = $this->Email_model->get_placeholder_data($urn);
             $placeholder_data[0]['comments'] = $last_comment;
             if (count($placeholder_data)) {
                 foreach ($placeholder_data[0] as $key => $val) {
