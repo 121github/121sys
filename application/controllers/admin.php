@@ -91,7 +91,7 @@ class Admin extends CI_Controller
             if ($this->File_model->save_folder($data)) {
                 $success = true;
                 if ($old_folder_name !== $new_folder_name) {
-                    if (rename(FCPATH . "/upload/" . $old_folder_name, FCPATH . "/upload/" . $new_folder_name)) {
+                    if (rename(FCPATH . "/upload/files/" . $old_folder_name, FCPATH . "/upload/files/" . $new_folder_name)) {
                         $success = false;
                         $msg = "Folder already taken";
                     }
@@ -107,7 +107,7 @@ class Admin extends CI_Controller
             if (intval($insert_id)) {
                 $data['folder_id'] = $insert_id;
                 $success = true;
-                if (!mkdir(FCPATH . "/upload/" . $new_folder_name)) {
+                if (!mkdir(FCPATH . "/upload/files/" . $new_folder_name)) {
                     $msg = "Folder already exists";
                     $success = false;
                 }
