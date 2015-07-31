@@ -49,6 +49,11 @@ switch ($domain) {
         $session_name = '121sys_test';
         break;
 
+    case '10.10.1.15':
+        define('ENVIRONMENT', 'testing');
+        $session_name = '121sys_test';
+        break;
+
     case 'accept.':
         define('ENVIRONMENT', 'acceptance');
         $session_name = '121sys_accept';
@@ -65,6 +70,11 @@ switch ($domain) {
         break;
 
     case 'hsl.':
+        define('ENVIRONMENT', 'production');
+        $session_name = '121sys_hsl';
+        break;
+
+    case 'cls.hslchairs.com':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_hsl';
         break;
