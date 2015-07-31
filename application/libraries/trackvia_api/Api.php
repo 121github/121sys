@@ -136,7 +136,7 @@ class Api extends EventDispatcher
      * @param  string $contentType
      * @return array The json parsed response from the server
      */
-    private function api($url, $httpMethod = 'GET', $data = null, $contentType = null)
+    private function api($url, $httpMethod = 'GET', $data = null, $contentType = null, $page = null, $limit = null)
     {
         // trigger an event
         $this->trigger('api_request_init', array('url' => $url));
@@ -157,8 +157,11 @@ class Api extends EventDispatcher
             'data'   => $data
         );
 
-        // add the access token onto the url
-        $url = $url . '?access_token='.$accessToken;
+        // add the access token onto the url and the page and limit if its needed
+        $limit_url = ($limit?"&limit=".$limit:"");
+        $page_url = ($page?"&page=".$page:"");
+
+        $url = $url . '?access_token='.$accessToken.$limit_url.$page_url;
 
         $this->trigger('api_request_send', array('url' => $url, 'http_method' => $httpMethod, 'data' => $data));
         
@@ -277,12 +280,12 @@ class Api extends EventDispatcher
      * @param  int $viewId
      * @return array Array of view data returned from the api
      */
-    public function getView($viewId)
+    public function getView($viewId,$page = null, $limit = null)
     {
         // build the url
         $url = self::BASE_URL . self::VIEWS_URL .'/'. $viewId;
-        
-        return $this->api($url, 'GET');
+
+        return $this->api($url, 'GET',null,null,$page,$limit);
     }
 
     /**
