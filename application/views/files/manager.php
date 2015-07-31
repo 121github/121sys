@@ -5,7 +5,7 @@
           <div class="panel-heading"> <i class="fa fa-files-o fa-fw"></i> Files 
             <div class="pull-right">
               <div class="btn-group">
-               <button type="button" id="upload-btn" class="btn btn-default btn-xs disabled"> <span class="glyphicon glyphicon-file"></span> Upload</button>
+               <button type="button" id="upload-btn" class="btn btn-default btn-xs <?php if(count($user_folders)>"1"){ echo "disabled"; } ?> "> <span class="glyphicon glyphicon-file"></span> Upload</button>
               </div>
             <div class="btn-group">
 	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"  id="folder-filter-text"> <span class="glyphicon glyphicon-filter"></span> All Folders</button>
@@ -43,5 +43,9 @@
 <script>
 $(document).ready(function(){
 files.init();
+<?php if(count($user_folders)=="1"){ ?>
+	$('.folder-filter').first().trigger('click');
+<?php } ?>
+
 });
 </script>
