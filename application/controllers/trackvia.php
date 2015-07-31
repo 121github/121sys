@@ -92,7 +92,8 @@ class Trackvia extends CI_Controller
             if ($view_id <> SOUTHWAY_ALL_RECORDS && $view_id <> PRIVATE_ALL_RECORDS) {
                 $data[$name] = array("source" => $sources[$name], "one2one" => $this->Trackvia_model->get_121_counts($name));
                 if ($this->input->post('tv') || $this->uri->segment(3) == "tv") {
-                    $view = $this->tv->getView($view_id);
+                    //$view = $this->tv->getView($view_id);
+                    $view = $this->getAllViewRecords($view_id);
                     if ($this->uri->segment(4) == "debug") {
                         echo "<pre>";
                         print_r($view);
@@ -336,6 +337,39 @@ inner join data_sources using(source_id) set notes = source_name where campaign_
         }
         print_r($todo);
     }
+    */
+
+    private function getAllViewRecords($view_id) {
+        $page = 1;
+        $limit = null;
+        $search = true;
+        $view = array();
+        while($search) {
+            //TRACKVIA API MODIFIED (added page and limit variables) !!!!!!!!!!!!!!!!!!!!!!!!!!
+            $result = $this->tv->getView($view_id,$page, $limit);
+
+            //$result = array();
+            if (isset($result['records'])) {
+                $view['id'] = $result['id'];
+                $view['name'] = $result['name'];
+                $view['description'] = $result['description'];
+                $view['table_id'] = $result['table_id'];
+                $view['record_count'] = (isset($view['record_count'])?($result['record_count']+$view['record_count']):$result['record_count']);
+                $view['records'] = (isset($view['records'])?array_merge($result['records'],$view['records']):$result['records']);
+
+                $search = true;
+
+                $page++;
+            }
+            else {
+                $search = false;
+            }
+        }
+
+        return $view;
+    }
+
+
     /*
         /**
          * Test
@@ -354,7 +388,8 @@ inner join data_sources using(source_id) set notes = source_name where campaign_
         $source = $options['source_id'];
         $savings = $options['savings_per_panel'];
         //Get the trackvia records for this view
-        $view = $this->tv->getView($view_id);
+        $view = $this->getAllViewRecords($view_id);
+        //$view = $this->tv->getView($view_id);
 
 
         if (isset($view['records'])) {
