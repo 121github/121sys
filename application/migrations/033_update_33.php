@@ -131,7 +131,7 @@ class Migration_update_33 extends CI_Migration
 
 $this->db->query("ALTER TABLE `record_planner` ADD `planner_status` BOOLEAN NOT NULL DEFAULT TRUE");
 	
-	$this->db->query("INSERT INTO permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'files only', 'Files')");
+	$this->db->query("INSERT INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'files only', 'Files')");
 	
 	$this->db->query("INSERT INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'survey only', 'Survey')");
 	
