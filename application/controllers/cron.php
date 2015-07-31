@@ -29,7 +29,13 @@ class Cron extends CI_Controller
 		$this->check_company_telephone_numbers();
 		//deletes files that are in the upload folder but nowhere in the db!
 		$this->tidy_files();
+		//unassign records from users that don't need them
+		$this->unassign_records();
     }
+
+	public function unassign_records(){
+		   $this->Cron_model->unassign_records();
+	}
 
     public function update_hours()
     {
