@@ -203,7 +203,7 @@ class Records extends CI_Controller
             $automatic = false;
             $urn       = $this->uri->segment(3);
         }
-        
+        		
         /* work out the previous and next urns */
         $previous = (isset($_SESSION['prev']) ? $_SESSION['prev'] : "");
         $current  = (isset($_SESSION['curr']) ? $_SESSION['curr'] : $urn);
@@ -335,11 +335,13 @@ class Records extends CI_Controller
             $data['types'] = $types;
         }
         
-        //get the users if we need the ownership feature is on
+        //get the users we need the ownership feature is on
         if (in_array(5, $features)) {
             $users         = $this->Records_model->get_users(false, $campaign_id);
             $data['users'] = $users;
         }
+			//take ownership of unassigned record if nobody else is on it
+			$this->Records_model->take_ownership($urn);
         
         $this->template->load('default', 'records/custom/' . (!empty($campaign_layout) ? $campaign_layout : "2col.php"), $data);
         

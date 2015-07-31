@@ -257,7 +257,7 @@ class Records_model extends CI_Model
 
             }
 			//if no user is allocated we should add the a user to prevent someone else landing on this record
-            if (empty($owner) && in_array("set call outcomes", $_SESSION['permissions'])) {
+            if (empty($owner) && in_array("keep re", $_SESSION['permissions'])) {
                 $this->db->replace("ownership", array("user_id" => $user_id, "urn" => $urn));
             }
             return $urn;
@@ -505,6 +505,10 @@ class Records_model extends CI_Model
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
         $where = " where 1 ";
+		
+		if(isset($_SESSION['current_campaign'])){
+				$where .= " and r.campaign_id = '".$_SESSION['current_campaign'] ."'";
+		}
 		$where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         //Check the bounds of the map
         if ($options['bounds'] && $options['map'] == 'true') {
@@ -605,10 +609,6 @@ class Records_model extends CI_Model
             $select .= " ,sc.script_name,sc.script_id,sc.script,sc.expandable  ";
             $from .= "  left join scripts_to_campaigns using(campaign_id) left join scripts sc using(script_id) ";
         }
-        if (in_array(5, $features)) {
-            $select .= " ,u.user_id,u.user_email,u.user_telephone,u.name";
-            $from .= " left join ownership own using(urn) left join users u using(user_id)";
-        }
         $where = "  where r.campaign_id in({$_SESSION['campaign_access']['list']}) and urn = '$urn' ";
         $order = " order by c.sort,c.contact_id,ct.description ";
         $qry = $select . $from . $where . $order;
@@ -685,17 +685,6 @@ class Records_model extends CI_Model
 
                     }
                 }
-                if (in_array(5, $features)) {
-
-                    //put the ownership dteails into the array
-                    if ($result['user_id']) {
-                        $data['ownership'][$result['user_id']] = array(
-                            "name" => $result['name'],
-                            "email" => $result['user_email'],
-                            "telephone" => $result['user_telephone']
-                        );
-                    }
-                }
                 if (in_array(6, $features)) {
                     //put any scripts into the array
                     if ($result['script_id']) {
@@ -739,6 +728,14 @@ class Records_model extends CI_Model
         //return the completed array
         return $data;
     }
+
+	//if the record is unassigned set the current user as the owner
+	public function take_ownership($urn){
+	$qry = "select urn from ownership where urn = '$urn'";
+	if(!$this->db->query($qry)->num_rows()){
+		$this->db->insert("ownership",array("urn"=>$urn,"user_id"=>$_SESSION['user_id']));
+	}
+	}
 
     public function get_history($urn, $limit, $offset)
     {
@@ -841,7 +838,7 @@ class Records_model extends CI_Model
         return $result;
     }
 
-    public function save_ownership($urn, $owners)
+    public function save_ownership($urn, $owners=false)
     {
         //first remove the old owners for the urn
         $this->db->where("urn", $urn);
