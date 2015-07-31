@@ -28,7 +28,8 @@ if(strpos($_SERVER['REQUEST_URI'],"121sys/121sys")!==false){
 $no_https = array("accept.", "demo.", "test.");
 
 $full_url = explode('121system.com', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-$domain = $full_url[0];
+$domain = explode("/",$full_url[0]);
+$domain = $domain[0];
 //if the site has no certificate but they are trying to use https then we redirect to the non-https url
 if (in_array($domain, $no_https)) {
     if (isset($_SERVER['HTTPS']) || $_SERVER['SERVER_PORT'] == 443) {
@@ -48,6 +49,11 @@ switch ($domain) {
         $session_name = '121sys_test';
         break;
 
+    case '10.10.1.15':
+        define('ENVIRONMENT', 'testing');
+        $session_name = '121sys_test';
+        break;
+
     case 'accept.':
         define('ENVIRONMENT', 'acceptance');
         $session_name = '121sys_accept';
@@ -61,6 +67,16 @@ switch ($domain) {
     case 'jonwall.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_jonwall';
+        break;
+
+    case 'hsl.':
+        define('ENVIRONMENT', 'production');
+        $session_name = '121sys_hsl';
+        break;
+
+    case 'cls.hslchairs.com':
+        define('ENVIRONMENT', 'production');
+        $session_name = '121sys_hsl';
         break;
 
     case 'demo.':
