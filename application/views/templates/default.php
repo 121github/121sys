@@ -109,16 +109,17 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 			  if (in_array("use callpot", $_SESSION['permissions'])) { ?>
               <li><a href="<?php echo base_url(); ?>records/detail">Start Calling</a></li>
               <?php } ?>
-                    <?php if (!isset($page)) { $page = ""; } 
-						$this->view('navigation/dashboards.php'); 
-						$this->view('navigation/records.php'); 
-						$this->view('navigation/files.php'); 
-						$this->view('navigation/appointments.php'); 
-						$this->view('navigation/planner.php'); 
-						$this->view('navigation/surveys.php'); 
-						$this->view('navigation/calendar.php'); 
-						$this->view('navigation/admin.php'); 
-						$this->view('navigation/reports.php'); 
+                    <?php if (!isset($page)) { $page = ""; }
+						$page = array("page"=>$page); 
+						$this->view('navigation/dashboards.php',$page); 
+						$this->view('navigation/records.php',$page) ;
+						$this->view('navigation/files.php',$page);
+						$this->view('navigation/appointments.php',$page) ;
+						$this->view('navigation/planner.php',$page) ;
+						$this->view('navigation/surveys.php',$page);
+						$this->view('navigation/calendar.php',$page) ;
+						$this->view('navigation/admin.php',$page) ;
+						$this->view('navigation/reports.php',$page); 
 			 } else { ?>
               <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
             <?php } ?>

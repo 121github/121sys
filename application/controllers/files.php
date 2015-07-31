@@ -193,13 +193,13 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
        	echo "You don't have permission to write to this folder";
         exit;	
 		}
-        if (!is_dir(FCPATH . "upload/$folder_name")) {
+        if (!is_dir(FCPATH . "upload/files/$folder_name")) {
         header('HTTP/1.0 406 Not Found');
        	echo "Selected folder does not exist";
         exit;
         }
         
-        if (!empty($_FILES) && is_dir(FCPATH . "upload/$folder_name/$day")) {
+        if (!empty($_FILES) && is_dir(FCPATH . "upload/files/$folder_name/$day")) {
             
             $tempFile     = $_FILES['file']['tmp_name']; //3
             $originalname = preg_replace("/[^A-Za-z0-9. ]/", '', $_FILES['file']['name']);
