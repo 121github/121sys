@@ -184,7 +184,6 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
 		$folder_name = $user_folders[$folder]['folder_name'];
 		$day = date('Y-m-d');
 		if(!is_dir(FCPATH . "upload/files/".$folder_name."/".$day)){
-		$this->firephp->log("Directory does not exist, creating: ".FCPATH . "upload/files/".$folder_name."/".$day);
 		mkdir(FCPATH . "upload/files/$folder_name/$day");
 		}
 		} else {
