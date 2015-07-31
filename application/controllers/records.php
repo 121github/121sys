@@ -341,7 +341,9 @@ class Records extends CI_Controller
             $data['users'] = $users;
         }
 			//take ownership of unassigned record if nobody else is on it
+			if(in_array('take ownership',$_SESSION['permissions'])){
 			$this->Records_model->take_ownership($urn);
+			}
         
         $this->template->load('default', 'records/custom/' . (!empty($campaign_layout) ? $campaign_layout : "2col.php"), $data);
         
