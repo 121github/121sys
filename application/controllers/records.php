@@ -47,7 +47,12 @@ class Records extends CI_Controller
         //this array contains data for the visible columns in the table on the view page
 		$this->load->model('Datatables_model');
 		$visible_columns = $this->Datatables_model->get_visible_columns(1);
-
+		if(!$visible_columns){
+		 $this->load->model('Admin_model');
+		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
+		$visible_columns = $this->Datatables_model->get_visible_columns(1);	
+			
+		}
         $data = array(
             'campaign_access' => $this->_campaigns,
             'page' => 'list_records',
