@@ -103,7 +103,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
              } else if (in_array("survey only", $_SESSION['permissions'])) { 
 				$this->view('navigation/survey_only.php');
              } else if(in_array("mix campaigns", $_SESSION['permissions']) || isset($_SESSION['current_campaign'])){
-			  ?><li><a href="<?php echo base_url(); ?>records/detail">Start Calling</a></li>
+			  ?>
+              <?php 
+			  //The system will give the agents the records that need dialing
+			  if (in_array("use callpot", $_SESSION['permissions'])) { ?>
+              <li><a href="<?php echo base_url(); ?>records/detail">Start Calling</a></li>
+              <?php } ?>
                     <?php if (!isset($page)) { $page = ""; } 
 						$this->view('navigation/dashboards.php'); 
 						$this->view('navigation/records.php'); 
