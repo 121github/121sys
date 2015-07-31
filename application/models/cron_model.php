@@ -12,17 +12,18 @@ class Cron_model extends CI_Model
 
     }
 
-public function clear_planner(){
-		//no point having entries in the route planner for days that have lapsed!			
-		$qry = "delete from ownership where urn in(select urn from history join campaigns using(campaign_id) join outcomes using(outcome_id) join records using(urn) where record_status = 1 and keep_record is null and campaign_status = 1)";
-		$this->db->query($qry);
-	}
+    public function unassign_records()
+    {
+        $qry = "delete from ownership where urn in(select urn from history join campaigns using(campaign_id) join outcomes using(outcome_id) join records using(urn) where record_status = 1 and keep_record is null and campaign_status = 1)";
+        $this->db->query($qry);
+    }
 
-	public function clear_planner(){
-		//no point having entries in the route planner for days that have lapsed!
-		$qry = "update record_planner set planner_status = 0 where date(start_date) < curdate()";
-		$this->db->query($qry);
-	}
+    public function clear_planner()
+    {
+        //no point having entries in the route planner for days that have lapsed!
+        $qry = "update record_planner set planner_status = 0 where date(start_date) < curdate()";
+        $this->db->query($qry);
+    }
 
     public function clear_hours()
     {
