@@ -31,7 +31,6 @@ class User_model extends CI_Model
             $username,
             $password
         ))->result_array();
-        
         if (!empty($result)) {
             $config_query            = "SELECT * from configuration";
             $config                  = $this->db->query($config_query)->row_array(0);

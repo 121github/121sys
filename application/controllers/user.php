@@ -21,7 +21,7 @@ class User extends CI_Controller
             $this->load->library('form_validation');
             $this->form_validation->set_error_delimiters('<div class=\'error\'>', '</div>');
             $this->form_validation->set_rules('username', 'Username', 'trim|required|strtolower');
-            $this->form_validation->set_rules('password', 'Password', 'trim|required|strtolower|md5');
+            $this->form_validation->set_rules('password', 'Password', 'trim|required|md5');
             
             if ($this->form_validation->run()) {
                 $username = $this->input->post('username');
@@ -34,7 +34,9 @@ class User extends CI_Controller
                     if ($this->input->post('password') == md5("pass123")) {
 						$this->session->set_flashdata('change_pass', '1');
                         $redirect = base64_encode("user/account");
-                    } else {
+                    } else if(in_array("files only",$_SESSION['permissions'])){
+						 redirect('files/manager');
+					} else {
                         $redirect = $this->input->post('redirect');
                     }
                     if (!empty($redirect)) {

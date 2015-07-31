@@ -128,20 +128,12 @@ class Migration_update_33 extends CI_Migration
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
 	
-	
-			 $this->db->query("replace INTO `datatables_user_columns` (select
-'',user_id, 1, 1, 1 from users where user_status = 1)");
-			 $this->db->query("replace INTO `datatables_user_columns` (select
-'',user_id, 1, 2, 1 from users where user_status = 1)");
-			 $this->db->query("replace INTO `datatables_user_columns` (select
-'',user_id, 1, 7, 1 from users where user_status = 1)");
-			 $this->db->query("replace INTO `datatables_user_columns` (select
-'',user_id, 1, 3, 1 from users where user_status = 1)");
-			 $this->db->query("replace INTO `datatables_user_columns` (select
-'',user_id, 1, 4, 1 from users where user_status = 1)");
-			 $this->db->query("replace INTO `datatables_user_columns` (select
-'',user_id, 1, 17, 1 from users where user_status = 1)");
 
+$this->db->query("ALTER TABLE `record_planner` ADD `planner_status` BOOLEAN NOT NULL DEFAULT TRUE");
+	
+	$this->db->query("INSERT INTO permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'files only', 'Files')");
+	
+	$this->db->query("INSERT INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'survey only', 'Survey')");
 	
     }
 

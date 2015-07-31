@@ -13,6 +13,9 @@ class Datatables_model extends CI_Model
 		$this->db->where(array("user_id"=>$_SESSION['user_id'],"table_id"=>$table_id));
 		$this->db->join("datatables_columns","datatables_columns.column_id=datatables_user_columns.column_id");
 		$columns = $this->db->get("datatables_user_columns")->result_array();
+		if(count($columns)==0){
+		return false;
+		}
 		$visible_columns = array();
 		foreach($columns as $column){
 		$visible_columns['columns'][] = array("data" => !empty($column['column_alias'])?$column['column_alias']:$column['column_select']);
