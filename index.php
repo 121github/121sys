@@ -74,7 +74,7 @@ switch ($domain) {
         $session_name = '121sys_hsl';
         break;
 
-    case 'cls.hslchairs.com':
+    case 'hcs.hslchairs.com':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_hsl';
         break;
