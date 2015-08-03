@@ -238,7 +238,7 @@ $(document).on('change','.q3-question',function(){
        <div class="radio">
             <label>
                 <input class="q4-question" type="radio"  name="answers[a4][]" id="optionsRadios1"
-                       value="Yes"  <?php if (@strpos($values['a4'], "Yes") !== false) {
+                       value="Y"  <?php if (@strpos($values['a4'], "Y") !== false) {
                     echo "checked";
                 } ?> />
                Yes
@@ -247,7 +247,7 @@ $(document).on('change','.q3-question',function(){
         <div class="radio">
             <label>
                 <input class="q4-question" type="radio" name="answers[a4][]" id="optionsRadios2"
-                       value="No" <?php if (@strpos($values['a4'], "No") !== false) {
+                       value="N" <?php if (@strpos($values['a4'], "N") !== false) {
                     echo "checked";
                 } ?>>
                 No
@@ -256,7 +256,7 @@ $(document).on('change','.q3-question',function(){
         </div>
                         <script>
 $(document).on('change','.q4-question',function(){
-	if($(this).val()=="Yes"){
+	if($(this).val()=="Y"){
 			$('#q6-container').show();
 			$('#q5-container').show().find('input').val('');
 	} else {
@@ -265,7 +265,7 @@ $(document).on('change','.q4-question',function(){
 	}
 });
 </script> 
-<?php if (@$values['a4']== "Yes"&&@$values['a2']=="Home Owner"&&@$values['a1']=="House"){ ?>
+<?php if (@$values['a4']== "Y"&&@$values['a2']=="Home Owner"&&@$values['a1']=="House"){ ?>
 	<script>
 	$(document).ready(function(){
 		$('#q6-container').show();
