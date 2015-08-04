@@ -3,7 +3,7 @@
       <div class="col-lg-12">
         <h1 class="page-header">Campaign Admin</h1>
       </div>
-      <!-- /.col-lg-12 --> 
+      <!-- /.col-lg-12 -->
     </div>
     <!-- /.row -->
     <div class="row">
@@ -47,7 +47,7 @@
                          <td><input type="checkbox" class="form-control" name="c1[is_owner]" id="c1_own"/></td>
                          <td><input type="checkbox" class="form-control" name="c1[is_client_ref]" id="c1_ref"/></td>
                       </tr>
-                     
+
                       <tr>
                         <td><input class="form-control" value="" name="c2[name]" id="c2"/></td>
                         <td><input type="checkbox" class="form-control" name="c2[visible]" id="c2_vis"/></td>
@@ -56,7 +56,7 @@
                            <td><input type="checkbox" class="form-control" name="c2[is_radio]" id="c2_rad"/></td>
                         <td><input type="checkbox" class="form-control" name="c2[is_color]" id="c2_col"/></td>
                          <td><input type="checkbox" class="form-control" name="c2[is_owner]" id="c2_own"/></td>
-                         <td><input type="checkbox" class="form-control" name="c2[is_client_ref]" id="c2_ref"/></td>    
+                         <td><input type="checkbox" class="form-control" name="c2[is_client_ref]" id="c2_ref"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="c3[name]" id="c3"/></td>
@@ -112,7 +112,7 @@
 								$(this).closest('tr').find('[id*="rad"]').prop('checked',false);
 							}
 						 });
-						  
+
 						  	 $(document).on('change','[id*="col"]',function(){
 							if($(this).prop('checked')){
 								$(this).closest('tr').find('[id*="sel"]').prop('checked',true);
@@ -123,16 +123,16 @@
 								$(this).closest('tr').find('[id*="rad"]').prop('checked',false);
 							}
 						 });
-						  
-						  
+
+
 						   $(document).on('change','[id*="rad"]',function(){
 							if($(this).prop('checked')){
 								$(this).closest('tr').find('[id*="sel"]').prop('checked',false);
 								$(this).closest('tr').find('[id*="col"]').prop('checked',false);
 								$(this).closest('tr').find('[id*="own"]').prop('checked',false);
-								$(this).closest('tr').find('[id*="ref"]').prop('checked',false);							} 
+								$(this).closest('tr').find('[id*="ref"]').prop('checked',false);							}
 						 });
-						  
+
 					  });
 					  </script>
                     <hr />
@@ -169,7 +169,7 @@
                     <table>
                       <tr>
                         <th>Datetime field name | </th>
-                        <th> | Visible | </th>  
+                        <th> | Visible | </th>
                         <th> | Editable</th>
                       </tr>
                       <tr>
@@ -191,7 +191,7 @@
                         <th> | Visible | </th>
                           <th > | Editable | </th>
                           <th> | Use Dropdown</th>
-                        
+
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="n1[name]" id="n1"/></td>
@@ -205,6 +205,12 @@
                             <td><input type="checkbox" class="form-control" name="n2[editable]" id="n2_edi"/></td>
                         <td><input type="checkbox" class="form-control" name="n2[is_select]" id="n2_sel"/></td>
                       </tr>
+                        <tr>
+                            <td><input class="form-control" value="" name="n3[name]" id="n3"/></td>
+                            <td><input type="checkbox" class="form-control" name="n3[visible]" id="n3_vis"/></td>
+                            <td><input type="checkbox" class="form-control" name="n3[editable]" id="n3_edi"/></td>
+                            <td><input type="checkbox" class="form-control" name="n3[is_select]" id="n3_sel"/></td>
+                        </tr>
                     </table>
                     <hr />
                       <div class="form-group pull-right">
@@ -212,21 +218,21 @@
                       </div>
                     </div>
                     </td>
-               </tr>         
+               </tr>
               </table>
             </form>
           </div>
         </div>
       </div>
-      
-      <!-- /.row --> 
 
-<script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script> 
-<!-- SB Admin Scripts - Include with every page --> 
-<script src="<?php echo base_url() ?>assets/js/sb-admin.js"></script> 
+      <!-- /.row -->
+
+<script src="<?php echo base_url() ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<!-- SB Admin Scripts - Include with every page -->
+<script src="<?php echo base_url() ?>assets/js/sb-admin.js"></script>
 <script>
 $(document).ready(function(){
 	admin.init();
 });
-</script> 
+</script>
 
