@@ -599,7 +599,6 @@ class Sms_model extends CI_Model
                       inner join contacts c ON (c.urn=r.urn)
                       inner join contact_telephone ct ON (c.contact_id=ct.contact_id)
                     where telephone_number REGEXP '^(447|[[.+.]]447|00447|0447|07)'
-                          and r.record_status = 1
                           and r.urn IN (".implode(",",$urn_list).")";
 
         $result = $this->db->query($qry)->result_array();
