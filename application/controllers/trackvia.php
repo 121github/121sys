@@ -756,9 +756,7 @@ class Trackvia extends CI_Controller
     {
         $urn = $this->input->post('urn');
         //Get the record data
-        $record = $this->Trackvia_model->get_record($urn);
-		$this->load->model('Records_model');
-		$record['comments'] = $this->Records_model->get_last_comment($urn);
+        $record = $this->get_record($urn);
 		
         $data = array("Customer not contactable" => "Customer not contactable");
 
@@ -781,7 +779,7 @@ class Trackvia extends CI_Controller
     {
         $urn = $this->input->post('urn');
         //Get the record data
-        $record = $this->Trackvia_model->get_record($urn);
+        $record = $this->get_record($urn);
         $data = array("Planned Survey Date" => "", "Survey appt" => "", "Survey Booking Confirmed" => "", "Survey booked by" => "", "Survey Appointment Comments" => "", "Customer Cancellation" => "declined", "Customer Cancellation notes" => !empty($record['outcome_reason']) ? $record['outcome_reason'] : $record['comments'], "Cancelled by" => "121", "Date of Cancellation" => date('Y-m-d') . "T12:00:00-0600");
 
         if ($record['campaign_id'] == "29") {
@@ -809,7 +807,7 @@ class Trackvia extends CI_Controller
     {
         $urn = $this->input->post('urn');
         //Get the record data
-        $record = $this->Trackvia_model->get_record($urn);
+        $record = $this->get_record($urn);
         $data = array("Planned Installation date" => "", "Installation Date Confirmed" => "", "Customer Cancellation" => "declined", "Customer Cancellation notes" => !empty($record['outcome_reason']) ? $record['outcome_reason'] : $record['comments'], "Cancelled by" => "121", "Date of Cancellation" => date('Y-m-d') . "T12:00:00-0600");
         if ($record['campaign_id'] == "29") {
             $data["Owner Consent to proceed"] = "N";
@@ -834,7 +832,7 @@ class Trackvia extends CI_Controller
     {
         $urn = $this->input->post('urn');
         //Get the record data
-        $record = $this->Trackvia_model->get_record($urn);
+        $record = $this->get_record($urn);
         $data = array("Date Owner / Tenant Informed of Rejection" => date('Y-m-d') . "T12:00:00-0600",
             "Owner / Tenant Informed of Rejection" => "Y");
 
@@ -858,7 +856,7 @@ class Trackvia extends CI_Controller
     {
         $urn = $this->input->post('urn');
         //Get the record data
-        $record = $this->Trackvia_model->get_record($urn);
+        $record = $this->get_record($urn);
         $data = array("External Survey Completed" => "Y",
             "Internal Survey Completed" => "Y");
 
@@ -875,6 +873,15 @@ class Trackvia extends CI_Controller
             }
             mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
         }
+    }
+
+    //Get the record data
+    private function get_record($urn) {
+        $record = $this->Trackvia_model->get_record($urn);
+        $this->load->model('Records_model');
+        $record['comments'] = $this->Records_model->get_last_comment($urn);
+
+        return $record;
     }
 
     public function get_urn_from_ghs()

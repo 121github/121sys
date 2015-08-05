@@ -249,8 +249,10 @@ class User_model extends CI_Model
     
     public function close_hours()
     {
-        $qry = "update hours_logged set end_time = now() where end_time is null and user_id = '{$_SESSION['user_id']}'";
-        $this->db->query($qry);
+        if (isset($_SESSION['user_id'])) {
+            $qry = "update hours_logged set end_time = now() where end_time is null and user_id = '{$_SESSION['user_id']}'";
+            $this->db->query($qry);
+        }
     }
     
     public function get_team_managers($user_id)
