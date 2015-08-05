@@ -6,7 +6,7 @@ class Datatables_model extends CI_Model
     function __construct()
     {
         parent::__construct();
-        $this->custom_fields = array("c1","c2","c3","c4","c5","c6","d1","d2","dt1","dt2","n1","n2");
+        $this->custom_fields = array("c1","c2","c3","c4","c5","c6","d1","d2","dt1","dt2","n1","n2", "n3");
     }
 	
 	public function get_visible_columns($table_id){
