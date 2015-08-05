@@ -273,10 +273,38 @@ class Trackvia extends CI_Controller
         //queries we may want to run after the updates can go here
         $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29)");
         $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29)");
-        $this->db->query("update contacts inner join records using(urn)
-inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29) and records.source_id is not null");
+        $this->db->query("update contacts inner join records using(urn)     inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29) and records.source_id is not null");
         $this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 124,outcome_reason_id=16, record_status=3 where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id in(22,28,29)");
         $this->db->query("update records set urgent = null where source_id not in(38,35) and campaign_id in(22,28,29)");
+        //Update appointmentes without history associated
+        echo "<br>Checking if exists appointmentes without history associated...";
+        $this->db->query("
+            INSERT INTO history
+            (campaign_id, urn, contact, description, outcome_id, nextcall, user_id, role_id, team_id, group_id)
+            SELECT
+                r.campaign_id,
+                r.urn,
+                a.date_added AS contact,
+                'Record was updated' AS description,
+                72 AS outcome_id,
+                a.date_added AS nextcall,
+                a.created_by AS user_id,
+                u.role_id,
+                u.team_id,
+                u.group_id
+            FROM appointments a
+            INNER JOIN records r USING (urn)
+            INNER JOIN users u ON (a.created_by = u.user_id)
+            LEFT JOIN (
+                SELECT history_id,urn, contact
+                FROM history
+                WHERE outcome_id = 72) h ON (h.urn = r.urn AND DATE(h.contact) = DATE(a.date_added))
+            WHERE u.name <> 'GHS User' AND h.history_id IS NULL
+        ");
+        $afftectedRows = $this->db->affected_rows();
+        echo $afftectedRows." rows inserted in the history table.<br>";
+
+
     }
 
     /*
