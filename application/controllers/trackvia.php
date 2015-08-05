@@ -729,6 +729,9 @@ inner join data_sources using(source_id) set notes = source_name where campaign_
         $urn = $this->input->post('urn');
         //Get the record data
         $record = $this->Trackvia_model->get_record($urn);
+		$this->load->model('Records_model');
+		$record['comments'] = $this->Records_model->get_last_comment($urn);
+		
         $data = array("Customer not contactable" => "Customer not contactable");
 
         $response = $this->tv->updateRecord($record['client_ref'], $data);
