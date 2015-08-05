@@ -2,6 +2,12 @@
 /*******************************************************************/
 /********************** MAP ****************************************/
 /*******************************************************************/
+platform = navigator.platform,
+            mapLink = 'http://maps.google.com/';
+        if (platform === 'iPad' || platform === 'iPhone' || platform === 'iPod') {
+            mapLink = 'comgooglemaps://';
+        }
+
 var maps = {
     initialize: function (map_type) {
         this.map_type = map_type;
@@ -23,7 +29,7 @@ var maps = {
         this.panelList = $('#draggablePanelList');
         this.colour_by = null;
 
-
+/*
         if (getCookie('lat') && getCookie('lng')) {
             this.lat = getCookie('lat');
             this.lng = getCookie('lng');
@@ -33,6 +39,10 @@ var maps = {
             this.lng = maps.uk_lng;
             var default_zoom = maps.default_zoom;
         }
+		*/
+		 this.lat = maps.uk_lat;
+            this.lng = maps.uk_lng;
+            var default_zoom = maps.default_zoom;
         this.myLatlng = new google.maps.LatLng(maps.lat, maps.lng);
 
         this.mapOptions = {
@@ -73,7 +83,6 @@ var maps = {
 
         $('#optimized').bootstrapToggle({
             onstyle: 'success',
-            size: 'mini'
         });
 
         $('#map-view-toggle').bootstrapToggle({
@@ -223,27 +232,21 @@ var maps = {
                 e.preventDefault();
             });
 
-            //Drag and drop
-            jQuery(function ($) {
-                maps.panelList.sortable({
-                    // Only make the .panel-heading child elements support dragging.
-                    // Omit this to make then entire <li>...</li> draggable.
-                    handle: '.record-planner-heading',
-                    update: function () {
-                        maps.updateRecordPlannerList();
-                    }
-                });
-            });
-
             $(document).on("click", '.goup-btn', function (e) {
                 e.preventDefault();
-                $(this).parents('.record-planner-item').insertBefore($(this).parents('.record-planner-item').prev());
+                $(this).closest('.record-planner-item').insertBefore($(this).closest('.record-planner-item').prev());
+				   $(this).closest('.record-planner-item').find('.route').empty();
+				   $('.route').empty();
+				   planner.fix_order_buttons();
                 maps.updateRecordPlannerList();
             });
 
             $(document).on("click", '.godown-btn', function (e) {
                 e.preventDefault();
                 $(this).parents('.record-planner-item').insertAfter($(this).parents('.record-planner-item').next());
+				 $(this).closest('.record-planner-item').find('.route').empty();
+				  $('.route').empty();
+				   planner.fix_order_buttons();
                 maps.updateRecordPlannerList();
             });
 
@@ -251,7 +254,11 @@ var maps = {
             //Generate route
             $(document).on("click", '.calc-route-btn', function (e) {
                 e.preventDefault();
+				if($('.directions-form').find('input[name="origin"]').val()==""||$('.directions-form').find('input[name="destination"]').val()==""){
+					alert("You must set an origin and destination postcode");
+				} else {
                 maps.calcRoute();
+				}
             });
         }
     },
@@ -265,9 +272,6 @@ var maps = {
                     getCookie('location_error') + ' Please contact support for assistance</div>'
                 $('.container-fluid').prepend(location_error);
             }
-            if (getCookie('current_postcode')) {
-                $('.map-form').find('input[name="postcode"]').val(getCookie('current_postcode'));
-            }
 
             //Start animation in the map for the marker selected in the table
             $(document).on('mouseenter', '.data-table tbody tr', function () {
@@ -277,7 +281,7 @@ var maps = {
 
             $(document).on('mouseenter', 'li .record-planner-heading', function () {
                 maps.animateMarker($(this).attr('data-urn'));
-                $(this).css('font-weight', 'bold');
+                $(this).css('color', 'red');
             });
 
             //End animation in the map for the marker deselected in the table
@@ -288,7 +292,7 @@ var maps = {
 
             $(document).on('mouseleave', 'li .record-planner-heading', function () {
                 maps.removeMarkerAnimation($(this).attr('data-urn'));
-                $(this).css('font-weight', 'normal');
+                $(this).css('color', 'white');
             });
 
             if (device_type == ('default')) {
@@ -325,26 +329,30 @@ var maps = {
         var record_list_route = [];
         var waypts = [];
         //Open map view
-        if (!$('#map-view-toggle').prop('cheched')) {
+       	if (device_type=="default"&&!$('#map-view-toggle').prop('cheched')) {
             $('#map-view-toggle').bootstrapToggle('on')
             maps.showMap($('#map-view-toggle'));
-        }
+        } 
         maps.removeDirections();
-        $('.panel', maps.panelList).each(function (index, elem) {
-            var postcode = $(elem).attr('postcode');
-            var record_planner_id = $(elem).attr('record-planner-id');
+        $('.record-planner-item', maps.panelList).not('.exclude-waypoint').each(function (index, elem) {
+            var postcode = $(elem).attr('data-postcode');
+            var record_planner_id = $(elem).attr('data-planner-id');
             if (index < 8) {
+
                 waypts.push({
                     //location: new google.maps.LatLng(lat, lng),
                     location: postcode + ', UK',
                     stopover: true
                 });
+
                 record_list_route[index] = {
                     record_planner_id: record_planner_id,
                     postcode: postcode
                 };
 
-            }
+            } else {
+				 record_list_route[index] = {};
+			}
         });
         //Get the origin and the destination
         var origin = maps.markerLocation.getPosition();
@@ -409,7 +417,7 @@ var maps = {
         var dest = destination;
         var travelMode = $('.map-form').find('input[name="travel-mode"]').val();
 
-        $('.change-directions-btn').fadeTo("fast", 0.4);
+        $('.change-directions-btn,.planner-travel-mode').fadeTo("fast", 0.4);
         $('.' + travelMode).fadeTo("fast", 1);
 
         var request = {
@@ -434,13 +442,13 @@ var maps = {
                     if (maps.map_type == 'planner') {
                         var data_route = {
                             'order_num': index,
-                            'record_planner': record_list_ord[waypoint_order[index]],
+                            'record_planner': record_list_ord[index],
                             'start_add': route.start_address,
-                            'start_lat': route.start_location.A,
-                            'start_lng': route.start_location.F,
+                            'start_lat': route.start_location.G,
+                            'start_lng': route.start_location.K,
                             'end_add': route.end_address,
-                            'end_lat': route.end_location.A,
-                            'end_lng': route.end_location.F,
+                            'end_lat': route.end_location.G,
+                            'end_lng': route.end_location.K,
                             'distance': route.distance.value,
                             'duration': route.duration.value,
                             'travel_mode': travelMode
@@ -457,9 +465,7 @@ var maps = {
                 maps.directionsDisplay.setDirections(result);
                 if (maps.map_type == 'planner') {
                     maps.saveRecordRoute(record_list_route);
-                    setTimeout(function () {
-                        map_table_reload();
-                    }, 2000);
+                    map.setZoom(maps.default_zoom);	
                 }
             }
         });
@@ -889,13 +895,13 @@ var maps = {
 
         google.maps.event.addListener(marker, 'mouseover', function () {
             $('.data-table tbody').find("[postcode='" + marker.postcode + "']").css('color', 'green');
-            $('li').find("[data-urn='" + marker.id + "']").css('font-weight', 'bold');
+            $('li').find(".planner-title[data-urn='" + marker.id + "']").css('color', '#FF3333');
         });
 
         //Hide in the table the appointment deselected in the map
         google.maps.event.addListener(marker, 'mouseout', function () {
             $('.data-table tbody').find("[postcode='" + marker.postcode + "']").css('color', 'black');
-            $('li').find("[data-urn='" + marker.id + "']").css('font-weight', 'normal');
+            $('li').find(".planner-title[data-urn='" + marker.id + "']").css('color', '#fff');
         });
 
         maps.markers.push(marker);
@@ -968,7 +974,7 @@ var maps = {
             if (response.success) {
                 flashalert.success(response.msg);
                 if (maps.map_type == 'planner') {
-                    map_table_reload();
+                    planner_reload();
                 }
                 else {
                     if (typeof view_records !== 'undefined') {
@@ -994,15 +1000,19 @@ var maps = {
             dataType: "JSON",
             data: {
                 record_list: $.parseJSON(JSON.stringify(record_list_route)),
-                date: $('.filter-form').find('input[name="date"]').val()
+                date: $('.filter-form').find('input[name="date"]').val(),
+				origin: $('.directions-form').find('input[name="origin"]').val(),
+				destination: $('.directions-form').find('input[name="destination"]').val()
             }
         }).done(function (response) {
             if (response.success) {
-
+				planner_reload();
             } else {
-
+				flashalert.danger(response.error);
             }
-        });
+        }).error(function(){
+			flashalert.danger("There was a problem planning the route");
+		});
     }
 
 }

@@ -1,5 +1,4 @@
 var device_type;
-
 $(window).ready(function() {
     setDevice($(window).width());
 });

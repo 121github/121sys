@@ -52,12 +52,13 @@ class Planner extends CI_Controller
     public function planner_data()
     {
         if ($this->input->is_ajax_request()) {
-
+ $this->load->model('Records_model');
             $records = $this->Planner_model->planner_data(false, $this->input->post());
 
             foreach ($records as $k => $v) {
-                //Website
-                $records[$k]["website"] = ($records[$k]['company_website']?$records[$k]['company_website']:($records[$k]['contact_website']?$records[$k]['contact_website']:''));
+                if(!empty($v['urn'])){
+                $records[$k]["comments"] = $this->Records_model->get_last_comment($v['urn']);
+				}
             }
 
             $data = array(
@@ -114,10 +115,21 @@ class Planner extends CI_Controller
 
             $record_list = $this->input->post('record_list');
             $date = $this->input->post('date');
+			$origin = postcodeFormat($this->input->post('origin'));
+			$destination = postcodeFormat($this->input->post('destination'));			
+			if(postcodeCheckFormat($origin)&&!$this->Planner_model->get_location_id($origin)){
+			echo json_encode(array("success"=>false,"error"=>"The origin postcode is not valid"));
+			exit;
+			}
+			if(postcodeCheckFormat($destination)&&!$this->Planner_model->get_location_id($destination)){
+			echo json_encode(array("success"=>false,"error"=>"The destination postcode is not valid"));
+			exit;
+			}
+			
             $user_id = $_SESSION['user_id'];
-
-            $this->Planner_model->save_record_order($record_list, $user_id, $date);
-            $this->Planner_model->save_record_route($record_list, $user_id, $date);
+			//$this->firephp->log($record_list);
+            $this->Planner_model->save_record_route($record_list, $user_id, $date, $origin,$destination);
+			$this->Planner_model->save_record_order($record_list, $user_id, $date, $origin,$destination);
 
             echo json_encode(array(
                 "success"=>true,

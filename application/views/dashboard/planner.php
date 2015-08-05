@@ -22,7 +22,7 @@
                     <div class="panel-body">
                         <form class="directions-form">
                             <div class="row">
-                                <div class="col-lg-6 col-sm-12" style="margin-bottom: 10px;">
+                                <div class="col-lg-4 col-sm-12" style="margin-bottom: 10px;">
                                     <div class="input-group">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default get-origin-location-btn" type="button">
@@ -34,7 +34,7 @@
                                                    title="Enter the origin"/>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 col-sm-12" style="margin-bottom: 10px;">
+                                <div class="col-lg-4 col-sm-12" style="margin-bottom: 10px;">
                                     <div class="input-group">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default get-destination-location-btn" type="button">
@@ -46,26 +46,22 @@
                                                    title="Enter the destination"/>
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div>
+                                <div class="col-lg-4">
                                         <input type="checkbox" id="optimized" name="optimized"
                                                data-on="<i class='glyphicon glyphicon-ok'></i> Fastest Route"
-                                               data-off="<i class='glyphicon glyphicon-remove'></i> Fastest Route?" data-toggle="toggle">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6" style="text-align: right">
-                                    <button class="btn btn-success btn-sm calc-route-btn">Get Route!</button>
+                                               data-off="<i class='glyphicon glyphicon-remove'></i> Fastest Route" data-toggle="toggle">
+                                    <button style="margin:3px 0px 3px" class="btn btn-success btn calc-route-btn">Get Route!</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="panel panel-default planner-data">
-                    <div class="panel-body blocktext" style="max-height: 650px;">
+                    <div class="panel-body">
                         <!-- Bootstrap 3 panel list. -->
-                        <ul id="draggablePanelList" class="list-unstyled" style="height: 650px; overflow: auto;">
+                        <div id="draggablePanelList">
                                 <img src=' <?php echo base_url(); ?>assets/img/ajax-loader-bar.gif'>
-                        </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,36 +80,34 @@
                     </div>
                     <div class="directions-btn">
                         <form class="form-horizontal map-form">
-                            <div class="row">
+                             <div class="row">
                                 <div class="col-lg-12 col-sm-12">
-                                    <div class="input-group">
-                                        <input hidden name="travel-mode">
-                                        <input hidden name="destination">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default get-current-location-btn" type="button">
-                                                <span style="font-size: 15px" class="glyphicon glyphicon-map-marker"></span>
-                                            </button>
-                                        </span>
-                                        <input type="text" class="form-control" name="postcode"
+                                    <span style="position:absolute;top:0px;right:-20px; padding:5px; font-size:14px"
+                                          class='glyphicon glyphicon-exclamation-sign red pointer' data-toggle='tooltip'
+                                          data-placement='left'
+                                          title='Records without a postcode are not shown on the map'></span>
+<div class="input-group">
+             <input hidden name="travel-mode">
+                                        <input hidden name="destination">       <span class="pointer btn-default input-group-addon" id="show-uk"><span class="fa fa-globe"></span></span>
+  <span class="pointer btn-default input-group-addon get-current-location-btn"><span class="glyphicon glyphicon-map-marker"></span></span>
+  <input type="text" class="form-control input-sm" name="postcode"
                                                placeholder="Postcode..."
-                                               title="Enter the location"/>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default get-location-btn" type="button">Go!</button>
-                                        </span>
-                                    </div>
+                                               title="Enter the location" />
+  <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
+</div>
                                 </div>
                             </div>
                             <div class="form-group input-group-sm directions-menu" style="display: none">
                                 <div class="row" style="margin-top: 5px; text-align: right">
                                     <div class="col-lg-12 col-md-12" style="font-size: 11px;">
                                         <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                              class="change-directions-btn DRIVING pointer" item-mode="DRIVING"><img
+                                              class="planner-travel-mode DRIVING pointer" item-mode="DRIVING"><img
                                                 width="25px;" src="assets/img/icons/car.png"/></span>
                                         <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                              class="change-directions-btn BICYCLING pointer" item-mode="BICYCLING"><img
+                                              class="planner-travel-mode BICYCLING pointer" item-mode="BICYCLING"><img
                                                 width="25px;" src="assets/img/icons/cycle.png"/></span>
                                         <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                              class="change-directions-btn WALKING pointer" item-mode="WALKING"><img
+                                              class="planner-travel-mode WALKING pointer" item-mode="WALKING"><img
                                                 width="25px;" src="assets/img/icons/walking.png"/></span>
                                         <span class="close-directions-btn btn-lg glyphicon glyphicon-remove pointer"></span>
                                     </div>

@@ -45,7 +45,7 @@ var modals = {
         });
         $(document).on('click', '.remove-from-planner', function (e) {
             e.preventDefault();
-            modals.remove_from_planner($(this).attr('data-urn'));
+            modals.confirm_remove_from_planner($(this).attr('data-urn'));
         });
         $(document).on('click', '#save-appointment', function (e) {
             e.preventDefault();
@@ -330,12 +330,6 @@ var modals = {
         });
     },
     view_appointment_html: function (data) {
-        platform = navigator.platform,
-            mapLink = 'http://maps.google.com/';
-        if (platform === 'iPad' || platform === 'iPhone' || platform === 'iPod') {
-            mapLink = 'comgooglemaps://';
-        }
-
         if (data.attendee_names.length > 0) {
             var attendees = "";
             $.each(data.attendee_names, function (i, val) {
@@ -347,8 +341,8 @@ var modals = {
         }
         var mheader = "Appointment #" + data.appointment_id + " <small>" + data.campaign_name + "</small>";
         var mbody = "<table class='table small'><tbody><tr><th>Company</th><td>" + data.coname + "</td></tr><tr><th>Date</th><td>" + data.starttext + "</td></tr><tr><th>Title</th><td>" + data.title + "</td></tr><tr><th>Notes</th><td>" + data.text + "</td></tr><tr><th>Attendees</th><td>" + attendees + "</td></tr><tr><th>Type</th><td>" + data.appointment_type + "</td></tr><tr><th>Location</th><td>" + data.address + "</td></tr>";
-        if (data.distance && helper.current_postcode) {
-            mbody += "<tr><th>Distance</th><td>" + Number(data.distance).toFixed(2) + " Miles from " + helper.current_postcode + "</td></tr>";
+        if (data.distance && getCookie('current_postcode')) {
+            mbody += "<tr><th>Distance</th><td>" + Number(data.distance).toFixed(2) + " Miles from " + getCookie('current_postcode') + "</td></tr>";
         }
         mbody += "</tbody></table>";
         mbody += "This appointment was set by <b>" + data.created_by + "</b> on <b>" + data.date_added + "</b>";
@@ -360,7 +354,7 @@ var modals = {
             mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?q=' + data.postcode + '",+UK">View Map</a>';
         }
         if (data.distance && getCookie('current_postcode')) {
-            mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?zoom=2&saddr=' + helper.current_postcode + '&daddr=' + data.postcode + '">Navigate</a>';
+            mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?zoom=2&saddr=' + getCookie('current_postcode') + '&daddr=' + data.postcode + '">Navigate</a>';
         }
         if (data.cancellation_reason) {
             mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <p class="text-danger">This appointment was cancelled.<br><small>' + data.cancellation_reason + '</small></p>';
@@ -618,11 +612,21 @@ var modals = {
             }
         });
     },
-    remove_from_planner: function (urn) {
+	  confirm_remove_from_planner: function (urn,user_id) {
+            var mheader = "Remove from planner";
+            var mbody = "Are you sure you want remove this item from the planner?";
+            modals.load_modal(mheader, mbody);
+			modals.default_buttons();
+            $('.confirm-delete').click(function () {
+                modals.remove_from_planner(urn,user_id);
+            });
+        },
+    remove_from_planner: function (urn,user_id) {
         $.ajax({
             url: helper.baseUrl + 'planner/remove_record',
             data: {
-                urn: urn
+                urn: urn,
+				user_id:user_id
             },
             type: "POST",
             dataType: "JSON"
@@ -771,6 +775,12 @@ var modals = {
             merge_btn = ' <button class="btn btn-info pull-right" data-modal="merge-record" data-urn="' + data.urn + '" data-merge-target="' + record.urn + '">Merge</button>';
         }
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>' + merge_btn;
+		if (data.planner_postcode&&getCookie('current_postcode')) {
+            mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?q=' + data.planner_postcode + '",+UK">View Map</a>';
+        }
+        if (data.planner_postcode&&getCookie('current_postcode')) {
+            mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?zoom=2&saddr=' + getCookie('current_postcode') + '&daddr=' + data.planner_postcode + '">Navigate</a>';
+        }
         modals.load_modal(mheader, mbody, mfooter);
         modal_body.css('padding:0px');
     },
