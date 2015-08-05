@@ -938,7 +938,7 @@ $d = preg_replace('/[0-9]/','',$data['description']);
 						 }
 					}
 					if($row['is_client_ref']==1){
-						$this->Records_model->insert_client_ref($urn,$k);
+						$this->Records_model->insert_client_ref($urn,$v);
 					}
 					
 				}

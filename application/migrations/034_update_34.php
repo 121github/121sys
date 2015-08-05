@@ -11,7 +11,7 @@ class Migration_update_34 extends CI_Migration
     public function up()
     {
         $this->firephp->log("starting migration 34");
-		$this->db->query("INSERT INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'take ownership', 'System')");
+		$this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'take ownership', 'System')");
 	}
 	
 }
