@@ -28,7 +28,8 @@ class Datatables_model extends CI_Model
 		
 		foreach($visible_columns['headings'] as $k => $heading){
 			if(in_array($heading,$this->custom_fields)){
-				$this->db->where(array("campaign_id"=>$_SESSION['current_campaign'],"field"=>$heading));
+				$current_campaign = (isset($_SESSION['current_campaign'])?$_SESSION['current_campaign']:'');
+				$this->db->where(array("campaign_id"=>$current_campaign,"field"=>$heading));
 		$field = $this->db->get('record_details_fields')->row_array();
 		if(count($field)){
 		$visible_columns['headings'][$k] = $field['field_name'];
