@@ -78,7 +78,7 @@ $(document).on('click','.planner-travel-mode',function(e){
 					} else if(device_type=="tablet"||device_type=="tablet2"||device_type=="mobile2"){
 						button_size = "";
 					}
-            var body = '';
+            var start_point='',end_point='',waypoints = '';
             if (response.data.length > 0) {
 				var pbody = "";
                 $.each(response.data, function (k, val) {
@@ -89,11 +89,8 @@ $(document).on('click','.planner-travel-mode',function(e){
 					}
 					
                     maps.items.push(val);
-                    var color = 'default';
-                    var route = '';
-                    var travelIcon = "";
+                    var color = 'default',route = '',travelIcon = '';
                     if (val.duration) {
-
                         if (val.travel_mode == "DRIVING") {
                             travelIcon = "car";
                         }
@@ -184,13 +181,16 @@ $(document).on('click','.planner-travel-mode',function(e){
     '</div></div>'	
 					}
 					if(val.planner_type==1){
-						 pbody += planner_item + planner_details + '<ul id="draggable-items" class="list-unstyled ui-sortable">';
+						 start_point += planner_item + planner_details + '<ul id="draggable-items" class="list-unstyled ui-sortable">';
 					} else if(val.planner_type==3){
-						  pbody += '</ul>' + planner_item + planner_details;
+						  end_point += '</ul>' + planner_item + planner_details;
 					} else {
-						pbody += planner_item + planner_details;
+						waypoints += planner_item + planner_details;
 					}			
                 });
+				
+				pbody = start_point +'<ul>'+waypoints+'</ul>'+end_point;
+				
             }
             else {
                 var pbody = '<div>No waypoints have been added on this day!</div>' +
