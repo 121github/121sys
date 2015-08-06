@@ -1,3 +1,9 @@
+platform = navigator.platform,
+            mapLink = 'http://maps.google.com/';
+        if (platform === 'iPad' || platform === 'iPhone' || platform === 'iPod') {
+            mapLink = 'comgooglemaps://';
+        }
+
 var device_type;
 $(window).ready(function() {
     setDevice($(window).width());

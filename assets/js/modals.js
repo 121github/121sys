@@ -43,9 +43,13 @@ var modals = {
             e.preventDefault();
             modals.save_planner($(this).attr('data-urn'));
         });
-        $(document).on('click', '.remove-from-planner', function (e) {
+        $(document).on('click', '.remove-from-planner-confirm', function (e) {
             e.preventDefault();
             modals.confirm_remove_from_planner($(this).attr('data-urn'));
+        });
+		$(document).on('click', '.remove-from-planner', function (e) {
+            e.preventDefault();
+            modals.remove_from_planner($(this).attr('data-urn'));
         });
         $(document).on('click', '#save-appointment', function (e) {
             e.preventDefault();
@@ -612,11 +616,11 @@ var modals = {
             var mbody = "Are you sure you want remove this item from the planner?";
             modals.load_modal(mheader, mbody);
 			modals.default_buttons();
-            $('.confirm-delete').click(function () {
-                modals.remove_from_planner(urn,user_id);
+            $('.confirm-modal').click(function () {
+                modals.remove_from_planner(urn,user_id,true);
             });
         },
-    remove_from_planner: function (urn,user_id) {
+    remove_from_planner: function (urn,user_id,planner_page) {
         $.ajax({
             url: helper.baseUrl + 'planner/remove_record',
             data: {
@@ -628,8 +632,13 @@ var modals = {
         }).done(function (response) {
             if (response.success) {
                 flashalert.success(response.msg);
+				if(planner_page){
+				$('#modal').modal('toggle');
+				planner.populate_table();
+				} else {
                 $('#modal').find('#planner_status').text('This record is not in your journey planner. You can add it below').removeClass('text-success');
                 $('#modal').find('.remove-from-planner').hide();
+				}
             }
         });
     },

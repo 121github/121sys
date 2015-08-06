@@ -2,11 +2,7 @@
 /*******************************************************************/
 /********************** MAP ****************************************/
 /*******************************************************************/
-platform = navigator.platform,
-            mapLink = 'http://maps.google.com/';
-        if (platform === 'iPad' || platform === 'iPhone' || platform === 'iPod') {
-            mapLink = 'comgooglemaps://';
-        }
+
 
 var maps = {
     initialize: function (map_type) {
@@ -234,7 +230,7 @@ var maps = {
 
             $(document).on("click", '.goup-btn', function (e) {
                 e.preventDefault();
-                $(this).closest('.record-planner-item').insertBefore($(this).closest('.record-planner-item').prev());
+                $(this).closest('li').insertBefore($(this).closest('li').prev());
 				   $(this).closest('.record-planner-item').find('.route').empty();
 				   $('.route').empty();
 				   planner.fix_order_buttons();
@@ -243,7 +239,7 @@ var maps = {
 
             $(document).on("click", '.godown-btn', function (e) {
                 e.preventDefault();
-                $(this).parents('.record-planner-item').insertAfter($(this).parents('.record-planner-item').next());
+                $(this).parents('li').insertAfter($(this).parents('li').next());
 				 $(this).closest('.record-planner-item').find('.route').empty();
 				  $('.route').empty();
 				   planner.fix_order_buttons();
@@ -338,7 +334,6 @@ var maps = {
             var postcode = $(elem).attr('data-postcode');
             var record_planner_id = $(elem).attr('data-planner-id');
             if (index < 8) {
-
                 waypts.push({
                     //location: new google.maps.LatLng(lat, lng),
                     location: postcode + ', UK',
@@ -371,13 +366,15 @@ var maps = {
 
     updateRecordPlannerList: function () {
         panelList = $('#draggablePanelList');
-        $('.panel', panelList).each(function (index, elem) {
+        $('li', panelList).each(function (index, elem) {
+			$(elem).find('btn').each(function(i,e){
             if (index < 8) {
-                $(elem).removeClass("panel-default").addClass("panel-success");
+                $(e).removeClass("btn-default").addClass("btn-success");
             }
             else {
-                $(elem).removeClass("panel-success").addClass("panel-default");
+                $(e).removeClass("btn-success").addClass("btn-default");
             }
+			});
         });
         $('.route-header').hide();
         maps.removeDirections();
@@ -1002,7 +999,8 @@ var maps = {
                 record_list: $.parseJSON(JSON.stringify(record_list_route)),
                 date: $('.filter-form').find('input[name="date"]').val(),
 				origin: $('.directions-form').find('input[name="origin"]').val(),
-				destination: $('.directions-form').find('input[name="destination"]').val()
+				destination: $('.directions-form').find('input[name="destination"]').val(),
+				user_id: false //we can add a user here to edit some elses planner
             }
         }).done(function (response) {
             if (response.success) {

@@ -41,13 +41,14 @@ $(document).on('click','.planner-travel-mode',function(e){
         planner.populate_table();
     },
 	fix_order_buttons: function(){
-		$planner_items = $('.record-planner-item');
+		$planner_items = $('ul .record-planner-item');
+		$planner_items.find('.godown-btn,.goup-btn').prop('disabled',false);
 		$planner_items.each(function(i,e){
-			if(i==1){
+			if(i==0){
 				$(this).find('.godown-btn').prop('disabled',false);
 				$(this).find('.goup-btn').prop('disabled',true);
 			}
-			if(i==$planner_items.length-2){
+			if(i==$planner_items.length-1){
 				$(this).find('.godown-btn').prop('disabled',true);
 				$(this).find('.goup-btn').prop('disabled',false);
 			}
@@ -79,6 +80,7 @@ $(document).on('click','.planner-travel-mode',function(e){
 					}
             var body = '';
             if (response.data.length > 0) {
+				var pbody = "";
                 $.each(response.data, function (k, val) {
 					if(val.planner_type=="1"){
 						$('.directions-form').find('input[name="origin"]').val(val.postcode);
@@ -147,7 +149,7 @@ $(document).on('click','.planner-travel-mode',function(e){
 				(val.record_planner_id ?	'<p><b>Planner: </b>' + val.user + ' on ' + val.start + '</p>' : '') +	             	(val.comments ?	'<p><b>Last Comments: </b>' + val.comments + '</p>' : '') +	                  
                                                 '</div>' +
 												  '</div>' +
-                                            '</div>';
+                                            '</div></li>';
 											
 					if(val.planner_type==3||val.planner_type==1){
 					button_style = "btn-info";	
@@ -160,8 +162,8 @@ $(document).on('click','.planner-travel-mode',function(e){
   '</button>'+
     '</div></div>'
 					} else {
-					planner_item = '<li><div class="row record-planner-item" style="margin:10px 0" data-postcode="'+val.postcode+'" data-planner-id="'+val.record_planner_id+'" >' +
-'<div style="text-align:center"><span style="font-size:30px; padding-bottom:5px; cursor:grab" class="fa fa-arrow-down drag"></span>'+ route+'</div>'+
+					planner_item = '<li class="list-unstyled" ><div class="row record-planner-item" style="margin:10px 0" data-postcode="'+val.postcode+'" data-planner-id="'+val.record_planner_id+'" >' +
+  (k>0?'<div style="text-align:center"><span style="font-size:30px; padding-bottom:5px; cursor:grab" class="fa fa-arrow-down drag"></span>'+ route+'</div>':'')+
    '<div class="col-lg-12 col-sm-12" style="padding:0px;margin:0px">' +
 '<div class="btn-group" style="width:100%;display:table;">'+
   '<button type="button" style="display:table-cell;width:10%;" class="btn '+button_size+' btn-success expand-planner"><span class="fa fa-plus"></span></button>'+
@@ -176,13 +178,13 @@ $(document).on('click','.planner-travel-mode',function(e){
     '<span class="fa fa-arrow-up"></span>'+
   '</button>'+
       '<button type="button" '+
-	' style="display:table-cell;width:10%" class="btn btn-danger '+button_size+' remove-from-planner" data-urn="'+val.urn+'" >'+
+	' style="display:table-cell;width:10%" class="btn btn-danger '+button_size+' remove-from-planner-confirm" data-urn="'+val.urn+'" >'+
     '<span class="fa fa-remove"></span>'+
   '</button>'+
     '</div></div>'	
 					}
 					if(val.planner_type==1){
-						 pbody = planner_item + planner_details + '<ul id="draggable-items" class="list-unstyled ui-sortable">';
+						 pbody += planner_item + planner_details + '<ul id="draggable-items" class="list-unstyled ui-sortable">';
 					} else if(val.planner_type==3){
 						  pbody += '</ul>' + planner_item + planner_details;
 					} else {

@@ -16,6 +16,11 @@ class Planner extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Planner_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
+		if(intval($this->input->post('user_id'))>0){
+			$this->user_id = intval($this->input->post('user_id'));
+			} else {
+			$this->user_id = $_SESSION['user_id'];
+			}
     }
 
     public function index()
@@ -78,12 +83,11 @@ class Planner extends CI_Controller
 			 echo json_encode(array("success"=>false,"msg"=>"You can only plan for the future!"));	
 			 exit; 
 			 }
-			 $user_id = $_SESSION['user_id'];
-			 if($this->Planner_model->check_planner($urn,$user_id)){
+			 if($this->Planner_model->check_planner($urn,$this->user_id)){
 				 echo json_encode(array("success"=>false,"msg"=>"Record is already in planner"));	
 				 exit;  
 			 }
-			 $this->Planner_model->add_record($urn,$date,$postcode);
+			 $this->Planner_model->add_record($urn,$date,$postcode,$this->user_id);
 			 echo json_encode(array("success"=>true,"msg"=>"Planner was updated"));
 			  exit; 
 			 } else {
@@ -99,7 +103,7 @@ class Planner extends CI_Controller
     public function remove_record(){
 		 if ($this->input->is_ajax_request()&&$this->_access) {
 			 $urn = $this->input->post('urn');
-			 $this->Planner_model->remove_record($urn); 
+			 $this->Planner_model->remove_record($urn,$this->user_id); 
 			 echo json_encode(array("success"=>true,"msg"=>"Planner was updated"));
 		 } else {
 			echo "denied"; 
@@ -125,11 +129,8 @@ class Planner extends CI_Controller
 			echo json_encode(array("success"=>false,"error"=>"The destination postcode is not valid"));
 			exit;
 			}
-			
-            $user_id = $_SESSION['user_id'];
-			//$this->firephp->log($record_list);
-            $this->Planner_model->save_record_route($record_list, $user_id, $date, $origin,$destination);
-			$this->Planner_model->save_record_order($record_list, $user_id, $date, $origin,$destination);
+            $this->Planner_model->save_record_route($record_list, $this->user_id, $date, $origin,$destination);
+			$this->Planner_model->save_record_order($record_list, $this->user_id, $date, $origin,$destination);
 
             echo json_encode(array(
                 "success"=>true,

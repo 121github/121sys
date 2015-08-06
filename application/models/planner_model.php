@@ -90,13 +90,14 @@ class Planner_model extends CI_Model
         return $where;
     }
 
-    public function add_record($urn=NULL, $date, $postcode, $type=2, $order=20)
+    public function add_record($urn=NULL, $date, $postcode, $user_id=false, $type=2, $order=20)
     {
-		//get the location_id
-		$qry = "select postcode_id from uk_postcodes where postcode = '$postcode'";
-		$location_id = $this->db->query($qry)->row()->postcode_id;
+		if(!$user_id){
+		$user_id = 	$_SESSION['user_id'];
+		}
+		$location_id = $this->get_location_id($postcode);
 		//add the location to the planner table
-		$data = array("urn"=>$urn,"user_id"=>$_SESSION['user_id'],"start_date"=>$date,"postcode"=>$postcode,"location_id"=>$location_id,"planner_status"=>1,"planner_type"=>$type,"order_num"=>$order);
+		$data = array("urn"=>$urn,"user_id"=>$user_id,"start_date"=>$date,"postcode"=>$postcode,"location_id"=>$location_id,"planner_status"=>1,"planner_type"=>$type,"order_num"=>$order);
 		$this->db->insert("record_planner",$data);
 		return $this->db->insert_id();
     }
@@ -108,17 +109,22 @@ class Planner_model extends CI_Model
 	}	
 	}
 	
-    public function remove_record($urn)
-    {
-        $this->db->where(array("urn" => $urn, "user_id" => $_SESSION['user_id'], "planner_status"=>1));
-        $this->db->delete("record_planner");
+    public function remove_record($urn,$user_id)
+    {	
+	$data = array("urn" => $urn, "user_id" => $user_id, "planner_status"=>1);
+	$date = $this->db->get_where("record_planner",$data)->row()->start_date;
+	
+	$delete = "delete from record_planner_route where record_planner_id in(select record_planner_id from record_planner where start_date = '$date' and user_id = '$user_id')";
+	$this->db->query($delete);
+	$this->firephp->log($this->db->last_query());
+    $this->db->delete("record_planner",$data);
     }
 
     public function save_record_order($record_list, $user_id, $date)
     {
-        //Reset the order as null for this user and on this date
+        //Reset the order of all waypoints as null for this user and on this date
         $data = array(
-            'order_num' => null
+            'order_num' => NULL
         );
         $this->db->where('user_id', $user_id);
         $this->db->where('date(start_date)', $date);
@@ -136,7 +142,7 @@ class Planner_model extends CI_Model
                 ));
             }
         }
-		
+		//set the origin and destination items to the front and back of the route
 		$qry = "update record_planner set order_num = 0 where date(start_date) = '$date' and user_id = '$user_id' and planner_type=1";
 		$this->db->query($qry);
 		$qry = "update record_planner set order_num = 100 where date(start_date) = '$date' and user_id = '$user_id' and planner_type=3";
@@ -154,7 +160,8 @@ function get_location_id($postcode){
         $check_location = $this->db->get("uk_postcodes");
         if ($check_location->num_rows()) {
 			$loc = $check_location->row();
-			$this->db->replace("locations", array("location_id" => $loc->postcode_id, 
+			$location_id = $loc->postcode_id;
+			$this->db->replace("locations", array("location_id" => $location_id, 
 			"lat" => $loc->lat, 
 			"lng" => $loc->lng));
         } else {
@@ -179,14 +186,15 @@ function get_location_id($postcode){
 		//clear the old origin / destination from the planner
 		$delete = "delete from record_planner where date(start_date) = '$date' and user_id = $user_id and planner_type in(1,3)";
 		$this->db->query($delete);
+		$this->firephp->log($this->db->last_query());
 		//insert the origin with type 1 (origin)
-		$first = $this->add_record(NULL, $date, $origin, $type=1, $order=0);
+		$first = $this->add_record(NULL, $date, $origin, $user_id, $type=1, $order=0);
         foreach ($record_list as $order_num => $record) {
             if (isset($record['record_planner']['record_planner_id'])) {
 			$planner_id = $record['record_planner']['record_planner_id'];
 			} else {
 			//if its the destination address then add it in the planner
-			$planner_id = $this->add_record(NULL, $date, $dest, $type=3, $order=100);
+			$planner_id = $this->add_record(NULL, $date, $dest,$user_id, $type=3, $order=100);
 			}
                 array_push($data, array(
                     'record_planner_id' => $planner_id,
