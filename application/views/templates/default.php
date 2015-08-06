@@ -217,6 +217,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     $(document).on('change', '#campaign-select', function () {
         $.ajax({
             url: helper.baseUrl + 'user/current_campaign/' + $(this).val(),
+            dataType: "JSON",
             beforeSend: function () {
                 $('[data-id="campaign-select"]').append('<span style="position:absolute; right:5px;" ><img src="' + helper.baseUrl + 'assets/img/small-loading.gif" /></span>');
                 $('[data-id="campaign-select"]').find('.caret').hide();

@@ -136,15 +136,10 @@ var modals = {
 
         $(document).on('click', '.remove-filter-option', function() {
             var field = $(this).attr('data-field');
-                $.ajax({
-                    url: helper.baseUrl + 'modals/remove_filter_option',
-                    data: {field: field},
-                    type: "POST",
-                    dataType: "JSON"
-                }).done(function(response) {
-                    $('.modal-header').append("Applying filters... <img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
-                    location.reload(true);
-                });
+            modals.remove_filter(field);
+        });
+        $(document).on('click', '.clear-filters-btn', function() {
+            modals.clear_filters();
         });
     },	
 	column_picker:function(table_id){
@@ -800,12 +795,16 @@ var modals = {
 
         var filter_options = "";
         filter_options += "<div style='float:right; padding:8px 0;'>"+$('.dataTables_info').text()+"</div>";
+        var clear_filters_opt = true;
         if (data) {
             $.each(data, function (i, val) {
                 var remove_btn = "";
                 filter_options += "<div style='width:200px; padding:8px 0; border-bottom: 1px dashed #ccc'>";
                 if(val.removable){
                     remove_btn = " <span data-field='" + val.name + "' class='remove-filter-option glyphicon glyphicon-remove pointer red small'></span>";
+                }
+                else {
+                    clear_filters_opt = false;
                 }
                 filter_options += "<strong>" + i + remove_btn+"</strong>";
 
@@ -828,10 +827,33 @@ var modals = {
         var mheader = "Your search options ";
         var mbody = filter_options;
 
+        var clear_filters_btn = (clear_filters_opt)?'<a class="btn btn-primary clear-filters-btn pull-right">Clear Filters</a> ':'';
+
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
-                    '<a class="btn btn-primary pull-right">Clear Filters</a> ';
+                        clear_filters_btn;
 
         modals.load_modal(mheader, mbody, mfooter)
+    },
+    remove_filter: function(field) {
+        $.ajax({
+            url: helper.baseUrl + 'modals/remove_filter_option',
+            data: {field: field},
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            $('.modal-header').append("Applying filters... <img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+            location.reload(true);
+        });
+    },
+    clear_filters: function() {
+        $.ajax({
+            url: helper.baseUrl + 'modals/clear_filter_option',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            $('.modal-header').append("Applying filters... <img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+            location.reload(true);
+        });
     },
 
 

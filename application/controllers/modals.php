@@ -301,4 +301,20 @@ class Modals extends CI_Controller
             echo json_encode(array("success" => true));
         }
     }
+
+    public function clear_filter_option()
+    {
+        if ($this->input->is_ajax_request()) {
+
+            $filter = $_SESSION['filter']['values'];
+            foreach ($filter as $field => $val_filter) {
+                unset($_SESSION['filter']['values'][$field]);
+            }
+            $filter = $_SESSION['filter']['values'];
+
+            $this->Filter_model->apply_filter($filter);
+
+            echo json_encode(array("success" => true));
+        }
+    }
 }

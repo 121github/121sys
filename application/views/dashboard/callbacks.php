@@ -12,7 +12,7 @@
           <div class="panel-heading"> <i class="fa fa-phone fa-fw"></i> Callbacks 
             <div class="pull-right">
                <form class="callbacks-filter" data-func="callbacks_panel">
-            	<div class="btn-group">s
+            	<div class="btn-group">
             	  <input type="hidden" name="date_from" value="<?php echo (!empty($date_from)?$date_from:date('Y-m-d')); ?>">
                   <input type="hidden" name="date_to" value="<?php echo (!empty($date_to)?$date_to:date('Y-m-d')); ?>">
                   <input type="hidden" name="campaign">
