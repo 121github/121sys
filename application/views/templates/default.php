@@ -84,8 +84,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <?php if (isset($campaign_access) && count($campaign_access) > 0) { ?>
                 <li style="padding:0 20px;">
                     <select id="campaign-select" data-width="100%">
-                        <option
-                            value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
+                        <?php if(in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
+                            <option value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
+                        <?php } ?>
                         <?php foreach ($campaign_access as $client => $camp_array) { ?>
                             <optgroup label="<?php echo $client ?>">
                                 <?php foreach ($camp_array as $camp) { ?>
@@ -217,6 +218,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     $(document).on('change', '#campaign-select', function () {
         $.ajax({
             url: helper.baseUrl + 'user/current_campaign/' + $(this).val(),
+            dataType: "JSON",
             beforeSend: function () {
                 $('[data-id="campaign-select"]').append('<span style="position:absolute; right:5px;" ><img src="' + helper.baseUrl + 'assets/img/small-loading.gif" /></span>');
                 $('[data-id="campaign-select"]').find('.caret').hide();

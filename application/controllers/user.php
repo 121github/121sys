@@ -5,38 +5,39 @@ if (!defined('BASEPATH'))
 
 class User extends CI_Controller
 {
-    
+
     public function __construct()
     {
         parent::__construct();
         $this->load->model('User_model');
         $this->load->model('Form_model');
+        $this->load->model('Filter_model');
     }
-    
+
     public function login()
     {
-        
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
+
             $this->load->library('form_validation');
             $this->form_validation->set_error_delimiters('<div class=\'error\'>', '</div>');
             $this->form_validation->set_rules('username', 'Username', 'trim|required|strtolower');
             $this->form_validation->set_rules('password', 'Password', 'trim|required|md5');
-            
+
             if ($this->form_validation->run()) {
                 $username = $this->input->post('username');
                 if ($this->User_model->validate_login($this->input->post('username'), $this->input->post('password'))) {
                     if (isset($_SESSION['current_campaign'])) {
                         $this->set_campaign_features();
-						$this->current_campaign($_SESSION['current_campaign']);
+                        $this->current_campaign($_SESSION['current_campaign']);
                     }
-					$this->apply_default_filter();
+                    $this->apply_default_filter();
                     if ($this->input->post('password') == md5("pass123")) {
-						$this->session->set_flashdata('change_pass', '1');
+                        $this->session->set_flashdata('change_pass', '1');
                         $redirect = base64_encode("user/account");
-                    } else if(in_array("files only",$_SESSION['permissions'])){
-						 redirect('files/manager');
-					} else {
+                    } else if (in_array("files only", $_SESSION['permissions'])) {
+                        redirect('files/manager');
+                    } else {
                         $redirect = $this->input->post('redirect');
                     }
                     if (!empty($redirect)) {
@@ -62,11 +63,11 @@ class User extends CI_Controller
                 redirect('user/login'); //Need to redirect to show the flash error.
             }
         }
-        
+
         session_destroy();
-        
+
         $redirect = ($this->uri->segment(3) ? $this->uri->segment(3) : false);
-        $data     = array(
+        $data = array(
             'pageId' => 'login',
             'pageClass' => 'login',
             'title' => '121 Calling System',
@@ -77,7 +78,7 @@ class User extends CI_Controller
         );
         $this->template->load('default', 'user/login', $data);
     }
-    
+
     public function logout()
     {
         if (in_array("log hours", $_SESSION['permissions'])) {
@@ -86,95 +87,94 @@ class User extends CI_Controller
         session_destroy();
         redirect('user/login');
     }
-    
-	public function apply_default_filter(){
-			$this->load->model('Filter_model');
-			$filter = array();
-            /*set the default filter options up accounding to the "Default view" permissions */	
-				if (@in_array("view live", $_SESSION['permissions'])) {
-                     $filter['record_status'][] = 1;
-                }			
-				if (@in_array("view pending", $_SESSION['permissions'])) {
-                     $filter['record_status'][] = 2;
-                }	
-				if (@in_array("view dead", $_SESSION['permissions'])) {
-                    $filter['record_status'][] = 3;
-                }
-                if (@in_array("view completed", $_SESSION['permissions'])) {
-                    $filter['record_status'][] = 4;
-                }
-              
-				/*if the default is to view all parked record we just add all the parked codes to the filter (as long as there are less than 10 this will do the trick) */	
-				if (@in_array("view parked", $_SESSION['permissions'])) {
-                       $filter['view_parked'] = true;
-                }
-				
-					if (in_array("view unassigned", $_SESSION['permissions'])) {
-                    $filter['view_unassigned'] = true; //this allows to search for null value in ownership table
-					}
-                	if (in_array("view own records", $_SESSION['permissions'])) {
-                    $filter['user_id'][] = $_SESSION['user_id'];
-					}
-					
-					if (!isset($_SESSION['filter']['values']['group_id'])) {	
-                    if (in_array("view own group", $_SESSION['permissions'])&&!empty($_SESSION['group'])) {
-                     $filter['group_id'][] = $_SESSION['group'];
-                    }
-					}
-					if (!isset($_SESSION['filter']['values']['team_id'])) {	
-                    if (in_array("view own team", $_SESSION['permissions'])&&!empty($_SESSION['team'])) {
-                    $filter['team_id'][] = $_SESSION['team'];
-                    }
 
-                if (isset($_SESSION['current_campaign'])) {
-                  $filter['campaign_id'][] =  $_SESSION['current_campaign'];
-                }
-				//we can add any additional filter requirements here if we ever need to
-				$where = "";
-                $_SESSION['filter']['where'] = $where;
+    public function apply_default_filter()
+    {
+        $filter = array();
+        /*set the default filter options up accounding to the "Default view" permissions */
+        if (@in_array("view live", $_SESSION['permissions'])) {
+            $filter['record_status'][] = 1;
+        }
+        if (@in_array("view pending", $_SESSION['permissions'])) {
+            $filter['record_status'][] = 2;
+        }
+        if (@in_array("view dead", $_SESSION['permissions'])) {
+            $filter['record_status'][] = 3;
+        }
+        if (@in_array("view completed", $_SESSION['permissions'])) {
+            $filter['record_status'][] = 4;
+        }
+
+        /*if the default is to view all parked record we just add all the parked codes to the filter (as long as there are less than 10 this will do the trick) */
+        if (@in_array("view parked", $_SESSION['permissions'])) {
+            $filter['view_parked'] = true;
+        }
+
+        if (in_array("view unassigned", $_SESSION['permissions'])) {
+            $filter['view_unassigned'] = true; //this allows to search for null value in ownership table
+        }
+        if (in_array("view own records", $_SESSION['permissions'])) {
+            $filter['user_id'][] = $_SESSION['user_id'];
+        }
+
+        if (!isset($_SESSION['filter']['values']['group_id'])) {
+            if (in_array("view own group", $_SESSION['permissions']) && !empty($_SESSION['group'])) {
+                $filter['group_id'][] = $_SESSION['group'];
             }
-            
-			$this->Filter_model->apply_filter($filter);	
-		
-	}
-	
-	
+        }
+        if (!isset($_SESSION['filter']['values']['team_id'])) {
+            if (in_array("view own team", $_SESSION['permissions']) && !empty($_SESSION['team'])) {
+                $filter['team_id'][] = $_SESSION['team'];
+            }
+
+            if (isset($_SESSION['current_campaign'])) {
+                $filter['campaign_id'][] = $_SESSION['current_campaign'];
+            }
+            //we can add any additional filter requirements here if we ever need to
+            $where = "";
+            $_SESSION['filter']['where'] = $where;
+        }
+
+        $this->Filter_model->apply_filter($filter);
+
+    }
+
+
     public function account()
     {
         user_auth_check(false);
-		$campaign_access = campaign_access_dropdown();
+        $campaign_access = campaign_access_dropdown();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
+
             $this->load->library('form_validation');
             //$this->form_validation->set_error_delimiters('<div class=\'error\'>', '</div>');
-            
+
             $this->form_validation->set_rules('current_pass', 'current password', 'trim|required|strtolower|md5');
             $this->form_validation->set_rules('new_pass', 'new password', 'trim|required|min_length[5]|matches[conf_pass]');
             $this->form_validation->set_rules('conf_pass', 'confirm password', 'trim|required|min_length[5]');
-            
-            
-            
+
+
             if ($this->form_validation->run()) {
-                
+
                 if ($this->User_model->validate_login($_SESSION['user_id'], $this->input->post('current_pass'), true)) {
                     $response = $this->User_model->set_password($this->input->post('new_pass'));
                     $this->session->set_flashdata('success', 'Password was updated');
-					echo 'Logout';
-					exit;
+                    echo 'Logout';
+                    exit;
                 } else {
                     echo json_encode(array(
                         "msg" => 'Current password was incorrect'
                     ));
                     exit;
                 }
-                
-            }  else {
-				    echo json_encode(array(
-                "msg" => validation_errors()
-            		));
-            		exit;	
-				}
-        
+
+            } else {
+                echo json_encode(array(
+                    "msg" => validation_errors()
+                ));
+                exit;
+            }
+
         }
 
         $user_id = $_SESSION['user_id'];
@@ -183,9 +183,9 @@ class User extends CI_Controller
         $roles = $this->Form_model->get_roles();
         $groups = $this->Form_model->get_groups();
         $teams = $this->Form_model->get_teams();
-        
+
         $data = array(
-			'campaign_access' => $campaign_access,
+            'campaign_access' => $campaign_access,
             'pageId' => 'my-account',
             'page' => array('records' => 'account'),
             'pageClass' => 'my-account',
@@ -203,7 +203,8 @@ class User extends CI_Controller
         $this->template->load('default', 'user/account', $data);
     }
 
-    public function get_user_by_id() {
+    public function get_user_by_id()
+    {
         if ($this->input->post()) {
             $user = $this->User_model->get_user_by_id($this->input->post("user_id"));
 
@@ -217,12 +218,13 @@ class User extends CI_Controller
     /**
      * Save contact details
      */
-    public function save_contact_details() {
+    public function save_contact_details()
+    {
         if ($this->input->post()) {
             $form = array();
-            $form['user_email'] = ($this->input->post("email_form")?$this->input->post("email_form"):NULL);
-            $form['user_telephone'] = ($this->input->post("telephone_form")?$this->input->post("telephone_form"):NULL);
-            $form['ext'] = ($this->input->post("ext_form")?$this->input->post("ext_form"):NULL);
+            $form['user_email'] = ($this->input->post("email_form") ? $this->input->post("email_form") : NULL);
+            $form['user_telephone'] = ($this->input->post("telephone_form") ? $this->input->post("telephone_form") : NULL);
+            $form['ext'] = ($this->input->post("ext_form") ? $this->input->post("ext_form") : NULL);
             $user_id = $this->input->post("user_id");
 
 
@@ -231,7 +233,7 @@ class User extends CI_Controller
 
             echo json_encode(array(
                 "success" => ($results),
-                "msg" => ($results?"Contact details saved successfully":"ERROR: The Contact details was not saved successfully!")
+                "msg" => ($results ? "Contact details saved successfully" : "ERROR: The Contact details was not saved successfully!")
             ));
         }
     }
@@ -239,7 +241,8 @@ class User extends CI_Controller
     /*
      * Rsest failed login to 0
      */
-    public function reset_failed_logins() {
+    public function reset_failed_logins()
+    {
         if ($this->input->post()) {
 
             $user_id = $this->input->post('user_id');
@@ -251,7 +254,7 @@ class User extends CI_Controller
 
             echo json_encode(array(
                 "success" => ($results),
-                "msg" => ($results?"Failed logins reset to 0 successfully":"ERROR: The Failed logins was not updated successfully!")
+                "msg" => ($results ? "Failed logins reset to 0 successfully" : "ERROR: The Failed logins was not updated successfully!")
             ));
         }
     }
@@ -259,66 +262,65 @@ class User extends CI_Controller
     /* at the bottom of default.php template: this function is ran every time a page is loaded and it checks whether user permissions/access have been changed or not so they can be reapplied without needing to log out */
     public function check_session()
     {
-        if($this->User_model->check_session()){
-		$this->User_model->load_user_session();
-		$this->apply_default_filter();
-		//if the user has been removed from their current campaign we should kick them out by unsetting the current campaign
-		if (@!in_array($_SESSION['current_campaign'], $_SESSION['campaign_access']['array'])) {
-            unset($_SESSION['current_campaign']);
-			unset($_SESSION['current_campaign_name']);
+        if ($this->User_model->check_session()) {
+            $this->User_model->load_user_session();
+            $this->apply_default_filter();
+            //if the user has been removed from their current campaign we should kick them out by unsetting the current campaign
+            if (@!in_array($_SESSION['current_campaign'], $_SESSION['campaign_access']['array'])) {
+                unset($_SESSION['current_campaign']);
+                unset($_SESSION['current_campaign_name']);
             }
-		echo "Session reloaded";
-		}
+            echo "Session reloaded";
+        }
         //no longer showing footer 
-        if(in_array("show footer",$_SESSION['permissions'])&&isset($_SESSION['current_campaign'])){	
-        $user_id = $_SESSION['user_id'];
-        $campaign = $_SESSION['current_campaign'];
-        
-        $this->load->model('Records_model');
-       // $duration = $this->User_model->get_duration($campaign,$user_id);
-	   // $rate = number_format(($transfers + $cross_transfers)/($duration/60/60),2);
-        $positive_outcomes = $this->Records_model->get_positive_for_footer($campaign);
-		
-		
-        $worked = $this->User_model->get_worked($campaign,$user_id);
-        $positives = $this->User_model->get_positives($campaign,$user_id);
+        if (in_array("show footer", $_SESSION['permissions']) && isset($_SESSION['current_campaign'])) {
+            $user_id = $_SESSION['user_id'];
+            $campaign = $_SESSION['current_campaign'];
 
-		
+            $this->load->model('Records_model');
+            // $duration = $this->User_model->get_duration($campaign,$user_id);
+            // $rate = number_format(($transfers + $cross_transfers)/($duration/60/60),2);
+            $positive_outcomes = $this->Records_model->get_positive_for_footer($campaign);
 
-        $cross_transfers = $this->User_model->get_cross_transfers_by_campaign_destination($campaign,$user_id);
-		$footer_stats["Records Worked"] = $worked;
-		foreach($positives as $row){
-		if($row['outcome']=="Transfer"){
-		$row['count'] = $row['count']+$cross_transfers;	
-		}
-		$footer_stats[$row['outcome']] = $row['count'];
-		}
-        echo json_encode($footer_stats);
-      
-		}
+
+            $worked = $this->User_model->get_worked($campaign, $user_id);
+            $positives = $this->User_model->get_positives($campaign, $user_id);
+
+
+            $cross_transfers = $this->User_model->get_cross_transfers_by_campaign_destination($campaign, $user_id);
+            $footer_stats["Records Worked"] = $worked;
+            foreach ($positives as $row) {
+                if ($row['outcome'] == "Transfer") {
+                    $row['count'] = $row['count'] + $cross_transfers;
+                }
+                $footer_stats[$row['outcome']] = $row['count'];
+            }
+            echo json_encode($footer_stats);
+
+        }
     }
-    
+
     public function set_campaign_features()
     {
         $campaign_features = $this->Form_model->get_campaign_features($_SESSION['current_campaign']);
-        $features          = array();
+        $features = array();
         foreach ($campaign_features as $row) {
             $features[] = $row['name'];
         }
         $_SESSION['campaign_features'] = $features;
-        
+
     }
-    
-    
+
+
     /* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
-    public function current_campaign($camp_id=false)
+    public function current_campaign($camp_id = false)
     {
-        $campaign = ($camp_id?intval($this->uri->segment(3)):$camp_id);
-        $user_id  = $_SESSION['user_id'];
-		 unset($_SESSION['next']);
-         unset($_SESSION['filter']);
+        $campaign = ($camp_id ? intval($this->uri->segment(3)) : $camp_id);
+        $user_id = $_SESSION['user_id'];
+        unset($_SESSION['next']);
         if ($campaign > "0") {
-            if (in_array($campaign, $_SESSION['campaign_access']['array'])) {				
+            unset($_SESSION['filter']);
+            if (in_array($campaign, $_SESSION['campaign_access']['array'])) {
                 /* no longer logging in realtime  
                 if(in_array("log hours",$_SESSION['permissions'])){
                 //start logging the duration on the selected campaign
@@ -328,8 +330,8 @@ class User extends CI_Controller
                 //reset the permissions
                 $this->User_model->set_permissions();
                 //this function lets you add and remove permissions based on the selected campaign rather than user role! :)
-                
-				$campaign_permissions = $this->User_model->campaign_permissions($campaign);
+
+                $campaign_permissions = $this->User_model->campaign_permissions($campaign);
                 foreach ($campaign_permissions as $row) {
                     //a 1 indicates the permission should be added otherwize it is revoked!
                     if ($row['permission_state'] == "1") {
@@ -338,32 +340,45 @@ class User extends CI_Controller
                         unset($_SESSION['permissions'][$row['permission_id']]);
                     }
                 }
-				
+
                 $campaign_row = $this->User_model->campaign_row($campaign);
-				$_SESSION['current_client'] = $campaign_row['client_name'];
-				$_SESSION['current_campaign_name'] = $campaign_row['campaign_name'];
-				$_SESSION['current_campaign'] = $campaign_row['campaign_id'];
-				$this->set_campaign_features();
-				$this->apply_default_filter();
+                $_SESSION['current_client'] = $campaign_row['client_name'];
+                $_SESSION['current_campaign_name'] = $campaign_row['campaign_name'];
+                $_SESSION['current_campaign'] = $campaign_row['campaign_id'];
+                $this->set_campaign_features();
+                $this->apply_default_filter();
             }
         } else {
-			unset($_SESSION['current_client']);
-            	unset($_SESSION['current_campaign_name']);
-                unset($_SESSION['current_campaign']);
-                unset($_SESSION['campaign_features']);
-                /* no longer logging in realtime 
-                $this->User_model->close_hours();
-                */
+            unset($_SESSION['current_client']);
+            unset($_SESSION['current_campaign_name']);
+            unset($_SESSION['current_campaign']);
+            unset($_SESSION['campaign_features']);
+            unset($_SESSION['filter']['values']['campaign_id']);
+            /* no longer logging in realtime
+            $this->User_model->close_hours();
+            */
+
+            $filter = $_SESSION['filter']['values'];
+            $this->Filter_model->apply_filter($filter);
+
+            if (@!in_array('mix campaigns', $_SESSION['permissions'])) {
+                echo json_encode(array(
+                    "location" => 'dashboard'
+                ));
+                return;
+            }
         }
+        echo json_encode(array());
     }
-    
+
     public function index()
     {
         //redirect('user/account');
     }
 
     //Send an email with the instructions to reset a password
-    public function send_email_reset_password() {
+    public function send_email_reset_password()
+    {
         if ($this->input->is_ajax_request()) {
 
             $form = $this->input->post();
@@ -378,8 +393,7 @@ class User extends CI_Controller
                     "reason" => "user",
                     "msg" => "The username does not exist!"
                 ));
-            }
-            else {
+            } else {
                 $user = $user[0];
                 if (!$user['user_email']) {
                     echo json_encode(array(
@@ -387,8 +401,7 @@ class User extends CI_Controller
                         "reason" => "email_address",
                         "msg" => "You don't have an email address saved! Please, contact with the Administrator"
                     ));
-                }
-                else {
+                } else {
                     //Set the TOKEN for this user in order to generate the link to reset the password
                     $reset_pass_token = $this->set_reset_pass_token($user);
                     $user['reset_pass_token'] = $reset_pass_token;
@@ -397,13 +410,13 @@ class User extends CI_Controller
                     $send_email = $this->send_reset_password_email($user);
 
                     if ($send_email) {
-                        $this->session->set_flashdata('success', 'An email was sent successfully to '.$user['user_email'].'. You will receive it in your mailbox soon with the instructions to reset the password');
+                        $this->session->set_flashdata('success', 'An email was sent successfully to ' . $user['user_email'] . '. You will receive it in your mailbox soon with the instructions to reset the password');
                         $this->session->set_flashdata('username', $username);
                     }
 
                     echo json_encode(array(
                         "success" => ($send_email),
-                        "msg" => ($send_email?"The email was sent successfully. You will receive it in your mailbox soon":"ERROR: The email was not sent successfully! Please contact with the Administrator")
+                        "msg" => ($send_email ? "The email was sent successfully. You will receive it in your mailbox soon" : "ERROR: The email was not sent successfully! Please contact with the Administrator")
                     ));
                 }
             }
@@ -411,7 +424,8 @@ class User extends CI_Controller
     }
 
     //Set the TOKEN for this user in order to generate the link to reset the password
-    private function set_reset_pass_token($user) {
+    private function set_reset_pass_token($user)
+    {
         $user_id = $user['user_id'];
         unset($user['user_id']);
         $user['reset_pass_token'] = md5(uniqid(mt_rand(), true));;
@@ -420,26 +434,27 @@ class User extends CI_Controller
         return $user['reset_pass_token'];
     }
 
-    private function send_reset_password_email ($user) {
+    private function send_reset_password_email($user)
+    {
 
         //Send the email
 
-        $reset_pass_url = base_url()."user/restore_password/".$user['reset_pass_token'];
+        $reset_pass_url = base_url() . "user/restore_password/" . $user['reset_pass_token'];
         $email_address_from = "noreply@121customerinsight.co.uk";
         $email_address_to = $user['user_email'];
         $subject = "121System - Restore your Password";
-        $body = "Hi ".$user['name'].",
-            Please, click on the next link if you want to restore your password: ".$reset_pass_url."";
+        $body = "Hi " . $user['name'] . ",
+            Please, click on the next link if you want to restore your password: " . $reset_pass_url . "";
 
         $this->load->library('email');
 
         $config = array(
-            "protocol"=>"smtp",
-            "smtp_host"=>"mail.121system.com",
-            "smtp_user"=>"mail@121system.com",
-            "smtp_pass"=>"L3O9QDirgUKXNE7rbNkP",
-            "smtp_port"=>25,
-            "mailtype"=>"html"
+            "protocol" => "smtp",
+            "smtp_host" => "mail.121system.com",
+            "smtp_user" => "mail@121system.com",
+            "smtp_pass" => "L3O9QDirgUKXNE7rbNkP",
+            "smtp_port" => 25,
+            "mailtype" => "html"
         );
 
         $this->email->initialize($config);
@@ -456,7 +471,8 @@ class User extends CI_Controller
     }
 
     //Restore the password
-    public function restore_password() {
+    public function restore_password()
+    {
         $reset_pass_token = ($this->uri->segment(3) ? $this->uri->segment(3) : false);
 
         //Get the user with this reset_pass_token
@@ -466,8 +482,7 @@ class User extends CI_Controller
         if (empty($user)) {
             $this->session->set_flashdata('error', 'The password was replaced before from this link. If you need to restore the password again, please, click on forgot password and we will send you an email again');
             redirect('user/login');
-        }
-        else {
+        } else {
             $user = $user[0];
 
             $data = array(
@@ -485,7 +500,8 @@ class User extends CI_Controller
     }
 
     //Save the restored the password
-    public function save_restored_password() {
+    public function save_restored_password()
+    {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -514,8 +530,7 @@ class User extends CI_Controller
                     "success" => ($restored),
                     "msg" => ($restored ? "The password was restored successfully" : "ERROR: The password was not restored successfully! Please contact with the Administrator")
                 ));
-            }
-            else {
+            } else {
                 echo json_encode(array(
                     "success" => false,
                     "msg" => validation_errors()
