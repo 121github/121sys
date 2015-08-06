@@ -6,7 +6,7 @@ if (!defined('BASEPATH'))
 function join_array(){
 	$array = array();
 
-	$array['company_addresses'] = array("companies","company_adrdesses");
+	$array['company_addresses'] = array("companies","company_addresses");
 	$array['contact_addresses'] = array("contacts","contact_addresses");
 	$array['contact_locations'] = array("contacts","contact_addresses","contact_locations");
 	$array['company_locations'] = array("companies","company_addresses","company_locations");	
