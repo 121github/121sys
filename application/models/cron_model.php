@@ -12,6 +12,10 @@ class Cron_model extends CI_Model
 
     }
 
+	public function remove_leavers(){
+	$this->db->query("update 121sys.users set user_status = 0 where name in(SELECT agent_name FROM attendance.`tbl_employees` where campaign = 'leaver') and group_id = 1");	
+	}
+	
     public function unassign_records()
     {
         $qry = "delete from ownership where urn in(select urn from history join campaigns using(campaign_id) join outcomes using(outcome_id) join records using(urn) where record_status = 1 and keep_record is null and campaign_status = 1)";

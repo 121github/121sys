@@ -17,6 +17,7 @@ function join_array(){
 	$array['ownership'] = array("ownership","ownership_users");
 	$array['subsectors'] = array("companies","company_subsectors","subsectors");
 	$array['sectors'] = array("companies","company_subsectors","subsectors","sectors");
+	$array['ownership_users'] = array("ownership","ownership_users");
 	return $array;
 }
 

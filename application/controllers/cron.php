@@ -31,6 +31,8 @@ class Cron extends CI_Controller
 		$this->tidy_files();
 		//unassign records from users that don't need them
 		$this->unassign_records();
+		//restrict any agents that have left //this uses the agent name so if we ever get 2 users with the same name it could cause problems
+		$this->remove_leavers();
     }
 
 	public function unassign_records(){

@@ -153,7 +153,10 @@ function get_location_id($postcode){
         $this->db->where("postcode", $postcode);
         $check_location = $this->db->get("uk_postcodes");
         if ($check_location->num_rows()) {
-            $location_id = $check_location->row()->postcode_id;
+			$loc = $check_location->row();
+			$this->db->replace("locations", array("location_id" => $loc->postcode_id, 
+			"lat" => $loc->lat, 
+			"lng" => $loc->lng));
         } else {
             $coords = postcode_to_coords($postcode);
 			if(isset($coords['lat'])){

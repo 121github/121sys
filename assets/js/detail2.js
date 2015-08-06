@@ -224,7 +224,7 @@ var record = {
                 },
                 fail: function () {
                     $('#tasks-panel').html('<p>Cannot load tasks</p>');
-                },
+                }
             }).done(function (response) {
                 if (response.success) {
                     var tasks = "";
@@ -251,7 +251,7 @@ var record = {
                     });
                     $('#tasks-panel').html(tasks);
 					$('#tasks-panel input[type="checkbox"]').bootstrapToggle({
-            onstyle: 'warning',
+            onstyle: 'warning'
         });
 		$('#tasks-panel select').selectpicker();
                 } else {
@@ -820,7 +820,7 @@ var record = {
                 }
                 ;
             });
-        },
+        }
     },
     //contact_panel_functions
     company_panel: {
@@ -1194,7 +1194,7 @@ var record = {
                 url: helper.baseUrl + 'modals/new_sms_form',
                 type: "POST",
                 dataType: "HTML",
-                data: {urn: record.urn},
+                data: {urn: record.urn}
             }).done(function (data) {
                 var $mbody = $(data), mheader = "Send sms", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="marl btn btn-primary" id="continue-sms">Continue</button>';
                 $mbody.find('#smstemplatespicker').selectpicker().on('change', function () {
@@ -1232,7 +1232,7 @@ var record = {
             //Get template data
             $.ajax({
                 url: helper.baseUrl + 'modals/view_sms',
-                dataType: "HTML",
+                dataType: "HTML"
             }).done(function (data) {
                 var mheader = "View sms", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 modals.load_modal(mheader, $mbody, mfooter);
@@ -1405,7 +1405,7 @@ var record = {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    urn: record.urn,
+                    urn: record.urn
                 }
             }).done(function (response) {
                 $('#slots-panel').empty();
@@ -1463,7 +1463,7 @@ var record = {
                 url: helper.baseUrl + 'modals/new_email_form',
                 type: "POST",
                 dataType: "HTML",
-                data: {urn: record.urn},
+                data: {urn: record.urn}
             }).done(function (data) {
                 var $mbody = $(data), mheader = "Send Email", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button type="submit" class="marl btn btn-primary" disabled id="continue-email">Continue</button>';
                 $mbody.find('#emailtemplatespicker').selectpicker().on('change', function () {
@@ -1501,7 +1501,7 @@ var record = {
             //Get template data
             $.ajax({
                 url: helper.baseUrl + 'modals/view_email',
-                dataType: "HTML",
+                dataType: "HTML"
             }).done(function (data) {
                 var mheader = "View Email", $mbody = $(data), mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 modals.load_modal(mheader, $mbody, mfooter);
