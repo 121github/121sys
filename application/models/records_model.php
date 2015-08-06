@@ -729,11 +729,26 @@ class Records_model extends CI_Model
         return $data;
     }
 
-	//if the record is unassigned set the current user as the owner
+	//if the record is unassigned set the current user as the owner. If it is assigned to somebody else then show an error
 	public function take_ownership($urn){
-	$qry = "select urn from ownership where urn = '$urn'";
-	if(!$this->db->query($qry)->num_rows()){
+	$qry = "select * from ownership where urn = '$urn'";
+	$result = $this->db->query($qry)->result_array();
+	if(count($result)==0){
 		$this->db->insert("ownership",array("urn"=>$urn,"user_id"=>$_SESSION['user_id']));
+	} else {
+		$is_owner = false;
+		//check if the user is assigned to this record
+		foreach($result as $row){
+			if($_SESSION['user_id']==$row['user_id']){
+				$is_owner = true;
+			}
+		}
+		if(in_array($_SESSION['view own records'])){
+		//redirect to error page is user is not the owner
+		if(!$is_owner){
+			redirect(base_url() . "error/ownership");	
+		}
+		}
 	}
 	}
 

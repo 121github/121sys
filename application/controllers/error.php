@@ -32,6 +32,16 @@ class Error extends CI_Controller
 		
 	}
 	
+	public function ownership(){
+		        $data = array(
+			'page' => 'error-page',
+ 			'campaign_access' => $this->_campaigns,
+            'title' => 'Permission Denied',
+			'msg'=>'This record is assigned to another user. If you believe you should have access to it, please contact the system administrator');
+			 $this->template->load('default', 'errors/display.php', $data);
+		
+	}
+	
 		public function data(){
 		        $data = array(
 			'page' => 'error-page',

@@ -156,7 +156,7 @@ var modals = {
         }).done(function (response) {
 			 var mheader = "Choose the columns to display";
 			 var mbody = "<form id='column-picker-form' ><input type='hidden' name='table' value='"+table_id+"' />";
-			 var mfooter = '<button type="submit" class="btn btn-primary pull-right" id="save-columns">Save</button> <button class="btn btn-default pull-left">Cancel</button>';
+			 var mfooter = '<button type="submit" class="btn btn-primary pull-right" id="save-columns">Save</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 			 $.each(response,function(group,row){
 				mbody += "<h4>"+group+"</h4>";
 				var colpicker = "<select class='selectpicker' name='columns[]' multiple data-width='100%'>";
