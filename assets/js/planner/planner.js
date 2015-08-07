@@ -137,7 +137,7 @@ $(document).on('click','.planner-travel-mode',function(e){
 					var button_style = "btn-success";	
 					var planner_details = '<div class="collapse" id="collapse_'+val.record_planner_id+'">' + '<div class="col-lg-12 col-sm-12 small" style="padding:10px 20px 0px">' +
 													(val.client_ref ?	'<p><b>Reference: </b>' + val.client_ref + '</p>' : '') +	
-										(val.name!=="na" ?	'<p><b>Company: </b>' + val.name + '</p>' : '') +	
+										(val.name!=="Start"&&val.name!=="Destination" ?	'<p><b>Company: </b>' + val.name + '</p>' : '') +	
 											(val.fullname ?	'<p><b>Contact: </b>' + val.fullname + '</p>' : '') +	
 											(val.outcome ?	'<p><b>Outcome: </b>' + val.outcome + '</p>' : '') +	
 	(val.nextcall ?	'<p><b>Next Action: </b>' + val.nextcall + '</p>' : '') +	
@@ -155,16 +155,16 @@ $(document).on('click','.planner-travel-mode',function(e){
    '<div class="col-lg-12 col-sm-12" style="padding:0px;margin:0px">' +
 '<div class="btn-group" style="width:100%;display:table;">'+
   '<button type="button" style="display:table-cell;width:10%;" class="btn '+button_size+' btn-info expand-planner"><span class="fa fa-plus"></span></button>'+
-  '<button type="button" style="display:table-cell; width:90%" class="btn '+button_size+' btn-info"><span class="pull-left">'+title+'</span>'+
+  '<button type="button" data-marker='+val.planner_id+' style="display:table-cell; width:90%" class="btn '+button_size+' btn-info"><span class="pull-left">'+title+'</span>'+
   '</button>'+
     '</div></div>'
 					} else {
-					planner_item = '<li class="list-unstyled" ><div class="row record-planner-item" style="margin:10px 0" data-postcode="'+val.postcode+'" data-planner-id="'+val.record_planner_id+'" >' +
+					planner_item = '<li class="list-unstyled" style="margin:0; padding:0" ><div class="row record-planner-item" style="margin:10px 0" data-postcode="'+val.postcode+'" data-planner-id="'+val.record_planner_id+'" >' +
   (k>0?'<div style="text-align:center"><span style="font-size:30px; padding-bottom:5px; cursor:grab" class="fa fa-arrow-down drag"></span>'+ route+'</div>':'')+
    '<div class="col-lg-12 col-sm-12" style="padding:0px;margin:0px">' +
 '<div class="btn-group" style="width:100%;display:table;">'+
   '<button type="button" style="display:table-cell;width:10%;" class="btn '+button_size+' btn-success expand-planner"><span class="fa fa-plus"></span></button>'+
-  '<button type="button" style="display:table-cell; width:60%" class="btn '+button_size+' btn-success planner-title" data-modal="view-record" data-urn="'+val.urn+'" ><span class="pull-left">'+title+'</span>'+
+  '<button type="button" style="display:table-cell; width:60%" class="btn '+button_size+' btn-success planner-title" data-modal="view-record" data-marker='+val.planner_id+' data-urn="'+val.urn+'" ><span class="pull-left">'+title+'</span>'+
   '</button>'+
     '<button type="button" data-pos="'+k+'" style="display:table-cell;width:10%" '+
 	' class="btn '+button_style+' '+button_size+' godown-btn">'+
@@ -181,15 +181,15 @@ $(document).on('click','.planner-travel-mode',function(e){
     '</div></div>'	
 					}
 					if(val.planner_type==1){
-						 start_point += planner_item + planner_details + '<ul id="draggable-items" class="list-unstyled ui-sortable">';
+						 start_point += planner_item + planner_details;
 					} else if(val.planner_type==3){
-						  end_point += '</ul>' + planner_item + planner_details;
+						  end_point += planner_item + planner_details;
 					} else {
 						waypoints += planner_item + planner_details;
 					}			
                 });
 				
-				pbody = start_point +'<ul>'+waypoints+'</ul>'+end_point;
+				pbody = start_point +'<ul style="margin:0; padding:0">'+waypoints+'</ul>'+end_point;
 				
             }
             else {

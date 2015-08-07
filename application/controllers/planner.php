@@ -120,7 +120,8 @@ class Planner extends CI_Controller
             $record_list = $this->input->post('record_list');
             $date = $this->input->post('date');
 			$origin = postcodeFormat($this->input->post('origin'));
-			$destination = postcodeFormat($this->input->post('destination'));			
+			$destination = postcodeFormat($this->input->post('destination'));	
+			$this->firephp->log($origin);		
 			if(postcodeCheckFormat($origin)&&!$this->Planner_model->get_location_id($origin)){
 			echo json_encode(array("success"=>false,"error"=>"The origin postcode is not valid"));
 			exit;

@@ -13,19 +13,11 @@ class Planner_model extends CI_Model
 
     public function planner_data($count = false, $options = false)
     {
-        $table_columns = array(
-            "date_format(rp.`start_date`,'%d/%m/%y')",
-            "com.name",
-            "u.name",
-            "distance",
-            "time",
-            "postcode"
-        );
 
         $qry = "select
                     date_format(rp.`start_date`,'%d/%m/%Y') start,
 					if(com.name is null,fullname,com.name) title,
-                    if(com.name is null,'na',com.name) name,
+                    if(planner_type=3,'Destination',if(planner_type=1,'Start',if(com.name is null,'na',com.name))) name,
 					planner_type,
                     fullname,
                     u.name user,
@@ -60,14 +52,14 @@ class Planner_model extends CI_Model
                   left join record_planner_route rpr using(record_planner_id)
                   left join outcomes using(outcome_id)";
 
-        $where = $this->get_where($options, $table_columns);
+        $where = $this->get_where($options);
         $qry .= $where;
         $qry .= "  group by record_planner_id order by case when rp.order_num is not null then rp.order_num else record_planner_id end asc ";
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
 
-    private function get_where($options, $table_columns)
+    private function get_where($options, $table_columns=array())
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
         $where = " where (campaign_id in({$_SESSION['campaign_access']['list']}) or campaign_id is null)";
@@ -157,13 +149,18 @@ class Planner_model extends CI_Model
 function get_location_id($postcode){
 		$postcode = postcodeFormat($postcode);
         $this->db->where("postcode", $postcode);
+		$this->db->join("locations","location_id=postcode_id","LEFT");
         $check_location = $this->db->get("uk_postcodes");
         if ($check_location->num_rows()) {
 			$loc = $check_location->row();
-			$location_id = $loc->postcode_id;
-			$this->db->replace("locations", array("location_id" => $location_id, 
+			if(empty($loc->location_id)){
+			$this->db->replace("locations", array("location_id" => $loc->postcode_id, 
 			"lat" => $loc->lat, 
 			"lng" => $loc->lng));
+			$location_id = $this->db->insert_id();	
+			} else {
+			$location_id = $loc->location_id;	
+			}
         } else {
             $coords = postcode_to_coords($postcode);
 			if(isset($coords['lat'])){

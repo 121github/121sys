@@ -250,12 +250,26 @@ var maps = {
             //Generate route
             $(document).on("click", '.calc-route-btn', function (e) {
                 e.preventDefault();
-				if($('.directions-form').find('input[name="origin"]').val()==""||$('.directions-form').find('input[name="destination"]').val()==""){
-					alert("You must set an origin and destination postcode");
-				} else {
+				var origin = $('.directions-form').find('input[name="origin"]').val();
+				var destination = $('.directions-form').find('input[name="destination"]').val();
+				//check the postcodes are valid first	
+			$.ajax({
+            url: helper.baseUrl + 'ajax/validate_postcode',
+            data: {
+                origin: origin,
+				destination:destination
+            },
+            dataType: 'JSON',
+            type: 'POST'
+        }).done(function (response) {
+            //if postcode is valid
+            if (response.success) {
                 maps.calcRoute();
+				} else {
+				flashalert.danger(response.msg);	
 				}
             });
+			});
         }
     },
 
@@ -830,17 +844,16 @@ var maps = {
             '<div id="content">' +
             '<div id="siteNotice">' +
             '</div>' +
-            '<h2 id="firstHeading" class="firstHeading">' + value.name + '</h2>' +
             '<div id="bodyContent_' + value.urn + '">' +
-            '<p><b>Company: </b>' + (value.name ? value.name : '') + '</p>' +
-            '<p><b>Contact: </b>' + (value.fullname ? value.fullname : '') + '</p>' +
-            '<p><b>Outcome: </b>' + (value.outcome ? value.outcome : '') + '</p>' +
-            '<p><b>Next Call: </b>' + (value.nextcall ? value.nextcall : '') + '</p>' +
-            '<p><b>Last Updated: </b>' + (value.date_updated ? value.date_updated : '') + '</p>' +
-            '<p><b>Postcode: </b>' + (value.postcode ? (value.postcode + '(' + (value.lat ? value.lat : '-') + ',' + (value.lng ? value.lng : '-') + ')') : '') + '</p>' +
+			'<h4 id="firstHeading" class="firstHeading">' + (value.name ?value.name:'') + '</h4>'+
+            (value.fullname ? '<p><b>Contact: </b>' + value.fullname + '</p>' : '') +
+            (value.outcome ? '<p><b>Outcome: </b>' + value.outcome + '</p>' : '') +
+            (value.nextcall ? '<p><b>Next Call: </b>' + value.nextcall + '</p>' : '') +
+            (value.date_updated ? '<p><b>Last Updated: </b>' + value.date_updated + '</p>' : '') +
+            (value.postcode ? '<p><b>Postcode: </b>' + value.postcode + '</p>' : '') +
+            (value.website ? '<p><b>Website: </b>' + value.website + '</p>' : '') +
+            (planner_info ? '<p>' + planner_info + '</p>' : '') + '<p>' +
             '<p style="display: none;">' + value.location_id + '</p>' +
-            '<p><b>Website: </b><a target="_blank" href="' + value.website + '">' + value.website + '</a></p>' +
-            '<p>' + planner_info + '</p>' +
             '<p>' +
             '<span><a class="btn btn-success btn-sm record-btn" item-postcode="' + value.postcode + '" href="#"><span class="glyphicon glyphicon-road"></span> Navigate </a></span>' +
             '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
