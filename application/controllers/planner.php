@@ -59,11 +59,21 @@ class Planner extends CI_Controller
         if ($this->input->is_ajax_request()) {
  $this->load->model('Records_model');
             $records = $this->Planner_model->planner_data(false, $this->input->post());
-
+$letters=array("A","B","C","D","E","F","G","H","I","J","K","L","M");
+$i=0;
             foreach ($records as $k => $v) {
+				if($v['planner_type']==1){
+					$records[$k]["letter"] = "dd-start";
+				} else if($v['planner_type']==3){
+					$records[$k]["letter"] = "dd-end";
+				} else { 
+					$records[$k]["letter"] = "marker".$letters[$i];
+					$i++;
+				}
                 if(!empty($v['urn'])){
                 $records[$k]["comments"] = $this->Records_model->get_last_comment($v['urn']);
 				}
+				
             }
 
             $data = array(
@@ -120,8 +130,7 @@ class Planner extends CI_Controller
             $record_list = $this->input->post('record_list');
             $date = $this->input->post('date');
 			$origin = postcodeFormat($this->input->post('origin'));
-			$destination = postcodeFormat($this->input->post('destination'));	
-			$this->firephp->log($origin);		
+			$destination = postcodeFormat($this->input->post('destination'));		
 			if(postcodeCheckFormat($origin)&&!$this->Planner_model->get_location_id($origin)){
 			echo json_encode(array("success"=>false,"error"=>"The origin postcode is not valid"));
 			exit;

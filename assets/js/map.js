@@ -207,70 +207,6 @@ var maps = {
         google.maps.event.addListener(map, "click", function () {
             maps.infowindow.close();
         });
-
-
-        if (maps.map_type == 'planner') {
-            //Date range
-            $('.daterange').daterangepicker({
-                    opens: "left",
-                    singleDatePicker: true,
-                    showDropdowns: true,
-                    format: 'DD/MM/YYYY',
-                    startDate: moment()
-                },
-                function (start, end, element) {
-                    var $btn = this.element;
-                    $btn.find('.date-text').html(start.format('MMMM D'));
-                    $btn.closest('.filter-form').find('input[name="date"]').val(start.format('YYYY-MM-DD'));
-                    map_table_reload();
-                });
-            $(document).on("click", '.daterange', function (e) {
-                e.preventDefault();
-            });
-
-            $(document).on("click", '.goup-btn', function (e) {
-                e.preventDefault();
-                $(this).closest('li').insertBefore($(this).closest('li').prev());
-				   $(this).closest('.record-planner-item').find('.route').empty();
-				   $('.route').empty();
-				   planner.fix_order_buttons();
-                maps.updateRecordPlannerList();
-            });
-
-            $(document).on("click", '.godown-btn', function (e) {
-                e.preventDefault();
-                $(this).parents('li').insertAfter($(this).parents('li').next());
-				 $(this).closest('.record-planner-item').find('.route').empty();
-				  $('.route').empty();
-				   planner.fix_order_buttons();
-                maps.updateRecordPlannerList();
-            });
-
-
-            //Generate route
-            $(document).on("click", '.calc-route-btn', function (e) {
-                e.preventDefault();
-				var origin = $('.directions-form').find('input[name="origin"]').val();
-				var destination = $('.directions-form').find('input[name="destination"]').val();
-				//check the postcodes are valid first	
-			$.ajax({
-            url: helper.baseUrl + 'ajax/validate_postcode',
-            data: {
-                origin: origin,
-				destination:destination
-            },
-            dataType: 'JSON',
-            type: 'POST'
-        }).done(function (response) {
-            //if postcode is valid
-            if (response.success) {
-                maps.calcRoute();
-				} else {
-				flashalert.danger(response.msg);	
-				}
-            });
-			});
-        }
     },
 
     showMap: function (btn) {
@@ -481,6 +417,7 @@ var maps = {
             }
         });
         maps.directionsDisplay.setMap(map);
+		maps.directionsDisplay.setOptions( { suppressMarkers: true } );
         $('.directions-menu').show();
         maps.directionsDisplay.setPanel(document.getElementById("directionsPanel"));
     },
@@ -880,15 +817,7 @@ var maps = {
             postcode: value.postcode,
             content: contentString,
             id: value.urn,
-            icon: {
-                path: marker_icon,
-                scale: 0.4,
-                strokeWeight: 0.2,
-                strokeColor: 'black',
-                strokeOpacity: 1,
-                fillColor: marker_color,
-                fillOpacity: 0.9,
-            },
+            icon: "http://maps.google.com/mapfiles/"+value.letter+".png",
         });
 
         maps.setMarker(marker);

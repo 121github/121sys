@@ -108,7 +108,6 @@ class Planner_model extends CI_Model
 	
 	$delete = "delete from record_planner_route where record_planner_id in(select record_planner_id from record_planner where start_date = '$date' and user_id = '$user_id')";
 	$this->db->query($delete);
-	$this->firephp->log($this->db->last_query());
     $this->db->delete("record_planner",$data);
     }
 
@@ -183,7 +182,6 @@ function get_location_id($postcode){
 		//clear the old origin / destination from the planner
 		$delete = "delete from record_planner where date(start_date) = '$date' and user_id = $user_id and planner_type in(1,3)";
 		$this->db->query($delete);
-		$this->firephp->log($this->db->last_query());
 		//insert the origin with type 1 (origin)
 		$first = $this->add_record(NULL, $date, $origin, $user_id, $type=1, $order=0);
         foreach ($record_list as $order_num => $record) {
