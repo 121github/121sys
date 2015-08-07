@@ -157,7 +157,8 @@ var maps = {
             $('.directions-form').find('input[name="destination"]').val(current_postcode);
         });
 
-        $(document).on('click', '.show-directionsPanel-btn', function () {
+        $(document).on('click', '.show-directionsPanel-btn', function (e) {
+			e.preventDefault();
             maps.showDirections();
         });
 
@@ -406,9 +407,10 @@ var maps = {
                     total_distance = total_distance + parseInt(route.distance.value);
                 });
                 $('.route-info').html(
-                    (Math.ceil((total_distance / 1000) / 1.2)) + ' miles - ' +
+                   '<span style="font-weight: bold; padding:5px; font-size: 14px; text-align: center;color: #fff; line-height:0.5	">'+ (Math.ceil((total_distance / 1000) / 1.2)) + ' miles - ' +
                     (toHHMMSS(total_duration)) +
-                    '<span style="font-size: 25px; margin-right: 12px; margin-left: 11px;" class="show-directionsPanel-btn pointer glyphicon glyphicon-eye-open"></span>');
+                    '</span>').css({'line-height':'0.3','padding':'0 10px 10px','margin-bottom':'5px','border-radius':'4px'}).show();
+					$('#show-directions').html('<button class="pull-right show-directionsPanel-btn btn btn-success btn-xs pointer">Directions</button>').show();
                 maps.directionsDisplay.setDirections(result);
                 if (maps.map_type == 'planner') {
                     maps.saveRecordRoute(record_list_route);

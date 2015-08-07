@@ -53,46 +53,29 @@
                         <i class="bottom right"></i>
                     </div>
                     <div class="directions-btn">
-                        <form class="form-horizontal map-form">
-                            <div class="row">
-                                <div class="col-lg-12 col-sm-12">
-                    <div class="input-group">
-             <input hidden name="travel-mode">
-                                        <input hidden name="destination">
-                                          <span class="pointer btn-default input-group-addon"><span id="show-uk" class="fa fa-globe"></span></span>
-  <span class="pointer btn-default input-group-addon get-current-location-btn"><span class="glyphicon glyphicon-map-marker"></span></span>
-  <input type="text" class="form-control input-sm" name="postcode"
-                                               placeholder="Postcode..."
-                                               title="Enter the location" />
-  <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
-</div>
-                                </div>
-                            </div>
-                            <div class="form-group input-group-sm directions-menu" style="display: none">
-                                <div class="row" style="margin-top: 5px; text-align: right">
-                                    <div class="col-lg-12 col-md-12" style="font-size: 11px;">
-                                    <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                          class="change-directions-btn DRIVING pointer" item-mode="DRIVING"><img
-                                            width="25px;" src="assets/img/icons/car.png"/></span>
-                                    <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                          class="change-directions-btn TRANSIT pointer" item-mode="TRANSIT"><img
-                                            width="25px;" src="assets/img/icons/train.png"/></span>
-                                    <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                          class="change-directions-btn BICYCLING pointer" item-mode="BICYCLING"><img
-                                            width="25px;" src="assets/img/icons/cycle.png"/></span>
-                                    <span style="opacity: 0.4; filter: alpha(opacity=40);"
-                                          class="change-directions-btn WALKING pointer" item-mode="WALKING"><img
-                                            width="25px;" src="assets/img/icons/walking.png"/></span>
-                                        <span class="close-directions-btn btn-lg glyphicon glyphicon-remove"></span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="route-info"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+<style>
+    #map-canvas {
+        min-height: 750px;
+        margin: 0px;
+        padding: 0px
+    }
+
+    .map-form {
+        position: absolute;
+        top: 8px;
+		width:100%;
+    }
+.map-form .input-group {
+		width:250px;
+		left:50px;
+    }
+	#show-directions { margin-right:50px; }
+    .route-info {
+       	background-color:rgba(000, 000, 000, 0.4);
+		float:right;
+		margin-right:50px;
+    }
+</style>
                     </div>
                     <div class="panel panel-primary directionsPanel-container">
                         <div class="panel-heading">
