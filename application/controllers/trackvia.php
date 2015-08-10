@@ -126,6 +126,7 @@ class Trackvia extends CI_Controller
     {
         //SOUTHWAY TABLE
         $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id = 22");
+		$this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
         //Book View
         echo "<br>Checking the SOUTHWAY_BOOK_SURVEY(" . SOUTHWAY_BOOK_SURVEY . ") view";
         echo "<br>";

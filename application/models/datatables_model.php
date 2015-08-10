@@ -21,7 +21,13 @@ class Datatables_model extends CI_Model
 		$visible_columns['columns'][] = array("data" => !empty($column['column_alias'])?$column['column_alias']:$column['column_select']);
 		$visible_columns['headings'][] = $column['column_title'];
 		$visible_columns['select'][] = $column['column_select'] ." ".$column['column_alias'];
+		//cannot use group_concat with where operators so just use the order instead ;)
+		if(strpos($column['column_select'],"group_concat")!==false){
+		$visible_columns['filter'][] = $column['column_order'];
+		} else {
 		$visible_columns['filter'][] = $column['column_select'];
+		}
+		
 		$visible_columns['order'][] = $column['column_order'];
 		$visible_columns['tables'][] = $column['column_table'];
 		}
