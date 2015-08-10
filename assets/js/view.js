@@ -89,7 +89,7 @@ var view_records = {
                     $('.tt').tooltip();
                     //Show the records in the map
                     maps.showItems();
-                    maps.current_postcode = d.responseJSON.current_postcode;
+                    maps.current_postcode = getCookie('current_postcode');
                     planner_permission = d.responseJSON.planner_permission;
                     maps.temp_bounds = null;
 					

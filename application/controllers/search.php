@@ -246,7 +246,7 @@ class Search extends CI_Controller
 			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
-
+			$filter = array_merge($filter,$_SESSION['filter']['values']);
             $urn_array   = $this->Filter_model->count_records($filter);
 			
             echo json_encode(array(
