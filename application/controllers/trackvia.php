@@ -83,6 +83,15 @@ class Trackvia extends CI_Controller
             "CC: steve.prior@globalheatsource.com";
     }
 
+	public function check_voicemail(){
+	$urn = $this->input->post('urn');
+	$qry = "select urn from history join outcomes using(outcome_id) where delay_hours > 0 and urn = $urn";
+	if($this->db->query($qry)->num_rows()==4){
+	echo json_encode(array("success"=>true));
+	}
+		
+	}
+	
     public function get_counts()
     {
         $sources = $this->source_config;
