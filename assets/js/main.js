@@ -287,6 +287,7 @@ $(document).ready(function () {
             $(this).toggleClass('right-caret left-caret');
         grandparent.find('.left-caret').not(this).toggleClass('right-caret left-caret');
         grandparent.find(".sub-menu:visible").not(current).hide();
+        grandparent.find(".sub-menu-left:visible").not(current).hide();
         current.toggle();
         e.stopPropagation();
     });
@@ -294,6 +295,7 @@ $(document).ready(function () {
         var root = $(this).closest('.dropdown');
         root.find('.left-caret').toggleClass('right-caret left-caret');
         root.find('.sub-menu:visible').hide();
+        root.find('.sub-menu-left:visible').hide();
     });
 
     var barheight = $('.navbar').height();
