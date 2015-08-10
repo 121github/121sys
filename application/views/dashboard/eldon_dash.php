@@ -79,7 +79,16 @@ Found: <span class="record-count"></span> <a href="#" class="submit-filter" >Vie
 </div>
    </div>
       <!-- /.row -->
-     
+       <div class="row">
+        <div class="col-lg-12">
+                  <div class="panel panel-primary">
+            <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> Admin Tasks</div>
+                       <div class="panel-body" id="tasks-panel">
+                <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
+                </div>
+            </div>
+            </div>
+            </div>
       
       <div class="row">
         <div class="col-lg-12">

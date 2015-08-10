@@ -355,6 +355,13 @@ class Records extends CI_Controller
 		}
 	}
 	
+	public function get_task_history(){
+		if ($this->input->is_ajax_request() && $this->_access) {
+			$history = $this->Records_model->get_task_history($this->input->post('urn'));
+			echo json_encode(array("success"=>true,"data"=>$history));
+		}
+	}
+	
 	public function get_campaign_tasks(){
 		if ($this->input->is_ajax_request() && $this->_access) {
 			$campaign_id = $this->Records_model->get_campaign_from_urn($this->input->post('urn'));
@@ -366,12 +373,13 @@ class Records extends CI_Controller
 			 foreach($result as $row){
 				 $data[$row['task_id']] = $row;
 				if(!empty($row['task_status_id'])){
+	//if any task statuses are in the tasks_to_options table they are put here and shown as a drop down menu.
 				$task_statuses[$row['task_id']][$row['task_status_id']] = $row['task_status'];
 				 }
 				 //find the selected task status from the available options
 				foreach($tasks as $t){
-					if($t['task_status_id']==$row['task_status_id']&&$row['task_id']==$t['task_id']){
-				$selected[$row['task_id']]=$row['task_status_id'];
+					if($row['task_id']==$t['task_id']){
+				$selected[$row['task_id']]=$t['task_status_id'];
 					}
 				}
 				//add the selected task status for the drop down menu

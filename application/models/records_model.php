@@ -12,6 +12,11 @@ class Records_model extends CI_Model
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
 
+	public function get_task_history($urn){
+		$qry = "select task_name task, task_status, date_format(`timestamp`,'%d/%m/%Y %H:%i') `date`, name from task_history join users using(user_id) join tasks using(task_id) join task_status_options using(task_status_id) order by `timestamp` desc";
+		return $this->db->query($qry)->result_array();
+	}
+
     public function check_max_dials($urn)
     {
         //checks if a record has had too many non-contactable outcomes and removes it from the pot

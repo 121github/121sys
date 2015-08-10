@@ -18,6 +18,12 @@ class Dashboard extends CI_Controller
         unset($_SESSION['navigation']);
     }
 
+  public function pending_tasks()
+    {
+		$tasks = $this->Dashboard_model->pending_tasks();
+		echo json_encode(array("success"=>true,"data"=>$tasks));
+	}
+
     //this laods the user dashboard view
     public function ghs()
     {

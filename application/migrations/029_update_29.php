@@ -14,7 +14,6 @@ class Migration_update_29 extends CI_Migration
 		$this->db->query("DROP TABLE IF EXISTS record_tasks");
 		$this->db->query("DROP TABLE IF EXISTS tasks");
 		$this->db->query("DROP TABLE IF EXISTS tasks_to_options");
-		$this->db->query("DROP TABLE IF EXISTS record_tasks");
 		$this->db->query("DROP TABLE IF EXISTS task_history");
 		$this->db->query("DROP TABLE IF EXISTS task_status_options");
 		

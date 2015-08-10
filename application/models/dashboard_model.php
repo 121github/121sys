@@ -11,6 +11,12 @@ class Dashboard_model extends CI_Model
         parent::__construct();
     }
 
+	public function pending_tasks(){
+		$qry = "select urn,task_name,companies.name company, date_format(`timestamp`,'%d/%m/%y %H:%i') `date`, users.name, task_status, campaign_name from task_history join (select max(task_history_id) maxid from task_history group by concat(task_id,'-',urn)) maxtasks on maxtasks.maxid = task_history.task_history_id join records using(urn) join campaigns using(campaign_id) join users using(user_id) join task_status_options using(task_status_id) join tasks using(task_id) join companies using(urn) where task_status_id > 1";
+		return $this->db->query($qry)->result_array();	
+		
+	}
+	
     public function overdue_visits($filter = "")
     {
         $qry = "select urn,users.name owner, c1 as category,campaign_name as type,companies.name,records.date_updated,outcome from records inner join companies using(urn) inner join record_details using(urn) left join ownership using(urn) left join users using(user_id) inner join campaigns using(campaign_id) inner join outcomes using(outcome_id) where curdate()>date(nextcall) ";

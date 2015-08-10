@@ -213,7 +213,30 @@ var record = {
 			$(document).on('change', 'input.task_status', function () {
                 record.tasks.save('toggle',$(this));
             });
+			$(document).on('click', '#task-history', function () {
+                record.tasks.history();
+            });
         },
+		history:function(){
+			 $.ajax({
+                url: helper.baseUrl + 'records/get_task_history',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    'urn': record.urn
+                },
+                fail: function () {
+                    flashalert.danger('Cannot load tasks history');
+                }
+            }).done(function (response) {
+				var mheader = "Task History",mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-right" type="button">Close</button>',mbody="<ul style='list-style:none'>";
+				$.each(response.data,function(i,row){
+					mbody += "<li style='margin:0px 0px 5px'><small><b>"+row.date+': '+row.name+"</b></small><br>"+row.task+": "+ row.task_status +"</li>";
+				});
+				mbody += "</ul>";
+				modals.load_modal(mheader, mbody, mfooter);
+			});
+		},
         load_panel: function () {
             $.ajax({
                 url: helper.baseUrl + 'records/get_campaign_tasks',
@@ -230,7 +253,7 @@ var record = {
                     var tasks = "";
                     $.each(response.data, function (k, row) {
 						if(row.statuses){
-                        tasks += '<div class="col-sm-4"><label>' + row.task_name + '</label><br><select class="selectpicker task_status" id="' + row.task_id + '">';
+                        tasks += '<div class="col-sm-6"><label>' + row.task_name + '</label><br><select class="selectpicker task_status" id="' + row.task_id + '">';
                         $.each(row.statuses, function (status_id,status) {
                             if (status_id == row.selected) {
                                 var selected = "selected"
@@ -246,7 +269,12 @@ var record = {
 							} else {
 							var size = "";
 							}
-						  tasks += '<div class="col-sm-4"><label>' + row.task_name + '</label><br><input '+size+' id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
+							 if (row.selected=="2") {
+                                var selected = "checked"
+                            } else {
+                                var selected = "";
+                            }
+						  tasks += '<div class="col-sm-4"><label>' + row.task_name + '</label><br><input '+selected+' '+size+' id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
 						}
                     });
                     $('#tasks-panel').html(tasks);
