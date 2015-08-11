@@ -166,6 +166,18 @@ div.tooltip-inner {
     border-left-color:#fff;
     box-shadow:none;
 }
+.dropdown-menu .sub-menu-left {
+    right: 100%;
+    left: -100%;
+    position: absolute;
+    top: -5px;
+    display:none;
+    margin-top: -1px;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+    border-right-color:#fff;
+    box-shadow:none;
+}
 .right-caret:after,.left-caret:after
 {	content:"";
     border-bottom: 5px solid transparent;
