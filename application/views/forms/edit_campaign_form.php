@@ -114,7 +114,50 @@
             <p class="backup_error"></p>
         </div>
     </div>
-
+<div class="form-group input-group-sm">
+        <p>
+            Please set the max dials allowed before they are removed
+            <select name="max_dials">
+           <option value="">No Limit</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            </select>
+        </p>
+    </div>
+    
+    <div class="form-group input-group-sm">
+     Please set the fields to order virgin record calling priority
+        <p>
+            Priority 1:
+  <select class="virgin-order" name="virgin_order_1">
+    <option value="">Not Applicable</option>
+           <option value="urn">URN</option>
+            <option value="client_ref">Client Ref</option>
+            <option value="rand()">Random</option>
+           <option value="turnover">Turnover</option>
+           <option value="distance">Distance from last appointment</option>
+           <option value="employees">Employees</option>
+          
+            </select>
+        </p>
+         <p>
+            Priority 2:
+  <select class="virgin-order" name="virgin_order_2">
+    <option value="">Not Applicable</option>
+           <option value="urn">URN</option>
+            <option value="client_ref">Client Ref</option>
+            <option value="rand()">Random</option>
+           <option value="turnover">Turnover</option>
+           <option value="distance">Distance from last appointment</option>
+           <option value="employees">Employees</option>
+         
+            </select>
+        </p>
+    </div>
     <div class="form-group input-group-sm">
         <p>
             Please set the map icon

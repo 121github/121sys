@@ -18,12 +18,12 @@
 
       <span class="pull-right">
             <?php //show navigation if the user came from the list records page
-            if (!empty($nav['prev']) && !$automatic && in_array("search records", $_SESSION['permissions'])): ?>
+            if (!empty($nav['prev']) && !$automatic): ?>
                 <a type="button" class="btn btn-default btn-lg <?php if (!$allow_skip) {
                     echo "nav-btn";
                 } ?>" href="<?php echo $nav['prev'] ?>">Previous</a>
             <?php endif ?>
-          <?php if (!empty($nav['next']) && !$automatic && in_array("search records", $_SESSION['permissions'])): ?>
+          <?php if (!empty($nav['next']) && !$automatic): ?>
               <a type="button" class="btn btn-default btn-lg <?php if (!$allow_skip) {
                   echo "nav-btn";
               } ?>" href="<?php echo $nav['next'] ?>">Next</a>

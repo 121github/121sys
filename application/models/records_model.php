@@ -11,7 +11,7 @@ class Records_model extends CI_Model
         parent::__construct();
         $this->name_field = "concat(title,' ',firstname,' ',lastname)";
     }
-
+	
 	public function get_task_history($urn){
 		$qry = "select task_name task, task_status, date_format(`timestamp`,'%d/%m/%Y %H:%i') `date`, name from task_history join users using(user_id) join tasks using(task_id) join task_status_options using(task_status_id) order by `timestamp` desc";
 		return $this->db->query($qry)->result_array();
@@ -230,36 +230,43 @@ class Records_model extends CI_Model
 
     public function get_record()
     {
+		//clear nav
+		$this->db->where("user_id",$_SESSION['user_id']);
+		$this->delete("navigation");
+		//if a virgin order for the campaign is set then it's declare it here to insert into the virgin query below
+		$custom_order = isset($_SESSION['custom_order'])?" order by " . $_SESSION['custom_order']:"";
+		$custom_join = isset($_SESSION['custom_joins'])?$_SESSION['custom_joins']:"";
+		//other variables
         $urn = 0;
         $campaign = $_SESSION['current_campaign'];
         $user_id = $_SESSION['user_id'];
         if (intval($campaign)) {
             $priority = array();
             //1st priority is call back DMS and email sents within 10 mins belonging to the user
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between now() - interval 10 MINUTE and now() + interval 10 MINUTE and (user_id = '$user_id') and outcome_id in(2,85) order by case when outcome_id = 2 then 1 else 2 end, date_updated limit 1";
+            $priority[] = "select urn,user_id from records left join ownership using(urn) join navigation nav using(urn) where nav.urn is null and campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between now() - interval 10 MINUTE and now() + interval 10 MINUTE and (user_id = '$user_id') and outcome_id in(2,85) order by case when outcome_id = 2 then 1 else 2 end, date_updated";
             //next priority is any all other DMS and emails belonging to the user
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(2,85) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials limit 1";
+            $priority[] = "select urn,user_id from records left join ownership using(urn) join navigation nav using(urn) where nav.urn is null and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(2,85) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials";
             //next priority is lapsed callbacks	beloning to the user
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(1,2,85) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,date_updated,dials limit 1";
+            $priority[] = "select urn,user_id from records left join ownership using(urn) join navigation nav using(urn) where nav.urn is null and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(1,2,85) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,date_updated,dials";
             //next priority is lapsed callbacks	unassigned
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
-                $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(1,2,85) and user_id is null order by case when outcome_id = 2 then 1 else 2 end,date_updated,dials limit 1";
+                $priority[] = "select urn,user_id from records left join ownership using(urn) join navigation nav using(urn) where nav.urn is null and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(1,2,85) and user_id is null order by case when outcome_id = 2 then 1 else 2 end,date_updated,dials";
             }
             //next priority is virgin and assigend to the user
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (user_id = '$user_id') order by date_updated,dials limit 1";
+			$priority[] = "select urn,user_id from records left join ownership using(urn) $custom_join join navigation nav using(urn) where nav.urn is null and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (user_id = '$user_id')" . $custom_order ;
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
                 //next priority is virgin and unassigned
-                $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and user_id is null order by date_updated,dials limit 1";
+			$priority[] = "select urn,user_id from records left join ownership using(urn) $custom_join join navigation nav using(urn) where nav.urn is null and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and user_id is null ". $custom_order ;
             }
             //next priority is any other record with a nextcall date in order of lowest dials (current user)
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (user_id = '$user_id') order by date_updated,dials limit 1";
+            $priority[] = "select urn,user_id from records left join ownership using(urn) join navigation nav using(urn) where nav.urn is null and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (user_id = '$user_id') order by date_updated,dials";
             //next any other record with a nextcall date in order of lowest dials (any user)
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
-                $priority[] = "select urn,user_id from records left join ownership using(urn) where campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and user_id is null order by date_updated,dials limit 1";
+                $priority[] = "select urn,user_id from records left join ownership using(urn) join navigation nav using(urn) where nav.urn is null and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and user_id is null order by date_updated,dials";
             }
-
+			
             foreach ($priority as $k => $qry) {
-                $query = $this->db->query($qry);
+                $query = $this->db->query($qry." limit 1");
 
                 if ($query->num_rows() > 0) {
                     $urn = $query->row(0)->urn;
@@ -270,7 +277,7 @@ class Records_model extends CI_Model
 
             }
             //if no user is allocated we should add the a user to prevent someone else landing on this record
-            if (empty($owner) && in_array("keep re", $_SESSION['permissions'])) {
+            if (empty($owner) && in_array("keep records", $_SESSION['permissions'])) {
                 $this->db->replace("ownership", array("user_id" => $user_id, "urn" => $urn));
             }
             return $urn;
@@ -757,10 +764,16 @@ class Records_model extends CI_Model
                     $is_owner = true;
                 }
             }
-            if (in_array($_SESSION['view own records'])) {
+            if (in_array('view own records',$_SESSION['permissions'])) {
                 //redirect to error page is user is not the owner
                 if (!$is_owner) {
+					if(isset($_SESSION['navigation'])){
+						//skip to the next record
+					$k = array_search($urn,$_SESSION['navigation']);
+					redirect(base_url() . "records/detail/".$_SESSION['navigation'][$k+1]);
+					} else {
                     redirect(base_url() . "error/ownership");
+					}
                 }
             }
         }

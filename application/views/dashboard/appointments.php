@@ -13,7 +13,7 @@
         <div class="pull-right">
             <form class="filter-form">
                 <div class="btn-group">
-                    <button id="record-icon" class="btn btn-default btn-xs iconpicker" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:# 0066">
+                    <button id="record-icon" class="btn btn-default btn-xs iconpicker" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:# 0066"></button>
                 </div>
                 <div class="btn-group">
                     <input type="hidden" name="group">
@@ -53,6 +53,38 @@
                         <i class="bottom right"></i>
                     </div>
                     <div class="directions-btn">
+                               <form class="form-horizontal map-form">
+<div class="input-group" style="float:left;">
+             <input hidden name="travel-mode">
+                                        <input hidden name="destination"><span class="pointer btn-default input-group-addon" id="show-uk"><span class="fa fa-globe"></span></span>
+  <span class="pointer btn-default input-group-addon get-current-location-btn"><span class="glyphicon glyphicon-map-marker"></span></span>
+  <input type="text" class="form-control input-sm" name="postcode"
+                                               placeholder="Postcode..."
+                                               title="Enter the location" />
+  <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
+</div>
+<div style="float:right;margin-right:50px;">
+ <span style="opacity: 0.4; filter: alpha(opacity=40);" class="planner-travel-mode DRIVING pointer" item-mode="DRIVING"><img
+                                                width="25px;" src="<?php echo base_url() ?>assets/img/icons/car.png"/></span>
+                                        <span style="opacity: 0.4; filter: alpha(opacity=40);"
+                                              class="planner-travel-mode BICYCLING pointer" item-mode="BICYCLING"><img
+                                                width="25px;" src="<?php echo base_url() ?>assets/img/icons/cycle.png"/></span>
+                                        <span style="opacity: 0.4; filter: alpha(opacity=40);"
+                                              class="planner-travel-mode WALKING pointer" item-mode="WALKING"><img
+                                                width="25px;" src="<?php echo base_url() ?>assets/img/icons/walking.png"/></span>
+                                                                          </div>  
+                                                                          <div style="clear:both"></div>  
+                                        <div class="route-info"></div>
+                                        <div style="clear:both"></div>  
+                                        <div id="show-directions"></div>
+                        </form>
+                        </div>
+                        </h1>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                    
 <style>
     #map-canvas {
         min-height: 750px;

@@ -2039,7 +2039,11 @@ var record = {
                         $panel.find('.panel-content ul').append($('<li/>').text(val.name));
                     });
                 } else {
-                    $panel.find('.panel-content').append($('<p/>').text('There are no users allocated to this record. To take ownership you can update the record or use the edit button to assign it to another user.'));
+					var no_owners = 'There are no users allocated to this record. ';
+					if(helper.permissions['edit ownership'] > 0){
+					no_owners += 'To take ownership you can update the record or use the edit button to assign it to a user.'
+					}
+                    $panel.find('.panel-content').append($('<p/>').text(no_owners));
                 }
 
             });

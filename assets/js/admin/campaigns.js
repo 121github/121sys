@@ -258,7 +258,10 @@ var admin = {
                                     "<td class='campaign_id'>" + val.campaign_id +
                                     "</td><td class='campaign_name'>" + val.campaign_name +
                                     "</td><td>" + val.campaign_type_desc +
-                                            "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span>" +
+                                            "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span>" +			"<span class='hidden max_dials'>" + val.max_dials + "</span>" +
+											"<span class='hidden virgin_order_1'>" + val.virgin_order_1 + "</span>" +
+								
+												"<span class='hidden virgin_order_2'>" + val.virgin_order_2 + "</span>" +
 											 "<span class='hidden record_layout'>" + val.record_layout + "</span>" +
                                             "<span class='hidden campaign_type_id'>" + val.campaign_type_id + "</span>" +
                                             "<span class='hidden min_quote_days'>" + (val.min_quote_days?val.min_quote_days:'') + "</span>" +
@@ -289,7 +292,9 @@ var admin = {
             var min_quote_days = $('form').find('input[name="min_quote_days"]');
             var max_quote_days = $('form').find('input[name="max_quote_days"]');
             var map_icon = row.find('.map_icon').text();
-
+			$('form').find('select[name="max_dials"]').val(row.find('.max_dials').text());
+			$('form').find('select[name="virgin_order_1"]').val(row.find('.virgin_order_1').text());
+			$('form').find('select[name="virgin_order_2"]').val(row.find('.virgin_order_2').text());
             $('form').find('input[name="campaign_id"]').val(row.find('.campaign_id').text());
             $('form').find('input[name="custom_panel_name"]').val(row.find('.custom_panel_name').text());
             $('form').find('select[name="campaign_type_id"]').selectpicker('val', row.find('.campaign_type_id').text());
@@ -309,7 +314,7 @@ var admin = {
             if (map_icon.length > 0) {
                 $('#map-icon').iconpicker('setIcon', map_icon);
             }
-
+			admin.campaigns.get_custom_fields(row.find('.campaign_id').text());
             admin.campaigns.get_features(row.find('.campaign_id').text());
 
             $('.ajax-table').fadeOut(1000, function() {
@@ -337,6 +342,7 @@ var admin = {
             });
 
         },
+		
         check_quote_days: function(min_quote_days, max_quote_days){
             $('form').find('.min_quote_days').text("");
             if (min_quote_days > max_quote_days) {
@@ -398,7 +404,20 @@ var admin = {
                 }
             });
         },
-
+		get_custom_fields: function(campaign){
+			  $.ajax({
+                url: helper.baseUrl + 'admin/get_custom_fields',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    campaign: campaign
+                }
+            }).done(function(response) {
+				$.each(response, function(i,row){
+                $('form').find('.virgin-order').append('<option value="'+row.field+'">'+row.field_name+'</option>');
+				});
+            });
+		},
         get_features: function(campaign) {
             $.ajax({
                 url: helper.baseUrl + 'admin/get_campaign_features',

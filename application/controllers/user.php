@@ -345,6 +345,15 @@ class User extends CI_Controller
                 $_SESSION['current_client'] = $campaign_row['client_name'];
                 $_SESSION['current_campaign_name'] = $campaign_row['campaign_name'];
                 $_SESSION['current_campaign'] = $campaign_row['campaign_id'];
+				//this is to set the order of virgin records in the start calling pot
+				if(!empty($campaign_row['virgin_order_1'])){
+				$_SESSION['custom_joins'] = $this->get_join($campaign_row['virgin_order_1']);
+				$_SESSION['custom_order']= $campaign_row['virgin_order_1'];
+				}
+				if(!empty($campaign_row['virgin_order_2'])&&!empty($campaign_row['virgin_order_1'])){
+				$_SESSION['custom_joins'] .= $this->get_join($campaign_row['virgin_order_2']);
+				$_SESSION['custom_order'] .= ",".$campaign_row['virgin_order_1'];
+				}
                 $this->set_campaign_features();
                 $this->apply_default_filter();
             }
@@ -370,6 +379,23 @@ class User extends CI_Controller
         }
         echo json_encode(array());
     }
+
+	public function get_join($field){
+		$joins="";
+		if($field == "employees" || $field == "turnover"){
+		$joins .= " left join companies using(urn) ";	
+		}
+		if($field == "client_ref"){
+		$joins .= " left join client_refs using(urn) ";	
+		}
+		if($field == "c1" || $field == "c2" || $field == "c3" || $field == "c4" || $field == "c5" || $field == "c6" || $field == "d1" || $field == "d2" || $field == "dt1" || $field == "dt2" || $field == "n1" || $field == "n2" || $field == "n3"){
+		$joins .= " left join record_details using(urn) ";	
+		}
+		if($field == "distance"){
+		$joins .= " ";	
+		}
+		return $joins;
+	}
 
     public function index()
     {

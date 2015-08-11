@@ -46,12 +46,14 @@ public function search_urn_by_c1($ref){
 
 }
 public function search_by_contact_phone($phone){
-	$qry = "select urn,parked_code,urgent from records join contacts using(urn) join contact_telephone using(contact_id) left join record_details using(urn) where telephone_number like '%$phone%' order by c1";
+	//GHS ONLY
+	$qry = "select urn,parked_code,urgent from records join contacts using(urn) join contact_telephone using(contact_id) left join record_details using(urn) where telephone_number like '%$phone%' and campaign_id in(22,28,29) order by c1";
 	return $this->db->query($qry)->row_array();
 
 }
 public function search_urn_by_address($add1,$postcode){
-		$qry = "select urn,parked_code,urgent from records left join record_details using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) where postcode = '$postcode' and add1 like '$add1%' order by c1";
+	//GHS ONLY
+		$qry = "select urn,parked_code,urgent from records left join record_details using(urn) left join contacts using(urn) left join contact_addresses using(contact_id) where postcode = '$postcode' and add1 like '$add1%' and campaign_id in(22,28,29) order by c1";
 		$this->firephp->log($qry);
 		return $this->db->query($qry)->row_array();
 
