@@ -230,9 +230,6 @@ class Records_model extends CI_Model
 
     public function get_record()
     {
-		//clear nav
-		$this->db->where("user_id",$_SESSION['user_id']);
-		$this->delete("navigation");
 		//if a virgin order for the campaign is set then it's declare it here to insert into the virgin query below
 		$custom_order = isset($_SESSION['custom_order'])?" order by " . $_SESSION['custom_order']:"";
 		$custom_join = isset($_SESSION['custom_joins'])?$_SESSION['custom_joins']:"";
