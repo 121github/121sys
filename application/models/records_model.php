@@ -861,7 +861,7 @@ class Records_model extends CI_Model
         if ($urn) {
             $qry = "select appointment_type_id id,appointment_type name, icon from appointment_types at join campaign_appointment_types using(appointment_type_id) records using(campaign_id) where urn = '$urn'";
         } else {
-            $qry = "select appointment_type_id id,appointment_type name from appointment_types join campaign_appointment_types using(appointment_type_id) where campaign_id = '$campaign'";
+            $qry = "select appointment_type_id id,appointment_type name,icon from appointment_types join campaign_appointment_types using(appointment_type_id) where campaign_id = '$campaign'";
         }
 		$query = $this->db->query($qry);
 		if($query->num_rows()){
