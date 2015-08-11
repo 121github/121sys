@@ -4,7 +4,8 @@ init:function(){
 		  $.ajax({
                             url: helper.baseUrl + 'trackvia/check_voicemail',
                             type: "POST",
-                            data: {urn: record.urn}
+							dataType:"JSON",
+                            data: {urn: $('#urn').val()}
                         }).done(function(response){
 								if(response.success){
 	alert("If an answer machine picks up you should leave a message!");

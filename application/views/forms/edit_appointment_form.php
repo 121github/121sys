@@ -13,9 +13,7 @@
           <p>Please choose the appointment type</p>
 <select name="appointment_type_id" class="selectpicker typepicker" title="Choose a type" data-width="95%" required>
  <?php foreach($types as $type): ?>
- <option 
- <?php if($type['name']=="Telephone"){ echo "data-icon='glyphicon-phone'"; } ?>
- <?php if($type['name']=="Face to face"){ echo "data-icon='glyphicon-user'"; } ?>
+ <option data-icon="<?php echo $type['icon'] ?>" 
   value="<?php echo $type['id'] ?>"><?php echo $type['name'] ?></option>
  <?php endforeach; ?>
 </select>

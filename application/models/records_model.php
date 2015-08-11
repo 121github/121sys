@@ -859,12 +859,18 @@ class Records_model extends CI_Model
     public function get_appointment_types($urn = false, $campaign = false)
     {
         if ($urn) {
-            $qry = "select appointment_type_id id,appointment_type name from appointment_types at left join records using(campaign_id) where (urn = '$urn' or at.campaign_id is null)";
+            $qry = "select appointment_type_id id,appointment_type name, icon from appointment_types at join campaign_appointment_types using(appointment_type_id) records using(campaign_id) where urn = '$urn'";
         } else {
-            $qry = "select appointment_type_id id,appointment_type name from appointment_types where (campaign_id = '$campaign' or campaign_id is null)";
+            $qry = "select appointment_type_id id,appointment_type name from appointment_types join campaign_appointment_types using(appointment_type_id) where campaign_id = '$campaign'";
         }
-        $result = $this->db->query($qry)->result_array();
-        return $result;
+		$query = $this->db->query($qry);
+		if($query->num_rows()){
+        return  $query->result_array();
+		} else {
+		//if no app types have been set for the campaign just use the defaults
+		$qry = "select appointment_type_id id,appointment_type name, icon from appointment_types where is_default = 1 ";
+		return  $this->db->query($qry)->result_array();
+		}
     }
 
     public function save_ownership($urn, $owners = false)
