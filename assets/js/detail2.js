@@ -1435,7 +1435,9 @@ var record = {
                 data: {
                     urn: record.urn
                 }
-            }).done(function (response) {
+            }).fail(function(){
+				flashalert.danger("The appointment slots could not be loaded");
+			}).done(function (response) {
                 $('#slots-panel').empty();
                 if (response.success) {
                     var table = '<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th><th>AM</th><th>PM</th></thead><tbody>';
@@ -1454,7 +1456,7 @@ var record = {
                 } else {
                     $('#slots-panel').html('<p>No slots found</p>');
                 }
-            });
+            })
         }
     },
     //emails panel functions

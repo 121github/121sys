@@ -284,7 +284,9 @@ var modals = {
             } else {
                 flashalert.danger(response.msg);
             }
-        });
+        }).fail(function(){
+				flashalert.danger("There was an error saving the appointment");
+			});
     },
     delete_appointment: function (id, cancellation_reason) {
         $.ajax({

@@ -23,7 +23,9 @@ class Appointments extends CI_Controller
 
 	public function slot_availability(){
 		$urn = $this->input->post('urn');
-	 $slots = $this->Appointments_model->slot_availability($urn);	
+		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
+		$user_id = false;
+	 $slots = $this->Appointments_model->slot_availability($campaign_id,$user_id);	
 	 echo json_encode(array("success"=>true,"data"=>$slots));
 	}
 

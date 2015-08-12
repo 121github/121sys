@@ -908,7 +908,7 @@ class Records extends CI_Controller
 				$response = array("success" => true);
 				
 				//if its a GHS campaign update trackvia
-				if($_SESSION['current_client']=="GHS"){
+				if(isset($_SESSION['current_client'])&&$_SESSION['current_client']=="GHS"){
 					$response["trackvia"] = base_url()."trackvia/add_appointment";
 					$response["urn"] = $data['urn'];
 				}

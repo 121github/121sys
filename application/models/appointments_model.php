@@ -11,45 +11,65 @@ class Appointments_model extends CI_Model
         parent::__construct();
     }
 	
-	public function slot_availability($urn){
+	public function slot_availability($campaign_id,$user_id){
+		$days = array("1"=>"Monday","2"=>"Tuesday","3"=>"Wednesday","4"=>"Thursday","5"=>"Friday","6"=>"Saturday","7"=>"Sunday");
+		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end, sum(max_slots) `max_slots`,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where 1 ";
+		
+		if($user_id){
+		$qry .= " and user_id = '$user_id' ";
+		}
+		if($campaign_id){
+		$qry .= " and campaign_id = '$campaign_id' ";
+		}
+		$qry .= " group by appointment_slot_id,day";
+		$slot_data = $this->db->query($qry)->result_array();
 		$slots = array();
 		$thresholds = array();
+		foreach($slot_data as $row){
 		//GHS campaign appointment slot thresholds
-		$thresholds["Monday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Tuesday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Wednesday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Thursday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Friday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Saturday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Sunday"]= array('am' => 0,'am_max'=>5,'pm' => 0,'pm_max'=>15);
-		
+				
+				if(!empty($row['day'])){
+				$thresholds[$days[$row['day']]][] = array("slot_id"=>$row['appointment_slot_id'],"name"=>$row['slot_name'],"apps"=>0,"max"=>$row['max_slots'],"desc"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
+		} else {
+		$general[] = array("slot_id"=>$row['appointment_slot_id'],"name"=>$row['slot_name'],"apps"=>0,"max"=>$row['max_slots'],"desc"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
+		$this->firephp->log($general);
+		}
+		}
+
+
+foreach($days as $day){
+if(!array_key_exists($day,$thresholds)){
+	
+$thresholds[$day] = $general;	
+}	
+}
+
+$this->firephp->log($thresholds);exit;
+
 for($i = 0; $i < 30; $i++){
     $slots[date("D jS M", strtotime('+'. $i .' days'))] = $thresholds[date("l", strtotime('+'. $i .' days'))];
 }
 
-		$am = "select date(`start`) start,count(*) count from appointments left join records using(urn) where time(`start`) between '09:00:00' and '12:59:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`) ";
-		$pm = "select date(`start`) start,count(*) count from appointments left join records using(urn )where time(`start`) between '13:00:00' and '18:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`)";
-		$eve = ""; //not using
-		
-		$am_results = $this->db->query($am)->result_array();
-		$pm_results = $this->db->query($pm)->result_array();
-		//$eve_results = $this->db->query($eve)->result_array();
+$this->firephp->log($slots);
 
-		foreach($am_results as $row){
-			$date = date("D jS M", strtotime($row['start']));
-			@$slots[$date]['am']=$row['count'];
+foreach($slots as $day => $slot){
+	if(isset($slot['slot_start'])){
+	$qry = "select date(`start`) start,count(*) count from appointments left join records using(urn) join campaigns using(campaign_id) where time(`start`) between '".$slot['slot_start']."' and '".$slot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and ";
+		if($user_id){
+		$qry .= " and user_id = '$user_id' ";
 		}
-		foreach($pm_results as $row){
-			$date = date("D jS M", strtotime($row['start']));
-			@$slots[$date]['pm']=$row['count'];
+		if($campaign_id){
+		$qry .= " and campaign_id = '$campaign_id' ";
 		}
-		/*
-		foreach($eve_results as $row){
+	$qry .= " group by date(`start`) ";
+	$result = $this->db->query($qry)->result_array();
+	foreach($result as $row){
 			$date = date("D jS M", strtotime($row['start']));
-				$day = date("l", strtotime($row['start']));
-			@$slots[$date][$day]['eve']++;
+			@$slots[$date][$slot]['apps']=$row['count'];
 		}
-		*/
+	}
+}
+		
 		return $slots;
 	}
 	
