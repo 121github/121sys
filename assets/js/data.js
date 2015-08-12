@@ -867,7 +867,7 @@ var add_record = {
         }).done(function (response) {
             if (response.success) {
                 //Redirect to the record panel
-                window.location.href = helper.baseUrl()+'records/detail/' + response.record_id;
+                window.location.href = helper.baseUrl+'records/detail/' + response.record_id;
                 flashalert.success("Record saved");
             }
             else {
