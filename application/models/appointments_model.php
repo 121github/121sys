@@ -13,13 +13,7 @@ class Appointments_model extends CI_Model
 	
 	public function slot_availability($urn){
 		$qry = "select slot_name,slot_description, sum(max_slots), user_id, campaign_id, `day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where 1 ";
-		
-		if($user_id){
-		$qry .= " and user_id = '$user_id' ";
-		}
-		if($campaign_id){
-		$qry .= " and campaign_id = '$campaign_id' ";
-		}
+
 		$qry .= " group by day";
 		$slot_data = $this->db->query($qry)->result_array();
 		$slots = array();
