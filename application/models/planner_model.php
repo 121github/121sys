@@ -88,18 +88,35 @@ class Planner_model extends CI_Model
     {
         $current_campaign_where = (isset($_SESSION['current_campaign'])?'&& c.campaign_id = '.$_SESSION['current_campaign']:'');
 
+        $join = '';
+        if (isset($_SESSION['current_campaign']) and $_SESSION['current_campaign']) {
+            $join .= 'INNER JOIN users_to_campaigns uc ON (uc.user_id = u.user_id  && uc.campaign_id = '.$_SESSION['current_campaign'].')';
+        }
+
         $qry = "select
                   c.campaign_name,
                   c.campaign_id,
                   b.branch_name,
                   b.branch_id,
+                  b.map_icon,
                   u.name,
-                  u.user_id
+                  u.user_id,
+                  r.role_id,
+                  r.role_name,
+                  ba.postcode,
+                  ba.location_id,
+                  ba.covered_area,
+                  l.lat,
+                  l.lng
                 from  users u
                   left join branch_user bu using (user_id)
                   left join branch_campaign bc using (branch_campaign_id)
                   left join branch b using (branch_id)
-                  left join campaigns c ON (c.campaign_id = bc.campaign_id ".$current_campaign_where.")";
+                  left join branch_area ba using (branch_area_id)
+                  inner join locations l using (location_id)
+                  left join campaigns c ON (c.campaign_id = bc.campaign_id ".$current_campaign_where.")
+                  left join user_roles r using (role_id)
+                   $join ";
 
         $result = $this->db->query($qry)->result_array();
         return $result;

@@ -67,6 +67,7 @@ class Planner extends CI_Controller
 
         $aux = array();
         $aux['Campaigns'] = array();
+        $aux['Others'] = array();
         foreach ($campaign_branch_users as $campaign_branch_user) {
             if (isset($campaign_branch_user['campaign_id'])) {
                 if (!isset($aux['Campaigns'][$campaign_branch_user['campaign_name']][$campaign_branch_user['branch_name']])) {
@@ -74,15 +75,53 @@ class Planner extends CI_Controller
                 }
                 $aux['Campaigns'][$campaign_branch_user['campaign_name']][$campaign_branch_user['branch_name']][$campaign_branch_user['user_id']] = $campaign_branch_user['name'];
             } else {
-                if (!isset($aux['Others'])) {
-                    $aux['Others'] = array();
-                }
                 $aux['Others'][$campaign_branch_user['user_id']] = $campaign_branch_user['name'];
             }
         }
+
+        if (!in_array($_SESSION['user_id'],$aux['Others'])) {
+            $aux['Others'][$_SESSION['user_id']] = $_SESSION['name'];
+        }
+
         $campaign_branch_users = $aux;
 
         return $campaign_branch_users;
+    }
+
+    public function showBranches() {
+        if ($this->input->is_ajax_request()) {
+            $user_id = $this->input->post('user_id');
+
+            $campaign_branch_users = $this->Planner_model->getCampaignBranchUsers();
+
+            $aux = array();
+            foreach ($campaign_branch_users as $campaign_branch_user) {
+                if (isset($campaign_branch_user['campaign_id'])) {
+                    if (!isset($aux[$campaign_branch_user['branch_id']]['current_branch']) || !$aux[$campaign_branch_user['branch_id']]['current_branch']) {
+                        $campaign_branch_user['current_branch'] = ($campaign_branch_user['user_id'] === $user_id?true:false);
+                    }
+                    else {
+                        $campaign_branch_user['current_branch'] = $aux[$campaign_branch_user['branch_id']]['current_branch'];
+                    }
+                    $campaign_branch_user["map_icon"] = ($campaign_branch_user["map_icon"]?str_replace("FA_","",str_replace("-","_",strtoupper($campaign_branch_user["map_icon"]))):NULL);
+                    if (!isset($aux[$campaign_branch_user['branch_id']])) {
+                        $campaign_branch_user['user_id'] = array($campaign_branch_user['user_id']);
+                    }
+                    else {
+                        $branch_user_id = $campaign_branch_user['user_id'];
+                        $campaign_branch_user['user_id'] = $aux[$campaign_branch_user['branch_id']]['user_id'];
+                        array_push($campaign_branch_user['user_id'],$branch_user_id);
+                    }
+                    $aux[$campaign_branch_user['branch_id']] = $campaign_branch_user;
+                }
+            }
+
+            $campaign_branch_users = $aux;
+
+            echo json_encode(array(
+                "data" => $campaign_branch_users
+            ));
+        }
     }
 
     public function planner_data()

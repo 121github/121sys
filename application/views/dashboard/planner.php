@@ -40,7 +40,7 @@
                             <span class="user-filter-name">User</span>
                         </button>
                         <ul class="dropdown-menu">
-                            <?php if (count($campaign_branch_users['Campaigns']) == 1) { ?>
+                            <?php if (count($campaign_branch_users['Campaigns']) == 1 && isset($_SESSION['current_campaign'])) { ?>
                                 <?php foreach ($campaign_branch_users['Campaigns'] as $campaign => $branches): ?>
                                     <?php if (!empty($branches)) { ?>
                                         <?php foreach ($branches as $branch => $user): ?>

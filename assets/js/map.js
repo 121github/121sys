@@ -12,10 +12,12 @@ var maps = {
         this.map;
         this.current_postcode = false;
         this.markers = [];
+        this.circles = [];
         this.markerLocation;
         this.bounds = null;
         this.temp_bounds = null;
         this.items = [];
+        this.branches = [];
         this.table;
         this.infowindow = new google.maps.InfoWindow();
         this.geocoder = new google.maps.Geocoder();
@@ -468,6 +470,7 @@ var maps = {
     showItems: function () {
         if ($('#map-view-toggle').prop('checked')) {
             maps.deleteMarkers();
+            maps.deleteCircles();
             var legend_ar = [];
             $.each(maps.items, function (i, item) {
                 if (maps.map_type == "appointments") {
@@ -498,6 +501,15 @@ var maps = {
                 var legendControl = new maps.showLegend(showLegendDiv, map, legend_ar);
                 map.controls[google.maps.ControlPosition.LEFT_TOP].push(showLegendDiv);
             }
+        }
+    },
+
+    //Show the branches in the map
+    showBranches: function () {
+        if ($('#map-view-toggle').prop('checked')) {
+            $.each(maps.branches, function (i, item) {
+                maps.addBranchMarker(item);
+            });
         }
     },
 
@@ -573,19 +585,19 @@ var maps = {
     addRecordMarker: function (value) {
         var marker_color = "#" + (value.record_color_map ? (value.record_color_map).substr(1) : maps.intToARGB(maps.hashCode(value.attendee)));
         var marker_icon = fontawesome.markers.MAP_MARKER;
-        var marker_scale = 0.4;
+        var marker_anchor = maps.getIconAnchor('CROSSHAIRS');
 
         if (((planner_permission == true)) && (value.record_planner_id)) {
             marker_icon = fontawesome.markers.FLAG;
-            marker_scale = 0.3;
+            marker_anchor = maps.getIconAnchor('FLAG');
         }
         else if (value.map_icon) {
             marker_icon = eval("fontawesome.markers." + value.map_icon);
-            marker_scale = 0.3;
+            marker_anchor = maps.getIconAnchor(value.map_icon);
         }
         else if (value.campaign_map_icon) {
             marker_icon = eval("fontawesome.markers." + value.campaign_map_icon);
-            marker_scale = 0.3;
+            marker_anchor = maps.getIconAnchor(value.campaign_map_icon);
         }
 
         var navbtn = false;
@@ -664,7 +676,8 @@ var maps = {
             content: contentString,
             icon: {
                 path: marker_icon,
-                scale: marker_scale,
+                scale: 0.4,
+                anchor: marker_anchor,
                 strokeWeight: 0.2,
                 strokeColor: 'black',
                 strokeOpacity: 1,
@@ -680,15 +693,15 @@ var maps = {
         //var marker_icon = fontawesome.markers.MAP_MARKER;
         var marker_color = "#" + (value.record_color_map ? (value.record_color_map).substr(1) : maps.intToARGB(maps.hashCode(value.name)));
         var marker_icon = fontawesome.markers.MAP_MARKER;
-        var marker_scale = 0.4;
+        var marker_anchor = maps.getIconAnchor('CROSSHAIRS');
 
         if (value.map_icon) {
             marker_icon = eval("fontawesome.markers." + value.map_icon);
-            marker_scale = 0.3;
+            marker_anchor = maps.getIconAnchor(value.map_icon);
         }
         else if (value.campaign_map_icon) {
             marker_icon = eval("fontawesome.markers." + value.campaign_map_icon);
-            marker_scale = 0.3;
+            marker_anchor = maps.getIconAnchor(value.campaign_map_icon);
         }
 
         var navbtn = false;
@@ -766,7 +779,8 @@ var maps = {
             id: value.marker_id,
             icon: {
                 path: marker_icon,
-                scale: marker_scale,
+                scale: 0.4,
+                anchor: marker_anchor,
                 strokeWeight: 0.2,
                 strokeColor: 'black',
                 strokeOpacity: 1,
@@ -834,6 +848,77 @@ var maps = {
         maps.setMarker(marker);
     },
 
+    addBranchMarker: function (value) {
+        var marker_color = "#" + (value.color_map ? (value.color_map).substr(1) : maps.intToARGB(maps.hashCode(value.branch_id)));
+        var marker_icon = fontawesome.markers.CROSSHAIRS;
+        var marker_anchor = maps.getIconAnchor('CROSSHAIRS');
+
+        if (value.map_icon) {
+            marker_icon = eval("fontawesome.markers." + value.map_icon);
+            marker_anchor = maps.getIconAnchor(value.map_icon);
+        }
+
+        var contentString =
+            '<div id="content">' +
+            '<div id="siteNotice">' +
+            '</div>' +
+            '<h4 id="firstHeading" class="firstHeading">' + (value.branch_name ? value.branch_name : '') + '</h4>' +
+            '<div id="bodyContent_' + value.branch_id + '">' +
+            (value.campaign_name ? '<p><b>Campaign: </b>' + value.campaign_name + '</p>' : '') +
+            '</div>' +
+            '</div>';
+
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(value.lat, value.lng),
+            map: map,
+            title: value.branch_name,
+            postcode: value.postcode,
+            id: value.branch_id,
+            content: contentString,
+            icon: {
+                path: marker_icon,
+                scale: 0.4,
+                anchor: marker_anchor,
+                strokeWeight: 0.2,
+                strokeColor: 'black',
+                strokeOpacity: 1,
+                fillColor: marker_color,
+                fillOpacity: 0.9,
+            },
+        });
+
+        if (value.current_branch && value.covered_area) {
+            var circle = new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35,
+                map: map,
+                center: new google.maps.LatLng(value.lat, value.lng),
+                radius: parseInt(value.covered_area)
+            });
+            maps.setCircle(circle);
+
+        }
+
+        maps.setMarker(marker);
+    },
+
+    getIconAnchor: function(icon) {
+        var anchor;
+        switch(icon) {
+            case 'MAP_MARKER':
+                anchor = new google.maps.Point(15, -15);
+                break;
+            default:
+                anchor = new google.maps.Point(30, -30);
+                break;
+        }
+
+        return anchor;
+    },
+
     setMarker: function (marker) {
         google.maps.event.addListener(marker, 'click', function () {
             maps.infowindow.close();
@@ -855,6 +940,10 @@ var maps = {
         });
 
         maps.markers.push(marker);
+    },
+
+    setCircle: function (circle) {
+        maps.circles.push(circle);
     },
 
     // Hash any string into an integer value
@@ -898,6 +987,14 @@ var maps = {
     deleteMarkers: function () {
         maps.clearMarkers();
         maps.markers = [];
+
+    },
+
+    // Deletes all circles in the array by removing references to them.
+    deleteCircles: function () {
+        while(maps.circles[0]){
+            maps.circles.pop().setMap(null);
+        }
 
     },
 
