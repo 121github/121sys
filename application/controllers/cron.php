@@ -342,19 +342,24 @@ class Cron extends CI_Controller
             $aux[$contact['contact_id']] = $contact['telephone_number'];
 
             $new_telephone_number = $contact['telephone_number'];
+			$new_telephone_number = "0".ltrim($new_telephone_number,'044');
+			$new_telephone_number = "0".ltrim($new_telephone_number,'44');
             $new_telephone_number = str_replace('+44', '0', $new_telephone_number);
             $new_telephone_number = str_replace('+', '00', substr($new_telephone_number, 0, 2)) . substr($new_telephone_number, 2);
             $new_telephone_number = str_replace('(0)', '', $new_telephone_number);
 			$new_telephone_number = str_replace(' ', '', $new_telephone_number);
             $new_telephone_number = preg_replace('/[^0-9]/', '', $new_telephone_number);
-
-
+			
+echo $new_telephone_number; echo "<br>";
             if (strlen($new_telephone_number) < 7) {
                 $contact['telephone_number'] = '';
                 array_push($delete_telephone_numbers, $contact);
+				
             } else {
-                if ($new_telephone_number != $contact['telephone_number']) {
+
+                if ($new_telephone_number !== $contact['telephone_number']) {
                     $contact['telephone_number'] = $new_telephone_number;
+					echo $new_telephone_number; echo "<br>";
                     array_push($update_telephone_numbers, $contact);
                 }
             }
@@ -375,7 +380,10 @@ class Cron extends CI_Controller
             $output .= "OK --> 0 deleted \n\n";
         }
 
-
+		echo "<pre>";
+		print_r($update_telephone_numbers);
+		echo "</pre>";
+		exit;
         //Update the copmany with the new telephone_numbers
         $output .= "\tUpdating wrong contact telephone numbers... ";
         if (!empty($update_telephone_numbers)) {
