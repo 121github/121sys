@@ -15,36 +15,36 @@ var admin = {
         });
 
         // Map iconpicker
-		if($('#map-icon').length!==0){
-        $('#map-icon').iconpicker({
-            align: 'center', // Only in div tag
-            arrowClass: 'btn-success',
-            arrowPrevIconClass: 'glyphicon glyphicon-chevron-left',
-            arrowNextIconClass: 'glyphicon glyphicon-chevron-right',
-            cols: 5,
-            footer: true,
-            header: true,
-            icon: '',
-            iconset: 'fontawesome',
-            labelHeader: '{0} of {1} pages',
-            labelFooter: '{0} - {1} of {2} icons',
-            placement: 'bottom', // Only in button tag
-            rows: 5,
-            search: true,
-            searchText: 'Search',
-            selectedClass: 'btn-success',
-            unselectedClass: ''
-        });
+        if ($('#map-icon').length !== 0) {
+            $('#map-icon').iconpicker({
+                align: 'center', // Only in div tag
+                arrowClass: 'btn-success',
+                arrowPrevIconClass: 'glyphicon glyphicon-chevron-left',
+                arrowNextIconClass: 'glyphicon glyphicon-chevron-right',
+                cols: 5,
+                footer: true,
+                header: true,
+                icon: '',
+                iconset: 'fontawesome',
+                labelHeader: '{0} of {1} pages',
+                labelFooter: '{0} - {1} of {2} icons',
+                placement: 'bottom', // Only in button tag
+                rows: 5,
+                search: true,
+                searchText: 'Search',
+                selectedClass: 'btn-success',
+                unselectedClass: ''
+            });
 
-        $('#map-icon').on('change', function(e) {
-            var map_icon = ((e.icon.length>0 && e.icon != "empty")?e.icon:'');
-            $('form').find('input[name="map_icon"]').val(map_icon);
-        });
+            $('#map-icon').on('change', function(e) {
+                var map_icon = ((e.icon.length > 0 && e.icon != "empty") ? e.icon : '');
+                $('form').find('input[name="map_icon"]').val(map_icon);
+            });
 
-		}
+        }
 
     },
-	    hide_edit_form: function() {
+    hide_edit_form: function() {
         $('form').fadeOut(1000, function() {
             $('.ajax-table').fadeIn();
         });
@@ -255,28 +255,31 @@ var admin = {
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
                         $tbody.append("<tr>" +
-                                    "<td class='campaign_id'>" + val.campaign_id +
-                                    "</td><td class='campaign_name'>" + val.campaign_name +
-                                    "</td><td>" + val.campaign_type_desc +
-                                            "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span>" +			"<span class='hidden max_dials'>" + val.max_dials + "</span>" +
-											"<span class='hidden virgin_order_1'>" + val.virgin_order_1 + "</span>" +
-								
-												"<span class='hidden virgin_order_2'>" + val.virgin_order_2 + "</span>" +
-											 "<span class='hidden record_layout'>" + val.record_layout + "</span>" +
-                                            "<span class='hidden campaign_type_id'>" + val.campaign_type_id + "</span>" +
-                                            "<span class='hidden min_quote_days'>" + (val.min_quote_days?val.min_quote_days:'') + "</span>" +
-                                            "<span class='hidden max_quote_days'>" + (val.max_quote_days?val.max_quote_days:'') + "</span>" +
-                                            "<span class='hidden months_ago'>" + (val.months_ago?val.months_ago:'') + "</span>" +
-                                            "<span class='hidden months_num'>" + (val.months_num?val.months_num:'') + "</span>" +
-                                            "<span class='hidden map_icon'>" + (val.map_icon?val.map_icon:'empty') + "</span>" +
-                                    "</td><td>" + val.client_name +
-                                            "<span class='hidden client_id'>" + val.client_id + "</span>" +
-                                    "</td><td>" + val.campaign_status_text +
-                                            "<span class='hidden campaign_status'>" + val.campaign_status + "</span>" +
-                                    "</td><td class='start_date'>" + val.start_date +
-                                    "</td><td class='end_date'>" + val.end_date +
-                                    "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn'  item-id='" + val.campaign_id + "'>Delete</button>" +
-                                "</td></tr>");
+                            "<td class='campaign_id'>" + val.campaign_id +
+                            "</td><td class='campaign_name'>" + val.campaign_name +
+                            "</td><td>" + val.campaign_type_desc +
+                            "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span>" + "<span class='hidden max_dials'>" + val.max_dials + "</span>" +
+                            "<span class='hidden virgin_order_join'>" + val.virgin_order_join + "</span>" +
+                            "<span class='hidden virgin_order_string'>" + val.virgin_order_string + "</span>" + "<span class='hidden telephone_protocol'>" + val.telephone_protocol + "</span>" +
+                            "<span class='hidden telephone_prefix'>" + val.telephone_prefix + "</span>" +
+                            "<span class='hidden virgin_order_1'>" + val.virgin_order_1 + "</span>" +
+
+                            "<span class='hidden virgin_order_2'>" + val.virgin_order_2 + "</span>" +
+                            "<span class='hidden record_layout'>" + val.record_layout + "</span>" +
+                            "<span class='hidden campaign_type_id'>" + val.campaign_type_id + "</span>" +
+                            "<span class='hidden min_quote_days'>" + (val.min_quote_days ? val.min_quote_days : '') + "</span>" +
+                            "<span class='hidden max_quote_days'>" + (val.max_quote_days ? val.max_quote_days : '') + "</span>" +
+                            "<span class='hidden months_ago'>" + (val.months_ago ? val.months_ago : '') + "</span>" +
+                            "<span class='hidden months_num'>" + (val.months_num ? val.months_num : '') + "</span>" +
+                            "<span class='hidden map_icon'>" + (val.map_icon ? val.map_icon : 'empty') + "</span>" +
+                            "</td><td>" + val.client_name +
+                            "<span class='hidden client_id'>" + val.client_id + "</span>" +
+                            "</td><td>" + val.campaign_status_text +
+                            "<span class='hidden campaign_status'>" + val.campaign_status + "</span>" +
+                            "</td><td class='start_date'>" + val.start_date +
+                            "</td><td class='end_date'>" + val.end_date +
+                            "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn'  item-id='" + val.campaign_id + "'>Delete</button>" +
+                            "</td></tr>");
 
                         $options += "<option value='" + val.campaign_id + "'>" + val.campaign_name + "</options>";
                     }
@@ -292,15 +295,19 @@ var admin = {
             var min_quote_days = $('form').find('input[name="min_quote_days"]');
             var max_quote_days = $('form').find('input[name="max_quote_days"]');
             var map_icon = row.find('.map_icon').text();
-			$('form').find('select[name="max_dials"]').val(row.find('.max_dials').text());
-			$('form').find('select[name="virgin_order_1"]').val(row.find('.virgin_order_1').text());
-			$('form').find('select[name="virgin_order_2"]').val(row.find('.virgin_order_2').text());
+            $('form').find('input[name="virgin_order_string"]').val(row.find('.virgin_order_string').text());
+            $('form').find('input[name="telephone_protocol"]').val(row.find('.telephone_protocol').text());
+            $('form').find('input[name="telephone_prefix"]').val(row.find('.telephone_prefix').text());
+            $('form').find('input[name="virgin_order_join"]').val(row.find('.virgin_order_join').text());
+            $('form').find('select[name="max_dials"]').val(row.find('.max_dials').text());
+            $('form').find('select[name="virgin_order_1"]').val(row.find('.virgin_order_1').text());
+            $('form').find('select[name="virgin_order_2"]').val(row.find('.virgin_order_2').text());
             $('form').find('input[name="campaign_id"]').val(row.find('.campaign_id').text());
             $('form').find('input[name="custom_panel_name"]').val(row.find('.custom_panel_name').text());
             $('form').find('select[name="campaign_type_id"]').selectpicker('val', row.find('.campaign_type_id').text());
             $('form').find('input[name="campaign_name"]').val(row.find('.campaign_name').text());
             $('form').find('select[name="client_id"]').selectpicker('val', row.find('.client_id').text());
-			$('form').find('select[name="record_layout"]').selectpicker('val', row.find('.record_layout').text());
+            $('form').find('select[name="record_layout"]').selectpicker('val', row.find('.record_layout').text());
             $('form').find('select[name="campaign_status"]').selectpicker('val', row.find('.campaign_status').text());
             $('form').find('input[name="start_date"]').data('DateTimePicker').setDate(row.find('.start_date').text());
             $('form').find('input[name="end_date"]').data('DateTimePicker').setDate(row.find('.end_date').text());
@@ -308,13 +315,13 @@ var admin = {
             max_quote_days.val(row.find('.max_quote_days').text());
             $('form').find('input[name="months_ago"]').val(row.find('.months_ago').text());
             $('form').find('input[name="months_num"]').val(row.find('.months_num').text());
-            $('form').find('input[name="map_icon"]').val(((map_icon!="empty" && map_icon.length>0)?map_icon:''));
+            $('form').find('input[name="map_icon"]').val(((map_icon != "empty" && map_icon.length > 0) ? map_icon : ''));
 
             //Icon picker
             if (map_icon.length > 0) {
                 $('#map-icon').iconpicker('setIcon', map_icon);
             }
-			admin.campaigns.get_custom_fields(row.find('.campaign_id').text());
+            admin.campaigns.get_custom_fields(row.find('.campaign_id').text());
             admin.campaigns.get_features(row.find('.campaign_id').text());
 
             $('.ajax-table').fadeOut(1000, function() {
@@ -327,52 +334,50 @@ var admin = {
             $('form').find('input[name="months_num"],input[name="months_ago"]').numeric();
 
             //Check if the min_quote_days is less than max_quote_days
-            min_quote_days.blur(function(){
+            min_quote_days.blur(function() {
                 admin.campaigns.check_quote_days(parseInt(min_quote_days.val()), parseInt(max_quote_days.val()));
             });
-            max_quote_days.blur(function(){
+            max_quote_days.blur(function() {
                 admin.campaigns.check_quote_days(parseInt(min_quote_days.val()), parseInt(max_quote_days.val()));
             });
 
-            $('form').find('input[name="months_num"]').keyup(function(){
+            $('form').find('input[name="months_num"]').keyup(function() {
                 admin.campaigns.check_backup_months(parseInt($('form').find('input[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
             });
-            $('form').find('input[name="months_ago"]').keyup(function(){
+            $('form').find('input[name="months_ago"]').keyup(function() {
                 admin.campaigns.check_backup_months(parseInt($('form').find('input[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
             });
 
         },
-		
-        check_quote_days: function(min_quote_days, max_quote_days){
+
+        check_quote_days: function(min_quote_days, max_quote_days) {
             $('form').find('.min_quote_days').text("");
             if (min_quote_days > max_quote_days) {
                 $('form').find('.quote_days_error').text("The minimum quote days must be less than the maximum quote days");
                 $('form').find('input[name="min_quote_days"]').css('color', 'red');
                 $('form').find('input[name="max_quote_days"]').css('color', 'red');
-            }
-            else {
+            } else {
                 $('form').find('.quote_days_error').text("");
                 $('form').find('input[name="min_quote_days"]').css('color', 'black');
                 $('form').find('input[name="max_quote_days"]').css('color', 'black');
             }
         },
 
-        check_backup_months: function(months_ago, months_num){
+        check_backup_months: function(months_ago, months_num) {
             $('form').find('.backup_error').text("");
-            if (months_ago < months_num||!months_num||!months_ago) {
+            if (months_ago < months_num || !months_num || !months_ago) {
                 $('form').find('.backup_error').text("Second input should be less than the first");
                 $('form').find('input[name="months_num"]').css('color', 'red');
                 $('form').find('input[name="months_ago"]').css('color', 'red');
-				$('#archive-example').text('');
-            }
-            else {
-				var months_ago_moment = moment().subtract(months_ago,'months')
-				var month_ago_date = months_ago_moment.format('DD/MM/YYYY');
-				var month_num_date = months_ago_moment.add(months_num,'months').format('DD/MM/YYYY');
+                $('#archive-example').text('');
+            } else {
+                var months_ago_moment = moment().subtract(months_ago, 'months')
+                var month_ago_date = months_ago_moment.format('DD/MM/YYYY');
+                var month_num_date = months_ago_moment.add(months_num, 'months').format('DD/MM/YYYY');
                 $('form').find('.backup_error').text("");
                 $('form').find('input[name="months_num"]').css('color', 'black');
                 $('form').find('input[name="months_ago"]').css('color', 'black');
-				$('#archive-example').text('This would archive all records with a last update between '+month_ago_date+' and '+month_num_date+' if it was ran today');
+                $('#archive-example').text('This would archive all records with a last update between ' + month_ago_date + ' and ' + month_num_date + ' if it was ran today');
             }
         },
         create: function() {
@@ -385,7 +390,7 @@ var admin = {
         },
         //save a campaign
         save: function($btn) {
-            $("button[type=submit]").attr('disabled','disabled');
+            $("button[type=submit]").attr('disabled', 'disabled');
             $.ajax({
                 url: helper.baseUrl + 'admin/save_campaign',
                 type: "POST",
@@ -396,16 +401,15 @@ var admin = {
                     admin.campaigns.load_campaigns();
                     admin.hide_edit_form();
                     flashalert.success(response.message);
-                    $("button[type=submit]").attr('disabled',false);
-                }
-                else {
+                    $("button[type=submit]").attr('disabled', false);
+                } else {
                     flashalert.danger(response.message);
-                    $("button[type=submit]").attr('disabled',false);
+                    $("button[type=submit]").attr('disabled', false);
                 }
             });
         },
-		get_custom_fields: function(campaign){
-			  $.ajax({
+        get_custom_fields: function(campaign) {
+            $.ajax({
                 url: helper.baseUrl + 'admin/get_custom_fields',
                 type: "POST",
                 dataType: "JSON",
@@ -413,11 +417,11 @@ var admin = {
                     campaign: campaign
                 }
             }).done(function(response) {
-				$.each(response, function(i,row){
-                $('form').find('.virgin-order').append('<option value="'+row.field+'">'+row.field_name+'</option>');
-				});
+                $.each(response, function(i, row) {
+                    $('form').find('.virgin-order').append('<option value="' + row.field + '">' + row.field_name + '</option>');
+                });
             });
-		},
+        },
         get_features: function(campaign) {
             $.ajax({
                 url: helper.baseUrl + 'admin/get_campaign_features',

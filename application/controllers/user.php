@@ -346,6 +346,10 @@ class User extends CI_Controller
                 $_SESSION['current_campaign_name'] = $campaign_row['campaign_name'];
                 $_SESSION['current_campaign'] = $campaign_row['campaign_id'];
 				//this is to set the order of virgin records in the start calling pot
+				if(!empty($campaign_row['virgin_order_string'])){
+				$_SESSION['custom_joins'] = $campaign_row['virgin_order_join'];
+				$_SESSION['custom_order'] = $campaign_row['virgin_order_string'];
+				} else {
 				if(!empty($campaign_row['virgin_order_1'])){
 				$_SESSION['custom_joins'] = $this->get_join($campaign_row['virgin_order_1']);
 				$_SESSION['custom_order']= $campaign_row['virgin_order_1'];
@@ -354,6 +358,8 @@ class User extends CI_Controller
 				$_SESSION['custom_joins'] .= $this->get_join($campaign_row['virgin_order_2']);
 				$_SESSION['custom_order'] .= ",".$campaign_row['virgin_order_1'];
 				}
+				}
+				
                 $this->set_campaign_features();
                 $this->apply_default_filter();
             }

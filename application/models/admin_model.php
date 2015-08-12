@@ -10,11 +10,11 @@ class Admin_model extends CI_Model
     /* functions for the admin campaigns page */
     public function get_campaign_details($campaign = "")
     {
-        $qry = "select campaign_id,campaign_name,campaign_type_desc,record_layout,client_name,IF(campaign_status=1,'Live','Dead') campaign_status_text,campaign_type_id,custom_panel_name, campaign_status, client_id, IF(start_date is null,'-',date_format(start_date,'%d/%m/%Y')) start_date,IF(end_date is null,'-',date_format(end_date,'%d/%m/%Y')) end_date, min_quote_days, max_quote_days, bc.months_ago, bc.months_num, map_icon, max_dials, virgin_order_1,virgin_order_2  from campaigns left join campaign_types using(campaign_type_id) left join clients using(client_id) left join backup_by_campaign bc using (campaign_id) where 1";
+        $qry = "select campaign_id,campaign_name,campaign_type_desc,record_layout,client_name,IF(campaign_status=1,'Live','Dead') campaign_status_text,campaign_type_id,custom_panel_name, campaign_status, client_id, IF(start_date is null,'-',date_format(start_date,'%d/%m/%Y')) start_date,IF(end_date is null,'-',date_format(end_date,'%d/%m/%Y')) end_date, min_quote_days, max_quote_days, bc.months_ago, bc.months_num, map_icon, max_dials, virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix  from campaigns left join campaign_types using(campaign_type_id) left join clients using(client_id) left join backup_by_campaign bc using (campaign_id) where 1";
         if (!empty($urn)) {
             $qry .= " and camapign_id = '$campaign'";
         }
-        $qry .= " order by campaign_name desc";
+        $qry .= " order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
     public function add_new_campaign($form)

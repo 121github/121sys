@@ -392,6 +392,10 @@ class Admin extends CI_Controller
 			if (empty($form['virgin_order_2'])) {
                 $form['virgin_order_2'] = NULL;
             }
+			if (!empty($form['virgin_order_string'])) {
+				$form['virgin_order_1'] = NULL;
+                $form['virgin_order_2'] = NULL;
+            }
             if (empty($form['record_layout'])) {
                 $form['record_layout'] = "2col.php";
             }

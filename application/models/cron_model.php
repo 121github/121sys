@@ -11,6 +11,9 @@ class Cron_model extends CI_Model
         parent::__construct();
 
     }
+	public function unassign_owners(){
+	$this->db->query("select * from ownership where user_id not in(select user_id from users join role_permissions using(role_id) join permissions using(permission_id) where permission_name <> 'keep records') and urn not in (select urn from history join outcomes using(outcome_id)  join records using(urn) where keep_record = 1) and urn in(select urn from records where record_status = 1 and date(date_updated) < curdate())");	
+	}
 
 	public function remove_leavers(){
 	$this->db->query("update 121sys.users set user_status = 0 where name in(SELECT agent_name FROM attendance.`tbl_employees` where campaign = 'leaver') and group_id = 1");	

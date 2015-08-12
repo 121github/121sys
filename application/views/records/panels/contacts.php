@@ -29,7 +29,7 @@
               <dt><?php echo (strpos($number_text,"Transfer")!==false?"":$number['tel_name']) ?></dt>
                   <dd>
                       <a  <?php echo $style ?>
-                          href="#" class="startcall <?php echo $btn ?> <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="callto:<?php echo $number['tel_num'] ?>"><?php echo $number_text ?>
+                          href="#" class="startcall <?php echo $btn ?> <?php if(in_array("use timer",$_SESSION['permissions'])){ echo "starttimer"; } ?>" item-url="<?php echo $details['record']["telephone_protocol"].$details['record']["telephone_prefix"] ?><?php echo $number['tel_num'] ?>"><?php echo $number_text ?>
                       </a>
                       <?php if (strlen($number['tel_num'])>0&&!preg_match('/^Transfer/',$number['tel_name'])): ?>
                           <?php if ($number['tel_tps'] == NULL): ?>

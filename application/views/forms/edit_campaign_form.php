@@ -75,45 +75,7 @@
                       <button class="btn btn-default clear-input" type="button">Clear</button>
                       </span></div>
     </div>
-    <div class="form-group input-group-sm">
-        <p>Please set quote days for the renewal date (if applicable)</p>
-
-        <div class="input-group">
-            <div class="col-xs-4">
-                <p>Min Quote Days</p>
-                <input name="min_quote_days" type="text" class="form-control" placeholder="Min Quote">
-            </div>
-            <div class="col-xs-4">
-                <p>Max Quote Days</p>
-                <input name="max_quote_days" type="text" class="form-control" placeholder="Max Quote">
-            </div>
-            <div class="col-xs-3" style="color: red;">
-                <p></p>
-
-                <p class="quote_days_error"></p>
-            </div>
-
-        </div>
-    </div>
-    <div class="form-group input-group-sm">
-        <p>Set a default archiving period</p>
-
-        <div class="col-xs-3">
-            <p>Last update less than</p>
-            <input type="text" name="months_ago" class="form-control pull-left" style="width:100px;"
-                   placeholder="eg. 12"/> <label class="control-label marl"> months ago</label>
-        </div>
-        <div class="col-xs-3">
-            <p>How many months to include</p>
-            <input type="text" name="months_num" class="form-control pull-left" style="width:100px;"
-                   placeholder="eg. 3"/> <label class="control-label marl"> months</label>
-        </div>
-        <div class="col-xs-3" style="color: red;">
-            <p></p>
-
-            <p class="backup_error"></p>
-        </div>
-    </div>
+ 
 <div class="form-group input-group-sm">
         <p>
             Please set the max dials allowed before they are removed
@@ -157,15 +119,73 @@
          
             </select>
         </p>
+           </div>
+        <?php if($_SESSION['role']=="1"){ ?>
+          <div class="form-group input-group-sm">
+        <p>Virgin Order Custom String <span class="text-danger">(inserted directly into SQL so be careful)</span></p>
+        <input type="text" class="form-control" name="virgin_order_string" placeholder="Enter a custom order sting" />
     </div>
+      <div class="form-group input-group-sm">
+        <p>Virgin Order Join String <span class="text-danger">(inserted directly into SQL so be careful)</span></p>
+        <input type="text" class="form-control" name="virgin_order_string" placeholder="join companies using(urn)" />
+    </div>
+    <?php } ?>
+      <div class="form-group input-group-sm">
+        <p>Telephone Protocol</p>
+        <input type="text" class="form-control" name="telephone_protocol" placeholder="Default is callto:" />
+    </div>
+      <div class="form-group input-group-sm">
+        <p>Telephone Prefix</p>
+        <input type="text" class="form-control" name="telephone_prefix" placeholder="Prefix numbers for dialling eg. 9" />
+    </div>
+ 
     <div class="form-group input-group-sm">
         <p>
-            Please set the map icon
+            Please set the default map icon <span class="text-info">(if no record icon is set it will use this)</span></p>
             <button class="btn btn-info" id="map-icon"></button>
             <input type="hidden" name="map_icon">
-        </p>
     </div>
 
+
+<div class="form-group input-group-sm">
+        <p>Please set quote days for the renewal date (if applicable)</p>
+
+        <div class="input-group">
+            <div class="col-xs-4">
+                <p>Min Quote Days</p>
+                <input name="min_quote_days" type="text" class="form-control" placeholder="Min Quote">
+            </div>
+            <div class="col-xs-4">
+                <p>Max Quote Days</p>
+                <input name="max_quote_days" type="text" class="form-control" placeholder="Max Quote">
+            </div>
+            <div class="col-xs-3" style="color: red;">
+                <p></p>
+
+                <p class="quote_days_error"></p>
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group input-group-sm">
+        <p>Set a default archiving period</p>
+
+        <div class="col-xs-3">
+            <p>Last update less than</p>
+            <input type="text" name="months_ago" class="form-control pull-left" style="width:100px;"
+                   placeholder="eg. 12"/> <label class="control-label marl"> months ago</label>
+        </div>
+        <div class="col-xs-3">
+            <p>How many months to include</p>
+            <input type="text" name="months_num" class="form-control pull-left" style="width:100px;"
+                   placeholder="eg. 3"/> <label class="control-label marl"> months</label>
+        </div>
+        <div class="col-xs-3" style="color: red;">
+            <p></p>
+
+            <p class="backup_error"></p>
+        </div>
+    </div>
     <div class="form-group">
         <p id="archive-example" class="green"></p>
     </div>
