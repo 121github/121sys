@@ -353,6 +353,8 @@ class Cron_model extends CI_Model
         $qry = "select company_id, telephone_id, telephone_number
                   from company_telephone
                   where
+				  	  telephone_number like '04%' or
+					  telephone_number like '44%' or
                       telephone_number like '%+%' or
                       telephone_number like '%/%' or
                       telephone_number like '%(%' or
