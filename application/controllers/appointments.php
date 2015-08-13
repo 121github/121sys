@@ -26,7 +26,6 @@ class Appointments extends CI_Controller
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
 		$user_id = intval($this->input->post('user_id'));
 		$postcode = $this->input->post('postcode');
-		$this->firephp->log($postcode);
 		if(!empty($postcode)){
 		 if(validate_postcode($postcode)){
 					  $postcode = postcodeFormat($postcode); 	 
