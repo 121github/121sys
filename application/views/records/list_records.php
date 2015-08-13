@@ -3,13 +3,15 @@
         <i class="fa fa-list fa-fw"></i>
         Record List
         <div class="pull-right">
-            <form class="filter-form">    
-                     <div class="btn-group">
-         <button type="button" class="btn btn-default btn-xs" data-modal="choose-columns" data-table-id="1"><span
+            <form class="filter-form">
+                <span class="btn btn-success btn-sm export-btn fa fa-file-excel-o"></span>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-xs" data-modal="choose-columns"
+                            data-table-id="1"><span
                             class="fa fa-table"></span> Columns
                     </button>
-         </div>
-           <input type="hidden" name="group">                <!--<div class="btn-group">
+                </div>
+                <input type="hidden" name="group"> <!--<div class="btn-group">
                   
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span
                             class="glyphicon glyphicon-filter"></span> Colour By
@@ -53,30 +55,34 @@
                         <i class="bottom right"></i>
                     </div>
                     <div class="directions-btn">
-                     <form class="form-horizontal map-form">
-<div class="input-group" style="float:left;">
-             <input hidden name="travel-mode">
-                                        <input hidden name="destination"><span class="pointer btn-default input-group-addon" id="show-uk"><span class="fa fa-globe"></span></span>
-  <span class="pointer btn-default input-group-addon get-current-location-btn"><span class="glyphicon glyphicon-map-marker"></span></span>
-  <input type="text" class="form-control input-sm" name="postcode"
-                                               placeholder="Postcode..."
-                                               title="Enter the location" />
-  <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
-</div>
-<div style="float:right;margin-right:50px;">
+                        <form class="form-horizontal map-form">
+                            <div class="input-group" style="float:left;">
+                                <input hidden name="travel-mode">
+                                <input hidden name="destination"><span class="pointer btn-default input-group-addon"
+                                                                       id="show-uk"><span
+                                        class="fa fa-globe"></span></span>
+                                <span class="pointer btn-default input-group-addon get-current-location-btn"><span
+                                        class="glyphicon glyphicon-map-marker"></span></span>
+                                <input type="text" class="form-control input-sm" name="postcode"
+                                       placeholder="Postcode..."
+                                       title="Enter the location"/>
+                                <span class="pointer btn-default input-group-addon get-location-btn">Go</span>
+                            </div>
+                            <div style="float:right;margin-right:50px;">
  <span style="opacity: 0.4; filter: alpha(opacity=40);" class="planner-travel-mode DRIVING pointer" item-mode="DRIVING"><img
-                                                width="25px;" src="<?php echo base_url() ?>assets/img/icons/car.png"/></span>
+         width="25px;" src="<?php echo base_url() ?>assets/img/icons/car.png"/></span>
                                         <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                               class="planner-travel-mode BICYCLING pointer" item-mode="BICYCLING"><img
                                                 width="25px;" src="<?php echo base_url() ?>assets/img/icons/cycle.png"/></span>
                                         <span style="opacity: 0.4; filter: alpha(opacity=40);"
                                               class="planner-travel-mode WALKING pointer" item-mode="WALKING"><img
-                                                width="25px;" src="<?php echo base_url() ?>assets/img/icons/walking.png"/></span>
-                                                                          </div>  
-                                                                          <div style="clear:both"></div>  
-                                        <div class="route-info"></div>
-                                        <div style="clear:both"></div>  
-                                        <div id="show-directions"></div>
+                                                width="25px;"
+                                                src="<?php echo base_url() ?>assets/img/icons/walking.png"/></span>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="route-info"></div>
+                            <div style="clear:both"></div>
+                            <div id="show-directions"></div>
                         </form>
                     </div>
                     <div class="panel panel-primary directionsPanel-container">
@@ -106,26 +112,31 @@
     .map-form {
         position: absolute;
         top: 8px;
-		width:100%;
+        width: 100%;
     }
-.map-form .input-group {
-		width:250px;
-		left:50px;
+
+    .map-form .input-group {
+        width: 250px;
+        left: 50px;
     }
-	#show-directions { margin-right:50px; }
+
+    #show-directions {
+        margin-right: 50px;
+    }
+
     .route-info {
-       	background-color:rgba(000, 000, 000, 0.4);
-		float:right;
-		margin-right:50px;
+        background-color: rgba(000, 000, 000, 0.4);
+        float: right;
+        margin-right: 50px;
     }
 </style>
 
 <script type="text/javascript">
- table_columns = <?php echo json_encode($columns) ?>;
+    table_columns = <?php echo json_encode($columns) ?>;
 
-	$(document).ready(function() {
-    maps.initialize("records");
-    view_records.init();
+    $(document).ready(function () {
+        maps.initialize("records");
+        view_records.init();
 
         view_records.has_filter = "<?php echo ((isset($_SESSION['filter']['values']) && !empty($_SESSION['filter']['values']))?true:false) ?>";
     });

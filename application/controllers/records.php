@@ -18,6 +18,7 @@ class Records extends CI_Controller
         $this->load->model('Form_model');
 		$this->load->model('Audit_model');
         $this->load->model('Appointments_model');
+        $this->load->model('Datatables_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
     
@@ -421,6 +422,7 @@ class Records extends CI_Controller
             exit;
         }
     }
+
     /*save contact details */
     public function save_contact()
     {
@@ -566,6 +568,7 @@ class Records extends CI_Controller
             exit;
         }
     }
+
     /*update record details */
     public function update()
     {
@@ -1150,5 +1153,30 @@ class Records extends CI_Controller
             ));
         }
     }
+
+
+    /**
+     *
+     */
+    public function export_data() {
+        if ($this->input->is_ajax_request()) {
+
+            //Get the urn list from the session
+            $urnList = $_SESSION['navigation'];
+            $urnsShown = array_pop($urnList);
+
+            $visible_columns = $this->Datatables_model->get_visible_columns(1);
+
+
+
+            $this->firephp->log($visible_columns);
+
+            echo json_encode(array(
+                "success" => true,
+                "msg" => ""
+            ));
+        }
+    }
 }
+
 ?>
