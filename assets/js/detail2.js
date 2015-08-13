@@ -1433,29 +1433,48 @@ var record = {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    urn: record.urn
+                    urn: record.urn,
+					distance:$('#slot-distance').val(),
+					postcode:$('#slot-postcode').val(),
+					user_id:$('#slot-attendee').val()
                 }
             }).fail(function(){
 				flashalert.danger("The appointment slots could not be loaded");
 			}).done(function (response) {
                 $('#slots-panel').empty();
                 if (response.success) {
-                    var table = '<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th><th>AM</th><th>PM</th></thead><tbody>';
-                    $.each(response.data, function (k, v) {
-                        var slot_color_am, slot_color_pm, slot_color_eve = "";
-                        if (v.am >= v.am_max) {
-                            slot_color_am = 'text-danger';
+					var slots = "";
+					 $.each(response.data.timeslots,function(slot_id, slot){
+						slots += '<th><span class="glyphicon glyphicon-info-sign tt" data-toggle="tooltip" data-placement="right" title="'+slot.slot_description+'" ></span> '+slot.slot_name+'</th>'
+					 });
+					
+                    var table = '<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th>'+slots+'</thead><tbody>';
+                    $.each(response.data.apps, function (k, day) {
+						var day_row = "<td>"+k+"</td>";
+						$.each(day,function(i,v){
+						var slot_color="",priority="";  
+						if(v.best_distance){
+							var slot_color = 'text-success';
+							priority = '<span class="text-success fa fa-check-circle"></span>'
+						}
+                        if (v.apps >= v.max_apps) {
+                            var slot_color = 'text-danger';
                         }
-                        if (v.pm >= v.pm_max) {
-                            slot_color_pm = 'text-danger';
-                        }
-                        table += '<tr><td>' + k + '</td><td class="' + slot_color_am + '" >' + v.am + '</td><td  class="' + slot_color_pm + '">' + v.pm + '</td></tr>'
+						if(v.apps>0){
+						var apps = '<span class="tt pointer" data-html="true" data-toggle="tooltip" data-placement="right" title="Nearest appointment is:<br><b>'+v.min_distance+' miles</b>">' + v.apps + '/'+v.max_apps+' '+priority+'</span>';
+						} else {
+						var	apps = v.apps + '/'+v.max_apps
+						}
+						 day_row += '<td class="' + slot_color + '" >'+apps+'</td>';
+						});
+                        table += '<tr>'+day_row+'</tr>'
                     });
                     table += '</tbody></table></div>';
                     $('#slots-panel').html(table);
                 } else {
-                    $('#slots-panel').html('<p>No slots found</p>');
+                    $('#slots-panel').html(response.error);
                 }
+				$('.tt').tooltip();
             })
         }
     },

@@ -11,55 +11,119 @@ class Appointments_model extends CI_Model
         parent::__construct();
     }
 	
-	public function slot_availability($urn){
-		$qry = "select slot_name,slot_description, sum(max_slots), user_id, campaign_id, `day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where 1 ";
-
-		$qry .= " group by day";
-		$slot_data = $this->db->query($qry)->result_array();
-		$slots = array();
-		$thresholds = array();
-		
-		foreach($slot_data as $row){
-		//GHS campaign appointment slot thresholds
-		
-		$thresholds["Monday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Tuesday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Wednesday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Thursday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Friday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Saturday"]= array('am' => 0,'am_max'=>15,'pm' => 0,'pm_max'=>15);
-		$thresholds["Sunday"]= array('am' => 0,'am_max'=>5,'pm' => 0,'pm_max'=>15);
-		
+	public function slot_availability($campaign_id,$user_id=false,$postcode=false,$distance=false){
+		$days = array(1=>"Monday",2=>"Tuesday",3=>"Wednesday",4=>"Thursday",5=>"Friday",6=>"Saturday",7=>"Sunday");
+		$timeslots = array();
+		$where= "";
+		if(!empty($user_id)){
+		$where .= " and user_id = '$user_id' ";
 		}
+		if($campaign_id){
+		$where .= " and campaign_id = '$campaign_id' ";
+		}
+		//first configure the default array
+		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null $where ";
+		$max = array();
+		$this->firephp->log($qry);
+		$default = $this->db->query($qry)->result_array();
+		if(count($default)=="0"){
+		return array("error"=>"The selected user does not have appointment slots configured");	
+		}
+		$thresholds = array();
+		foreach($days as $day_num => $day){
+			foreach($default as $row){
+			$daycheck = "select slot_assignment_id from appointment_slot_assignment where appointment_slot_id = ".$row['appointment_slot_id']." and user_id = ".$row['user_id']." and day = ".$day_num;
+			
+			if(!$this->db->query($daycheck)->num_rows()){
+				$this->firephp->log($daycheck);
+			$timeslots[$row['appointment_slot_id']] = array("slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
+			$max[$day_num][$row['user_id']]['default'] = $row['max_apps'];
+			unset($row['max_apps']);
+			$thresholds[$day][$row['appointment_slot_id']] = $row;
+			$thresholds[$day][$row['appointment_slot_id']]['max_apps'] = $max[$day_num][$row['user_id']]['default'];
+			$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
+			} else {
+			$thresholds[$day][$row['appointment_slot_id']] = $row;	
+			$thresholds[$day][$row['appointment_slot_id']]['max_apps'] = 0;
+			$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
+			}
+			}
+		}
+				$this->firephp->log($thresholds);
+		//now configure the specified daily slots
+		$max = array();
 		
+		foreach($days as $daynum => $day){
+		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` = $daynum $where ";
+		$daily_slots = $this->db->query($qry)->result_array();
+		foreach($daily_slots as $k=>$row){
+			$this->firephp->log($row);
+			$timeslots[$row['appointment_slot_id']] = array("appointment_slot_id"=>$row['appointment_slot_id'],"slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
+			if(isset($thresholds[$day][$row['appointment_slot_id']]['max_apps'])){
+				$thresholds[$day][$row['appointment_slot_id']]['max_apps'] += $row['max_apps'];
+			} else {
+			$thresholds[$day][$row['appointment_slot_id']] = $row;
+			}
+			}
+		$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
+		}
+		$this->firephp->log($thresholds);
 for($i = 0; $i < 30; $i++){
     $slots[date("D jS M", strtotime('+'. $i .' days'))] = $thresholds[date("l", strtotime('+'. $i .' days'))];
 }
 
-		$am = "select date(`start`) start,count(*) count from appointments left join records using(urn) where time(`start`) between '09:00:00' and '12:59:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`) ";
-		$pm = "select date(`start`) start,count(*) count from appointments left join records using(urn )where time(`start`) between '13:00:00' and '18:00:00' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) and campaign_id = (select campaign_id from records where urn ='$urn') group by date(`start`)";
-		$eve = ""; //not using
-		
-		$am_results = $this->db->query($am)->result_array();
-		$pm_results = $this->db->query($pm)->result_array();
-		//$eve_results = $this->db->query($eve)->result_array();
+$join_locations = "";
+$distance_select = "";
 
-		foreach($am_results as $row){
-			$date = date("D jS M", strtotime($row['start']));
-			@$slots[$date]['am']=$row['count'];
+	
+		if(!empty($postcode)){
+		    $coords = postcode_to_coords($postcode);
+			if(isset($coords['lat'])&&isset($coords['lng'])){
+				
+				$distance_select = ",min((((ACOS(SIN((" .
+                $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .
+                $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
+                $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515)) AS distance";
+				
+                        $join_locations = " left join locations on locations.location_id = appointments.location_id ";
+						if($distance>0){
+                        $where .= " and ( ";
+                        //Distance from the company or the contacts addresses
+                        $where .= " (";
+                        $where .= $coords['lat'] . " BETWEEN (locations.lat-" . $distance . ") AND (locations.lat+" . $distance . ")";
+                        $where .= " and " . $coords['lng'] . " BETWEEN (locations.lng-" . $distance . ") AND (locations.lng+" . $distance . ")";
+                        $where .= " and ((((
+							ACOS(
+								SIN(" . $coords['lat'] . "*PI()/180) * SIN(locations.lat*PI()/180) +
+								COS(" . $coords['lat'] . "*PI()/180) * COS(locations.lat*PI()/180) * COS(((" . $coords['lng'] . " - locations.lng)*PI()/180)
+							)
+						)*180/PI())*160*0.621371192)) <= " . $distance . ")";
+                        
+                        $where .= " ) )";	
+						}
+		}	else {
+			return array("error"=>"There was an error with the postcode");	
 		}
-		foreach($pm_results as $row){
-			$date = date("D jS M", strtotime($row['start']));
-			@$slots[$date]['pm']=$row['count'];
 		}
-		/*
-		foreach($eve_results as $row){
+foreach($timeslots as $id=>$timeslot){
+		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where group by date(`start`) order by distance";
+		$results = $this->db->query($qry)->result_array();
+		$i=0;
+		foreach($results as $row){
 			$date = date("D jS M", strtotime($row['start']));
-				$day = date("l", strtotime($row['start']));
-			@$slots[$date][$day]['eve']++;
+			@$slots[$date][$id]['apps']=$row['count'];
+			//the smallest distance for this timeslot
+			@$slots[$date][$id]['min_distance']=number_format($row['distance'],2);
+			if($i==0){
+			//first record is best distance	
+			@$slots[$date][$id]['best_distance']=true;	
+			}
+			$i++;
 		}
-		*/
-		return $slots;
+}
+		return array("timeslots"=>$timeslots,"apps"=>$slots);
+		
+		
 	}
 	
     public function appointment_data($count = false, $options = false)

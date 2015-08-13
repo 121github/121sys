@@ -24,9 +24,25 @@ class Appointments extends CI_Controller
 	public function slot_availability(){
 		$urn = $this->input->post('urn');
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
-		$user_id = false;
-	 $slots = $this->Appointments_model->slot_availability($urn);	
-	 echo json_encode(array("success"=>true,"data"=>$slots));
+		$user_id = intval($this->input->post('user_id'));
+		$postcode = $this->input->post('postcode');
+		$this->firephp->log($postcode);
+		if(!empty($postcode)){
+		 if(validate_postcode($postcode)){
+					  $postcode = postcodeFormat($postcode); 	 
+				 } else {
+					 $error = "Postcode " . strtoupper($postcode) . " is not valid";
+					 echo json_encode(array("success"=>false,"error"=>$error));
+					 exit;
+				 }
+		}
+		$distance = intval($this->input->post('distance'));
+	 $data = $this->Appointments_model->slot_availability($campaign_id,$user_id,$postcode,$distance);
+	 if(isset($data['error'])){
+	  echo json_encode(array("success"=>false,"error"=>$data['error']));		
+	 } else {
+	 echo json_encode(array("success"=>true,"data"=>$data));
+	 }
 	}
 
     public function index()
