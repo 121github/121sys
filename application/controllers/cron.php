@@ -776,7 +776,7 @@ $new_telephone_number = "0".ltrim($new_telephone_number,'44');
 
         $this->email->from('noreply@121customerinsight.co.uk');
         $this->email->to($email_address);
-        //$this->email->bcc("bradf@121customerinsight.co.uk");
+        $this->email->bcc("bradf@121customerinsight.co.uk");
         $this->email->subject($subject);
         $this->email->message($body);
 
