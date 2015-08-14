@@ -11,9 +11,6 @@ class Migration_update_41 extends CI_Migration
 
     public function up(){
         $this->firephp->log("starting migration 41");
-
-        $this->db->query("ALTER TABLE branch ADD map_icon VARCHAR(50) NULL");
-        $this->db->query("ALTER TABLE branch ADD color_map VARCHAR(50) NULL");
 		
 		$this->db->query("CREATE TABLE IF NOT EXISTS `appointment_slots` (
   `appointment_slot_id` int(11) NOT NULL AUTO_INCREMENT,
