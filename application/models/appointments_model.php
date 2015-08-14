@@ -24,7 +24,6 @@ class Appointments_model extends CI_Model
 		//first configure the default array
 		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null $where ";
 		$max = array();
-		$this->firephp->log($qry);
 		$default = $this->db->query($qry)->result_array();
 		if(count($default)=="0"){
 		return array("error"=>"The selected user does not have appointment slots configured");	
@@ -49,7 +48,6 @@ class Appointments_model extends CI_Model
 			}
 			}
 		}
-				$this->firephp->log($thresholds);
 		//now configure the specified daily slots
 		$max = array();
 		
@@ -57,7 +55,6 @@ class Appointments_model extends CI_Model
 		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` = $daynum $where ";
 		$daily_slots = $this->db->query($qry)->result_array();
 		foreach($daily_slots as $k=>$row){
-			$this->firephp->log($row);
 			$timeslots[$row['appointment_slot_id']] = array("appointment_slot_id"=>$row['appointment_slot_id'],"slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
 			if(isset($thresholds[$day][$row['appointment_slot_id']]['max_apps'])){
 				$thresholds[$day][$row['appointment_slot_id']]['max_apps'] += $row['max_apps'];
@@ -67,7 +64,6 @@ class Appointments_model extends CI_Model
 			}
 		$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
 		}
-		$this->firephp->log($thresholds);
 for($i = 0; $i < 30; $i++){
     $slots[date("D jS M", strtotime('+'. $i .' days'))] = $thresholds[date("l", strtotime('+'. $i .' days'))];
 }

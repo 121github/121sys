@@ -1456,7 +1456,7 @@ var record = {
 							var slot_color = 'text-success';
 							priority = '<span class="text-success fa fa-check-circle"></span>'
 						}
-                        if (v.apps >= v.max_apps) {
+                        if (Number(v.apps) >= Number(v.max_apps)) {
                             var slot_color = 'text-danger';
                         }
 						if(v.apps>0){
