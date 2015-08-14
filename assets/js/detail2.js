@@ -15,8 +15,7 @@ var record = {
     init: function (urn, role, campaign) {
         $(document).on('click', '#update-record', function (e) {
             e.preventDefault();
-            if ($('#custom-panel:contains("Call Direction")').length > 0 && $('#custom-panel .panel-content:contains("Inbound")').length == 0 && $('#custom-panel .panel-content:contains("Outbound")').length == 0) {
-
+            if ($('[name="call_direction"]').length > 0 && !$('[name="call_direction"]').is(':checked')) {
                 alert("You must set a call direction");
             } else if ($('.outcomepicker').val().length > 0) {
                 if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {

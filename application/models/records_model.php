@@ -1008,7 +1008,8 @@ class Records_model extends CI_Model
             "group_id",
             "contact_id",
             "progress_id",
-            "last_survey"
+            "last_survey",
+			"call_direction"
         ), $hist, NULL));
         return $this->db->insert_id();
     }

@@ -63,7 +63,12 @@
               <?php endforeach; ?>
             </select></div>
             <?php } ?>
-          
+        <?php  if(in_array("set call direction",$_SESSION['permissions'])) {  ?>
+            <div class="form-group"><label>Inbound <input type="radio" id="cd-inbound" value="1" name="call_direction" /></label>
+            <label>Outbound <input type="radio" id="cd-outbound" value="0" name="call_direction" /></label>
+            
+            </div>
+           <?php } ?>
           <div class="form-group">
           <?php $text = ""; $color=""; 
 		  if($details['record']['record_status']=="3"){ 
@@ -79,7 +84,8 @@
 		  $text = "This record has been parked and cannot not be dialed. \r\nReason for parking: ".$details['record']['park_reason']."\r\n".$parktext;   
 		   }
 		   ?>
-             <textarea name="comments" class="form-control <?php echo $color ?> <?php if(isset($stretch)){ echo "stretch-element"; } ?>" rows="<?php echo isset($stretch)?1:3 ?>" placeholder="Enter the call notes here"><?php echo $text ?>
+
+                        <textarea name="comments" class="form-control <?php echo $color ?> <?php if(isset($stretch)){ echo "stretch-element"; } ?>" rows="<?php echo isset($stretch)?1:3 ?>" placeholder="Enter the call notes here"><?php echo $text ?>
 </textarea></span>
           </div>
           <div class="form-group">
