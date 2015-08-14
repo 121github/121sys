@@ -27,6 +27,21 @@ $this->db->query("INSERT INTO `appointment_slots` (`appointment_slot_id`, `slot_
 (2, '13:00:00', '18:00:00', 'PM', 'Afternoon slot between 1pm and 6pm'),
 (3, '18:00:01', '20:00:00', 'EVE', 'Evening slot between 6pm 8pm')");
 		  
+		  $this->db->query("CREATE TABLE IF NOT EXISTS `appointment_slot_assignment` (
+`slot_assignment_id` int(11) NOT NULL,
+  `appointment_slot_id` int(11) NOT NULL,
+  `campaign_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `max_slots` int(11) NOT NULL,
+  `day` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+
+$this->db->query("ALTER TABLE `appointment_slot_assignment`
+ ADD PRIMARY KEY (`slot_assignment_id`), ADD KEY `appointment_slot_id` (`appointment_slot_id`,`campaign_id`,`user_id`)");
+ 
+ $this->db->query("ALTER TABLE `appointment_slot_assignment`
+MODIFY `slot_assignment_id` int(11) NOT NULL AUTO_INCREMENT");
+		  
 	}
 	
 }
