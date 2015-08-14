@@ -107,7 +107,8 @@ public function update_extra($data){
 		$insert_query = $this->db->insert_string("appointments",$insert);
 		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$insert_query);
 		$this->db->query($insert_query);
-
+		$appointment_id = $this->db->insert_id();
+		$this->db->insert("appointment_attendees",array("appointment_id"=>$appointment_id,"user_id"=>"121"));
 	}
 	
 	public function uncancel_appointment($urn,$date){
