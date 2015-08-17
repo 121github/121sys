@@ -387,14 +387,17 @@ class Admin extends CI_Controller
             }
 			
 			if (empty($form['virgin_order_1'])) {
-                $form['virgin_order_1'] = NULL;
+                $form['virgin_order_1'] = '';
             }
 			if (empty($form['virgin_order_2'])) {
-                $form['virgin_order_2'] = NULL;
+                $form['virgin_order_2'] = '';
             }
 			if (!empty($form['virgin_order_string'])) {
-				$form['virgin_order_1'] = NULL;
-                $form['virgin_order_2'] = NULL;
+				$form['virgin_order_1'] = '';
+                $form['virgin_order_2'] = '';
+            }
+			if (!empty($form['telephone_prefix'])) {
+				$form['telephone_prefix'] = '';
             }
             if (empty($form['record_layout'])) {
                 $form['record_layout'] = "2col.php";
