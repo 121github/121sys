@@ -70,12 +70,12 @@ for($i = 0; $i < 30; $i++){
 
 $join_locations = "";
 $distance_select = "";
-
+$distance_order = "";
 	
 		if(!empty($postcode)){
 		    $coords = postcode_to_coords($postcode);
 			if(isset($coords['lat'])&&isset($coords['lng'])){
-				
+				$distance_order = " order by distance";
 				$distance_select = ",min((((ACOS(SIN((" .
                 $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .
                 $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
@@ -102,7 +102,7 @@ $distance_select = "";
 		}
 		}
 foreach($timeslots as $id=>$timeslot){
-		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where group by date(`start`) order by distance";
+		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where group by date(`start`) $distance_order";
 		$results = $this->db->query($qry)->result_array();
 		$i=0;
 		foreach($results as $row){

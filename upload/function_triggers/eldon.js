@@ -7,7 +7,7 @@ $('.outcomepicker').prop('disabled',true).selectpicker('refresh')
 set_outcome_delays:function(){
 	var color = $('#custom-panel').find('.c1').text();
 	if(color=="Gold"){
-	$('#outcomes').find("option[value='97']").attr('delay',24*30*4);
+	$('#outcomes').find("option[value='97']").attr('delay',24*30*3);
 } else if(color=="Platinum"){
 	$('#outcomes').find("option[value='97']").attr('delay',24*30*1);
 }
