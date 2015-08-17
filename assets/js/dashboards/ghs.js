@@ -27,19 +27,20 @@ search_record:function($btn){
 	dataType:"JSON",
 	data: $btn.closest('form').serialize()
 	}).done(function(response){
-		var results;
-		if(response.urn){
-		results = "<p><span class='text-success'>The record was found! </span>";
-		if(response.parked_code){
-			results += "<span class='text-danger'> This address is not in the survey booking list!</span>"
+		var results="",table="";
+		if(response.success){
+			table = "<table class='table table-striped table-condensed'><thead><tr><th>Data</th><th>Contact</th><th>Address</th><th>Postcode</th><th>Last Outcome</th><th>Owner</th></tr></thead>";
+			$.each(response.data,function(i,row){
+				results += "<p><span class='text-success'>The record was found!</span>";
+				table += "<tr class='pointer' data-modal='view-record' data-urn='"+row.urn+"'><td>"+row.source_name+"</td><td>"+row.fullname+"</td><td>"+row.add1+"</td><td>"+row.postcode+"</td><td>"+row.outcome+"</td><td>"+row.name+"</td></tr>";
+			});
+			table += "</table>";
+		} else {
+			results = "<p class='text-danger'>No record was found, please create a new record and capture all the contact details. If it's a housing association tenant please update the new record with the call outcome <b>Query</b>. If it's a private tenant please complete the data capture form.</p>"	
+		results += "<a href='"+helper.baseUrl+"data/add_record' class='btn btn-info'>Create New</a>";	
 		}
 		results += "</p>";
-		results += "<a href='"+helper.baseUrl+"records/detail/"+response.urn+"' class='btn btn-success'>View Record</a>";
-		} else {
-		results = "<p class='text-danger'>No record was found, please create a new record and capture all the contact details. If it's a housing association tenant please update the new record with the call outcome <b>Query</b>. If it's a private tenant please complete the data capture form.</p>"	
-		results += "<a href='"+helper.baseUrl+"data/add_record' class='btn btn-info'>Create New</a>";
-		}
-		$('#search-results').html(results);
+		$('#search-results').html(results + table);
 	});
 	
 },

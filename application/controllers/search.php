@@ -24,15 +24,19 @@ class Search extends CI_Controller
 		
 	public function search_address(){
 		if($this->input->post('ghs_ref')){
-			$row = $this->Filter_model->search_urn_by_c1($this->input->post('ghs_ref'));
+			$result = $this->Filter_model->search_urn_by_c1($this->input->post('ghs_ref'));
 		} else if($this->input->post('telephone')) {
-			$row = $this->Filter_model->search_by_contact_phone($this->input->post('telephone'));
+			$result = $this->Filter_model->search_by_contact_phone($this->input->post('telephone'));
 		} else {
 			$postcode = postcodeFormat($this->input->post('postcode'));
 			$add1 = str_replace(" ","",$this->input->post('add1'));
-			$row = $this->Filter_model->search_urn_by_address($add1,$postcode);
+			$result = $this->Filter_model->search_urn_by_address($add1,$postcode);
 		}
-		echo json_encode($row);
+		if(count($result)>0){
+		echo json_encode(array("success"=>true,"data"=>$result));	
+		} else {
+		echo json_encode(array("success"=>false));	
+		}
 	}
 	
 	
