@@ -4,8 +4,8 @@
     <form>
     <input type="hidden" id="slot-distance" name="distance" value="" />
       <input type="hidden" id="slot-attendee"  name="attendee" value="" />
-          <div class="input-group">
-             <div class="input-group-btn" style="width:230px">
+          <div class="input-group"  style="width:230px">
+             <div class="input-group-btn">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Distance <span class="caret"></span></button>
         <ul class="dropdown-menu">
           <li><a class="filter" data-val="1" data-ref="distance" href="#">1 Mile</a></li>
