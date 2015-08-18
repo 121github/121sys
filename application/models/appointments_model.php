@@ -34,7 +34,6 @@ class Appointments_model extends CI_Model
 			$daycheck = "select slot_assignment_id from appointment_slot_assignment where appointment_slot_id = ".$row['appointment_slot_id']." and user_id = ".$row['user_id']." and day = ".$day_num;
 			
 			if(!$this->db->query($daycheck)->num_rows()){
-				$this->firephp->log($daycheck);
 			$timeslots[$row['appointment_slot_id']] = array("slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
 			$max[$day_num][$row['user_id']]['default'] = $row['max_apps'];
 			unset($row['max_apps']);
@@ -206,7 +205,6 @@ foreach($timeslots as $id=>$timeslot){
 
         $qry .= $order;
         $qry .= "  limit $start,$length";
-		$this->firephp->log($qry);
         $result = $this->db->query($qry)->result_array();
         return $result;
     }
