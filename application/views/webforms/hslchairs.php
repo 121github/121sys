@@ -82,8 +82,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 			$('.dob').datetimepicker({
         pickTime: false,
         viewMode: 'years',
-        format: 'DD/MM/YYYY'
-    });).on('keypress paste', function (e) {
+        format: 'DD/MM/YYYY',
+		startDate: '-60y'
+    }).on('keypress paste', function (e) {
   e.preventDefault();
   return false;
 });	
