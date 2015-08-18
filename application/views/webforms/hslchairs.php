@@ -9,7 +9,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <title>GHS Inbound Data Capture</title>
+    <title>HSL Appointment Checklist</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
     <!-- Optional theme -->
@@ -66,7 +66,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <option value='Neighbour'>Neighbour</option>
       </select>
         </div>
-    <div id="q2-container">
+    <div class="form-group" id="q2-container">
           <label>Reason home consultation required?</label>
           <br>
           <input name="answers[a2]" class="form-control" placeholder="Enter the reason for the home consultation"/>
@@ -147,7 +147,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
               No </label>
       </div>
         </div>
-                    <div id="q7-container">
+                    <div class="form-group" id="q7-container">
           <label>Please capture the name of the person</label>
           <br>
           <input name="answers[a7]" class="form-control" placeholder="2nd persons name"/>
@@ -251,10 +251,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       </div>
         </div>
         
-        <div id="q13-container">
+        <div class="form-group" id="q13-container">
           <label>Any other information relevant</label>
 <br>
-              <textarea class="q13-question" style="height:50px" name="answers[a13][]"
+              <textarea class="form-control q13-question" style="height:50px" name="answers[a13][]"
                      ><?php echo $values['a13'] ?></textarea>
         </div>
         
