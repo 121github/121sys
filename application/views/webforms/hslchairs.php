@@ -93,12 +93,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
          <div class="form-group" id="q14-container">
           <label>Customer height?</label>
           <br>
-          <input name="answers[a14]" class="form-control" placeholder="Enter the approximate height of the customer"/>
+          <input name="answers[a14]" class="form-control" placeholder="Enter the approximate height of the customer" value="<? echo $values['a14'] ?>"/>
         </div>
     <div class="form-group" id="q2-container">
           <label>Reason home consultation required?</label>
           <br>
-          <input name="answers[a2]" class="form-control" placeholder="Enter the reason for the home consultation"/>
+          <input name="answers[a2]" class="form-control" placeholder="Enter the reason for the home consultation" value="<? echo $values['a2'] ?>" />
         </div>
     <div id="q3-container">
           <label>Does customer need assistance to stand/transfer independantly?</label>

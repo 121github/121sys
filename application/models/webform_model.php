@@ -43,7 +43,7 @@ class Webform_model extends CI_Model
 		return $data;
 	}
 	public function update_contact($contact){
-		$this->db->where("id",$contact['contact_id']);
+		$this->db->where("contact_id",$contact['contact_id']);
 	$this->db->update("contacts",$contact);	
 	}
 	
