@@ -298,6 +298,17 @@ class Trackvia extends CI_Controller
 		$urn 	= $row['urn'];
 		$this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 137,outcome_reason_id=NULL, record_status=3 where urn = '$urn'");
 		$this->unable_to_contact($urn);
+		//clear virgin records ownership
+		$this->db->query("delete from ownership where urn in(select urn 
+FROM records
+WHERE 1
+AND campaign_id in(22,28,29)
+AND record_status =1
+AND parked_code IS NULL
+AND progress_id IS NULL
+AND outcome_id IS NULL 
+AND dials = 0  )");
+		
 		}
 		
 		
