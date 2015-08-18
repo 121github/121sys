@@ -9,7 +9,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <title>HSL Appointment Checklist</title>
+    <title>HSL Pre-Consultation Checklist</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
     <!-- Optional theme -->
@@ -47,7 +47,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     </head>
     <body>
 <div class="container">
-      <h2>GHS inbound data capture form</h2>
+      <h2>HSL Pre-Consultation Checklist</h2>
       <p>Please complete the following questions and click save</p>
       <form id="form" style="padding-bottom:50px;">
     <div id="q1-container">
@@ -128,7 +128,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
               No </label>
       </div>
         </div>
-            <div id="q6-container">
+            <div id="q6-container" style="display:none">
           <label>Can anyone familiar with the customers needs also be available during the Home Consultation?</label>
           <div class="radio">
         <label>
@@ -137,7 +137,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     echo "checked";
                 } ?> />
               Yes </label>
-      </div>
+      
           <div class="radio">
         <label>
               <input class="q6-question" type="radio" name="answers[a6][]" id="optionsRadios2"
@@ -148,12 +148,26 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       </div>
         </div>
                     <div class="form-group" id="q7-container">
-          <label>Please capture the name of the person</label>
+          <label>Please capture the name of the person if applicable</label>
           <br>
           <input name="answers[a7]" class="form-control" placeholder="2nd persons name"/>
         </div>
-        
-        
+        </div>
+        <script type="text/javascript">
+		$(document).ready(function(){
+			$(document).on('change','.helper-required',function(){
+				if($('.q3-question:checked').val()=="Yes"){
+					$('#q6-container').show();
+				} else if($('.q4-question:checked').val()=="No"){
+					$('#q6-container').show();
+				} else if($('.q5-question:checked').val()=="Yes"){
+					$('#q6-container').show();
+				} else {
+					$('#q6-container').hide();
+				}
+			});
+		});
+		</script>
         
             <div id="q8-container">
           <label>Are there any vehicle or parking restrictions at the Customer's Accommodation?</label>
