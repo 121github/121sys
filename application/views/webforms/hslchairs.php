@@ -155,8 +155,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         </div>
         <script type="text/javascript">
 		$(document).ready(function(){
-			$(document).on('change','.helper-required',function(){
-				if($('.q3-question:checked').val()=="Yes"){
+			
+			function check_answers(){
+			if($('.q3-question:checked').val()=="Yes"){
 					$('#q6-container').show();
 				} else if($('.q4-question:checked').val()=="No"){
 					$('#q6-container').show();
@@ -164,7 +165,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 					$('#q6-container').show();
 				} else {
 					$('#q6-container').hide();
-				}
+				}	
+			}
+			
+			$(document).on('change','.helper-required',function(){
+				check_answers();
 			});
 		});
 		</script>
