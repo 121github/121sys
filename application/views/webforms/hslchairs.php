@@ -137,7 +137,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     echo "checked";
                 } ?> />
               Yes </label>
-      
+      </div>
           <div class="radio">
         <label>
               <input class="q6-question" type="radio" name="answers[a6][]" id="optionsRadios2"
@@ -146,7 +146,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 } ?>>
               No </label>
       </div>
-        </div>
+      
                     <div class="form-group" id="q7-container">
           <label>Please capture the name of the person if applicable</label>
           <br>
