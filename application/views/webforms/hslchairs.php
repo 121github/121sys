@@ -70,12 +70,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           <div class="form-group" >
           <label>Customer Name</label>
           <br>
-          <input name="fullname" readonly class="form-control" placeholder="Enter the customer name" value="<?php echo $contact['fullname'] ?>"/>
+          <input name="fullname" readonly class="form-control" placeholder="Enter the customer name" value="<?php echo $contact['name'] ?>"/>
         </div>
               <div class="form-group">
           <label>Customer date of birth?</label>
           <br>
-          <input name="contact[dob]" class="form-control dob" placeholder="Enter the date of birth"  value="<?php echo $contact['dob'] ?>"/>
+          <input name="contact[dob]" class="form-control dob" placeholder="Enter the date of birth"  <?php if(!empty($contact['dob'])) { echo "value='".$contact['dob']."'"; } ?> />
         </div>
         <script type="text/javascript">
 		$(document).ready(function(){
@@ -83,7 +83,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         pickTime: false,
         viewMode: 'years',
         format: 'DD/MM/YYYY',
-		startDate: '-60y'
+		defaultDate: new Date(1979, 0, 1,1, 0, 0, 0),
     }).on('keypress paste', function (e) {
   e.preventDefault();
   return false;
