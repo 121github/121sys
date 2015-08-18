@@ -75,7 +75,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           <label>Does customer need assistance to stand/transfer independantly?</label>
           <div class="radio">
         <label>
-              <input class="q3-question" type="radio" name="answers[a3][]" id="optionsRadios1"
+              <input class="q3-question helper-required" type="radio" name="answers[a3][]" id="optionsRadios1"
                        value="Yes"  <?php if (@strpos($values['a3'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
@@ -83,7 +83,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       </div>
           <div class="radio">
         <label>
-              <input class="q3-question" type="radio" name="answers[a3][]" id="optionsRadios2"
+              <input class="q3-question helper-required" type="radio" name="answers[a3][]" id="optionsRadios2"
                        value="No" <?php if (@strpos($values['a3'], "No") !== false) {
                     echo "checked";
                 } ?>>
@@ -94,7 +94,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           <label>Can Customer walk unaided?</label>
           <div class="radio">
         <label>
-              <input class="q4-question" type="radio" name="answers[a4][]" id="optionsRadios1"
+              <input class="q4-question helper-required" type="radio" name="answers[a4][]" id="optionsRadios1"
                        value="Yes"  <?php if (@strpos($values['a4'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
@@ -102,7 +102,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       </div>
           <div class="radio">
         <label>
-              <input class="q4-question" type="radio" name="answers[a4][]" id="optionsRadios2"
+              <input class="q4-question helper-required" type="radio" name="answers[a4][]" id="optionsRadios2"
                        value="No" <?php if (@strpos($values['a4'], "No") !== false) {
                     echo "checked";
                 } ?>>
@@ -113,7 +113,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           <label>Does Customer have any problems with sight/hearing/speech/memory?</label>
           <div class="radio">
         <label>
-              <input class="q5-question" type="radio" name="answers[a5][]" id="optionsRadios1"
+              <input class="q5-question helper-required" type="radio" name="answers[a5][]" id="optionsRadios1"
                        value="Yes"  <?php if (@strpos($values['a5'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
@@ -121,7 +121,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       </div>
           <div class="radio">
         <label>
-              <input class="q5-question" type="radio" name="answers[a5][]" id="optionsRadios2"
+              <input class="q5-question helper-required" type="radio" name="answers[a5][]" id="optionsRadios2"
                        value="No" <?php if (@strpos($values['a5'], "No") !== false) {
                     echo "checked";
                 } ?>>
@@ -154,7 +154,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         </div>
         </div>
         <script type="text/javascript">
-		$(document).ready(function(){
+
 			
 			function check_answers(){
 			if($('.q3-question:checked').val()=="Yes"){
@@ -167,7 +167,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 					$('#q6-container').hide();
 				}	
 			}
-			
+					$(document).ready(function(){
 			$(document).on('change','.helper-required',function(){
 				check_answers();
 			});
