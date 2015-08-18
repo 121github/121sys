@@ -31,16 +31,20 @@ class Webform_model extends CI_Model
 		$qry = "select * from webform_answers where webform_id = '$form' and urn = '$urn'";
 				
 		$data['values'] = $this->db->query($qry)->row_array();
-		$qry = "select co.name, co.website,cot.telephone_number cophone,ct.telephone_number cphone,coa.add1,coa.add2,coa.add3,coa.county,coa.postcode,co.email,c.fullname,coa.country,c.email,c1 from records left join record_details using(urn) left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join companies co using(urn) left join company_telephone cot using(company_id) left join contact_addresses ca using(contact_id) left join company_addresses coa using(company_id) left join email_history eh using(urn) where urn ='$urn' and campaign_id ='$campaign_id' group by urn";
+		$qry = "select c.contact_id,co.name, co.website,cot.telephone_number cophone,ct.telephone_number cphone,coa.add1,coa.add2,coa.add3,coa.county,coa.postcode,co.email,c.fullname,date_format(c.dob,'%d/%m/%Y') dob,coa.country,c.email,c1 from records left join record_details using(urn) left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join companies co using(urn) left join company_telephone cot using(company_id) left join contact_addresses ca using(contact_id) left join company_addresses coa using(company_id) left join email_history eh using(urn) where urn ='$urn' and campaign_id ='$campaign_id' group by urn";
 		//$this->firephp->log($qry);
 		$result = $this->db->query($qry)->result_array();
 		foreach($result as $row){
 			$data['company'] = array("name"=>$row['name'],"website"=>$row['website'],"phone"=>$row['cophone'],"add1"=>$row['add1'],"add2"=>$row['add2'],"add3"=>$row['add3'],"county"=>$row['county'],"country"=>$row['country'],"postcode"=>$row['postcode'],"email"=>$row['email']);
-			$data['contact'] = array("name"=>$row['fullname'],"email"=>$row['email'],"website"=>$row['website'],"phone"=>$row['cphone'],"add1"=>$row['add1'],"add2"=>$row['add2'],"add3"=>$row['add3'],"county"=>$row['county'],"country"=>$row['country'],"postcode"=>$row['postcode'],"email"=>$row['email']);
+			$data['contact'] = array("contact_id"=>$row['contact_id'],"name"=>$row['fullname'],"email"=>$row['email'],"website"=>$row['website'],"phone"=>$row['cphone'],"add1"=>$row['add1'],"add2"=>$row['add2'],"add3"=>$row['add3'],"county"=>$row['county'],"country"=>$row['country'],"postcode"=>$row['postcode'],"email"=>$row['email'],"dob"=>$row['dob']);
 			$data['custom'] = array("c1"=>$row['c1']);
 		}
 		
 		return $data;
+	}
+	public function update_contact($contact){
+		$this->db->where("id",$contact['contact_id']);
+	$this->db->update("contacts",$contact);	
 	}
 	
 	public function save_answer($data){

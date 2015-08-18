@@ -66,6 +66,34 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <option value='Neighbour'>Neighbour</option>
       </select>
         </div>
+         <input name="contact[contact_id]" value="<?php echo $contact['contact_id'] ?>" type="hidden" /> 
+          <div class="form-group" >
+          <label>Customer Name</label>
+          <br>
+          <input name="fullname" readonly class="form-control" placeholder="Enter the customer name" value="<?php echo $contact['fullname'] ?>"/>
+        </div>
+              <div class="form-group">
+          <label>Customer date of birth?</label>
+          <br>
+          <input name="contact[dob]" class="form-control dob" placeholder="Enter the date of birth"  value="<?php echo $contact['dob'] ?>"/>
+        </div>
+        <script type="text/javascript">
+		$(document).ready(function(){
+			$('.dob').datetimepicker({
+        pickTime: false,
+        viewMode: 'years',
+        format: 'DD/MM/YYYY'
+    });).on('keypress paste', function (e) {
+  e.preventDefault();
+  return false;
+});	
+		});
+		</script>
+         <div class="form-group" id="q14-container">
+          <label>Customer height?</label>
+          <br>
+          <input name="answers[a14]" class="form-control" placeholder="Enter the approximate height of the customer"/>
+        </div>
     <div class="form-group" id="q2-container">
           <label>Reason home consultation required?</label>
           <br>
