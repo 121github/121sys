@@ -53,6 +53,8 @@ class Webforms extends CI_Controller
 		if($this->input->post('save')=="1"){
 			$answers = $this->input->post('answers');
 			if($this->input->post('contact')){
+				$contact = $this->input->post('contact');
+				$contact['dob'] = to_mysql_datetime($contact['dob']);
 			$this->Webform_model->update_contact($contact);	
 			}
 			foreach($answers as $question_name=>$input){
