@@ -927,19 +927,20 @@ class Sms extends CI_Controller
                         $customID = uniqid($record['urn'].date('now'));
 
                         //Check the variables inside [] in the template and change them with a value if the template_id exist
+                        $text = $original_text;
                         $placeholder_data = $this->Email_model->get_placeholder_data($record['urn']);
                         if(count($placeholder_data)){
                             foreach($placeholder_data[0] as $key => $val){
-                                if(strpos($original_text,"[$key]")!==false){
+                                if(strpos($text,"[$key]")!==false){
                                     if(empty($val)){
                                         setcookie("placeholder_error", $key, time() + (60), "/");
                                         if($key=="start"){
-                                            $text = str_replace("[$key]","<span style=\"color:red\">** NO APPOINTMENT FOUND **</span>",$original_text);
+                                            $text = str_replace("[$key]","<span style=\"color:red\">** NO APPOINTMENT FOUND **</span>",$text);
                                         } else {
-                                            $text = str_replace("[$key]","<span style=\"color:red\">** [$key] WAS EMPTY **</span>",$original_text);
+                                            $text = str_replace("[$key]","<span style=\"color:red\">** [$key] WAS EMPTY **</span>",$text);
                                         }
                                     } else {
-                                        $text = str_replace("[$key]",$val,$original_text);
+                                        $text = str_replace("[$key]",$val,$text);
                                     }
                                 }
                             }
