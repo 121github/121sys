@@ -134,11 +134,20 @@ class Planner_model extends CI_Model
         return $this->db->insert_id();
     }
 
+    public function update_record_planner($planner_id, $planner) {
+        $this->db->where('record_planner_id', $planner_id);
+        $this->db->update('record_planner', $planner);
+    }
+
     public function check_planner($urn, $user_id)
     {
-        $qry = "select urn from record_planner where planner_status = 1 and urn = '$urn' and user_id = '$user_id'";
+        $qry = "select urn, record_planner_id from record_planner where planner_status = 1 and urn = '$urn' and user_id = '$user_id'";
         if ($this->db->query($qry)->num_rows()) {
-            return true;
+            $result = $this->db->query($qry)->result_array();
+            return $result[0]['record_planner_id'];
+        }
+        else {
+            return false;
         }
     }
 
@@ -255,5 +264,23 @@ class Planner_model extends CI_Model
         if (!empty($data)) {
             $this->db->insert_batch('record_planner_route', $data);
         }
+    }
+
+    public function getPlannerInfoByAppointment($appointment_id)
+    {
+        $qry = "select
+                  a.*,
+                  GROUP_CONCAT(DISTINCT at.user_id SEPARATOR ',') as attendees,
+                  GROUP_CONCAT(DISTINCT br.user_id SEPARATOR ',') as region_users
+                from  appointments a
+                  left join appointment_attendees at using(appointment_id)
+                  left join branch b using(branch_id)
+                  left join branch_region_users br using (region_id)
+                  where appointment_id = ".$appointment_id."
+                  group by appointment_id";
+
+        $result = $this->db->query($qry)->result_array();
+
+        return (isset($result[0])?$result[0]:NULL);
     }
 }
