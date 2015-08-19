@@ -109,10 +109,10 @@ class Planner_model extends CI_Model
                   l.lat,
                   l.lng
                 from  users u
-                  left join branch_user bu using (user_id)
-                  left join branch_campaign bc using (branch_campaign_id)
-                  left join branch b using (branch_id)
-                  left join branch_area ba using (branch_area_id)
+                  left join branch_region_users bu using (user_id)
+                  left join branch b using (region_id)
+                  left join branch_campaigns bc using (branch_id)
+                  left join branch_addresses ba using (branch_id)
                   inner join locations l using (location_id)
                   left join campaigns c ON (c.campaign_id = bc.campaign_id ".$current_campaign_where.")
                   left join user_roles r using (role_id)
