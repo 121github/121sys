@@ -66,16 +66,16 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <option value='Neighbour'>Neighbour</option>
       </select>
         </div>
-         <input name="contact[contact_id]" value="<?php echo $contact['contact_id'] ?>" type="hidden" /> 
+         <input name="contact[contact_id]" value="<?php echo @$contact['contact_id'] ?>" type="hidden" /> 
           <div class="form-group" >
           <label>Customer Name</label>
           <br>
           <input name="fullname" readonly class="form-control" placeholder="Enter the customer name" value="<?php echo $contact['name'] ?>"/>
         </div>
-              <div class="form-group">
+              <div class="form-group relative">
           <label>Customer date of birth?</label>
           <br>
-          <input name="contact[dob]" class="form-control dob" placeholder="Enter the date of birth"  <?php if(!empty($contact['dob'])) { echo "value='".$contact['dob']."'"; } ?> />
+          <input name="contact[dob]" class="form-control dob" placeholder="Enter the date of birth"  <?php if(!empty($contact['dob'])) { echo "value='".@$contact['dob']."'"; } ?> />
         </div>
         <script type="text/javascript">
 		$(document).ready(function(){
@@ -92,12 +92,12 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
          <div class="form-group" id="q14-container">
           <label>Customer height?</label>
           <br>
-          <input name="answers[a14]" class="form-control" placeholder="Enter the approximate height of the customer" value="<? echo $values['a14'] ?>"/>
+          <input name="answers[a14]" class="form-control" placeholder="Enter the approximate height of the customer" value="<?php echo @$values['a14'] ?>"/>
         </div>
     <div class="form-group" id="q2-container">
           <label>Reason home consultation required?</label>
           <br>
-          <input name="answers[a2]" class="form-control" placeholder="Enter the reason for the home consultation" value="<? echo $values['a2'] ?>" />
+          <input name="answers[a2]" class="form-control" placeholder="Enter the reason for the home consultation" value="<?php echo @$values['a2'] ?>" />
         </div>
     <div id="q3-container">
           <label>Does customer need assistance to stand/transfer independantly?</label>
@@ -301,8 +301,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <div class="form-group" id="q13-container">
           <label>Any other information relevant</label>
 <br>
-              <textarea class="form-control q13-question" style="height:50px" name="answers[a13][]"
-                     ><?php echo $values['a13'] ?></textarea>
+              <textarea class="form-control q13-question" style="height:50px" name="answers[a13][]"><?php echo @$values['a13'] ?></textarea>
         </div>
         
     <a href="<?php echo base_url() . 'records/detail/' . $this->uri->segment(4); ?>" class="btn btn-default">Go

@@ -13,6 +13,23 @@ class Form_model extends CI_Model
         }
     }
 	
+		public function get_campaign_branches($campaign_id){
+		$qry = "select branch_id,branch_name from branch join branch_campaigns using(branch_id) where campaign_id = '$campaign_id'";
+		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		$qry .=  " order by branch_name";
+		$result = $this->db->query($qry)->result_array();
+		return $result;
+	}
+	
+	public function get_campaign_regions($campaign_id){
+		$qry = "select region_id,region_name from branch_regions join branch using(region_id) join branch_campaigns using(branch_id) where campaign_id = '$campaign_id'";
+		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		$qry .=  " group by region_id order by region_name ";
+		$result = $this->db->query($qry)->result_array();
+		$this->firephp->log($this->db->last_query());
+		return $result;
+	}
+	
 	public function get_contacts($urn){
 		//this is used to get the available contacts in the appoitnment form
 		$this->db->select("contact_id id,fullname name");

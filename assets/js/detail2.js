@@ -815,7 +815,7 @@ var record = {
                             .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
                                 .append($('<dl/>').addClass('dl-horizontal contact-detail-list').append($contact_detail_list_items).append($contact_detail_telephone_items))
                         )
-                    );
+                    ).append("<input type='hidden' name='contact_postcode' value='"+$postcode+"' />");
                 });
 
             });

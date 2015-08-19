@@ -23,6 +23,26 @@ class Ajax extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 
+	public function update_branch_locations(){
+	$this->load->model('Planner_model');
+	foreach($this->db->query("select branch_id,postcode from branch_addresses")->result_array() as $row){
+		$postcode = $row['postcode'];
+		$location_id = $this->Planner_model->get_location_id($postcode);
+		$this->db->where("branch_id",$row['branch_id']);
+		$this->db->update("branch_addresses",array("location_id"=>$location_id));
+	}
+	}
+	
+	public function get_branch_info(){
+		$this->load->model('Branches_model');
+		  if($this->input->post('postcode')&&!$this->input->post('branch_id')){
+			$result = $this->Branches_model->get_branch_info(false,$this->input->post('postcode'));  
+		  } else if($this->input->post('branch_id')){
+			$result = $this->Branches_model->get_branch_info($this->input->post('branch_id'),$this->input->post('postcode'));    
+		  }
+		echo json_encode($result);
+	}
+
 	public function fix_eldon(){
 	$qry ="select urn,name from record_details left join users on users.name like concat(c3,'%')";
 	$res = $this->db->query($qry)->result_array();

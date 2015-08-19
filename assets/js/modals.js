@@ -1193,6 +1193,9 @@ var modals = {
                     $('.tab-alert').hide();
                 }
                 record.contact_panel.load_panel(record.urn, response.id);
+				if($('#branch-info').length>0){
+					campaign_functions.get_branch_info();
+				}
             });
 
         },

@@ -1,3 +1,5 @@
+.relative { position:relative }
+
 table.data-table {
   max-width: none !important;
 }

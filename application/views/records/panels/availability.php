@@ -4,9 +4,9 @@
     <form>
     <input type="hidden" id="slot-distance" name="distance" value="" />
       <input type="hidden" id="slot-attendee"  name="attendee" value="" />
-          <div class="input-group"  style="width:230px">
+          <div class="input-group"  style="width:280px">
              <div class="input-group-btn">
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Distance <span class="caret"></span></button>
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="slot-distance-text">Distance</span> <span class="caret"></span></button>
         <ul class="dropdown-menu">
           <li><a class="filter" data-val="1" data-ref="distance" href="#">1 Mile</a></li>
           <li><a class="filter" data-val="3" data-ref="distance" href="#">3 Miles</a></li>
@@ -24,7 +24,7 @@
     <input class="form-control input-xs" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
     
       <div class="input-group-btn">
-        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">Users <span class="caret"></span></button>
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-attendee-text">Users</span> <span class="caret"></span></button>
         <ul class="dropdown-menu pull-right" role="menu">
          <?php foreach($attendees as $attendee): ?>
           <li><a href="#" class="filter" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><?php echo $attendee['name'] ?></a> </li>
@@ -46,10 +46,16 @@ $(document).on('blur','#slot-postcode',function(){
 
 $(document).on('click','#slot-availability li a',function(e){
 e.preventDefault();
-	var type = $(this).attr('data-ref'),value = $(this).attr('data-val');
+	var type = $(this).attr('data-ref'),value = $(this).attr('data-val'),txt=$(this).text();
 	$(this).closest('form').find('input[name="'+type+'"]').val(value);
+	
 	$(this).closest('ul').find('a').css("color","black");
     $(this).css("color","green");
+	if(type=="distance"){
+	$(this).closest('form').find('#slot-'+type+'-text').text(txt);	
+	} else if(type=="attendee"){
+		$(this).closest('form').find('#slot-'+type+'-text').text(txt);	
+	}
 	record.appointment_slots_panel.load_panel();
 	
 });

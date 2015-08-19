@@ -353,6 +353,12 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $users         = $this->Records_model->get_users(false, $campaign_id);
             $data['users'] = $users;
         }
+		 //get the users we need the ownership feature is on
+        if (in_array(18, $features)) {
+            $regions         = $this->Form_model->get_campaign_regions($campaign_id);
+            $data['regions'] = $regions;
+        }
+		
 			//take ownership of unassigned record if nobody else is on it
 			if(in_array('take ownership',$_SESSION['permissions'])){
 			$this->Records_model->take_ownership($urn);
