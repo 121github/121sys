@@ -234,48 +234,68 @@ class Planner extends CI_Controller
     {
 
         $appointment_id = $this->input->post('appointment_id');
+        $appointment_id=1;
 
-        //get the info for the planner
-        $appointment_data = $this->Planner_model->getPlannerInfoByAppointment($appointment_id);
+        if ($appointment_id) {
 
-        $users = array_unique(array_merge(explode(',',$appointment_data['attendees']),explode(',',$appointment_data['region_users'])));
+            //get the info for the planner
+            $appointment_data = $this->Planner_model->getPlannerInfoByAppointment($appointment_id);
 
-        //Create the planner data for every user
-        $planner_data = array();
-        foreach($users as $user_id) {
-            $planner = array(
-                "urn" => $appointment_data['urn'],
-                "user_id" => $user_id,
-                "start_date" => $appointment_data['start'],
-                "postcode" => $appointment_data['postcode'],
-                "location_id" => $appointment_data['location_id'],
-                "order_num" => 20,
-                "planner_status" => PLANNER_STATUS_LIVE,
-                "planner_type" => PLANNER_TYPE_WAYPOINT,
-            );
+            $users = array_unique(array_merge(explode(',', $appointment_data['attendees']), explode(',', $appointment_data['region_users'])));
 
-            array_push($planner_data,$planner);
-        }
+            //Create the planner data for every user
+            $planner_data = array();
+            foreach ($users as $user_id) {
+                $planner = array(
+                    "urn" => $appointment_data['urn'],
+                    "user_id" => $user_id,
+                    "start_date" => $appointment_data['start'],
+                    "postcode" => $appointment_data['postcode'],
+                    "location_id" => $appointment_data['location_id'],
+                    "order_num" => 20,
+                    "planner_status" => PLANNER_STATUS_LIVE,
+                    "planner_type" => PLANNER_TYPE_WAYPOINT,
+                );
 
-        //Add or update the record planner for each user
-        foreach($planner_data as $planner) {
-            //Check if the planner already exist for this urn
-            $planner_id = $this->Planner_model->check_planner($planner['urn'], $planner['user_id']);
-            //If the status of the appointment is not cancellation, we add or update the appointment
+                array_push($planner_data, $planner);
+            }
+
+            //Add or update the record planner for each user
+            foreach ($planner_data as $planner) {
+                //Check if the planner already exist for this urn
+                $planner_id = $this->Planner_model->check_planner($planner['urn'], $planner['user_id']);
+                //If the status of the appointment is not cancellation, we add or update the appointment
+                if ($appointment_data['status'] != APPOINTMENT_STATUS_CANCEL) {
+                    if ($planner_id) {
+                        //Update the planner
+                        $this->Planner_model->update_record_planner($planner_id, $planner);
+                    } else {
+                        //Add the planner for that user
+                        $this->Planner_model->add_record($planner['urn'], $planner['start_date'], $planner['postcode'], $planner['user_id']);
+                    }
+                } else if ($planner_id) {
+                    //Cancel the planner if already exist
+                    $this->Planner_model->remove_record($planner['urn'], $planner['user_id']);
+                }
+            }
+
             if ($appointment_data['status'] != APPOINTMENT_STATUS_CANCEL) {
-                if ($planner_id) {
-                    //Update the planner
-                    $this->Planner_model->update_record_planner($planner_id, $planner);
-                }
-                else {
-                    //Add the planner for that user
-                    $this->Planner_model->add_record($planner['urn'], $planner['start_date'], $planner['postcode'], $planner['user_id']);
-                }
+                echo json_encode(array(
+                    "success" => true,
+                    "msg" => "Appointment added or updated on the planner"
+                ));
+            } else {
+                echo json_encode(array(
+                    "success" => true,
+                    "msg" => "Appointment cancelled on the planner"
+                ));
             }
-            else if ($planner_id) {
-                //Cancel the planner if already exist
-                $this->Planner_model->remove_record($planner['urn'], $planner['user_id']);
-            }
+        }
+        else {
+            echo json_encode(array(
+                "success" => false,
+                "msg" => "The appointment_id doesn't exist"
+            ));
         }
     }
 
