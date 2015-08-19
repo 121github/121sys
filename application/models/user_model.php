@@ -152,7 +152,7 @@ class User_model extends CI_Model
         //finally we unflag the update session    
         $this->db->where('user_id', $_SESSION['user_id']);
         $this->db->update('users', array(
-            'reload_session' => '0'
+          'reload_session' => '0'
         ));
     }
     

@@ -41,7 +41,6 @@ class Branches_model extends CI_Model
 		$driver_qry =  "select user_id id,name,user_email email,home_postcode,vehicle_reg from users join branch_region_users using(user_id) where attendee = 0 and region_id = ".$region_id;
 		$result[$k]['drivers'] = $this->db->query($driver_qry)->result_array();
 		}
-		$this->firephp->log($result);
 		return array("success"=>true,"branches"=>$result);
 	}
 	

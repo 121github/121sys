@@ -315,12 +315,14 @@ class User extends CI_Controller
     /* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
     public function current_campaign($camp_id = false)
     {
-        $campaign = ($camp_id ? intval($this->uri->segment(3)) : $camp_id);
+			
+        $campaign = ($camp_id ?  $camp_id:intval($this->uri->segment(3)));
         $user_id = $_SESSION['user_id'];
         unset($_SESSION['next']);
         if ($campaign > "0") {
             unset($_SESSION['filter']);
             if (in_array($campaign, $_SESSION['campaign_access']['array'])) {
+				
                 /* no longer logging in realtime  
                 if(in_array("log hours",$_SESSION['permissions'])){
                 //start logging the duration on the selected campaign

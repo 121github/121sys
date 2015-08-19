@@ -32,19 +32,15 @@ var planner = {
             e.preventDefault();
         });
 
-
-        var user_id = $('form').find('input[name="user"]').val();
-        $('.user-filter[id="' + user_id + '"]').css("color", "green");
-        $('.user-filter-name').text($('.user-filter[id="' + user_id + '"]').text());
-
-        $(document).on("click", ".user-filter", function (e) {
+        $(document).on("click", "a.user-filter", function (e) {
+			console.log($(this).text());
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
             //$(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="user"]').val($(this).attr('id'));
+            $(this).closest('form').find('input[name="user"]').val($(this).attr('data-id'));
             $(this).closest('ul').find('a').css("color", "black");
-            $('.user-filter').css("color", "black");
-            $('.user-filter-name').text($('.user-filter[id="' + $(this).attr('id') + '"]').text());
+            $('#user-filter').css("color", "black");
+            $('#user-filter-name').text($(this).text());
             $(this).css("color", "green");
             maps.removeDirections();
             planner_reload();
@@ -277,6 +273,8 @@ var planner = {
 
             }
             else {
+				$('input[name="origin"]').val(response.user_postcode);
+				$('input[name="destination"]').val(response.user_postcode);
                 var pbody = '<div>No waypoints have been added on this day!</div>' +
                     '<div>' +
                     '<span class="glyphicon glyphicon-question-sign"></span> ' +

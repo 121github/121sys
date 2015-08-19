@@ -29,7 +29,7 @@ class Planner extends CI_Controller
         $user_id = ($_SESSION['user_id'] ? $_SESSION['user_id'] : NULL);
 
         $campaign_branch_users = $this->getCampaignBranchUsers();
-
+		$planner_users = $this->Form_model->get_drivers();
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'System planner',
@@ -37,6 +37,7 @@ class Planner extends CI_Controller
             'page' => array('dashboard' => 'planner'),
             'campaign_branch_users' => $campaign_branch_users,
             'user_id' => $user_id,
+			'planner_users' => $planner_users,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
@@ -103,7 +104,13 @@ class Planner extends CI_Controller
                     else {
                         $campaign_branch_user['current_branch'] = $aux[$campaign_branch_user['branch_id']]['current_branch'];
                     }
+					if(strpos($campaign_branch_user["map_icon"],".png")!==false){
+					 $campaign_branch_user["map_icon_type"] = "image";	
+					} else {
+						$campaign_branch_user["map_icon_type"] = "icon";	
                     $campaign_branch_user["map_icon"] = ($campaign_branch_user["map_icon"]?str_replace("FA_","",str_replace("-","_",strtoupper($campaign_branch_user["map_icon"]))):NULL);
+					}
+					
                     if (!isset($aux[$campaign_branch_user['branch_id']])) {
                         $campaign_branch_user['user_id'] = array($campaign_branch_user['user_id']);
                     }
@@ -145,10 +152,14 @@ class Planner extends CI_Controller
                 }
 
             }
-
+			
             $data = array(
                 "data" => $records
             );
+			if(count($records)==0&&$this->input->post('user_id')){
+				$user_postcode = $this->Planner_model->get_user_postcode($this->input->post('user_id'));
+				$data['user_postcode'] = $user_postcode;
+			}
             echo json_encode($data);
         }
     }

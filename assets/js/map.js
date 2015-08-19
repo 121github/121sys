@@ -851,12 +851,35 @@ var maps = {
         var marker_color = "#" + (value.color_map ? (value.color_map).substr(1) : maps.intToARGB(maps.hashCode(value.branch_id)));
         var marker_icon = fontawesome.markers.CROSSHAIRS;
         var marker_anchor = maps.getIconAnchor('CROSSHAIRS');
-
+		var icon_data =  {
+                path: marker_icon,
+                scale: 0.4,
+                anchor: marker_anchor,
+                strokeWeight: 0.2,
+                strokeColor: 'black',
+                strokeOpacity: 1,
+                fillColor: marker_color,
+                fillOpacity: 0.9,
+            }
         if (value.map_icon) {
+			if(value.map_icon_type=="image"){
+			var icon_data = helper.baseUrl+'assets/themes/hsl/'+value.map_icon;	
+			} else {
             marker_icon = eval("fontawesome.markers." + value.map_icon);
             marker_anchor = maps.getIconAnchor(value.map_icon);
-        }
-
+			var icon_data =  {
+                path: marker_icon,
+                scale: 0.4,
+                anchor: marker_anchor,
+                strokeWeight: 0.2,
+                strokeColor: 'black',
+                strokeOpacity: 1,
+                fillColor: marker_color,
+                fillOpacity: 0.9,
+            }
+			}
+        } 
+		
         var contentString =
             '<div id="content">' +
             '<div id="siteNotice">' +
@@ -874,16 +897,7 @@ var maps = {
             postcode: value.postcode,
             id: value.branch_id,
             content: contentString,
-            icon: {
-                path: marker_icon,
-                scale: 0.4,
-                anchor: marker_anchor,
-                strokeWeight: 0.2,
-                strokeColor: 'black',
-                strokeOpacity: 1,
-                fillColor: marker_color,
-                fillOpacity: 0.9,
-            },
+            icon: icon_data,
         });
 
         if (value.current_branch && value.covered_area) {

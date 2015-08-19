@@ -35,7 +35,7 @@
 
                     <input type="hidden" name="user" value="<?php echo $user_id ?>">
                     <?php if(in_array("admin planner", $_SESSION['permissions'])) { ?>
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        <!--<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-filter"></span>
                             <span class="user-filter-name">User</span>
                         </button>
@@ -99,7 +99,21 @@
                                     </li>
                                 <?php endforeach ?>
                             <?php } ?>
+                        </ul>-->
+                        
+                        
+                        
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            <span id="user-filter-name">Driver</span> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                        <?php foreach($planner_users as $row){ ?>
+                         <li><a href="#" class="user-filter" data-id="<?php echo $row['user_id'] ?>"><?php echo $row['region_name'] ?>: <?php echo $row['name'] ?> </a>
+                         <?php } ?>
                         </ul>
+                        
+                        
+                        
                     <?php } ?>
 
                 </div>

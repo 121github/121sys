@@ -26,7 +26,6 @@ if(strpos($_SERVER['REQUEST_URI'],"121sys/121sys")!==false){
 }
 
 $no_https = array("accept.", "demo.", "test.");
-
 $full_url = explode('121system.com', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 $domain = explode("/",$full_url[0]);
 $domain = $domain[0];
@@ -62,6 +61,7 @@ switch ($domain) {
     case 'eldon.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_eldon';
+		$theme = "eldon";
         break;
 
     case 'jonwall.':
@@ -72,11 +72,13 @@ switch ($domain) {
     case 'hsl.':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_hsl';
+		$theme = "hsl";
         break;
 
     case 'hcs.hslchairs.com':
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_hsl';
+		$theme = "hsl";
         break;
 
     case 'demo.':
@@ -87,6 +89,7 @@ switch ($domain) {
     default:
         define('ENVIRONMENT', 'development');
         $session_name = '121sys_dev';
+		$theme = "default";
         break;
 }
 
@@ -96,6 +99,7 @@ session_name($session_name);
 session_start();
 $_SESSION['session_name'] = session_name();
 $_SESSION['environment'] = ENVIRONMENT;
+$_SESSION['theme_folder'] = $theme;
 
 /*
  *---------------------------------------------------------------

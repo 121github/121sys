@@ -13,6 +13,24 @@ class Form_model extends CI_Model
         }
     }
 	
+	public function get_drivers($campaign_id=false,$region_id=false,$branch_id=false){
+		$qry = "select user_id, name, region_name from users join branch_region_users using(user_id) join branch_regions using(region_id) join branch using(region_id) join branch_campaigns using(branch_id) where 1 ";
+		$qry .= " and attendee = 0 ";
+		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		if($campaign_id){
+		$qry .= " and campaign_id = '$campaign_id' ";
+		}
+		if($region_id){
+		$qry .= " and branch.region_id = '$region_id' ";
+		}
+		if($branch_id){
+		$qry .= " and branch.branch_id = '$branch_id' ";
+		}
+		$qry .= " group by user_id order by region_name,name ";
+		return $this->db->query($qry)->result_array();
+		
+	}
+	
 		public function get_campaign_branches($campaign_id){
 		$qry = "select branch_id,branch_name from branch join branch_campaigns using(branch_id) where campaign_id = '$campaign_id'";
 		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
@@ -26,7 +44,6 @@ class Form_model extends CI_Model
 		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$qry .=  " group by region_id order by region_name ";
 		$result = $this->db->query($qry)->result_array();
-		$this->firephp->log($this->db->last_query());
 		return $result;
 	}
 	

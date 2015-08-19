@@ -14,7 +14,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
     <!-- Optional theme -->
     <link rel="stylesheet"
-          href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/bootstrap-theme.css">
+          href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : $theme); ?>/bootstrap-theme.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/dataTables.bootstrap.css">
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
@@ -81,7 +81,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     <small><span class="text-primary"><?php echo date('l jS F') ?></span> -
                         Welcome <?php echo $_SESSION['name'] ?></small>
                 </a></li>
-            <?php if (isset($campaign_access) && count($campaign_access) > 0) { ?>
+            <?php if (isset($campaign_access) && count($campaign_access) > 1) { ?>
                 <li style="padding:0 20px;">
                     <select id="campaign-select" data-width="100%">
                         <?php if(in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
