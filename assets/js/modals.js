@@ -543,11 +543,9 @@ var modals = {
             format: 'DD/MM/YYYY HH:mm'
         });
         $('#modal').find('.dateonly').datetimepicker({
-            format: 'DD/MM/YYYY',
-            pickTime: false
+            format: 'DD/MM/YYYY'
         });
         $('#modal').find('.dateyears').datetimepicker({
-            pickTime: false,
             viewMode: 'years',
             format: 'DD/MM/YYYY'
         });

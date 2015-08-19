@@ -80,7 +80,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <script type="text/javascript">
 		$(document).ready(function(){
 			$('.dob').datetimepicker({
-        pickTime: false,
         viewMode: 'years',
         format: 'DD/MM/YYYY',
 		defaultDate: new Date(1979, 0, 1,1, 0, 0, 0),

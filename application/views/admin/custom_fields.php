@@ -141,14 +141,14 @@
                       <tr>
                         <th>Date field name </th>
                         <th> | Visible | </th>
-                        <th> | Renewal | </th>
-                          <th> | Editable </th>
+                        <th> | Editable | </th>
+                          <th> | Renewal </th>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="d1[name]" id="d1"/></td>
                         <td><input type="checkbox" class="form-control"  name="d1[visible]" id="d1_vis"/></td>
-                        <td><input type="checkbox"  class="form-control" name="d1[renewal]" id="d1_ren"/></td>
-                            <td><input type="checkbox" class="form-control" name="d1[editable]" id="d1_edi"/></td>
+                        <td><input type="checkbox"  class="form-control" name="d1[editable]" id="d1_ren"/></td>
+                            <td><input type="checkbox" class="form-control" name="d1[renewal]" id="d1_edi"/></td>
                       </tr>
                       <tr>
                         <td><input class="form-control" value="" name="d2[name]" id="d2"/></td>

@@ -330,7 +330,6 @@ $(document).ready(function () {
             appointment_rules.loadAppointmentRulesAttendees();
 
             $('#modal').find('.block-day').datetimepicker({
-                pickTime: false,
                 format: 'DD/MM/YYYY'
             });
 

@@ -130,19 +130,17 @@ function stretch() {
 function renew_js() {
     $('.tt').tooltip();
     $('.datetime').datetimepicker({
-        format: 'DD/MM/YYYY HH:mm'
+        format: 'DD/MM/YYYY HH:mm',
+		sideBySide:true
     });
     $('.date').datetimepicker({
         format: 'DD/MM/YYYY',
-        pickTime: false
     });
     $('.date2').datetimepicker({
         format: 'YYYY-MM-DD',
-        pickTime: false,
         maxDate: moment()
     });
     $('.dob').datetimepicker({
-        pickTime: false,
         viewMode: 'years',
         format: 'DD/MM/YYYY'
     });

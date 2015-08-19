@@ -930,7 +930,13 @@ $d = preg_replace('/[0-9]/','',$data['description']);
 
 			$info = $this->input->post();
 			$custom_fields = array("c1","c2","c3","c4","c5","c6");
+			$date_fields = array("d1","d2","d3","dt1","dt2","d3");
 			foreach($info as $k => $v){
+				if(in_array($k,$date_fields)){
+				if($v==""){
+					$info[$k] = NULL;
+				}
+				}
 				//check if its a special field ie-ownership,client_ref or color
 				if(in_array($k,$custom_fields)){
 				$qry = "select field_name,is_color,is_owner,is_client_ref from record_details_fields join campaigns 		using(campaign_id) join records using(campaign_id) where urn = '$urn' and field = '$k'";

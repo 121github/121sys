@@ -77,7 +77,8 @@ var record = {
 
                 $('#nextcall').val(timestamp_to_uk(nextcall, true));
                 $('#nextcall').datetimepicker({
-                    format: 'DD/MM/YYYY HH:mm'
+                    format: 'DD/MM/YYYY HH:mm',
+					sideBySide:true
                 });
                 $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
                 //$('#nextcall').data("DateTimePicker").setDate(timestamp_to_uk(nextcall,true));
@@ -87,7 +88,8 @@ var record = {
                 nextcall = old_nextcall;
                 $('#nextcall').val(nextcall);
                 $('#nextcall').datetimepicker({
-                    format: 'DD/MM/YYYY HH:mm'
+                    format: 'DD/MM/YYYY HH:mm',
+					sideBySide:true
                 });
                 $('#nextcall').animate({backgroundColor: "#99FF99"}, 500).delay(300).animate({backgroundColor: "#FFFFFF"}, 500);
             }
@@ -105,10 +107,12 @@ var record = {
         var datetimepicker = $('.datetime');
         datetimepicker.off("dp.hide");
         datetimepicker.on("dp.hide", function (e) {
+			if($('#outcomes').length>0){
             var new_nextcall = $('input[name="nextcall"]').val();
             var outcome = $('#outcomes option:selected').val();
             var comments = $('textarea[name="comments"]').val();
             record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
+			}
         });
 
         var old_comments = $('textarea[name="comments"]').val();
@@ -1967,30 +1971,32 @@ var record = {
                         $radio += "</div>";
                         form += $radio;
                     } else {
-                        if (row.type != "varchar" && row.type != "number") {
+                        if (row.type !== "varchar" && row.type !== "number") {
                             inputclass = row.type;
-                            if (row.value = '-' && row.type == "datetime") {
+                            if (row.value == '-' && row.type == "datetime") {
                                 row.value = moment(new Date()).format("DD/MM/YYYY HH:mm:ss");
                             }
-                            if (row.value = '-' && row.type == "date") {
+                            if (row.value == '-' && row.type == "date") {
                                 row.value = moment(new Date()).format("DD/MM/YYYY");
                             }
                         }
                         if (row.value == "-") {
                             row.value = "";
                         }
-                        form += " <div class='form-group input-group-sm " + inputclass + "'>" + row.name + "<input " + is_disabled + " class='form-control' name='" + row.code + "' type='text' value='" + row.value + "'/></div>";
+                        form += "<div style='position:relative' class='form-group input-group-sm'>" + row.name + "<input " + is_disabled + " class='form-control  " + inputclass + "' name='" + row.code + "' type='text' value='" + row.value + "'/></div>";
                     }
                 });
             });
             $form.append(form + "<button class='btn btn-primary pull-right marl save-info'>Save</button> <button class='btn btn-default pull-right close-custom'>Cancel</button>");
             $('.selectpicker').selectpicker();
             $('.date').datetimepicker({
-                pickTime: false,
-                format: 'DD/MM/YYYY'
+                format: 'DD/MM/YYYY',
+				showClear:true,
+				sideBySide:true
             });
             $('.datetime').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm'
+                format: 'DD/MM/YYYY HH:mm',
+				showClear:true
             });
         }
     },

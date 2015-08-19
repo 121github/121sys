@@ -175,7 +175,6 @@ var maps = {
 
             $('.date').datetimepicker({
                 format: 'DD/MM/YYYY',
-                pickTime: false,
                 defaultDate: (planner_date.length > 0 ? planner_date : today_date)
             });
         });

@@ -602,7 +602,6 @@ var backup_restore = {
                                         + "<span class='glyphicon glyphicon-save btn-new-backup pointer'></span>"
                                         + "</td></tr>");
                                 $('.date').datetimepicker({
-                                    pickTime: false,
                                     maxDate: new Date()
                                 });
                             }
