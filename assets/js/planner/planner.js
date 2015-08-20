@@ -158,6 +158,10 @@ var planner = {
             } else if (device_type == "tablet" || device_type == "tablet2" || device_type == "mobile2") {
                 button_size = "";
             }
+			if(response.use_home){
+				$('input[name="origin"]').val(response.user_postcode);
+				$('input[name="destination"]').val(response.user_postcode);	
+				}
             var start_point = '', end_point = '', waypoints = '';
             if (response.data.length > 0) {
                 var pbody = "";
@@ -273,8 +277,6 @@ var planner = {
 
             }
             else {
-				$('input[name="origin"]').val(response.user_postcode);
-				$('input[name="destination"]').val(response.user_postcode);
                 var pbody = '<div>No waypoints have been added on this day!</div>' +
                     '<div>' +
                     '<span class="glyphicon glyphicon-question-sign"></span> ' +

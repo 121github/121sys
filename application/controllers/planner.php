@@ -138,11 +138,14 @@ class Planner extends CI_Controller
             $records = $this->Planner_model->planner_data(false, $this->input->post());
             $letters = array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M");
             $i = 0;
+			$use_home=true;
             foreach ($records as $k => $v) {
                 if ($v['planner_type'] == 1) {
                     $records[$k]["letter"] = "dd-start";
+					$use_home=false;
                 } else if ($v['planner_type'] == 3) {
                     $records[$k]["letter"] = "dd-end";
+					$use_home=false;
                 } else {
                     $records[$k]["letter"] = "marker" . $letters[$i];
                     $i++;
@@ -156,9 +159,11 @@ class Planner extends CI_Controller
             $data = array(
                 "data" => $records
             );
-			if(count($records)==0&&$this->input->post('user_id')){
+			$data['use_home'] = false;
+			if($use_home){
 				$user_postcode = $this->Planner_model->get_user_postcode($this->input->post('user_id'));
 				$data['user_postcode'] = $user_postcode;
+				$data['use_home'] = true;
 			}
             echo json_encode($data);
         }

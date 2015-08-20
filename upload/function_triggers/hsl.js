@@ -18,6 +18,7 @@ get_branch_info:function(id){
 	dataType:"JSON",
 	data:	{postcode:contact_postcode,branch_id:id}
 	}).done(function(response){
+		if(response){
 		var branch_info = "";	
 			branch_info += "<table class='table table-condensed table-striped'><thead><tr><th>Branch</th><th>Hub</th><th>Driver</th><th>Consultant</th><th>Distance</th></tr><thead><tbody>";
 			$.each(response.branches,function(i,row){
@@ -25,6 +26,9 @@ get_branch_info:function(id){
 			});
 			branch_info += "</tbody></table>";
 		 $('#branch-info').html(branch_info);
+		} else {
+			$('#branch-info').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
+		}
 	}).fail(function(){
 		$('#branch-info').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
 		
