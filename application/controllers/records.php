@@ -926,8 +926,10 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 				
 				
 				
-				$response = array("success" => true);
-				
+				$response = array("success" => true,"appointment_id"=>$id,"add_to_planner"=>false);
+				if(in_array("apps to planner",$_SESSION['permissions'])){
+					$response['add_to_planner'] = true;
+				}
 				//if its a GHS campaign update trackvia
 				if(isset($_SESSION['current_client'])&&$_SESSION['current_client']=="GHS"){
 					$response["trackvia"] = base_url()."trackvia/add_appointment";

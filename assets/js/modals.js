@@ -281,6 +281,15 @@ var modals = {
                 if (typeof record !== "undefined") {
                     record.appointment_panel.load_appointments();
                 }
+				if(response.add_to_planner){
+					$.ajax({url:helper.baseUrl+'planner/add_appointment_to_the_planner',
+					data:{appointment_id:response.id},
+					type:"POST",
+					dataType:"JSON"
+					}).done(function(response){
+						
+					});
+				}
             } else {
                 flashalert.danger(response.msg);
             }
@@ -753,7 +762,7 @@ var modals = {
                 });
                 planner_form += '<select></div>';
 
-                planner_form += '<div class="form-group"><label>Select Date</label><input value="' + data.planner_date + '" class="form-control dateonly" id="planner_date" placeholder="Choose date..." /></div>';
+                planner_form += '<div class="form-group relative"><label>Select Date</label><input value="' + data.planner_date + '" class="form-control dateonly" id="planner_date" placeholder="Choose date..." /></div>';
                 planner_form += ' <button class="marl btn btn-info pull-right save-planner" data-urn="' + data.urn + '" href="#">Save to planner</button> ';
             } else {
                 planner_form += '<p class="text-danger">You cannot add this record to the journey planner because it has no address</p>'
@@ -787,6 +796,7 @@ var modals = {
         }
         modals.load_modal(mheader, mbody, mfooter);
         modal_body.css('padding:0px');
+		modal_body.css('overflow', 'visible');
     },
     view_filter_options: function () {
         $.ajax({

@@ -851,6 +851,8 @@ class Records_model extends CI_Model
         else:
             $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and attendee = 1 and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
         endif;
+		$qry .= " order by name";
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 
