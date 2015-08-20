@@ -1201,12 +1201,26 @@ class Records_model extends CI_Model
         $result = $this->db->get("appointments")->result_array();
         return $result;
     }
-
+	
+	public function get_branch_from_attendee($attendee){
+	$qry = "select branch_id from branch_region_users join branch using(region_id)	where user_id = '$attendee'";
+	$branch =  $this->db->query($qry)->row_array();
+	if(isset($branch['branch_id'])){
+	return $branch['branch_id'];	
+	} else {
+	return NULL;	
+	}
+	}
+	
     public function save_appointment($post)
     {
+		
+		
         $attendees = $post['attendees'];
         unset($post['attendees']);
 
+		$branch_id = $this->get_branch_from_attendee($attendees[0]);
+		$post['branch_id']  = $branch_id;
         if ($post['contact_id'] == 'other') {
             $post['contact_id'] = NULL;
         }

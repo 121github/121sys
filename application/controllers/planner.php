@@ -255,10 +255,10 @@ class Planner extends CI_Controller
 
             //Create the planner data for every user
             $planner_data = array();
-            foreach ($users as $user_id) {
+            foreach ($users as $user) {
                 $planner = array(
                     "urn" => $appointment_data['urn'],
-                    "user_id" => $user_id,
+                    "user_id" => $user,
                     "start_date" => $appointment_data['start'],
                     "postcode" => $appointment_data['postcode'],
                     "location_id" => $appointment_data['location_id'],

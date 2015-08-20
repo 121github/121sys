@@ -25,6 +25,9 @@ get_branch_info:function(id){
 			});
 			branch_info += "</tbody></table>";
 		 $('#branch-info').html(branch_info);
+	}).fail(function(){
+		$('#branch-info').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
+		
 	});
 	
 	
