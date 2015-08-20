@@ -35,7 +35,7 @@ class Migration_update_43 extends CI_Migration
   `branch_email` varchar(250) NOT NULL,
   `branch_status` tinyint(1) NOT NULL DEFAULT '1',
   `region_id` int(11) DEFAULT NULL,
-    `map_icon` varchar(50) NULL
+   `map_icon` varchar(50) NULL,
   PRIMARY KEY (`branch_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
 
