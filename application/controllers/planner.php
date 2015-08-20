@@ -245,7 +245,6 @@ class Planner extends CI_Controller
     {
 
         $appointment_id = $this->input->post('appointment_id');
-        $appointment_id=1;
 
         if ($appointment_id) {
 
