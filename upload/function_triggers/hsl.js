@@ -43,4 +43,7 @@ get_branch_info:function(id){
 
 $(document).ready(function(){
 	campaign_functions.init();
+	//hsl requests
+	$(".record-panel .panel-heading").html($(".record-panel .panel-heading").html().replace("Record Details", "Progress Summary"));
+	
 });
