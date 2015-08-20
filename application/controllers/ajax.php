@@ -22,6 +22,10 @@ class Ajax extends CI_Controller
 		$this->load->helper('misc');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+	
+	public function test(){
+	mail("bradf@121customerinsight.co.uk","Test","testing the email for php");	
+	}
 
 	public function update_branch_locations(){
 	$this->load->model('Planner_model');
