@@ -408,6 +408,7 @@ var modals = {
                 $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true);
             });
             modals.load_modal(mheader, $mbody, mfooter);
+			modal_body.css('overflow', 'visible');
             modals.appointment_contacts(data.urn, data.contact_id);
         });
     },
@@ -450,6 +451,7 @@ var modals = {
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
             var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
             modals.load_modal(mheader, mbody, mfooter);
+			modal_body.css('overflow', 'visible');
             modals.appointment_contacts(urn);
         });
     },
@@ -549,7 +551,8 @@ var modals = {
         $('#modal').find('.selectpicker').selectpicker();
         $('#modal').find('.tt').tooltip();
         $('#modal').find('.datetime').datetimepicker({
-            format: 'DD/MM/YYYY HH:mm'
+            format: 'DD/MM/YYYY HH:mm',
+			sideBySide:true
         });
         $('#modal').find('.dateonly').datetimepicker({
             format: 'DD/MM/YYYY'
