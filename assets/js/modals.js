@@ -283,7 +283,7 @@ var modals = {
                 }
 				if(response.add_to_planner){
 					$.ajax({url:helper.baseUrl+'planner/add_appointment_to_the_planner',
-					data:{appointment_id:response.id},
+					data:{appointment_id:response.appointment_id},
 					type:"POST",
 					dataType:"JSON"
 					}).done(function(response){
