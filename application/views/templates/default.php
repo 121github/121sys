@@ -81,7 +81,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     <small><span class="text-primary"><?php echo date('l jS F') ?></span> -
                         Welcome <?php echo $_SESSION['name'] ?></small>
                 </a></li>
-            <?php if (isset($campaign_access) && count($campaign_access) > "1") { ?>
+            <?php if (isset($campaign_access) && count($_SESSION['campaign_access']['array']) > "1") { ?>
                 <li style="padding:0 20px;">
                     <select id="campaign-select" data-width="100%">
                         <?php if(in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>

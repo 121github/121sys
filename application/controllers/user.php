@@ -474,7 +474,7 @@ class User extends CI_Controller
         //Send the email
 
         $reset_pass_url = base_url() . "user/restore_password/" . $user['reset_pass_token'];
-        $email_address_from = "noreply@121customerinsight.co.uk";
+        $email_address_from = "no-reply@121system.com";
         $email_address_to = $user['user_email'];
         $subject = "121System - Restore your Password";
         $body = "Hi " . $user['name'] . ",

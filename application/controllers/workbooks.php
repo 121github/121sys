@@ -384,7 +384,7 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
 
         $this->email->initialize($config);
 
-        $this->email->from('noreply@121customerinsight.co.uk');
+        $this->email->from('no-reply@121system.com');
         $this->email->to('bradf@121customerinsight.co.uk');
         $this->email->cc('estebanc@121customerinsight.co.uk');
         $this->email->bcc('');

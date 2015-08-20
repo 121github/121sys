@@ -253,7 +253,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
         
         $this->email->initialize($config);
         
-        $this->email->from('noreply@121customerinsight.co.uk');
+        $this->email->from('no-reply@121system.com');
         $this->email->to('bradf@121customerinsight.co.uk');
         //$this->email->to('cvproject@121customerinsight.co.uk');
         $this->email->cc('');
