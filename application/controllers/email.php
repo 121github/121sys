@@ -13,6 +13,7 @@ class Email extends CI_Controller
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
         $this->load->model('Email_model');
+        $this->load->model('Appointments_model');
     }
 
 
@@ -518,12 +519,10 @@ class Email extends CI_Controller
 
     private function send($form)
     {
-
-
         $this->load->library('email');
 
         //Get the server conf if exist
-        if ($template = $this->Email_model->get_template($form['template_id'])) {
+        if (isset($form['template_id']) && $template = $this->Email_model->get_template($form['template_id'])) {
             if ($template['template_hostname']) {
                 $config['smtp_host'] = $template['template_hostname'];
             }
@@ -543,7 +542,7 @@ class Email extends CI_Controller
         }
 
         //unsubscribe link
-        if (@$form['template_unsubscribe'] == "1") {
+        if (isset($form['template_unsubscribe']) && @$form['template_unsubscribe'] == "1") {
             $form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10px;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/" . base64_encode($form['template_id']) . "/" . base64_encode($form['urn']) . "'>unsubscribe</a></p>";
         };
         if (isset($form['email_id'])) {
@@ -558,7 +557,6 @@ class Email extends CI_Controller
         $this->email->bcc($form['bcc']);
         $this->email->subject($form['subject']);
         $this->email->message($form['body']);
-
 
         $tmp_path = '';
         $user_id = (isset($_SESSION['user_id'])) ? $_SESSION['user_id'] : NULL;
@@ -576,13 +574,15 @@ class Email extends CI_Controller
                     if (@!copy($file_path, $tmp_path . $attachment['name'])) {
                         return false;
                     } else {
-                        $this->email->attach($tmp_path . $attachment['name']);
+                        $disposition = (isset($attachment['disposition'])?$attachment['disposition']:"attachment");
+                        $this->email->attach($tmp_path . $attachment['name'], $disposition);
                     }
                 }
             }
         }
+
         $result = $this->email->send();
-        $this->email->print_debugger();
+        //print_r($this->email->print_debugger());
         $this->email->clear(TRUE);
 
         //Remove tmp dir
@@ -680,5 +680,302 @@ class Email extends CI_Controller
 
         $this->User_model->close_hours();
         session_destroy();
+    }
+
+    public function book_appointment_ics($appointment_id, $send_to, $description) {
+        $this->load->library('email');
+
+        $urn = $this->input->post('urn');
+
+        //$appointment = $this->Appointment_model->getLastAppointmentUpdated($urn);
+
+        $appointment_id = 32;
+        $description = 'Test';
+        $send_to = 'estebanc@121customerinsight.co.uk';
+
+        //Get the appointment info
+        $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
+        $this->firephp->log($appointment);
+        $appointment_ics = array();
+        if ($appointment) {
+            $appointment_ics['appointment_id'] = $appointment->appointment_id;
+            $appointment_ics['start_date'] = $appointment->start;
+            $appointment_ics['send_to'] = $send_to;
+            $appointment_ics['duration'] = strtotime($appointment->end) - strtotime($appointment->start);
+            $appointment_ics['title'] = 'Appointment Booking - '.$appointment->title;
+            $appointment_ics['location'] = $appointment->postcode;
+            $appointment_ics['uid'] = "HSL_Appointment_".$appointment->appointment_id;
+            $appointment_ics['description'] = $description;
+            $appointment_ics['sequence'] = 0;
+            $appointment_ics['method'] = 'REQUEST';
+        }
+
+        //Create the ical file to attach
+        $ical = $this->createIcalFile($appointment_ics['uid'], $appointment_ics['method'], $appointment_ics['send_to'], $appointment_ics['start_date'], $appointment_ics['duration'], $appointment_ics['title'], $appointment_ics['description'], $appointment_ics['location'], $appointment_ics['sequence']);
+
+        //ATTACH the ics file
+        //Create tmp dir if it does not exist
+        $tmp_path = FCPATH . '/upload/attachments/ics';
+        $filename = $appointment_ics['uid'].".ics";
+
+        if (@!file_exists($tmp_path)) {
+            mkdir($tmp_path, 0777, true);
+        }
+
+        $handle = fopen($tmp_path."/".$filename , 'w+');
+        if($handle)
+        {
+            if(@!fwrite($handle, $ical )) {
+                return false;
+            }
+            else {
+                $attachments = array(
+                    array(
+                        "path" => $tmp_path."/".$filename,
+                        "name" => $filename,
+                        //"disposition" => 'inline'
+                    )
+                );
+            }
+        }
+        fclose($handle);
+
+        //SEND MAIL
+        $form_to_send = array(
+            "send_from" => "noreply@121system.com",
+            "send_to" => $appointment_ics['send_to'],
+            "cc" => null,
+            "bcc" => null,
+            "subject" => $appointment_ics['title'],
+            "body" => $appointment_ics['description'],
+            "template_attachments" => $attachments
+        );
+
+        $email_sent = $this->send($form_to_send);
+
+        //Save the appointment_ics sent
+        if ($email_sent) {
+            $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
+
+            return $appointment_ics_id;
+        }
+
+        return $form_to_send;
+
+    }
+
+    public function update_appointment_ics($uid, $description, $start_date, $duration, $location) {
+        $this->load->helper('email');
+
+        $uid = 'HSL_Appointment_32';
+        $description = 'Test 2';
+        $start_date = '2015-08-19 10:30';
+        $duration = NULL;
+        $location = NULL;
+
+        //Get the appointment ics info
+        $last_appointment_ics = $this->Appointments_model->getLastAppointmentIcsByUid($uid);
+
+        $appointment_ics = array();
+        if ($last_appointment_ics) {
+            $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
+            $appointment_ics['start_date'] = ($start_date?$start_date:$last_appointment_ics->start_date);
+            $appointment_ics['send_to'] = $last_appointment_ics->send_to;
+            $appointment_ics['duration'] = ($duration?$duration:$last_appointment_ics->duration);
+            $appointment_title = explode(' - ',$last_appointment_ics->title)[1];
+            $appointment_ics['title'] = 'Appointment Update - '.$appointment_title;
+            $appointment_ics['location'] = ($location?$location:$last_appointment_ics->location);
+            $appointment_ics['uid'] = "121Sys_".$last_appointment_ics->appointment_id;
+            $appointment_ics['description'] = ($description?$description:$last_appointment_ics->description);
+            $appointment_ics['sequence'] = $last_appointment_ics->sequence + 1;
+            $appointment_ics['method'] = 'REQUEST';
+        }
+
+
+        //Create the ical file to attach
+        $ical = $this->createIcalFile($appointment_ics['uid'], $appointment_ics['method'], $appointment_ics['send_to'], $appointment_ics['start_date'], $appointment_ics['duration'], $appointment_ics['title'], $appointment_ics['description'], $appointment_ics['location'], $appointment_ics['sequence']);
+
+        //ATTACH the ics file
+        //Create tmp dir if it does not exist
+        $tmp_path = FCPATH . '/upload/attachments/ics';
+        $filename = $appointment_ics['uid'].".ics";
+
+        if (@!file_exists($tmp_path)) {
+            mkdir($tmp_path, 0777, true);
+        }
+
+        $handle = fopen($tmp_path."/".$filename , 'w+');
+        if($handle)
+        {
+            if(@!fwrite($handle, $ical )) {
+                return false;
+            }
+            else {
+                $attachments = array(
+                    array(
+                        "path" => $tmp_path."/".$filename,
+                        "name" => $filename,
+                        //"disposition" => 'inline'
+                    )
+                );
+            }
+        }
+        fclose($handle);
+
+        //SEND MAIL
+        $form_to_send = array(
+            "send_from" => "noreply@121system.com",
+            "send_to" => $appointment_ics['send_to'],
+            "cc" => null,
+            "bcc" => null,
+            "subject" => $appointment_ics['title'],
+            "body" => $appointment_ics['description'],
+            "template_attachments" => $attachments
+        );
+
+        $email_sent = $this->send($form_to_send);
+
+
+        //Save the appointment_ics sent
+        if ($email_sent) {
+            $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
+
+            return $appointment_ics_id;
+        }
+
+        return $email_sent;
+    }
+
+    public function cancel_appointment_ics($uid) {
+        $this->load->helper('email');
+
+        $uid = 'HSL_Appointment_32';
+
+        //Get the appointment ics info
+        $last_appointment_ics = $this->Appointments_model->getLastAppointmentIcsByUid($uid);
+
+        $appointment_ics = array();
+        if ($last_appointment_ics) {
+            $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
+            $appointment_ics['start_date'] = $last_appointment_ics->start_date;
+            $appointment_ics['send_to'] = $last_appointment_ics->send_to;
+            $appointment_ics['duration'] = $last_appointment_ics->duration;
+            $appointment_title = explode(' - ',$last_appointment_ics->title)[1];
+            $appointment_ics['title'] = 'Appointment Cancellation - '.$appointment_title;
+            $appointment_ics['location'] = $last_appointment_ics->location;
+            $appointment_ics['uid'] = "121Sys_".$last_appointment_ics->appointment_id;
+            $appointment_ics['description'] = $last_appointment_ics->description;
+            $appointment_ics['sequence'] = $last_appointment_ics->sequence + 1;
+            $appointment_ics['method'] = 'CANCEL';
+        }
+
+        //Create the ical file to attach
+        $ical = $this->createIcalFile($appointment_ics['uid'], $appointment_ics['method'], $appointment_ics['send_to'], $appointment_ics['start_date'], $appointment_ics['duration'], $appointment_ics['title'], $appointment_ics['description'], $appointment_ics['location'], $appointment_ics['sequence']);
+
+        //ATTACH the ics file
+        //Create tmp dir if it does not exist
+        $tmp_path = FCPATH . '/upload/attachments/ics';
+        $filename = $appointment_ics['uid'].".ics";
+
+        if (@!file_exists($tmp_path)) {
+            mkdir($tmp_path, 0777, true);
+        }
+
+        $handle = fopen($tmp_path."/".$filename , 'w+');
+        if($handle)
+        {
+            if(@!fwrite($handle, $ical )) {
+                return false;
+            }
+            else {
+                $attachments = array(
+                    array(
+                        "path" => $tmp_path."/".$filename,
+                        "name" => $filename,
+                        //"disposition" => 'inline'
+                    )
+                );
+            }
+        }
+        fclose($handle);
+
+        //SEND MAIL
+        $form_to_send = array(
+            "send_from" => "noreply@121system.com",
+            "send_to" => $appointment_ics['send_to'],
+            "cc" => null,
+            "bcc" => null,
+            "subject" => $appointment_ics['title'],
+            "body" => $appointment_ics['description'],
+            "template_attachments" => $attachments
+        );
+
+        $email_sent = $this->send($form_to_send);
+
+        //Save the appointment_ics sent
+        if ($email_sent) {
+            $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
+
+            return $appointment_ics_id;
+        }
+
+        return $email_sent;
+    }
+
+
+    private function createIcalFile($uid, $method, $email, $meeting_date, $meeting_duration, $subject, $meeting_description, $meeting_location, $sequence) {
+        //Convert MYSQL datetime and construct iCal start, end and issue dates
+        $meetingstamp = STRTOTIME($meeting_date . " -1 hour UTC");
+        //        $dtstart = GMDATE("Ymd\THis\Z", $meetingstamp);
+        //        $dtend = GMDATE("Ymd\THis\Z", $meetingstamp + $meeting_duration);
+        //        $todaystamp = GMDATE("Ymd\THis\Z");
+        $dtstart = GMDATE("Ymd\THis\Z", $meetingstamp);
+        $dtend = GMDATE("Ymd\THis\Z", $meetingstamp + $meeting_duration);
+        $todaystamp = GMDATE("Ymd\THis\Z");
+
+        //Create unique identifier
+        $cal_uid = $uid;
+
+        $status = ($method === "CANCEL" ? "STATUS: CANCELLED " : "");
+
+        $attendees = '';
+        foreach (explode(',', $email) as $attendee) {
+            $attendee_add = trim($attendee);
+            $attendee_name = trim(strstr($attendee, '@', true));
+            $attendees .= 'ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;CN="' . $attendee_name . '":mailto:' . $attendee_add . ' ';
+        }
+
+
+        //Create ICAL Content (Google rfc 2445 for details and examples of usage)
+        $ical = '
+BEGIN:VCALENDAR
+PRODID:-//Microsoft Corporation//Outlook 11.0 MIMEDIR//EN
+VERSION:2.0
+METHOD:' . $method . '
+' . $status . '
+BEGIN:VEVENT
+ORGANIZER:MAILTO:bradf@121customerinsight.co.uk
+' . $attendees . '
+DTSTART:' . $dtstart . '
+DTEND:' . $dtend . '
+LOCATION:' . $meeting_location . '
+TRANSP:OPAQUE
+SEQUENCE:' . $sequence . '
+UID:' . $cal_uid . '
+DTSTAMP:' . $todaystamp . '
+DESCRIPTION:' . $meeting_description . '
+SUMMARY:' . $subject . '
+PRIORITY:5
+X-MICROSOFT-CDO-IMPORTANCE:1
+CLASS:PUBLIC
+BEGIN:VALARM
+TRIGGER:-PT1440M
+ACTION:DISPLAY
+DESCRIPTION:Reminder
+END:VALARM
+END:VEVENT
+END:VCALENDAR';
+
+        return $ical;
     }
 }
