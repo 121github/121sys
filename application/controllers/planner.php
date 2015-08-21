@@ -23,6 +23,81 @@ class Planner extends CI_Controller
         }
     }
 
+
+	public function simulate_hsl_planner(){
+	$customer_postcode = $this->input->post('postcode');	
+	$branch_id = $this->input->post('branch_id');	
+	$driver_id = $this->input->post('driver_id');
+	$slot = 1;
+	//get the user for the branch
+	
+	//step 1 get the drivers postcode
+	$driver_postcode = $this->Planner_model->get_user_postcode($driver_id);
+	$branch_postcode = $this->Planner_model->get_branch_postcode($branch_id);
+	$this->firephp->log($driver_postcode);
+	$this->firephp->log($branch_postcode);
+	//distance from drivers home to branch
+	$url  = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$driver_postcode,uk&destinations=$branch_postcode,uk&mode=Driving";
+	$response = json_decode(file_get_contents($url));
+	$driver_to_branch  = json_decode($response);
+	$driver_to_branch_details = $branch_to_customer['rows'][0]['elements'];
+	$url  = urlencode("https://maps.googleapis.com/maps/api/distancematrix/json?origins=$branch_postcode,uk&destinations=$customer_postcode,uk&mode=Driving");
+	$response = file_get_contents($url);
+	$branch_to_customer = json_decode($response);
+	$branch_to_customer_details = $branch_to_customer['rows'][0]['elements'];
+	
+	for($i = 0; $i < 30; $i++){
+    //$days[date("D jS M", strtotime('+'. $i .' days'))] = array();
+	$days[date("Y-m-d", strtotime('+'. $i .' days'))] = array();
+	}
+	
+	
+	
+	
+	
+	$travel_info = array();
+	
+			$date = date("D jS M", strtotime($row['app_date']));
+
+	
+	
+	foreach($result as $row){		
+	foreach($days as $day=>$array){
+		
+		
+		//get appointments for user in next 14 days
+	$qry = "select date(start) `app_date`,postcode from appointments join attendees using(appointment_id) join users using(user_id) where user_id = '$driver_id' and date(`start`) = '$day' order by `end` asc";
+	$result = $this->db->query($qry)->result_array();
+	$full=false;
+	if(count($result)==2){
+		$full=true;
+	}
+	$appointment_1_postcode = isset($result[0])?$result[0]['postcode']:"";
+	$appointment_2_postcode = isset($result[1])?$result[1]['postcode']:"";	
+	
+	$travel_info[$day][0]=$driver_to_branch;
+	$days[$day]['start'] = array("title"=>"Driver Home","postcode"=>$driver_postcode);
+	$days[$day]['branch'] = array("title"=>"Branch","postcode"=>$branch_postcode);
+	if($slot=="1"&&!$full){
+	$days[$day]['slot1'] = array("title"=>"Slot 1","postcode"=>$customer_postcode);
+	$days[$day]['slot2'] = array("title"=>"Slot 2","postcode"=>$appointment_1_postcode);
+	} else if($slot=="2"&&!$full){
+	$days[$day]['slot1'] = array("title"=>"Slot 1","postcode"=>$appointment_1_postcode);
+	$days[$day]['slot2'] = array("title"=>"Slot 2","postcode"=>$customer_postcode);	
+	} else if($full){
+	$days[$day]['slot1'] = array("title"=>"Slot 1","postcode"=>$appointment_1_postcode);
+	$days[$day]['slot2'] = array("title"=>"Slot 2","postcode"=>$appointment_2_postcode);	
+	}
+	$days[$day]['branch'] = array("title"=>"Branch","postcode"=>$branch_postcode);
+	$days[$day]['start'] = array("title"=>"Driver Home","postcode"=>$driver_postcode); 
+	}
+		
+		
+	}
+
+echo json_encode($days);
+	}
+
     public function index()
     {
 

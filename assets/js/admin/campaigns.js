@@ -309,8 +309,8 @@ var admin = {
             $('form').find('select[name="client_id"]').selectpicker('val', row.find('.client_id').text());
             $('form').find('select[name="record_layout"]').selectpicker('val', row.find('.record_layout').text());
             $('form').find('select[name="campaign_status"]').selectpicker('val', row.find('.campaign_status').text());
-            $('form').find('input[name="start_date"]').data('DateTimePicker').setDate(row.find('.start_date').text());
-            $('form').find('input[name="end_date"]').data('DateTimePicker').setDate(row.find('.end_date').text());
+            $('form').find('input[name="start_date"]').data('DateTimePicker').date(row.find('.start_date').text());
+            $('form').find('input[name="end_date"]').data('DateTimePicker').date(row.find('.end_date').text());
             min_quote_days.val(row.find('.min_quote_days').text());
             max_quote_days.val(row.find('.max_quote_days').text());
             $('form').find('input[name="months_ago"]').val(row.find('.months_ago').text());

@@ -265,10 +265,10 @@ class Dashboard_model extends CI_Model
         $date_from = $filter['date_from'];
         $date_to = $filter['date_to'];
         if (!empty($date_from)) {
-            $qry .= " and date(nextcall) >= '$date_from' ";
+            $qry .= " and date(nextcall) >= date('$date_from') ";
         }
         if (!empty($date_to)) {
-            $qry .= " and date(nextcall) <= '$date_to' ";
+            $qry .= " and date(nextcall) <= date('$date_to') ";
         }
         if (!empty($filter['campaign'])) {
             $qry .= " and campaign_id = '{$filter['campaign']}'";
@@ -286,7 +286,6 @@ class Dashboard_model extends CI_Model
         $qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         $qry .= " group by urn order by nextcall asc limit 50";
-        $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 

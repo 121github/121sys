@@ -396,7 +396,7 @@ class Admin extends CI_Controller
 				$form['virgin_order_1'] = '';
                 $form['virgin_order_2'] = '';
             }
-			if (!empty($form['telephone_prefix'])) {
+			if (empty($form['telephone_prefix'])) {
 				$form['telephone_prefix'] = '';
             }
             if (empty($form['record_layout'])) {

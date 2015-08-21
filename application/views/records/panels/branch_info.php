@@ -6,7 +6,7 @@
           <li><a class="region-select" data-branch-id="<?php echo $row['region_id'] ?>" href="#"><?php echo $row['region_name'] ?></a></li>
        <?php } ?>
           <li role="separator" class="divider"></li>
-          <li><a class="filter" data-ref="distance" href="#" style="color: green;">Any Distance</a></li>
+          <li><a class="filter" data-ref="distance" href="#" style="color: green;">Show all</a></li>
         </ul>
         </div>
           <div class="btn-group">

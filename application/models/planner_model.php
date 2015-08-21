@@ -21,6 +21,15 @@ class Planner_model extends CI_Model
 		}
 	}
 	
+		public function get_branch_postcode($branch_id){
+		$this->db->select("postcode");
+		$this->db->where("branch_id",$branch_id);
+		$qry = $this->db->get("branch_addresses");
+		if($qry->num_rows()){
+		return $qry->row()->postcode;
+		}
+	}
+	
     public function planner_data($count = false, $options = false)
     {
 

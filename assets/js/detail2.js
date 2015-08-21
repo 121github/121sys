@@ -1456,7 +1456,7 @@ var record = {
 						var day_row = "<td>"+k+"</td>";
 						$.each(day,function(i,v){
 						var slot_color="",priority="";  
-						if(v.best_distance){
+						if(v.best_distance&& v.apps<v.max_apps){
 							var slot_color = 'text-success';
 							priority = '<span class="text-success fa fa-check-circle"></span>'
 						}
@@ -1468,7 +1468,7 @@ var record = {
 						} else {
 						var	apps = v.apps + '/'+v.max_apps
 						}
-						 day_row += '<td class="' + slot_color + '" >'+apps+'</td>';
+						 day_row += '<td class="' + slot_color + '" ><input type="radio" name="slot-choice"/> '+apps+'</td>';
 						});
                         table += '<tr>'+day_row+'</tr>'
                     });

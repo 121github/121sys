@@ -24,13 +24,13 @@
     <input class="form-control input-xs" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
     
       <div class="input-group-btn">
-        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-attendee-text">Users</span> <span class="caret"></span></button>
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-attendee-text">Filter</span> <span class="caret"></span></button>
         <ul class="dropdown-menu pull-right" role="menu">
          <?php foreach($attendees as $attendee): ?>
           <li><a href="#" class="filter" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><?php echo $attendee['name'] ?></a> </li>
           <?php endforeach ?>
           <li class="divider"></li>
-          <li><a class="filter" ref="#" style="color: green;" data-ref="attendee">All Users</a> </li>
+          <li><a class="filter" ref="#" style="color: green;" data-ref="attendee">Show all</a> </li>
         </ul>
       </div>
     </div>

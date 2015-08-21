@@ -261,7 +261,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           <label>Confirm there is a power supply and space to set demonstrate and demonstrate the chair(s)?</label><br>
           <div class="radio" style="display:inline-block">
         <label>
-              <input type="radio" name="answers[a17][]" id="optionsRadios1" data-show-notes="true"
+              <input type="radio" name="answers[a17][]" id="optionsRadios1" 
                        value="Yes"  <?php if (@strpos($values['a17'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
@@ -269,20 +269,20 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       </div>
              <div class="radio" style="display:inline-block; margin-left:20px">
         <label>
-              <input type="radio" name="answers[a17][]" id="optionsRadios2"
+              <input type="radio" name="answers[a17][]" id="optionsRadios2" data-show-notes="true"
                        value="No" <?php if (@strpos($values['a17'], "No") !== false) {
                     echo "checked";
                 } ?>>
               No </label>
       </div>
        <div class="form-group">
-          <label>Please enter notes</label>
+          <label>Please enter alternate arrangements</label>
           <br>
           <input type="text" name="answers[a18]" value="<?php echo @$values['a18'] ?>" class="form-control" placeholder="Enter access power supply notes here if applicable"/>
         </div>
         </div>
            <div class="question">
-          <label>Confirm that the Home Consultation will take approximately 1 hours</label><br>
+          <label>Confirm that the Home Consultation will take approximately 1 hour</label><br>
           <div class="radio" style="display:inline-block">
         <label>
               <input type="radio" name="answers[a19][]" id="optionsRadios1" data-show-notes="true"
