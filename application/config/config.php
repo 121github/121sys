@@ -366,5 +366,21 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = '';
 
 
+/*
+|--------------------------------------------------------------------------
+| Email config
+|--------------------------------------------------------------------------
+|
+|
+*/
+$config['email'] = array(
+    "protocol"=>"smtp",
+    "smtp_host"=>"mail.121system.com",
+    "smtp_user"=>"mail@121system.com",
+    "smtp_pass"=>"L3O9QDirgUKXNE7rbNkP",
+    "smtp_port"=>25,
+    "mailtype" => "html"
+);
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */
