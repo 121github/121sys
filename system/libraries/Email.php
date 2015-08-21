@@ -2069,6 +2069,7 @@ class CI_Email {
 						'rtf'	=>	'text/rtf',
 						'xml'	=>	'text/xml',
 						'xsl'	=>	'text/xml',
+						'ics'	=>	'text/calendar',
 						'mpeg'	=>	'video/mpeg',
 						'mpg'	=>	'video/mpeg',
 						'mpe'	=>	'video/mpeg',

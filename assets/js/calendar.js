@@ -257,6 +257,12 @@ $(document).ready(function () {
 		 modal_body.css('overflow', 'visible');
     });
 
+    $(document).on('click', '#import-appointment-btn', function (e) {
+        e.preventDefault();
+        modal.import_appointment();
+        modal_body.css('overflow', 'visible');
+    });
+
 
     var modal = {
         distance: function () {

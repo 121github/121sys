@@ -145,6 +145,14 @@ var modals = {
         $(document).on('click', '.clear-filters-btn', function() {
             modals.clear_filters();
         });
+
+        $(document).on('click', '[data-modal="import-appointment-btn"]', function (e) {
+            e.preventDefault();
+            var clicked_urn = $(this).attr('data-urn');
+            setTimeout(function () {
+                modals.import_appointments();
+            }, 500);
+        });
     },	
 	column_picker:function(table_id){
 		  $.ajax({
@@ -601,6 +609,34 @@ var modals = {
         if (!$('#modal').hasClass('in')) {
             modal.show_modal();
         }
+
+    },
+    import_appointments: function () {
+
+        var mheader = "Import appointments from outlook (.ics)";
+        var mbody = '<div id="step-2" class="step-container">' +
+                        '<p>Import your appointments from a ICS file</p>' +
+                        '<span class="btn btn-default fileinput-button">' +
+                            '<i class="glyphicon glyphicon-plus"></i>' +
+                            '<span>Select file...</span>' +
+                            '<input id="fileupload" type="file" name="files[]" data-url="import/import_file">' +
+                        '</span>' +
+                        '<br>' +
+                        '<br>' +
+                        '<div id="progress" class="progress">' +
+                        '   <div class="progress-bar progress-bar-success"></div>' +
+                        '</div>' +
+                        '<div id="files" class="files pull-left">' +
+                            '<span id="filename"></span>' +
+                            '<br>' +
+                            '<span id="file-status"></span>' +
+                        '</div>' +
+                        '<button style="display:none" class="btn btn-success pull-right marl goto-step-3">Continue</button> ' +
+                    '</div>';
+        //var mbody = '<p>You must select a ics file to import the appointments</p><div class="form-group"><label>Enter Postcode</label><div class="input-group"><input type="text" class="form-control current_postcode_input" placeholder="Enter a postcode..."><div class="input-group-addon pointer btn locate-postcode"><span class="glyphicon glyphicon-map-marker"></span> Use my location</div></div>';
+        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+
+        modals.load_modal(mheader, mbody, mfooter)
 
     },
     save_planner: function (urn) {

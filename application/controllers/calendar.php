@@ -9,7 +9,7 @@ class Calendar extends CI_Controller
     {
         parent::__construct();
         user_auth_check(false);
-		check_page_permissions('full calendar');
+        check_page_permissions('full calendar');
         $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Calendar_model');
         $this->load->model('Form_model');
@@ -30,13 +30,13 @@ class Calendar extends CI_Controller
     //this loads the data management view
     public function index()
     {
-		if(!isset($_SESSION['calendar-filter'])){
-			$_SESSION['calendar-filter']['distance'] = 1500;
-			if(isset($_COOKIE['current_postcode'])){
-			$_SESSION['calendar-filter']['postcode'] = $_COOKIE['current_postcode'];
-			}
-		}
-		
+        if (!isset($_SESSION['calendar-filter'])) {
+            $_SESSION['calendar-filter']['distance'] = 1500;
+            if (isset($_COOKIE['current_postcode'])) {
+                $_SESSION['calendar-filter']['postcode'] = $_COOKIE['current_postcode'];
+            }
+        }
+
         $users = array();
         if (in_array("mix campaigns", $_SESSION['permissions'])) {
             $campaigns = $this->Form_model->get_calendar_campaigns();
@@ -59,7 +59,10 @@ class Calendar extends CI_Controller
                 'lib/underscore.js',
                 'plugins/calendar/js/calendar.js',
                 'calendar.js',
-                'location.js'
+                'location.js',
+                'plugins/jqfileupload/jquery.fileupload.js',
+                'plugins/jqfileupload/jquery.fileupload-process.js',
+                'plugins/jqfileupload/jquery.fileupload-validate.js'
             ),
             'disable_campaign' => $disable_campaign_filter,
             'date' => date('Y-m-d'),
@@ -67,6 +70,7 @@ class Calendar extends CI_Controller
             'users' => $users,
             'css' => array(
                 'calendar.css',
+                'plugins/jqfileupload/jquery.fileupload.css'
             )
         );
         $this->template->load('default', 'calendar/view.php', $data);
@@ -88,9 +92,9 @@ class Calendar extends CI_Controller
     ]
 }';
 
-		
-	}
-	
+
+    }
+
     public function suggested_slots()
     {
         /* not using this its not complete
@@ -112,13 +116,13 @@ class Calendar extends CI_Controller
         if ($this->input->post('urn') && !$this->input->post('postcode')) {
             $postcode = $this->Calendar_model->get_postcode_from_urn($this->input->post('urn'));
         }
-if(isset($_POST['startDate'])){
-        $start = !empty($_POST['startDate']) ? date('Y-m-d h:i:s', ($_POST['startDate'] / 1000)) : date('Y-m-d h:i:s');
-        $end = !empty($_POST['endDate']) ? date('Y-m-d h:i:s', ($_POST['endDate'] / 1000)) : date('2040-m-d h:i:s');
-} else {
-	 $start = "";
-	 $end = "";
-}
+        if (isset($_POST['startDate'])) {
+            $start = !empty($_POST['startDate']) ? date('Y-m-d h:i:s', ($_POST['startDate'] / 1000)) : date('Y-m-d h:i:s');
+            $end = !empty($_POST['endDate']) ? date('Y-m-d h:i:s', ($_POST['endDate'] / 1000)) : date('2040-m-d h:i:s');
+        } else {
+            $start = "";
+            $end = "";
+        }
         if (isset($_POST['users'])) {
             $users = $_POST['users'];
         } else {
@@ -135,7 +139,7 @@ if(isset($_POST['startDate'])){
         if (!empty($_POST['distance'])) {
             $distance = $_POST['distance'];
         } else {
-            $distance = (isset($_SESSION['calendar-filter']['distance']) ? $_SESSIO['calendar-filter']['distance'] : "1500");
+            $distance = (isset($_SESSION['calendar-filter']['distance']) ? $_SESSION['calendar-filter']['distance'] : "1500");
         }
         if (isset($_POST['campaigns'])) {
             $campaigns = $_POST['campaigns'];
@@ -193,7 +197,8 @@ if(isset($_POST['startDate'])){
     /**
      * Add new appointment rule
      */
-    public function add_appointment_rule() {
+    public function add_appointment_rule()
+    {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
             $form['block_day'] = to_mysql_datetime($form['block_day']);
@@ -205,8 +210,7 @@ if(isset($_POST['startDate'])){
                     "msg" => "ERROR: You can not block this day for this attendee. The attendee has at least one appointment scheduled. Reschedule the appointment and block the day after that."
                 ));
                 exit(0);
-            }
-            else {
+            } else {
                 $results = $this->Calendar_model->add_appointment_rule($form);
 
                 echo json_encode(array(
@@ -220,7 +224,8 @@ if(isset($_POST['startDate'])){
     /**
      * Delete an appointment rule
      */
-    public function delete_appointment_rule() {
+    public function delete_appointment_rule()
+    {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
 
@@ -236,15 +241,16 @@ if(isset($_POST['startDate'])){
     /**
      * Get appointment rules
      */
-    public function get_appointment_rules() {
+    public function get_appointment_rules()
+    {
         if ($this->input->is_ajax_request()) {
             $appointment_rules = $this->Calendar_model->get_appointment_rules();
             $aux = array();
-            foreach($appointment_rules as $rule) {
+            foreach ($appointment_rules as $rule) {
                 if (!isset($aux[$rule['block_day']])) {
                     $aux[$rule['block_day']] = array();
                 }
-                array_push($aux[$rule['block_day']],$rule);
+                array_push($aux[$rule['block_day']], $rule);
             }
             $appointment_rules = $aux;
 
@@ -259,7 +265,8 @@ if(isset($_POST['startDate'])){
     /**
      * Get appointment rules by date
      */
-    public function get_appointment_rules_by_date() {
+    public function get_appointment_rules_by_date()
+    {
         if ($this->input->is_ajax_request()) {
             $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date(to_mysql_datetime($this->input->post('date')));
 
@@ -274,7 +281,8 @@ if(isset($_POST['startDate'])){
     /**
      * Get appointment rule reasons
      */
-    public function get_appointment_rule_reasons() {
+    public function get_appointment_rule_reasons()
+    {
         if ($this->input->is_ajax_request()) {
             $appointment_rule_reasons = $this->Form_model->get_appointment_rule_reasons();
 

@@ -269,4 +269,83 @@ foreach($timeslots as $id=>$timeslot){
         return (!empty($results));
     }
 
+
+    /**
+     * Get appointment by id
+     *
+     */
+    public function getAppointmentById($appointment_id) {
+
+        $this->db->select('*');
+        $this->db->from('appointments');
+        $this->db->where('appointment_id', $appointment_id);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1)
+        {
+            return $query->row();
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+
+    /**
+     * Get getLastAppointmentIcsByUid
+     *
+     */
+    public function getLastAppointmentIcsByUid($uid) {
+
+        $this->db->select('*');
+        $this->db->from('appointments_ics');
+        $this->db->where('uid', $uid);
+        $this->db->order_by("appointments_ics_id", "desc");
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1)
+        {
+            return $query->row();
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+
+
+    /**
+     * Get the Last Appointment Updated by urn
+     *
+     */
+    public function getLastAppointmentUpdated($urn) {
+
+        $this->db->select('*');
+        $this->db->from('appointments');
+        $this->db->where('urn', $urn);
+        $this->db->order_by("date_added", "desc");
+        $this->db->order_by("date_updated", "desc");
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1)
+        {
+            return $query->row();
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+
+    /**
+     * Get appointment by id
+     *
+     */
+    public function saveAppointmentIcs($appointment_ics) {
+
+        $this->db->insert('appointments_ics', $appointment_ics);
+
+        return $this->db->insert_id();
+
+    }
+
 }
