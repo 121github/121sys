@@ -1,5 +1,7 @@
 <?php
-$domain = explode('121system.com', $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])[0];
+$full_url = explode('121system.com', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+$domain = explode("/",$full_url[0]);
+$domain = $domain[0];
 switch ($domain) {
 	case 'www.':
 		define('ENVIRONMENT', 'production');
@@ -7,6 +9,11 @@ switch ($domain) {
 		break;
 
 	case 'test.':
+		define('ENVIRONMENT', 'testing');
+		$session_name = '121sys_test';
+		break;
+
+	case '10.10.1.15':
 		define('ENVIRONMENT', 'testing');
 		$session_name = '121sys_test';
 		break;
@@ -19,6 +26,21 @@ switch ($domain) {
 	case 'eldon.':
 		define('ENVIRONMENT', 'production');
 		$session_name = '121sys_eldon';
+		break;
+
+	case 'jonwall.':
+		define('ENVIRONMENT', 'production');
+		$session_name = '121sys_jonwall';
+		break;
+
+	case 'hsl.':
+		define('ENVIRONMENT', 'production');
+		$session_name = '121sys_hsl';
+		break;
+
+	case 'hcs.hslchairs.com':
+		define('ENVIRONMENT', 'production');
+		$session_name = '121sys_hsl';
 		break;
 
 	case 'demo.':
