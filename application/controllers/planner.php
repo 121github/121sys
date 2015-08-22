@@ -359,7 +359,8 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"statts"=>$travel_info
             //get the info for the planner
             $appointment_data = $this->Planner_model->getPlannerInfoByAppointment($appointment_id);
 
-            $users = array_unique(array_merge(explode(',', $appointment_data['attendees']), explode(',', $appointment_data['region_users'])));
+            $users = array_filter(array_unique(array_merge(explode(',', $appointment_data['attendees']), explode(',', $appointment_data['region_users']))));
+
 
             //Create the planner data for every user
             $planner_data = array();

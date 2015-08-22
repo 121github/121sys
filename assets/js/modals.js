@@ -290,14 +290,46 @@ var modals = {
                     record.appointment_panel.load_appointments();
                 }
 				if(response.add_to_planner){
+                    var appointment_id = response.appointment_id;
 					$.ajax({url:helper.baseUrl+'planner/add_appointment_to_the_planner',
 					data:{appointment_id:response.appointment_id},
 					type:"POST",
 					dataType:"JSON"
 					}).done(function(response){
-						
+
 					});
 				}
+                //Send the ics file if it is needed for the book appointment
+                if (response.state == 'inserted') {
+                    $.ajax({
+                        url: helper.baseUrl + 'email/book_appointment_ics',
+                        data: {
+                            appointment_id: appointment_id,
+                            description: 'New appointment added on the system'
+                        },
+                        type: "POST",
+                        dataType: "JSON"
+                    }).done(function(response){
+
+                    });
+                }
+                //Send the ics file if it is needed for update the appointment
+                else if (response.state == 'updated') {
+                    $.ajax({
+                        url: helper.baseUrl + 'email/update_appointment_ics',
+                        data: {
+                            appointment_id: appointment_id,
+                            description: 'Appointment updated on the system',
+                            start: response.data.start,
+                            end: response.data.end,
+                            postcode: response.data.postcode
+                        },
+                        type: "POST",
+                        dataType: "JSON"
+                    }).done(function(response){
+
+                    });
+                }
             } else {
                 flashalert.danger(response.msg);
             }
@@ -318,6 +350,28 @@ var modals = {
         }).done(function (response) {
             record.appointment_panel.load_appointments();
             if (response.success) {
+                //Delete from the planner if it is needed
+                if(response.add_to_planner){
+                    $.ajax({url:helper.baseUrl+'planner/add_appointment_to_the_planner',
+                        data:{appointment_id:id},
+                        type:"POST",
+                        dataType:"JSON"
+                    }).done(function(response){
+
+                    });
+                }
+                //Send ics cancellation if it is needed
+                $.ajax({
+                    url: helper.baseUrl + 'email/cancel_appointment_ics',
+                    data: {
+                        appointment_id: id,
+                        description: 'Appointment cancelled on the system',
+                    },
+                    type: "POST",
+                    dataType: "JSON"
+                }).done(function(response){
+
+                });
                 flashalert.success("Appointment was cancelled");
             } else {
                 flashalert.danger("Unable to cancel the appointment. Contact administrator");
