@@ -13,7 +13,7 @@
                             <div class="panel-heading"> Add Record</div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">
-		                    	<div class="form-group input-group-sm" <?php if(count($campaigns)=="1"){ echo "style='display:none'";  } ?>  >                  		
+		                    	<div class="form-group input-group-sm" <?php if(count($campaigns)=="1"){ echo "style='display:none'";  } ?> >                  		
 									<p><label>Campaign</label></p> 
 									<select name="campaign_id" class="selectpicker" id="campaign">
                                     	<option value="">Select the campaign</option>
