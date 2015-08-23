@@ -15,7 +15,7 @@ class Migration_update_46 extends CI_Migration
 		
       $this->firephp->log("starting migration 46");
 
-      $this->db->query("CREATE TABLE appointments_ics
+      $this->db->query("CREATE TABLE IF NOT EXISTS appointments_ics
                         (
                             appointments_ics_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
                             appointment_id INT NOT NULL,
