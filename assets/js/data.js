@@ -839,7 +839,7 @@ var add_record = {
             add_record.save($(this));
 			}
         });
-		$('#campaign').trigger('change');
+		//$('#campaign').trigger('change');
     },
     show_campaign_type: function () {
         var ctype = $('#campaign option:selected').attr('ctype');

@@ -13,8 +13,8 @@
                             <div class="panel-heading"> Add Record</div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">
-		                    	<div class="form-group input-group-sm">                  		
-									<p><label>Campaign</label></p>
+		                    	<div class="form-group input-group-sm" <?php if(count($campaigns)=="1"){ echo "style='display:none'";  } ?>  >                  		
+									<p><label>Campaign</label></p> 
 									<select name="campaign_id" class="selectpicker" id="campaign">
                                     	<option value="">Select the campaign</option>
                                         <?php foreach($campaigns as $row){ ?>
@@ -23,7 +23,7 @@
 	                                        </option>
                                         <?php } ?>
 									</select>
-                                    
+                                  
 									<p id="ctype-text" class="green" style="display:none"></p>
 									</div>
 
