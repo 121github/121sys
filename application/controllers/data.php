@@ -548,7 +548,7 @@ $this->_campaigns = campaign_access_dropdown();
     		$name = explode(' ', $form['contact_name'], 2);
 			str_replace(array("Mr","Miss","Mrs","Ms"),array("","","",""),$name);
     		$contact['firstname'] = $name[0];
-    		$contact['lastname'] = $name[1];
+    		@$contact['lastname'] = @$name[1];
 			if(!isset($name[1])){
 			echo json_encode(array("success"=>false,"error"=>"You must enter a full name"));
 			exit;
