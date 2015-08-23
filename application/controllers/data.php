@@ -546,24 +546,25 @@ $this->_campaigns = campaign_access_dropdown();
     	else if (!empty($form['contact_name'])) {
     		$contact['fullname'] = $form['contact_name'];
     		$name = explode(' ', $form['contact_name'], 2);
+			str_replace(array("Mr","Miss","Mrs","Ms"),array("","","",""),$name);
     		$contact['firstname'] = $name[0];
     		$contact['lastname'] = $name[1];
+			if(!isset($name[1])){
+			echo json_encode(array("success"=>false,"error"=>"You must enter a full name"));
+			exit;
+			}
     		$response = true;
     	}
     	else {
-    		$response = false;
+    		echo json_encode(array("success"=>false,"error"=>"You must enter a name"));
+			exit;
     	}
     	
     	if ($response) {
     		unset($form['company_name']);
     		unset($form['contact_name']);
     		 
-    		$this->firephp->log($form['campaign_id']);
-    		$this->firephp->log($company);
-    		$this->firephp->log($contact);
-    		 
     		if (!empty($form['campaign_id'])) {
-    			$this->firephp->log($form);
     			$record_id = $this->Records_model->save_record($form);
     			if ($record_id) {
     				if (!empty($company)) {

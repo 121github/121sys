@@ -839,7 +839,7 @@ var add_record = {
             add_record.save($(this));
 			}
         });
-		//$('#campaign').trigger('change');
+		$('#campaign').trigger('change');
     },
     show_campaign_type: function () {
         var ctype = $('#campaign option:selected').attr('ctype');
@@ -871,7 +871,7 @@ var add_record = {
             }
             else {
                 $("button[type=submit]").attr('disabled', false);
-                flashalert.danger("Error saving the record");
+                flashalert.danger(response.error);
             }
 
         }).fail(function(){
