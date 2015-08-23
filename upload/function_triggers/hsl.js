@@ -26,7 +26,7 @@ init:function(){
 				var date = $(this).attr('data-date');
 				var uk_date = $(this).attr('data-uk-date');
 				var time = $(this).attr('data-time');
-				quick_planner.popup_simulation(uk_date,date,time,simulation.waypoints[date],simulation.stats[date]);
+				quick_planner.popup_simulation(uk_date,date,time,simulation.waypoints[date],simulation.stats[date],simulation.slots[date]);
 			});
 	
 	$(document).on('change','input[name="hub-choice"],input[name="slot"]',function(){
@@ -104,10 +104,9 @@ check_selections:function(driver,branch){
 	}
 	
 },
-popup_simulation:function(date,sqldate,time,waypoints,stats){
+popup_simulation:function(date,sqldate,time,waypoints,stats,slots){
 	var mheader = "Journey simulation for "+date;
 	var mbody = "";
-	var freeslot = true;
 	var i=0;
 	$.each(waypoints, function(name,waypoint){ 
 	if(waypoint.postcode.length>0){
@@ -124,13 +123,12 @@ popup_simulation:function(date,sqldate,time,waypoints,stats){
 	} else {
 		mbody += '<div style="text-align:center">Total Duration: <strong>'+stats[i].duration.text+'</strong>  Total Distance: <strong>'+stats[i].distance.text+'</strong></div>';
 	}
-	} else {
-	freeslot = false;	
 	}
+
 	i++;
 	});
 	var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
-	if(freeslot){
+	if(slots.apps<slots.max_apps){
 	mfooter += '<button type="submit" data-date="'+sqldate +' '+time+'" class="btn btn-primary pull-right continue-simulation">Continue</button>';	
 	}
 	modals.load_modal(mheader,mbody,mfooter);
