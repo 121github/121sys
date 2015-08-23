@@ -34,13 +34,24 @@ class Migration_update_46 extends CI_Migration
         ");
 
 
-
+		$check = $this->db->query("SHOW COLUMNS FROM `users` LIKE 'home_postcode'");
+		if(!$check->num_rows()){
         $this->db->query("ALTER TABLE users ADD home_postcode VARCHAR(10) NOT NULL");
+		}
+		
+		$check = $this->db->query("SHOW COLUMNS FROM `users` LIKE 'vehicle_reg'");
+		if(!$check->num_rows()){
         $this->db->query("ALTER TABLE users ADD vehicle_reg VARCHAR(10) NOT NULL");
+		}	
+		
+		$check = $this->db->query("SHOW COLUMNS FROM `users` LIKE 'custom'");
+			if(!$check->num_rows()){
         $this->db->query("ALTER TABLE users ADD custom VARCHAR(50) NOT NULL");
-
+			}
+				$check = $this->db->query("SHOW COLUMNS FROM `users` LIKE 'ics'");
+				if(!$check->num_rows()){
         $this->db->query("ALTER TABLE users ADD ics TINYINT DEFAULT 0 NOT NULL");
-
+				}
         $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'import ics', 'Appointments')");
         $id = $this->db->insert_id();
         $this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('1', $id)");
