@@ -336,7 +336,8 @@ class Sms extends CI_Controller
             }
             if (!empty($messages)) {
                 if ($status!=SMS_STATUS_PENDING) {
-                    $response = $this->sendBulkSms($messages);
+                    $test = (ENVIRONMENT !== "production")?"true":"false";
+                    $response = $this->sendBulkSms($messages,$test);
                     //Save the sms_history
                     if ($response == "OK") {
                         $this->Sms_model->update_sms_histories($sms_histories);
