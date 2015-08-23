@@ -915,18 +915,28 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 ));
 				exit;
 				}
-				
-				if(empty($data['appointment_id'])){
-				$this->Audit_model->log_appointment_insert($data);
-				$id = $this->Records_model->save_appointment($data);
+
+
+                $state = false;
+                if(empty($data['appointment_id'])){
+                    $this->Audit_model->log_appointment_insert($data);
+                    $id = $this->Records_model->save_appointment($data);
+                    $state = 'inserted';
 				} else {
-				$this->Audit_model->log_appointment_update($data);
-				$id = $this->Records_model->save_appointment($data);
+                    $this->Audit_model->log_appointment_update($data);
+                    $id = $this->Records_model->save_appointment($data);
+                    $state = 'updated';
 				}
 				
 				
-				
-				$response = array("success" => true,"appointment_id"=>$id,"add_to_planner"=>false);
+				$response = array(
+                    "success" => true,
+                    "appointment_id"=>$id,
+                    "add_to_planner"=>false,
+                    "state"=>$state,
+                    "data" => $data
+                );
+
 				if(in_array("apps to planner",$_SESSION['permissions'])){
 					$response['add_to_planner'] = true;
 				}
@@ -955,7 +965,8 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             
             //return success to page
             echo json_encode(array(
-                "success" => true
+                "success" => true,
+                "add_to_planner"=>(in_array("apps to planner",$_SESSION['permissions']))
             ));
         } else {
             echo "Denied";

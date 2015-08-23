@@ -24,6 +24,9 @@ class Contacts_model extends CI_Model
             $contact['general'] = array(
                 "contact_id" => $result['contact_id'],
                 "urn" => $result['urn'],
+                "title" => $result['title'],
+                "firstname" => $result['firstname'],
+                "lastname" => $result['lastname'],
                 "fullname" => $result['fullname'],
                 "position" => $result['position'],
                 "website" => $result['website'],
