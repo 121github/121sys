@@ -4,6 +4,9 @@ var modals = {
         modal_footer = $('#modal').find('.modal-footer');
         modal_header = $('#modal').find('.modal-title');
         modal_body = $('#modal').find('.modal-body');
+		$(document).on('click','[data-dismiss="modal"]',function(e){
+			$('.container-fluid').removeAttr('style');
+		});
         $(document).on('click', '[data-modal="merge-record"]', function (e) {
             e.preventDefault();
             modals.merge_record($(this).attr('data-urn'), $(this).attr('data-merge-target'));
@@ -390,7 +393,7 @@ var modals = {
         }).done(function (response) {
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Delete</button>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Cancel Appointment</button>';
             $mbody = $(mbody);
             //check if the appointment address is already in the dropdown and if not, add it.
             var option_exists = false;
@@ -430,7 +433,7 @@ var modals = {
                 $('#contact-select').hide();
             },
             error: function () {
-                $('#contact-select').parent().append('<p class="text-error">Unable to find contacts</p>');
+                $('#contact-select').parent().append('<p class="text-error"><small>Please add a contact before setting an appointment<small></p>');
             },
         }).done(function (result) {
             $('#contact-select').show();
@@ -441,12 +444,12 @@ var modals = {
                 }
                 $('#contact-select').append('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
             });
-            $('#contact-select').append('<option value="other">Other</option>');
+            //$('#contact-select').append('<option value="other">Other</option>');
             $('#contact-select').selectpicker();
         });
 
     },
-    create_appointment: function (urn) {
+    create_appointment: function (urn,start,attendee) {
         $.ajax({
             url: helper.baseUrl + 'modals/edit_appointment',
             type: 'POST',
@@ -461,6 +464,9 @@ var modals = {
             modals.load_modal(mheader, mbody, mfooter);
 			modal_body.css('overflow', 'visible');
             modals.appointment_contacts(urn);
+			if(typeof campaign_functions.appointment_setup !== "undefined"){
+				campaign_functions.appointment_setup(start,attendee);
+			}
         });
     },
     appointment_outcome_html: function (id) {
@@ -578,6 +584,7 @@ var modals = {
         $("#modal").find("#tabs").tab();
     },
     set_size: function () {
+		if(device_type!=="default"){
         //this will make the modals mobile responsive :)
         if ($('#modal').hasClass('in')) {
             var height = $(window).height() - 20;
@@ -593,6 +600,7 @@ var modals = {
                 $('.container-fluid').css('height', '100%').css('overflow', 'auto');
             }
         }
+		}
     },
     set_location: function () {
 
@@ -1148,7 +1156,10 @@ var modals = {
                 if (type == "edit") {
                     modals.contacts.load_tabs(id, tab);
                 }
-
+				if(typeof campaign_functions.contact_form_setup !== "undefined"){
+					campaign_functions.contact_form_setup();
+				}
+				
             });
         },
         load_tabs: function (id, item_form) {

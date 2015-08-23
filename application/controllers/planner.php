@@ -24,7 +24,8 @@ class Planner extends CI_Controller
     }
 
 	public function get_journey_details($start,$end){
-	$url  = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".urlencode($start).",uk&destinations=".urlencode($end).",uk&mode=Driving";
+
+	$url  = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".urlencode($start).",uk&destinations=".urlencode($end).",uk&mode=Driving&units=imperial";
 	$response = json_decode(file_get_contents($url),true);
 	return $response['rows'][0]['elements'][0];
 	}
@@ -34,15 +35,19 @@ class Planner extends CI_Controller
 	$branch_id = $this->input->post('branch_id');	
 	$driver_id = $this->input->post('driver_id');
 	$slot = "1";
+	if($this->input->post('slot')){
+	$slot = $this->input->post('slot');	
+	}
 	//get the user for the branch
 	
 	//step 1 get the drivers postcode
 	$driver_postcode = $this->Planner_model->get_user_postcode($driver_id);
 	$branch_postcode = $this->Planner_model->get_branch_postcode($branch_id);
 	
-	for($i = 0; $i < 30; $i++){
-    //$days[date("D jS M", strtotime('+'. $i .' days'))] = array();
+	for($i = 0; $i < 7; $i++){
+	if(date("D", strtotime('+'. $i .' days'))<>"Sun"){
 	$days[] = date("Y-m-d", strtotime('+'. $i .' days'));
+	}
 	}
 	
 	$travel_info = array();
@@ -50,79 +55,158 @@ class Planner extends CI_Controller
 	
 	$driver_to_branch_details = $this->get_journey_details($driver_postcode,$branch_postcode);	
 	$branch_to_customer_details = $this->get_journey_details($branch_postcode,$customer_postcode);
+
 	
 	
-	
-	
+	$stats =  array("distance"=>array("text"=>"","value"=>0),"duration"=>array("text"=>"","value"=>0),"added_distance"=>array("text"=>"","value"=>0),"added_duration"=>array("text"=>"","value"=>0));
 	
 	foreach($days as $day){	
-	$travel_info[$day]["driver_to_branch_1"]=$driver_to_branch_details;
+		$app_duration = array(0=>0,1=>0);
+	$uk_date = date('D jS M',strtotime($day));
+	$total_distance = 0;
+	$total_duration = 0;
+	$added_duration = 0;
+	$added_distance = 0;
+	$travel_info[$day][0]=$driver_to_branch_details;
+	$added_distance = $branch_to_customer_details['distance'];
+	$added_duration = $branch_to_customer_details['duration'];
 		//get appointments for user in next 14 days
-	$qry = "select date(start) `app_date`,postcode from appointments join appointment_attendees using(appointment_id) join users using(user_id) where user_id = '$driver_id' and date(`start`) = '$day' order by `end` asc";
+	$qry = "select date(start) `app_date`,postcode,TIME_TO_SEC(TIMEDIFF(`end`,`start`)) app_duration, if(time(`start`)<'13:00:00','am','pm') ampm from appointments join appointment_attendees using(appointment_id) join users using(user_id) where user_id = '$driver_id' and date(`start`) = '$day' order by `end` asc";
 	$result = $this->db->query($qry)->result_array();
 	$full=false;
 	$apps = count($result);
-	$appointment_1_postcode = isset($result[0])?$result[0]['postcode']:false;
-	$appointment_2_postcode = isset($result[1])?$result[1]['postcode']:false;	
-	
-	
-	$data[$day]['start'] = array("title"=>"Driver Home","postcode"=>$driver_postcode);
-	$data[$day]['branch_start'] = array("title"=>"Branch","postcode"=>$branch_postcode);
-	if($slot=="1"&&$apps=="1"){
-	$travel_info[$day]["branch_to_customer"] = $branch_to_customer_details;
-	$data[$day]['slot1'] = array("title"=>"Slot 1","postcode"=>$customer_postcode);
-	$data[$day]['slot2'] = array("title"=>"Slot 2","postcode"=>$appointment_1_postcode);
-	//get distance between slots
-		if($appointment_1_postcode){
-	$travel_info[$day]["customer_to_slot2"] = $this->get_journey_details($customer_postcode,$appointment_1_postcode);	
-		} else {
-	$travel_info[$day]["customer_to_slot2"] = "";		
-		}
-	} else if($slot=="2"&&$apps=="1"){
-			if($appointment_1_postcode){
-	$travel_info[$day]["branch_to_slot1"] = $this->get_journey_details($branch_postcode,$appointment_1_postcode);
-			} else {
-	$travel_info[$day]["branch_to_slot1"] = "";	
-			}
-	$data[$day]['slot1'] = array("title"=>"Slot 1","postcode"=>$appointment_1_postcode);
-	$data[$day]['slot2'] = array("title"=>"Slot 2","postcode"=>$customer_postcode);	
-	//get distance between slots
-	if($appointment_1_postcode){
-	$travel_info[$day]["slot1_to_customer"] = $this->get_journey_details($appointment_1_postcode,$customer_postcode);
+	$appointment_1 = isset($result[0])?$result[0]:false;
+	$appointment_2 = isset($result[1])?$result[1]:false;	
+	if($appointment_1&&!$appointment_2&&$appointment_1['ampm']=="am"){
+		$slot = 2;
 	} else {
-	$travel_info[$day]["slot1_to_customer"] = "";	
+		$slot = 1;
 	}
-	$travel_info[$day]["customer_to_branch"] =  $branch_to_customer_details;		
-	} else if($apps=="2"){
-	$data[$day]['slot1'] = array("title"=>"Slot 1","postcode"=>$appointment_1_postcode);
-	$data[$day]['slot2'] = array("title"=>"Slot 2","postcode"=>$appointment_2_postcode);
-	$travel_info[$day]["slot2_to_branch"] =  $this->get_journey_details($appointment_2_postcode,$branch_postcode);	
+	//adding uk date format to the start so we can show this instead of mysql
+	$data[$day]['start'] = array("title"=>"Driver Home","postcode"=>$driver_postcode,"uk_date"=>$uk_date);
+	$data[$day]['branch_start'] = array("title"=>"Branch","postcode"=>$branch_postcode);
+	
+	/* if a PM appointment has already been booked this day the new appointment will be put first */
+	if($slot=="1"&&$apps=="1"){
+			$app_duration[0] = 3600;
+	$app_duration[1] = $appointment_1['app_duration'];
+	$travel_info[$day][1] = $branch_to_customer_details;
+	$data[$day]['slot1'] = array("title"=>"This Appointment","postcode"=>$customer_postcode,"app_duration_val"=>$app_duration[0],"app_duration"=>convertToHoursMins(3600/60, '%2dh %2dm'));
+	$data[$day]['slot2'] = array("title"=>"Second Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>$app_duration[1],"app_duration"=>convertToHoursMins($appointment_1['app_duration']/60, '%2dh %2dm'));
+
 	//get distance between slots
-	$travel_info[$day]["slot1_to_slot2"] = $this->get_journey_details($appointment_1_postcode,$appointment_2_postcode);	
-	} else if($slot=="1"&&$apps=="0"){
-	//no apps	
-	$travel_info[$day]["branch_to_customer"] = $branch_to_customer_details;
-	$travel_info[$day]["customer_to_slot2"] = "";
-	$travel_info[$day]["customer_to_branch"] = $branch_to_customer_details;
-		$data[$day]['slot1'] = array("title"=>"Slot 1","postcode"=>$customer_postcode);
-		$data[$day]['slot2'] = array("title"=>"Slot 2","postcode"=>"");
-	} else if($slot=="2"&&$apps=="0"){
-	$travel_info[$day]["branch_to_slot1"] = "";
-	$travel_info[$day]["branch_to_customer"] = $branch_to_customer_details;
-	$travel_info[$day]["customer_to_branch"] = $branch_to_customer_details;	
-		$data[$day]['slot1'] = array("title"=>"Slot 1","postcode"=>"");
-		$data[$day]['slot2'] = array("title"=>"Slot 2","postcode"=>$customer_postcode);
+	$travel_info[$day][2] = $this->get_journey_details($customer_postcode,$appointment_1['postcode']);	
+	$travel_info[$day][3] = $this->get_journey_details($appointment_1['postcode'],$branch_postcode);	
 	}
-	//get branch to slot 1 to branch
-	//get branch to slot 2 to branch	
+	/* if an AM appointment has already been booked this day the new appointment will be put last */
+	if($slot=="2"&&$apps=="1"){
+			$app_duration[0] = $appointment_1['app_duration'];
+	$app_duration[1] = 3600;
+	$travel_info[$day][1] = $this->get_journey_details($branch_postcode,$appointment_1['postcode']);
+
+	$data[$day]['slot1'] = array("title"=>"First Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>$app_duration[0],"app_duration"=>convertToHoursMins($appointment_1['app_duration']/60, '%2dh %2dm'));
+	$data[$day]['slot2'] = array("title"=>"This Appointment","postcode"=>$customer_postcode,"app_duration_val"=>$app_duration[1],"app_duration"=>convertToHoursMins(3600/60, '%2dh %2dm'));
+
+	//get distance between slots
+	$travel_info[$day]["2"] = $this->get_journey_details($appointment_1['postcode'],$customer_postcode);
+	$travel_info[$day]["3"] =  $branch_to_customer_details;		
+
+	}
+	
+	/* if the slots are both taken */
+	if($apps=="2"){
+	$app_duration[0] = $appointment_1['app_duration'];
+	$app_duration[1] = $appointment_2['app_duration'];	
+	$data[$day]['slot1'] = array("title"=>"First Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>$app_duration[0],"app_duration"=>convertToHoursMins($appointment_1['app_duration']/60, '%2dh %2dm'));
+	$data[$day]['slot2'] = array("title"=>"Second Appointment","postcode"=>$appointment_2['postcode'],"app_duration_val"=>$app_duration[1],"app_duration"=>convertToHoursMins($appointment_2['app_duration']/60, '%2dh %2dm'));
+	$travel_info[$day]["3"] =  $this->get_journey_details($appointment_2_postcode,$branch_postcode);	
+	//get distance between slots
+	$travel_info[$day]["2"] = $this->get_journey_details($appointment_2['postcode'],$appointment_2['postcode']);
+
+	} 
+	
+	/* if no slots are taken */
+	if($slot=="1"&&$apps=="0"){	
+	$app_duration[0] = 3600;
+	$app_duration[1] = 0;
+	$travel_info[$day]["1"] = $branch_to_customer_details;
+	$travel_info[$day]["2"] = $branch_to_customer_details;
+	$travel_info[$day]["3"] = $stats;
+		$data[$day]['slot1'] = array("title"=>"This Appointment","postcode"=>$customer_postcode,"app_duration"=>convertToHoursMins(3600/60, '%2dh %2dm'),"app_duration_val"=>$app_duration[0]);
+		$data[$day]['slot2'] = array("title"=>"Second Appointment","postcode"=>"","app_duration_val"=>$app_duration[1]);
+		
+		$total_app_duration = $app_duration[0] + $app_duration[1];
+	} 
+	
 	$data[$day]['branch_end'] = array("title"=>"Branch","postcode"=>$branch_postcode);
 	$data[$day]['destination'] = array("title"=>"Driver Home","postcode"=>$driver_postcode); 
-		$travel_info[$day]["branch_to_driver"]=$driver_to_branch_details;
+	$travel_info[$day]["4"]=$driver_to_branch_details;
 	}
 
+foreach($travel_info as $day=>$a){
+	$total_distance = 0;
+	$total_duration =0;
+	foreach($a as $k=>$v){
+$total_distance += $v['distance']['value'];	
+$total_duration += $v['duration']['value'];	
+
+$data[$day]['start']['time'] = "09:00 am";
+if($k==0){
+$data[$day]['branch_start']['time'] = date('H:i a',strtotime("9am + " .  $total_duration. " seconds"));
+}
+if($k==1){
+$data[$day]['slot1']['time'] = date('H:i a',strtotime("9am + " . $total_duration. " seconds"));
+if($slot=="1"){
+$data[$day]['slot1']['datetime'] = date('H:i',strtotime("9am + " . $total_duration . " seconds"));
+}
+}
+if($k==2){
+$dur = $total_duration+$data[$day]['slot2']['app_duration_val'];
+$data[$day]['slot2']['time'] = date('H:i a',strtotime("9am + " . intval($dur) . " seconds"));
+if($slot=="2"){
+$data[$day]['slot2']['datetime'] = date('H:i',strtotime("9am + " . intval($dur) . " seconds"));
+}
+}
+if($k==3){
+$dur = $total_duration +$data[$day]['slot1']['app_duration_val']+$data[$day]['slot2']['app_duration_val'];
+$data[$day]['branch_end']['time'] = date('H:i a',strtotime("9am + " . intval($dur). " seconds"));
+}
+if($k==4){
+	$dur = $total_duration + $data[$day]['slot1']['app_duration_val']+$data[$day]['slot2']['app_duration_val'];
+$data[$day]['destination']['time'] = date('H:i a',strtotime("9am + " . intval($dur). " seconds"));
+}
 
 
-echo json_encode(array("success"=>true,"waypoints"=>$data,"statts"=>$travel_info));
+$travel_info[$day][$k]['added_distance']['value'] = $total_distance;
+$travel_info[$day][$k]['added_duration']['value'] = $total_duration;
+
+$travel_info[$day][$k]['added_distance']['text'] = number_format(($total_distance/1000)*0.621371192,1)." Miles";
+$travel_info[$day][$k]['added_duration']['text'] = convertToHoursMins($total_duration/60, '%2dh %2dm');
+	}
+$total_duration += $total_app_duration;
+$travel_info[$day][5]['distance']['value'] = $total_distance;
+$travel_info[$day][5]['duration']['value'] = $total_duration;
+$travel_info[$day][5]['distance']['text'] = number_format(($total_distance/1000)*0.621371192,1)." Miles";
+$travel_info[$day][5]['duration']['text'] =  convertToHoursMins($total_duration/60, '%2dh %2dm');
+$travel_info[$day][5]['added_distance'] = $travel_info[$day][5]['distance'];
+$travel_info[$day][5]['added_duration'] = $travel_info[$day][5]['duration'];
+}
+
+//also add the slots to the data to show in the panel
+$this->load->model('Appointments_model');
+$slots = array();
+$appointments = $this->Appointments_model->slot_availability(1,$driver_id);
+foreach($appointments['apps'] as $date => $day){
+	$max_apps = 0;
+	$apps = 0;
+	foreach($day as $k=>$row){
+		$max_apps += $row['max_apps'];
+		$apps += $row['apps'];
+		$sql_date = DateTime::createFromFormat('D jS M', $date)->format('Y-m-d');
+		$slots[$sql_date] = array("apps"=>$apps,"max_apps"=>$max_apps);	
+	}
+}
+echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,"slots"=>$slots));
 
 	}
 

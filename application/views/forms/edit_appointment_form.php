@@ -21,8 +21,8 @@
         </div>
         </div>
                 <div class="form-group input-group-sm">
-          <p>Please enter a description including the location <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="Please note additional info or special requirements here"></span></p>
-<input type="text" class="form-control" name="text" placeholder="Eg: Appointment with director at HQ to offer our services" required/>
+          <p>Please add appointment notes here <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="These notes are sent to the attendee"></span></p>
+<input type="text" class="form-control" name="text" placeholder="Please note additional info or special requirements here" required/>
         </div>
         
         <div class="row">
@@ -43,7 +43,7 @@
         <div class="row">
         <div class="col-xs-12 col-xs-6">
                 <div class="form-group input-group-sm">
-          <p>Please choose the attendee <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="The person the appointment is being set for. This person will recieve an automated email notification of the appointment"></span></p>
+          <p>Please choose the attendee <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="Whoever the appointment is set for will recieve an email notification containing all the details"></span></p>
 <select name="attendees[]" id="attendee-select" class="selectpicker attendeepicker" title="Choose the attendees" data-width="95%" required>
  <?php foreach($attendees as $attendee): ?>
  <option value="<?php echo $attendee['user_id'] ?>"><?php echo $attendee['name'] ?></option>
@@ -53,7 +53,7 @@
         </div>
                <div class="col-xs-12 col-xs-6">
                 <div class="form-group input-group-sm">
-          <p>Please choose the Contact <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="The person the appointment is with. You should send them a confirmation email manually if required"></span></p>
+          <p>Please choose the Contact <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip" data-title="The contact the appointment is with. They must be sent an email or mail confirmation manually if required"></span></p>
 <select name="contact_id" id="contact-select" class="contactpicker" title="Choose the contact" data-width="100%" required>
 </select>
         </div>

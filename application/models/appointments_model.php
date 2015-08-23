@@ -106,6 +106,7 @@ foreach($timeslots as $id=>$timeslot){
 		$i=0;
 		foreach($results as $row){
 			$date = date("D jS M", strtotime($row['start']));
+			@$slots[$date][$id]['sqldate']=$row['start'];
 			@$slots[$date][$id]['apps']=$row['count'];
 			//the smallest distance for this timeslot
 			@$slots[$date][$id]['min_distance']=number_format($row['distance'],2);

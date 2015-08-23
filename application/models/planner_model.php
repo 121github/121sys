@@ -12,7 +12,6 @@ class Planner_model extends CI_Model
     }
 	
 	public function get_user_postcode($user_id){
-		$this->firephp->log($user_id);
 		$this->db->select("home_postcode");
 		$this->db->where("user_id",$user_id);
 		$qry = $this->db->get("users");
