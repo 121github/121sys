@@ -105,6 +105,8 @@ foreach($timeslots as $id=>$timeslot){
 		$results = $this->db->query($qry)->result_array();
 		$i=0;
 		foreach($results as $row){
+			if($row['start']=="2015-08-24"){
+			}
 			$date = date("D jS M", strtotime($row['start']));
 			@$slots[$date][$id]['sqldate']=$row['start'];
 			@$slots[$date][$id]['apps']=$row['count'];

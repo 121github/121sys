@@ -115,7 +115,7 @@ popup_simulation:function(date,sqldate,time,waypoints,stats,slots){
 	mbody += waypoint.app_duration
 	}
 	if(typeof waypoint.time !== "undefined"){
-	mbody += " <span class='red'>Time: "+ 	waypoint.time+"</span>";
+	mbody += " <span class='red travel-time' style='display:none'>Time: "+ 	waypoint.time+"</span>";
 	}
 	mbody += '</p></div>'
 	if(i<5){
@@ -157,7 +157,7 @@ load_planner:function(){
 planner_summary:function(data){
 	simulation = data;
 	var table = "";
-		table += "<div class='table-responsive' style='overflow:auto; max-height:215px'><table class='small table table-condensed'><thead><tr><th>Date</th><th>Slots</th><th>Total Distance</th><th>Total Travel Time</th><th>Route</th><tr></thead><tbody>";
+		table += "<div class='table-responsive' style='overflow:auto; max-height:215px'><table class='small table table-condensed'><thead><tr><th>Date</th><th>Slots</th><th>Total Distance</th><th>Total Duration</th><th>Route</th><tr></thead><tbody>";
 		$.each(data.waypoints,function(date,waypoint){
 			var btn_text = "Simulate";	
 			var slots =  data.slots[date];

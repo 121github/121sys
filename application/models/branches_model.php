@@ -23,7 +23,7 @@ class Branches_model extends CI_Model
 		$qry ="select br.region_id,b.branch_id,b.branch_name,region_name,consultant,consultant_id,consultant_email,(((ACOS(SIN((" .
                 $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .
                 $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
-                $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515) AS distance from branch b join branch_addresses ba using(branch_id) join locations l using(location_id) join branch_regions br using(region_id) join branch_region_users bru using(region_id) left join (select user_id consultant_id,name consultant,user_email consultant_email  from users where attendee=0) consultants on bru.user_id = consultant_id join branch_user bu on bu.branch_id = b.branch_id join branch_campaigns bc on bc.branch_id = b.branch_id where 1";
+                $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515) AS distance from branch b join branch_addresses ba using(branch_id) join locations l using(location_id) join branch_regions br using(region_id) join branch_region_users bru using(region_id) left join (select user_id consultant_id,name consultant,user_email consultant_email  from users where attendee=0) consultants on bru.user_id = consultant_id join branch_user bu on bu.branch_id = b.branch_id join branch_campaigns bc on bc.branch_id = b.branch_id where branch_status= 1";
 		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		if($id){
 		$qry .= " and br.region_id = '$id' ";	

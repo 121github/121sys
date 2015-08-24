@@ -53,7 +53,7 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-
+						
                         <div class="form-group">
                             <select id="user-select" name="users[]" multiple class="selectpicker" data-width="100%"
                                     data-size="5" title="Select attendees">
@@ -64,6 +64,7 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                      
                         <div class="form-group location-form">
                             <button id="distance-cal-button" class="btn btn-default"><span
                                     class="glyphicon glyphicon-cog"></span> Distance
