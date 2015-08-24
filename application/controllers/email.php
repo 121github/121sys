@@ -692,11 +692,29 @@ class Email extends CI_Controller
 
 
             //TODO select the users that will receive the ics file
-            $send_to = 'estebanc@121customerinsight.co.uk';
+            $send_to = 'kirstyp@121customerinsight.co.uk, rachaeln@121customerinsight.co.uk';
+            //$send_to = 'estebanc@121customerinsight.co.uk';
             $send_from = 'bradf@121customerinsight.co.uk';
 
             //Get the appointment info
             $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
+
+            //Get contact info
+            $contact = $this->Contacts_model->get_contact($appointment->contact_id);
+
+            //Date
+            $start_date = new \DateTime($appointment->start);
+            $end_date = new \DateTime($appointment->end);
+            $day = $start_date->format("jS F Y");
+            $start_time = $start_date->format("G:ia");
+            $end_time = $end_date->format("G:ia");
+
+            $title = 'Appointment Booking - '.$appointment->title;
+
+            $description = "A new appointment have been booked for ".
+                $day." and the allocated time will be between ".$start_time." and ".$end_time.
+                "The appointment have been booked for ".$contact['general']['fullname'].
+                " on the address: ".$appointment->address;
 
             $appointment_ics = array();
             if ($appointment) {
@@ -705,7 +723,7 @@ class Email extends CI_Controller
                 $appointment_ics['send_to'] = $send_to;
                 $appointment_ics['send_from'] = $send_from;
                 $appointment_ics['duration'] = strtotime($appointment->end) - strtotime($appointment->start);
-                $appointment_ics['title'] = 'Appointment Booking - '.$appointment->title;
+                $appointment_ics['title'] = $title;
                 $appointment_ics['location'] = $appointment->postcode;
                 $appointment_ics['uid'] = "HSL_Appointment_".$appointment->appointment_id;
                 $appointment_ics['description'] = $description;
@@ -748,9 +766,9 @@ class Email extends CI_Controller
                 "send_from" => "noreply@121system.com",
                 "send_to" => $appointment_ics['send_to'],
                 "cc" => null,
-                "bcc" => null,
+                "bcc" => 'estebanc@121customerinsight.co.uk',
                 "subject" => $appointment_ics['title'],
-                "body" => $appointment_ics['description'],
+                "body" => $description,
                 "template_attachments" => $attachments
             );
 
@@ -788,10 +806,30 @@ class Email extends CI_Controller
         //Get the appointment ics info
         $last_appointment_ics = $this->Appointments_model->getLastAppointmentIcsByUid($uid);
 
+        //Get the appointment info
+        $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
+
+        //Get contact info
+        $contact = $this->Contacts_model->get_contact($appointment->contact_id);
+
+        //Date
+        $start_date = ($start_date?$start_date:$last_appointment_ics->start_date);
+        $start_day = new \DateTime($start_date);
+        $end_date = ($end_date?$end_date:$last_appointment_ics->end_date);
+        $end_day = new \DateTime($start_date);
+        $day = $start_day->format("jS F Y");
+        $start_time = $start_day->format("G:ia");
+        $end_time = $end_day->format("G:ia");
+
+        $description = "An appointment have been reschedulled for ".
+            $day." and the allocated time will be between ".$start_time." and ".$end_time.
+            "The appointment have been booked for ".$contact['general']['fullname'].
+            " on the address: ".$appointment->address;
+
         $appointment_ics = array();
         if ($last_appointment_ics) {
             $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
-            $appointment_ics['start_date'] = ($start_date?$start_date:$last_appointment_ics->start_date);
+            $appointment_ics['start_date'] = $start_date;
             $appointment_ics['send_to'] = $last_appointment_ics->send_to;
             $appointment_ics['send_from'] = $last_appointment_ics->send_from;
             $appointment_ics['duration'] = ($duration?$duration:$last_appointment_ics->duration);
@@ -840,7 +878,7 @@ class Email extends CI_Controller
             "send_from" => "noreply@121system.com",
             "send_to" => $appointment_ics['send_to'],
             "cc" => null,
-            "bcc" => null,
+            "bcc" => 'estebanc@121customerinsight.co.uk',
             "subject" => $appointment_ics['title'],
             "body" => $appointment_ics['description'],
             "template_attachments" => $attachments
@@ -873,6 +911,22 @@ class Email extends CI_Controller
 
         //Get the appointment ics info
         $last_appointment_ics = $this->Appointments_model->getLastAppointmentIcsByUid($uid);
+
+        //Get the appointment info
+        $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
+
+        //Get contact info
+        $contact = $this->Contacts_model->get_contact($appointment->contact_id);
+
+        //Date
+        $start_date = $last_appointment_ics->start_date;
+        $start_day = new \DateTime($start_date);
+        $day = $start_day->format("jS F Y");
+
+        $description = "An appointment have been cancelled. It was booked for ".
+            $day.
+            " with ".$contact['general']['fullname'].
+            " on the address: ".$appointment->address;
 
         $appointment_ics = array();
         if ($last_appointment_ics) {
@@ -925,7 +979,7 @@ class Email extends CI_Controller
             "send_from" => "noreply@121system.com",
             "send_to" => $appointment_ics['send_to'],
             "cc" => null,
-            "bcc" => null,
+            "bcc" => 'estebanc@121customerinsight.co.uk',
             "subject" => $appointment_ics['title'],
             "body" => $appointment_ics['description'],
             "template_attachments" => $attachments
@@ -1022,7 +1076,8 @@ END:VCALENDAR';
             $postcode = $appointment->postcode;
 
             //TODO Send to
-            $send_to = 'estebanc@121customerinsight.co.uk';
+            $send_to = 'rachaeln@121customerinsight.co.uk';
+            //$send_to = 'estebanc@121customerinsight.co.uk';
 
             //Get contact info
             $contact = $this->Contacts_model->get_contact($appointment->contact_id);
@@ -1047,7 +1102,7 @@ END:VCALENDAR';
                 "send_from" => "noreply@121system.com",
                 "send_to" => $send_to,
                 "cc" => null,
-                "bcc" => null,
+                "bcc" => 'estebanc@121customerinsight.co.uk',
                 "subject" => "HSL - Appointment Booking",
                 "body" => "Appointment booking description",
                 "template_attachments" => $attachments
