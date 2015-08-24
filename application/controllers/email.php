@@ -691,13 +691,28 @@ class Email extends CI_Controller
             $description = $this->input->post('description');
 
 
-            //TODO select the users that will receive the ics file
-            $send_to = 'kirstyp@121customerinsight.co.uk, rachaeln@121customerinsight.co.uk';
-           // $send_to = 'estebanc@121customerinsight.co.uk';
-            $send_from = 'bradf@121customerinsight.co.uk';
-
             //Get the appointment info
             $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
+
+            //TODO select the users that will receive the ics file
+            //Get the receivers, that sould be the attendees with ics field true and if the branch_id is set on the appointment, send to the
+            //users related to the branch_region
+            $email_addresses = $this->Email_model->get_ics_email_addresses($appointment_id);
+            $email_addresses = array();
+
+            if (!empty($email_addresses)) {
+                $send_to = implode(", ",$email_addresses);
+            }
+            else {
+                if ($appointment->branch_id) {
+                    $send_to = 'kirstyp@121customerinsight.co.uk, rachaeln@121customerinsight.co.uk';
+                }
+                else {
+                    $send_to = 'estebanc@121customerinsight.co.uk';
+                }
+            }
+
+            $send_from = 'bradf@121customerinsight.co.uk';
 
             //Get contact info
             $contact = $this->Contacts_model->get_contact($appointment->contact_id);
@@ -725,7 +740,7 @@ class Email extends CI_Controller
                 $appointment_ics['duration'] = strtotime($appointment->end) - strtotime($appointment->start);
                 $appointment_ics['title'] = $title;
                 $appointment_ics['location'] = $appointment->postcode;
-                $appointment_ics['uid'] = "HSL_Appointment_".$appointment->appointment_id;
+                $appointment_ics['uid'] = "Appointment_".$appointment->appointment_id;
                 $appointment_ics['description'] = $description;
                 $appointment_ics['sequence'] = 0;
                 $appointment_ics['method'] = 'REQUEST';
@@ -796,7 +811,7 @@ class Email extends CI_Controller
         $this->load->helper('email');
 
         $appointment_id = $this->input->post('appointment_id');
-        $uid = 'HSL_Appointment_'.$appointment_id;
+        $uid = 'Appointment_'.$appointment_id;
         $description = $this->input->post('description');
         $start_date = $this->input->post('start');
         $end_date = $this->input->post('end');
@@ -907,7 +922,7 @@ class Email extends CI_Controller
         $appointment_id = $this->input->post('appointment_id');
         $description = $this->input->post('description');
 
-        $uid = 'HSL_Appointment_'.$appointment_id;
+        $uid = 'Appointment_'.$appointment_id;
 
         //Get the appointment ics info
         $last_appointment_ics = $this->Appointments_model->getLastAppointmentIcsByUid($uid);
@@ -1060,24 +1075,27 @@ END:VCALENDAR';
     }
 
 
+    //TODO Refactor all the functions bellow
     public function send_appointment_confirmation() {
         user_auth_check();
         if ($this->input->is_ajax_request()) {
             $appointment_id = $this->input->post('appointment_id');
             $branch_id = $this->input->post('branch_id');
             $description = $this->input->post('description');
+            $send_to = $this->input->post('send_to');
 
             //Get the appointment info
             $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
+
+            //TODO just for testing
+            if (!$appointment->branch_id) {
+                $send_to = 'estebanc@121customerinsight.co.uk';
+            }
 
             $start_date = $appointment->start;
             $end_date = $appointment->end;
             $address = $appointment->address;
             $postcode = $appointment->postcode;
-
-            //TODO Send to
-            $send_to = 'rachaeln@121customerinsight.co.uk';
-            //$send_to = 'estebanc@121customerinsight.co.uk';
 
             //Get contact info
             $contact = $this->Contacts_model->get_contact($appointment->contact_id);

@@ -588,4 +588,21 @@ $qry .= " group by urn";
         return $result;
     }
 
+
+    public function get_ics_email_addresses($appointment_id) {
+        $qry = "select
+                 user_email
+                from appointments a
+                inner join appointment_attendees apt using(appointment_id)
+                inner join users u using (user_id)
+                where
+                    ics = 1
+                    and user_email is not null and user_email <> ''
+                    and appointment_id = ".$appointment_id;
+
+        $result = $this->db->query($qry)->result_array();
+
+        return $result;
+    }
+
 }
