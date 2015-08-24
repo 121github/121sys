@@ -21,6 +21,14 @@ class Appointments extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 
+	public function get_apps(){
+		$user_id = $this->input->post('user_id');
+		$date = $this->input->post('date');
+	$qry = "select title, date_format(start,'%H:%i') `start`, date_format(end,'%H:%i')	`end`  from appointments join appointment_attendees using(appointment_id) where date(`start`) = '$date' and user_id = '$user_id' order by `start`";
+	$result = $this->db->query($qry)->result_array();
+	echo json_encode(array("success"=>true,"data"=>$result));	
+	}
+
 	public function slot_availability(){
 		$urn = $this->input->post('urn');
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);

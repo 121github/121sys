@@ -206,7 +206,7 @@ foreach($appointments['apps'] as $date => $day){
 		$slots[$sql_date] = array("apps"=>$apps,"max_apps"=>$max_apps);	
 	}
 }
-echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,"slots"=>$slots));
+echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,"slots"=>$slots,"user_id"=>$driver_id));
 
 	}
 
