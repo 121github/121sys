@@ -295,12 +295,12 @@ class Sms extends CI_Controller
 
         $output = "";
         $output .= "Sending pending sms... \n\n";
-        $limit = 50;
+        $limit = 100;
         if (intval($this->uri->segment(3)) > 0) {
             $limit = $this->uri->segment(3);
         }
 
-        //Get the oldest 50 mails pending to be sent
+        //Get the oldest 100 mails pending to be sent
         $pending_sms = $this->Sms_model->get_pending_sms($limit);
         if (!empty($pending_sms)) {
             //Check if we have enough credits
@@ -397,10 +397,10 @@ class Sms extends CI_Controller
                 $comments = "There is no enough credits to send the texts. Get more credits and run the send_pending_sms process.";
                 $msg = "There is not enough credits: ".$currentCredits['sms']."\n\n";
             }
-            //Check if more than 50 sms will be sent
-            else if(count($remind_appointments) > 50) {
+            //Check if more than 100 sms will be sent
+            else if(count($remind_appointments) > 100) {
                 $status = 1;
-                $msg = "You are trying to send more than 50 text messages. The sms will not be sent and will be stored in the sms_history as pending. Please review the process and run the send_pending_sms process manually.\n\n";
+                $msg = "You are trying to send more than 100 text messages. The sms will not be sent and will be stored in the sms_history as pending. Please review the process and run the send_pending_sms process manually.\n\n";
             }
 
             if (!empty($remind_appointments)) {
