@@ -131,18 +131,22 @@ function renew_js() {
     $('.tt').tooltip();
     $('.datetime').datetimepicker({
         format: 'DD/MM/YYYY HH:mm',
-		sideBySide:true
+		sideBySide:true,
+		
     });
     $('.date').datetimepicker({
         format: 'DD/MM/YYYY',
+		enabledHours:false
     });
     $('.date2').datetimepicker({
         format: 'YYYY-MM-DD',
-        maxDate: moment()
+        maxDate: moment(),
+		enabledHours:false
     });
     $('.dob').datetimepicker({
         viewMode: 'years',
-        format: 'DD/MM/YYYY'
+        format: 'DD/MM/YYYY',
+		enabledHours:false
     });
     $(document).on('keypress', '.date,.datetime,.dob', function (e) {
         e.preventDefault()

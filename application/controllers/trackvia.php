@@ -22,6 +22,13 @@ define('PRIVATE_INFORM_INELIGIBLE', '3000718985');
 define('PRIVATE_REBOOK', '3000718984');
 define('PRIVATE_SURVEY_SLOTS', '3000719187');
 
+define('CITYWEST_ALL_RECORDS', '3000725653');
+define('CITYWEST_BOOK_SURVEY', '3000725763');
+//define('CITYWEST_INFORM_INELIGIBLE', '3000718985');
+define('CITYWEST_REBOOK', '3000725650');
+define('CITYWEST_SURVEY_SLOTS', '3000725652');
+
+
 if ($_SESSION['environment'] == "acceptance" || $_SESSION['environment'] == "test" || $_SESSION['environment'] == "development") {
 
     define('PRIVATE_TABLE', '3000283421');
@@ -62,10 +69,14 @@ class Trackvia extends CI_Controller
 
         $this->tv_views = array(
             "GHS Southway Total" => SOUTHWAY_ALL_RECORDS,
+			 "GHS Citywest Total" => CITYWEST_ALL_RECORDS,
             "GHS Private Total" => PRIVATE_ALL_RECORDS,
             "GHS Southway survey" => SOUTHWAY_BOOK_SURVEY,
             "GHS Southway rebook" => SOUTHWAY_REBOOK,
             "GHS Southway booked" => SOUTHWAY_SURVEY_SLOTS,
+			"GHS Citywest survey" => CITYWEST_BOOK_SURVEY,
+            "GHS Citywest rebook" => CITYWEST_REBOOK,
+            "GHS Citywest booked" => CITYWEST_SURVEY_SLOTS,
             "GHS Private survey" => PRIVATE_BOOK_SURVEY,
             "GHS Private rebook" => PRIVATE_REBOOK,
             "GHS Private booked" => PRIVATE_SURVEY_SLOTS,
@@ -78,7 +89,10 @@ class Trackvia extends CI_Controller
             "GHS Private survey" => 39,
             "GHS Private rebook" => 38,
             "GHS Private booked" => 36,
-            "GHS Private not viable" => 40);
+            "GHS Private not viable" => 40,
+			"GHS Citywest survey" => 41,
+            "GHS Citywest rebook" => 42,
+            "GHS Citywest booked" => 43);
         $this->headers = "From: noreply@121system.com" . "\r\n" .
             "CC: steve.prior@globalheatsource.com";
     }
@@ -98,7 +112,7 @@ class Trackvia extends CI_Controller
         $tables = $this->tv_views;
         $data = array();
         foreach ($tables as $name => $view_id) {
-            if ($view_id <> SOUTHWAY_ALL_RECORDS && $view_id <> PRIVATE_ALL_RECORDS) {
+            if ($view_id <> SOUTHWAY_ALL_RECORDS && $view_id <> PRIVATE_ALL_RECORDS && $view_id <> CITYWEST_ALL_RECORDS) {
                 $data[$name] = array("source" => $sources[$name], "one2one" => $this->Trackvia_model->get_121_counts($name));
                 if ($this->input->post('tv') || $this->uri->segment(3) == "tv") {
                     //$view = $this->tv->getView($view_id);
@@ -121,7 +135,7 @@ class Trackvia extends CI_Controller
     }
 
 	public function fix_non_contacts(){
-			$query = "select urn from records where outcome_id = 137 and campaign_id in (22,29)";
+			$query = "select urn from records where outcome_id = 137 and campaign_id in (22,29,32)";
 		foreach($this->db->query($query)->result_array() as $row){
 		$urn 	= $row['urn'];
 		$this->unable_to_contact($urn);
@@ -141,8 +155,11 @@ class Trackvia extends CI_Controller
 
     public function check_trackvia()
     {
-        //SOUTHWAY TABLE
+        //CITYWEST DATA
+		$this->db->query("update records set parked_code=2,source_id = 49 where campaign_id = 32");
+		 //SOUTHWAY DATA
         $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id = 22");
+		//PRIVATE DATA
 		$this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
         //Book View
         echo "<br>Checking the SOUTHWAY_BOOK_SURVEY(" . SOUTHWAY_BOOK_SURVEY . ") view";
@@ -192,6 +209,59 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
                 'source_id' => 37,
+                'savings_per_panel' => 20
+            )
+        );
+		
+		//CITYWEST
+		   //Book View
+        echo "<br>Checking the CITYWEST_BOOK_SURVEY(" . CITYWEST_BOOK_SURVEY . ") view";
+        echo "<br>";
+        $this->checkView(
+            CITYWEST_BOOK_SURVEY,
+            array(
+                'campaign_id' => 32,
+                'urgent' => NULL,
+                'status' => 1,
+                'appointment_creation' => false,
+                'appointment_cancelled' => false,
+                'record_color' => '0066FF',
+                'source_id' => 46,
+                'savings_per_panel' => 20,
+            )
+        );
+
+        //Rebook View
+        echo "<br>Checking the CITYWEST_REBOOK(" . CITYWEST_REBOOK . ") view";
+        echo "<br>";
+        $this->checkView(
+            CITYWEST_REBOOK,
+            array(
+                'campaign_id' => 32,
+                'urgent' => 1,
+                'status' => 1,
+                'appointment_creation' => true,
+                'appointment_cancelled' => true,
+                'record_color' => '0066FF',
+                'source_id' => 47,
+                'savings_per_panel' => 20
+            )
+        );
+
+        //Survey Slots View
+        echo "<br>Checking the CITYWEST_SURVEY_SLOTS(" . CITYWEST_SURVEY_SLOTS . ") view";
+        echo "<br>";
+        $this->checkView(
+            CITYWEST_SURVEY_SLOTS,
+            array(
+                'campaign_id' => 32,
+                'urgent' => NULL,
+                'status' => 4,
+                'outcome_id' => 72,
+                'appointment_creation' => true,
+                'appointment_cancelled' => false,
+                'record_color' => '00CC00',
+                'source_id' => 48,
                 'savings_per_panel' => 20
             )
         );
@@ -289,11 +359,11 @@ class Trackvia extends CI_Controller
         );
 
         //queries we may want to run after the updates can go here
-        $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29)");
-        $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29)");
-        $this->db->query("update contacts inner join records using(urn)     inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29) and records.source_id is not null");
+        $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29,32)");
+        $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29,32)");
+        $this->db->query("update contacts inner join records using(urn)     inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29,32) and records.source_id is not null");
 		
-		$query = "select urn from records where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id in(22,28,29)";
+		$query = "select urn from records where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id in(22,28,29,32)";
 		foreach($this->db->query($query)->result_array() as $row){
 		$urn 	= $row['urn'];
 		$this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 137,outcome_reason_id=NULL, record_status=3 where urn = '$urn'");
@@ -302,7 +372,7 @@ class Trackvia extends CI_Controller
 		$this->db->query("delete from ownership where urn in(select urn 
 FROM records
 WHERE 1
-AND campaign_id in(22,28,29)
+AND campaign_id in(22,28,29,32)
 AND record_status =1
 AND parked_code IS NULL
 AND progress_id IS NULL
@@ -312,8 +382,8 @@ AND dials = 0  )");
 		}
 		
 		
-		
-        $this->db->query("update records set urgent = null where source_id not in(38,35) and campaign_id in(22,28,29)");
+		//unset anything marked as urgent that is not in the rebook data sources
+        $this->db->query("update records set urgent = null where source_id not in(38,35,47) and campaign_id in(22,28,29,32)");
         //Update appointmentes without history associated
         echo "<br>Checking if exists appointmentes without history associated...";
         $this->db->query("
@@ -1129,7 +1199,7 @@ AND dials = 0  )");
 
         $fields = implode(",", $concat);
         $query = "SELECT urn, concat( $fields ) ref , count( * ) count
-FROM `$table` left join contacts using(contact_id) left join records using(urn) where campaign_id in(22,28,29)
+FROM `$table` left join contacts using(contact_id) left join records using(urn) where campaign_id in(22,28,29,32)
 GROUP BY concat( $fields )
 HAVING count( concat( $fields ) ) >1";
         $result = $this->db->query($query)->result_array();
