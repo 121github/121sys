@@ -22,7 +22,7 @@ class Appointments_model extends CI_Model
 		$where .= " and campaign_id = '$campaign_id' ";
 		}
 		//first configure the default array
-		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null $where ";
+		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null  $where ";
 		$max = array();
 		$default = $this->db->query($qry)->result_array();
 		if(count($default)=="0"){
@@ -101,7 +101,7 @@ $distance_order = "";
 		}
 		}
 foreach($timeslots as $id=>$timeslot){
-		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where group by date(`start`) $distance_order";
+		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where `status` = 1  and time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where group by date(`start`) $distance_order";
 		$results = $this->db->query($qry)->result_array();
 		$i=0;
 		foreach($results as $row){

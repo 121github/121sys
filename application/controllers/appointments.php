@@ -24,7 +24,7 @@ class Appointments extends CI_Controller
 	public function get_apps(){
 		$user_id = $this->input->post('user_id');
 		$date = $this->input->post('date');
-	$qry = "select title, date_format(start,'%H:%i') `start`, date_format(end,'%H:%i')	`end`  from appointments join appointment_attendees using(appointment_id) where date(`start`) = '$date' and user_id = '$user_id' order by `start`";
+	$qry = "select title, date_format(start,'%H:%i') `start`, date_format(end,'%H:%i')	`end`  from appointments join appointment_attendees using(appointment_id) where date(`start`) = '$date' and user_id = '$user_id' and `status` = 1 order by `start`";
 	$result = $this->db->query($qry)->result_array();
 	echo json_encode(array("success"=>true,"data"=>$result));	
 	}
