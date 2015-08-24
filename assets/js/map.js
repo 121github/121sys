@@ -165,7 +165,8 @@ var maps = {
         });
 
         //Planner form
-        $(document).on('click', '.planner-btn', function () {
+        $(document).on('click', '.planner-btn', function (e) {
+			e.preventDefault();
             var urn = $(this).attr('item-urn');
             var planner_date = $(this).attr('item-planner-date');
             var today_date = new Date();

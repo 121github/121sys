@@ -44,8 +44,6 @@ class Trackvia_model extends CI_Model
      * Get records in our system from trackvia ids (client_ref)
      */
     public function getRecordsByTVIds($tv_record_ids) {
-		//having to put a 3000 limit on this or msql timesout
-		if(count($tv_record_ids)<3000){
         $qry = "SELECT
                   r.campaign_id,
                   r.urn,
@@ -64,9 +62,6 @@ class Trackvia_model extends CI_Model
 				WHERE cr.client_ref IN (".implode(',',$tv_record_ids).")";
 
         return $this->db->query($qry)->result_array();
-		} else {
-		return array();	
-		}
     }
 
 
