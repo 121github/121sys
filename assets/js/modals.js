@@ -283,6 +283,7 @@ var modals = {
             dataType: "JSON"
         }).done(function (response) {
             if (response.success) {
+                var appointment_id = response.appointment_id;
                 flashalert.success('Appointment was saved');
                 if (response.trackvia) {
                     console.log("trackvia");
@@ -293,7 +294,6 @@ var modals = {
                     record.appointment_panel.load_appointments();
                 }
 				if(response.add_to_planner){
-                    var appointment_id = response.appointment_id;
 					$.ajax({url:helper.baseUrl+'planner/add_appointment_to_the_planner',
 					data:{appointment_id:response.appointment_id},
 					type:"POST",

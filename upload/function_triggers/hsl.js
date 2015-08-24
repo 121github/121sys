@@ -119,7 +119,8 @@ data:{ user_id:user_id,date:date }
             data: {
                 appointment_id: appointment_id,
                 branch_id: branch_id,
-                description: 'HSL - Appointment confirmation'
+                description: 'HSL - Appointment confirmation',
+                send_to: 'rachaeln@121customerinsight.co.uk'
             },
             type: "POST",
             dataType: "JSON"
