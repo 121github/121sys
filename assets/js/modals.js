@@ -334,20 +334,10 @@ var modals = {
                     });
                 }
                 //TODO send cover letter from hsl file
-                //Send appointment_confirmation + cover_letter to hsl
-                //var branch_id = null;
-                //$.ajax({
-                //    url: helper.baseUrl + 'email/send_appointment_confirmation',
-                //    data: {
-                //        appointment_id: appointment_id,
-                //        branch_id: branch_id,
-                //        description: 'HSL - Appointment confirmation'
-                //    },
-                //    type: "POST",
-                //    dataType: "JSON"
-                //}).done(function(response){
-                //
-                //});
+                if (typeof campaign_functions.appointment_saved !== "undefined") {
+                    campaign_functions.appointment_saved(appointment_id);
+                }
+
             } else {
                 flashalert.danger(response.msg);
             }

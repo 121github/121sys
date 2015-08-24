@@ -7,6 +7,7 @@ var campaign_functions = {
             var title = $(this).find('option:selected').text();
             $('[name="title"]').val(title);
         });
+
 $(document).on('click','.show-apps',function(e){
 var user_id =$(this).attr('data-user');
 var date =$(this).attr('data-date');
@@ -25,6 +26,7 @@ data:{ user_id:user_id,date:date }
 		
 });
 });
+
         campaign_functions.get_branch_info();
         $(document).on('click', '#closest-branch', function (e) {
             e.preventDefault();
@@ -204,7 +206,9 @@ var quick_planner = {
             if (typeof waypoint.slot2.datetime !== "undefined") {
                 var time = waypoint.slot2.datetime;
             }
+
             table += "<tr><td>" + waypoint.start.uk_date + "</td><td class='pointer show-apps' data-date='" + date + "' data-user='"+simulation.user_id+"'>" + slots.apps + "/" + slots.max_apps + "</td><td>" + stats[5].distance.text + "</td><td>" + stats[5].duration.text + "</td><td><button class='btn btn-default btn-xs simulate' data-date='" + date + "' data-time='" + time + "' data-uk-date='" + waypoint.start.uk_date + "'>Simulate</button></td></tr>";
+
         });
         table += "</tbody></table></div>";
         $('#quick-planner').html(table);

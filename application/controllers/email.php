@@ -1096,6 +1096,17 @@ END:VCALENDAR';
             //Create the hsl cover_letter
             $complete_path = $this->create_hsl_cover_letter($path, $filename, $start_date, $end_date, $title, $name, $surname, $address, $postcode);
 
+            $start_date = new \DateTime($start_date);
+            $end_date = new \DateTime($end_date);
+            $day = $start_date->format("jS F Y");
+            $start_time = $start_date->format("G:ia");
+            $end_time = $end_date->format("G:ia");
+
+            $body = "A new appointment have been booked for ".
+                $day." and the allocated time will be between ".$start_time." and ".$end_time.
+                "The appointment have been booked for ".$contact['general']['fullname'].
+                " on the address: ".$appointment->address;
+
             //SEND MAIL
             $attachments = array($complete_path);
             $form_to_send = array(
@@ -1103,8 +1114,8 @@ END:VCALENDAR';
                 "send_to" => $send_to,
                 "cc" => null,
                 "bcc" => 'estebanc@121customerinsight.co.uk',
-                "subject" => "HSL - Appointment Booking",
-                "body" => "Appointment booking description",
+                "subject" => "Appointment Booking - ".$appointment->title,
+                "body" => $body,
                 "template_attachments" => $attachments
             );
 
