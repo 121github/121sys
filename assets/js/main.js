@@ -135,7 +135,8 @@ function renew_js() {
 		
     });
     $('.date').datetimepicker({
-        format: 'DD/MM/YYYY'
+        format: 'DD/MM/YYYY',
+		enabledHours:false
     });
     $('.date2').datetimepicker({
         format: 'YYYY-MM-DD',

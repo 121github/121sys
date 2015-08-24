@@ -169,14 +169,13 @@ var maps = {
 			e.preventDefault();
             var urn = $(this).attr('item-urn');
             var planner_date = $(this).attr('item-planner-date');
-            var today_date = new Date();
-            today_date = today_date.getUTCDate() + "/" + (today_date.getUTCMonth() + 1) + "/" + today_date.getFullYear();
+            var today_date = moment().format('DD/MM/YYYY');
             $('#bodyContent_' + urn).hide();
             $('#formContent_' + urn).show();
+$(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_date : today_date);
 
             $('.date').datetimepicker({
-                format: 'DD/MM/YYYY',
-                defaultDate: (planner_date.length > 0 ? planner_date : today_date)
+                format: 'DD/MM/YYYY'
             });
         });
 
