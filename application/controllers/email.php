@@ -692,8 +692,8 @@ class Email extends CI_Controller
 
 
             //TODO select the users that will receive the ics file
-            $send_to = 'kirstyp@121customerinsight.co.uk, rachaeln@121customerinsight.co.uk';
-            //$send_to = 'estebanc@121customerinsight.co.uk';
+            //$send_to = 'kirstyp@121customerinsight.co.uk, rachaeln@121customerinsight.co.uk';
+            $send_to = 'estebanc@121customerinsight.co.uk';
             $send_from = 'bradf@121customerinsight.co.uk';
 
             //Get the appointment info
@@ -1076,8 +1076,8 @@ END:VCALENDAR';
             $postcode = $appointment->postcode;
 
             //TODO Send to
-            $send_to = 'rachaeln@121customerinsight.co.uk';
-            //$send_to = 'estebanc@121customerinsight.co.uk';
+           // $send_to = 'rachaeln@121customerinsight.co.uk';
+            $send_to = 'estebanc@121customerinsight.co.uk';
 
             //Get contact info
             $contact = $this->Contacts_model->get_contact($appointment->contact_id);

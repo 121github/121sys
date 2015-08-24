@@ -73,6 +73,7 @@ class Planner extends CI_Controller
 		//get appointments for user in next 14 days
 	$qry = "select date(start) `app_date`,postcode,TIME_TO_SEC(TIMEDIFF(`end`,`start`)) app_duration, if(time(`start`)<'13:00:00','am','pm') ampm from appointments join appointment_attendees using(appointment_id) join users using(user_id) where user_id = '$driver_id' and date(`start`) = '$day' order by `end` asc";
 	$result = $this->db->query($qry)->result_array();
+	
 	$full=false;
 	$apps = count($result);
 	$appointment_1 = isset($result[0])?$result[0]:false;
@@ -82,6 +83,7 @@ class Planner extends CI_Controller
 	} else {
 		$slot = 1;
 	}
+
 	//adding uk date format to the start so we can show this instead of mysql
 	$data[$day]['start'] = array("title"=>"Driver Home","postcode"=>$driver_postcode,"uk_date"=>$uk_date);
 	$data[$day]['branch_start'] = array("title"=>"Branch","postcode"=>$branch_postcode);
@@ -119,7 +121,7 @@ class Planner extends CI_Controller
 	$app_duration[1] = $appointment_2['app_duration'];	
 	$data[$day]['slot1'] = array("title"=>"First Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>$app_duration[0],"app_duration"=>convertToHoursMins($appointment_1['app_duration']/60, '%2dh %2dm'));
 	$data[$day]['slot2'] = array("title"=>"Second Appointment","postcode"=>$appointment_2['postcode'],"app_duration_val"=>$app_duration[1],"app_duration"=>convertToHoursMins($appointment_2['app_duration']/60, '%2dh %2dm'));
-	$travel_info[$day]["3"] =  $this->get_journey_details($appointment_2_postcode,$branch_postcode);	
+	$travel_info[$day]["3"] =  $this->get_journey_details($appointment_2['postcode'],$branch_postcode);	
 	//get distance between slots
 	$travel_info[$day]["2"] = $this->get_journey_details($appointment_2['postcode'],$appointment_2['postcode']);
 
