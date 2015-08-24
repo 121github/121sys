@@ -33,12 +33,14 @@ if ($_SESSION['environment'] == "acceptance" || $_SESSION['environment'] == "tes
 
     define('PRIVATE_TABLE', '3000283421');
     define('SOUTHWAY_TABLE', '3000283398');
+	define('CITYWEST_TABLE', '3000283398');
 
 } else if ($_SESSION['environment'] == "production") {
 //Live tables
 
     define('PRIVATE_TABLE', '3000282959');
     define('SOUTHWAY_TABLE', '3000283129');
+	define('CITYWEST_TABLE', '3000284157');
 
 }
 
@@ -214,6 +216,25 @@ class Trackvia extends CI_Controller
         );
 		
 		//CITYWEST
+		        echo "<br>Checking the CITYWEST_ALL_RECORDS(" . CITYWEST_ALL_RECORDS . ") view";
+        echo "<br>";
+        $this->checkView(
+            CITYWEST_ALL_RECORDS,
+            array(
+                'campaign_id' => 32,
+                'urgent' => NULL,
+                'status' => 1,
+                'appointment_creation' => false,
+                'appointment_cancelled' => false,
+                'record_color' => '000000',
+                'parked_code' => 2,
+                'source_id' => 49,
+                'savings_per_panel' => 30
+
+            )
+        );
+		
+		
 		   //Book View
         echo "<br>Checking the CITYWEST_BOOK_SURVEY(" . CITYWEST_BOOK_SURVEY . ") view";
         echo "<br>";
