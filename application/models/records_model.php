@@ -449,7 +449,7 @@ class Records_model extends CI_Model
         $qry .= "  limit $start,$length";
         $records = $this->db->query($qry)->result_array();
         $records['count'] = $count;
-        $this->firephp->log($qry);
+        //$this->firephp->log($qry);
         return $records;
     }
 

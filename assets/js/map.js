@@ -630,7 +630,7 @@ var maps = {
 
         var planner_form =
             '<form class="planner-form-' + value.urn + '">' +
-            '<div class="form-group input-group-sm">' +
+            '<div class="form-group input-group-sm relative">' +
             '<p>Planning Date: </p><input type="text" class="form-control date" name="date" placeholder="Enter the planning date" required/>' +
             '</div>' +
             '<div class="form-group input-group-sm">' +
@@ -734,7 +734,7 @@ var maps = {
 
         var planner_form =
             '<form class="planner-form-' + value.urn + '">' +
-            '<div class="form-group input-group-sm">' +
+            '<div class="form-group input-group-sm relative">' +
             '<p>Planning Date: </p><input type="text" class="form-control date" name="date" placeholder="Enter the planning date" required/>' +
             '</div>' +
             '<div class="form-group input-group-sm">' +

@@ -1,4 +1,7 @@
-.relative { position:relative }
+.relative { position:relative !important }
+.gm-style .gm-style-iw, .gm-style .gm-style-iw a, .gm-style .gm-style-iw span, .gm-style .gm-style-iw label, .gm-style .gm-style-iw div {
+  overflow:visible !important;
+}
 
 table.data-table {
   max-width: none !important;
