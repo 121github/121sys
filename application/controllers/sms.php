@@ -320,7 +320,7 @@ class Sms extends CI_Controller
 
                 array_push($messages, array(
                     'sms_number' => $sms['send_to'],
-                    'send_from' => $sms['sender_id'],
+                    'send_from' => $sms['sender_from'],
                     'sms_text' => $sms['text'],
                     'id' => $sms['text_local_id'],
                 ));
