@@ -121,10 +121,11 @@ class Planner extends CI_Controller
 	$app_duration[1] = $appointment_2['app_duration'];	
 	$data[$day]['slot1'] = array("title"=>"First Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>$app_duration[0],"app_duration"=>convertToHoursMins($appointment_1['app_duration']/60, '%2dh %2dm'));
 	$data[$day]['slot2'] = array("title"=>"Second Appointment","postcode"=>$appointment_2['postcode'],"app_duration_val"=>$app_duration[1],"app_duration"=>convertToHoursMins($appointment_2['app_duration']/60, '%2dh %2dm'));
+	$travel_info[$day][1] = $this->get_journey_details($branch_postcode,$appointment_1['postcode']);
+	$travel_info[$day]["2"] = $this->get_journey_details($appointment_1['postcode'],$appointment_2['postcode']);
 	$travel_info[$day]["3"] =  $this->get_journey_details($appointment_2['postcode'],$branch_postcode);	
 	//get distance between slots
-	$travel_info[$day]["2"] = $this->get_journey_details($appointment_2['postcode'],$appointment_2['postcode']);
-
+	
 	} 
 	
 	/* if no slots are taken */
