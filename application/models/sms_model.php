@@ -495,9 +495,10 @@ class Sms_model extends CI_Model
      */
     public function get_pending_sms($limit)
     {
-        $qry = "select *
-            from sms_history
-            where status_id=1
+        $qry = "select sh.*, s.name as sender_from
+            from sms_history sh
+            left join sms_sender s using(sender_id)
+            where sh.status_id=1
             limit 0,".$limit;
 
 
