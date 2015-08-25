@@ -216,7 +216,7 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 20
             )
         );
-	/*	
+		
 		//CITYWEST
 		        echo "<br>Checking the CITYWEST_ALL_RECORDS(" . CITYWEST_ALL_RECORDS . ") view";
         echo "<br>";
@@ -235,7 +235,7 @@ class Trackvia extends CI_Controller
 
             )
         );
-	*/	
+		
 		
 		   //Book View
         echo "<br>Checking the CITYWEST_BOOK_SURVEY(" . CITYWEST_BOOK_SURVEY . ") view";
@@ -386,7 +386,7 @@ class Trackvia extends CI_Controller
         $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29,32)");
         $this->db->query("update contacts inner join records using(urn)     inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29,32) and records.source_id is not null");
 		
-		$query = "select urn from records where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id in(22,28,29,32)";
+		$query = "select urn from records join campaigns using(campaign_id) where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id in(22,28,29,32)";
 		foreach($this->db->query($query)->result_array() as $row){
 		$urn 	= $row['urn'];
 		$this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 137,outcome_reason_id=NULL, record_status=3 where urn = '$urn'");
