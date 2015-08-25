@@ -117,15 +117,17 @@ class Trackvia extends CI_Controller
             if ($view_id <> SOUTHWAY_ALL_RECORDS && $view_id <> PRIVATE_ALL_RECORDS && $view_id <> CITYWEST_ALL_RECORDS) {
                 $data[$name] = array("source" => $sources[$name], "one2one" => $this->Trackvia_model->get_121_counts($name));
                 if ($this->input->post('tv') || $this->uri->segment(3) == "tv") {
-                    //$view = $this->tv->getView($view_id);
-                    $view = $this->getAllViewRecords($view_id);
+                    $data[$name]["trackvia"] = 0;
+					for($page=1;$page<15;$page++){
+                    $view = $this->getAllViewRecords($view_id,$page);
                     if ($this->uri->segment(4) == "debug") {
                         echo "<pre>";
                         print_r($view);
                         echo "</pre>";
                         echo "<br>";
                     }
-                    $data[$name]["trackvia"] = $view['record_count'];
+                    $data[$name]["trackvia"] += $view['record_count'];
+					}
                 } else {
                     $data[$name]["trackvia"] = false;
                 }
@@ -496,12 +498,11 @@ AND dials = 0  )");
     }
     */
 
-    private function getAllViewRecords($view_id) {
-        $page = 1;
+    private function getAllViewRecords($view_id,$page=1) {
+        //$page = 1;
         $limit = null;
         $search = true;
         $view = array();
-        while($search) {
             //TRACKVIA API MODIFIED (added page and limit variables) !!!!!!!!!!!!!!!!!!!!!!!!!!
             $result = $this->tv->getView($view_id,$page, $limit);
 
@@ -514,14 +515,10 @@ AND dials = 0  )");
                 $view['record_count'] = (isset($view['record_count'])?($result['record_count']+$view['record_count']):$result['record_count']);
                 $view['records'] = (isset($view['records'])?array_merge($result['records'],$view['records']):$result['records']);
 
-                $search = true;
-
-                $page++;
             }
             else {
-                $search = false;
+                return false;
             }
-        }
 
         return $view;
     }
@@ -545,7 +542,9 @@ AND dials = 0  )");
         $source = $options['source_id'];
         $savings = $options['savings_per_panel'];
         //Get the trackvia records for this view
-        $view = $this->getAllViewRecords($view_id);
+		for ($page=1;$page<15;$page++){
+        $view = $this->getAllViewRecords($view_id,$page);
+
         //$view = $this->tv->getView($view_id);
 
 
@@ -781,6 +780,9 @@ AND dials = 0  )");
         }
 
         echo "</pre>";
+		}
+
+
     }
 
     /**
