@@ -414,11 +414,16 @@ var record = {
                             k++;
                         });
                         if (k > record.limit - 1) {
-							 $history_panel.find('.panel-heading').append('<span class="btn btn-info btn-xs pull-right" id="show-all-history-btn">Show All</span>');
+							 $history_panel.find('.panel-heading').html('History<span class="btn btn-info btn-xs pull-right" id="show-all-history-btn">Show All</span>');
                        
                         }
-                       $history_panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-hover table-condensed"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th>'+call_direction_header+'</tr></thead><tbody>' + history_rows + '</tbody></table></div>');
-
+						if($history_panel.width()<400){
+							var small_class="small";
+						} else {
+							var small_class="";
+						}
+                       $history_panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-hover table-condensed '+small_class+'"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th>'+call_direction_header+'</tr></thead><tbody>' + history_rows + '</tbody></table></div>');
+						
                     } else {
                         $history_panel.find('.panel-body').append('<p>This record has no history information yet</p>');
                     }
@@ -438,20 +443,17 @@ var record = {
                     urn: record.urn
                 }
             }).done(function (response) {
-                var edit_btn = "", delete_btn = "", mheader = "Showing all history", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                var edit_history = "", delete_btn = "", mheader = "Showing all history", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 
                 if (response.data.length > 0) {
                     var mbody = '<div id="edit-history-container" style="display:none"></div><div id="all-history-container">';
-                    mbody += '<table class="table table-striped"><thead><tr><th>Name</th><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>';
+                    mbody += '<table class="table table-striped table-hover table-condensed"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>';
                     $.each(response.data, function (i, val) {
                         if (helper.permissions['edit history'] > 0) {
-                            edit_btn = '<span class="glyphicon glyphicon-pencil pointer pull-right" id="edit-history-btn" item-modal="1" item-id="' + val.history_id + '"></span>';
-                        }
-                        if (helper.permissions['delete history'] > 0) {
-                            delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right marl" data-target="#modal" id="del-history-btn" item-modal="1" item-id="' + val.history_id + '" title="Delete history"></span>';
+                            edit_history = 'class="pointer" data-modal="edit-history" data-id="' + val.history_id + '"';
                         }
 
-                        mbody += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td><td>' + edit_btn + '</td><td>' + delete_btn + '</td></tr>';
+                        mbody += '<tr '+edit_history+'><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.comments + '</td></tr>';
                     });
 
                     mbody += '</tbody></table></div>';
@@ -531,7 +533,7 @@ var record = {
                 var mheader = "Edit History", mbody = "<div id='edit-history-container'></div><div id='all-history-container'></div>", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button> <button class="btn btn-danger pull-right marl" item-id="'+id+'" id="del-history-btn">Delete</button> ';
                 modals.load_modal(mheader, mbody, mfooter);
             } else {
-                var mfooter = "<button class='btn btn-primary pull-right marl' id='save-history-btn'>Save</button> <button class='btn btn-default pull-left' id='edit-history-back'>Back</button>";
+                var mfooter = '<button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button> <button class="btn btn-danger pull-right marl" item-id="'+id+'" id="del-history-btn">Delete</button> <button class="btn btn-default pull-left" id="edit-history-back">Back</button>';
                 modals.update_footer(mfooter);
             }
             $('#all-history-container').fadeOut(function () {
@@ -1954,7 +1956,12 @@ var record = {
         load_table: function (data) {
             var $panel = $('#custom-panel').find('.panel-content');
             $panel.empty();
-            var table = "<div class='table-responsive'><table class='table table-striped table-condensed'>";
+									if($panel.width()<400){
+							var small_class="small";
+						} else {
+							var small_class="";
+						}
+            var table = "<div class='table-responsive'><table class='table table-striped table-condensed "+small_class+"'>";
             var thead, detail_id;
             var tbody = "<tbody>";
             var contents = "";
