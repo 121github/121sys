@@ -272,8 +272,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 
             <div class="radio" style="display:inline-block">
                 <label>
-                    <input type="radio" name="answers[a12][]" id="optionsRadios1" data-show-notes="true"
-                           value="Yes" <?php if (@strpos($values['a12'], "Yes") !== false) {
+                    <input type="radio" name="answers[a13][]" id="optionsRadios1" data-show-notes="true"
+                           value="Yes" <?php if (@strpos($values['a13'], "Yes") !== false) {
                         echo "checked";
                     } ?> />
                     Yes </label>
