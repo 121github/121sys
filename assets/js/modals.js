@@ -335,7 +335,7 @@ var modals = {
                 }
                 //TODO send cover letter from hsl file
                 if (typeof campaign_functions.appointment_saved !== "undefined") {
-                    campaign_functions.appointment_saved(appointment_id);
+                    campaign_functions.appointment_saved(appointment_id, response.state);
                 }
 
             } else {

@@ -583,6 +583,7 @@ class Email extends CI_Controller
 
         $result = $this->email->send();
         //print_r($this->email->print_debugger());
+        //$this->firephp->log($this->email->print_debugger([$include = array('headers', 'subject', 'body')]));
         $this->email->clear(TRUE);
 
         //Remove tmp dir
@@ -697,54 +698,259 @@ class Email extends CI_Controller
             //TODO select the users that will receive the ics file
             //Get the receivers, that sould be the attendees with ics field true and if the branch_id is set on the appointment, send to the
             //users related to the branch_region
-            $email_addresses = $this->Email_model->get_ics_email_addresses($appointment_id);
-            $email_addresses = array();
+            $ics_addresses = $this->Email_model->get_ics_email_addresses($appointment_id);
+
+            $email_addresses = array_filter(array_unique(array_merge(
+                explode(',', $ics_addresses['attendees']),
+                explode(',', $ics_addresses['region_users']),
+                explode(',', $ics_addresses['branch_users'])
+            )));
 
             if (!empty($email_addresses)) {
                 $send_to = implode(", ",$email_addresses);
-            }
-            else {
-                if ($appointment->branch_id) {
-                    $send_to = 'kirstyp@121customerinsight.co.uk, rachaeln@121customerinsight.co.uk';
+
+                $send_from = "appointments@121system.com";
+
+                //Get contact info
+                $contact = $this->Contacts_model->get_contact($appointment->contact_id);
+
+                //Date
+                $start_date = new \DateTime($appointment->start);
+                $end_date = new \DateTime($appointment->end);
+                $day = $start_date->format("jS F Y");
+                $start_time = $start_date->format("G:ia");
+                $end_time = $end_date->format("G:ia");
+
+                $title = 'Appointment Booking - '.$appointment->title. ' #'.$appointment_id;
+
+                $description = "<div><h2>Appointment booked</h2></div>";
+                $description .= "<div>A new appointment have been booked for ".
+                    $day." and the allocated time will be between ".$start_time." and ".$end_time.
+                    ". The appointment have been booked for ".$contact['general']['fullname'].
+                    " on the address: ".$appointment->address."</div><br />";
+
+                $appointment_table = "<table>
+                    <thead><th><h3>Appointment</h3></th><th><a href='".base_url()."records/detail/".$appointment->urn."'>#".$appointment_id."</a></th>
+                    <tbody>
+                        <tr><td>Appointment Title:</td><td>".$appointment->title."</td></tr>
+                        <tr><td>Day:</td><td>".$day."</td></tr>
+                        <tr><td>Time:</td><td>".$start_time." - ".$end_time."</td></tr>
+                        <tr><td>Address:</td><td>".$appointment->address."</td></tr>
+                        ".($appointment->branch_id?"<tr><td>Branch:</td><td>".$appointment->branch_id."</td></tr>":"")."
+                    </tbody>
+                </table>";
+                $description .= "<div>".$appointment_table."</div><br />";
+
+
+                $contact_table = "<table>
+                    <thead><th colspan='2'><h3>Contacts</h3></th>
+                    <tbody>
+                        <tr><td>Name:</td><td>".$contact['general']['fullname']."</td></tr>
+                        <tr><td>Email:</td><td>".$contact['general']['email']."</td></tr>
+                    </tbody>
+                </table>";
+                $description .= "<div>".$contact_table."</div><br />";
+
+                //Get the webform answers for this urn
+                $webform_answers = $this->Email_model->get_webform_answers_by_urn($appointment->urn);
+                //Get the last one
+                $webform = (isset($webform_answers[0])?$webform_answers[0]:array());
+                if (!empty($webform)) {
+                    $answers = "";
+                    for($i=1;$i<=30;$i++) {
+                        $answers .= "<tr><td>".$webform['q'.$i]."</td><td>".$webform['a'.$i]."</td></tr>";
+                    }
+                    $webform_table = "<table>
+                    <thead style='margin-bottom: 2px;'><th colspan='2'><h3>".$webform['webform_name']."</h3></th>
+                    <tbody>".$answers."</tbody>
+                </table>";
                 }
                 else {
-                    $send_to = 'estebanc@121customerinsight.co.uk';
+                    $webform_table = "<table>
+                    <tbody>There is not webform for this record</tbody>
+                </table>";
                 }
-            }
+                $description .= "<div>".$webform_table."</div><br />";
 
-            $send_from = 'bradf@121customerinsight.co.uk';
+                $appointment_ics = array();
+                if ($appointment) {
+                    $appointment_ics['appointment_id'] = $appointment->appointment_id;
+                    $appointment_ics['start_date'] = $appointment->start;
+                    $appointment_ics['send_to'] = $send_to;
+                    $appointment_ics['send_from'] = $send_from;
+                    $appointment_ics['duration'] = strtotime($appointment->end) - strtotime($appointment->start);
+                    $appointment_ics['title'] = $title;
+                    $appointment_ics['location'] = $appointment->postcode;
+                    $appointment_ics['uid'] = "Appointment_".$appointment->appointment_id;
+                    $appointment_ics['description'] = $description;
+                    $appointment_ics['sequence'] = 0;
+                    $appointment_ics['method'] = 'REQUEST';
+                }
+
+                //Create the ical file to attach
+                $ical = $this->createIcalFile($appointment_ics['uid'], $appointment_ics['method'], $appointment_ics['send_from'], $appointment_ics['send_to'], $appointment_ics['start_date'], $appointment_ics['duration'], $appointment_ics['title'], $appointment_ics['description'], $appointment_ics['location'], $appointment_ics['sequence']);
+
+                //ATTACH the ics file
+                //Create tmp dir if it does not exist
+                $tmp_path = FCPATH . '/upload/attachments/ics';
+                $filename = $appointment_ics['uid'].".ics";
+
+                if (@!file_exists($tmp_path)) {
+                    mkdir($tmp_path, 0777, true);
+                }
+
+                $handle = fopen($tmp_path."/".$filename , 'w+');
+                if($handle)
+                {
+                    if(@!fwrite($handle, $ical )) {
+                        return false;
+                    }
+                    else {
+                        $attachments = array(
+                            array(
+                                "path" => $tmp_path."/".$filename,
+                                "name" => $filename,
+                                "disposition" => 'inline'
+                            )
+                        );
+                    }
+                }
+                fclose($handle);
+
+                //SEND MAIL
+                $form_to_send = array(
+                    "send_from" => "appointments@121system.com",
+                    "send_to" => $appointment_ics['send_to'],
+                    "cc" => null,
+                    "bcc" => 'estebanc@121customerinsight.co.uk',
+                    "subject" => $appointment_ics['title'],
+                    "body" => $description,
+                    "template_attachments" => $attachments
+                );
+
+                $email_sent = $this->send($form_to_send);
+
+                //TODO save email_history or delete the attachment??
+                //$email_history_id = $this->Email_model->add_new_email_history($form);
+
+                //Save the appointment_ics sent
+                if ($email_sent) {
+                    $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
+                    $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
+                }
+
+
+                echo json_encode(array(
+                    "success" => ($email_sent),
+                    "appointment_ics" => $appointment_ics
+                ));
+            }
+            else {
+                echo json_encode(array(
+                    "success" => "true",
+                    "msg" => "no email addresses to send ics email"
+                ));
+            }
+        }
+
+    }
+
+    public function update_appointment_ics() {
+        $this->load->helper('email');
+
+        $appointment_id = $this->input->post('appointment_id');
+        $uid = 'Appointment_'.$appointment_id;
+        $description = $this->input->post('description');
+        $start_date = $this->input->post('start');
+        $end_date = $this->input->post('end');
+        $duration = strtotime($end_date) - strtotime($start_date);
+        $location = $this->input->post('postcode');
+
+        //Get the appointment ics info
+        $last_appointment_ics = $this->Appointments_model->getLastAppointmentIcsByUid($uid);
+
+        //If exist a previous ics sent
+        if ($last_appointment_ics) {
+
+            //Get the appointment info
+            $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
 
             //Get contact info
             $contact = $this->Contacts_model->get_contact($appointment->contact_id);
 
             //Date
-            $start_date = new \DateTime($appointment->start);
-            $end_date = new \DateTime($appointment->end);
-            $day = $start_date->format("jS F Y");
-            $start_time = $start_date->format("G:ia");
-            $end_time = $end_date->format("G:ia");
+            $start_date = ($start_date?$start_date:$last_appointment_ics->start_date);
+            $start_day = new \DateTime($start_date);
+            $end_date = ($end_date?$end_date:$last_appointment_ics->end_date);
+            $end_day = new \DateTime($start_date);
+            $day = $start_day->format("jS F Y");
+            $start_time = $start_day->format("G:ia");
+            $end_time = $end_day->format("G:ia");
 
-            $title = 'Appointment Booking - '.$appointment->title;
-
-            $description = "A new appointment have been booked for ".
+            $description = "<div><h2>Appointment rescheduled</h2></div>";
+            $description .= "An appointment have been rescheduled for ".
                 $day." and the allocated time will be between ".$start_time." and ".$end_time.
-                "The appointment have been booked for ".$contact['general']['fullname'].
-                " on the address: ".$appointment->address;
+                ". The appointment have been booked for ".$contact['general']['fullname'].
+                " on the address: ".$appointment->address."</div><br />";
+
+            $appointment_table = "<table>
+                    <thead><th><h3>Appointment</h3></th><th><a href='".base_url()."records/detail/".$appointment->urn."'>#".$appointment_id."</a></th>
+                    <tbody>
+                        <tr><td>Appointment Title:</td><td>".$appointment->title."</td></tr>
+                        <tr><td>Day:</td><td>".$day."</td></tr>
+                        <tr><td>Time:</td><td>".$start_time." - ".$end_time."</td></tr>
+                        <tr><td>Address:</td><td>".$appointment->address."</td></tr>
+                        ".($appointment->branch_id?"<tr><td>Branch:</td><td>".$appointment->branch_id."</td></tr>":"")."
+                    </tbody>
+                </table>";
+            $description .= "<div>".$appointment_table."</div><br />";
+
+
+            $contact_table = "<table>
+                    <thead><th colspan='2'><h3>Contacts</h3></th>
+                    <tbody>
+                        <tr><td>Name:</td><td>".$contact['general']['fullname']."</td></tr>
+                        <tr><td>Email:</td><td>".$contact['general']['email']."</td></tr>
+                    </tbody>
+                </table>";
+            $description .= "<div>".$contact_table."</div><br />";
+
+            //Get the webform answers for this urn
+            $webform_answers = $this->Email_model->get_webform_answers_by_urn($appointment->urn);
+            //Get the last one
+            $webform = (isset($webform_answers[0])?$webform_answers[0]:array());
+            if (!empty($webform)) {
+                $answers = "";
+                for($i=1;$i<=30;$i++) {
+                    $answers .= "<tr><td>".$webform['q'.$i]."</td><td>".$webform['a'.$i]."</td></tr>";
+                }
+                $webform_table = "<table>
+                    <thead style='margin-bottom: 2px;'><th colspan='2'><h3>".$webform['webform_name']."</h3></th>
+                    <tbody>".$answers."</tbody>
+                </table>";
+            }
+            else {
+                $webform_table = "<table>
+                    <tbody>There is not webform for this record</tbody>
+                </table>";
+            }
+            $description .= "<div>".$webform_table."</div><br />";
 
             $appointment_ics = array();
-            if ($appointment) {
-                $appointment_ics['appointment_id'] = $appointment->appointment_id;
-                $appointment_ics['start_date'] = $appointment->start;
-                $appointment_ics['send_to'] = $send_to;
-                $appointment_ics['send_from'] = $send_from;
-                $appointment_ics['duration'] = strtotime($appointment->end) - strtotime($appointment->start);
-                $appointment_ics['title'] = $title;
-                $appointment_ics['location'] = $appointment->postcode;
-                $appointment_ics['uid'] = "Appointment_".$appointment->appointment_id;
-                $appointment_ics['description'] = $description;
-                $appointment_ics['sequence'] = 0;
+            if ($last_appointment_ics) {
+                $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
+                $appointment_ics['start_date'] = $start_date;
+                $appointment_ics['send_to'] = $last_appointment_ics->send_to;
+                $appointment_ics['send_from'] = $last_appointment_ics->send_from;
+                $appointment_ics['duration'] = ($duration?$duration:$last_appointment_ics->duration);
+                $appointment_ics['title'] = 'Appointment Update - '.$appointment->title. ' #'.$appointment_id;
+                $appointment_ics['location'] = ($location?$location:$last_appointment_ics->location);
+                $appointment_ics['uid'] = $uid;
+                $appointment_ics['description'] = ($description?$description:$last_appointment_ics->description);
+                $appointment_ics['sequence'] = $last_appointment_ics->sequence + 1;
                 $appointment_ics['method'] = 'REQUEST';
             }
+
 
             //Create the ical file to attach
             $ical = $this->createIcalFile($appointment_ics['uid'], $appointment_ics['method'], $appointment_ics['send_from'], $appointment_ics['send_to'], $appointment_ics['start_date'], $appointment_ics['duration'], $appointment_ics['title'], $appointment_ics['description'], $appointment_ics['location'], $appointment_ics['sequence']);
@@ -769,7 +975,7 @@ class Email extends CI_Controller
                         array(
                             "path" => $tmp_path."/".$filename,
                             "name" => $filename,
-                            //"disposition" => 'inline'
+                            "disposition" => 'inline'
                         )
                     );
                 }
@@ -778,12 +984,12 @@ class Email extends CI_Controller
 
             //SEND MAIL
             $form_to_send = array(
-                "send_from" => "noreply@121system.com",
+                "send_from" => "appointments@121system.com",
                 "send_to" => $appointment_ics['send_to'],
                 "cc" => null,
                 "bcc" => 'estebanc@121customerinsight.co.uk',
                 "subject" => $appointment_ics['title'],
-                "body" => $description,
+                "body" => $appointment_ics['description'],
                 "template_attachments" => $attachments
             );
 
@@ -798,122 +1004,17 @@ class Email extends CI_Controller
                 $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
             }
 
-
             echo json_encode(array(
                 "success" => ($email_sent),
                 "appointment_ics" => $appointment_ics
             ));
         }
-
-    }
-
-    public function update_appointment_ics() {
-        $this->load->helper('email');
-
-        $appointment_id = $this->input->post('appointment_id');
-        $uid = 'Appointment_'.$appointment_id;
-        $description = $this->input->post('description');
-        $start_date = $this->input->post('start');
-        $end_date = $this->input->post('end');
-        $duration = strtotime($end_date) - strtotime($start_date);
-        $location = $this->input->post('postcode');
-
-        //Get the appointment ics info
-        $last_appointment_ics = $this->Appointments_model->getLastAppointmentIcsByUid($uid);
-
-        //Get the appointment info
-        $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
-
-        //Get contact info
-        $contact = $this->Contacts_model->get_contact($appointment->contact_id);
-
-        //Date
-        $start_date = ($start_date?$start_date:$last_appointment_ics->start_date);
-        $start_day = new \DateTime($start_date);
-        $end_date = ($end_date?$end_date:$last_appointment_ics->end_date);
-        $end_day = new \DateTime($start_date);
-        $day = $start_day->format("jS F Y");
-        $start_time = $start_day->format("G:ia");
-        $end_time = $end_day->format("G:ia");
-
-        $description = "An appointment have been reschedulled for ".
-            $day." and the allocated time will be between ".$start_time." and ".$end_time.
-            "The appointment have been booked for ".$contact['general']['fullname'].
-            " on the address: ".$appointment->address;
-
-        $appointment_ics = array();
-        if ($last_appointment_ics) {
-            $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
-            $appointment_ics['start_date'] = $start_date;
-            $appointment_ics['send_to'] = $last_appointment_ics->send_to;
-            $appointment_ics['send_from'] = $last_appointment_ics->send_from;
-            $appointment_ics['duration'] = ($duration?$duration:$last_appointment_ics->duration);
-            $appointment_title = explode(' - ',$last_appointment_ics->title)[1];
-            $appointment_ics['title'] = 'Appointment Update - '.$appointment_title;
-            $appointment_ics['location'] = ($location?$location:$last_appointment_ics->location);
-            $appointment_ics['uid'] = $uid;
-            $appointment_ics['description'] = ($description?$description:$last_appointment_ics->description);
-            $appointment_ics['sequence'] = $last_appointment_ics->sequence + 1;
-            $appointment_ics['method'] = 'REQUEST';
+        else {
+            echo json_encode(array(
+                "success" => true,
+                "msg" => "Nothing sent. There is no appointment ics sent before"
+            ));
         }
-
-
-        //Create the ical file to attach
-        $ical = $this->createIcalFile($appointment_ics['uid'], $appointment_ics['method'], $appointment_ics['send_from'], $appointment_ics['send_to'], $appointment_ics['start_date'], $appointment_ics['duration'], $appointment_ics['title'], $appointment_ics['description'], $appointment_ics['location'], $appointment_ics['sequence']);
-
-        //ATTACH the ics file
-        //Create tmp dir if it does not exist
-        $tmp_path = FCPATH . '/upload/attachments/ics';
-        $filename = $appointment_ics['uid'].".ics";
-
-        if (@!file_exists($tmp_path)) {
-            mkdir($tmp_path, 0777, true);
-        }
-
-        $handle = fopen($tmp_path."/".$filename , 'w+');
-        if($handle)
-        {
-            if(@!fwrite($handle, $ical )) {
-                return false;
-            }
-            else {
-                $attachments = array(
-                    array(
-                        "path" => $tmp_path."/".$filename,
-                        "name" => $filename,
-                        //"disposition" => 'inline'
-                    )
-                );
-            }
-        }
-        fclose($handle);
-
-        //SEND MAIL
-        $form_to_send = array(
-            "send_from" => "noreply@121system.com",
-            "send_to" => $appointment_ics['send_to'],
-            "cc" => null,
-            "bcc" => 'estebanc@121customerinsight.co.uk',
-            "subject" => $appointment_ics['title'],
-            "body" => $appointment_ics['description'],
-            "template_attachments" => $attachments
-        );
-
-        $email_sent = $this->send($form_to_send);
-
-        //TODO save email_history or delete the attachment??
-        //$email_history_id = $this->Email_model->add_new_email_history($form);
-
-        //Save the appointment_ics sent
-        if ($email_sent) {
-            $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
-            $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
-        }
-
-        echo json_encode(array(
-            "success" => ($email_sent),
-            "appointment_ics" => $appointment_ics
-        ));
     }
 
     public function cancel_appointment_ics() {
@@ -927,94 +1028,150 @@ class Email extends CI_Controller
         //Get the appointment ics info
         $last_appointment_ics = $this->Appointments_model->getLastAppointmentIcsByUid($uid);
 
-        //Get the appointment info
-        $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
-
-        //Get contact info
-        $contact = $this->Contacts_model->get_contact($appointment->contact_id);
-
-        //Date
-        $start_date = $last_appointment_ics->start_date;
-        $start_day = new \DateTime($start_date);
-        $day = $start_day->format("jS F Y");
-
-        $description = "An appointment have been cancelled. It was booked for ".
-            $day.
-            " with ".$contact['general']['fullname'].
-            " on the address: ".$appointment->address;
-
-        $appointment_ics = array();
+        //If exist a previous ics sent
         if ($last_appointment_ics) {
-            $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
-            $appointment_ics['start_date'] = $last_appointment_ics->start_date;
-            $appointment_ics['send_to'] = $last_appointment_ics->send_to;
-            $appointment_ics['send_from'] = $last_appointment_ics->send_from;
-            $appointment_ics['duration'] = $last_appointment_ics->duration;
-            $appointment_title = explode(' - ',$last_appointment_ics->title)[1];
-            $appointment_ics['title'] = 'Appointment Cancellation - '.$appointment_title;
-            $appointment_ics['location'] = $last_appointment_ics->location;
-            $appointment_ics['uid'] = $uid;
-            $appointment_ics['description'] = ($description?$description:$last_appointment_ics->description);
-            $appointment_ics['sequence'] = $last_appointment_ics->sequence + 1;
-            $appointment_ics['method'] = 'CANCEL';
-        }
 
-        //Create the ical file to attach
-        $ical = $this->createIcalFile($appointment_ics['uid'], $appointment_ics['method'], $appointment_ics['send_from'], $appointment_ics['send_to'], $appointment_ics['start_date'], $appointment_ics['duration'], $appointment_ics['title'], $appointment_ics['description'], $appointment_ics['location'], $appointment_ics['sequence']);
+            //Get the appointment info
+            $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
 
-        //ATTACH the ics file
-        //Create tmp dir if it does not exist
-        $tmp_path = FCPATH . '/upload/attachments/ics';
-        $filename = $appointment_ics['uid'].".ics";
+            //Get contact info
+            $contact = $this->Contacts_model->get_contact($appointment->contact_id);
 
-        if (@!file_exists($tmp_path)) {
-            mkdir($tmp_path, 0777, true);
-        }
+            //Date
+            $start_date = $last_appointment_ics->start_date;
+            $end_date = $appointment->end;
+            $start_day = new \DateTime($start_date);
+            $day = $start_day->format("jS F Y");
+            $end_day = new \DateTime($start_date);
+            $start_time = $start_day->format("G:ia");
+            $end_time = $end_day->format("G:ia");
 
-        $handle = fopen($tmp_path."/".$filename , 'w+');
-        if($handle)
-        {
-            if(@!fwrite($handle, $ical )) {
-                return false;
+            $description = "<div><h2>Appointment cancelled</h2></div>";
+            $description .= "An appointment have been cancelled. It was booked for " .
+                $day .
+                " with " . $contact['general']['fullname'] .
+                " on the address: " . $appointment->address . "</div><br />";
+
+            $appointment_table = "<table>
+                        <thead><th><h3>Appointment</h3></th><th><a href='".base_url()."records/detail/".$appointment->urn."'>#".$appointment_id."</a></th>
+                        <tbody>
+                            <tr><td>Appointment Title:</td><td>" . $appointment->title . "</td></tr>
+                            <tr><td>Day:</td><td>" . $day . "</td></tr>
+                            <tr><td>Time:</td><td>" . $start_time . " - " . $end_time . "</td></tr>
+                            <tr><td>Address:</td><td>" . $appointment->address . "</td></tr>
+                            " . ($appointment->branch_id ? "<tr><td>Branch:</td><td>" . $appointment->branch_id . "</td></tr>" : "") . "
+                            <tr><td>Cancellation reason:</td><td>" . $appointment->cancellation_reason . "</td></tr>
+                        </tbody>
+                    </table>";
+            $description .= "<div>" . $appointment_table . "</div><br />";
+
+
+            $contact_table = "<table>
+                        <thead><th colspan='2'><h3>Contacts</h3></th>
+                        <tbody>
+                            <tr><td>Name:</td><td>" . $contact['general']['fullname'] . "</td></tr>
+                            <tr><td>Email:</td><td>" . $contact['general']['email'] . "</td></tr>
+                        </tbody>
+                    </table>";
+            $description .= "<div>" . $contact_table . "</div><br />";
+
+            //Get the webform answers for this urn
+            $webform_answers = $this->Email_model->get_webform_answers_by_urn($appointment->urn);
+            //Get the last one
+            $webform = (isset($webform_answers[0]) ? $webform_answers[0] : array());
+            if (!empty($webform)) {
+                $answers = "";
+                for ($i = 1; $i <= 30; $i++) {
+                    $answers .= "<tr><td>" . $webform['q' . $i] . "</td><td>" . $webform['a' . $i] . "</td></tr>";
+                }
+                $webform_table = "<table>
+                        <thead style='margin-bottom: 2px;'><th colspan='2'><h3>" . $webform['webform_name'] . "</h3></th>
+                        <tbody>" . $answers . "</tbody>
+                    </table>";
+            } else {
+                $webform_table = "<table>
+                        <tbody>There is not webform for this record</tbody>
+                    </table>";
             }
-            else {
-                $attachments = array(
-                    array(
-                        "path" => $tmp_path."/".$filename,
-                        "name" => $filename,
-                        //"disposition" => 'inline'
-                    )
-                );
+            $description .= "<div>" . $webform_table . "</div><br />";
+
+            $appointment_ics = array();
+            if ($last_appointment_ics) {
+                $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
+                $appointment_ics['start_date'] = $last_appointment_ics->start_date;
+                $appointment_ics['send_to'] = $last_appointment_ics->send_to;
+                $appointment_ics['send_from'] = $last_appointment_ics->send_from;
+                $appointment_ics['duration'] = $last_appointment_ics->duration;
+                $appointment_title = explode(' - ', $last_appointment_ics->title)[1];
+                $appointment_ics['title'] = 'Appointment Cancellation - ' . $appointment->title . ' #' . $appointment_id;
+                $appointment_ics['location'] = $last_appointment_ics->location;
+                $appointment_ics['uid'] = $uid;
+                $appointment_ics['description'] = ($description ? $description : $last_appointment_ics->description);
+                $appointment_ics['sequence'] = $last_appointment_ics->sequence + 1;
+                $appointment_ics['method'] = 'CANCEL';
             }
+
+            //Create the ical file to attach
+            $ical = $this->createIcalFile($appointment_ics['uid'], $appointment_ics['method'], $appointment_ics['send_from'], $appointment_ics['send_to'], $appointment_ics['start_date'], $appointment_ics['duration'], $appointment_ics['title'], $appointment_ics['description'], $appointment_ics['location'], $appointment_ics['sequence']);
+
+            //ATTACH the ics file
+            //Create tmp dir if it does not exist
+            $tmp_path = FCPATH . '/upload/attachments/ics';
+            $filename = $appointment_ics['uid'] . ".ics";
+
+            if (@!file_exists($tmp_path)) {
+                mkdir($tmp_path, 0777, true);
+            }
+
+            $handle = fopen($tmp_path . "/" . $filename, 'w+');
+            if ($handle) {
+                if (@!fwrite($handle, $ical)) {
+                    return false;
+                } else {
+                    $attachments = array(
+                        array(
+                            "path" => $tmp_path . "/" . $filename,
+                            "name" => $filename,
+                            "disposition" => 'inline'
+                        )
+                    );
+                }
+            }
+            fclose($handle);
+
+            //SEND MAIL
+            $form_to_send = array(
+                "send_from" => "appointments@121system.com",
+                "send_to" => $appointment_ics['send_to'],
+                "cc" => null,
+                "bcc" => 'estebanc@121customerinsight.co.uk',
+                "subject" => $appointment_ics['title'],
+                "body" => $appointment_ics['description'],
+                "template_attachments" => $attachments
+            );
+
+            $email_sent = $this->send($form_to_send);
+
+            //TODO save email_history or delete the attachment??
+            //$email_history_id = $this->Email_model->add_new_email_history($form);
+
+            //Save the appointment_ics sent
+            if ($email_sent) {
+                $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
+                $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
+            }
+
+            echo json_encode(array(
+                "success" => ($email_sent),
+                "appointment_ics" => $appointment_ics
+            ));
         }
-        fclose($handle);
-
-        //SEND MAIL
-        $form_to_send = array(
-            "send_from" => "noreply@121system.com",
-            "send_to" => $appointment_ics['send_to'],
-            "cc" => null,
-            "bcc" => 'estebanc@121customerinsight.co.uk',
-            "subject" => $appointment_ics['title'],
-            "body" => $appointment_ics['description'],
-            "template_attachments" => $attachments
-        );
-
-        $email_sent = $this->send($form_to_send);
-
-        //TODO save email_history or delete the attachment??
-        //$email_history_id = $this->Email_model->add_new_email_history($form);
-
-        //Save the appointment_ics sent
-        if ($email_sent) {
-            $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
-            $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
+        else {
+            echo json_encode(array(
+                "success" => true,
+                "msg" => "Nothing sent. There is no appointment ics sent before"
+            ));
         }
-
-        echo json_encode(array(
-            "success" => ($email_sent),
-            "appointment_ics" => $appointment_ics
-        ));
 
     }
 
@@ -1031,66 +1188,63 @@ class Email extends CI_Controller
         //Create unique identifier
         $cal_uid = $uid;
 
-        $status = ($method === "CANCEL" ? "STATUS: CANCELLED " : "");
+        $status = ($method === "CANCEL" ? "\n"."STATUS: CANCELLED"."\r\n" : "\n");
 
         $attendees = '';
         foreach (explode(',', $to) as $attendee) {
             $attendee_add = trim($attendee);
             $attendee_name = trim(strstr($attendee, '@', true));
-            $attendees .= 'ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;CN="' . $attendee_name . '":mailto:' . $attendee_add . ' ';
+            $attendees .= 'ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;CN="' . $attendee_name . '":mailto:' . $attendee_add ."\r\n";
         }
+
+        $attendees = rtrim($attendees);
 
 
         //Create ICAL Content (Google rfc 2445 for details and examples of usage)
-        $ical = '
-BEGIN:VCALENDAR
-PRODID:-//Microsoft Corporation//Outlook 11.0 MIMEDIR//EN
-VERSION:2.0
-METHOD:' . $method . '
-' . $status . '
-BEGIN:VEVENT
-ORGANIZER:MAILTO:'.$from.'
-' . $attendees . '
-DTSTART:' . $dtstart . '
-DTEND:' . $dtend . '
-LOCATION:' . $meeting_location . '
-TRANSP:OPAQUE
-SEQUENCE:' . $sequence . '
-UID:' . $cal_uid . '
-DTSTAMP:' . $todaystamp . '
-DESCRIPTION:' . $meeting_description . '
-SUMMARY:' . $subject . '
-PRIORITY:5
-X-MICROSOFT-CDO-IMPORTANCE:1
-CLASS:PUBLIC
-BEGIN:VALARM
-TRIGGER:-PT1440M
-ACTION:DISPLAY
-DESCRIPTION:Reminder
-END:VALARM
-END:VEVENT
+        $ical = 'BEGIN:VCALENDAR'."\r".'
+PRODID:-//Microsoft Corporation//Outlook 11.0 MIMEDIR//EN'."\r".'
+VERSION:2.0'."\r".'
+METHOD:' . $method . ''."\r".'' . $status .
+'BEGIN:VEVENT'."\r".'
+ORGANIZER:MAILTO:'.$from.''."\r".'
+' . $attendees . ''."\r".'
+DTSTART:' . $dtstart . ''."\r".'
+DTEND:' . $dtend . ''."\r".'
+LOCATION:' . $meeting_location . ''."\r".'
+TRANSP:OPAQUE'."\r".'
+SEQUENCE:' . $sequence . ''."\r".'
+UID:' . $cal_uid . ''."\r".'
+DTSTAMP:' . $todaystamp . ''."\r".'
+DESCRIPTION:' . $meeting_description . ''."\r".'
+SUMMARY:' . $subject . ''."\r".'
+PRIORITY:5'."\r".'
+X-MICROSOFT-CDO-IMPORTANCE:1'."\r".'
+CLASS:PUBLIC'."\r".'
+BEGIN:VALARM'."\r".'
+TRIGGER:-PT1440M'."\r".'
+ACTION:DISPLAY'."\r".'
+DESCRIPTION:Reminder'."\r".'
+END:VALARM'."\r".'
+END:VEVENT'."\r".'
 END:VCALENDAR';
 
         return $ical;
     }
 
 
-    //TODO Refactor all the functions bellow
     public function send_appointment_confirmation() {
         user_auth_check();
         if ($this->input->is_ajax_request()) {
             $appointment_id = $this->input->post('appointment_id');
             $branch_id = $this->input->post('branch_id');
-            $description = $this->input->post('description');
+            $state = $this->input->post('state');
             $send_to = $this->input->post('send_to');
 
             //Get the appointment info
             $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
 
             //TODO just for testing
-            if (!$appointment->branch_id) {
-                $send_to = 'estebanc@121customerinsight.co.uk';
-            }
+            $send_to = 'bradf@121customerinsight.co.uk';
 
             $start_date = $appointment->start;
             $end_date = $appointment->end;
@@ -1109,7 +1263,7 @@ END:VCALENDAR';
             $today = $today_date->format("YmdHis");
 
             $path = 'upload/attachments/cover_letter';
-            $filename = "HSL_Appointment_" . $today;
+            $filename = "HSL_Appointment_" . $today."_".$appointment->appointment_id;
 
             //Create the hsl cover_letter
             $complete_path = $this->create_hsl_cover_letter($path, $filename, $start_date, $end_date, $title, $name, $surname, $address, $postcode);
@@ -1120,10 +1274,22 @@ END:VCALENDAR';
             $start_time = $start_date->format("G:ia");
             $end_time = $end_date->format("G:ia");
 
-            $body = "A new appointment have been booked for ".
-                $day." and the allocated time will be between ".$start_time." and ".$end_time.
-                "The appointment have been booked for ".$contact['general']['fullname'].
-                " on the address: ".$appointment->address;
+            $subject = 'Appointment confirmation';
+            $body = 'Appointment confirmation';
+            if ($state == 'inserted') {
+                $subject = 'Appointment Booking';
+                $body = "A new appointment have been booked for ".
+                    $day." and the allocated time will be between ".$start_time." and ".$end_time.
+                    ". The appointment have been booked for ".$contact['general']['fullname'].
+                    " on the address: ".$appointment->address;
+            }
+            else if ($state == 'updated') {
+                $subject = 'Appointment Update';
+                $body = "An appointment have been rescheduled for ".
+                    $day." and the allocated time will be between ".$start_time." and ".$end_time.
+                    ". The appointment have been booked for ".$contact['general']['fullname'].
+                    " on the address: ".$appointment->address;
+            }
 
             //SEND MAIL
             $attachments = array($complete_path);
@@ -1132,7 +1298,7 @@ END:VCALENDAR';
                 "send_to" => $send_to,
                 "cc" => null,
                 "bcc" => 'estebanc@121customerinsight.co.uk',
-                "subject" => "Appointment Booking - ".$appointment->title,
+                "subject" => $subject." - ".$appointment->title,
                 "body" => $body,
                 "template_attachments" => $attachments
             );
@@ -1185,6 +1351,14 @@ END:VCALENDAR';
         // Adding an empty Section to the document...
         $section = $phpWord->addSection();
 
+        //HEADER
+        $header = $section->addHeader();
+        $header->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>100, 'height'=>100, 'align'=>'right'));
+
+        //FOOTER
+        $footer = $section->addFooter();
+        $footer->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>30, 'height'=>30, 'align'=>'right'));
+
         //CONTACT DETAILS
         // Adding Contact details font
         $fontStyleName = 'ContactDetailsStyle';
@@ -1198,8 +1372,10 @@ END:VCALENDAR';
         $section->addText(htmlspecialchars($today_day), "ContactDetailsStyle");
         $section->addTextBreak(0, "ContactDetailsStyle");
         $section->addText(htmlspecialchars($title.' '.$name.' '.$surname), "ContactDetailsStyle");
-        $section->addText(htmlspecialchars($address), "ContactDetailsStyle");
-        $section->addText(htmlspecialchars($postcode), "ContactDetailsStyle");
+        $addresses = explode(',',$address);
+        foreach($addresses as  $address) {
+            $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle");
+        }
         $section->addTextBreak(1, "ContactDetailsStyle");
         $section->addText(htmlspecialchars('Dear '.$title.' '.$surname.','), "ContactDetailsStyle");
         $section->addTextBreak(0, "ContactDetailsStyle");
@@ -1233,7 +1409,7 @@ END:VCALENDAR';
         $section->addTextBreak(1);
 
         $section->addText(htmlspecialchars('Yours sincerely'),array('name' => 'Tahoma', 'size' => 10));
-        $section->addTextBreak(7);
+        $section->addTextBreak(4);
 
         $section->addText(htmlspecialchars('Home Consultation Service Team'),array('name' => 'Tahoma', 'size' => 10));
 

@@ -588,21 +588,44 @@ $qry .= " group by urn";
         return $result;
     }
 
-
-    public function get_ics_email_addresses($appointment_id) {
+    //Get the webform by urn (ordered by timestamp)
+    public function get_webform_answers_by_urn($urn) {
         $qry = "select
-                 user_email
-                from appointments a
-                inner join appointment_attendees apt using(appointment_id)
-                inner join users u using (user_id)
-                where
-                    ics = 1
-                    and user_email is not null and user_email <> ''
-                    and appointment_id = ".$appointment_id;
+                 *
+                from webform_answers wa
+                inner join webforms w using(webform_id)
+                inner join webform_questions wq using(webform_id)
+                inner join webforms_to_campaigns wc using(webform_id)
+                where urn = ".$urn."
+                order by updated_by desc";
 
         $result = $this->db->query($qry)->result_array();
 
         return $result;
+    }
+
+
+    public function get_ics_email_addresses($appointment_id) {
+
+        $qry = "select
+                  a.*,
+                  GROUP_CONCAT(DISTINCT (IF(atus.ics,atus.user_email,NULL)) SEPARATOR ',') as attendees,
+                  GROUP_CONCAT(DISTINCT (IF(brus.ics,brus.user_email,NULL)) SEPARATOR ',') as region_users,
+                  GROUP_CONCAT(DISTINCT (IF(bus.ics,bus.user_email,NULL)) SEPARATOR ',') as branch_users
+                from  appointments a
+                left join appointment_attendees at using(appointment_id)
+                left join users atus ON (atus.user_id = at.user_id)
+                left join branch b using(branch_id)
+                left join branch_region_users bru using (region_id)
+                left join users brus ON (brus.user_id = bru.user_id)
+                left join branch_user bu using (branch_id)
+                left join users bus ON (bus.user_id = bu.user_id)
+                where appointment_id = ".$appointment_id."
+                group by appointment_id";
+
+        $result = $this->db->query($qry)->result_array();
+
+        return (isset($result[0])?$result[0]:NULL);
     }
 
 }
