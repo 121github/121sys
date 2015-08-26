@@ -205,8 +205,9 @@ foreach($appointments['apps'] as $date => $day){
 	foreach($day as $k=>$row){
 		$max_apps += $row['max_apps'];
 		$apps += $row['apps'];
+		$reason  = isset($row['reason'])?$row['reason']:false;
 		$sql_date = DateTime::createFromFormat('D jS M', $date)->format('Y-m-d');
-		$slots[$sql_date] = array("apps"=>$apps,"max_apps"=>$max_apps);	
+		$slots[$sql_date] = array("apps"=>$apps,"max_apps"=>$max_apps,"reason"=>$reason);	
 	}
 }
 echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,"slots"=>$slots,"user_id"=>$driver_id));

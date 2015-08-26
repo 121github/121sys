@@ -50,22 +50,71 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       <h2>HSL Pre-Consultation Checklist</h2>
       <p>Please complete the following questions and click save</p>
       <form id="form" style="padding-bottom:50px;">
+               <div>
+          <label>Please enter the origin/source of the lead</label>
+          <br>
+          <select name="answers[a25]" class="selectpicker" data-width="100%"
+                    data-size="5" >
+                    <option  value=''>--Please select--</option>
+        <option <?php if (@strpos($values['a25'], "Loop phone") !== false) {
+                    echo "selected";
+                } ?> value='Loop phone'>Loop phone</option>
+        <option <?php if (@strpos($values['a25'], "Web") !== false) {
+                    echo "selected";
+                } ?> value='Web'>Web</option>
+        <option <?php if (@strpos($values['a25'], "Direct") !== false) {
+                    echo "selected";
+                } ?> value='Direct'>Direct</option>
+        <option <?php if (@strpos($values['a25'], "Customer Service") !== false) {
+                    echo "selected";
+                } ?> value='Customer Service'>Customer Service</option>
+        <option <?php if (@strpos($values['a25'], "Other") !== false) {
+                    echo "selected";
+                } ?> value='Other'>Other</option>
+      </select>
+        </div>
+        <h5>Now capture/validate the following information from the customer</h5>
     <div>
           <label>Where did you hear about us?</label>
           <br>
-          <select name="answers[a22]" class="selectpicker" data-width="100%"
+          <select name="answers[a24][]" class="selectpicker" data-width="100%" multiple
                     data-size="5" >
-        <option value='Mail / Leaflet'>Mail / Leaflet</option>
-        <option value='Referral'>Referral</option>
-        <option value='Newspaper'>Newspaper</option>
-        <option value='Website'>Website</option>
-        <option value='Radio'>Radio</option>
-        <option value='Facebook'>Facebook</option>
-        <option value='Family'>Family</option>
-        <option value='Friend'>Friend</option>
-        <option value='Neighbour'>Neighbour</option>
+        <option <?php if (@strpos($values['a24'], "Mail / Leaflet") !== false) {
+                    echo "selected";
+                } ?>value='Mail / Leaflet'>Mail / Leaflet</option>
+        <option <?php if (@strpos($values['a24'], "Referral") !== false) {
+                    echo "selected";
+                } ?> value='Referral'>Referral</option>
+        <option <?php if (@strpos($values['a24'], "Newspaper") !== false) {
+                    echo "selected";
+                } ?> value='Newspaper'>Newspaper</option>
+        <option <?php if (@strpos($values['a24'], "Website") !== false) {
+                    echo "selected";
+                } ?> value='Website'>Website</option>
+        <option <?php if (@strpos($values['a24'], "Radio") !== false) {
+                    echo "selected";
+                } ?> value='Radio'>Radio</option>
+        <option <?php if (@strpos($values['a24'], "Facebook") !== false) {
+                    echo "selected";
+                } ?> value='Facebook'>Facebook</option>
+        <option <?php if (@strpos($values['a24'], "Family") !== false) {
+                    echo "selected";
+                } ?> value='Family'>Family</option>
+        <option <?php if (@strpos($values['a24'], "Friend") !== false) {
+                    echo "selected";
+                } ?> value='Friend'>Friend</option>
+        <option <?php if (@strpos($values['a24'], "Neighbour") !== false) {
+                    echo "selected";
+                } ?> value='Neighbour'>Neighbour</option>
+         <option <?php if (@strpos($values['a24'], "TV") !== false) {
+                    echo "selected";
+                } ?> value='TV'>TV</option>
+          <option <?php if (@strpos($values['a24'], "Door") !== false) {
+                    echo "selected";
+                } ?> value='Door'>Door</option>
       </select>
         </div>
+        
         	<input id="contact-id" name="answers[a1]" value="<?php echo @$values['a1'] ?>" type="hidden" /> 
           <input id="contact-fullname" name="answers[a2]" value="<?php echo @$values['a2'] ?>" type="hidden" /> 
           <div class="form-group" >
@@ -185,11 +234,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <input type="text" name="answers[a12]" value="<?php echo @$values['a12'] ?>" class="form-control" placeholder="Enter notes if they answered yes above "/>
         </div>
         </div>
-             <div>
+             <div class="question">
           <label>Can anyone familiar with the customers needs also be available during the Home Consultation?</label><br>
           <div class="radio" style="display:inline-block">
         <label>
-              <input type="radio" name="answers[a12][]" id="optionsRadios1" 
+              <input type="radio" name="answers[a12][]" id="optionsRadios1"  data-show-notes="true"
                        value="Yes"  <?php if (@strpos($values['a12'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
@@ -197,44 +246,21 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       </div>
                 <div class="radio" style="display:inline-block; margin-left:20px">
         <label>
-              <input type="radio" name="answers[a12][]" id="optionsRadios2"
-                       value="No" <?php if (@strpos($values['a12'], "No") !== false) {
-                    echo "checked";
-                } ?>>
-              No </label>
-      </div>
-              </div>  
-                             <div class="form-group">
-          <label>Please capture the name of the helper/carer if applicable</label>
-          <br>
-          <input type="text" name="answers[a13]" value="<?php echo @$values['a13'] ?>" class="form-control" placeholder="Helper/carers persons name"/>
-        </div>      
-              <div class="question">
-          <label>Are there any vehicle or parking restrictions at the Customer's Accommodation?</label><br>
-          <div class="radio" style="display:inline-block">
-        <label>
-              <input type="radio" name="answers[a13][]" id="optionsRadios1" data-show-notes="true"
-                       value="Yes"  <?php if (@strpos($values['a13'], "Yes") !== false) {
-                    echo "checked";
-                } ?> />
-              Yes </label>
-      </div>
-              <div class="radio" style="display:inline-block; margin-left:20px">
-        <label>
               <input type="radio" name="answers[a13][]" id="optionsRadios2"
                        value="No" <?php if (@strpos($values['a13'], "No") !== false) {
                     echo "checked";
                 } ?>>
               No </label>
       </div>
-      <div class="form-group">
-          <label>Please enter notes</label>
+        <div class="form-group">
+          <label>Please capture the name of the helper/carer if applicable</label>
           <br>
-          <input type="text" name="answers[a14]" value="<?php echo @$values['a14'] ?>" class="form-control" placeholder="Add parking details if applicable"/>
-        </div>
-        </div>
-               <div class="question">
-          <label>Are there any issues with stairs/doorways at the Customer's Accommodation?</label><br>
+          <input type="text" name="answers[a14]" value="<?php echo @$values['a14'] ?>" class="form-control" placeholder="Helper/carers persons name"/>
+        </div>      
+              </div>  
+                           
+              <div class="question">
+          <label>Are there any vehicle or parking restrictions at the Customer's Accommodation?</label><br>
           <div class="radio" style="display:inline-block">
         <label>
               <input type="radio" name="answers[a15][]" id="optionsRadios1" data-show-notes="true"
@@ -243,7 +269,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 } ?> />
               Yes </label>
       </div>
-               <div class="radio" style="display:inline-block; margin-left:20px">
+              <div class="radio" style="display:inline-block; margin-left:20px">
         <label>
               <input type="radio" name="answers[a15][]" id="optionsRadios2"
                        value="No" <?php if (@strpos($values['a15'], "No") !== false) {
@@ -254,23 +280,47 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
       <div class="form-group">
           <label>Please enter notes</label>
           <br>
-          <input type="text" name="answers[a16]" value="<?php echo @$values['a16'] ?>" class="form-control" placeholder="Enter access notes here if applicable"/>
+          <input type="text" name="answers[a16]" value="<?php echo @$values['a16'] ?>" class="form-control" placeholder="Add parking details if applicable"/>
+        </div>
+        </div>
+               <div class="question">
+          <label>Are there any issues with stairs/doorways at the Customer's Accommodation?</label><br>
+          <div class="radio" style="display:inline-block">
+        <label>
+              <input type="radio" name="answers[a17][]" id="optionsRadios1" data-show-notes="true"
+                       value="Yes"  <?php if (@strpos($values['a17'], "Yes") !== false) {
+                    echo "checked";
+                } ?> />
+              Yes </label>
+      </div>
+               <div class="radio" style="display:inline-block; margin-left:20px">
+        <label>
+              <input type="radio" name="answers[a17][]" id="optionsRadios2"
+                       value="No" <?php if (@strpos($values['a17'], "No") !== false) {
+                    echo "checked";
+                } ?>>
+              No </label>
+      </div>
+      <div class="form-group">
+          <label>Please enter notes</label>
+          <br>
+          <input type="text" name="answers[a18]" value="<?php echo @$values['a18'] ?>" class="form-control" placeholder="Enter access notes here if applicable"/>
         </div>
         </div>
              <div class="question">
           <label>Confirm there is a power supply and space to set demonstrate and demonstrate the chair(s)?</label><br>
           <div class="radio" style="display:inline-block">
         <label>
-              <input type="radio" name="answers[a17][]" id="optionsRadios1" 
-                       value="Yes"  <?php if (@strpos($values['a17'], "Yes") !== false) {
+              <input type="radio" name="answers[a19][]" id="optionsRadios1" 
+                       value="Yes"  <?php if (@strpos($values['a19'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
               Yes </label>
       </div>
              <div class="radio" style="display:inline-block; margin-left:20px">
         <label>
-              <input type="radio" name="answers[a17][]" id="optionsRadios2" data-show-notes="true"
-                       value="No" <?php if (@strpos($values['a17'], "No") !== false) {
+              <input type="radio" name="answers[a19][]" id="optionsRadios2" data-show-notes="true"
+                       value="No" <?php if (@strpos($values['a19'], "No") !== false) {
                     echo "checked";
                 } ?>>
               No </label>
@@ -278,23 +328,23 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
        <div class="form-group">
           <label>Please enter alternate arrangements</label>
           <br>
-          <input type="text" name="answers[a18]" value="<?php echo @$values['a18'] ?>" class="form-control" placeholder="Enter access power supply notes here if applicable"/>
+          <input type="text" name="answers[a20]" value="<?php echo @$values['a20'] ?>" class="form-control" placeholder="Enter access power supply notes here if applicable"/>
         </div>
         </div>
            <div class="question">
           <label>Confirm that the Home Consultation will take approximately 1 hour</label><br>
           <div class="radio" style="display:inline-block">
         <label>
-              <input type="radio" name="answers[a19][]" id="optionsRadios1" data-show-notes="true"
-                       value="Yes"  <?php if (@strpos($values['a19'], "Yes") !== false) {
+              <input type="radio" name="answers[a21][]" id="optionsRadios1" data-show-notes="true"
+                       value="Yes"  <?php if (@strpos($values['a21'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
               Yes </label>
       </div>
                 <div class="radio" style="display:inline-block; margin-left:20px">
         <label>
-              <input type="radio" name="answers[a19][]" id="optionsRadios2"
-                       value="No" <?php if (@strpos($values['a19'], "No") !== false) {
+              <input type="radio" name="answers[a21][]" id="optionsRadios2"
+                       value="No" <?php if (@strpos($values['a21'], "No") !== false) {
                     echo "checked";
                 } ?>>
               No </label>
@@ -304,16 +354,16 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
           <label>Confirm the home consultant will telephone them the day before the consultation and if known, provide the names of the home consultant and driver?</label><br>
           <div class="radio" style="display:inline-block">
         <label>
-              <input type="radio" name="answers[a20][]" id="optionsRadios1"
-                       value="Yes"  <?php if (@strpos($values['a20'], "Yes") !== false) {
+              <input type="radio" name="answers[a23][]" id="optionsRadios1"
+                       value="Yes"  <?php if (@strpos($values['a22'], "Yes") !== false) {
                     echo "checked";
                 } ?> />
               Yes </label>
       </div>
                <div class="radio" style="display:inline-block; margin-left:20px">
         <label>
-              <input type="radio" name="answers[a20][]" id="optionsRadios2"
-                       value="No" <?php if (@strpos($values['a20'], "No") !== false) {
+              <input type="radio" name="answers[a23][]" id="optionsRadios2"
+                       value="No" <?php if (@strpos($values['a22'], "No") !== false) {
                     echo "checked";
                 } ?>>
               No </label>
@@ -323,15 +373,15 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <div class="form-group">
           <label>Any other information relevant</label>
 <br>
-              <textarea class="form-control" style="height:50px" name="answers[a21][]"><?php echo @$values['a21'] ?></textarea>
+              <textarea class="form-control" style="height:50px" name="answers[a23][]"><?php echo @$values['a23'] ?></textarea>
         </div>
         
     <a href="<?php echo base_url() . 'records/detail/' . $this->uri->segment(4); ?>" class="btn btn-default">Go
         back</a>
     <?php if(@!empty($values['completed_on'])){ ?>
-    <button type="submit" id="save-form" class="btn btn-primary">Save form</button>
+    <button  id="save-form" class="btn btn-primary">Save form</button>
     <?php } else { ?>
-    <button type="submit" id="complete-form" class="btn btn-primary">Save form</button>
+    <button  id="complete-form" class="btn btn-primary">Save form</button>
     <?php } ?>
   </form>
     </div>
@@ -386,24 +436,41 @@ $(this).find('.form-group').hide();
             })
         });
         $(document).on('click', '#save-form', function (e) {
-            console.log($('#form').serialize());
-            e.preventDefault();
+			 e.preventDefault();
+			 if(check_form()){
             $.ajax({
                 type: "POST",
                 data: $('#form').serialize() + '&save=1'
             }).done(function (response) {
                 flashalert.success("Form was saved");
             });
+			} else {
+			flashalert.danger("Please answer all questions");	
+			}
         });
+		function check_form(){
+			var completed = true;
+			$.each($('.question'),function(){
+				if($(this).find('input[type="radio"]:checked').length<1){
+					$(this).css('border','1px solid red');
+				completed = false;	
+				}
+			});
+		return completed;	
+			
+		}
 		$(document).on('click', '#complete-form', function (e) {
-            console.log($('#form').serialize());
-            e.preventDefault();
+			e.preventDefault();
+            if(check_form()){
             $.ajax({
                 type: "POST",
                 data: $('#form').serialize() + '&save=1&complete=1'
             }).done(function (response) {
                 flashalert.success("Form was saved");
             });
+			} else {
+			flashalert.danger("Please answer all questions");	
+			}
         });
 
 

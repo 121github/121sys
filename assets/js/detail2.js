@@ -18,7 +18,7 @@ var record = {
             if ($('[name="call_direction"]').length > 0 && !$('[name="call_direction"]').is(':checked')) {
                 alert("You must set a call direction");
             } else if ($('.outcomepicker').val().length > 0) {
-                if ($('.outcomepicker').val() == "4" && $('.history-panel').find('tbody tr').length > 0) {
+                if ($('.outcomepicker').val() == "4" && $('#history-panel').find('tbody tr').length > 0) {
                     modal.dead_line($(this));
                 } else if ($('.outcomepicker').val() == "120" && $('.contact-panel').find('#map-link').length == 0) {
                     modal.desktop_prequal($(this));
@@ -340,7 +340,10 @@ var record = {
     history_panel: {
         init: function () {
             record.history_panel.load_panel();
-
+ $(document).on('change', '#selectpicker_outcome', function (e) {
+                e.preventDefault();
+                record.history_panel.load_outcome_reasons($(this).val());
+            });
             $(document).on('click', '#show-all-history-btn', function (e) {
                 e.preventDefault();
                 record.history_panel.load_all_history_panel();
@@ -349,19 +352,9 @@ var record = {
                 e.preventDefault();
                 record.history_panel.close_all_history($(this));
             });
-            $(document).on('click', '#edit-history-btn', function (e) {
+            $(document).on('click', '[data-modal="edit-history"]', function (e) {
                 e.preventDefault();
-                record.history_panel.edit_history($(this).attr('item-id'), $(this).attr('item-modal'));
-            });
-            $(document).on("click", "#close-history-btn", function (e) {
-                e.preventDefault();
-                var modal = $(this).attr('item-modal');
-                var panel = (modal == "1" ? '.history-all-panel' : '.history-panel');
-                var content = (modal == "1" ? '.history-all-content' : '.panel-content');
-                $(panel).find('.glyphicon-remove').removeClass('glyphicon-remove');
-                $(panel).find('form').fadeOut(function () {
-                    $(panel).find(content).fadeIn()
-                });
+                record.history_panel.edit_history($(this).attr('data-id'), $(this).attr('item-modal'));
             });
             $(document).on("click", "#save-history-btn", function (e) {
                 e.preventDefault();
@@ -381,6 +374,7 @@ var record = {
             });
         },
         load_panel: function () {
+			$history_panel = $('#history-panel');
             $.ajax({
                 url: helper.baseUrl + 'ajax/get_history',
                 type: "POST",
@@ -391,10 +385,8 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    $('.history-panel').find('.panel-content').empty();
-                    var $body = "";
-                    var $edit_btn = "";
-                    var $delete_btn = "";
+                    $history_panel.find('.panel-body').empty();
+                    var history_rows = "";
                     if (response.data.length) {
                         //if any outcomes in the history have the "keep" flag the user will keep ownership. This stops answermachines from being taken out of the users pot when they have had a call back Dm previously
                         if (response.keep) {
@@ -402,25 +394,33 @@ var record = {
                         }
                         //Use the k var only to know if there are more than x records
                         var k = 0;
+						var edit_history="",call_direction_header="",call_direction = "";
                         $.each(response.data, function (i, val) {
+							
+							if (helper.permissions['set call direction'] > 0) {
+							 call_direction_header = "<th>Direction</th>";
+							 if(val.call_direction=="Inbound"){  var direction = '<span class="fa fa-sign-in"></span>'; } else {  var direction = '<span class="fa fa-sign-out"></span>'; }
+							 call_direction = "<td>"+direction+"</td>";
+							}
                             if (helper.permissions['edit history'] > 0) {
-                                $edit_btn = '<span class="glyphicon glyphicon-pencil pointer pull-right" id="edit-history-btn" item-modal="0" item-id="' + val.history_id + '"></span>';
+                               edit_history = 'class="pointer" data-modal="edit-history" data-id="'+val.history_id+'"';
                             }
                             if (helper.permissions['delete history'] > 0) {
-                                $delete_btn = '<span class="glyphicon glyphicon-trash pointer pull-right marl" data-target="#modal" id="del-history-btn" item-modal="0" item-id="' + val.history_id + '" title="Delete history"></span>';
+                               
                             }
                             if (k <= record.limit - 1) {
-                                $body += '<tr><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.outcome_reason + ' ' + val.comments + '</td><td>' + $edit_btn + '</td><td>' + $delete_btn + '</td></tr>';
+                                history_rows += '<tr '+edit_history+'><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.outcome_reason + ' ' + val.comments + '</td>' + call_direction + '</tr>';
                             }
                             k++;
                         });
                         if (k > record.limit - 1) {
-                            $body += '<tr><td colspan="6"><a href="#"><span class="btn btn-info btn-sm pull-right"  id="show-all-history-btn">Show All</span></a></td></tr>';
+							 $history_panel.find('.panel-heading').append('<span class="btn btn-info btn-xs pull-right" id="show-all-history-btn">Show All</span>');
+                       
                         }
-                        $('.history-panel').find('.panel-content').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th><th colspan="2"></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                       $history_panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-hover table-condensed"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th>'+call_direction_header+'</tr></thead><tbody>' + history_rows + '</tbody></table></div>');
 
                     } else {
-                        $('.history-panel').find('.panel-content').append('<p>This record has no history information yet</p>');
+                        $history_panel.find('.panel-body').append('<p>This record has no history information yet</p>');
                     }
                 }
                 ;
@@ -461,7 +461,7 @@ var record = {
                 }
             });
         },
-        edit_history: function (id, modal) {
+        edit_history: function (id) {
             $.ajax({
                 url: helper.baseUrl + "ajax/get_history_by_id",
                 type: "POST",
@@ -473,7 +473,7 @@ var record = {
                 record.history_panel.load_history_form(response.data, response.outcomes, response.progress_list, id, modal);
             });
         },
-        load_history_form: function (data, outcomes, progress_list, id, modal) {
+        load_history_form: function (data, outcomes, progress_list, id) {
             var form = '<form>';
             form += "<input type='hidden' name='history_id' value='" + id + "'/>";
 
@@ -488,7 +488,7 @@ var record = {
                 }
                 select_outcome += "<option " + selected + " value='" + outcome['id'] + "'>" + outcome['name'] + "</option>";
             });
-
+			
             $.each(progress_list, function (key, progress) {
                 var selected = "";
                 if (data.progress == progress['name']) {
@@ -496,24 +496,39 @@ var record = {
                 }
                 select_progress += "<option " + selected + " value='" + progress['id'] + "'>" + progress['name'] + "</option>";
             });
-            date_input = "<div class='form-group input-group-sm'><p>" + data.contact + "</p></div>";
-            user_input = "<div class='form-group input-group-sm'><p>" + data.name + "</p></div>";
-            outcome_input = (data.outcome_id) ? "<div class='form-group input-group-sm'><p>Outcome</p><select name='outcome_id' id='selectpicker_outcome' class='selectpicker_outcome'  " + disabled + ">" + select_outcome + "</select></div>" : "";
+
+            date_input = "<div class='form-group  input-group-sm relative'><label>Updated on</label><input type='text' value = '"+data.contact+"' name='contact' class='form-control datetime' /></div>";
+            user_input = "<div class='form-group'><label>Updated by</label><p>" + data.name + "</p></div>";
+            outcome_input = "<div class='form-group'><label>Outcome</label><br><select name='outcome_id' id='selectpicker_outcome' class='selectpicker_outcome'  " + disabled + ">" + select_outcome + "</select></div>";
+			outcome_reason_input ="<div class='form-group'><label>Outcome Reason</label><br><select name='outcome_reason_id' id='selectpicker_outcome_reason' class='selectpicker_outcome_reason' disabled><option value=''>Loading reasons...</option></select></div>";
+			   if (helper.permissions['set call direction'] > 0) {
+				   var outbound_selected = data.call_direction=="0"?"selected":""
+				   var inbound_selected = data.call_direction=="1"?"selected":""
+			direction_input ="<div class='form-group'><label>Call direction</label><br><select name='call_direction' id='selectpicker_direction' class='selectpicker_call_direction'><option value='1' "+inbound_selected+">Inbound</option><option value='0' "+outbound_selected+">Outbound</option></select></div>";
+			   } else {
+			  direction_input = ""; 
+			   }
             progress_input = (data.progress_id) ? "<div class='form-group input-group-sm'><p>Progress</p><select name='progress_id' id='selectpicker_progress' class='selectpicker_progress'  " + disabled + ">" + select_progress + "</select></div>" : "";
-            comments_input = "<div class='form-group input-group-sm'><p>Comments</p><textarea class='form-control ' placeholder='Enter the comments here' rows='3' name='comments'>" + data.comments + "</textarea></div>";
+            comments_input = "<div class='form-group input-group-sm'><label>Comments</label><textarea class='form-control ' placeholder='Enter the comments here' rows='3' name='comments'>" + data.comments + "</textarea></div>";
 
             form += date_input +
                 user_input +
                 outcome_input +
+				outcome_reason_input +
+				direction_input +
                 progress_input +
                 comments_input;
 
             form += '</form>';
             $form = $(form);
-            $form.find('select').selectpicker();
+            $form.find('#selectpicker_outcome,#selectpicker_direction').selectpicker();
+			$form.find('.datetime').datetimepicker({
+				format: 'DD/MM/YYYY HH:mm',
+				showClear:true,
+				sideBySide:true});
 
-            if (modal == "0") {
-                var mheader = "Edit History", mbody = "<div id='edit-history-container'></div><div id='all-history-container'></div>", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button>';
+            if (!$('#modal').hasClass('in')) {
+                var mheader = "Edit History", mbody = "<div id='edit-history-container'></div><div id='all-history-container'></div>", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button> <button class="btn btn-danger pull-right marl" item-id="'+id+'" id="del-history-btn">Delete</button> ';
                 modals.load_modal(mheader, mbody, mfooter);
             } else {
                 var mfooter = "<button class='btn btn-primary pull-right marl' id='save-history-btn'>Save</button> <button class='btn btn-default pull-left' id='edit-history-back'>Back</button>";
@@ -522,8 +537,34 @@ var record = {
             $('#all-history-container').fadeOut(function () {
                 $('#edit-history-container').html($form).fadeIn();
                 modal_body.css('overflow', 'visible');
+				
+				record.history_panel.load_outcome_reasons(data.outcome_id,data.outcome_reason_id);
             });
+			
         },
+		load_outcome_reasons:function(outcome_id,selected){
+			$.ajax({
+                url: helper.baseUrl + "ajax/get_outcome_reasons",
+                type: "POST",
+                dataType: "JSON",
+                data: {outcome_id:outcome_id,urn:record.urn }
+            }).done(function (response) {
+				var new_reasons = "";
+				if(response.data.length>0){
+              $.each(response.data,function(i,v){
+				  var is_reason = "";
+				  if(v.outcome_reason_id = selected){
+					  is_reason = "selected";
+				  }
+				new_reasons += "<option value='"+v.id+"' "+is_reason+">"+v.name+"</option>";
+			  });
+			   $('#selectpicker_outcome_reason').html(new_reasons).prop('disabled',false).selectpicker('refresh');
+				} else {
+			   $('#selectpicker_outcome_reason').html('<option value="">Not applicable</option>').prop('disabled',true).selectpicker('refresh');	
+				}
+            });
+			
+		},
         update_history: function (modal) {
             $.ajax({
                 url: helper.baseUrl + "ajax/update_history",

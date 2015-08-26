@@ -17,11 +17,12 @@ class Appointments_model extends CI_Model
 		$where= "";
 		if(!empty($user_id)){
 		$where .= " and user_id = '$user_id' ";
+		$holidays_where = $where;
 		}
 		if($campaign_id){
 		$where .= " and campaign_id = '$campaign_id' ";
 		}
-		//first configure the default array
+		//first configure the default array for all days
 		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null  $where ";
 		$max = array();
 		$default = $this->db->query($qry)->result_array();
@@ -34,7 +35,7 @@ class Appointments_model extends CI_Model
 			$daycheck = "select slot_assignment_id from appointment_slot_assignment where appointment_slot_id = ".$row['appointment_slot_id']." and user_id = ".$row['user_id']." and day = ".$day_num;
 			
 			if(!$this->db->query($daycheck)->num_rows()){
-			$timeslots[$row['appointment_slot_id']] = array("slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
+			$timeslots[$row['appointment_slot_id']] = array("slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end'],"reason"=>"");
 			$max[$day_num][$row['user_id']]['default'] = $row['max_apps'];
 			unset($row['max_apps']);
 			$thresholds[$day][$row['appointment_slot_id']] = $row;
@@ -47,9 +48,8 @@ class Appointments_model extends CI_Model
 			}
 			}
 		}
-		//now configure the specified daily slots
+		//now find the specified daily slots and overwrite the default array
 		$max = array();
-		
 		foreach($days as $daynum => $day){
 		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` = $daynum $where ";
 		$daily_slots = $this->db->query($qry)->result_array();
@@ -63,9 +63,34 @@ class Appointments_model extends CI_Model
 			}
 		$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
 		}
-for($i = 0; $i < 30; $i++){
-    $slots[date("D jS M", strtotime('+'. $i .' days'))] = $thresholds[date("l", strtotime('+'. $i .' days'))];
+		
+/* get user holidays to remove from slots */
+$holidays = array();
+if($user_id){
+		$get_holidays = "select reason,block_day from appointment_rules join appointment_rule_reasons using(reason_id) where 1 "; 
+		$get_holidays .= $holidays_where;
+
+		foreach($this->db->query($get_holidays)->result_array() as $k=>$row){
+			$holidays[$row['block_day']] = array("reason"=>$row['reason']);
+		}
 }
+/* end holidays */
+
+/* now push all the data into each day for the next 30 days and if there is a holiday for the day we remove the slots and add the reason */
+
+for($i = 0; $i < 30; $i++){
+	$date = date("Y-m-d", strtotime('+'. $i .' days'));
+	$this_day =  $thresholds[date("l", strtotime('+'. $i .' days'))];
+	if(array_key_exists($date,$holidays)){
+		foreach($this_day as $slot => $details){
+			$this_day[$slot]['max_apps']=0;
+				@$this_day[$slot]['reason']=$holidays[$date]['reason'];
+		}
+	}
+	
+    $slots[date("D jS M", strtotime('+'. $i .' days'))]  =$this_day;
+}
+/* now get the appointments in each slot for each day and push them into the array */
 
 $join_locations = "";
 $distance_select = "";
@@ -100,13 +125,19 @@ $distance_order = "";
 			return array("error"=>"There was an error with the postcode");	
 		}
 		}
+		
+
+		
+		
 foreach($timeslots as $id=>$timeslot){
 		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where `status` = 1  and time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where group by date(`start`) $distance_order";
 		$results = $this->db->query($qry)->result_array();
+		
+		
+		
+		
 		$i=0;
 		foreach($results as $row){
-			if($row['start']=="2015-08-24"){
-			}
 			$date = date("D jS M", strtotime($row['start']));
 			@$slots[$date][$id]['sqldate']=$row['start'];
 			@$slots[$date][$id]['apps']=$row['count'];
@@ -119,6 +150,7 @@ foreach($timeslots as $id=>$timeslot){
 			$i++;
 		}
 }
+
 		return array("timeslots"=>$timeslots,"apps"=>$slots);
 		
 		

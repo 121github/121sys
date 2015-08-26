@@ -895,10 +895,25 @@ $d = preg_replace('/[0-9]/','',$data['description']);
         }
     }
     
+	public function get_outcome_reasons(){
+		  if ($this->input->is_ajax_request()) {
+            $outcome_id = intval($this->input->post('outcome_id'));
+            $urn = intval($this->input->post('urn'));
+			$campaign = $this->Records_model->get_campaign_from_urn($urn);
+            $outcome_reasons = $this->Form_model->get_outcome_reasons($campaign,$outcome_id);
+            echo json_encode(array(
+                "success" => true,
+                "data" => $outcome_reasons,
+            ));
+        }
+		
+	}
+	
     public function update_history()
     {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
+			$form['contact'] = to_mysql_datetime($form['contact']);
             if ($this->Records_model->save_history($form)) {
                 echo json_encode(array(
                     "success" => true,

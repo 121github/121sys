@@ -242,6 +242,11 @@ class Form_model extends CI_Model
         $qry = "select outcome_id id,outcome name from outcomes left join outcomes_to_campaigns using(outcome_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by outcome_id order by outcome ";
         return $this->db->query($qry)->result_array();
     }
+	   public function get_outcome_reasons($campaign_id,$outcome)
+    {
+        $qry = "select outcome_reason_id id,outcome_reason name from outcome_reasons join outcome_reason_campaigns using(outcome_reason_id) where outcome_id = '$outcome' and campaign_id = '$campaign_id' and campaign_id in({$_SESSION['campaign_access']['list']}) order by outcome_reason ";
+        return $this->db->query($qry)->result_array();
+    }
     public function get_progress_descriptions()
     {
         $qry = "select progress_id id,description name from progress_description";

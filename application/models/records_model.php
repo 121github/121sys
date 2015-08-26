@@ -785,16 +785,17 @@ class Records_model extends CI_Model
     {
         $limit_ = ($limit) ? "limit " . $offset . "," . $limit : '';
 
-        $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null,if(pd.description is null,'No Action Required',pd.description),if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome)) as outcome,if(outcome_reason is null,'',outcome_reason) outcome_reason , history.history_id, if(comments is null,'',comments) comments, keep_record,u.user_id from history left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) left join progress_description pd using(progress_id) left join users u using(user_id) left join cross_transfers on cross_transfers.history_id = history.history_id ";
+        $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null,if(pd.description is null,'No Action Required',pd.description),if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome)) as outcome,if(outcome_reason is null,'',outcome_reason) outcome_reason , history.history_id, if(comments is null,'',comments) comments, keep_record,u.user_id,if(call_direction=1,'Inbound','Outbound') call_direction from history left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) left join progress_description pd using(progress_id) left join users u using(user_id) left join cross_transfers on cross_transfers.history_id = history.history_id ";
         $qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id where urn = '$urn' order by history_id desc " . $limit_;
         return $this->db->query($qry)->result_array();
     }
 
     public function get_history_by_id($history_id)
     {
-        $qry = "select history.contact, history.history_id, history.outcome_id, history.progress_id, if(history.comments is null,'',history.comments) comments, outcomes.outcome, pd.description as progress, u.name
+        $qry = "select date_format(history.contact,'%d/%m/%Y %H:%i') contact, history.history_id, history.outcome_id, history.progress_id, if(history.comments is null,'',history.comments) comments, outcomes.outcome, pd.description as progress, u.name, call_direction, outcome_reason_id, outcome_reason
                 from history
                 left join outcomes using(outcome_id)
+				left join outcome_reasons using(outcome_reason_id)
                 left join progress_description pd using(progress_id)
                 left join users u using(user_id)";
         $qry .= " where history.history_id = '$history_id'";

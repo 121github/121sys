@@ -1,3 +1,9 @@
+.panel-body { overflow:hidden }
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
+}
+.purple { background:#C4C4FF }
+
 .relative { position:relative !important }
 .gm-style .gm-style-iw, .gm-style .gm-style-iw a, .gm-style .gm-style-iw span, .gm-style .gm-style-iw label, .gm-style .gm-style-iw div {
   overflow:visible !important;

@@ -1,9 +1,6 @@
-    <div class="panel panel-primary">
+    <div class="panel panel-primary" id="history-panel">
         <div class="panel-heading">History</div>
-        <div class="panel-body history-panel">
-            <?php $this->view('forms/edit_history_record.php'); ?>
-            <div class="panel-content">
+        <div class="panel-body">
                 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
-            </div>
         </div>
     </div>

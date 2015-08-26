@@ -8,7 +8,9 @@ var campaign_functions = {
             $('[name="title"]').val(title);
         });
 
-$(document).on('click','.show-apps',function(e){
+$(document).on('mouseover','.show-apps',function(e){
+var target = $(this);
+if(target.attr('data-toggle')!=="tooltip"){
 var user_id =$(this).attr('data-user');
 var date =$(this).attr('data-date');
 $.ajax({ url:helper.baseUrl+'appointments/get_apps',
@@ -19,12 +21,13 @@ data:{ user_id:user_id,date:date }
 	if(response.data.length>0){
 	var apps="";
 	$.each(response.data,function(i,row){
-		apps+= Number(i+1)+'. '+row.title+ ': '+row.start+' until '+row.end+'\n';
+		apps+= Number(i+1)+'. '+row.title+ ': '+row.start+' until '+row.end+'<br>';
 	});
-	alert(apps);
-	} 
-		
+	target.attr('data-toggle','tooltip').attr('data-placement','top').attr('title',apps).attr('data-html','true').tooltip();
+	target.trigger('mouseout').trigger('mouseover');
+	} 	
 });
+}
 });
 
         campaign_functions.get_branch_info();
@@ -207,13 +210,16 @@ var quick_planner = {
             if (typeof waypoint.slot2.datetime !== "undefined") {
                 var time = waypoint.slot2.datetime;
             }
+var empty_tooltip = slots.apps=="0"?" data-toggle='tooltip' data-html='true' data-placement='top' title='No appointments booked'":"";
+var tooltip = slots.reason?" data-toggle='tooltip' data-html='true' data-placement='top' title='Not available: "+slots.reason+"'":empty_tooltip;
+var holiday = slots.reason?"class='purple'":"";
+color = slots.apps>=slots.max_apps&&slots.max_apps>0?"class='danger'":holiday;
 
-            table += "<tr><td>" + waypoint.start.uk_date + "</td><td class='pointer show-apps' data-date='" + date + "' data-user='"+simulation.user_id+"'>" + slots.apps + "/" + slots.max_apps + "</td><td>" + stats[5].distance.text + "</td><td>" + stats[5].duration.text + "</td><td><button class='btn btn-default btn-xs simulate' data-date='" + date + "' data-time='" + time + "' data-uk-date='" + waypoint.start.uk_date + "'>Simulate</button></td></tr>";
-
+            table += "<tr "+color+"><td>" + waypoint.start.uk_date + "</td><td><div class='pointer show-apps' data-date='" + date + "' data-user='"+simulation.user_id+"' "+tooltip+" >" + slots.apps + "/" + slots.max_apps + "</div></td><td>" + stats[5].distance.text + "</td><td>" + stats[5].duration.text + "</td><td><button class='btn btn-default btn-xs simulate' data-date='" + date + "' data-time='" + time + "' data-uk-date='" + waypoint.start.uk_date + "'>Simulate</button></td></tr>";
         });
         table += "</tbody></table></div>";
         $('#quick-planner').html(table);
-
+		$('#quick-planner .show-apps[data-toggle="tooltip"]').tooltip();
 
     },
     fill_width_planner: function (data) {
