@@ -192,7 +192,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                    placeholder="Enter the reason for the home consultation" value="<?php echo @$values['a6'] ?>"/>
         </div>
         <div class="question">
-            <label>Does customer need assistance to stand/transfer independantly?</label><br>
+            <label>Does customer need assistance to stand/transfer independently?</label><br>
 
             <div class="radio" style="display:inline-block">
                 <label>
