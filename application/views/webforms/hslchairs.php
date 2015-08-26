@@ -55,26 +55,26 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <div>
             <label>Please enter the origin/source of the lead</label>
             <br>
-            <select name="answers[a24]" class="selectpicker" data-width="100%"
+            <select name="answers[a25]" class="selectpicker" data-width="100%"
                     data-size="5">
                 <option value=''>--Please select--</option>
-                <option <?php if (@strpos($values['a24'], "Loop phone") !== false) {
+                <option <?php if (@strpos($values['a25'], "Loop phone") !== false) {
                     echo "selected";
                 } ?> value='Loop phone'>Loop phone
                 </option>
-                <option <?php if (@strpos($values['a24'], "Web") !== false) {
+                <option <?php if (@strpos($values['a25'], "Web") !== false) {
                     echo "selected";
                 } ?> value='Web'>Web
                 </option>
-                <option <?php if (@strpos($values['a24'], "Direct") !== false) {
+                <option <?php if (@strpos($values['a25'], "Direct") !== false) {
                     echo "selected";
                 } ?> value='Direct'>Direct
                 </option>
-                <option <?php if (@strpos($values['a24'], "Customer Service") !== false) {
+                <option <?php if (@strpos($values['a25'], "Customer Service") !== false) {
                     echo "selected";
                 } ?> value='Customer Service'>Customer Service
                 </option>
-                <option <?php if (@strpos($values['a24'], "Other") !== false) {
+                <option <?php if (@strpos($values['a25'], "Other") !== false) {
                     echo "selected";
                 } ?> value='Other'>Other
                 </option>
@@ -85,49 +85,49 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <div>
             <label>Where did you hear about us?</label>
             <br>
-            <select name="answers[a23][]" class="selectpicker" data-width="100%" multiple
+            <select name="answers[a24][]" class="selectpicker" data-width="100%" multiple
                     data-size="5">
-                <option <?php if (@strpos($values['a23'], "Mail / Leaflet") !== false) {
+                <option <?php if (@strpos($values['a24'], "Mail / Leaflet") !== false) {
                     echo "selected";
                 } ?>value='Mail / Leaflet'>Mail / Leaflet
                 </option>
-                <option <?php if (@strpos($values['a23'], "Referral") !== false) {
+                <option <?php if (@strpos($values['a24'], "Referral") !== false) {
                     echo "selected";
                 } ?> value='Referral'>Referral
                 </option>
-                <option <?php if (@strpos($values['a23'], "Newspaper") !== false) {
+                <option <?php if (@strpos($values['a24'], "Newspaper") !== false) {
                     echo "selected";
                 } ?> value='Newspaper'>Newspaper
                 </option>
-                <option <?php if (@strpos($values['a23'], "Website") !== false) {
+                <option <?php if (@strpos($values['a24'], "Website") !== false) {
                     echo "selected";
                 } ?> value='Website'>Website
                 </option>
-                <option <?php if (@strpos($values['a23'], "Radio") !== false) {
+                <option <?php if (@strpos($values['a24'], "Radio") !== false) {
                     echo "selected";
                 } ?> value='Radio'>Radio
                 </option>
-                <option <?php if (@strpos($values['a23'], "Facebook") !== false) {
+                <option <?php if (@strpos($values['a24'], "Facebook") !== false) {
                     echo "selected";
                 } ?> value='Facebook'>Facebook
                 </option>
-                <option <?php if (@strpos($values['a23'], "Family") !== false) {
+                <option <?php if (@strpos($values['a24'], "Family") !== false) {
                     echo "selected";
                 } ?> value='Family'>Family
                 </option>
-                <option <?php if (@strpos($values['a23'], "Friend") !== false) {
+                <option <?php if (@strpos($values['a24'], "Friend") !== false) {
                     echo "selected";
                 } ?> value='Friend'>Friend
                 </option>
-                <option <?php if (@strpos($values['a23'], "Neighbour") !== false) {
+                <option <?php if (@strpos($values['a24'], "Neighbour") !== false) {
                     echo "selected";
                 } ?> value='Neighbour'>Neighbour
                 </option>
-                <option <?php if (@strpos($values['a23'], "TV") !== false) {
+                <option <?php if (@strpos($values['a24'], "TV") !== false) {
                     echo "selected";
                 } ?> value='TV'>TV
                 </option>
-                <option <?php if (@strpos($values['a23'], "Door") !== false) {
+                <option <?php if (@strpos($values['a24'], "Door") !== false) {
                     echo "selected";
                 } ?> value='Door'>Door
                 </option>
