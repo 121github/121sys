@@ -20,7 +20,8 @@ class PrepareHslDeployment extends AbstractTask
             'setfacl -dR -m u:www-data:rwx -m u:\`whoami\`:rwx datafiles',
             'find . -type f -exec chmod 664 {} \;',
             'find . -type d -exec chmod 775 {} \;',
-            'chmod -R 777 importcsv.sh'
+            'chmod -R 777 importcsv.sh',
+            'mv upload/function_triggers/hsl.js upload/function_triggers/hsl.js'
         );
 
         $command = implode(" && ", $commandList);
