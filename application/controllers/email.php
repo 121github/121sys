@@ -1230,8 +1230,8 @@ END:VCALENDAR';
 
             $start_date = $appointment->start;
             $end_date = $appointment->end;
-            $address = $appointment->address;
-            $postcode = $appointment->postcode;
+
+            $address = (isset($_SESSION['cover_letter_address'])?$_SESSION['cover_letter_address']:$appointment->address);
 
             //Get contact info
             $contact = $this->Contacts_model->get_contact($appointment->contact_id);
@@ -1348,11 +1348,11 @@ END:VCALENDAR';
         //HEADER
         $header = $section->addHeader();
         $header->addText(htmlspecialchars($reference), array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true));
-        $header->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>100, 'height'=>100, 'align'=>'right'));
+        //$header->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>100, 'height'=>100, 'align'=>'right'));
 
         //FOOTER
-        $footer = $section->addFooter();
-        $footer->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>30, 'height'=>30, 'align'=>'right'));
+        //$footer = $section->addFooter();
+        //$footer->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>30, 'height'=>30, 'align'=>'right'));
 
         //CONTACT DETAILS
         // Adding Contact details font
@@ -1366,9 +1366,9 @@ END:VCALENDAR';
         $section->addText(htmlspecialchars($fullname), "ContactDetailsStyle");
         $addresses = explode(',',$address);
         foreach($addresses as  $address) {
-            $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle");
+            $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle", array("spaceAfter" => 0.3));
         }
-        $section->addTextBreak(2, "ContactDetailsStyle");
+        $section->addTextBreak(1, "ContactDetailsStyle");
         $section->addText(htmlspecialchars($today_day), "ContactDetailsStyle");
         $section->addTextBreak(1, "ContactDetailsStyle");
         $section->addText(htmlspecialchars('Dear '.$fullname), "ContactDetailsStyle");
@@ -1402,7 +1402,7 @@ END:VCALENDAR';
         $section->addText(htmlspecialchars('01924 486900.'),array('name' => 'Tahoma', 'size' => 10, 'bold' => true));
         $section->addTextBreak(1);
 
-        $section->addText(htmlspecialchars('Yours sincerely'),array('name' => 'Tahoma', 'size' => 10));
+        $section->addText(htmlspecialchars('Yours sincerely,'),array('name' => 'Tahoma', 'size' => 10));
         $section->addTextBreak(4);
 
         $section->addText(htmlspecialchars('Home Consultation Service Team'),array('name' => 'Tahoma', 'size' => 10));
