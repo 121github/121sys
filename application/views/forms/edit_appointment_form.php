@@ -87,10 +87,10 @@
                         data-width="100%">
                     <?php foreach ($addresses as $address):
                         $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
-                        $add1 = (isset($address['add1']) ? $address['add1'] : "");
-                        $add2 = (isset($address['add2']) ? ", ".$address['add2'] : "");
-                        $add3 = (isset($address['add3']) ? ", ".$address['add3'] : "");
-                        $county = (isset($address['county'])?", ".$address['county']:"");
+                        $add1 = (isset($address['add1']) && !empty($address['add1']) ? $address['add1'] : "");
+                        $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", ".$address['add2'] : "");
+                        $add3 = (isset($address['add3']) && !empty($address['add3']) ? ", ".$address['add3'] : "");
+                        $county = (isset($address['county']) && !empty($address['county']) ? ", ".$address['county']:"");
                         $add = $add1.$add2.$add3.$county;
                         $add .= (!empty($address['postcode']) ? ", " . $address['postcode'] : " - This address has no postcode!");
                         ?>
