@@ -1,6 +1,12 @@
 <?php if (in_array("admin menu", $_SESSION['permissions'])) { ?>
                         <li><a href="#admin">Admin</a>
                             <ul id="admin">
+                            
+                            <?php if($_SESSION['session_name']=="121sys_prosales"){ ?>
+								   <li>
+                                            <a href="<?php echo base_url() ?>data/clear_records">Delete demo data</a></li>
+							<?php } ?>
+                            
                                 <?php if (in_array("system menu", $_SESSION['permissions'])) { ?>
                                     <?php if (in_array("edit templates", $_SESSION['permissions'])) { ?>
                                         <li <?php echo @($page == 'bulk-email' ? "class='Selected'" : "") ?>>

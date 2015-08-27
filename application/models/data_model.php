@@ -7,6 +7,28 @@ class Data_model extends CI_Model
     {
         parent::__construct();
     }
+	
+	public function clear_records(){
+		  $this->db->query("SET FOREIGN_KEY_CHECKS = 0");
+$this->db->query("TRUNCATE appointments");
+$this->db->query("truncate appointment_attendees");
+$this->db->query("truncate record_planner");
+$this->db->query("truncate record_planner_route");
+$this->db->query("truncate ownership");
+$this->db->query("truncate contact_addresses");
+$this->db->query("truncate contact_telephone");
+$this->db->query("truncate contacts");
+$this->db->query("truncate company_addresses");
+$this->db->query("truncate company_telephone");
+$this->db->query("truncate companies");
+$this->db->query("truncate webform_answers");
+$this->db->query("truncate record_details");
+$this->db->query("truncate record_planner_route");
+$this->db->query("truncate record_planner");
+$this->db->query("truncate records");
+$this->db->query("SET FOREIGN_KEY_CHECKS = 1");
+	}
+	
     public function get_custom_fields($campaign)
     {
         $this->db->where("campaign_id", $campaign);

@@ -15,6 +15,18 @@ $this->_campaigns = campaign_access_dropdown();
         $this->load->model('Contacts_model');
         $this->load->model('Records_model');
     }
+	
+	function clear_records(){
+	if($_SESSION['role']=="1"&&$_SESSION['session_name']=="121sys_prosales"){
+		$response = $this->Data_model->clear_data();
+		if($response){
+		echo "Demo data has been deleted :)";
+		} else {
+		echo "There was an error deleting the demo data :(";	
+		}
+	}	
+	}
+	
     //this loads the data management view
     public function index()
     {
