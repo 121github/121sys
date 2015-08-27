@@ -77,8 +77,18 @@ var campaign_functions = {
         campaign_functions.set_appointment_start(start);
         campaign_functions.set_appointment_attendee(attendee);
         $('[name="title"]').val("Home Consultancy");
+		
+		//we need to insert a drop down of contact addresses for the cover letter address
+		campaign_functions.hsl_coverletter_address()
 
     },
+	hsl_coverletter_address:function(){
+		$options = $('#addresspicker').html();
+	$cover_letter_address = "<div class='row'><div class='col-lg-12'><div class='form-group input-group-sm'><p>Please select the recipient address for the appointment confirmation letter</p><select id='cl_addresspicker'>"+$options+"</select></div></div></div>";
+		
+		$('#appointment-form').append($cover_letter_address);
+		$('#appointment-form').find('#cl_addresspicker').selectpicker();
+	},
     set_appointment_attendee: function (attendee) {
         $('.attendeepicker').selectpicker('val', [attendee]);
     },
