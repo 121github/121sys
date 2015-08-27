@@ -74,20 +74,25 @@ var campaign_functions = {
         $('input[name="linkedin"]').closest('.form-group').hide();
     },
     appointment_setup: function (start, attendee) {
+		campaign_functions.hsl_coverletter_address()
         campaign_functions.set_appointment_start(start);
         campaign_functions.set_appointment_attendee(attendee);
         $('[name="title"]').val("Home Consultancy");
-		
-		//we need to insert a drop down of contact addresses for the cover letter address
-		campaign_functions.hsl_coverletter_address()
-
     },
 	hsl_coverletter_address:function(){
 		$options = $('#addresspicker').html();
-	$cover_letter_address = "<div class='row'><div class='col-lg-12'><div class='form-group input-group-sm'><p>Please select the recipient address for the appointment confirmation letter</p><select id='cl_addresspicker'>"+$options+"</select></div></div></div>";
+	$cover_letter_address = $("<div class='form-group'><p>Please select the recipient address for the appointment confirmation letter</p><select data-width='100%' id='cl_addresspicker'>"+$options+"</select></div>");
 		
-		$('#appointment-form').append($cover_letter_address);
+		$cover_letter_address.insertBefore($('#select-appointment-address'));
 		$('#appointment-form').find('#cl_addresspicker').selectpicker();
+		
+		$(document).on('change','#cl_addresspicker',function(){
+			$.ajax({ url:helper.baseUrl+'ajax/add_cover_letter_address',
+			data:{ coverletter_address : $(this).val() },
+			dataType:"JSON",
+			type:"POST"
+			})
+		});
 	},
     set_appointment_attendee: function (attendee) {
         $('.attendeepicker').selectpicker('val', [attendee]);
@@ -95,7 +100,6 @@ var campaign_functions = {
     set_appointment_start: function (start) {
         var m = moment(start, "YYYY-MM-DD HH:mm");
         $('.startpicker').data("DateTimePicker").date(m);
-        $('.endpicker').data("DateTimePicker").minDate(m);
         $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
     },
     get_branch_info: function (id) {

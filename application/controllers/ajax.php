@@ -22,8 +22,12 @@ class Ajax extends CI_Controller
 		$this->load->helper('misc');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
-
-
+//this is only for hsl we should move it somewhere nice when we can
+	public function add_cover_letter_address(){
+	$_SESSION['cover_letter_address'] = 	$this->input->post('coverletter_address');
+		
+	}
+	
 	public function update_branch_locations(){
 	$this->load->model('Planner_model');
 	foreach($this->db->query("select branch_id,postcode from branch_addresses")->result_array() as $row){
