@@ -86,7 +86,10 @@ switch ($domain) {
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_demo';
         break;
-
+    case 'pro.':
+        define('ENVIRONMENT', 'production');
+        $session_name = '121sys_prosales';
+        break;
     default:
         define('ENVIRONMENT', 'development');
         $session_name = '121sys_dev';
