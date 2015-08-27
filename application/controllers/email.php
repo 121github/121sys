@@ -1230,24 +1230,24 @@ END:VCALENDAR';
 
             $start_date = $appointment->start;
             $end_date = $appointment->end;
-            $address = $appointment->address;
-            $postcode = $appointment->postcode;
+
+            $address = (isset($_SESSION['cover_letter_address'])?$_SESSION['cover_letter_address']:$appointment->address);
 
             //Get contact info
             $contact = $this->Contacts_model->get_contact($appointment->contact_id);
             $fullname = (isset($contact['general']['fullname'])?$contact['general']['fullname']:'');
-            $fullname = explode(" ",$fullname);
-            $name = (isset($contact['general']['firstname'])?$contact['general']['firstname']:$fullname[0]);
-            $surname = (isset($contact['general']['lastname'])?$contact['general']['lastname']:$fullname[1]);
-            $title = null;
-
-            foreach($fullname as $value) {
-                if (in_array($value,array("Mr", "Miss", "Mrs", "Ms", "Dr", "Sr"))) {
-                    $title = $value;
-                    $name = (isset($contact['general']['firstname'])?$contact['general']['firstname']:$fullname[1]);
-                    $surname = (isset($contact['general']['lastname'])?$contact['general']['lastname']:$fullname[2]);
-                }
-            }
+//            $fullname = explode(" ",$fullname);
+//            $name = (isset($contact['general']['firstname'])?       $contact['general']['firstname']:$fullname[0]);
+//            $surname = (isset($contact['general']['lastname'])?$contact['general']['lastname']:$fullname[1]);
+//            $title = null;
+//
+//            foreach($fullname as $value) {
+//                if (in_array($value,array("Mr", "Miss", "Mrs", "Ms", "Dr", "Sr"))) {
+//                    $title = $value;
+//                    $name = (isset($contact['general']['firstname'])?$contact['general']['firstname']:$fullname[1]);
+//                    $surname = (isset($contact['general']['lastname'])?$contact['general']['lastname']:$fullname[2]);
+//                }
+//            }
 
             $today_date = new \DateTime('now');
             $today = $today_date->format("YmdHis");
@@ -1259,7 +1259,8 @@ END:VCALENDAR';
             $reference = (isset($created_by_user[0]['custom'])?'Our Ref '.$created_by_user[0]['custom']:'');
 
             //Create the hsl cover_letter
-            $complete_path = $this->create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $title, $name, $surname, $address, $postcode);
+            //$complete_path = $this->create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $title, $name, $surname, $address, $postcode);
+            $complete_path = $this->create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $fullname, $address);
 
             $start_date = new \DateTime($start_date);
             $end_date = new \DateTime($end_date);
@@ -1309,7 +1310,7 @@ END:VCALENDAR';
         }
     }
 
-    private function create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $title, $name, $surname, $address, $postcode) {
+    private function create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $fullname, $address) {
         require_once(APPPATH . 'libraries/PhpWord/Autoloader.php');
 
         $start_date = new \DateTime($start_date);
@@ -1347,11 +1348,11 @@ END:VCALENDAR';
         //HEADER
         $header = $section->addHeader();
         $header->addText(htmlspecialchars($reference), array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true));
-        $header->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>100, 'height'=>100, 'align'=>'right'));
+        //$header->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>100, 'height'=>100, 'align'=>'right'));
 
         //FOOTER
-        $footer = $section->addFooter();
-        $footer->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>30, 'height'=>30, 'align'=>'right'));
+        //$footer = $section->addFooter();
+        //$footer->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>30, 'height'=>30, 'align'=>'right'));
 
         //CONTACT DETAILS
         // Adding Contact details font
@@ -1361,15 +1362,16 @@ END:VCALENDAR';
             array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true)
         );
         // Adding Text element to the Section having font styled by default...
-        $section->addText(htmlspecialchars((isset($title)?$title.' ':'').$name.' '.$surname), "ContactDetailsStyle");
+        //$section->addText(htmlspecialchars((isset($title)?$title.' ':'').$name.' '.$surname), "ContactDetailsStyle");
+        $section->addText(htmlspecialchars($fullname), "ContactDetailsStyle");
         $addresses = explode(',',$address);
         foreach($addresses as  $address) {
-            $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle");
+            $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle", array("spaceAfter" => 0.3));
         }
-        $section->addTextBreak(2, "ContactDetailsStyle");
+        $section->addTextBreak(1, "ContactDetailsStyle");
         $section->addText(htmlspecialchars($today_day), "ContactDetailsStyle");
         $section->addTextBreak(1, "ContactDetailsStyle");
-        $section->addText(htmlspecialchars('Dear '.(isset($title)?$title:$name).' '.$surname.','), "ContactDetailsStyle");
+        $section->addText(htmlspecialchars('Dear '.$fullname), "ContactDetailsStyle");
         $section->addTextBreak(0, "ContactDetailsStyle");
 
         //CONTENT
@@ -1400,7 +1402,7 @@ END:VCALENDAR';
         $section->addText(htmlspecialchars('01924 486900.'),array('name' => 'Tahoma', 'size' => 10, 'bold' => true));
         $section->addTextBreak(1);
 
-        $section->addText(htmlspecialchars('Yours sincerely'),array('name' => 'Tahoma', 'size' => 10));
+        $section->addText(htmlspecialchars('Yours sincerely,'),array('name' => 'Tahoma', 'size' => 10));
         $section->addTextBreak(4);
 
         $section->addText(htmlspecialchars('Home Consultation Service Team'),array('name' => 'Tahoma', 'size' => 10));
