@@ -40,11 +40,11 @@ class Filter_model extends CI_Model
 public function search_urn_by_c1($ref){
 	$this->db->select("records.urn,records.parked_code,urgent,name,fullname,source_name,outcome");
 	$this->db->where("c1",$ref);
-	$this->db->join("record_details","record_details.urn=records.urn");
-	$this->db->join("ownership","record_details.urn=ownership.urn");
-	$this->db->join("data_sources","data_sources.source_id=records.source_id");
-	$this->db->join("outcomes","records.outcome_id=outcomes.outcome_id");
-	$this->db->join("users","users.user_id=ownership.user_id");
+	$this->db->join("record_details","record_details.urn=records.urn","left");
+	$this->db->join("ownership","record_details.urn=ownership.urn","left");
+	$this->db->join("data_sources","data_sources.source_id=records.source_id","left");
+	$this->db->join("outcomes","records.outcome_id=outcomes.outcome_id","left");
+	$this->db->join("users","users.user_id=ownership.user_id","left");
 	$this->db->group_by("records.urn");
 	$this->db->order_by("c1");
 	return $this->db->get("records")->result_array();
@@ -52,14 +52,13 @@ public function search_urn_by_c1($ref){
 }
 public function search_by_contact_phone($phone){
 	//GHS ONLY
-	$qry = "select urn,parked_code,urgent, name, outcome,fullname,source_name from records join contacts using(urn) join contact_telephone using(contact_id) left join record_details using(urn) left join data_sources using(source_id) join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) where telephone_number like '%$phone%' and campaign_id in(22,28,29)  group by records.urn order by c1";
+	$qry = "select urn,parked_code,urgent, name, outcome,fullname,source_name from records join contacts using(urn) join contact_telephone using(contact_id) left join record_details using(urn) left join data_sources using(source_id) left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) where telephone_number like '%$phone%' and campaign_id in(22,28,29)  group by records.urn order by c1";
 	return $this->db->query($qry)->result_array();
 
 }
 public function search_urn_by_address($add1,$postcode){
 	//GHS ONLY
-		$qry = "select urn,parked_code,urgent,name,fullname,add1,postcode,source_name,outcome from records  left join ownership using(urn) left join users using(user_id)  left join record_details using(urn) left join data_sources using(source_id) join outcomes using(outcome_id) left join contacts using(urn) left join contact_addresses using(contact_id) where postcode = '$postcode' and add1 like '$add1%' and campaign_id in(22,28,29) group by records.urn order by c1";
-		$this->firephp->log($qry);
+		$qry = "select urn,parked_code,urgent,name,fullname,add1,postcode,source_name,outcome from records  left join ownership using(urn) left join users using(user_id)  left join record_details using(urn) left join data_sources using(source_id) left join outcomes using(outcome_id) left join contacts using(urn) left join contact_addresses using(contact_id) where postcode = '$postcode' and add1 like '$add1%' and campaign_id in(22,28,29) group by records.urn order by c1";
 		return $this->db->query($qry)->result_array();
 
 

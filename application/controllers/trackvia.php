@@ -854,6 +854,9 @@ AND dials = 0  )");
                 $this->update_tv_record($urn);
             }
         } else if ($app['campaign_id'] == "22") {
+            $update_record = array("source_id" => 48, "record_color" => "00CC00");
+        }
+		else if ($app['campaign_id'] == "32") {
             $update_record = array("source_id" => 37, "record_color" => "00CC00");
         }
         $data = array(

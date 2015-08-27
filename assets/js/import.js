@@ -21,6 +21,11 @@ var importer = {
         $(document).on("click", ".goto-step-3", function (e) {
             e.preventDefault();
             importer.display_sample();
+			 if ($('#campaign option:selected').attr('ctype') == "B2B") {
+				 $('#company-merge').show();
+			 } else {
+				 $('#company-merge').hide();
+			 }
         });
         $(document).on("click", ".goto-step-1", function (e) {
             e.preventDefault();
@@ -273,7 +278,11 @@ var importer = {
                 if ($('#campaign option:selected').attr('ctype') == "B2B") {
                     importer.create_companies();
                 } else {
+                     if ($('#merge-details').val() != "") {
+                    importer.merge_details();
+                } else {
                     importer.tidy_up();
+                }
                 }
             } else {
                 $('#import-progress').html("<span class='red'>Import failed while adding the contact addresses</span>");
@@ -323,8 +332,8 @@ var importer = {
             dataType: "JSON"
         }).done(function (response) {
             if (response.success) {
-                if ($('#merge-options').val() != "") {
-                    importer.merge_contacts();
+                if ($('#merge-companies').val() != "") {
+                    importer.merge_companies();
                 } else {
                     importer.tidy_up();
                 }
@@ -335,18 +344,47 @@ var importer = {
             }
         });
     },
-    merge_contacts: function () {
-        $('#import-progress').text("Merging contacts to companies...");
-        if ($('#merge-options').val() == "1") {
+    merge_companies: function () {
+        $('#import-progress').text("Merging company_details...");
+        if ($('#merge-companies').val() == "1") {
             var merge_path = "merge_by_client_refs"
-        } else if ($('#merge-options').val() == "2") {
+        } else if ($('#merge-companies').val() == "2") {
             var merge_path = "merge_dupe_companies";
-		} else if ($('#merge-options').val() == "3") {
+		} else if ($('#merge-companies').val() == "3") {
             var merge_path = "merge_dupe_companies_exact";
-        } else if ($('#merge-options').val() == "4") {
+        } else if ($('#merge-companies').val() == "4") {
             var merge_path = "merge_by_merge_column";
-        }
+        } 
+
         $.ajax({
+            url: helper.baseUrl + 'import/' + merge_path,
+            type: "POST",
+            dataType: "JSON",
+            data: {campaign: $('#campaign').val()}
+        }).done(function (response) {
+            if (response.success) {
+					if ($('#merge-details').val() !== "") {
+			importer.merge_details();
+					} else {
+				
+                importer.tidy_up();
+					}
+            }
+        });
+    },
+	merge_details:function(){
+		if ($('#merge-details').val() == "5") {
+			$('#import-progress').text("Merging record details...");
+            var merge_path = "merge_record_details_by_client_refs";
+        } else if ($('#merge-details').val() == "6") {
+			$('#import-progress').text("Merging record details...");
+            var merge_path = "merge_record_details_using_contact";
+        } else if ($('#merge-details').val() == "7") {
+			$('#import-progress').text("Merging record details...");
+            var merge_path = "merge_record_details_by_merge_column";
+		}
+		
+		 $.ajax({
             url: helper.baseUrl + 'import/' + merge_path,
             type: "POST",
             dataType: "JSON",
@@ -356,7 +394,8 @@ var importer = {
                 importer.tidy_up();
             }
         });
-    },
+	},
+	
     tidy_up: function () {
         $('#import-progress').text("Cleaning up any mess...");
         $.ajax({
