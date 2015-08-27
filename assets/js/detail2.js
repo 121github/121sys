@@ -1987,9 +1987,9 @@ var record = {
             $form.empty();
             $form.append("<input type='hidden' name='urn' value='" + record.urn + "'/>");
             $form.append("<input type='hidden' name='detail_id' value='" + id + "'/>");
-            var form = "";
+			   var form = "";
             $.each(data, function (k, detail) {
-
+				             form = "";
                 $.each(detail, function (i, row) {
                     var inputclass = "";
                     var is_disabled = "disabled";
@@ -2022,10 +2022,10 @@ var record = {
                         if (row.type !== "varchar" && row.type !== "number") {
                             inputclass = row.type;
                             if (row.value == '-' && row.type == "datetime") {
-                                row.value = moment(new Date()).format("DD/MM/YYYY HH:mm:ss");
+                                row.value = '';
                             }
                             if (row.value == '-' && row.type == "date") {
-                                row.value = moment(new Date()).format("DD/MM/YYYY");
+                                row.value = '';
                             }
                         }
                         if (row.value == "-") {
@@ -2039,12 +2039,12 @@ var record = {
             $('.selectpicker').selectpicker();
             $('.date').datetimepicker({
                 format: 'DD/MM/YYYY',
-				showClear:true,
-				sideBySide:true
+				showClear:true
             });
             $('.datetime').datetimepicker({
                 format: 'DD/MM/YYYY HH:mm',
-				showClear:true
+				showClear:true,
+				sideBySide:true
             });
         }
     },

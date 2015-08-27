@@ -4,7 +4,7 @@
         Record List
         <div class="pull-right">
             <form class="filter-form">
-                <span class="btn btn-success btn-sm export-btn fa fa-file-excel-o"></span>
+                <!--<span class="btn btn-success btn-xs export-btn fa fa-file-excel-o"> Export</span>-->
                 <div class="btn-group">
                     <button type="button" class="btn btn-default btn-xs" data-modal="choose-columns"
                             data-table-id="1"><span
