@@ -1366,7 +1366,9 @@ END:VCALENDAR';
         $section->addText(htmlspecialchars($fullname), "ContactDetailsStyle");
         $addresses = explode(',',$address);
         foreach($addresses as  $address) {
-            $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle", array("spaceAfter" => 0.3));
+            if (strlen(trim($address)) > 0) {
+                $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle", array("spaceAfter" => 0.3));
+            }
         }
         $section->addTextBreak(1, "ContactDetailsStyle");
         $section->addText(htmlspecialchars($today_day), "ContactDetailsStyle");
