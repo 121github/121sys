@@ -732,24 +732,18 @@ class Email extends CI_Controller
                 $appointment_table = "<table>
                     <thead><th><h3>Appointment</h3></th><th><a href='".base_url()."records/detail/".$appointment->urn."'>#".$appointment_id."</a></th>
                     <tbody>
-                        <tr><td>Appointment Title:</td><td>".$appointment->title."</td></tr>
+                        <tr><td>Title:</td><td>".$appointment->title."</td></tr>
+                        <tr><td>Type:</td><td>".$appointment->appointment_type."</td></tr>
                         <tr><td>Day:</td><td>".$day."</td></tr>
                         <tr><td>Time:</td><td>".$start_time." - ".$end_time."</td></tr>
+                        <tr><td>Contact Name:</td><td>".$contact['general']['fullname']."</td></tr>
+                        <tr><td>Contact Email:</td><td>".$contact['general']['email']."</td></tr>
                         <tr><td>Address:</td><td>".$appointment->address."</td></tr>
-                        ".($appointment->branch_id?"<tr><td>Branch:</td><td>".$appointment->branch_id."</td></tr>":"")."
+                        <tr><td>Notes:</td><td>".$appointment->text."</td></tr>
+                        ".($appointment->branch_id?"<tr><td>Branch:</td><td>".($appointment->branch_name?$appointment->branch_name:'')."</td></tr>":"")."
                     </tbody>
                 </table>";
                 $description .= "<div>".$appointment_table."</div><br />";
-
-
-                $contact_table = "<table>
-                    <thead><th colspan='2'><h3>Contacts</h3></th>
-                    <tbody>
-                        <tr><td>Name:</td><td>".$contact['general']['fullname']."</td></tr>
-                        <tr><td>Email:</td><td>".$contact['general']['email']."</td></tr>
-                    </tbody>
-                </table>";
-                $description .= "<div>".$contact_table."</div><br />";
 
                 //Get the webform answers for this urn
                 $webform_answers = $this->Email_model->get_webform_answers_by_urn($appointment->urn);
@@ -896,24 +890,18 @@ class Email extends CI_Controller
             $appointment_table = "<table>
                     <thead><th><h3>Appointment</h3></th><th><a href='".base_url()."records/detail/".$appointment->urn."'>#".$appointment_id."</a></th>
                     <tbody>
-                        <tr><td>Appointment Title:</td><td>".$appointment->title."</td></tr>
+                        <tr><td>Title:</td><td>".$appointment->title."</td></tr>
+                        <tr><td>Type:</td><td>".$appointment->appointment_type."</td></tr>
                         <tr><td>Day:</td><td>".$day."</td></tr>
                         <tr><td>Time:</td><td>".$start_time." - ".$end_time."</td></tr>
+                        <tr><td>Contact Name:</td><td>".$contact['general']['fullname']."</td></tr>
+                        <tr><td>Contact Email:</td><td>".$contact['general']['email']."</td></tr>
                         <tr><td>Address:</td><td>".$appointment->address."</td></tr>
-                        ".($appointment->branch_id?"<tr><td>Branch:</td><td>".$appointment->branch_id."</td></tr>":"")."
+                        <tr><td>Notes:</td><td>".$appointment->text."</td></tr>
+                        ".($appointment->branch_id?"<tr><td>Branch:</td><td>".($appointment->branch_name?$appointment->branch_name:'')."</td></tr>":"")."
                     </tbody>
                 </table>";
             $description .= "<div>".$appointment_table."</div><br />";
-
-
-            $contact_table = "<table>
-                    <thead><th colspan='2'><h3>Contacts</h3></th>
-                    <tbody>
-                        <tr><td>Name:</td><td>".$contact['general']['fullname']."</td></tr>
-                        <tr><td>Email:</td><td>".$contact['general']['email']."</td></tr>
-                    </tbody>
-                </table>";
-            $description .= "<div>".$contact_table."</div><br />";
 
             //Get the webform answers for this urn
             $webform_answers = $this->Email_model->get_webform_answers_by_urn($appointment->urn);
@@ -1055,25 +1043,19 @@ class Email extends CI_Controller
             $appointment_table = "<table>
                         <thead><th><h3>Appointment</h3></th><th><a href='".base_url()."records/detail/".$appointment->urn."'>#".$appointment_id."</a></th>
                         <tbody>
-                            <tr><td>Appointment Title:</td><td>" . $appointment->title . "</td></tr>
-                            <tr><td>Day:</td><td>" . $day . "</td></tr>
-                            <tr><td>Time:</td><td>" . $start_time . " - " . $end_time . "</td></tr>
-                            <tr><td>Address:</td><td>" . $appointment->address . "</td></tr>
-                            " . ($appointment->branch_id ? "<tr><td>Branch:</td><td>" . $appointment->branch_id . "</td></tr>" : "") . "
+                            <tr><td>Title:</td><td>".$appointment->title."</td></tr>
+                            <tr><td>Type:</td><td>".$appointment->appointment_type."</td></tr>
+                            <tr><td>Day:</td><td>".$day."</td></tr>
+                            <tr><td>Time:</td><td>".$start_time." - ".$end_time."</td></tr>
+                            <tr><td>Contact Name:</td><td>".$contact['general']['fullname']."</td></tr>
+                            <tr><td>Contact Email:</td><td>".$contact['general']['email']."</td></tr>
+                            <tr><td>Address:</td><td>".$appointment->address."</td></tr>
+                            <tr><td>Notes:</td><td>".$appointment->text."</td></tr>
+                            ".($appointment->branch_id?"<tr><td>Branch:</td><td>".($appointment->branch_name?$appointment->branch_name:'')."</td></tr>":"")."
                             <tr><td>Cancellation reason:</td><td>" . $appointment->cancellation_reason . "</td></tr>
                         </tbody>
                     </table>";
             $description .= "<div>" . $appointment_table . "</div><br />";
-
-
-            $contact_table = "<table>
-                        <thead><th colspan='2'><h3>Contacts</h3></th>
-                        <tbody>
-                            <tr><td>Name:</td><td>" . $contact['general']['fullname'] . "</td></tr>
-                            <tr><td>Email:</td><td>" . $contact['general']['email'] . "</td></tr>
-                        </tbody>
-                    </table>";
-            $description .= "<div>" . $contact_table . "</div><br />";
 
             //Get the webform answers for this urn
             $webform_answers = $this->Email_model->get_webform_answers_by_urn($appointment->urn);
@@ -1244,7 +1226,7 @@ END:VCALENDAR';
             $appointment = $this->Appointments_model->getAppointmentById($appointment_id);
 
             //TODO just for testing
-            $send_to = 'bradf@121customerinsight.co.uk';
+            //$send_to = 'estebanc@121customerinsight.co.uk';
 
             $start_date = $appointment->start;
             $end_date = $appointment->end;
@@ -1253,11 +1235,19 @@ END:VCALENDAR';
 
             //Get contact info
             $contact = $this->Contacts_model->get_contact($appointment->contact_id);
-            $title = (isset($contact['general']['title'])?$contact['general']['title']:'');
             $fullname = (isset($contact['general']['fullname'])?$contact['general']['fullname']:'');
             $fullname = explode(" ",$fullname);
             $name = (isset($contact['general']['firstname'])?$contact['general']['firstname']:$fullname[0]);
             $surname = (isset($contact['general']['lastname'])?$contact['general']['lastname']:$fullname[1]);
+            $title = null;
+
+            foreach($fullname as $value) {
+                if (in_array($value,array("Mr", "Miss", "Mrs", "Ms", "Dr", "Sr"))) {
+                    $title = $value;
+                    $name = (isset($contact['general']['firstname'])?$contact['general']['firstname']:$fullname[1]);
+                    $surname = (isset($contact['general']['lastname'])?$contact['general']['lastname']:$fullname[2]);
+                }
+            }
 
             $today_date = new \DateTime('now');
             $today = $today_date->format("YmdHis");
@@ -1265,8 +1255,11 @@ END:VCALENDAR';
             $path = 'upload/attachments/cover_letter';
             $filename = "HSL_Appointment_" . $today."_".$appointment->appointment_id;
 
+            $created_by_user = $this->User_model->get_user_by_id($appointment->created_by);
+            $reference = (isset($created_by_user[0]['custom'])?'Our Ref '.$created_by_user[0]['custom']:'');
+
             //Create the hsl cover_letter
-            $complete_path = $this->create_hsl_cover_letter($path, $filename, $start_date, $end_date, $title, $name, $surname, $address, $postcode);
+            $complete_path = $this->create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $title, $name, $surname, $address, $postcode);
 
             $start_date = new \DateTime($start_date);
             $end_date = new \DateTime($end_date);
@@ -1316,7 +1309,7 @@ END:VCALENDAR';
         }
     }
 
-    private function create_hsl_cover_letter($path, $filename, $start_date, $end_date, $title, $name, $surname, $address, $postcode) {
+    private function create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $title, $name, $surname, $address, $postcode) {
         require_once(APPPATH . 'libraries/PhpWord/Autoloader.php');
 
         $start_date = new \DateTime($start_date);
@@ -1335,16 +1328,16 @@ END:VCALENDAR';
 
         //Add document information
         $properties = $phpWord->getDocInfo();
-        $properties->setCreator('My name');
-        $properties->setCompany('My factory');
-        $properties->setTitle('My title');
-        $properties->setDescription('My description');
-        $properties->setCategory('My category');
-        $properties->setLastModifiedBy('My name');
-        $properties->setCreated(mktime(0, 0, 0, 3, 12, 2014));
-        $properties->setModified(mktime(0, 0, 0, 3, 14, 2014));
-        $properties->setSubject('My subject');
-        $properties->setKeywords('my, key, word');
+        $properties->setCreator('Hsl');
+        $properties->setCompany('Hsl');
+        $properties->setTitle($filename);
+        //$properties->setDescription('My description');
+        //$properties->setCategory('My category');
+        $properties->setLastModifiedBy('Hsl');
+        //$properties->setCreated(mktime(0, 0, 0, 3, 12, 2014));
+        //$properties->setModified(mktime(0, 0, 0, 3, 14, 2014));
+        //$properties->setSubject('My subject');
+        //$properties->setKeywords('my, key, word');
 
         /* Note: any element you append to a document must reside inside of a Section. */
 
@@ -1353,6 +1346,7 @@ END:VCALENDAR';
 
         //HEADER
         $header = $section->addHeader();
+        $header->addText(htmlspecialchars($reference), array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true));
         $header->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>100, 'height'=>100, 'align'=>'right'));
 
         //FOOTER
@@ -1367,44 +1361,42 @@ END:VCALENDAR';
             array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true)
         );
         // Adding Text element to the Section having font styled by default...
-        $section->addText(htmlspecialchars('Our Ref AB/HV'), "ContactDetailsStyle");
-        $section->addTextBreak(1, "ContactDetailsStyle");
-        $section->addText(htmlspecialchars($today_day), "ContactDetailsStyle");
-        $section->addTextBreak(0, "ContactDetailsStyle");
-        $section->addText(htmlspecialchars($title.' '.$name.' '.$surname), "ContactDetailsStyle");
+        $section->addText(htmlspecialchars((isset($title)?$title.' ':'').$name.' '.$surname), "ContactDetailsStyle");
         $addresses = explode(',',$address);
         foreach($addresses as  $address) {
             $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle");
         }
+        $section->addTextBreak(2, "ContactDetailsStyle");
+        $section->addText(htmlspecialchars($today_day), "ContactDetailsStyle");
         $section->addTextBreak(1, "ContactDetailsStyle");
-        $section->addText(htmlspecialchars('Dear '.$title.' '.$surname.','), "ContactDetailsStyle");
+        $section->addText(htmlspecialchars('Dear '.(isset($title)?$title:$name).' '.$surname.','), "ContactDetailsStyle");
         $section->addTextBreak(0, "ContactDetailsStyle");
 
         //CONTENT
 
         // Adding Text element with font customized inline...
         $section->addText(
-            htmlspecialchars('Thank you for your interest in HSL’s Home Consultation Service. We hope you enjoy looking through your comfort catalogue and fabric card, offering a huge choice chairs to make sitting, rising and relaxing easier in a wide choice of fabrics and leathers.'),
+            htmlspecialchars('Thank you for your interest in HSL’s Home Consultation Service. We that hope you enjoy looking through your comfort catalogue and fabric card, offering a huge choice of chairs to make sitting, rising and relaxing easier in a wide choice of fabrics and leathers.'),
             array('name' => 'Tahoma', 'size' => 10)
         );
         $section->addTextBreak(0);
 
         $section->addText(
-            htmlspecialchars('You won’t believe how comfortable our chairs are until you try them and our Home Consultation Service enables you to do this in the comfort of your own home. Our Home Comfort Specialists have expert knowledge and advice on all our ranges and will be happy to help you choose the perfect chair to suit your individual needs.'),
+            htmlspecialchars('You won’t believe how comfortable our chairs are until you try them and our Home Consultation Service enables you to do this in the comfort of your own home. Our Home Consultants have expert knowledge and advice on all of our ranges and will be happy to help you choose the perfect chair to suit your individual needs.'),
             array('name' => 'Tahoma', 'size' => 10)
         );
         $section->addTextBreak(0);
 
         $section->addText(
             htmlspecialchars(
-                'As per our telephone conversation I confirm your appointment for '.
+                'I confirm your appointment has been arranged for '.
                 $day.' and the allocated time will be between '.$start_time.' and '.$end_time.'.'.
-                ' As discussed our Home Consultant will contact you the day before your appointment to confirm their details and to answer any question you may have.'
+                ' As discussed our Home Consultant will contact you the day before your appointment to introduce themselves and to answer any questions you may have.'
             ),
             array('name' => 'Tahoma', 'size' => 10));
         $section->addTextBreak(0);
 
-        $section->addText(htmlspecialchars('In the meantime should you have any queries please do not hesitate in contacting me on '),array('name' => 'Tahoma', 'size' => 10));
+        $section->addText(htmlspecialchars('In the meantime should you have any queries please do not hesitate to contact the Home Consultation Team on '),array('name' => 'Tahoma', 'size' => 10));
         $section->addText(htmlspecialchars('01924 486900.'),array('name' => 'Tahoma', 'size' => 10, 'bold' => true));
         $section->addTextBreak(1);
 
