@@ -1376,7 +1376,7 @@ END:VCALENDAR';
 
         // Adding Text element with font customized inline...
         $section->addText(
-            htmlspecialchars('Thank you for your interest in HSL’s Home Consultation Service. We that hope you enjoy looking through your comfort catalogue and fabric card, offering a huge choice of chairs to make sitting, rising and relaxing easier in a wide choice of fabrics and leathers.'),
+            htmlspecialchars('Thank you for your interest in HSL’s Home Consultation Service. We hope that you enjoy looking through your comfort catalogue and fabric card, offering a huge choice of chairs to make sitting, rising and relaxing easier in a wide choice of fabrics and leathers.'),
             array('name' => 'Tahoma', 'size' => 10)
         );
         $section->addTextBreak(0);
