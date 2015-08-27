@@ -120,6 +120,7 @@ class Trackvia extends CI_Controller
                     $data[$name]["trackvia"] = 0;
 					for($page=1;$page<15;$page++){
                     $view = $this->getAllViewRecords($view_id,$page);
+						if(isset($view['record_count'])){
                     if ($this->uri->segment(4) == "debug") {
                         echo "<pre>";
                         print_r($view);
@@ -127,6 +128,9 @@ class Trackvia extends CI_Controller
                         echo "<br>";
                     }
                     $data[$name]["trackvia"] += $view['record_count'];
+						} else { 
+						continue;
+						}
 					}
                 } else {
                     $data[$name]["trackvia"] = false;

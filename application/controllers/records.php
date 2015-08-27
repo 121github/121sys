@@ -174,7 +174,7 @@ class Records extends CI_Controller
                 );
             }
 						
-            $_SESSION['navigation'][] = $nav;
+            $_SESSION['navigation'] = $nav;
             $data = array(
                 "draw" => $this->input->post('draw'),
                 "recordsTotal" => $count,
