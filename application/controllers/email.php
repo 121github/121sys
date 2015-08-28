@@ -1239,7 +1239,6 @@ END:VCALENDAR';
 
             $address = (isset($_SESSION['cover_letter_address'])?$_SESSION['cover_letter_address']:$appointment->address);
 
-            //TODO We shuld store this on the appointment table for the reschedules
             //Remove the cover_letter_address after send the email
             unset($_SESSION['cover_letter_address']);
 
