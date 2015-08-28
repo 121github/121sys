@@ -480,6 +480,10 @@ var modals = {
             modals.load_modal(mheader, $mbody, mfooter);
 			modal_body.css('overflow', 'visible');
             modals.appointment_contacts(data.urn, data.contact_id);
+
+            if(typeof campaign_functions.appointment_edit_setup !== "undefined"){
+                campaign_functions.appointment_edit_setup();
+            }
         });
     },
     appointment_contacts: function (urn, contact_id) {

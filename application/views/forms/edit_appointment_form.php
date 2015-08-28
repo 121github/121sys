@@ -100,8 +100,6 @@
                     <?php endforeach; ?>
                     <option value="Other">Other</option>
                 </select>&nbsp;
-
-
             </div>
         </div>
     </div>

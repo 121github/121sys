@@ -74,26 +74,30 @@ var campaign_functions = {
         $('input[name="linkedin"]').closest('.form-group').hide();
     },
     appointment_setup: function (start, attendee) {
-		campaign_functions.hsl_coverletter_address()
+        campaign_functions.hsl_coverletter_address();
         campaign_functions.set_appointment_start(start);
         campaign_functions.set_appointment_attendee(attendee);
         $('[name="title"]').val("Home Consultancy");
     },
-	hsl_coverletter_address:function(){
-		$options = $('#addresspicker').html();
-	$cover_letter_address = $("<div class='form-group'><p>Please select the recipient address for the appointment confirmation letter</p><select data-width='100%' id='cl_addresspicker'>"+$options+"</select></div>");
-		
-		$cover_letter_address.insertBefore($('#select-appointment-address'));
-		$('#appointment-form').find('#cl_addresspicker').selectpicker();
-		
-		$(document).on('change','#cl_addresspicker',function(){
-			$.ajax({ url:helper.baseUrl+'ajax/add_cover_letter_address',
-			data:{ coverletter_address : $(this).val() },
-			dataType:"JSON",
-			type:"POST"
-			})
-		});
-	},
+    appointment_edit_setup: function () {
+        campaign_functions.hsl_coverletter_address();
+    },
+    hsl_coverletter_address: function () {
+        $options = $('#addresspicker').html();
+        $cover_letter_address = $("<div class='form-group'><p>Please select the recipient address for the appointment confirmation letter</p><select data-width='100%' id='cl_addresspicker'><option value=''>Same than the appointment</option>" + $options + "</select></div>");
+
+        $cover_letter_address.insertAfter($('#select-appointment-address'));
+        $('#appointment-form').find('#cl_addresspicker').selectpicker();
+
+        $(document).on('change', '#cl_addresspicker', function () {
+            $.ajax({
+                url: helper.baseUrl + 'ajax/add_cover_letter_address',
+                data: {coverletter_address: $(this).val()},
+                dataType: "JSON",
+                type: "POST"
+            })
+        });
+    },
     set_appointment_attendee: function (attendee) {
         $('.attendeepicker').selectpicker('val', [attendee]);
     },
