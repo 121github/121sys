@@ -3,8 +3,9 @@
  ========================================================================== */
 getLocation();
 function getLocation() {
+	console.log("Test");
 	if (navigator.geolocation) {
-        return navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError);
+        return navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError,{timeout:10000});
     }
     alert('Geolocation is not enabled on this device');
     return false;
@@ -12,6 +13,7 @@ function getLocation() {
 
 
 function getLocationSuccess(position) {
+	console.log(position);
     //store in localstorage
 	document.cookie = "lat="+position.coords.latitude;
 	document.cookie = "lng="+position.coords.longitude;
@@ -86,6 +88,7 @@ function getLocationSuccess(position) {
 }
 
 function getLocationError(error){
+	console.log(error);
     var errMsg = 'Unknown Error';
     switch (error.code) {
         case 0:

@@ -515,7 +515,7 @@ class Records_model extends CI_Model
         $_SESSION['navigation'] = array();
         foreach ($records as $row) {
             $_SESSION['navigation'][] = $row['urn'];
-			$this->firephp->log($row['urn']);
+			//$this->firephp->log($row['urn']);
         }
 		
     }

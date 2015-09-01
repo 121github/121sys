@@ -222,7 +222,7 @@ class Trackvia extends CI_Controller
 		 //CITYWEST DATA
 		$this->db->query("update records set parked_code=2,source_id = 49 where campaign_id = 32");
 		//CITYWEST
-		        echo "<br>Checking the CITYWEST_ALL_RECORDS(" . CITYWEST_ALL_RECORDS . ") view";
+		/*        echo "<br>Checking the CITYWEST_ALL_RECORDS(" . CITYWEST_ALL_RECORDS . ") view";
         echo "<br>";
         $this->checkView(
             CITYWEST_ALL_RECORDS,
@@ -239,7 +239,7 @@ class Trackvia extends CI_Controller
 
             )
         );
-		
+		*/
 		
 		   //Book View
         echo "<br>Checking the CITYWEST_BOOK_SURVEY(" . CITYWEST_BOOK_SURVEY . ") view";
@@ -509,10 +509,10 @@ AND dials = 0  )");
 
         if (isset($view['records'])) {
             $tv_records = $view['records'];
-            //print_r($view_id);
-			echo "<pre>";
+            print_r($view_id);
+			/*echo "<pre>";
             print_r($view);
-			echo "</pre>";
+			echo "</pre>";*/
         } else {
 			$tv_records = array();
             print_r($view_id);

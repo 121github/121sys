@@ -133,7 +133,7 @@ class Cron_model extends CI_Model
         $this->db->join("locations", "locations.location_id=company_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("company_addresses")->result_array();
-        $this->firephp->log("Find all company postcodes without a location ID:" . $this->db->last_query());
+       // $this->firephp->log("Find all company postcodes without a location ID:" . $this->db->last_query());
         $status = "Company Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
@@ -142,10 +142,10 @@ class Cron_model extends CI_Model
             file_put_contents($file, $formatted_postcode . ": " . $row['postcode'] . "\r\n");
             if ($formatted_postcode == NULL) {
                 $qry = "update company_addresses set postcode = null where company_id = '{$row['company_id']}'";
-                $this->db->query($qry);
+                //$this->db->query($qry);
             } else {
                 $qry = "update company_addresses set postcode = '$formatted_postcode' where company_id = '{$row['company_id']}'";
-                $this->db->query($qry);
+                //$this->db->query($qry);
             }
         }
 
@@ -154,7 +154,7 @@ class Cron_model extends CI_Model
         $this->db->join("locations", "locations.location_id=contact_addresses.location_id", "LEFT");
         $this->db->where("locations.location_id is null and postcode is not null");
         $postcodes = $this->db->get("contact_addresses")->result_array();
-        $this->firephp->log("Find all contact postcodes without a location ID:" . $this->db->last_query());
+       // $this->firephp->log("Find all contact postcodes without a location ID:" . $this->db->last_query());
         $status .= "Contact Postcodes found: " . count($postcodes) . "\r\n";
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
@@ -209,9 +209,9 @@ class Cron_model extends CI_Model
             if ($this->db->query($qry)->num_rows()) {
                 $pc = $this->db->query($qry)->row_array();
                 $q1 = "insert ignore into locations set location_id='{$pc['postcode_id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
-                $this->firephp->log($q1);
+                //$this->firephp->log($q1);
                 $this->db->query($q1);
-                $q2 = "update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'";
+                //$q2 = "update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'";
                 $this->firephp->log($q2);
                 $this->db->query($q2);
             }
