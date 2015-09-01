@@ -218,6 +218,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
                     '<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ' +
                     '<span class="sr-only">Error: </span>' +
                     getCookie('location_error') + ' Please contact support for assistance</div>'
+				$('.alert').remove();
                 $('.container-fluid').prepend(location_error);
             }
 
