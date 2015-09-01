@@ -10,7 +10,7 @@ class Data_model extends CI_Model
 	
 	public function clear_records(){
 		  $this->db->query("SET FOREIGN_KEY_CHECKS = 0");
-$this->db->query("TRUNCATE appointments");
+$this->db->query("truncate appointments");
 $this->db->query("truncate appointment_attendees");
 $this->db->query("truncate record_planner");
 $this->db->query("truncate record_planner_route");
@@ -27,6 +27,7 @@ $this->db->query("truncate record_planner_route");
 $this->db->query("truncate record_planner");
 $this->db->query("truncate records");
 $this->db->query("SET FOREIGN_KEY_CHECKS = 1");
+return true;
 	}
 	
     public function get_custom_fields($campaign)
