@@ -160,16 +160,12 @@ class Trackvia extends CI_Controller
         $result = $this->Trackvia_model->get_rebookings($campaign);
         echo json_encode(array("success" => true, "data" => $result));
     }
-
-    public function check_trackvia()
-    {
-        //CITYWEST DATA
-		$this->db->query("update records set parked_code=2,source_id = 49 where campaign_id = 32");
+	
+	
+	public function check_southway(){
 		 //SOUTHWAY DATA
         $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id = 22");
-		//PRIVATE DATA
-		$this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
-        //Book View
+		 //Book View
         echo "<br>Checking the SOUTHWAY_BOOK_SURVEY(" . SOUTHWAY_BOOK_SURVEY . ") view";
         echo "<br>";
         $this->checkView(
@@ -220,7 +216,11 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 20
             )
         );
-		
+		$this->check_trackvia(22);
+	}
+	public function check_citywest(){
+		 //CITYWEST DATA
+		$this->db->query("update records set parked_code=2,source_id = 49 where campaign_id = 32");
 		//CITYWEST
 		        echo "<br>Checking the CITYWEST_ALL_RECORDS(" . CITYWEST_ALL_RECORDS . ") view";
         echo "<br>";
@@ -292,8 +292,13 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 20
             )
         );
-
-//
+		$this->check_trackvia(32);
+	}
+	public function check_private(){
+			//PRIVATE DATA
+		$this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
+		
+		//
 //        //PRIVATE TABLE
 //
         //Private Residential View
@@ -384,13 +389,19 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 30
             )
         );
+		$this->check_trackvia(29);
 
-        //queries we may want to run after the updates can go here
-        $this->db->query("update records set map_icon ='fa-home' where campaign_id in(22,28,29,32)");
-        $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id in(22,28,29,32)");
-        $this->db->query("update contacts inner join records using(urn)     inner join data_sources using(source_id) set notes = source_name where campaign_id in(22,28,29,32) and records.source_id is not null");
+	}
+	
+	
+    public function check_trackvia($campaign_id)
+    {
+  //queries we may want to run after the updates can go here
+        $this->db->query("update records set map_icon ='fa-home' where campaign_id = '$campaign_id'");
+        $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id = '$campaign_id'");
+        $this->db->query("update contacts inner join records using(urn)     inner join data_sources using(source_id) set notes = source_name where campaign_id = '$campaign_id' and records.source_id is not null");
 		
-		$query = "select urn from records join campaigns using(campaign_id) where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id in(22,28,29,32)";
+		$query = "select urn from records join campaigns using(campaign_id) where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id = '$campaign_id'";
 		foreach($this->db->query($query)->result_array() as $row){
 		$urn 	= $row['urn'];
 		$this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 137,outcome_reason_id=NULL, record_status=3 where urn = '$urn'");
@@ -399,7 +410,7 @@ class Trackvia extends CI_Controller
 		$this->db->query("delete from ownership where urn in(select urn 
 FROM records
 WHERE 1
-AND campaign_id in(22,28,29,32)
+AND campaign_id = '$campaign_id'
 AND record_status =1
 AND parked_code IS NULL
 AND progress_id IS NULL
@@ -410,9 +421,9 @@ AND dials = 0  )");
 		
 		
 		//unset anything marked as urgent that is not in the rebook data sources
-        $this->db->query("update records set urgent = null where source_id not in(38,35,47) and campaign_id in(22,28,29,32)");
+        $this->db->query("update records set urgent = null where source_id not in(38,35,47) and campaign_id = '$campaign_id'");
         //Update appointmentes without history associated
-        echo "<br>Checking if exists appointmentes without history associated...";
+        echo "<br>Checking if exists appointments without history associated...";
         $this->db->query("
             INSERT INTO history
             (campaign_id, urn, contact, description, outcome_id, nextcall, user_id, role_id, team_id, group_id)
@@ -442,65 +453,6 @@ AND dials = 0  )");
 
     }
 
-    /*
-    public function fix_records(){
-        $todo = array();
-        echo "#Getting affected record...";
-        echo "<br>";
-        echo $qry = "SELECT *, r.date_updated ru FROM `records` r left join outcomes using(outcome_id) left join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id) WHERE r.date_added like '2015-07-06 17:1%' AND campaign_id in(22,28,29)";
-    echo ";<br>";
-    echo "<br>";
-        $duplicated = $this->db->query($qry)->result_array();
-        foreach($duplicated as $row){
-            echo "#Getting originals...".$row['urn'];
-            echo "<br>";
-            echo $qry = "select *, r.date_updated ru from records r left join record_details using(urn) join contacts using(urn) join contact_addresses using(contact_id) where add1 = '{$row['add1']}' and postcode = '{$row['postcode']}' and date(r.date_added) <> '2015-07-06'";
-            echo ";<br>";
-            $originals = $this->db->query($qry)->result_array();
-
-            foreach($originals as $original){
-                    $o_urn = $original['urn'];
-                echo "#".$row['ru'].":".$original['ru'].";<br>";
-                if(!empty($row['ru'])){
-            $todo[$original['urn']] = array("outcome"=>$row['outcome'],"campaign"=>$original['campaign_id']);
-            echo "#updating original from dupe...".$original['urn'];
-            echo "<br>";
-            echo "update records set record_status = '{$row['record_status']}',outcome_id=".(empty($row['outcome_id'])?"NULL":$row['outcome_id'])." ,outcome_reason_id=".(empty($row['outcome_reason_id'])?"NULL":$row['outcome_reason_id'])."  where urn = '$o_urn'";
-            echo ";<br>";
-            echo "#adding history to original...";
-            echo "<br>";
-            $add_history = "insert into history (select '',campaign_id,'$o_urn',loaded,contact,description,outcome_id,outcome_reason_id,comments,nextcall,user_id,role_id,team_id,group_id,contact_id,progress_id,last_survey from history where urn = '{$row['urn']}')";
-            echo $add_history;
-            echo ";<br>";
-            echo "#adding details to original if missing...";
-            echo "<br>";
-                }
-            if(empty($original['c1'])&&!empty($row['c1'])){
-            echo $update_c1 = "update record_details set c1='{$row['c1']}' where urn = $o_urn"; echo ";<br>";
-            }
-                    if(empty($original['c2'])&&!empty($row['c2'])){
-            echo $update_c1 = "update record_details set c2='{$row['c2']}' where urn = $o_urn"; echo ";<br>";
-            }
-                    if(empty($original['c3'])&&!empty($row['c3'])){
-            echo $update_c1 = "update record_details set c3='{$row['c3']}' where urn = $o_urn"; echo ";<br>";
-            }
-                    if(empty($original['c4'])&&!empty($row['c4'])){
-            echo $update_c1 = "update record_details set c4='{$row['c4']}' where urn = $o_urn"; echo ";<br>";
-            }
-                    if(empty($original['c5'])&&!empty($row['c5'])){
-            echo $update_c1 = "update record_details set c5='{$row['c5']}' where urn = $o_urn"; echo ";<br>";
-            }
-                        if(empty($original['c6'])&&!empty($row['c6'])){
-            echo $update_c1 = "update record_details set c6='{$row['c6']}' where urn = $o_urn"; echo ";<br>";
-            }
-
-
-        }
-
-        }
-        print_r($todo);
-    }
-    */
 
     private function getAllViewRecords($view_id,$page=1) {
         //$page = 1;
