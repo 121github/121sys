@@ -17,12 +17,12 @@ $this->_campaigns = campaign_access_dropdown();
     }
 	
 	function clear_records(){
-	if($_SESSION['session_name']=="121sys_prosales"){
+	if(1==1||$_SESSION['session_name']=="121sys_prosales"){
 		$response = $this->Data_model->clear_records();
 		if($response){
-		echo "Demo data has been deleted :)";
+		echo "<span class='text-success glyphicon glyphicon-ok'></span> Demo data has been deleted";
 		} else {
-		echo "There was an error deleting the demo data :(";	
+		echo "<span class='text-danger glyphicon glyphicon-info-sign'></span> There was an error deleting the demo data";	
 		}
 	}	
 	}

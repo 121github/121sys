@@ -2,8 +2,22 @@
                         <li><a href="#admin">Admin</a>
                             <ul id="admin">
                             
-                            <?php if($_SESSION['session_name']=="121sys_prosales"){ ?>
-								   <li><a href="<?php echo base_url() ?>data/clear_records">Delete demo data</a></li>
+                            <?php if(1==1||$_SESSION['session_name']=="121sys_prosales"){ ?>
+								   <li><a href="#" id="del-data">Delete demo data</a></li>
+                                   <script type="text/javascript">
+								   $(document).on('click','#del-data',function(e){
+									  e.preventDefault();
+									  $.ajax({ url:helper.baseUrl+'data/clear_records',
+									  type:"POST",
+									  dataType:"HTML",
+									  beforeSend:function(){
+										modals.load_modal("Clearing data","<p>Please be patient while the system is reset</p><img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif' />",'<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>'); 
+									  }
+								   }).done(function(response){
+									   modal_body.html(response);
+								   });
+								    });
+								   </script>
 							<?php } ?>
                             
                                 <?php if (in_array("system menu", $_SESSION['permissions'])) { ?>
