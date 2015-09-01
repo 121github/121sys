@@ -499,6 +499,8 @@ AND dials = 0  )");
         $savings = $options['savings_per_panel'];
         //Get the trackvia records for this view
 		for ($page=1;$page<15;$page++){
+			echo "Page: .$page";
+			echo "<br>";
         $view = $this->getAllViewRecords($view_id,$page);
 
         //$view = $this->tv->getView($view_id);
@@ -630,14 +632,14 @@ AND dials = 0  )");
         if (!empty($update_notes)) {
             echo("Updating Notes");
             echo "<br>";
-            print_r($update_notes);
+            //print_r($update_notes);
             echo $this->Trackvia_model->updateNotes($update_notes);
         }
         //update the record details
         if (!empty($extra)) {
             echo("Updating Details");
             echo "<br>";
-            print_r($update_extra);
+            //print_r($update_extra);
             $this->Trackvia_model->update_extra($update_extra);
         }
 
