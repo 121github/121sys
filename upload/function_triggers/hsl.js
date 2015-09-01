@@ -84,10 +84,11 @@ var campaign_functions = {
     },
     hsl_coverletter_address: function () {
         $options = $('#addresspicker').html();
-        $cover_letter_address = $("<div class='form-group'><p>Please select the recipient address for the appointment confirmation letter</p><select data-width='100%' id='cl_addresspicker'><option value=''>Same than the appointment</option>" + $options + "</select></div>");
+        $cover_letter_address = $("<div class='form-group'><p>Please select the recipient address for the appointment confirmation letter</p><select data-width='100%' id='cl_addresspicker'><option value=''>Same as the appointment</option>" + $options + "</select></div>");
+		$cover_letter_address.find('option[value="Other"]').remove();
 
-        $cover_letter_address.insertAfter($('#select-appointment-address'));
-        $('#appointment-form').find('#cl_addresspicker').selectpicker();
+        $cover_letter_address.insertBefore($('#select-appointment-address'));
+        $('#cl_addresspicker').selectpicker();
 
         $(document).on('change', '#cl_addresspicker', function () {
             $.ajax({

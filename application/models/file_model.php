@@ -64,10 +64,12 @@ class File_model extends CI_Model
     
     public function create_folder($data)
     {
-        $this->db->insert("folders", array(
+       $insert_query =  $this->db->insert_string("folders", array(
             "folder_name" => $data['folder_name'],
             "accepted_filetypes" => $data['accepted_filetypes']
         ));
+		$insert_query = str_replace('INSERT INTO','INSERT IGNORE INTO',$insert_query);
+		$this->db->query($insert_query);
         return $this->db->insert_id();
     }
     

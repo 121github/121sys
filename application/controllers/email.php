@@ -1355,8 +1355,8 @@ END:VCALENDAR';
         $section = $phpWord->addSection();
 
         //HEADER
-        $header = $section->addHeader();
-        $header->addText(htmlspecialchars($reference), array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true));
+        //$header = $section->addHeader();
+        //$header->addText(htmlspecialchars($reference), array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true));
         //$header->addImage('assets/themes/hsl/hsl_stacked_logo.png', array('width'=>100, 'height'=>100, 'align'=>'right'));
 
         //FOOTER
@@ -1372,6 +1372,8 @@ END:VCALENDAR';
         );
         // Adding Text element to the Section having font styled by default...
         //$section->addText(htmlspecialchars((isset($title)?$title.' ':'').$name.' '.$surname), "ContactDetailsStyle");
+		$section->addTextBreak(6);
+		$section->addText(htmlspecialchars($reference), "ContactDetailsStyle");
         $section->addText(htmlspecialchars($fullname), "ContactDetailsStyle");
         $addresses = explode(',',$address);
         foreach($addresses as  $address) {
