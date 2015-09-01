@@ -110,7 +110,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group input-group-sm pull-left">
-                                        <p id='import-progress'>&nbsp;</p>
+                                        <p id='import-progress' style='padding-left:10px;'>&nbsp;</p>
                                         <button class="btn btn-success pull-right pull-left marl" id="import">Import</button> <button class="btn btn-default pull-left goto-step-2 marl">Back</button>
                                     </div>
                                     <div style="clear:both"></div>

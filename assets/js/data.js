@@ -147,8 +147,12 @@ var importer = {
         });
     },
     show_campaign_type: function () {
+		if($('#campaign').val()>0){
         var ctype = $('#campaign option:selected').attr('ctype');
         $('#ctype-text').text("This is a " + ctype + " campaign.").show();
+		} else {
+		 $('#ctype-text').text("This is a " + ctype + " campaign.").hide();	
+		}
     },
     check_source: function ($btn) {
         if ($btn.val() == "other") {

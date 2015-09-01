@@ -4,6 +4,15 @@ var campaign_function = {
 init:function(){
 $('.outcomepicker').prop('disabled',true).selectpicker('refresh')
 },
+appointment_setup:function(){
+	
+},
+contact_form_setup:function(){
+	
+},
+appointment_saved:function(){
+	
+},
 set_outcome_delays:function(){
 	var color = $('#custom-panel').find('.c1').text();
 	if(color=="Gold"){

@@ -17,6 +17,15 @@ init:function(){
 		alert("*Confirm that loft access will be required during the survey. (head and shoulder inspection usually sufficient)\n*Confirm access also required to main electric meter and fuse board required - it helps if obstacles are removed prior to survey.");
 	});
 },
+appointment_setup:function(){
+	
+},
+contact_form_setup:function(){
+	
+},
+appointment_saved:function(){
+	
+},
 email_trigger:function(){
                         $.ajax({
                             url: helper.baseUrl + 'email/trigger_email',

@@ -486,7 +486,7 @@ AND dials = 0  )");
          */
     public function checkView($view_id, $options)
     {
-        echo "<pre>";
+        
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
@@ -510,7 +510,9 @@ AND dials = 0  )");
         if (isset($view['records'])) {
             $tv_records = $view['records'];
             //print_r($view_id);
+			echo "<pre>";
             print_r($view);
+			echo "</pre>";
         } else {
 			$tv_records = array();
             print_r($view_id);
@@ -638,14 +640,14 @@ AND dials = 0  )");
             echo $this->Trackvia_model->updateNotes($update_notes);
         }
         //update the record details
-        if (!empty($extra)) {
+        if (!empty($update_extra)) {
             echo("Updating Details");
             echo "<br>";
             //print_r($update_extra);
             $this->Trackvia_model->update_extra($update_extra);
         }
 
-        echo "\n<br>Records left to create in our system... " . count($tv_records) . "\n";
+        echo "<br>Records left to create in our system... " . count($tv_records) . "\n";
         echo "<br>";
         $new = array();
         //Add new records if there are any left in the $tv_records array
@@ -736,10 +738,10 @@ AND dials = 0  )");
 
             }
             //show the new urns
+			echo "<pre>";
             print_r($new);
+			echo "</pre>";
         }
-
-        echo "</pre>";
 		}
 
 

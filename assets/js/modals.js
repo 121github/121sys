@@ -334,7 +334,7 @@ var modals = {
                     });
                 }
                 //TODO send cover letter from hsl file
-                if (typeof campaign_functions.appointment_saved !== "undefined") {
+                if (typeof campaign_functions !== "undefined") {
                     campaign_functions.appointment_saved(appointment_id, response.state);
                 }
 
@@ -499,6 +499,7 @@ var modals = {
                 $('#contact-select').parent().append('<p class="text-error"><small>Please add a contact before setting an appointment<small></p>');
             },
         }).done(function (result) {
+			if(result.length>0){
             $('#contact-select').show();
             $.each(result, function (k, v) {
                 var selected = "";
@@ -509,6 +510,10 @@ var modals = {
             });
             //$('#contact-select').append('<option value="other">Other</option>');
             $('#contact-select').selectpicker();
+			} else {
+			$('.close-modal').trigger('click');
+			flashalert("You must add a contact before setting an appointment");	
+			}
         });
 
     },
@@ -527,7 +532,7 @@ var modals = {
             modals.load_modal(mheader, mbody, mfooter);
 			modal_body.css('overflow', 'visible');
             modals.appointment_contacts(urn);
-			if(typeof campaign_functions.appointment_setup !== "undefined"){
+			if(typeof campaign_functions !== "undefined"){
 				campaign_functions.appointment_setup(start,attendee);
 			}
         });
@@ -1219,7 +1224,7 @@ var modals = {
                 if (type == "edit") {
                     modals.contacts.load_tabs(id, tab);
                 }
-				if(typeof campaign_functions.contact_form_setup !== "undefined"){
+				if(typeof campaign_functions !== "undefined"){
 					campaign_functions.contact_form_setup();
 				}
 				
