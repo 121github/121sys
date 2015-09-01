@@ -71,8 +71,15 @@ class Trackvia_model extends CI_Model
 
 
 public function update_extra($data){
-	$this->firephp->log($data);
-	  return $this->db->update_batch('record_details', $data, 'urn');
+//check the record details are in the table. If not add it, then update the rest
+foreach($data as $k=>$row){
+$qry = "select urn from record_details where urn = '".$row['urn']."'";
+if(!$this->db->query($qry)->num_rows()){
+	$this->db->insert("record_details",$data);
+	unset($data[$k]);
+}
+}
+return $this->db->update_batch('record_details', $data, 'urn');
 }
     //Update records in our system
     public function updateRecords($records) {

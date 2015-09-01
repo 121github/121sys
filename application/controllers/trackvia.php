@@ -497,6 +497,7 @@ AND dials = 0  )");
         $record_color = $options['record_color'];
         $source = $options['source_id'];
         $savings = $options['savings_per_panel'];
+		
         //Get the trackvia records for this view
 		for ($page=1;$page<15;$page++){
 			echo "Page: .$page";
@@ -511,6 +512,7 @@ AND dials = 0  )");
             //print_r($view_id);
             print_r($view);
         } else {
+			$tv_records = array();
             print_r($view_id);
             print_r($view);
             return false;
