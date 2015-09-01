@@ -75,7 +75,7 @@ public function update_extra($data){
 foreach($data as $k=>$row){
 $qry = "select urn from record_details where urn = '".$row['urn']."'";
 if(!$this->db->query($qry)->num_rows()){
-	$this->db->insert("record_details",$data);
+	$this->db->insert("record_details",$row);
 	unset($data[$k]);
 }
 }
