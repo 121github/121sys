@@ -506,7 +506,7 @@ AND dials = 0  )");
 
         if (isset($view['records'])) {
             $tv_records = $view['records'];
-            print_r($view_id);
+            //print_r($view_id);
             print_r($view);
         } else {
             print_r($view_id);
@@ -648,7 +648,7 @@ AND dials = 0  )");
         if (count($tv_records) > 0) {
             echo("Creating new records #Source-ID: [$source]");
             echo "<br>";
-            print_r($tv_records);
+            //print_r($tv_records);
             foreach ($tv_records as $record) {
                 //organise the new record data
                 $data = array("campaign_id" => $campaign_id,

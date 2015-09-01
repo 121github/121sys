@@ -71,6 +71,7 @@ class Trackvia_model extends CI_Model
 
 
 public function update_extra($data){
+	$this->firephp->log($data);
 	  return $this->db->update_batch('record_details', $data, 'urn');
 }
     //Update records in our system
