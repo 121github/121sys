@@ -281,7 +281,7 @@ var importer = {
                      if ($('#merge-details').val() != "") {
                     importer.merge_details();
                 } else {
-                    importer.tidy_up();
+                    importer.add_locations();
                 }
                 }
             } else {
@@ -335,7 +335,7 @@ var importer = {
                 if ($('#merge-companies').val() != "") {
                     importer.merge_companies();
                 } else {
-                    importer.tidy_up();
+                    importer.add_locations();
                 }
             } else {
                 $('#import-progress').html("<span class='red'>Import failed while adding the company addresses</span>");
@@ -367,7 +367,7 @@ var importer = {
 			importer.merge_details();
 					} else {
 				
-                importer.tidy_up();
+                importer.add_locations();
 					}
             }
         });
@@ -391,7 +391,7 @@ var importer = {
             data: {campaign: $('#campaign').val()}
         }).done(function (response) {
             if (response.success) {
-                importer.tidy_up();
+                importer.add_locations();
             }
         });
 	},
@@ -415,6 +415,16 @@ var importer = {
                 importer.undo_changes();
             }
         });
+    },
+	add_locations: function() {
+		 $('#import-progress').html("Calculating postcode co-ordinates...(this may take a while)");
+        $.ajax({
+            url: helper.baseUrl + 'cron/update_all_locations'
+        }).done(function (response) {
+			importer.tidy_up();
+        }).fail(function(){
+			importer.tidy_up();
+		});;
     },
     check_contact_telephone_numbers: function() {
         $.ajax({
