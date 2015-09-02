@@ -27,6 +27,10 @@ class Planner extends CI_Controller
 
 	$url  = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".urlencode($start).",uk&destinations=".urlencode($end).",uk&mode=Driving&units=imperial";
 	$response = json_decode(file_get_contents($url),true);
+	if(!isset($response['rows'][0]['elements'][0])){
+	$this->firephp->log($response);	
+	return array("distance"=>array("text"=>"","value"=>0),"duration"=>array("text"=>"","value"=>0),"added_distance"=>array("text"=>"","value"=>0),"added_duration"=>array("text"=>"","value"=>0));
+	}
 	return $response['rows'][0]['elements'][0];
 	}
 
