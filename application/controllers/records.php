@@ -314,6 +314,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 'plugins/countdown/jquery.countdown.min.js',
                 'plugins/responsive-calendar/0.8/responsive-calendar.js',
                 'lib/jquery.numeric.min.js',
+                'lib/jquery.alphanum.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
 				//'lib/wavsurfer.js'

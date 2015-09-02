@@ -1062,6 +1062,10 @@ var modals = {
             $tab.find('.item-id').val(id);
             if (action == "edit_address") {
                 var page = "get_contact_address";
+                $tab.find('form').find('input').alphanum({
+                    allow: '', // Specify characters to allow
+                    disallow: ''  // Specify characters to disallow
+                });
             } else if (action == "edit_phone") {
                 var page = "get_contact_number";
             }
@@ -1410,6 +1414,10 @@ var modals = {
             $tab.find('.item-id').val(id);
             if (action == "edit_coaddress") {
                 var page = "get_company_address";
+                $tab.find('form').find('input').alphanum({
+                    allow: '', // Specify characters to allow
+                    disallow: ''  // Specify characters to disallow
+                });
             } else if (action == "edit_cophone") {
                 var page = "get_company_number";
             }
