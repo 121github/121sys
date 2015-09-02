@@ -49,13 +49,7 @@ var campaign_functions = {
             var date = $(this).attr('data-date');
             var uk_date = $(this).attr('data-uk-date');
             var time = $(this).attr('data-time');
-			//for dates where the simulation has no data there is a force attr which allows the simulation to run when the button is clicked
-			if($(this).attr('data-force')=="true"){
-			//the force function pushes the simulationd ata into the sim array for that date
-			quick_planner.force_simulation(date,$('input[name="hub-choice"]:checked').val());
-			} else {
             quick_planner.popup_simulation(uk_date, date, time, simulation.waypoints[date], simulation.stats[date], simulation.slots[date]);
-			}
         });
 
         $(document).on('change', 'input[name="hub-choice"],input[name="slot"]', function () {
@@ -71,10 +65,6 @@ var campaign_functions = {
             modals.create_appointment(record.urn, start, attendee)
         });
     },
-	force_simulation:function(){
-		
-		
-	},
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
         $('input[name="position"]').closest('.form-group').hide();
@@ -234,8 +224,6 @@ var quick_planner = {
             if (slots.apps == slots.max_apps) {
                 var btn_text = "Show";
             }
-			if(typeof waypoint.slot1 !== "undefined"){
-			force = "data-force='true'";	
             if (typeof waypoint.slot1.datetime !== "undefined") {
                 var time = waypoint.slot1.datetime;
             } 
@@ -247,7 +235,7 @@ var quick_planner = {
             var holiday = slots.reason ? "class='purple'" : "";
             color = slots.apps >= slots.max_apps && slots.max_apps > 0 ? "class='danger'" : holiday;
             table += "<tr " + color + "><td>" + waypoint.start.uk_date + "</td><td><div class='pointer show-apps' data-date='" + date + "' data-user='" + simulation.user_id + "' " + tooltip + " >" + slots.apps + "/" + slots.max_apps + "</div></td><td>" + stats[5].distance.text + "</td><td>" + stats[5].duration.text + "</td><td><button class='btn btn-default btn-xs simulate' data-date='" + date + "' data-time='" + time + "' data-uk-date='" + waypoint.start.uk_date + "' "+force+" >Simulate</button></td></tr>";
-			}
+
         });
         table += "</tbody></table></div>";
         $('#quick-planner').html(table);

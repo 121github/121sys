@@ -110,8 +110,8 @@ class Planner extends CI_Controller
 	$data[$day]['slot2'] = array("title"=>"This Appointment","postcode"=>$customer_postcode,"app_duration_val"=>$app_duration[1],"app_duration"=>convertToHoursMins(3600/60, '%2dh %2dm'));
 
 	//get distance between slots
-	$travel_info[$day]["2"] = $this->get_journey_details($appointment_1['postcode'],$customer_postcode);
-	$travel_info[$day]["3"] =  $branch_to_customer_details;		
+	$travel_info[$day][2] = $this->get_journey_details($appointment_1['postcode'],$customer_postcode);
+	$travel_info[$day][3] =  $branch_to_customer_details;		
 
 	}
 	
@@ -122,8 +122,8 @@ class Planner extends CI_Controller
 	$data[$day]['slot1'] = array("title"=>"First Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>$app_duration[0],"app_duration"=>convertToHoursMins($appointment_1['app_duration']/60, '%2dh %2dm'));
 	$data[$day]['slot2'] = array("title"=>"Second Appointment","postcode"=>$appointment_2['postcode'],"app_duration_val"=>$app_duration[1],"app_duration"=>convertToHoursMins($appointment_2['app_duration']/60, '%2dh %2dm'));
 	$travel_info[$day][1] = $this->get_journey_details($branch_postcode,$appointment_1['postcode']);
-	$travel_info[$day]["2"] = $this->get_journey_details($appointment_1['postcode'],$appointment_2['postcode']);
-	$travel_info[$day]["3"] =  $this->get_journey_details($appointment_2['postcode'],$branch_postcode);	
+	$travel_info[$day][2] = $this->get_journey_details($appointment_1['postcode'],$appointment_2['postcode']);
+	$travel_info[$day][3] =  $this->get_journey_details($appointment_2['postcode'],$branch_postcode);	
 	//get distance between slots
 	
 	} 
@@ -132,9 +132,9 @@ class Planner extends CI_Controller
 	if($slot=="1"&&$apps=="0"){	
 	$app_duration[0] = 3600;
 	$app_duration[1] = 0;
-	$travel_info[$day]["1"] = $branch_to_customer_details;
-	$travel_info[$day]["2"] = $branch_to_customer_details;
-	$travel_info[$day]["3"] = $stats;
+	$travel_info[$day][1] = $branch_to_customer_details;
+	$travel_info[$day][2] = $branch_to_customer_details;
+	$travel_info[$day][3] = $stats;
 		$data[$day]['slot1'] = array("title"=>"This Appointment","postcode"=>$customer_postcode,"app_duration"=>convertToHoursMins(3600/60, '%2dh %2dm'),"app_duration_val"=>$app_duration[0]);
 		$data[$day]['slot2'] = array("title"=>"Second Appointment","postcode"=>"","app_duration_val"=>$app_duration[1]);
 		
@@ -143,7 +143,7 @@ class Planner extends CI_Controller
 	
 	$data[$day]['branch_end'] = array("title"=>"Branch","postcode"=>$branch_postcode);
 	$data[$day]['destination'] = array("title"=>"Driver Home","postcode"=>$driver_postcode); 
-	$travel_info[$day]["4"]=$driver_to_branch_details;
+	$travel_info[$day][4]=$driver_to_branch_details;
 	}
 
 foreach($travel_info as $day=>$a){
