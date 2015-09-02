@@ -373,14 +373,7 @@ $.ajax({url:'http://www.121system.com/workbooks/create_lead',
 
         $this->load->library('email');
 
-        $config = array(
-            "smtp_host" => "mail.121system.com",
-            "smtp_user" => "mail@121system.com",
-            "smtp_pass" => "L3O9QDirgUKXNE7rbNkP",
-            "smtp_port" => 25
-        );
-
-        $config['mailtype'] = 'html';
+        $config = $this->config->item('email');
 
         $this->email->initialize($config);
 
