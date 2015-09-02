@@ -224,9 +224,12 @@ var quick_planner = {
             if (slots.apps == slots.max_apps) {
                 var btn_text = "Show";
             }
+			if(typeof waypoint.slot1 !== "undefined"){
+				console.log(date);
+			}
             if (typeof waypoint.slot1.datetime !== "undefined") {
                 var time = waypoint.slot1.datetime;
-            }
+            } 
             if (typeof waypoint.slot2.datetime !== "undefined") {
                 var time = waypoint.slot2.datetime;
             }
