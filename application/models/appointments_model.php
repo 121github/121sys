@@ -78,7 +78,7 @@ if($user_id){
 
 /* now push all the data into each day for the next 30 days and if there is a holiday for the day we remove the slots and add the reason */
 
-for($i = 0; $i < 30; $i++){
+for($i = 1; $i < 30; $i++){
 	$date = date("Y-m-d", strtotime('+'. $i .' days'));
 	$this_day =  $thresholds[date("l", strtotime('+'. $i .' days'))];
 	if(array_key_exists($date,$holidays)){

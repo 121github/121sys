@@ -224,7 +224,7 @@ class File_model extends CI_Model
 		$permissions = " '1' as `read`,'1' as `write` ";	
 		}
 		
-        $qry = "select folder_name,filename,filesize,if(name is null,'Anonymous',name) as username,date_format(date_added,'%d/%m/%y %H:%i') date_uploaded,$permissions,accepted_filetypes,file_id from files left join folders using(folder_id) left join users using(user_id) left join folder_permissions using(folder_id) ";
+        $qry = "select folder_name,filename,filesize,if(name is null,'Anonymous',name) as username,date_format(date_added,'%d/%m/%y %H:%i') date_uploaded,$permissions,accepted_filetypes,file_id,concat(folder_name,'/',date_format(date_added,'%Y-%m-%d')) path from files left join folders using(folder_id) left join users using(user_id) left join folder_permissions using(folder_id) ";
 		
 		
         $qry .= $this->get_where($options, $table_columns);
@@ -258,9 +258,9 @@ class File_model extends CI_Model
         $this->load->helper('scan');
         foreach ($files as $k => $row) {
             $files[$k]['filesize'] = formatSizeUnits($row['filesize']);
-            $file_options          = '<span data-file="' . $row['file_id'] . '" class="download-file glyphicon glyphicon-download-alt green pointer tt" data-toggle="tooltip" data-placement="top" title="Compress and download"></span>';
+            $file_options          = '<button data-file="' . $row['file_id'] . '" class="btn btn-xs btn-default download-file"><span  class="glyphicon glyphicon-download pointer"></span> Zip</button>  <a href="'.base_url().'upload/files/'.$row['path'].'/'.$row['filename'].'" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-file"></span> Open</a>';
             if ($row['write'] == "1") {
-                $file_options .= '<span data-file="' . $row['file_id'] . '" class="delete-file marl glyphicon glyphicon-remove red tt" data-toggle="tooltip" data-placement="top" title="Delete file"></span>';
+                $file_options .= '<button data-file="' . $row['file_id'] . '" class="btn btn-xs btn-danger delete-file "><span  class="glyphicon glyphicon-remove"></span> Delete</button>';
             }
             $files[$k]['options'] = $file_options;
         }
