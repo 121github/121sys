@@ -50,31 +50,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
     <!--Need to make a new icon for this
           <link rel="apple-touch-icon" href="<?php echo base_url(); ?>assets/img/apple-touch-icon.png" />-->
-         <script>
-                    function newLocation()
-                    {
-                        if (navigator.geolocation)
-                        {
-                            navigator.geolocation.getCurrentPosition(set_loc,failed_loc,{timeout:10000});
-                        } else
-                        {
-                            x.innerHTML = "Geolocation is not supported by this browser.";
-                        }
-                    }
-					function failed_loc(error){
-					console.log(error);
-					}
-                    function set_loc(position)
-                    {
-                        var latitude = document.getElementById('latitude');
-                        latitude.value = position.coords.latitude;
-
-                        var longitude = document.getElementById('longitude');
-                        longitude.value = position.coords.longitude;
-						alert(latitude.value);
-                    }
-					newLocation()
-                    </script> 
 </head>
 <body>
 <div class="img-circle" id="timerclosed" style="display: none;"><span
