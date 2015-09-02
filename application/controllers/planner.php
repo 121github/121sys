@@ -31,7 +31,7 @@ class Planner extends CI_Controller
 	}
 
 	public function simulate_hsl_planner(){
-	$force==true;	
+	$force=true;	
 		
 	$customer_postcode = $this->input->post('postcode');	
 	$branch_id = $this->input->post('branch_id');	
@@ -89,10 +89,7 @@ class Planner extends CI_Controller
 	//adding uk date format to the start so we can show this instead of mysql
 	$data[$day]['start'] = array("title"=>"Driver Home","postcode"=>$driver_postcode,"uk_date"=>$uk_date);
 	$data[$day]['branch_start'] = array("title"=>"Branch","postcode"=>$branch_postcode);
-	$data[$day]['slot1'] = array();
-	$data[$day]['slot2'] = array();
-	$data[$day]['branch_end'] = array();
-	$data[$day]['destination'] = array();
+
 	/* if a PM appointment has already been booked this day the new appointment will be put first */
 	if($slot=="1"&&$apps=="1"){
 			$app_duration[0] = 3600;
@@ -121,7 +118,7 @@ class Planner extends CI_Controller
 	}
 	
 	/* if the slots are both taken */
-	if($apps=="2"&&$force==true){
+	if($apps=="2"&&$force){
 	$app_duration[0] = $appointment_1['app_duration'];
 	$app_duration[1] = $appointment_2['app_duration'];	
 	$data[$day]['slot1'] = array("title"=>"First Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>$app_duration[0],"app_duration"=>convertToHoursMins($appointment_1['app_duration']/60, '%2dh %2dm'));
@@ -131,12 +128,14 @@ class Planner extends CI_Controller
 	$travel_info[$day]["3"] =  $this->get_journey_details($appointment_2['postcode'],$branch_postcode);	
 	//get distance between slots
 	
-	}  else {
+	}  
+	
+	if($apps=="2"&&!$force){
 	$data[$day]['slot1'] = array("title"=>"First Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>"-","app_duration"=>"-");
 	$data[$day]['slot2'] = array("title"=>"Second Appointment","postcode"=>$appointment_2['postcode'],"app_duration_val"=>"-","app_duration"=>"-");
-	$travel_info[$day]["1"] = array();
-	$travel_info[$day]["2"] =  array();
-	$travel_info[$day]["3"] =   array();		
+	$travel_info[$day]["1"] = $stats;
+	$travel_info[$day]["2"] =  $stats;
+	$travel_info[$day]["3"] =   $stats;		
 	}
 	
 	/* if no slots are taken */
