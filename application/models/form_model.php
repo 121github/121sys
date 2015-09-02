@@ -219,7 +219,7 @@ class Form_model extends CI_Model
     }
     public function get_agents()
     {
-        $qry = "select user_id id,name from users left join role_permissions using(role_id) left join permissions using(permission_id) left join users_to_campaigns using(user_id) where permission_name = 'show footer' and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id";
+        $qry = "select user_id id,name from users left join role_permissions using(role_id) left join permissions using(permission_id) left join users_to_campaigns using(user_id) where permission_name = 'report on' and campaign_id in ({$_SESSION['campaign_access']['list']}) group by user_id";
         
         return $this->db->query($qry)->result_array();
     }
