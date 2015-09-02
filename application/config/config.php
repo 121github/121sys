@@ -373,12 +373,22 @@ $config['proxy_ips'] = '';
 |
 |
 */
+/*
 $config['email'] = array(
     "protocol"=>"smtp",
     "smtp_host"=>"mail.121system.com",
     "smtp_user"=>"mail@121system.com",
     "smtp_pass"=>"L3O9QDirgUKXNE7rbNkP",
     "smtp_port"=>25,
+    "mailtype" => "html"
+);
+*/
+$config['email'] = array(
+    "protocol"=>"smtp",
+    "smtp_host"=>"compsmart.co.uk",
+    "smtp_user"=>"121@compsmart.co.uk",
+    "smtp_pass"=>"3SQ)W5AJ^V8T",
+    "smtp_port"=>49,
     "mailtype" => "html"
 );
 
