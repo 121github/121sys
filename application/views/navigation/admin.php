@@ -2,7 +2,7 @@
                         <li><a href="#admin">Admin</a>
                             <ul id="admin">
                             
-                            <?php if(1==1||$_SESSION['session_name']=="121sys_prosales"){ ?>
+                            <?php if($_SESSION['session_name']=="121sys_prosales"){ ?>
 								   <li><a href="#" id="del-data">Delete demo data</a></li>
                                    <script type="text/javascript">
 								   $(document).on('click','#del-data',function(e){
