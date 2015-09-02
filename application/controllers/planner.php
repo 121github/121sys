@@ -44,7 +44,7 @@ class Planner extends CI_Controller
 	$driver_postcode = $this->Planner_model->get_user_postcode($driver_id);
 	$branch_postcode = $this->Planner_model->get_branch_postcode($branch_id);
 	
-	for($i = 1; $i < 15; $i++){
+	for($i = 1; $i < 30; $i++){
 	if(date("D", strtotime('+'. $i .' days'))<>"Sun"){
 	$days[] = date("Y-m-d", strtotime('+'. $i .' days'));
 	}
