@@ -120,7 +120,7 @@ class Planner extends CI_Controller
 	}
 	
 	/* if the slots are both taken */
-	if($apps=="2"){
+	if($apps<1){
 	$app_duration[0] = $appointment_1['app_duration'];
 	$app_duration[1] = $appointment_2['app_duration'];	
 	$data[$day]['slot1'] = array("title"=>"First Appointment","postcode"=>$appointment_1['postcode'],"app_duration_val"=>$app_duration[0],"app_duration"=>convertToHoursMins($appointment_1['app_duration']/60, '%2dh %2dm'));

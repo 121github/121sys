@@ -117,7 +117,7 @@ var campaign_functions = {
         }).done(function (response) {
             if (response) {
                 var branch_info = "";
-                branch_info += "<table class='table table-condensed table-striped'><thead><tr><th>Hub</th><th>Consultant</th><th>Branch</th><th>Distance</th></tr><thead><tbody>";
+                branch_info += "<table class='table small table-condensed table-striped'><thead><tr><th>Hub</th><th>Consultant</th><th>Branch</th><th>Distance</th></tr><thead><tbody>";
                 $.each(response.branches, function (i, row) {
                     branch_info += "<tr><td>" + row.region_name + "</td><td>" + row.consultants[0].name + "</td><td>" + row.branch_name + "</td><td>" + row.distance + "</td><td><input type='radio' name='hub-choice' data-branch='" + row.branch_id + "' data-region='" + row.region_id + "' value='" + row.drivers[0].id + "'/></td></tr>";
                 });
