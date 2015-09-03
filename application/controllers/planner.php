@@ -75,7 +75,7 @@ class Planner extends CI_Controller
 	$added_distance = $branch_to_customer_details['distance'];
 	$added_duration = $branch_to_customer_details['duration'];
 		//get appointments for user in next 14 days
-	$qry = "select date(start) `app_date`,postcode,TIME_TO_SEC(TIMEDIFF(`end`,`start`)) app_duration, if(time(`start`)<'13:00:00','am','pm') ampm from appointments join appointment_attendees using(appointment_id) join users using(user_id) where user_id = '$driver_id' and date(`start`) = '$day' order by `end` asc";
+	$qry = "select date(start) `app_date`,postcode,TIME_TO_SEC(TIMEDIFF(`end`,`start`)) app_duration, if(time(`start`)<'13:00:00','am','pm') ampm from appointments join appointment_attendees using(appointment_id) join users using(user_id) where user_id = '$driver_id' and date(`start`) = '$day' and `status` = 1 order by `end` asc";
 	$result = $this->db->query($qry)->result_array();
 	
 	$full=false;

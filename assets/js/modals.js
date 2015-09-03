@@ -664,20 +664,17 @@ var modals = {
     set_size: function () {
 		//there is a slight delay while the modal fades in which is fixed with the 500ms timeout function
 		setTimeout(function() {
-		console.log("starting modal resizer")
 		if(device_type!=="default"){
         //this will make the modals mobile responsive :)
         if ($('#modal').hasClass('in')) {
             var height = $(window).height() - 20;
             var mheight = $('.modal-dialog').height();
             if (mheight > height) {
-				console.log("modal is bigger than window");
                 modal_body.css('max-height', 'none').css('height', 'auto');
                 $('body').removeClass('modal-open');
                 $('#modal').css('position', 'absolute');
                 $('.container-fluid').css('height', mheight + 50 + 'px').css('overflow', 'hidden');
             } else {
-				console.log("modal is smaller than window");
                 $('#modal').css('position', 'fixed').css('overflow', 'auto');
                 $('body').addClass('modal-open');
                 $('.container-fluid').css('height', '100%').css('overflow', 'auto');
