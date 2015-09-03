@@ -487,4 +487,38 @@ class Dashboard_model extends CI_Model
 
         return array("today" => $today_sms, "today_url" => $today_url, "all" => $all_sms, "all_url" => $all_url);
     }
+
+
+    public function get_num_appointments_set($filter)
+    {
+        $where = " where 1 ";
+
+        if (isset($filter['date_from'])) {
+            $where .= " and DATE(a.`start`) >= '" . $filter['date_from'] . "' ";
+        }
+        if (isset($filter['date_to'])) {
+            $where .= " and DATE(a.`start`) <= '" . $filter['date_to'] . "' ";
+        }
+
+        $qry = "select
+                    CONCAT(YEAR(a.`start`), '/', WEEK(a.`start`)) week,
+                    count(*) num_appointments,
+                    br.region_name,
+                    br.region_id
+                from appointments a
+                    inner join branch b using (branch_id)
+                    inner join branch_regions br using (region_id)
+                " . $where . "
+                group by CONCAT(YEAR(a.`start`), '/', WEEK(a.`start`)), br.region_id";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+
+    public function get_branch_regions()
+    {
+        $qry = "select * from branch_regions br";
+
+        return $this->db->query($qry)->result_array();
+    }
 }

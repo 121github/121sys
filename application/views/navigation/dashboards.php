@@ -8,6 +8,10 @@
                                 <li <?php echo @($page == 'ghs_dash' ? "class=Selected'" : "") ?>><a
                                         href="<?php echo base_url() ?>dashboard/ghs">GHS Dash</a></li>
                             <?php } ?>
+                            <?php if ($_SESSION['sn'] == 'hsl.121system.com' || $_SESSION['sn'] == 'hcs.hslchairs.com') { ?>
+                                <li <?php echo @($page == 'hsl_dash' ? "class=Selected'" : "") ?>><a
+                                        href="<?php echo base_url() ?>dashboard/hsl">Hsl Dash</a></li>
+                            <?php } ?>
                             <li <?php echo @($page == 'favorites_dash' ? "class=Selected'" : "") ?>><a
                                     href="<?php echo base_url() ?>dashboard/favorites">Favorites</a></li>
                             <li <?php echo @($page == 'overview' ? "class=Selected'" : "") ?>><a
