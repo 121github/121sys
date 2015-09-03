@@ -1,10 +1,10 @@
 <div class="panel panel-primary">
-    <div class="panel-heading">
+    <div class="panel-heading clearfix">
         <i class="fa fa-map-marker fa-fw"></i> Journey planner
         <div class="pull-right">
             <form class="filter-form">
                 <div class="btn-group">
-                    <!--                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>-->
+                    <!--                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Campaign <span class="caret"></span></button>-->
                     <!--                    <ul class="dropdown-menu pull-right" role="menu">-->
                     <!--                        --><?php //foreach($campaign_branch_users as $campaign => $branches): ?>
                     <!--                            --><?php //if (!empty($branches)) { ?>

@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-lg-8">
         <div class="panel panel-primary">
-            <div class="panel-heading"><i class="fa fa-star fa-fw"></i>My
+            <div class="panel-heading clearfix"><i class="fa fa-star fa-fw"></i>My
                 Favorites     <?php if (!isset($_SESSION['current_campaign'])) { ?>
                     <div class="pull-right">
                     <div class="btn-group">
@@ -30,7 +30,7 @@
         </div>
 
         <div class="panel panel-primary">
-            <div class="panel-heading"><i class="fa fa-smile-o fa-fw"></i> Interest Nows
+            <div class="panel-heading clearfix"><i class="fa fa-smile-o fa-fw"></i> Interest Nows
                 <?php if (!isset($_SESSION['current_campaign'])) { ?>
                     <div class="pull-right">
                     <div class="btn-group">
@@ -61,7 +61,7 @@
     <div class="col-lg-4">
         <?php if (isset($_SESSION['current_campaign']) && @$_SESSION['current_campaign'] == 3) { ?>
             <div class="panel panel-primary">
-                <div class="panel-heading"><i class="fa fa-exclamation-circle fa-fw"></i>Pending
+                <div class="panel-heading clearfix"><i class="fa fa-exclamation-circle fa-fw"></i>Pending
                 </div>
                 <div class="panel-body pending-panel">
                     <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
@@ -69,7 +69,7 @@
             </div>
         <?php } ?>
         <div class="panel panel-primary">
-            <div class="panel-heading"><i
+            <div class="panel-heading clearfix"><i
                     class="fa fa-exclamation-triangle fa-fw"></i> Urgent <?php if (!isset($_SESSION['current_campaign'])) { ?>
                     <div class="pull-right">
                     <div class="btn-group">
@@ -93,7 +93,7 @@
             </div>
         </div>
         <div class="panel panel-primary">
-            <div class="panel-heading"><i
+            <div class="panel-heading clearfix"><i
                     class="fa fa-calendar-o fa-fw"></i> Appointments <?php if (!isset($_SESSION['current_campaign'])) { ?>
                     <div class="pull-right">
                     <div class="btn-group">

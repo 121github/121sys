@@ -10,7 +10,7 @@
         <div class="col-lg-12">
           
            <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i> Answers
+            <div class="panel-heading clearfix"> <i class="fa fa-bar-chart-o fa-fw"></i> Answers
              <div class="pull-right">
                 <div class="btn-group">
                   <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>
@@ -25,8 +25,9 @@
               </div>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body answers_panel">
-             <table class="table table-striped table-responsive"><thead><th>Survey</th><th>Completed</th><th>Average NPS</th><th>Perfect 10</th><th>Below 7</th></thead><tbody>
+            <div class="panel-body answers_panel  table-responsive">
+            <?php if(count($answers)>0){ ?>
+             <table class="table table-striped"><thead><th>Survey</th><th>Completed</th><th>Average NPS</th><th>Perfect 10</th><th>Below 7</th></thead><tbody>
              <?php 
 			 foreach($answers as $row){
 				//create the url for the click throughs
@@ -38,12 +39,15 @@
 			 }
 			 ?>
              </tbody></table>
+             <?php } else { ?>
+             <p>No surveys have been completed</p>
+             <?php } ?>
             </div>
             <!-- /.panel-body --> 
           </div>
           
            <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i> <span class="panel-title">Answers Chart</span> 
+            <div class="panel-heading clearfix"> <i class="fa fa-bar-chart-o fa-fw"></i> <span class="panel-title">Answers Chart</span> 
              <div class="pull-right">
                 <div class="btn-group">
                   <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Filter <span class="caret"></span> </button>

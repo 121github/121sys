@@ -1,5 +1,5 @@
 <div class="panel panel-primary" id="slot-availability">
-  <div class="panel-heading">Slot Availability
+  <div class="panel-heading clearfix">Slot Availability
     <div class="pull-right">
     <form>
     <input type="hidden" id="slot-distance" name="distance" value="" />

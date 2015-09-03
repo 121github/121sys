@@ -1,5 +1,5 @@
 <div class="panel panel-primary">
-	<div class="panel-heading">Branch Info   <div class="pull-right">  <div class="btn-group">
+	<div class="panel-heading clearfix">Branch Info   <div class="pull-right">  <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Hub <span class="caret"></span></button>
         <ul class="dropdown-menu">
         <?php foreach($regions as $row){ ?>
@@ -14,6 +14,6 @@
       </div>
       </div>
       </div>
-	<div class="panel-body"  id="branch-info"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+	<div class="panel-body table-responsive"  id="branch-info"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
     
 </div>

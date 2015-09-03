@@ -1,5 +1,5 @@
  <div class="panel panel-primary contact-panel">
-      <div class="panel-heading">
+      <div class="panel-heading clearfix">
         <h4 class="panel-title"> Contact Details<?php if(in_array("add contacts",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pointer pull-right" data-modal="add-contact" data-urn="<?php echo $details['record']["urn"] ?>"></span><?php } ?></h4>
       </div>
       <!-- List group -->

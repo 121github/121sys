@@ -71,7 +71,7 @@ var answers = {
 //adjust the height of the xlabel container so that they fit
 $('svg').attr('height','460');
 				} else {
-				$('#answers-chart').html('<h4>No surveys found</h4>');	
+				$('#answers-chart').html('<p>No surveys have been completed</p>');	
 				}
 			});
 }

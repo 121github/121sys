@@ -1,5 +1,5 @@
     <div class="panel panel-primary webforms-panel">
-      <div class="panel-heading">Calendar</div>
+      <div class="panel-heading clearfix">Calendar</div>
       <div class="panel-body">
         <div class="panel-content"> 
          <div class="responsive-calendar">

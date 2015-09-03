@@ -4,6 +4,17 @@ var modals = {
         modal_footer = $('#modal').find('.modal-footer');
         modal_header = $('#modal').find('.modal-title');
         modal_body = $('#modal').find('.modal-body');
+		$(document).on('click','[data-toggle="tab"]',function(e){
+			console.log($(this).attr('href'));
+			var tab = $(this).attr('href');
+			if(tab=="#tab-planner"||tab=="#phone"){
+			modal_body.css('overflow','visible');
+			} else {
+			modal_body.css('overflow','auto');	
+			}
+		});
+		
+		
 		$(document).on('click','[data-dismiss="modal"]',function(e){
 			$('.container-fluid').removeAttr('style');
 		});
@@ -619,8 +630,6 @@ var modals = {
             $("#modal").draggable({
                 handle: ".modal-header,.modal-footer"
             });
-            modals.set_size();
-
         }
 
         modal_body.css('padding', '20px');
@@ -650,25 +659,32 @@ var modals = {
             $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
         });
         $("#modal").find("#tabs").tab();
+		modals.set_size();
     },
     set_size: function () {
+		//there is a slight delay while the modal fades in which is fixed with the 500ms timeout function
+		setTimeout(function() {
+		console.log("starting modal resizer")
 		if(device_type!=="default"){
         //this will make the modals mobile responsive :)
         if ($('#modal').hasClass('in')) {
             var height = $(window).height() - 20;
             var mheight = $('.modal-dialog').height();
             if (mheight > height) {
-                modal_body.css('height', 'auto');
+				console.log("modal is bigger than window");
+                modal_body.css('max-height', 'none').css('height', 'auto');
                 $('body').removeClass('modal-open');
                 $('#modal').css('position', 'absolute');
                 $('.container-fluid').css('height', mheight + 50 + 'px').css('overflow', 'hidden');
             } else {
-                $('#modal').css('position', 'fixed');
+				console.log("modal is smaller than window");
+                $('#modal').css('position', 'fixed').css('overflow', 'auto');
                 $('body').addClass('modal-open');
                 $('.container-fluid').css('height', '100%').css('overflow', 'auto');
             }
         }
 		}
+		}, 500);
     },
     set_location: function () {
 
@@ -911,7 +927,6 @@ var modals = {
         }
         modals.load_modal(mheader, mbody, mfooter);
         modal_body.css('padding:0px');
-		modal_body.css('overflow', 'visible');
     },
     view_filter_options: function () {
         $.ajax({

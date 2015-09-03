@@ -1,5 +1,5 @@
   <div class="panel panel-primary record-panel">
-      <div class="panel-heading">Record Details
+      <div class="panel-heading clearfix">Record Details
         <?php if($details['record']['favorite']){ ?>
         <span class="pull-right pointer" id="favorite-btn" action="remove"><span class="glyphicon glyphicon-star yellow"></span> Remove from favourites</span>
         <?php } else { ?>

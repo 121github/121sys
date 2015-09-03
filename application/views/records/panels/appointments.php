@@ -1,5 +1,5 @@
     <div class="panel panel-primary">
-      <div class="panel-heading">Appointments  <?php if(in_array("add appointments",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pointer pull-right marl" data-modal="create-appointment" data-urn="<?php echo $record['urn'] ?>"></span><?php } ?> <span class="glyphicon glyphicon-calendar pull-right pointer view-calendar pointer"></span></div>
+      <div class="panel-heading clearfix">Appointments  <?php if(in_array("add appointments",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pointer pull-right marl" data-modal="create-appointment" data-urn="<?php echo $record['urn'] ?>"></span><?php } ?> <span class="glyphicon glyphicon-calendar pull-right pointer view-calendar pointer"></span></div>
       <div class="panel-body appointment-panel"> 
         <div class="panel-content"> 
           <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
@@ -9,7 +9,7 @@
     
     <!--
         <div class="panel panel-primary webforms-panel">
-      <div class="panel-heading">Calendar</div>
+      <div class="panel-heading clearfix">Calendar</div>
       <div class="panel-body">
         <div class="panel-content"> 
          <div class="responsive-calendar">

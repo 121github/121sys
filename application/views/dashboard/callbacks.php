@@ -9,7 +9,7 @@
           <div class="row">
             <div class="col-lg-12">
         <div class="panel panel-primary" id="a_callbacks">
-          <div class="panel-heading"> <i class="fa fa-phone fa-fw"></i> Callbacks 
+          <div class="panel-heading clearfix"> <i class="fa fa-phone fa-fw"></i> Callbacks 
             <div class="pull-right">
                <form class="callbacks-filter" data-func="callbacks_panel">
             	<div class="btn-group">
@@ -24,7 +24,7 @@
 			      <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo (!empty($btntext)?$btntext:"Today"); ?> </span></button></div>
 			       <?php if(!isset($_SESSION['current_campaign'])){ ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Campaign</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Campaign <span class="caret"></span></button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($campaigns as $row): ?>
 	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="campaign"><?php echo $row['name'] ?></a> </li>
@@ -36,7 +36,7 @@
                   <?php } ?>
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Agent <span class="caret"></span></button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($agents as $row): ?>
 	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="agent"><?php echo $row['name'] ?></a> </li>
@@ -48,7 +48,7 @@
                   <?php } ?>
                     <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Team <span class="caret"></span></button></button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($team_managers as $row): ?>
 	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="team"><?php echo $row['name'] ?></a> </li>
@@ -59,7 +59,7 @@
                   </div>
                  <?php } ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Source</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Source <span class="caret"></span></button></button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($sources as $row): ?>
 	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="source"><?php echo $row['name'] ?></a> </li>

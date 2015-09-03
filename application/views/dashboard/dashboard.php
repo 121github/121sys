@@ -12,8 +12,8 @@
 
         <!-- /.panel -->
         <div class="panel panel-primary call-history">
-            <div class="panel-heading">
-                <i class="fa fa-history fa-fw"></i> Latest Call History</span>
+            <div class="panel-heading clearfix" >
+                <i class="fa fa-history fa-fw"></i> Recent Activity</span>
                 <div class="pull-right">
                     <form class="history-filter" data-func="history_panel">
                         <input type="hidden" name="date_from" value="">
@@ -25,7 +25,7 @@
                         <?php if (!isset($_SESSION['current_campaign'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span> Campaign
+                                        data-toggle="dropdown"><span class="caret"></span> Campaign
                                 </button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($campaigns as $row): ?>
@@ -41,7 +41,7 @@
                         <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span> Agent
+                                        data-toggle="dropdown">Agent <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($agents as $row): ?>
@@ -56,7 +56,7 @@
                         <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>Team
+                                        data-toggle="dropdown">Team <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($team_managers as $row): ?>
@@ -80,7 +80,7 @@
         </div>
         <!-- /.panel -->
         <div class="panel panel-primary">
-            <div class="panel-heading"><i class="fa fa-comments fa-fw"></i> Latest Comments
+            <div class="panel-heading clearfix"><i class="fa fa-comments fa-fw"></i> Latest Comments
                 <div class="pull-right">
                     <form class="comments-filter" data-func="comments_panel">
                         <input type="hidden" name="date_from" value="">
@@ -93,7 +93,7 @@
                         <?php if (!isset($_SESSION['current_campaign'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span> Campaign
+                                        data-toggle="dropdown"><span class="caret"></span> Campaign
                                 </button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($campaigns as $row): ?>
@@ -109,7 +109,7 @@
                         <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span> Agent
+                                        data-toggle="dropdown">Agent <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($agents as $row): ?>
@@ -124,7 +124,7 @@
                         <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>Team
+                                        data-toggle="dropdown">Team <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($team_managers as $row): ?>
@@ -166,7 +166,7 @@
     <div class="col-lg-4">
         <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
             <div class="panel panel-primary">
-                <div class="panel-heading"><i class="fa fa-list-alt fa-fw"></i> System Statistics
+                <div class="panel-heading clearfix"><i class="fa fa-list-alt fa-fw"></i> System Statistics
                     <div class="pull-right">
                         <form class="stats-filter" data-func="system_stats">
                             <input type="hidden" name="date_from" value="">
@@ -178,7 +178,7 @@
                             <?php if (!isset($_SESSION['current_campaign'])) { ?>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                            data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>
+                                            data-toggle="dropdown"><span class="caret"></span>
                                         Campaign
                                     </button>
                                     <ul class="dropdown-menu pull-right" role="menu">
@@ -195,7 +195,7 @@
                             <!-- doesnt fit on panel
                   <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span> Agent</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach ($agents as $row): ?>
 	                    <li><a href="#" class="filter" data-ref="agent" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
@@ -207,7 +207,7 @@
                   <?php } ?>
                     <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span>Team</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach ($team_managers as $row): ?>
 	                    <li><a href="#" class="filter" data-ref="team" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
@@ -233,7 +233,7 @@
         <?php } ?>
         <?php if (in_array("email", $_SESSION['permissions'])) { ?>
             <div class="panel panel-primary">
-                <div class="panel-heading"><i class="fa fa-envelope-o fa-fw"></i> Email Statistics
+                <div class="panel-heading clearfix"><i class="fa fa-envelope-o fa-fw"></i> Email Statistics
                     <div class="pull-right">
                         <form class="emails-filter" data-func="emails_panel">
                             <input type="hidden" name="date_from" value="">
@@ -245,7 +245,7 @@
                             <?php if (!isset($_SESSION['current_campaign'])) { ?>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                            data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>
+                                            data-toggle="dropdown"><span class="caret"></span>
                                         Campaign
                                     </button>
                                     <ul class="dropdown-menu pull-right" role="menu">
@@ -262,7 +262,7 @@
                             <!-- doesnt fit on panel
                   <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span> Agent</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach ($agents as $row): ?>
 	                    <li><a href="#" class="filter" data-ref="agent" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
@@ -274,7 +274,7 @@
                   <?php } ?>
                     <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span>Team</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach ($team_managers as $row): ?>
 	                    <li><a href="#" class="filter" data-ref="team" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
@@ -300,14 +300,14 @@
         <?php } ?>
         <?php if (in_array("sms", $_SESSION['permissions'])) { ?>
             <div class="panel panel-primary">
-                <div class="panel-heading"><i class="glyphicon glyphicon-phone"></i> Sms Statistics
+                <div class="panel-heading clearfix"><i class="glyphicon glyphicon-phone"></i> Sms Statistics
                     <div class="pull-right">
                         <form class="sms-filter" data-func="sms_panel">
                             <input type="hidden" name="campaign">
                             <?php if (!isset($_SESSION['current_campaign'])) { ?>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                            data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>
+                                            data-toggle="dropdown"><span class="caret"></span>
                                         Campaign
                                     </button>
                                     <ul class="dropdown-menu pull-right" role="menu">
@@ -335,7 +335,7 @@
             </div>
         <?php } ?>
         <div class="panel panel-primary">
-            <div class="panel-heading"><i class="fa fa-bell fa-fw"></i> Todays Outcomes
+            <div class="panel-heading clearfix"><i class="fa fa-bell fa-fw"></i> Todays Outcomes
                 <div class="pull-right">
                     <form class="outcomes-filter" data-func="outcomes_panel">
                         <input type="hidden" name="date_from" value="">
@@ -347,7 +347,7 @@
                         <?php if (!isset($_SESSION['current_campaign'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span> Campaign
+                                        data-toggle="dropdown"><span class="caret"></span> Campaign
                                 </button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($campaigns as $row): ?>
@@ -363,7 +363,7 @@
                         <!-- doesnt fit on panel
                   <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span> Agent</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach ($agents as $row): ?>
 	                    <li><a href="#" class="filter" data-ref="agent" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
@@ -375,7 +375,7 @@
                   <?php } ?>
                     <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span>Team</button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach ($team_managers as $row): ?>
 	                    <li><a href="#" class="filter" data-ref="team" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>

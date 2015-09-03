@@ -1,5 +1,5 @@
 <div class="panel panel-primary company-panel">
-    <div class="panel-heading">
+    <div class="panel-heading clearfix">
         <h4 class="panel-title"> Company Details
             <?php if (in_array("add companies", $_SESSION['permissions'])){ ?><!--Not using this feature yet. Need to clear the company id value in form if we start using it--><span
                 class="glyphicon glyphicon-plus pointer pull-right" data-modal="add_company" data-urn="<?php echo $details['record']["urn"] ?>" style="display:none"></span><?php } ?>

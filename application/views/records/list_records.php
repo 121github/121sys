@@ -1,5 +1,5 @@
 <div class="panel panel-primary">
-    <div class="panel-heading">
+    <div class="panel-heading clearfix">
         <i class="fa fa-list fa-fw"></i>
         Record List
         <div class="pull-right">
@@ -86,7 +86,7 @@
                         </form>
                     </div>
                     <div class="panel panel-primary directionsPanel-container">
-                        <div class="panel-heading">
+                        <div class="panel-heading clearfix">
                             Route
                         </div>
                         <div class="panel-body" style="font-size: 12px; overflow: auto; height: 500px;">

@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary">
-          <div class="panel-heading"> <i class="fa fa-bar-chart-o fa-fw"></i> Productivity Report
+          <div class="panel-heading clearfix"> <i class="fa fa-bar-chart-o fa-fw"></i> Productivity Report
             <div class="pull-right">
             <form class="filter-form">
             	<div class="btn-group">
@@ -33,7 +33,7 @@
 
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Agent</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Agent <span class="caret"></span></button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($agents as $row): ?>
 	                    <li><a href="#" class="agent-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
@@ -45,7 +45,7 @@
                   <?php } ?>
                     <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span>Team</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Team <span class="caret"></span></button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($team_managers as $row): ?>
 	                    <li><a href="#" class="team-filter" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>
@@ -59,7 +59,7 @@
             </div>
           </div>
           <!-- /.panel-heading -->
-          <div class="panel-body productivity-panel">
+          <div class="panel-body productivity-panel  table-responsive">
               <table class="table productivity-table">
                   <thead></thead>
                   <tbody>

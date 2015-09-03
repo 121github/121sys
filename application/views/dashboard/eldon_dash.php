@@ -10,7 +10,7 @@
 
   <div class="col-md-12"> 
     <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-search fa-fw"></i> Search
+            <div class="panel-heading clearfix"> <i class="fa fa-search fa-fw"></i> Search
             </div>
               <div class="panel-body search-panel">
 
@@ -82,7 +82,7 @@ Found: <span class="record-count"></span> <a href="#" class="submit-filter" >Vie
        <div class="row">
         <div class="col-lg-12">
                   <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> Admin Tasks</div>
+            <div class="panel-heading clearfix"> <i class="fa fa-clock-o fa-fw"></i> Admin Tasks</div>
                        <div class="panel-body" id="tasks-panel">
                 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />
                 </div>
@@ -93,7 +93,7 @@ Found: <span class="record-count"></span> <a href="#" class="submit-filter" >Vie
       <div class="row">
         <div class="col-lg-12">
                   <div class="panel panel-primary">
-            <div class="panel-heading"> <i class="fa fa-clock-o fa-fw"></i> Overdue Visits
+            <div class="panel-heading clearfix"> <i class="fa fa-clock-o fa-fw"></i> Overdue Visits
                <div class="pull-right"> <form id="overdue-filter" data-func="overdue_panel">
             	  <input type="hidden" name="date_from" value="">
                   <input type="hidden" name="date_to" value="">
@@ -105,7 +105,7 @@ Found: <span class="record-count"></span> <a href="#" class="submit-filter" >Vie
                   			      <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> Last updated </span></button></div>
                   <?php if(!isset($_SESSION['current_campaign'])){ ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" > <span class="glyphicon glyphicon-filter"></span> Campaign</button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" > Campaign <span class="caret"></span></button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($campaigns as $row): ?>
 	                    <li><a href="#" class="filter" data-ref="campaign" id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a> </li>

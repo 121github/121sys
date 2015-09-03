@@ -1,5 +1,5 @@
     <div class="panel panel-primary webforms-panel">
-      <div class="panel-heading">Webforms</div>
+      <div class="panel-heading clearfix">Webforms</div>
       <div class="panel-body">
         <div class="panel-content"> 
           <?php foreach($webforms as $webform){ ?>

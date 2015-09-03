@@ -1,5 +1,5 @@
  <div class="panel panel-primary attachment-panel">
-      <div class="panel-heading">
+      <div class="panel-heading clearfix">
         <h4 class="panel-title"> Attachments<?php if(in_array("add attachment",$_SESSION['permissions'])){ ?>
                 <span class="glyphicon glyphicon-plus fileinput-button pull-right">
                     <!-- The file input field used as target for the file upload widget -->

@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
-            <div class="panel-heading"><i class="fa fa-bar-chart-o fa-fw"></i> Sms Report
+            <div class="panel-heading clearfix"><i class="fa fa-bar-chart-o fa-fw"></i> Sms Report
                 <div class="pull-right">
                     <form class="filter-form">
                         <div class="btn-group">
@@ -27,8 +27,7 @@
                         </div>
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-filter"></span> Template
-                            </button>
+                                Template <span class="caret"></span></button>
                             <ul class="dropdown-menu pull-right" role="menu">
                                 <?php foreach ($templates as $row): ?>
                                     <li><a href="#" class="template-filter"
@@ -40,8 +39,7 @@
                         </div>
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-filter"></span> Campaign
-                            </button>
+                                Campaign <span class="caret"></span></button>
                             <ul class="dropdown-menu pull-right" role="menu">
                                 <?php foreach ($campaigns as $row): ?>
                                     <li><a href="#" class="campaign-filter"
@@ -54,8 +52,7 @@
                         <?php if (in_array("by team", $_SESSION['permissions'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>Team
-                                </button>
+                                        data-toggle="dropdown">Team <span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($team_managers as $row): ?>
                                         <li><a href="#" class="team-filter"
@@ -69,8 +66,7 @@
                         <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span> Agent
-                                </button>
+                                        data-toggle="dropdown">Agent <span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($agents as $row): ?>
                                         <li><a href="#" class="agent-filter"
@@ -83,8 +79,7 @@
                         <?php } ?>
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-filter"></span> Source
-                            </button>
+                                Source <span class="caret"></span></button>
                             <ul class="dropdown-menu pull-right" role="menu">
                                 <?php foreach ($sources as $row): ?>
                                     <li><a href="#" class="source-filter"
@@ -98,7 +93,7 @@
                 </div>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body sms-data">
+            <div class="panel-body sms-data table-responsive">
                 <table class="table ajax-table">
                     <thead>
                     <tr>
