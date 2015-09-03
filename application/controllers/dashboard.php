@@ -82,6 +82,30 @@ class Dashboard extends CI_Controller
         $this->template->load('default', 'dashboard/eldon_dash.php', $data);
     }
 
+    //this laods the hsl dashboard view
+    public function hsl()
+    {
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Dashboard',
+            'title' => 'Dashboard',
+            'page' => 'hsl_dash',
+            'javascript' => array(
+                'charts.js',
+                'dashboard.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js',
+                'dashboards/hsl.js',
+            ),
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'dashboard/hsl_dash.php', $data);
+    }
+
 
     //this laods the user dashboard view  
     public function user_dash()
@@ -443,6 +467,75 @@ class Dashboard extends CI_Controller
             echo json_encode(array(
                 "success" => true,
                 "data" => $data,
+                "msg" => "No records found"
+            ));
+        }
+
+    }
+
+    public function get_appointments_by_region_and_week()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->helper('date');
+
+            $filter = $this->input->post();
+            if (isset($_SESSION['current_campaign'])) {
+                $filter['campaign'] = $_SESSION['current_campaign'];
+            }
+
+            $date_from = new \DateTime("now");
+            $date_to = new \DateTime("now + 6 week - 1 day");
+            $filter['date_from'] = $date_from->format("Y-m-d");
+            $filter['date_to'] = $date_to->format("Y-m-d");
+
+            //Get the appointments for the next 6 weeks grouped by region
+            $num_appointments_set = $this->Dashboard_model->get_num_appointments_set($filter);
+
+            $aux = array();
+            $weeks = array();
+            foreach ($num_appointments_set as $val) {
+                if (!isset($aux[$val['region_id']])) {
+                    $aux[$val['region_id']] = array(
+                        'region_name' => $val['region_name']
+                    );
+                }
+
+                $week = explode("/", $val['week']);
+                $key = $val['week'];
+
+                $aux[$val['region_id']][$key] = array(
+                    'num_appointments' => $val['num_appointments']
+                );
+
+                $val['week'] = getStartAndEndDateByMonth($week[1], $week[0]);
+                $weeks[$key] = $val['week'];
+            }
+            $data = $aux;
+
+
+            //Get the rest weeks where there is no appointments
+            for ($i = 0; $i < 6; $i++) {
+                $date = new \DateTime(strtotime($date_from->format("U")) . " + " . $i . " week");
+                if (!isset($weeks[$date->format("Y/W")])) {
+                    $weeks[$date->format("Y/W")] = getStartAndEndDateByMonth($date->format("W"), $date->format("Y"));
+                }
+            }
+            ksort($weeks);
+
+            //Get regions
+            $regions = $this->Dashboard_model->get_branch_regions();
+            foreach ($regions as $region) {
+                if (!isset($data[$region['region_id']])) {
+                    $data[$region['region_id']] = array(
+                        "region_name" => $region['region_name']
+                    );
+                }
+            }
+
+            echo json_encode(array(
+                "success" => (!empty($num_appointments_set)),
+                "data" => $data,
+                "weeks" => $weeks,
                 "msg" => "No records found"
             ));
         }
