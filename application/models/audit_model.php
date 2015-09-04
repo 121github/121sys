@@ -9,6 +9,118 @@ class Audit_model extends CI_Model {
         parent::__construct();
     }
   
+ 
+ public function get_custom_panel_name($urn){
+	 $this->db->select("custom_panel_name");
+	 $this->db->join("records","records.campaign_id=campaigns.campaign_id");
+	 $this->db->where("urn",$urn);
+		return  $this->db->get("campaigns")->row()->custom_panel_name;	 
+ }
+ 
+############## log custom fields functions ###########################################
+
+#################################################################################### 
+  
+   //custom field inserted
+      public function log_custom_fields_insert($data = array(),$urn=NULL) {
+			$id = $data['detail_id'];
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "insert",
+                'table_name' => 'record_details',
+                'reference' => $id,
+				'urn' => $urn
+            );
+        $this->db->insert('audit', $details);
+        $audit_id = $this->db->insert_id();
+		$log_fields = array("c1","c2","c3","c3","c5","c6","d1","d2","dt1","dt2","n1","n2","n3");
+		
+			//get the custom field names
+		$field_names = array();
+		$custom_fields_query = "select field,field_name from record_details_fields join records using(campaign_id) join campaigns using(campaign_id) where urn = '".$urn."'";
+		$custom_field_result = $this->db->query($custom_fields_query)->result_array();
+		foreach($custom_field_result as $row){
+		$field_names[$row['field']] = $row['field_name'];	
+		}
+
+		
+        foreach ($data as $column => $value) {
+             if (in_array($column,$log_fields)&&!empty($value)) {
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $field_names[$column],
+                'oldval' => "",
+                'newval' => $value
+            );
+                $this->db->insert('audit_values', $fields);
+            }
+        }
+        return $audit_id;
+    }
+  
+  //custom field updated
+    public function log_custom_fields_update($data = array(),$urn=NULL) {
+		
+        $id = $data['detail_id'];
+        $qry = "SELECT * from record_details WHERE detail_id = '$id'";
+		
+        $original = $this->db->query($qry)->result_array();
+        foreach ($original[0] as $key => $value) {
+			
+            if (!array_key_exists($key, $data)) {
+                unset($original[0][$key]);
+            }
+        }
+		foreach($data as $k=>$v){
+		if(in_array($k,array("d1","d2"))){
+		$date = DateTime::createFromFormat('d/m/Y', $v)->format('Y-m-d');
+		$data[$k]=	$date;
+		}
+		if(in_array($k,array("dt1","dt2"))){
+		$date = DateTime::createFromFormat('d/m/Y H:i:s', $v)->format('Y-m-d H:i:s');
+		$data[$k]=	$date;
+		}
+		}
+        $diff = array_diff($data, $original[0]);
+        $audit_id = NULL;
+
+        if (count($diff) > 0) {
+            $details = array(
+                'user_id' => $_SESSION['user_id'],
+                'change_type' => "update",
+                'table_name' => 'record_details',
+                'reference' => $id,
+				'urn' => $urn
+            );
+            $this->db->insert('audit', $details);
+			//$this->firephp->log($this->db->last_query());
+            $audit_id = $this->db->insert_id();
+        }
+
+		//get the custom field names
+		$field_names = array();
+		$custom_fields_query = "select field,field_name from record_details_fields join records using(campaign_id) join campaigns using(campaign_id) where urn = '".$data['urn']."'";
+		$custom_field_result = $this->db->query($custom_fields_query)->result_array();
+		foreach($custom_field_result as $row){
+		$field_names[$row['field']] = $row['field_name'];	
+		}
+
+        foreach ($diff as $column => $value) {
+            $oldval = (empty($original[0][$column]) ? "" : $original[0][$column]);
+            $fields = array(
+                'audit_id' => $audit_id,
+                'column_name' => $field_names[$column],
+                'oldval' => $oldval,
+                'newval' => $value
+            );
+
+            $this->db->insert('audit_values', $fields);
+        }
+
+        return $audit_id;
+    }
+  
+  
 ####################################################################################
 
 ############## log company functions ###########################################
@@ -239,6 +351,7 @@ class Audit_model extends CI_Model {
 ####################################################################################
 //appointment inserted
  public function log_appointment_insert($data = array(),$urn=NULL) {
+	 $this->firephp->log($data);
 	 		unset($data['attendees']);
 			$id = $data['appointment_id'];
             $details = array(
@@ -246,13 +359,13 @@ class Audit_model extends CI_Model {
                 'change_type' => "insert",
                 'table_name' => 'appointments',
                 'reference' => $id,
-				'urn' => $urn
+				'urn' => $data['urn']
             );
         $this->db->insert('audit', $details);
         $audit_id = $this->db->insert_id();
-
+		$log_fields = array("address","appointment_type_id","start","end","text","title","contact_id","postcode");
         foreach ($data as $column => $value) {
-            if (!empty($value)) {
+		if (in_array($column,$log_fields)&&!empty($value)) {
             $fields = array(
                 'audit_id' => $audit_id,
                 'column_name' => $column,
@@ -279,10 +392,7 @@ class Audit_model extends CI_Model {
 		
         //compare the new data with the old data to see what has changed
         $diff = array_diff($data, $original);
-        //$this->firephp->log($original[0]);
         $audit_id = NULL;
-		$this->firephp->log($data);
-		$this->firephp->log($original);
         //if something has changed we log the change
         if (count($diff) > 0) {
             $details = array(

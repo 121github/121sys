@@ -10,6 +10,11 @@ class Webform_model extends CI_Model
     }
 	
 	
+	public function get_webform_answers($webform_id,$urn){
+	$qry = "select * from webform_answers where urn = '$urn' and webform_id = '$webform_id'";
+	return $this->db->query($qry)->row_array();	
+	}
+	
 	public function check_form_permission($email_id,$urn,$campaign_id){
 		//check the email id matches the urn so custoemrs can only see their own form
 		$qry = "select * from records left join email_history using(urn) where email_history.urn = '$urn' and email_id = '$email_id' and campaign_id = '$campaign_id'";

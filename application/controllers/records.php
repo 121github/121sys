@@ -920,15 +920,15 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 
                 $state = false;
                 if(empty($data['appointment_id'])){
+					$id = $this->Records_model->save_appointment($data);
+					$data['appointment_id'] = $id;
                     $this->Audit_model->log_appointment_insert($data);
-                    $id = $this->Records_model->save_appointment($data);
                     $state = 'inserted';
 				} else {
                     $this->Audit_model->log_appointment_update($data);
                     $id = $this->Records_model->save_appointment($data);
                     $state = 'updated';
 				}
-				
 				
 				$response = array(
                     "success" => true,

@@ -544,7 +544,7 @@ var modals = {
 			modal_body.css('overflow', 'visible');
             modals.appointment_contacts(urn);
 			if(typeof campaign_functions !== "undefined"){
-				campaign_functions.appointment_setup(start,attendee);
+				campaign_functions.appointment_setup(start);
 			}
         });
     },

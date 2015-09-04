@@ -142,7 +142,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <br>
             <select id="contact-name">
                 <?php foreach ($contacts as $contact) { ?>
-                    <option <?php if ($contact['contact_id'] == $values['a1']) {
+                    <option <?php if ($contact['contact_id'] == @$values['a1']) {
                         echo "selected";
                     } ?> value="<?php echo $contact['contact_id'] ?>"><?php echo $contact['name'] ?></option>
                 <?php } ?>
@@ -153,8 +153,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     $(document).on('change', '#contact-name', function () {
                         $("#contact-id").val($(this).val());
                         $('#contact-fullname').val($("#contact-name option:selected").text());
-
                     });
+					 $("#contact-name").trigger("change");
                 });
             </script>
         </div>

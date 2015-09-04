@@ -1,5 +1,6 @@
 <form style="padding:0 20px;" id="appointment-form" class="form-horizontal">
     <input type="hidden" name="appointment_id">
+      <input type="hidden" name="branch_id">
     <input type="hidden" name="urn" value="<?php echo $urn ?>">
 
     <div class="row">
@@ -53,7 +54,7 @@
     <div class="row">
         <div class="col-xs-12 col-xs-6">
             <div class="form-group input-group-sm">
-                <p>Please choose the attendee <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
+                <p>Please choose the attendee(s) <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
                                                     data-title="Whoever the appointment is set for will recieve an email notification containing all the details"></span>
                 </p>
                 <select name="attendees[]" id="attendee-select" class="selectpicker attendeepicker"

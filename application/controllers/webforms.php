@@ -14,7 +14,16 @@ class Webforms extends CI_Controller
             //$this->User_model->validate_login('admin', md5('pass123'));
 			//user_auth_check();del');
     }
-    
+    public function get_webform_answers(){
+		$urn = $this->input->post('urn');
+		$webform_id = $this->input->post('urn');
+		$answers = $this->Webform_model->get_webform_answers($webform_id,$urn);
+		if(count($answers)>0){
+		echo json_encode(array("success"=>true,"answers"=>$answers));	
+		} else {
+		echo json_encode(array("success"=>false,"error"=>"Webform does not exist for this record"));		
+		}
+	}
     
 	public function remote(){
 		

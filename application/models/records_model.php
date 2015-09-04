@@ -1164,9 +1164,11 @@ class Records_model extends CI_Model
         }
         if (!empty($post['detail_id'])) {
             $this->db->where("detail_id", $post['detail_id']);
-            return $this->db->update("record_details", $post);
+            $this->db->update("record_details", $post);
+			return $post['detail_id'];
         } else {
-            return $this->db->insert("record_details", $post);
+           $this->db->insert("record_details", $post);
+		    return $this->db->insert_id();
         }
     }
 
@@ -1218,10 +1220,9 @@ class Records_model extends CI_Model
     {
         $attendees = $post['attendees'];
         unset($post['attendees']);
-if(!isset($post['branch_id'])){
-		$branch_id = $this->get_branch_from_attendee($attendees[0]);
-		$post['branch_id']  = $branch_id;
-}
+		if(empty($post['branch_id'])){
+		 $post['branch_id'] = NULL;
+		}
         if ($post['contact_id'] == 'other') {
             $post['contact_id'] = NULL;
         }

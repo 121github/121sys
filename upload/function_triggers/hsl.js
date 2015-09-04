@@ -60,9 +60,8 @@ var campaign_functions = {
 
         $(document).on('click', '.continue-simulation', function (e) {
             e.preventDefault();
-            var attendee = $('input[name="hub-choice"]:checked').val();
             var start = $(this).attr('data-date');
-            modals.create_appointment(record.urn, start, attendee)
+            modals.create_appointment(record.urn, start)
         });
     },
     contact_form_setup: function () {
@@ -72,12 +71,31 @@ var campaign_functions = {
         $('input[name="facebook"]').closest('.form-group').hide();
         $('input[name="linkedin"]').closest('.form-group').hide();
     },
-    appointment_setup: function (start, attendee) {
+    appointment_setup: function (start) {
+		var attendee = $('input[name="hub-choice"]:checked').val();
+		var branch = $('input[name="hub-choice"]:checked').attr('data-branch');
         campaign_functions.hsl_coverletter_address();
         campaign_functions.set_appointment_start(start);
         campaign_functions.set_appointment_attendee(attendee);
+		campaign_functions.set_appointment_contact();
         $('[name="title"]').val("Home Consultancy");
+		$('[name="branch_id"]').val(branch);
     },
+	set_appointment_contact:function(){
+		$.ajax({url:helper.baseUrl+'webforms/get_webform_answers',
+		data:{urn:record.urn,webform_id:"1"},
+		dataType:"JSON",
+		type:"POST"
+		}).done(function(response){
+			if(response.success){
+		$('.contactpicker').selectpicker('val', [response.answers.a1]);
+			} else {
+			alert("You have not completed the webform yet!");	
+			}
+		}).fail(function(){
+			flashalert.danger("There was an error finding the default contact");
+		});;
+	},
     appointment_edit_setup: function () {
         campaign_functions.hsl_coverletter_address();
     },

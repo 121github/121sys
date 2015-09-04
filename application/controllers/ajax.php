@@ -49,10 +49,10 @@ class Ajax extends CI_Controller
     public function get_branch_info()
     {
         $this->load->model('Branches_model');
-        if ($this->input->post('postcode') && !$this->input->post('branch_id')) {
+        if ($this->input->post('postcode') && !$this->input->post('region_id')) {
             $result = $this->Branches_model->get_branch_info(false, $this->input->post('postcode'));
-        } else if ($this->input->post('branch_id')) {
-            $result = $this->Branches_model->get_branch_info($this->input->post('branch_id'), $this->input->post('postcode'));
+        } else if ($this->input->post('region_id')) {
+            $result = $this->Branches_model->get_branch_info($this->input->post('region_id'), $this->input->post('postcode'));
         }
         echo json_encode($result);
     }
@@ -1023,7 +1023,16 @@ class Ajax extends CI_Controller
                     $info[$k] = NULL;
                 }
             }
-            if ($this->Records_model->save_additional_info($info)) {
+			if(!empty($info['detail_id'])){
+			$this->Audit_model->log_custom_fields_update($info,$info['urn']);
+			$id = $this->Records_model->save_additional_info($info);
+			} else {
+			$id = $this->Records_model->save_additional_info($info);
+			$info['detail_id'] = $id;
+			$this->Audit_model->log_custom_fields_insert($info,$info['urn']);	
+			}
+			
+            if ($id) {
                 echo json_encode(array(
                     "success" => true,
                     "msg" => "The information has been updated"
