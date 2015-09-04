@@ -63,6 +63,9 @@ var campaign_functions = {
             var start = $(this).attr('data-date');
             modals.create_appointment(record.urn, start)
         });
+		$(document).on('click','[data-modal="delete-appointment"]',function(){
+			$('[name="cancellation_reason"]').text("Appointment cancelled").hide();
+		});
     },
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
