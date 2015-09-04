@@ -777,6 +777,7 @@ class Audit_model extends CI_Model {
 public function audit_data($count=false,$options=false){
 	      $table_columns = array(
             "campaign_name",
+			"urn",
             "table_name",
             "change_type",
             "name",
@@ -784,16 +785,22 @@ public function audit_data($count=false,$options=false){
         );
         $order_columns = array(
             "campaign_name",
+			"urn",
             "table_name",
             "change_type",
             "name",
             "timestamp"
         );
-	
-	$qry = "select campaign_name,table_name,change_type,column_name,name,date_format(`timestamp`,'%d/%m/%Y %H:%i') `timestamp`,urn,audit_id from audit left join audit_values using(audit_id) left join records using(urn) left join campaigns using(campaign_id) left join users using(user_id)";
+	if($count){
+		$fields = "audit_id";
+	} else {
+		$fields = "campaign_name,table_name,change_type,column_name,name,date_format(`timestamp`,'%d/%m/%Y %H:%i') `timestamp`,urn,audit_id ";
+	}
+	$qry = "select $fields from audit left join audit_values using(audit_id) left join records using(urn) left join campaigns using(campaign_id) left join users using(user_id)";
 	$where = $this->get_where($options, $table_columns);
 		$qry .= $where;
 	if($count){
+		$qry .= " group by audit_id";
 	return $this->db->query($qry)->num_rows();
 	}
 	
