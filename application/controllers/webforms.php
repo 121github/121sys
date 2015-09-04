@@ -16,7 +16,7 @@ class Webforms extends CI_Controller
     }
     public function get_webform_answers(){
 		$urn = $this->input->post('urn');
-		$webform_id = $this->input->post('urn');
+		$webform_id = $this->input->post('webform_id');
 		$answers = $this->Webform_model->get_webform_answers($webform_id,$urn);
 		if(count($answers)>0){
 		echo json_encode(array("success"=>true,"answers"=>$answers));	
