@@ -326,7 +326,7 @@ class Form_model extends CI_Model
         if (in_array("all campaigns", $_SESSION['permissions'])) {
             $qry = "select template_id id,template_name name from email_templates order by template_name";
         } else {
-            $qry = "select template_id id,template_name name from email_templates left join email_template_to_campaigns using(template_id) where campaign_id in({$_SESSION['campaign_access']['list']}) order by template_name";
+            $qry = "select template_id id,template_name name from email_templates left join email_template_to_campaigns using(template_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by template_id order by template_name";
         }
         return $this->db->query($qry)->result_array();
     }
@@ -373,6 +373,7 @@ class Form_model extends CI_Model
         $this->db->from("sms_templates t");
         $this->db->join("sms_template_to_campaigns c", "c.template_id = t.template_id");
         $this->db->where("c.campaign_id", $campaign_id);
+		 $this->db->group_by("t.template_id");
         return $this->db->get()->result_array();
     }
 
