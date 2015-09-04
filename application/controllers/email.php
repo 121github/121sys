@@ -327,7 +327,7 @@ class Email extends CI_Controller
 
                 $webform = $this->Email_model->get_webform_id($placeholder_data[0]['campaign_id']);
                 //if a webform placeholder is in the email create the link
-                $url = "http://www.121system.com/webforms/remote/" . $placeholder_data[0]['campaign_id'] . "/" . $urn . "/" . $webform . "/" . $email_id;
+                $url = base_url()."webforms/remote/" . $placeholder_data[0]['campaign_id'] . "/" . $urn . "/" . $webform . "/" . $email_id;
                 $form_to_send['body'] = str_replace("[webform]", $url, $form_to_send['body']);
 
                 //Send the email
@@ -543,10 +543,10 @@ class Email extends CI_Controller
 
         //unsubscribe link
         if (isset($form['template_unsubscribe']) && @$form['template_unsubscribe'] == "1") {
-            $form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10px;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='http://www.121system.com/email/unsubscribe/" . base64_encode($form['template_id']) . "/" . base64_encode($form['urn']) . "'>unsubscribe</a></p>";
+            $form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10px;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='".base_url()."email/unsubscribe/" . base64_encode($form['template_id']) . "/" . base64_encode($form['urn']) . "'>unsubscribe</a></p>";
         };
         if (isset($form['email_id'])) {
-            $form['body'] .= "<br><img style='display:none;' src='http://www.121system.com/email/image?id=" . $form['email_id'] . "'>";
+            $form['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?id=" . $form['email_id'] . "'>";
         }
 
         $config = $this->config->item('email');

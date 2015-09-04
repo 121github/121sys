@@ -78,7 +78,7 @@ overdue_visits:function(){
             $.each(response.data, function (i, val) {
                     tbody += "<tr class='pointer' data-modal='view-record' data-urn='"+ val.urn +"'><td>" + val.type + "</td><td>" + val.category + "</td><td>" + val.name + "</td><td>" + val.owner + "</td><td>" + val.last_update + "</td><td>" + val.outcome + "</td></tr>";
             });
-			var table = '<div class="table-responsive"><table class="table table-bordered table-hover table-striped"><thead><tr><th>Campaign</th><th>Category</th><th>Company</th><th>User</th><th>Date Update</th><th>Outcome</th></tr></thead><tbody>'+tbody+'</tbody></table></div>'
+			var table = '<div class="table-responsive"><table class="table table-bordered table-hover table-striped"><thead><tr><th>Campaign</th><th>Category</th><th>Company</th><th>User</th><th>Last update</th><th>Outcome</th></tr></thead><tbody>'+tbody+'</tbody></table></div>'
 			$('#overdue-panel').html(table);
 			} else {
 			$('#overdue-panel').html('<p>No records need to be visited yet</p>');	
