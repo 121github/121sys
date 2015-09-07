@@ -29,8 +29,7 @@ class Ajax extends CI_Controller
         $this->firephp->log($this->input->post('coverletter_address'));
         if ($this->input->post('coverletter_address') || $this->input->post('coverletter_address') != '') {
             $_SESSION['cover_letter_address'] = $this->input->post('coverletter_address');
-        }
-        else {
+        } else {
             unset($_SESSION['cover_letter_address']);
         }
     }
@@ -1000,7 +999,7 @@ class Ajax extends CI_Controller
                 }
                 //check if its a special field ie-ownership,client_ref or color
                 if (in_array($k, $custom_fields)) {
-                    $qry = "select field_name,is_color,is_owner,is_client_ref from record_details_fields join campaigns 		using(campaign_id) join records using(campaign_id) where urn = '$urn' and field = '$k'";
+                    $qry = "select field_name,is_color,is_owner,is_client_ref from record_details_fields join campaigns using(campaign_id) join records using(campaign_id) where urn = '$urn' and field = '$k'";
                     $special_fields = $this->db->query($qry)->result_array();
                     foreach ($special_fields as $row) {
                         if ($row['is_color'] == 1) {
@@ -1023,15 +1022,15 @@ class Ajax extends CI_Controller
                     $info[$k] = NULL;
                 }
             }
-			if(!empty($info['detail_id'])){
-			$this->Audit_model->log_custom_fields_update($info,$info['urn']);
-			$id = $this->Records_model->save_additional_info($info);
-			} else {
-			$id = $this->Records_model->save_additional_info($info);
-			$info['detail_id'] = $id;
-			$this->Audit_model->log_custom_fields_insert($info,$info['urn']);	
-			}
-			
+            if (!empty($info['detail_id'])) {
+                $this->Audit_model->log_custom_fields_update($info, $info['urn']);
+                $id = $this->Records_model->save_additional_info($info);
+            } else {
+                $id = $this->Records_model->save_additional_info($info);
+                $info['detail_id'] = $id;
+                $this->Audit_model->log_custom_fields_insert($info, $info['urn']);
+            }
+
             if ($id) {
                 echo json_encode(array(
                     "success" => true,
