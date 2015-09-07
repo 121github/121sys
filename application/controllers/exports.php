@@ -15,6 +15,7 @@ class Exports extends CI_Controller
     public function index()
     {
 		$campaigns = $this->Form_model->get_user_campaigns();
+        $sources = $this->Form_model->get_sources();
         $users = $this->Form_model->get_users_with_email();
 
         $data = array(
@@ -32,6 +33,7 @@ class Exports extends CI_Controller
                 'daterangepicker-bs3.css'
             ),
 			'campaigns' => $campaigns,
+            'sources' => $sources,
             'users' => $users
         );
         $this->template->load('default', 'exports/view_exports.php', $data);
@@ -104,6 +106,8 @@ class Exports extends CI_Controller
             $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : $nowDate->format('Y-m-d'));
             $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
             $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+            $options['source'] = ($this->input->post('source') ? $this->input->post('source') : "");
+            $options['source_name'] = ($this->input->post('source_name') ? str_replace(" ", "", $this->input->post('source_name')) : "");
             $options['export_forms_id'] = ($this->input->post('export_forms_id') ? $this->input->post('export_forms_id') : "");
 
 

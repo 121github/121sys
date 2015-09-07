@@ -61,13 +61,16 @@ class Export_model extends CI_Model
         if ($export_form['campaign_filter'] && isset($options['campaign']) && !empty($options['campaign'])) {
             $qry .= " and ".$export_form['campaign_filter']." = '" . $options['campaign'] . "' ";
         }
+        if ($export_form['source_filter'] && isset($options['source']) && !empty($options['source'])) {
+            $qry .= " and " . $export_form['source_filter'] . " = '" . $options['source'] . "' ";
+        }
         if ($export_form['group_by']) {
             $qry .= " group by ".$export_form['group_by'];
         }
         if ($export_form['order_by']) {
             $qry .= " order by ".$export_form['order_by'];
         }
-		
+
         $result = $this->db->query($qry)->result_array();
 
         return $result;
