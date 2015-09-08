@@ -399,7 +399,13 @@ var record = {
 							
 							if (helper.permissions['set call direction'] > 0) {
 							 call_direction_header = "<th>Direction</th>";
-							 if(val.call_direction=="Inbound"){  var direction = '<span class="fa fa-sign-in"></span>'; } else {  var direction = '<span class="fa fa-sign-out"></span>'; }
+                                if (val.call_direction == "Inbound") {
+                                    var direction = '<span class="fa fa-sign-in"></span>';
+                                } else if (val.call_direction == "Outbound") {
+                                    var direction = '<span class="fa fa-sign-out"></span>';
+                                } else {
+                                    var direction = '<span class="fa fa-ban"></span>';
+                                }
 							 call_direction = "<td>"+direction+"</td>";
 							}
                             if (helper.permissions['edit history'] > 0) {
@@ -506,7 +512,7 @@ var record = {
 			   if (helper.permissions['set call direction'] > 0) {
 				   var outbound_selected = data.call_direction=="0"?"selected":""
 				   var inbound_selected = data.call_direction=="1"?"selected":""
-			direction_input ="<div class='form-group'><label>Call direction</label><br><select name='call_direction' id='selectpicker_direction' class='selectpicker_call_direction'><option value='1' "+inbound_selected+">Inbound</option><option value='0' "+outbound_selected+">Outbound</option></select></div>";
+                   direction_input = "<div class='form-group'><label>Call direction</label><br><select name='call_direction' id='selectpicker_direction' class='selectpicker_call_direction'><option value=''>No direction</option><option value='1' " + inbound_selected + ">Inbound</option><option value='0' " + outbound_selected + ">Outbound</option></select></div>";
 			   } else {
 			  direction_input = ""; 
 			   }

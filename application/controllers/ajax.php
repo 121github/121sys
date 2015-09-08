@@ -937,6 +937,9 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
+            if ($form['call_direction'] == '') {
+                $form['call_direction'] = NULL;
+            }
             $form['contact'] = to_mysql_datetime($form['contact']);
             if ($this->Records_model->save_history($form)) {
                 echo json_encode(array(
