@@ -1423,7 +1423,7 @@ END:VCALENDAR';
         $section->addTextBreak(1);
 
         $section->addText(htmlspecialchars('Yours sincerely,'),array('name' => 'Tahoma', 'size' => 10));
-        $section->addTextBreak(4);
+        $section->addTextBreak(3);
 
         $section->addText(htmlspecialchars('Home Consultation Service Team'),array('name' => 'Tahoma', 'size' => 10));
 
