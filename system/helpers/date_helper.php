@@ -616,13 +616,14 @@ if ( ! function_exists('timezones'))
 if (!function_exists('getStartAndEndDateByMonth')) {
 	function getStartAndEndDateByMonth($week, $year)
 	{
-
 		$time = strtotime("1 January $year", time());
 		$day = date('w', $time);
 		$time += ((7 * $week) + 1 - $day) * 24 * 3600;
 		$return[0] = date('d/m/Y', $time);
+		$return[2] = date('Y-m-d', $time);
 		$time += 6 * 24 * 3600;
 		$return[1] = date('d/m/Y', $time);
+		$return[3] = date('Y-m-d', $time);
 
 		return $return;
 	}

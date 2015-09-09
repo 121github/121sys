@@ -497,7 +497,7 @@ class Dashboard_model extends CI_Model
             $where .= " and DATE(a.`start`) >= '" . $filter['date_from'] . "' ";
         }
         if (isset($filter['date_to'])) {
-            $where .= " and DATE(a.`start`) <= '" . $filter['date_to'] . "' ";
+            $where .= " and DATE(a.`start`) < '" . $filter['date_to'] . "' ";
         }
 
         $qry = "select

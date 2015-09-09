@@ -479,13 +479,20 @@ class Dashboard extends CI_Controller
             $this->load->helper('date');
 
             $filter = $this->input->post();
-            if (isset($_SESSION['current_campaign'])) {
-                $filter['campaign'] = $_SESSION['current_campaign'];
+
+            if (!$filter['date_from']) {
+                $date_form = new \DateTime("now");
+            } else {
+                $date_form = new \DateTime($filter['date_from']);
             }
 
-            $date_from = new \DateTime("now");
-            $date_to = new \DateTime("now + 6 week - 1 day");
-            $filter['date_from'] = $date_from->format("Y-m-d");
+            //Get the las monday
+            $date_form = clone $date_form->modify(('Sunday' == $date_form->format('l')) ? 'Monday last week' : 'Monday this week');
+
+            $date_to = clone $date_form;
+            $date_to->add(new DateInterval('P5W'));
+
+            $filter['date_from'] = $date_form->format("Y-m-d");
             $filter['date_to'] = $date_to->format("Y-m-d");
 
             //Get the appointments for the next 6 weeks grouped by region
@@ -514,13 +521,27 @@ class Dashboard extends CI_Controller
 
 
             //Get the rest weeks where there is no appointments
-            for ($i = 0; $i < 6; $i++) {
-                $date = new \DateTime(strtotime($date_from->format("U")) . " + " . $i . " week");
+
+            for ($i = 0; $i < 5; $i++) {
+                $date = clone $date_form;
+                $date->add(new DateInterval('P' . $i . 'W'));
+
+                //$this->firephp->log($date->format('Y/W'));
+                $date_last_day = clone $date;
+                $date_last_day->modify('Sunday this week');
+                //$this->firephp->log($date->format('dmY'));
                 if (!isset($weeks[$date->format("Y/W")])) {
+                    //$weeks[$date->format("Y/W")][0] = $date->format("d/m/Y");
+                    //$weeks[$date->format("Y/W")][1] = $date_last_day->format("d/m/Y");
+                    //$weeks[$date->format("Y/W")][2] = $date->format("Y-m-d");
+                    //$weeks[$date->format("Y/W")][3] = $date_last_day->format("Y-m-d");
                     $weeks[$date->format("Y/W")] = getStartAndEndDateByMonth($date->format("W"), $date->format("Y"));
                 }
             }
             ksort($weeks);
+
+            //$this->firephp->log($data);
+            //$this->firephp->log($weeks);
 
             //Get regions
             $regions = $this->Dashboard_model->get_branch_regions();
@@ -535,8 +556,7 @@ class Dashboard extends CI_Controller
             echo json_encode(array(
                 "success" => (!empty($num_appointments_set)),
                 "data" => $data,
-                "weeks" => $weeks,
-                "msg" => "No records found"
+                "weeks" => $weeks
             ));
         }
 

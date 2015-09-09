@@ -355,7 +355,10 @@ class Search extends CI_Controller
             "sent-sms-time" => "hour(sms_history.sent_date)",
             "sms-status" => "sms_history.status_id",
             "user-sms-sent-id" => "user-sms-sent-id",
-            "template-sms" => "template-sms"
+            "template-sms" => "template-sms",
+            "start-date-appointment-from" => "start-date-appointment-from",
+            "start-date-appointment-to" => "start-date-appointment-to",
+            "branch-region" => "branch-region"
         );
         
         $search_fields_2 = array(

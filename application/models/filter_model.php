@@ -947,6 +947,29 @@ return $this->db->get('record_details_options')->result_array();
             unset($array['sent-sms-to']);
         }
 
+        //only join the appointment tables if we need them
+        $appointment_qry = "";
+        if (in_array("start-date-appointment-from", $fields) || in_array("start-date-appointment-from", $fields)) {
+            $qry .= " inner join appointments a on a.urn = records.urn ";
+
+            if (in_array("start-date-appointment-from", $fields)) {
+                $appointment_qry .= " and date(a.start) >= '" . $array['start-date-appointment-from'] . "'";
+                unset($array['start-date-appointment-from']);
+            }
+            if (in_array("start-date-appointment-to", $fields)) {
+                $appointment_qry .= " and date(a.start) < '" . $array['start-date-appointment-to'] . "'";
+                unset($array['start-date-appointment-to']);
+            }
+
+            if (in_array("branch-region", $fields)) {
+                $qry .= " inner join branch b on b.branch_id = a.branch_id ";
+
+                $appointment_qry .= " and b.region_id = " . $array['branch-region'];
+                unset($array['branch-region']);
+            }
+        }
+
+
         $user_sms_sent_qry = '';
         if (in_array("user-sms-sent-id", $fields)) {
             $sent_date_qry .= " and sms_history.user_id = '" . $array['user-sms-sent-id'] . "'";
@@ -1083,8 +1106,7 @@ return $this->db->get('record_details_options')->result_array();
         }
 
 
-
-        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry $contact_telephone_qry $contact_postcode_qry $contact_fullname_qry $comany_name_qry $company_telephone_qry $company_postcode_qry $client_ref_qry";
+        $qry .= " where campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) $parked $agent $all_transfer $all_dials $contact_qry $email_qry $sent_date_qry $template_qry $parked_qry $update_date_qry $contact_telephone_qry $contact_postcode_qry $contact_fullname_qry $comany_name_qry $company_telephone_qry $company_postcode_qry $client_ref_qry $appointment_qry";
 
         //check the tabel header filter
         foreach ($options['columns'] as $k => $v) {
