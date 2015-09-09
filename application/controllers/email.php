@@ -1328,7 +1328,12 @@ END:VCALENDAR';
         $start_time = $start_date->format("G:ia");
         $end_time = $end_date->format("G:ia");
         $today_date = new \DateTime('now');
-        $today_day = $today_date->format("jS F Y");
+        $today_day = array(
+            "day" => $today_date->format("j"),
+            "superscript" => $today_date->format("S"),
+            "month" => $today_date->format("F"),
+            "year" => $today_date->format("Y")
+        );
 
         \PhpOffice\PhpWord\Autoloader::register();
 
@@ -1372,18 +1377,20 @@ END:VCALENDAR';
         );
         // Adding Text element to the Section having font styled by default...
         //$section->addText(htmlspecialchars((isset($title)?$title.' ':'').$name.' '.$surname), "ContactDetailsStyle");
-		$section->addTextBreak(6);
+        $section->addTextBreak(4);
 		$section->addText(htmlspecialchars($reference), "ContactDetailsStyle");
-        $section->addText(htmlspecialchars($fullname), "ContactDetailsStyle");
+        $textrun = $section->addTextRun();
+        $textrun->addText(htmlspecialchars($today_day['day']), "ContactDetailsStyle");
+        $textrun->addText(htmlspecialchars($today_day['superscript']), array('name' => 'Tahoma', 'size' => 10, 'color' => '1B2232', 'bold' => true, 'superscript' => true));
+        $textrun->addText(htmlspecialchars(" " . $today_day['month'] . " " . $today_day['year']), "ContactDetailsStyle");
+        $section->addText(htmlspecialchars($fullname), "ContactDetailsStyle", array("spaceAfter" => 0.3));
         $addresses = explode(',',$address);
         foreach($addresses as  $address) {
             if (strlen(trim($address)) > 0) {
                 $section->addText(htmlspecialchars(trim($address)), "ContactDetailsStyle", array("spaceAfter" => 0.3));
             }
         }
-        $section->addTextBreak(1, "ContactDetailsStyle");
-        $section->addText(htmlspecialchars($today_day), "ContactDetailsStyle");
-        $section->addTextBreak(1, "ContactDetailsStyle");
+        $section->addTextBreak(2, "ContactDetailsStyle");
         $section->addText(htmlspecialchars('Dear '.$fullname), "ContactDetailsStyle");
         $section->addTextBreak(0, "ContactDetailsStyle");
 
