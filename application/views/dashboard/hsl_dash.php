@@ -32,73 +32,62 @@
     </div>
 </div>
 
+
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-4">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <i class="fa fa-clock-o fa-fw"></i>
-                Appointment checklist
+                Completed Webform
             </div>
-            <div class="panel-body" id="webform-panel">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Completed Webform
-                            </div>
-                            <div class="panel-body" id="completed-panel">
-                                <table class='table table-striped table-condensed'>
-                                    <thead>
-                                    <tr>
-                                        <th>Completed</th>
-                                        <th>Uncompleted</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td><?php echo $webform_completed['completed'] . " (" . round(($webform_completed['completed'] * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
-                                        <td><?php echo $webform_completed['uncompleted'] . " (" . round(($webform_completed['uncompleted'] * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Where did you hear about us?
-                            </div>
-                            <div class="panel-body" id="hear-panel">
-                                <table class='table table-striped table-condensed'>
-                                    <?php foreach ($webform_hear as $key => $val) { ?>
-                                        <tr>
-                                            <th><?php echo $key; ?></th>
-                                            <td><?php echo $val . " (" . round(($val * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Origin/source of the lead
-                            </div>
-                            <div class="panel-body" id="source-panel">
-                                <table class='table table-striped table-condensed'>
-                                    <?php foreach ($webform_source as $key => $val) { ?>
-                                        <tr>
-                                            <th><?php echo $key; ?></th>
-                                            <td><?php echo $val . " (" . round(($val * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="panel-body" id="completed-panel">
+                <table class='table table-striped table-condensed'>
+                    <thead>
+                    <tr>
+                        <th>Completed</th>
+                        <th>Uncompleted</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><?php echo $webform_completed['completed'] . " (" . round(($webform_completed['completed'] * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
+                        <td><?php echo $webform_completed['uncompleted'] . " (" . round(($webform_completed['uncompleted'] * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Where did you hear about us?
+            </div>
+            <div class="panel-body" id="hear-panel">
+                <table class='table table-striped table-condensed'>
+                    <?php foreach ($webform_hear as $key => $val) { ?>
+                        <tr>
+                            <th><?php echo $key; ?></th>
+                            <td><?php echo $val . " (" . round(($val * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
+                        </tr>
+                    <?php } ?>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Origin/source of the lead
+            </div>
+            <div class="panel-body" id="source-panel">
+                <table class='table table-striped table-condensed'>
+                    <?php foreach ($webform_source as $key => $val) { ?>
+                        <tr>
+                            <th><?php echo $key; ?></th>
+                            <td><?php echo $val . " (" . round(($val * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
+                        </tr>
+                    <?php } ?>
+                </table>
             </div>
         </div>
     </div>
