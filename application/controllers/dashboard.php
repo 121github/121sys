@@ -85,6 +85,40 @@ class Dashboard extends CI_Controller
     //this laods the hsl dashboard view
     public function hsl()
     {
+        $webform_id = 1;
+        $webform_data = $this->Dashboard_model->get_webform_data($webform_id);
+
+        $webform_completed = array("completed" => 0, "uncompleted" => 0, "total" => count($webform_data));
+        $webform_hear = array();
+        $webform_source = array();
+
+        foreach ($webform_data as $data) {
+            if ($data['completed_on']) {
+                $webform_completed['completed'] = $webform_completed['completed'] + 1;
+            } else {
+                $webform_completed['uncompleted'] = $webform_completed['uncompleted'] + 1;
+            }
+
+            //Hear about
+            if ($data['a24'] == '') {
+                $data['a24'] = 'No answer';
+            }
+            if (!isset($webform_hear[$data['a24']])) {
+                $webform_hear[$data['a24']] = 0;
+            }
+            $webform_hear[$data['a24']]++;
+
+            //Source
+            if ($data['a25'] == '') {
+                $data['a25'] = 'No answer';
+            }
+            if (!isset($webform_source[$data['a25']])) {
+                $webform_source[$data['a25']] = 0;
+            }
+            $webform_source[$data['a25']]++;
+        }
+
+
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Dashboard',
@@ -95,8 +129,11 @@ class Dashboard extends CI_Controller
                 'dashboard.js',
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'dashboards/hsl.js',
+                'dashboards/hsl.js'
             ),
+            'webform_completed' => $webform_completed,
+            'webform_hear' => $webform_hear,
+            'webform_source' => $webform_source,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',

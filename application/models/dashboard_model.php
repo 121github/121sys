@@ -521,4 +521,16 @@ class Dashboard_model extends CI_Model
 
         return $this->db->query($qry)->result_array();
     }
+
+
+    public function get_webform_data($webform_id)
+    {
+        $qry = "SELECT *
+                from webforms w
+                inner join webform_answers wa using (webform_id)
+                inner join webform_questions wq using (webform_id)
+                where w.webform_id = " . $webform_id;
+
+        return $this->db->query($qry)->result_array();
+    }
 }
