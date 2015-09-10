@@ -33,14 +33,14 @@ if ($_SESSION['environment'] == "acceptance" || $_SESSION['environment'] == "tes
 
     define('PRIVATE_TABLE', '3000283421');
     define('SOUTHWAY_TABLE', '3000283398');
-	define('CITYWEST_TABLE', '3000283398');
+    define('CITYWEST_TABLE', '3000283398');
 
 } else if ($_SESSION['environment'] == "production") {
 //Live tables
 
     define('PRIVATE_TABLE', '3000282959');
     define('SOUTHWAY_TABLE', '3000283129');
-	define('CITYWEST_TABLE', '3000284157');
+    define('CITYWEST_TABLE', '3000284157');
 
 }
 
@@ -71,12 +71,12 @@ class Trackvia extends CI_Controller
 
         $this->tv_views = array(
             "GHS Southway Total" => SOUTHWAY_ALL_RECORDS,
-			 "GHS Citywest Total" => CITYWEST_ALL_RECORDS,
+            "GHS Citywest Total" => CITYWEST_ALL_RECORDS,
             "GHS Private Total" => PRIVATE_ALL_RECORDS,
             "GHS Southway survey" => SOUTHWAY_BOOK_SURVEY,
             "GHS Southway rebook" => SOUTHWAY_REBOOK,
             "GHS Southway booked" => SOUTHWAY_SURVEY_SLOTS,
-			"GHS Citywest survey" => CITYWEST_BOOK_SURVEY,
+            "GHS Citywest survey" => CITYWEST_BOOK_SURVEY,
             "GHS Citywest rebook" => CITYWEST_REBOOK,
             "GHS Citywest booked" => CITYWEST_SURVEY_SLOTS,
             "GHS Private survey" => PRIVATE_BOOK_SURVEY,
@@ -92,22 +92,23 @@ class Trackvia extends CI_Controller
             "GHS Private rebook" => 38,
             "GHS Private booked" => 36,
             "GHS Private not viable" => 40,
-			"GHS Citywest survey" => 41,
-            "GHS Citywest rebook" => 42,
-            "GHS Citywest booked" => 43);
+            "GHS Citywest survey" => 46,
+            "GHS Citywest rebook" => 47,
+            "GHS Citywest booked" => 48);
         $this->headers = "From: noreply@121system.com" . "\r\n" .
             "CC: steve.prior@globalheatsource.com";
     }
 
-	public function check_voicemail(){
-	$urn = $this->input->post('urn');
-	$qry = "select urn from history join outcomes using(outcome_id) where delay_hours > 0 and urn = $urn";
-	if($this->db->query($qry)->num_rows()==4){
-	echo json_encode(array("success"=>true));
-	}
-		
-	}
-	
+    public function check_voicemail()
+    {
+        $urn = $this->input->post('urn');
+        $qry = "select urn from history join outcomes using(outcome_id) where delay_hours > 0 and urn = $urn";
+        if ($this->db->query($qry)->num_rows() == 4) {
+            echo json_encode(array("success" => true));
+        }
+
+    }
+
     public function get_counts()
     {
         $sources = $this->source_config;
@@ -118,20 +119,20 @@ class Trackvia extends CI_Controller
                 $data[$name] = array("source" => $sources[$name], "one2one" => $this->Trackvia_model->get_121_counts($name));
                 if ($this->input->post('tv') || $this->uri->segment(3) == "tv") {
                     $data[$name]["trackvia"] = 0;
-					for($page=1;$page<15;$page++){
-                    $view = $this->getAllViewRecords($view_id,$page);
-						if(isset($view['record_count'])){
-                    if ($this->uri->segment(4) == "debug") {
-                        echo "<pre>";
-                        print_r($view);
-                        echo "</pre>";
-                        echo "<br>";
+                    for ($page = 1; $page < 15; $page++) {
+                        $view = $this->getAllViewRecords($view_id, $page);
+                        if (isset($view['record_count'])) {
+                            if ($this->uri->segment(4) == "debug") {
+                                echo "<pre>";
+                                print_r($view);
+                                echo "</pre>";
+                                echo "<br>";
+                            }
+                            $data[$name]["trackvia"] += $view['record_count'];
+                        } else {
+                            continue;
+                        }
                     }
-                    $data[$name]["trackvia"] += $view['record_count'];
-						} else { 
-						continue;
-						}
-					}
                 } else {
                     $data[$name]["trackvia"] = false;
                 }
@@ -142,13 +143,14 @@ class Trackvia extends CI_Controller
 
     }
 
-	public function fix_non_contacts(){
-			$query = "select urn from records where outcome_id = 137 and campaign_id in (22,29,32)";
-		foreach($this->db->query($query)->result_array() as $row){
-		$urn 	= $row['urn'];
-		$this->unable_to_contact($urn);
-		}
-	}
+    public function fix_non_contacts()
+    {
+        $query = "select urn from records where outcome_id = 137 and campaign_id in (22,29,32)";
+        foreach ($this->db->query($query)->result_array() as $row) {
+            $urn = $row['urn'];
+            $this->unable_to_contact($urn);
+        }
+    }
 
     public function get_rebookings()
     {
@@ -160,12 +162,13 @@ class Trackvia extends CI_Controller
         $result = $this->Trackvia_model->get_rebookings($campaign);
         echo json_encode(array("success" => true, "data" => $result));
     }
-	
-	
-	public function check_southway(){
-		 //SOUTHWAY DATA
+
+
+    public function check_southway()
+    {
+        //SOUTHWAY DATA
         $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id = 22");
-		 //Book View
+        //Book View
         echo "<br>Checking the SOUTHWAY_BOOK_SURVEY(" . SOUTHWAY_BOOK_SURVEY . ") view";
         echo "<br>";
         $this->checkView(
@@ -216,13 +219,15 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 20
             )
         );
-		$this->check_trackvia(22);
-	}
-	public function check_citywest(){
-		 //CITYWEST DATA
-		$this->db->query("update records set parked_code=2,source_id = 49 where campaign_id = 32");
-		//CITYWEST
-		/*        echo "<br>Checking the CITYWEST_ALL_RECORDS(" . CITYWEST_ALL_RECORDS . ") view";
+        $this->check_trackvia(22);
+    }
+
+    public function check_citywest()
+    {
+        //CITYWEST DATA
+        $this->db->query("update records set parked_code=2,source_id = 49 where campaign_id = 32");
+        //CITYWEST
+        /*        echo "<br>Checking the CITYWEST_ALL_RECORDS(" . CITYWEST_ALL_RECORDS . ") view";
         echo "<br>";
         $this->checkView(
             CITYWEST_ALL_RECORDS,
@@ -239,9 +244,9 @@ class Trackvia extends CI_Controller
 
             )
         );
-		*/
-		
-		   //Book View
+        */
+
+        //Book View
         echo "<br>Checking the CITYWEST_BOOK_SURVEY(" . CITYWEST_BOOK_SURVEY . ") view";
         echo "<br>";
         $this->checkView(
@@ -292,13 +297,15 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 20
             )
         );
-		$this->check_trackvia(32);
-	}
-	public function check_private(){
-			//PRIVATE DATA
-		$this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
-		
-		//
+        $this->check_trackvia(32);
+    }
+
+    public function check_private()
+    {
+        //PRIVATE DATA
+        $this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
+
+        //
 //        //PRIVATE TABLE
 //
         //Private Residential View
@@ -389,25 +396,25 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 30
             )
         );
-		$this->check_trackvia(29);
+        $this->check_trackvia(29);
 
-	}
-	
-	
+    }
+
+
     public function check_trackvia($campaign_id)
     {
-  //queries we may want to run after the updates can go here
+        //queries we may want to run after the updates can go here
         $this->db->query("update records set map_icon ='fa-home' where campaign_id = '$campaign_id'");
         $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id = '$campaign_id'");
         $this->db->query("update contacts inner join records using(urn)     inner join data_sources using(source_id) set notes = source_name where campaign_id = '$campaign_id' and records.source_id is not null");
-		
-		$query = "select urn from records join campaigns using(campaign_id) where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id = '$campaign_id'";
-		foreach($this->db->query($query)->result_array() as $row){
-		$urn 	= $row['urn'];
-		$this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 137,outcome_reason_id=NULL, record_status=3 where urn = '$urn'");
-		$this->unable_to_contact($urn);
-		//clear virgin records ownership
-		$this->db->query("delete from ownership where urn in(select urn 
+
+        $query = "select urn from records join campaigns using(campaign_id) where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id = '$campaign_id'";
+        foreach ($this->db->query($query)->result_array() as $row) {
+            $urn = $row['urn'];
+            $this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 137,outcome_reason_id=NULL, record_status=3 where urn = '$urn'");
+            $this->unable_to_contact($urn);
+            //clear virgin records ownership
+            $this->db->query("delete from ownership where urn in(select urn
 FROM records
 WHERE 1
 AND campaign_id = '$campaign_id'
@@ -416,11 +423,11 @@ AND parked_code IS NULL
 AND progress_id IS NULL
 AND outcome_id IS NULL 
 AND dials = 0  )");
-		
-		}
-		
-		
-		//unset anything marked as urgent that is not in the rebook data sources
+
+        }
+
+
+        //unset anything marked as urgent that is not in the rebook data sources
         $this->db->query("update records set urgent = null where source_id not in(38,35,47) and campaign_id = '$campaign_id'");
         //Update appointmentes without history associated
         echo "<br>Checking if exists appointments without history associated...";
@@ -448,33 +455,33 @@ AND dials = 0  )");
             WHERE u.name <> 'GHS User' AND h.history_id IS NULL
         ");
         $afftectedRows = $this->db->affected_rows();
-        echo $afftectedRows." rows inserted in the history table.<br>";
+        echo $afftectedRows . " rows inserted in the history table.<br>";
 
 
     }
 
 
-    private function getAllViewRecords($view_id,$page=1) {
+    private function getAllViewRecords($view_id, $page = 1)
+    {
         //$page = 1;
         $limit = null;
         $search = true;
         $view = array();
-            //TRACKVIA API MODIFIED (added page and limit variables) !!!!!!!!!!!!!!!!!!!!!!!!!!
-            $result = $this->tv->getView($view_id,$page, $limit);
+        //TRACKVIA API MODIFIED (added page and limit variables) !!!!!!!!!!!!!!!!!!!!!!!!!!
+        $result = $this->tv->getView($view_id, $page, $limit);
 
-            //$result = array();
-            if (isset($result['records'])) {
-                $view['id'] = $result['id'];
-                $view['name'] = $result['name'];
-                $view['description'] = $result['description'];
-                $view['table_id'] = $result['table_id'];
-                $view['record_count'] = (isset($view['record_count'])?($result['record_count']+$view['record_count']):$result['record_count']);
-                $view['records'] = (isset($view['records'])?array_merge($result['records'],$view['records']):$result['records']);
+        //$result = array();
+        if (isset($result['records'])) {
+            $view['id'] = $result['id'];
+            $view['name'] = $result['name'];
+            $view['description'] = $result['description'];
+            $view['table_id'] = $result['table_id'];
+            $view['record_count'] = (isset($view['record_count']) ? ($result['record_count'] + $view['record_count']) : $result['record_count']);
+            $view['records'] = (isset($view['records']) ? array_merge($result['records'], $view['records']) : $result['records']);
 
-            }
-            else {
-                return false;
-            }
+        } else {
+            return false;
+        }
 
         return $view;
     }
@@ -486,7 +493,7 @@ AND dials = 0  )");
          */
     public function checkView($view_id, $options)
     {
-        
+
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
@@ -497,252 +504,252 @@ AND dials = 0  )");
         $record_color = $options['record_color'];
         $source = $options['source_id'];
         $savings = $options['savings_per_panel'];
-		
+
         //Get the trackvia records for this view
-		for ($page=1;$page<15;$page++){
-			echo "Page: .$page";
-			echo "<br>";
-        $view = $this->getAllViewRecords($view_id,$page);
+        for ($page = 1; $page < 15; $page++) {
+            echo "Page: .$page";
+            echo "<br>";
+            $view = $this->getAllViewRecords($view_id, $page);
 
-        //$view = $this->tv->getView($view_id);
-
-
-        if (isset($view['records'])) {
-            $tv_records = $view['records'];
-            print_r($view_id);
-			/*echo "<pre>";
-            print_r($view);
-			echo "</pre>";*/
-        } else {
-			$tv_records = array();
-            print_r($view_id);
-            print_r($view);
-            return false;
-        }
+            //$view = $this->tv->getView($view_id);
 
 
-        //Get the locator ids (client_ref in our system
-        $tv_record_ids = array();
-        $aux = array();
-        foreach ($tv_records as $tv_record) {
-            array_push($tv_record_ids, $tv_record['id']);
-            $aux[md5($tv_record['id'])] = $tv_record;
-        }
-        $tv_records = $aux;
-
-        echo "<br>Total track via records in this view... " . count($tv_records);
-        echo "<br>";
-        //Get the records to be updated in our system
-        $records = $this->Trackvia_model->getRecordsByTVIds($tv_record_ids);
-        echo "<br>Matching records found in the calling system... " . count($records);
-        echo "<br>";
-        //Update the record campaign if it is needed (different campaign) and create a new one if it does not exist yet
-        $update_records = array();
-        $update_extra = array();
-        $update_notes = array();
-        $new_records_ids = $tv_record_ids;
-        $records_found = 0;
-        $appointments_cancelled_count = 0;
-        $appointments_created_count = 0;
-
-        foreach ($records as $record) {
-            $property_status = "";
-            $fields = $tv_records[md5($record['client_ref'])]['fields'];
-            foreach ($fields as $k => $v) {
-                if (strpos($k, "Property Stat") !== false) {
-                    $property_status = $v;
-                }
+            if (isset($view['records'])) {
+                $tv_records = $view['records'];
+                print_r($view_id);
+                /*echo "<pre>";
+                print_r($view);
+                echo "</pre>";*/
+            } else {
+                $tv_records = array();
+                print_r($view_id);
+                print_r($view);
+                return false;
             }
 
-            //If the campaign had changed or the park_code is "Not Working"
 
-            if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 || $record['parked_code'] == 2 || $record['record_color'] != $record_color || $record['source_id'] != $source) {
-                if ($record['record_status'] <> "3") {
-                    $update_array = array(
-                        'urn' => $record['urn'],
-                        'campaign_id' => $campaign_id,
-                        'parked_code' => NULL,
-                        'urgent' => $urgent,
-                        'record_status' => $status,
-                        'record_color' => $record_color,
-                        'source_id' => $source
-                    );
-                    if (!empty($outcome_id)) {
-                        $update_array['outcome_id'] = $outcome_id;
+            //Get the locator ids (client_ref in our system
+            $tv_record_ids = array();
+            $aux = array();
+            foreach ($tv_records as $tv_record) {
+                array_push($tv_record_ids, $tv_record['id']);
+                $aux[md5($tv_record['id'])] = $tv_record;
+            }
+            $tv_records = $aux;
+
+            echo "<br>Total track via records in this view... " . count($tv_records);
+            echo "<br>";
+            //Get the records to be updated in our system
+            $records = $this->Trackvia_model->getRecordsByTVIds($tv_record_ids);
+            echo "<br>Matching records found in the calling system... " . count($records);
+            echo "<br>";
+            //Update the record campaign if it is needed (different campaign) and create a new one if it does not exist yet
+            $update_records = array();
+            $update_extra = array();
+            $update_notes = array();
+            $new_records_ids = $tv_record_ids;
+            $records_found = 0;
+            $appointments_cancelled_count = 0;
+            $appointments_created_count = 0;
+
+            foreach ($records as $record) {
+                $property_status = "";
+                $fields = $tv_records[md5($record['client_ref'])]['fields'];
+                foreach ($fields as $k => $v) {
+                    if (strpos($k, "Property Stat") !== false) {
+                        $property_status = $v;
                     }
-                    if (!empty($parked_code)) {
-                        $update_array['parked_code'] = $parked_code;
+                }
+
+                //If the campaign had changed or the park_code is "Not Working"
+
+                if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 || $record['parked_code'] == 2 || $record['record_color'] != $record_color || $record['source_id'] != $source) {
+                    if ($record['record_status'] <> "3") {
+                        $update_array = array(
+                            'urn' => $record['urn'],
+                            'campaign_id' => $campaign_id,
+                            'parked_code' => NULL,
+                            'urgent' => $urgent,
+                            'record_status' => $status,
+                            'record_color' => $record_color,
+                            'source_id' => $source
+                        );
+                        if (!empty($outcome_id)) {
+                            $update_array['outcome_id'] = $outcome_id;
+                        }
+                        if (!empty($parked_code)) {
+                            $update_array['parked_code'] = $parked_code;
+                        }
+                        //organising the record update data
+                        array_push($update_records, $update_array);
+
                     }
-                    //organising the record update data
-                    array_push($update_records, $update_array);
-
                 }
-            }
-            //Create appointment if it is needed
-            if ($appointment_creation) {
-                if ($appointment_cancelled) {
-                    $appointments_cancelled_count++;
-                } else {
-                    $appointments_created_count++;
+                //Create appointment if it is needed
+                if ($appointment_creation) {
+                    if ($appointment_cancelled) {
+                        $appointments_cancelled_count++;
+                    } else {
+                        $appointments_created_count++;
+                    }
+                    $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
                 }
-                $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
-            }
 
-            if (!empty($fields['Contact Notes'])) {
-                array_push($update_notes, array("urn" => $record['urn'], "note" => str_replace("<!--tvia_br--><br><!--tvia_br-->", "\n", $fields['Contact Notes']), "updated_by" => 1));
-            }
-            //organise the record_details update
-            $extra = array();
-            if (!empty($fields['No. Panels (Desktop)']) && isset($fields['No. Panels (Desktop)'])) {
-                $extra["n1"] = $fields['No. Panels (Desktop)'];
-                $extra["n2"] = $fields['No. Panels (Desktop)'] * $savings;
-            }
-            if (!empty($fields['GHS UPRN']) && isset($fields['GHS UPRN'])) {
-                $extra["c1"] = $fields['GHS UPRN'];
-                //echo $fields['GHS UPRN']."<br>";
-            }
-            if (!empty($fields['Referred by']) && isset($fields['Referred by'])) {
-                $extra["c2"] = $fields['Referred by'];
-            }
-            if (!empty($fields['Enquiry Type']) && isset($fields['Enquiry Type'])) {
-                $extra["c3"] = $fields['Enquiry Type'];
-                //echo $fields['Enquiry type']."<br>";
-            }
-            if (@!empty($property_status)) {
-                $extra["c5"] = $property_status;
-            }
-            if (!empty($fields['Reason for Desktop Fail']) && isset($fields['Reason for Desktop Fail']) && $campaign_id <> 22) {
-                $extra["c6"] = $fields['Reason for Desktop Fail'];
-            } else if (!empty($fields['Int Survey Priority']) && isset($fields['Reason for Desktop Fail']) && $campaign_id == 22) {
-                $extra["c6"] = $fields['Int Survey Priority'];
-            }
-            if (!empty($extra)) {
-                $extra['urn'] = $record['urn'];
-                array_push($update_extra, $extra);
-            }
-            //Remove from the new_record_ids array the records that already exist on our system
-            if (in_array($record['client_ref'], $new_records_ids)) {
-                unset($tv_records[md5($record['client_ref'])]);
-            }
-        }
-
-        //Update the records which campaign was changed
-        echo "\n<br>Records updated in our system... " . count($update_records) . "\n";
-        echo "<br>";
-
-        if (!empty($update_records)) {
-            $this->Trackvia_model->updateRecords($update_records);
-        }
-        if (!empty($update_notes)) {
-            echo("Updating Notes");
-            echo "<br>";
-            //print_r($update_notes);
-            echo $this->Trackvia_model->updateNotes($update_notes);
-        }
-        //update the record details
-        if (!empty($update_extra)) {
-            echo("Updating Details");
-            echo "<br>";
-            //print_r($update_extra);
-            $this->Trackvia_model->update_extra($update_extra);
-        }
-
-        echo "<br>Records left to create in our system... " . count($tv_records) . "\n";
-        echo "<br>";
-        $new = array();
-        //Add new records if there are any left in the $tv_records array
-        if (count($tv_records) > 0) {
-            echo("Creating new records #Source-ID: [$source]");
-            echo "<br>";
-            //print_r($tv_records);
-            foreach ($tv_records as $record) {
-                //organise the new record data
-                $data = array("campaign_id" => $campaign_id,
-                    "date_added" => date('Y-m-d H:i:s'),
-                    "record_status" => $status,
-                    "record_color" => $record_color,
-                    "outcome_id" => $outcome_id,
-                    "urgent" => $urgent,
-                    "source_id" => $source,
-                    "parked_code" => 2
-                );
-                $urn = $this->Trackvia_model->add_record($data);
-                //catch the newly created urns
-                $new[] = $urn;
-                //prepare the new client refs
-                $data = array("urn" => $urn,
-                    "client_ref" => $record['id']
-                );
-                //insert the client refs
-                $this->Trackvia_model->add_client_refs($data);
-                //prepare the record_details
-                $data = array();
+                if (!empty($fields['Contact Notes'])) {
+                    array_push($update_notes, array("urn" => $record['urn'], "note" => str_replace("<!--tvia_br--><br><!--tvia_br-->", "\n", $fields['Contact Notes']), "updated_by" => 1));
+                }
+                //organise the record_details update
+                $extra = array();
+                if (!empty($fields['No. Panels (Desktop)']) && isset($fields['No. Panels (Desktop)'])) {
+                    $extra["n1"] = $fields['No. Panels (Desktop)'];
+                    $extra["n2"] = $fields['No. Panels (Desktop)'] * $savings;
+                }
                 if (!empty($fields['GHS UPRN']) && isset($fields['GHS UPRN'])) {
-                    $data["c1"] = $fields['GHS UPRN'];
+                    $extra["c1"] = $fields['GHS UPRN'];
+                    //echo $fields['GHS UPRN']."<br>";
                 }
                 if (!empty($fields['Referred by']) && isset($fields['Referred by'])) {
-                    $data["c2"] = $fields['Referred by'];
+                    $extra["c2"] = $fields['Referred by'];
                 }
                 if (!empty($fields['Enquiry Type']) && isset($fields['Enquiry Type'])) {
-                    $data["c3"] = $fields['Enquiry Type'];
+                    $extra["c3"] = $fields['Enquiry Type'];
+                    //echo $fields['Enquiry type']."<br>";
                 }
-                if (!empty($fields['Property Status']) && isset($fields['Property Status'])) {
-                    $data["c5"] = $fields['Property Status'];
+                if (@!empty($property_status)) {
+                    $extra["c5"] = $property_status;
                 }
-                if (!empty($fields['Reason for Desktop Fail']) && isset($fields['Reason for Desktop Fail'])) {
-                    $data["c6"] = $fields['Reason for Desktop Fail'];
+                if (!empty($fields['Reason for Desktop Fail']) && isset($fields['Reason for Desktop Fail']) && $campaign_id <> 22) {
+                    $extra["c6"] = $fields['Reason for Desktop Fail'];
+                } else if (!empty($fields['Int Survey Priority']) && isset($fields['Reason for Desktop Fail']) && $campaign_id == 22) {
+                    $extra["c6"] = $fields['Int Survey Priority'];
                 }
-                if (!empty($data)) {
-                    $data["urn"] = $urn;
-                    $this->Trackvia_model->add_record_details($data);
+                if (!empty($extra)) {
+                    $extra['urn'] = $record['urn'];
+                    array_push($update_extra, $extra);
                 }
-                //prepare any new contacts
-                $data = array("urn" => $urn,
-                    "fullname" => isset($record['fields']['Owner / Tenant Name 1']) ? $record['fields']['Owner / Tenant Name 1'] : '',
-                    "email" => isset($record['fields']['Email address']) ? $record['fields']['Email address'] : NULL,
-                    "date_created" => date('Y-m-d H:i:s'),
-                    "notes" => "Ref# " . $record['id'],
-                    "primary" => 1);
-                $contact = $this->Trackvia_model->add_contact($data);
-                //prepare any new telephone numbers
-                if (isset($record['fields']['Primary Contact (Landline)']) && !empty($record['fields']['Primary Contact (Landline)'])) {
-                    $data = array("contact_id" => $contact,
-                        "description" => "Landline",
-                        "telephone_number" => $record['fields']['Primary Contact (Landline)']
-                    );
-                    $this->Trackvia_model->add_telephone($data);
+                //Remove from the new_record_ids array the records that already exist on our system
+                if (in_array($record['client_ref'], $new_records_ids)) {
+                    unset($tv_records[md5($record['client_ref'])]);
                 }
-                //prepare any new mobile telephone numbers
-                if (isset($record['fields']['Primary Contact (Mobile)']) && !empty($record['fields']['Primary Contact (Mobile)'])) {
-                    $data = array("contact_id" => $contact,
-                        "description" => "Mobile",
-                        "telephone_number" => $record['fields']['Primary Contact (Mobile)']
-                    );
-                    $this->Trackvia_model->add_telephone($data);
-                }
-                //add transfer
-                $data = array("contact_id" => $contact,
-                    "description" => "Transfer to GHS",
-                    "telephone_number" => "01228819810"
-                );
-                $this->Trackvia_model->add_telephone($data);
-                //prepare any new telephone addresses
-                $data = array("contact_id" => $contact,
-                    "add1" => $record['fields']['House No.'] . " " . $record['fields']['Address 1'],
-                    "add2" => $record['fields']['Address 2'],
-                    "add3" => @$record['fields']['City'],
-                    "postcode" => $record['fields']['PostCode'],
-                    "primary" => 1);
-                $this->Trackvia_model->add_address($data);
-
-
             }
-            //show the new urns
-			echo "<pre>";
-            print_r($new);
-			echo "</pre>";
+
+            //Update the records which campaign was changed
+            echo "\n<br>Records updated in our system... " . count($update_records) . "\n";
+            echo "<br>";
+
+            if (!empty($update_records)) {
+                $this->Trackvia_model->updateRecords($update_records);
+            }
+            if (!empty($update_notes)) {
+                echo("Updating Notes");
+                echo "<br>";
+                //print_r($update_notes);
+                echo $this->Trackvia_model->updateNotes($update_notes);
+            }
+            //update the record details
+            if (!empty($update_extra)) {
+                echo("Updating Details");
+                echo "<br>";
+                //print_r($update_extra);
+                $this->Trackvia_model->update_extra($update_extra);
+            }
+
+            echo "<br>Records left to create in our system... " . count($tv_records) . "\n";
+            echo "<br>";
+            $new = array();
+            //Add new records if there are any left in the $tv_records array
+            if (count($tv_records) > 0) {
+                echo("Creating new records #Source-ID: [$source]");
+                echo "<br>";
+                //print_r($tv_records);
+                foreach ($tv_records as $record) {
+                    //organise the new record data
+                    $data = array("campaign_id" => $campaign_id,
+                        "date_added" => date('Y-m-d H:i:s'),
+                        "record_status" => $status,
+                        "record_color" => $record_color,
+                        "outcome_id" => $outcome_id,
+                        "urgent" => $urgent,
+                        "source_id" => $source,
+                        "parked_code" => 2
+                    );
+                    $urn = $this->Trackvia_model->add_record($data);
+                    //catch the newly created urns
+                    $new[] = $urn;
+                    //prepare the new client refs
+                    $data = array("urn" => $urn,
+                        "client_ref" => $record['id']
+                    );
+                    //insert the client refs
+                    $this->Trackvia_model->add_client_refs($data);
+                    //prepare the record_details
+                    $data = array();
+                    if (!empty($fields['GHS UPRN']) && isset($fields['GHS UPRN'])) {
+                        $data["c1"] = $fields['GHS UPRN'];
+                    }
+                    if (!empty($fields['Referred by']) && isset($fields['Referred by'])) {
+                        $data["c2"] = $fields['Referred by'];
+                    }
+                    if (!empty($fields['Enquiry Type']) && isset($fields['Enquiry Type'])) {
+                        $data["c3"] = $fields['Enquiry Type'];
+                    }
+                    if (!empty($fields['Property Status']) && isset($fields['Property Status'])) {
+                        $data["c5"] = $fields['Property Status'];
+                    }
+                    if (!empty($fields['Reason for Desktop Fail']) && isset($fields['Reason for Desktop Fail'])) {
+                        $data["c6"] = $fields['Reason for Desktop Fail'];
+                    }
+                    if (!empty($data)) {
+                        $data["urn"] = $urn;
+                        $this->Trackvia_model->add_record_details($data);
+                    }
+                    //prepare any new contacts
+                    $data = array("urn" => $urn,
+                        "fullname" => isset($record['fields']['Owner / Tenant Name 1']) ? $record['fields']['Owner / Tenant Name 1'] : '',
+                        "email" => isset($record['fields']['Email address']) ? $record['fields']['Email address'] : NULL,
+                        "date_created" => date('Y-m-d H:i:s'),
+                        "notes" => "Ref# " . $record['id'],
+                        "primary" => 1);
+                    $contact = $this->Trackvia_model->add_contact($data);
+                    //prepare any new telephone numbers
+                    if (isset($record['fields']['Primary Contact (Landline)']) && !empty($record['fields']['Primary Contact (Landline)'])) {
+                        $data = array("contact_id" => $contact,
+                            "description" => "Landline",
+                            "telephone_number" => $record['fields']['Primary Contact (Landline)']
+                        );
+                        $this->Trackvia_model->add_telephone($data);
+                    }
+                    //prepare any new mobile telephone numbers
+                    if (isset($record['fields']['Primary Contact (Mobile)']) && !empty($record['fields']['Primary Contact (Mobile)'])) {
+                        $data = array("contact_id" => $contact,
+                            "description" => "Mobile",
+                            "telephone_number" => $record['fields']['Primary Contact (Mobile)']
+                        );
+                        $this->Trackvia_model->add_telephone($data);
+                    }
+                    //add transfer
+                    $data = array("contact_id" => $contact,
+                        "description" => "Transfer to GHS",
+                        "telephone_number" => "01228819810"
+                    );
+                    $this->Trackvia_model->add_telephone($data);
+                    //prepare any new telephone addresses
+                    $data = array("contact_id" => $contact,
+                        "add1" => $record['fields']['House No.'] . " " . $record['fields']['Address 1'],
+                        "add2" => $record['fields']['Address 2'],
+                        "add3" => @$record['fields']['City'],
+                        "postcode" => $record['fields']['PostCode'],
+                        "primary" => 1);
+                    $this->Trackvia_model->add_address($data);
+
+
+                }
+                //show the new urns
+                echo "<pre>";
+                print_r($new);
+                echo "</pre>";
+            }
         }
-		}
 
 
     }
@@ -813,8 +820,7 @@ AND dials = 0  )");
             }
         } else if ($app['campaign_id'] == "22") {
             $update_record = array("source_id" => 37, "record_color" => "00CC00");
-        }
-		else if ($app['campaign_id'] == "32") {
+        } else if ($app['campaign_id'] == "32") {
             $update_record = array("source_id" => 48, "record_color" => "00CC00");
         }
         $data = array(
@@ -848,13 +854,14 @@ AND dials = 0  )");
 
     }
 
-    public function unable_to_contact($urn=false)
-    {	if(!$urn){
-        $urn = $this->input->post('urn');
-	}
+    public function unable_to_contact($urn = false)
+    {
+        if (!$urn) {
+            $urn = $this->input->post('urn');
+        }
         //Get the record data
         $record = $this->get_record($urn);
-		
+
         $data = array("Customer not contactable" => "Customer not contactable");
 
         $response = $this->tv->updateRecord($record['client_ref'], $data);
@@ -973,7 +980,8 @@ AND dials = 0  )");
     }
 
     //Get the record data
-    private function get_record($urn) {
+    private function get_record($urn)
+    {
         $record = $this->Trackvia_model->get_record($urn);
         $this->load->model('Records_model');
         $record['comments'] = $this->Records_model->get_last_comment($urn);
