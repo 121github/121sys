@@ -854,13 +854,7 @@ class Trackvia extends CI_Controller
             $planned_appointment_time = (isset($fields['Commissioning appt']) ? $fields['Commissioning appt'] : '');
             $planned_appointment_type = APPOINTMENT_TYPE_INSTALLATION;
             $title = "Appointment for installation";
-
-            $app_data = "<br>";
-            foreach ($fields as $k => $v) {
-                if (!empty($v)) {
-                    $app_data .= "$k: $v<br>";
-                }
-            }
+            $app_data = (isset($fields['Installation comments']) ? '<br>' . $fields['Installation comments'] : '');
             $text = "Appointment set for GHS Installation $app_data";
         } else {
             $planned_appointment_date = '';
@@ -952,7 +946,8 @@ class Trackvia extends CI_Controller
         else if ($app['appointment_type_id'] === APPOINTMENT_TYPE_INSTALLATION) {
             $data = array(
                 "Commissioning date (customer needs to be in)" => $app['date'] . "T12:00:00-0600",
-                "Commissioning appt" => $app['slot']
+                "Commissioning appt" => $app['slot'],
+                "Installation comments" => $app['title'] . ' : ' . $app['text']
             );
         }
 
