@@ -1488,7 +1488,8 @@ var record = {
                     urn: record.urn,
 					distance:$('#slot-distance').val(),
 					postcode:$('#slot-postcode').val(),
-					user_id:$('#slot-attendee').val()
+					user_id:$('#slot-attendee').val(),
+					app_type:$('#app-type').val()
                 }
             }).fail(function(){
 				flashalert.danger("The appointment slots could not be loaded");

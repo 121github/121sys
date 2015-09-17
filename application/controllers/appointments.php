@@ -31,7 +31,9 @@ class Appointments extends CI_Controller
 
 	public function slot_availability(){
 		$urn = $this->input->post('urn');
+		$app_type = $this->input->post('app_type');
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
+		$source = $this->Records_model->get_source($urn);
 		$user_id = intval($this->input->post('user_id'));
 		$postcode = $this->input->post('postcode');
 		if(!empty($postcode)){
@@ -44,7 +46,7 @@ class Appointments extends CI_Controller
 				 }
 		}
 		$distance = intval($this->input->post('distance'));
-	 $data = $this->Appointments_model->slot_availability($campaign_id,$user_id,$postcode,$distance);
+	 $data = $this->Appointments_model->slot_availability($campaign_id,$user_id,$postcode,$distance,$source['source_id'],$app_type);
 	 if(isset($data['error'])){
 	  echo json_encode(array("success"=>false,"error"=>$data['error']));		
 	 } else {

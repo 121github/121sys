@@ -11,7 +11,7 @@ class Appointments_model extends CI_Model
         parent::__construct();
     }
 	
-	public function slot_availability($campaign_id,$user_id=false,$postcode=false,$distance=false){
+	public function slot_availability($campaign_id,$user_id=false,$postcode=false,$distance=false,$source=false,$app_type=false){
 		$days = array(1=>"Monday",2=>"Tuesday",3=>"Wednesday",4=>"Thursday",5=>"Friday",6=>"Saturday",7=>"Sunday");
 		$timeslots = array();
 		$where= "";
@@ -21,6 +21,9 @@ class Appointments_model extends CI_Model
 		}
 		if($campaign_id){
 		$where .= " and campaign_id = '$campaign_id' ";
+		}
+		if($source){
+		$where .= " and source_id = '$source' ";	
 		}
 		//first configure the default array for all days
 		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null  $where ";
@@ -130,11 +133,13 @@ $distance_order = "";
 		
 		
 foreach($timeslots as $id=>$timeslot){
-		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where `status` = 1  and time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where group by date(`start`) $distance_order";
+	$app_type_where = "";
+	if($app_type){
+	$app_type_where = " and appointment_type_id = '$app_type' ";	
+	}
+		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where `status` = 1  and time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where $app_type_where group by date(`start`) $distance_order";
+				
 		$results = $this->db->query($qry)->result_array();
-		
-		
-		
 		
 		$i=0;
 		foreach($results as $row){

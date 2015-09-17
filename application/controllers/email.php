@@ -300,13 +300,15 @@ class Email extends CI_Controller
             ));
             exit;
         }
+		/*
 		if(!valid_email($form['send_to'])){
 		 echo json_encode(array(
                 "success" => false,
                 "msg" => "One or more email address is not valid"
             ));
             exit;	
-		}
+		}*/
+		
         //Save the email in the history table
         unset($form['template_attachments']);
         $email_id = $this->Email_model->add_new_email_history($form);
