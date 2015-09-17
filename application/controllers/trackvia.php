@@ -923,10 +923,10 @@ class Trackvia extends CI_Controller
             }
         } else if ($app['campaign_id'] == "22") {
             //Survey
-            if ($app['appointment_type_id'] === APPOINTMENT_TYPE_SURVEY) {
+            if ($app['appointment_type_id'] == APPOINTMENT_TYPE_SURVEY) {
                 $update_record = array("source_id" => 37, "record_color" => "00CC00");
             } //Installation
-            else if ($app['appointment_type_id'] === APPOINTMENT_TYPE_INSTALLATION) {
+            else if ($app['appointment_type_id'] == APPOINTMENT_TYPE_INSTALLATION) {
                 $update_record = array("source_id" => 52, "record_color" => "00CC00");
             }
         } else if ($app['campaign_id'] == "32") {
@@ -934,7 +934,7 @@ class Trackvia extends CI_Controller
         }
 
         //Survey
-        if ($app['appointment_type_id'] === APPOINTMENT_TYPE_SURVEY) {
+        if ($app['appointment_type_id'] == APPOINTMENT_TYPE_SURVEY) {
             $data = array(
                 "Planned Survey Date" => $app['date'] . "T12:00:00-0600",
                 "Survey appt" => $app['slot'],
@@ -943,8 +943,10 @@ class Trackvia extends CI_Controller
                 "Survey Appointment Comments" => $app['title'] . ' : ' . $app['text']
             );
         } //Installation
-        else if ($app['appointment_type_id'] === APPOINTMENT_TYPE_INSTALLATION) {
+        else if ($app['appointment_type_id'] == APPOINTMENT_TYPE_INSTALLATION) {
             $data = array(
+			 "Scaffold Up" => date('Y-m-d',strtotime($app['date'] ."- 2 day")) . "T12:00:00-0600",
+			 "Planned Installation date" => date('Y-m-d',strtotime($app['date'] ."- 1 day")) . "T12:00:00-0600",
                 "Commissioning date (customer needs to be in)" => $app['date'] . "T12:00:00-0600",
                 "Commissioning appt" => $app['slot'],
                 "Installation comments" => $app['title'] . ' : ' . $app['text']
@@ -983,6 +985,31 @@ class Trackvia extends CI_Controller
         $record = $this->get_record($urn);
 
         $data = array("Customer not contactable" => "Customer not contactable");
+
+        $response = $this->tv->updateRecord($record['client_ref'], $data);
+        if (!empty($response)) {
+            echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref']));
+        } else {
+            $message = " An error occured while updating a record \r\n";
+            $message .= "  URN: $urn \r\n";
+            $message .= " Record ID: " . $record['client_ref'] . " \r\n";
+            $message .= " Sent Data \r\n";
+            foreach ($data as $k => $v) {
+                $message .= " $k: $v \r\n";
+            }
+            mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
+        }
+    }
+	
+	public function unable_to_contact_installs($urn = false)
+    {
+        if (!$urn) {
+            $urn = $this->input->post('urn');
+        }
+        //Get the record data
+        $record = $this->get_record($urn);
+
+        $data = array("Cannot Contact for Installation" => "Cannot Contact for Installation");
 
         $response = $this->tv->updateRecord($record['client_ref'], $data);
         if (!empty($response)) {
