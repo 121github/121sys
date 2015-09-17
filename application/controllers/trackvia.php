@@ -944,9 +944,20 @@ class Trackvia extends CI_Controller
             );
         } //Installation
         else if ($app['appointment_type_id'] == APPOINTMENT_TYPE_INSTALLATION) {
+			if(date('l',strtotime($app['date']))=="Monday"){
+			$scaffold = 4;
+			$install = 3;	
+			} else if(date('l',strtotime($app['date']))=="Tuesday"){
+			$scaffold = 4;
+			$install = 1;	
+			} else {
+			$scaffold = 2;
+			$install = 1;		
+			}
+			
             $data = array(
-			 "Scaffold Up" => date('Y-m-d',strtotime($app['date'] ."- 2 day")) . "T12:00:00-0600",
-			 "Planned Installation date" => date('Y-m-d',strtotime($app['date'] ."- 1 day")) . "T12:00:00-0600",
+			 "Scaffold Up" => date('Y-m-d',strtotime($app['date'] ."- $scaffold day")) . "T12:00:00-0600",
+			 "Planned Installation date" => date('Y-m-d',strtotime($app['date'] ."- $install day")) . "T12:00:00-0600",
                 "Commissioning date (customer needs to be in)" => $app['date'] . "T12:00:00-0600",
                 "Commissioning appt" => $app['slot'],
                 "Installation comments" => $app['title'] . ' : ' . $app['text']
