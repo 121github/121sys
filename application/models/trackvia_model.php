@@ -60,7 +60,8 @@ class Trackvia_model extends CI_Model
 				  r.record_status,
 				  r.urgent,
 				  r.record_color,
-				  r.source_id
+				  r.source_id,
+				  a.appointment_type_id
 				from records r
 				inner join client_refs cr using(urn)
 				left join (select max(appointment_id) appointment_id,urn from appointments group by urn) ma using(urn)
@@ -99,12 +100,11 @@ class Trackvia_model extends CI_Model
         return $this->db->insert_update_batch('sticky_notes', $notes);
     }
 
-    public function create_appointment($fields, $records, $start)
+    public function create_appointment($fields, $records, $start, $title, $text, $appointment_type_id)
     {
 
         $address = "";
         $postcode = "";
-        $app_data = "<br>";
         if (isset($fields['House No.'])) {
             $address .= ' ' . $fields['House No.'];
         }
@@ -119,13 +119,21 @@ class Trackvia_model extends CI_Model
             $postcode = postcodeFormat($fields['PostCode']);
         }
 
-        foreach ($fields as $k => $v) {
-            if (!empty($v)) {
-                $app_data .= "$k: $v<br>";
-            }
-        }
         //check if exists
-        $insert = array("urn" => $records['urn'], "title" => "Appointment for survey", "text" => "Appointment set for GHS Survey $app_data", "start" => $start, "end" => date('Y-m-d H:i:s', strtotime("+1 hour", strtotime($start))), "postcode" => $postcode, "status" => 1, "created_by" => "123", "date_updated" => NULL, "date_added" => date('Y-m-d H:i:s'), "updated_by" => 123, "address" => $address);
+        $insert = array(
+            "urn" => $records['urn'],
+            "title" => $title,
+            "text" => $text,
+            "start" => $start,
+            "end" => date('Y-m-d H:i:s', strtotime("+1 hour", strtotime($start))),
+            "postcode" => $postcode, "status" => 1,
+            "created_by" => "123",
+            "date_updated" => NULL,
+            "date_added" => date('Y-m-d H:i:s'),
+            "updated_by" => 123,
+            "address" => $address,
+            'appointment_type_id' => $appointment_type_id
+        );
         $insert_query = $this->db->insert_string("appointments", $insert);
         $insert_query = str_replace('INSERT INTO', 'INSERT IGNORE INTO', $insert_query);
         $this->db->query($insert_query);

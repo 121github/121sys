@@ -15,6 +15,8 @@ define('SOUTHWAY_ALL_RECORDS', '3000719193');
 define('SOUTHWAY_BOOK_SURVEY', '3000719114');
 define('SOUTHWAY_REBOOK', '3000719115');
 define('SOUTHWAY_SURVEY_SLOTS', '3000719175');
+define('SOUTHWAY_BOOK_INSTALLATION', '3000724696');
+define('SOUTHWAY_INSTALLATION_SLOTS', '3000723374');
 
 define('PRIVATE_ALL_RECORDS', '3000719185');
 define('PRIVATE_BOOK_SURVEY', '3000718982');
@@ -76,6 +78,8 @@ class Trackvia extends CI_Controller
             "GHS Southway survey" => SOUTHWAY_BOOK_SURVEY,
             "GHS Southway rebook" => SOUTHWAY_REBOOK,
             "GHS Southway booked" => SOUTHWAY_SURVEY_SLOTS,
+            "GHS Southway installation" => SOUTHWAY_BOOK_INSTALLATION,
+            "GHS Southway installation booked" => SOUTHWAY_INSTALLATION_SLOTS,
             "GHS Citywest survey" => CITYWEST_BOOK_SURVEY,
             "GHS Citywest rebook" => CITYWEST_REBOOK,
             "GHS Citywest booked" => CITYWEST_SURVEY_SLOTS,
@@ -88,6 +92,8 @@ class Trackvia extends CI_Controller
             "GHS Southway survey" => 34,
             "GHS Southway rebook" => 35,
             "GHS Southway booked" => 37,
+            "GHS Southway installation" => 51,
+            "GHS Southway installation booked" => 52,
             "GHS Private survey" => 39,
             "GHS Private rebook" => 38,
             "GHS Private booked" => 36,
@@ -168,6 +174,26 @@ class Trackvia extends CI_Controller
     {
         //SOUTHWAY DATA
         $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id = 22");
+
+//        //Southway All records View
+//        echo "<br>Checking the SOUTHWAY_ALL_RECORDS(" . SOUTHWAY_ALL_RECORDS . ") view";
+//        echo "<br>";
+//        $this->checkView(
+//            SOUTHWAY_ALL_RECORDS,
+//            array(
+//                'campaign_id' => 22,
+//                'urgent' => NULL,
+//                'status' => 1,
+//                'appointment_creation' => false,
+//                'appointment_cancelled' => false,
+//                'record_color' => '000000',
+//                'parked_code' => 2,
+//                'source_id' => 28,
+//                'savings_per_panel' => 20
+//
+//            )
+//        );
+
         //Book View
         echo "<br>Checking the SOUTHWAY_BOOK_SURVEY(" . SOUTHWAY_BOOK_SURVEY . ") view";
         echo "<br>";
@@ -219,6 +245,43 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 20
             )
         );
+
+
+        //Installation Book View
+        echo "<br>Checking the SOUTHWAY_BOOK_INSTALLATION(" . SOUTHWAY_BOOK_INSTALLATION . ") view";
+        echo "<br>";
+        $this->checkView(
+            SOUTHWAY_BOOK_INSTALLATION,
+            array(
+                'campaign_id' => 22,
+                'urgent' => NULL,
+                'status' => 1,
+                'appointment_creation' => false,
+                'appointment_cancelled' => false,
+                'record_color' => '0066FF',
+                'source_id' => 51,
+                'savings_per_panel' => 20,
+            )
+        );
+
+        //Installation Slots View
+        echo "<br>Checking the SOUTHWAY_INSTALLATION_SLOTS(" . SOUTHWAY_SURVEY_SLOTS . ") view";
+        echo "<br>";
+        $this->checkView(
+            SOUTHWAY_INSTALLATION_SLOTS,
+            array(
+                'campaign_id' => 22,
+                'urgent' => NULL,
+                'status' => 4,
+                'outcome_id' => 72,
+                'appointment_creation' => true,
+                'appointment_cancelled' => false,
+                'record_color' => '00CC00',
+                'source_id' => 52,
+                'savings_per_panel' => 20
+            )
+        );
+
         $this->check_trackvia(22);
     }
 
@@ -415,14 +478,14 @@ class Trackvia extends CI_Controller
             $this->unable_to_contact($urn);
             //clear virgin records ownership
             $this->db->query("delete from ownership where urn in(select urn
-FROM records
-WHERE 1
-AND campaign_id = '$campaign_id'
-AND record_status =1
-AND parked_code IS NULL
-AND progress_id IS NULL
-AND outcome_id IS NULL 
-AND dials = 0  )");
+                FROM records
+                WHERE 1
+                AND campaign_id = '$campaign_id'
+                AND record_status =1
+                AND parked_code IS NULL
+                AND progress_id IS NULL
+                AND outcome_id IS NULL
+                AND dials = 0  )");
 
         }
 
@@ -734,12 +797,22 @@ AND dials = 0  )");
                     );
                     $this->Trackvia_model->add_telephone($data);
                     //prepare any new telephone addresses
-                    $data = array("contact_id" => $contact,
+                    if (!isset($record['fields']['PostCode'])) {
+                        $tv_record = $this->tv->getRecord($record['id']);
+                        $record['fields']['House No.'] = $tv_record['fields']['House No.'];
+                        $record['fields']['Address 1'] = $tv_record['fields']['Address 1'];
+                        $record['fields']['Address 2'] = $tv_record['fields']['Address 2'];
+                        $record['fields']['City'] = $tv_record['fields']['City'];
+                        $record['fields']['PostCode'] = $tv_record['fields']['PostCode'];
+                    }
+                    $data = array(
+                        "contact_id" => $contact,
                         "add1" => $record['fields']['House No.'] . " " . $record['fields']['Address 1'],
                         "add2" => $record['fields']['Address 2'],
                         "add3" => @$record['fields']['City'],
                         "postcode" => $record['fields']['PostCode'],
-                        "primary" => 1);
+                        "primary" => 1
+                    );
                     $this->Trackvia_model->add_address($data);
 
 
@@ -759,42 +832,72 @@ AND dials = 0  )");
      */
     public function addUpdateAppointment($fields, $record, $appointment_cancelled = false)
     {
+        //Survey
         if (isset($fields['Planned Survey Date'])) {
             $sd = explode("T", $fields['Planned Survey Date']);
+            $planned_appointment_date = $sd[0];
+            $planned_appointment_time = (isset($fields['Survey appt']) ? $fields['Survey appt'] : '');
+            $planned_appointment_type = APPOINTMENT_TYPE_SURVEY;
+            $title = "Appointment for survey";
+
+            $app_data = "<br>";
+            foreach ($fields as $k => $v) {
+                if (!empty($v)) {
+                    $app_data .= "$k: $v<br>";
+                }
+            }
+            $text = "Appointment set for GHS Survey $app_data";
+        } //Installation
+        else if (isset($fields['Commissioning date (customer needs to be in)'])) {
+            $sd = explode("T", $fields['Commissioning date (customer needs to be in)']);
+            $planned_appointment_date = $sd[0];
+            $planned_appointment_time = (isset($fields['Commissioning appt']) ? $fields['Commissioning appt'] : '');
+            $planned_appointment_type = APPOINTMENT_TYPE_INSTALLATION;
+            $title = "Appointment for installation";
+            $app_data = (isset($fields['Installation comments']) ? '<br>' . $fields['Installation comments'] : '');
+            $text = "Appointment set for GHS Installation $app_data";
+        } else {
+            $planned_appointment_date = '';
+            $planned_appointment_type = NULL;
+            $title = "Appointment";
         }
-        $planned_survey_date = (isset($fields['Planned Survey Date']) ? $sd[0] : '');
-        $planned_survey_time = $fields['Survey appt'];
-        switch ($planned_survey_time) {
+
+        switch ($planned_appointment_time) {
             case "am":
-                $planned_survey_time = "09:00:00";
+                $planned_appointment_time = "09:00:00";
                 break;
             case "pm":
-                $planned_survey_time = "13:00:00";
+                $planned_appointment_time = "13:00:00";
                 break;
             case "eve":
-                $planned_survey_time = "18:00:00";
+                $planned_appointment_time = "18:00:00";
                 break;
             default:
-                $planned_survey_time = "09:00:00";
+                $planned_appointment_time = "09:00:00";
                 break;
         }
 
-        $planned_survey_datetime = $planned_survey_date . " " . $planned_survey_time;
+        $planned_survey_datetime = $planned_appointment_date . " " . $planned_appointment_time;
 
-        //TODO Add appointment if the survey_date is different in both systems
-        if ($record['survey_date'] != $planned_survey_date) {
+        //Add appointment if the appointment_date (same for surveys and installations) is different in both systems
+        if ($record['survey_date'] != $planned_appointment_date) {
             //Create a new appointment if it is needed
-            $this->Trackvia_model->create_appointment($fields, $record, $planned_survey_datetime);
+            //Check if the postcode exist on this field, or get from the all_view in other case
+            if (!isset($fields['PostCode'])) {
+                $tv_record = $this->tv->getRecord($record['client_ref']);
+                $fields['PostCode'] = $tv_record['fields']['PostCode'];
+            }
+            $this->Trackvia_model->create_appointment($fields, $record, $planned_survey_datetime, $title, $text, $planned_appointment_type);
             $this->Locations_model->set_location_id($fields['PostCode']);
         } else {
             echo("Uncancelling appointment that was set:" . $record['urn']);
             echo "<br>";
-            $this->Trackvia_model->uncancel_appointment($record['urn'], $planned_survey_date);
+            $this->Trackvia_model->uncancel_appointment($record['urn'], $planned_appointment_date);
         }
         if ($appointment_cancelled) {
             echo("Cancelling appointment that needs rebooking:" . $record['urn']);
             echo "<br>";
-            $this->Trackvia_model->cancel_appointment($record['urn'], $planned_survey_date);
+            $this->Trackvia_model->cancel_appointment($record['urn'], $planned_appointment_date);
         }
     }
 
@@ -819,17 +922,34 @@ AND dials = 0  )");
                 $this->update_tv_record($urn);
             }
         } else if ($app['campaign_id'] == "22") {
-            $update_record = array("source_id" => 37, "record_color" => "00CC00");
+            //Survey
+            if ($app['appointment_type_id'] === APPOINTMENT_TYPE_SURVEY) {
+                $update_record = array("source_id" => 37, "record_color" => "00CC00");
+            } //Installation
+            else if ($app['appointment_type_id'] === APPOINTMENT_TYPE_INSTALLATION) {
+                $update_record = array("source_id" => 52, "record_color" => "00CC00");
+            }
         } else if ($app['campaign_id'] == "32") {
             $update_record = array("source_id" => 48, "record_color" => "00CC00");
         }
-        $data = array(
-            "Planned Survey Date" => $app['date'] . "T12:00:00-0600",
-            "Survey appt" => $app['slot'],
-            "Survey Booking Confirmed" => "Y",
-            "Survey booked by" => "121",
-            "Survey Appointment Comments" => $app['title'] . ' : ' . $app['text']
-        );
+
+        //Survey
+        if ($app['appointment_type_id'] === APPOINTMENT_TYPE_SURVEY) {
+            $data = array(
+                "Planned Survey Date" => $app['date'] . "T12:00:00-0600",
+                "Survey appt" => $app['slot'],
+                "Survey Booking Confirmed" => "Y",
+                "Survey booked by" => "121",
+                "Survey Appointment Comments" => $app['title'] . ' : ' . $app['text']
+            );
+        } //Installation
+        else if ($app['appointment_type_id'] === APPOINTMENT_TYPE_INSTALLATION) {
+            $data = array(
+                "Commissioning date (customer needs to be in)" => $app['date'] . "T12:00:00-0600",
+                "Commissioning appt" => $app['slot'],
+                "Installation comments" => $app['title'] . ' : ' . $app['text']
+            );
+        }
 
         if ($app['campaign_id'] == 29) {
             $data["Owner Consent to proceed"] = "Y";
@@ -906,17 +1026,15 @@ AND dials = 0  )");
         }
     }
 
-    //the fields we update here need confirming, there doesnt appear to be any cancel install fields for us.
+    //TODO the fields we update here need confirming, there doesnt appear to be any cancel install fields for us.
     public function install_refused()
     {
+
         $urn = $this->input->post('urn');
         //Get the record data
         $record = $this->get_record($urn);
-        $data = array("Planned Installation date" => "", "Installation Date Confirmed" => "", "Customer Cancellation" => "declined", "Customer Cancellation notes" => !empty($record['outcome_reason']) ? $record['outcome_reason'] : $record['comments'], "Cancelled by" => "121", "Date of Cancellation" => date('Y-m-d') . "T12:00:00-0600");
-        if ($record['campaign_id'] == "29") {
-            $data["Owner Consent to proceed"] = "N";
-            $data["Date Tenant Notified"] = "today";
-        }
+        $data = array("Commissioning date (customer needs to be in)" => "", "Commissioning appt" => "", "Customer Cancellation" => "declined", "Customer Cancellation notes" => !empty($record['outcome_reason']) ? $record['outcome_reason'] : $record['comments'], "Cancelled by" => "121", "Date of Cancellation" => date('Y-m-d') . "T12:00:00-0600");
+
         $response = $this->tv->updateRecord($record['client_ref'], $data);
         if (!empty($response)) {
             echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref'], "data" => $data));
@@ -957,6 +1075,30 @@ AND dials = 0  )");
 
 
     public function already_had_survey()
+    {
+        $urn = $this->input->post('urn');
+        //Get the record data
+        $record = $this->get_record($urn);
+        $data = array("External Survey Completed" => "Y",
+            "Internal Survey Completed" => "Y");
+
+        $response = $this->tv->updateRecord($record['client_ref'], $data);
+        if (!empty($response)) {
+            echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref'], "data" => $data));
+        } else {
+            $message = " An error occured while updating a record \r\n";
+            $message .= "  URN: $urn \r\n";
+            $message .= " Record ID: " . $record['client_ref'] . " \r\n";
+            $message .= " Sent Data \r\n";
+            foreach ($data as $k => $v) {
+                $message .= "$k: $v\r\n";
+            }
+            mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
+        }
+    }
+
+    //TODO the fields we update here need confirming
+    public function already_had_installation()
     {
         $urn = $this->input->post('urn');
         //Get the record data

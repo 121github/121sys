@@ -821,6 +821,14 @@ class Records_model extends CI_Model
         return $this->db->delete("history");
     }
 
+    public function get_source($urn)
+    {
+        $qry = "select ds.* from data_sources ds inner join records using(source_id) where urn = '$urn'";
+        $result = $this->db->query($qry)->result_array();
+
+        return (!empty($result) ? $result[0] : array());
+    }
+
     public function get_outcomes($campaign)
     {
         $qry = "select outcome_id,outcome,delay_hours,`disabled` from outcomes left join outcomes_to_campaigns using(outcome_id) where campaign_id = '$campaign' and enable_select = 1 union select outcome_id, outcome ,delay_hours,`disabled` from role_outcomes join outcomes using(outcome_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and (campaign_id = '$campaign' or campaign_id is null) and role_id = '{$_SESSION['role']}'  order by outcome";
@@ -991,6 +999,11 @@ class Records_model extends CI_Model
             }
         }
 
+        if (!isset($hist['source_id']) || empty($hist['source_id'])) {
+            $source = $this->get_source($hist['urn']);
+            $hist['source_id'] = $source['source_id'];
+        }
+
         $hist["contact"] = date('Y-m-d H:i');
         $hist["user_id"] = $_SESSION['user_id'];
         $hist["role_id"] = $_SESSION['role'];
@@ -1013,7 +1026,8 @@ class Records_model extends CI_Model
             "contact_id",
             "progress_id",
             "last_survey",
-			"call_direction"
+            "call_direction",
+            "source_id"
         ), $hist, NULL));
         return $this->db->insert_id();
     }
