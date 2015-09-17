@@ -300,7 +300,13 @@ class Email extends CI_Controller
             ));
             exit;
         }
-
+		if(!valid_email($form['send_to'])){
+		 echo json_encode(array(
+                "success" => false,
+                "msg" => "One or more email address is not valid"
+            ));
+            exit;	
+		}
         //Save the email in the history table
         unset($form['template_attachments']);
         $email_id = $this->Email_model->add_new_email_history($form);
@@ -1093,7 +1099,8 @@ class Email extends CI_Controller
                 $appointment_ics['send_to'] = $last_appointment_ics->send_to;
                 $appointment_ics['send_from'] = $last_appointment_ics->send_from;
                 $appointment_ics['duration'] = $last_appointment_ics->duration;
-                $appointment_title = explode(' - ', $last_appointment_ics->title)[1];
+				$title_split = explode(' - ', $last_appointment_ics->title);
+                $appointment_title = $title_split[1];
                 $appointment_ics['title'] = 'Appointment Cancellation - ' . $appointment->title . ' #' . $appointment_id;
                 $appointment_ics['location'] = $last_appointment_ics->location;
                 $appointment_ics['uid'] = $uid;

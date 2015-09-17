@@ -373,7 +373,7 @@ $config['proxy_ips'] = '';
 |
 |
 */
-/*
+
 $config['email'] = array(
     "protocol"=>"smtp",
     "smtp_host"=>"mail.121system.com",
@@ -382,7 +382,7 @@ $config['email'] = array(
     "smtp_port"=>25,
     "mailtype" => "html"
 );
-*/
+/* backup
 $config['email'] = array(
     "protocol"=>"smtp",
     "smtp_host"=>"compsmart.co.uk",
@@ -391,6 +391,6 @@ $config['email'] = array(
     "smtp_port"=>49,
     "mailtype" => "html"
 );
-
+/*
 /* End of file config.php */
 /* Location: ./application/config/config.php */
