@@ -375,18 +375,26 @@ class Sms extends CI_Controller
 
         $template_id = null;
         $test = null;
+        $app_type = null;
 
+        //Template ID
         if (intval($this->uri->segment(3)) > 0) {
             $template_id = $this->uri->segment(3);
         }
 
+        //TEST
         if (intval($this->uri->segment(4)) >= 0) {
             $test = $this->uri->segment(4);
         }
 
+        //Appointment type
+        if (intval($this->uri->segment(5)) >= 0) {
+            $app_type_id = $this->uri->segment(5);
+        }
+
         if ($template_id) {
             //Get the appointments and the contact number where the appointment date is tomorrow or the day after tomorrow
-            $remind_appointments = $this->Sms_model->get_remind_appointments($template_id);
+            $remind_appointments = $this->Sms_model->get_remind_appointments($template_id, $app_type_id);
 
             //Check if we have enough credits
             $status = SMS_STATUS_UNKNOWN;
