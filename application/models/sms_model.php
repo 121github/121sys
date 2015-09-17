@@ -507,8 +507,9 @@ class Sms_model extends CI_Model
         return $result;
     }
 
-    public function get_remind_appointments($template_id)
+    public function get_remind_appointments($template_id, $app_type_id)
     {
+        $where_app_type = ($app_type_id ? ' and a.appointment_type_id = ' . $app_type_id . ' ' : '');
         $qry = "select
                   DISTINCT CONCAT(appointment_id,'_',telephone_number),
                   a.appointment_id,
@@ -533,6 +534,7 @@ class Sms_model extends CI_Model
                 left join users uat using (user_id)
                 where telephone_number REGEXP '^(447|[[.+.]]447|00447|0447|07)'
                     and template_id = ".$template_id."
+                    " . $where_app_type . "
                     and a.status = 1
                     and date(start) BETWEEN (CURDATE() + INTERVAL 1 DAY) AND (CURDATE() + INTERVAL 2 DAY)";
 
