@@ -23,10 +23,11 @@ class Appointments_model extends CI_Model
 		$where .= " and campaign_id = '$campaign_id' ";
 		}
 		if($source){
-		$where .= " and source_id = '$source' ";	
+		$where .= " and (source_id = '$source' or source_id is null )";	
 		}
 		//first configure the default array for all days
 		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null  $where ";
+		$this->firephp->log($qry);
 		$max = array();
 		$default = $this->db->query($qry)->result_array();
 		if(count($default)=="0"){

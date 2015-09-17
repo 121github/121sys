@@ -2,20 +2,21 @@
   <div class="panel-heading clearfix">Slot Availability
     <div class="pull-right">
     <form>
+    <input type="hidden" id="source-id" value="<?php echo $details['record']['source_id'] ?>" />
     <input type="hidden" id="slot-distance" name="distance" value="" />
       <input type="hidden" id="slot-attendee"  name="attendee" value="" />
           <input type="hidden" id="app-type" value="" />
           <div class="input-group"  style="width:280px">
-            <div class="input-group-btn">
-        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-attendee-text">Type</span> <span class="caret"></span></button>
+            <!--<div class="input-group-btn">
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-type-text">Type</span> <span class="caret"></span></button>
         <ul class="dropdown-menu pull-right" role="menu">
          <?php foreach($types as $type): ?>
-          <li><a href="#" class="filter" data-val="<?php echo $type['id'] ?>" data-ref="attendee"><?php echo $type['name'] ?></a> </li>
+          <li><a href="#" class="filter" data-val="<?php echo $type['id'] ?>" data-ref="type"><?php echo $type['name'] ?></a> </li>
           <?php endforeach ?>
           <li class="divider"></li>
           <li><a class="filter" ref="#" style="color: green;" data-ref="appointment_type">Show all</a> </li>
         </ul>
-      </div>
+      </div>-->
           
           
              <div class="input-group-btn">
@@ -34,7 +35,7 @@
           <li><a class="filter" data-ref="distance" href="#" style="color: green;">Any Distance</a></li>
         </ul>
       </div>
-    <input class="form-control input-xs" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
+    <input class="form-control input-xs" style="width:100px" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
 
       <div class="input-group-btn">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-attendee-text">Attendee</span> <span class="caret"></span></button>
@@ -67,6 +68,8 @@ e.preventDefault();
 	if(type=="distance"){
 	$(this).closest('form').find('#slot-'+type+'-text').text(txt);	
 	} else if(type=="attendee"){
+		$(this).closest('form').find('#slot-'+type+'-text').text(txt);	
+	} else if(type=="type"){
 		$(this).closest('form').find('#slot-'+type+'-text').text(txt);	
 	}
 	record.appointment_slots_panel.load_panel();
