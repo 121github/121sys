@@ -414,6 +414,32 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     No </label>
             </div>
         </div>
+        <div class="question">
+            <label>Does the customer have a reference number?</label><br>
+
+            <div class="radio" style="display:inline-block">
+                <label>
+                    <input type="radio" name="answers[a26][]" id="optionsRadios1" data-show-notes="true"
+                           value="Yes" <?php if (@strpos($values['a26'], "Yes") !== false) {
+                        echo "checked";
+                    } ?> />
+                    Yes </label>
+            </div>
+            <div class="radio" style="display:inline-block; margin-left:20px">
+                <label>
+                    <input type="radio" name="answers[a26][]" id="optionsRadios2"
+                           value="No" <?php if (@strpos($values['a26'], "No") !== false) {
+                        echo "checked";
+                    } ?>>
+                    No </label>
+            </div>
+            <div class="form-group">
+                <label>Please enter the reference number</label>
+                <br>
+                <input type="text" name="answers[a27]" value="<?php echo @$values['a27'] ?>" class="form-control"
+                       placeholder="Add parking details if applicable"/>
+            </div>
+        </div>
 
         <div class="form-group">
             <label>Any other information relevant</label>
