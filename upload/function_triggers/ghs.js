@@ -17,8 +17,11 @@ init:function(){
 
 	if($('#source-id').val()=="51"){
 		$('#slot-attendee').val('139');
-	} else {
+	} else if ($('#source-id').val()=="34"||$('#source-id').val()=="35"||$('#source-id').val()=="37"||$('#source-id').val()=="38"){
 		$('#slot-attendee').val('122');
+	} else if ($('#source-id').val()=="49"||$('#source-id').val()=="48"||$('#source-id').val()=="47"||$('#source-id').val()=="46"){
+		$('#slot-attendee').val('137');
+	} else {
 	}
 
 
