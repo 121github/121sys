@@ -52,13 +52,13 @@ public function search_urn_by_c1($ref){
 }
 public function search_by_contact_phone($phone){
 	//GHS ONLY
-    $qry = "select urn,parked_code,urgent, name, outcome,fullname,source_name from records join contacts using(urn) join contact_telephone using(contact_id) left join record_details using(urn) left join data_sources using(source_id) left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) where telephone_number like '%$phone%' and campaign_id in(22,28,29,32)  group by records.urn order by c1";
+    $qry = "select urn,parked_code,urgent, name, outcome,fullname,source_name from records join contacts using(urn) join contact_telephone using(contact_id) left join record_details using(urn) left join data_sources on records.souce_id = data_sources.source_id left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) where telephone_number like '%$phone%' and campaign_id in(22,28,29,32)  group by records.urn order by c1";
 	return $this->db->query($qry)->result_array();
 
 }
 public function search_urn_by_address($add1,$postcode){
 	//GHS ONLY
-    $qry = "select urn,parked_code,urgent,name,fullname,add1,postcode,source_name,outcome from records  left join ownership using(urn) left join users using(user_id)  left join record_details using(urn) left join data_sources using(source_id) left join outcomes using(outcome_id) left join contacts using(urn) left join contact_addresses using(contact_id) where postcode = '$postcode' and add1 like '$add1%' and campaign_id in(22,28,29,32) group by records.urn order by c1";
+    $qry = "select urn,parked_code,urgent,name,fullname,add1,postcode,source_name,outcome from records  left join ownership using(urn) left join users using(user_id)  left join record_details using(urn) left join data_sources on records.souce_id = data_sources.source_id left join outcomes using(outcome_id) left join contacts using(urn) left join contact_addresses using(contact_id) where postcode = '$postcode' and add1 like '$add1%' and campaign_id in(22,28,29,32) group by records.urn order by c1";
 		return $this->db->query($qry)->result_array();
 
 
@@ -830,7 +830,7 @@ return $this->db->get('record_details_options')->result_array();
         }
 		*/
 		if (in_array("source", $fields)) {
-            $qry .= " left join data_sources using(source_id) ";
+            $qry .= " left join data_sources on records.souce_id = data_sources.source_id ";
         }
         if (in_array("status", $fields)) {
             $qry .= " left join status_list on records.record_status = status_list.record_status_id ";

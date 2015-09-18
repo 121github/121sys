@@ -52,12 +52,22 @@ class Appointments_model extends CI_Model
 			}
 			}
 		}
+		
+		//get any user specified days
+		$defined_slots = array();
+		$get_slots = "select appointment_slot_id,`date`,max_slots from appointment_slot_override where `date` > curdate() $where group by appointment_slot_id";
+		$get_slots_result = $this->db->query($get_slots)->result_array();
+		foreach($get_slots_result as $row){
+		$defined_slots[$row['date']][$row['appointment_slot_id']]["max_apps"] = $row['max_slots']; 
+		}
+		$this->firephp->log($defined_slots);
 		//now find the specified daily slots and overwrite the default array
 		$max = array();
 		foreach($days as $daynum => $day){
 		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` = $daynum $where ";
 		$daily_slots = $this->db->query($qry)->result_array();
 		foreach($daily_slots as $k=>$row){
+			$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
 			$timeslots[$row['appointment_slot_id']] = array("appointment_slot_id"=>$row['appointment_slot_id'],"slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
 			if(isset($thresholds[$day][$row['appointment_slot_id']]['max_apps'])){
 				$thresholds[$day][$row['appointment_slot_id']]['max_apps'] += $row['max_apps'];
@@ -65,8 +75,10 @@ class Appointments_model extends CI_Model
 			$thresholds[$day][$row['appointment_slot_id']] = $row;
 			}
 			}
-		$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
+		
 		}
+		
+		
 		
 /* get user holidays to remove from slots */
 $holidays = array();
@@ -85,11 +97,19 @@ if($user_id){
 for($i = 1; $i < 30; $i++){
 	$date = date("Y-m-d", strtotime('+'. $i .' days'));
 	$this_day =  $thresholds[date("l", strtotime('+'. $i .' days'))];
+	
+		if(array_key_exists($date,$defined_slots)){
+	foreach($this_day as $slot => $details){
+		if(isset($defined_slots[$date][$slot])){
+		$this_day[$slot]['max_apps']=$defined_slots[$date][$slot]["max_apps"];
+	}
+	}
+		}
 	if(array_key_exists($date,$holidays)){
 		foreach($this_day as $slot => $details){
 			$this_day[$slot]['max_apps']=0;
 				@$this_day[$slot]['reason']=$holidays[$date]['reason'];
-		}
+		}	
 	}
 	
     $slots[date("D jS M", strtotime('+'. $i .' days'))]  =$this_day;

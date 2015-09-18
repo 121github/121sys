@@ -15,6 +15,13 @@ init:function(){
 	$('#save-sticky').hide();
 	$('#sticky-notes').addClass('red').prop('readonly',true);
 
+	if($('#source-id').val()=="51"){
+		$('#slot-attendee').val('139');
+	} else {
+		$('#slot-attendee').val('122');
+	}
+
+
 },
 appointment_setup:function(){
 	console.log("Setting up appointment from ghs.js");
