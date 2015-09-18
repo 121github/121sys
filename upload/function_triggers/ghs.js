@@ -17,13 +17,14 @@ init:function(){
 
 },
 appointment_setup:function(){
+	console.log("Setting up appointment from ghs.js");
 	if($('#source-id').val()=="51"){
 		$('.attendeepicker').selectpicker('val',[139]);
-		$('.typepicker').selectpicker('val',[3])
+		$('.typepicker').selectpicker('val',[4])
 	} else {
 		alert("*Confirm that loft access will be required during the survey. (head and shoulder inspection usually sufficient)\n*Confirm access also required to main electric meter and fuse board required - it helps if obstacles are removed prior to survey.");
 		$('.attendeepicker').selectpicker('val',[122]);
-		$('.typepicker').selectpicker('val',[4]);
+		$('.typepicker').selectpicker('val',[3]);
 	}
 },
 contact_form_setup:function(){
