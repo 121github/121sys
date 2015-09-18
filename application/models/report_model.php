@@ -94,7 +94,7 @@ class Report_model extends CI_Model
             $where .= " and teams.team_id = '$team' ";
         }
         if (!empty($source)) {
-            $where .= " and source_id = '$source' ";
+            $where .= " and history.source_id = '$source' ";
         }
         //if the user does not have the agent reporting permission they can only see their own stats
         if (@!in_array("by agent", $_SESSION['permissions'])) {
