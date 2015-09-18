@@ -1,6 +1,7 @@
 // JavaScript Document
 var campaign_functions = {
 init:function(){
+	
 		  $.ajax({
                             url: helper.baseUrl + 'trackvia/check_voicemail',
                             type: "POST",
@@ -13,12 +14,17 @@ init:function(){
 						})
 	$('#save-sticky').hide();
 	$('#sticky-notes').addClass('red').prop('readonly',true);
-	$(document).on('click','[data-modal="create-appointment"]',function(){
-		alert("*Confirm that loft access will be required during the survey. (head and shoulder inspection usually sufficient)\n*Confirm access also required to main electric meter and fuse board required - it helps if obstacles are removed prior to survey.");
-	});
+
 },
 appointment_setup:function(){
-	
+	if($('#source-id').val()=="51"){
+		$('.attendeepicker').selectpicker('val',[139]);
+		$('.typepicker').selectpicker('val',[3])
+	} else {
+		alert("*Confirm that loft access will be required during the survey. (head and shoulder inspection usually sufficient)\n*Confirm access also required to main electric meter and fuse board required - it helps if obstacles are removed prior to survey.");
+		$('.attendeepicker').selectpicker('val',[122]);
+		$('.typepicker').selectpicker('val',[4]);
+	}
 },
 contact_form_setup:function(){
 	
