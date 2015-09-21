@@ -10,7 +10,7 @@ releases:
   enabled: true
   max: 4
   symlink: 121sys
-  directory: releases/121sys_releases
+  directory: releases/121sys_releases/121sys
 hosts:
     - 10.10.1.13
 tasks:
