@@ -16,6 +16,8 @@ class UploadFolder extends AbstractTask
         $commandList = array(
             'mkdir -p ../upload',
             'chmod 777 ../upload',
+            'mkdir -p ../upload/function_triggers',
+            'chmod 777 ../upload/function_triggers',
             //'setfacl -R -m u:www-data:rwx -m u:\`whoami\`:rwx ../upload',
             //'setfacl -dR -m u:www-data:rwx -m u:\`whoami\`:rwx ../upload',
             'ln -nsf ../upload upload'
