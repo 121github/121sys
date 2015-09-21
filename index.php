@@ -54,6 +54,12 @@ switch ($domain) {
         $session_name = '121sys_test';
         break;
 
+    case 'accept.hsl.':
+        define('ENVIRONMENT', 'acceptance');
+        $session_name = '121sys_accept_hsl';
+        $theme = "hsl";
+        break;
+
     case 'accept.':
         define('ENVIRONMENT', 'acceptance');
         $session_name = '121sys_accept';
