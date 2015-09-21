@@ -202,17 +202,56 @@ class Calendar extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
             $form['block_day'] = to_mysql_datetime($form['block_day']);
+            $form['block_day_end'] = to_mysql_datetime($form['block_day_end']);
 
-            //Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
-            if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'])) {
-                echo json_encode(array(
-                    "success" => false,
-                    "msg" => "ERROR: You can not block this day for this attendee. The attendee has at least one appointment scheduled. Reschedule the appointment and block the day after that."
-                ));
-                exit(0);
-            } else {
-                $results = $this->Calendar_model->add_appointment_rule($form);
+            $days_diff = (strtotime($form['block_day_end']) - strtotime($form['block_day'])) / (60 * 60 * 24);
+            unset($form['block_day_end']);
+            $block_day_start = $form['block_day'];
 
+            if (isset($form['appointment_slot_id']) and $form['appointment_slot_id'] == '') {
+                $form['appointment_slot_id'] = NULL;
+            }
+
+            $rules_to_add = array();
+            for ($i = 0; $i <= $days_diff; $i++) {
+                $block_day = date("Y-m-d", strtotime($block_day_start . "+ " . $i . " days"));
+                $form['block_day'] = $block_day;
+
+                //Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
+                if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'])) {
+                    echo json_encode(array(
+                        "success" => false,
+                        "msg" => "ERROR: The attendee has at least one appointment scheduled on the day selected. Reschedule the appointment and block the day after that."
+                    ));
+                    exit(0);
+                } else {
+                    //Check if already exist a rule for that day
+                    $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date_and_user($form['block_day'], $form['user_id']);
+                    foreach ($appointment_rules as $appointment_rule) {
+                        //If appointment_slot is set
+                        if ($form['appointment_slot_id']) {
+                            //If all day is already set, delete it to insert the new one with a slot
+                            if (!$appointment_rule['appointment_slot_id']) {
+                                $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
+                            } //If is the same appointment_slot, delete it to insert the new one on the same slot
+                            else if ($form['appointment_slot_id'] == $appointment_rule['appointment_slot_id']) {
+                                $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
+                            }
+                        } //If all day is set, delete all that are already set for this day to insert the new one for the whole day
+                        else {
+                            $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
+                        }
+                    }
+
+                    array_push($rules_to_add, $form);
+                }
+            }
+
+            if (!empty($rules_to_add)) {
+                //Add the appointment rules got
+                foreach ($rules_to_add as $rule) {
+                    $results = $this->Calendar_model->add_appointment_rule($rule);
+                }
                 echo json_encode(array(
                     "success" => (!empty($results)),
                     "msg" => (!empty($results)) ? "Appointment Rules added successfully" : "ERROR: Appointment Rules NOT added successfully!"
@@ -288,6 +327,21 @@ class Calendar extends CI_Controller
 
             echo json_encode(array(
                 "data" => $appointment_rule_reasons
+            ));
+        }
+
+    }
+
+    /**
+     * Get appointment slots
+     */
+    public function get_appointment_slots()
+    {
+        if ($this->input->is_ajax_request()) {
+            $get_appointment_slots = $this->Form_model->get_appointment_slots();
+
+            echo json_encode(array(
+                "data" => $get_appointment_slots
             ));
         }
 
