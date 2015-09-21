@@ -57,7 +57,7 @@ switch ($domain) {
     case 'accept.hsl.':
         define('ENVIRONMENT', 'acceptance');
         $session_name = '121sys_accept_hsl';
-        $theme = "hsl";
+        $theme = "voice";
         break;
 
     case 'accept.':
