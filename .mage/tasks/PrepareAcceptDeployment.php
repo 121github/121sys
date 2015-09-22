@@ -20,7 +20,8 @@ class PrepareAcceptDeployment extends AbstractTask
             'setfacl -dR -m u:www-data:rwx -m u:\`whoami\`:rwx datafiles',
             'find . -type f -exec chmod 664 {} \;',
             'find . -type d -exec chmod 775 {} \;',
-            'chmod -R 777 importcsv.sh'
+            'chmod -R 777 importcsv.sh',
+            'cp /var/lib/jenkins/jobs/121Sys/workspace/upload/function_triggers/ghs.js upload/function_triggers/ghs.js'
         );
 
         $command = implode(" && ", $commandList);
