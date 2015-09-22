@@ -103,10 +103,15 @@ class Dashboard extends CI_Controller
             if ($data['a24'] == '') {
                 $data['a24'] = 'No answer';
             }
-            if (!isset($webform_hear[$data['a24']])) {
-                $webform_hear[$data['a24']] = 0;
+
+            //If is multiselected
+            $data_hear_ar = explode(",", $data['a24']);
+            foreach ($data_hear_ar as $data_hear) {
+                if (!isset($webform_hear[$data_hear])) {
+                    $webform_hear[$data_hear] = 0;
+                }
+                $webform_hear[$data_hear]++;
             }
-            $webform_hear[$data['a24']]++;
 
             //Source
             if ($data['a25'] == '') {
