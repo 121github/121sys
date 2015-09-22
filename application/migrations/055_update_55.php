@@ -1,7 +1,4 @@
-
-			if(!$check->num_rows()){
-        $this->db->query("ALTER TABLE users ADD custom VARCHAR(50) NOT NULL");
-			}<?php
+<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Migration_update_55 extends CI_Migration
@@ -15,8 +12,8 @@ class Migration_update_55 extends CI_Migration
     public function up()
     {
 		  $this->firephp->log("starting migration 55");
-		$check = $this->db->query("select * from `datatables_columns` where column_title = 'Start Date'");	
-		if(!$this->db->num_rows($check)){
+		$check = $this->db->query("select * from `datatables_columns` where column_title = 'Start Date'");
+		if(!$check->num_rows()){
 		$this->db->query("INSERT INTO `datatables_columns` (`column_id`, `column_title`, `column_alias`, `column_select`, `column_order`, `column_group`, `column_table`) VALUES
 (44, 'Start Date', 'start', 'date_format(a.start,''%d/%m/%Y'')', 'a.start', 'Appointment', 'appointments'),
 (45, 'End Time', 'end_time', 'date_format(a.end,''%l:%i %p'')', 'time(a.end)', 'Appointment', 'appointments'),

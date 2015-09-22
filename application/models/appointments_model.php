@@ -82,12 +82,15 @@ class Appointments_model extends CI_Model
         /* get user holidays to remove from slots */
         $holidays = array();
         if ($user_id) {
-            $get_holidays = "select reason,block_day,appointment_slot_id from appointment_rules join appointment_rule_reasons using(reason_id) where 1 ";
+            $get_holidays = "select reason,reason_id,block_day,appointment_slot_id,other_reason from appointment_rules join appointment_rule_reasons using(reason_id) where 1 ";
             $get_holidays .= $holidays_where;
 
             foreach ($this->db->query($get_holidays)->result_array() as $k => $row) {
 				$slot = intval($row['appointment_slot_id']);
                 $holidays[$row['block_day']] = array("slot"=>$slot,"reason" => $row['reason']);
+				if($row['reason_id']=="3"){
+					 $holidays[$row['block_day']]['reason'] = $row['other_reason'];
+				}
             }
         }
         /* end holidays */
@@ -111,7 +114,7 @@ class Appointments_model extends CI_Model
                     @$this_day[$slot]['reason'] = $holidays[$date]['reason'];
                 }
 					} else {
-					  $this_day[$holidays[$date]['slot']]['max_apps'] = 0;
+					 $this_day[$holidays[$date]['slot']]['max_apps'] = 0;
                     @$this_day[$holidays[$date]['slot']]['reason'] = $holidays[$date]['reason'];	
 					}
             }
