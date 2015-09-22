@@ -307,6 +307,7 @@ $(document).ready(function () {
         },
         addAppointmentRule: function (block_day) {
             modals.default_buttons();
+			modal_body.css('overflow','visible');
             modal_header.text('Add appointment rule');
             $('#modal').modal({
                 backdrop: 'static',

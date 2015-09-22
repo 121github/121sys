@@ -253,7 +253,7 @@ class Trackvia extends CI_Controller
         $this->checkView(
             SOUTHWAY_BOOK_INSTALLATION,
             array(
-                'campaign_id' => 22,
+                'campaign_id' => 52,
                 'urgent' => NULL,
                 'status' => 1,
                 'appointment_creation' => false,
@@ -270,7 +270,7 @@ class Trackvia extends CI_Controller
         $this->checkView(
             SOUTHWAY_INSTALLATION_SLOTS,
             array(
-                'campaign_id' => 22,
+                'campaign_id' => 52,
                 'urgent' => NULL,
                 'status' => 4,
                 'outcome_id' => 72,
@@ -281,7 +281,9 @@ class Trackvia extends CI_Controller
                 'savings_per_panel' => 20
             )
         );
-
+		//update sw install campaign records
+		$this->check_trackvia(52);
+		//update sw survey campaign records
         $this->check_trackvia(22);
     }
 
@@ -469,13 +471,14 @@ class Trackvia extends CI_Controller
         //queries we may want to run after the updates can go here
         $this->db->query("update records set map_icon ='fa-home' where campaign_id = '$campaign_id'");
         $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id = '$campaign_id'");
-        $this->db->query("update contacts inner join records using(urn)     inner join data_sources using(source_id) set notes = source_name where campaign_id = '$campaign_id' and records.source_id is not null");
+        $this->db->query("update contacts inner join records using(urn) inner join data_sources using(source_id) set notes = source_name where campaign_id = '$campaign_id' and records.source_id is not null");
 
         $query = "select urn from records join campaigns using(campaign_id) where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id = '$campaign_id'";
         foreach ($this->db->query($query)->result_array() as $row) {
             $urn = $row['urn'];
             $this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 137,outcome_reason_id=NULL, record_status=3 where urn = '$urn'");
             $this->unable_to_contact($urn);
+			 }
             //clear virgin records ownership
             $this->db->query("delete from ownership where urn in(select urn
                 FROM records
@@ -487,7 +490,7 @@ class Trackvia extends CI_Controller
                 AND outcome_id IS NULL
                 AND dials = 0  )");
 
-        }
+       
 
 
         //unset anything marked as urgent that is not in the rebook data sources
