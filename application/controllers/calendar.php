@@ -218,7 +218,7 @@ class Calendar extends CI_Controller
                 $form['block_day'] = $block_day;
 
                 //Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
-                if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'])) {
+                if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'], $form['appointment_slot_id'])) {
                     echo json_encode(array(
                         "success" => false,
                         "msg" => "ERROR: The attendee has at least one appointment scheduled on the day selected. Reschedule the appointment and block the day after that."
