@@ -23,7 +23,7 @@ class Migration_update_55 extends CI_Migration
 (49, 'App. Notes', 'appointment_notes', 'if(char_length(a.text)>100,concat(substring(a.text,1,100),''...''),substring(a.text,1,100))', 'a.text', 'Appointment', 'appointments'),
 (50, 'Start Time', 'start_time', 'date_format(a.start,''%l:%i %p'')', 'time(a.start)', 'Appointment', 'appointments'),
 (51, 'Created By', 'created_by', 'appointment_users.name', 'appointment_users.name', 'Appointment', 'appointments'),
-(52, 'Attendees', 'attendees', 'group_concat(au.name)', 'au.name', 'Appointment', 'appointments')");
+(52, 'Attendees', 'attendees', 'group_concat(distinct au.name SEPARATOR '', '')', 'au.name', 'Appointment', 'appointments')");
 
 $this->db->query("INSERT INTO `datatables_table_columns` (`table_id`, `column_id`) VALUES
 (3, 53),

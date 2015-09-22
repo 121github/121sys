@@ -254,6 +254,7 @@ class Appointments_model extends CI_Model
 
         $qry .= $this->get_where($options, $filter_columns);
         $qry .= " group by appointment_id";
+		$this->firephp->log($qry);
         if ($count) {
 
             return $this->db->query($qry)->num_rows();

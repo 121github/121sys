@@ -106,7 +106,7 @@ class Appointments extends CI_Controller
 			$visible_columns = $this->Datatables_model->get_visible_columns(3);
 			$options = $this->input->post();
 			$options['visible_columns'] = $visible_columns;
-
+		$this->firephp->log($visible_columns);
 			//check the options
 			foreach($options['columns'] as $k=>$column){
 				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
@@ -118,7 +118,6 @@ class Appointments extends CI_Controller
             $count = $this->Appointments_model->appointment_data(true, $options);
 
             foreach ($records as $k => $v) {
-
                 //Location
                 if ($records[$k]["company_location"]) {
                     $location_ar = explode(',',$records[$k]["company_location"]);

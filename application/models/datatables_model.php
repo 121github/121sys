@@ -14,7 +14,6 @@ class Datatables_model extends CI_Model
 		$this->db->join("datatables_columns","datatables_columns.column_id=datatables_user_columns.column_id");
 		$this->db->order_by("sort");
 		$columns = $this->db->get("datatables_user_columns")->result_array();
-		$this->firephp->log($this->db->last_query());
 		if(count($columns)==0){
 		return false;
 		}
@@ -59,7 +58,7 @@ class Datatables_model extends CI_Model
 ('', $user_id, 3, 1, 1),
 ('', $user_id, 4, 1, 1),
 ('', $user_id, 17, 1, 1),
-('', $user_id, 1, 3, 1),
+('', $user_id, 4, 3, 1),
 ('', $user_id, 44, 3, 1),
 ('', $user_id, 45, 3, 1),
 ('', $user_id, 48, 3, 1),
