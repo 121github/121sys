@@ -346,10 +346,29 @@ class Appointments_model extends CI_Model
      * Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
      *
      */
-    public function checkNoAppointmentForTheDayBlocked($attendee_id, $blockDay)
+    public function checkNoAppointmentForTheDayBlocked($attendee_id, $blockDay, $appointment_slot_id = NULL)
     {
 
-        $qry = "select * from appointments left join appointment_attendees using(appointment_id) where user_id = " . $attendee_id . " and '" . to_mysql_datetime($blockDay) . "' >= date(start) and '" . to_mysql_datetime($blockDay) . "' <= date(end)";
+        $appointment_slot_start = '00:00:00';
+        $appointment_slot_end = '23:59:59';
+        if ($appointment_slot_id) {
+            $qry = "select * from appointment_slots where appointment_slot_id = " . $appointment_slot_id;
+            $results = $this->db->query($qry)->result_array();
+
+            $appointment_slot = (!empty($results) ? $results[0] : array());
+            if (!empty($appointment_slot)) {
+                $appointment_slot_start = $appointment_slot['slot_start'];
+                $appointment_slot_end = $appointment_slot['slot_end'];
+            }
+        }
+
+        $qry = "select apt.user_id, a.appointment_id, a.start, a.end
+                from appointments a
+                  left join appointment_attendees apt using(appointment_id)
+                where
+                  apt.user_id = 30
+                  and '" . to_mysql_datetime($blockDay) . " " . $appointment_slot_start . "' <= a.start
+                  and '" . to_mysql_datetime($blockDay) . " " . $appointment_slot_end . "' >= a.end";
 
         $results = $this->db->query($qry)->result_array();
 
