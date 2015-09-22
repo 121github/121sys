@@ -131,6 +131,22 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     echo "selected";
                 } ?> value='Door'>Door
                 </option>
+                <option <?php if (@strpos($values['a24'], "Doordrop") !== false) {
+                    echo "selected";
+                } ?> value='Doordrop'>Doordrop
+                </option>
+                <option <?php if (@strpos($values['a24'], "Existing Customer") !== false) {
+                    echo "selected";
+                } ?> value='Existing Customer'>Existing Customer
+                </option>
+                <option <?php if (@strpos($values['a24'], "Catalogue") !== false) {
+                    echo "selected";
+                } ?> value='Catalogue'>Catalogue
+                </option>
+                <option <?php if (@strpos($values['a24'], "OT Recommendation") !== false) {
+                    echo "selected";
+                } ?> value='OT Recommendation'>OT Recommendation
+                </option>
             </select>
         </div>
 
