@@ -38,7 +38,7 @@
     <input class="form-control input-xs" style="min-width:100px;margin-top:2px" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
 
       <div class="input-group-btn">
-        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-attendee-text">Attendee</span> <span class="caret"></span></button>
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span> <span id="slot-attendee-text">Filter</span> </button>
         <ul class="dropdown-menu pull-right" role="menu">
          <?php foreach($attendees as $attendee): ?>
           <li><a href="#" class="filter" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><?php echo $attendee['name'] ?></a> </li>

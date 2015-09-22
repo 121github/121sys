@@ -57,7 +57,11 @@ class Datatables_model extends CI_Model
 ('', $user_id, 3, 1, 1),
 ('', $user_id, 4, 1, 1),
 ('', $user_id, 17, 1, 1),
-('', $user_id, 1, 3, 1)");		
+('', $user_id, 1, 3, 1),
+('', $user_id, 44, 3, 1),
+('', $user_id, 45, 3, 1),
+('', $user_id, 48, 3, 1),
+('', $user_id, 50, 3, 1),('', $user_id, 52, 3, 1)");		
 	}
 	
 	public function all_columns($table_id){
