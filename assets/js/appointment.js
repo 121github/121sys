@@ -14,6 +14,36 @@ var appointment = {
     init: function () {
         this.table;
 
+        $('form').find('input[name="date_from"]').val(moment().format('YYYY-MM-DD'));
+        $('form').find('input[name="date_to"]').val(moment().add('days', 29).format('YYYY-MM-DD'));
+
+        $('.daterange').daterangepicker({
+                opens: "left",
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Tomorrow': [moment().add('days', 1), moment().add('days', 1)],
+                    'Next 7 Days': [moment(), moment().add('days', 6)],
+                    'Next 30 Days': [moment(), moment().add('days', 29)],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Next Month': [moment().add('month', 1).startOf('month'), moment().add('month', 1).endOf('month')]
+                },
+                format: 'DD/MM/YYYY',
+                minDate: "02/07/2014",
+                startDate: moment(),
+                endDate: moment().add('days', 29)
+            },
+            function (start, end, element) {
+                var $btn = this.element;
+                $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
+                $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+                appointment.reload_table();
+            });
+
+        $(document).on("click", '.daterange', function (e) {
+            e.preventDefault();
+        });
+
         $(document).on("click", ".group-filter", function(e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
@@ -79,6 +109,8 @@ var appointment = {
                     d.bounds = (maps.temp_bounds ? maps.temp_bounds : maps.getBounds());
                     d.map = $('#map-view-toggle').prop('checked');
                     d.group = $('.filter-form').find('input[name="group"]').val();
+                    d.date_from = $('.filter-form').find('input[name="date_from"]').val();
+                    d.date_to = $('.filter-form').find('input[name="date_to"]').val();
                 },
                 complete: function (d) {
                     $('.dt_info').show();
