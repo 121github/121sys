@@ -91,7 +91,9 @@ class Appointments extends CI_Controller
 				'plugins/DataTables/js/jquery.dataTables.min.js',
 				'plugins/DataTables/js/dataTables.bootstrap.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
-                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
             )
         );
         $this->template->load('default', 'dashboard/appointments.php', $data);

@@ -211,7 +211,7 @@ class Appointments_model extends CI_Model
             "r.urn",
             "a.appointment_id marker_id",
             "GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location",
-     "GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location",
+               "GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location",
              "date_format(rp.start_date,'%d/%m/%Y') planner_date",
              "rp.user_id planner_user_id",
              "rp.record_planner_id",
@@ -290,6 +290,14 @@ class Appointments_model extends CI_Model
         //Check the bounds of the map
         if ($options['bounds'] && $options['map']=='true') {
             $where .= " and (appointment_locations.lat < ".$options['bounds']['neLat']." and appointment_locations.lat > ".$options['bounds']['swLat']." and appointment_locations.lng < ".$options['bounds']['neLng']." and appointment_locations.lng > ".$options['bounds']['swLng'].") ";
+        }
+
+        //Check the start_date and end_date
+        if (isset($options['date_from']) && $options['date_from']) {
+            $where .= " and date(a.start) >= '" . $options['date_from'] . "' ";
+        }
+        if (isset($options['date_to']) && $options['date_to']) {
+            $where .= " and date(a.end) <= '" . $options['date_to'] . "' ";
         }
 
         //check the tabel header filter
