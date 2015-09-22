@@ -35,7 +35,7 @@
           <li><a class="filter" data-ref="distance" href="#" style="color: green;">Any Distance</a></li>
         </ul>
       </div>
-    <input class="form-control input-xs" style="width:100px" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
+    <input class="form-control input-xs" style="min-width:100px;margin-top:2px" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
 
       <div class="input-group-btn">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-attendee-text">Attendee</span> <span class="caret"></span></button>
