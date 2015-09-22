@@ -12,7 +12,9 @@ class Datatables_model extends CI_Model
 	public function get_visible_columns($table_id){
 		$this->db->where(array("user_id"=>$_SESSION['user_id'],"table_id"=>$table_id));
 		$this->db->join("datatables_columns","datatables_columns.column_id=datatables_user_columns.column_id");
+		$this->db->order_by("sort");
 		$columns = $this->db->get("datatables_user_columns")->result_array();
+		$this->firephp->log($this->db->last_query());
 		if(count($columns)==0){
 		return false;
 		}
@@ -70,7 +72,6 @@ class Datatables_model extends CI_Model
 	$this->db->where("table_id",$table_id);
 	$this->db->join("datatables_table_columns","datatables_table_columns.column_id = datatables_columns.column_id");
 	 $result = $this->db->get("datatables_columns")->result_array();
-	 $this->firephp->log($this->db->last_query());
 	 if(@$_SESSION['current_campaign']>0){
 	 foreach($result as $k => $row){
 		if(in_array($row['column_title'],$this->custom_fields)){
@@ -90,6 +91,7 @@ class Datatables_model extends CI_Model
 		public function selected_columns($table_id){
 	$this->db->select("column_id");
 	$this->db->where(array("table_id"=>$table_id,"user_id"=>$_SESSION['user_id']));
+	$this->db->order_by("sort");
 	return $this->db->get("datatables_user_columns")->result_array();
 	}
 	
