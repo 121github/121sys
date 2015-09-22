@@ -33,7 +33,7 @@ class Appointments extends CI_Controller
 		$urn = $this->input->post('urn');
 		$app_type = $this->input->post('app_type');
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
-		$source = $this->Records_model->get_source($urn);
+		$source =  false; //$this->Records_model->get_source($urn);
 		$user_id = intval($this->input->post('user_id'));
 		$postcode = $this->input->post('postcode');
 		if(!empty($postcode)){
@@ -56,11 +56,22 @@ class Appointments extends CI_Controller
 
     public function index()
     {
+		 //this array contains data for the visible columns in the table on the view page
+		$this->load->model('Datatables_model');
+		$visible_columns = $this->Datatables_model->get_visible_columns(3);
+		if(!$visible_columns){
+		 $this->load->model('Admin_model');
+		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
+		$visible_columns = $this->Datatables_model->get_visible_columns(3);
+		}
+		
+		
         $data = array(
             'campaign_access' => $this->_campaigns,
             'pageId' => 'System appointment',
             'title' => 'Appointments',
             'page' => 'appointments',
+			'columns' => $visible_columns,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
@@ -89,9 +100,18 @@ class Appointments extends CI_Controller
     public function appointment_data()
     {
         if ($this->input->is_ajax_request()) {
+			$this->load->model('Datatables_model');
+			$visible_columns = $this->Datatables_model->get_visible_columns(3);
+			$options = $this->input->post();
+			$options['visible_columns'] = $visible_columns;
 
-            $options = $this->input->post();
-
+			//check the options
+			foreach($options['columns'] as $k=>$column){
+				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
+					$options['columns'][$k]['search']['value']="";
+				}
+			}
+			
             $records = $this->Appointments_model->appointment_data(false, $options);
             $count = $this->Appointments_model->appointment_data(true, $options);
 
@@ -120,13 +140,16 @@ class Appointments extends CI_Controller
                     $records[$k]["record_location_id"] = NULL;
                 }
 
-                //Record color
-                $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"].$records[$k]['name'])));
+              	  	//Record color
+                $records[$k]["record_color"] = ($options['group']?genColorCodeFromText($records[$k][$options['group']]):($records[$k]["record_color"]?'#'.$records[$k]["record_color"]:genColorCodeFromText($records[$k]["urn"])));
                 $records[$k]["record_color_map"] = $records[$k]["record_color"];
-                //Add the icon to the record color
-                $map_icon = ($records[$k]['map_icon']?$records[$k]['map_icon']:($records[$k]['campaign_map_icon']?$records[$k]['campaign_map_icon']:'fa-map-marker'));
-                $records[$k]["record_color"] .= '/'.$map_icon;
 
+                //Add the icon to the record color
+                $map_icon = ((in_array("planner", $_SESSION['permissions']) && $records[$k]['record_planner_id'])?'fa-flag':($records[$k]['map_icon']?$records[$k]['map_icon']:($records[$k]['campaign_map_icon']?$records[$k]['campaign_map_icon']:'fa-map-marker')));
+                $records[$k]["color_icon"] = '<span class="fa '.$map_icon.'" style="font-size:20px; color: '.$records[$k]["record_color"].'">&nbsp;</span>';
+				// color dot
+				  $records[$k]["color_dot"] = '<span class="fa fa-circle" style="font-size:20px; color: '.$records[$k]["record_color"].'">&nbsp;</span>';
+				
                 //Map Icon
                 $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['map_icon']))):NULL);
                 $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['campaign_map_icon']))):NULL);
@@ -134,7 +157,7 @@ class Appointments extends CI_Controller
                 //Planner addresses options
                 $records[$k]["planner_addresses"] = array(
                     $records[$k]["location_id"] => $records[$k]["postcode"],
-                    $records[$k]["record_location_id"] => $records[$k]["record_postcode"]
+                    //$records[$k]["appointment_location_id"] => $records[$k]["appointment_postcode"]
                 );
             }
 

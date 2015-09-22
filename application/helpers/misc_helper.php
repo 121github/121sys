@@ -28,6 +28,9 @@ function join_array(){
 	$array['subsectors'] = array("companies","company_subsectors","subsectors");
 	$array['sectors'] = array("companies","company_subsectors","subsectors","sectors");
 	$array['ownership_users'] = array("ownership","ownership_users");
+	$array['appointment_users'] = array("appointments","appointment_users");
+	$array['appointment_attendees'] = array("appointments","appointment_attendees");
+
 	return $array;
 }
 
@@ -35,7 +38,7 @@ function table_joins(){
 		$join = array();
 		$join['records'] = "";
 		$join['client_refs'] = " left join client_refs cref on cref.urn = r.urn ";
-	    $join['record_planner'] = " left join (select urn,start_date,record_planner_id,postcode,user_id from record_planner where date(start_date)>=curdate() and planner_status = 1)rp on rp.urn = r.urn ";
+	    $join['record_planner'] = " left join (select urn,location_id,start_date,record_planner_id,postcode,user_id from record_planner where date(start_date)>=curdate() and planner_status = 1)rp on rp.urn = r.urn ";
         $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
         $join['appointments'] = " left join appointments a on a.urn = r.urn ";
         $join['companies'] = " left join companies com on com.urn = r.urn ";
@@ -65,6 +68,10 @@ function table_joins(){
 		$join['campaign_types'] = " left join campaign_types campt on campt.campaign_type_id = camp.campaign_type_id ";
 		$join['company_locations'] = " left JOIN locations company_locations ON (coma.location_id = company_locations.location_id) ";
         $join['contact_locations'] = " left JOIN locations contact_locations ON (cona.location_id = contact_locations.location_id) ";
+		$join['appointments'] = " left JOIN appointments a on a.urn = r.urn ";
+		$join['appointment_users'] = " left JOIN users appointment_users ON appointment_users.user_id = a.created_by ";
+		$join['appointment_attendees'] = " 	left join appointment_attendees aa on aa.appointment_id = a.appointment_id left join users au on au.user_id = aa.user_id ";
+		$join['appointment_locations'] = " left JOIN locations appointment_locations on a.location_id =  appointment_locations.location_id ";
 		return $join;
 }
 

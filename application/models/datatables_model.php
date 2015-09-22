@@ -24,6 +24,8 @@ class Datatables_model extends CI_Model
 		//cannot use group_concat with where operators so just use the order instead ;)
 		if(strpos($column['column_select'],"group_concat")!==false){
 		$visible_columns['filter'][] = $column['column_order'];
+		} else if(strpos($column['column_select'],"char_length")!==false){
+		$visible_columns['filter'][] = $column['column_order'];	
 		} else {
 		$visible_columns['filter'][] = $column['column_select'];
 		}
@@ -54,7 +56,8 @@ class Datatables_model extends CI_Model
 ('', $user_id, 7, 1, 1),
 ('', $user_id, 3, 1, 1),
 ('', $user_id, 4, 1, 1),
-('', $user_id, 17, 1, 1)");		
+('', $user_id, 17, 1, 1),
+('', $user_id, 1, 3, 1)");		
 	}
 	
 	public function all_columns($table_id){

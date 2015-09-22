@@ -15,13 +15,15 @@ init:function(){
 	$('#save-sticky').hide();
 	$('#sticky-notes').addClass('red').prop('readonly',true);
 
-	if($('#source-id').val()=="51"){
+	if($('#source-id').val()=="51"||$('#source-id').val()=="52"){
 		$('#slot-attendee').val('139');
 	} else if ($('#source-id').val()=="34"||$('#source-id').val()=="35"||$('#source-id').val()=="37"||$('#source-id').val()=="38"){
 		$('#slot-attendee').val('122');
 	} else if ($('#source-id').val()=="49"||$('#source-id').val()=="48"||$('#source-id').val()=="47"||$('#source-id').val()=="46"){
 		$('#slot-attendee').val('137');
 	} else {
+		//private
+		$('#slot-attendee').val('121');
 	}
 
 

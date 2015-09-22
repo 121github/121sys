@@ -1,11 +1,13 @@
-// JavaScript Document
-$(document).ready(function () {
-    maps.initialize("appointments");
-    appointment.init();
-});
+
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
 function map_table_reload() {
     appointment.table.columns.adjust().draw();
+}
+
+function full_table_reload() {
+    appointment.table.destroy();
+    appointment.table.destroy();
+    appointment.reload_table();
 }
 
 var appointment = {
@@ -24,9 +26,6 @@ var appointment = {
         });
 
         appointment.reload_table();
-
-        //Set icons used for the filter
-        appointment.get_used_icons();
     },
     get_used_icons: function() {
         $.ajax({
@@ -41,29 +40,35 @@ var appointment = {
             });
         });
     },
-    reload_table: function () {
-        var table = "<table width='100%' class='table table-striped table-bordered table-hover data-table'><thead><tr><th>Icon</th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></thead>";
-        table += "<tfoot><tr><th></th><th>Date</th><th>Company</th><th>Allocation</th><th>Created</th><th>Postcode</th></tr></tfoot></table>";
+      reload_table: function () {
+        var headings = "";
+        column_count = new Array();
+        $.each(table_columns.headings, function (i, header) {
+            headings += "<th>" + header + "</th>";
+            column_count[i] = i;
+        });
+        var table = "<table width='100%' class='table small table-striped table-bordered table-hover data-table'><thead><tr>" + headings + "</tr></thead>";
+        table += "<tfoot><tr>" + headings + "</tr></tfoot></table>";
 
         $('#table-wrapper').html(table);
         appointment.populate_table();
     },
-    populate_table: function (table_name) {
+		  populate_table: function (table_name) {
         appointment.table = $('.data-table').DataTable({
             "oLanguage": {
                 "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
             },
             "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"clear">',
-            "autoWidth": true,
+            "width": "100%",
             "scrollX": true,
             "processing": true,
             "serverSide": true,
             "pagingType": "full",
             "iDisplayLength": 50,
-            order: [[ 1, "desc" ]],
             responsive: true,
+            order: [[0, "desc"]],
             "ajax": {
-                url: helper.baseUrl + "appointments/appointment_data",
+              url: helper.baseUrl + "appointments/appointment_data",
                 type: 'POST',
                 beforeSend: function () {
                     $('.dt_info').hide();
@@ -71,51 +76,30 @@ var appointment = {
                 },
                 data: function (d) {
                     d.extra_field = false;
-                    d.bounds = maps.getBounds();
+                    d.bounds = (maps.temp_bounds ? maps.temp_bounds : maps.getBounds());
                     d.map = $('#map-view-toggle').prop('checked');
                     d.group = $('.filter-form').find('input[name="group"]').val();
                 },
                 complete: function (d) {
                     $('.dt_info').show();
                     $('.tt').tooltip();
-                    //Show the appointments in the map
+                    //Show the records in the map
                     maps.showItems();
+                    maps.current_postcode = getCookie('current_postcode');
                     planner_permission = d.responseJSON.planner_permission;
+                    maps.temp_bounds = null;
+
                 }
             },
             "deferRender": true,
-            "columns": [{
-                "data": "record_color",
-                "orderable": false,
-                render:function(e) {
-                    var element_ar = e.split('/');
-                    var color = element_ar[0];
-                    var icon = element_ar[1];
-
-                    if(!icon){
-                        return '&nbsp;';
-                    } else {
-                        return '<span class="fa '+icon+'" style="font-size:20px; color: '+color+'">&nbsp;</span>';
-                    }
-                }
-            }, {
-                "data": "start"
-            }, {
-                "data": "name"
-            }, {
-                "data": "attendee"
-            }, {
-                "data": "date_added"
-            }, {
-                "data": "postcode"
-            }],
+            "columns": table_columns.columns,
             "columnDefs": [
-			{"width": "20px","targets": 0},{
-                "targets": [0, 1, 2, 3, 4, 5],
-                "data": null,
-                "defaultContent": "-"
-            }],
-            "createdRow": function (row, data, dataIndex) {
+                {
+                    "targets": column_count,
+                    "data": null,
+                    "defaultContent": "-"
+                }],
+           "createdRow": function (row, data, dataIndex) {
                 $(row).attr('data-id', data['appointment_id']);
 				$(row).attr('data-urn', data['urn']);
                 $(row).attr('data-modal', 'view-appointment');
@@ -128,27 +112,24 @@ var appointment = {
             }
         });
 
-        //filterable columns
-        // Setup - adds search input boxes to the footer row
-        $('.data-table tfoot th').each(function () {
+		 $('.data-table tfoot th').each(function () {
             var title = $('.data-table thead th').eq($(this).index()).text();
-			var filter_attribute = 'placeholder="Filter..."';
+            var filter_attribute = 'placeholder="Filter..."';
             if (title == "Icon") {
                 var filter_attribute = "disabled";
-            } 
+            }
+
             if (title == "Options") {
                 $(this).html('');
             }
             else if (title == "Icon") {
-                $('#record-icon').on('change', function (e) {
-                    var icon = (e.icon=='empty'?'':e.icon);
-                    appointment.table.column($(this).index()).search(icon).draw();
-
-                });
+                $icon_btn = $('<button class="btn btn-default btn-sm iconpicker record-icon" role="iconpicker" data-icon="" data-index="' + $(this).index() + '" data-iconset="fontawesome" style="color:#0066"></button>');
+                $(this).html($icon_btn);
+                appointment.get_used_icons();
             }
             else {
                 var search_val = appointment.table.column($(this).index()).search();
-                $(this).html('<input class="dt-filter form-control" '+filter_attribute+' value="' + search_val[0] + '" />');
+                $(this).html('<input class="dt-filter input-sm form-control" ' + filter_attribute + ' value="' + search_val[0] + '" />');
             }
         });
 
@@ -170,6 +151,23 @@ var appointment = {
         });
         $('.data-table thead').append(r);
         $('#search_0').css('text-align', 'center');
+	},
+	   get_used_icons: function () {
+        $.ajax({
+            url: helper.baseUrl + 'records/get_used_icons',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            $('.record-icon').iconpicker();
+            $('.record-icon').iconpicker('setIconset', {
+                iconClass: 'fa',
+                iconClassFix: '',
+                icons: response.icons
+            }).change(function (e) {
+                var icon = (e.icon == 'empty' ? 'Icon' : e.icon);
+                appointment.table.column($(this).attr('data-index')).search(icon).draw();
+            });
+        });
     }
 
 }

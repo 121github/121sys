@@ -1,3 +1,27 @@
+<style>
+    #map-canvas {
+        min-height: 750px;
+        margin: 0px;
+        padding: 0px
+    }
+
+    .map-form {
+        position: absolute;
+        top: 8px;
+		width:100%;
+    }
+.map-form .input-group {
+		width:250px;
+		left:50px;
+    }
+	#show-directions { margin-right:50px; }
+    .route-info {
+       	background-color:rgba(000, 000, 000, 0.4);
+		float:right;
+		margin-right:50px;
+    }
+</style>
+
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">Appointments
@@ -12,9 +36,17 @@
         <i class="fa fa-calendar-o fa-fw"></i> Appointments
         <div class="pull-right">
             <form class="filter-form">
-                <div class="btn-group">
-                    <button id="record-icon" class="btn btn-default btn-xs iconpicker" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:# 0066"></button>
+            
+              <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-xs" data-modal="choose-columns"
+                            data-table-id="3"><span
+                            class="fa fa-table"></span> Columns
+                    </button>
                 </div>
+            
+                <!--<div class="btn-group">
+                    <button id="record-icon" class="btn btn-default btn-xs iconpicker" role="iconpicker" data-icon="" data-iconset="fontawesome" style="color:# 0066"></button>
+                </div>-->
                 <div class="btn-group">
                     <input type="hidden" name="group">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="glyphicon glyphicon-filter"></span> Colour By</button>
@@ -37,7 +69,10 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-lg-12 appointment-view" id="table-wrapper"></div>
+                <div id="table-wrapper" class="col-lg-12 appointment-view" style="overflow:visible">
+                <img class="table-loading"
+                     src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
+            </div>
             <div class="col-lg-6 map-view" style="display: none">
                 <h1 class="planner-map">
                     <div class="map-wrapper">
@@ -85,29 +120,7 @@
                         </div>
                         </div>
                     
-<style>
-    #map-canvas {
-        min-height: 750px;
-        margin: 0px;
-        padding: 0px
-    }
 
-    .map-form {
-        position: absolute;
-        top: 8px;
-		width:100%;
-    }
-.map-form .input-group {
-		width:250px;
-		left:50px;
-    }
-	#show-directions { margin-right:50px; }
-    .route-info {
-       	background-color:rgba(000, 000, 000, 0.4);
-		float:right;
-		margin-right:50px;
-    }
-</style>
                     </div>
                     <div class="panel panel-primary directionsPanel-container">
                         <div class="panel-heading clearfix">
@@ -127,25 +140,12 @@
     </div>
 </div>
 
-<style>
-    #map-canvas {
-        min-height: 750px;
-        margin: 0px;
-        padding: 0px
-    }
+<script type="text/javascript">
+    table_columns = <?php echo json_encode($columns) ?>;
 
-    .map-form {
-        position: absolute;
-        top: 28px;
-        right: 55px;
-        width: 50%;
-    }
+  $(document).ready(function () {
+    maps.initialize("appointments");
+    appointment.init();
+    });
 
-    .route-info {
-        font-weight: bold;
-        font-size: 14px;
-        text-align: right;
-        color: green;
-    }
-</style>
-
+</script>

@@ -182,69 +182,74 @@ foreach($timeslots as $id=>$timeslot){
 	
     public function appointment_data($count = false, $options = false)
     {
-        $table_columns = array(
-            "CONCAT(IFNULL(records.map_icon,''),IFNULL(camp.map_icon,''))",
-            "date_format(a.`start`,'%d/%m/%y H:i')",
-            "com.name",
-            "u.name",
-            "date_format(a.`date_added`,'%d/%m/%y')",
-            "postcode"
-        );
-        $order_columns = array(
-            "r.date_added",
-            "a.start",
-            "com.name",
-            "u.name",
-            "a.date_added",
-            "a.postcode"
+		 $tables = $options['visible_columns']['tables'];
+        //these tables must be joined to the query regardless of the selected columns to allow the map to function
+        $required_tables = array("campaigns", "companies", "company_addresses", "contacts","contact_addresses","contact_locations", "company_locations","appointment_locations","ownership","record_planner","record_planner_user","ownership","outcomes","appointment_attendees","appointment_users");
+        foreach ($required_tables as $rt) {
+            if (!in_array($rt, $tables)) {
+                $tables[] = $rt;
+            }
+        }
+        $table_columns = $options['visible_columns']['select'];
+        $filter_columns = $options['visible_columns']['filter'];
+        $order_columns = $options['visible_columns']['order'];	
+
+		   $join = array();
+        //add mandatory column selections here
+           $required_select_columns = array(
+            "a.postcode",
+            "appointment_locations.lat",
+            "appointment_locations.lng",
+            "appointment_locations.location_id",
+            "a.appointment_id",
+            "r.urn",
+            "a.appointment_id marker_id",
+            "GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location",
+     "GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location",
+             "date_format(rp.start_date,'%d/%m/%Y') planner_date",
+             "rp.user_id planner_user_id",
+             "rp.record_planner_id",
+             "rp.postcode as planner_postcode",
+             "rp.location_id as planner_location_id",
+             "rpu.name planner_user",
+			 "r.record_color",
+             "r.map_icon",
+             "camp.map_icon as campaign_map_icon"
         );
 
-        $qry = "select
-                  date_format(`start`,'%d/%m/%y %H:%i') start,
-                  com.name,
-                  u.name attendee,
-                  date_format(a.`date_added`,'%d/%m/%y') date_added,
-                  a.postcode,
-                  loc.lat,
-                  loc.lng,
-                  loc.location_id,
-                  a.appointment_id,
-				  a.title,
-                  records.urn,
-				  appointment_id marker_id,
-				  records.record_color,
-				  records.map_icon,
-				  GROUP_CONCAT(DISTINCT CONCAT(coma.postcode, '(',company_locations.lat,'/',company_locations.lng,')','|',company_locations.location_id) separator ',') as company_location,
-                  GROUP_CONCAT(DISTINCT CONCAT(cona.postcode, '(',contact_locations.lat,'/',contact_locations.lng,')','|',contact_locations.location_id) separator ',') as contact_location,
-                  camp.map_icon as campaign_map_icon,
-                  ow.user_id ownership_id,
-                  owu.name ownership,
-                  outcome,
-                  date_format(rp.start_date,'%d/%m/%Y') planner_date,
-                  rp.user_id planner_user_id,
-                  rp.record_planner_id,
-                  rp.postcode as planner_postcode,
-                  rp.location_id as planner_location_id,
-                  rpu.name planner_user
-                from appointments a
-                  left join appointment_attendees aa using(appointment_id)
-                  left join users u on u.user_id = aa.user_id
-                  left join records using(urn)
-                  left join campaigns camp using(campaign_id)
-                  left join companies com using(urn)
-                  left join company_addresses coma on coma.company_id = com.company_id
-                  left join locations company_locations ON (coma.location_id = company_locations.location_id)
-                  left join contacts con on con.urn = records.urn
-                  left join contact_addresses cona on cona.contact_id = con.contact_id
-                  left join locations contact_locations ON (cona.location_id = contact_locations.location_id)
-                  left join locations loc on loc.location_id = a.location_id
-                  left join ownership ow on ow.urn = records.urn
-                  left join users owu on ow.user_id = owu.user_id
-                  left join outcomes o on o.outcome_id = records.outcome_id
-                  left join record_planner rp on rp.urn = records.urn
-                  left join users rpu on rpu.user_id = rp.user_id ";
-        $where = $this->get_where($options, $table_columns);
-        $qry .= $where;
+
+      
+				  
+				          //if any of the mandatory columns are missing from the columns array we push them in
+        foreach ($required_select_columns as $required) {
+            if (!in_array($required, $table_columns)) {
+                $table_columns[] = $required;
+            }
+        }
+        //turn the selection array into a list
+        $selections = implode(",", $table_columns);	  
+        $qry = "select $selections from appointments a join records r using(urn) ";
+				  
+        $table_joins = table_joins();
+		unset($table_joins['appointments']);
+        $join_array = join_array();
+		unset($join_array['appointments']);
+
+        foreach ($tables as $table) {
+            if (array_key_exists($table, $join_array)) {
+                foreach ($join_array[$table] as $t) {
+                    @$join[$t] = $table_joins[$t];
+                }
+            } else {
+                @$join[$table] = $table_joins[$table];
+            }
+        }
+
+        foreach ($join as $join_query) {
+            $qry .= $join_query;
+        }
+
+        $qry .= $this->get_where($options, $filter_columns);
         $qry .= " group by appointment_id";
         if ($count) {
 
@@ -271,13 +276,13 @@ foreach($timeslots as $id=>$timeslot){
     private function get_where($options, $table_columns)
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
-        $where = " where a.`status` = 1 and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $where = " where a.`status` = 1 and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		if(isset($_SESSION['current_campaign'])){
-			 $where .= " and campaign_id = '".$_SESSION['current_campaign']."' ";
+			 $where .= " and r.campaign_id = '".$_SESSION['current_campaign']."' ";
 		}
         //Check the bounds of the map
         if ($options['bounds'] && $options['map']=='true') {
-            $where .= " and (loc.lat < ".$options['bounds']['neLat']." and loc.lat > ".$options['bounds']['swLat']." and loc.lng < ".$options['bounds']['neLng']." and loc.lng > ".$options['bounds']['swLng'].") ";
+            $where .= " and (appointment_locations.lat < ".$options['bounds']['neLat']." and appointment_locations.lat > ".$options['bounds']['swLat']." and appointment_locations.lng < ".$options['bounds']['neLng']." and appointment_locations.lng > ".$options['bounds']['swLng'].") ";
         }
 
         //check the tabel header filter

@@ -451,6 +451,7 @@ var modals = {
             mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <p class="text-danger">This appointment was cancelled.<br><small>' + data.cancellation_reason + '</small></p>';
         }
         modals.load_modal(mheader, mbody, mfooter)
+		modal_body.css('overflow', 'auto');
     },
     edit_appointment_html: function (data) {
         $.ajax({
@@ -489,12 +490,13 @@ var modals = {
                 $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true);
             });
             modals.load_modal(mheader, $mbody, mfooter);
-			modal_body.css('overflow', 'visible');
             modals.appointment_contacts(data.urn, data.contact_id);
-
-            if(typeof campaign_functions.appointment_edit_setup !== "undefined"){
+			modal_body.css('overflow', 'visible');
+            if(typeof campaign_functions !== "undefined"){
+				  if(typeof campaign_functions.appointment_edit_setup !== "undefined"){
                 campaign_functions.appointment_edit_setup();
             }
+			}
         });
     },
     appointment_contacts: function (urn, contact_id) {
