@@ -106,7 +106,6 @@ class Appointments extends CI_Controller
 			$visible_columns = $this->Datatables_model->get_visible_columns(3);
 			$options = $this->input->post();
 			$options['visible_columns'] = $visible_columns;
-		$this->firephp->log($visible_columns);
 			//check the options
 			foreach($options['columns'] as $k=>$column){
 				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
