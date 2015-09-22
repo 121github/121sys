@@ -10,176 +10,174 @@ class Appointments_model extends CI_Model
     {
         parent::__construct();
     }
-	
-	public function slot_availability($campaign_id,$user_id=false,$postcode=false,$distance=false,$source=false,$app_type=false){
-		$days = array(1=>"Monday",2=>"Tuesday",3=>"Wednesday",4=>"Thursday",5=>"Friday",6=>"Saturday",7=>"Sunday");
-		$timeslots = array();
-		$where= "";
-		if(!empty($user_id)){
-		$where .= " and user_id = '$user_id' ";
-		$holidays_where = $where;
-		}
-		if($campaign_id){
-		$where .= " and campaign_id = '$campaign_id' ";
-		}
-		if($source){
-		$where .= " and (source_id = '$source' or source_id is null )";	
-		}
-		//first configure the default array for all days
-		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null  $where ";
-		$this->firephp->log($qry);
-		$max = array();
-		$default = $this->db->query($qry)->result_array();
-		if(count($default)=="0"){
-		return array("error"=>"The selected user does not have appointment slots configured");	
-		}
-		$thresholds = array();
-		foreach($days as $day_num => $day){
-			foreach($default as $row){
-			$daycheck = "select slot_assignment_id from appointment_slot_assignment where appointment_slot_id = ".$row['appointment_slot_id']." and user_id = ".$row['user_id']." and day = ".$day_num;
-			
-			if(!$this->db->query($daycheck)->num_rows()){
-			$timeslots[$row['appointment_slot_id']] = array("slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end'],"reason"=>"");
-			$max[$day_num][$row['user_id']]['default'] = $row['max_apps'];
-			unset($row['max_apps']);
-			$thresholds[$day][$row['appointment_slot_id']] = $row;
-			$thresholds[$day][$row['appointment_slot_id']]['max_apps'] = $max[$day_num][$row['user_id']]['default'];
-			$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
-			} else {
-			$thresholds[$day][$row['appointment_slot_id']] = $row;	
-			$thresholds[$day][$row['appointment_slot_id']]['max_apps'] = 0;
-			$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
-			}
-			}
-		}
-		
-		//get any user specified days
-		$defined_slots = array();
-		$get_slots = "select appointment_slot_id,`date`,max_slots from appointment_slot_override where `date` > curdate() $where ";
-		$get_slots_result = $this->db->query($get_slots)->result_array();
-		foreach($get_slots_result as $row){
-		$defined_slots[$row['date']][$row['appointment_slot_id']]["max_apps"] = $row['max_slots']; 
-		}
-		//now find the specified daily slots and overwrite the default array
-		$max = array();
-		foreach($days as $daynum => $day){
-		$qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` = $daynum $where ";
-		$daily_slots = $this->db->query($qry)->result_array();
-		foreach($daily_slots as $k=>$row){
-			$thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
-			$timeslots[$row['appointment_slot_id']] = array("appointment_slot_id"=>$row['appointment_slot_id'],"slot_name"=>$row['slot_name'],"slot_description"=>$row['slot_description'],"slot_start"=>$row['slot_start'],"slot_end"=>$row['slot_end']);
-			if(isset($thresholds[$day][$row['appointment_slot_id']]['max_apps'])){
-				$thresholds[$day][$row['appointment_slot_id']]['max_apps'] += $row['max_apps'];
-			} else {
-			$thresholds[$day][$row['appointment_slot_id']] = $row;
-			}
-			}
-		
-		}
-		
-		
-		
-/* get user holidays to remove from slots */
-$holidays = array();
-if($user_id){
-		$get_holidays = "select reason,block_day from appointment_rules join appointment_rule_reasons using(reason_id) where 1 "; 
-		$get_holidays .= $holidays_where;
 
-		foreach($this->db->query($get_holidays)->result_array() as $k=>$row){
-			$holidays[$row['block_day']] = array("reason"=>$row['reason']);
-		}
-}
-/* end holidays */
+    public function slot_availability($campaign_id, $user_id = false, $postcode = false, $distance = false, $source = false, $app_type = false)
+    {
+        $days = array(1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday", 7 => "Sunday");
+        $timeslots = array();
+        $where = "";
+        if (!empty($user_id)) {
+            $where .= " and user_id = '$user_id' ";
+            $holidays_where = $where;
+        }
+        if ($campaign_id) {
+            $where .= " and campaign_id = '$campaign_id' ";
+        }
+        if ($source) {
+            $where .= " and (source_id = '$source' or source_id is null )";
+        }
+        //first configure the default array for all days
+        $qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null  $where ";
+        $this->firephp->log($qry);
+        $max = array();
+        $default = $this->db->query($qry)->result_array();
+        if (count($default) == "0") {
+            return array("error" => "The selected user does not have appointment slots configured");
+        }
+        $thresholds = array();
+        foreach ($days as $day_num => $day) {
+            foreach ($default as $row) {
+                $daycheck = "select slot_assignment_id from appointment_slot_assignment where appointment_slot_id = " . $row['appointment_slot_id'] . " and user_id = " . $row['user_id'] . " and day = " . $day_num;
 
-/* now push all the data into each day for the next 30 days and if there is a holiday for the day we remove the slots and add the reason */
+                if (!$this->db->query($daycheck)->num_rows()) {
+                    $timeslots[$row['appointment_slot_id']] = array("slot_name" => $row['slot_name'], "slot_description" => $row['slot_description'], "slot_start" => $row['slot_start'], "slot_end" => $row['slot_end'], "reason" => "");
+                    $max[$day_num][$row['user_id']]['default'] = $row['max_apps'];
+                    unset($row['max_apps']);
+                    $thresholds[$day][$row['appointment_slot_id']] = $row;
+                    $thresholds[$day][$row['appointment_slot_id']]['max_apps'] = $max[$day_num][$row['user_id']]['default'];
+                    $thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
+                } else {
+                    $thresholds[$day][$row['appointment_slot_id']] = $row;
+                    $thresholds[$day][$row['appointment_slot_id']]['max_apps'] = 0;
+                    $thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
+                }
+            }
+        }
 
-for($i = 1; $i < 30; $i++){
-	$date = date("Y-m-d", strtotime('+'. $i .' days'));
-	$this_day =  $thresholds[date("l", strtotime('+'. $i .' days'))];
-		if(array_key_exists($date,$defined_slots)){
-	foreach($this_day as $slot => $details){
-		if(isset($defined_slots[$date][$slot])){
-		$this_day[$slot]['max_apps']=$defined_slots[$date][$slot]["max_apps"];
-	}
-	}
-		}
-	if(array_key_exists($date,$holidays)){
-		foreach($this_day as $slot => $details){
-			$this_day[$slot]['max_apps']=0;
-				@$this_day[$slot]['reason']=$holidays[$date]['reason'];
-		}	
-	}
-	
-    $slots[date("D jS M", strtotime('+'. $i .' days'))]  =$this_day;
-}
-/* now get the appointments in each slot for each day and push them into the array */
+        //get any user specified days
+        $defined_slots = array();
+        $get_slots = "select appointment_slot_id,`date`,max_slots from appointment_slot_override where `date` > curdate() $where ";
+        $get_slots_result = $this->db->query($get_slots)->result_array();
+        foreach ($get_slots_result as $row) {
+            $defined_slots[$row['date']][$row['appointment_slot_id']]["max_apps"] = $row['max_slots'];
+        }
+        //now find the specified daily slots and overwrite the default array
+        $max = array();
+        foreach ($days as $daynum => $day) {
+            $qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` = $daynum $where ";
+            $daily_slots = $this->db->query($qry)->result_array();
+            foreach ($daily_slots as $k => $row) {
+                $thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
+                $timeslots[$row['appointment_slot_id']] = array("appointment_slot_id" => $row['appointment_slot_id'], "slot_name" => $row['slot_name'], "slot_description" => $row['slot_description'], "slot_start" => $row['slot_start'], "slot_end" => $row['slot_end']);
+                if (isset($thresholds[$day][$row['appointment_slot_id']]['max_apps'])) {
+                    $thresholds[$day][$row['appointment_slot_id']]['max_apps'] += $row['max_apps'];
+                } else {
+                    $thresholds[$day][$row['appointment_slot_id']] = $row;
+                }
+            }
 
-$join_locations = "";
-$distance_select = "";
-$distance_order = "";
-	
-		if(!empty($postcode)){
-		    $coords = postcode_to_coords($postcode);
-			if(isset($coords['lat'])&&isset($coords['lng'])){
-				$distance_order = " order by distance";
-				$distance_select = ",min((((ACOS(SIN((" .
-                $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .
-                $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
-                $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515)) AS distance";
-				
-                        $join_locations = " left join locations on locations.location_id = appointments.location_id ";
-						if($distance>0){
-                        $where .= " and ( ";
-                        //Distance from the company or the contacts addresses
-                        $where .= " (";
-                        $where .= $coords['lat'] . " BETWEEN (locations.lat-" . $distance . ") AND (locations.lat+" . $distance . ")";
-                        $where .= " and " . $coords['lng'] . " BETWEEN (locations.lng-" . $distance . ") AND (locations.lng+" . $distance . ")";
-                        $where .= " and ((((
+        }
+
+
+        /* get user holidays to remove from slots */
+        $holidays = array();
+        if ($user_id) {
+            $get_holidays = "select reason,block_day from appointment_rules join appointment_rule_reasons using(reason_id) where 1 ";
+            $get_holidays .= $holidays_where;
+
+            foreach ($this->db->query($get_holidays)->result_array() as $k => $row) {
+                $holidays[$row['block_day']] = array("reason" => $row['reason']);
+            }
+        }
+        /* end holidays */
+
+        /* now push all the data into each day for the next 30 days and if there is a holiday for the day we remove the slots and add the reason */
+
+        for ($i = 1; $i < 30; $i++) {
+            $date = date("Y-m-d", strtotime('+' . $i . ' days'));
+            $this_day = $thresholds[date("l", strtotime('+' . $i . ' days'))];
+            if (array_key_exists($date, $defined_slots)) {
+                foreach ($this_day as $slot => $details) {
+                    if (isset($defined_slots[$date][$slot])) {
+                        $this_day[$slot]['max_apps'] = $defined_slots[$date][$slot]["max_apps"];
+                    }
+                }
+            }
+            if (array_key_exists($date, $holidays)) {
+                foreach ($this_day as $slot => $details) {
+                    $this_day[$slot]['max_apps'] = 0;
+                    @$this_day[$slot]['reason'] = $holidays[$date]['reason'];
+                }
+            }
+
+            $slots[date("D jS M", strtotime('+' . $i . ' days'))] = $this_day;
+        }
+        /* now get the appointments in each slot for each day and push them into the array */
+
+        $join_locations = "";
+        $distance_select = "";
+        $distance_order = "";
+
+        if (!empty($postcode)) {
+            $coords = postcode_to_coords($postcode);
+            if (isset($coords['lat']) && isset($coords['lng'])) {
+                $distance_order = " order by distance";
+                $distance_select = ",min((((ACOS(SIN((" .
+                    $coords['lat'] . "*PI()/180)) * SIN((lat*PI()/180))+COS((" .
+                    $coords['lat'] . "*PI()/180)) * COS((lat*PI()/180)) * COS(((" .
+                    $coords['lng'] . "- lng)*PI()/180))))*180/PI())*60*1.1515)) AS distance";
+
+                $join_locations = " left join locations on locations.location_id = appointments.location_id ";
+                if ($distance > 0) {
+                    $where .= " and ( ";
+                    //Distance from the company or the contacts addresses
+                    $where .= " (";
+                    $where .= $coords['lat'] . " BETWEEN (locations.lat-" . $distance . ") AND (locations.lat+" . $distance . ")";
+                    $where .= " and " . $coords['lng'] . " BETWEEN (locations.lng-" . $distance . ") AND (locations.lng+" . $distance . ")";
+                    $where .= " and ((((
 							ACOS(
 								SIN(" . $coords['lat'] . "*PI()/180) * SIN(locations.lat*PI()/180) +
 								COS(" . $coords['lat'] . "*PI()/180) * COS(locations.lat*PI()/180) * COS(((" . $coords['lng'] . " - locations.lng)*PI()/180)
 							)
 						)*180/PI())*160*0.621371192)) <= " . $distance . ")";
-                        
-                        $where .= " ) )";	
-						}
-		}	else {
-			return array("error"=>"There was an error with the postcode");	
-		}
-		}
-		
 
-		
-		
-foreach($timeslots as $id=>$timeslot){
-	$app_type_where = "";
-	if($app_type){
-	$app_type_where = " and appointment_type_id = '$app_type' ";	
-	}
-		$qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where `status` = 1  and time(`start`) between '".$timeslot['slot_start']."' and '".$timeslot['slot_end']."' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where $app_type_where group by date(`start`) $distance_order";
-				
-		$results = $this->db->query($qry)->result_array();
-		
-		$i=0;
-		foreach($results as $row){
-			$date = date("D jS M", strtotime($row['start']));
-			@$slots[$date][$id]['sqldate']=$row['start'];
-			@$slots[$date][$id]['apps']=$row['count'];
-			//the smallest distance for this timeslot
-			@$slots[$date][$id]['min_distance']=number_format($row['distance'],2);
-			if($i==0){
-			//first record is best distance	
-			@$slots[$date][$id]['best_distance']=true;	
-			}
-			$i++;
-		}
-}
+                    $where .= " ) )";
+                }
+            } else {
+                return array("error" => "There was an error with the postcode");
+            }
+        }
 
-		return array("timeslots"=>$timeslots,"apps"=>$slots);
-		
-		
-	}
-	
+
+        foreach ($timeslots as $id => $timeslot) {
+            $app_type_where = "";
+            if ($app_type) {
+                $app_type_where = " and appointment_type_id = '$app_type' ";
+            }
+            $qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where `status` = 1  and time(`start`) between '" . $timeslot['slot_start'] . "' and '" . $timeslot['slot_end'] . "' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where $app_type_where group by date(`start`) $distance_order";
+
+            $results = $this->db->query($qry)->result_array();
+
+            $i = 0;
+            foreach ($results as $row) {
+                $date = date("D jS M", strtotime($row['start']));
+                @$slots[$date][$id]['sqldate'] = $row['start'];
+                @$slots[$date][$id]['apps'] = $row['count'];
+                //the smallest distance for this timeslot
+                @$slots[$date][$id]['min_distance'] = number_format($row['distance'], 2);
+                if ($i == 0) {
+                    //first record is best distance
+                    @$slots[$date][$id]['best_distance'] = true;
+                }
+                $i++;
+            }
+        }
+
+        return array("timeslots" => $timeslots, "apps" => $slots);
+
+
+    }
+
     public function appointment_data($count = false, $options = false)
     {
 		 $tables = $options['visible_columns']['tables'];
@@ -276,6 +274,7 @@ foreach($timeslots as $id=>$timeslot){
     private function get_where($options, $table_columns)
     {
         //the default condition in ever search query to stop people viewing campaigns they arent supposed to!
+
         $where = " where a.`status` = 1 and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		if(isset($_SESSION['current_campaign'])){
 			 $where .= " and r.campaign_id = '".$_SESSION['current_campaign']."' ";
@@ -307,9 +306,24 @@ foreach($timeslots as $id=>$timeslot){
         return $this->db->query($qry)->result_array();
     }
 
-    public function checkDayBlocked($attendee_id, $startDate, $endDate) {
+    public function checkDayBlocked($attendee_id, $startDate, $endDate)
+    {
 
-        $qry = "select * from appointment_rules where user_id = ".$attendee_id." and block_day>='".substr(to_mysql_datetime($startDate),0,10)."' and block_day<='".substr(to_mysql_datetime($endDate),0,10)."'";
+        $qry = "SELECT *
+                    FROM appointment_rules apr
+                      LEFT JOIN appointment_slots aps USING (appointment_slot_id)
+                    WHERE user_id = " . $attendee_id . "
+                          AND (block_day >= DATE('" . to_mysql_datetime($startDate) . "') AND block_day <= DATE('" . to_mysql_datetime($endDate) . "'))
+                          AND (
+                            (
+                                (TIME('" . to_mysql_datetime($startDate) . "') >= aps.slot_start AND TIME('" . to_mysql_datetime($startDate) . "') <= aps.slot_end)
+                                 OR
+                                (TIME('" . to_mysql_datetime($endDate) . "') >= aps.slot_start AND TIME('" . to_mysql_datetime($endDate) . "') <= aps.slot_end)
+                            )
+                            OR
+                            appointment_slot_id IS NULL
+                          )
+               ";
 
         $results = $this->db->query($qry)->result_array();
 
@@ -323,9 +337,10 @@ foreach($timeslots as $id=>$timeslot){
      * Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
      *
      */
-    public function checkNoAppointmentForTheDayBlocked($attendee_id, $blockDay) {
+    public function checkNoAppointmentForTheDayBlocked($attendee_id, $blockDay)
+    {
 
-        $qry = "select * from appointments left join appointment_attendees using(appointment_id) where user_id = ".$attendee_id." and '".to_mysql_datetime($blockDay)."' >= date(start) and '".to_mysql_datetime($blockDay)."' <= date(end)";
+        $qry = "select * from appointments left join appointment_attendees using(appointment_id) where user_id = " . $attendee_id . " and '" . to_mysql_datetime($blockDay) . "' >= date(start) and '" . to_mysql_datetime($blockDay) . "' <= date(end)";
 
         $results = $this->db->query($qry)->result_array();
 
@@ -338,20 +353,18 @@ foreach($timeslots as $id=>$timeslot){
      * Get appointment by id
      *
      */
-    public function getAppointmentById($appointment_id) {
+    public function getAppointmentById($appointment_id)
+    {
 
         $this->db->select('*');
         $this->db->from('appointments');
         $this->db->where('appointment_id', $appointment_id);
-        $this->db->join('branch','branch.branch_id=appointments.branch_id','LEFT');
-        $this->db->join('appointment_types','appointment_types.appointment_type_id=appointments.appointment_type_id','LEFT');
+        $this->db->join('branch', 'branch.branch_id=appointments.branch_id', 'LEFT');
+        $this->db->join('appointment_types', 'appointment_types.appointment_type_id=appointments.appointment_type_id', 'LEFT');
         $query = $this->db->get();
-        if ($query->num_rows() == 1)
-        {
+        if ($query->num_rows() == 1) {
             return $query->row();
-        }
-        else
-        {
+        } else {
             return NULL;
         }
     }
@@ -360,7 +373,8 @@ foreach($timeslots as $id=>$timeslot){
      * Get getLastAppointmentIcsByUid
      *
      */
-    public function getLastAppointmentIcsByUid($uid) {
+    public function getLastAppointmentIcsByUid($uid)
+    {
 
         $this->db->select('*');
         $this->db->from('appointments_ics');
@@ -368,12 +382,9 @@ foreach($timeslots as $id=>$timeslot){
         $this->db->order_by("appointments_ics_id", "desc");
         $this->db->limit(1);
         $query = $this->db->get();
-        if ($query->num_rows() == 1)
-        {
+        if ($query->num_rows() == 1) {
             return $query->row();
-        }
-        else
-        {
+        } else {
             return NULL;
         }
     }
@@ -383,7 +394,8 @@ foreach($timeslots as $id=>$timeslot){
      * Get the Last Appointment Updated by urn
      *
      */
-    public function getLastAppointmentUpdated($urn) {
+    public function getLastAppointmentUpdated($urn)
+    {
 
         $this->db->select('*');
         $this->db->from('appointments');
@@ -392,12 +404,9 @@ foreach($timeslots as $id=>$timeslot){
         $this->db->order_by("date_updated", "desc");
         $this->db->limit(1);
         $query = $this->db->get();
-        if ($query->num_rows() == 1)
-        {
+        if ($query->num_rows() == 1) {
             return $query->row();
-        }
-        else
-        {
+        } else {
             return NULL;
         }
     }
@@ -406,7 +415,8 @@ foreach($timeslots as $id=>$timeslot){
      * Get appointment by id
      *
      */
-    public function saveAppointmentIcs($appointment_ics) {
+    public function saveAppointmentIcs($appointment_ics)
+    {
 
         $this->db->insert('appointments_ics', $appointment_ics);
 

@@ -429,6 +429,14 @@ class Form_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
+    public function get_appointment_slots()
+    {
+        $qry = "select
+                  appointment_slot_id id,
+                  CONCAT(slot_name,' (',TIME_FORMAT(slot_start, '%H:%i'),'-',TIME_FORMAT(slot_end, '%H:%i'),')') name from appointment_slots order by slot_start";
+        return $this->db->query($qry)->result_array();
+    }
+
     /**
      * Get campaign_triggers
      */

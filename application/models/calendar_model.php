@@ -117,6 +117,15 @@ class Calendar_model extends CI_Model
     }
 
     /**
+     * Update appointment rule
+     */
+    public function update_appointment_rule($data)
+    {
+        $this->db->where('appointment_rules_id', $data['appointment_rules_id']);
+        return $this->db->update("appointment_rules", $data);
+    }
+
+    /**
      * Delete an appointment rule
      */
     public function delete_appointment_rule($appointment_rules_id) {
@@ -140,11 +149,27 @@ class Calendar_model extends CI_Model
      * Get appointment rules by date
      */
     public function get_appointment_rules_by_date($block_day) {
-        $qry = "select appointment_rules_id, reason_id, block_day, other_reason, users.name, reason
+        $qry = "select appointment_rules_id, reason_id, block_day, other_reason, users.name, reason, appointment_slot_id, CONCAT(slot_name,' (',TIME_FORMAT(slot_start, '%H:%i'),'-',TIME_FORMAT(slot_end, '%H:%i'),')') as slot_name
                 from appointment_rules
                 inner join appointment_rule_reasons using (reason_id)
                 inner join users using (user_id)
+                left join appointment_slots using (appointment_slot_id)
                 where block_day = '".$block_day."'";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Get appointment rules by date
+     */
+    public function get_appointment_rules_by_date_and_user($block_day, $user_id)
+    {
+        $qry = "select appointment_rules_id, reason_id, block_day, other_reason, users.name, reason, appointment_slot_id, CONCAT(slot_name,' (',TIME_FORMAT(slot_start, '%H:%i'),'-',TIME_FORMAT(slot_end, '%H:%i'),')') as slot_name
+                from appointment_rules
+                inner join appointment_rule_reasons using (reason_id)
+                inner join users using (user_id)
+                left join appointment_slots using (appointment_slot_id)
+                where block_day = '" . $block_day . "' and user_id = " . $user_id;
 
         return $this->db->query($qry)->result_array();
     }

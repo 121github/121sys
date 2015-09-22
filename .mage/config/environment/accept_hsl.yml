@@ -9,8 +9,8 @@ deployment:
 releases:
   enabled: true
   max: 4
-  symlink: 121sys
-  directory: releases/121sys_releases/121sys
+  symlink: 121sys_hsl
+  directory: releases/121sys_releases/121sys_hsl
 hosts:
     - 10.10.1.13
 tasks:
@@ -18,8 +18,8 @@ tasks:
   on-deploy:
     - uploadFolder
     - logFolder
-    - prepareAcceptDeployment
+    - prepareAcceptHslDeployment
     - permissionsGroup
   post-release:
-    - databaseBackup: {user: 121sys_accept, pass: DuAzN4xt7xP4zDFH, host: localhost, database: 121sys_accept}
+    - databaseBackup: {user: 121sys_accep_hsl, pass: WWHYHwATpUeUpM7L, host: localhost, database: 121sys_accep_hsl}
   post-deploy:
