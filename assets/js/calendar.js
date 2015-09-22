@@ -113,14 +113,14 @@ $(document).ready(function () {
                 data: {date: block_day}
             }).done(function (response) {
                 if (response.success) {
-                    var rules = '<div><h4>' + block_day + '</h4></div><table class="table ajax-table"><thead><tr><th>Attendee</th><th>Reason</th><th>Slot</th><th>Options</th></tr></thead><tbody>';
+                    var rules = '<div><h4>' + block_day + '</h4></div><table class="table ajax-table"><thead><tr><th>Attendee</th><th>Reason</th><th>Slot</th><th>Remove</th></tr></thead><tbody>';
                     $.each(response.data, function (key, value) {
                         rules +=
                             '<tr>' +
                             '<td>' + value.name + '</td>' +
                             '<td>' + value.reason + '<div style="font-size: 10px;">' + value.other_reason + '</div></td>' +
                             '<td>' + (value.slot_name ? value.slot_name : 'All day') + '</td>' +
-                            '<td><span class="glyphicon glyphicon-remove del-rule-btn" item-id="' + value.appointment_rules_id + '" item-date="' + block_day + '"></span></td>' +
+                            '<td><span class="glyphicon glyphicon-remove del-rule-btn pointer" item-id="' + value.appointment_rules_id + '" item-date="' + block_day + '"></span></td>' +
                             '</tr>';
                     });
                     rules += '</tbody></table>';

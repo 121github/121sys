@@ -203,15 +203,18 @@ $travel_info[$day][5]['added_duration'] = $travel_info[$day][5]['duration'];
 $this->load->model('Appointments_model');
 $slots = array();
 $appointments = $this->Appointments_model->slot_availability(1,$driver_id);
+
 foreach($appointments['apps'] as $date => $day){
 	$max_apps = 0;
 	$apps = 0;
 	foreach($day as $k=>$row){
+		if(isset($row['max_apps'])){
 		$max_apps += $row['max_apps'];
 		$apps += $row['apps'];
 		$reason  = isset($row['reason'])?$row['reason']:false;
 		$sql_date = DateTime::createFromFormat('D jS M', $date)->format('Y-m-d');
 		$slots[$sql_date] = array("apps"=>$apps,"max_apps"=>$max_apps,"reason"=>$reason);	
+		}
 	}
 }
 echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,"slots"=>$slots,"user_id"=>$driver_id));
