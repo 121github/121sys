@@ -369,7 +369,7 @@ class Trackvia extends CI_Controller
     {
         //PRIVATE DATA
         $this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
-
+		
         //
 //        //PRIVATE TABLE
 //
@@ -462,7 +462,8 @@ class Trackvia extends CI_Controller
             )
         );
         $this->check_trackvia(29);
-
+		//remove mortgage approval, landlord approval and general queries. These are handles by GHS
+		$this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3 and outcome_id in (135,125,127)");
     }
 
 

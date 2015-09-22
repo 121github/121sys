@@ -1532,6 +1532,13 @@ var record = {
         }
     },
     //emails panel functions
+		check_email_exists:function(){
+		if($('.contacts-list:contains("Email address")')||$('.companies-list:contains("Email address")')){
+		return true;	
+		} else {
+		return false;	
+		}
+	},
     email_panel: {
         init: function () {
             this.config = {
@@ -1540,7 +1547,11 @@ var record = {
             record.email_panel.load_panel();
             $(document).on('click', '#new-email-btn', function (e) {
                 e.preventDefault();
+				if(record.check_email_exists()){
                 record.email_panel.create();
+				} else {
+				alert("You must add the email address to the associated contact before you can send an email");	
+				}
             });
             $(document).on('click', '#continue-email', function (e) {
                 e.preventDefault();
