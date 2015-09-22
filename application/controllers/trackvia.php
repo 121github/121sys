@@ -173,8 +173,8 @@ class Trackvia extends CI_Controller
     public function check_southway()
     {
         //SOUTHWAY DATA
-        $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id = 22");
-
+        $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id in(22,52)");
+		
 //        //Southway All records View
 //        echo "<br>Checking the SOUTHWAY_ALL_RECORDS(" . SOUTHWAY_ALL_RECORDS . ") view";
 //        echo "<br>";

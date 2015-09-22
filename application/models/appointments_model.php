@@ -223,9 +223,6 @@ class Appointments_model extends CI_Model
              "camp.map_icon as campaign_map_icon"
         );
 
-
-      
-				  
 				          //if any of the mandatory columns are missing from the columns array we push them in
         foreach ($required_select_columns as $required) {
             if (!in_array($required, $table_columns)) {
