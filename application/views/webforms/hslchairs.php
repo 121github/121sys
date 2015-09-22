@@ -66,13 +66,17 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     echo "selected";
                 } ?> value='Web'>Web
                 </option>
-                <option <?php if (@strpos($values['a25'], "Direct") !== false) {
+                <option <?php if (@strpos($values['a25'], "Direct Call") !== false) {
                     echo "selected";
-                } ?> value='Direct'>Direct
+                } ?> value='Direct Call'>Direct Call
                 </option>
-                <option <?php if (@strpos($values['a25'], "Customer Service") !== false) {
+                <option <?php if (@strpos($values['a25'], "Direct Email") !== false) {
                     echo "selected";
-                } ?> value='Customer Service'>Customer Service
+                } ?> value='Direct Email'>Direct Email
+                </option>
+                <option <?php if (@strpos($values['a25'], "Customer Services") !== false) {
+                    echo "selected";
+                } ?> value='Customer Services'>Customer Services
                 </option>
                 <option <?php if (@strpos($values['a25'], "Other") !== false) {
                     echo "selected";
