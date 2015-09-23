@@ -173,7 +173,7 @@ class Trackvia extends CI_Controller
     public function check_southway()
     {
         //SOUTHWAY DATA
-        $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id in(22,52)");
+        $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id in(22)");
 		
 //        //Southway All records View
 //        echo "<br>Checking the SOUTHWAY_ALL_RECORDS(" . SOUTHWAY_ALL_RECORDS . ") view";
@@ -246,7 +246,12 @@ class Trackvia extends CI_Controller
             )
         );
 
+		//update sw survey campaign records
+        $this->check_trackvia(22);
+    }
 
+	public function check_sw_installs(){
+	 $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id in(52)");
         //Installation Book View
         echo "<br>Checking the SOUTHWAY_BOOK_INSTALLATION(" . SOUTHWAY_BOOK_INSTALLATION . ") view";
         echo "<br>";
@@ -282,10 +287,9 @@ class Trackvia extends CI_Controller
             )
         );
 		//update sw install campaign records
-		$this->check_trackvia(52);
-		//update sw survey campaign records
-        $this->check_trackvia(22);
-    }
+		$this->check_trackvia(52);	
+		
+	}
 
     public function check_citywest()
     {
