@@ -163,8 +163,9 @@
     table_columns = <?php echo json_encode($columns) ?>;
 
     $(document).ready(function () {
-        maps.initialize("appointments");
-        appointment.init();
-    });
+		maps.initialize("appointments");
+        appointment.init();	 
+	 });	
+
 
 </script>

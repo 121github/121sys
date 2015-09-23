@@ -176,7 +176,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
 <?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script async defer
+ type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <?php } ?>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['permissions'])){ ?>

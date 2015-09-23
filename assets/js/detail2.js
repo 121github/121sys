@@ -486,9 +486,10 @@ var record = {
             form += "<input type='hidden' name='history_id' value='" + id + "'/>";
 
             var select_outcome = "<option value=''>No action required</option>", select_progress = "<option value=''>No action required</option>";
-
-            var disabled = (record.role == 1 ? "" : "disabled");
-
+			  var disabled = ""
+  if (helper.permissions['edit outcome'] > 0) {
+          disabled = "disabled";
+  }
             $.each(outcomes, function (key, outcome) {
                 var selected = "";
                 if (data.outcome == outcome['name']) {
