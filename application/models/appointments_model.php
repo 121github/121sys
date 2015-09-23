@@ -190,7 +190,7 @@ class Appointments_model extends CI_Model
     {
 		 $tables = $options['visible_columns']['tables'];
         //these tables must be joined to the query regardless of the selected columns to allow the map to function
-        $required_tables = array("campaigns", "companies", "company_addresses", "contacts","contact_addresses","contact_locations", "company_locations","appointment_locations","ownership","record_planner","record_planner_user","ownership","outcomes","appointment_attendees","appointment_users");
+        $required_tables = array("campaigns", "companies", "company_addresses", "contacts","contact_addresses","contact_locations", "company_locations","appointment_locations","ownership","record_planner","record_planner_user","ownership","outcomes","appointment_attendees","appointment_users","appointment_types");
         foreach ($required_tables as $rt) {
             if (!in_array($rt, $tables)) {
                 $tables[] = $rt;

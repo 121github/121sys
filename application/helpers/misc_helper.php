@@ -30,7 +30,7 @@ function join_array(){
 	$array['ownership_users'] = array("ownership","ownership_users");
 	$array['appointment_users'] = array("appointments","appointment_users");
 	$array['appointment_attendees'] = array("appointments","appointment_attendees");
-
+	$array['appointment_types'] = array("appointments","appointment_types");
 	return $array;
 }
 
@@ -72,6 +72,7 @@ function table_joins(){
 		$join['appointment_users'] = " left JOIN users appointment_users ON appointment_users.user_id = a.created_by ";
 		$join['appointment_attendees'] = " 	left join appointment_attendees aa on aa.appointment_id = a.appointment_id left join users au on au.user_id = aa.user_id ";
 		$join['appointment_locations'] = " left JOIN locations appointment_locations on a.location_id =  appointment_locations.location_id ";
+		$join['appointment_types'] = " left JOIN appointment_types using(appointment_type_id) ";
 		return $join;
 }
 

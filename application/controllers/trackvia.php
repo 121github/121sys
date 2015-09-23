@@ -939,13 +939,9 @@ AND parked_code IS NULL");
                 $this->update_tv_record($urn);
             }
         } else if ($app['campaign_id'] == "22") {
-            //Survey
-            if ($app['appointment_type_id'] == APPOINTMENT_TYPE_SURVEY) {
-                $update_record = array("source_id" => 37, "record_color" => "00CC00");
-            } //Installation
-            else if ($app['appointment_type_id'] == APPOINTMENT_TYPE_INSTALLATION) {
-                $update_record = array("source_id" => 52, "record_color" => "00CC00");
-            }
+        $update_record = array("source_id" => 37, "record_color" => "00CC00");
+        } else if ($app['campaign_id'] == "52") {
+            $update_record = array("source_id" => 52, "record_color" => "00CC00");
         } else if ($app['campaign_id'] == "32") {
             $update_record = array("source_id" => 48, "record_color" => "00CC00");
         }
