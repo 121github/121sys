@@ -251,7 +251,8 @@ class Trackvia extends CI_Controller
     }
 
 	public function check_sw_installs(){
-	 $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id in(52)");
+	 $this->db->query("update records set parked_code=2 where campaign_id in(52)");
+
         //Installation Book View
         echo "<br>Checking the SOUTHWAY_BOOK_INSTALLATION(" . SOUTHWAY_BOOK_INSTALLATION . ") view";
         echo "<br>";
