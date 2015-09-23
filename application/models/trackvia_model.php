@@ -100,7 +100,7 @@ class Trackvia_model extends CI_Model
         return $this->db->insert_update_batch('sticky_notes', $notes);
     }
 
-    public function create_appointment($fields, $records, $start, $title, $text, $appointment_type_id)
+    public function create_appointment($fields, $records, $start, $title, $text, $appointment_type_id,$attendee)
     {
 
         $address = "";
@@ -138,7 +138,7 @@ class Trackvia_model extends CI_Model
         $insert_query = str_replace('INSERT INTO', 'INSERT IGNORE INTO', $insert_query);
         $this->db->query($insert_query);
         $appointment_id = $this->db->insert_id();
-        $this->db->insert("appointment_attendees", array("appointment_id" => $appointment_id, "user_id" => "121"));
+        $this->db->insert("appointment_attendees", array("appointment_id" => $appointment_id, "user_id" => $attendee));
     }
 
     public function uncancel_appointment($urn, $date)

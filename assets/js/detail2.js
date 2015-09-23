@@ -1533,7 +1533,15 @@ var record = {
     },
     //emails panel functions
 		check_email_exists:function(){
-		if($('.contacts-list:contains("Email address")')||$('.companies-list:contains("Email address")')){
+		if($('.contacts-list:contains("Email address")').length||$('.companies-list:contains("Email address")').length){
+		return true;	
+		} else {
+		return false;	
+		}
+	},
+	  //emails panel functions
+		check_contact_exists:function(){
+		if($('.contacts-list li').length){
 		return true;	
 		} else {
 		return false;	
@@ -1547,10 +1555,14 @@ var record = {
             record.email_panel.load_panel();
             $(document).on('click', '#new-email-btn', function (e) {
                 e.preventDefault();
+				if(record.check_contact_exists()){
 				if(record.check_email_exists()){
                 record.email_panel.create();
 				} else {
-				alert("You must add the email address to the associated contact before you can send an email");	
+				alert("There are no contacts with an email address. Please add the email or create a new contact first");	
+				} 
+				} else {
+				alert("You must create a new contact and add the email address first");	
 				}
             });
             $(document).on('click', '#continue-email', function (e) {
