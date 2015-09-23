@@ -208,6 +208,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 34,
                 'savings_per_panel' => 20,
+				 'attendee' => 122
             )
         );
 
@@ -224,7 +225,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => true,
                 'record_color' => '0066FF',
                 'source_id' => 35,
-                'savings_per_panel' => 20
+                'savings_per_panel' => 20,
+				 'attendee' => 122
             )
         );
 
@@ -242,7 +244,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
                 'source_id' => 37,
-                'savings_per_panel' => 20
+                'savings_per_panel' => 20,
+				 'attendee' => 122
             )
         );
 
@@ -267,11 +270,12 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 51,
                 'savings_per_panel' => 20,
+				 'attendee' => 139
             )
         );
 
         //Installation Slots View
-        echo "<br>Checking the SOUTHWAY_INSTALLATION_SLOTS(" . SOUTHWAY_SURVEY_SLOTS . ") view";
+        echo "<br>Checking the SOUTHWAY_INSTALLATION_SLOTS(" . SOUTHWAY_INSTALLATION_SLOTS . ") view";
         echo "<br>";
         $this->checkView(
             SOUTHWAY_INSTALLATION_SLOTS,
@@ -284,7 +288,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
                 'source_id' => 52,
-                'savings_per_panel' => 20
+                'savings_per_panel' => 20,
+				 'attendee' => 139
             )
         );
 		//update sw install campaign records
@@ -330,6 +335,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 46,
                 'savings_per_panel' => 20,
+				 'attendee' => 137
             )
         );
 
@@ -346,7 +352,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => true,
                 'record_color' => '0066FF',
                 'source_id' => 47,
-                'savings_per_panel' => 20
+                'savings_per_panel' => 20,
+				 'attendee' => 137
             )
         );
 
@@ -364,7 +371,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
                 'source_id' => 48,
-                'savings_per_panel' => 20
+                'savings_per_panel' => 20,
+				 'attendee' => 137
             )
         );
         $this->check_trackvia(32);
@@ -392,7 +400,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '000000',
                 'parked_code' => 2,
                 'source_id' => 41,
-                'savings_per_panel' => 30
+                'savings_per_panel' => 30,
+				 'attendee' => 121
 
             )
         );
@@ -410,7 +419,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '0066FF',
                 'source_id' => 39,
-                'savings_per_panel' => 30
+                'savings_per_panel' => 30,
+				 'attendee' => 121
 
             )
         );
@@ -428,7 +438,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => true,
                 'record_color' => '6600FF',
                 'source_id' => 38,
-                'savings_per_panel' => 30
+                'savings_per_panel' => 30,
+				 'attendee' => 121
             )
         );
 
@@ -446,7 +457,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
                 'source_id' => 36,
-                'savings_per_panel' => 30
+                'savings_per_panel' => 30,
+				 'attendee' => 121
             )
         );
 
@@ -463,7 +475,8 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '990000',
                 'source_id' => 40,
-                'savings_per_panel' => 30
+                'savings_per_panel' => 30,
+				 'attendee' => 121
             )
         );
         $this->check_trackvia(29);
@@ -577,7 +590,7 @@ AND parked_code IS NULL");
          */
     public function checkView($view_id, $options)
     {
-
+		$attendee = isset($options['attendee']) ? $options['attendee'] : "121";
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
@@ -677,7 +690,7 @@ AND parked_code IS NULL");
                     } else {
                         $appointments_created_count++;
                     }
-                    $this->addUpdateAppointment($fields, $record, $appointment_cancelled);
+                    $this->addUpdateAppointment($fields, $record, $appointment_cancelled,$attendee);
                 }
 
                 if (!empty($fields['Contact Notes'])) {
@@ -852,7 +865,7 @@ AND parked_code IS NULL");
     /**
      * Add/Update appointment in our system
      */
-    public function addUpdateAppointment($fields, $record, $appointment_cancelled = false)
+    public function addUpdateAppointment($fields, $record, $appointment_cancelled = false,$attendee="121")
     {
         //Survey
         if (isset($fields['Planned Survey Date'])) {
@@ -909,7 +922,7 @@ AND parked_code IS NULL");
                 $tv_record = $this->tv->getRecord($record['client_ref']);
                 $fields['PostCode'] = $tv_record['fields']['PostCode'];
             }
-            $this->Trackvia_model->create_appointment($fields, $record, $planned_survey_datetime, $title, $text, $planned_appointment_type);
+            $this->Trackvia_model->create_appointment($fields, $record, $planned_survey_datetime, $title, $text, $planned_appointment_type,$attendee);
             $this->Locations_model->set_location_id($fields['PostCode']);
         } else {
             echo("Uncancelling appointment that was set:" . $record['urn']);
