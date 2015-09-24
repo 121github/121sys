@@ -929,7 +929,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                     $id = $this->Records_model->save_appointment($data);
                     $state = 'updated';
 				}
-				
+				log_message('info', 'Appointment added to 121sys:'.$id.":".$state);
 				$response = array(
                     "success" => true,
                     "appointment_id"=>$id,
@@ -941,10 +941,12 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 				if(in_array("apps to planner",$_SESSION['permissions'])){
 					$response['add_to_planner'] = true;
 				}
+				
 				//if its a GHS campaign update trackvia
 				if(isset($_SESSION['current_client'])&&$_SESSION['current_client']=="GHS"){
 					$response["trackvia"] = base_url()."trackvia/add_appointment";
 					$response["urn"] = $data['urn'];
+					log_message('info', 'Appointment trigger was returned:'.$id.":".$state);
 				}
                 echo json_encode($response);
 				

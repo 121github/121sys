@@ -939,7 +939,7 @@ AND parked_code IS NULL");
 
     public function add_appointment()
     {
-
+log_message('info', 'Starting Trackvia appointment:'. $urn);
         $urn = $this->input->post('urn');
 
         //Get the record data
@@ -1009,12 +1009,15 @@ AND parked_code IS NULL");
         }
         //Update the record
         $response = $this->tv->updateRecord($app['client_ref'], $data);
+		
         if (!empty($response)) {
+			log_message('info', 'Appointment was added:'. $urn.':'.$response.':'.$app['client_ref']);
             $this->db->where("urn", $urn);
             $this->db->update("records", $update_record);
             echo json_encode(array("success" => true, "response" => $response, "ref" => $app['client_ref'], "data" => $data));
             $this->db->query("update records set urgent=null where urn = '$urn'");
         } else {
+			log_message('info', 'No response from trackvia:'. $urn);
             $message = "An error occured while saving an appointment \r\n	";
             $message .= "  URN: $urn \r\n";
             $message .= "Record ID: " . $app['client_ref'] . " \r\n	";
