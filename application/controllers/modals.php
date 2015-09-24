@@ -199,7 +199,8 @@ class Modals extends CI_Controller
             $addresses = $this->Records_model->get_addresses($urn);
             $attendees = $this->Records_model->get_attendees(false, $campaign_id);
             $types = $this->Records_model->get_appointment_types(false, $campaign_id);
-            $this->load->view('forms/edit_appointment_form.php', array("urn" => $urn, "attendees" => $attendees, "addresses" => $addresses, "types" => $types));
+            $branches = $this->Form_model->get_campaign_branches($campaign_id);
+            $this->load->view('forms/edit_appointment_form.php', array("urn" => $urn, "attendees" => $attendees, "addresses" => $addresses, "types" => $types, "branches" => $branches));
         }
     }
 

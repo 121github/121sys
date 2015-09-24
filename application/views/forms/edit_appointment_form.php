@@ -1,6 +1,5 @@
 <form style="padding:0 20px;" id="appointment-form" class="form-horizontal">
     <input type="hidden" name="appointment_id">
-      <input type="hidden" name="branch_id">
     <input type="hidden" name="urn" value="<?php echo $urn ?>">
 
     <div class="row">
@@ -52,7 +51,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 col-xs-6">
+        <div class="col-xs-12 col-xs-6 attendees-selection">
             <div class="form-group input-group-sm">
                 <p>Please choose the attendee(s) <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
                                                     data-title="Whoever the appointment is set for will recieve an email notification containing all the details"></span>
@@ -65,7 +64,21 @@
                 </select>
             </div>
         </div>
-        <div class="col-xs-12 col-xs-6">
+        <div class="col-xs-12 col-xs-4 branches-selection" style="display:none;">
+            <div class="form-group input-group-sm">
+                <p>Please choose the branch <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
+                                                  data-title="Whoever the appointment is set for the people related with this branch will recieve an email notification containing all the details"></span>
+                </p>
+                <select name="branch_id" id="branch-select" class="selectpicker branchpicker"
+                        title="Choose the branch" data-width="95%" required>
+                    <option value="">Choose the Branch...</option>
+                    <?php foreach ($branches as $branch): ?>
+                        <option value="<?php echo $branch['branch_id'] ?>"><?php echo $branch['branch_name'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-12 col-xs-6 contacts-selection">
             <div class="form-group input-group-sm">
                 <p>Please choose the Contact <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
                                                    data-title="The contact the appointment is with. They must be sent an email or mail confirmation manually if required"></span>
