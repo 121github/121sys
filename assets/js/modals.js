@@ -487,6 +487,11 @@ var modals = {
                         $mbody.find('#attendee-select option[value="' + user_id + '"]').prop('selected', true);
                     });
                 }
+                if (k == "branch_id") {
+                    if (v) {
+                        $mbody.find('#branch-select option[value="' + v + '"]').prop('selected', true);
+                    }
+                }
                 $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true);
             });
             modals.load_modal(mheader, $mbody, mfooter);
