@@ -370,7 +370,7 @@ class Appointments_model extends CI_Model
                 from appointments a
                   left join appointment_attendees apt using(appointment_id)
                 where
-                  apt.user_id = 30
+                  apt.user_id = '$attendee_id'
                   and '" . to_mysql_datetime($blockDay) . " " . $appointment_slot_start . "' <= a.start
                   and '" . to_mysql_datetime($blockDay) . " " . $appointment_slot_end . "' >= a.end";
 

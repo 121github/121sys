@@ -700,7 +700,7 @@ var record = {
                                 dataType: "JSON",
                                 data: {urn: record.urn}
                             }).done(function (function_trigger_response) {
-                                if(function_trigger_response.js_functions.length>0){
+                                if(function_trigger_response.length>0){
 									$.each(function_trigger_response.js_functions,function(i,f){
 									eval(f+'()');
 									});
