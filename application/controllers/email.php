@@ -723,7 +723,7 @@ class Email extends CI_Controller
             $email_addresses = $this->get_ics_email_addresses($appointment_id);
 
             if (!empty($email_addresses)) {
-                $send_to = implode(", ",$email_addresses);
+                $send_to = implode(",", $email_addresses);
 
                 $send_from = "appointments@121system.com";
 
@@ -793,7 +793,7 @@ class Email extends CI_Controller
                 if ($appointment) {
                     $appointment_ics['appointment_id'] = $appointment->appointment_id;
                     $appointment_ics['start_date'] = $appointment->start;
-                    $appointment_ics['send_to'] = $send_to;
+                    $appointment_ics['send_to'] = str_replace(" ", "", $send_to);
                     $appointment_ics['send_from'] = $send_from;
                     $appointment_ics['duration'] = strtotime($appointment->end) - strtotime($appointment->start);
                     $appointment_ics['title'] = $title;
@@ -895,7 +895,7 @@ class Email extends CI_Controller
             //Get the receivers, that sould be the attendees with ics field true and if the branch_id is set on the appointment, send to the
             //users related to the branch_region
             $email_addresses = $this->get_ics_email_addresses($appointment_id);
-            $send_to = implode(", ", $email_addresses);
+            $send_to = implode(",", $email_addresses);
 
             if (!empty($email_addresses)) {
                 //Send a cancelation to the people that is not in the new receivers
@@ -965,7 +965,7 @@ class Email extends CI_Controller
                 if ($last_appointment_ics) {
                     $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
                     $appointment_ics['start_date'] = $start_date;
-                    $appointment_ics['send_to'] = $send_to;
+                    $appointment_ics['send_to'] = str_replace(" ", "", $send_to);
                     $appointment_ics['send_from'] = $last_appointment_ics->send_from;
                     $appointment_ics['duration'] = ($duration ? $duration : $last_appointment_ics->duration);
                     $appointment_ics['title'] = 'Appointment Update - ' . $appointment->title . ' #' . $appointment_id;
@@ -1123,7 +1123,7 @@ class Email extends CI_Controller
             if ($last_appointment_ics) {
                 $appointment_ics['appointment_id'] = $last_appointment_ics->appointment_id;
                 $appointment_ics['start_date'] = $last_appointment_ics->start_date;
-                $appointment_ics['send_to'] = (!empty($send_to) ? implode(",", $send_to) : $last_appointment_ics->send_to);
+                $appointment_ics['send_to'] = str_replace(" ", "", (!empty($send_to) ? implode(",", $send_to) : $last_appointment_ics->send_to));
                 $appointment_ics['send_from'] = $last_appointment_ics->send_from;
                 $appointment_ics['duration'] = $last_appointment_ics->duration;
 				$title_split = explode(' - ', $last_appointment_ics->title);
