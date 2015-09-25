@@ -21,7 +21,14 @@ class Email_model extends CI_Model
             return "0";
         }
     }
-
+	
+	public function get_contact_email($urn){
+		$qry = "select email from contacts where urn = '$urn' and email like '%@%'";
+		if($this->db->query($qry)->num_rows()=="1"){
+		return $this->db->query($qry)->row()->email;	
+		}
+	}
+	
     public function get_placeholder_data($urn = NULL)
     {
         $user_qry = "";

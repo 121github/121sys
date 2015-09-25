@@ -261,7 +261,7 @@ class Dashboard_model extends CI_Model
     public function all_callbacks($filter)
     {
         $last_comments = "(select h.comments from history h where h.urn = records.urn and CHAR_LENGTH(h.comments) > 0 order by h.contact desc limit 1)";
-        $qry = "select urn,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,users.name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id = 2 ";
+        $qry = "select urn,outcome,if(companies.name is null,fullname,companies.name) as contact,nextcall,campaign_name as campaign,users.name, if($last_comments is not null,$last_comments,'') as last_comments from records left join companies using(urn) join outcomes using(outcome_id) left join ownership using(urn) left join campaigns using(campaign_id) left join contacts using(urn) left join users using(user_id) where outcome_id in(select outcome_id from outcomes where requires_callback = 1) ";
         $date_from = $filter['date_from'];
         $date_to = $filter['date_to'];
         if (!empty($date_from)) {

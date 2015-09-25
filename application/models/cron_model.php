@@ -45,10 +45,10 @@ class Cron_model extends CI_Model
             if ($query->num_rows()) {
                 $campaigns = $query->result_array();
                 foreach ($campaigns as $row) {				
-                    $qry = "update hours set time_logged = '{$row['duration']}',`date`=now() where user_id = '{$agent['id']}' and campaign_id = {$row['campaign_id']} and ,`date`=now()";
+                    $qry = "update hours set time_logged = '{$row['duration']}',`date`=now() where user_id = '{$agent['id']}' and campaign_id = {$row['campaign_id']} and date(`date`)=curdate()";
                     $update = $this->db->query($qry);
                     if ($this->db->affected_rows() == 0) {
-                        $qry = "insert into hours set time_logged = '{$row['duration']}',user_id = '{$agent['id']}',campaign_id = {$row['campaign_id']},duration=null,`date`=curdate(),updated_date=now()";
+                        $qry = "insert into hours set time_logged = '{$row['duration']}',user_id = '{$agent['id']}',campaign_id = {$row['campaign_id']},`date`=curdate(),updated_date=now()";
                         $insert = $this->db->query($qry);
                     }
                 }
@@ -210,8 +210,7 @@ class Cron_model extends CI_Model
                 $q1 = "insert ignore into locations set location_id='{$pc['postcode_id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
                 //$this->firephp->log($q1);
                 $this->db->query($q1);
-                //$q2 = "update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'";
-                $this->firephp->log($q2);
+                $q2 = "update company_addresses set location_id = {$pc['postcode_id']} where postcode = '{$row['postcode']}'";
                 $this->db->query($q2);
             }
         }

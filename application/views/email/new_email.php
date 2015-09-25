@@ -54,7 +54,7 @@
 				</p>
 				<input type="text" class="form-control" name="send_to"
 					title="Enter the destination" required 
-					value="<?php echo $template['template_to']; ?>"
+					value="<?php echo (!empty($template['template_to'])?$template['template_to']:$email_address); ?>"
 				/>
 			</div>
 			<div class="form-group input-group-sm">		

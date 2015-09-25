@@ -94,13 +94,13 @@ class Email extends CI_Controller
         $this->_campaigns = campaign_access_dropdown();
         $urn = intval($this->uri->segment(4));
         $template_id = intval($this->uri->segment(3));
+		$email_address = $this->Email_model->get_contact_email($urn);
         $placeholder_data = $this->Email_model->get_placeholder_data($urn);
         $template = $this->Email_model->get_template($template_id);
         $last_comment = $this->Records_model->get_last_comment($urn);
 
         $placeholder_data = $this->Email_model->get_placeholder_data($urn);
         $placeholder_data[0]['comments'] = $last_comment;
-        $this->firephp->log($placeholder_data);
         if (count($placeholder_data)) {
             foreach ($placeholder_data[0] as $key => $val) {
                 if ($key == "fullname") {
@@ -132,6 +132,7 @@ class Email extends CI_Controller
             'urn' => $urn,
             'template_id' => $template_id,
             'template' => $template,
+			'email_address' => $email_address,
             'css' => array(
                 'dashboard.css',
                 'plugins/summernote/summernote.css',

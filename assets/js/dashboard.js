@@ -235,9 +235,9 @@ var dashboard = {
                     else {
                         comments = '<span class="glyphicon glyphicon-comment" style="opacity: 0.4; filter: alpha(opacity=40);"></span>';
                     }
-                    $row += '<tr class="pointer" data-modal="view-record" data-urn="' + val.urn + '"><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td>' + comments + '</td></tr>';
+                    $row += '<tr class="pointer" data-modal="view-record" data-urn="' + val.urn + '"><td>' + val.outcome + '</td><td>' + val.contact + '</td><td>' + val.name + '</td><td>' + val.campaign + '</td><td>' + val.date + '</td><td>' + val.time + '</td><td>' + comments + '</td></tr>';
                 });
-                $('.callbacks').html('<div class="table-responsive"><table class="table table-hover table-striped table-responsive"><thead><th>Contact</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>Comments</th></thead><tbody>' + $row + '</tbody></table></div>');
+                $('.callbacks').html('<div class="table-responsive"><table class="table table-hover table-striped table-responsive"><thead><th>Type</th><th>Name</th><th>User</th><th>Campaign</th><th>Date</th><th>Time</th><th>Comments</th></thead><tbody>' + $row + '</tbody></table></div>');
                 $('.tt').tooltip();
             } else {
                 $('.callbacks').html('<p>' + response.msg + '</p>');
