@@ -66,9 +66,20 @@ public function search_urn_by_address($add1,$postcode){
 
 
 public function get_custom_options($field,$campaign){
+
 $this->db->select('id,option');
 $this->db->where(array("campaign_id"=>$campaign,"field"=>$field));
-return $this->db->get('record_details_options')->result_array();	
+$query = $this->db->get('record_details_options');
+if(!$query->num_rows()){
+$this->db->distinct();
+$this->db->select($field);
+$this->db->join("records");
+$this->db->where(array("campaign_id"=>$campaign));
+$this->db->get("record_details");
+} else {
+return $query->result_array();
+}
+
 }
 
 

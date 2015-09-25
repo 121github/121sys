@@ -944,10 +944,9 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
 
         //Get the record data
         $app = $this->Trackvia_model->get_appointment($urn);
-
         //if its a private record then we need to do a few extra bits
         $update_record = array();
-        if ($app['campaign_id'] == "29") {
+        if ($app['campaign_id'] == "29"&&$app['source_id']<>"55") {
             $update_record = array("source_id" => 36, "record_color" => "00CC00");
             //if it doesnt exist on trackvia we should add it first
             if (empty($app['client_ref'])) {
@@ -1008,6 +1007,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
             $data["Owner Consent to proceed"] = "Y";
         }
         //Update the record
+		
         $response = $this->tv->updateRecord($app['client_ref'], $data);
 		
         if (!empty($response)) {
@@ -1017,6 +1017,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
             echo json_encode(array("success" => true, "response" => $response, "ref" => $app['client_ref'], "data" => $data));
             $this->db->query("update records set urgent=null where urn = '$urn'");
         } else {
+			if($app['source_id']<>"55"){
 			log_message('info', 'No response from trackvia:'. $urn);
             $message = "An error occured while saving an appointment \r\n	";
             $message .= "  URN: $urn \r\n";
@@ -1026,6 +1027,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
                 $message .= "$k: $v \r\n	";
             }
             mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
+			}
         }
 
     }
