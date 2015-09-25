@@ -73,7 +73,7 @@ $query = $this->db->get('record_details_options');
 if(!$query->num_rows()){
 $this->db->distinct();
 $this->db->select($field);
-$this->db->join("records");
+$this->db->join("records","records.urn=record_details.urn");
 $this->db->where(array("campaign_id"=>$campaign));
 $this->db->get("record_details");
 } else {
