@@ -36,8 +36,6 @@ class Cron extends CI_Controller
     }
   public function evening_crons()
     {
-		//add up the time for each campaign & user and save it in the hours table in the time_logged column
-		$this->update_hours();
 		//clear the time_logged table ready for tomorrow
 		$this->clear_hours();	
 	}
