@@ -34,18 +34,23 @@ class Cron extends CI_Controller
 		//restrict any agents that have left //this uses the agent name so if we ever get 2 users with the same name it could cause problems
 		$this->remove_leavers();
     }
-
+  public function evening_crons()
+    {
+		//add up the time for each campaign & user and save it in the hours table in the time_logged column
+		$this->update_hours();
+		//clear the time_logged table ready for tomorrow
+		$this->clear_hours();	
+	}
+	
 	public function unassign_records(){
 		   $this->Cron_model->unassign_records();
 	}
 
     public function update_hours()
     {
-        $agents = $this->Form_model->get_agents();
+        $agents = $this->Form_model->get_users_logged();
         $this->Cron_model->update_hours($agents);
-
     }
-
     public function clear_hours()
     {
         $this->Cron_model->clear_hours();

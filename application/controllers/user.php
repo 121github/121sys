@@ -323,12 +323,11 @@ class User extends CI_Controller
             unset($_SESSION['filter']);
             if (in_array($campaign, $_SESSION['campaign_access']['array'])) {
 				
-                /* no longer logging in realtime  
+                // no longer logging in realtime  
                 if(in_array("log hours",$_SESSION['permissions'])){
                 //start logging the duration on the selected campaign
                 $this->User_model->update_hours_log($campaign,$user_id);
                 }
-                *
                 //reset the permissions
                 $this->User_model->set_permissions();
                 //this function lets you add and remove permissions based on the selected campaign rather than user role! :)

@@ -223,6 +223,11 @@ class Form_model extends CI_Model
         
         return $this->db->query($qry)->result_array();
     }
+	  public function get_users_logged()
+    {
+        $qry = "select user_id id,name from users left join role_permissions using(role_id) left join permissions using(permission_id) left join users_to_campaigns using(user_id) where permission_name = 'log hours' group by user_id";
+        return $this->db->query($qry)->result_array();
+    }
     public function get_sources()
     {
         if (in_array("all campaigns", $_SESSION['permissions'])) {
