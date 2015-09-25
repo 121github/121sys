@@ -338,7 +338,7 @@ class Dashboard_model extends CI_Model
 
 
         $qry_filter .= " and campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) and h.role_id is not null ";
-        $qry = "select urn, max(contact) as `when`, contact as outcome_date,outcome as outcome,`name`,campaign_name as campaign from history h left join campaigns using(campaign_id) left join outcomes using(outcome_id) left join users u using(user_id) left join records using(urn)  left join (select user_id, max(contact) survey_date from history h left join campaigns using(campaign_id)  left join records using(urn) where h.outcome_id in(select outcome_id from outcomes where positive=1) $qry_filter group by user_id) ls on ls.user_id = h.user_id where u.team_id is not null $qry_filter  group by u.user_id ";
+        $qry = "select urn, max(contact) as `when`, contact as outcome_date,outcome as outcome,`name`,campaign_name as campaign from history h left join campaigns using(campaign_id) left join outcomes using(outcome_id) left join users u using(user_id) left join records using(urn)  left join (select user_id, max(contact) survey_date from history h left join campaigns using(campaign_id)  left join records using(urn) where h.outcome_id in(select outcome_id from outcomes where positive=1) $qry_filter group by user_id) ls on ls.user_id = h.user_id where u.team_id is not null and date(`contact`) = curdate() $qry_filter  group by u.user_id ";
 
         return $this->db->query($qry)->result_array();
     }
@@ -372,7 +372,7 @@ class Dashboard_model extends CI_Model
 
 
         $qry_filter .= " and campaigns.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-        $qry = "select `name`,count(*) dials,if(positive is null,'0',positive) positives,$campaign as campaign from history h left join campaigns using(campaign_id)  left join records using(urn) left join (select user_id,count(*) positive from history h left join campaigns using(campaign_id) left join records using(urn) where 1 and h.outcome_id in(select outcome_id from outcomes where positive=1) $qry_filter group by user_id) sv on sv.user_id = h.user_id  left join users on h.user_id = users.user_id where users.team_id is not null $qry_filter group by h.user_id";
+        $qry = "select `name`,count(*) dials,if(positive is null,'0',positive) positives,$campaign as campaign from history h left join campaigns using(campaign_id)  left join records using(urn) left join (select user_id,count(*) positive from history h left join campaigns using(campaign_id) left join records using(urn) where 1 and h.outcome_id in(select outcome_id from outcomes where positive=1) $qry_filter group by user_id) sv on sv.user_id = h.user_id  left join users on h.user_id = users.user_id where users.team_id is not null and users.user_status = 1 $qry_filter group by h.user_id";
 
         return $this->db->query($qry)->result_array();
     }
@@ -399,7 +399,7 @@ class Dashboard_model extends CI_Model
         $qry = "select `name`,count(*) total,if(virgin is null,'0',virgin) as virgin,if(in_progress is null,'0',in_progress) as in_progress,if(completed is null,'0',completed) as completed,$campaign as campaign from records r  left join ownership o using(urn)  left join campaigns using(campaign_id) left join (select user_id,count(*) virgin from records left join ownership o using(urn) left join campaigns using(campaign_id) where outcome_id is null and record_status = 1 $qry_filter group by user_id) v on v.user_id = o.user_id  
 	 left join (select user_id,count(*) in_progress from records  left join ownership o using(urn) left join campaigns using(campaign_id) where record_status = 1 and outcome_id is not null $qry_filter group by user_id) ip on ip.user_id = o.user_id  
 	 left join (select user_id,count(*) completed from records  left join ownership o using(urn) left join campaigns using(campaign_id) where record_status in(3,4) $qry_filter group by user_id) c on c.user_id = o.user_id  
-	left join users on o.user_id = users.user_id where record_status in(1,3,4) and users.team_id is not null $qry_filter group by o.user_id";
+	left join users on o.user_id = users.user_id where record_status in(1,3,4) and users.team_id is not null  and users.user_status = 1 $qry_filter group by o.user_id";
         return $this->db->query($qry)->result_array();
     }
 
