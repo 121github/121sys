@@ -72,15 +72,16 @@ $this->db->where(array("campaign_id"=>$campaign,"field"=>$field));
 $query = $this->db->get('record_details_options');
 if(!$query->num_rows()){
 $this->db->distinct();
-$this->db->select($field);
+$this->db->select("$field id,$field `option`",null,false);
 $this->db->join("records","records.urn=record_details.urn");
 $this->db->where(array("campaign_id"=>$campaign));
-$this->db->get("record_details");
+return $this->db->get("record_details")->result_array();
 } else {
 return $query->result_array();
 }
 
 }
+
 
 
     public function count_records($filter)
