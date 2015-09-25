@@ -45,10 +45,10 @@ class Cron_model extends CI_Model
             if ($query->num_rows()) {
                 $campaigns = $query->result_array();
                 foreach ($campaigns as $row) {				
-                    $qry = "update hours set time_logged = '{$row['duration']}',`date`=now() where user_id = '{$agent['id']}' and campaign_id = {$row['campaign_id']} and date(`date`)=curdate()";
+                    $qry = "update hours set time_logged = '{$row['duration']}',`date`=curdate() where user_id = '{$agent['id']}' and campaign_id = {$row['campaign_id']} and date(`date`)=curdate()";
                     $update = $this->db->query($qry);
                     if ($this->db->affected_rows() == 0) {
-                        $qry = "insert into hours set time_logged = '{$row['duration']}',user_id = '{$agent['id']}',campaign_id = {$row['campaign_id']},`date`=curdate(),updated_date=now()";
+                        $qry = "insert ignore into hours set time_logged = '{$row['duration']}',user_id = '{$agent['id']}',campaign_id = {$row['campaign_id']},`date`=curdate(),updated_date=now()";
                         $insert = $this->db->query($qry);
                     }
                 }

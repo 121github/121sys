@@ -18,5 +18,6 @@ class Migration_update_59 extends CI_Migration
 		}
 		//callback dm and email sent requires a callback
 		$this->db->query("update outcomes set requires_callback = 1 where outcome_id in(2,85) ");
+		$this->db->query("alter table hours add unique(user_id,campaign_id,date)");
 	}
 }
