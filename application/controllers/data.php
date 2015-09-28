@@ -547,6 +547,7 @@ $this->_campaigns = campaign_access_dropdown();
     	$source = $this->Records_model->get_source_by_name("Manual");
     	$form['record_status'] = $status->record_status_id;
     	$form['source_id'] = $source->source_id;
+		$form['added_by'] = $_SESSION['user_id'];
     	
     	$company = array();
     	$contact = array();
