@@ -22,15 +22,34 @@ class Search extends CI_Controller
 	
 	
 		
-	public function search_address(){
-		if($this->input->post('ghs_ref')){
-			$result = $this->Filter_model->search_urn_by_c1($this->input->post('ghs_ref'));
-		} else if($this->input->post('telephone')) {
-			$result = $this->Filter_model->search_by_contact_phone($this->input->post('telephone'));
+	public function new_record_check(){
+		if($this->uri->segment(3)=="ghs"){
+			$campaigns = array(22,28,29,32,52);
 		} else {
-			$postcode = postcodeFormat($this->input->post('postcode'));
-			$add1 = str_replace(" ","",$this->input->post('add1'));
-			$result = $this->Filter_model->search_urn_by_address($add1,$postcode);
+			$campaigns = array();
+			$campaigns[] = $this->input->post('campaign_id');
+		}
+		if($this->input->post('ref')){
+			$result = $this->Filter_model->search_urn_by_c1($this->input->post('ref'),$campaigns);
+		}  else if($this->input->post('contact_postcode')) {
+			$this->firephp->log("looking up contact address");
+			$postcode = postcodeFormat($this->input->post('contact_postcode'));
+			$add1 = str_replace(" ","",$this->input->post('contact_add1'));
+			$result = $this->Filter_model->search_urn_by_contact_address($add1,$postcode,$campaigns);
+			
+		} else if($this->input->post('contact_telephone')) {
+			$this->firephp->log("looking up contact telephone");
+			$result = $this->Filter_model->search_by_contact_phone($this->input->post('contact_telephone'),$campaigns);
+		}  else if($this->input->post('company_postcode')) {
+			$this->firephp->log("looking up company address");
+			$postcode = postcodeFormat($this->input->post('company_postcode'));
+			$add1 = str_replace(" ","",$this->input->post('company_add1'));
+			$result = $this->Filter_model->search_urn_by_company_address($add1,$postcode,$campaigns);
+		} else if($this->input->post('company_telephone')) {
+			$this->firephp->log("looking up company telephone");
+			$result = $this->Filter_model->search_by_company_phone($this->input->post('company_telephone'),$campaigns);
+		} else {
+			$result = array();
 		}
 		if(count($result)>0){
 		echo json_encode(array("success"=>true,"data"=>$result));	

@@ -12,6 +12,12 @@ class Company_model extends CI_Model
 
     }
     
+		public function add_address($data){
+	$this->db->insert("company_addresses",$data);	
+	}
+	    public function add_telephone($data){
+	$this->db->insert("company_telephone",$data);	
+	}
 	public function update_subsectors($subsectors,$company){
 		$this->db->where('company_id',$company);	
 		$this->db->delete('company_subsectors');

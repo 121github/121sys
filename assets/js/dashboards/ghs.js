@@ -23,7 +23,7 @@ var ghs = {
     },
     search_record: function ($btn) {
         $.ajax({
-            url: helper.baseUrl + 'search/search_address',
+            url: helper.baseUrl + 'search/search_address/ghs',
             type: "POST",
             dataType: "JSON",
             data: $btn.closest('form').serialize()
@@ -33,7 +33,7 @@ var ghs = {
                 table = "<table class='table table-striped table-condensed'><thead><tr><th>Data</th><th>Contact</th><th>Address</th><th>Postcode</th><th>Last Outcome</th><th>Owner</th></tr></thead>";
                 $.each(response.data, function (i, row) {
                     results += "<p><span class='text-success'>The record was found!</span>";
-                    table += "<tr class='pointer' data-modal='view-record' data-urn='" + row.urn + "'><td>" + row.source_name + "</td><td>" + row.fullname + "</td><td>" + row.add1 + "</td><td>" + row.postcode + "</td><td>" + row.outcome + "</td><td>" + row.name + "</td></tr>";
+                    table += "<tr class='pointer' data-modal='view-record' data-urn='" + row.urn + "'><td>" + row.source_name + "</td><td>" + row.name + "</td><td>" + row.add1 + "</td><td>" + row.postcode + "</td><td>" + row.outcome + "</td><td>" + row.user + "</td></tr>";
                 });
                 table += "</table>";
             } else {

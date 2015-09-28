@@ -147,7 +147,7 @@ var importer = {
         });
     },
     show_campaign_type: function () {
-		if($('#campaign').val()>0){
+		if($('#campaign').val().length>0){
         var ctype = $('#campaign option:selected').attr('ctype');
         $('#ctype-text').text("This is a " + ctype + " campaign.").show();
 		} else {
@@ -831,6 +831,11 @@ var add_record = {
         $(document).on('change', '#campaign', function () {
             add_record.show_campaign_type();
         });
+		 $(document).on("click", "#continue-btn", function (e) {
+			  e.preventDefault();
+			  add_record.check_dupes();
+			   
+		 });
         $(document).on("click", "#save-btn", function (e) {
             e.preventDefault();
 			if($('#campaign').val()==""){
@@ -845,7 +850,32 @@ var add_record = {
         });
 		$('#campaign').trigger('change');
     },
+	check_dupes: function(){
+		if($('#company_postcode').val()==""&&$('#contact_postcode').val()==""){
+			flashalert.danger("Please enter a postcode");
+		} else {
+		 $.ajax({
+            url: helper.baseUrl + 'search/new_record_check',
+            type: "POST",
+            dataType: "JSON",
+            data: $('form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+				var table = "<table class='table table-striped'><thead><th>Data</th><th>Name</th><th>Address</th><th>Postcode</th><th>Last Outcome</th><th>Last User<th></thead><tbody>";
+				$.each(response.data,function(i,row){
+				 table += "<tr class='pointer' data-modal='view-record' data-urn='"+row.urn+"'><td>"+row.source_name+"</td><td>"+row.name+"</td><td>"+row.add1+"</td><td>"+row.postcode+"</td><td>"+row.outcome+"</td><td>"+row.user+"</td></tr>";
+				});
+				 table += "</tbody></table>";
+				$('#dupes-found').html("<p class='text-info'><span class='glyphicon glyphicon-info-sign'></span> Other records were found in this postcode.</p>"+table);
+				$('#save-btn').show();
+            } else {
+				add_record.save();
+			}
+		})
+		}
+	},
     show_campaign_type: function () {
+		if($('#campaign').val().length>0){
         var ctype = $('#campaign option:selected').attr('ctype');
         $('#ctype-text').text("This is a " + ctype + " campaign.").show();
 
@@ -857,6 +887,9 @@ var add_record = {
             $('#contact').show();
             $('#company').hide();
         }
+		} else {
+		  $('#ctype-text').text("This is a " + ctype + " campaign.").hide();	
+		}
     },
     //save a record
     save: function ($btn) {
@@ -870,7 +903,7 @@ var add_record = {
         }).done(function (response) {
             if (response.success) {
                 //Redirect to the record panel
-                window.location.href = helper.baseUrl+'records/detail/' + response.record_id;
+               window.location.href = helper.baseUrl+'records/detail/' + response.record_id;
                 flashalert.success("Record saved");
             }
             else {

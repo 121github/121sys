@@ -61,8 +61,9 @@ class Records_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
-    public function find_related_records($urn, $campaign = false)
+    public function find_related_records($urn=false, $campaign = false, $original = false)
     {
+		if($urn&&!$original){
         $qry = "select companies.name,companies.website,concat(coma.add1,coma.postcode) address,concat(cona.add1,cona.postcode) contact_address,comt.telephone_number company_telephone,cont.telephone_number contact_telephone,concat(fullname,dob) contact from records left join companies using(urn) left join company_addresses coma using(company_id) left join contacts using(urn) left join company_telephone comt using(company_id) left join contact_telephone cont using(contact_id) left join contact_addresses cona using(contact_id)  where urn = '$urn'";
         if ($campaign) {
             $qry .= " and campaign_id = '$campaign'";
@@ -93,6 +94,7 @@ class Records_model extends CI_Model
                 $original['contact_addresses'][$row['contact_address']] = $row['contact_address'];
             }
         }
+		}
         //now look for matches using the data from the original
         $matches = array();
         foreach ($original as $k => $v) {

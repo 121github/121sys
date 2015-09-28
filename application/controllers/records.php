@@ -33,9 +33,17 @@ class Records extends CI_Controller
 	
 	public function related_records(){
 	  if ($this->input->is_ajax_request()) {
+		  //this function find duplicate or associated records. You can check against an array of fields (original) or you can check against a urn
+		  if($this->input->post('urn')){
             $urn = $this->input->post('urn');
 			$campaign = $this->Records_model->get_campaign_from_urn($urn);
-			$result = $this->Records_model->find_related_records($urn,$campaign);
+			$original = false;
+		  } else {
+			 $urn = false;
+			 $original = $this->input->post();
+			 $campaign = $this->input->post('campaign');
+		  }
+			$result = $this->Records_model->find_related_records($urn,$campaign,$original);
 			echo json_encode(array("success"=>true,"data"=>$result,"msg"=>"No matches were found"));
 	  }
 		

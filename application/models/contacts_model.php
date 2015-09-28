@@ -71,7 +71,12 @@ class Contacts_model extends CI_Model
         return $results = $this->db->get("contacts")->result_array();
     }
     
-    
+	public function add_address($data){
+	$this->db->insert("contact_addresses",$data);	
+	}
+    public function add_telephone($data){
+	$this->db->insert("contact_telephone",$data);	
+	}
     public function get_contacts($urn)
     {
         

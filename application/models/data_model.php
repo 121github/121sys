@@ -983,7 +983,7 @@ return true;
 
         return $this->db->query($qry)->result_array();
     }
-
+	
     /**
      * Delete duplicates
      *
