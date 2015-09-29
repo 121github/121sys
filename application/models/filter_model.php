@@ -50,52 +50,62 @@ public function search_urn_by_c1($ref){
 	return $this->db->get("records")->result_array();
 
 }
-public function search_by_contact_phone($phone,$campaigns=false){
-	//GHS ONLY
-	if($campaigns){
-	$campaigns = implode(",",$campaigns);
-	}
-    $qry = "select urn,parked_code,urgent, if(users.name is null,if(husers.name is null,'-',husers.name),users.name) user, if(outcome is null,'-',outcome) outcome,fullname name,source_name from records join contacts using(urn) join contact_telephone using(contact_id) left join record_details using(urn) left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) left join history using(urn) left join users husers on husers.user_id = history.user_id where telephone_number like '%$phone%' ";
-	if($campaigns){
-		$qry .= " and records.campaign_id in($campaigns)";
-	}	$qry .= "  group by records.urn order by c1 ";
-	return $this->db->query($qry)->result_array();
 
-}
-public function search_urn_by_contact_address($add1,$postcode,$campaigns=false){
-	//GHS ONLY
-		if($campaigns){
+public function quick_search($type="b2b",$companies=false,$postcode=false,$add1=false,$telephone=false,$campaigns=array(),$ref=false){
+	$where = "";
+	$joins = " left join companies using(urn) left join contacts using(urn)";
+	if(count($campaigns)>0){
 	$campaigns = implode(",",$campaigns);
+	$where .= " and records.campaign_id in($campaigns) ";
 	}
-    $qry = "select urn,parked_code,urgent, if(users.name is null,if(husers.name is null,'-',husers.name),users.name)  user,fullname name,add1,postcode,source_name,if(outcome is null,'-',outcome) outcome from records  left join ownership using(urn) left join users using(user_id)  left join record_details using(urn) left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join contacts using(urn) left join contact_addresses using(contact_id) left join history using(urn) left join users husers on husers.user_id = history.user_id where postcode = '$postcode' and add1 like '$add1%' ";
-	if($campaigns){
-		$qry .= " and records.campaign_id in($campaigns)";
+	if($ref){
+	$where .= " and client_ref = '$ref' ";
 	}
-	$qry .= "  group by records.urn order by c1 ";
+	if($type=="b2b"){
+	$joins .= " left join company_addresses using(company_id) left join company_telephone using(company_id)";
+	if($postcode){
+	$where .= " and (replace(company_addresses.postcode,' ','') like '$postcode%' ) ";
+	}
+	if($add1){
+	$where .= " and company_addresses.add1 like '$add1%') ";
+	}
+	if($telephone){
+	$where .= " and (company_telephone.telephone_number like '%$telephone%') ";
+	}
+	if($companies){
+	$names = implode("'|'",$companies);
+	$where .= " and replace(companies.name,' ','') regexp '$names' and companies.name <> ''";
+	//$where .= " and replace(companies.name,' ','') in ('$names') and companies.name <> ''";
+	}
+	} else {
+	$joins .= " left join left join contact_addresses using(contact_id) left join contact_addresses using(contact_id) ";
+	if($postcode){
+	$where .= " and (replace(contact_addresses.postcode,' ','') like '$postcode%') ";
+	}
+	if($add1){
+	$where .= " and (contact_addresses.add1 like '$add1%') ";
+	}
+	if($telephone){
+	$where .= " and (contact_telephone.telephone_number like '%$telephone%') ";
+	}	
+	}
+	$qry = "select campaign_name,urn,parked_code,urgent, if(users.name is null,if(husers.name is null,'-',husers.name),users.name) user, if(outcome is null,'-',outcome) outcome,status_name,date_format(records.date_added,'%d/%m/%y') date_added,if(postcode is null or postcode='','-',postcode) postcode,if(add1 is null or add1='','-',add1) add1,if(companies.name is not null,companies.name,fullname) name,source_name from records join campaigns using(campaign_id) $joins left join record_details using(urn) left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) join status_list on record_status = record_status_id left join history using(urn) left join users husers on husers.user_id = history.user_id where 1 $where group by records.urn ";	
 		return $this->db->query($qry)->result_array();
 }
-public function search_by_company_phone($phone,$campaigns=false){
-	//GHS ONLY
-	if($campaigns){
-	$campaigns = implode(",",$campaigns);
-	}
-    $qry = "select urn,parked_code,urgent,  if(users.name is null,if(husers.name is null,'-',husers.name),users.name)  user, if(outcome is null,'-',outcome) outcome,companies.name name,source_name from records join companies using(urn) join company_telephone using(contact_id) left join record_details using(urn) left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) left join history using(urn) left join users husers on husers.user_id = history.user_id where telephone_number like '%$phone%' ";
-	if($campaigns){
-		$qry .= " and records.campaign_id in($campaigns)";
-	}	$qry .= "  group by records.urn order by c1 ";
-	return $this->db->query($qry)->result_array();
 
-}
-public function search_urn_by_company_address($add1,$postcode,$campaigns=false){
-	//GHS ONLY
+
+public function get_companies_from_initial($name,$campaigns=false){
 		if($campaigns){
 	$campaigns = implode(",",$campaigns);
 	}
-    $qry = "select urn,parked_code,urgent, if(users.name is null,if(husers.name is null,'-',husers.name),users.name)  user,companies.name name,add1,postcode,source_name,if(outcome is null,'-',outcome) outcome from records  left join ownership using(urn) left join users using(user_id)  left join record_details using(urn) left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join companies using(urn) left join company_addresses using(contact_id) left join history using(urn) left join users husers on husers.user_id = history.user_id where postcode = '$postcode' and add1 like '$add1%' ";
+	//get all names starting with that letter to narrow it down
+	$coname = substr($name,0,1);
+    $qry = "select replace(name,' ','') name from companies join records using(urn) where companies.name like '$coname%' ";
 	if($campaigns){
 		$qry .= " and records.campaign_id in($campaigns)";
 	}
-	$qry .= "  group by records.urn order by c1 ";
+	$qry .= "  group by companies.name";
+
 		return $this->db->query($qry)->result_array();
 }
 

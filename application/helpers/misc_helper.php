@@ -13,6 +13,19 @@ function convertToHoursMins($time, $format = '%d:%d') {
     return sprintf($format, $hours, $minutes);
 }
 
+
+function closest_strings($str,$array,$tolerance=3){
+$minStr = "";
+$result = array();
+foreach($array as $curStr) {
+  $dis = levenshtein($str, $curStr);
+  if ($dis <= $tolerance) {
+    $result[] = $curStr;
+  }
+}
+	return $result;
+}
+
 function join_array(){
 	$array = array();
 

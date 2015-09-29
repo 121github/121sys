@@ -38,7 +38,7 @@
 									</div>
                                                                         <div class="form-group input-group-sm">   
 										<p><label>House number or first line of address</label></p>
-										<input type="text" name="company_add1" id="add1" class="form-control"  placeholder="House number or first line of address" />
+										<input type="text" name="company_add1" id="company_add1" class="form-control"  placeholder="House number or first line of address" />
 									</div>
                                     
                                 

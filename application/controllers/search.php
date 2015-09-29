@@ -27,30 +27,62 @@ class Search extends CI_Controller
 			$campaigns = array(22,28,29,32,52);
 		} else {
 			$campaigns = array();
+			if($this->input->post('campaign_id')){
 			$campaigns[] = $this->input->post('campaign_id');
+			}
 		}
+		$result = array();
+		$type=false;
+		$postcode = false;
+		$add1=false;
+		$telephone=false;
+		$company_names =false;
 		if($this->input->post('ref')){
-			$result = $this->Filter_model->search_urn_by_c1($this->input->post('ref'),$campaigns);
-		}  else if($this->input->post('contact_postcode')) {
-			$this->firephp->log("looking up contact address");
-			$postcode = postcodeFormat($this->input->post('contact_postcode'));
-			$add1 = str_replace(" ","",$this->input->post('contact_add1'));
-			$result = $this->Filter_model->search_urn_by_contact_address($add1,$postcode,$campaigns);
-			
-		} else if($this->input->post('contact_telephone')) {
-			$this->firephp->log("looking up contact telephone");
-			$result = $this->Filter_model->search_by_contact_phone($this->input->post('contact_telephone'),$campaigns);
-		}  else if($this->input->post('company_postcode')) {
-			$this->firephp->log("looking up company address");
-			$postcode = postcodeFormat($this->input->post('company_postcode'));
-			$add1 = str_replace(" ","",$this->input->post('company_add1'));
-			$result = $this->Filter_model->search_urn_by_company_address($add1,$postcode,$campaigns);
-		} else if($this->input->post('company_telephone')) {
-			$this->firephp->log("looking up company telephone");
-			$result = $this->Filter_model->search_by_company_phone($this->input->post('company_telephone'),$campaigns);
-		} else {
-			$result = array();
+		$ref = $this->input->post('ref');
+		}  
+		if($this->input->post('contact_postcode')) {
+			$type = "b2c";
+		$postcode = str_replace(" ","",postcodeFormat($this->input->post('contact_postcode')));
+		} 
+		if($this->input->post('contact_add1')){
+			$type = "b2c";
+		$add1 = trim(preg_replace('/[a-zA-Z]/', '', $this->input->post('contact_add1')));
 		}
+		if($this->input->post('contact_telephone')) {
+			$type = "b2c";
+		$telephone = $this->input->post('contact_telephone');
+		}  
+		 if($this->input->post('company_postcode')) {
+			 $type = "b2b";
+		$postcode = str_replace(" ","",postcodeFormat($this->input->post('company_postcode')));
+		} 
+		if($this->input->post('company_add1')){
+			$type = "b2b";
+		$add1 = trim(preg_replace('/[a-zA-Z]/', '', $this->input->post('company_add1')));
+		}
+		if($this->input->post('company_telephone')) {
+			$type = "b2b";
+			$telephone=$this->input->post('company_telephone');
+		} 
+		if($this->input->post('company_name')) { 
+		$type = "b2b";
+		$company = str_ireplace(array(" ltd"," plc"," limited"," uk","-","(uk)"," "),array("","","","","","",""),strtolower($this->input->post('company_name')));
+			$names = $this->Filter_model->get_companies_from_initial($company,$campaigns);
+			foreach($names as $row){
+			$all_company_names[$row['name']] = str_ireplace(array(" ltd"," plc"," limited"," uk","-","(uk)"," "),array("","","","","","",""),strtolower($row['name']));
+			}
+			if(strlen($company)>6){
+				$tolerance=2; 
+			} else {
+				$tolerance=1;
+			}
+			$company_names = closest_strings($company,$all_company_names,$tolerance);
+			if(count($company_names)==0){
+			$company_names=array($company);
+			} 
+		} 
+		$result = $this->Filter_model->quick_search($type,$company_names,$postcode,$add1,$telephone,$campaigns,$ref=false);
+		
 		if(count($result)>0){
 		echo json_encode(array("success"=>true,"data"=>$result));	
 		} else {

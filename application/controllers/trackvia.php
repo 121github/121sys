@@ -584,6 +584,41 @@ AND parked_code IS NULL");
     }
 
 
+public function update_record_details($array=false){
+if(!$array){
+$array = array();
+$array[] = $this->input->post('id');
+$urn =  $this->Trackvia_model->get_urn_from_client_ref($id);
+$data = array("urn"=>$urn);
+} else if($this->input->post('urn')){
+$array = array();
+$array[] = $this->Trackvia_model->get_client_ref_from_urn($urn);
+$data = array("urn"=>$urn);
+} 
+
+foreach($array as $id){
+$response = $this->tv->getRecord($id);
+$fields = $response['fields'];
+if (!empty($fields['GHS UPRN']) && isset($fields['GHS UPRN'])) {
+                        $data["c1"] = $fields['GHS UPRN'];
+                    }
+                    if (!empty($fields['Referred by']) && isset($fields['Referred by'])) {
+                        $data["c2"] = $fields['Referred by'];
+                    }
+                    if (!empty($fields['Enquiry Type']) && isset($fields['Enquiry Type'])) {
+                        $data["c3"] = $fields['Enquiry Type'];
+                    }
+                    if (!empty($fields['Property Status']) && isset($fields['Property Status'])) {
+                        $data["c5"] = $fields['Property Status'];
+                    }
+                    if (!empty($fields['Reason for Desktop Fail']) && isset($fields['Reason for Desktop Fail'])) {
+                        $data["c6"] = $fields['Reason for Desktop Fail'];
+                    }
+}
+$this->Trackvia_model->update_record_from_trackvia($data);			
+echo json_encode($data);					
+}
+
     /*
         /**
          * Test

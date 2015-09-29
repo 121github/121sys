@@ -9,8 +9,25 @@ class Trackvia_model extends CI_Model
         parent::__construct();
 
     }
-
-
+	
+	public function update_record_from_trackvia($data){
+		$this->db->where("c1",$data["c1"]);
+		if($this->db->get("record_details")->num_rows()){
+			$this->db->where("c1",$data["c1"]);
+			$this->db->update("record_details",$data);
+		} else {
+			$this->db->insert("record_details",$data);
+		}
+	}
+	
+	public function get_client_ref_from_urn($urn){
+	$this->db->where("urn",$urn);
+	return $this->db->get("client_refs")->row()->client_ref;	
+	}
+		public function get_urn_from_client_ref($id){
+	$this->db->where("client_ref",$id);
+	return $this->db->get("client_refs")->row()->urn;	
+	}
     public function get_rebookings($campaign = "")
     {
         $qry = "select urn,fullname,campaign_name,if(records.date_updated is null,'Never',date_format(records.date_updated,'%d/%m/%y')) lastcall, if(dials>0,'warning','danger') col from records left join contacts using(urn) left join appointments a using(urn) left join campaigns using(campaign_id) where urgent = 1 and cancellation_reason is not null and record_status = 1";

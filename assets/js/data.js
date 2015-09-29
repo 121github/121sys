@@ -851,25 +851,38 @@ var add_record = {
 		$('#campaign').trigger('change');
     },
 	check_dupes: function(){
-		if($('#company_postcode').val()==""&&$('#contact_postcode').val()==""){
+		if($('#company_postcode').val()==""&&$('#contact_postcode').val()==""&&$('#company_name').val()==""||$('#company_postcode').val()==""&&$('#company_add1').val()!=""||$('#contact_postcode').val()==""&&$('#contact_add1').val()!=""){
 			flashalert.danger("Please enter a postcode");
 		} else {
 		 $.ajax({
             url: helper.baseUrl + 'search/new_record_check',
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize()
+            data: $('form').serialize(),
+			beforeSend:function(){
+			  $('#dupes-found').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');	
+			}
         }).done(function (response) {
             if (response.success) {
-				var table = "<table class='table table-striped'><thead><th>Data</th><th>Name</th><th>Address</th><th>Postcode</th><th>Last Outcome</th><th>Last User<th></thead><tbody>";
+				if($('#campaign').val()==""){
+				var camphead = "<th>Campaign</th>";	
+				var campbody = true;	
+				} else {
+				var camphead = "";	
+				var campbody = false;		
+				}
+				var table = "<div class='table-responsive'><table class='small table-condensed table table-striped'><thead>"+camphead+"<th>Data</th><th>Name</th><th>Address</th><th>Postcode</th><th>Status</th><th>Date Added<th></thead><tbody>";
 				$.each(response.data,function(i,row){
-				 table += "<tr class='pointer' data-modal='view-record' data-urn='"+row.urn+"'><td>"+row.source_name+"</td><td>"+row.name+"</td><td>"+row.add1+"</td><td>"+row.postcode+"</td><td>"+row.outcome+"</td><td>"+row.user+"</td></tr>";
+				 table += "<tr class='pointer' data-modal='view-record' data-urn='"+row.urn+"'>";
+				 if(campbody){ table +=  "<td>"+row.campaign_name+"</td>" }
+				 table += "<td>"+row.source_name+"</td><td>"+row.name+"</td><td>"+row.add1+"</td><td>"+row.postcode+"</td><td>"+row.status_name+"</td><td>"+row.date_added+"</td></tr>";
 				});
-				 table += "</tbody></table>";
-				$('#dupes-found').html("<p class='text-info'><span class='glyphicon glyphicon-info-sign'></span> Other records were found in this postcode.</p>"+table);
+				 table += "</tbody></table></div>";
+				$('#dupes-found').html("<p class='text-info'><span class='glyphicon glyphicon-info-sign'></span> Similar records were found.  Please check this record does not exist before you create a new one</p>"+table);
 				$('#save-btn').show();
             } else {
-				add_record.save();
+				$('#dupes-found').html("<p class='text-success'><span class='glyphicon glyphicon-ok'></span> No duplicate records were found. Click the save button to create a new record.</p>");
+				$('#save-btn').show();
 			}
 		})
 		}
@@ -881,11 +894,11 @@ var add_record = {
 
         if (ctype == 'B2B') {
             $('#company').show();
-            $('#contact').hide();
+            $('#contact').hide().find('input').val('');
         }
         else if (ctype == 'B2C') {
             $('#contact').show();
-            $('#company').hide();
+            $('#company').hide().find('input').val('');
         }
 		} else {
 		  $('#ctype-text').text("This is a " + ctype + " campaign.").hide();	
@@ -893,8 +906,7 @@ var add_record = {
     },
     //save a record
     save: function ($btn) {
-
-        $("button[type=submit]").attr('disabled', 'disabled');
+        $("#save-btn").attr('disabled', 'disabled');
         $.ajax({
             url: helper.baseUrl + 'data/save_record',
             type: "POST",
