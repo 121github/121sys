@@ -9,7 +9,7 @@ class Export_model extends CI_Model
     }
 
     public function get_export_forms() {
-        $qry = "select * from export_forms";
+        $qry = "select * from export_forms order by name";
 
         return $this->db->query($qry)->result_array();
     }
