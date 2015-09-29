@@ -51,7 +51,7 @@ public function search_urn_by_c1($ref){
 
 }
 
-public function quick_search($type="b2b",$companies=false,$postcode=false,$add1=false,$telephone=false,$campaigns=array(),$ref=false){
+public function quicksearch($type="b2b",$companies=false,$postcode=false,$add1=false,$telephone=false,$campaigns=array(),$ref=false){
 	$where = "";
 	$joins = " left join companies using(urn) left join contacts using(urn)";
 	if(count($campaigns)>0){
@@ -59,7 +59,8 @@ public function quick_search($type="b2b",$companies=false,$postcode=false,$add1=
 	$where .= " and records.campaign_id in($campaigns) ";
 	}
 	if($ref){
-	$where .= " and client_ref = '$ref' ";
+		$joins .= " left join client_refs using(urn) left join record_details using(urn) ";
+	$where .= " and (client_ref = '$ref' or c1 = '$ref') ";
 	}
 	if($type=="b2b"){
 	$joins .= " left join company_addresses using(company_id) left join company_telephone using(company_id)";
@@ -78,7 +79,7 @@ public function quick_search($type="b2b",$companies=false,$postcode=false,$add1=
 	//$where .= " and replace(companies.name,' ','') in ('$names') and companies.name <> ''";
 	}
 	} else {
-	$joins .= " left join left join contact_addresses using(contact_id) left join contact_addresses using(contact_id) ";
+	$joins .= " left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) ";
 	if($postcode){
 	$where .= " and (replace(contact_addresses.postcode,' ','') like '$postcode%') ";
 	}
@@ -89,7 +90,7 @@ public function quick_search($type="b2b",$companies=false,$postcode=false,$add1=
 	$where .= " and (contact_telephone.telephone_number like '%$telephone%') ";
 	}	
 	}
-	$qry = "select campaign_name,urn,parked_code,urgent, if(users.name is null,if(husers.name is null,'-',husers.name),users.name) user, if(outcome is null,'-',outcome) outcome,status_name,date_format(records.date_added,'%d/%m/%y') date_added,if(postcode is null or postcode='','-',postcode) postcode,if(add1 is null or add1='','-',add1) add1,if(companies.name is not null,companies.name,fullname) name,source_name from records join campaigns using(campaign_id) $joins left join record_details using(urn) left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) join status_list on record_status = record_status_id left join history using(urn) left join users husers on husers.user_id = history.user_id where 1 $where group by records.urn ";	
+	$qry = "select campaign_name,urn,parked_code,urgent, if(users.name is null,if(husers.name is null,'-',husers.name),users.name) user, if(outcome is null,'-',outcome) outcome,status_name,date_format(records.date_added,'%d/%m/%y') date_added,if(postcode is null or postcode='','-',postcode) postcode,if(add1 is null or add1='','-',add1) add1,if(companies.name is not null,companies.name,fullname) name,source_name from records join campaigns using(campaign_id) $joins left join data_sources on records.source_id = data_sources.source_id left join outcomes using(outcome_id) left join ownership using(urn) left join users using(user_id) join status_list on record_status = record_status_id left join history using(urn) left join users husers on husers.user_id = history.user_id where 1 $where group by records.urn ";
 		return $this->db->query($qry)->result_array();
 }
 

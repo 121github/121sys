@@ -10,11 +10,11 @@
 <form class="form">
 <div class="form-group">
 <label>House Number</label>
-<input type="text" class="form-control" placeholder="Enter the house number" name="add1"/>
+<input type="text" class="form-control" placeholder="Enter the house number" name="contact_add1"/>
 </div>
 <div class="form-group">
 <label>Postcode</label>
-<input type="text" class="form-control" placeholder="Enter the full postcode" name="postcode"/>
+<input type="text" class="form-control" placeholder="Enter the full postcode" name="contact_postcode"/>
 </div>
 <div class="form-group">
 <button class="btn btn-primary" id="search-address">Search by address</button>
@@ -26,7 +26,7 @@
 <form>
 <div class="form-group">
 <label>GHS Reference</label>
-<input type="text" class="form-control" placeholder="GHS Reference eg. SW12345" name="ghs_ref"/>
+<input type="text" class="form-control" placeholder="GHS Reference eg. SW12345" name="ref"/>
 </div>
 <div class="form-group">
 <button class="btn btn-primary" id="search-reference">Search by reference</button>
@@ -39,7 +39,7 @@
 <form>
 <div class="form-group">
 <label>Telephone</label>
-<input type="text" class="form-control" placeholder="All or part of a number" name="telephone"/>
+<input type="text" class="form-control" placeholder="All or part of a number" name="contact_telephone"/>
 </div>
 <div class="form-group">
 <button class="btn btn-primary" id="search-telephone">Search by phone</button>

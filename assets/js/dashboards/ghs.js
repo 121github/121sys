@@ -23,7 +23,7 @@ var ghs = {
     },
     search_record: function ($btn) {
         $.ajax({
-            url: helper.baseUrl + 'search/search_address/ghs',
+            url: helper.baseUrl + 'search/quicksearch/ghs',
             type: "POST",
             dataType: "JSON",
             data: $btn.closest('form').serialize()

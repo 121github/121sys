@@ -855,7 +855,7 @@ var add_record = {
 			flashalert.danger("Please enter a postcode");
 		} else {
 		 $.ajax({
-            url: helper.baseUrl + 'search/new_record_check',
+            url: helper.baseUrl + 'search/quicksearch',
             type: "POST",
             dataType: "JSON",
             data: $('form').serialize(),

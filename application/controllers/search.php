@@ -22,7 +22,7 @@ class Search extends CI_Controller
 	
 	
 		
-	public function new_record_check(){
+	public function quicksearch(){
 		if($this->uri->segment(3)=="ghs"){
 			$campaigns = array(22,28,29,32,52);
 		} else {
@@ -31,6 +31,7 @@ class Search extends CI_Controller
 			$campaigns[] = $this->input->post('campaign_id');
 			}
 		}
+		$ref=false;
 		$result = array();
 		$type=false;
 		$postcode = false;
@@ -38,7 +39,7 @@ class Search extends CI_Controller
 		$telephone=false;
 		$company_names =false;
 		if($this->input->post('ref')){
-		$ref = $this->input->post('ref');
+		$ref = trim($this->input->post('ref'));
 		}  
 		if($this->input->post('contact_postcode')) {
 			$type = "b2c";
@@ -81,7 +82,7 @@ class Search extends CI_Controller
 			$company_names=array($company);
 			} 
 		} 
-		$result = $this->Filter_model->quick_search($type,$company_names,$postcode,$add1,$telephone,$campaigns,$ref=false);
+		$result = $this->Filter_model->quicksearch($type,$company_names,$postcode,$add1,$telephone,$campaigns,$ref);
 		
 		if(count($result)>0){
 		echo json_encode(array("success"=>true,"data"=>$result));	
