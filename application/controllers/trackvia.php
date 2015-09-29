@@ -557,7 +557,20 @@ AND parked_code IS NULL");
 
     }
 
-
+  	public function list_view(){
+	$view_id = $this->uri->segment(3);
+	$records = array();
+	 for ($page = 1; $page < 15; $page++) {
+		$result = $this->getAllViewRecords($view_id, $page, $limit);
+		if(isset($result['records'])){
+		$records = array_merge($result['records'],$records);
+		} else {
+		break;
+		}
+	 }
+	print_r($records);
+	}
+	
     private function getAllViewRecords($view_id, $page = 1)
     {
         //$page = 1;
@@ -1272,10 +1285,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
         }
     }
 
-    public function test_update()
-    {
-        $response = $this->tv->updateRecord(false, false);
-    }
+ 
 
     /**
      * Add a trackvia record
