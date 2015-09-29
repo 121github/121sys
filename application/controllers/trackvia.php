@@ -568,7 +568,9 @@ AND parked_code IS NULL");
 		break;
 		}
 	 }
+	 echo "<pre>";
 	print_r($records);
+	 echo "</pre>";
 	}
 	
     private function getAllViewRecords($view_id, $page = 1)

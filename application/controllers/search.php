@@ -374,6 +374,7 @@ class Search extends CI_Controller
             "progress" => "progress_id",
 			"team" => "teams.team_id",
 			"source" => "records.source_id",
+			"hsource" => "history.source_id",
 			"parked" => "parked_code",
 			"cross" => "cross_transfers.campaign_id",
 			"alldials" => "alldials", //this gets all dials to a specific campaign including cross transfers

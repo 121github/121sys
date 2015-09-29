@@ -886,13 +886,14 @@ return $query->result_array();
             $qry .= " left join data_sources on data_sources.source_id = records.source_id ";
         }
 		*/
-		if (in_array("source", $fields)) {
-            $qry .= " left join data_sources on records.source_id = data_sources.source_id ";
-        }
+		
         if (in_array("status", $fields)) {
             $qry .= " left join status_list on records.record_status = status_list.record_status_id ";
         }
         if ($table == "records") {
+			if (in_array("source", $fields)) {
+            $qry .= " left join data_sources on records.source_id = data_sources.source_id ";
+        }
             //join the cross transfer table
             $qry .= " left join history on records.urn = history.urn and history.contact = records.date_updated";
             $qry .= " left join cross_transfers on cross_transfers.history_id = history.history_id ";
@@ -904,6 +905,9 @@ return $query->result_array();
                 $qry .= " left join teams on users.team_id = teams.team_id ";
             }
         } else {
+				if (in_array("source", $fields)) {
+            $qry .= " left join data_sources on history.source_id = data_sources.source_id ";
+        }
             //join the cross transfer table
             $qry .= " left join cross_transfers on cross_transfers.history_id = history.history_id ";
             $qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id ";

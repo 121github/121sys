@@ -200,7 +200,7 @@ class Reports extends CI_Controller
                 $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
                 $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
                 $url .= (!empty($team) ? "/team/$team" : "");
-                $url .= (!empty($source) ? "/source/$source" : "");
+                $url .= (!empty($source) ? "/hsource/$source" : "");
 
                 $total = $row['total'];
                 $pc = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
@@ -329,7 +329,7 @@ class Reports extends CI_Controller
             $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
             $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/source/$source_search" : "");
+            $url .= (!empty($source_search) ? "/hsource/$source_search" : "");
             if ($group == "date") {
                 $group = "contact";
             }
