@@ -195,7 +195,7 @@ class Reports extends CI_Controller
 
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/history";
-                $url .= (!empty($campaign) ? "/campaign/$campaign" : "");
+                $url .= (!empty($campaign) ? "/hcampaign/$campaign" : "");
                 $url .= (!empty($user) ? "/user/$user" : "");
                 $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
                 $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
@@ -325,7 +325,7 @@ class Reports extends CI_Controller
             $totalDuration = 0;
             $url = base_url() . "search/custom/history";
             $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+            $url .= (!empty($campaign_search) ? "/hcampaign/$campaign_search" : "");
             $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
             $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
@@ -350,7 +350,7 @@ class Reports extends CI_Controller
                     $outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
                 } else {
                     $allDialsUrl = $url . "/outcome/null:not/alldials/" . $id;
-                    $outcomesUrl = $url . "/outcome/null:not/campaign/" . $id . "/outcome/" . $form['outcome'];
+                    $outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/" . $form['outcome'];
                 }
 
                 $data[] = array(
@@ -373,7 +373,7 @@ class Reports extends CI_Controller
 
             $totalPercent = ($totalDials) ? number_format((($totalOutcomes) * 100) / $totalDials, 2) : 0;
 
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+            $url .= (!empty($campaign_search) ? "/hcampaign/$campaign_search" : "");
             $url .= ($group == "reason" ? "/reason/null:not" : "");
 
             array_push($data, array(

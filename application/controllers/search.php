@@ -362,6 +362,7 @@ class Search extends CI_Controller
             "outcome" => "outcomes.outcome_id",
             "survey" => "surveys.survey_info_id",
             "campaign" => "records.campaign_id",
+			"hcampaign" => "history.campaign_id",
             "user" => "users.user_id",
             "status" => "record_status",
             "nextcall" => "records.nextcall",
