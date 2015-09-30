@@ -213,7 +213,6 @@ class Report_model extends CI_Model
         where 1 $where
 		group by $group_by ";
 
-        $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 
@@ -305,6 +304,118 @@ class Report_model extends CI_Model
         $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
+
+public function get_realtime_history($options){
+	$date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $user = isset($options['agent']) ? $options['agent'] : "";
+        $team = isset($options['team']) ? $options['team'] : "";
+        $outcome = isset($options['outcome']) ? $options['outcome'] : "";
+ 		$campaign = isset($options['campaign']) ? $options['campaign'] : "";
+		
+        $where = "";
+
+        if (!empty($date_from)) {
+            $where .= " and date(`contact`) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(`contact`) <= '$date_to' ";
+        }
+        if (!empty($user)) {
+            $where .= " and history.user_id = '$user' ";
+        }
+        if (!empty($team)) {
+            $where .= " and history.team_id = '$team' ";
+        }
+		 if (!empty($campaign)) {
+            $where .= " and campaign_id = '$campaign' ";
+        }
+        if (!empty($outcome)) {
+            $where .= " and history.outcome_id = '$outcome' ";
+        }
+
+        //if the user does not have the agent reporting permission they can only see their own stats
+        if (@!in_array("by agent", $_SESSION['permissions'])) {
+            $where .= " and history.user_id = '{$_SESSION['user_id']}' ";
+        }
+
+        $where .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		$qry = "select count(*) count,campaign_id,campaign_name,user_id,users.name from history join campaigns using(campaign_id) join users using(user_id) where 1 $where group by user_id,campaign_id";
+		return $this->db->query($qry)->result_array();
+	
+}
+public function get_realtime_hours($options){
+		$date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $user = isset($options['agent']) ? $options['agent'] : "";
+        $team = isset($options['team']) ? $options['team'] : "";
+        $outcome = isset($options['outcome']) ? $options['outcome'] : "";
+$campaign = isset($options['campaign']) ? $options['campaign'] : "";
+        $where = "";
+
+        if (!empty($date_from)) {
+            $where .= " and date(`date`) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(`date`) <= '$date_to' ";
+        }
+        if (!empty($user)) {
+            $where .= " and hours.user_id = '$user' ";
+        }
+        if (!empty($team)) {
+            $where .= " and history.team_id = '$team' ";
+        }
+		 if (!empty($campaign)) {
+            $where .= " and hours.campaign_id = '$campaign' ";
+        }
+
+        //if the user does not have the agent reporting permission they can only see their own stats
+        if (@!in_array("by agent", $_SESSION['permissions'])) {
+            $where .= " and hours.user_id = '{$_SESSION['user_id']}' ";
+        }
+
+        $where .= " and hours.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		$qry = "select SUM(TIME_TO_SEC(hours.time_logged)) as duration,campaign_id,campaign_name,user_id,users.name from hours join campaigns using(campaign_id) join users using(user_id) where 1 $where group by user_id";
+		return $this->db->query($qry)->result_array();
+	
+}
+public function get_realtime_hours_logged($options){
+		$date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $user = isset($options['agent']) ? $options['agent'] : "";
+        $team = isset($options['team']) ? $options['team'] : "";
+        $outcome = isset($options['outcome']) ? $options['outcome'] : "";
+$campaign = isset($options['campaign']) ? $options['campaign'] : "";
+        $where = "";
+
+        if (!empty($date_from)) {
+            $where .= " and date(`start_time`)= date('$date_from') ";
+        }
+        if (!empty($date_to)) {
+            //$where .= " and date(`contact`) <= '$date_to' ";
+        }
+        if (!empty($user)) {
+            $where .= " and user_id = '$user' ";
+        }
+        if (!empty($team)) {
+            $where .= " and history.team_id = '$team' ";
+        }
+		 if (!empty($campaign)) {
+            $where .= " and campaign_id = '$campaign' ";
+        }
+
+        //if the user does not have the agent reporting permission they can only see their own stats
+        if (@!in_array("by agent", $_SESSION['permissions'])) {
+            $where .= " and hours_logged.user_id = '{$_SESSION['user_id']}' ";
+        }
+
+        $where .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		$qry = "select sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time))) duration,campaign_id,campaign_name,user_id,users.name from hours_logged join campaigns using(campaign_id) join users using(user_id) where 1 $where group by user_id";
+		return $this->db->query($qry)->result_array();
+	
+}
+
+
 
     /**
      * Get the data for the productivity report

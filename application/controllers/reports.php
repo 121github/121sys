@@ -621,7 +621,86 @@ class Reports extends CI_Controller
         );
         $this->template->load('default', 'reports/productivity.php', $data);
     }
+    //this is the controller loads the initial view for the realtime report
+    public function realtime()
+    {
+        $agents = $this->Form_model->get_agents();
+        $teamManagers = $this->Form_model->get_teams();
+        $outcomes = $this->Form_model->get_outcomes();
+		$campaigns = $this->Form_model->get_campaigns();
+		$teams = $this->Form_model->get_teams();
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Reports',
+            'title' => 'Reports | Realtime',
+            'page' => 'realtime',
+            'javascript' => array(
+                'charts.js',
+                'report/realtime.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'team_managers' => $teamManagers,
+            'agents' => $agents,
+			'campaigns' => $campaigns,
+            'outcomes' => $outcomes,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/realtime.php', $data);
+    }
+	
+	    public function realtime_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $data = array();
+            $total = 0;
+            $history = $this->Report_model->get_realtime_history($this->input->post());
+			$hours = $this->Report_model->get_realtime_hours($this->input->post());
+			$hours_logged = $this->Report_model->get_realtime_hours_logged($this->input->post());
+			
+			//$this->firephp->log($history);
+			//$this->firephp->log($hours);
+			//$this->firephp->log($hours_logged);
+			if(count($history>0)){
+			foreach($history as $row){
+				$row['duration'] = 0;
+				$row['dph'] = 0;
+				$data[$row['user_id']] = $row;
+			}
+			}
+				if(count($hours>0)){
+			foreach($hours as $row){
+			$data[$row['user_id']]['duration'] += $row['duration'];
+			}
+				}
+					if(count($hours_logged>0)){
+			foreach($hours_logged as $row){
+				//$data[$row['user_id']]['duration'] += $row['duration'];
+			}
+					}
+					
+			foreach($data as $k=>$row){
+			if($row['duration']>0){
+			$this->load->helper('date');
+			$data[$k]['dph'] = number_format($row['count']/($row['duration']/3600),2);
+			$data[$k]['duration'] = timespan(0,$row['duration']);
+			}
+			}
+					
+            echo json_encode(array(
+                "success" => (!empty($data)),
+                "data" => $data,
+                "total" => $total,
+                "msg" => (empty($results) ? "No results found" : "")
+            ));
+        }
+    }
 
+	
     public function capture_data()
     {
 
