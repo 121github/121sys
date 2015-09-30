@@ -340,7 +340,7 @@ public function get_realtime_history($options){
         }
 
         $where .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-		$qry = "select count(*) count,campaign_id,campaign_name,user_id,users.name from history join campaigns using(campaign_id) join users using(user_id) where 1 $where group by user_id,campaign_id";
+		$qry = "select count(*) count,user_id,users.name from history join campaigns using(campaign_id) join role_permissions using(role_id) join permissions using(permission_id) join users using(user_id) where permission_name = 'log hours' $where group by user_id,campaign_id";
 		return $this->db->query($qry)->result_array();
 	
 }
@@ -375,7 +375,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         }
 
         $where .= " and hours.campaign_id in({$_SESSION['campaign_access']['list']}) ";
-		$qry = "select SUM(TIME_TO_SEC(hours.time_logged)) as duration,campaign_id,campaign_name,user_id,users.name from hours join campaigns using(campaign_id) join users using(user_id) where 1 $where group by user_id";
+		$qry = "select SUM(TIME_TO_SEC(hours.time_logged)) as duration,user_id,users.name from hours join campaigns using(campaign_id) join users using(user_id) join role_permissions using(role_id) join permissions using(permission_id)  where permission_name = 'log hours' $where group by user_id";
 		return $this->db->query($qry)->result_array();
 	
 }
@@ -386,7 +386,7 @@ public function get_realtime_hours_logged($options){
         $team = isset($options['team']) ? $options['team'] : "";
         $outcome = isset($options['outcome']) ? $options['outcome'] : "";
 $campaign = isset($options['campaign']) ? $options['campaign'] : "";
-        $where = "";
+        $where = " and user_status = 1";
 
         if (!empty($date_from)) {
             $where .= " and date(`start_time`)= date('$date_from') ";
@@ -410,7 +410,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         }
 
         $where .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
-		$qry = "select sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time))) duration,campaign_id,campaign_name,user_id,users.name from hours_logged join campaigns using(campaign_id) join users using(user_id) where 1 $where group by user_id";
+		$qry = "select sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time))) duration,user_id,users.name from hours_logged join campaigns using(campaign_id) join users using(user_id) join role_permissions using(role_id) join permissions using(permission_id) where permission_name = 'log hours' $where group by user_id";
 		return $this->db->query($qry)->result_array();
 	
 }
