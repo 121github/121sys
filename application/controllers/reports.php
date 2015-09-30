@@ -675,7 +675,8 @@ class Reports extends CI_Controller
 				if(count($hours>0)){
 			foreach($hours as $row){
 			if(!isset($data[$row['user_id']])){
-			$data[$row['user_id']] = $row;	
+			$data[$row['user_id']] = $row;
+			$data[$row['user_id']]['count'] = 0;	
 			}
 			$data[$row['user_id']]['duration'] += $row['duration'];
 			}

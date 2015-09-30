@@ -232,6 +232,11 @@ class Records extends CI_Controller
         
         
         $this->User_model->campaign_access_check($urn);
+		
+		$_SESSION['record_urn'] = $urn;
+		if($urn<>$_SESSION['record_urn']){
+		$_SESSION['record_loaded'] = date('Y-m-d H:i:s');
+		}
         $campaign                     = $this->Records_model->get_campaign($urn);
         $campaign_id                  = $campaign['campaign_id'];
         $campaign_layout              = $campaign['record_layout'];

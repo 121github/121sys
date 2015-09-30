@@ -47,6 +47,7 @@ class User_model extends CI_Model
                 "last_login" => date('Y-m-d H:i:s'),
                 "failed_logins" => "0"
             ));
+			$this->log_login($result['user_id']);
             return true;
         }
         $qry = "update users set failed_logins = failed_logins+1,last_failed_login=now() where $check_field = '$username'";
@@ -327,4 +328,29 @@ class User_model extends CI_Model
 	$this->db->join("clients","campaigns.client_id=clients.client_id");
 	return $this->db->get("campaigns")->row_array();	
 	}
+	
+	public function log_activity($request=false){
+		$this->db->where(array("logoff"=>NULL,"user_id"=>$_SESSION['user_id']));
+		$this->db->limit(1);
+		$this->db->order_by('log_id','desc');
+		$this->db->update("access_log",array("lastaction"=>date('Y-m-d H:i:s')));
+	}
+		public function log_logout($user_id){
+		$this->db->where(array("logoff"=>NULL,"user_id"=>$user_id));
+		$this->db->limit(1);
+		$this->db->order_by('log_id','desc');
+		$this->db->update("access_log",array("logoff"=>date('Y-m-d H:i:s')));
+	}
+		public function log_login($user_id){
+	 $this->db->insert("access_log", array(
+                "user_id" => $user_id, 
+				"logon"=>date('Y-m-d H:i:s'),
+                "lastaction" => date('Y-m-d H:i:s'),
+				"ip_address"=>$_SERVER['REMOTE_ADDR']
+            ));
+		}
+		public function log_timeout($user_id){
+	 $qry = "update access_log set logoff = lastaction where logoff is null";
+	 $this->db->query($qry);
+		}
 }

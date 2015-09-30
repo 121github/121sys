@@ -63,7 +63,9 @@ class User extends CI_Controller
                 redirect('user/login'); //Need to redirect to show the flash error.
             }
         }
-
+		if(isset($_SESSION['user_id'])){
+		$this->User_model->log_logout($_SESSION['user_id']);
+		}
         session_destroy();
 
         $redirect = ($this->uri->segment(3) ? $this->uri->segment(3) : false);
@@ -84,6 +86,7 @@ class User extends CI_Controller
         if (in_array("log hours", $_SESSION['permissions'])) {
             $this->User_model->close_hours();
         }
+		$this->User_model->log_logout($_SESSION['user_id']);
         session_destroy();
         redirect('user/login');
     }
