@@ -188,7 +188,7 @@ class Admin extends CI_Controller
         $options['features'] = $this->Form_model->get_campaign_features();
         $options['clients'] = $this->Form_model->get_clients();
         $options['groups'] = $this->Form_model->get_all_groups();
-        $options['campaigns'] = $this->Form_model->get_campaigns();
+        $options['campaigns'] = $this->Form_model->get_all_campaigns();
         $options['views'] = $this->Form_model->get_custom_views();
 		
         $data = array(

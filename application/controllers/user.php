@@ -349,6 +349,7 @@ class User extends CI_Controller
                 $_SESSION['current_client'] = $campaign_row['client_name'];
                 $_SESSION['current_campaign_name'] = $campaign_row['campaign_name'];
                 $_SESSION['current_campaign'] = $campaign_row['campaign_id'];
+				$_SESSION['timeout'] = $campaign_row['timeout'];
 				//this is to set the order of virgin records in the start calling pot
 				if(!empty($campaign_row['virgin_order_string'])){
 				$_SESSION['custom_joins'] = $campaign_row['virgin_order_join'];

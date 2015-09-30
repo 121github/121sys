@@ -30,6 +30,7 @@ $full_url = explode('121system.com', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_U
 $domain = explode("/",$full_url[0]);
 $domain = $domain[0];
 $theme = "default";
+$timeout = 1800; //30min timeout
 //if the site has no certificate but they are trying to use https then we redirect to the non-https url
 if (in_array($domain, $no_https)) {
     if (isset($_SERVER['HTTPS']) || $_SERVER['SERVER_PORT'] == 443) {
@@ -58,6 +59,7 @@ switch ($domain) {
         define('ENVIRONMENT', 'acceptance');
         $session_name = '121sys_accept_hsl';
         $theme = "voice";
+		$timeout = 6000; //100 minutes
         break;
 
     case 'accept.':
@@ -69,6 +71,7 @@ switch ($domain) {
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_eldon';
 		$theme = "eldon";
+		$timeout = 6000; //100 minutes
         break;
 
     case 'jonwall.':
@@ -109,6 +112,7 @@ session_start();
 $_SESSION['session_name'] = session_name();
 $_SESSION['environment'] = ENVIRONMENT;
 $_SESSION['theme_folder'] = $theme;
+$_SESSION['timeout'] = $timeout;
 
 /*
  *---------------------------------------------------------------

@@ -530,7 +530,7 @@ $this->_campaigns = campaign_access_dropdown();
     					'dashboard.css'
     			),
     			'javascript' => array(
-    					'data.js'
+    					'data.js?v1'
     			)
     	);
     	$this->template->load('default', 'data/add_record.php', $data);

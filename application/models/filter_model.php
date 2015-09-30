@@ -64,11 +64,11 @@ public function quicksearch($type="b2b",$companies=false,$postcode=false,$add1=f
 	}
 	if($type=="b2b"){
 	$joins .= " left join company_addresses using(company_id) left join company_telephone using(company_id)";
-	if($postcode){
+	if($postcode&&$add1){
 	$where .= " and (replace(company_addresses.postcode,' ','') like '$postcode%' ) ";
 	}
 	if($add1){
-	$where .= " and company_addresses.add1 like '$add1%') ";
+	$where .= " and company_addresses.add1 like '$add1%' ";
 	}
 	if($telephone){
 	$where .= " and (company_telephone.telephone_number like '%$telephone%') ";

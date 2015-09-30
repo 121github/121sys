@@ -38,6 +38,8 @@ class Search extends CI_Controller
 		$add1=false;
 		$telephone=false;
 		$company_names =false;
+		
+		
 		if($this->input->post('ref')){
 		$ref = trim($this->input->post('ref'));
 		}  
@@ -83,12 +85,8 @@ class Search extends CI_Controller
 			} 
 		} 
 		$result = $this->Filter_model->quicksearch($type,$company_names,$postcode,$add1,$telephone,$campaigns,$ref);
-		
-		if(count($result)>0){
 		echo json_encode(array("success"=>true,"data"=>$result));	
-		} else {
-		echo json_encode(array("success"=>false));	
-		}
+
 	}
 	
 	

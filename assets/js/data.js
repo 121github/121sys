@@ -851,8 +851,13 @@ var add_record = {
 		$('#campaign').trigger('change');
     },
 	check_dupes: function(){
-		if($('#company_postcode').val()==""&&$('#contact_postcode').val()==""&&$('#company_name').val()==""||$('#company_postcode').val()==""&&$('#company_add1').val()!=""||$('#contact_postcode').val()==""&&$('#contact_add1').val()!=""){
+		if($('#contact_postcode').val()==""&&$('#contact_add1').val()!=""&&$('#company_name').val()==""||$('#company_add1').val()!=""&&$('#company_postcode').val()){
 			flashalert.danger("Please enter a postcode");
+		} else if($('#contact_name').val()==""&&$('#company_name').val()==""){
+			flashalert.danger("Please enter a name");
+		} else if($('#contact_postcode').val()==""&&$('#contact_add1').val()==""&&$('#company_name').val()=="") {
+			$('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> Can not check for duplicates without a postcode. Click the create new button to add it anyway</p>");
+			$('#save-btn').show();
 		} else {
 		 $.ajax({
             url: helper.baseUrl + 'search/quicksearch',
@@ -864,6 +869,7 @@ var add_record = {
 			}
         }).done(function (response) {
             if (response.success) {
+				if(response.data.length>0){
 				if($('#campaign').val()==""){
 				var camphead = "<th>Campaign</th>";	
 				var campbody = true;	
@@ -881,9 +887,12 @@ var add_record = {
 				$('#dupes-found').html("<p class='text-info'><span class='glyphicon glyphicon-info-sign'></span> Similar records were found.  Please check this record does not exist before you create a new one</p>"+table);
 				$('#save-btn').show();
             } else {
-				$('#dupes-found').html("<p class='text-success'><span class='glyphicon glyphicon-ok'></span> No duplicate records were found. Click the save button to create a new record.</p>");
+				$('#dupes-found').html("<p class='text-success'><span class='glyphicon glyphicon-ok'></span> No duplicate records were found. Click the <b>Create New</b> button to add a new record.</p>");
 				$('#save-btn').show();
 			}
+			} else {
+		flashalert.danger(response.error);
+		}
 		})
 		}
 	},

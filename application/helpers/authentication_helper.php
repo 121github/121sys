@@ -8,7 +8,7 @@ if ( !function_exists('user_auth_check') )
 		$CI->load->model('User_model');
 		$inactivity = false;
 		//check last action time in session, if > 15 minutes destroy the session to log the user out
-			if (isset($_SESSION['last_action'])&&$_SESSION['last_action'] + 6000 < time()) {
+			if (isset($_SESSION['last_action'])&&$_SESSION['last_action'] + $_SESSION['timeout'] < time()) {
 			$CI->User_model->log_timeout($_SESSION['user_id']);
 			session_destroy();
 			session_start(); //start the session again just so we can add an error message
