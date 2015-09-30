@@ -674,12 +674,18 @@ class Reports extends CI_Controller
 			}
 				if(count($hours>0)){
 			foreach($hours as $row){
+			if(!isset($data[$row['user_id']])){
+			$data[$row['user_id']] = $row;	
+			}
 			$data[$row['user_id']]['duration'] += $row['duration'];
 			}
 				}
 					if(count($hours_logged>0)){
 			foreach($hours_logged as $row){
-				//$data[$row['user_id']]['duration'] += $row['duration'];
+			if(!isset($data[$row['user_id']])){
+			$data[$row['user_id']] = $row;	
+			}
+			$data[$row['user_id']]['duration'] += $row['duration'];
 			}
 					}
 					

@@ -341,6 +341,7 @@ public function get_realtime_history($options){
 
         $where .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$qry = "select count(*) count,user_id,users.name from history join campaigns using(campaign_id) join role_permissions using(role_id) join permissions using(permission_id) join users using(user_id) where permission_name = 'log hours' $where group by user_id";
+		$this->firephp->log($qry);
 		return $this->db->query($qry)->result_array();
 	
 }
@@ -376,6 +377,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $where .= " and hours.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$qry = "select SUM(hours.time_logged) as duration,user_id,users.name from hours join campaigns using(campaign_id) join users using(user_id) join role_permissions using(role_id) join permissions using(permission_id)  where permission_name = 'log hours' $where group by user_id";
+		$this->firephp->log($qry);
 		return $this->db->query($qry)->result_array();
 	
 }
@@ -411,6 +413,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $where .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$qry = "select sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time))) duration,user_id,users.name from hours_logged join campaigns using(campaign_id) join users using(user_id) join role_permissions using(role_id) join permissions using(permission_id) where permission_name = 'log hours' $where group by user_id";
+		$this->firephp->log($qry);
 		return $this->db->query($qry)->result_array();
 	
 }
@@ -461,10 +464,10 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $where .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         $qry = "select count(*) count, IF(duration,duration,0) as duration, IF(ring_time,ring_time,0) as ring_time, users.ext, users.name as agent, users.user_id as agent_id
-                from history
-                  inner join records using(urn)
-                  inner join users using(user_id)
-                  inner join teams on users.team_id = teams.team_id
+                from users
+				  left join history using(user_id)
+                  join records using(urn)
+                  join teams on users.team_id = teams.team_id
                   left join (
                     select  SUM(TIME_TO_SEC(call_log.duration)) as duration, SUM(call_log.ring_time) as ring_time, users.ext as extension
                       FROM call_log
@@ -473,11 +476,11 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
                       GROUP BY users.user_id
                     ) calls on (users.ext = extension)";
 
-        $qry .= " where 1 " . $where;
+        $qry .= " where user_status = 1 " . $where;
 
         $qry .= " GROUP BY users.user_id
                   ORDER BY users.user_id";
-
+		
         return $this->db->query($qry)->result_array();
     }
 
