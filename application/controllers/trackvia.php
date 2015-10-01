@@ -1089,7 +1089,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
         }
         //Get the record data
         $record = $this->get_record($urn);
-
+if($record['source_id']<>55){
         $data = array("Customer not contactable" => "Customer not contactable");
 
         $response = $this->tv->updateRecord($record['client_ref'], $data);
@@ -1105,6 +1105,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
             }
             mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
         }
+}
     }
 	
 	public function unable_to_contact_installs($urn = false)
@@ -1114,7 +1115,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
         }
         //Get the record data
         $record = $this->get_record($urn);
-
+if($record['source_id']<>55){
         $data = array("Cannot Contact for Installation" => "Cannot Contact for Installation");
 
         $response = $this->tv->updateRecord($record['client_ref'], $data);
@@ -1130,6 +1131,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
             }
             mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
         }
+}
     }
 
     public function survey_refused()
@@ -1137,13 +1139,14 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
         $urn = $this->input->post('urn');
         //Get the record data
         $record = $this->get_record($urn);
+		if($record['source_id']<>55){
         $data = array("Planned Survey Date" => "", "Survey appt" => "", "Survey Booking Confirmed" => "", "Survey booked by" => "", "Survey Appointment Comments" => "", "Customer Cancellation" => "declined", "Customer Cancellation notes" => !empty($record['outcome_reason']) ? $record['outcome_reason'] : $record['comments'], "Cancelled by" => "121", "Date of Cancellation" => date('Y-m-d') . "T12:00:00-0600");
 
         if ($record['campaign_id'] == "29") {
             $data["Owner Consent to proceed"] = "N";
             $data["Date Tenant Notified"] = "today";
         }
-
+		
         $response = $this->tv->updateRecord($record['client_ref'], $data);
         if (!empty($response)) {
             echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref'], "data" => $data));
@@ -1157,6 +1160,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
             }
             mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
         }
+		}
     }
 
     //TODO the fields we update here need confirming, there doesnt appear to be any cancel install fields for us.
@@ -1212,6 +1216,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
         $urn = $this->input->post('urn');
         //Get the record data
         $record = $this->get_record($urn);
+		if($record['source_id']<>55){
         $data = array("External Survey Completed" => "Y",
             "Internal Survey Completed" => "Y");
 
@@ -1228,6 +1233,7 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
             }
             mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
         }
+		}
     }
 
     //TODO the fields we update here need confirming
