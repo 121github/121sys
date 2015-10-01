@@ -1022,6 +1022,9 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
                 "Survey booked by" => "121",
                 "Survey Appointment Comments" => $app['title'] . ' : ' . $app['text']
             );
+			if($app['source_id']=="55"){
+				 $data["Data Source"]= "CC-121Set1-IB";
+			}
         } //Installation
         else if ($app['appointment_type_id'] == APPOINTMENT_TYPE_INSTALLATION) {
 			if(date('l',strtotime($app['date']))=="Monday"){
@@ -1447,7 +1450,10 @@ if($record['source_id']<>55){
         if (!empty($details['c2'])) {
             $data["Referred by"] = $details['c2'];
         }
-
+		//GHS data source - this cod eis for the New lead source. ie the 500 solar records bought by 121
+		if($details['source_id']==55){
+			 $data["Data Source"] = "CC-121Set1-IB";
+		}
         return $data;
 
     }

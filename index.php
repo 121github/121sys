@@ -83,6 +83,7 @@ switch ($domain) {
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_hsl';
 		$theme = "hsl";
+		$timeout = 6000; //100 minutes
         break;
 
     case 'hcs.hslchairs.com':
