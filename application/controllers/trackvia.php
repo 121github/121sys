@@ -174,7 +174,7 @@ class Trackvia extends CI_Controller
     {
         //SOUTHWAY DATA
         $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id in(22)");
-		
+
 //        //Southway All records View
 //        echo "<br>Checking the SOUTHWAY_ALL_RECORDS(" . SOUTHWAY_ALL_RECORDS . ") view";
 //        echo "<br>";
@@ -208,7 +208,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 34,
                 'savings_per_panel' => 20,
-				 'attendee' => 122
+                'attendee' => 122
             )
         );
 
@@ -226,7 +226,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 35,
                 'savings_per_panel' => 20,
-				 'attendee' => 122
+                'attendee' => 122
             )
         );
 
@@ -245,16 +245,17 @@ class Trackvia extends CI_Controller
                 'record_color' => '00CC00',
                 'source_id' => 37,
                 'savings_per_panel' => 20,
-				 'attendee' => 122
+                'attendee' => 122
             )
         );
 
-		//update sw survey campaign records
+        //update sw survey campaign records
         $this->check_trackvia(22);
     }
 
-	public function check_sw_installs(){
-	 $this->db->query("update records set parked_code=2 where campaign_id in(52)");
+    public function check_sw_installs()
+    {
+        $this->db->query("update records set parked_code=2 where campaign_id in(52)");
 
         //Installation Book View
         echo "<br>Checking the SOUTHWAY_BOOK_INSTALLATION(" . SOUTHWAY_BOOK_INSTALLATION . ") view";
@@ -270,7 +271,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 51,
                 'savings_per_panel' => 20,
-				 'attendee' => 139
+                'attendee' => 139
             )
         );
 
@@ -289,13 +290,13 @@ class Trackvia extends CI_Controller
                 'record_color' => '00CC00',
                 'source_id' => 52,
                 'savings_per_panel' => 20,
-				 'attendee' => 139
+                'attendee' => 139
             )
         );
-		//update sw install campaign records
-		$this->check_trackvia(52);	
-		
-	}
+        //update sw install campaign records
+        $this->check_trackvia(52);
+
+    }
 
     public function check_citywest()
     {
@@ -335,7 +336,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 46,
                 'savings_per_panel' => 20,
-				 'attendee' => 137
+                'attendee' => 137
             )
         );
 
@@ -353,7 +354,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 47,
                 'savings_per_panel' => 20,
-				 'attendee' => 137
+                'attendee' => 137
             )
         );
 
@@ -372,7 +373,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '00CC00',
                 'source_id' => 48,
                 'savings_per_panel' => 20,
-				 'attendee' => 137
+                'attendee' => 137
             )
         );
         $this->check_trackvia(32);
@@ -382,7 +383,7 @@ class Trackvia extends CI_Controller
     {
         //PRIVATE DATA
         $this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
-		
+
         //
 //        //PRIVATE TABLE
 //
@@ -401,7 +402,7 @@ class Trackvia extends CI_Controller
                 'parked_code' => 2,
                 'source_id' => 41,
                 'savings_per_panel' => 30,
-				 'attendee' => 121
+                'attendee' => 121
 
             )
         );
@@ -420,7 +421,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'source_id' => 39,
                 'savings_per_panel' => 30,
-				 'attendee' => 121
+                'attendee' => 121
 
             )
         );
@@ -439,7 +440,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '6600FF',
                 'source_id' => 38,
                 'savings_per_panel' => 30,
-				 'attendee' => 121
+                'attendee' => 121
             )
         );
 
@@ -458,7 +459,7 @@ class Trackvia extends CI_Controller
                 'record_color' => '00CC00',
                 'source_id' => 36,
                 'savings_per_panel' => 30,
-				 'attendee' => 121
+                'attendee' => 121
             )
         );
 
@@ -476,24 +477,24 @@ class Trackvia extends CI_Controller
                 'record_color' => '990000',
                 'source_id' => 40,
                 'savings_per_panel' => 30,
-				 'attendee' => 121
+                'attendee' => 121
             )
         );
         $this->check_trackvia(29);
-		//remove mortgage approval, landlord approval and general queries. These are handles by GHS
-		$this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and outcome_id in (135,125,127)");
-		//park any that have a refusal reason
-		$this->db->query("update
-FROM `record_details`
-JOIN records
-USING ( urn ) set parked_code = 2
-WHERE campaign_id =29
-AND (
-c6 IS NOT NULL
-OR c6 = ''
-)
-AND record_status = 1
-AND parked_code IS NULL");
+        //remove mortgage approval, landlord approval and general queries. These are handles by GHS
+        $this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and outcome_id in (135,125,127)");
+        //park any that have a refusal reason
+        $this->db->query("update
+            `record_details`
+            JOIN records
+            USING ( urn ) set parked_code = 2
+            WHERE campaign_id =29
+            AND (
+            c6 IS NOT NULL
+            OR c6 = ''
+            )
+            AND record_status = 1
+            AND parked_code IS NULL");
     }
 
 
@@ -509,9 +510,9 @@ AND parked_code IS NULL");
             $urn = $row['urn'];
             $this->db->query("update records left join campaigns using(campaign_id) set outcome_id = 137,outcome_reason_id=NULL, record_status=3 where urn = '$urn'");
             $this->unable_to_contact($urn);
-			 }
-            //clear virgin records ownership
-            $this->db->query("delete from ownership where urn in(select urn
+        }
+        //clear virgin records ownership
+        $this->db->query("delete from ownership where urn in(select urn
                 FROM records
                 WHERE 1
                 AND campaign_id = '$campaign_id'
@@ -520,8 +521,6 @@ AND parked_code IS NULL");
                 AND progress_id IS NULL
                 AND outcome_id IS NULL
                 AND dials = 0  )");
-
-       
 
 
         //unset anything marked as urgent that is not in the rebook data sources
@@ -554,25 +553,61 @@ AND parked_code IS NULL");
         $afftectedRows = $this->db->affected_rows();
         echo $afftectedRows . " rows inserted in the history table.<br>";
 
+        //Cancel the appointments that are still live, with a future date and are not in the right view (booked surveys or installs)
+        echo "<br>Cancel appointments that are still live, with a future date and are not in the right view (booked surveys or installs)... ";
+        $qry = "
+            SELECT
+              GROUP_CONCAT(a.appointment_id SEPARATOR ',') as app
+            FROM appointments a
+              INNER JOIN records r USING (urn)
+              INNER JOIN data_sources d USING (source_id)
+              INNER JOIN contacts c USING (urn)
+              INNER JOIN client_refs cf USING (urn)
+            WHERE source_id IN (28, 41, 49)
+                  AND campaign_id = " . $campaign_id . "
+                  AND a.start >= NOW()
+                  AND a.status != 0";
+        $appointments = $this->db->query($qry)->result_array();
+        if (!empty($appointments[0]['app'])) {
+            $appointment_list = $appointments[0]['app'];
+            echo " appointment ids (" . $appointment_list . ")<br>";
+            //Set appointment status as 0 -> cancel
+            $this->db->query("UPDATE appointments app SET app.status=0, app.cancellation_reason='Cancelled by GHS' WHERE app.appointment_id IN (" . $appointment_list . ")");
+            $afftectedRows = $this->db->affected_rows();
+            echo "<br>" . $afftectedRows . " appointments cancelled.<br>";
 
+            //Set the outcome on the record as Appointment Cancelled (132)
+            $this->db->query("
+              UPDATE records r SET r.outcome_id=132 WHERE r.urn IN (
+                  SELECT a.urn
+                  FROM appointments a
+                  WHERE a.appointment_id IN (" . $appointment_list . ")
+              )
+            ");
+            $afftectedRows = $this->db->affected_rows();
+            echo $afftectedRows . " records updated with outcome as Appointment Cancelled<br>";
+        } else {
+            echo " Nothing changed<br>";
+        }
     }
 
-  	public function list_view(){
-	$view_id = $this->uri->segment(3);
-	$records = array();
-	 for ($page = 1; $page < 15; $page++) {
-		$result = $this->getAllViewRecords($view_id, $page, $limit);
-		if(isset($result['records'])){
-		$records = array_merge($result['records'],$records);
-		} else {
-		break;
-		}
-	 }
-	 echo "<pre>";
-	print_r($records);
-	 echo "</pre>";
-	}
-	
+    public function list_view()
+    {
+        $view_id = $this->uri->segment(3);
+        $records = array();
+        for ($page = 1; $page < 15; $page++) {
+            $result = $this->getAllViewRecords($view_id, $page);
+            if (isset($result['records'])) {
+                $records = array_merge($result['records'], $records);
+            } else {
+                break;
+            }
+        }
+        echo "<pre>";
+        print_r($records);
+        echo "</pre>";
+    }
+
     private function getAllViewRecords($view_id, $page = 1)
     {
         //$page = 1;
@@ -599,40 +634,43 @@ AND parked_code IS NULL");
     }
 
 
-public function update_record_details($array=false){
-if(!$array){
-$array = array();
-$array[] = $this->input->post('id');
-$urn =  $this->Trackvia_model->get_urn_from_client_ref($id);
-$data = array("urn"=>$urn);
-} else if($this->input->post('urn')){
-$array = array();
-$array[] = $this->Trackvia_model->get_client_ref_from_urn($urn);
-$data = array("urn"=>$urn);
-} 
+    public function update_record_details($array = false)
+    {
+        if (!$array) {
+            //TODO Check this part: error on the $id, which doesn't exist
+            $array = array();
+            $array[] = $this->input->post('id');
+            $urn = $this->Trackvia_model->get_urn_from_client_ref($id);
+            $data = array("urn" => $urn);
+        } else if ($this->input->post('urn')) {
+            $urn = $this->input->post('urn');
+            $array = array();
+            $array[] = $this->Trackvia_model->get_client_ref_from_urn($urn);
+            $data = array("urn" => $urn);
+        }
 
-foreach($array as $id){
-$response = $this->tv->getRecord($id);
-$fields = $response['fields'];
-if (!empty($fields['GHS UPRN']) && isset($fields['GHS UPRN'])) {
-                        $data["c1"] = $fields['GHS UPRN'];
-                    }
-                    if (!empty($fields['Referred by']) && isset($fields['Referred by'])) {
-                        $data["c2"] = $fields['Referred by'];
-                    }
-                    if (!empty($fields['Enquiry Type']) && isset($fields['Enquiry Type'])) {
-                        $data["c3"] = $fields['Enquiry Type'];
-                    }
-                    if (!empty($fields['Property Status']) && isset($fields['Property Status'])) {
-                        $data["c5"] = $fields['Property Status'];
-                    }
-                    if (!empty($fields['Reason for Desktop Fail']) && isset($fields['Reason for Desktop Fail'])) {
-                        $data["c6"] = $fields['Reason for Desktop Fail'];
-                    }
-}
-$this->Trackvia_model->update_record_from_trackvia($data);			
-echo json_encode($data);					
-}
+        foreach ($array as $id) {
+            $response = $this->tv->getRecord($id);
+            $fields = $response['fields'];
+            if (!empty($fields['GHS UPRN']) && isset($fields['GHS UPRN'])) {
+                $data["c1"] = $fields['GHS UPRN'];
+            }
+            if (!empty($fields['Referred by']) && isset($fields['Referred by'])) {
+                $data["c2"] = $fields['Referred by'];
+            }
+            if (!empty($fields['Enquiry Type']) && isset($fields['Enquiry Type'])) {
+                $data["c3"] = $fields['Enquiry Type'];
+            }
+            if (!empty($fields['Property Status']) && isset($fields['Property Status'])) {
+                $data["c5"] = $fields['Property Status'];
+            }
+            if (!empty($fields['Reason for Desktop Fail']) && isset($fields['Reason for Desktop Fail'])) {
+                $data["c6"] = $fields['Reason for Desktop Fail'];
+            }
+        }
+        $this->Trackvia_model->update_record_from_trackvia($data);
+        echo json_encode($data);
+    }
 
     /*
         /**
@@ -640,7 +678,7 @@ echo json_encode($data);
          */
     public function checkView($view_id, $options)
     {
-		$attendee = isset($options['attendee']) ? $options['attendee'] : "121";
+        $attendee = isset($options['attendee']) ? $options['attendee'] : "121";
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
@@ -711,7 +749,7 @@ echo json_encode($data);
                 //If the campaign had changed or the park_code is "Not Working"
 
                 if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 || $record['parked_code'] == 2 || $record['record_color'] != $record_color || $record['source_id'] != $source) {
-                    if ($record['record_status'] <> "3") {
+                    if ($record['record_status'] <> "3" || in_array($source, array(37, 52, 36, 48))) {
                         $update_array = array(
                             'urn' => $record['urn'],
                             'campaign_id' => $campaign_id,
@@ -728,7 +766,7 @@ echo json_encode($data);
                             $update_array['parked_code'] = $parked_code;
                         }
                         //organising the record update data
-						
+
                         array_push($update_records, $update_array);
 
                     }
@@ -740,7 +778,7 @@ echo json_encode($data);
                     } else {
                         $appointments_created_count++;
                     }
-                    $this->addUpdateAppointment($fields, $record, $appointment_cancelled,$attendee);
+                    $this->addUpdateAppointment($fields, $record, $appointment_cancelled, $attendee);
                 }
 
                 if (!empty($fields['Contact Notes'])) {
@@ -915,7 +953,7 @@ echo json_encode($data);
     /**
      * Add/Update appointment in our system
      */
-    public function addUpdateAppointment($fields, $record, $appointment_cancelled = false,$attendee="121")
+    public function addUpdateAppointment($fields, $record, $appointment_cancelled = false, $attendee = "121")
     {
         //Survey
         if (isset($fields['Planned Survey Date'])) {
@@ -972,7 +1010,7 @@ echo json_encode($data);
                 $tv_record = $this->tv->getRecord($record['client_ref']);
                 $fields['PostCode'] = $tv_record['fields']['PostCode'];
             }
-            $this->Trackvia_model->create_appointment($fields, $record, $planned_survey_datetime, $title, $text, $planned_appointment_type,$attendee);
+            $this->Trackvia_model->create_appointment($fields, $record, $planned_survey_datetime, $title, $text, $planned_appointment_type, $attendee);
             $this->Locations_model->set_location_id($fields['PostCode']);
         } else {
             echo("Uncancelling appointment that was set:" . $record['urn']);
@@ -989,14 +1027,15 @@ echo json_encode($data);
 
     public function add_appointment()
     {
-log_message('info', 'Starting Trackvia appointment:'. $urn);
         $urn = $this->input->post('urn');
+
+        log_message('info', 'Starting Trackvia appointment:' . $urn);
 
         //Get the record data
         $app = $this->Trackvia_model->get_appointment($urn);
         //if its a private record then we need to do a few extra bits
         $update_record = array();
-        if ($app['campaign_id'] == "29"&&$app['source_id']<>"55") {
+        if ($app['campaign_id'] == "29" && $app['source_id'] <> "55") {
             $update_record = array("source_id" => 36, "record_color" => "00CC00");
             //if it doesnt exist on trackvia we should add it first
             if (empty($app['client_ref'])) {
@@ -1006,11 +1045,11 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
                 $this->update_tv_record($urn);
             }
         } else if ($app['campaign_id'] == "22") {
-        $update_record = array("source_id" => 37, "record_color" => "00CC00");
+            //$update_record = array("source_id" => 37, "record_color" => "00CC00");
         } else if ($app['campaign_id'] == "52") {
-            $update_record = array("source_id" => 52, "record_color" => "00CC00");
+            //$update_record = array("source_id" => 52, "record_color" => "00CC00");
         } else if ($app['campaign_id'] == "32") {
-            $update_record = array("source_id" => 48, "record_color" => "00CC00");
+            //$update_record = array("source_id" => 48, "record_color" => "00CC00");
         }
 
         //Survey 
@@ -1022,37 +1061,37 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
                 "Survey booked by" => "121",
                 "Survey Appointment Comments" => $app['title'] . ' : ' . $app['text']
             );
-			if($app['source_id']=="55"){
-				 $data["Data Source"]= "CC-121Set1-IB";
-			}
+            if ($app['source_id'] == "55") {
+                $data["Data Source"] = "CC-121Set1-IB";
+            }
         } //Installation
         else if ($app['appointment_type_id'] == APPOINTMENT_TYPE_INSTALLATION) {
-			if(date('l',strtotime($app['date']))=="Monday"){
-			$scaffold = " - 4";
-			$install = "- 3";	
-			$scaffold_down = "+ 1";	
-			} else if(date('l',strtotime($app['date']))=="Tuesday"){
-			$scaffold = " - 4";
-			$install = " - 1";
-			$scaffold_down = "+ 1";					
-			} else if(date('l',strtotime($app['date']))=="Friday"){
-			$scaffold = " - 2";
-			$install = " - 1";	
-			$scaffold_down = "+ 3";			
-			} else {
-			$scaffold = " - 2";
-			$install = " - 1";	
-			$scaffold_down = "+ 1";		
-			}
-			
+            if (date('l', strtotime($app['date'])) == "Monday") {
+                $scaffold = " - 4";
+                $install = "- 3";
+                $scaffold_down = "+ 1";
+            } else if (date('l', strtotime($app['date'])) == "Tuesday") {
+                $scaffold = " - 4";
+                $install = " - 1";
+                $scaffold_down = "+ 1";
+            } else if (date('l', strtotime($app['date'])) == "Friday") {
+                $scaffold = " - 2";
+                $install = " - 1";
+                $scaffold_down = "+ 3";
+            } else {
+                $scaffold = " - 2";
+                $install = " - 1";
+                $scaffold_down = "+ 1";
+            }
+
             $data = array(
-			 "Scaffold Up" => date('Y-m-d',strtotime($app['date'] ." $scaffold day")) . "T12:00:00-0600",
-			  "Scaffold Down" => date('Y-m-d',strtotime($app['date'] ." $scaffold_down day")) . "T12:00:00-0600",
-			 "Planned Installation date" => date('Y-m-d',strtotime($app['date'] ." $install day")) . "T12:00:00-0600",
+                "Scaffold Up" => date('Y-m-d', strtotime($app['date'] . " $scaffold day")) . "T12:00:00-0600",
+                "Scaffold Down" => date('Y-m-d', strtotime($app['date'] . " $scaffold_down day")) . "T12:00:00-0600",
+                "Planned Installation date" => date('Y-m-d', strtotime($app['date'] . " $install day")) . "T12:00:00-0600",
                 "Commissioning date (customer needs to be in)" => $app['date'] . "T12:00:00-0600",
                 "Commissioning appt" => "am",//$app['slot'],
                 "Installation comments" => $app['title'] . ' : ' . $app['text'],
-				"Installation Date Confirmed" => "Y"
+                "Installation Date Confirmed" => "Y"
             );
         }
 
@@ -1060,27 +1099,27 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
             $data["Owner Consent to proceed"] = "Y";
         }
         //Update the record
-		
+
         $response = $this->tv->updateRecord($app['client_ref'], $data);
-		
+
         if (!empty($response)) {
-			log_message('info', 'Appointment was added:'. $urn.':'.$response.':'.$app['client_ref']);
+            log_message('info', 'Appointment was added:' . $urn . ':' . $response . ':' . $app['client_ref']);
             $this->db->where("urn", $urn);
             $this->db->update("records", $update_record);
             echo json_encode(array("success" => true, "response" => $response, "ref" => $app['client_ref'], "data" => $data));
             $this->db->query("update records set urgent=null where urn = '$urn'");
         } else {
-			if($app['source_id']<>"55"){
-			log_message('info', 'No response from trackvia:'. $urn);
-            $message = "An error occured while saving an appointment \r\n	";
-            $message .= "  URN: $urn \r\n";
-            $message .= "Record ID: " . $app['client_ref'] . " \r\n	";
-            $message .= "Sent Data \r\n	";
-            foreach ($data as $k => $v) {
-                $message .= "$k: $v \r\n	";
+            if ($app['source_id'] <> "55") {
+                log_message('info', 'No response from trackvia:' . $urn);
+                $message = "An error occured while saving an appointment \r\n	";
+                $message .= "  URN: $urn \r\n";
+                $message .= "Record ID: " . $app['client_ref'] . " \r\n	";
+                $message .= "Sent Data \r\n	";
+                foreach ($data as $k => $v) {
+                    $message .= "$k: $v \r\n	";
+                }
+                mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
             }
-            mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
-			}
         }
 
     }
@@ -1092,49 +1131,49 @@ log_message('info', 'Starting Trackvia appointment:'. $urn);
         }
         //Get the record data
         $record = $this->get_record($urn);
-if($record['source_id']<>55){
-        $data = array("Customer not contactable" => "Customer not contactable");
+        if ($record['source_id'] <> 55) {
+            $data = array("Customer not contactable" => "Customer not contactable");
 
-        $response = $this->tv->updateRecord($record['client_ref'], $data);
-        if (!empty($response)) {
-            echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref']));
-        } else {
-            $message = " An error occured while updating a record \r\n";
-            $message .= "  URN: $urn \r\n";
-            $message .= " Record ID: " . $record['client_ref'] . " \r\n";
-            $message .= " Sent Data \r\n";
-            foreach ($data as $k => $v) {
-                $message .= " $k: $v \r\n";
+            $response = $this->tv->updateRecord($record['client_ref'], $data);
+            if (!empty($response)) {
+                echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref']));
+            } else {
+                $message = " An error occured while updating a record \r\n";
+                $message .= "  URN: $urn \r\n";
+                $message .= " Record ID: " . $record['client_ref'] . " \r\n";
+                $message .= " Sent Data \r\n";
+                foreach ($data as $k => $v) {
+                    $message .= " $k: $v \r\n";
+                }
+                mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
             }
-            mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
         }
-}
     }
-	
-	public function unable_to_contact_installs($urn = false)
+
+    public function unable_to_contact_installs($urn = false)
     {
         if (!$urn) {
             $urn = $this->input->post('urn');
         }
         //Get the record data
         $record = $this->get_record($urn);
-if($record['source_id']<>55){
-        $data = array("Cannot Contact for Installation" => "Cannot Contact for Installation");
+        if ($record['source_id'] <> 55) {
+            $data = array("Cannot Contact for Installation" => "Cannot Contact for Installation");
 
-        $response = $this->tv->updateRecord($record['client_ref'], $data);
-        if (!empty($response)) {
-            echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref']));
-        } else {
-            $message = " An error occured while updating a record \r\n";
-            $message .= "  URN: $urn \r\n";
-            $message .= " Record ID: " . $record['client_ref'] . " \r\n";
-            $message .= " Sent Data \r\n";
-            foreach ($data as $k => $v) {
-                $message .= " $k: $v \r\n";
+            $response = $this->tv->updateRecord($record['client_ref'], $data);
+            if (!empty($response)) {
+                echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref']));
+            } else {
+                $message = " An error occured while updating a record \r\n";
+                $message .= "  URN: $urn \r\n";
+                $message .= " Record ID: " . $record['client_ref'] . " \r\n";
+                $message .= " Sent Data \r\n";
+                foreach ($data as $k => $v) {
+                    $message .= " $k: $v \r\n";
+                }
+                mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
             }
-            mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
         }
-}
     }
 
     public function survey_refused()
@@ -1142,28 +1181,28 @@ if($record['source_id']<>55){
         $urn = $this->input->post('urn');
         //Get the record data
         $record = $this->get_record($urn);
-		if($record['source_id']<>55){
-        $data = array("Planned Survey Date" => "", "Survey appt" => "", "Survey Booking Confirmed" => "", "Survey booked by" => "", "Survey Appointment Comments" => "", "Customer Cancellation" => "declined", "Customer Cancellation notes" => !empty($record['outcome_reason']) ? $record['outcome_reason'] : $record['comments'], "Cancelled by" => "121", "Date of Cancellation" => date('Y-m-d') . "T12:00:00-0600");
+        if ($record['source_id'] <> 55) {
+            $data = array("Planned Survey Date" => "", "Survey appt" => "", "Survey Booking Confirmed" => "", "Survey booked by" => "", "Survey Appointment Comments" => "", "Customer Cancellation" => "declined", "Customer Cancellation notes" => !empty($record['outcome_reason']) ? $record['outcome_reason'] : $record['comments'], "Cancelled by" => "121", "Date of Cancellation" => date('Y-m-d') . "T12:00:00-0600");
 
-        if ($record['campaign_id'] == "29") {
-            $data["Owner Consent to proceed"] = "N";
-            $data["Date Tenant Notified"] = "today";
-        }
-		
-        $response = $this->tv->updateRecord($record['client_ref'], $data);
-        if (!empty($response)) {
-            echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref'], "data" => $data));
-        } else {
-            $message = " An error occured while updating a record \r\n";
-            $message .= "  URN: $urn \r\n";
-            $message .= " Record ID: " . $record['client_ref'] . " \r\n";
-            $message .= " Sent Data \r\n";
-            foreach ($data as $k => $v) {
-                $message .= " $k: $v \r\n";
+            if ($record['campaign_id'] == "29") {
+                $data["Owner Consent to proceed"] = "N";
+                $data["Date Tenant Notified"] = "today";
             }
-            mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
+
+            $response = $this->tv->updateRecord($record['client_ref'], $data);
+            if (!empty($response)) {
+                echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref'], "data" => $data));
+            } else {
+                $message = " An error occured while updating a record \r\n";
+                $message .= "  URN: $urn \r\n";
+                $message .= " Record ID: " . $record['client_ref'] . " \r\n";
+                $message .= " Sent Data \r\n";
+                foreach ($data as $k => $v) {
+                    $message .= " $k: $v \r\n";
+                }
+                mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
+            }
         }
-		}
     }
 
     //TODO the fields we update here need confirming, there doesnt appear to be any cancel install fields for us.
@@ -1219,24 +1258,24 @@ if($record['source_id']<>55){
         $urn = $this->input->post('urn');
         //Get the record data
         $record = $this->get_record($urn);
-		if($record['source_id']<>55){
-        $data = array("External Survey Completed" => "Y",
-            "Internal Survey Completed" => "Y");
+        if ($record['source_id'] <> 55) {
+            $data = array("External Survey Completed" => "Y",
+                "Internal Survey Completed" => "Y");
 
-        $response = $this->tv->updateRecord($record['client_ref'], $data);
-        if (!empty($response)) {
-            echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref'], "data" => $data));
-        } else {
-            $message = " An error occured while updating a record \r\n";
-            $message .= "  URN: $urn \r\n";
-            $message .= " Record ID: " . $record['client_ref'] . " \r\n";
-            $message .= " Sent Data \r\n";
-            foreach ($data as $k => $v) {
-                $message .= "$k: $v\r\n";
+            $response = $this->tv->updateRecord($record['client_ref'], $data);
+            if (!empty($response)) {
+                echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref'], "data" => $data));
+            } else {
+                $message = " An error occured while updating a record \r\n";
+                $message .= "  URN: $urn \r\n";
+                $message .= " Record ID: " . $record['client_ref'] . " \r\n";
+                $message .= " Sent Data \r\n";
+                foreach ($data as $k => $v) {
+                    $message .= "$k: $v\r\n";
+                }
+                mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
             }
-            mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
         }
-		}
     }
 
     //TODO the fields we update here need confirming
@@ -1296,7 +1335,6 @@ if($record['source_id']<>55){
         }
     }
 
- 
 
     /**
      * Add a trackvia record
@@ -1450,10 +1488,10 @@ if($record['source_id']<>55){
         if (!empty($details['c2'])) {
             $data["Referred by"] = $details['c2'];
         }
-		//GHS data source - this cod eis for the New lead source. ie the 500 solar records bought by 121
-		if($details['source_id']==55){
-			 $data["Data Source"] = "CC-121Set1-IB";
-		}
+        //GHS data source - this cod eis for the New lead source. ie the 500 solar records bought by 121
+        if ($details['source_id'] == 55) {
+            $data["Data Source"] = "CC-121Set1-IB";
+        }
         return $data;
 
     }
