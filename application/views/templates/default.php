@@ -67,7 +67,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <?php if (isset($_SESSION['permissions'])) { ?>
         <a href="#menu" class="navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
-<?php if(isset($_SESSION['current_campaign'])&&count($campaign_pots)>0){ ?>
+<?php if(isset($_SESSION['current_campaign'])&&count($campaign_pots)>0&&isset($global_filter)){ ?>
 <?php if(isset($_SESSION['current_pot'])){ $filter_style = "color:#fff;background:#a94442"; } else { $filter_style = ""; } ?>
                 <a href="#menu-right" class="navbar-toggle navbar-right" style="height:34px;width:42px;<?php echo $filter_style ?>"><span class="glyphicon glyphicon-filter" style="padding-left:3px"></span></a>
     <?php } ?>            
@@ -116,6 +116,20 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                             </optgroup>
                         <?php } ?>
                     </select>
+<label>Data Source <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip" data-placement="right" data-title="The source of the data" data-html="true"></span></label>
+ <select name="data_source" class="select-picker" data-width="100%">
+ <option value="">-- Any data source --</option>
+                        <?php foreach ($campaign_sources as $campaign => $data_source) { ?>
+                            <optgroup label="<?php echo $campaign ?>">
+                                <?php foreach ($data_source as $source) { ?>
+                                    <option <?php if (isset($_SESSION['current_source']) && $_SESSION['current_source'] == $source['id']) {
+                                        echo "Selected";
+                                    } ?> value="<?php echo $source['id'] ?>"><?php echo $source['name'] ?></option>
+                                <?php } ?>
+                            </optgroup>
+                        <?php } ?>
+                    </select>                    
+                    
  <button id="global-filter-submit" class="btn btn-primary pull-right">Submit</button>
  </form>
  </div>
@@ -322,35 +336,18 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 		<?php } ?>
         $('#campaign-select').selectpicker();
 		$('.select-picker').selectpicker();
-		
-
-$(document).on('change','#top-campaign-filter select',function(){
-	$.ajax({url:helper.baseUrl+'ajax/pots_in_campaign',
-	data:{campaign:$(this).val()},
-	type:"POST",
-	dataType:"JSON"
-	}).done(function(pots){
-		var pot_options = "<option value=''>All records</option>";
-		if(pots.length>0){
-		$.each(pots,function(i,row){
-			pot_options += "<option value='"+row.id+"'>"+row.name+"</option>";
-		});
-		$('#top-pot-filter select').html(pot_options).prop('disabled',false).selectpicker('refresh')
-		} else {
-		$('#top-pot-filter select').html(pot_options).prop('disabled',true).selectpicker('refresh')
-		}
-		;
-	});
-});
 
 $(document).on('click','#global-filter-submit',function(e){
 	e.preventDefault();
-	$.ajax({url:helper.baseUrl+'user/set_data_pot',
+	$.ajax({url:helper.baseUrl+'user/set_data',
 	data:$('#global-filter-form').serialize(),
 	type:"POST"
 	}).done(function(){
 		var right_mmenu = $("nav#menu-right").data( "mmenu" );
 		right_mmenu.close();
+		if(typeof view_records.table!=="undefined"){
+			 map_table_reload()	
+		}
 	});
 });
 

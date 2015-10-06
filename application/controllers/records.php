@@ -12,8 +12,6 @@ class Records extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
-		$this->_pots = campaign_pots();
         $this->load->model('User_model');
         $this->load->model('Records_model');
         $this->load->model('Survey_model');
@@ -70,7 +68,6 @@ $this->_pots = campaign_pots();
             'page' => 'list_records',
             'title' => 'List Records',
             'columns' => $visible_columns,
-			'global_filter' => true,
             'css' => array(
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
 				'map.css',
@@ -301,10 +298,10 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         if ($campaign['campaign_id']) {
             $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($campaign['campaign_id']);
         }
-
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+'campaign_pots' => $this->User_model->get_campaign_pots(),
+'campaign_sources' => $this->User_model->get_campaign_sources(),
             'page' => '',
             'campaign' => $campaign,
             'title' => 'Record Details',
@@ -313,7 +310,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 			'outcome_reasons' => $outcome_reasons,
             "features" => $features,
             "panels" => $panels,
-			'global_filter' => true,
+			'global_filter' => $automatic, //only use the side filter if they are using start calling for now
             "allow_skip" => $allow_skip,
             "xfer_campaigns" => $xfers,
             "progress_options" => $progress_options,

@@ -13,7 +13,7 @@ class Workbooks extends CI_Controller
         $this->load->model('Workbooks_model');
 
         $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
         $this->workbooks = new WorkbooksApi(array(
             'application_name' => 'PHP test client',
             'user_agent' => 'php_test_client/0.1',

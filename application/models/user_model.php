@@ -353,4 +353,50 @@ class User_model extends CI_Model
 	 $qry = "update access_log set logoff = lastaction where logoff is null";
 	 $this->db->query($qry);
 		}
+		
+		
+		public function get_campaign_pots(){
+		$user = $_SESSION['user_id'];
+		$campaign = (isset($_SESSION['current_campaign'])?" and campaign_id = '".$_SESSION['current_campaign']."'":"");
+	if(in_array("all campaigns",$_SESSION['permissions'])){	
+		$qry = "select pot_id id,pot_name name, campaign_name from data_pots join records using(pot_id) join campaigns using(campaign_id) where campaign_status = 1 $campaign group by pot_id,campaign_id order by campaign_name,pot_name";
+	} else {
+		$qry = "select pot_id id,pot_name name,campaign_name from users_to_campaigns left join campaigns using(campaign_id) join records using(campaign_id) join data_pots using(pot_id) where user_id = '$user' and campaign_status = 1 and campaign_id in (" .$_SESSION['campaign_access']['list'].") $campaign group by pot_id,campaign_id order by campaign_name,pot_name";
+	}
+		$query = $this->db->query($qry);
+
+		$result = $this->db->query($qry)->result_array();
+		if($this->db->query($qry)->num_rows()){
+		$pots = array();
+		foreach($result as $row){
+			$pots[$row['campaign_name']][] = array("id"=>$row['id'],"name"=>$row['name'],"campaign_name"=>$row['campaign_name']);
+		}
+		return $pots;
+		} else {
+		unset($_SESSION['current_pot']);
+		}
+		}
+		
+				public function get_campaign_sources(){
+		$user = $_SESSION['user_id'];
+		$campaign = (isset($_SESSION['current_campaign'])?" and campaign_id = '".$_SESSION['current_campaign']."'":"");
+	if(in_array("all campaigns",$_SESSION['permissions'])){	
+		$qry = "select source_id id,source_name name, campaign_name from data_sources join records using(source_id) join campaigns using(campaign_id) where campaign_status = 1 $campaign group by source_id,campaign_id order by campaign_name,source_name";
+	} else {
+		$qry = "select source_id id,source_name name,campaign_name from users_to_campaigns left join campaigns using(campaign_id) join records using(campaign_id) join  data_sources using(source_id) where user_id = '$user' and campaign_status = 1 and campaign_id in (" .$_SESSION['campaign_access']['list'].") $campaign group by source_id,campaign_id order by campaign_name,source_name";
+	}
+		$query = $this->db->query($qry);
+
+		$result = $this->db->query($qry)->result_array();
+		if($this->db->query($qry)->num_rows()){
+		$sources = array();
+		foreach($result as $row){
+			$sources[$row['campaign_name']][] = array("id"=>$row['id'],"name"=>$row['name'],"campaign_name"=>$row['campaign_name']);
+		}
+		return $sources;
+		} else {
+		unset($_SESSION['current_pot']);
+		}
+		}
+		
 }

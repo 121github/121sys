@@ -11,7 +11,7 @@ class Database extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
         $this->load->model('Database_model');
     }
 //misc db functions

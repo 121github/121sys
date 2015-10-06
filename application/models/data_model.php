@@ -155,6 +155,13 @@ return true;
         ));
         return $this->db->insert_id();
     }
+	   public function create_pot($pot)
+    {
+        $this->db->insert("data_pots", array(
+            "pot_name" => $pot
+        ));
+        return $this->db->insert_id();
+    }
     public function import_record($row, $options)
     {
         $errors     = array();
@@ -180,7 +187,8 @@ return true;
 								}
                 //insert the options into the records table data
                 $row["records"]['campaign_id'] = $options['campaign'];
-                $row["records"]['source_id']   = $options['source'];
+                $row["records"]['source_id']   = (!empty($options['source'])?$options['source']:NULL);
+				$row["records"]['pot_id']   = (!empty($options['pot'])?$options['pot']:NULL);
 				$row["records"]['date_added']   = date('Y-m-d');
 				$row["records"]['dials']   = "0";
                 if ($options["duplicates"] == "1" || $options["autoincrement"] == 1) {
@@ -270,7 +278,7 @@ return true;
 								}
                 //insert the options into the records table data
                 $row["records"]['campaign_id'] = $options['campaign'];
-                $row["records"]['source_id']   = $options['source'];
+                $row["records"]['pot_id']   = $options['pot'];
                 $urn                           = $row["records"]["urn"];
                 $this->db->where("urn", $urn);
                 $this->db->update("records", $row["records"]);

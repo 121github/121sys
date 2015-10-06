@@ -56,7 +56,7 @@ class Trackvia_model extends CI_Model
 
     public function get_appointment($urn)
     {
-        $query = "select a.urn,a.title,a.`text`,client_ref,date(a.`start`) `date`,if(time(`start`)<'12:30:00','am','pm') slot,fullname,campaign_id, appointment_type_id,source_id from records left join (select max(appointment_id) appointment_id, urn from appointments apps group by urn) ma on ma.urn = records.urn left join appointments a using(appointment_id) inner join contacts on contacts.urn = records.urn left join client_refs on records.urn = client_refs.urn left join record_details on record_details.urn = records.urn left join webform_answers on webform_answers.urn = records.urn where a.urn = '$urn' group by a.appointment_id";
+        $query = "select a.urn,a.title,a.`text`,client_ref,date(a.`start`) `date`,if(time(`start`)<'12:30:00','am','pm') slot,fullname,campaign_id, appointment_type_id,source_id,pot_id from records left join (select max(appointment_id) appointment_id, urn from appointments apps group by urn) ma on ma.urn = records.urn left join appointments a using(appointment_id) inner join contacts on contacts.urn = records.urn left join client_refs on records.urn = client_refs.urn left join record_details on record_details.urn = records.urn left join webform_answers on webform_answers.urn = records.urn where a.urn = '$urn' group by a.appointment_id";
         return $this->db->query($query)->row_array();
     }
 
@@ -77,7 +77,7 @@ class Trackvia_model extends CI_Model
 				  r.record_status,
 				  r.urgent,
 				  r.record_color,
-				  r.source_id,
+				  r.pot_id,
 				  a.appointment_type_id
 				from records r
 				inner join client_refs cr using(urn)
@@ -212,34 +212,34 @@ class Trackvia_model extends CI_Model
     public function get_121_counts($name)
     {
         if ($name == "GHS Southway survey") {
-            $qry = "select urn from records where campaign_id = 22 and source_id = '34'";
+            $qry = "select urn from records where campaign_id = 22 and pot_id = '34'";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Southway rebook") {
-            $qry = "select urn from records where campaign_id = 22 and source_id = '35'";
+            $qry = "select urn from records where campaign_id = 22 and pot_id = '35'";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Southway booked") {
-            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 22 and source_id = '37' and outcome_id = 72 and record_status = 4 and date(`start`) >= curdate()";
+            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 22 and pot_id = '37' and outcome_id = 72 and record_status = 4 and date(`start`) >= curdate()";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Private survey") {
-            $qry = "select urn from records where campaign_id = 29 and source_id = '39' ";
+            $qry = "select urn from records where campaign_id = 29 and pot_id = '39' ";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Private rebook") {
-            $qry = "select urn from records where campaign_id = 29 and source_id = '38' ";
+            $qry = "select urn from records where campaign_id = 29 and pot_id = '38' ";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Private booked") {
-            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 29 and source_id = '36'  and record_status = 4 and outcome_id = 72 and date(`start`) >= curdate()";
+            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 29 and pot_id = '36'  and record_status = 4 and outcome_id = 72 and date(`start`) >= curdate()";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Private not viable") {
-            $qry = "select urn from records where campaign_id = 28 and source_id = '40' ";
+            $qry = "select urn from records where campaign_id = 28 and pot_id = '40' ";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Citywest survey") {
-            $qry = "select urn from records where campaign_id = 32 and source_id = '46'";
+            $qry = "select urn from records where campaign_id = 32 and pot_id = '46'";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Citywest rebook") {
-            $qry = "select urn from records where campaign_id = 32 and source_id = '47'";
+            $qry = "select urn from records where campaign_id = 32 and pot_id = '47'";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Citywest booked") {
-            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 32 and source_id = '48' and outcome_id = 72 and record_status = 4 and date(`start`) >= curdate()";
+            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 32 and pot_id = '48' and outcome_id = 72 and record_status = 4 and date(`start`) >= curdate()";
             return $this->db->query($qry)->num_rows();
         }
     }

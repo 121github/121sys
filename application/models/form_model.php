@@ -247,6 +247,16 @@ class Form_model extends CI_Model
         }
         return $this->db->query($qry)->result_array();
     }
+	    public function get_pots()
+    {
+        if (in_array("all campaigns", $_SESSION['permissions'])) {
+            $qry = "select pot_id id,pot_name name from data_pots";
+        } else {
+            $qry = "select pot_id id,pot_name name from records left join data_pots using(pot_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by pot_name";
+        }
+        return $this->db->query($qry)->result_array();
+    }
+	
     public function get_categories()
     {
         $qry = "select question_cat_id id,question_cat_name name from questions_to_categories";

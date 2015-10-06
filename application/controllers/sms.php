@@ -108,7 +108,7 @@ class Sms extends CI_Controller
     {
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
 
         $urn = intval($this->uri->segment(3));
 

@@ -92,7 +92,7 @@ class Email extends CI_Controller
     {
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
         $urn = intval($this->uri->segment(4));
         $template_id = intval($this->uri->segment(3));
 		$email_address = $this->Email_model->get_contact_email($urn);

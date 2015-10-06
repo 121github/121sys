@@ -11,7 +11,7 @@ class Calendar extends CI_Controller
         user_auth_check(false);
         check_page_permissions('full calendar');
         $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
         $this->load->model('Calendar_model');
         $this->load->model('Form_model');
         $this->load->model('Appointments_model');

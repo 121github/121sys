@@ -10,7 +10,7 @@ class Error extends CI_Controller
     {
         parent::__construct();
 		$this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
     }
 	
 	public function access(){

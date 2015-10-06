@@ -14,7 +14,7 @@ class Reports extends CI_Controller
         $this->load->model('Filter_model');
         $this->load->model('Report_model');
         $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
     }
 
     //this controller loads the view for the capture page on the reports

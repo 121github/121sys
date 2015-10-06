@@ -9,7 +9,7 @@ class Data extends CI_Controller
         parent::__construct();
         user_auth_check(false);
 $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
         $this->load->model('Form_model');
         $this->load->model('Data_model');
         $this->load->model('Company_model');
@@ -33,6 +33,7 @@ $this->_pots = campaign_pots();
     {
         $campaigns = $this->Form_model->get_campaigns();
         $sources   = $this->Form_model->get_sources();
+		$pots   = $this->Form_model->get_pots();
         $data      = array(
             'campaign_access' => $this->_campaigns,
 'campaign_pots' => $this->_pots,
@@ -47,6 +48,7 @@ $this->_pots = campaign_pots();
             ),
             'campaigns' => $campaigns,
             'sources' => $sources,
+			'pots' => $pots,
             'css' => array(
                 'dashboard.css',
                 'plugins/jqfileupload/jquery.fileupload.css'
@@ -300,6 +302,7 @@ $this->_pots = campaign_pots();
             $header        = $this->input->post('header');
             $campaign      = $this->input->post('campaign');
             $new_source    = $this->input->post('new_source');
+			$new_pot    = $this->input->post('new_pot');
             $source        = $this->input->post('source');
             $tables        = $this->import_fields(false);
             $final         = array(
@@ -315,11 +318,15 @@ $this->_pots = campaign_pots();
             if (!empty($new_source)) {
                 $source = $this->Data_model->create_source($new_source);
             }
+			 if (!empty($new_pot)) {
+                $pot = $this->Data_model->create_pot($new_pot);
+            }
             $options = array(
                 "autoincrement" => $autoincrement,
                 "duplicates" => $duplicates,
                 "campaign" => $campaign,
-                "source" => $source
+                "source" => $source,
+				 "pot" => $pot
             );
             $row     = 0;
             if (($handle = fopen("datafiles/" . $filename, "r")) !== FALSE) {

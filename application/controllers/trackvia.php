@@ -88,7 +88,7 @@ class Trackvia extends CI_Controller
             "GHS Private booked" => PRIVATE_SURVEY_SLOTS,
             "GHS Private not viable" => PRIVATE_INFORM_INELIGIBLE);
 
-        $this->source_config = array(
+        $this->pot_config = array(
             "GHS Southway survey" => 34,
             "GHS Southway rebook" => 35,
             "GHS Southway booked" => 37,
@@ -117,12 +117,12 @@ class Trackvia extends CI_Controller
 
     public function get_counts()
     {
-        $sources = $this->source_config;
+        $pots = $this->pot_config;
         $tables = $this->tv_views;
         $data = array();
         foreach ($tables as $name => $view_id) {
             if ($view_id <> SOUTHWAY_ALL_RECORDS && $view_id <> PRIVATE_ALL_RECORDS && $view_id <> CITYWEST_ALL_RECORDS) {
-                $data[$name] = array("source" => $sources[$name], "one2one" => $this->Trackvia_model->get_121_counts($name));
+                $data[$name] = array("pot" => $pots[$name], "one2one" => $this->Trackvia_model->get_121_counts($name));
                 if ($this->input->post('tv') || $this->uri->segment(3) == "tv") {
                     $data[$name]["trackvia"] = 0;
                     for ($page = 1; $page < 15; $page++) {
@@ -173,7 +173,7 @@ class Trackvia extends CI_Controller
     public function check_southway()
     {
         //SOUTHWAY DATA
-        $this->db->query("update records set parked_code=2,source_id = 28 where campaign_id in(22)");
+        $this->db->query("update records set parked_code=2,pot_id = 28 where campaign_id in(22)");
 
 //        //Southway All records View
 //        echo "<br>Checking the SOUTHWAY_ALL_RECORDS(" . SOUTHWAY_ALL_RECORDS . ") view";
@@ -188,7 +188,7 @@ class Trackvia extends CI_Controller
 //                'appointment_cancelled' => false,
 //                'record_color' => '000000',
 //                'parked_code' => 2,
-//                'source_id' => 28,
+//                'pot_id' => 28,
 //                'savings_per_panel' => 20
 //
 //            )
@@ -206,7 +206,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
                 'record_color' => '0066FF',
-                'source_id' => 34,
+                'pot_id' => 34,
                 'savings_per_panel' => 20,
                 'attendee' => 122
             )
@@ -224,7 +224,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
                 'appointment_cancelled' => true,
                 'record_color' => '0066FF',
-                'source_id' => 35,
+                'pot_id' => 35,
                 'savings_per_panel' => 20,
                 'attendee' => 122
             )
@@ -243,7 +243,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
-                'source_id' => 37,
+                'pot_id' => 37,
                 'savings_per_panel' => 20,
                 'attendee' => 122
             )
@@ -269,7 +269,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
                 'record_color' => '0066FF',
-                'source_id' => 51,
+                'pot_id' => 51,
                 'savings_per_panel' => 20,
                 'attendee' => 139
             )
@@ -288,7 +288,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
-                'source_id' => 52,
+                'pot_id' => 52,
                 'savings_per_panel' => 20,
                 'attendee' => 139
             )
@@ -301,7 +301,7 @@ class Trackvia extends CI_Controller
     public function check_citywest()
     {
         //CITYWEST DATA
-        $this->db->query("update records set parked_code=2,source_id = 49 where campaign_id = 32");
+        $this->db->query("update records set parked_code=2,pot_id = 49 where campaign_id = 32");
         //CITYWEST
         /*        echo "<br>Checking the CITYWEST_ALL_RECORDS(" . CITYWEST_ALL_RECORDS . ") view";
         echo "<br>";
@@ -315,7 +315,7 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '000000',
                 'parked_code' => 2,
-                'source_id' => 49,
+                'pot_id' => 49,
                 'savings_per_panel' => 30
 
             )
@@ -334,7 +334,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
                 'record_color' => '0066FF',
-                'source_id' => 46,
+                'pot_id' => 46,
                 'savings_per_panel' => 20,
                 'attendee' => 137
             )
@@ -352,7 +352,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
                 'appointment_cancelled' => true,
                 'record_color' => '0066FF',
-                'source_id' => 47,
+                'pot_id' => 47,
                 'savings_per_panel' => 20,
                 'attendee' => 137
             )
@@ -371,7 +371,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
-                'source_id' => 48,
+                'pot_id' => 48,
                 'savings_per_panel' => 20,
                 'attendee' => 137
             )
@@ -382,7 +382,7 @@ class Trackvia extends CI_Controller
     public function check_private()
     {
         //PRIVATE DATA
-        $this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and record_status = 3");
+        $this->db->query("update records set parked_code=2,pot_id = 41 where campaign_id = 29 and record_status = 3");
 
         //
 //        //PRIVATE TABLE
@@ -400,7 +400,7 @@ class Trackvia extends CI_Controller
                 'appointment_cancelled' => false,
                 'record_color' => '000000',
                 'parked_code' => 2,
-                'source_id' => 41,
+                'pot_id' => 41,
                 'savings_per_panel' => 30,
                 'attendee' => 121
 
@@ -419,7 +419,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
                 'record_color' => '0066FF',
-                'source_id' => 39,
+                'pot_id' => 39,
                 'savings_per_panel' => 30,
                 'attendee' => 121
 
@@ -438,7 +438,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
                 'appointment_cancelled' => true,
                 'record_color' => '6600FF',
-                'source_id' => 38,
+                'pot_id' => 38,
                 'savings_per_panel' => 30,
                 'attendee' => 121
             )
@@ -457,7 +457,7 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => true,
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
-                'source_id' => 36,
+                'pot_id' => 36,
                 'savings_per_panel' => 30,
                 'attendee' => 121
             )
@@ -475,14 +475,14 @@ class Trackvia extends CI_Controller
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
                 'record_color' => '990000',
-                'source_id' => 40,
+                'pot_id' => 40,
                 'savings_per_panel' => 30,
                 'attendee' => 121
             )
         );
         $this->check_trackvia(29);
         //remove mortgage approval, landlord approval and general queries. These are handles by GHS
-        $this->db->query("update records set parked_code=2,source_id = 41 where campaign_id = 29 and outcome_id in (135,125,127)");
+        $this->db->query("update records set parked_code=2,pot_id = 41 where campaign_id = 29 and outcome_id in (135,125,127)");
         //park any that have a refusal reason
         $this->db->query("update
             `record_details`
@@ -503,7 +503,7 @@ class Trackvia extends CI_Controller
         //queries we may want to run after the updates can go here
         $this->db->query("update records set map_icon ='fa-home' where campaign_id = '$campaign_id'");
         $this->db->query("update contact_addresses left join contacts using(contact_id) left join records using(urn) set contact_addresses.`primary` = 1 where campaign_id = '$campaign_id'");
-        $this->db->query("update contacts inner join records using(urn) inner join data_sources using(source_id) set notes = source_name where campaign_id = '$campaign_id' and records.source_id is not null");
+        $this->db->query("update contacts inner join records using(urn) inner join data_pots using(pot_id) set notes = pot_name where campaign_id = '$campaign_id' and records.pot_id is not null");
 
         $query = "select urn from records join campaigns using(campaign_id) where outcome_id in(select outcome_id from outcomes where delay_hours is not null) and dials > max_dials and campaign_id = '$campaign_id'";
         foreach ($this->db->query($query)->result_array() as $row) {
@@ -523,8 +523,8 @@ class Trackvia extends CI_Controller
                 AND dials = 0  )");
 
 
-        //unset anything marked as urgent that is not in the rebook data sources
-        $this->db->query("update records set urgent = null where source_id not in(38,35,47) and campaign_id = '$campaign_id'");
+        //unset anything marked as urgent that is not in the rebook data pots
+        $this->db->query("update records set urgent = null where pot_id not in(38,35,47) and campaign_id = '$campaign_id'");
         //Update appointmentes without history associated
         echo "<br>Checking if exists appointments without history associated...";
         $this->db->query("
@@ -560,10 +560,10 @@ class Trackvia extends CI_Controller
               GROUP_CONCAT(a.appointment_id SEPARATOR ',') as app
             FROM appointments a
               INNER JOIN records r USING (urn)
-              INNER JOIN data_sources d USING (source_id)
+              INNER JOIN data_pots d USING (pot_id)
               INNER JOIN contacts c USING (urn)
               INNER JOIN client_refs cf USING (urn)
-            WHERE source_id IN (28, 41, 49)
+            WHERE pot_id IN (28, 41, 49)
                   AND campaign_id = " . $campaign_id . "
                   AND a.start >= NOW()
                   AND a.status != 0";
@@ -687,7 +687,7 @@ class Trackvia extends CI_Controller
         $appointment_creation = $options['appointment_creation'];
         $appointment_cancelled = $options['appointment_cancelled'];
         $record_color = $options['record_color'];
-        $source = $options['source_id'];
+        $pot = $options['pot_id'];
         $savings = $options['savings_per_panel'];
 
         //Get the trackvia records for this view
@@ -748,8 +748,8 @@ class Trackvia extends CI_Controller
 
                 //If the campaign had changed or the park_code is "Not Working"
 
-                if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 || $record['parked_code'] == 2 || $record['record_color'] != $record_color || $record['source_id'] != $source) {
-                    if ($record['record_status'] <> "3" || in_array($source, array(37, 52, 36, 48))) {
+                if ($record['campaign_id'] != $campaign_id || $record['parked_code'] == 7 || $record['parked_code'] == 2 || $record['record_color'] != $record_color || $record['pot_id'] != $pot) {
+                    if ($record['record_status'] <> "3" || in_array($pot, array(37, 52, 36, 48))) {
                         $update_array = array(
                             'urn' => $record['urn'],
                             'campaign_id' => $campaign_id,
@@ -757,7 +757,7 @@ class Trackvia extends CI_Controller
                             'urgent' => $urgent,
                             'record_status' => $status,
                             'record_color' => $record_color,
-                            'source_id' => $source
+                            'pot_id' => $pot
                         );
                         if (!empty($outcome_id)) {
                             $update_array['outcome_id'] = $outcome_id;
@@ -845,7 +845,7 @@ class Trackvia extends CI_Controller
             $new = array();
             //Add new records if there are any left in the $tv_records array
             if (count($tv_records) > 0) {
-                echo("Creating new records #Source-ID: [$source]");
+                echo("Creating new records #Source-ID: [$pot]");
                 echo "<br>";
                 //print_r($tv_records);
                 foreach ($tv_records as $record) {
@@ -856,7 +856,7 @@ class Trackvia extends CI_Controller
                         "record_color" => $record_color,
                         "outcome_id" => $outcome_id,
                         "urgent" => $urgent,
-                        "source_id" => $source,
+                        "pot_id" => $pot,
                         "parked_code" => 2
                     );
                     $urn = $this->Trackvia_model->add_record($data);
@@ -1035,8 +1035,8 @@ class Trackvia extends CI_Controller
         $app = $this->Trackvia_model->get_appointment($urn);
         //if its a private record then we need to do a few extra bits
         $update_record = array();
-        if ($app['campaign_id'] == "29" && $app['source_id'] <> "55") {
-            $update_record = array("source_id" => 36, "record_color" => "00CC00");
+        if ($app['campaign_id'] == "29" && $app['pot_id'] <> "55") {
+            $update_record = array("pot_id" => 36, "record_color" => "00CC00");
             //if it doesnt exist on trackvia we should add it first
             if (empty($app['client_ref'])) {
                 $response = $this->add_tv_record($urn);
@@ -1045,11 +1045,11 @@ class Trackvia extends CI_Controller
                 $this->update_tv_record($urn);
             }
         } else if ($app['campaign_id'] == "22") {
-            //$update_record = array("source_id" => 37, "record_color" => "00CC00");
+            //$update_record = array("pot_id" => 37, "record_color" => "00CC00");
         } else if ($app['campaign_id'] == "52") {
-            //$update_record = array("source_id" => 52, "record_color" => "00CC00");
+            //$update_record = array("pot_id" => 52, "record_color" => "00CC00");
         } else if ($app['campaign_id'] == "32") {
-            //$update_record = array("source_id" => 48, "record_color" => "00CC00");
+            //$update_record = array("pot_id" => 48, "record_color" => "00CC00");
         }
 
         //Survey 
@@ -1061,7 +1061,7 @@ class Trackvia extends CI_Controller
                 "Survey booked by" => "121",
                 "Survey Appointment Comments" => $app['title'] . ' : ' . $app['text']
             );
-            if ($app['source_id'] == "55") {
+            if ($app['pot_id'] == "55") {
                 $data["Data Source"] = "CC-121Set1-IB";
             }
         } //Installation
@@ -1109,7 +1109,7 @@ class Trackvia extends CI_Controller
             echo json_encode(array("success" => true, "response" => $response, "ref" => $app['client_ref'], "data" => $data));
             $this->db->query("update records set urgent=null where urn = '$urn'");
         } else {
-            if ($app['source_id'] <> "55") {
+            if ($app['pot_id'] <> "55") {
                 log_message('info', 'No response from trackvia:' . $urn);
                 $message = "An error occured while saving an appointment \r\n	";
                 $message .= "  URN: $urn \r\n";
@@ -1131,7 +1131,7 @@ class Trackvia extends CI_Controller
         }
         //Get the record data
         $record = $this->get_record($urn);
-        if ($record['source_id'] <> 55) {
+        if ($record['pot_id'] <> 55) {
             $data = array("Customer not contactable" => "Customer not contactable");
 
             $response = $this->tv->updateRecord($record['client_ref'], $data);
@@ -1157,7 +1157,7 @@ class Trackvia extends CI_Controller
         }
         //Get the record data
         $record = $this->get_record($urn);
-        if ($record['source_id'] <> 55) {
+        if ($record['pot_id'] <> 55) {
             $data = array("Cannot Contact for Installation" => "Cannot Contact for Installation");
 
             $response = $this->tv->updateRecord($record['client_ref'], $data);
@@ -1181,7 +1181,7 @@ class Trackvia extends CI_Controller
         $urn = $this->input->post('urn');
         //Get the record data
         $record = $this->get_record($urn);
-        if ($record['source_id'] <> 55) {
+        if ($record['pot_id'] <> 55) {
             $data = array("Planned Survey Date" => "", "Survey appt" => "", "Survey Booking Confirmed" => "", "Survey booked by" => "", "Survey Appointment Comments" => "", "Customer Cancellation" => "declined", "Customer Cancellation notes" => !empty($record['outcome_reason']) ? $record['outcome_reason'] : $record['comments'], "Cancelled by" => "121", "Date of Cancellation" => date('Y-m-d') . "T12:00:00-0600");
 
             if ($record['campaign_id'] == "29") {
@@ -1258,7 +1258,7 @@ class Trackvia extends CI_Controller
         $urn = $this->input->post('urn');
         //Get the record data
         $record = $this->get_record($urn);
-        if ($record['source_id'] <> 55) {
+        if ($record['pot_id'] <> 55) {
             $data = array("External Survey Completed" => "Y",
                 "Internal Survey Completed" => "Y");
 
@@ -1488,8 +1488,8 @@ class Trackvia extends CI_Controller
         if (!empty($details['c2'])) {
             $data["Referred by"] = $details['c2'];
         }
-        //GHS data source - this cod eis for the New lead source. ie the 500 solar records bought by 121
-        if ($details['source_id'] == 55) {
+        //GHS data pot - this cod eis for the New lead pot. ie the 500 solar records bought by 121
+        if ($details['pot_id'] == 55) {
             $data["Data Source"] = "CC-121Set1-IB";
         }
         return $data;

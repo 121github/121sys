@@ -60,29 +60,6 @@ if ( !function_exists('user_auth_check') )
 
 	}
 	
-	function campaign_pots(){
-				$CI =& get_instance();
-		$user = $_SESSION['user_id'];
-		$campaign = (isset($_SESSION['current_campaign'])?" and campaign_id = '".$_SESSION['current_campaign']."'":"");
-	if(in_array("all campaigns",$_SESSION['permissions'])){	
-		$qry = "select pot_id id,pot_name name, campaign_name from data_pots join records using(pot_id) join campaigns using(campaign_id) where campaign_status = 1 $campaign group by pot_id,campaign_id order by campaign_name,pot_name";
-	} else {
-		$qry = "select pot_id id,pot_name name,campaign_name from users_to_campaigns left join campaigns using(campaign_id) join records using(campaign_id) join data_pots using(pot_id) where user_id = '$user' and campaign_status = 1 and campaign_id in (" .$_SESSION['campaign_access']['list'].") $campaign group by pot_id,campaign_id order by campaign_name,pot_name";
-	}
-		$query = $CI->db->query($qry);
-
-		$result = $CI->db->query($qry)->result_array();
-		if($CI->db->query($qry)->num_rows()){
-		$pots = array();
-		foreach($result as $row){
-			$pots[$row['campaign_name']][] = array("id"=>$row['id'],"name"=>$row['name'],"campaign_name"=>$row['campaign_name']);
-		}
-		return $pots;
-		} else {
-		unset($_SESSION['current_pot']);
-		}
-		
-	}
 	
 	
 	function check_page_permissions($required){

@@ -27,8 +27,8 @@
                                         </select>
                                          <p id="ctype-text" class="green" style="display:none"></p>
                                     </div>
-                                    
-                                    <p>Where is this data from?</p>
+                                    <hr />
+                                    <p>Where is this data from? (Source)</p>
                                     <div class="form-group input-group-sm">
                                         <select class="selectpicker pull-left" id="source">
                                             <option value="">Select the data source</option>
@@ -41,6 +41,21 @@
                                         </select>
                                         <input type="text" name="new_source" id="new_source" class="form-control pull-left marl" style="width:200px; display:none" placeholder="Enter the name of the data source" />
                                     </div>
+                                      <div class="clearfix"></div>
+                                    <p>Group this data within the campaign (Pot)</p>
+                                    <div class="form-group input-group-sm">
+                                        <select class="selectpicker pull-left" id="source">
+                                            <option value="">Select the data pot</option>
+                                            <?php foreach($sources as $row){ ?>
+                                            <option value="<?php echo $row['id'] ?>">
+                                                <?php echo $row[ 'name'] ?>
+                                            </option>
+                                            <?php } ?>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <input type="text" name="new_source" id="new_pot" class="form-control pull-left marl" style="width:200px; display:none" placeholder="Enter the name of the data pot" />
+                                    </div>
+                                    
                                     <div class="clearfix"></div>
                                     <button class="btn btn-success pull-right goto-step-2">Continue</button>
 

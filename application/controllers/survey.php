@@ -12,7 +12,7 @@ class Survey extends CI_Controller
         user_auth_check();
 		check_page_permissions('view surveys');
 $this->_campaigns = campaign_access_dropdown();
-$this->_pots = campaign_pots();
+
         $this->load->model('Survey_model');
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
