@@ -572,7 +572,7 @@ class Trackvia extends CI_Controller
             $appointment_list = $appointments[0]['app'];
             echo " appointment ids (" . $appointment_list . ")<br>";
             //Set appointment status as 0 -> cancel
-            $this->db->query("UPDATE appointments app SET app.status=0 WHERE app.appointment_id IN (" . $appointment_list . ")");
+            $this->db->query("UPDATE appointments app SET app.status=0, app.cancellation_reason='Cancelled by GHS' WHERE app.appointment_id IN (" . $appointment_list . ")");
             $afftectedRows = $this->db->affected_rows();
             echo "<br>" . $afftectedRows . " appointments cancelled.<br>";
 
