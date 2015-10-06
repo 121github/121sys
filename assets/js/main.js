@@ -83,7 +83,15 @@ function setDevice(width) {
         device_type = "default";
     }
 	modals.set_size();
+	if(device_type=="default"||device_type=="tablet2"||device_type=="tablet"){
+		$('#top-campaign-container').css('display','inline-block');
+		$('#side-campaign-select').hide();
+	} else {
+		$('#top-campaign-container').hide();
+		$('#side-campaign-select').show();
+	}
 }
+
 
 
 function addLeadingZero(num) {

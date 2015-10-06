@@ -12,6 +12,7 @@ class Smstemplates extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('Sms_model');
         $this->load->model('Form_model');
 
@@ -27,6 +28,7 @@ class Smstemplates extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'pageId' => 'Dashboard',
             'title' => 'Admin | SMS Templates',
             'page' => 'smstemplates',

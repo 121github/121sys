@@ -11,6 +11,7 @@ class Search extends CI_Controller
         parent::__construct();
         user_auth_check();
 		$this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Company_model');
@@ -238,6 +239,7 @@ class Search extends CI_Controller
         
         $data = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'pageId' => 'Search',
 			'page'=>"search",
             'title' => 'Search',
@@ -500,6 +502,7 @@ class Search extends CI_Controller
         $data = array(
 			'page' => 'Search',
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
 			'pageId' => 'Search',
             'title' => 'Search',
             'columns' => $visible_columns,

@@ -237,42 +237,42 @@ class Records_model extends CI_Model
 		$custom_join = isset($_SESSION['custom_joins'])?$_SESSION['custom_joins']:"";
 		//other variables
         $urn = 0;
-        $campaign = $_SESSION['current_campaign'];
+        $campaign = (isset($_SESSION['current_campaign'])?" and campaign_id = '".$_SESSION['current_campaign']."'":"");
+		$pot = (isset($_SESSION['current_pot'])?" and pot_id = '".$_SESSION['current_pot']."'":"");
         $user_id = $_SESSION['user_id'];
-        if (intval($campaign)) {
+        if (!empty($campaign)) {
             $priority = array();
             //1st priority where last outcome needs a callback within 10 mins belonging to the user
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 and campaign_id = '$campaign' and record_status = 1 and parked_code is null and  progress_id is null and nextcall between now() - interval 10 MINUTE and now() + interval 10 MINUTE and (user_id = '$user_id') and outcome_id in(select outcome_id from outcomes where requires_callback = 1) order by case when outcome_id = 2 then 1 else 2 end, date_updated";
+            $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $campaign $pot and record_status = 1 and parked_code is null and  progress_id is null and nextcall between now() - interval 10 MINUTE and now() + interval 10 MINUTE and (user_id = '$user_id') and outcome_id in(select outcome_id from outcomes where requires_callback = 1) order by case when outcome_id = 2 then 1 else 2 end, date_updated";
             //next priority is any all other DMS and emails belonging to the user
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(select outcome_id from outcomes where requires_callback = 1) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials";
+            $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $campaign $pot and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and outcome_id in(select outcome_id from outcomes where requires_callback = 1) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,dials";
             //next priority is lapsed callbacks	beloning to the user
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,date_updated,dials";
+            $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $campaign $pot and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and (user_id = '$user_id') order by case when outcome_id = 2 then 1 else 2 end,nextcall,date_updated,dials";
             //next priority is lapsed callbacks	unassigned
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
-                $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and user_id is null order by case when outcome_id = 2 then 1 else 2 end,date_updated,dials";
+                $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $campaign $pot and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (outcome_id in(select outcome_id from outcomes where requires_callback = 1) or outcome_id=1) and user_id is null order by case when outcome_id = 2 then 1 else 2 end,date_updated,dials";
             }
             //next priority is virgin and assigend to the user
-			$priority[] = "select urn,user_id from records left join ownership using(urn) $custom_join where 1 and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (user_id = '$user_id')" . $custom_order ;
+			$priority[] = "select urn,user_id from records left join ownership using(urn) $custom_join where 1 $campaign $pot and record_status = 1 and parked_code is null and progress_id is null and (outcome_id is null) and (user_id = '$user_id')" . $custom_order ;
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
                 //next priority is virgin and unassigned
-			$priority[] = "select urn,user_id from records left join ownership using(urn) $custom_join where 1 and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and user_id is null ". $custom_order ;
+			$priority[] = "select urn,user_id from records left join ownership using(urn) $custom_join where 1 $campaign $pot and record_status = 1 and parked_code is null and progress_id is null and outcome_id is null and user_id is null ". $custom_order ;
             }
             //next priority is any other record with a nextcall date in order of lowest dials (current user)
-            $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (user_id = '$user_id') order by date_updated,dials";
+            $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $campaign $pot and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and (user_id = '$user_id') order by date_updated,dials";
             //next any other record with a nextcall date in order of lowest dials (any user)
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
-                $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 and campaign_id = '$campaign' and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and user_id is null order by date_updated,dials";
+                $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $campaign $pot and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and user_id is null order by date_updated,dials";
             }
-			
             foreach ($priority as $k => $qry) {
                 $query = $this->db->query($qry." limit 1");
-
+				
                 if ($query->num_rows() > 0) {
+					$this->firephp->log($this->db->last_query());
                     $urn = $query->row(0)->urn;
                     $owner = $query->row(0)->user_id;
                     break;
                 }
-                //$this->firephp->log($this->db->last_query());
 
             }
             //if no user is allocated we should add the a user to prevent someone else landing on this record
@@ -833,6 +833,14 @@ class Records_model extends CI_Model
 
         return (!empty($result) ? $result[0] : array());
     }
+	
+	  public function get_pot($urn)
+    {
+        $qry = "select dp.* from data_pots dp inner join records on records.pot_id = dp.pot_id where urn = '$urn'";
+        $result = $this->db->query($qry)->result_array();
+
+        return (!empty($result) ? $result[0] : array());
+    }
 
     public function get_outcomes($campaign)
     {
@@ -1003,10 +1011,9 @@ class Records_model extends CI_Model
                 $hist["nextcall"] = date('Y-m-d H:i:s');
             }
         }
-
-        if (!isset($hist['source_id']) || empty($hist['source_id'])) {
-            $source = $this->get_source($hist['urn']);
-            $hist['source_id'] = $source['source_id'];
+		if (!isset($hist['pot_id']) || empty($hist['pot_id'])) {
+            $pot = $this->get_pot($hist['urn']);
+            $hist['pot_id'] = $pot['pot_id'];
         }
 
         $hist["contact"] = date('Y-m-d H:i:s');

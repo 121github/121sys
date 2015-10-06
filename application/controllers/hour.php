@@ -8,6 +8,7 @@ class Hour extends CI_Controller
         parent::__construct();
         user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Hour_model');
@@ -25,6 +26,7 @@ class Hour extends CI_Controller
     	$this->Cron_model->update_hours($agents);
     	$data     = array(
     			'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
     			'pageId' => 'Admin',
     			'title' => 'Admin | Hours',
     			'page' =>  'agent_hours',
@@ -175,6 +177,7 @@ class Hour extends CI_Controller
         $agents = $this->Form_model->get_agents();
         $data     = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'pageId' => 'Admin',
             'title' => 'Admin | Hours',
             'page' => 'default_hours',

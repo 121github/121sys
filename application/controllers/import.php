@@ -11,6 +11,7 @@ class Import extends CI_Controller
         parent::__construct();
         user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('Import_model');
 		$this->load->model('Form_model');
         $this->load->model('Company_model');
@@ -45,6 +46,7 @@ echo json_encode(array("success"=>true));
         $sources   = $this->Form_model->get_sources();
         $data      = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'title' => 'Import Data',
             'page' => 'import_data',
             'javascript' => array(

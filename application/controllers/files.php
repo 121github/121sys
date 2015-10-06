@@ -11,6 +11,7 @@ class Files extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('Docscanner_model');
         $this->load->model('File_model');
     }
@@ -53,6 +54,7 @@ class Files extends CI_Controller
             //'folder' => $folder,
             'page' => 'files',
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'title' => 'File Manager',
             'user_folders' => $user_folders,
             //'files'=>$files,
@@ -271,6 +273,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
         $folders = $this->File_model->get_folders();
         $data    = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'folders' => $folders,
             'pageId' => 'Admin',
             'title' => 'Admin',

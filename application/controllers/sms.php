@@ -108,6 +108,7 @@ class Sms extends CI_Controller
     {
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
 
         $urn = intval($this->uri->segment(3));
 
@@ -151,6 +152,7 @@ class Sms extends CI_Controller
         $data = array(
             'urn' => $urn,
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'pageId' => 'Create-sms',
             'title' => 'Send new sms',
             'urn' => $urn,

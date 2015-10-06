@@ -313,8 +313,14 @@ class User extends CI_Controller
         $_SESSION['campaign_features'] = $features;
 
     }
-
-
+  public function set_data_pot($pot_id = false)
+    {
+	if(intval($this->input->post('data_pot'))>0){
+	$_SESSION['current_pot'] = 	$this->input->post('data_pot');
+	} else {
+	unset($_SESSION['current_pot']);
+	}
+	}
     /* at the bottom of default.php template: when the campaign drop down is changed we set the new campaign in the session so we can filter all the records easily */
     public function current_campaign($camp_id = false)
     {

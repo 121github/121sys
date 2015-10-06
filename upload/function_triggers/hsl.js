@@ -22,7 +22,7 @@ var campaign_functions = {
                     if (response.data.length > 0) {
                         var apps = "";
                         $.each(response.data, function (i, row) {
-                            apps += Number(i + 1) + '. ' + row.title + ': ' + row.start + ' until ' + row.end + '<br>';
+                            apps += '<small>'+Number(i + 1) + '. ' + row.title + ': '+ row.postcode +'<br>' + row.start + ' until ' + row.end + '</small><br>';
                         });
                         target.attr('data-toggle', 'tooltip').attr('data-placement', 'top').attr('title', apps).attr('data-html', 'true').tooltip();
                         target.trigger('mouseout').trigger('mouseover');

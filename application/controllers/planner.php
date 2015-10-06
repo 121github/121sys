@@ -12,6 +12,7 @@ class Planner extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('User_model');
         $this->load->model('Form_model');
         $this->load->model('Planner_model');
@@ -230,6 +231,7 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
 		$planner_users = $this->Form_model->get_drivers();
         $data = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'pageId' => 'System planner',
             'title' => 'Planner',
             'page' => array('dashboard' => 'planner'),

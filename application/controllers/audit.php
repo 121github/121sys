@@ -12,6 +12,7 @@ class Audit extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('User_model');
         $this->load->model('Records_model');
         $this->load->model('Survey_model');
@@ -22,6 +23,7 @@ class Audit extends CI_Controller
 public function index(){
 	 $data = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'page' => 'audit',
             'title' => 'System Audit',
 			'javascript' => array('plugins/DataTables/js/jquery.dataTables.min.js',

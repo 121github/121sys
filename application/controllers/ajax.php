@@ -11,6 +11,7 @@ class Ajax extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('Company_model');
         $this->load->model('Contacts_model');
         $this->load->model('Records_model');
@@ -22,6 +23,12 @@ class Ajax extends CI_Controller
         $this->load->helper('misc');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+
+	public function pots_in_campaign(){
+	$campaign = $this->input->post("campaign");	
+	$pots = $this->Form_model->pots_in_campaign($campaign);
+	echo json_encode($pots);
+	}
 
 //this is only for hsl we should move it somewhere nice when we can
     public function add_cover_letter_address()

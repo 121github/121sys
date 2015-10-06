@@ -12,6 +12,8 @@ class Records extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
+		$this->_pots = campaign_pots();
         $this->load->model('User_model');
         $this->load->model('Records_model');
         $this->load->model('Survey_model');
@@ -64,9 +66,11 @@ class Records extends CI_Controller
 		}
         $data = array(
             'campaign_access' => $this->_campaigns,
+			'campaign_pots' => $this->_pots,
             'page' => 'list_records',
             'title' => 'List Records',
             'columns' => $visible_columns,
+			'global_filter' => true,
             'css' => array(
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
 				'map.css',
@@ -229,8 +233,7 @@ class Records extends CI_Controller
             $_SESSION['next'] = "0";
         }
         /* end nav config */
-        
-        
+               
         $this->User_model->campaign_access_check($urn);
 		
 		$_SESSION['record_urn'] = $urn;
@@ -301,6 +304,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 
         $data = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'page' => '',
             'campaign' => $campaign,
             'title' => 'Record Details',
@@ -309,6 +313,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 			'outcome_reasons' => $outcome_reasons,
             "features" => $features,
             "panels" => $panels,
+			'global_filter' => true,
             "allow_skip" => $allow_skip,
             "xfer_campaigns" => $xfers,
             "progress_options" => $progress_options,

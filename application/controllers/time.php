@@ -8,6 +8,7 @@ class Time extends CI_Controller
         parent::__construct();
         user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Time_model');
@@ -22,6 +23,7 @@ class Time extends CI_Controller
         $exception_types = $this->Form_model->get_time_exception_type();
     	$data     = array(
     			'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
     			'pageId' => 'Admin',
     			'title' => 'Admin | Time',
     			'page' =>  'agent_time',
@@ -288,6 +290,7 @@ class Time extends CI_Controller
         $agents = $this->Form_model->get_agents();
         $data     = array(
             'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'pageId' => 'Admin',
             'title' => 'Admin | Time',
             'page' => 'default_time',

@@ -10,12 +10,14 @@ class Error extends CI_Controller
     {
         parent::__construct();
 		$this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
     }
 	
 	public function access(){
 		        $data = array(
 			'page' => 'error-page',
  			'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'title' => 'Permission Denied',
 			'msg'=>'Please contact your system administrator if you believe you should have access to this record');
 			 $this->template->load('default', 'errors/display.php', $data);
@@ -26,6 +28,7 @@ class Error extends CI_Controller
 		        $data = array(
 			'page' => 'error-page',
  			'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'title' => 'Permission Denied',
 			'msg'=>'You do not have access to these files. Please contact the administrator if you believe you should have access');
 			 $this->template->load('default', 'errors/display.php', $data);
@@ -36,6 +39,7 @@ class Error extends CI_Controller
 		        $data = array(
 			'page' => 'error-page',
  			'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'title' => 'Permission Denied',
 			'msg'=>'This record is assigned to another user. If you believe you should have access to it, please contact the system administrator');
 			 $this->template->load('default', 'errors/display.php', $data);
@@ -46,6 +50,7 @@ class Error extends CI_Controller
 		        $data = array(
 			'page' => 'error-page',
 			'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'title' => 'Data error',
 			'msg'=>'There are no records left for calling. Please try another campaign or contact your administrator');
 			 $this->template->load('default', 'errors/display.php', $data);
@@ -56,6 +61,7 @@ class Error extends CI_Controller
 		        $data = array(
 			'page' => 'error-page',
 			'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'title' => 'No campaign selected',
 			'msg'=>'Please select a campaign from the drop down menu above before you start calling');
 			 $this->template->load('default', 'errors/display.php', $data);
@@ -65,6 +71,7 @@ class Error extends CI_Controller
 		        $data = array(
 			'pageId' => 'error-page',
 			'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
             'title' => 'No campaign selected',
 			'msg'=>'Please select a campaign from the drop down menu above to view the associated calendar');
 			 $this->template->load('default', 'errors/display.php', $data);

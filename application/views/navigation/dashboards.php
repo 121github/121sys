@@ -1,5 +1,5 @@
- <li><a href="#mm-1">Dashboard</a>
-                        <ul>
+ <li><a href="#dashboards">Dashboard</a>
+                        <ul id="dashboards">
                             <?php if ($_SESSION['sn'] == 'eldon.121system.com') { ?>
                                 <li <?php echo @($page == 'eldon_dash' ? "class=Selected'" : "") ?>><a
                                         href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>

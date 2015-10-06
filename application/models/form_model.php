@@ -13,6 +13,11 @@ class Form_model extends CI_Model
         }
     }
 	
+	public function pots_in_campaign($campaign){
+		$qry = "select pot_id id, pot_name name from data_pots join records using(pot_id) where campaign_id = '$campaign'";
+		return $this->db->query($qry)->result_array();
+	}
+	
 	public function get_drivers($campaign_id=false,$region_id=false,$branch_id=false){
 		$qry = "select user_id, name, region_name from users join branch_region_users using(user_id) join branch_regions using(region_id) join branch using(region_id) join branch_campaigns using(branch_id) where 1 ";
 		$qry .= " and attendee = 0 ";

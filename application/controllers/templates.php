@@ -12,6 +12,7 @@ class Templates extends CI_Controller
 		parent::__construct();
 		user_auth_check(false);
 $this->_campaigns = campaign_access_dropdown();
+$this->_pots = campaign_pots();
 		$this->load->model('Email_model');
 		$this->load->model('Form_model');
 		
@@ -26,6 +27,7 @@ $this->_campaigns = campaign_access_dropdown();
 		
 		$data = array(
 				'campaign_access' => $this->_campaigns,
+'campaign_pots' => $this->_pots,
 'pageId' => 'Dashboard',
 				'title' => 'Admin | Email Templates',
 				'page'=> 'templates',

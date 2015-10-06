@@ -51,6 +51,7 @@ function table_joins(){
 		$join = array();
 		$join['records'] = "";
 		$join['client_refs'] = " left join client_refs cref on cref.urn = r.urn ";
+		$join['data_pots'] = " left join data_pots dp on r.pot_id = dp.pot_id ";
 	    $join['record_planner'] = " left join (select urn,location_id,start_date,record_planner_id,postcode,user_id from record_planner where date(start_date)>=curdate() and planner_status = 1)rp on rp.urn = r.urn ";
         $join['record_planner_user'] = " left join users rpu on rpu.user_id = rp.user_id ";
         $join['appointments'] = " left join appointments a on a.urn = r.urn ";
