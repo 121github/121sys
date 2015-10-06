@@ -536,7 +536,8 @@ class Sms_model extends CI_Model
                     and template_id = ".$template_id."
                     " . $where_app_type . "
                     and a.status = 1
-                    and date(start) BETWEEN (CURDATE() + INTERVAL 1 DAY) AND (CURDATE() + INTERVAL 2 DAY)";
+                    and date(start) BETWEEN (CURDATE() + INTERVAL 1 DAY) AND (CURDATE() + INTERVAL 2 DAY)
+                    and r.source_id NOT IN (28, 41, 49)";
 
         $result = $this->db->query($qry)->result_array();
 
