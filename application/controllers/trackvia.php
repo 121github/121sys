@@ -89,7 +89,8 @@ class Trackvia extends CI_Controller
             "GHS Private booked" => PRIVATE_SURVEY_SLOTS,
             "GHS Private" => "",
 			 "GHS Southway" => "",
-			  "GHS Citywest" => "");
+			  "GHS Citywest" => "",
+			    "GHS New Leads" => "");
 		
         $this->pot_config = array(
             "GHS Southway survey" => 34,

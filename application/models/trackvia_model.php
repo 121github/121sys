@@ -239,7 +239,7 @@ class Trackvia_model extends CI_Model
             $qry = "select urn from records where campaign_id = 28 and pot_id = '40' ";
             return $this->db->query($qry)->num_rows();
         }  else if ($name == "GHS Citywest") {
-            $qry = "select urn from records where campaign_id = 29 and pot_id = '49'";
+            $qry = "select urn from records where campaign_id = 32 and pot_id = '49'";
             return $this->db->query($qry)->num_rows();
         }  else if ($name == "GHS Citywest survey") {
             $qry = "select urn from records where campaign_id = 32 and pot_id = '46'";
