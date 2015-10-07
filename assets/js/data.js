@@ -1,10 +1,9 @@
 /*the class below is for the data import page. It gets initialized by the data.php view*/
 var importer = {
     init: function () {
-        $(document).on('change', '#source', function (e) {
-            importer.check_source($(this));
+        $(document).on('change', '#source,#pot', function (e) {
+            importer.check_source_pot($(this));
         });
-
         $(document).on('change', '#campaign', function () {
             importer.show_campaign_type();
         });
@@ -142,7 +141,7 @@ var importer = {
             url: helper.baseUrl + 'data/start_import',
             type: "POST",
             dataType: "JSON",
-            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val() + '&type=' + $('#campaign option:selected').attr('ctype')
+            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val() + '&pot=' + $('#pot').val() + '&type=' + $('#campaign option:selected').attr('ctype')
         }).done(function () {
         });
     },
@@ -154,7 +153,7 @@ var importer = {
 		 $('#ctype-text').text("This is a " + ctype + " campaign.").hide();	
 		}
     },
-    check_source: function ($btn) {
+    check_source_pot: function ($btn) {
         if ($btn.val() == "other") {
             $btn.closest('.form-group').find('input[type="text"]').show()
         } else {

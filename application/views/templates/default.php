@@ -234,7 +234,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/js/jquery.mmenu.min.all.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/main.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/main.js?v2.0"></script>
 <?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
     <script
  type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>

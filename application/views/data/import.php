@@ -44,9 +44,9 @@
                                       <div class="clearfix"></div>
                                     <p>Group this data within the campaign (Pot)</p>
                                     <div class="form-group input-group-sm">
-                                        <select class="selectpicker pull-left" id="source">
+                                        <select class="selectpicker pull-left" id="pot">
                                             <option value="">Select the data pot</option>
-                                            <?php foreach($sources as $row){ ?>
+                                            <?php foreach($pots as $row){ ?>
                                             <option value="<?php echo $row['id'] ?>">
                                                 <?php echo $row[ 'name'] ?>
                                             </option>
@@ -110,7 +110,7 @@
                                     </div>
                                     
                                   <div class="form-group input-group-sm pull-left marl" id="company-merge">
-                                        <p>Merge companies <span class="glyphicon glyphicon-info-sign tt" data-toggle="tooltip" data-placement="left" data-html="true" title="This feature allows multiple contacts to be added to a single company.<p>The company option uses both company name and postcode to find a match.</p><p>The merge column uses any column selected as the merge column</p>"></span></p>
+                                        <p>Merge companies <span class="glyphicon glyphicon-info-sign tt" data-toggle="tooltip" data-placement="left" data-html="true" title="This feature allows multiple contacts to be added to a single company.<p>The company option uses both company name and postcode to find a match.</p><p>The merge column uses any column selected as the merge column</p>"> </span> </p>
                                         <select name="merge" class="selectpicker" id="merge-companies" data-width="150px">
                                          	<option value="">Do not merge</option>
                                             <option value="1">Merge by client ref</option>
@@ -149,11 +149,11 @@
                                         </select>
                                     </div>-->
                                                     <div id="ignore-tel" style="display:none" class="form-group input-group-sm pull-left marl">
-                                         <p>Require telephone</p>
+                                         <p>Require telephone </p>
                                         <select style="display:none"  name="ignore_tel" class="selectpicker" data-width="150px"><option value="0" selected >Yes</option><option value="1">No</option></select>
                                         </div>
                                     <div class="form-group input-group-sm pull-left">
-                                        <p id='import-progress'>&nbsp;</p>
+                                        <p class="marl" id='import-progress'>&nbsp;</p>
                                         <button class="btn btn-success pull-right pull-left marl" id="import">Import</button> <button class="btn btn-default pull-left goto-step-2 marl">Back</button>
                             
                                     </div>

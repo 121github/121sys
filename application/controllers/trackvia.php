@@ -1188,7 +1188,7 @@ class Trackvia extends CI_Controller
                 $data["Owner Consent to proceed"] = "N";
                 $data["Date Tenant Notified"] = "today";
             }
-
+if(!empty($record['client_ref'])){
             $response = $this->tv->updateRecord($record['client_ref'], $data);
             if (!empty($response)) {
                 echo json_encode(array("success" => true, "response" => $response, "ref" => $record['client_ref'], "data" => $data));
@@ -1202,6 +1202,7 @@ class Trackvia extends CI_Controller
                 }
                 mail("bradf@121customerinsight.co.uk", "Trackvia Update Error", $message, $this->headers);
             }
+}
         }
     }
 
