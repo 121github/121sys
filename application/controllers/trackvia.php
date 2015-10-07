@@ -228,6 +228,7 @@ class Trackvia extends CI_Controller
                 'campaign_id' => 22,
                 'urgent' => 1,
                 'status' => 1,
+				'parked_code' => NULL,
                 'appointment_creation' => true,
                 'appointment_cancelled' => true,
                 'record_color' => '0066FF',
@@ -247,6 +248,7 @@ class Trackvia extends CI_Controller
                 'campaign_id' => 22,
                 'urgent' => NULL,
                 'status' => 4,
+				'parked_code' => NULL,
                 'outcome_id' => 72,
                 'appointment_creation' => true,
                 'appointment_cancelled' => false,
@@ -274,6 +276,7 @@ class Trackvia extends CI_Controller
             array(
                 'campaign_id' => 52,
                 'urgent' => NULL,
+				'parked_code' => NULL,
                 'status' => 1,
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
@@ -281,7 +284,8 @@ class Trackvia extends CI_Controller
                 'pot_id' => 51,
                 'savings_per_panel' => 20,
                 'attendee' => 139,
-				'source_id' => 28
+				'source_id' => 28,
+				'dials'=>0
             )
         );
 
@@ -294,6 +298,7 @@ class Trackvia extends CI_Controller
                 'campaign_id' => 52,
                 'urgent' => NULL,
                 'status' => 4,
+				'parked_code' => NULL,
                 'outcome_id' => 72,
                 'appointment_creation' => true,
                 'appointment_cancelled' => false,
@@ -341,6 +346,7 @@ class Trackvia extends CI_Controller
             array(
                 'campaign_id' => 32,
                 'urgent' => NULL,
+				'parked_code' => NULL,
                 'status' => 1,
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
@@ -360,6 +366,7 @@ class Trackvia extends CI_Controller
             array(
                 'campaign_id' => 32,
                 'urgent' => 1,
+				'parked_code' => NULL,
                 'status' => 1,
                 'appointment_creation' => true,
                 'appointment_cancelled' => true,
@@ -381,6 +388,7 @@ class Trackvia extends CI_Controller
                 'urgent' => NULL,
                 'status' => 4,
                 'outcome_id' => 72,
+				'parked_code' => NULL,
                 'appointment_creation' => true,
                 'appointment_cancelled' => false,
                 'record_color' => '00CC00',
@@ -410,6 +418,7 @@ class Trackvia extends CI_Controller
                 'campaign_id' => 29,
                 'urgent' => NULL,
                 'status' => 1,
+				'parked_code' => NULL,
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
                 'record_color' => '000000',
@@ -428,6 +437,7 @@ class Trackvia extends CI_Controller
             array(
                 'campaign_id' => 29,
                 'urgent' => NULL,
+				'parked_code' => NULL,
                 'status' => 1,
                 'appointment_creation' => false,
                 'appointment_cancelled' => false,
@@ -447,6 +457,7 @@ class Trackvia extends CI_Controller
             array(
                 'campaign_id' => 29,
                 'urgent' => 1,
+				'parked_code' => NULL,
                 'status' => 1,
                 'appointment_creation' => true,
                 'appointment_cancelled' => true,
@@ -465,6 +476,7 @@ class Trackvia extends CI_Controller
             array(
                 'campaign_id' => 29,
                 'urgent' => NULL,
+				'parked_code' => NULL,
                 'status' => 4,
                 'outcome_id' => 72,
                 'appointment_creation' => true,
@@ -483,6 +495,7 @@ class Trackvia extends CI_Controller
             PRIVATE_INFORM_INELIGIBLE,
             array(
                 'campaign_id' => 28,
+				'parked_code' => NULL,
                 'urgent' => NULL,
                 'status' => 1,
                 'appointment_creation' => false,
@@ -695,8 +708,9 @@ class Trackvia extends CI_Controller
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
-        $outcome_id = isset($options['outcome_id']) ? $options['outcome_id'] : NULL;
-        $parked_code = isset($options['parked_code']) ? $options['parked_code'] : NULL;
+        $outcome_id = isset($options['outcome_id']) ? $options['outcome_id'] : "";
+        $parked_code = isset($options['parked_code']) ? $options['parked_code'] : "";
+		$parked_code = isset($options['dials']) ? $options['dials'] : "";
         $appointment_creation = $options['appointment_creation'];
         $appointment_cancelled = $options['appointment_cancelled'];
         $record_color = $options['record_color'];
@@ -774,6 +788,9 @@ class Trackvia extends CI_Controller
                         );
                         if (!empty($outcome_id)) {
                             $update_array['outcome_id'] = $outcome_id;
+                        }
+						if (!empty($dials)) {
+                            $update_array['dials'] = $dials;
                         }
                         if (!empty($parked_code)) {
                             $update_array['parked_code'] = $parked_code;
