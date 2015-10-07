@@ -2,12 +2,17 @@
 /*the class below is for the data import page. It gets initialized by the data.php view*/
 var importer = {
     init: function () {
-        $(document).on('change', '#source', function (e) {
-            importer.check_source($(this));
+        $(document).on('change', '#source,#pot', function (e) {
+            importer.check_source_pot($(this));
         });
         $(document).on('blur', '#new_source', function (e) {
             if ($(this).val().length > 0) {
                 importer.add_source();
+            }
+        });
+		        $(document).on('blur', '#new_pot', function (e) {
+            if ($(this).val().length > 0) {
+                importer.add_pot();
             }
         });
         $(document).on('change', '#campaign', function () {
@@ -88,6 +93,28 @@ var importer = {
 
         });
     },
+	add_pot: function () {
+        $.ajax({
+            url: helper.baseUrl + 'import/add_pot',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                pot: $('#new_pot').val()
+            }
+        }).done(function (response) {
+            if (response.success) {
+                $('#pot option').each(function () {
+                    $(this).removeAttr('selected');
+                });
+                $('#pot').append('<option selected value="' + response.data + '">' + $('#new_pot').val() + '</option>');
+                $('#new_pot').hide();
+                $('#pot').selectpicker('render').selectpicker('refresh')
+            } else {
+                flashalert.danger("This data pot already exists");
+            }
+
+        });
+    },
     importcsv: function (filename) {
         $.ajax({
             url: helper.baseUrl + 'import/import_csv',
@@ -121,7 +148,7 @@ var importer = {
             url: helper.baseUrl + 'import/update_headers',
             type: "POST",
             dataType: "JSON",
-            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val() + '&type=' + $('#campaign option:selected').attr('ctype')
+            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val()+ '&pot=' + $('#pot').val() + '&type=' + $('#campaign option:selected').attr('ctype')
         }).done(function (response) {
             if (response.success) {
                 importer.check_import();
@@ -137,7 +164,7 @@ var importer = {
             url: helper.baseUrl + 'import/check_import',
             type: "POST",
             dataType: "JSON",
-            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val() + '&type=' + $('#campaign option:selected').attr('ctype')
+            data: $('#data-form').serialize() + '&filename=' + encodeURIComponent($('#filename').text()) + '&campaign=' + $('#campaign').val() + '&source=' + $('#source').val()+ '&pot=' + $('#pot').val() + '&type=' + $('#campaign option:selected').attr('ctype')
         }).done(function (response) {
             if (response.success) {
                 importer.start_import();
@@ -187,6 +214,7 @@ var importer = {
             data: {
                 campaign: $('#campaign').val(),
                 source: $('#source').val(),
+				pot: $('#pot').val(),
                 type: $('#campaign option:selected').attr('ctype')
             }
         }).done(function (response) {
@@ -208,6 +236,7 @@ var importer = {
             data: {
                 campaign: $('#campaign').val(),
                 source: $('#source').val(),
+				 pot: $('#pot').val(),
                 type: $('#campaign option:selected').attr('ctype')
             }
         }).done(function (response) {
@@ -458,7 +487,7 @@ var importer = {
         var ctype = $('#campaign option:selected').attr('ctype');
         $('#ctype-text').text("This is a " + ctype + " campaign.").show();
     },
-    check_source: function ($btn) {
+    check_source_pot: function ($btn) {
         if ($btn.val() == "other") {
             $btn.closest('.form-group').find('input[type="text"]').show()
         } else {
@@ -478,6 +507,10 @@ var importer = {
             var incomplete = "Please select a data source";
         } else if ($('#source').val() == "other" && $('#new_source').val() == "") {
             var incomplete = "Please enter the new source name";
+        } else if ($('#pot').val() == "") {
+           // var incomplete = "Please select a data pot";
+        } else if ($('#pot').val() == "other" && $('#new_pot').val() == "") {
+            var incomplete = "Please enter the new pot name";
         }
 
         if (incomplete) {

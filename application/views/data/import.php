@@ -45,7 +45,7 @@
                                     <p>Group this data within the campaign (Pot)</p>
                                     <div class="form-group input-group-sm">
                                         <select class="selectpicker pull-left" id="pot">
-                                            <option value="">Select the data pot</option>
+                                            <option value="">Do not use a pot</option>
                                             <?php foreach($pots as $row){ ?>
                                             <option value="<?php echo $row['id'] ?>">
                                                 <?php echo $row[ 'name'] ?>
@@ -53,7 +53,7 @@
                                             <?php } ?>
                                             <option value="other">Other</option>
                                         </select>
-                                        <input type="text" name="new_source" id="new_pot" class="form-control pull-left marl" style="width:200px; display:none" placeholder="Enter the name of the data pot" />
+                                        <input type="text" name="new_pot" id="new_pot" class="form-control pull-left marl" style="width:200px; display:none" placeholder="Enter the name of the data pot" />
                                     </div>
                                     
                                     <div class="clearfix"></div>

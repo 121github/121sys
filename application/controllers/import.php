@@ -39,14 +39,31 @@ echo json_encode(array("success"=>true));
             "success"=>true,"data" => $id
         ));
 	}
+	
+	
+		public function add_pot(){
+	$pot = $this->input->post('pot');
+	$this->db->insert('data_pots',array("pot_name"=>$pot));
+	if($this->db->_error_message()){	
+	 echo json_encode(array(
+            "success"=>false
+        ));
+		exit;
+	}
+	$id = $this->db->insert_id();
+	 echo json_encode(array(
+            "success"=>true,"data" => $id
+        ));
+	}
 	  //this loads the data management view
     public function index()
     {
         $campaigns = $this->Form_model->get_campaigns();
         $sources   = $this->Form_model->get_sources();
+		$pots   = $this->Form_model->get_pots();
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+			'pots' => $pots,
             'title' => 'Import Data',
             'page' => 'import_data',
             'javascript' => array(
