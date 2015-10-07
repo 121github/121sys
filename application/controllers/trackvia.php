@@ -68,7 +68,8 @@ class Trackvia extends CI_Controller
 
         $this->tv_tables = array(
             "GHS Southway" => SOUTHWAY_TABLE,
-            "GHS Private" => PRIVATE_TABLE
+            "GHS Private" => PRIVATE_TABLE,
+			"GHS Citywest" => CITYWEST_TABLE
         );
 
         $this->tv_views = array(
@@ -262,7 +263,7 @@ class Trackvia extends CI_Controller
 
     public function check_sw_installs()
     {
-        $this->db->query("update records set parked_code=2 where campaign_id in(52)");
+        $this->db->query("update records set parked_code=2,pot_id = 28 where campaign_id in(52)");
 
         //Installation Book View
         echo "<br>Checking the SOUTHWAY_BOOK_INSTALLATION(" . SOUTHWAY_BOOK_INSTALLATION . ") view";
@@ -394,7 +395,7 @@ class Trackvia extends CI_Controller
     public function check_private()
     {
         //PRIVATE DATA
-        $this->db->query("update records set parked_code=2,pot_id = 41 where campaign_id = 29 and record_status = 3");
+        $this->db->query("update records set parked_code=2,pot_id = 41 where campaign_id in(28,29) and record_status = 3");
 
         //
 //        //PRIVATE TABLE
