@@ -67,7 +67,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <?php if (isset($_SESSION['permissions'])) { ?>
         <a href="#menu" class="navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
-<?php if(isset($_SESSION['current_campaign'])&&count($campaign_pots)>0&&isset($global_filter)){ ?>
+        <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0 && isset($global_filter)) { ?>
 <?php if(isset($_SESSION['current_pot'])){ $filter_style = "color:#fff;background:#a94442"; } else { $filter_style = ""; } ?>
                 <a href="#menu-right" class="navbar-toggle navbar-right" style="height:34px;width:42px;<?php echo $filter_style ?>"><span class="glyphicon glyphicon-filter" style="padding-left:3px"></span></a>
     <?php } ?>            
@@ -99,7 +99,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             id="big-logo" style="margin-top:-5px; width:100%"
             src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
 </div>
-<?php if(isset($_SESSION['current_campaign'])&&count($campaign_pots)>0){ ?>
+<?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0) { ?>
 <nav id="menu-right" class="mm-menu mm--horizontal mm-offcanvas">
 <div style="padding:30px 20px 3px">
 <form id="global-filter-form">
