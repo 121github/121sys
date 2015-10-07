@@ -274,7 +274,7 @@ AND   TABLE_NAME   = 'records'")->row()->urn;
     {
         $campaign_id = $this->input->post('campaign');
         $source_id   = $this->input->post('source');
-		
+		$pot_id   = $this->input->post('pot')?$this->input->post('pot'):NULL;
 		if(empty($campaign_id)||empty($source_id)){
 		echo json_encode(array(
             "success" => false,"msg"=>"You must set the campaign and data source"
@@ -284,7 +284,7 @@ AND   TABLE_NAME   = 'records'")->row()->urn;
 		
         $qry_fields  = $this->Import_model->get_fields("records");
         if (!empty($qry_fields)) {
-            $insert_query = "insert into records (campaign_id,source_id " . $qry_fields['table_fields'] . ") select '" . $campaign_id . "','" . $source_id . "' " . $qry_fields['import_fields'] . " from importcsv";
+            $insert_query = "insert into records (campaign_id,source_id,pot_id " . $qry_fields['table_fields'] . ") select '" . $campaign_id . "','" . $source_id . "','" . $pot_id . "' " . $qry_fields['import_fields'] . " from importcsv";
             //$this->firephp->log($insert_query);
             $this->db->query($insert_query);
         }
