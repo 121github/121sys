@@ -36,7 +36,7 @@ $this->_campaigns = campaign_access_dropdown();
 		$pots   = $this->Form_model->get_pots();
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 			'pageId' => 'Admin',
             'title' => 'Admin | Import',
             'page' =>  'import',
@@ -124,7 +124,7 @@ $this->_campaigns = campaign_access_dropdown();
         $campaigns = $this->Form_model->get_campaigns();
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 			'pageId' => 'Admin',
             'title' => 'Admin | Data Management',
             'page' =>'data_allocation',
@@ -146,7 +146,7 @@ $this->_campaigns = campaign_access_dropdown();
         $campaigns = $this->Form_model->get_campaigns();
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Daily Ration',
             'page' => 'daily_ration',
@@ -533,7 +533,7 @@ $this->_campaigns = campaign_access_dropdown();
 		}
     	$data = array(
     			'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
     			'pageId' => 'Admin',
     			'title' => 'Admin | Add Record',
     			'page' =>'add_record',
@@ -683,7 +683,7 @@ $this->_campaigns = campaign_access_dropdown();
         $campaigns = $this->Form_model->get_campaigns();
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Backup and Restore',
             'page' =>  'backup_restore',
@@ -950,7 +950,7 @@ $this->_campaigns = campaign_access_dropdown();
 
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Outcomes',
             'page' => 'outcomes',
@@ -1065,7 +1065,7 @@ $this->_campaigns = campaign_access_dropdown();
 
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Triggers',
             'page' => 'triggers',
@@ -1278,7 +1278,7 @@ $this->_campaigns = campaign_access_dropdown();
 
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Duplicates',
             'page' => 'duplicates',
@@ -1393,7 +1393,7 @@ $this->_campaigns = campaign_access_dropdown();
 
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Suppression',
             'page' =>  'suppression' ,
@@ -1490,7 +1490,7 @@ $this->_campaigns = campaign_access_dropdown();
     {
         $data      = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Park Codes',
             'page' => 'parkcode',

@@ -25,7 +25,7 @@ $this->_campaigns = campaign_access_dropdown();
 		
 		$data = array(
 				'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 'pageId' => 'Admin',
 				'title' => 'Admin',
 				'page'=> 'scripts',

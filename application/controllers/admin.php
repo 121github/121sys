@@ -46,7 +46,7 @@ class Admin extends CI_Controller
         $users = $this->Form_model->get_users();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             "folders" => $folders,
             'pageId' => 'Admin',
             'title' => 'Admin',
@@ -146,7 +146,7 @@ class Admin extends CI_Controller
         $options['groups'] = $this->Form_model->get_all_groups();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => 'users'
@@ -196,7 +196,7 @@ class Admin extends CI_Controller
 		
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => 'campaign_setup',
@@ -229,7 +229,7 @@ class Admin extends CI_Controller
         $options['views'] = $this->Form_model->get_custom_views();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Campaign Access',
             'page' => 'campaign_access',
@@ -516,7 +516,7 @@ class Admin extends CI_Controller
         $logs = $this->Admin_model->get_logs();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => 'logs'
@@ -540,7 +540,7 @@ class Admin extends CI_Controller
         }
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => 'roles'
@@ -616,7 +616,7 @@ class Admin extends CI_Controller
         check_page_permissions('admin groups');
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => 'groups'
@@ -660,7 +660,7 @@ class Admin extends CI_Controller
         $managers = $this->Form_model->get_managers();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin',
             'page' => 'teams'
@@ -792,7 +792,7 @@ class Admin extends CI_Controller
         $campaigns = $this->Form_model->get_campaigns();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Campaign custom fields',
             'page' => 'custom_fields',

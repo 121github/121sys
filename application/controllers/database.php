@@ -88,7 +88,7 @@ echo ";<br>";
         $data = array(
             'page' => 'database',
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Database-management',
             'version' => $version,
             'title' => 'Database management',

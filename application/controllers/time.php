@@ -23,7 +23,7 @@ class Time extends CI_Controller
         $exception_types = $this->Form_model->get_time_exception_type();
     	$data     = array(
     			'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
     			'pageId' => 'Admin',
     			'title' => 'Admin | Time',
     			'page' =>  'agent_time',
@@ -290,7 +290,7 @@ class Time extends CI_Controller
         $agents = $this->Form_model->get_agents();
         $data     = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Admin',
             'title' => 'Admin | Time',
             'page' => 'default_time',

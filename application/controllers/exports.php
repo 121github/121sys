@@ -21,7 +21,7 @@ class Exports extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 			'pageId' => 'export',
             'title' => 'Admin | Exporter',
             'javascript' => array(

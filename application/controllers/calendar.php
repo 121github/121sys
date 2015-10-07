@@ -54,7 +54,7 @@ class Calendar extends CI_Controller
         }
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'title' => 'Dashboard | Calendar',
             'page' => 'data',
             'javascript' => array(

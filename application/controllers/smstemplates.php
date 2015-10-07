@@ -28,7 +28,7 @@ class Smstemplates extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Admin | SMS Templates',
             'page' => 'smstemplates',

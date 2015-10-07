@@ -239,7 +239,7 @@ class Search extends CI_Controller
         
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Search',
 			'page'=>"search",
             'title' => 'Search',
@@ -502,7 +502,7 @@ class Search extends CI_Controller
         $data = array(
 			'page' => 'Search',
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 			'pageId' => 'Search',
             'title' => 'Search',
             'columns' => $visible_columns,

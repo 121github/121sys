@@ -102,7 +102,7 @@ $this->_campaigns = campaign_access_dropdown();
         $data = array(
             'urn' => $urn,
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 'pageId' => 'Create-survey',
             'title' => 'Create new survey',
             'campaign' => $campaign,
@@ -160,7 +160,7 @@ $this->_campaigns = campaign_access_dropdown();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 'pageId' => 'Edit-survey',
             'title' => 'Edit survey',
             'urn' => $urn,
@@ -226,7 +226,7 @@ $this->_campaigns = campaign_access_dropdown();
         
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 'pageId' => 'List-survey',
             'title' => 'List Surveys',
             'columns' => $visible_columns,

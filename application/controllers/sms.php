@@ -152,7 +152,7 @@ class Sms extends CI_Controller
         $data = array(
             'urn' => $urn,
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Create-sms',
             'title' => 'Send new sms',
             'urn' => $urn,

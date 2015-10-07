@@ -28,7 +28,7 @@ class Reports extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Data Capture',
             'page' => 'data_capture',
@@ -58,7 +58,7 @@ class Reports extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Targets',
             'page' => 'targets'
@@ -92,7 +92,7 @@ class Reports extends CI_Controller
         $results = $this->Report_model->all_answers_data();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Answers',
             'page' => 'answers'
@@ -144,7 +144,7 @@ class Reports extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Activity',
             'page' => 'activity'
@@ -260,7 +260,7 @@ class Reports extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Campaign Outcme',
             'page' => "outcome_report_$group",
@@ -425,7 +425,7 @@ class Reports extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Email',
             'page' => "email_report_$group",
@@ -608,7 +608,7 @@ class Reports extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Productivity',
             'page' => 'productivity',
@@ -639,7 +639,7 @@ class Reports extends CI_Controller
 		$teams = $this->Form_model->get_teams();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Realtime',
             'page' => 'realtime',
@@ -774,7 +774,7 @@ class Reports extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Reports',
             'title' => 'Reports | Sms',
             'page' => "sms_report_$group",

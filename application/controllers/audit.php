@@ -23,7 +23,7 @@ class Audit extends CI_Controller
 public function index(){
 	 $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'page' => 'audit',
             'title' => 'System Audit',
 			'javascript' => array('plugins/DataTables/js/jquery.dataTables.min.js',

@@ -231,7 +231,7 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
 		$planner_users = $this->Form_model->get_drivers();
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'System planner',
             'title' => 'Planner',
             'page' => array('dashboard' => 'planner'),

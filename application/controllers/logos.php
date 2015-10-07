@@ -30,7 +30,7 @@ class Logos extends CI_Controller
 		
     	$data     = array(
     			'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
     			'pageId' => 'Admin',
     			'title' => 'Campaign logos',
     			'page' => 'logos',

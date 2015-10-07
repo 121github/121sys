@@ -345,7 +345,7 @@ $(document).on('click','#global-filter-submit',function(e){
 	}).done(function(){
 		var right_mmenu = $("nav#menu-right").data( "mmenu" );
 		right_mmenu.close();
-		if(typeof view_records.table!=="undefined"){
+		if(typeof view_records !=="undefined"){
 			 map_table_reload()	
 		}
 	});

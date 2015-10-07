@@ -18,7 +18,7 @@ class Docscanner extends CI_Controller
 	public function index(){
 	        $data                 = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
 			'pageId' => 'Admin',
             'title' => 'Admin',
             'javascript' => array(

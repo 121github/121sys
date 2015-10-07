@@ -128,7 +128,7 @@ class Email extends CI_Controller
         $data = array(
             'urn' => $urn,
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Create-survey',
             'title' => 'Send new email',
             'urn' => $urn,
