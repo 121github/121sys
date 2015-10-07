@@ -212,7 +212,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'pot_id' => 34,
                 'savings_per_panel' => 20,
-                'attendee' => 122
+                'attendee' => 122,
+				'source_id' => 28
             )
         );
 
@@ -230,7 +231,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'pot_id' => 35,
                 'savings_per_panel' => 20,
-                'attendee' => 122
+                'attendee' => 122,
+				'source_id' => 28
             )
         );
 
@@ -249,7 +251,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '00CC00',
                 'pot_id' => 37,
                 'savings_per_panel' => 20,
-                'attendee' => 122
+                'attendee' => 122,
+				'source_id' => 28
             )
         );
 
@@ -275,7 +278,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'pot_id' => 51,
                 'savings_per_panel' => 20,
-                'attendee' => 139
+                'attendee' => 139,
+				'source_id' => 28
             )
         );
 
@@ -294,7 +298,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '00CC00',
                 'pot_id' => 52,
                 'savings_per_panel' => 20,
-                'attendee' => 139
+                'attendee' => 139,
+				'source_id' => 28
             )
         );
         //update sw install campaign records
@@ -340,7 +345,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'pot_id' => 46,
                 'savings_per_panel' => 20,
-                'attendee' => 137
+                'attendee' => 137,
+				'source_id' => 49
             )
         );
 
@@ -358,7 +364,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'pot_id' => 47,
                 'savings_per_panel' => 20,
-                'attendee' => 137
+                'attendee' => 137,
+				'source_id' => 49
             )
         );
 
@@ -377,7 +384,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '00CC00',
                 'pot_id' => 48,
                 'savings_per_panel' => 20,
-                'attendee' => 137
+                'attendee' => 137,
+				'source_id' => 49
             )
         );
         $this->check_trackvia(32);
@@ -407,7 +415,6 @@ class Trackvia extends CI_Controller
                 'pot_id' => 41,
                 'savings_per_panel' => 30,
                 'attendee' => 121
-
             )
         );
 

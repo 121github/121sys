@@ -210,7 +210,7 @@ class Trackvia_model extends CI_Model
 
 
     public function get_121_counts($name)
-    {    if ($name == "GHS Southway ") {
+    {    if ($name == "GHS Southway") {
             $qry = "select urn from records where campaign_id = 22 and pot_id = '28'";
             return $this->db->query($qry)->num_rows();
         }
@@ -223,7 +223,7 @@ class Trackvia_model extends CI_Model
         } else if ($name == "GHS Southway booked") {
             $qry = "select urn from records inner join appointments using(urn) where campaign_id = 22 and pot_id = '37'";
             return $this->db->query($qry)->num_rows();
-        } else if ($name == "GHS Private ") {
+        } else if ($name == "GHS Private") {
             $qry = "select urn from records where campaign_id = 29 and pot_id = '41'";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Private survey") {
