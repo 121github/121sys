@@ -86,8 +86,10 @@ class Trackvia extends CI_Controller
             "GHS Private survey" => PRIVATE_BOOK_SURVEY,
             "GHS Private rebook" => PRIVATE_REBOOK,
             "GHS Private booked" => PRIVATE_SURVEY_SLOTS,
-            "GHS Private not viable" => PRIVATE_INFORM_INELIGIBLE);
-
+            "GHS Private" => "",
+			 "GHS Southway" => "",
+			  "GHS Citywest" => "");
+		
         $this->pot_config = array(
             "GHS Southway survey" => 34,
             "GHS Southway rebook" => 35,
@@ -122,7 +124,8 @@ class Trackvia extends CI_Controller
         $data = array();
         foreach ($tables as $name => $view_id) {
             if ($view_id <> SOUTHWAY_ALL_RECORDS && $view_id <> PRIVATE_ALL_RECORDS && $view_id <> CITYWEST_ALL_RECORDS) {
-                $data[$name] = array("pot" => $pots[$name], "one2one" => $this->Trackvia_model->get_121_counts($name));
+                $data[$name] = array("pot" => $pots[$name], "one2one" => $this->Trackvia_model->get_121_counts($name));				
+				if(!empty($view_id)){
                 if ($this->input->post('tv') || $this->uri->segment(3) == "tv") {
                     $data[$name]["trackvia"] = 0;
                     for ($page = 1; $page < 15; $page++) {
@@ -142,6 +145,7 @@ class Trackvia extends CI_Controller
                 } else {
                     $data[$name]["trackvia"] = false;
                 }
+				}
 
             }
         }

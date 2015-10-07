@@ -96,7 +96,7 @@ var ghs = {
                     } else {
                         var tv = "-";
                     }
-                    table += '<tr><td>' + name + '</td><td>' + tv + '</td><td><a class="pointer" href="' + helper.baseUrl + 'search/custom/records/source/' + row.source + '/">' + row.one2one + '</a> ' + tt + '</td></tr>';
+                    table += '<tr><td>' + name + '</td><td>' + tv + '</td><td><a class="pointer" href="' + helper.baseUrl + 'search/custom/records/source/' + row.pot + '/">' + row.one2one + '</a> ' + tt + '</td></tr>';
                 });
                 table += "</tbody></table>";
                 $('.data-panel').html(table);
