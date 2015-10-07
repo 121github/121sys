@@ -233,7 +233,7 @@ class Trackvia_model extends CI_Model
             $qry = "select urn from records where campaign_id = 29 and pot_id = '38' ";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Private booked") {
-            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 29 and pot_id = '36'";
+            $qry = "select urn from records where campaign_id = 29 and pot_id = '36'";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Private not viable") {
             $qry = "select urn from records where campaign_id = 28 and pot_id = '40' ";
@@ -248,14 +248,17 @@ class Trackvia_model extends CI_Model
             $qry = "select urn from records where campaign_id = 32 and pot_id = '47'";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Citywest booked") {
-            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 32 and pot_id = '48'";
+            $qry = "select urn from records where campaign_id = 32 and pot_id = '48'";
             return $this->db->query($qry)->num_rows();
         } else if ($name == "GHS Southway installation booked") {
-            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 52 and pot_id = '52'";
+            $qry = "select urn from records where campaign_id = 52 and pot_id = '52'";
             return $this->db->query($qry)->num_rows();
         }
 		else if ($name == "GHS Southway installation") {
-            $qry = "select urn from records inner join appointments using(urn) where campaign_id = 52 and pot_id = '51'";
+            $qry = "select urn from records where campaign_id = 52 and pot_id = '51'";
+            return $this->db->query($qry)->num_rows();
+        } else if ($name == "GHS New Leads") {
+            $qry = "select urn from records where campaign_id = 29 and pot_id = '55'";
             return $this->db->query($qry)->num_rows();
         }
     }

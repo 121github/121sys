@@ -104,7 +104,10 @@ class Trackvia extends CI_Controller
             "GHS Private not viable" => 40,
             "GHS Citywest survey" => 46,
             "GHS Citywest rebook" => 47,
-            "GHS Citywest booked" => 48);
+            "GHS Citywest booked" => 48,
+			"GHS Citywest" => 49,
+            "GHS Southway" => 28,
+            "GHS Private" => 41);
         $this->headers = "From: noreply@121system.com" . "\r\n" .
             "CC: steve.prior@globalheatsource.com";
     }
