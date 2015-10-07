@@ -33,7 +33,6 @@ class Dashboard extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'ghs_dash',
@@ -63,7 +62,7 @@ class Dashboard extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'Eldon',
@@ -129,7 +128,7 @@ class Dashboard extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'hsl_dash',
@@ -166,7 +165,7 @@ class Dashboard extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'overview',
@@ -215,7 +214,7 @@ class Dashboard extends CI_Controller
         }
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'callback_dash',
@@ -264,7 +263,7 @@ class Dashboard extends CI_Controller
         }
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'favorites_dash',
@@ -304,7 +303,7 @@ class Dashboard extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'client_dash',
@@ -329,7 +328,7 @@ class Dashboard extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'nbf_dash',
@@ -356,7 +355,7 @@ class Dashboard extends CI_Controller
 
         $data = array(
             'campaign_access' => $this->_campaigns,
-'campaign_pots' => $this->_pots,
+
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
             'page' => 'management_dash',
