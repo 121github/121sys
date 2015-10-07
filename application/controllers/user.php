@@ -336,6 +336,8 @@ class User extends CI_Controller
         unset($_SESSION['next']);
         if ($campaign > "0") {
             unset($_SESSION['filter']);
+			unset($_SESSION['current_source']);
+			unset($_SESSION['current_pot']);
             if (in_array($campaign, $_SESSION['campaign_access']['array'])) {
 				
                 // no longer logging in realtime  
@@ -384,6 +386,8 @@ class User extends CI_Controller
             unset($_SESSION['current_client']);
             unset($_SESSION['current_campaign_name']);
             unset($_SESSION['current_campaign']);
+			unset($_SESSION['current_source']);
+			unset($_SESSION['current_pot']);
             unset($_SESSION['campaign_features']);
             unset($_SESSION['filter']['values']['campaign_id']);
             /* no longer logging in realtime

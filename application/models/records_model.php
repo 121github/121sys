@@ -268,6 +268,7 @@ class Records_model extends CI_Model
             }
             foreach ($priority as $k => $qry) {
                 $query = $this->db->query($qry." limit 1");
+				$_SESSION['last_query'] = $this->db->last_query();
                 if ($query->num_rows() > 0) {
 					$this->firephp->log($this->db->last_query());
                     $urn = $query->row(0)->urn;
