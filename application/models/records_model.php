@@ -838,7 +838,7 @@ class Records_model extends CI_Model
 	
 	  public function get_pot($urn)
     {
-        $qry = "select dp.* from data_pots dp inner join records on records.pot_id = dp.pot_id where urn = '$urn'";
+        $qry = "select dp.* from records dp left join data_pots on data_pots.pot_id = dp.pot_id where urn = '$urn'";
         $result = $this->db->query($qry)->result_array();
 
         return (!empty($result) ? $result[0] : array());
