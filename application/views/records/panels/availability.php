@@ -2,7 +2,7 @@
   <div class="panel-heading clearfix">Slot Availability
     <div class="pull-right">
     <form>
-    <input type="hidden" id="source-id" value="<?php echo $details['record']['source_id'] ?>" />
+    <input type="hidden" id="pot-id" value="<?php echo $details['record']['pot_id'] ?>" />
     <input type="hidden" id="slot-distance" name="distance" value="" />
       <input type="hidden" id="slot-attendee"  name="attendee" value="" />
           <input type="hidden" id="app-type" value="" />
