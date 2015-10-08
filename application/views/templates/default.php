@@ -144,7 +144,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 </a></li>
             <?php if (isset($campaign_access) && count($_SESSION['campaign_access']['array']) > "2") { ?>
                 <li style="padding:0 20px;">
-                    <select id="side-campaign-select" class="side-campaign-filter campaign-select" data-width="100%">
+                    <select id="side-campaign-select" class="selectpicker" data-width="100%">
                         <?php if(in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
                             <option value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
                         <?php } ?>
@@ -334,9 +334,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             }
 		});
 		<?php } ?>
-        $('#campaign-select').selectpicker();
-		$('.select-picker').selectpicker();
-
 $(document).on('click','#global-filter-submit',function(e){
 	e.preventDefault();
 	$.ajax({url:helper.baseUrl+'user/set_data',

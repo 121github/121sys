@@ -257,7 +257,7 @@ class Search extends CI_Controller
             'email_templates' => $email_templates,
             'groups' => $groups,
             'javascript' => array(
-                'filter.js',
+                'filter.js?v2.0',
             	'location.js'
             )
         );
