@@ -9,7 +9,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <title>Behicle Insurance Questions</title>
+    <title>Vehicle Insurance Questions</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
     <!-- Optional theme -->

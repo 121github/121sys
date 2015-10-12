@@ -9,7 +9,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <title>Insurance Questions</title>
+    <title>Liabilty Insurance Questions</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
     <!-- Optional theme -->
@@ -47,7 +47,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 </head>
 <body>
 <div class="container">
-    <h2>Vehicle Insurance Questions</h2>
+    <h2>Liabilty Insurance Questions</h2>
 
     <p>Please complete the following questions and click save</p>
 
