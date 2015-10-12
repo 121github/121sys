@@ -104,7 +104,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <div style="padding:30px 20px 3px">
 <form id="global-filter-form">
 <label>Data Pot <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip" data-placement="right" data-title="A group of specific records within a campaign" data-html="true"></span></label>
- <select name="data_pot" class="select-picker" data-width="100%">
+ <select name="data_pot" class="selectpicker" data-width="100%">
  <option value="">-- Any data pot --</option>
                         <?php foreach ($campaign_pots as $campaign => $pot_data) { ?>
                             <optgroup label="<?php echo $campaign ?>">
@@ -117,7 +117,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         <?php } ?>
                     </select>
 <label>Data Source <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip" data-placement="right" data-title="The source of the data" data-html="true"></span></label>
- <select name="data_source" class="select-picker" data-width="100%">
+ <select name="data_source" class="selectpicker" data-width="100%">
  <option value="">-- Any data source --</option>
                         <?php foreach ($campaign_sources as $campaign => $data_source) { ?>
                             <optgroup label="<?php echo $campaign ?>">
@@ -344,6 +344,8 @@ $(document).on('click','#global-filter-submit',function(e){
 		right_mmenu.close();
 		if(typeof view_records !=="undefined"){
 			 map_table_reload()	
+		} else {
+		window.location = helper.baseUrl+'records/detail/0';	
 		}
 	});
 });

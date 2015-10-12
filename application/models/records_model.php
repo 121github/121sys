@@ -230,6 +230,11 @@ class Records_model extends CI_Model
 
     }
 
+	public function get_record_row($urn){
+	$this->db->where("urn",$urn);
+	return $this->db->get("records")->row_array();		
+	}
+
     public function get_record()
     {
 
@@ -1015,8 +1020,9 @@ class Records_model extends CI_Model
             }
         }
 		if (!isset($hist['pot_id']) || empty($hist['pot_id'])) {
-            $pot = $this->get_pot($hist['urn']);
-            $hist['pot_id'] = $pot['pot_id'];
+            $record = $this->get_record_row($hist['urn']);
+            $hist['pot_id'] = $record['pot_id'];
+			$hist['source_id'] = $record['source_id'];
         }
 
         $hist["contact"] = date('Y-m-d H:i:s');
@@ -1044,7 +1050,8 @@ class Records_model extends CI_Model
             "progress_id",
             "last_survey",
             "call_direction",
-            "source_id"
+            "source_id",
+			"pot_id"
         ), $hist, NULL));
         return $this->db->insert_id();
     }
