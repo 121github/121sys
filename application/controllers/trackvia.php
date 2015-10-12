@@ -72,6 +72,8 @@ class Trackvia extends CI_Controller
 			"GHS Citywest" => CITYWEST_TABLE
         );
 
+		$this->tv_sources = array("GHS Bought Data"=>"CC-121Set1-OB","GHS Ginger Peterborough"=>"CC-Ginger1PB-OB","GHS Ginger Manchester"=>"CC-Ginger1MA-OB");
+
         $this->tv_views = array(
             "GHS Southway Total" => SOUTHWAY_ALL_RECORDS,
             "GHS Citywest Total" => CITYWEST_ALL_RECORDS,
@@ -1087,15 +1089,17 @@ class Trackvia extends CI_Controller
 
         //Survey 
         if ($app['appointment_type_id'] == APPOINTMENT_TYPE_SURVEY) {
+			$tv_sources = $this->tv_sources; 
             $data = array(
                 "Planned Survey Date" => $app['date'] . "T12:00:00-0600",
                 "Survey appt" => $app['slot'],
                 "Survey Booking Confirmed" => "Y",
                 "Survey booked by" => "121",
                 "Survey Appointment Comments" => $app['title'] . ' : ' . $app['text']
+				
             );
-            if ($app['pot_id'] == "55") {
-                $data["Data Source"] = "CC-121Set1-IB";
+            if (isset($tv_sources[$app['source_name']])) {
+                $data["Data Source"] = $tv_sources[$app['source_name']];
             }
         } //Installation
         else if ($app['appointment_type_id'] == APPOINTMENT_TYPE_INSTALLATION) {
@@ -1126,6 +1130,9 @@ class Trackvia extends CI_Controller
                 "Installation comments" => $app['title'] . ' : ' . $app['text'],
                 "Installation Date Confirmed" => "Y"
             );
+			 if (isset($tv_sources[$app['source_name']])) {
+                $data["Data Source"] = $tv_sources[$app['source_name']];
+            }
         }
 
         if ($app['campaign_id'] == 29) {
