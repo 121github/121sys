@@ -90,7 +90,7 @@ if (!function_exists('postcode_to_coords')) {
     function postcode_to_coords($postcode) {
         $_SESSION['current_postcode'] = $postcode;
         //Contact the google maps api to get the lat & lng from the postcode
-        $url = 'http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($postcode) . '&sensor=false';
+        $url = 'http://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($postcode) . ',uk&sensor=false';
         $json = json_decode(file_get_contents($url));
 		if(isset($json->error_message)){
 			return array("error"=>$json->error_message);
