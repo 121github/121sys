@@ -229,13 +229,18 @@ class Records extends CI_Controller
             $_SESSION['next'] = "0";
         }
         /* end nav config */
-               
         $this->User_model->campaign_access_check($urn);
 		
+		//first time a record is loaded set the logging fields
+	if(!isset($_SESSION['record_urn'])||!isset($_SESSION['record_loaded'])){
 		$_SESSION['record_urn'] = $urn;
-	if($urn<>$_SESSION['record_urn'] || !isset($_SESSION['record_loaded'])){
 		$_SESSION['record_loaded'] = date('Y-m-d H:i:s');
-		}
+	}
+	//for subsequent page loads we only log it if the urn has changed
+	if($urn<>$_SESSION['record_urn']){
+		$_SESSION['record_loaded'] = date('Y-m-d H:i:s');
+		$_SESSION['record_urn'] = $urn;
+	}
         $campaign                     = $this->Records_model->get_campaign($urn);
         $campaign_id                  = $campaign['campaign_id'];
         $campaign_layout              = $campaign['record_layout'];

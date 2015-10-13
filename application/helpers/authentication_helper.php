@@ -48,10 +48,14 @@ if ( !function_exists('user_auth_check') )
 		$query = $CI->db->query($qry);
 
 		$result = $CI->db->query($qry)->result_array();
-		if($CI->db->query($qry)->num_rows()){
+		$campaign_count  = $CI->db->query($qry)->num_rows();
+		if($campaign_count>0){
 		$campaigns = array();
 		foreach($result as $row){
 			$campaigns[$row['client']][] = array("id"=>$row['id'],"name"=>$row['name'],"type"=>$row['type'],"client"=>$row['client']);
+		}
+		if($campaign_count=="1") {
+			$_SESSION['current_campaign'] = $row['id'];
 		}
 		return $campaigns;
 		} else {
