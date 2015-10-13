@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 
 class Ajax extends CI_Controller
 {
-
+//ajax
     public function __construct()
     {
         parent::__construct();
