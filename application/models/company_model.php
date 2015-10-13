@@ -87,15 +87,17 @@ class Company_model extends CI_Model
         //put the contact details into array
         // $this->firephp->log($qry);
         foreach ($results as $result):
-           			 $companies[$result['company_id']]['visible'] = array(
-                "Company" => $result['coname'],
-                "Sector" => $result['sector_name'],
-                "Subsector" => $result['subsector_name'],
-                "Description" => $result['codescription'],
-                "Website" => $result['cowebsite'],
-				"Employees" => $result['employees'],
-				"Company #" => $result['conumber'],
-            );
+            if (!isset($companies[$result['company_id']]['visible'])) {
+                $companies[$result['company_id']]['visible'] = array(
+                    "Company" => $result['coname'],
+                    "Sector" => $result['sector_name'],
+                    "Subsector" => $result['subsector_name'],
+                    "Description" => $result['codescription'],
+                    "Website" => $result['cowebsite'],
+                    "Employees" => $result['employees'],
+                    "Company #" => $result['conumber'],
+                );
+            }
 
 			$companies[$result['company_id']]['telephone'][$result['cotelephone_id']] = array(
                 "tel_name" => $result['cotel_name'],

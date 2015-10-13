@@ -656,15 +656,17 @@ class Records_model extends CI_Model
                         "fullname" => $result['fullname'],
                         "use_full" => $use_fullname
                     );
-                    $data['contacts'][$result['contact_id']]['visible'] = array(
-                        "Job" => $result['position'],
-                        "DOB" => $result['dob'],
-                        "Email address" => $result['email'],
-                        "Linkedin" => $result['linkedin'],
-                        "Email Optout" => $result['email_optout'],
-                        "Website" => $result['website'],
-                        "Notes" => $result['notes']
-                    );
+                    if (!isset($data['contacts'][$result['contact_id']]['visible'])) {
+                        $data['contacts'][$result['contact_id']]['visible'] = array(
+                            "Job" => $result['position'],
+                            "DOB" => $result['dob'],
+                            "Email address" => $result['email'],
+                            "Linkedin" => $result['linkedin'],
+                            "Email Optout" => $result['email_optout'],
+                            "Website" => $result['website'],
+                            "Notes" => $result['notes']
+                        );
+                    }
 
                     $data['contacts'][$result['contact_id']]['telephone'][$result['telephone_id']] = array(
                         "tel_name" => $result['tel_name'],
@@ -687,14 +689,17 @@ class Records_model extends CI_Model
                 if (in_array(2, $features)) {
                     if ($result['company_id']) {
                         $data['company'][$result['company_id']]["Company Name"] = $result['coname'];
-                        $data['company'][$result['company_id']]['visible'] = array(
-                            "Sector" => $result['sector_name'],
-                            "Subsector" => $result['subsector_name'],
-                            "Description" => $result['codescription'],
-                            "Website" => $result['cowebsite'],
-                            "Employees" => $result['employees'],
-                            "Company #" => $result['conumber']
-                        );
+
+                        if (!isset($data['company'][$result['company_id']]['visible'])) {
+                            $data['company'][$result['company_id']]['visible'] = array(
+                                "Sector" => $result['sector_name'],
+                                "Subsector" => $result['subsector_name'],
+                                "Description" => $result['codescription'],
+                                "Website" => $result['cowebsite'],
+                                "Employees" => $result['employees'],
+                                "Company #" => $result['conumber']
+                            );
+                        }
 
                         $data['company'][$result['company_id']]['telephone'][$result['cotelephone_id']] = array(
                             "tel_name" => $result['cotel_name'],

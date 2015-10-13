@@ -53,6 +53,7 @@ class Ajax extends CI_Controller
 
     public function get_branch_info()
     {
+        $result = null;
         $this->load->model('Branches_model');
         if ($this->input->post('postcode') && !$this->input->post('region_id')) {
             $result = $this->Branches_model->get_branch_info(false, $this->input->post('postcode'));
@@ -613,6 +614,9 @@ class Ajax extends CI_Controller
                 "add1",
                 "add2",
                 "add3",
+                "add4",
+                "locality",
+                "city",
                 "county",
                 "country",
                 "postcode",
@@ -667,6 +671,9 @@ class Ajax extends CI_Controller
                 "add1",
                 "add2",
                 "add3",
+                "add4",
+                "locality",
+                "city",
                 "county",
                 "country",
                 "postcode",
@@ -710,6 +717,9 @@ class Ajax extends CI_Controller
                 "add1",
                 "add2",
                 "add3",
+                "add4",
+                "locality",
+                "city",
                 "county",
                 "country",
                 "postcode",
@@ -756,6 +766,9 @@ class Ajax extends CI_Controller
                 "add1",
                 "add2",
                 "add3",
+                "add4",
+                "locality",
+                "city",
                 "county",
                 "country",
                 "postcode",
@@ -1105,5 +1118,59 @@ class Ajax extends CI_Controller
             exit;
         }
     }
+
+    public function get_addresses_by_postcode()
+    {
+        if ($this->input->is_ajax_request()) {
+
+            $postcode = str_replace(" ", "", $this->input->post("postcode"));
+            $house_number = $this->input->post("house_number");
+
+            $curl = curl_init();
+
+            //Get the address
+            curl_setopt($curl, CURLOPT_URL, 'http://www.121leads.co.uk/121it/web/api/addresses/' . $postcode . '/open.json');
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            $addresses = curl_exec($curl);
+            $curl_info = curl_getinfo($curl);
+            curl_close($curl);
+
+            $addresses = json_decode($addresses, true);
+
+            if ($curl_info['http_code'] != 200) {
+                echo json_encode(array(
+                    "success" => false,
+                    "data" => array(),
+                    "postcode" => postcodeFormat($postcode)
+                ));
+            } else {
+                $address_selected = null;
+                //Check if the house number match any of the results
+                if ($house_number) {
+                    foreach ($addresses as $key => $address) {
+                        $ar = $address;
+                        unset($ar['postcode_io']);
+                        unset($ar['id']);
+                        unset($ar['latitude']);
+                        unset($ar['longitude']);
+                        unset($ar['created_date']);
+                        if (preg_grep("/{$house_number}/i", $ar)) {
+                            $address_selected = $key;
+                            break;
+                        }
+                    }
+                }
+                //return success to page
+                echo json_encode(array(
+                    "success" => (!empty($addresses)),
+                    "data" => $addresses,
+                    "postcode" => postcodeFormat($postcode),
+                    "address_selected" => $address_selected
+                ));
+            }
+        }
+    }
+
+
 
 }
