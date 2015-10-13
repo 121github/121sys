@@ -104,8 +104,12 @@
                         $add1 = (isset($address['add1']) && !empty($address['add1']) ? $address['add1'] : "");
                         $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", ".$address['add2'] : "");
                         $add3 = (isset($address['add3']) && !empty($address['add3']) ? ", ".$address['add3'] : "");
+                        $add4 = (isset($address['add4']) && !empty($address['add4']) ? ", " . $address['add4'] : "");
+                        $locality = (isset($address['locality']) && !empty($address['locality']) ? ", " . $address['locality'] : "");
+                        $city = (isset($address['city']) && !empty($address['city']) ? ", " . $address['city'] : "");
                         $county = (isset($address['county']) && !empty($address['county']) ? ", ".$address['county']:"");
-                        $add = $add1.$add2.$add3.$county;
+                        $country = (isset($address['country']) && !empty($address['country']) ? ", " . $address['country'] : "");
+                        $add = $add1 . $add2 . $add3 . $add4 . $locality . $city . $county . $country;
                         $add .= (!empty($address['postcode']) ? ", " . $address['postcode'] : " - This address has no postcode!");
                         ?>
                         <option <?php if (empty($address['postcode'])) {
