@@ -132,6 +132,9 @@ if (defined('ENVIRONMENT')) {
         case 'testing':
             error_reporting(E_ALL);
             break;
+        case 'demo':
+            error_reporting(0);
+            break;
         case 'acceptance':
             error_reporting(0);
             break;
