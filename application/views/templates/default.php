@@ -98,7 +98,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         </select>
     </div>
     <?php if ($_SESSION['environment'] == 'demo') { ?>
-        <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data addded could be deleted at any time!! </span>
+        <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data added could be deleted at any time!! </span>
     <?php } ?>
 </div>
 <?php } ?>
