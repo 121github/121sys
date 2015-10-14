@@ -348,6 +348,10 @@ var modals = {
                 if (typeof campaign_functions !== "undefined") {
                     campaign_functions.appointment_saved(appointment_id, response.state);
                 }
+                //Notice for set the outcome before leave the page
+                $(window).on('beforeunload', function () {
+                    return 'You need to set the outcome after create/reschedule an appointment. Are you sure you want to leave?';
+                });
 
             } else {
                 flashalert.danger(response.msg);
@@ -390,6 +394,10 @@ var modals = {
                     dataType: "JSON"
                 }).done(function(response){
 
+                });
+                //Notice for set the outcome before leave the page
+                $(window).on('beforeunload', function () {
+                    return 'You need to set the outcome after cancel an appointment. Are you sure you want to leave?';
                 });
                 flashalert.success("Appointment was cancelled");
             } else {

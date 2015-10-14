@@ -136,6 +136,11 @@ var record = {
         $(document).on('click', 'dd a.startcall', function (e) {
             e.preventDefault();
             window.location.href = $(this).attr('item-url');
+            //Notice for set the outcome before leave the page
+            $(window).on('beforeunload', function () {
+                return 'You need to set the outcome after a call. Are you sure you want to leave?';
+            });
+
         });
         /*initialize the timer when the agent calls */
         $(document).on('click', 'dd a.starttimer', function (e) {
@@ -708,6 +713,9 @@ var record = {
                             });
                         });
                     }
+                    //Disable leave page notice
+                    $(window).off('beforeunload');
+
                     record.update_panel.init();
                     $('textarea[name="comments"]').val('');
                     $('#update-record').prop('disabled', true);
