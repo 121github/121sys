@@ -68,72 +68,86 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <a href="#menu" class="navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
         <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0 && isset($global_filter)) { ?>
-<?php if(isset($_SESSION['current_pot'])){ $filter_style = "color:#fff;background:#a94442"; } else { $filter_style = ""; } ?>
-                <a href="#menu-right" class="navbar-toggle navbar-right" style="height:34px;width:42px;<?php echo $filter_style ?>"><span class="glyphicon glyphicon-filter" style="padding-left:3px"></span></a>
-    <?php } ?>            
+            <?php if (isset($_SESSION['current_pot'])) {
+                $filter_style = "color:#fff;background:#a94442";
+            } else {
+                $filter_style = "";
+            } ?>
+            <a href="#menu-right" class="navbar-toggle navbar-right"
+               style="height:34px;width:42px;<?php echo $filter_style ?>"><span class="glyphicon glyphicon-filter"
+                                                                                style="padding-left:3px"></span></a>
+        <?php } ?>
     <?php } ?>
-    
-       <?php if (isset($campaign_access)) { ?>
-       <div id="top-campaign-container" style="padding-top:8px; width:230px; display:none">
-                    <select id="top-campaign-select" class="selectpicker" data-width="230px">
-                        <?php if(in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
-                            <option value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
-                        <?php } ?>
-                        <?php foreach ($campaign_access as $client => $camp_array) { ?>
-                            <optgroup label="<?php echo $client ?>">
-                                <?php foreach ($camp_array as $camp) { ?>
-                                    <option <?php if (isset($_SESSION['current_campaign']) && $_SESSION['current_campaign'] == $camp['id']) {
-                                        echo "Selected";
-                                    } ?> value="<?php echo $camp['id'] ?>"><?php echo $camp['name'] ?></option>
-                                <?php } ?>
-                            </optgroup>
-                        <?php } ?>
-                    </select>
-                    </div>
-                    </div>
+
+    <?php if (isset($campaign_access)) { ?>
+    <div id="top-campaign-container" style="padding-top:8px; width:230px; display:none">
+        <select id="top-campaign-select" class="selectpicker" data-width="230px">
+            <?php if (in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
+                <option
+                    value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
             <?php } ?>
-    
-    
-    <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
-                                                     src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png"><img
-            id="big-logo" style="margin-top:-5px; width:100%"
-            src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
+            <?php foreach ($campaign_access as $client => $camp_array) { ?>
+                <optgroup label="<?php echo $client ?>">
+                    <?php foreach ($camp_array as $camp) { ?>
+                        <option <?php if (isset($_SESSION['current_campaign']) && $_SESSION['current_campaign'] == $camp['id']) {
+                            echo "Selected";
+                        } ?> value="<?php echo $camp['id'] ?>"><?php echo $camp['name'] ?></option>
+                    <?php } ?>
+                </optgroup>
+            <?php } ?>
+        </select>
+    </div>
+    <?php if ($_SESSION['environment'] == 'demo') { ?>
+        <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data addded could be deleted at any time!! </span>
+    <?php } ?>
+</div>
+<?php } ?>
+
+
+<a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
+                                                 src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png"><img
+        id="big-logo" style="margin-top:-5px; width:100%"
+        src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
 </div>
 <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0) { ?>
-<nav id="menu-right" class="mm-menu mm--horizontal mm-offcanvas">
-<div style="padding:30px 20px 3px">
-<form id="global-filter-form">
-<label>Data Pot <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip" data-placement="right" data-title="A group of specific records within a campaign" data-html="true"></span></label>
- <select name="data_pot" class="selectpicker" data-width="100%">
- <option value="">-- Any data pot --</option>
-                        <?php foreach ($campaign_pots as $campaign => $pot_data) { ?>
-                            <optgroup label="<?php echo $campaign ?>">
-                                <?php foreach ($pot_data as $pot) { ?>
-                                    <option <?php if (isset($_SESSION['current_pot']) && $_SESSION['current_pot'] == $pot['id']) {
-                                        echo "Selected";
-                                    } ?> value="<?php echo $pot['id'] ?>"><?php echo $pot['name'] ?></option>
-                                <?php } ?>
-                            </optgroup>
-                        <?php } ?>
-                    </select>
-<label>Data Source <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip" data-placement="right" data-title="The source of the data" data-html="true"></span></label>
- <select name="data_source" class="selectpicker" data-width="100%">
- <option value="">-- Any data source --</option>
-                        <?php foreach ($campaign_sources as $campaign => $data_source) { ?>
-                            <optgroup label="<?php echo $campaign ?>">
-                                <?php foreach ($data_source as $source) { ?>
-                                    <option <?php if (isset($_SESSION['current_source']) && $_SESSION['current_source'] == $source['id']) {
-                                        echo "Selected";
-                                    } ?> value="<?php echo $source['id'] ?>"><?php echo $source['name'] ?></option>
-                                <?php } ?>
-                            </optgroup>
-                        <?php } ?>
-                    </select>                    
-                    
- <button id="global-filter-submit" class="btn btn-primary pull-right">Submit</button>
- </form>
- </div>
-</nav>
+    <nav id="menu-right" class="mm-menu mm--horizontal mm-offcanvas">
+        <div style="padding:30px 20px 3px">
+            <form id="global-filter-form">
+                <label>Data Pot <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
+                                      data-placement="right" data-title="A group of specific records within a campaign"
+                                      data-html="true"></span></label>
+                <select name="data_pot" class="selectpicker" data-width="100%">
+                    <option value="">-- Any data pot --</option>
+                    <?php foreach ($campaign_pots as $campaign => $pot_data) { ?>
+                        <optgroup label="<?php echo $campaign ?>">
+                            <?php foreach ($pot_data as $pot) { ?>
+                                <option <?php if (isset($_SESSION['current_pot']) && $_SESSION['current_pot'] == $pot['id']) {
+                                    echo "Selected";
+                                } ?> value="<?php echo $pot['id'] ?>"><?php echo $pot['name'] ?></option>
+                            <?php } ?>
+                        </optgroup>
+                    <?php } ?>
+                </select>
+                <label>Data Source <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
+                                         data-placement="right" data-title="The source of the data"
+                                         data-html="true"></span></label>
+                <select name="data_source" class="selectpicker" data-width="100%">
+                    <option value="">-- Any data source --</option>
+                    <?php foreach ($campaign_sources as $campaign => $data_source) { ?>
+                        <optgroup label="<?php echo $campaign ?>">
+                            <?php foreach ($data_source as $source) { ?>
+                                <option <?php if (isset($_SESSION['current_source']) && $_SESSION['current_source'] == $source['id']) {
+                                    echo "Selected";
+                                } ?> value="<?php echo $source['id'] ?>"><?php echo $source['name'] ?></option>
+                            <?php } ?>
+                        </optgroup>
+                    <?php } ?>
+                </select>
+
+                <button id="global-filter-submit" class="btn btn-primary pull-right">Submit</button>
+            </form>
+        </div>
+    </nav>
 <?php } ?>
 <nav id="menu" class="mm-menu mm--horizontal mm-offcanvas">
     <?php if (isset($_SESSION['permissions'])) { ?>
@@ -145,8 +159,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             <?php if (isset($campaign_access) && count($_SESSION['campaign_access']['array']) > "2") { ?>
                 <li style="padding:0 20px;">
                     <select id="side-campaign-select" class="selectpicker" data-width="100%">
-                        <?php if(in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
-                            <option value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
+                        <?php if (in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
+                            <option
+                                value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
                         <?php } ?>
                         <?php foreach ($campaign_access as $client => $camp_array) { ?>
                             <optgroup label="<?php echo $client ?>">
@@ -160,30 +175,32 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     </select>
                 </li>
             <?php } ?>
-                <?php if (in_array("files only", $_SESSION['permissions'])) { 
-				$this->view('navigation/files_only.php');
-             } else if (in_array("survey only", $_SESSION['permissions'])) { 
-				$this->view('navigation/survey_only.php');
-             } else if(in_array("mix campaigns", $_SESSION['permissions']) || isset($_SESSION['current_campaign'])){
-			  ?>
-              <?php 
-			  //The system will give the agents the records that need dialing
-			  if (in_array("use callpot", $_SESSION['permissions'])) { ?>
-              <li><a href="<?php echo base_url(); ?>records/detail">Start Calling</a></li>
-              <?php } ?>
-                    <?php if (!isset($page)) { $page = ""; }
-						$page = array("page"=>$page); 
-						$this->view('navigation/dashboards.php',$page); 
-						$this->view('navigation/records.php',$page) ;
-						$this->view('navigation/files.php',$page);
-						$this->view('navigation/appointments.php',$page) ;
-						$this->view('navigation/planner.php',$page) ;
-						$this->view('navigation/surveys.php',$page);
-						$this->view('navigation/calendar.php',$page) ;
-						$this->view('navigation/admin.php',$page) ;
-						$this->view('navigation/reports.php',$page); 
-			 } else { ?>
-              <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
+            <?php if (in_array("files only", $_SESSION['permissions'])) {
+                $this->view('navigation/files_only.php');
+            } else if (in_array("survey only", $_SESSION['permissions'])) {
+                $this->view('navigation/survey_only.php');
+            } else if (in_array("mix campaigns", $_SESSION['permissions']) || isset($_SESSION['current_campaign'])) {
+                ?>
+                <?php
+                //The system will give the agents the records that need dialing
+                if (in_array("use callpot", $_SESSION['permissions'])) { ?>
+                    <li><a href="<?php echo base_url(); ?>records/detail">Start Calling</a></li>
+                <?php } ?>
+                <?php if (!isset($page)) {
+                    $page = "";
+                }
+                $page = array("page" => $page);
+                $this->view('navigation/dashboards.php', $page);
+                $this->view('navigation/records.php', $page);
+                $this->view('navigation/files.php', $page);
+                $this->view('navigation/appointments.php', $page);
+                $this->view('navigation/planner.php', $page);
+                $this->view('navigation/surveys.php', $page);
+                $this->view('navigation/calendar.php', $page);
+                $this->view('navigation/admin.php', $page);
+                $this->view('navigation/reports.php', $page);
+            } else { ?>
+                <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
             <?php } ?>
 
 
@@ -237,7 +254,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/main.js?v2.0"></script>
 <?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
     <script
- type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+        type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <?php } ?>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['permissions'])){ ?>
@@ -279,8 +296,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     $(document).on('change', '#top-campaign-select,#side-campaign-select', function () {
         $.ajax({
             url: helper.baseUrl + 'user/current_campaign/' + $(this).val(),
-			type:"POST",
-			data:{campaign:$(this).val(),pot:$('#top-pot-filter select').val()},
+            type: "POST",
+            data: {campaign: $(this).val(), pot: $('#top-pot-filter select').val()},
             dataType: "JSON",
             beforeSend: function () {
                 $('[data-id="campaign-select"]').append('<span style="position:absolute; right:5px;" ><img src="' + helper.baseUrl + 'assets/img/small-loading.gif" /></span>');
@@ -315,40 +332,42 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php if($this->session->flashdata('warning')){ ?>
         flashalert.success('<?php echo $this->session->flashdata('warning') ?>');
         <?php } ?>
-        $('nav#menu').mmenu({ extensions: ["pageshadow","effect-menu-slide", "effect-listitems-slide","pagedim-black"] });
-		/*
-		var api_mmenu = $("nav#menu").data( "mmenu" );
-		api_mmenu.bind( "openPanel", function( $panel ) {
+        $('nav#menu').mmenu({extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"]});
+        /*
+         var api_mmenu = $("nav#menu").data( "mmenu" );
+         api_mmenu.bind( "openPanel", function( $panel ) {
          console.log( "This panel is now opened:" + $panel.attr( "id" ) );
-		 $('body').append('<div style="color:red; font-size:18px; position:fixed; z-index:9999999; left:340px;">Select a campaign to begin</div>');
-      });
-*/
+         $('body').append('<div style="color:red; font-size:18px; position:fixed; z-index:9999999; left:340px;">Select a campaign to begin</div>');
+         });
+         */
 
-<?php if(isset($global_filter)){ ?>		
-		$('nav#menu-right').mmenu({
-			 	navbar:{ title:"Search &amp; Filter <span class='text-primary'><?php echo @$_SESSION['current_campaign_name'] ?></span>"
-				},
-			 extensions: ["pageshadow","effect-menu-slide", "effect-listitems-slide","pagedim-black"],
-			  offCanvas: {
-               position  : "right",
+        <?php if(isset($global_filter)){ ?>
+        $('nav#menu-right').mmenu({
+            navbar: {
+                title: "Search &amp; Filter <span class='text-primary'><?php echo @$_SESSION['current_campaign_name'] ?></span>"
+            },
+            extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
+            offCanvas: {
+                position: "right",
             }
-		});
-		<?php } ?>
-$(document).on('click','#global-filter-submit',function(e){
-	e.preventDefault();
-	$.ajax({url:helper.baseUrl+'user/set_data',
-	data:$('#global-filter-form').serialize(),
-	type:"POST"
-	}).done(function(){
-		var right_mmenu = $("nav#menu-right").data( "mmenu" );
-		right_mmenu.close();
-		if(typeof view_records !=="undefined"){
-			 map_table_reload()	
-		} else {
-		window.location = helper.baseUrl+'records/detail/0';	
-		}
-	});
-});
+        });
+        <?php } ?>
+        $(document).on('click', '#global-filter-submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: helper.baseUrl + 'user/set_data',
+                data: $('#global-filter-form').serialize(),
+                type: "POST"
+            }).done(function () {
+                var right_mmenu = $("nav#menu-right").data("mmenu");
+                right_mmenu.close();
+                if (typeof view_records !== "undefined") {
+                    map_table_reload()
+                } else {
+                    window.location = helper.baseUrl + 'records/detail/0';
+                }
+            });
+        });
 
     });
 </script>
