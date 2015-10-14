@@ -15,7 +15,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <!-- Optional theme -->
     <link rel="stylesheet"
           href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : $theme); ?>/bootstrap-theme.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/dataTables.min.css">
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/datepicker3.css">
@@ -228,8 +228,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.min.js"></script>
 <?php if (@in_array("datatables", $javascript)) { ?>
-    <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
+   <!-- <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/datatables.min.js"></script>-->
+    <!--<script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>-->
 <?php } ?>
 <script src="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/js/jquery.mmenu.min.all.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>

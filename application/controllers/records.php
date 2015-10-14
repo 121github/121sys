@@ -79,8 +79,8 @@ class Records extends CI_Controller
                 'view.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
-				'plugins/DataTables/js/jquery.dataTables.min.js',
-				'plugins/DataTables/js/dataTables.bootstrap.js',
+				'plugins/DataTables/datatables.min.js',
+				//'plugins/DataTables/js/dataTables.bootstrap.js',
 		'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
             )

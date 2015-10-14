@@ -12,7 +12,7 @@ class Planner extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-
+		$this->load->model('Records_model');
         $this->load->model('User_model');
         $this->load->model('Form_model');
         $this->load->model('Planner_model');
@@ -36,8 +36,9 @@ class Planner extends CI_Controller
 	}
 
 	public function simulate_hsl_planner(){
+	$campaign_id = $_SESSION['current_campaign'];
 	$customer_postcode = $this->input->post('postcode');	
-	$branch_id = $this->input->post('branch_id');	
+	$branch_id = $this->input->post('branch_id');
 	$driver_id = $this->input->post('driver_id');
 	$slot = "1";
 	if($this->input->post('slot')){
