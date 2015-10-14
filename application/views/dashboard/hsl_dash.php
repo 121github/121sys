@@ -66,8 +66,34 @@
                 <table class='table table-striped table-condensed'>
                     <?php foreach ($webform_hear as $key => $val) { ?>
                         <tr>
-                            <th><?php echo $key; ?></th>
-                            <td><?php echo $val . " (" . round(($val * 100) / $webform_completed['total'], 2) . "%)"; ?></td>
+                            <th>
+                                <span data-toggle="collapse"
+                                      data-target="#accordion_<?php echo str_replace(" ", "", $key); ?>"
+                                      class="clickable pointer">
+                                    <?php if (!empty($val['sub_hear'])) { ?>
+                                        +
+                                    <?php } ?>
+                                </span>
+                            </th>
+                            <th>
+                                <?php echo $key; ?>
+                                <div id="accordion_<?php echo str_replace(" ", "", $key); ?>" class="collapse"
+                                     style="width: 150%;">
+                                    <table style="width: 100%; font-size: 10px; font-weight: normal">
+                                        <?php foreach ($val['sub_hear'] as $sub_key => $sub_val) { ?>
+                                            <tr>
+                                                <div>
+                                                    <td><?php echo $sub_key; ?></td>
+                                                    <td><?php echo $sub_val . " (" . round(($sub_val * 100) / $val['count'], 2) . "%)"; ?></td>
+                                                </div>
+                                            </tr>
+                                        <?php } ?>
+                                    </table>
+                                </div>
+                            </th>
+                            <td>
+                                <?php echo $val['count'] . " (" . round(($val['count'] * 100) / $webform_completed['total'], 2) . "%)"; ?>
+                            </td>
                         </tr>
                     <?php } ?>
                 </table>

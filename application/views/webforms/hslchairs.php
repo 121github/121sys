@@ -87,21 +87,26 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <h5>Now capture/validate the following information from the customer</h5>
 
         <div>
-            <label>Where did you hear about us?</label>
+            <label style="width:50%">Where did you hear about us?</label><label style="width:50%">Secondary
+                option</label>
             <br>
-            <select name="answers[a24][]" class="selectpicker" data-width="100%" multiple
+            <select name="answers[a24][]" id="hear" class="selectpicker" data-width="50%" multiple
                     data-size="5">
-                <option <?php if (@strpos($values['a24'], "Mail / Leaflet") !== false) {
+                <option <?php if (@strpos($values['a24'], "Direct Mail") !== false) {
                     echo "selected";
                 } ?>value='Mail / Leaflet'>Mail / Leaflet
                 </option>
-                <option <?php if (@strpos($values['a24'], "Referral") !== false) {
+                <option <?php if (@strpos($values['a24'], "Refferal (family, friend, neighbour)") !== false) {
                     echo "selected";
-                } ?> value='Referral'>Referral
+                } ?> value='Refferal (family, friend, neighbour)'>Refferal (family, friend, neighbour)
                 </option>
                 <option <?php if (@strpos($values['a24'], "Newspaper") !== false) {
                     echo "selected";
                 } ?> value='Newspaper'>Newspaper
+                </option>
+                <option <?php if (@strpos($values['a24'], "Magazine") !== false) {
+                    echo "selected";
+                } ?> value='Magazine'>Magazine
                 </option>
                 <option <?php if (@strpos($values['a24'], "Website") !== false) {
                     echo "selected";
@@ -115,21 +120,13 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     echo "selected";
                 } ?> value='Facebook'>Facebook
                 </option>
-                <option <?php if (@strpos($values['a24'], "Family") !== false) {
+                <option <?php if (@strpos($values['a24'], "TV Spot") !== false) {
                     echo "selected";
-                } ?> value='Family'>Family
+                } ?> value='TV Spot'>TV Spot
                 </option>
-                <option <?php if (@strpos($values['a24'], "Friend") !== false) {
+                <option <?php if (@strpos($values['a24'], "TV Sponsorship") !== false) {
                     echo "selected";
-                } ?> value='Friend'>Friend
-                </option>
-                <option <?php if (@strpos($values['a24'], "Neighbour") !== false) {
-                    echo "selected";
-                } ?> value='Neighbour'>Neighbour
-                </option>
-                <option <?php if (@strpos($values['a24'], "TV") !== false) {
-                    echo "selected";
-                } ?> value='TV'>TV
+                } ?> value='TV Sponsorship'>TV Sponsorship
                 </option>
                 <option <?php if (@strpos($values['a24'], "Door") !== false) {
                     echo "selected";
@@ -139,9 +136,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     echo "selected";
                 } ?> value='Doordrop'>Doordrop
                 </option>
-                <option <?php if (@strpos($values['a24'], "Existing Customer") !== false) {
+                <option <?php if (@strpos($values['a24'], "Previous Customer") !== false) {
                     echo "selected";
-                } ?> value='Existing Customer'>Existing Customer
+                } ?> value='Previous Customer'>Previous Customer
                 </option>
                 <option <?php if (@strpos($values['a24'], "Catalogue") !== false) {
                     echo "selected";
@@ -151,6 +148,583 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     echo "selected";
                 } ?> value='OT Recommendation'>OT Recommendation
                 </option>
+                <option <?php if (@strpos($values['a24'], "Press Inserts") !== false) {
+                    echo "selected";
+                } ?> value='Press Inserts'>Press Inserts
+                </option>
+            </select>
+            <select name="answers[a28][]" id="sub-hear" class="selectpicker" data-width="49%" multiple data-size="5">
+                <optgroup label="Newspaper" disabled>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Mail Weekend") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Mail Weekend'>Daily Mail Weekend
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Mail Midweek") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Mail Midweek'>Daily Mail Midweek
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Mail Saturday") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Mail Saturday'>Daily Mail Saturday
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Mail on Sunday Event") !== false) {
+                            echo "selected";
+                        } ?> value='Mail on Sunday Event'>Mail on Sunday Event
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Mail on Sunday / You Mag") !== false) {
+                            echo "selected";
+                        } ?> value='Mail on Sunday / You Mag'>Mail on Sunday / You Mag
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Saturday Express Mag") !== false) {
+                            echo "selected";
+                        } ?> value='Saturday Express Mag'>Saturday Express Mag
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Express Saturday") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Express Saturday'>Daily Express Saturday
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Express Midweek") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Express Midweek'>Daily Express Midweek
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sunday Express") !== false) {
+                            echo "selected";
+                        } ?> value='Sunday Express'>Sunday Express
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Telegraph Saturday") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Telegraph Saturday'>Daily Telegraph Saturday
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Telegraph Midweek") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Telegraph Midweek'>Daily Telegraph Midweek
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Saturday Telegraph Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='Saturday Telegraph Magazine'>Saturday Telegraph Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sunday Telegraph") !== false) {
+                            echo "selected";
+                        } ?> value='Sunday Telegraph'>Sunday Telegraph
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Sun") !== false) {
+                            echo "selected";
+                        } ?> value='The Sun'>The Sun
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sun TV Mag") !== false) {
+                            echo "selected";
+                        } ?> value='Sun TV Mag'>Sun TV Mag
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sun on Sunday / TV Soap") !== false) {
+                            echo "selected";
+                        } ?> value='Sun on Sunday / TV Soap'>Sun on Sunday / TV Soap
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Times Saturday") !== false) {
+                            echo "selected";
+                        } ?> value='The Times Saturday'>The Times Saturday
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Times Midweek") !== false) {
+                            echo "selected";
+                        } ?> value='The Times Midweek'>The Times Midweek
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Times Mag") !== false) {
+                            echo "selected";
+                        } ?> value='The Times Mag'>The Times Mag
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Sunday Times") !== false) {
+                            echo "selected";
+                        } ?> value='The Sunday Times'>The Sunday Times
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Sunday Times Mag") !== false) {
+                            echo "selected";
+                        } ?> value='The Sunday Times Mag'>The Sunday Times Mag
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sunday Times Culture") !== false) {
+                            echo "selected";
+                        } ?> value='Sunday Times Culture'>Sunday Times Culture
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Mirror") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Mirror'>Daily Mirror
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "We Love TV") !== false) {
+                            echo "selected";
+                        } ?> value='We Love TV'>We Love TV
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sunday Mirror") !== false) {
+                            echo "selected";
+                        } ?> value='Sunday Mirror'>Sunday Mirror
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sunday Mirror Notebook") !== false) {
+                            echo "selected";
+                        } ?> value='Sunday Mirror Notebook'>Sunday Mirror Notebook
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The People") !== false) {
+                            echo "selected";
+                        } ?> value='The People'>The People
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Love Sunday") !== false) {
+                            echo "selected";
+                        } ?> value='Love Sunday'>Love Sunday
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Guardian Weekend Mag") !== false) {
+                            echo "selected";
+                        } ?> value='Guardian Weekend Mag'>Guardian Weekend Mag
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Guardian") !== false) {
+                            echo "selected";
+                        } ?> value='The Guardian'>The Guardian
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Observer Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='Observer Magazine'>Observer Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Observer") !== false) {
+                            echo "selected";
+                        } ?> value='The Observer'>The Observer
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Mail Scotland Saturday") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Mail Scotland Saturday'>Daily Mail Scotland Saturday
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Mail on Sunday Scotland") !== false) {
+                            echo "selected";
+                        } ?> value='Mail on Sunday Scotland'>Mail on Sunday Scotland
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Mail Scotland Midweek") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Mail Scotland Midweek'>Daily Mail Scotland Midweek
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Scottish Daily Express Saturday") !== false) {
+                            echo "selected";
+                        } ?> value='Scottish Daily Express Saturday'>Scottish Daily Express Saturday
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Scottish daily express midweek") !== false) {
+                            echo "selected";
+                        } ?> value='Scottish daily express midweek'>Scottish daily express midweek
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Scottish Sunday Express") !== false) {
+                            echo "selected";
+                        } ?> value='Scottish Sunday Express'>Scottish Sunday Express
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Daily Record") !== false) {
+                            echo "selected";
+                        } ?> value='Daily Record'>Daily Record
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sunday Mail") !== false) {
+                            echo "selected";
+                        } ?> value='Sunday Mail'>Sunday Mail
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sunday Post") !== false) {
+                            echo "selected";
+                        } ?> value='Sunday Post'>Sunday Post
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Herald Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='The Herald Magazine'>The Herald Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sunday Herald") !== false) {
+                            echo "selected";
+                        } ?> value='Sunday Herald'>Sunday Herald
+                    </option>
+                </optgroup>
+                <optgroup label="Magazine" disabled>
+                    <option
+                        <?php if (@strpos($values['a28'], "TV times code") !== false) {
+                            echo "selected";
+                        } ?> value='TV times code'>TV times code
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Radio times code") !== false) {
+                            echo "selected";
+                        } ?> value='Radio times code'>Radio times code
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Peoples Friend") !== false) {
+                            echo "selected";
+                        } ?> value='Peoples Friend'>Peoples Friend
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Peoples Friend Special") !== false) {
+                            echo "selected";
+                        } ?> value='Peoples Friend Special'>Peoples Friend Special
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Peoples friend Pocket Novels") !== false) {
+                            echo "selected";
+                        } ?> value='Peoples friend Pocket Novels'>Peoples friend Pocket Novels
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "My Weekly") !== false) {
+                            echo "selected";
+                        } ?> value='My Weekly'>My Weekly
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "My Weekly Special") !== false) {
+                            echo "selected";
+                        } ?> value='My Weekly Special'>My Weekly Special
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "My Weekly Pocket Novels") !== false) {
+                            echo "selected";
+                        } ?> value='My Weekly Pocket Novels'>My Weekly Pocket Novels
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Radio Times") !== false) {
+                            echo "selected";
+                        } ?> value='Radio Times'>Radio Times
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Radio times Extra") !== false) {
+                            echo "selected";
+                        } ?> value='Radio times Extra'>Radio times Extra
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Womens Weekly") !== false) {
+                            echo "selected";
+                        } ?> value='Womens Weekly'>Womens Weekly
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Womens Weekly Special") !== false) {
+                            echo "selected";
+                        } ?> value='Womens Weekly Special'>Womens Weekly Special
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Puzzler Big Brands") !== false) {
+                            echo "selected";
+                        } ?> value='Puzzler Big Brands'>Puzzler Big Brands
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Puzzler Q Range") !== false) {
+                            echo "selected";
+                        } ?> value='Puzzler Q Range'>Puzzler Q Range
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Puzzler Chat Pack") !== false) {
+                            echo "selected";
+                        } ?> value='Puzzler Chat Pack'>Puzzler Chat Pack
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Take A Break") !== false) {
+                            echo "selected";
+                        } ?> value='Take A Break'>Take A Break
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Take A Break Special") !== false) {
+                            echo "selected";
+                        } ?> value='Take A Break Special'>Take A Break Special
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Womans Own") !== false) {
+                            echo "selected";
+                        } ?> value='Womans Own'>Womans Own
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Womans Own Special") !== false) {
+                            echo "selected";
+                        } ?> value='Womans Own Special'>Womans Own Special
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Womans") !== false) {
+                            echo "selected";
+                        } ?> value='Womans'>Womans
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Womans Special") !== false) {
+                            echo "selected";
+                        } ?> value='Womans Special'>Womans Special
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "TV Choice") !== false) {
+                            echo "selected";
+                        } ?> value='TV Choice'>TV Choice
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Total TV Guide") !== false) {
+                            echo "selected";
+                        } ?> value='Total TV Guide'>Total TV Guide
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Whats on TV") !== false) {
+                            echo "selected";
+                        } ?> value='Whats on TV'>Whats on TV
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "TV and Satelite Week") !== false) {
+                            echo "selected";
+                        } ?> value='TV and Satelite Week'>TV and Satelite Week
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Weekly News") !== false) {
+                            echo "selected";
+                        } ?> value='Weekly News'>Weekly News
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Yours") !== false) {
+                            echo "selected";
+                        } ?> value='Yours'>Yours
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Amateur Gardening ") !== false) {
+                            echo "selected";
+                        } ?> value='Amateur Gardening '>Amateur Gardening
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Garden News") !== false) {
+                            echo "selected";
+                        } ?> value='Garden News'>Garden News
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Saga") !== false) {
+                            echo "selected";
+                        } ?> value='Saga'>Saga
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Choice Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='Choice Magazine'>Choice Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "BBC Countrylife") !== false) {
+                            echo "selected";
+                        } ?> value='BBC Countrylife'>BBC Countrylife
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Take A Puzzle") !== false) {
+                            echo "selected";
+                        } ?> value='Take A Puzzle'>Take A Puzzle
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Take A Crossword") !== false) {
+                            echo "selected";
+                        } ?> value='Take A Crossword'>Take A Crossword
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Arrowwords") !== false) {
+                            echo "selected";
+                        } ?> value='Arrowwords'>Arrowwords
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Sudoku Selection") !== false) {
+                            echo "selected";
+                        } ?> value='Sudoku Selection'>Sudoku Selection
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Best OF British") !== false) {
+                            echo "selected";
+                        } ?> value='Best OF British'>Best OF British
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Card Making and Papercraft") !== false) {
+                            echo "selected";
+                        } ?> value='Card Making and Papercraft'>Card Making and Papercraft
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Bella") !== false) {
+                            echo "selected";
+                        } ?> value='Bella'>Bella
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "That\'s Life") !== false) {
+                            echo "selected";
+                        } ?> value="That\'s Life">That's Life
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Chat") !== false) {
+                            echo "selected";
+                        } ?> value='Chat'>Chat
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Readers Digest") !== false) {
+                            echo "selected";
+                        } ?> value='Readers Digest'>Readers Digest
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Woman & Home") !== false) {
+                            echo "selected";
+                        } ?> value='Woman & Home'>Woman & Home
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Good Housekeeping") !== false) {
+                            echo "selected";
+                        } ?> value='Good Housekeeping'>Good Housekeeping
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Caravan Club Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='Caravan Club Magazine'>Caravan Club Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Garden") !== false) {
+                            echo "selected";
+                        } ?> value='The Garden'>The Garden
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "CSMA Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='CSMA Magazine'>CSMA Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "NFOP Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='NFOP Magazine'>NFOP Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Eye to Eye Puzzles") !== false) {
+                            echo "selected";
+                        } ?> value='Eye to Eye Puzzles'>Eye to Eye Puzzles
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Motability Lifestyle") !== false) {
+                            echo "selected";
+                        } ?> value='Motability Lifestyle'>Motability Lifestyle
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Arthritis Digest") !== false) {
+                            echo "selected";
+                        } ?> value='Arthritis Digest'>Arthritis Digest
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Arthritis Today") !== false) {
+                            echo "selected";
+                        } ?> value='Arthritis Today'>Arthritis Today
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Stroke News") !== false) {
+                            echo "selected";
+                        } ?> value='Stroke News'>Stroke News
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "WI Life") !== false) {
+                            echo "selected";
+                        } ?> value='WI Life'>WI Life
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "National Trust Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='National Trust Magazine'>National Trust Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "National Trust Scotland Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='National Trust Scotland Magazine'>National Trust Scotland Magazine
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Nature\'s Home") !== false) {
+                            echo "selected";
+                        } ?> value="Nature\'s Home">Nature's Home
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Legion") !== false) {
+                            echo "selected";
+                        } ?> value='The Legion'>The Legion
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "The Legion Scotland") !== false) {
+                            echo "selected";
+                        } ?> value='The Legion Scotland'>The Legion Scotland
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "House Beautiful") !== false) {
+                            echo "selected";
+                        } ?> value='House Beautiful'>House Beautiful
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Candis") !== false) {
+                            echo "selected";
+                        } ?> value='Candis'>Candis
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Gardens Illustrated ") !== false) {
+                            echo "selected";
+                        } ?> value='Gardens Illustrated '>Gardens Illustrated
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Homes & Antiques") !== false) {
+                            echo "selected";
+                        } ?> value='Homes & Antiques'>Homes & Antiques
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Prima") !== false) {
+                            echo "selected";
+                        } ?> value='Prima'>Prima
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "OT Magazine") !== false) {
+                            echo "selected";
+                        } ?> value='OT Magazine'>OT Magazine
+                    </option>
+                </optgroup>
+                <optgroup label="TV Sponsorship" disabled>
+                    <option
+                        <?php if (@strpos($values['a28'], "Channel itv3") !== false) {
+                            echo "selected";
+                        } ?> value='Channel itv3'>Channel itv3
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "ITV3 Morning") !== false) {
+                            echo "selected";
+                        } ?> value='ITV3 Morning'>ITV3 Morning
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "ITV3 Late Peak") !== false) {
+                            echo "selected";
+                        } ?> value='ITV3 Late Peak'>ITV3 Late Peak
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "Dickinson\'s Real Deal") !== false) {
+                            echo "selected";
+                        } ?> value="Dickinson\'s Real Deal">Dickinson's Real Deal
+                    </option>
+                    <option
+                        <?php if (@strpos($values['a28'], "UKTV") !== false) {
+                            echo "selected";
+                        } ?> value='UKTV'>UKTV
+                    </option>
+                </optgroup>
             </select>
         </div>
 
@@ -174,7 +748,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         $("#contact-id").val($(this).val());
                         $('#contact-fullname').val($("#contact-name option:selected").text());
                     });
-					 $("#contact-name").trigger("change");
+                    $("#contact-name").trigger("change");
                 });
             </script>
         </div>
@@ -564,6 +1138,38 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             } else {
                 flashalert.danger("Please answer all questions");
             }
+        });
+
+        //Sub Hear Disable/Enable
+        //Enable just which have the main option selected
+        $(this).find(":selected").each(function () {
+            var selected_value = $(this).val();
+            var optgroup = $("#sub-hear").find("optgroup[label='" + selected_value + "']");
+            optgroup.attr('disabled', false)
+        });
+        $("#sub-hear").selectpicker('refresh');
+
+        //On change the first option on the hear question
+        $('#hear').on('change', function (e) {
+
+            //First of all disable all of them
+            $("#sub-hear").find("optgroup").each(function () {
+                $(this).attr('disabled', true)
+            });
+
+            //Enable just which have the main option selected
+            $(this).find(":selected").each(function () {
+                var selected_value = $(this).val();
+                var optgroup = $("#sub-hear").find("optgroup[label='" + selected_value + "']");
+                optgroup.attr('disabled', false)
+            });
+
+            //Unselect which are disabled
+            $("#sub-hear").find("optgroup[disabled]").each(function () {
+                $(this).find(":selected").attr("selected", false);
+            });
+
+            $("#sub-hear").selectpicker('refresh');
         });
 
 
