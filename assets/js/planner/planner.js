@@ -1,7 +1,10 @@
 $(document).ready(function () {
-    maps.initialize("planner");
     planner.init();
 });
+
+function initializemaps(){
+   		maps.initialize("planner");
+}
 
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
 function planner_reload() {
@@ -14,6 +17,16 @@ function map_table_reload() {
 var planner = {
     init: function () {
         planner.reload_table();
+
+		$('#map-view-toggle').bootstrapToggle({
+            onstyle: 'success',
+            size: 'mini',
+        }).show().bootstrapToggle('off');
+
+	   $(document).on('change','#map-view-toggle',function(){
+	       maps.showMap($(this));
+            map_table_reload();
+	   });
 
         $('.daterange').daterangepicker({
                 opens: "left",
@@ -146,7 +159,7 @@ var planner = {
             type: "POST",
             dataType: "JSON",
             data: {
-                bounds: maps.getBounds(),
+                bounds:(typeof map=="undefined"?null:maps.getBounds()),
                 map: $('#map-view-toggle').prop('checked'),
                 date: $('.filter-form').find('input[name="date"]').val(),
                 user_id: $('.filter-form').find('input[name="user"]').val()

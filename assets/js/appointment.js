@@ -1,7 +1,12 @@
 
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
+function initializemaps(){
+   		maps.initialize("appointment");
+}
+
 function map_table_reload() {
-    appointment.table.columns.adjust().draw();
+     appointment.table.columns.adjust().draw();
+	 appointment.table.columns.adjust();
 }
 
 function full_table_reload() {
@@ -13,7 +18,15 @@ function full_table_reload() {
 var appointment = {
     init: function () {
         this.table;
+		$('#map-view-toggle').bootstrapToggle({
+            onstyle: 'success',
+            size: 'mini',
+        }).show().bootstrapToggle('off');
 
+	   $(document).on('change','#map-view-toggle',function(){
+	       maps.showMap($(this));
+            map_table_reload();
+	   });
         $('form').find('input[name="date_from"]').val(moment().format('YYYY-MM-DD'));
         $('form').find('input[name="date_to"]').val(moment().add('days', 29).format('YYYY-MM-DD'));
 
@@ -85,10 +98,16 @@ var appointment = {
     },
 		  populate_table: function (table_name) {
         appointment.table = $('.data-table').DataTable({
+           buttons: [
+            'copy', 'csv', 'excel', 'print'
+        ],
+		colReorder: true,
             "oLanguage": {
                 "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
             },
-            "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"clear">',
+            "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t><"col-lg-12"<"pull-left"l> <"pull-left marl" B>>><"clear">',
+			"lengthMenu": [[10, 25, 50,100, -1], [10, 25, 50,100, "All"]],
+			
             "width": "100%",
             "scrollX": true,
             "processing": true,
@@ -106,7 +125,7 @@ var appointment = {
                 },
                 data: function (d) {
                     d.extra_field = false;
-                    d.bounds = (maps.temp_bounds ? maps.temp_bounds : maps.getBounds());
+                    d.bounds =(typeof map=="undefined"?null:maps.getBounds()),
                     d.map = $('#map-view-toggle').prop('checked');
                     d.group = $('.filter-form').find('input[name="group"]').val();
                     d.date_from = $('.filter-form').find('input[name="date_from"]').val();
@@ -143,6 +162,7 @@ var appointment = {
                 maps.items.push(data);
             }
         });
+		
 
 		 $('.data-table tfoot th').each(function () {
             var title = $('.data-table thead th').eq($(this).index()).text();
@@ -161,7 +181,12 @@ var appointment = {
             }
             else {
                 var search_val = appointment.table.column($(this).index()).search();
-                $(this).html('<input class="dt-filter input-sm form-control" ' + filter_attribute + ' value="' + search_val[0] + '" />');
+				if(typeof search_val[0]!=="undefined"){
+				var filter_val = search_val[0];	
+				} else {
+				var filter_val = "";	
+				}
+                $(this).html('<input class="dt-filter input-sm form-control" ' + filter_attribute + ' value="' + filter_val + '" />');
             }
         });
 
@@ -176,6 +201,8 @@ var appointment = {
 
         });
 
+
+
         //this moves the search input boxes to the top of the table
         var r = $('.data-table tfoot tr');
         r.find('th').each(function () {
@@ -183,6 +210,15 @@ var appointment = {
         });
         $('.data-table thead').append(r);
         $('#search_0').css('text-align', 'center');
+		
+		
+		appointment.table.on('column-reorder',function(e, settings, details){
+   	$.ajax({url:helper.baseUrl+'datatables/save_order',
+	type:"POST",
+	dataType:"JSON",
+	data:{ columns: appointment.table.colReorder.order(),table:3 }
+	})
+	})
 	},
 	   get_used_icons: function () {
         $.ajax({

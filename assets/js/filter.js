@@ -3,7 +3,7 @@ var filter = {
     init: function() {
 		filter.custom_fields_panel()
         filter.count_records(); 
-        $(document).on('change','select:not(,#top-campaign-select,#side-campaign-select,.actions_parked_code_select,.actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select,.actions_template_select)',function() {
+        $(document).on('change','select:not(#top-campaign-select,#side-campaign-select,.actions_parked_code_select,.actions_parked_code_campaign,.actions_ownership_select,.actions_campaign_select,.actions_template_select)',function() {
             filter.count_records();
         });
 

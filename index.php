@@ -58,7 +58,7 @@ switch ($domain) {
     case 'accept.hsl.':
         define('ENVIRONMENT', 'acceptance');
         $session_name = '121sys_accept_hsl';
-        $theme = "voice";
+        $theme = "hsl";
 		$timeout = 6000; //100 minutes
         break;
 
@@ -112,9 +112,12 @@ session_name($session_name);
 session_start();
 $_SESSION['session_name'] = session_name();
 $_SESSION['environment'] = ENVIRONMENT;
+if(!isset($_SESSION['theme_folder'])){
 $_SESSION['theme_folder'] = $theme;
+}
+if(!isset($_SESSION['timeout'])){
 $_SESSION['timeout'] = $timeout;
-
+}
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

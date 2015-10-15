@@ -309,7 +309,7 @@ $(document).ready(function () {
     });
 
     var barheight = $('.navbar').height();
-    if (barheight > 50) {
+    if (barheight > 53) {
         $('.navbar-brand').hide();
     }
 

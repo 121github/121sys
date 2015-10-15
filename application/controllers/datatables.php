@@ -15,6 +15,17 @@ class Datatables extends CI_Controller
         $this->load->model('Datatables_model');
     }
 
+	public function save_order(){
+	$columns = $this->input->post('columns');
+	$table = $this->input->post('table');
+
+	$selected_columns = $this->Datatables_model->selected_columns($table);
+	foreach($selected_columns as $k=>$column){
+	$this->db->where(array("column_id"=>$column['column_id'],"user_id"=>$_SESSION['user_id'],"table_id"=>$table));
+	$this->db->update("datatables_user_columns",array("sort"=>$columns[$k]));
+	}
+	}
+
 	public function save_columns(){
 		$data = $this->input->post();
 		//delete the existing user columns for this table

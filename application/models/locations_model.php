@@ -17,16 +17,16 @@ class Locations_model extends CI_Model
     {
         $formatted_postcode = postcodeCheckFormat($postcode);
         if (!empty($formatted_postcode)) {
-            $check = "select postcode_id,lat,lng from uk_postcodes where postcode = '$formatted_postcode'";
+            $check = "select id,latitude lat,longitude lng from uk_postcodes.postcodeio where postcode = '$formatted_postcode'";
             if ($this->db->query($check)->num_rows()) {
                 $row = $this->db->query($check)->row_array();
-                $qry = "insert ignore into locations set location_id = '{$row['postcode_id']}',lat = '{$row['lat']}',lng = '{$row['lng']}'";
+                $qry = "insert ignore into locations set location_id = '{$row['id']}',lat = '{$row['lat']}',lng = '{$row['lng']}'";
                 $this->db->query($qry);
-                $this->set_postcode_ids($formatted_postcode, $row['postcode_id']);
+                $this->set_postcode_ids($formatted_postcode, $row['id']);
             } else {
                 $response = postcode_to_coords($postcode);
                 if (!isset($response['error']) && isset($response['lng'])) {
-                    $this->db->query("insert ignore into uk_postcodes set postcode='$formatted_postcode',lat = '{$response['lat']}',lng = '{$response['lng']}'");
+                    $this->db->query("insert ignore into uk_postcodes.postcodeio set postcode='$formatted_postcode',lat = '{$response['lat']}',lng = '{$response['lng']}'");
                     $id = $this->db->insert_id();
 					$this->db->query("insert ignore into locations set location_id = '$id',lat = '{$response['lat']}',lng = '{$response['lng']}'");
                     $this->set_postcode_ids($formatted_postcode, $id); 
@@ -40,9 +40,10 @@ class Locations_model extends CI_Model
     
     public function set_postcode_ids($postcode, $id)
     {
-        $this->db->query("update contact_addresses set location_id = $id where postcode = '$postcode' and location_id is null");
-        $this->db->query("update company_addresses set location_id =$id where postcode = '$postcode' and location_id is null");
-        $this->db->query("update appointments set location_id = $id where postcode = '$postcode' and location_id is null");
+        $this->db->query("update contact_addresses set location_id = $id where postcode = '$postcode'");
+        $this->db->query("update company_addresses set location_id =$id where postcode = '$postcode'");
+        $this->db->query("update appointments set location_id = $id where postcode = '$postcode'");
+		$this->db->query("update record_planner set location_id = $id where postcode = '$postcode'");
     }
     
     

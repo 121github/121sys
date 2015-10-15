@@ -15,7 +15,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <!-- Optional theme -->
     <link rel="stylesheet"
           href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : $theme); ?>/bootstrap-theme.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/dataTables.min.css">
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/datepicker3.css">
@@ -24,7 +24,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/default.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/css/jquery.mmenu.all.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/font-awesome.css">
-
     <style>
         .navbar-toggle {
             display: block;
@@ -44,6 +43,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     endif; ?>
     <link rel="shortcut icon"
           href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/icon.png">
+
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery-ui-1.9.2.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
@@ -90,7 +90,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         <?php } ?>
                     </select>
                     </div>
-                    </div>
+                      
             <?php } ?>
     
     
@@ -184,11 +184,21 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 						$this->view('navigation/reports.php',$page); 
 			 } else { ?>
               <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
+              <li><select id="side-campaign-select" class="selectpicker" data-width="100%">
+                        <?php if(in_array("mix campaigns", $_SESSION['permissions']) || (!isset($_SESSION['current_campaign']) && !in_array("mix campaigns", $_SESSION['permissions']))) { ?>
+                            <option value=""><?php echo(in_array("mix campaigns", $_SESSION['permissions']) ? "Campaign Filter" : "Select a campaign to begin"); ?></option>
+                        <?php } ?>
+                        <?php foreach ($campaign_access as $client => $camp_array) { ?>
+                            <optgroup label="<?php echo $client ?>">
+                                <?php foreach ($camp_array as $camp) { ?>
+                                    <option <?php if (isset($_SESSION['current_campaign']) && $_SESSION['current_campaign'] == $camp['id']) {
+                                        echo "Selected";
+                                    } ?> value="<?php echo $camp['id'] ?>"><?php echo $camp['name'] ?></option>
+                                <?php } ?>
+                            </optgroup>
+                        <?php } ?>
+                    </select></li>
             <?php } ?>
-
-
-            <li class="Spacer"><a href="<?php echo base_url(); ?>user/account" class="hreflink">My Account</a></li>
-            <li><a href="<?php echo base_url(); ?>user/logout" class="hreflink">Logout</a></li>
         </ul>
     <?php } ?>
 </nav>
@@ -223,22 +233,15 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         class="close close-alert">&times;</span></div>
 <div class="page-danger alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
+
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.min.js"></script>
-<?php if (@in_array("datatables", $javascript)) { ?>
-    <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/jquery.dataTables.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/plugins/DataTables/js/dataTables.bootstrap.js"></script>
-<?php } ?>
 <script src="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/js/jquery.mmenu.min.all.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/main.js?v2.0"></script>
-<?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
-    <script
- type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<?php } ?>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['permissions'])){ ?>
     helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
@@ -315,7 +318,34 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php if($this->session->flashdata('warning')){ ?>
         flashalert.success('<?php echo $this->session->flashdata('warning') ?>');
         <?php } ?>
-        $('nav#menu').mmenu({ extensions: ["pageshadow","effect-menu-slide", "effect-listitems-slide","pagedim-black"] });
+        $('nav#menu').mmenu({
+               "navbars": [
+                  {
+                     "position": "top",
+                     "content": [
+                        "prev",
+                        "title",
+                        "close"
+                     ]
+                  },
+                  {
+                     "position": "top",
+                     "content": [
+						"<a href='"+helper.baseUrl+"dashboard'><span class='fa fa-home'></span> Home</a>",
+						"<a href='"+helper.baseUrl+"user/account'><span class='fa fa-user'></span> Account</a>",
+						"<a href='#'><span class='fa fa-search'></span> Search</a>",
+                     ]
+                  },
+				  {
+                     "position": "bottom",
+                     "content": [
+                        "<a onclick=\"javascript:alert('Coming Soon')\" href='#'><span class='fa fa-book'></span> Docs</a>",
+						"<a onclick=\"javascript:alert('Contact the helpdesk on 01619199610')\" href='#'><span class='fa fa-phone'></span> Contact</a>",
+						"<a href='"+helper.baseUrl+"user/logout'><span class='fa fa-sign-out'></span> Logout</a>"
+                     ]
+                  }
+               ]
+            ,"extensions": ["pageshadow","effect-menu-slide", "effect-listitems-slide","pagedim-black"]});
 		/*
 		var api_mmenu = $("nav#menu").data( "mmenu" );
 		api_mmenu.bind( "openPanel", function( $panel ) {
@@ -358,5 +388,9 @@ if (isset($javascript)):
         <script src="<?php echo base_url(); ?>assets/js/<?php echo $file ?>"></script>
     <?php endforeach;
 endif; ?>
+<?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
+<script
+ type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&sensor=false&callback=initializemaps"></script>
+<?php } ?>  
 </body>
 </html>

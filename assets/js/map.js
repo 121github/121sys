@@ -15,7 +15,7 @@ var maps = {
         this.circles = [];
         this.markerLocation;
         this.bounds = null;
-        this.temp_bounds = null;
+        this.temp_bounds = false;
         this.items = [];
         this.branches = [];
         this.table;
@@ -83,15 +83,6 @@ var maps = {
             onstyle: 'success',
         });
 
-        $('#map-view-toggle').bootstrapToggle({
-            onstyle: 'success',
-            size: 'mini',
-        }).show().bootstrapToggle('off');
-
-        $('#map-view-toggle').change(function () {
-            maps.showMap($(this));
-            map_table_reload();
-        });
         $(document).on('click', '.get-location-btn', function () {
             maps.removeDirections();
             maps.codeAddress(12);
@@ -450,7 +441,6 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
     //Get current bounds
     getBounds: function () {
         var bounds_obj = map.getBounds();
-
         neLat = (bounds_obj) ? bounds_obj.getNorthEast().lat() : null;
         neLng = (bounds_obj) ? bounds_obj.getNorthEast().lng() : null;
         swLat = (bounds_obj) ? bounds_obj.getSouthWest().lat() : null;
@@ -473,7 +463,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
             maps.deleteCircles();
             var legend_ar = [];
             $.each(maps.items, function (i, item) {
-                if (maps.map_type == "appointments") {
+                if (maps.map_type == "appointment") {
                     maps.addAppointmentMarker(item);
                 }
                 else if (maps.map_type == "records") {
@@ -844,7 +834,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
             id: value.urn,
             icon: "http://maps.google.com/mapfiles/" + value.letter + ".png",
         });
-
+		
         maps.setMarker(marker);
     },
 

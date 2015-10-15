@@ -12,7 +12,7 @@ class Planner extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-
+		$this->load->model('Records_model');
         $this->load->model('User_model');
         $this->load->model('Form_model');
         $this->load->model('Planner_model');
@@ -36,8 +36,9 @@ class Planner extends CI_Controller
 	}
 
 	public function simulate_hsl_planner(){
+	$campaign_id = $_SESSION['current_campaign'];
 	$customer_postcode = $this->input->post('postcode');	
-	$branch_id = $this->input->post('branch_id');	
+	$branch_id = $this->input->post('branch_id');
 	$driver_id = $this->input->post('driver_id');
 	$slot = "1";
 	if($this->input->post('slot')){
@@ -242,22 +243,23 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css',
-                '../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css',
+                //'../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
                 'map.css',
                 'daterangepicker-bs3.css'
             ),
             'javascript' => array(
                 'modals.js',
-                'planner/planner.js',
-                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'plugins/touch-punch/jquery-ui-touch-punch.js',
-                'location.js',
-                'map.js',
+
+				'map.js',
+				'planner/planner.js',
+				'location.js',
+			    'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+				 'plugins/touch-punch/jquery-ui-touch-punch.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js'
-            )
+           )
         );
         $this->template->load('default', 'dashboard/planner.php', $data);
     }

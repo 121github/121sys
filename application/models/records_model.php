@@ -453,7 +453,9 @@ class Records_model extends CI_Model
         }
 
         $qry .= $order;
+		if($length>0){
         $qry .= "  limit $start,$length";
+		}
         $records = $this->db->query($qry)->result_array();
         $records['count'] = $count;
         //$this->firephp->log($qry);
