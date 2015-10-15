@@ -93,7 +93,7 @@ switch ($domain) {
         break;
 
     case 'demo.':
-        define('ENVIRONMENT', 'production');
+        define('ENVIRONMENT', 'demo');
         $session_name = '121sys_demo';
         break;
     case 'pro.':
@@ -134,6 +134,9 @@ if (defined('ENVIRONMENT')) {
             break;
         case 'testing':
             error_reporting(E_ALL);
+            break;
+        case 'demo':
+            error_reporting(0);
             break;
         case 'acceptance':
             error_reporting(0);

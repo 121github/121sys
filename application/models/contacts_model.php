@@ -91,15 +91,19 @@ class Contacts_model extends CI_Model
                 "fullname" => $result['fullname'],
                 "use_full" => $use_fullname
             );
-            $contacts[$result['contact_id']]['visible'] = array(
-                "Job" => $result['position'],
-                "DOB" => $result['dob'],
-                "Email address" => $result['email'],
-                "Linkedin" => $result['linkedin'],
-                "Email Optout" => $result['email_optout'],
-                "Website" => $result['website'],
-				"Notes" => $result['notes']
-            );
+
+            if (!isset($contacts[$result['contact_id']]['visible'])) {
+                $contacts[$result['contact_id']]['visible'] = array(
+                    "Job" => $result['position'],
+                    "DOB" => $result['dob'],
+                    "Email address" => $result['email'],
+                    "Linkedin" => $result['linkedin'],
+                    "Email Optout" => $result['email_optout'],
+                    "Website" => $result['website'],
+                    "Notes" => $result['notes']
+                );
+            }
+
             $contacts[$result['contact_id']]['telephone'][$result['telephone_id']] = array(
                 "tel_name" => $result['tel_name'],
                 "tel_num" => $result['telephone_number'],

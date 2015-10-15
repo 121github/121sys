@@ -94,6 +94,12 @@ class Dashboard extends CI_Controller
         $webform_hear = array();
         $webform_source = array();
 
+        $subhear_options = array(
+            "Newspaper" => array("Daily Mail Weekend", "Daily Mail Midweek", "Daily Mail Saturday", "Mail on Sunday Event", "Mail on Sunday / You Mag", "Saturday Express Mag", "Daily Express Saturday", "Daily Express Midweek", "Sunday Express", "Daily Telegraph Saturday", "Daily Telegraph Midweek", "Saturday Telegraph Magazine", "Sunday Telegraph", "The Sun", "Sun TV Mag", "Sun on Sunday / TV Soap", "The Times Saturday", "The Times Midweek", "The Times Mag", "The Sunday Times", "The Sunday Times Mag", "Sunday Times Culture", "Daily Mirror", "We Love TV", "Sunday Mirror", "Sunday Mirror Notebook", "The People", "Love Sunday", "Guardian Weekend Mag", "The Guardian", "Observer Magazine", "The Observer", "Daily Mail Scotland Saturday", "Mail on Sunday Scotland", "Daily Mail Scotland Midweek", "Scottish Daily Express Saturday", "Scottish daily express midweek", "Scottish Sunday Express", "Daily Record", "Daily Record Saturday Plus", "Sunday Mail", "Sunday Post", "The Herald Magazine", "Sunday Herald"),
+            "Magazine" => array("Tv times code", "Radio times code", "Peoples Friend", "Peoples Friend Special", "Peoples friend Pocket Novels", "My Weekly", "My Weekly Special", "My Weekly Pocket Novels", "Radio Times", "radio times Extra", "Womens Weekly", "Womens Weekly Special", "Puzzler Big Brands", "Puzzler Q Range", "Puzzler Chat Pack", "Take A Break", "Take A Break Special", "Womans Own", "Womans Own Special", "Woman", "Woman Special", "TV Choice", "Total TV Guide", "Whats on TV", "TV and Satelite Week", "Weekly News", "Yours", "Amateur Gardening ", "Garden News", "Saga", "Choice Magazine", "BBC Countrylife", "BBC Gardeners World", "Take A Puzzle", "Take A Crossword", "Arrowwords", "Sudoku Selection", "Best OF British", "Card Making and Papercraft", "Bella", "That\'s Life", "Chat", "Readers Digest ", "Woman & Home", "Good Housekeeping", "Caravan Club Magazine", "The Garden", "CSMA Magazine", "NFOP Magazine", "Eye to Eye Puzzles", "Motability Lifestyle", "Arthritis Digest", "Arthritis Today", "Stroke News", "WI Life", "National Trust Magazine", "National Trust Scotland Magazine", "Nature\'s Home", "The Legion", "The Legion Scotland", "House Beautiful", "Candis", "Gardens Illustrated ", "Homes & Antiques", "Prima", "OT Magazine"),
+            "TV Sponsorship" => array("Channel itv3 ", "ITV3 Morning ", "ITV3 Late Peak", "Dickinson\'s Real Deal", "UKTV")
+        );
+
         foreach ($webform_data as $data) {
             if ($data['completed_on']) {
                 $webform_completed['completed'] = $webform_completed['completed'] + 1;
@@ -110,9 +116,25 @@ class Dashboard extends CI_Controller
             $data_hear_ar = explode(",", $data['a24']);
             foreach ($data_hear_ar as $data_hear) {
                 if (!isset($webform_hear[$data_hear])) {
-                    $webform_hear[$data_hear] = 0;
+                    $webform_hear[$data_hear]['count'] = 0;
+                    $webform_hear[$data_hear]['sub_hear'] = array();
                 }
-                $webform_hear[$data_hear]++;
+                $webform_hear[$data_hear]['count']++;
+            }
+
+            //Check the secondary option for the hear about question
+            $data_hear_subhear_ar = (strlen($data['a28']) > 0 ? explode(",", $data['a28']) : array());
+            foreach ($data_hear_subhear_ar as $data_hear_subhear) {
+                foreach ($subhear_options as $hear_opt => $subhear_option) {
+                    if (array_search($data_hear_subhear, $subhear_option) !== false) {
+                        $data_hear_subhear = str_replace("\\", '', $data_hear_subhear);
+                        if (!isset($webform_hear[$hear_opt]['sub_hear'][$data_hear_subhear])) {
+                            $webform_hear[$hear_opt]['sub_hear'][$data_hear_subhear] = 0;
+                        }
+                        $webform_hear[$hear_opt]['sub_hear'][$data_hear_subhear]++;
+                        break;
+                    }
+                }
             }
 
             //Source

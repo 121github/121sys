@@ -90,31 +90,35 @@
         </div>
     </div>
     <div class="col-md-4 col-sm-12">
-        <div class="panel panel-primary" >
-            <div class="panel-heading"> <i class="fa fa-unlock-alt fa-fw"></i> Change Your Password</div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-                <form id="pass-form">
-                    <div class="form-group">
-                        <label for="current_pass">Current Password:</label>
-                        <input type="password" name="current_pass" id="current_pass" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="new_pass">New Password:</label>
-                        <input type="password" data-clear-btn="true" name="new_pass" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="conf_pass">Confirm Password:</label>
-                        <input type="password" data-clear-btn="true" name="conf_pass" class="form-control"/>
-                    </div>
+        <?php if ($_SESSION['environment'] != 'demo') { ?>
+            <div class="panel panel-primary">
+                <div class="panel-heading"><i class="fa fa-unlock-alt fa-fw"></i> Change Your Password</div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <form id="pass-form">
+                        <div class="form-group">
+                            <label for="current_pass">Current Password:</label>
+                            <input type="password" name="current_pass" id="current_pass" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_pass">New Password:</label>
+                            <input type="password" data-clear-btn="true" name="new_pass" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="conf_pass">Confirm Password:</label>
+                            <input type="password" data-clear-btn="true" name="conf_pass" class="form-control"/>
+                        </div>
 
-                    <div class="pull-right">
-                        <button type="submit" id="change-pass" name="change-pass" class="btn-success form-control">Change Password</button>
-                    </div>
+                        <div class="pull-right">
+                            <button type="submit" id="change-pass" name="change-pass" class="btn-success form-control">
+                                Change Password
+                            </button>
+                        </div>
 
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
+        <?php } ?>
         <?php if($_SESSION['role'] == 1): ?>
         <div class="panel panel-primary" >
             <div class="panel-heading"> <i class="fa fa-bell fa-fw"></i>Activity</div>

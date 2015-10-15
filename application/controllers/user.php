@@ -32,7 +32,7 @@ class User extends CI_Controller
                         $this->current_campaign($_SESSION['current_campaign']);
                     }
                     $this->apply_default_filter();
-                    if ($this->input->post('password') == md5("pass123")) {
+                    if ($this->input->post('password') == md5("pass123") && ($_SESSION['environment'] != 'demo')) {
                         $this->session->set_flashdata('change_pass', '1');
                         $redirect = base64_encode("user/account");
                     } else if (in_array("files only", $_SESSION['permissions'])) {

@@ -592,6 +592,17 @@ class Email extends CI_Controller
             }
         }
 
+        //If the environment is different than production, send the email to the user (if exists)
+        if ((ENVIRONMENT !== "production")) {
+            if (isset($_SESSION['email']) && $_SESSION['email'] != '') {
+                $this->email->to($_SESSION['email']);
+                $this->email->cc("");
+                $this->email->bcc("");
+            } else {
+                $this->email->clear(TRUE);
+                return true;
+            }
+        }
         $result = $this->email->send();
         //print_r($this->email->print_debugger());
         //$this->firephp->log($this->email->print_debugger([$include = array('headers', 'subject', 'body')]));

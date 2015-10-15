@@ -658,15 +658,17 @@ class Records_model extends CI_Model
                         "fullname" => $result['fullname'],
                         "use_full" => $use_fullname
                     );
-                    $data['contacts'][$result['contact_id']]['visible'] = array(
-                        "Job" => $result['position'],
-                        "DOB" => $result['dob'],
-                        "Email address" => $result['email'],
-                        "Linkedin" => $result['linkedin'],
-                        "Email Optout" => $result['email_optout'],
-                        "Website" => $result['website'],
-                        "Notes" => $result['notes']
-                    );
+                    if (!isset($data['contacts'][$result['contact_id']]['visible'])) {
+                        $data['contacts'][$result['contact_id']]['visible'] = array(
+                            "Job" => $result['position'],
+                            "DOB" => $result['dob'],
+                            "Email address" => $result['email'],
+                            "Linkedin" => $result['linkedin'],
+                            "Email Optout" => $result['email_optout'],
+                            "Website" => $result['website'],
+                            "Notes" => $result['notes']
+                        );
+                    }
 
                     $data['contacts'][$result['contact_id']]['telephone'][$result['telephone_id']] = array(
                         "tel_name" => $result['tel_name'],
@@ -689,14 +691,17 @@ class Records_model extends CI_Model
                 if (in_array(2, $features)) {
                     if ($result['company_id']) {
                         $data['company'][$result['company_id']]["Company Name"] = $result['coname'];
-                        $data['company'][$result['company_id']]['visible'] = array(
-                            "Sector" => $result['sector_name'],
-                            "Subsector" => $result['subsector_name'],
-                            "Description" => $result['codescription'],
-                            "Website" => $result['cowebsite'],
-                            "Employees" => $result['employees'],
-                            "Company #" => $result['conumber']
-                        );
+
+                        if (!isset($data['company'][$result['company_id']]['visible'])) {
+                            $data['company'][$result['company_id']]['visible'] = array(
+                                "Sector" => $result['sector_name'],
+                                "Subsector" => $result['subsector_name'],
+                                "Description" => $result['codescription'],
+                                "Website" => $result['cowebsite'],
+                                "Employees" => $result['employees'],
+                                "Company #" => $result['conumber']
+                            );
+                        }
 
                         $data['company'][$result['company_id']]['telephone'][$result['cotelephone_id']] = array(
                             "tel_name" => $result['cotel_name'],
@@ -891,9 +896,9 @@ class Records_model extends CI_Model
 
     public function get_addresses($urn = "")
     {
-        $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,county,postcode from contact_addresses inner join contacts using(contact_id) where urn = '$urn'";
+        $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode from contact_addresses inner join contacts using(contact_id) where urn = '$urn'";
         $addresses = $this->db->query($qry)->result_array();
-        $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,county,postcode from company_addresses inner join companies using(company_id) where urn = '$urn'";
+        $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode from company_addresses inner join companies using(company_id) where urn = '$urn'";
         $companies = $this->db->query($qry)->result_array();
         foreach ($companies as $row) {
             $addresses[] = $row;
