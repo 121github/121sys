@@ -1,6 +1,12 @@
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
+function initializemaps(){
+   		maps.initialize("records");
+}
+
+
 function map_table_reload() {
     view_records.table.columns.adjust().draw();
+	 view_records.table.columns.adjust();
 }
 
 function full_table_reload() {
@@ -12,7 +18,16 @@ function full_table_reload() {
 var view_records = {
     init: function () {
         this.table;
+		$('#map-view-toggle').bootstrapToggle({
+            onstyle: 'success',
+            size: 'mini',
+        }).show().bootstrapToggle('off');
 
+	   $(document).on('change','#map-view-toggle',function(){
+	       maps.showMap($(this));
+            map_table_reload();
+	   });
+			
         $(document).on("click", ".group-filter", function (e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
@@ -74,7 +89,7 @@ var view_records = {
             "oLanguage": {
                 "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
             },
-            "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t><"col-lg-2"l><"col-lg-10"B>><"clear">',
+            "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t><"col-lg-12"<"pull-left"l> <"pull-left marl" B>>><"clear">',
 			"lengthMenu": [[10, 25, 50,100, -1], [10, 25, 50,100, "All"]],
             "width": "100%",
             "scrollX": true,
@@ -93,7 +108,7 @@ var view_records = {
                 },
                 data: function (d) {
                     d.extra_field = false;
-                    d.bounds = (maps.temp_bounds ? maps.temp_bounds : maps.getBounds());
+                    d.bounds =(typeof map=="undefined"?null:maps.getBounds()),
                     d.map = $('#map-view-toggle').prop('checked');
                     d.group = $('.filter-form').find('input[name="group"]').val();
                 },
@@ -101,11 +116,10 @@ var view_records = {
                     $('.dt_info').show();
                     $('.tt').tooltip();
                     //Show the records in the map
-					console.log(d);
                     maps.showItems();
                     maps.current_postcode = getCookie('current_postcode');
                     planner_permission = d.responseJSON.planner_permission;
-                    maps.temp_bounds = null;
+                    maps.temp_bounds = false;
 
                     //Show search options if some filter exist
                     if (view_records.has_filter) {
@@ -184,7 +198,7 @@ var view_records = {
    	$.ajax({url:helper.baseUrl+'datatables/save_order',
 	type:"POST",
 	dataType:"JSON",
-	data:{ columns:view_records.table.colReorder.order() }
+	data:{ columns:view_records.table.colReorder.order(),table:1 }
 	})
 });
 

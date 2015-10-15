@@ -1,7 +1,7 @@
 /* ==========================================================================
    LOCATION
  ========================================================================== */
-getLocation();
+//getLocation();
 function getLocation() {
 	if (navigator.geolocation) {
         return navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError,{timeout:10000});

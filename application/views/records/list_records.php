@@ -135,9 +135,7 @@
     table_columns = <?php echo json_encode($columns) ?>;
 
     $(document).ready(function () {
-        maps.initialize("records");
         view_records.init();
-
         view_records.has_filter = "<?php echo ((isset($_SESSION['filter']['values']) && !empty($_SESSION['filter']['values']))?true:false) ?>";
     });
 

@@ -12,9 +12,8 @@ class Branches_model extends CI_Model
 
 	
 	public function get_branch_info($id=false,$postcode=false){
-		$this->db->where("postcode", $postcode);
-        $this->db->join("locations", "location_id=postcode_id", "LEFT");
-        $check_location = $this->db->get("uk_postcodes");
+		$qry = "select postcode,latitude lat, longitude lng from uk_postcodes.postcodeio where postcode = '$postcode'";
+        $check_location = $this->db->query($qry);
         if ($check_location->num_rows()) {
           $coords = $check_location->row_array();
 		} else {

@@ -123,8 +123,8 @@
                             class="glyphicon glyphicon-calendar"></span> <span
                             class="date-text"> <?php echo "Today"; ?> </span></button>
                 </div>
-                <div class="btn-group">
-                    <input type="checkbox" id="map-view-toggle"
+               <div class="btn-group">
+                    <input style="display:none" type="checkbox" id="map-view-toggle"
                            data-on="<i class='glyphicon glyphicon-map-marker'></i> Map View"
                            data-off="<i class='glyphicon glyphicon-map-marker'></i> Map View" data-toggle="toggle">
                 </div>

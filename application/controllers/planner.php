@@ -243,22 +243,23 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css',
-                '../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css',
+                //'../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
                 'map.css',
                 'daterangepicker-bs3.css'
             ),
             'javascript' => array(
                 'modals.js',
-                'planner/planner.js',
-                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'plugins/touch-punch/jquery-ui-touch-punch.js',
-                'location.js',
-                'map.js',
+
+				'map.js',
+				'planner/planner.js',
+				'location.js',
+			    'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+				 'plugins/touch-punch/jquery-ui-touch-punch.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js'
-            )
+           )
         );
         $this->template->load('default', 'dashboard/planner.php', $data);
     }

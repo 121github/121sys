@@ -271,7 +271,9 @@ class Appointments_model extends CI_Model
         }
 
         $qry .= $order;
+		if($length>0){
         $qry .= "  limit $start,$length";
+		}
         $result = $this->db->query($qry)->result_array();
         return $result;
     }

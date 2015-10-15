@@ -131,6 +131,7 @@ return $query->result_array();
 
     public function count_records($filter)
     {
+		$this->firephp->log($filter);
         $qry   = "select distinct r.urn from records r ";
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
@@ -152,7 +153,7 @@ return $query->result_array();
     {
         //setting the second parameter to 'true' stores the filter in the session
         $this->Filter_model->create_query_filter($filter, true);
-        $_SESSION['filter']['values'] = $this->Filter_model->clean_filter($filter);
+        $_SESSION['filter']['values'] = $this->clean_filter($filter);
     }
     
     public function create_query_filter($filter, $use = false)

@@ -17,11 +17,11 @@ class Datatables extends CI_Controller
 
 	public function save_order(){
 	$columns = $this->input->post('columns');
-	$table = 1;
+	$table = $this->input->post('table');
 
 	$selected_columns = $this->Datatables_model->selected_columns($table);
 	foreach($selected_columns as $k=>$column){
-	$this->db->where(array("column_id"=>$column['column_id'],"user_id"=>$_SESSION['user_id'],"table_id"=>1));
+	$this->db->where(array("column_id"=>$column['column_id'],"user_id"=>$_SESSION['user_id'],"table_id"=>$table));
 	$this->db->update("datatables_user_columns",array("sort"=>$columns[$k]));
 	}
 	}

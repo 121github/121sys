@@ -269,14 +269,14 @@ class Search extends CI_Controller
     	if ($this->input->is_ajax_request()) {
     		$postcode = postcodeCheckFormat($this->input->post('postcode'));
 			
-    		$this->db->where("postcode",$postcode);
-			$geodata = $this->db->get("uk_postcodes");
+    		$postcode_qry = "select id,longitude lng,latitude,lat uk_postcodes.postcodeio where postcode = '$postcode'";
+			$geodata = $this->db->query($postcode_qry);
 			if($geodata->num_rows()>0){
 			$coords = $geodata->row_array();	
 			} else {
 			$coords = postcode_to_coords($postcode);
 			if(isset($coords['lat'])){
-			$this->db->query("insert ignore into uk_postcodes set postcode = '$postcode',lat='{$coords['lat']}',lng='{$coords['lng']}'");
+			$this->db->query("insert ignore into uk_postcodes.postcodeio set postcode = '$postcode',latitude='{$coords['lat']}',longitude='{$coords['lng']}'");
 			}
 			}
     		
@@ -302,7 +302,7 @@ class Search extends CI_Controller
 			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
-			$filter = array_merge($filter,$_SESSION['filter']['values']);
+			//$filter = array_merge($filter,$_SESSION['filter']['values']);
             $urn_array   = $this->Filter_model->count_records($filter);
 			
             echo json_encode(array(

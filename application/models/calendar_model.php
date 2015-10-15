@@ -26,8 +26,8 @@ class Calendar_model extends CI_Model
         $join .= " left join companies using(urn) left join contacts using(contact_id) left join campaigns using(campaign_id) left join campaign_types using(campaign_type_id) left join appointment_attendees using(appointment_id) left join users using(user_id) ";
         if (!empty($options['postcode']) && !empty($options['distance'])) {
             $distance = intval($options['distance']) * 1.1515;
-            $this->db->where("postcode", $options['postcode']);
-            $geodata = $this->db->get("uk_postcodes");
+            $postcode_qry =  "select postcode,latitude lat, longitude lng from uk_postcodes.postcodeio where postcode = '".$optiopns['postcode']."'";
+            $geodata = $this->db->query($postcode_qry);
             if ($geodata->num_rows() > 0) {
                 $coords = $geodata->row_array();
             } else {
