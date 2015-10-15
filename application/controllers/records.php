@@ -1064,6 +1064,18 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         $i++;
         
         $this->email->message($msg);
+
+        //If the environment is different than production, send the email to the user (if exists)
+        if ((ENVIRONMENT !== "production")) {
+            if (isset($_SESSION['email']) && $_SESSION['email'] != '') {
+                $this->email->to($_SESSION['email']);
+                $this->email->cc("");
+                $this->email->bcc("");
+            } else {
+                $this->email->clear(TRUE);
+                return true;
+            }
+        }
         $this->email->send();
         //$this->firephp->log($this->email->print_debugger());
         $this->email->clear();
