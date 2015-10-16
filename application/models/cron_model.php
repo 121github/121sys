@@ -9,7 +9,7 @@ class Cron_model extends CI_Model
     function __construct()
     {
         parent::__construct();
-
+		$this->db2 = $this->load->database('uk_postcodes',true);
     }
 	public function unassign_owners(){
 	$this->db->query("select * from ownership where user_id not in(select user_id from users join role_permissions using(role_id) join permissions using(permission_id) where permission_name <> 'keep records') and urn not in (select urn from history join outcomes using(outcome_id)  join records using(urn) where keep_record = 1) and urn in(select urn from records where record_status = 1 and date(date_updated) < curdate())");	
@@ -206,6 +206,7 @@ class Cron_model extends CI_Model
 		select postcode from record_planner where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
         $status = "NULL Postcodes found: " . count($postcodes) . "\r\n";
+		$postcode_array = array();
         foreach ($postcodes as $row) {
 		$postcode_array[$row['postcode']] = $row['postcode'];  	
 		}
@@ -214,15 +215,15 @@ class Cron_model extends CI_Model
 		} else {
 		$postcode_list = "";
 		}
-            $qry = "select id,postcode, latitude lat,longitude lng from uk_postcodes.PostcodeIo where postcode in('$postcode_list')"; 
-                $postcode_locations = $this->db->query($qry)->result_array();
+            echo $qry = "select id,postcode, latitude lat,longitude lng from uk_postcodes.PostcodeIo where postcode in('$postcode_list')"; 
+                $postcode_locations = $this->db2->query($qry)->result_array();
 				foreach($postcode_locations as $pc){
                 $insert_locations = "insert ignore into locations set location_id='{$pc['id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
                 //$this->firephp->log($q1);
                 $this->db->query($insert_locations);
                  $company_locations = "update company_addresses set location_id = {$pc['id']} where postcode = '{$pc['postcode']}'";
                 $this->db->query($company_locations);
-				echo $contact_locations = "update contact_addresses set location_id = {$pc['id']} where postcode = '{$pc['postcode']}'";
+				$contact_locations = "update contact_addresses set location_id = {$pc['id']} where postcode = '{$pc['postcode']}'";
                 $this->db->query($contact_locations);
 				$appointment_locations = "update appointments set location_id = {$pc['id']} where postcode = '{$pc['postcode']}'";
                 $this->db->query($appointment_locations);
@@ -250,7 +251,7 @@ class Cron_model extends CI_Model
 
             if (!isset($response['error'])) {
                 file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
+                $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
             }
         }
 
@@ -269,7 +270,7 @@ class Cron_model extends CI_Model
 
             if (!isset($response['error'])) {
                 file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
+                $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
             }
         }
 
@@ -287,7 +288,7 @@ class Cron_model extends CI_Model
 
             if (!isset($response['error'])) {
                 file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
+                $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
             }
         }
 

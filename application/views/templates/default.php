@@ -259,8 +259,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/js/jquery.mmenu.min.all.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/modals.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/main.js?v2.0"></script>
+<script src="<?php echo base_url(); ?>assets/js/modals.js?v2.0"></script>
+<script src="<?php echo base_url(); ?>assets/js/main.js?v2.1"></script>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['permissions'])){ ?>
     helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');

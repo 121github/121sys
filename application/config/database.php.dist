@@ -80,4 +80,22 @@ $db['121backup']['swap_pre'] = '';
 $db['121backup']['autoinit'] = TRUE;
 $db['121backup']['stricton'] = FALSE;
 /* End of file database.php */
+
+$db['uk_postcodes']['hostname'] = 'localhost';
+$db['uk_postcodes']['username'] = 'uk_postcodes';
+$db['uk_postcodes']['password'] = 'ZwWQKUc4Mjrcx3Z8';
+$db['uk_postcodes']['database'] = 'uk_postcodes';
+$db['uk_postcodes']['dbdriver'] = 'mysqli';
+$db['uk_postcodes']['dbprefix'] = '';
+$db['uk_postcodes']['pconnect'] = FALSE;
+$db['uk_postcodes']['db_debug'] = TRUE;
+$db['uk_postcodes']['cache_on'] = FALSE;
+$db['uk_postcodes']['cachedir'] = '';
+//$db['121backup']['char_set'] = 'UTF-8';
+$db['uk_postcodes']['dbcollat'] = 'latin1_swedish_ci';
+$db['uk_postcodes']['swap_pre'] = '';
+$db['uk_postcodes']['autoinit'] = TRUE;
+$db['uk_postcodes']['stricton'] = FALSE;
+
+
 /* Location: ./application/config/database.php */

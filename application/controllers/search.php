@@ -11,13 +11,13 @@ class Search extends CI_Controller
         parent::__construct();
         user_auth_check();
 		$this->_campaigns = campaign_access_dropdown();
-
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Company_model');
         $this->load->model('Contacts_model');
         $this->load->model('Records_model');
         $this->load->model('Email_model');
+		$this->db2 = $this->load->database('uk_postcodes',true);
     }
 	
 	
@@ -268,15 +268,14 @@ class Search extends CI_Controller
     {
     	if ($this->input->is_ajax_request()) {
     		$postcode = postcodeCheckFormat($this->input->post('postcode'));
-			
     		$postcode_qry = "select id,longitude lng,latitude,lat uk_postcodes.PostcodeIo where postcode = '$postcode'";
-			$geodata = $this->db->query($postcode_qry);
+			$geodata =$this->db2->query($postcode_qry);
 			if($geodata->num_rows()>0){
 			$coords = $geodata->row_array();	
 			} else {
 			$coords = postcode_to_coords($postcode);
 			if(isset($coords['lat'])){
-			$this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode = '$postcode',latitude='{$coords['lat']}',longitude='{$coords['lng']}'");
+			$this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode = '$postcode',latitude='{$coords['lat']}',longitude='{$coords['lng']}'");
 			}
 			}
     		
