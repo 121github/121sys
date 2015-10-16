@@ -214,7 +214,7 @@ class Cron_model extends CI_Model
 		} else {
 		$postcode_list = "";
 		}
-            $qry = "select id,postcode, latitude lat,longitude lng from uk_postcodes.postcodeio where postcode in('$postcode_list')"; 
+            $qry = "select id,postcode, latitude lat,longitude lng from uk_postcodes.PostcodeIo where postcode in('$postcode_list')"; 
                 $postcode_locations = $this->db->query($qry)->result_array();
 				foreach($postcode_locations as $pc){
                 $insert_locations = "insert ignore into locations set location_id='{$pc['id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
@@ -250,7 +250,7 @@ class Cron_model extends CI_Model
 
             if (!isset($response['error'])) {
                 file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert ignore into uk_postcodes.postcodeio set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
+                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
             }
         }
 
@@ -269,7 +269,7 @@ class Cron_model extends CI_Model
 
             if (!isset($response['error'])) {
                 file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert ignore into uk_postcodes.postcodeio set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
+                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
             }
         }
 
@@ -287,7 +287,7 @@ class Cron_model extends CI_Model
 
             if (!isset($response['error'])) {
                 file_put_contents($file, $status . $response['lat']);
-                $this->db->query("insert ignore into uk_postcodes.postcodeio set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
+                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
             }
         }
 

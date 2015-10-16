@@ -269,14 +269,14 @@ class Search extends CI_Controller
     	if ($this->input->is_ajax_request()) {
     		$postcode = postcodeCheckFormat($this->input->post('postcode'));
 			
-    		$postcode_qry = "select id,longitude lng,latitude,lat uk_postcodes.postcodeio where postcode = '$postcode'";
+    		$postcode_qry = "select id,longitude lng,latitude,lat uk_postcodes.PostcodeIo where postcode = '$postcode'";
 			$geodata = $this->db->query($postcode_qry);
 			if($geodata->num_rows()>0){
 			$coords = $geodata->row_array();	
 			} else {
 			$coords = postcode_to_coords($postcode);
 			if(isset($coords['lat'])){
-			$this->db->query("insert ignore into uk_postcodes.postcodeio set postcode = '$postcode',latitude='{$coords['lat']}',longitude='{$coords['lng']}'");
+			$this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode = '$postcode',latitude='{$coords['lat']}',longitude='{$coords['lng']}'");
 			}
 			}
     		

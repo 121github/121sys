@@ -217,7 +217,7 @@ class Planner_model extends CI_Model
     function get_location_id($postcode)
     {
         $postcode = postcodeFormat($postcode);
-        $postcode_qry = "select id,latitude lat,longitude lng from uk_postcodes.postcodeio where postcode = '$postcode'";
+        $postcode_qry = "select id,latitude lat,longitude lng from uk_postcodes.PostcodeIo where postcode = '$postcode'";
         $check_location = $this->db->query($postcode_qry);
         if ($check_location->num_rows()) {
             $loc = $check_location->row();
@@ -225,7 +225,7 @@ class Planner_model extends CI_Model
         } else {
             $coords = postcode_to_coords($postcode);
             if (isset($coords['lat'])) {
-                $this->db->query("insert ignore into uk_postcodes.postcodeio set postcode='$postcode',latitude = '{$coords['lat']}',longitude = '{$coords['lng']}'");
+                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='$postcode',latitude = '{$coords['lat']}',longitude = '{$coords['lng']}'");
                 $location_id = $this->db->insert_id();
                 $this->db->query("replace into locations set location_id='$location_id',latitude = '{$coords['lat']}',longitude = '{$coords['lng']}'");
             } else {
