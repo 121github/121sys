@@ -618,8 +618,8 @@ class Records_model extends CI_Model
     }
 
     public function get_details($urn, $features)
-    {	
-        $select = "select r.urn,r.source_id,source_name,r.pot_id,pot_name,c4, cr.client_ref,if(r.map_icon is null,camp.map_icon,r.map_icon) map_icon, r.record_color, c.contact_id,if(fullname = '','No Name',fullname) fullname,c.email,c.notes,linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.outcome_reason_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason,camp.telephone_protocol,camp.telephone_prefix ";
+    {
+        $select = "select r.urn,r.source_id,source_name,r.pot_id,pot_name,c4, cr.client_ref,if(r.map_icon is null,camp.map_icon,r.map_icon) map_icon, r.record_color, c.contact_id,if(fullname = '','No Name',fullname) fullname,c.email,c.notes,linkedin,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,c.website,c.position,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,a.address_id,custom_panel_name, a.add1,a.add2,a.add3,a.city,a.county,a.country,a.postcode,con_pc.lat latitidue,con_pc.lng longitude,a.`primary` is_primary,date_format(r.nextcall,'%d/%m/%Y %H:%i') nextcall,o.outcome,r.outcome_id,r.outcome_reason_id,r.record_status,r.progress_id,pd.description as progress,urgent,date_format(r.date_updated,'%d/%m/%Y %H:%i') date_updated,r.last_survey_id,r.campaign_id,camp.campaign_name,r.reset_date,park_reason,camp.telephone_protocol,camp.telephone_prefix ";
         $from = " from records r ";
         $from .= " left join client_refs cr using(urn) left join data_pots using(pot_id) left join record_details rd using(urn) ";
 		$from .= " left join data_sources ds on r.source_id = ds.source_id  ";
@@ -632,7 +632,7 @@ class Records_model extends CI_Model
             $from .= " left join sticky_notes sticky using(urn) ";
         }
         if (in_array(2, $features)) {
-            $select .= ",coma.postcode planner_postcode,com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.conumber,com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,com_pc.lat colatitude,com_pc.lng colongitude";
+            $select .= ",coma.postcode planner_postcode,com.company_id,com.name coname, sector_name, subsector_name,com.description codescription, com.conumber,com.website cowebsite,com.employees,comt.telephone_id cotelephone_id, comt.description cotel_name,comt.telephone_number cotelephone_number,coma.`primary` cois_primary,ctps,coma.address_id coaddress_id,coma.add1 coadd1,coma.add2 coadd2,coma.add3 coadd3,coma.city cocity,coma.county cocounty,coma.country cocountry,coma.postcode copostcode,com_pc.lat colatitude,com_pc.lng colongitude";
             $from .= " left join companies com using(urn) left join company_addresses coma using(company_id) left join locations com_pc on com_pc.location_id = coma.location_id left join company_telephone comt using(company_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id)";
         } else {
 		  $select .= ",a.postcode planner_postcode";
@@ -681,6 +681,7 @@ class Records_model extends CI_Model
                         $data['contacts'][$result['contact_id']]['visible']['Address']['add1'] = $result['add1'];
                         $data['contacts'][$result['contact_id']]['visible']['Address']['add2'] = $result['add2'];
                         $data['contacts'][$result['contact_id']]['visible']['Address']['add3'] = $result['add3'];
+                        $data['contacts'][$result['contact_id']]['visible']['Address']['city'] = $result['city'];
                         $data['contacts'][$result['contact_id']]['visible']['Address']['county'] = $result['county'];
                         $data['contacts'][$result['contact_id']]['visible']['Address']['country'] = $result['country'];
                         $data['contacts'][$result['contact_id']]['visible']['Address']['postcode'] = $result['postcode'];
@@ -714,6 +715,7 @@ class Records_model extends CI_Model
                             $data['company'][$result['company_id']]['visible']['Address']['add1'] = $result['coadd1'];
                             $data['company'][$result['company_id']]['visible']['Address']['add2'] = $result['coadd2'];
                             $data['company'][$result['company_id']]['visible']['Address']['add3'] = $result['coadd3'];
+                            $data['company'][$result['company_id']]['visible']['Address']['city'] = $result['cocity'];
                             $data['company'][$result['company_id']]['visible']['Address']['county'] = $result['cocounty'];
                             $data['company'][$result['company_id']]['visible']['Address']['country'] = $result['cocountry'];
                             $data['company'][$result['company_id']]['visible']['Address']['postcode'] = $result['copostcode'];
