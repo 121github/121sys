@@ -131,7 +131,6 @@ return $query->result_array();
 
     public function count_records($filter)
     {
-		$this->firephp->log($filter);
         $qry   = "select distinct r.urn from records r ";
         //convert the filter options into a query and them to the base query
         $addon = $this->Filter_model->create_query_filter($filter);
@@ -468,6 +467,16 @@ return $query->result_array();
             "type" => "range",
             "alias" => "a.start"
         );
+		$filter_options["all_names"]              = array(
+            "table" => "",
+            "type" => "",
+            "alias" => ""
+        );
+		$filter_options["all_phone"]              = array(
+            "table" => "",
+            "type" => "",
+            "alias" => ""
+        );
         $qry                                = "";
         $special                            = "";
 		$parked								= "";
@@ -579,13 +588,24 @@ return $query->result_array();
                     $where .= " and survey_id is not null ";
                     $join['surveys'] = " left join surveys sur on sur.urn = r.urn ";
                 }
-                
+                if ($field == "all_names") {
+                    $where .= " and (com.name like '%$data%' or con.fullname like '%$data%') ";
+                    $join['contacts'] = " left join contacts con on con.urn = r.urn ";
+					$join['companies'] = " left join companies com on com.urn = r.urn ";
+                }
+				if ($field == "all_phone") {
+                    $where .= " and (cont.telephone_number like '%$data%' or comt.telephone_number like '%$data%') ";
+                    $join['contacts'] = " left join contacts con on con.urn = r.urn ";
+					$join['companies'] = " left join companies com on com.urn = r.urn ";
+					$join['company_telephone'] = " left join company_telephone comt on comt.company_id = com.company_id ";
+					$join['contact_telephone'] = " left join contact_telephone cont on cont.contact_id = con.contact_id ";
+                }
                 /* join any additional tables if they are required */
 				 if ($filter_options[$field]['table'] == "record_details") {
                     $join['record_details'] = " left join record_details rd on rd.urn = r.urn ";
                 }
 				 if ($filter_options[$field]['table'] == "outcomes") {
-                    $join['contacts'] = " left join outcomes on outcomes.outcome_id = r.outcome_id";
+                    $join['outcomes'] = " left join outcomes on outcomes.outcome_id = r.outcome_id";
                 }
                 if ($filter_options[$field]['table'] == "contacts") {
                     $join['contacts'] = " left join contacts con on con.urn = r.urn ";

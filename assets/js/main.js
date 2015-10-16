@@ -313,7 +313,40 @@ $(document).ready(function () {
         $('.navbar-brand').hide();
     }
 
+	$(document).on("click","#startsearch",function(e){
+		e.preventDefault();
+		$.ajax({ url:helper.baseUrl+'search/count_records',
+		type:"POST",
+		dataType:"JSON",
+		data:$('#quicksearchform').serialize()	
+	}).done(function(response){
+		if(response.success){
+			if(response.data>0){
+		$('#quicksearchresult').addClass('text-success').html('<a href="#" id="showquicksearchresults">'+response.data+' record(s) found</a>');
+			} else {
+		$('#quicksearchresult').addClass('text-warning').text('0 record(s) found');		
+			}
+		} else {
+		$('#quicksearchresult').addClass('text-danger').text(response.msg);
+		}
+	});
 });
+
+$(document).on("click","#showquicksearchresults",function(e){
+	e.preventDefault();
+        $.ajax({
+            url: helper.baseUrl + 'search/apply_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('#quicksearchform').serialize()
+        }).done(function(response) {
+            window.location.href = helper.baseUrl + 'records/view';
+            localStorage.removeItem('DataTables_' + settings.sInstance + '_' + '/records/view');
+        });
+});
+
+});
+
 
 /* ==========================================================================
  BROWSER

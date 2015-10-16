@@ -64,6 +64,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     </div>
 <?php } ?>
 <div class="navbar navbar-default navbar-fixed-top">
+       
     <?php if (isset($_SESSION['permissions'])) { ?>
         <a href="#menu" class="navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
@@ -101,15 +102,14 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <?php if ($_SESSION['environment'] == 'demo') { ?>
         <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data added could be deleted at any time!! </span>
     <?php } ?>
-</div>
-<?php } ?>
-
-
-<a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
+    
+    <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
                                                  src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png"><img
         id="big-logo" style="margin-top:-5px; width:100%"
         src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
 </div>
+<?php } ?>
+
 <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0) { ?>
     <nav id="menu-right" class="mm-menu mm--horizontal mm-offcanvas">
         <div style="padding:30px 20px 3px">
@@ -199,6 +199,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 						$this->view('navigation/calendar.php',$page) ;
 						$this->view('navigation/admin.php',$page) ;
 						$this->view('navigation/reports.php',$page); 
+						$this->view('navigation/search.php',$page); 
 			 } else { ?>
               <li><a href="#" style="color:red">Please select a campaign to begin</a></li>
               <li><select id="side-campaign-select" class="selectpicker" data-width="100%">
@@ -351,19 +352,20 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                      "content": [
 						"<a href='"+helper.baseUrl+"dashboard'><span class='fa fa-home'></span> Home</a>",
 						"<a href='"+helper.baseUrl+"user/account'><span class='fa fa-user'></span> Account</a>",
-						"<a href='#'><span class='fa fa-search'></span> Search</a>",
+						"<a class='mm-next' data-target='#searchnav' href='#searchnav'><span class='fa fa-search'></span> Search</a>"
                      ]
                   },
 				  {
                      "position": "bottom",
                      "content": [
                         "<a onclick=\"javascript:alert('Coming Soon')\" href='#'><span class='fa fa-book'></span> Docs</a>",
-						"<a onclick=\"javascript:alert('Contact the helpdesk on 01619199610')\" href='#'><span class='fa fa-phone'></span> Contact</a>",
+						"<a data-modal='contact-us' href='#'><span class='fa fa-phone'></span> Contact</a>",
 						"<a href='"+helper.baseUrl+"user/logout'><span class='fa fa-sign-out'></span> Logout</a>"
                      ]
                   }
                ]
             ,"extensions": ["pageshadow","effect-menu-slide", "effect-listitems-slide","pagedim-black"]});
+
 
         <?php if(isset($global_filter)){ ?>
         $('nav#menu-right').mmenu({

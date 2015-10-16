@@ -14,7 +14,9 @@ var modals = {
 			}
 		});
 		
-		
+		$(document).on('click','[data-modal="contact-us"]',function(e){
+			  modals.contact_us();
+		});
 		$(document).on('click','[data-dismiss="modal"]',function(e){
 			$('.container-fluid').removeAttr('style');
 		});
@@ -1734,4 +1736,12 @@ var modals = {
     calendar: function () {
         /* add the modal code here */
     },
+	contact_us:function(){
+		var menu = $("nav#menu").data("mmenu");
+		menu.close();
+		var mheader = "Contact Us";
+		var mbody = "<p>If you you need any help or advice using this system please get in touch.</p><p><ul><li>Call us on <b>0161 9199 610</b></li><li>Email us at <b>support@121system.com</b></li></ul><p>Our offices are open 9am-5pm GMT, we endeavour to respond to all emails within 2 working hours</p>";
+		 var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-right" type="button">Close</button>';
+		 modals.load_modal(mheader,mbody,mfooter);	
+	}
 }

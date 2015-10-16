@@ -299,11 +299,20 @@ class Search extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
 			$filter = $this->input->post();
+			$clean_filter = array_escape(array_filter($filter));
+			if(count($clean_filter)==0){
+			echo json_encode(array(
+                "success" => false,
+                "msg" => "No search critera was entered"
+            ));
+			exit;	
+			}
+			
 			if(!in_array("search campaigns",$_SESSION['permissions'])){ 
 			  $filter['campaign_id']=array($_SESSION['current_campaign']);
 			}
 			//$filter = array_merge($filter,$_SESSION['filter']['values']);
-            $urn_array   = $this->Filter_model->count_records($filter);
+            $urn_array   = $this->Filter_model->count_records($clean_filter);
 			
             echo json_encode(array(
                 "success" => true,

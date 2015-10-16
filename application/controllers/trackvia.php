@@ -430,7 +430,8 @@ class Trackvia extends CI_Controller
                 'parked_code' => 2,
                 'pot_id' => 41,
                 'savings_per_panel' => 30,
-                'attendee' => 121
+                'attendee' => 121,
+				'source_id' => 41
             )
         );
 
@@ -449,7 +450,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '0066FF',
                 'pot_id' => 39,
                 'savings_per_panel' => 30,
-                'attendee' => 121
+                'attendee' => 121,
+				'source_id' => 41
 
             )
         );
@@ -469,7 +471,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '6600FF',
                 'pot_id' => 38,
                 'savings_per_panel' => 30,
-                'attendee' => 121
+                'attendee' => 121,
+				'source_id' => 41
             )
         );
 
@@ -489,7 +492,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '00CC00',
                 'pot_id' => 36,
                 'savings_per_panel' => 30,
-                'attendee' => 121
+                'attendee' => 121,
+				'source_id' => 41
             )
         );
 
@@ -508,7 +512,8 @@ class Trackvia extends CI_Controller
                 'record_color' => '990000',
                 'pot_id' => 40,
                 'savings_per_panel' => 30,
-                'attendee' => 121
+                'attendee' => 121,
+				'source_id' => 41
             )
         );
         $this->check_trackvia(29);
@@ -713,7 +718,8 @@ class Trackvia extends CI_Controller
         $campaign_id = $options['campaign_id'];
         $urgent = $options['urgent'];
         $status = $options['status'];
-        $outcome_id = isset($options['outcome_id']) ? $options['outcome_id'] : "";
+        $outcome_id = isset($options['outcome_id']) ? $options['outcome_id'] : NULL;
+		$source_id = isset($options['source_id']) ? $options['source_id'] : NULL;
         $parked_code = isset($options['parked_code']) ? $options['parked_code'] : "";
 		$parked_code = isset($options['dials']) ? $options['dials'] : "";
         $appointment_creation = $options['appointment_creation'];
@@ -892,6 +898,7 @@ class Trackvia extends CI_Controller
                         "outcome_id" => $outcome_id,
                         "urgent" => $urgent,
                         "pot_id" => $pot,
+						"source_id" => $source_id,
                         "parked_code" => 2
                     );
                     $urn = $this->Trackvia_model->add_record($data);
