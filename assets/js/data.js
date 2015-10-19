@@ -919,7 +919,7 @@ var add_record = {
             url: helper.baseUrl + 'data/save_record',
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize()
+            data: $('form#record-form').serialize()
         }).done(function (response) {
             if (response.success) {
                 //Redirect to the record panel
