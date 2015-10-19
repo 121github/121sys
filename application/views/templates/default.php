@@ -15,7 +15,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <!-- Optional theme -->
     <link rel="stylesheet"
           href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : $theme); ?>/bootstrap-theme.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/dataTables.min.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/datatables.min.css">
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/datepicker3.css">
