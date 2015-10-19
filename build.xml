@@ -6,7 +6,7 @@
   <property name="builddir" value="${workspace}/build" />
 
   <target name="build"
-  	depends="prepare,lint,phploc,pdepend,phpcpd,phpmd-ci,phpcs-ci,phpdoc"/>
+          depends="prepare,lint,phploc,pdepend,phpcpd,phpmd-ci,phpcs-ci,phpdox"/>
 	<!-- depends="prepare,vendors, database_schema, parameters,lint,phploc,pdepend,phpcpd,phpmd-ci,phpcs-ci,phpdoc,phpunit,phpcb"/> -->
   
   <target name="build-parallel" depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
@@ -63,6 +63,22 @@
     </exec>
   </target>
 
+    <target name="phploc-ci"
+            unless="phploc.done"
+            depends="prepare"
+            description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="phploc" taskname="phploc">
+            <arg value="--count-tests"/>
+            <arg value="--log-csv"/>
+            <arg path="${basedir}/logs/phploc.csv"/>
+            <arg value="--log-xml"/>
+            <arg path="${builddir}/logs/phploc.xml"/>
+            <arg path="${sourcedir}"/>
+        </exec>
+
+        <property name="phploc.done" value="true"/>
+    </target>
+
   <target name="pdepend" description="Calculate software metrics using PHP_Depend">
     <exec executable="pdepend">
       <arg value="--jdepend-xml=${builddir}/logs/jdepend.xml" />
@@ -116,9 +132,18 @@
 
   <target name="phpdoc" description="Generate API documentation using phpDox">
     <exec executable="phpdoc">
-      <arg line="-d '${sourcedir}' -t '${builddir}/docs' --title='Tempo' --template='new-black'"/>
+      <arg line="-d '${sourcedir}' -t '${builddir}/docs' --title='121System' --template='responsive-twig'"/>
     </exec>
   </target>
+
+    <target name="phpdox"
+            unless="phpdox.done"
+            depends="phploc-ci,phpcs-ci,phpmd-ci"
+            description="Generate project documentation using phpDox">
+        <exec executable="phpdox" dir="${builddir}" taskname="phpdox"/>
+
+        <property name="phpdox.done" value="true"/>
+    </target>
 
   <target name="phpunit" description="Run unit tests with PHPUnit">
     <exec executable="phpunit" failonerror="true">
