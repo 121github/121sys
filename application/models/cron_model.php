@@ -241,10 +241,9 @@ class Cron_model extends CI_Model
     {
         $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
 		
-		        $qry = "select postcode from company_addresses where location_id is null and postcode is not null union
-		select postcode from contact_addresses where location_id is null and postcode is not null union
-		select postcode from appointments where location_id is null and postcode is not null union
-		select postcode from record_planner where location_id is null and postcode is not null";
+		        $qry = "select postcode from company_addresses where location_id is null and postcode is not null limit 300 union select postcode from contact_addresses where location_id is null and postcode is not null limit 300 union
+		select postcode from appointments where location_id is null and postcode is not null limit 300 union
+		select postcode from record_planner where location_id is null and postcode is not null limit 300";
         $postcodes = $this->db->query($qry)->result_array();
        echo $status = "NULL Postcodes found: " . count($postcodes) . "<br>\r\n";
 		$postcode_array = array();
@@ -253,10 +252,10 @@ class Cron_model extends CI_Model
 		$postcode_array[$row['postcode']] = postcodeFormat($row['postcode']);
 			}
 		}
-        foreach ($postcode_array as $row) {
-			if(validate_postcode($row['postcode'])){
-		$response = postcode_to_coords($row['postcode']);
-		$postcode = postcodeFormat($row['postcode']);
+        foreach ($postcode_array as $pc) {
+			if(validate_postcode($pc)){
+		$response = postcode_to_coords($pc);
+		$postcode = postcodeFormat($pc);
 		$this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='$postcode',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
 			}
 		}
