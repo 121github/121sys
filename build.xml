@@ -193,7 +193,7 @@
             unless="phpdox.done"
             depends="phploc-ci,phpcs-ci,phpmd-ci"
             description="Generate project documentation using phpDox">
-        <exec executable="phpdox" dir="${builddir}" taskname="phpdox">
+        <exec executable="phpdox" dir="${workspace}" taskname="phpdox">
             <arg value="--file"/>
             <arg path="${workspace}/phpdox.xml"/>
         </exec>
