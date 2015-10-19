@@ -203,7 +203,7 @@ class Cron_model extends CI_Model
         $qry = "select postcode from company_addresses where location_id is null and postcode is not null limit 300 union
 		select postcode from contact_addresses where location_id is null and postcode is not null limit 300 union
 		select postcode from appointments where location_id is null and postcode is not null limit 300 union
-		select postcode from record_planner where location_id is null and postcode is not limit 300 null";
+		select postcode from record_planner where location_id is null and postcode is not null limit 300 ";
         $postcodes = $this->db->query($qry)->result_array();
        echo $status = "NULL Postcodes found: " . count($postcodes) . "<br>\r\n";
 		$postcode_array = array();
