@@ -5,7 +5,9 @@
             <include mask="*.php"/>
         </collector>
         <generator output="build">
-            <build engine="html" output="html"/>
+            <build engine="html" enabled="true" output="html">
+                <file extension="html"/>
+            </build>
         </generator>
     </project>
 </phpdox>
