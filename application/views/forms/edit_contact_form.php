@@ -325,7 +325,14 @@
 
                 $.each(response.data, function (i, val) {
                     options += '<option value="' + i + '">' +
-                        val.add1 + ", " + val.add2 + ", " + val.add3 + ", " + val.add4 + ", " + val.locality + ", " + val.city + ", " + val.county + ", " + val.postcode_io.country +
+                        (val.add1 ? val.add1 : '') +
+                        (val.add2 ? ", " + val.add2 : '') +
+                        (val.add3 ? ", " + val.add3 : '') +
+                        (val.add4 ? ", " + val.add4 : '') +
+                        (val.locality ? ", " + val.locality : '') +
+                        (val.city ? ", " + val.city : '') +
+                        (val.county ? ", " + val.county : '') +
+                        (typeof val.postcode_io.country != "undefined" ? ", " + val.postcode_io.country : '') +
                         '</option>';
                 });
                 $('.contact-address-form').find('select[name="address"]')
