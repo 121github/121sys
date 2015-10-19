@@ -71,8 +71,11 @@
             unless="phploc.done"
             description="Measure project size using PHPLOC">
         <exec executable="phploc">
+            <arg value="--count-tests"/>
             <arg value="--log-csv"/>
             <arg value="${builddir}/logs/phploc.csv"/>
+            <arg value="--log-xml"/>
+            <arg path="${builddir}/logs/phploc.xml"/>
             <arg path="${sourcedir}"/>
         </exec>
         <property name="phploc.done" value="true"/>
@@ -185,7 +188,7 @@
 
     <target name="phpdoc" description="Generate API documentation using phpDox">
         <exec executable="phpdoc">
-            <arg line="-d '${sourcedir}' -t '${builddir}/docs' --title='121System' --template='responsive-twig'"/>
+            <arg line="-d '${sourcedir}' -t '${builddir}/docs' --title='121System'"/>
         </exec>
     </target>
 
