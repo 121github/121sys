@@ -207,7 +207,7 @@ public function check_darlington(){
        $this->checkView(
            SOUTHWAY_ALL_RECORDS,
            array(
-              'campaign_id' => *,
+               //'campaign_id' => *,
                'urgent' => NULL,
                'status' => 1,
                'appointment_creation' => false,
@@ -227,7 +227,7 @@ public function check_darlington(){
         $this->checkView(
             DARLINGON_BOOK_SURVEY,
             array(
-                'campaign_id' => *,
+                //'campaign_id' => *,
                 'urgent' => NULL,
                 'status' => 1,
                 'appointment_creation' => false,
@@ -246,7 +246,7 @@ public function check_darlington(){
         $this->checkView(
             DARLINGTON_REBOOK,
             array(
-                'campaign_id' => *,
+                //'campaign_id' => *,
                 'urgent' => 1,
                 'status' => 1,
 				'parked_code' => NULL,
@@ -266,7 +266,7 @@ public function check_darlington(){
         $this->checkView(
             DARLINGTON_SURVEY_SLOTS,
             array(
-                'campaign_id' => *,
+                //'campaign_id' => *,
                 'urgent' => NULL,
                 'status' => 4,
 				'parked_code' => NULL,
@@ -282,7 +282,7 @@ public function check_darlington(){
         );
 
         //update sw survey campaign records
-        $this->check_trackvia(*);
+    //$this->check_trackvia(*);
 }
 
  public function check_da_installs()
@@ -295,7 +295,7 @@ public function check_darlington(){
         $this->checkView(
             DARLINGTON_BOOK_INSTALLATION,
             array(
-                'campaign_id' => *,
+                //'campaign_id' => *,
                 'urgent' => NULL,
 				'parked_code' => NULL,
                 'status' => 1,
@@ -316,7 +316,7 @@ public function check_darlington(){
         $this->checkView(
             DARLINGTON_INSTALLATION_SLOTS,
             array(
-                'campaign_id' => *,
+                //'campaign_id' => *,
                 'urgent' => NULL,
                 'status' => 4,
 				'parked_code' => NULL,
@@ -331,7 +331,7 @@ public function check_darlington(){
             )
         );
         //update sw install campaign records
-        $this->check_trackvia(*);
+        //$this->check_trackvia(*);
 
     }
 
