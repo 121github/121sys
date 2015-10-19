@@ -11,6 +11,14 @@ define('CLIENT_SECRET', 'qhhgy6bbdc0w8gc0kc0kc0k88gw0ko0oskocock0wc8gw48w8');
 define('USERNAME', 'ghsAPI');
 define('PASSWORD', 'global123');
 
+define('DARLINGTON_ALL_RECORDS', '3000735550');
+define('DARLINGTON_BOOK_SURVEY', '3000735546');
+define('DARLINGTON_REBOOK', '3000735547');
+define('DARLINGTON_SURVEY_SLOTS', '3000735549');
+define('DARLINGTON_BOOK_INSTALLATION', '3000735601');
+define('DARLINGTON_INSTALLATION_SLOTS', '3000735622');
+
+
 define('SOUTHWAY_ALL_RECORDS', '3000719193');
 define('SOUTHWAY_BOOK_SURVEY', '3000719114');
 define('SOUTHWAY_REBOOK', '3000719115');
@@ -39,7 +47,8 @@ if ($_SESSION['environment'] == "acceptance" || $_SESSION['environment'] == "tes
 
 } else if ($_SESSION['environment'] == "production") {
 //Live tables
-
+ 
+  define('DARLINGTON_TABLE', '3000284891');
     define('PRIVATE_TABLE', '3000282959');
     define('SOUTHWAY_TABLE', '3000283129');
     define('CITYWEST_TABLE', '3000284157');
@@ -69,7 +78,8 @@ class Trackvia extends CI_Controller
         $this->tv_tables = array(
             "GHS Southway" => SOUTHWAY_TABLE,
             "GHS Private" => PRIVATE_TABLE,
-			"GHS Citywest" => CITYWEST_TABLE
+			"GHS Citywest" => CITYWEST_TABLE,
+			"GHS Darlington" => DARLINGTON_TABLE
         );
 
 		$this->tv_sources = array("GHS Bought Data"=>"CC-121Set1-OB","GHS Ginger Peterborough"=>"CC-Ginger1PB-OB","GHS Ginger Manchester"=>"CC-Ginger1MA-OB");
@@ -83,6 +93,11 @@ class Trackvia extends CI_Controller
             "GHS Southway booked" => SOUTHWAY_SURVEY_SLOTS,
             "GHS Southway installation" => SOUTHWAY_BOOK_INSTALLATION,
             "GHS Southway installation booked" => SOUTHWAY_INSTALLATION_SLOTS,
+			            "GHS Darlington survey" => DARLINGTON_BOOK_SURVEY,
+            "GHS Darlington rebook" => DARLINGTON_REBOOK,
+            "GHS Darlington booked" => DARLINGTON_SURVEY_SLOTS,
+            "GHS Darlington installation" => DARLINGTON_BOOK_INSTALLATION,
+            "GHS Darlington installation booked" => DARLINGTON_INSTALLATION_SLOTS,
             "GHS Citywest survey" => CITYWEST_BOOK_SURVEY,
             "GHS Citywest rebook" => CITYWEST_REBOOK,
             "GHS Citywest booked" => CITYWEST_SURVEY_SLOTS,
@@ -100,6 +115,11 @@ class Trackvia extends CI_Controller
             "GHS Southway booked" => 37,
             "GHS Southway installation" => 51,
             "GHS Southway installation booked" => 52,
+			"GHS Darlington survey" => 58,
+            "GHS Darlington rebook" => 60,
+            "GHS Darlington booked" => 59,
+            "GHS Darlington installation" => 61,
+            "GHS Darlington installation booked" => 62,
             "GHS Private survey" => 39,
             "GHS Private rebook" => 38,
             "GHS Private booked" => 36,
@@ -178,6 +198,141 @@ class Trackvia extends CI_Controller
         }
         $result = $this->Trackvia_model->get_rebookings($campaign);
         echo json_encode(array("success" => true, "data" => $result));
+    }
+public function check_darlington(){
+	$this->db->query("update records set parked_code=2,pot_id = 57 where campaign_id in(*)");
+	
+ echo "<br>Checking the SOUTHWAY_ALL_RECORDS(" . SOUTHWAY_ALL_RECORDS . ") view";
+       echo "<br>";
+       $this->checkView(
+           SOUTHWAY_ALL_RECORDS,
+           array(
+              'campaign_id' => *,
+               'urgent' => NULL,
+               'status' => 1,
+               'appointment_creation' => false,
+               'appointment_cancelled' => false,
+               'record_color' => '000000',
+               'parked_code' => 2,
+               'pot_id' => 57,
+               'savings_per_panel' => 20,
+			   'source_id' => 60
+
+           )
+        );
+
+        //Book View
+        echo "<br>Checking the DARLINGON_BOOK_SURVEY(" . DARLINGON_BOOK_SURVEY . ") view";
+        echo "<br>";
+        $this->checkView(
+            DARLINGON_BOOK_SURVEY,
+            array(
+                'campaign_id' => *,
+                'urgent' => NULL,
+                'status' => 1,
+                'appointment_creation' => false,
+                'appointment_cancelled' => false,
+                'record_color' => '0066FF',
+                'pot_id' => 58,
+                'savings_per_panel' => 20,
+                'attendee' => 122,
+				'source_id' => 60
+            )
+        );
+
+        //Rebook View
+        echo "<br>Checking the DARLINGTON_REBOOK(" . DARLINGTON_REBOOK . ") view";
+        echo "<br>";
+        $this->checkView(
+            DARLINGTON_REBOOK,
+            array(
+                'campaign_id' => *,
+                'urgent' => 1,
+                'status' => 1,
+				'parked_code' => NULL,
+                'appointment_creation' => true,
+                'appointment_cancelled' => true,
+                'record_color' => '0066FF',
+                'pot_id' => 60,
+                'savings_per_panel' => 20,
+                'attendee' => 122,
+				'source_id' => 60
+            )
+        );
+
+        //Survey Slots View
+        echo "<br>Checking the DARLINGTON_SURVEY_SLOTS(" . DARLINGTON_SURVEY_SLOTS . ") view";
+        echo "<br>";
+        $this->checkView(
+            DARLINGTON_SURVEY_SLOTS,
+            array(
+                'campaign_id' => *,
+                'urgent' => NULL,
+                'status' => 4,
+				'parked_code' => NULL,
+                'outcome_id' => 72,
+                'appointment_creation' => true,
+                'appointment_cancelled' => false,
+                'record_color' => '00CC00',
+                'pot_id' => 37,
+                'savings_per_panel' => 20,
+                'attendee' => 122,
+				'source_id' => 60
+            )
+        );
+
+        //update sw survey campaign records
+        $this->check_trackvia(*);
+}
+
+ public function check_da_installs()
+    {
+        $this->db->query("update records set parked_code=2,pot_id = 57 where campaign_id in(*)");
+
+        //Installation Book View
+        echo "<br>Checking the DARLINGTON_BOOK_INSTALLATION(" . DARLINGTON_BOOK_INSTALLATION . ") view";
+        echo "<br>";
+        $this->checkView(
+            DARLINGTON_BOOK_INSTALLATION,
+            array(
+                'campaign_id' => *,
+                'urgent' => NULL,
+				'parked_code' => NULL,
+                'status' => 1,
+                'appointment_creation' => false,
+                'appointment_cancelled' => false,
+                'record_color' => '0066FF',
+                'pot_id' => 61,
+                'savings_per_panel' => 20,
+                'attendee' => 139,
+				'source_id' => 60,
+				'dials'=>0
+            )
+        );
+
+        //Installation Slots View
+        echo "<br>Checking the DARLINGTON_INSTALLATION_SLOTS(" . DARLINGTON_INSTALLATION_SLOTS . ") view";
+        echo "<br>";
+        $this->checkView(
+            DARLINGTON_INSTALLATION_SLOTS,
+            array(
+                'campaign_id' => *,
+                'urgent' => NULL,
+                'status' => 4,
+				'parked_code' => NULL,
+                'outcome_id' => 72,
+                'appointment_creation' => true,
+                'appointment_cancelled' => false,
+                'record_color' => '00CC00',
+                'pot_id' => 62,
+                'savings_per_panel' => 20,
+                'attendee' => 139,
+				'source_id' => 60
+            )
+        );
+        //update sw install campaign records
+        $this->check_trackvia(*);
+
     }
 
 

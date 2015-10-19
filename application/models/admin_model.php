@@ -7,6 +7,108 @@ class Admin_model extends CI_Model
     {
         parent::__construct();
     }
+	
+	public function clone_campaign($new_name,$id,$tables=array()){
+		//check it doesnt exist
+		$this->db->where("campaign_name",$new_name);
+		if($this->db->get("campaigns")->num_rows()){
+		return false;	
+		}
+		$qry = "insert into campaigns (campaign_id,campaign_group_id,campaign_name,record_layout,logo,campaign_type_id,client_id,campaign_status,email_recipients,reassign_to,custom_panel_name,min_quote_days,daily_data,map_icon,virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix,timeout) select '',campaign_group_id,'$new_name',record_layout,logo,campaign_type_id,client_id,campaign_status,email_recipients,reassign_to,custom_panel_name,min_quote_days,daily_data,map_icon,virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix,timeout from campaigns where campaign_id = '$id'";
+		$this->db->query($qry);
+		$new_id = $this->db->insert_id(); 
+		if(in_array("features",$tables)){
+		//add campaign features
+		$qry = "insert into campaigns_to_features select $new_id,feature_id from campaigns_to_features where campaign_id = $id";
+		$this->db->query($qry);
+		}
+
+		if(in_array("managers",$tables)){
+		//add campaign managers 
+		$qry = "insert into campaign_managers select $new_id,user_id from campaign_managers where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		if(in_array("appointment_types",$tables)){
+		//add campaign appointment_types
+		$qry = "insert into campaign_appointment_types select $new_id,appointment_type_id from campaign_appointment_types where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		if(in_array("permissions",$tables)){
+		//add campaign permissions
+		$qry = "insert into campaign_permissions select $new_id,permissions_id,permission_state from campaign_permissions where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		if(in_array("tasks",$tables)){
+				//add campaign permissions
+		$qry = "insert into campaign_tasks select $new_id,task_id from campaign_tasks where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		if(in_array("triggers",$tables)){
+						//add campaign triggers
+		$qry = "insert into campaign_triggers select '',$new_id,path from campaign_triggers where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		if(in_array("outcomes",$tables)){
+			//add campaign outcomes
+		$qry = "insert into outcomes_to_campaigns select outcome_id,$new_id from outcomes_to_campaigns where campaign_id = $id";
+		$this->db->query($qry);
+				
+			//add campaign outcomes
+		$qry = "insert into outcome_reason_campaigns select $new_id,outcome_id,outcome_reason_id from outcome_reason_campaigns where campaign_id = $id";
+		$this->db->query($qry);
+		}
+	 	if(in_array("scripts",$tables)){
+					//add campaign outcome scripts
+		$qry = "insert into scripts_to_campaigns select script_id,$new_id from scripts_to_campaigns where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		if(in_array("sms",$tables)){
+						//add campaign sms templates
+		$qry = "insert into sms_template_to_campaigns select template_id,$new_id from sms_template_to_campaigns where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		if(in_array("sms_triggers",$tables)){
+								//add campaign triggers
+		$qry = "insert into sms_triggers select trigger_id,$new_id,outcome_id,template_id from sms_triggers where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		if(in_array("email",$tables)){
+						//add campaign triggers
+		$qry = "insert into email_template_to_campaign select template_id,$new_id from email_template_to_campaign where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		if(in_array("email_triggers",$tables)){
+						//add campaign triggers
+		$qry = "insert into email_triggers select '',$new_id,outcome_id,template_id from email_triggers where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		if(in_array("surveys",$tables)){
+										//add campaign surveys
+		$qry = "insert into surveys_to_campaigns select '',survey_info_id,$new_id,`default` from surveys_to_campaigns where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		if(in_array("webforms",$tables)){
+											//add campaign webforms
+		$qry = "insert into webforms_to_campaigns select webform_id,$new_id from webforms_to_campaigns where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		if(in_array("ownership_triggers",$tables)){
+													//add campaign ownership
+		$qry = "insert into ownership_triggers select trigger_id,$new_id,outcome_id from ownership_triggers where campaign_id = $id";
+		$this->db->query($qry);
+		}
+		
+		return $new_id;
+	}
+	
     /* functions for the admin campaigns page */
     public function get_campaign_details($campaign = "")
     {

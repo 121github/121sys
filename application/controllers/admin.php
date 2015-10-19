@@ -17,6 +17,45 @@ class Admin extends CI_Controller
         $this->load->model('File_model');
     }
 
+	
+	public function copy_campaign(){
+			 check_page_permissions('campaign setup');
+				
+	  if ($this->input->is_ajax_request()) {
+	$tables = $this->input->post('tables');
+	$campaign_id =  $this->input->post('campaign_id');
+	$copy_to =  $this->input->post('new_name');
+	$id = $this->Admin_model->clone_campaign($copy_to,$campaign_id,$tables);
+	if($id){
+	echo json_encode(array("success"=>true,"id"=>$id));	
+	
+	  } else {
+	echo json_encode(array("success"=>false,"msg"=>"Campaign with this name already exists"));		  
+	  }
+	  exit;
+	  }
+	 
+
+        $campaigns = $this->Form_model->get_all_campaigns();
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin',
+            'page' => 'copy_campaign',
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'admin/copy_campaign.js'
+            ),
+            'options' => array("campaigns" => $campaigns)
+
+        );
+        $this->template->load('default', 'admin/copy_campaign.php', $data);
+	  
+	  
+	}
+
     public function get_folder_read_users()
     {
         $id = $this->input->post('id');
@@ -488,7 +527,7 @@ class Admin extends CI_Controller
             $response = $this->Admin_model->save_campaign_features($features);
 
             echo json_encode(array(
-                "data" => false,
+                "data" => $form,
                 "message" => "Campaign Saved",
                 "success" => true
             ));

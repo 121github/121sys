@@ -127,7 +127,7 @@
     </div>
       <div class="form-group input-group-sm">
         <p>Virgin Order Join String <span class="text-danger">(inserted directly into SQL so be careful)</span></p>
-        <input type="text" class="form-control" name="virgin_order_string" placeholder="join companies using(urn)" />
+        <input type="text" class="form-control" name="virgin_order_join" placeholder="join companies using(urn)" />
     </div>
     <?php } ?>
       <div class="form-group input-group-sm">
