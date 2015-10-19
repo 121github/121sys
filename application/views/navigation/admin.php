@@ -132,7 +132,7 @@
                                                         href="<?php echo base_url() ?>admin/campaigns">Campaign
                                                         Setup</a></li>
                                                             <li <?php echo @($page == 'copy_campaign' ? "class='Selected'" : "") ?>>
-                                                    <a href="<?php echo base_url() ?>copy_campaign">Clone Campaign</a></li>
+                                                    <a href="<?php echo base_url() ?>admin/copy_campaign">Clone Campaign</a></li>
                                                 <li <?php echo @($page == 'custom_fields' ? "class='Selected'" : "") ?>>
                                                     <a href="<?php echo base_url() ?>admin/campaign_fields">Campaign
                                                         Fields</a></li>
