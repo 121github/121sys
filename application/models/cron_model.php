@@ -205,10 +205,12 @@ class Cron_model extends CI_Model
 		select postcode from appointments where location_id is null and postcode is not null union
 		select postcode from record_planner where location_id is null and postcode is not null";
         $postcodes = $this->db->query($qry)->result_array();
-        $status = "NULL Postcodes found: " . count($postcodes) . "\r\n";
+       echo $status = "NULL Postcodes found: " . count($postcodes) . "<br>\r\n";
 		$postcode_array = array();
         foreach ($postcodes as $row) {
-		$postcode_array[$row['postcode']] = $row['postcode'];  	
+			if(validate_postcode($row['postcode'])){
+		$postcode_array[$row['postcode']] = postcodeFormat($row['postcode']);
+			}
 		}
 		if(count($postcode_array)>0){
 		$postcode_list = implode("','",$postcode_array);
@@ -217,6 +219,7 @@ class Cron_model extends CI_Model
 		}
             echo $qry = "select id,postcode, latitude lat,longitude lng from uk_postcodes.PostcodeIo where postcode in('$postcode_list')"; 
                 $postcode_locations = $this->db2->query($qry)->result_array();
+
 				foreach($postcode_locations as $pc){
                 $insert_locations = "insert ignore into locations set location_id='{$pc['id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
                 //$this->firephp->log($q1);
@@ -237,61 +240,27 @@ class Cron_model extends CI_Model
     public function update_locations_with_google()
     {
         $file = dirname($_SERVER['SCRIPT_FILENAME']) . "/datafiles/location_progress.txt";
-        //1.2 use google to update the rest
-        $this->db->select("postcode,company_id");
-        $this->db->join("locations", "locations.location_id=company_addresses.location_id", "LEFT");
-        $this->db->where("locations.location_id is null and postcode is not null");
-        $postcodes = $this->db->get("company_addresses")->result_array();
-        $status = "Company Postcodes found [google search]: " . count($postcodes) . "\r\n";
-        $this->firephp->log($status);
-        file_put_contents($file, $status);
-        foreach ($postcodes as $row) {
-            file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
-            $response = postcode_to_coords($row['postcode']);
-
-            if (!isset($response['error'])) {
-                file_put_contents($file, $status . $response['lat']);
-                $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
-            }
-        }
-
-
-        //2.2 use google to update the rest
-        $this->db->select("postcode,contact_id");
-        $this->db->join("locations", "locations.location_id=contact_addresses.location_id", "LEFT");
-        $this->db->where("locations.location_id is null and postcode is not null");
-        $postcodes = $this->db->get("contact_addresses")->result_array();
-        $status .= "Contact Postcodes found [google search]: " . count($postcodes) . "\r\n";
-        $this->firephp->log($status);
-        file_put_contents($file, $status);
-        foreach ($postcodes as $row) {
-            file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
-            $response = postcode_to_coords($row['postcode']);
-
-            if (!isset($response['error'])) {
-                file_put_contents($file, $status . $response['lat']);
-                $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
-            }
-        }
-
-        //3.2 use google to update the rest
-        $this->db->select("postcode,appointment_id");
-        $this->db->join("locations", "locations.location_id=appointments.location_id", "LEFT");
-        $this->db->where("locations.location_id is null and postcode is not null");
-        $postcodes = $this->db->get("appointments")->result_array();
-        $status .= "Appointment Postcodes found [google search]: " . count($postcodes) . "\r\n";
-        $this->firephp->log($status);
-        file_put_contents($file, $status);
-        foreach ($postcodes as $row) {
-            file_put_contents($file, $status . ": " . $row['postcode'] . "\r\n");
-            $response = postcode_to_coords($row['postcode']);
-
-            if (!isset($response['error'])) {
-                file_put_contents($file, $status . $response['lat']);
-                $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$row['postcode']}',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
-            }
-        }
-
+		
+		        $qry = "select postcode from company_addresses where location_id is null and postcode is not null union
+		select postcode from contact_addresses where location_id is null and postcode is not null union
+		select postcode from appointments where location_id is null and postcode is not null union
+		select postcode from record_planner where location_id is null and postcode is not null";
+        $postcodes = $this->db->query($qry)->result_array();
+       echo $status = "NULL Postcodes found: " . count($postcodes) . "<br>\r\n";
+		$postcode_array = array();
+		foreach ($postcodes as $row) {
+			if(validate_postcode($row['postcode'])){
+		$postcode_array[$row['postcode']] = postcodeFormat($row['postcode']);
+			}
+		}
+        foreach ($postcode_array as $row) {
+			if(validate_postcode($row['postcode'])){
+		$response = postcode_to_coords($row['postcode']);
+		$postcode = postcodeFormat($row['postcode']);
+		$this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='$postcode',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");
+			}
+		}
+		$this->update_location_ids();
     }
 
     /**
