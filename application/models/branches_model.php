@@ -6,7 +6,7 @@ class Branches_model extends CI_Model
     function __construct()
     {
         parent::__construct();
-        $this->db2 = $this->load->database('uk_postcodes',true);
+        $this->db2 = $this->load->database('uk_postcodes',true); 
     }
 	
 
