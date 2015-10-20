@@ -222,10 +222,10 @@ public function check_darlington(){
         );
 */
         //Book View
-        echo "<br>Checking the DARLINGON_BOOK_SURVEY(" . DARLINGON_BOOK_SURVEY . ") view";
+        echo "<br>Checking the DARLINGTON_BOOK_SURVEY(" . DARLINGTON_BOOK_SURVEY . ") view";
         echo "<br>";
         $this->checkView(
-            DARLINGON_BOOK_SURVEY,
+            DARLINGTON_BOOK_SURVEY,
             array(
                 'campaign_id' => 61,
                 'urgent' => NULL,
