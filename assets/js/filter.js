@@ -97,7 +97,7 @@ var filter = {
         $(document).on('click', '.clear-filter', function(e) {
             e.preventDefault()
             $('.no-number').removeClass('btn-danger').closest('.form-group').find('input').prop('disabled', false);
-            $('form')[0].reset();
+            $('#container-fluid form')[0].reset();
             $('.record-status').selectpicker('render');
             $('input[type="text"],input[type="hidden"], input[type="select"]:not(.record-status,#top-campaign-select,#side-campaign-select)').val('');
             filter.count_records();

@@ -200,7 +200,7 @@ class Trackvia extends CI_Controller
         echo json_encode(array("success" => true, "data" => $result));
     }
 public function check_darlington(){
-	$this->db->query("update records set parked_code=2,pot_id = 57 where campaign_id in(*)");
+	$this->db->query("update records set parked_code=2,pot_id = 57 where campaign_id in(61)");
 	
  echo "<br>Checking the DARLINGTON_ALL_RECORDS(" . DARLINGTON_ALL_RECORDS . ") view";
        echo "<br>";
@@ -287,7 +287,7 @@ public function check_darlington(){
 
  public function check_da_installs()
     {
-        $this->db->query("update records set parked_code=2,pot_id = 57 where campaign_id in(*)");
+        $this->db->query("update records set parked_code=2,pot_id = 57 where campaign_id in(62)");
 
         //Installation Book View
         echo "<br>Checking the DARLINGTON_BOOK_INSTALLATION(" . DARLINGTON_BOOK_INSTALLATION . ") view";

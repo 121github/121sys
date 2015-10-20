@@ -72,7 +72,7 @@ var sms = {
             url: helper.baseUrl + "sms/send_sms",
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize(),
+            data: $('#container-fluid form').serialize(),
 			beforeSend:function(){
 			$("button[type=submit]").hide().parent().append('<img id="pending-send" src="'+helper.baseUrl+'assets/img/ajax-loader.gif" />');
 			}

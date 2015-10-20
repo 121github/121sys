@@ -221,7 +221,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         </ul>
     <?php } ?>
 </nav>
-<div class="container-fluid">
+<div class="container-fluid" id="container-fluid">
     <?php echo $body; ?></div>
 <!-- /content -->
 

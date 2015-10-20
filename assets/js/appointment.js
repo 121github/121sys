@@ -27,8 +27,8 @@ var appointment = {
 	       maps.showMap($(this));
             map_table_reload();
 	   });
-        $('form').find('input[name="date_from"]').val(moment().format('YYYY-MM-DD'));
-        $('form').find('input[name="date_to"]').val(moment().add('days', 29).format('YYYY-MM-DD'));
+        $('#container-fluid form').find('input[name="date_from"]').val(moment().format('YYYY-MM-DD'));
+        $('#container-fluid form').find('input[name="date_to"]').val(moment().add('days', 29).format('YYYY-MM-DD'));
 
         $('.daterange').daterangepicker({
                 opens: "left",

@@ -514,8 +514,7 @@ class Search extends CI_Controller
 			'pageId' => 'Search',
             'title' => 'Search',
             'columns' => $visible_columns,
-			'javascript' => array('plugins/DataTables/js/jquery.dataTables.min.js',
-				'plugins/DataTables/js/dataTables.bootstrap.js')
+			'javascript' => array('plugins/DataTables/datatables.min.js')
         );
         $this->template->load('default', 'records/custom.php', $data);
     }

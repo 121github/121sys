@@ -78,21 +78,21 @@ var template = {
             $("button[type=submit]").attr('disabled', false);
 
             var row = $btn.closest('tr');
-            $('form').find('input[name="template_id"]').val(result.data.template_id);
-            $('form').find('input[name="template_name"]').val(result.data.template_name);
+            $('#container-fluid form').find('input[name="template_id"]').val(result.data.template_id);
+            $('#container-fluid form').find('input[name="template_name"]').val(result.data.template_name);
             $('#sender_select').selectpicker('val', result.data.template_sender_id).selectpicker('render');
-            $('form').find('textarea[name="template_text"]').val(result.data.template_text);
+            $('#container-fluid form').find('textarea[name="template_text"]').val(result.data.template_text);
             if (result.data.template_unsubscribe == "1") {
-                $('form').find('#unsubscribe-yes').prop('checked', true).parent().addClass('active');
-                $('form').find('#unsubscribe-no').prop('checked', false).parent().removeClass('active');
+                $('#container-fluid form').find('#unsubscribe-yes').prop('checked', true).parent().addClass('active');
+                $('#container-fluid form').find('#unsubscribe-no').prop('checked', false).parent().removeClass('active');
             } else {
-                $('form').find('#unsubscribe-no').prop('checked', true).parent().addClass('active');
-                $('form').find('#unsubscribe-yes').prop('checked', false).parent().removeClass('active');
+                $('#container-fluid form').find('#unsubscribe-no').prop('checked', true).parent().addClass('active');
+                $('#container-fluid form').find('#unsubscribe-yes').prop('checked', false).parent().removeClass('active');
             }
 
-            $('#chars').text(305-$('form').find('textarea[name="template_text"]').val().length);
+            $('#chars').text(305-$('#container-fluid form').find('textarea[name="template_text"]').val().length);
 
-            var data = {id: $('form').find('input[name="template_id"]').val()};
+            var data = {id: $('#container-fluid form').find('input[name="template_id"]').val()};
 
             $.ajax({
                 url: helper.baseUrl + "smstemplates/get_campaings_by_template_id",
@@ -110,7 +110,7 @@ var template = {
             });
 
             $('.ajax-table').fadeOut(1000, function() {
-                $('form').fadeIn();
+                $('#container-fluid form').fadeIn();
             });
         });
 
@@ -119,19 +119,19 @@ var template = {
     create: function () {
 
         $("button[type=submit]").attr('disabled', false);
-        $('form').trigger('reset');
+        $('#container-fluid form').trigger('reset');
         $('#campaigns_select').selectpicker('val', []).selectpicker('render');
         $('#sender_select').selectpicker('val', []).selectpicker('render');
-        $('form').find('input[type="hidden"]').val('');
+        $('#container-fluid form').find('input[type="hidden"]').val('');
         $('#chars').text(305);
 
         $('.ajax-table').fadeOut(1000, function () {
-            $('form').fadeIn(1000)
+            $('#container-fluid form').fadeIn(1000)
         });
     },
     //save a template
     save: function ($btn) {
-        var name = $('form').find('input[name="template_name"]').val();
+        var name = $('#container-fluid form').find('input[name="template_name"]').val();
         var sender = $('#sender_select').selectpicker().val();
         var campaigns = $('#campaigns_select').selectpicker().val();
 
@@ -144,7 +144,7 @@ var template = {
                 url: helper.baseUrl + 'smstemplates/save_template',
                 type: "POST",
                 dataType: "JSON",
-                data: $('form').serialize()
+                data: $('#container-fluid form').serialize()
             }).done(function (response) {
                 //Reload template table
                 template.load_templates();

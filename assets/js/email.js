@@ -109,7 +109,7 @@ var email = {
             url: helper.baseUrl + "email/send_email",
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize(),
+            data: $('#container-fluid form').serialize(),
 			beforeSend:function(){
 			$("button[type=submit]").hide().parent().append('<img id="pending-send" src="'+helper.baseUrl+'assets/img/ajax-loader.gif" />');	
 			}
@@ -128,11 +128,11 @@ var email = {
 		});;
     },
     add_contact_option: function (id, email, option) {
-        content = $('form').find('input[name=' + option + ']').val();
+        content = $('#container-fluid form').find('input[name=' + option + ']').val();
         if (content.length) {
             content = content + ', ';
         }
-        $('form').find('input[name=' + option + ']').val(content + email);
+        $('#container-fluid form').find('input[name=' + option + ']').val(content + email);
         $('.' + id + option).text("Added");
     },
     //add a new attached file to the list of the new attachments
@@ -140,7 +140,7 @@ var email = {
         var data = {
             filename: filename,
             path: path,
-            newFiles: $('form').find('input[name="template_attachments"]').val()
+            newFiles: $('#container-fluid form').find('input[name="template_attachments"]').val()
         };
 
         $.ajax({
@@ -149,7 +149,7 @@ var email = {
             dataType: "JSON",
             data: data
         }).done(function (response) {
-            $('form').find('input[name="template_attachments"]').val(response.data);
+            $('#container-fluid form').find('input[name="template_attachments"]').val(response.data);
             //Reload the new attachments table
             email.load_new_attachments(response.data_array);
         });
@@ -157,7 +157,7 @@ var email = {
     //Remove an attachment from the list of new attachments
     remove_new_attach: function (path) {
         //If the path exist as a new attachment, remove from the list
-        var data = {path: path, newFiles: $('form').find('input[name="template_attachments"]').val()};
+        var data = {path: path, newFiles: $('#container-fluid form').find('input[name="template_attachments"]').val()};
 
         $.ajax({
             url: helper.baseUrl + 'templates/unset_attached_files',
@@ -165,7 +165,7 @@ var email = {
             dataType: "JSON",
             data: data
         }).done(function (response) {
-            $('form').find('input[name="template_attachments"]').val(response.data);
+            $('#container-fluid form').find('input[name="template_attachments"]').val(response.data);
             //Reload the new attachments table
             email.load_new_attachments(response.data_array);
         });
@@ -202,7 +202,7 @@ var email = {
         $thead.empty();
 
         //Set progress-bar 0%
-        $('form').find('input[name="template_attachments"]').val("");
+        $('#container-fluid form').find('input[name="template_attachments"]').val("");
         $('#progress .progress-bar').css(
             'width',
             0 + '%'
@@ -212,7 +212,7 @@ var email = {
     },
     //Load attachments from the database for a particular template
     load_attachments: function () {
-        var data = {id: $('form').find('input[name="template_id"]').val()};
+        var data = {id: $('#container-fluid form').find('input[name="template_id"]').val()};
         $.ajax({
             url: helper.baseUrl + "templates/get_attachments_by_template_id",
             type: 'POST',
@@ -236,7 +236,7 @@ var email = {
         });
 
         $('.ajax-table').fadeOut(1000, function () {
-            $('form').fadeIn();
+            $('#container-fluid form').fadeIn();
         });
     },
     //Load the new attachments table
@@ -291,7 +291,7 @@ var modal = {
     add_contact: function (option) {
        modal_header.text('Add Contact');
         //Get the contacts
-        var urn = $('form').find('input[name="urn"]').val();
+        var urn = $('#container-fluid form').find('input[name="urn"]').val();
         var contacts;
         $.ajax({
             url: helper.baseUrl + "email/get_contacts",

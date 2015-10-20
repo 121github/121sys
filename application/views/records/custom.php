@@ -20,10 +20,15 @@
 	  $(document).ready( function () {
 	
 var table = $('.data-table').DataTable({
-	 "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"bottom"l><"clear">',
-		"oLanguage": {
-            "sProcessing": "<img src='"+helper.baseUrl+"assets/img/ajax-loader-bar.gif'>"
-        },
+	 buttons: [
+            'copy', 'csv', 'excel', 'print'
+        ],
+		colReorder: true,
+            "oLanguage": {
+                "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
+            },
+            "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t><"col-lg-12"<"pull-left"l> <"pull-left marl" B>>><"clear">',
+			"lengthMenu": [[10, 25, 50,100, -1], [10, 25, 50,100, "All"]],
 		"bAutoWidth": true,
 	 	"processing": true,
         "serverSide": true,
@@ -58,15 +63,31 @@ var table = $('.data-table').DataTable({
 	
 		//filterable columns
     // Setup - adds search input boxes to the footer row
-    $('.data-table tfoot th').each( function () {
-        var title = $('.data-table thead th').eq( $(this).index() ).text();
-		if(title=="Options"){
-		$(this).html( '' );
-			 } else { 
-		var search_val = table.column($(this).index()).search();
-        $(this).html( '<input class="dt-filter form-control" placeholder="Filter..." value="'+search_val[0]+'" />' );
-		}
-    });
+ $('.data-table tfoot th').each(function () {
+            var title = $('.data-table thead th').eq($(this).index()).text();
+            var filter_attribute = 'placeholder="Filter..."';
+            if (title == "Icon") {
+                var filter_attribute = "disabled";
+            }
+
+            if (title == "Options") {
+                $(this).html('');
+            }
+            else if (title == "Icon") {
+                $icon_btn = $('<button class="btn btn-default btn-sm iconpicker record-icon" role="iconpicker" data-icon="" data-index="' + $(this).index() + '" data-iconset="fontawesome" style="color:#0066"></button>');
+                $(this).html($icon_btn);
+                table.get_used_icons();
+            }
+            else {
+                var search_val = table.column($(this).index()).search();
+				if(typeof search_val[0]!=="undefined"){
+				var filter_val = search_val[0];	
+				} else {
+				var filter_val = "";	
+				}
+                $(this).html('<input class="dt-filter input-sm form-control" ' + filter_attribute + ' value="' + filter_val + '" />');
+            }
+        });
  
     // Apply the search
     table.columns().eq( 0 ).each( function ( colIdx ) {

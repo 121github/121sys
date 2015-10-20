@@ -63,9 +63,9 @@ var script = {
     edit: function($btn) {
     	$("button[type=submit]").attr('disabled',false);
     	var row = $btn.closest('tr');
-    	$('form').find('input[name="script_id"]').val(row.find('.script_id').text());
-        $('form').find('input[name="script_name"]').val(row.find('.script_name').text());
-        $('form').find('input[name="sort"]').val(row.find('.script_sort').text());
+    	$('#container-fluid form').find('input[name="script_id"]').val(row.find('.script_id').text());
+        $('#container-fluid form').find('input[name="script_name"]').val(row.find('.script_name').text());
+        $('#container-fluid form').find('input[name="sort"]').val(row.find('.script_sort').text());
         
         document.getElementById("script").value = row.find('.script_text').html();
         
@@ -75,7 +75,7 @@ var script = {
         	document.getElementById("expandable").checked = false;
         
         
-        var data = {id : $('form').find('input[name="script_id"]').val()};
+        var data = {id : $('#container-fluid form').find('input[name="script_id"]').val()};
         
         $.ajax({
             url: helper.baseUrl + "scripts/get_campaings_by_script_id",
@@ -92,14 +92,14 @@ var script = {
         });
 
         $('.ajax-table').fadeOut(1000, function() {
-            $('form').fadeIn();
+            $('#container-fluid form').fadeIn();
         });
     },
 	//add a new script
     create: function() {
-    	$('form').trigger('reset');
+    	$('#container-fluid form').trigger('reset');
     	$('.ajax-table').fadeOut(1000, function() {
-            $('form').fadeIn(1000)
+            $('#container-fluid form').fadeIn(1000)
         });
     },
     //save a script
@@ -109,7 +109,7 @@ var script = {
             url: helper.baseUrl + 'scripts/save_script',
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize()
+            data: $('#container-fluid form').serialize()
         }).done(function(response) {
         	//Reload script table
             script.load_scripts();

@@ -1054,7 +1054,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
                 date: $('.filter-form').find('input[name="date"]').val(),
                 origin: $('.directions-form').find('input[name="origin"]').val(),
                 destination: $('.directions-form').find('input[name="destination"]').val(),
-                user_id: $('form').find('input[name="user"]').val() //we can add a user here to edit some elses planner
+                user_id: $('#container-fluid form').find('input[name="user"]').val() //we can add a user here to edit some elses planner
             }
         }).done(function (response) {
             if (response.success) {

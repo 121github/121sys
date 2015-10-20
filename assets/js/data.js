@@ -444,7 +444,7 @@ var daily_ration = {
                             + "<input class='' value='" +	val.daily_data + "' name='" + val.campaign_id + "' onblur='daily_ration.set_daily_data("+val.campaign_id+")'>"
                             + "</td></tr>");
                     }
-                    $('form').find('input[name="'+ val.campaign_id +'"]').numeric();
+                    $('#container-fluid form').find('input[name="'+ val.campaign_id +'"]').numeric();
                 });
             } else {
                 $tbody
@@ -455,7 +455,7 @@ var daily_ration = {
         });
     },
     set_daily_data: function(campaign_id) {
-        var daily_data = $('form').find('input[name="'+ campaign_id +'"]').val();
+        var daily_data = $('#container-fluid form').find('input[name="'+ campaign_id +'"]').val();
         $.ajax({
             url: helper.baseUrl + 'data/set_daily_ration',
             type: "POST",
@@ -862,7 +862,7 @@ var add_record = {
             url: helper.baseUrl + 'search/quicksearch',
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize(),
+            data: $('#container-fluid form').serialize(),
 			beforeSend:function(){
 			  $('#dupes-found').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');	
 			}

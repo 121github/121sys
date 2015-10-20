@@ -57,7 +57,7 @@ var template = {
     //cancel the edit view
     cancel: function() {
     	//Delte attachments file uploaded without save
-    	var data = {filesUploaded :  $('form').find('input[name="template_attachments"]').val()};
+    	var data = {filesUploaded :  $('#container-fluid form').find('input[name="template_attachments"]').val()};
     	$.ajax({
             url: helper.baseUrl + "templates/delete_attachments_list",
             type: 'POST',
@@ -87,23 +87,23 @@ var template = {
 			    	$("button[type=submit]").attr('disabled',false);
     	$('#attachments').fadeOut();
         var row = $btn.closest('tr');
-        $('form').find('input[name="template_id"]').val(result.data.template_id);
-        $('form').find('input[name="template_name"]').val(result.data.template_name);
-        $('form').find('input[name="template_from"]').val(result.data.template_from);
-        $('form').find('input[name="template_to"]').val(result.data.template_to);
-        $('form').find('input[name="template_cc"]').val(result.data.template_cc);
-        $('form').find('input[name="template_bcc"]').val(result.data.template_bcc);
-        $('form').find('input[name="template_subject"]').val(result.data.template_subject);
+        $('#container-fluid form').find('input[name="template_id"]').val(result.data.template_id);
+        $('#container-fluid form').find('input[name="template_name"]').val(result.data.template_name);
+        $('#container-fluid form').find('input[name="template_from"]').val(result.data.template_from);
+        $('#container-fluid form').find('input[name="template_to"]').val(result.data.template_to);
+        $('#container-fluid form').find('input[name="template_cc"]').val(result.data.template_cc);
+        $('#container-fluid form').find('input[name="template_bcc"]').val(result.data.template_bcc);
+        $('#container-fluid form').find('input[name="template_subject"]').val(result.data.template_subject);
 		if(result.data.template_unsubscribe=="1"){
-			$('form').find('#unsubscribe-yes').prop('checked',true).parent().addClass('active');
-			$('form').find('#unsubscribe-no').prop('checked',false).parent().removeClass('active');
+			$('#container-fluid form').find('#unsubscribe-yes').prop('checked',true).parent().addClass('active');
+			$('#container-fluid form').find('#unsubscribe-no').prop('checked',false).parent().removeClass('active');
 		} else {
-			$('form').find('#unsubscribe-no').prop('checked',true).parent().addClass('active');
-			$('form').find('#unsubscribe-yes').prop('checked',false).parent().removeClass('active');
+			$('#container-fluid form').find('#unsubscribe-no').prop('checked',true).parent().addClass('active');
+			$('#container-fluid form').find('#unsubscribe-yes').prop('checked',false).parent().removeClass('active');
 		}
         tinyMCE.activeEditor.setContent(result.data.template_body);
 
-        var data = {id : $('form').find('input[name="template_id"]').val()};
+        var data = {id : $('#container-fluid form').find('input[name="template_id"]').val()};
         
         $.ajax({
             url: helper.baseUrl + "templates/get_campaings_by_template_id",
@@ -127,7 +127,7 @@ var template = {
 	//add a new template
     create: function() {
     	//Delte attachments file uploaded without save
-    	var data = {filesUploaded :  $('form').find('input[name="template_attachments"]').val()};
+    	var data = {filesUploaded :  $('#container-fluid form').find('input[name="template_attachments"]').val()};
     	$.ajax({
             url: helper.baseUrl + "templates/delete_attachments_list",
             type: 'POST',
@@ -135,10 +135,10 @@ var template = {
             data: data,
             success: function(data){
             	$("button[type=submit]").attr('disabled',false);
-                $('form').trigger('reset');
+                $('#container-fluid form').trigger('reset');
                  tinyMCE.activeEditor.setContent('');
                 $('#campaigns_select').selectpicker('val',[]).selectpicker('render');
-                $('form').find('input[type="hidden"]').val('');
+                $('#container-fluid form').find('input[type="hidden"]').val('');
                 template.empty_attachment_table();
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -147,7 +147,7 @@ var template = {
         });
     	
         $('.ajax-table').fadeOut(1000, function() {
-            $('form').fadeIn(1000)
+            $('#container-fluid form').fadeIn(1000)
         });
     },
     //save a template
@@ -157,7 +157,7 @@ var template = {
             url: helper.baseUrl + 'templates/save_template',
             type: "POST",
             dataType: "JSON",
-            data: $('form').serialize(),
+            data: $('#container-fluid form').serialize(),
 			beforeSend:function(){	
 				$("button[type=submit]").prop('disabled',true);
 			}
@@ -203,7 +203,7 @@ var template = {
     },
     //add a new attached file to the list of the new attachments
     attach_new_file: function(filename, path) {
-    	var data = {filename : filename, path : path, newFiles :  $('form').find('input[name="template_attachments"]').val()};
+    	var data = {filename : filename, path : path, newFiles :  $('#container-fluid form').find('input[name="template_attachments"]').val()};
     	
     	$.ajax({
             url: helper.baseUrl + 'templates/set_attached_files',
@@ -211,7 +211,7 @@ var template = {
             dataType: "JSON",
             data: data
         }).done(function(response) {
-        	$('form').find('input[name="template_attachments"]').val(response.data);
+        	$('#container-fluid form').find('input[name="template_attachments"]').val(response.data);
         	//Reload the new attachments table
         	template.load_new_attachments(response.data_array);
         });
@@ -219,7 +219,7 @@ var template = {
     //Remove an attachment from the list of new attachments
     remove_new_attach: function(path) {
     	//If the path exist as a new attachment, remove from the list
-    	var data = {path : path, newFiles :  $('form').find('input[name="template_attachments"]').val()};
+    	var data = {path : path, newFiles :  $('#container-fluid form').find('input[name="template_attachments"]').val()};
     	
     	$.ajax({
             url: helper.baseUrl + 'templates/unset_attached_files',
@@ -227,7 +227,7 @@ var template = {
             dataType: "JSON",
             data: data
         }).done(function(response) {
-        	$('form').find('input[name="template_attachments"]').val(response.data);
+        	$('#container-fluid form').find('input[name="template_attachments"]').val(response.data);
         	//Reload the new attachments table
         	template.load_new_attachments(response.data_array);
         });
@@ -264,7 +264,7 @@ var template = {
         $thead.empty();
         
     	//Set progress-bar 0%
-    	$('form').find('input[name="template_attachments"]').val("");
+    	$('#container-fluid form').find('input[name="template_attachments"]').val("");
     	$('#progress .progress-bar').css(
              'width',
              0 + '%'
@@ -274,7 +274,7 @@ var template = {
     },
     //Load attachments from the database for a particular template
     load_attachments: function() {
-    	var data = {id : $('form').find('input[name="template_id"]').val()};
+    	var data = {id : $('#container-fluid form').find('input[name="template_id"]').val()};
     	$.ajax({
             url: helper.baseUrl + "templates/get_attachments_by_template_id",
             type: 'POST',
@@ -299,7 +299,7 @@ var template = {
         });
         
         $('.ajax-table').fadeOut(1000, function() {
-            $('form').fadeIn();
+            $('#container-fluid form').fadeIn();
         });
     },
   //Load the new attachments table
