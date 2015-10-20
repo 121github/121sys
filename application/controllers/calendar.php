@@ -61,7 +61,7 @@ class Calendar extends CI_Controller
                 'lib/underscore.js',
                 'plugins/calendar/js/calendar.js',
                 'calendar.js',
-                'location.js',
+				'location.js',
                 'plugins/jqfileupload/jquery.fileupload.js',
                 'plugins/jqfileupload/jquery.fileupload-process.js',
                 'plugins/jqfileupload/jquery.fileupload-validate.js'

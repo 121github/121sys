@@ -404,8 +404,9 @@ if (isset($javascript)):
     <?php endforeach;
 endif; ?>
 <?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
+<?php if (@in_array("map.js", $javascript)){ $callback = "&callback=initializemaps"; } ?>
 <script
- type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false&callback=initializemaps"></script>
+ type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false<?php echo $callback ?>"></script>
 <?php } ?>  
 </body>
 </html>
