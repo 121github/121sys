@@ -201,7 +201,7 @@ class Trackvia extends CI_Controller
     }
 public function check_darlington(){
 	$this->db->query("update records set parked_code=2,pot_id = 57 where campaign_id in(61)");
-	
+	/*
  echo "<br>Checking the DARLINGTON_ALL_RECORDS(" . DARLINGTON_ALL_RECORDS . ") view";
        echo "<br>";
        $this->checkView(
@@ -220,7 +220,7 @@ public function check_darlington(){
 
            )
         );
-
+*/
         //Book View
         echo "<br>Checking the DARLINGON_BOOK_SURVEY(" . DARLINGON_BOOK_SURVEY . ") view";
         echo "<br>";
