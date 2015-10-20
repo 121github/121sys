@@ -109,7 +109,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
 </div>
 <?php } ?>
-
+</div>
 <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0) { ?>
     <nav id="menu-right" class="mm-menu mm--horizontal mm-offcanvas">
         <div style="padding:30px 20px 3px">

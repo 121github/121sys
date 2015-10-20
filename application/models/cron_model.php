@@ -203,7 +203,7 @@ class Cron_model extends CI_Model
         $qry = "select postcode from company_addresses where location_id is null and postcode is not null limit 1000 union
 		select postcode from contact_addresses where location_id is null and postcode is not null limit 1000 union
 		select postcode from appointments where location_id is null and postcode is not null limit 1000 union
-		select postcode from record_planner where location_id is null and postcode is not null limit 1000 ";
+		select postcode from record_planner where location_id is null and postcode is not null limit 1000 union select postcode from branch_addresses where location_id is null and postcode is not null limit 1000 ";
         $postcodes = $this->db->query($qry)->result_array();
        echo $status = "NULL Postcodes found: " . count($postcodes) . "<br>\r\n";
 		$postcode_array = array();
@@ -232,6 +232,8 @@ class Cron_model extends CI_Model
                 $this->db->query($appointment_locations);
 				$planner_locations = "update record_planner set location_id = {$pc['id']} where postcode = '{$pc['postcode']}'";
                 $this->db->query($planner_locations);
+				$planner_locations = "update branch_addresses set location_id = {$pc['id']} where postcode = '{$pc['postcode']}'";
+                $this->db->query($planner_locations);
 
         }
     }
@@ -243,7 +245,7 @@ class Cron_model extends CI_Model
 		
 		        $qry = "select postcode from company_addresses where location_id is null and postcode is not null limit 1000 union select postcode from contact_addresses where location_id is null and postcode is not null limit 1000 union
 		select postcode from appointments where location_id is null and postcode is not null limit 1000 union
-		select postcode from record_planner where location_id is null and postcode is not null limit 1000";
+		select postcode from record_planner where location_id is null and postcode is not null limit 1000 union select postcode from branch_addresses where location_id is null and postcode is not null limit 1000";
         $postcodes = $this->db->query($qry)->result_array();
        echo $status = "NULL Postcodes found: " . count($postcodes) . "<br>\r\n";
 		$postcode_array = array();
