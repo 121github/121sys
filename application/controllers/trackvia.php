@@ -40,10 +40,10 @@ define('CITYWEST_SURVEY_SLOTS', '3000725652');
 
 
 if ($_SESSION['environment'] == "acceptance" || $_SESSION['environment'] == "test" || $_SESSION['environment'] == "development") {
-
-    define('PRIVATE_TABLE', '3000283421');
-    define('SOUTHWAY_TABLE', '3000283398');
-    define('CITYWEST_TABLE', '3000283398');
+define('DARLINGTON_TABLE', '3000283398');
+define('PRIVATE_TABLE', '3000283421');
+define('SOUTHWAY_TABLE', '3000283398');
+define('CITYWEST_TABLE', '3000283398');
 
 } else if ($_SESSION['environment'] == "production") {
 //Live tables
