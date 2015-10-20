@@ -16,10 +16,10 @@ class PrepareJonWallDeployment extends AbstractTask
         $commandList = array(
             'mv application/config/database.php.jonwall application/config/database.php',
             'rm -rf application/config/database.php.*',
-            'setfacl -R -m u:www-data:rwx -m u:\`whoami\`:rwx datafiles',
-            'setfacl -dR -m u:www-data:rwx -m u:\`whoami\`:rwx datafiles',
-            'find . -type f -exec chmod 664 {} \;',
-            'find . -type d -exec chmod 775 {} \;',
+            'setfacl -R -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
+            'setfacl -dR -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
+            'find . -type f -exec chmod 644 {} \;',
+            'find . -type d -exec chmod 755 {} \;',
             'chmod -R 777 importcsv.sh'
         );
 
