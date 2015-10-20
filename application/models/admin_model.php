@@ -22,6 +22,11 @@ class Admin_model extends CI_Model
 		$qry = "insert into campaigns_to_features select $new_id,feature_id from campaigns_to_features where campaign_id = $id";
 		$this->db->query($qry);
 		}
+		if(in_array("extra_fields",$tables)){
+		//add campaign features
+		$qry = "insert into record_details_fields select '',$new_id,field,field_name,is_select,is_radio,sort,is_visible,is_renewal,`format`,editable,is_color,is_owner,is_client_ref from record_details_fields where campaign_id = $id";
+		$this->db->query($qry);
+		}
 
 		if(in_array("managers",$tables)){
 		//add campaign managers 
