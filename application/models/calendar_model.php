@@ -7,6 +7,7 @@ class Calendar_model extends CI_Model
     function __construct()
     {
         parent::__construct();
+		$this->db2 = $this->load->database('uk_postcodes',true); 
     }
 
 
@@ -27,7 +28,7 @@ class Calendar_model extends CI_Model
         if (!empty($options['postcode']) && !empty($options['distance'])) {
             $distance = intval($options['distance']) * 1.1515;
             $postcode_qry =  "select postcode,latitude lat, longitude lng from uk_postcodes.PostcodeIo where postcode = '".$options['postcode']."'";
-            $geodata = $this->db->query($postcode_qry);
+            $geodata = $this->db2->query($postcode_qry);
             if ($geodata->num_rows() > 0) {
                 $coords = $geodata->row_array();
             } else {
