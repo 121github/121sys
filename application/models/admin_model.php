@@ -35,7 +35,11 @@ class Admin_model extends CI_Model
 		$qry = "insert into campaign_managers select $new_id,user_id from campaign_managers where campaign_id = $id";
 		$this->db->query($qry);
 		}
-		
+		if(in_array("appointment_slots",$tables)){
+		//add campaign appointment_slots
+		$qry = "insert into appointment_slot_assignment select '',appointment_slot_id,$new_id,user_id,max_slots,day,source_id from appointment_slot_assignment where campaign_id = $id";
+		$this->db->query($qry);
+		}
 		if(in_array("appointment_types",$tables)){
 		//add campaign appointment_types
 		$qry = "insert into campaign_appointment_types select $new_id,appointment_type_id from campaign_appointment_types where campaign_id = $id";

@@ -31,7 +31,8 @@
           <select multiple name="tables[]" class="selectpicker" data-width="100%" id="copycampaignselect">
             <option selected value="features">Features</option>
              <option selected value="extra_fields">Extra Fields</option>
-            <option selected value="appointment_types">Available Appointment Types</option>
+              <option selected value="appointment_slots">Appointment Slots</option>
+            <option selected value="appointment_types">Appointment Types</option>
             <option selected value="campaign_permissions">Permissions</option>
             <option selected value="tasks">Tasks</option>
                         <option selected value="outcomes">Outcomes</option>
