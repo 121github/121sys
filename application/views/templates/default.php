@@ -406,7 +406,7 @@ endif; ?>
 <?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
 <?php if (@in_array("map.js", $javascript)){ $callback = "&callback=initializemaps"; } ?>
 <script
- type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false<?php echo $callback ?>"></script>
+ type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB2dIZjAKnkWHYFrf1JtPj5D65GA8EsSck&sensor=false<?php echo $callback ?>"></script>
 <?php } ?>  
 </body>
 </html>
