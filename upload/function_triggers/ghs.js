@@ -21,7 +21,11 @@ init:function(){
 		$('#slot-attendee').val('122');
 	} else if ($('#pot-id').val()=="49"||$('#pot-id').val()=="48"||$('#pot-id').val()=="47"||$('#pot-id').val()=="46"){
 		$('#slot-attendee').val('137');
-	} else {
+	}  else if ($('#pot-id').val()=="57"||$('#pot-id').val()=="58"||$('#pot-id').val()=="59"||$('#pot-id').val()=="60"){ 
+	$('#slot-attendee').val('143');
+	}  else if ($('#pot-id').val()=="61"||$('#pot-id').val()=="62"){ 
+	$('#slot-attendee').val('142');
+	}  else {
 		//private
 		$('#slot-attendee').val('121');
 	}
@@ -30,9 +34,23 @@ init:function(){
 },
 appointment_setup:function(){
 	console.log("Setting up appointment from ghs.js");
-	if($('#source-id').val()=="51"){
+	if($('#pot-id').val()=="51"||$('#pot-id').val()=="52"){
+		//if southway install
 		$('.attendeepicker').selectpicker('val',[139]);
 		$('.typepicker').selectpicker('val',[4])
+	} else if($('#pot-id').val()=="61"||$('#pot-id').val()=="62"){
+		//darlington install
+		$('.attendeepicker').selectpicker('val',[142]);
+		$('.typepicker').selectpicker('val',[4])
+	} else if($('#pot-id').val()=="57"||$('#pot-id').val()=="58"||$('#pot-id').val()=="59"||$('#pot-id').val()=="60"){	//darlington surveys
+		$('.attendeepicker').selectpicker('val',[143]);
+		$('.typepicker').selectpicker('val',[3])
+	} else if($('#pot-id').val()=="49"||$('#pot-id').val()=="46"||$('#pot-id').val()=="47"||$('#pot-id').val()=="48"){	//citywest surveys
+		$('.attendeepicker').selectpicker('val',[137]);
+		$('.typepicker').selectpicker('val',[3])
+	} else if($('#pot-id').val()=="36"||$('#pot-id').val()=="38"||$('#pot-id').val()=="39"||$('#pot-id').val()=="40"){	//private surveys
+		$('.attendeepicker').selectpicker('val',[121]);
+		$('.typepicker').selectpicker('val',[3])
 	} else {
 		alert("*Confirm that loft access will be required during the survey. (head and shoulder inspection usually sufficient)\n*Confirm access also required to main electric meter and fuse board required - it helps if obstacles are removed prior to survey.");
 		$('.attendeepicker').selectpicker('val',[122]);
