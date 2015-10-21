@@ -337,6 +337,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php if($this->session->flashdata('warning')){ ?>
         flashalert.success('<?php echo $this->session->flashdata('warning') ?>');
         <?php } ?>
+		$('.dropdown-menu ul').addClass('mm-nolistview');
         $('nav#menu').mmenu({
                "navbars": [
                   {
@@ -365,7 +366,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                   }
                ]
             ,"extensions": ["pageshadow","effect-menu-slide", "effect-listitems-slide","pagedim-black"]});
-
 
         <?php if(isset($global_filter)){ ?>
         $('nav#menu-right').mmenu({
