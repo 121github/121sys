@@ -141,19 +141,9 @@ class Cron_model extends CI_Model
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             //check valid uk format
-              if (!validate_postcode($row['postcode'])) {
-                $qry = "update company_addresses set postcode = null where postcode = '{$row['postcode']}'";
-                $this->db->query($qry);
-                $qry = "update contact_addresses set postcode = null where postcode = '{$row['postcode']}'";
-                $this->db->query($qry);
-                $qry = "update appointments set postcode = null where postcode = '{$row['postcode']}'";
-                $this->db->query($qry);
-                $qry = "update record_planner set postcode = null where postcode = '{$row['postcode']}'";
-                $this->db->query($qry);
-                $qry = "update branch_addresses set postcode = null where postcode = '{$row['postcode']}'";
-                $this->db->query($qry);
-            } else {
+              if (validate_postcode($row['postcode'])) {
 				$formatted_postcode = postcodeFormat($row['postcode']);
+				if($formatted_postcode<>$row['postcode']){
                 $qry = "update company_addresses set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
                 $this->db->query($qry);
                 $qry = "update contact_addresses set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
@@ -163,6 +153,18 @@ class Cron_model extends CI_Model
                 $qry = "update record_planner set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
                 $this->db->query($qry);
                 $qry = "update branch_addresses set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
+                $this->db->query($qry);
+				}
+            } else {
+				$qry = "update company_addresses set postcode = null where postcode = '{$row['postcode']}'";
+                $this->db->query($qry);
+                $qry = "update contact_addresses set postcode = null where postcode = '{$row['postcode']}'";
+                $this->db->query($qry);
+                $qry = "update appointments set postcode = null where postcode = '{$row['postcode']}'";
+                $this->db->query($qry);
+                $qry = "update record_planner set postcode = null where postcode = '{$row['postcode']}'";
+                $this->db->query($qry);
+                $qry = "update branch_addresses set postcode = null where postcode = '{$row['postcode']}'";
                 $this->db->query($qry);
             }
         }
@@ -193,8 +195,7 @@ class Cron_model extends CI_Model
         $postcode_locations = $this->db2->query($qry)->result_array();
         
         foreach ($postcode_locations as $pc) {
-            $insert_locations = "insert ignore into locations set location_id='{$pc['id']}',lat='{$pc['lat']}',lng='{$pc['lng']}',postcode='{$pc['postcode']}'";
-            //$this->firephp->log($q1);
+            $insert_locations = "replace into locations set location_id='{$pc['id']}',lat='{$pc['lat']}',lng='{$pc['lng']}'";
             $this->db->query($insert_locations);
             $company_locations = "update company_addresses set location_id = {$pc['id']} where postcode = '{$pc['postcode']}'";
             $this->db->query($company_locations);
