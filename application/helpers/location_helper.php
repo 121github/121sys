@@ -114,16 +114,17 @@ if (!function_exists('postcode_to_coords')) {
 if (!function_exists('get_postcode_data')) {
 
     function get_postcode_data($postcode) {
-        $_SESSION['current_postcode'] = $postcode;
         //Contact the google maps api to get the lat & lng from the postcode
-        $url = 'http://it.121system.com/api/postcodeios/' . urlencode($postcode) . '.json';
-        $json = json_decode(file_get_contents($url));
+        $url = 'http://it.121system.com/api/postcodeios/' . $postcode . '.json';
+        $json = json_decode(file_get_contents($url),true);
+		
 		if (isset($json['latitude'])) {
 			return $json;
 		}
 		else {
 			return array(
 					'error' => "Could not get postcode data from the API",
+					'url' => $url
 			);
 		}
     }

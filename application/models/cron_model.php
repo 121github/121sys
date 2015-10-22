@@ -212,7 +212,7 @@ class Cron_model extends CI_Model
     
     public function update_locations_from_api()
     {
-        
+        $this->load->helper('remotefile');
         $qry       = "select postcode from company_addresses where location_id is null and postcode is not null limit 1000 union select postcode from contact_addresses where location_id is null and postcode is not null limit 1000 union
 		select postcode from appointments where location_id is null and postcode is not null limit 1000 union
 		select postcode from record_planner where location_id is null and postcode is not null limit 1000 union select postcode from branch_addresses where location_id is null and postcode is not null limit 1000";
@@ -226,7 +226,8 @@ class Cron_model extends CI_Model
         }
         foreach ($postcode_array as $pc) {
             if (validate_postcode($pc)) {
-                $response = get_postcode_data($pc);
+				$json = loadFile("http://api.postcodes.io/postcodes/".urlencode($pc));
+				$response = json_decode($json,true);
                 if (isset($response['latitude'])) {
                     $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$response['postcode']}',latitude = '{$response['latitude']}',longitude = '{$response['longitude']}'");
                 }
