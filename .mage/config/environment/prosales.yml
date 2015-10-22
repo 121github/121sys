@@ -1,8 +1,8 @@
 #production
 deployment:
-  user: one2one
+  user: samba
   from: /var/lib/jenkins/jobs/121Sys/workspace/
-  to: www
+  to: /var/www
   excludes:
     - upload
     - application/logs
@@ -12,14 +12,14 @@ releases:
   symlink: 121sys_prosales
   directory: releases/121sys_releases/121sys_prosales
 hosts:
-    - www.leadcontrol.co.uk:2020
+    - 10.10.1.13
 tasks:
   pre-deploy:
   on-deploy:
     - uploadFolder
     - logFolder
     - prepareProSalesDeployment
-#    - permissionsGroup
+    - permissionsGroup
   post-release:
-    - databaseBackup: {user: one2one_prosales, pass: ca2fUAYMzh28VJ9Z, host: localhost, database: one2one_prosales}
+    - databaseBackup: {user: 121sys_prosales, pass: ca2fUAYMzh28VJ9Z, host: localhost, database: 121sys_prosales}
   post-deploy:
