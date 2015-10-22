@@ -256,7 +256,7 @@ class Cron_model extends CI_Model
         }
         foreach ($postcode_array as $pc) {
             if (validate_postcode($pc)) {
-                $response = postcode_to_coords($pc);
+                $response = postcode_to_coords(str_replace(" ","",$pc));
                 $postcode = postcodeFormat($pc);
                 if (isset($response['lat'])) {
                     $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='$postcode',latitude = '{$response['lat']}',longitude = '{$response['lng']}'");

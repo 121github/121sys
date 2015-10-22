@@ -136,7 +136,7 @@ class Cron extends CI_Controller
     public function update_locations_with_google()
     {
         //if we have any records left over that dont have a location_id we add the postcode to the uk_postcodes table using google maps api
-        $this->Cron_model->update_locations_with_google();
+        //$this->Cron_model->update_locations_with_google();
     }
 
     /* end location functions */
