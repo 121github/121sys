@@ -226,10 +226,13 @@ class Cron_model extends CI_Model
         }
         foreach ($postcode_array as $pc) {
             if (validate_postcode($pc)) {
-				$json = loadFile("http://api.postcodes.io/postcodes/".urlencode($pc));
+				$url = "http://it.121system.com/api/postcodeios/".str_replace(" ","",$pc).".json";
+			   //$url = "http://api.postcodes.io/postcode/".str_replace(" ","",$pc);
+				$json = loadFile($url);
 				$response = json_decode($json,true);
                 if (isset($response['latitude'])) {
                     $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='{$response['postcode']}',latitude = '{$response['latitude']}',longitude = '{$response['longitude']}'");
+					$response['postcode']. " was added to the PostcodeIO table<br>\r\n";
                 }
             }
         }
