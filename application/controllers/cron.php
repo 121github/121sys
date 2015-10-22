@@ -104,8 +104,9 @@ class Cron extends CI_Controller
     /* The following functions can be used to format postcodes and update geocoordinates in the uk_postcodes/locations table */
     public function update_all_locations()
     {
-        $this->Cron_model->update_locations_table();
+        $this->Cron_model->update_address_tables();
         $this->Cron_model->update_location_ids();
+		$this->Cron_model->update_location_from_api();
         $this->Cron_model->update_locations_with_google();
         echo json_encode(array(
             "success" => true
