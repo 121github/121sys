@@ -113,10 +113,10 @@ class Cron extends CI_Controller
         ));
     }
 
-    public function update_locations_table()
+    public function update_address_tables()
     {
         //sets invalid postcodes to null and looks up valid postcodes in the uk_postcodes table and copies them to the locations table
-        $this->Cron_model->update_locations_table();
+        $this->Cron_model->update_address_tables();
 
     }
 
