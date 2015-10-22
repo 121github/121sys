@@ -136,35 +136,34 @@ class Cron_model extends CI_Model
 		select postcode from appointments where location_id is null and postcode is not null limit 1000 union
 		select postcode from record_planner where location_id is null and postcode is not null limit 1000 union select postcode from branch_addresses where location_id is null and postcode is not null limit 1000 ";
         $postcodes = $this->db->query($qry)->result_array();
-        
         $status = "Postcodes found: " . count($postcodes) . "\r\n";
-        file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             //check valid uk format
+			$unformatted = $row['postcode'];
               if (validate_postcode($row['postcode'])) {
 				$formatted_postcode = postcodeFormat($row['postcode']);
-				if($formatted_postcode<>$row['postcode']){
-                $qry = "update company_addresses set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
+				if($formatted_postcode<>$unformatted){
+                $qry = "update company_addresses set postcode = '$formatted_postcode' where postcode = '$unformatted'";
                 $this->db->query($qry);
-                $qry = "update contact_addresses set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
+                $qry = "update contact_addresses set postcode = '$formatted_postcode' where postcode = '$unformatted'";
                 $this->db->query($qry);
-                $qry = "update appointments set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
+                $qry = "update appointments set postcode = '$formatted_postcode' where postcode = '$unformatted'";
                 $this->db->query($qry);
-                $qry = "update record_planner set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
+                $qry = "update record_planner set postcode = '$formatted_postcode' where postcode = '$unformatted'";
                 $this->db->query($qry);
-                $qry = "update branch_addresses set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
+                $qry = "update branch_addresses set postcode = '$formatted_postcode' where postcode = '$unformatted'";
                 $this->db->query($qry);
 				}
             } else {
-				$qry = "update company_addresses set postcode = null where postcode = '{$row['postcode']}'";
+				$qry = "update company_addresses set postcode = null where postcode = '$unformatted'";
                 $this->db->query($qry);
-                $qry = "update contact_addresses set postcode = null where postcode = '{$row['postcode']}'";
+                $qry = "update contact_addresses set postcode = null where postcode = '$unformatted'";
                 $this->db->query($qry);
-                $qry = "update appointments set postcode = null where postcode = '{$row['postcode']}'";
+                $qry = "update appointments set postcode = null where postcode = '$unformatted'";
                 $this->db->query($qry);
-                $qry = "update record_planner set postcode = null where postcode = '{$row['postcode']}'";
+                $qry = "update record_planner set postcode = null where postcode = '$unformatted'";
                 $this->db->query($qry);
-                $qry = "update branch_addresses set postcode = null where postcode = '{$row['postcode']}'";
+                $qry = "update branch_addresses set postcode = null where postcode = '$unformatted'";
                 $this->db->query($qry);
             }
         }
