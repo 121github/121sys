@@ -141,8 +141,7 @@ class Cron_model extends CI_Model
         file_put_contents($file, $status);
         foreach ($postcodes as $row) {
             //check valid uk format
-            $formatted_postcode = postcodeCheckFormat($row['postcode']);
-            if ($formatted_postcode == NULL) {
+              if (!validate_postcode($row['postcode'])) {
                 $qry = "update company_addresses set postcode = null where postcode = '{$row['postcode']}'";
                 $this->db->query($qry);
                 $qry = "update contact_addresses set postcode = null where postcode = '{$row['postcode']}'";
@@ -154,6 +153,7 @@ class Cron_model extends CI_Model
                 $qry = "update branch_addresses set postcode = null where postcode = '{$row['postcode']}'";
                 $this->db->query($qry);
             } else {
+				$formatted_postcode = postcodeFormat($row['postcode']);
                 $qry = "update company_addresses set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
                 $this->db->query($qry);
                 $qry = "update contact_addresses set postcode = '$formatted_postcode' where postcode = '{$row['postcode']}'";
