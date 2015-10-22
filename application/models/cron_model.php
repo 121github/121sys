@@ -179,7 +179,7 @@ class Cron_model extends CI_Model
 		select postcode from appointments where location_id is null and postcode is not null limit 1000 union
 		select postcode from record_planner where location_id is null and postcode is not null limit 1000 union select postcode from branch_addresses where location_id is null and postcode is not null limit 1000 ";
         $postcodes = $this->db->query($qry)->result_array();
-        echo $status = "Postcodes found: " . count($postcodes) . "<br>\r\n";
+		$status = "Postcodes found: " . count($postcodes) . "<br>\r\n";
         $postcode_array = array();
         foreach ($postcodes as $row) {
             if (validate_postcode($row['postcode'])) {
