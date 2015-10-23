@@ -542,7 +542,8 @@ $this->_campaigns = campaign_access_dropdown();
     					'dashboard.css'
     			),
     			'javascript' => array(
-    					'data.js?v1'
+                    'data.js?v1',
+                    'lib/jquery.numeric.min.js'
     			)
     	);
     	$this->template->load('default', 'data/add_record.php', $data);
@@ -576,7 +577,19 @@ $this->_campaigns = campaign_access_dropdown();
                 echo json_encode(array("success" => false, "error" => "Please enter a valid postcode"));
                 exit;
             }
-			$company_address=array("add1"=>$form['company_add1'],"postcode"=>$form['company_postcode'],"primary"=>"1");
+                $company_address = array(
+                    "postcode" => $form['company_postcode'],
+                    "add1" => $form['company_add1'],
+                    "add2" => $form['company_add2'],
+                    "add3" => $form['company_add3'],
+                    "add4" => $form['company_add4'],
+                    "locality" => $form['company_locality'],
+                    "city" => $form['company_city'],
+                    "county" => $form['company_county'],
+                    "country" => $form['company_country'],
+                    "primary" => "1"
+                );
+
 			}
 			
     		$response = true;
@@ -593,7 +606,19 @@ $this->_campaigns = campaign_access_dropdown();
                 echo json_encode(array("success" => false, "error" => "Please enter a valid postcode"));
                 exit;
             }
-			$contact_address=array("add1"=>$form['contact_add1'],"postcode"=>$form['contact_postcode'],"primary"=>"1");
+                $contact_address = array(
+                    "postcode" => $form['contact_postcode'],
+                    "add1" => $form['contact_add1'],
+                    "add2" => $form['contact_add2'],
+                    "add3" => $form['contact_add3'],
+                    "add4" => $form['contact_add4'],
+                    "locality" => $form['contact_locality'],
+                    "city" => $form['contact_city'],
+                    "county" => $form['contact_county'],
+                    "country" => $form['contact_country'],
+                    "primary" => "1"
+                );
+
 			} else if(empty($form['contact_add1'])&&!empty($form['contact_postcode'])){
 			 echo json_encode(array("success" => false, "error" => "Please enter the first line of the address"));
                 exit;	
@@ -624,11 +649,30 @@ $this->_campaigns = campaign_access_dropdown();
     		unset($form['company_name']);
 			unset($form['company_postcode']);
 			unset($form['company_add1']);
+            unset($form['company_add2']);
+            unset($form['company_add3']);
+            unset($form['company_add4']);
+            unset($form['company_locality']);
+            unset($form['company_city']);
+            unset($form['company_county']);
+            unset($form['company_country']);
 			unset($form['company_telephone']);
+            unset($form['company_house_number']);
+            unset($form['company_address']);
+
     		unset($form['contact_name']);
 			unset($form['contact_postcode']);
 			unset($form['contact_add1']);
+            unset($form['contact_add2']);
+            unset($form['contact_add3']);
+            unset($form['contact_add4']);
+            unset($form['contact_locality']);
+            unset($form['contact_city']);
+            unset($form['contact_county']);
+            unset($form['contact_country']);
 			unset($form['contact_telephone']);
+            unset($form['contact_house_number']);
+            unset($form['contact_address']);
 			 
     		if (!empty($form['campaign_id'])) {
     			$record_id = $this->Records_model->save_record($form);
