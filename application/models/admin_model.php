@@ -48,7 +48,7 @@ class Admin_model extends CI_Model
 		
 		if(in_array("permissions",$tables)){
 		//add campaign permissions
-		$qry = "insert into campaign_permissions select $new_id,permissions_id,permission_state from campaign_permissions where campaign_id = $id";
+		$qry = "insert into campaign_permissions select $new_id,permission_id,permission_state from campaign_permissions where campaign_id = $id";
 		$this->db->query($qry);
 		}
 		
