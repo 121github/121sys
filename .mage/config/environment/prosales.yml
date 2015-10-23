@@ -21,5 +21,5 @@ tasks:
     - prepareProSalesDeployment
     - permissionsGroup
   post-release:
-    - databaseBackup: {user: 121sys_prosales, pass: ca2fUAYMzh28VJ9Z, host: localhost, database: 121sys_prosales}
+    - databaseBackup: {user: 121sys_prosales, pass: rav7KI1AHeGEge5Aq2k7n5Ti6e848I, host: localhost, database: 121sys_prosales}
   post-deploy:
