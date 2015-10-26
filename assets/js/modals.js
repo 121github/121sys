@@ -1039,7 +1039,7 @@ var modals = {
                 modals.contacts.save_item(action);
             });
             /*when a tab is changed we should reset the tab content*/
-            $(document).on('click', '#modal .nav-tabs .phone-tab a,#modal .nav-tabs .address-tab a', function (e) {
+            $(document).on('click', '#modal .nav-tabs .general-tab a, #modal .nav-tabs .phone-tab a,#modal .nav-tabs .address-tab a', function (e) {
                 e.preventDefault();
                 var tabname = $(this).attr('href');
                 modals.contacts.change_tab(tabname);
