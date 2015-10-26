@@ -271,3 +271,7 @@ div.tooltip-inner {
   transition: all 1s ease-in-out;
 }
 .search-panels .panel{ overflow:visible !important }
+
+.input-append .btn.dropdown-toggle {
+    float: none;
+}
