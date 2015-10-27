@@ -2,12 +2,12 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
-
+		
         $(document).on('change', '.typepicker', function () {
             var title = $(this).find('option:selected').text();
             $('[name="title"]').val(title);
         });
-
+		
         $(document).on('mouseover', '.show-apps', function (e) {
             var target = $(this);
             if (target.attr('data-toggle') !== "tooltip") {
@@ -295,5 +295,9 @@ $(document).ready(function () {
     campaign_functions.init();
     //hsl requests
     $(".record-panel .panel-heading").html($(".record-panel .panel-heading").html().replace("Record Details", "Progress Summary"));
+
+if(helper.role>2){
+	$(".outcomepicker .dropdown-menu ul li:contains('Remove from records')").remove();
+}
 
 });
