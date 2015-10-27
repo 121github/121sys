@@ -542,7 +542,7 @@ $this->_campaigns = campaign_access_dropdown();
     					'dashboard.css'
     			),
     			'javascript' => array(
-                    'data.js?v1',
+                    'data.js?v2.0',
                     'lib/jquery.numeric.min.js'
     			)
     	);
