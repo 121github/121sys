@@ -52,6 +52,7 @@ class Contacts_model extends CI_Model
                     "add1" => !empty($result['add1'])?$result['add1']:'',
                     "add2" => $result['add2'],
                     "add3" => $result['add3'],
+                    "city" => $result['city'],
                     "county" => $result['county'],
                     "country" => $result['country'],
                     "postcode" => !empty($result['postcode'])?$result['postcode']:'',
@@ -114,6 +115,7 @@ class Contacts_model extends CI_Model
                 $contacts[$result['contact_id']]['visible']['Address']['add1']     = $result['add1'];
                 $contacts[$result['contact_id']]['visible']['Address']['add2']     = $result['add2'];
                 $contacts[$result['contact_id']]['visible']['Address']['add3']     = $result['add3'];
+                $contacts[$result['contact_id']]['visible']['Address']['city'] = $result['city'];
                 $contacts[$result['contact_id']]['visible']['Address']['county']   = $result['county'];
                 $contacts[$result['contact_id']]['visible']['Address']['country']  = $result['country'];
                 $contacts[$result['contact_id']]['visible']['Address']['postcode'] = $result['postcode'];
