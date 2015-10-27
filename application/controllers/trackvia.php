@@ -1528,12 +1528,8 @@ if(!empty($record['client_ref'])){
         $this->db->where(array("urn" => $urn));
         //if the record has TV id then we can update or we need to create it
         if ($this->db->get("client_refs")->num_rows()) {
-            echo("update tv record");
-            echo "<br>";
             $this->update_tv_record($urn);
         } else {
-            echo("creating tv record");
-            echo "<br>";
             $this->add_tv_record($urn);
         }
     }
