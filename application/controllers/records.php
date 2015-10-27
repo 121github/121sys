@@ -322,7 +322,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             "map_icon" => $details['record']['map_icon'],
             "campaign_triggers" => $campaign_triggers,
             "javascript" => array(
-                "detail2.js",
+                "detail2.js?v2.0",
 				'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
