@@ -15,8 +15,8 @@ class Trackvia_model extends CI_Model
 		if($this->db->get("record_details")->num_rows()){
 			$this->db->where("c1",$data["c1"]);
 			$this->db->update("record_details",$data);
-		} else {
-			$this->db->insert("record_details",$data);
+		} else if(isset($data['urn'])){
+			$this->db->replace("record_details",$data);
 		}
 	}
 	

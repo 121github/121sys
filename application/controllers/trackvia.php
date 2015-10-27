@@ -825,22 +825,19 @@ public function check_darlington(){
     }
 
 
-    public function update_record_details($array = false)
+    public function update_record_details($array = false,$urn=false)
     {
-        if (!$array) {
-            //TODO Check this part: error on the $id, which doesn't exist
+		if($this->input->post('id')){
             $array = array();
-            $array[] = $this->input->post('id');
-            $urn = $this->Trackvia_model->get_urn_from_client_ref($id);
-            $data = array("urn" => $urn);
-        } else if ($this->input->post('urn')) {
-            $urn = $this->input->post('urn');
-            $array = array();
-            $array[] = $this->Trackvia_model->get_client_ref_from_urn($urn);
-            $data = array("urn" => $urn);
-        }
+            $array[] = $this->input->post('id'); 
+        } else if($this->input->post('urn')){
+			 $urn = $this->input->post('urn');
+			 $array[] = $this->Trackvia_model->get_client_ref_from_urn($urn); 
+		}
 
         foreach ($array as $id) {
+			$urn = $this->Trackvia_model->get_urn_from_client_ref($id);
+			$data = array("urn" => $urn);
             $response = $this->tv->getRecord($id);
             $fields = $response['fields'];
             if (!empty($fields['GHS UPRN']) && isset($fields['GHS UPRN'])) {
