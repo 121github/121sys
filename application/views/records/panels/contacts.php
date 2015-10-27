@@ -16,7 +16,7 @@
 		  if($key=="Address"){
 			 ?>
               <dt><?php echo $key ?></dt>
-              <dd><a class="pull-right pointer" target="_blank" href="https://maps.google.com/maps?q=<?php echo $val['postcode'] ?>,+UK"><span class="glyphicon glyphicon-map-marker"></span> Map</a>
+              <dd><a id="map-link" class="pull-right pointer" target="_blank" href="https://maps.google.com/maps?q=<?php echo $val['postcode'] ?>,+UK"><span class="glyphicon glyphicon-map-marker"></span> Map</a>
               <input type="hidden" name="contact_postcode" value="<?php echo $val['postcode'] ?>" />
                 <?php foreach($val as $address_part){ echo (!empty($address_part)?$address_part."<br>":"");  }?>
               </dd>
