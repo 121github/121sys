@@ -824,6 +824,18 @@ public function check_darlington(){
         return $view;
     }
 
+	public function send_enquiry_to_tv($urn){
+		$urn = $this->input->post('urn');
+		$client_ref = $this->Trackvia_model->get_client_ref_from_urn($urn);
+		$this->where("urn",$urn);
+		$query = $this->db->get("record_details");
+		if($query->num_rows()){
+		$data = array("Date of Enquiry"=>$query->row()->d1);
+		if(!empty($date)){
+			 $this->tv->updateRecord($client_ref, $data);
+		}
+		}
+	}
 
     public function update_record_details($array = false,$urn=false)
     {
@@ -1683,6 +1695,9 @@ if(!empty($record['client_ref'])){
         }
         if (!empty($details['c2'])) {
             $data["Referred by"] = $details['c2'];
+        }
+		if (!empty($details['d1'])) {
+            $data["Date of Enquiry"] = $details['d1'];
         }
         //GHS data pot - this cod eis for the New lead pot. ie the 500 solar records bought by 121
         if ($details['pot_id'] == 55) {

@@ -58,6 +58,7 @@
 <option value="trackvia/update_tv_record">Update record in trackvia</option>
         <option value="trackvia/add_tv_record">Add record to trackvia</option>
          <option value="trackvia/update_record_details">Update record from trackvia</option>
+                  <option value="trackvia/send_enquiry_to_tv">Update trackvia enquiry date</option>
                 
 </select>
 </div>
