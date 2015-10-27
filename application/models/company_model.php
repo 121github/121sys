@@ -59,6 +59,7 @@ class Company_model extends CI_Model
                     "add1" => !empty($result['add1'])?$result['add1']:'',
                     "add2" => $result['add2'],
                     "add3" => $result['add3'],
+                    "city" => $result['city'],
                     "county" => $result['county'],
                     "country" => $result['country'],
                     "postcode" => !empty($result['postcode'])?$result['postcode']:'',
@@ -81,8 +82,8 @@ class Company_model extends CI_Model
     
     public function get_companies($urn)
     {
-        
-        $qry     = "select com.urn,com.company_id,com.name coname,com.description ,com.conumber,com.description codescription,sector_name,employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) where urn = '$urn' order by com.company_id";
+
+        $qry = "select com.urn,com.company_id,com.name coname,com.description ,com.conumber,com.description codescription,sector_name,employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,city cocity,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) where urn = '$urn' order by com.company_id";
         $results = $this->db->query($qry)->result_array();
         //put the contact details into array
         // $this->firephp->log($qry);
@@ -110,6 +111,7 @@ class Company_model extends CI_Model
                  $companies[$result['company_id']]['visible']['Address']['add1']     = $result['coadd1'];
                  $companies[$result['company_id']]['visible']['Address']['add2']     = $result['coadd2'];
                  $companies[$result['company_id']]['visible']['Address']['add3']     = $result['coadd3'];
+                $companies[$result['company_id']]['visible']['Address']['city'] = $result['cocity'];
                  $companies[$result['company_id']]['visible']['Address']['county']   = $result['cocounty'];
                  $companies[$result['company_id']]['visible']['Address']['country']  = $result['cocountry'];
                  $companies[$result['company_id']]['visible']['Address']['postcode'] = $result['copostcode'];

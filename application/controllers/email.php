@@ -927,8 +927,8 @@ class Email extends CI_Controller
                 //Date
                 $start_date = ($start_date ? $start_date : $last_appointment_ics->start_date);
                 $start_day = new \DateTime($start_date);
-                $end_date = ($end_date ? $end_date : $last_appointment_ics->end_date);
-                $end_day = new \DateTime($start_date);
+                $end_date = ($end_date ? $end_date : $appointment->end);
+                $end_day = new \DateTime($end_date);
                 $day = $start_day->format("jS F Y");
                 $start_time = $start_day->format("G:ia");
                 $end_time = $end_day->format("G:ia");
@@ -1086,7 +1086,7 @@ class Email extends CI_Controller
             $end_date = $appointment->end;
             $start_day = new \DateTime($start_date);
             $day = $start_day->format("jS F Y");
-            $end_day = new \DateTime($start_date);
+            $end_day = new \DateTime($end_date);
             $start_time = $start_day->format("G:ia");
             $end_time = $end_day->format("G:ia");
 
@@ -1216,7 +1216,8 @@ class Email extends CI_Controller
 
     private function createIcalFile($uid, $method, $from, $to, $meeting_date, $meeting_duration, $subject, $meeting_description, $meeting_location, $sequence) {
         //Convert MYSQL datetime and construct iCal start, end and issue dates
-        $meetingstamp = STRTOTIME($meeting_date . " -1 hour UTC");
+        //$meetingstamp = STRTOTIME($meeting_date . " -1 hour UTC");
+        $meetingstamp = STRTOTIME($meeting_date);
         //        $dtstart = GMDATE("Ymd\THis\Z", $meetingstamp);
         //        $dtend = GMDATE("Ymd\THis\Z", $meetingstamp + $meeting_duration);
         //        $todaystamp = GMDATE("Ymd\THis\Z");

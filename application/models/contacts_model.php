@@ -52,6 +52,7 @@ class Contacts_model extends CI_Model
                     "add1" => !empty($result['add1'])?$result['add1']:'',
                     "add2" => $result['add2'],
                     "add3" => $result['add3'],
+                    "city" => $result['city'],
                     "county" => $result['county'],
                     "country" => $result['country'],
                     "postcode" => !empty($result['postcode'])?$result['postcode']:'',
@@ -79,8 +80,8 @@ class Contacts_model extends CI_Model
 	}
     public function get_contacts($urn)
     {
-        
-        $qry     = "select c.urn,c.contact_id,fullname,a.primary is_primary,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
+
+        $qry = "select c.urn,c.contact_id,fullname,a.primary is_primary,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,city,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
         $results = $this->db->query($qry)->result_array();
         //put the contact details into array
         // $this->firephp->log($qry);
@@ -114,6 +115,7 @@ class Contacts_model extends CI_Model
                 $contacts[$result['contact_id']]['visible']['Address']['add1']     = $result['add1'];
                 $contacts[$result['contact_id']]['visible']['Address']['add2']     = $result['add2'];
                 $contacts[$result['contact_id']]['visible']['Address']['add3']     = $result['add3'];
+                $contacts[$result['contact_id']]['visible']['Address']['city'] = $result['city'];
                 $contacts[$result['contact_id']]['visible']['Address']['county']   = $result['county'];
                 $contacts[$result['contact_id']]['visible']['Address']['country']  = $result['country'];
                 $contacts[$result['contact_id']]['visible']['Address']['postcode'] = $result['postcode'];
