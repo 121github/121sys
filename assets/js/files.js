@@ -143,8 +143,13 @@ var files = {
                 $(this).html('');
             } else {
                 var search_val = table.column($(this).index()).search();
+				if(typeof search_val[0]!=="undefined"){
+				var filter_val = search_val[0];	
+				} else {
+				var filter_val = "";	
+				}
 				//console.log(table.column($(this).index()).search());
-                $(this).html('<input class="dt-filter form-control" placeholder="Filter..." value="' + search_val[0] + '" />');
+                $(this).html('<input class="dt-filter form-control" placeholder="Filter..." value="' + filter_val + '" />');
             }
         });
 
