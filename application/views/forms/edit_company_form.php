@@ -98,12 +98,31 @@
 
             <p>Enter the phone number details</p>
 
-            <div class="form-group input-group-sm">
-                <input type="text" class="form-control" placeholder="Description. Eg: Reception" name="description"
-                       value="">
-            </div>
-            <div class="form-group input-group-sm">
-                <input type="text" class="form-control" placeholder="Phone number" name="telephone_number" value="" onchange="changeNumberFunction()">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="input-append form-group btn-group">
+                        <div class="input-group-sm">
+                            <input type="text" class="form-control" placeholder="Description. Eg: Mobile"
+                                   name="description"
+                                   value="">
+                        </div>
+                        <a class="btn btn-default dropdown-toggle input-group-addon" data-toggle="dropdown" href="#">
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu type-selection">
+                            <li><a href="#">Landline</a></li>
+                            <li><a href="#">Mobile</a></li>
+                            <li><a href="#">Main</a></li>
+                            <li><a href="#">Fax</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Phone number" name="telephone_number"
+                               value="" onchange="changeNumberFunction()">
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="form-group input-group-sm col-md-11">
@@ -287,6 +306,10 @@
             }
         });
     }
+
+    $(".dropdown-menu li a").click(function () {
+        $('.company-phone-form').find('input[name="description"]').val($(this).text());
+    });
 
     //Get address
 
