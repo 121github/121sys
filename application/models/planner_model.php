@@ -230,7 +230,7 @@ class Planner_model extends CI_Model
 				$json = loadFile($url);
 				$response = json_decode($json,true);
                 if (isset($response['latitude'])) {
-                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='$postcode',latitude = '{$response['latitude']}',longitude = '{$response['longitude']}'");
+                $this->db2->query("insert ignore into uk_postcodes.PostcodeIo set postcode='$postcode',latitude = '{$response['latitude']}',longitude = '{$response['longitude']}'");
                 $location_id = $this->db2->insert_id();
                 $this->db->query("replace into locations set location_id='$location_id',latitude = '{$response['latitude']}',longitude = '{$response['longitude']}'");
             } else {
