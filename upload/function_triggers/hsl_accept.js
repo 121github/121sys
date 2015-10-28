@@ -32,12 +32,19 @@ var campaign_functions = {
         });
 
         campaign_functions.get_branch_info();
+        $('#closest-branch').prop('class', 'pointer btn btn-xs btn-success');
+
         $(document).on('click', '#closest-branch', function (e) {
             e.preventDefault();
             if ($('input[name="contact_postcode"]').val() == "") {
                 flashalert.danger("You must capture a valid customer postcode first");
             } else {
+                //Reset the quick planner
+                $('#quick-planner').html("Please choose the planner you want to use ");
+                $('.panel-heading').find(".branch-name").text("");
+                //Get the branches
                 campaign_functions.get_branch_info();
+                $('#closest-branch').prop('class', 'pointer btn btn-xs btn-success');
             }
         });
         $(document).on('click', 'a.region-select', function (e) {
@@ -65,6 +72,21 @@ var campaign_functions = {
         });
         $(document).on('click', '[data-modal="delete-appointment"]', function () {
             $('[name="cancellation_reason"]').text("Appointment cancelled").hide();
+        });
+
+        $(document).on("click", ".branch-filter", function (e) {
+            e.preventDefault();
+            $(this).closest('ul').prev('button').text($(this).find('.branch_name').text());
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).closest('tr').find('input[name="hub-choice"]').attr('data-branch', $(this).attr('id'));
+            $(this).closest('tr').find('input[name="hub-choice"]').attr('data-branch-name', $(this).attr('branch-name'));
+            $(this).closest('tr').find('input[name="hub-choice"]').val($(this).attr('data-bus-attendees'));
+            if ($(this).closest('tr').find('input[name="hub-choice"]').prop('checked')) {
+                quick_planner.load_planner();
+            }
+            $('.branch-distance-' + $(this).attr('data-region')).text($(this).attr('data-distance'));
+            $(this).css("color", "green");
+            $('#closest-branch').prop('class', 'pointer btn btn-xs btn-default');
         });
     },
     contact_form_setup: function () {
@@ -138,6 +160,7 @@ var campaign_functions = {
         $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
     },
     get_branch_info: function (id) {
+        //Get the branches
         var contact_postcode = $('input[name="contact_postcode"]').val();
 
         $.ajax({
@@ -148,9 +171,40 @@ var campaign_functions = {
         }).done(function (response) {
             if (response) {
                 var branch_info = "";
-                branch_info += "<table class='table small table-condensed table-striped'><thead><tr><th>Hub</th><th>Consultant</th><th>Branch</th><th>Distance</th></tr><thead><tbody>";
-                $.each(response.branches, function (i, row) {
-                    branch_info += "<tr><td>" + row.region_name + "</td><td>" + row.consultants[0].name + "</td><td>" + row.branch_name + "</td><td>" + row.distance + "</td><td><input type='radio' name='hub-choice' data-branch='" + row.branch_id + "' data-region='" + row.region_id + "' value='" + row.drivers[0].id + "'/></td></tr>";
+                branch_info += "<table class='table small table-condensed table-striped'>" +
+                    "<thead><tr><th>Hub</th><th>Branch</th><th>Distance</th></tr><thead>" +
+                    "<tbody>";
+
+                $.each(response.branches, function (i, region) {
+                    var options = "";
+                    var default_branch_id = region.branches[0].id;
+                    var default_branch_name = region.branches[0].name;
+                    var default_distance = region.branches[0].distance;
+
+                    $.each(region.branches, function (i, branch) {
+                        var option_color = 'black';
+                        if (branch.id == region.default_branch_id) {
+                            default_branch_id = branch.id;
+                            default_branch_name = branch.name;
+                            default_distance = branch.distance;
+                            option_color = 'green';
+                        }
+                        options += "<li><a href='#' class='branch-filter' id='" + branch.id + "' style='color: " + option_color + "' branch-name='" + branch.name + "' data-bus-attendees='" + region.brus_attendees + "' data-region='" + region.id + "' data-distance='" + branch.distance + "'>" +
+                            "<span class='branch_name'>" + branch.name + "</span>" +
+                            "<span style='font-size: 10px;'>" + " - " + branch.distance + "</span>" +
+                            "</a></li>";
+                    });
+
+                    branch_info += "<tr>" +
+                        "<td>" + region.name + "</td>" +
+                        "<td><div class='btn-group' style='width: 100%;'>" +
+                        "<button class='btn btn-default btn-xs dropdown-toggle' style='width: 100%; text-align: left' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+                        default_branch_name +
+                        "</button>" +
+                        "<ul class='dropdown-menu'>" + options + "</ul>" +
+                        "</td>" +
+                        "<td class='branch-distance-" + region.id + "'>" + default_distance + "</td>" +
+                        "<td><input type='radio' name='hub-choice' data-branch='" + default_branch_id + "' data-branch-name='" + default_branch_name + "' data-region='" + region.id + "' value='" + region.brus_attendees + "'/></td></tr>";
                 });
                 branch_info += "</tbody></table>";
                 $('#branch-info').html(branch_info);
@@ -159,7 +213,6 @@ var campaign_functions = {
             }
         }).fail(function () {
             $('#branch-info').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
-
         });
 
 
@@ -225,8 +278,11 @@ var quick_planner = {
     load_planner: function () {
         var contact_postcode = $('input[name="contact_postcode"]').val();
         var driver = $('input[name="hub-choice"]:checked').val();
+        var driver_name = $('input[name="hub-choice"]:checked').attr('data-driver-name');
         var branch = $('input[name="hub-choice"]:checked').attr('data-branch');
+        var branch_name = $('input[name="hub-choice"]:checked').attr('data-branch-name');
         var slot = $('input[name="slot"]:checked').val();
+        $('.panel-heading').find(".branch-name").text(branch_name);
         if (quick_planner.check_selections(driver, branch)) {
             $.ajax({
                 url: helper.baseUrl + 'planner/simulate_hsl_planner',
@@ -296,5 +352,9 @@ $(document).ready(function () {
     campaign_functions.init();
     //hsl requests
     $(".record-panel .panel-heading").html($(".record-panel .panel-heading").html().replace("Record Details", "Progress Summary"));
+
+    if (helper.role > 2) {
+        $(".outcomepicker .dropdown-menu ul li:contains('Remove from records')").remove();
+    }
 
 });

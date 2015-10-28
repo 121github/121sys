@@ -283,16 +283,24 @@ class Planner_model extends CI_Model
 
     public function getPlannerInfoByAppointment($appointment_id)
     {
+//        $qry = "select
+//                  a.*,
+//                  GROUP_CONCAT(DISTINCT at.user_id SEPARATOR ',') as attendees,
+//                  GROUP_CONCAT(DISTINCT br.user_id SEPARATOR ',') as region_users,
+//                  GROUP_CONCAT(DISTINCT bu.user_id SEPARATOR ',') as branch_users
+//                from  appointments a
+//                  left join appointment_attendees at using(appointment_id)
+//                  left join branch b using(branch_id)
+//                  left join branch_region_users br using (region_id)
+//                  left join branch_user bu using (branch_id)
+//                  where appointment_id = ".$appointment_id."
+//                  group by appointment_id";
+
         $qry = "select
                   a.*,
-                  GROUP_CONCAT(DISTINCT at.user_id SEPARATOR ',') as attendees,
-                  GROUP_CONCAT(DISTINCT br.user_id SEPARATOR ',') as region_users,
-                  GROUP_CONCAT(DISTINCT bu.user_id SEPARATOR ',') as branch_users
+                  GROUP_CONCAT(DISTINCT at.user_id SEPARATOR ',') as attendees
                 from  appointments a
                   left join appointment_attendees at using(appointment_id)
-                  left join branch b using(branch_id)
-                  left join branch_region_users br using (region_id)
-                  left join branch_user bu using (branch_id)
                   where appointment_id = ".$appointment_id."
                   group by appointment_id";
 
