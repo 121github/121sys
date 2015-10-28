@@ -61,7 +61,7 @@ class Files extends CI_Controller
             'javascript' => array(
 			'plugins/DataTables/datatables.min.js',
                 'lib/dropzone.js',
-                'files.js'
+                'files.js?v2.0'
             ),
             'css' => array(
                 'plugins/dropzone/basic.min.css',
