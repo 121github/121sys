@@ -9,6 +9,7 @@ class Planner_model extends CI_Model
     function __construct()
     {
         parent::__construct();
+		 $this->db2 = $this->load->database('uk_postcodes', true);
     }
 	
 	public function get_user_postcode($user_id){
@@ -216,6 +217,7 @@ class Planner_model extends CI_Model
 
     function get_location_id($postcode)
     {
+		$this->load->helper('remotefile');
         $postcode = postcodeFormat($postcode);
         $postcode_qry = "select id,latitude lat,longitude lng from uk_postcodes.PostcodeIo where postcode = '$postcode'";
         $check_location = $this->db2->query($postcode_qry);
@@ -223,11 +225,14 @@ class Planner_model extends CI_Model
             $loc = $check_location->row();
             $location_id = $loc->id;
         } else {
-            $coords = postcode_to_coords($postcode);
-            if (isset($coords['lat'])) {
-                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='$postcode',latitude = '{$coords['lat']}',longitude = '{$coords['lng']}'");
+			$url = "http://it.121system.com/api/postcodeios/".str_replace(" ","",$postcode).".json";
+			   //$url = "http://api.postcodes.io/postcode/".str_replace(" ","",$pc);
+				$json = loadFile($url);
+				$response = json_decode($json,true);
+                if (isset($response['latitude'])) {
+                $this->db->query("insert ignore into uk_postcodes.PostcodeIo set postcode='$postcode',latitude = '{$response['latitude']}',longitude = '{$response['longitude']}'");
                 $location_id = $this->db2->insert_id();
-                $this->db->query("replace into locations set location_id='$location_id',latitude = '{$coords['lat']}',longitude = '{$coords['lng']}'");
+                $this->db->query("replace into locations set location_id='$location_id',latitude = '{$response['latitude']}',longitude = '{$response['longitude']}'");
             } else {
                 $location_id = false;
             }
