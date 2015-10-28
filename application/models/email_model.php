@@ -620,8 +620,8 @@ $qry .= " group by urn";
                   GROUP_CONCAT(DISTINCT (IF(atus.ics,atus.user_email,NULL)) SEPARATOR ',') as attendees,
                   GROUP_CONCAT(DISTINCT (IF(brus.ics,brus.user_email,NULL)) SEPARATOR ',') as region_users,
                   GROUP_CONCAT(DISTINCT (IF(bus.ics,bus.user_email,NULL)) SEPARATOR ',') as branch_users,
-                  b.branch_email,
-		          br.region_email
+                  IF(b.ics,b.branch_email,NULL) as branch_email,
+                  IF(br.ics,br.region_email,NULL) as region_email
                 from  appointments a
                 left join appointment_attendees at using(appointment_id)
                 left join users atus ON (atus.user_id = at.user_id)

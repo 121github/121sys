@@ -1,5 +1,7 @@
 <div class="panel panel-primary">
-  <div class="panel-heading clearfix">Quick Planner
+  <div class="panel-heading clearfix">
+    Quick Planner
+    <div class='pull-right branch-name'></div>
     <!--<div class="pull-right">
     <form>
     <div class="input-group">
