@@ -264,7 +264,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['permissions'])){ ?>
     helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
-	helper.role = $.parseJSON('<?php echo $_SESSION['role_id'] ?>');
+    helper.roles = $.parseJSON('<?php echo $_SESSION['role'] ?>');
     helper.current_postcode = false;
     <?php } ?>
     <?php if(@!empty($_SESSION['current_postcode'])){ ?>
