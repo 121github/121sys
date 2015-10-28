@@ -172,34 +172,40 @@
             <input class="item-id" name="address_id" type="hidden" value="">
             <input name="contact_id" type="hidden" value="">
 
-            <p>Enter the address details</p>
+            <p>Enter the address details <span class="glyphicon glyphicon-info-sign tt" data-toggle="tooltip" title="Enter the postcode and house number below to auto populate the address fields"></span></p>
 
-            <div class="form-group input-group-sm">
-                <select class="form-control selectpicker" placeholder="Is this the primary address?" name="primary">
-                    <option value="1">Primary Address</option>
-                    <option value="0">Secondary Address</option>
-                </select>
-            </div>
             <div class="row">
                 <div class="col-md-3">
-                    <div class="form-group input-group-sm">
-                        <input type="text" class="form-control" placeholder="Postcode" name="postcode" value="">
-                    </div>
+                <div class="form-group">
+                        <input type="text" class="form-control input-sm" style="width:95%" placeholder="Postcode" name="postcode" value="">
+                        </div>
                 </div>
                 <?php if (in_array("get address", $_SESSION['permissions'])) { ?>
-                    <div class="col-md-1"></div>
                     <div class="col-md-3">
-                        <div class="form-group input-group-sm">
-                            <input type="text" class="form-control" placeholder="House number" name="house_number"
-                                   value="">
-                        </div>
+                      <div class="form-group">
+                            <input type="text" class="form-control input-sm" style="width:95%"   placeholder="House number" name="house_number"  value="">
                     </div>
-                    <div class="col-md-1"></div>
-                    <div class="col-md-2">
-                        <div class="form-group input-group-sm col-md-4">
-                            <span class="btn btn-sm btn-success get-contact-address">Get Address</span>
-                        </div>
+                       </div>
+                    <div class="col-md-3">
+                     <div class="form-group">
+                            <button class="btn btn-sm btn-info get-contact-address" style="width:95%" >Find Address</button>
                     </div>
+                     </div>
+                     <div class="col-md-3">
+                       <div class="form-group">
+                                  <div class="btn-group pull-right">
+                    <input data-width="100px" style="display:none" type="checkbox" id="primary-toggle"
+                           data-on="<i class='glyphicon glyphicon-home'></i> Primary"
+                           data-off="<i class='glyphicon glyphicon-home'></i> Primary" data-toggle="toggle">
+
+</div>
+            </div>
+            <script>
+		$('#primary-toggle').bootstrapToggle({
+            onstyle: 'success',
+        }).show().bootstrapToggle('off');
+			</script>
+                     </div>
                 <?php } ?>
             </div>
             <div class="form-group input-group-sm address-select" style="display:none;">

@@ -59,8 +59,7 @@ class Files extends CI_Controller
             'user_folders' => $user_folders,
             //'files'=>$files,
             'javascript' => array(
-			'plugins/DataTables/js/jquery.dataTables.min.js',
-			'plugins/DataTables/js/dataTables.bootstrap.js',
+			'plugins/DataTables/datatables.min.js',
                 'lib/dropzone.js',
                 'files.js'
             ),
