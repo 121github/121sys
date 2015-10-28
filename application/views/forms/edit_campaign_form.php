@@ -132,7 +132,7 @@
     <?php } ?>
       <div class="form-group input-group-sm">
         <p>Telephone Protocol</p>
-        <input type="text" class="form-control" name="telephone_protocol" placeholder="Default is callto:" />
+        <input type="text" class="form-control" name="telephone_protocol" placeholder="Default is callto:" value="callto:" />
     </div>
       <div class="form-group input-group-sm">
         <p>Telephone Prefix</p>
