@@ -394,3 +394,12 @@ $config['email'] = array(
 /*
 /* End of file config.php */
 /* Location: ./application/config/config.php */
+
+/*
+|--------------------------------------------------------------------------
+| Versioning config
+|--------------------------------------------------------------------------
+|
+|
+*/
+$config['project_version'] = '1.3';
