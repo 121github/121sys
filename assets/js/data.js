@@ -948,6 +948,9 @@ var add_record = {
             else {
                 $("button[type=submit]").attr('disabled', false);
                 flashalert.danger(response.error);
+                if (response.address_err) {
+                    $('#collapseContact').collapse('show');
+                }
             }
 
         }).fail(function(){
