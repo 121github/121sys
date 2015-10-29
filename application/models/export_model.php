@@ -30,7 +30,7 @@ class Export_model extends CI_Model
     public function get_export_users() {
         $qry = "select *
                 from export_to_users
-                inner join users using (user_id) left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) where campaign_status = 1 or role_id = 1";
+                inner join users using (user_id) left join users_to_campaigns using(user_id) left join campaigns using(campaign_id) where campaign_status = 1 or role_id = 1 group by user_id";
 
         return $this->db->query($qry)->result_array();
     }

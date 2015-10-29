@@ -164,7 +164,9 @@ class Cron extends CI_Controller
             }
             array_push($exports[$export_user['export_forms_id']]['users'], $export_user);
         }
-
+		
+		print_r($exports);
+		exit;
         foreach ($exports as $export) {
             $export_form = $export['export_form'];
 
