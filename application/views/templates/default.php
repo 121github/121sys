@@ -360,7 +360,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 				  {
                      "position": "bottom",
                      "content": [
-                        "<a onclick=\"javascript:alert('Coming Soon')\" href='#'><span class='fa fa-book'></span> Docs</a>",
+                         "<a onclick=\"javascript:alert('121 Customer Insight. Version:'+<?php echo $this->config->item('project_version');?>)\" href='#'><span class='fa fa-book'></span> About</a>",
 						"<a data-modal='contact-us' href='#'><span class='fa fa-phone'></span> Contact</a>",
 						"<a href='"+helper.baseUrl+"user/logout'><span class='fa fa-sign-out'></span> Logout</a>"
                      ]
