@@ -96,7 +96,7 @@ class Appointments_model extends CI_Model
 
         /* now push all the data into each day for the next 30 days and if there is a holiday for the day we remove the slots and add the reason */
 
-        for ($i = 1; $i < 30; $i++) {
+        for ($i = 1; $i < 45; $i++) {
             $date = date("Y-m-d", strtotime('+' . $i . ' days'));
             $this_day = $thresholds[date("l", strtotime('+' . $i . ' days'))];
             if (array_key_exists($date, $defined_slots)) {
