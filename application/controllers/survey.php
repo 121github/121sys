@@ -11,7 +11,8 @@ class Survey extends CI_Controller
         parent::__construct();
         user_auth_check();
 		check_page_permissions('view surveys');
-$this->_campaigns = campaign_access_dropdown();
+        $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Survey_model');
         $this->load->model('Records_model');
@@ -113,7 +114,7 @@ $this->_campaigns = campaign_access_dropdown();
             'categories' => $categories,
             "javascript" => array(
 				"lib/bootstrap-slider.js",
-                "survey.js",
+                "survey.js?v" . $this->project_version,
 			
             )
         );
@@ -176,8 +177,8 @@ $this->_campaigns = campaign_access_dropdown();
             "completed_date" => $completed_date,
             "locked" => $locked,
             "javascript" => array(
-			"lib/bootstrap-slider.js",
-                "survey.js",
+                "lib/bootstrap-slider.js",
+                "survey.js?v" . $this->project_version,
 				
             )
         );
@@ -232,8 +233,8 @@ $this->_campaigns = campaign_access_dropdown();
             'columns' => $visible_columns,
             'javascript' => array(
 				'plugins/DataTables/js/jquery.dataTables.min.js',
-			"lib/bootstrap-slider.js",
-                'survey_view.js',
+                "lib/bootstrap-slider.js",
+                'survey_view.js?v' . $this->project_version,
 			
             ),
 

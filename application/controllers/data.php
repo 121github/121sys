@@ -10,6 +10,7 @@ class Data extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Form_model');
         $this->load->model('Data_model');
@@ -46,7 +47,7 @@ class Data extends CI_Controller
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
                 'plugins/jqfileupload/jquery.fileupload.js',
-                'data.js'
+                'data.js?v' . $this->project_version
             ),
             'campaigns' => $campaigns,
             'sources' => $sources,
@@ -137,7 +138,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js',
+                'data.js?v' . $this->project_version,
                 "lib/bootstrap-slider.js"
             )
         );
@@ -159,7 +160,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js',
+                'data.js?v' . $this->project_version,
                 'lib/jquery.numeric.min.js'
             )
         );
@@ -553,7 +554,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js?v2.0',
+                'data.js?v' . $this->project_version,
                 'lib/jquery.numeric.min.js'
             )
         );
@@ -747,7 +748,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js',
+                'data.js?v' . $this->project_version,
                 'lib/jquery.numeric.min.js'
             )
         );
@@ -1014,7 +1015,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js'
+                'data.js?v' . $this->project_version
             ),
             'status_list' => $status_list,
             'progress_list' => $progress_list
@@ -1132,7 +1133,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js'
+                'data.js?v' . $this->project_version
             ),
             'campaigns' => $campaigns,
             'outcomes' => $outcomes,
@@ -1351,7 +1352,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js'
+                'data.js?v' . $this->project_version
             ),
             'filter' => $filter,
             'campaigns' => $campaigns
@@ -1468,7 +1469,7 @@ class Data extends CI_Controller
                 'daterangepicker-bs3.css'
             ),
             'javascript' => array(
-                'data.js',
+                'data.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -1566,7 +1567,7 @@ class Data extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'data.js'
+                'data.js?v' . $this->project_version
             )
         );
         $this->template->load('default', 'data/parkcodes.php', $data);

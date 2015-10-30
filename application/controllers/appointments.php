@@ -13,6 +13,7 @@ class Appointments extends CI_Controller
         user_auth_check();
 		check_page_permissions('view appointments');
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('User_model');
         $this->load->model('Records_model');
@@ -84,10 +85,10 @@ class Appointments extends CI_Controller
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
             'javascript' => array(
-                "modals.js",
-                "location.js",
-                "appointment.js",
-				"map.js",
+                "modals.js?v" . $this->project_version,
+                "location.js?v" . $this->project_version,
+                "appointment.js?v" . $this->project_version,
+                "map.js?v" . $this->project_version,
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/datatables.min.js',

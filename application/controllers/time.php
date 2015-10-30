@@ -8,6 +8,7 @@ class Time extends CI_Controller
         parent::__construct();
         user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -28,7 +29,7 @@ class Time extends CI_Controller
     			'title' => 'Admin | Time',
     			'page' =>  'agent_time',
     			'javascript' => array(
-    					'admin/time.js',
+                    'admin/time.js?v' . $this->project_version,
     					'lib/moment.js',
     					'lib/jquery.numeric.min.js',
     					'lib/daterangepicker.js',
@@ -295,7 +296,7 @@ class Time extends CI_Controller
             'title' => 'Admin | Time',
             'page' => 'default_time',
             'javascript' => array(
-                'admin/time.js',
+                'admin/time.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/jquery.numeric.min.js',
             ),

@@ -1,7 +1,7 @@
 
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
 function initializemaps(){
-   		maps.initialize("appointment");
+    maps.initialize("appointment");
 }
 
 function map_table_reload() {

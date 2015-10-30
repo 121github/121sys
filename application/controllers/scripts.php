@@ -9,7 +9,8 @@ class Scripts extends CI_Controller
 	{
 		parent::__construct();
 		user_auth_check(false);
-$this->_campaigns = campaign_access_dropdown();
+        $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
 		$this->load->model('Script_model');
 		$this->load->model('Form_model');
@@ -34,7 +35,7 @@ $this->_campaigns = campaign_access_dropdown();
 				),
 	
 				'javascript' => array(
-						'script.js',
+                    'script.js?v' . $this->project_version,
 				),
 				'campaigns' => $campaigns,
 		);

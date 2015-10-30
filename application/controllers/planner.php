@@ -12,6 +12,8 @@ class Planner extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
+
 		$this->load->model('Records_model');
         $this->load->model('User_model');
         $this->load->model('Form_model');
@@ -249,13 +251,13 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
                 'daterangepicker-bs3.css'
             ),
             'javascript' => array(
-                'modals.js',
+                'modals.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js',
 
-				'map.js',
-				'planner/planner.js',
-				'location.js',
+                'map.js?v' . $this->project_version,
+                'planner/planner.js?v' . $this->project_version,
+                'location.js?v' . $this->project_version,
 			    'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
 				 'plugins/touch-punch/jquery-ui-touch-punch.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js'

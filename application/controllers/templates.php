@@ -11,7 +11,8 @@ class Templates extends CI_Controller
 	{
 		parent::__construct();
 		user_auth_check(false);
-$this->_campaigns = campaign_access_dropdown();
+        $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
 		$this->load->model('Email_model');
 		$this->load->model('Form_model');
@@ -38,7 +39,7 @@ $this->_campaigns = campaign_access_dropdown();
 				),
 	
 				'javascript' => array(
-						'template-table.js',
+                    'template-table.js?v' . $this->project_version,
 						'plugins/jqfileupload/vendor/jquery.ui.widget.js',
 						'plugins/jqfileupload/jquery.iframe-transport.js',
 						'plugins/jqfileupload/jquery.fileupload.js',

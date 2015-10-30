@@ -11,6 +11,7 @@ class Files extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Docscanner_model');
         $this->load->model('File_model');
@@ -59,9 +60,9 @@ class Files extends CI_Controller
             'user_folders' => $user_folders,
             //'files'=>$files,
             'javascript' => array(
-			'plugins/DataTables/datatables.min.js',
+                'plugins/DataTables/datatables.min.js',
                 'lib/dropzone.js',
-                'files.js?v2.0'
+                'files.js?v' . $this->project_version
             ),
             'css' => array(
                 'plugins/dropzone/basic.min.css',
@@ -277,7 +278,7 @@ echo json_encode(array("success"=>true,"permissions"=>$permissions));
             'pageId' => 'Admin',
             'title' => 'Admin',
             'javascript' => array(
-                'dashboard.js'
+                'dashboard.js?v' . $this->project_version
             ),
             'css' => array(
                 'dashboard.css'

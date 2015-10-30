@@ -11,6 +11,7 @@ class Dashboard extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -37,11 +38,11 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'ghs_dash',
             'javascript' => array(
-                'charts.js',
-                'dashboard.js',
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'dashboards/ghs.js',
+                'dashboards/ghs.js?v' . $this->project_version,
             ),
             'agents' => $agents,
             'campaigns' => $campaigns,
@@ -67,11 +68,11 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'Eldon',
             'javascript' => array(
-                'charts.js',
-                'dashboard.js',
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'dashboards/eldon.js',
+                'dashboards/eldon.js?v' . $this->project_version,
             ),
             'agents' => $agents,
             'campaigns' => $campaigns,
@@ -155,11 +156,11 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'hsl_dash',
             'javascript' => array(
-                'charts.js',
-                'dashboard.js',
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'dashboards/hsl.js'
+                'dashboards/hsl.js?v' . $this->project_version
             ),
             'webform_completed' => $webform_completed,
             'webform_hear' => $webform_hear,
@@ -192,8 +193,8 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'overview',
             'javascript' => array(
-                'charts.js',
-                'dashboard.js',
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -241,8 +242,8 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'callback_dash',
             'javascript' => array(
-                'charts.js',
-                'dashboard.js',
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -290,8 +291,8 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'favorites_dash',
             'javascript' => array(
-                'charts.js',
-                'dashboard.js',
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -330,8 +331,8 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'client_dash',
             'javascript' => array(
-                'charts.js',
-                'dashboard.js'
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version
             ),
             'campaigns' => $campaigns,
             'surveys' => $surveys,
@@ -356,8 +357,8 @@ class Dashboard extends CI_Controller
             'page' => 'nbf_dash',
             'campaigns' => $campaigns,
             'javascript' => array(
-                'charts.js',
-                'dashboard.js'
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version
             ),
             'css' => array(
                 'dashboard.css',
@@ -382,8 +383,8 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'management_dash',
             'javascript' => array(
-                'charts.js',
-                'dashboard.js',
+                'charts.js?v' . $this->project_version,
+                'dashboard.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
