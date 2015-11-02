@@ -18,7 +18,7 @@ class Locations_model extends CI_Model
     {
         $formatted_postcode = postcodeCheckFormat($postcode);
         if (!empty($formatted_postcode)) {
-            $check = "select id,latitude lat,longitude lng from uk_postcodes.PostcodeIo where postcode = '$formatted_postcode'";
+            $check = "select id,latitude,longitude from uk_postcodes.PostcodeIo where postcode = '$formatted_postcode'";
             if ($this->db2->query($check)->num_rows()) {
                 $row = $this->db2->query($check)->row_array();
                 $qry = "insert ignore into locations set location_id = '{$row['id']}',lat = '{$row['latitude']}',lng = '{$row['longitude']}'";

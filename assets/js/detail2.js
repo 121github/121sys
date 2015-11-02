@@ -20,7 +20,7 @@ var record = {
             } else if ($('.outcomepicker').val().length > 0) {
                 if ($('.outcomepicker').val() == "4" && $('#history-panel').find('tbody tr').length > 0) {
                     modal.dead_line($(this));
-                } else if ($('.outcomepicker').val() == "120" && $('.contact-panel').find('#map-link').length == 0) {
+                } else if ($('.outcomepicker').val() == "120" && $('#contact-panel').find('#map-link').length == 0) {
                     modal.desktop_prequal($(this));
                 } else {
                     record.update_panel.save($(this));
@@ -802,18 +802,14 @@ var record = {
     contact_panel: {
         init: function () {
             this.config = {
-                panel: '.contact-panel'
+                panel: '#contact-panel'
             };
-            /* initialize the delete contact buttons */
-            $(document).on('click', 'span.del-contact-btn', function (e) {
-                e.preventDefault();
-                modal.delete_contact($(this).attr('item-id'));
-            });
             /*check tps */
             $(document).on('click', 'span.tps-btn', function (e) {
                 e.preventDefault();
                 record.contact_panel.check_tps($(this).attr('item-number'), $(this).attr('item-contact-id'), $(this).attr('item-number-id'));
             });
+			record.contact_panel.load_panel();
         },
         load_panel: function (urn, id) {
             var $panel = $(record.contact_panel.config.panel);
@@ -822,23 +818,25 @@ var record = {
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    urn: urn
-                }
+                    urn: record.urn
+                },
+				beforeSend: function(){ $panel.find('.contacts-list').html("<li class='list-group-item'><img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
+				}
             }).done(function (response) {
                 $panel.find('.contacts-list').empty();
+				if(response.data){
                 $.each(response.data, function (key, val) {
                     var show = "";
                     var collapse = "collapsed"
-                    if (key == id) {
+                    if (key == id||$panel.find('.contacts-list').length=="1") {
                         show = "in";
                         collapse = ""
                     }
-                    var $contact_detail_list_items = "",
-                        $contact_detail_telephone_items = "";
+                    var $contact_detail_telephone_items= "",$transfer_telephone_items="",$contact_detail_list_items="";
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function (dt, dd) {
-                        if (dd && dd != '' && dd.length > 0 && dt != 'Address') {
+                        if (dd && dd != '' &&dd!="null"&& dd.length > 0 && dt != 'Address') {
                             $contact_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function (key, val) {
@@ -852,7 +850,6 @@ var record = {
 
                     });
                     $.each(val.telephone, function (dt, tel) {
-                        if (tel.tel_name) {
                             var tps = "";
                             if (tel.tel_tps == null) {
                                 tps = "<span class='glyphicon glyphicon-question-sign black tps-btn tt pointer' item-contact-id='" + id + "' item-number-id='" + dt + "' item-number='" + tel.tel_num + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
@@ -863,18 +860,21 @@ var record = {
                             else {
                                 tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
                             }
-                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> " + tps + "</dd>";
-                        }
+							if(tel.tel_num&&tel.tel_num!=""){
+                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "'>" + tel.tel_num + "</a> " + tps + "</dd>";
+							}
                     });
-                    $panel.find('.contacts-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
-                            .append($('<a/>').attr('href', '#collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.name.fullname).addClass(collapse))
-                            .append($('<span/>').addClass('glyphicon glyphicon-trash pull-right pointer marl').attr('data-id', key).attr('data-modal', 'delete-contact'))
-                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right').attr('data-id', key).attr('data-modal', 'edit-contact'))
-                            .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
-                                .append($('<dl/>').addClass('dl-horizontal contact-detail-list').append($contact_detail_list_items).append($contact_detail_telephone_items))
-                        )
-                    ).append("<input type='hidden' name='contact_postcode' value='"+$postcode+"' />");
+					if(typeof val.transfer!=="undefined"){
+					 $.each(val.transfer, function (dt, tel) {
+					$transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num + '" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';
+					 });
+					 $transfer_telephone_items += '<div class="clearfix"></div>';
+					}
+					$panel.find('.contacts-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.name.fullname+'</a><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact"><span class="glyphicon glyphicon-trash"></span> Delete</span> <span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact"><span class="glyphicon glyphicon-pencil"></span> Edit</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal contact-detail-list">'+$contact_detail_list_items+$contact_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="contact_postcode" value="'+$postcode+'" /></div></li>');
                 });
+				} else {
+					$panel.find('.contacts-list').html('<li class="list-group-item">This record has no contacts</li>');
+				}
 
             });
         },
@@ -890,8 +890,11 @@ var record = {
                     contact_id: contact_id
                 }
             }).done(function (response) {
+				if(response.success){
+				record.contact_panel.load_panel(record.urn, contact_id)	
+				} else {
                 flashalert.warning(response.msg);
-                record.contact_panel.load_panel(record.urn, contact_id)
+				}
             });
         },
         remove: function (id) {
@@ -915,7 +918,7 @@ var record = {
     company_panel: {
         init: function () {
             this.config = {
-                panel: '.company-panel'
+                panel: '#company-panel'
             };
 
             $(document).on('click', '[data-modal="search-company"]', function (e) {
@@ -944,7 +947,7 @@ var record = {
                 e.preventDefault();
                 record.company_panel.update_company();
             });
-
+			record.company_panel.load_panel();
             /*check ctps */
             $(document).on('click', 'span.ctps-btn', function (e) {
                 e.preventDefault();
@@ -953,68 +956,68 @@ var record = {
         },
         load_panel: function (urn, id) {
             var $panel = $(record.company_panel.config.panel);
-            $.ajax({
+          $.ajax({
                 url: helper.baseUrl + 'ajax/get_companies',
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    urn: urn
-                }
+                    urn: record.urn
+                },
+				beforeSend: function(){ $panel.find('.companies-list').html("<li class='list-group-item'><img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
+				}
             }).done(function (response) {
-                $panel.find('.company-list').empty();
+                $panel.find('.companies-list').empty();
+				if(response.data){
                 $.each(response.data, function (key, val) {
                     var show = "";
-                    var collapse = "collapsed";
-                    if (key == id || typeof id == "undefined") {
+                    var collapse = "collapsed"
+                    if (key == id||$panel.find('.companies-list').length=="1") {
                         show = "in";
-                        collapse = "";
+                        collapse = ""
                     }
-                    var $company_detail_list_items = "",
-                        $company_detail_telephone_items = "";
+                    var $company_detail_telephone_items= "",$transfer_telephone_items="",$company_detail_list_items="";
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function (dt, dd) {
-                        if (dd && dd != '' && dt != 'Address' && dt != 'Company') {
-                            if (dt == 'Company #') {
-                                dd = "<a href='http://companycheck.co.uk/company/" + dd + "' target='blank'>" + dd + "</a>";
-                            }
-                            $company_detail_telephone_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
+                        if (dd && dd != '' &&dd!="null"&& dd.length > 0 && dt != 'Address') {
+                            $company_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             $.each(dd, function (key, val) {
-                                if (val && val != '') {
+                                if (val) {
                                     $address += val + "</br>";
                                     $postcode = dd.postcode;
                                 }
                             });
-
-                            $company_detail_list_items += "<dt>" + dt + "</dt><dd><a class='pull-right pointer' target='_blank' href='https://maps.google.com/maps?q=" + $postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>" + $address + "</dd>";
+                            $company_detail_list_items += "<dt>" + dt + "</dt><dd><a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + $postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>" + $address + "</dd>";
                         }
+
                     });
                     $.each(val.telephone, function (dt, tel) {
-                        var ctps = "";
-                        if (tel.tel_num) {
+                            var tps = "";
                             if (tel.tel_tps == null) {
-                                ctps = "<span class='glyphicon glyphicon-question-sign black ctps-btn tt pointer' item-company-id='" + id + "' item-number-id='" + dt + "' item-number='" + tel.tel_num + "' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
+                                tps = "<span class='glyphicon glyphicon-question-sign black tps-btn tt pointer' item-company-id='" + id + "' item-number-id='" + dt + "' item-number='" + tel.tel_num + "' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
                             }
                             else if (tel.tel_tps == 1) {
-                                ctps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS CTPS registered'></span>";
+                                tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS CTPS registered'></span>";
                             }
                             else {
-                                ctps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
+                                tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
                             }
-                        }
-                        $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='callto:" + tel.tel_num + "'>" + tel.tel_num + "</a> " + ctps + "</dd>";
+							if(tel.tel_num&&tel.tel_num!=""){
+                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "'>" + tel.tel_num + "</a> " + tps + "</dd>";
+							}
                     });
-                    $panel.find('.company-list').append($('<li/>').addClass('list-group-item').attr('item-id', key)
-                            .append($('<a/>').attr('href', '#com-collapse-' + key).attr('data-parent', '#accordian').attr('data-toggle', 'collapse').text(val.visible['Company']).addClass(collapse))
-                            //.append($('<span/>').addClass('glyphicon glyphicon-trash pull-right del-company-btn').attr('item-id', key).attr('data-target', '#model'))
-                            .append($('<span/>').addClass('glyphicon glyphicon-search pointer marl pull-right').attr('data-id', key).attr('data-modal', 'search-company'))
-                            .append($('<span/>').addClass('glyphicon glyphicon-pencil pointer pull-right').attr('data-id', key).attr('data-modal', 'edit-company'))
-                            .append($('<div/>').attr('id', 'collapse-' + key).addClass('panel-collapse collapse ' + show)
-                                .append($('<dl/>').addClass('dl-horizontal company-detail-list').append($company_detail_list_items).append($company_detail_telephone_items))
-                        )
-                    );
+					if(typeof val.transfer!=="undefined"){
+					 $.each(val.transfer, function (dt, tel) {
+					$transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num + '" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';
+					 });
+					 $transfer_telephone_items += '<div class="clearfix"></div>';
+					}
+					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-company"><span class="glyphicon glyphicon-trash"></span> Delete</span> <span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+$company_detail_list_items+$company_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+$postcode+'" /></div></li>');
                 });
+				} else {
+					$panel.find('.companies-list').html('<li class="list-group-item">This record has no companies</li>');
+				}
 
             });
         },
@@ -1030,8 +1033,11 @@ var record = {
                     company_id: company_id
                 }
             }).done(function (response) {
+				if(response.success){
+				record.company_panel.load_panel(record.urn, company_id)	
+				} else {
                 flashalert.warning(response.msg);
-                record.company_panel.load_panel(record.urn, company_id)
+				}
             });
         },
         remove: function (id) {
@@ -1102,10 +1108,10 @@ var record = {
                     response.total_results = (response.total_results < 200 ? response.total_results : 199);
                     $('#modal').find('#cosearchresult .table-container table').show();
                     $.each(response.items, function (key, val) {
-                        tbody.append("<tr class='pointer' item-number='" + val.description_values.company_number.replace('<strong>', '').replace('</strong>', '') + "'>" +
+                        tbody.append("<tr class='pointer' item-number='" + val.company_number.replace('<strong>', '').replace('</strong>', '') + "'>" +
                             "<td>" + val.title + "</td>" +
-                            "<td>" + val.description_values.company_number + "</td>" +
-                            "<td>" + val.description_values.company_status + "</td>" +
+                            "<td>" + val.company_number + "</td>" +
+                            "<td>" + val.company_status + "</td>" +
                             "<td>" + val.date_of_creation + "</td>" +
                             "</tr>");
                     });
@@ -1202,8 +1208,9 @@ var record = {
                     form.find('input[name="address_line_2"]').val(response.registered_office_address.address_line_2);
                     form.find('input[name="locality"]').val(response.registered_office_address.locality);
                 }
-                $('.company-officers').empty();
+                $('#company-officers').empty();
                 var i = 1;
+				if(typeof response.officer_summary != "undefined"){
                 var officers_table = '<table class="small table-condensed table">' +
                     '<thead>' +
                     '<th></th>' +
@@ -1226,7 +1233,9 @@ var record = {
                 });
                 officers_table += '</tbody></table>';
 
-                $('.company-officers').append(officers_table);
+                $('#company-officers').append(officers_table);
+				$('#officers').show();
+				} 
             });
         },
         update_company: function (start_index) {
@@ -1240,7 +1249,7 @@ var record = {
                 if (response.success) {
                     record.company_panel.load_panel(record.urn, $('.search-company-form').find('input[name="company_id"]').val());
                     record.contact_panel.load_panel(record.urn, $('.search-company-form').find('input[name="company_id"]').val());
-                    record.company_panel.close_get_company();
+                   $('#modal').modal('hide')
                     flashalert.success(response.msg);
                 }
                 else {
@@ -1879,13 +1888,13 @@ var record = {
                         var $options = "";
 
                         if (helper.permissions['delete surveys'] > 0) {
-                            $options = '<span class="glyphicon glyphicon-trash pointer pull-right del-survey-btn" data-target="#modal" item-id="' + key + '" ></span><span class="glyphicon glyphicon-pencil pointer pull-right edit-survey-btn"  item-id="' + key + '"></span>';
+                            $options += '<span class="btn btn-default btn-xs pull-right del-survey-btn" data-target="#modal" item-id="' + key + '" ><span class="glyphicon glyphicon-trash"><span> Delete</span>';
                         }
                         if (helper.permissions['edit surveys'] > 0 || !val.locked) {
-                            $options = '<span class="glyphicon glyphicon-edit pull-right edit-survey-btn pointer"  item-id="' + key + '"></span>';
+                            $options += '<span class="marl btn btn-default btn-xs pull-right edit-survey-btn"  item-id="' + key + '"><span class="glyphicon glyphicon-pencil"></span> Edit</span>';
                         }
                         if ($options == "") {
-                            $options = '<span class="glyphicon glyphicon-eye-open pull-right eye-survey-btn pointer"  item-id="' + key + '"></span>';
+                            $options = '<span class="btn btn-default btn-xs pull-right eye-survey-btn"  item-id="' + key + '"><span class="glyphicon glyphicon-eye-open"></span> View</span>';
                         }
 
                         $body += '<tr><td>' + val.date_created + '</td><td>' + val.contact_name + '</td><td>' + val.client_name + '</td><td>' + val.answer + '</td><td>' + val.is_completed + '</td><td>' + $options + '</td></tr>';
@@ -2016,7 +2025,7 @@ var record = {
                     }
                     detail_id = row.id;
                 });
-                tbody += '<td><span class="glyphicon glyphicon-pencil pointer pull-right edit-detail-btn"  item-id="' + detail_id + '"></span></td><tr>';
+                tbody += '<td><span class="btn btn-default btn-xs pull-right edit-detail-btn"  item-id="' + detail_id + '"><span class="glyphicon glyphicon-pencil"></span> Edit</span></td><tr>';
             });
             table += thead + '</thead>' + tbody + '<tbody></table></div>';
             $panel.append(table);
@@ -2844,71 +2853,5 @@ var workbooks = {
 }
 
 
-function changeContactNumberFunction() {
-    var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
-    var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
-    var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
-    var tps = "";
-    if (telephone_number.length > 0) {
-        tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
-        $('select[name="tps"]').selectpicker('val', "");
-    }
-    $('.edit-tps').html(tps);
-}
-
-function changeTpsFunction() {
-    var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
-    var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
-    var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
-    var tps_option = $('.contact-phone-form').find('select[name="tps"]').val();
-    var tps = "";
-    if (telephone_number.length > 0) {
-        if (tps_option.length == 0) {
-            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
-        }
-        else if (tps_option == 1) {
-            tps = "<span class='glyphicon glyphicon-exclamation-sign red tt' data-toggle='tooltip' data-placement='right' title='This number IS TPS registered'></span>";
-        }
-        else {
-            tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
-        }
-        $tab.find('.edit-tps').html(tps);
-    }
-}
-
-$(document).on('click', '.edit-tps-btn', function (e) {
-    e.preventDefault();
-    check_edit_tps();
-});
-
-function check_edit_tps() {
-    var contact_id = $('.contact-phone-form').find('input[name="contact_id"]').val();
-    var telephone_number = $('.contact-phone-form').find('input[name="telephone_number"]').val();
-    var telephone_id = $('.contact-phone-form').find('input[name="telephone_id"]').val();
-    var tps = '';
-
-    $.ajax({
-        url: helper.baseUrl + 'cron/check_tps',
-        type: "POST",
-        dataType: "JSON",
-        data: {
-            telephone_number: telephone_number,
-            type: "tps",
-            contact_id: contact_id
-        }
-    }).done(function (response) {
-        flashalert.warning(response.msg);
-        if (response.tps == 1) {
-            tps = "<span class='glyphicon glyphicon-question-sign black edit-tps-btn tt pointer' item-contact-id='" + contact_id + "' item-number-id='" + telephone_id + "' item-number='" + telephone_number + "' data-toggle='tooltip' data-placement='right' title='TPS Status is unknown. Click to check it'></span>";
-            $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 1);
-            $tab.find('.edit-tps').html(tps);
-        }
-        else if (response.tps == 0) {
-            tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
-            $('.contact-phone-form').find('select[name="tps"]').selectpicker('val', 0);
-            $tab.find('.edit-tps').html(tps);
-        }
-    });
-}
 
 

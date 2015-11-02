@@ -81,10 +81,14 @@ class Contacts_model extends CI_Model
     public function get_contacts($urn)
     {
 
-        $qry = "select c.urn,c.contact_id,fullname,a.primary is_primary,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,city,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
-        $results = $this->db->query($qry)->result_array();
+        $qry = "select camp.telephone_prefix,camp.telephone_protocol,c.urn,c.contact_id,fullname,a.primary is_primary,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,city,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) join records using(urn) join campaigns camp using(campaign_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
+		$query = $this->db->query($qry);
+        $results = $query->result_array();
         //put the contact details into array
         // $this->firephp->log($qry);
+		if(count($results)==0){
+			return false;
+		} 
         foreach ($results as $result):
            // $use_fullname                            = ($this->name_field == "fullname" ? true : false);
 			 $use_fullname  = true;
@@ -104,12 +108,23 @@ class Contacts_model extends CI_Model
                     "Notes" => $result['notes']
                 );
             }
-
+			if(strpos($result['tel_name'],"Transfer")!==false){
+			 $contacts[$result['contact_id']]['transfer'][$result['telephone_id']] = array(
+                "tel_name" => $result['tel_name'],
+                "tel_num" => $result['telephone_number'],
+                "tel_tps" => $result['tps'],
+				"tel_prefix" => $result['telephone_prefix'],
+				"tel_protocol" => $result['telephone_protocol']
+            );	
+			} else {
             $contacts[$result['contact_id']]['telephone'][$result['telephone_id']] = array(
                 "tel_name" => $result['tel_name'],
                 "tel_num" => $result['telephone_number'],
-                "tel_tps" => $result['tps']
+                "tel_tps" => $result['tps'],
+				"tel_prefix" => $result['telephone_prefix'],
+				"tel_protocol" => $result['telephone_protocol']
             );
+			}
         //we only want to display the primary address for each contact
             if ($result['is_primary'] == "1") {
                 $contacts[$result['contact_id']]['visible']['Address']['add1']     = $result['add1'];

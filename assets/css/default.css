@@ -1,13 +1,13 @@
 .panel-heading .pull-right button {
 margin-top:2px !important;	
 }
-
+.list-group-item div { width:100% } 
 
 @-moz-document url-prefix() {
   fieldset { display: table-cell; }
 }
 .purple { background:#C4C4FF }
-
+dl.contact-detail-list { margin-bottom:0 }
 .relative { position:relative !important }
 .gm-style .gm-style-iw, .gm-style .gm-style-iw a, .gm-style .gm-style-iw span, .gm-style .gm-style-iw label, .gm-style .gm-style-iw div {
   overflow:visible !important;

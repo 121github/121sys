@@ -31,13 +31,15 @@
         <div class="col-xs-8">
             <div class="form-group input-group-sm">
                 <p>From</p>
-                <select name="template_sender_id" class="selectpicker" id="sender_select" data-width="100%" data-size="5">
+                <select name="template_sender_id" class="selectpicker" id="sender_select" data-width="70%" data-size="5">
                     <option value="">Nothing selected</option>
                     <?php foreach ($sms_senders as $row): ?>
                         <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                     <?php endforeach; ?>
                 </select>
+                         <input type="text" placeholder="Eg:[c3]" class="form-control" style="width:15%;display:inline-block" disabled name="custom_sender" id="custom-sender" value="" />             
             </div>
+              
         </div>
     </div>
     <div class="row">

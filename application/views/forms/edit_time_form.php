@@ -79,11 +79,3 @@
 		</div>
 	</div>
 </form>
-
-<script>
-    $(document).ready(function(){
-        $('.datetimepicker').datetimepicker({
-            pickDate: false
-        });
-    });
-</script>

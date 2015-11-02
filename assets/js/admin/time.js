@@ -416,7 +416,6 @@ var time = {
         var datetimepicker = row.find('.datetimepicker.'+class_type);
 
         datetimepicker.datetimepicker({
-            pickDate: false
         });
         datetimepicker.off("dp.hide");
         datetimepicker.one("dp.hide",function (e) {
@@ -596,7 +595,6 @@ var default_time = {
         var datetimepicker = row.find('.datetimepicker.'+class_type);
 
         datetimepicker.datetimepicker({
-            pickDate: false
         });
 
         datetimepicker.off("dp.show");

@@ -145,6 +145,11 @@ class Sms extends CI_Controller
                     if (strpos($template['template_text'], "[$key]") !== false) {
                         $template['template_text'] = str_replace("[$key]", $val, $template['template_text']);
                     }
+					if($template['name']=="Automatic"){
+					 if ($template['custom_sender']=="[$key]"){
+                        $template['name'] = $val;
+                    }
+					}
                 }
             }
         }
@@ -240,14 +245,20 @@ class Sms extends CI_Controller
         $message = $form['template_text'];
 
         //Check if the sender selected exist
-        if ($this->check_sender_name($sender)) {
+        if (!$this->check_sender_name($sender)) {
+			 echo json_encode(array(
+                "data" => array("status" => "error", "msg" => "The selected sender name has not been configuired correctly")
+            ));
+			exit;
+		}
             //Check if the message is empty
             if (strlen(trim($message)) <= 0) {
                 echo json_encode(array(
-                    "data" => array("status" => "error", "msg" => "ERROR: The message is empty")
+                    "data" => array("status" => "error", "msg" => "The message is empty")
                 ));
+				exit;
             }
-            else {
+            
                 //Send the sms
                 $customID = uniqid($form['urn'].date('now'));
                 $response = $this->send($customID, $numbers, $message, $sender);
@@ -278,13 +289,7 @@ class Sms extends CI_Controller
                 echo json_encode(array(
                     "data" => $response
                 ));
-            }
-        }
-        else {
-            echo json_encode(array(
-                "data" => array("status" => "error", "msg" => "ERROR: The sender selected does not exist")
-            ));
-        }
+
     }
 
     /***********************************************************************************************************/

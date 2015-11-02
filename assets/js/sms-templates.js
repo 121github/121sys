@@ -22,7 +22,14 @@ var template = {
             e.preventDefault();
             template.cancel();
         });
-
+		$(document).on('change','#sender_select',function(){
+			if($(this).val()==0){
+			$('#custom-sender').prop('disabled',false);	
+			} else {
+			$('#custom-sender').prop('disabled',true);		
+			}
+		});
+		
         //Max length for sms text
         var maxLength = 305;
         $('textarea').keyup(function() {
@@ -79,6 +86,7 @@ var template = {
 
             var row = $btn.closest('tr');
             $('#container-fluid form').find('input[name="template_id"]').val(result.data.template_id);
+			  $('#container-fluid form').find('input[name="custom_sender"]').val(result.data.custom_sender);
             $('#container-fluid form').find('input[name="template_name"]').val(result.data.template_name);
             $('#sender_select').selectpicker('val', result.data.template_sender_id).selectpicker('render');
             $('#container-fluid form').find('textarea[name="template_text"]').val(result.data.template_text);

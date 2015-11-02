@@ -29,7 +29,7 @@ class Company_model extends CI_Model
 	
     public function get_company($id)
     {
-        $qry     = "select *,c.description as codescription,ct.description as ctdescription, date_format(c.date_of_creation,'%d/%m/%Y') date_of_creation from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) where company_id = '$id'";
+        $qry     = "select *,c.description as codescription,ct.description as ctdescription, date_format(c.date_of_creation,'%d/%m/%Y') date_of_creation from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) left join locations using(location_id) where company_id = '$id'";
         //$this->firephp->log($qry);
         $results = $this->db->query($qry)->result_array();
         foreach ($results as $result):
@@ -83,7 +83,7 @@ class Company_model extends CI_Model
     public function get_companies($urn)
     {
 
-        $qry = "select com.urn,com.company_id,com.name coname,com.description ,com.conumber,com.description codescription,sector_name,employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,city cocity,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) where urn = '$urn' order by com.company_id";
+        $qry = "select telephone_prefix,telephone_protocol,com.urn,com.company_id,com.name coname,com.description ,com.conumber,com.description codescription,sector_name,employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,city cocity,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) join records using(urn) join campaigns using(campaign_id) where urn = '$urn' order by com.company_id";
         $results = $this->db->query($qry)->result_array();
         //put the contact details into array
         // $this->firephp->log($qry);
@@ -103,7 +103,9 @@ class Company_model extends CI_Model
 			$companies[$result['company_id']]['telephone'][$result['cotelephone_id']] = array(
                 "tel_name" => $result['cotel_name'],
                 "tel_num" => $result['cotelephone_number'],
-                "tel_tps" => $result['ctps']
+                "tel_tps" => $result['ctps'],
+				"tel_prefix" => $result['telephone_prefix'],
+				"tel_protocol" => $result['telephone_protocol']
             );
 			
 			 //we only want to display the primary address for the company
@@ -152,7 +154,7 @@ class Company_model extends CI_Model
 	}
 
     public function save_company_address ($form) {
-        $this->db->insert("company_addresses", $form);
+        $this->db->insert_update("company_addresses", $form);
 
         $insert_id = $this->db->insert_id();
         $this->db->trans_complete();

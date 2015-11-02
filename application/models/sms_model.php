@@ -37,7 +37,7 @@ class Sms_model extends CI_Model
                   st.*,
                   ss.*
                 from sms_templates st
-                inner join sms_sender ss ON (st.template_sender_id = ss.sender_id)
+                join sms_sender ss ON (st.template_sender_id = ss.sender_id)
                 order by template_name";
 
         $results = $this->db->query($qry)->result_array();

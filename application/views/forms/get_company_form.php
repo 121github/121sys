@@ -76,8 +76,8 @@
 </div> 
  <select data-width="100%" class="sic_codes" name="subsector_id[]" id="sic_codes" multiple></select>
 
-<div style="border-bottom: 1px solid grey; margin: 10px 0;">OFFICERS <small>Select the officers to add in the contacts</small></div>
-            <div class="company-officers"></div>
+<div id="officers" style="display:none;border-bottom: 1px solid grey; margin: 10px 0;">OFFICERS <small>Select the officers to add in the contacts</small></div>
+            <div id="company-officers"></div>
 
         </form>
 </div>

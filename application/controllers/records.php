@@ -335,10 +335,12 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 'lib/jquery.numeric.min.js',
                 'lib/jquery.alphanum.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
-                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js',
+				'lib/bootstrap-datetimepicker.js'
 				//'lib/wavsurfer.js'
             ),
             'css' => array(
+				'bootstrap-datetimepicker.css',
 				'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
                 'plugins/jqfileupload/jquery.fileupload.css',
                 'plugins/countdown/jquery.countdown.css',

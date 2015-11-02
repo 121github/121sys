@@ -32,7 +32,6 @@ class Time extends CI_Controller
     					'lib/moment.js',
     					'lib/jquery.numeric.min.js',
     					'lib/daterangepicker.js',
-    					'lib/bootstrap-datetimepicker.js'
     			),
     			'css' => array(
     					'dashboard.css',

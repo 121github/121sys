@@ -1,6 +1,7 @@
 /*the class below is for the data import page. It gets initialized by the data.php view*/
 var importer = {
     init: function () {
+		$('#addresspicker').selectpicker();
         $(document).on('change', '#source,#pot', function (e) {
             importer.check_source_pot($(this));
         });
@@ -839,9 +840,9 @@ var add_record = {
             e.preventDefault();
 			if($('#campaign').val()==""){
 				flashalert.danger("Please select a campaign");	
-			} else if($('#campaign option:selected').attr('ctype')=="B2B"&&$('#company_name').val()==""){
+			} else if($('#campaign option:selected').attr('ctype')=="B2B"&&$('#name').val()==""){
 			flashalert.danger("Please enter a company name");
-			} else if($('#campaign option:selected').attr('ctype')=="B2C"&&$('#contact_name').val()==""){
+			} else if($('#campaign option:selected').attr('ctype')=="B2C"&&$('#name').val()==""){
 			flashalert.danger("Please enter a contact name");	
 			} else {
             add_record.save($(this));
@@ -849,31 +850,24 @@ var add_record = {
         });
 		$('#campaign').trigger('change');
 
-        //Contact Addresses
-        $('.contact-address-select').hide();
-        $('.record-form').find('input[name="contact_house_number"]').numeric();
+        //Find Addresses
+        $('#addresspicker-div').hide();
+        $('.record-form').find('input[name="house-number"]').numeric();
 
-        $(document).on('click', '.get-contact-address', function (e) {
+        $(document).on('click', '#get-address', function (e) {
             e.preventDefault();
-            add_record.get_contact_addresses();
+            add_record.get_addresses();
         });
 
-        //Company Addresses
-        $('.company-address-select').hide();
-        $('.record-form').find('input[name="company_house_number"]').numeric();
-
-        $(document).on('click', '.get-company-address', function (e) {
-            e.preventDefault();
-            add_record.get_company_addresses();
-        });
+ 
 
     },
 	check_dupes: function(){
-        if ($('#contact_postcode').val() == "" && $('#contact_add1').val() == "" && $('#company_name').val() == "" || $('#company_add1').val() == "" && $('#company_postcode').val()) {
+        if ($('#postcode').val() == "" && $('#add1').val() == "" && $('#name').val() == "" || $('#company_add1').val() == "" && $('#company_postcode').val()) {
             flashalert.danger("Please enter a postcode");
-		} else if($('#contact_name').val()==""&&$('#company_name').val()==""){
+		} else if($('#name').val()==""){
 			flashalert.danger("Please enter a name");
-		} else if($('#contact_postcode').val()==""&&$('#contact_add1').val()==""&&$('#company_name').val()=="") {
+		} else if($('#postcode').val()==""&&$('#add1').val()==""&&$('#name').val()=="") {
 			$('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> Can not check for duplicates without a postcode. Click the create new button to add it anyway</p>");
 			$('#save-btn').show();
 		} else {
@@ -920,12 +914,40 @@ var add_record = {
         $('#ctype-text').text("This is a " + ctype + " campaign.").show();
 
         if (ctype == 'B2B') {
+			$('#name-label').text('Company Name');
             $('#company').show();
             $('#contact').hide().find('input').val('');
-        }
+			
+			$('.record-form').find('#postcode').attr('name','company_postcode');
+			$('.record-form').find('#house_number').attr('name','company_house_number');
+                    $('.record-form').find('#add1').attr('name','company_add1');
+                    $('.record-form').find('#add2').attr('name','company_add2');
+                    $('.record-form').find('#add3').attr('name','company_add3');
+                    $('.record-form').find('#add4').attr('name','company_add4');
+                    $('.record-form').find('#locality').attr('name','company_locality');
+                    $('.record-form').find('#city').attr('name','company_city');
+                    $('.record-form').find('#county').attr('name','company_county');
+                    $('.record-form').find('#country').attr('name','company_country');
+			 $('.record-form').find('#name').attr('name','company_name');
+			  $('.record-form').find('#telephone').attr('name','company_telephone');
+					
+		}
         else if (ctype == 'B2C') {
+			$('#name-label').text('Contact Name');
             $('#contact').show();
             $('#company').hide().find('input').val('');
+						$('.record-form').find('#postcode').attr('name','contact_postcode');
+			$('.record-form').find('#house_number').attr('name','contact_house_number');
+                    $('.record-form').find('#add1').attr('name','contact_add1');
+                    $('.record-form').find('#add2').attr('name','contact_add2');
+                    $('.record-form').find('#add3').attr('name','contact_add3');
+                    $('.record-form').find('#add4').attr('name','contact_add4');
+                    $('.record-form').find('#locality').attr('name','contact_locality');
+                    $('.record-form').find('#city').attr('name','contact_city');
+                    $('.record-form').find('#county').attr('name','contact_county');
+                    $('.record-form').find('#country').attr('name','contact_country');
+					  $('.record-form').find('#name').attr('name','contact_name');
+					   $('.record-form').find('#telephone').attr('name','contact_telephone');
         }
 		} else {
 		  $('#ctype-text').text("This is a " + ctype + " campaign.").hide();	
@@ -955,13 +977,14 @@ var add_record = {
 			  flashalert.danger("Error saving the record");
 		});
     },
-    get_contact_addresses: function () {
+   
+
+    get_addresses: function () {
         var addresses;
-        var postcode = $('.record-form').find('input[name="contact_postcode"]').val();
-        var house_number = $('.record-form').find('input[name="contact_house_number"]').val();
-        $('.record-form input:not(#contact_name)').val('');
-        $('.record-form').find('input[name="contact_postcode"]').val(postcode);
-        $('.record-form').find('input[name="contact_house_number"]').val(house_number);
+        var postcode = $('.record-form').find('#postcode').val();
+        var house_number = $('.record-form').find('#house-number').val();
+        $('.record-form').find('#collapse input').val('');
+        $('.record-form').find('input[name="postcode"]').val(postcode);
 
         $.ajax({
             url: helper.baseUrl + 'ajax/get_addresses_by_postcode',
@@ -970,9 +993,9 @@ var add_record = {
             data: {postcode: postcode, house_number: house_number}
         }).done(function (response) {
             if (response.success) {
-                $('.record-form').find('input[name="contact_postcode"]').val(response.postcode);
+                $('.record-form').find('#postcode').val(response.postcode);
                 addresses = response.data;
-                flashalert.warning("Addresses found, select one");
+                flashalert.info("Please select the correct address");
                 var options = "<option value=''>Select one address...</option>";
 
                 $.each(response.data, function (i, val) {
@@ -988,132 +1011,51 @@ var add_record = {
                         (val.postcode ? ", " + val.postcode : '') +
                         '</option>';
                 });
-                $('.record-form').find('select[name="contact_address"]')
+                $('.record-form').find('#addresspicker')
                     .html(options)
                     .selectpicker('refresh');
 
                 //If the house number is found set this option by default
                 if (response.address_selected !== null && response.address_selected !== undefined) {
                     var address = addresses[response.address_selected];
-                    $('.record-form').find('input[name="contact_add1"]').val(address.add1);
-                    $('.record-form').find('input[name="contact_add2"]').val(address.add2);
-                    $('.record-form').find('input[name="contact_add3"]').val(address.add3);
-                    $('.record-form').find('input[name="contact_add4"]').val(address.add4);
-                    $('.record-form').find('input[name="contact_locality"]').val(address.locality);
-                    $('.record-form').find('input[name="contact_city"]').val(address.city);
-                    $('.record-form').find('input[name="contact_county"]').val(address.county);
-                    $('.record-form').find('input[name="contact_country"]').val(address.postcode_io.country);
+                    $('.record-form').find('#add1').val(address.add1);
+                    $('.record-form').find('#add2').val(address.add2);
+                    $('.record-form').find('#add3').val(address.add3);
+                    $('.record-form').find('#add4').val(address.add4);
+                    $('.record-form').find('#locality').val(address.locality);
+                    $('.record-form').find('#city').val(address.city);
+                    $('.record-form').find('#county').val(address.county);
+                    $('.record-form').find('#country').val(address.postcode_io.country);
 
-                    $('.record-form').find('select[name="contact_address"]')
+                    $('.record-form').find('#addresspicker')
                         .val(response.address_selected)
                         .selectpicker('refresh');
                 }
                 modal_body.css('overflow', 'visible');
-                $('.contact-address-select').show();
+               $('#addresspicker-div').show();
             }
             else {
                 modal_body.css('overflow', 'auto');
-                $('.contact-address-select').hide();
-                flashalert.danger("No address found");
+               $('#addresspicker-div').hide();
+                flashalert.danger("No address was found. Please enter manually");
+				$('#complete-address').trigger('click');
             }
         });
 
-
-        $('.contact-address-select .selectpicker').change(function () {
+        $('.addresspicker').change(function () {
 
             var selectedId = $(this).val();
             var address = addresses[selectedId];
-            $('.record-form').find('input[name="contact_house_number"]').val('');
-            $('.record-form').find('input[name="contact_postcode"]').val(address.postcode);
-            $('.record-form').find('input[name="contact_add1"]').val(address.add1);
-            $('.record-form').find('input[name="contact_add2"]').val(address.add2);
-            $('.record-form').find('input[name="contact_add3"]').val(address.add3);
-            $('.record-form').find('input[name="contact_add4"]').val(address.add4);
-            $('.record-form').find('input[name="contact_locality"]').val(address.locality);
-            $('.record-form').find('input[name="contact_city"]').val(address.city);
-            $('.record-form').find('input[name="contact_county"]').val(address.county);
-            $('.record-form').find('input[name="contact_country"]').val(address.postcode_io.country);
-
-        });
-    },
-
-    get_company_addresses: function () {
-        var addresses;
-        var postcode = $('.record-form').find('input[name="company_postcode"]').val();
-        var house_number = $('.record-form').find('input[name="company_house_number"]').val();
-        $('.record-form input:not(#company_name)').val('');
-        $('.record-form').find('input[name="company_postcode"]').val(postcode);
-        $('.record-form').find('input[name="company_house_number"]').val(house_number);
-
-        $.ajax({
-            url: helper.baseUrl + 'ajax/get_addresses_by_postcode',
-            type: "POST",
-            dataType: "JSON",
-            data: {postcode: postcode, house_number: house_number}
-        }).done(function (response) {
-            if (response.success) {
-                $('.record-form').find('input[name="company_postcode"]').val(response.postcode);
-                addresses = response.data;
-                flashalert.warning("Addresses found, select one");
-                var options = "<option value=''>Select one address...</option>";
-
-                $.each(response.data, function (i, val) {
-                    options += '<option value="' + i + '">' +
-                        (val.add1 ? val.add1 : '') +
-                        (val.add2 ? ", " + val.add2 : '') +
-                        (val.add3 ? ", " + val.add3 : '') +
-                        (val.add4 ? ", " + val.add4 : '') +
-                        (val.locality ? ", " + val.locality : '') +
-                        (val.city ? ", " + val.city : '') +
-                        (val.county ? ", " + val.county : '') +
-                        (typeof val.postcode_io.country != "undefined" ? ", " + val.postcode_io.country : '') +
-                        (val.postcode ? ", " + val.postcode : '') +
-                        '</option>';
-                });
-                $('.record-form').find('select[name="company_address"]')
-                    .html(options)
-                    .selectpicker('refresh');
-
-                //If the house number is found set this option by default
-                if (response.address_selected !== null && response.address_selected !== undefined) {
-                    var address = addresses[response.address_selected];
-                    $('.record-form').find('input[name="company_add1"]').val(address.add1);
-                    $('.record-form').find('input[name="company_add2"]').val(address.add2);
-                    $('.record-form').find('input[name="company_add3"]').val(address.add3);
-                    $('.record-form').find('input[name="company_add4"]').val(address.add4);
-                    $('.record-form').find('input[name="company_locality"]').val(address.locality);
-                    $('.record-form').find('input[name="company_city"]').val(address.city);
-                    $('.record-form').find('input[name="company_county"]').val(address.county);
-                    $('.record-form').find('input[name="company_country"]').val(address.postcode_io.country);
-
-                    $('.record-form').find('select[name="company_address"]')
-                        .val(response.address_selected)
-                        .selectpicker('refresh');
-                }
-                modal_body.css('overflow', 'visible');
-                $('.company-address-select').show();
-            }
-            else {
-                modal_body.css('overflow', 'auto');
-                $('.company-address-select').hide();
-                flashalert.danger("No address found");
-            }
-        });
-
-        $('.company-address-select .selectpicker').change(function () {
-
-            var selectedId = $(this).val();
-            var address = addresses[selectedId];
-            $('.record-form').find('input[name="company_house_number"]').val('');
-            $('.record-form').find('input[name="company_postcode"]').val(address.postcode);
-            $('.record-form').find('input[name="company_add1"]').val(address.add1);
-            $('.record-form').find('input[name="company_add2"]').val(address.add2);
-            $('.record-form').find('input[name="company_add3"]').val(address.add3);
-            $('.record-form').find('input[name="company_add4"]').val(address.add4);
-            $('.record-form').find('input[name="company_locality"]').val(address.locality);
-            $('.record-form').find('input[name="company_city"]').val(address.city);
-            $('.record-form').find('input[name="company_county"]').val(address.county);
-            $('.record-form').find('input[name="company_country"]').val(address.postcode_io.country);
+			$('.record-form').find('#postcode').val(address.postcode);
+			$('.record-form').find('#house_number').val(address.house_number);
+                    $('.record-form').find('#add1').val(address.add1);
+                    $('.record-form').find('#add2').val(address.add2);
+                    $('.record-form').find('#add3').val(address.add3);
+                    $('.record-form').find('#add4').val(address.add4);
+                    $('.record-form').find('#locality').val(address.locality);
+                    $('.record-form').find('#city').val(address.city);
+                    $('.record-form').find('#county').val(address.county);
+                    $('.record-form').find('#country').val(address.postcode_io.country);
 
         });
     }
