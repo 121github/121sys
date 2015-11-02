@@ -10,10 +10,12 @@ class Reports extends CI_Controller
     {
         parent::__construct();
         user_auth_check(false);
+        $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
+
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Report_model');
-        $this->_campaigns = campaign_access_dropdown();
 
     }
 
@@ -37,7 +39,7 @@ class Reports extends CI_Controller
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'javascript' => array(
-                'report/data_capture.js',
+                'report/data_capture.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
 
@@ -64,8 +66,8 @@ class Reports extends CI_Controller
             'page' => 'targets'
         ,
             'javascript' => array(
-                'charts.js',
-                'report/targets.js',
+                'charts.js?v' . $this->project_version,
+                'report/targets.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
 
@@ -98,8 +100,8 @@ class Reports extends CI_Controller
             'page' => 'answers'
         ,
             'javascript' => array(
-                'charts.js',
-                'report/answers.js'
+                'charts.js?v' . $this->project_version,
+                'report/answers.js?v' . $this->project_version
             ),
             'surveys' => $surveys,
             'answers' => $results,
@@ -150,8 +152,8 @@ class Reports extends CI_Controller
             'page' => 'activity'
         ,
             'javascript' => array(
-                'charts.js',
-                'report/activity.js',
+                'charts.js?v' . $this->project_version,
+                'report/activity.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -265,8 +267,8 @@ class Reports extends CI_Controller
             'title' => 'Reports | Campaign Outcme',
             'page' => "outcome_report_$group",
             'javascript' => array(
-                'charts.js',
-                'report/outcomes.js',
+                'charts.js?v' . $this->project_version,
+                'report/outcomes.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -430,8 +432,8 @@ class Reports extends CI_Controller
             'title' => 'Reports | Email',
             'page' => "email_report_$group",
             'javascript' => array(
-                'charts.js',
-                'report/email.js',
+                'charts.js?v' . $this->project_version,
+                'report/email.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -613,8 +615,8 @@ class Reports extends CI_Controller
             'title' => 'Reports | Productivity',
             'page' => 'productivity',
             'javascript' => array(
-                'charts.js',
-                'report/productivity.js',
+                'charts.js?v' . $this->project_version,
+                'report/productivity.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -644,8 +646,8 @@ class Reports extends CI_Controller
             'title' => 'Reports | Realtime',
             'page' => 'realtime',
             'javascript' => array(
-                'charts.js',
-                'report/realtime.js',
+                'charts.js?v' . $this->project_version,
+                'report/realtime.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
@@ -779,8 +781,8 @@ class Reports extends CI_Controller
             'title' => 'Reports | Sms',
             'page' => "sms_report_$group",
             'javascript' => array(
-                'charts.js',
-                'report/sms.js',
+                'charts.js?v' . $this->project_version,
+                'report/sms.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),

@@ -9,6 +9,8 @@ class Email extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->project_version = $this->config->item('project_version');
+
         $this->load->model('User_model');
         $this->load->model('Records_model');
         $this->load->model('Contacts_model');
@@ -142,7 +144,7 @@ class Email extends CI_Controller
                 'plugins/jqfileupload/jquery.fileupload.css',
             ),
             'javascript' => array(
-                'email.js',
+                'email.js?v' . $this->project_version,
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
                 'plugins/jqfileupload/jquery.fileupload.js',

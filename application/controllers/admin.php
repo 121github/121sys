@@ -9,6 +9,7 @@ class Admin extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -46,7 +47,7 @@ class Admin extends CI_Controller
                 'dashboard.css'
             ),
             'javascript' => array(
-                'admin/copy_campaign.js'
+                'admin/copy_campaign.js?v' . $this->project_version
             ),
             'options' => array("campaigns" => $campaigns)
 
@@ -192,7 +193,7 @@ class Admin extends CI_Controller
         ,
             'options' => $options,
             'javascript' => array(
-                'admin/users.js'
+                'admin/users.js?v' . $this->project_version
             ),
             'css' => array(
                 'dashboard.css'
@@ -240,8 +241,8 @@ class Admin extends CI_Controller
             'title' => 'Admin',
             'page' => 'campaign_setup',
             'javascript' => array(
-                'dashboard.js',
-                'admin/campaigns.js',
+                'dashboard.js?v' . $this->project_version,
+                'admin/campaigns.js?v' . $this->project_version,
                 'lib/jquery.numeric.min.js',
                 'lib/moment.js',
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
@@ -273,8 +274,8 @@ class Admin extends CI_Controller
             'title' => 'Admin | Campaign Access',
             'page' => 'campaign_access',
             'javascript' => array(
-                'dashboard.js',
-                'admin/campaigns.js',
+                'dashboard.js?v' . $this->project_version,
+                'admin/campaigns.js?v' . $this->project_version,
                 'lib/jquery.numeric.min.js',
                 'lib/moment.js'
             ),
@@ -585,7 +586,7 @@ class Admin extends CI_Controller
             'page' => 'roles'
         ,
             'javascript' => array(
-                'admin/roles.js'
+                'admin/roles.js?v' . $this->project_version
             ),
             'roles' => $roles,
             'permissions' => $permissions,
@@ -661,7 +662,7 @@ class Admin extends CI_Controller
             'page' => 'groups'
         ,
             'javascript' => array(
-                'admin/groups.js'
+                'admin/groups.js?v' . $this->project_version
             ),
             'css' => array(
                 'dashboard.css'
@@ -705,7 +706,7 @@ class Admin extends CI_Controller
             'page' => 'teams'
         ,
             'javascript' => array(
-                'admin/teams.js'
+                'admin/teams.js?v' . $this->project_version
             ),
             'css' => array(
                 'dashboard.css'
@@ -836,7 +837,7 @@ class Admin extends CI_Controller
             'title' => 'Campaign custom fields',
             'page' => 'custom_fields',
             'javascript' => array(
-                'admin/customfields.js'
+                'admin/customfields.js?v' . $this->project_version
             ),
             'css' => array(
                 'dashboard.css'

@@ -11,6 +11,7 @@ class Docscanner extends CI_Controller
         parent::__construct();
 		user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
 		 $this->load->model('Docscanner_model');
     }
@@ -22,7 +23,7 @@ class Docscanner extends CI_Controller
 			'pageId' => 'Admin',
             'title' => 'Admin',
             'javascript' => array(
-                'dashboard.js',
+                'dashboard.js?v' . $this->project_version,
             ),
             'options' => $options,
             'css' => array(

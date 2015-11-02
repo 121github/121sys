@@ -259,8 +259,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-select.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/js/jquery.mmenu.min.all.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/modals.js?v2.0"></script>
-<script src="<?php echo base_url(); ?>assets/js/main.js?v2.1"></script>
+<script src="<?php echo base_url() . "assets/js/modals.js?v" . $this->config->item('project_version'); ?>"></script>
+<script src="<?php echo base_url() . "assets/js/main.js?v" . $this->config->item('project_version'); ?>"></script>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['permissions'])){ ?>
     helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
@@ -360,7 +360,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 				  {
                      "position": "bottom",
                      "content": [
-                        "<a onclick=\"javascript:alert('Coming Soon')\" href='#'><span class='fa fa-book'></span> Docs</a>",
+                         "<a onclick=\"javascript:alert('121 Customer Insight. Version:'+<?php echo $this->config->item('project_version');?>)\" href='#'><span class='fa fa-book'></span> About</a>",
 						"<a data-modal='contact-us' href='#'><span class='fa fa-phone'></span> Contact</a>",
 						"<a href='"+helper.baseUrl+"user/logout'><span class='fa fa-sign-out'></span> Logout</a>"
                      ]
@@ -400,14 +400,17 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 </script>
 <?php //load specific javascript files set in the controller
 if (isset($javascript)):
-    foreach ($javascript as $file): ?>
+    foreach ($javascript as $file):?>
         <script src="<?php echo base_url(); ?>assets/js/<?php echo $file ?>"></script>
     <?php endforeach;
 endif; ?>
-<?php if (@in_array("map.js", $javascript) || @in_array("location.js", $javascript)) { ?>
-<?php if (@in_array("map.js", $javascript)){ $callback = "&callback=initializemaps"; } ?>
-<script
- type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false<?php echo $callback ?>"></script>
+<?php if (@in_array("map.js?v" . $this->config->item('project_version'), $javascript) || @in_array("location.js?v" . $this->config->item('project_version'), $javascript)) { ?>
+    <?php if (@in_array("map.js?v" . $this->config->item('project_version'), $javascript)) {
+        $callback = "&callback=initializemaps";
+    } ?>
+    <script
+        type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false<?php echo $callback ?>"></script>
 <?php } ?>  
 </body>
 </html>

@@ -8,6 +8,7 @@ class Exports extends CI_Controller
         parent::__construct();
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Export_model');
 		$this->load->model('Form_model');
@@ -27,7 +28,7 @@ class Exports extends CI_Controller
             'javascript' => array(
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'export.js'
+                'export.js?v' . $this->project_version
             ),
             'page' => 'export_data',
             'css' => array(

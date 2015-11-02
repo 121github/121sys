@@ -12,6 +12,8 @@ class Records extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
+
         $this->load->model('User_model');
         $this->load->model('Records_model');
         $this->load->model('Survey_model');
@@ -74,9 +76,9 @@ class Records extends CI_Controller
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
             'javascript' => array(
-				"location.js",
-				'map.js',
-                'view.js',
+                "location.js?v" . $this->project_version,
+                'map.js?v' . $this->project_version,
+                'view.js?v' . $this->project_version,
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/datatables.min.js',
@@ -322,7 +324,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             "map_icon" => $details['record']['map_icon'],
             "campaign_triggers" => $campaign_triggers,
             "javascript" => array(
-                "detail2.js?v2.0",
+                "detail2.js?v" . $this->project_version,
 				'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',

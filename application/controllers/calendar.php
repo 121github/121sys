@@ -11,6 +11,7 @@ class Calendar extends CI_Controller
         user_auth_check(false);
         check_page_permissions('full calendar');
         $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Calendar_model');
         $this->load->model('Form_model');
@@ -60,8 +61,8 @@ class Calendar extends CI_Controller
             'javascript' => array(
                 'lib/underscore.js',
                 'plugins/calendar/js/calendar.js',
-                'calendar.js',
-				'location.js',
+                'calendar.js?v' . $this->project_version,
+                'location.js?v' . $this->project_version,
                 'plugins/jqfileupload/jquery.fileupload.js',
                 'plugins/jqfileupload/jquery.fileupload-process.js',
                 'plugins/jqfileupload/jquery.fileupload-validate.js'

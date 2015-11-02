@@ -9,6 +9,8 @@ class Tasks extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->project_version = $this->config->item('project_version');
+
         $this->load->model('User_model');
         $this->load->model('Form_model');
     }
@@ -19,7 +21,7 @@ class Tasks extends CI_Controller
             'page' => 'tasks',
             'title' => 'Tasks',
             'javascript' => array(
-                'tasks.js'
+                'tasks.js?v' . $this->project_version
             ),
         );
         $this->template->load('default', 'tasks/list.php', $data);  

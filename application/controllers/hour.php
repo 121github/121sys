@@ -8,6 +8,7 @@ class Hour extends CI_Controller
         parent::__construct();
         user_auth_check(false);
 		$this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
 
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
@@ -31,7 +32,7 @@ class Hour extends CI_Controller
     			'title' => 'Admin | Hours',
     			'page' =>  'agent_hours',
     			'javascript' => array(
-    					'admin/hours.js',
+                    'admin/hours.js?v' . $this->project_version,
     					'lib/moment.js',
     					'lib/jquery.numeric.min.js',
     					'lib/daterangepicker.js',
@@ -181,7 +182,7 @@ class Hour extends CI_Controller
             'title' => 'Admin | Hours',
             'page' => 'default_hours',
             'javascript' => array(
-                'admin/hours.js',
+                'admin/hours.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/jquery.numeric.min.js',
             ),
