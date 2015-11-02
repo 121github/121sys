@@ -6,8 +6,10 @@ if (!defined('BASEPATH'))
 function array_escape($array)
 {
 	foreach($array as $k=>$v){
+		if(!is_array($k)&&!is_array($v)){
 		   $key = addslashes($k);
 	$array[$key] = addslashes($v);
+		}
 	}
 	return $array;
 }

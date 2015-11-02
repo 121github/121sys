@@ -16,11 +16,12 @@ class Recordings extends CI_Controller
 public function find_calls(){
 	session_write_close();
 	$this->load->helper('date');
-	//connect to 121backup which has the database of call recordings in a db named "recordings"
 //the urn we will be searching for - posted via ajax
 $urn = $this->input->post('urn');
 $numbers =  $this->Recordings_model->get_numbers($urn);
+$this->firephp->log($numbers);
 $calls =  $this->Records_model->get_calls($urn);
+$this->firephp->log($calls);
 $number_list = "''";
 $qry = "";
 $transfer_number ="";
@@ -46,7 +47,7 @@ $calltime = $row['contact'];
 $qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,owner from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
 $qry = rtrim($qry,"union ");
-//$this->firephp->log($qry);
+$this->firephp->log($qry);
 $result = $db2->query($qry);
 $recordings = $result->result_array();
 

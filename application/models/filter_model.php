@@ -773,7 +773,7 @@ return $query->result_array();
         }
 
 		/* users can only see records that have not been parked */
-		if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])) 									 		{
+		if (!isset($_SESSION['filter']['values']['parked_code'])||@!in_array("search parked",$_SESSION['permissions'])){
         $parked = " and (r.parked_code is null)";
         }
 		if(array_key_exists("parked_code",$filter)){

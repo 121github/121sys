@@ -7,7 +7,7 @@ var filter = {
             filter.count_records();
         });
 
-        $(document).on('click', '.locate-postcode', function(e) {
+        $(document).on('click', '.search-panels .locate-postcode', function(e) {
             e.preventDefault();
             getLocation();
             setTimeout(function() {
@@ -36,15 +36,15 @@ var filter = {
 			filter.count_records();
         });
 
-        $(document).on('click', '.no-number', function() {
+        $(document).on('click', '.search-panels .no-number', function() {
             filter.set_no_number($(this));
             filter.count_records();
         });
-        $(document).on('change', '.sector-select', function() {
+        $(document).on('change', '.search-panels .sector-select', function() {
             filter.load_subsectors($(this).val());
         });
 
-        $(document).on('blur', 'input[type="text"]', function() {
+        $(document).on('blur', '.search-panels input[type="text"]', function() {
             var postcode = $('.filter-form').find('input[name="postcode"]').val();
             //The postcode is evaluated in the current_postcode_input click control
             if (!postcode.length) {
@@ -57,11 +57,11 @@ var filter = {
             filter.check_postcode(postcode);
         });
 
-        $(document).on('click', 'input[type="checkbox"]:not(.all_campaigns_checkbox)', function() {
+        $(document).on('click', '.search-panels input[type="checkbox"]:not(.all_campaigns_checkbox)', function() {
             filter.count_records();
         });
 
-        $(document).on('click', 'input[name="all_campaigns"]', function(e) {
+        $(document).on('click', '.search-panels input[name="all_campaigns"]', function(e) {
             if ($('.edit-parkedcode-form').find('input[name="all_campaigns"]').is(":checked")) {
                 $('.actions_parked_code_campaign').attr('disabled', true).trigger("chosen:updated");
                 $('.actions_parked_code_campaign').val('');

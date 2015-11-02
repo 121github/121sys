@@ -36,6 +36,7 @@
                     <?php foreach ($sms_senders as $row): ?>
                         <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                     <?php endforeach; ?>
+                    <option value="0">Custom Sender</option>
                 </select>
                          <input type="text" placeholder="Eg:[c3]" class="form-control" style="width:15%;display:inline-block" disabled name="custom_sender" id="custom-sender" value="" />             
             </div>

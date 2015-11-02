@@ -36,6 +36,9 @@ class Cron extends CI_Controller
     }
   public function evening_crons()
     {
+		
+		//archive calls older than 6 months
+		$this->Cron_model->archive_old_recordings();
 		//clear the time_logged table ready for tomorrow
 		$this->clear_hours();	
 	}

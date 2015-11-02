@@ -16,7 +16,8 @@ class Migration_update_67 extends CI_Migration
 $check = $this->db->query("SHOW COLUMNS FROM `sms_templates` LIKE 'custom_sender'");
 		if(!$check->num_rows()){
         $this->db->query("ALTER TABLE `sms_templates` ADD `custom_sender` VARCHAR( 25 ) NOT NULL DEFAULT ''");
-		$this->db->query("INSERT ignore INTO `sms_sender` (`sender_id`, `name`) VALUES ('0', 'Automatic');");
+		$this->db->query("INSERT ignore INTO `sms_sender` (`sender_id`, `name`) VALUES ('0', 'Automatic')");
+		$this->db->query("update sms_sender set sender_id = '0' where name='Automatic'");
 		
 		}
 
