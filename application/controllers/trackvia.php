@@ -129,7 +129,8 @@ class Trackvia extends CI_Controller
             "GHS Citywest booked" => 48,
 			"GHS Citywest" => 49,
             "GHS Southway" => 28,
-            "GHS Private" => 41);
+            "GHS Private" => 41,
+			"GHS New Leads" => 55);
         $this->headers = "From: noreply@121system.com" . "\r\n" .
             "CC: steve.prior@globalheatsource.com";
     }
