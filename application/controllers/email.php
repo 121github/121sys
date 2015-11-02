@@ -941,6 +941,12 @@ class Email extends CI_Controller
                     ". The appointment have been booked for " . $contact['general']['fullname'] .
                     " on the address: " . $appointment->address . "</div><br />";
 
+                //Contact telephones
+                $contact_telephones = "";
+                foreach ($contact['telephone'] as $telephone) {
+                    $contact_telephones .= "<tr><td>Contact Telephone (" . $telephone['tel_name'] . "):</td><td>" . $telephone['tel_num'] . "</td></tr>";
+                }
+
                 $appointment_table = "<table>
                         <thead><th><h3>Appointment</h3></th><th><a href='" . base_url() . "records/detail/" . $appointment->urn . "'>#" . $appointment_id . "</a></th>
                         <tbody>
@@ -950,6 +956,7 @@ class Email extends CI_Controller
                             <tr><td>Time:</td><td>" . $start_time . " - " . $end_time . "</td></tr>
                             <tr><td>Contact Name:</td><td>" . $contact['general']['fullname'] . "</td></tr>
                             <tr><td>Contact Email:</td><td>" . $contact['general']['email'] . "</td></tr>
+                            " . $contact_telephones . "
                             <tr><td>Address:</td><td>" . $appointment->address . "</td></tr>
                             <tr><td>Notes:</td><td>" . $appointment->text . "</td></tr>
                             " . ($appointment->branch_id ? "<tr><td>Branch:</td><td>" . ($appointment->branch_name ? $appointment->branch_name : '') . "</td></tr>" : "") . "
@@ -1098,6 +1105,12 @@ class Email extends CI_Controller
                 " with " . $contact['general']['fullname'] .
                 " on the address: " . $appointment->address . "</div><br />";
 
+            //Contact telephones
+            $contact_telephones = "";
+            foreach ($contact['telephone'] as $telephone) {
+                $contact_telephones .= "<tr><td>Contact Telephone (" . $telephone['tel_name'] . "):</td><td>" . $telephone['tel_num'] . "</td></tr>";
+            }
+
             $appointment_table = "<table>
                         <thead><th><h3>Appointment</h3></th><th><a href='".base_url()."records/detail/".$appointment->urn."'>#".$appointment_id."</a></th>
                         <tbody>
@@ -1107,6 +1120,7 @@ class Email extends CI_Controller
                             <tr><td>Time:</td><td>".$start_time." - ".$end_time."</td></tr>
                             <tr><td>Contact Name:</td><td>".$contact['general']['fullname']."</td></tr>
                             <tr><td>Contact Email:</td><td>".$contact['general']['email']."</td></tr>
+                            " . $contact_telephones . "
                             <tr><td>Address:</td><td>".$appointment->address."</td></tr>
                             <tr><td>Notes:</td><td>".$appointment->text."</td></tr>
                             ".($appointment->branch_id?"<tr><td>Branch:</td><td>".($appointment->branch_name?$appointment->branch_name:'')."</td></tr>":"")."
