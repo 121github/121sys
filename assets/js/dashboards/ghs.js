@@ -8,7 +8,7 @@ var ghs = {
         $(document).on('click', '#search-address,#search-reference,#search-telephone', function (e) {
             e.preventDefault();
             var error = "";
-            $.each($(this).closest('form').find('input'), function () {
+            $.each($(this).closest('form').find('input').not('[name="contcat_add1"]'), function () {
                 if ($(this).val() == "") {
                     error = "Please enter the " + $(this).prev('label').text();
                 }
