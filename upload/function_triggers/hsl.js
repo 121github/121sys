@@ -31,7 +31,7 @@ var campaign_functions = {
             }
         });
 
-        campaign_functions.get_branch_info();
+        
         $('#closest-branch').prop('class', 'pointer btn btn-xs btn-success');
 
         $(document).on('click', '#closest-branch', function (e) {
@@ -88,6 +88,8 @@ var campaign_functions = {
             $(this).css("color", "green");
             $('#closest-branch').prop('class', 'pointer btn btn-xs btn-default');
         });
+		setTimeout( campaign_functions.get_branch_info(), 3000 );
+		
     },
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
