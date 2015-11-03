@@ -31,7 +31,6 @@ var campaign_functions = {
             }
         });
 
-        campaign_functions.get_branch_info();
         $('#closest-branch').prop('class', 'pointer btn btn-xs btn-success');
 
         $(document).on('click', '#closest-branch', function (e) {
@@ -88,6 +87,21 @@ var campaign_functions = {
             $(this).css("color", "green");
             $('#closest-branch').prop('class', 'pointer btn btn-xs btn-default');
         });
+
+        //Find closest branches on load
+        var interval = setInterval(function () {
+            campaign_functions.get_branch_info();
+            clearInterval(interval);
+        }, 3000);
+
+        //Find closest branches on new address
+        $(document).on("click", ".save-contact-address", function (e) {
+            var interval = setInterval(function () {
+                campaign_functions.get_branch_info();
+                clearInterval(interval);
+            }, 1000);
+        });
+
     },
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
