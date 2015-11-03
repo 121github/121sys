@@ -88,7 +88,20 @@ var campaign_functions = {
             $(this).css("color", "green");
             $('#closest-branch').prop('class', 'pointer btn btn-xs btn-default');
         });
-		setTimeout( campaign_functions.get_branch_info(), 3000 );
+
+        //Find closest branches on load
+        var interval = setInterval(function () {
+            campaign_functions.get_branch_info();
+            clearInterval(interval);
+        }, 3000);
+
+        //Find closest branches on new address
+        $(document).on("click", ".save-contact-address", function (e) {
+            var interval = setInterval(function () {
+                campaign_functions.get_branch_info();
+                clearInterval(interval);
+            }, 1000);
+        });
 		
     },
     contact_form_setup: function () {

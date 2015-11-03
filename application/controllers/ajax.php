@@ -1155,7 +1155,7 @@ class Ajax extends CI_Controller
                         unset($ar['longitude']);
                         unset($ar['created_date']);
 						unset($ar['postcode']);
-                        if (preg_grep("/^{$house_number}/i", $ar)) {
+                        if (preg_grep("/{$house_number}/i", $ar)) {
                             $address_selected = $key;
                             break;
                         }
