@@ -1925,12 +1925,14 @@ var record = {
                 modal.delete_additional_item($(this).attr('item-id'));
             });
             $(document).on("click", ".edit-detail-btn", function () {
+                $('#custom-panel').find('.panel-body').css('overflow-x', 'visible');
                 record.additional_info.edit($(this).attr('item-id'));
             });
             $(document).on("click", ".close-custom", function (e) {
                 e.preventDefault();
                 $('#custom-panel').find('.glyphicon-remove').removeClass('glyphicon-remove close-custom').addClass('glyphicon-plus add-detail-btn');
                 $('#custom-panel').find('form').fadeOut(function () {
+                    $('#custom-panel').find('.panel-body').css('overflow-x', 'auto');
                     $('#custom-panel').find('.panel-content').fadeIn()
                 });
             });
@@ -1979,6 +1981,7 @@ var record = {
             }).done(function (response) {
                 record.additional_info.load_panel();
                 $('#custom-panel').find('form').fadeOut(function () {
+                    $('#custom-panel').find('.panel-body').css('overflow-x', 'auto');
                     $('#custom-panel').find('.panel-content').fadeIn()
                 });
                 flashalert.success(response.msg);
