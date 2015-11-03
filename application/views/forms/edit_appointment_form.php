@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">
-                <p>Please enter a title for the appoinment <span class='tt glyphicon glyphicon-question-sign'
+                <p>Please enter a title for the appointment <span class='tt glyphicon glyphicon-question-sign'
                                                                  data-toggle="tooltip"
                                                                  data-title="Try to include the company or contact name"></span>
                 </p>
