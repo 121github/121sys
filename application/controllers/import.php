@@ -254,8 +254,8 @@ AND   TABLE_NAME   = 'records'")->row()->urn;
                 $this->db->query("update importcsv set `$field` = str_to_date(`$field`,'%d/%m/%Y %H:%i:%s') where `$field` like '%/%'");
             }
         }
-        
-		        //format phone numebrs - append leading zero
+
+        //format phone numbers - append leading zero
         $fields = $this->db->query("SHOW COLUMNS FROM `importcsv` where `Field` like '%_tel_%' ")->result_array();
         if ($fields > 0) {
             foreach ($fields as $row) {

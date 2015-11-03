@@ -99,7 +99,7 @@
             </ul>
           </div>
           <!-- /btn-group -->
-          <input type="text" class="form-control input-sm" placeholder="Select the numebr type or enter it here"
+            <input type="text" class="form-control input-sm" placeholder="Select the number type or enter it here"
                                    name="description"
                                    value="">
         </div>
