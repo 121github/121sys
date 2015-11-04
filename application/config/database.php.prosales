@@ -81,7 +81,7 @@ $db['121backup']['autoinit'] = TRUE;
 $db['121backup']['stricton'] = FALSE;
 /* End of file database.php */
 
-$db['uk_postcodes']['hostname'] = 'localhost';
+$db['uk_postcodes']['hostname'] = '121system.com';
 $db['uk_postcodes']['username'] = 'uk_postcodes';
 $db['uk_postcodes']['password'] = 'ZwWQKUc4Mjrcx3Z8';
 $db['uk_postcodes']['database'] = 'uk_postcodes';
