@@ -1589,7 +1589,7 @@ class Data extends CI_Controller
     public function save_parkcode()
     {
         if ($this->input->is_ajax_request()) {
-            if (!empty($this->input->post('parked_code'))) {
+            if (($this->input->post('parked_code') != '')) {
                 //Update the parkcode
                 $response = $this->Data_model->update_parkcode($this->input->post());
             } else {

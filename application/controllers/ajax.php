@@ -748,7 +748,7 @@ class Ajax extends CI_Controller
                 echo json_encode(array("success" => false, "msg" => "Please enter a valid postcode"));
                 exit;
             }
-            if ($this->input->post("primary") == "1" || empty($this->input->post("primary"))) {
+            if ($this->input->post("primary") == "1" || ($this->input->post("primary") == '')) {
                 $data['primary'] = "1";
                 $this->db->where("contact_id", $data['contact_id']);
                 $this->db->update("contact_addresses", array(
