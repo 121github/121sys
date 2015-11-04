@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = '121sys_prosales';
-$db['default']['password'] = 'rav7KI1AHeGEge5Aq2k7n5Ti6e848I';
-$db['default']['database'] = '121sys_prosales';
+$db['default']['username'] = 'one2one_prosales';
+$db['default']['password'] = 'ca2fUAYMzh28VJ9Z';
+$db['default']['database'] = 'one2one_prosales';
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
@@ -81,7 +81,7 @@ $db['121backup']['autoinit'] = TRUE;
 $db['121backup']['stricton'] = FALSE;
 /* End of file database.php */
 
-$db['uk_postcodes']['hostname'] = 'localhost';
+$db['uk_postcodes']['hostname'] = '121system.com';
 $db['uk_postcodes']['username'] = 'uk_postcodes';
 $db['uk_postcodes']['password'] = 'ZwWQKUc4Mjrcx3Z8';
 $db['uk_postcodes']['database'] = 'uk_postcodes';
