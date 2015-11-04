@@ -17,22 +17,22 @@
    <span class="glyphicon glyphicon-cog"></span> Options <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" id="record-options">
-   <?php if(!in_array("change color",$_SESSION['permissions'])){ ?>
+   <?php if(in_array("change color",$_SESSION['permissions'])){ ?>
     <li><a href="#" data-tab="color">Change Color</a></li>
       <?php } ?>
-     <?php if(!in_array("change icon",$_SESSION['permissions'])){ ?>
+     <?php if(in_array("change icon",$_SESSION['permissions'])){ ?>
     <li><a href="#" data-tab="icon">Change Icon</a></li>
       <?php } ?>
-     <?php if(!in_array("change source",$_SESSION['permissions'])){ ?>
+     <?php if(in_array("change source",$_SESSION['permissions'])){ ?>
     <li><a href="#" data-tab="source">Change Source</a></li>
       <?php } ?>
-     <?php if(!in_array("change pot",$_SESSION['permissions'])){ ?>
+     <?php if(in_array("change pot",$_SESSION['permissions'])){ ?>
     <li><a href="#" data-tab="pot">Change Pot</a></li>
       <?php } ?>
-     <?php if(!in_array("change campaign",$_SESSION['permissions'])){ ?>
+     <?php if(in_array("change campaign",$_SESSION['permissions'])){ ?>
     <li><a href="#" data-tab="campaign">Change Camapign</a></li>
       <?php } ?>
-    <?php if(!in_array("park records",$_SESSION['permissions'])){ ?>
+    <?php if(in_array("park records",$_SESSION['permissions'])){ ?>
       <li role="separator" class="divider"></li>
     <li><a href="#" data-tab="other">Remove Record</a></li>
     <?php } ?>
