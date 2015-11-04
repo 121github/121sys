@@ -48,16 +48,16 @@ class Ajax extends CI_Controller
 		if(empty($form['source_id'])){
 			unset($form['source_id']);
 		}
-		if(empty($form['pot_id'])){
+		if(empty($form['pot_id'])&&isset($form['pot_id'])){
 			$form['pot_id']=NULL;
 		}
-		if(empty($form['parked_code'])){
+		if(empty($form['parked_code'])&&isset($form['parked_code'])){
 			$form['parked_code']=NULL;
 		}
-		if(empty($form['record_color'])){
+		if(empty($form['record_color'])&&isset($form['record_color'])){
 			$form['record_color']=NULL;
 		}
-		if(empty($form['map_icon'])){
+		if(empty($form['map_icon'])&&isset($form['map_icon'])){
 			$form['map_icon']=NULL;
 		}
 		$this->Records_model->save_record_options($form);
