@@ -348,7 +348,8 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 'plugins/countdown/jquery.countdown.css',
                 'plugins/responsive-calendar/responsive-calendar.css',
                 'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
-                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css',
+				'plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css'
             ),
             'nav' => array(
                 'prev' => $prev,

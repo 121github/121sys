@@ -148,8 +148,9 @@ class Sms extends CI_Controller
                         $template['template_text'] = str_replace("[$key]", $val, $template['template_text']);
                     }
 					if($template['name']=="Automatic"){
-					 if ($template['custom_sender']=="[$key]"){
+					 if ($template['custom_sender']=="$key"||$template['custom_sender']=="[$key]"){
                         $template['name'] = $val;
+						$this->firephp->log($val);
                     }
 					}
                 }
@@ -242,7 +243,7 @@ class Sms extends CI_Controller
         user_auth_check();
         $form = $this->input->post();
 
-        $sender = ($form['template_sender_id']?$form['template_sender']:null);
+        $sender = ($form['template_sender']?$form['template_sender']:null);
         $numbers = $form['sent_to'];
         $message = $form['template_text'];
 
@@ -643,6 +644,13 @@ class Sms extends CI_Controller
         return $this->textlocal->getSenderNames()->default_sender_name;
     }
 
+
+	public function send_from_url(){
+	$numbers = array("+447814401867");
+	$message = "Motion detected!";
+	$sender = "one2One";
+	$this->textlocal->sendSms($numbers, $message, $sender, null, $test, $receiptUrl, $customID);	
+	}
 
     /***********************************************************************************************************/
     /***********************************************************************************************************/

@@ -114,9 +114,8 @@
             </ul>
           </div>
           <!-- /btn-group -->
-            <input type="text" class="form-control input-sm" placeholder="Select the number type or enter it here"
-                                   name="description"
-                                   value="">
+<input type="text" class="form-control input-sm" placeholder="Select the number type or enter it here"
+name="description" value="">
         </div>
         <!-- /input-group --> 
       </div>

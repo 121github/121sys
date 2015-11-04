@@ -36,6 +36,25 @@ class Modals extends CI_Controller
         }
     }
 
+	    public function record_options()
+    {
+        if ($this->input->is_ajax_request()) {
+			$current_options = $this->Modal_model->get_record_options($this->input->post('urn'));
+			$sources = $this->Form_model->get_sources();
+			$pots = $this->Form_model->get_pots();
+			$campaigns = $this->Form_model->get_user_campaigns();
+			$parked_codes = $this->Form_model->get_parked_codes();
+			$options = array();
+			$options["urn"] = $this->input->post('urn');
+			$options["sources"] = $sources;
+			$options["pots"] = $pots;
+			$options["campaigns"] = $campaigns;
+			$options["parked_codes"] = $parked_codes;
+			$options["current"] = $current_options;
+            $this->load->view('forms/record_options.php',$options);
+        }
+    }
+
     public function show_all_email()
     {
         if ($this->input->is_ajax_request()) {

@@ -30,24 +30,27 @@ $recordings = array();
 $recording = array();
 if(count($numbers)>0){
 $number_list = "";
+$number_query = "";
 foreach($numbers as $k =>$number){
 	if(strpos($number['description'],"Transfer")!==false){
 	$transfer_number = 	trim($number['number']);
 	} else {
-	$number_list .= '"'.trim($number['number']).'",';	
+	$number_query .= " replace(servicename,' ','')  like '%".trim($number['number'])."' or";	
+	//$number_list .= '"'.trim($number['number']).'",';	
 	}
 }
 }
 $number_list = rtrim($number_list,",");
+$number_query = rtrim($number_query,",or");
 $db2 = $this->load->database('121backup',true);
 
 if(count($calls)>0){
 foreach($calls as $row){
 $calltime = $row['contact'];
-$qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,owner from calls where  replace(servicename,' ','') in($number_list) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
+$qry .= "select id,servicename,filepath,starttime,endtime,date_format(starttime,'%d/%m/%y %H:%i') calldate,owner from calls where ($number_query) and (endtime between '$calltime' - INTERVAL 10 minute and '$calltime' + INTERVAL 5 minute) and calldate = date('$calltime') group by id union ";
 }
 $qry = rtrim($qry,"union ");
-$this->firephp->log($qry);
+//$this->firephp->log($qry);
 $result = $db2->query($qry);
 $recordings = $result->result_array();
 

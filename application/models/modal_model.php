@@ -9,6 +9,13 @@ class Modal_model extends CI_Model
         parent::__construct();
 
     }
+	public function get_record_options($urn){
+	$this->db->select("record_color,campaigns.map_icon campaign_icon,records.map_icon,park_reason, source_id,pot_id,records.campaign_id,records.parked_code",false);
+	$this->db->join("campaigns","records.campaign_id=campaigns.campaign_id");
+	$this->db->join("park_codes","park_codes.parked_code=records.parked_code","LEFT");
+	$this->db->where("urn",$urn);
+	return $this->db->get("records")->row_array();	
+	}
 	
 	public function table_fields(){
 	$fields = array("campaign_id"=>array("name"=>"Campaign name","remove"=>in_array("mix campaigns",$_SESSION['permissions'])?true:false),

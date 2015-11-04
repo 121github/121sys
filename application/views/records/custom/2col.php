@@ -13,8 +13,35 @@
         <small>
             URN: <?php echo $details['record']['urn'] ?> <?php if(!empty($details['record']['client_ref'])){ ?><span id="client-ref">Ref: <?php echo $details['record']['client_ref'] ?></span><?php } ?> <span class='text-primary'><?php echo(!empty($details['record']['campaign']) ? " [" . $details['record']['campaign'] . "]" : "") ?> <?php echo(!empty($details['record']['pot_name']) ? " [" . $details['record']['pot_name'] . "]" : "") ?></span></small> <?php echo(!empty($details['record']['logo']) ? '<img style="max-height:40px" src="' . base_url() . 'assets/logos/' . $details['record']['logo'] . '" />' : ""); ?>
 
-        <button class="btn btn-default" id="map-icon" style="color:#<?php echo empty($details['record']['color'])?"000":$details['record']['color'] ?>" data-iconset="fontawesome" data-icon="<?php echo $map_icon ?>"
-                role="iconpicker"></button>
+<?php if(in_array("record options",$_SESSION['permissions'])){  ?>
+<div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+   <span class="glyphicon glyphicon-cog"></span> Options <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" id="record-options">
+   <?php if(!in_array("change color",$_SESSION['permissions'])){ ?>
+    <li><a href="#" data-tab="color">Change Color</a></li>
+      <?php } ?>
+     <?php if(!in_array("change icon",$_SESSION['permissions'])){ ?>
+    <li><a href="#" data-tab="icon">Change Icon</a></li>
+      <?php } ?>
+     <?php if(!in_array("change source",$_SESSION['permissions'])){ ?>
+    <li><a href="#" data-tab="source">Change Source</a></li>
+      <?php } ?>
+     <?php if(!in_array("change pot",$_SESSION['permissions'])){ ?>
+    <li><a href="#" data-tab="pot">Change Pot</a></li>
+      <?php } ?>
+     <?php if(!in_array("change campaign",$_SESSION['permissions'])){ ?>
+    <li><a href="#" data-tab="campaign">Change Camapign</a></li>
+      <?php } ?>
+    <?php if(!in_array("park records",$_SESSION['permissions'])){ ?>
+      <li role="separator" class="divider"></li>
+    <li><a href="#" data-tab="other">Remove Record</a></li>
+    <?php } ?>
+  </ul>
+</div>
+<?php } ?>
+
 
       <span class="pull-right">
             <?php //show navigation if the user came from the list records page

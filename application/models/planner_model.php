@@ -147,6 +147,7 @@ class Planner_model extends CI_Model
             $user_id = $_SESSION['user_id'];
         }
         $location_id = $this->get_location_id($postcode);
+		$this->firephp->log($location_id);
         //add the location to the planner table
         $data = array("urn" => $urn, "user_id" => $user_id, "start_date" => $date, "postcode" => $postcode, "location_id" => $location_id, "planner_status" => 1, "planner_type" => $type, "order_num" => $order);
         $this->db->insert("record_planner", $data);
@@ -222,8 +223,9 @@ class Planner_model extends CI_Model
         $postcode_qry = "select id,latitude lat,longitude lng from uk_postcodes.PostcodeIo where postcode = '$postcode'";
         $check_location = $this->db2->query($postcode_qry);
         if ($check_location->num_rows()) {
-            $loc = $check_location->row();
-            $location_id = $loc->id;
+            $loc = $check_location->row_array();
+            $location_id = $loc['id'];
+			  $this->db->query("replace into locations set location_id='$location_id',lat = '{$loc['lat']}',lng = '{$loc['lng']}'");
         } else {
 			$url = "http://it.121system.com/api/postcodeios/".str_replace(" ","",$postcode).".json";
 			   //$url = "http://api.postcodes.io/postcode/".str_replace(" ","",$pc);

@@ -33,10 +33,10 @@ var ghs = {
             if (response.success) {
                 table = "<table class='table table-striped table-condensed'><thead><tr><th>Data</th><th>Contact</th><th>Address</th><th>Postcode</th><th>Last Outcome</th><th>Owner</th></tr></thead>";
                 $.each(response.data, function (i, row) {
-                    results += "<p><span class='text-success'>The record was found!</span>";
                     table += "<tr class='pointer' data-modal='view-record' data-urn='" + row.urn + "'><td>" + row.source_name + "</td><td>" + row.name + "</td><td>" + row.add1 + "</td><td>" + row.postcode + "</td><td>" + row.outcome + "</td><td>" + row.user + "</td></tr>";
                 });
                 table += "</table>";
+				 results += "<p><span class='text-success'>"+response.data.length+" record(s) found!</span>";
             } else {
                 results = "<p class='text-danger'>No record was found, please create a new record and capture all the contact details. If it's a housing association tenant please update the new record with the call outcome <b>Query</b>. If it's a private tenant please complete the data capture form.</p>"
                 results += "<a href='" + helper.baseUrl + "data/add_record' class='btn btn-info'>Create New</a>";

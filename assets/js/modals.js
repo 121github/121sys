@@ -7,13 +7,20 @@ var modals = {
 		$(document).on('click','[data-toggle="tab"]',function(e){
 			$('#company-address-form,#company-phone-form,#contact-address-form,#contact-phone-form').hide();
 			var tab = $(this).attr('href');
-			if(tab=="#tab-planner"||tab=="#phone"){
+			if(tab=="#tab-planner"||tab=="#phone"||tab=="#pot"||tab=="#source"||tab=="#campaign"||tab=="#other"){
 			modal_body.css('overflow','visible');
 			} else {
 			modal_body.css('overflow','auto');	
 			}
 		});
-		
+		$(document).on('click','#record-suppress',function(e){
+			e.preventDefault();
+			modals.suppress_record();
+		});
+		$(document).on('click','#save-record-options',function(e){
+			e.preventDefault();
+			modals.save_record_options();
+		});
 		$(document).on('click','[data-modal="contact-us"]',function(e){
 			  modals.contact_us();
 		});
@@ -55,15 +62,15 @@ var modals = {
             e.preventDefault();
             modals.set_location();
         });
-        $(document).on('click', '.save-planner', function (e) {
+        $(document).on('click', '#save-planner', function (e) {
             e.preventDefault();
             modals.save_planner($(this).attr('data-urn'));
         });
-        $(document).on('click', '.remove-from-planner-confirm', function (e) {
+        $(document).on('click', '#remove-from-planner-confirm', function (e) {
             e.preventDefault();
             modals.confirm_remove_from_planner($(this).attr('data-urn'));
         });
-		$(document).on('click', '.remove-from-planner', function (e) {
+		$(document).on('click', '#remove-from-planner', function (e) {
             e.preventDefault();
             modals.remove_from_planner($(this).attr('data-urn'));
         });
@@ -161,7 +168,6 @@ var modals = {
         $(document).on('click', '.clear-filters-btn', function() {
             modals.clear_filters();
         });
-
         $(document).on('click', '[data-modal="import-appointment-btn"]', function (e) {
             e.preventDefault();
             var clicked_urn = $(this).attr('data-urn');
@@ -169,7 +175,40 @@ var modals = {
                 modals.import_appointments();
             }, 500);
         });
-    },	
+		  $(document).on('change','#map-icon', function(e) {
+                var map_icon = ((e.icon.length > 0 && e.icon != "empty") ? e.icon : '');
+                $('form').find('input[name="map_icon"]').val(map_icon);
+            });
+    },
+	save_record_options:function(){
+		$.ajax({
+            url: helper.baseUrl + 'ajax/save_record_options',
+			data: $('#record-options-form').serialize(),
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+			 modals.record_options();
+			 flashalert.success("Record options saved");
+		}).fail(function(response){
+			 flashalert.danger("An error occured while saving");
+		});
+		
+	},
+	record_options:function(tab){
+		$.ajax({
+            url: helper.baseUrl + 'modals/record_options',
+			data: { urn:record.urn },
+            type: "POST",
+            dataType: "HTML"
+        }).done(function(response) {
+			 var mheader = "Record options";
+			 var mbody = response;
+			 var mfooter = '<button class="btn btn-primary pull-right" id="save-record-options">Save</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left">Cancel</button>';
+			 modals.load_modal(mheader,mbody,mfooter);
+			 modal_body.css('overflow', 'visible');
+			  $('#modal .nav-tabs a[href="#'+tab+'"]').tab('show');
+		});
+	},
 	column_picker:function(table_id){
 		  $.ajax({
             url: helper.baseUrl + 'datatables/get_columns',
@@ -224,7 +263,7 @@ var modals = {
             modals.load_modal(mheader, mbody, mfooter);
             $('[name="source"]').val(urn);
             $('[name="target"]').val(target);
-            modal_body.css('padding', '0').css('overflow', 'visible');
+            modal_body.css('overflow', 'visible');
         });
     },
     start_merge: function () {
@@ -648,10 +687,16 @@ var modals = {
                 handle: ".modal-header,.modal-footer"
             });
         }
-
+		
         modal_body.css('padding', '20px');
         modal_header.html(mheader);
         modal_body.html(mbody);
+		if(modal_body.find('.nav-tabs').length>0){
+		 modal_body.css('padding', '0');
+		} else {
+		 modal_body.css('padding', '20px');	
+		}
+		
         modal_footer.html(mfooter);
         if (!$('#modal').hasClass('in')) {
             modals.show_modal();
@@ -759,7 +804,8 @@ var modals = {
             if (response.success) {
                 flashalert.success(response.msg);
                 $('#modal').find('#planner_status').text('This record is in your journey planner. You can remove or reschedule it below').addClass('text-success');
-                $('#modal').find('.remove-from-planner').show();
+                $('#modal').find('#remove-from-planner').show();
+				$('#modal').find('#save-planner').hide();
             } else {
                 flashalert.danger(response.msg);
             }
@@ -791,7 +837,8 @@ var modals = {
 				planner.populate_table();
 				} else {
                 $('#modal').find('#planner_status').text('This record is not in your journey planner. You can add it below').removeClass('text-success');
-                $('#modal').find('.remove-from-planner').hide();
+                $('#modal').find('#remove-from-planner').hide();
+				$('#modal').find('#save-planner').show();
 				}
             }
         });
@@ -908,21 +955,23 @@ var modals = {
                 planner_form += '<select></div>';
 
                 planner_form += '<div class="form-group relative"><label>Select Date</label><input value="' + data.planner_date + '" class="form-control dateonly" id="planner_date" placeholder="Choose date..." /></div>';
-                planner_form += ' <button class="marl btn btn-info pull-right save-planner" data-urn="' + data.urn + '" href="#">Save to planner</button> ';
             } else {
                 planner_form += '<p class="text-danger">You cannot add this record to the journey planner because it has no address</p>'
             }
-
+				
             mbody += '<div role="tabpanel" class="tab-pane" id="tab-planner">';
             if (data.planner_id) {
                 mbody += '<p id="planner_status" class="text-success">This record is in your journey planner. You can remove or reschedule it below</p>';
                 mbody += planner_form;
-                mbody += ' <button class="btn btn-danger pull-right remove-from-planner" data-urn="' + data.urn + '" href="#">Remove from planner</button> ';
+                mbody += ' <button class="btn btn-danger pull-right" id="remove-from-planner" data-urn="' + data.urn + '" href="#">Remove from planner</button> ';
+				mbody += ' <button class="marl btn btn-info pull-right" style="display:none" id="save-planner" data-urn="' + data.urn + '" href="#">Save to planner</button> ';
             } else {
                 mbody += '<p id="planner_status">This record is not in your journey planner. You can add it below</p>';
                 mbody += planner_form;
-                mbody += ' <button style="display:none" class="btn btn-danger pull-right remove-from-planner" data-urn="' + data.urn + '" href="#">Remove from planner</button> ';
+				mbody += ' <button class="marl btn btn-info pull-right" id="save-planner" data-urn="' + data.urn + '" href="#">Save to planner</button> ';
+                mbody += ' <button style="display:none" class="btn btn-danger pull-right" style="display:none" id="remove-from-planner" data-urn="' + data.urn + '" href="#">Remove from planner</button> ';
             }
+			mbody += '<div class="clearfix"></div>'
 
         }
 
@@ -940,7 +989,6 @@ var modals = {
             mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?zoom=2&saddr=' + getCookie('current_postcode') + '&daddr=' + data.planner_postcode + '">Navigate</a>';
         }
         modals.load_modal(mheader, mbody, mfooter);
-        modal_body.css('padding:0px');
     },
     view_filter_options: function () {
         $.ajax({
@@ -1263,7 +1311,6 @@ var modals = {
 
                 modals.load_modal(mheader, $mbody, mfooter);
                 //dont want padding with tabs
-                modal_body.css('padding', '0px');
                 if (type == "edit") {
                     modals.contacts.load_tabs(id, tab);
                 }
@@ -1626,7 +1673,6 @@ var modals = {
 
                 modals.load_modal(mheader, $mbody, mfooter);
                 //dont want padding with tabs
-                modal_body.css('padding', '0px');
                 if (type == "edit") {
                     modals.companies.load_tabs(id, tab);
                 }

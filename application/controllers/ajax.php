@@ -23,6 +23,49 @@ class Ajax extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 
+	public function suppress_by_urn(){
+		if ($this->input->is_ajax_request()) {
+		$urn = $this->input->post('urn');
+		$numbers = $this->Contacts_model->get_numbers($urn);
+		$campaign = $this->Records_model->get_campaign_from_urn($urn);
+		$reason = "Suppressed by ".$_SESSION['name'];
+		$campaigns = array($campaign);
+		foreach($numbers as $number){
+		$suppression_id = $this->Data_model->insert_suppression($number, $reason);
+		$this->Data_model->save_suppression_by_campaign($suppression_id, $campaigns);
+		}
+		}
+		echo json_encode(array("success"=>true,"post"=>$form));
+	}
+
+	public function save_record_options(){
+		  if ($this->input->is_ajax_request()) {
+		$form = $this->input->post();
+		//checks
+		if(empty($form['campaign_id'])){
+			unset($form['campaign_id']);
+		}
+		if(empty($form['source_id'])){
+			unset($form['source_id']);
+		}
+		if(empty($form['pot_id'])){
+			$form['pot_id']=NULL;
+		}
+		if(empty($form['parked_code'])){
+			$form['parked_code']=NULL;
+		}
+		if(empty($form['record_color'])){
+			$form['record_color']=NULL;
+		}
+		if(empty($form['map_icon'])){
+			$form['map_icon']=NULL;
+		}
+		$this->Records_model->save_record_options($form);
+		echo json_encode(array("success"=>true,"post"=>$form));
+		  }
+		  
+	}
+
 	public function pots_in_campaign(){
 	$campaign = $this->input->post("campaign");	
 	$pots = $this->Form_model->pots_in_campaign($campaign);
