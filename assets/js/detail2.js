@@ -13,6 +13,13 @@ $(document).ajaxStop(function () {
 
 var record = {
     init: function (urn, role, campaign) {
+		$(document).on('click','#record-options li a',function(e){
+			 e.preventDefault();
+			 var tab = $(this).attr('data-tab');
+				modals.record_options(tab);
+			 
+		})
+		
         $(document).on('click', '#update-record', function (e) {
             e.preventDefault();
             if ($('[name="call_direction"]').length > 0 && !$('[name="call_direction"]').is(':checked')) {
@@ -33,7 +40,7 @@ var record = {
             e.preventDefault();
             record.update_panel.reset_record($(this));
         });
-        $(document).on('click', '#unpark-record', function (e) {
+        $(document).on('click', '#unpark-record,#record-unpark', function (e) {
             e.preventDefault();
             record.update_panel.unpark_record($(this));
         });
@@ -156,11 +163,6 @@ var record = {
         this.limit = 6;
         var data = [];
         window.history.pushState(data, "Record Details-" + record.urn, helper.baseUrl + 'records/detail/' + record.urn);
-
-        // Map iconpicker
-        $('#map-icon').on('change', function (e) {
-            record.setIcon(e.icon);
-        });
     },
     start_call: function () {
         $('#defaultCountdown').countdown('destroy');
@@ -861,7 +863,12 @@ var record = {
                                 tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT TPS registerd'></span>";
                             }
 							if(tel.tel_num&&tel.tel_num!=""){
-                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "'>" + tel.tel_num + "</a> " + tps + "</dd>";
+								if(helper.permissions['use timer']>0){
+								var timer = "starttimer";	
+								} else {
+								var timer = "";	
+								}
+                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "'>" + tel.tel_num + "</a> " + tps + "</dd>";
 							}
                     });
 					if(typeof val.transfer!=="undefined"){
@@ -1004,7 +1011,12 @@ var record = {
                                 tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
                             }
 							if(tel.tel_num&&tel.tel_num!=""){
-                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "'>" + tel.tel_num + "</a> " + tps + "</dd>";
+								if(helper.permissions['use timer']>0){
+								var timer = "starttimer";	
+								} else {
+								var timer = "";	
+								}
+                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "'>" + tel.tel_num + "</a> " + tps + "</dd>";
 							}
                     });
 					if(typeof val.transfer!=="undefined"){
@@ -1077,7 +1089,6 @@ var record = {
                 $panel.find('input[name="urn"]').val(urn);
                 record.company_panel.load_search_tabs(id);
                 modals.load_modal(mheader, $panel, mfooter);
-                modal_body.css('padding', '0px');
             });
 
         },
@@ -2354,13 +2365,11 @@ var record = {
                 beforeSend: function () {
                     $btn.next('.player-loading').removeClass("hidden");
                 }
-            }).done(function (response) {
+            }).fail(function(){
+				 flashalert.danger("There was a problem loading the recording");
+			}).done(function (response) {
                 $btn.next('.player-loading').addClass("hidden");
-                if (response.success) {
-                    modal.call_player(response.filename, response.filetype)
-                } else {
-                    flashalert.danger("There was a problem loading the recording");
-                }
+                modal.call_player(response.filename, response.filetype)
             });
         }
     },
@@ -2680,15 +2689,15 @@ var modal = {
             console.log('Finished playing');
         });
 
-        $('#speedplay').click(function () {
+          $(document).on('click','#speedplay',function () {
             wavesurfer.setPlaybackRate(Number($('#audiorate').text()) + 0.2);
             $('#audiorate').text(Number($('#audiorate').text()) + 0.2);
         });
-        $('#slowplay').click(function () {
+         $(document).on('click','#slowplay',function () {
             wavesurfer.setPlaybackRate(Number($('#audiorate').text()) - 0.2);
             $('#audiorate').text(Number($('#audiorate').text()) - 0.2);
         });
-        $('#playpause').click(function () {
+        $(document).on('click','#playpause',function () {
             if ($('#playpause i').hasClass('glyphicon-pause')) {
                 $('#playpause').html('<i class="glyphicon glyphicon-play"></i> Play');
                 wavesurfer.pause();

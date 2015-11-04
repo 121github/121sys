@@ -168,8 +168,6 @@ class Cron extends CI_Controller
             array_push($exports[$export_user['export_forms_id']]['users'], $export_user);
         }
 		
-		print_r($exports);
-		exit;
         foreach ($exports as $export) {
             $export_form = $export['export_form'];
 
@@ -784,7 +782,7 @@ $new_telephone_number = "0".ltrim($new_telephone_number,'44');
 
         $this->email->from('no-reply@121system.com');
         $this->email->to($email_address);
-        $this->email->bcc("bradf@121customerinsight.co.uk");
+        $this->email->bcc("bradf@121customerinsight.co.uk,nicolab@121customerinsight.co.uk");
         $this->email->subject($subject);
         $this->email->message($body);
 

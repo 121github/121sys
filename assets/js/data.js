@@ -2125,7 +2125,6 @@ var suppression = {
 
     save_suppression: function() {
         $(".save-suppression-btn").attr('disabled','disabled');
-
         var all_campaigns = ($('#suppression-form').find('input[name="all_campaigns"]').is(":checked")?1:0);
         var suppression_campaigns = $('.suppression_campaign_select').val();
         var telephone_number = $('#suppression-form').find('input[name="telephone_number"]').val();

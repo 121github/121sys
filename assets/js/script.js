@@ -3,20 +3,21 @@
 var script = {
     //initalize the group specific buttons 
     init: function() {
-    	$(document).on('click', '.add-btn', function() {
+    	$('#scripts-panel').on('click', '.add-btn', function() {
         	script.create();
         });
-        $(document).on('click', '.save-btn', function(e) {
+        $('#scripts-panel').on('click', '.save-btn', function(e) {
             e.preventDefault();
             script.save($(this));
         });
-        $(document).on('click', '.edit-btn', function() {
+        $('#script-data').on('click', '.edit-btn', function(e) {
+			e.preventDefault();
         	script.edit($(this));
         });
-        $(document).on('click', '.del-btn', function() {
+        $('#script-data').on('click', '.del-btn', function() {
             modal.delete_script($(this).attr('item-id'));
         });
-        $(document).on('click', '.close-btn', function(e) {
+        $('#scripts-panel').on('click', '.close-btn', function(e) {
         	e.preventDefault();
         	script.cancel();
         });
@@ -30,7 +31,7 @@ var script = {
             type: "POST",
             dataType: "JSON"
         }).done(function(response) {
-            $tbody = $('.script-data .ajax-table').find('tbody');
+            $tbody = $('#script-data .ajax-table').find('tbody');
             $tbody.empty();
             $.each(response.data, function(i, val) {
                 if (response.data.length) {
@@ -82,8 +83,8 @@ var script = {
             type: 'POST',
             dataType: "JSON",
             data: data,
-            success: function(data){
-                    $('.selectpicker').selectpicker('val',data["data"]).selectpicker('render');
+            success: function(response){
+                    $('#scripts-panel .selectpicker').selectpicker('val',response["data"]).selectpicker('refresh');
        
             },
             error: function(jqXHR, textStatus, errorThrown) {
