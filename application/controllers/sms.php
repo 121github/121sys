@@ -248,14 +248,13 @@ class Sms extends CI_Controller
         $numbers = $form['sent_to'];
         $message = $form['template_text'];
 
-        //TODO Activate when textLocal fix the BUG
         //Check if the sender selected exist
-//        if (!$this->check_sender_name($sender)) {
-//			 echo json_encode(array(
-//                "data" => array("status" => "error", "msg" => "The selected sender name has not been configuired correctly")
-//            ));
-//			exit;
-//		}
+        if (!$this->check_sender_name($sender)) {
+            echo json_encode(array(
+                "data" => array("status" => "error", "msg" => "The selected sender name has not been configuired correctly")
+            ));
+            exit;
+        }
         //Check if the message is empty
         if (strlen(trim($message)) <= 0) {
             echo json_encode(array(
