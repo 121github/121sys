@@ -135,6 +135,10 @@
                                                     <a
                                                         href="<?php echo base_url() ?>admin/campaign_permissions">Campaign Permissions
                                                         </a></li>
+                                                         <li <?php echo @($page == 'campaign_groups' ? "class='Selected'" : "") ?>>
+                                                    <a
+                                                        href="<?php echo base_url() ?>admin/campaign_groups">Campaign Groups
+                                                        </a></li>
                                                         
                                                             <li <?php echo @($page == 'copy_campaign' ? "class='Selected'" : "") ?>>
                                                     <a href="<?php echo base_url() ?>admin/copy_campaign">Clone Campaign</a></li>

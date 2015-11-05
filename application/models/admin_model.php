@@ -8,6 +8,52 @@ class Admin_model extends CI_Model
         parent::__construct();
     }
 	
+		public function delete_campaign_group($id){
+		$this->db->where("campaign_group_id",$id);
+		$this->db->delete("campaign_groups");	
+		}
+	
+		public function get_campaign_group($id){
+		$this->db->where("campaign_group_id",$id);	
+		return $this->db->get("campaign_groups")->row_array();
+		}
+		
+		public function set_campaign_group_ids($id,$campaigns){
+		foreach($campaigns as $campaign_id){
+		$this->db->where("campaign_id",$campaign_id);
+		$this->db->update("campaigns",array("campaign_group_id"=>$id));
+		}
+		}
+		
+		public function save_campaign_group($form){
+		if(empty($form['campaign_group_id'])){
+		$this->db->insert("campaign_groups",$form);
+		$id = $this->db->insert_id();	
+		} else {
+		$id = $form['campaign_group_id'];
+		$this->db->where("campaign_group_id",$id);		
+		$this->db->update("campaign_groups",$form);	
+		}
+		return $id;
+		}
+	
+	public function campaigns_in_campaign_group($id){
+	$campaigns = array();
+	$this->db->where("campaign_group_id",$id);	
+	foreach($this->db->get("campaigns")->result_array() as $row){
+		$campaigns[] = $row['campaign_id'];
+	}
+	return $campaigns;
+	}
+	
+	public function get_campaign_groups(){
+	$this->db->select("campaign_groups.campaign_group_id id,campaign_group_name name, if(`count` is null,'0',`count`) `count`",false);
+	$this->db->join("(select campaign_group_id,count(*) count from campaigns group by campaign_group_id) b","b.campaign_group_id=campaign_groups.campaign_group_id","LEFT",FALSE);
+	$this->db->group_by("campaign_groups.campaign_group_id");
+	$data =  $this->db->get("campaign_groups")->result_array();
+	return $data;
+	}
+	
 	public function clone_campaign($new_name,$id,$tables=array()){
 		//check it doesnt exist
 		$this->db->where("campaign_name",$new_name);

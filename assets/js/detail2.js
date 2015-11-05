@@ -17,7 +17,6 @@ var record = {
 			 e.preventDefault();
 			 var tab = $(this).attr('data-tab');
 				modals.record_options(tab);
-			 
 		})
 		
         $(document).on('click', '#update-record', function (e) {

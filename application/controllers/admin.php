@@ -17,7 +17,12 @@ class Admin extends CI_Controller
         $this->load->model('User_model');
         $this->load->model('File_model');
     }
-
+public function delete_campaign_group(){
+	 check_page_permissions('campaign setup');
+	 $this->Admin_model->delete_campaign_group($this->input->post('id'));
+	 echo json_encode(array("success"=>true));
+	
+}
 	
 	public function copy_campaign(){
 			 check_page_permissions('campaign setup');
@@ -67,6 +72,48 @@ class Admin extends CI_Controller
         }
         echo json_encode(array("users" => $user_array));
     }
+
+	public function get_campaign_groups(){
+		$campaign_groups = $this->Admin_model->get_campaign_groups();	
+		echo json_encode(array("success"=>true,"data"=>$campaign_groups));
+	}
+	
+	public function campaign_group_details(){
+		 check_page_permissions('campaign setup');
+		$id = $this->input->post('id');
+		$campaign_group = $this->Admin_model->get_campaign_group($id);
+		$campaign_group['campaigns'] = $this->Admin_model->campaigns_in_campaign_group($id);	
+		echo json_encode(array("success"=>true,"data"=>$campaign_group));
+	}
+	public function save_campaign_group(){
+		 check_page_permissions('campaign setup');
+	$form = $this->input->post();	
+	$campaigns = $form['campaigns'];
+	unset($form['campaigns']);
+	$id = $this->Admin_model->save_campaign_group($form);
+	$this->Admin_model->set_campaign_group_ids($id,$campaigns);
+	echo json_encode(array("success"=>true,"id"=>$id));
+		
+	}
+	public function campaign_groups(){
+        check_page_permissions('campaign setup');
+		$campaigns = $this->Form_model->get_campaigns();
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin',
+            'page' => 'campaign_groups',
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'admin/campaign_groups.js'
+            ),
+			'campaigns'=>$campaigns
+
+        );
+        $this->template->load('default', 'admin/campaign_groups.php', $data);
+	}
 
     public function get_folder_write_users()
     {
