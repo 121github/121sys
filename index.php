@@ -26,9 +26,15 @@ if(strpos($_SERVER['REQUEST_URI'],"121sys/121sys")!==false){
 }
 
 $no_https = array("accept.", "demo.", "test.");
+
 $full_url = explode('121system.com', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 $domain = explode("/",$full_url[0]);
 $domain = $domain[0];
+
+$ukfast_url = explode('one2one.leadcontrol.co.uk', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+$domain_ukfast = explode("/", $ukfast_url[0]);
+$domain_ukfast = $domain_ukfast[0];
+
 $theme = "default";
 $timeout = 1800; //30min timeout
 //if the site has no certificate but they are trying to use https then we redirect to the non-https url
@@ -101,9 +107,16 @@ switch ($domain) {
         $session_name = '121sys_prosales';
         break;
     default:
-        define('ENVIRONMENT', 'development');
-        $session_name = '121sys_dev';
-        break;
+        switch ($domain_ukfast) {
+            case 'prosales.':
+                define('ENVIRONMENT', 'production');
+                $session_name = '121sys_prosales_ukfast';
+                break;
+            default:
+                define('ENVIRONMENT', 'development');
+                $session_name = '121sys_dev';
+                break;
+        }
 }
 
 //sets the expirey time of the cookie
