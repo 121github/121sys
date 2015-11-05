@@ -109,7 +109,7 @@ class Cron extends CI_Controller
     {
         $this->Cron_model->update_address_tables();
         $this->Cron_model->update_location_ids();
-		$this->Cron_model->update_location_from_api();
+        $this->Cron_model->update_locations_from_api();
         $this->Cron_model->update_locations_with_google();
         echo json_encode(array(
             "success" => true
