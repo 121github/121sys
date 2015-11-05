@@ -37,7 +37,15 @@ class Ajax extends CI_Controller
 		}
 		echo json_encode(array("success"=>true,"post"=>$form));
 	}
-
+	
+	public function get_campaigns()
+    {
+        $campaigns = $this->Form_model->get_campaigns();
+        echo json_encode(array(
+            "data" => $campaigns
+        ));
+    }
+	
 	public function save_record_options(){
 		  if ($this->input->is_ajax_request()) {
 		$form = $this->input->post();

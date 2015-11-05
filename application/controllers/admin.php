@@ -597,6 +597,54 @@ class Admin extends CI_Controller
         $this->template->load('default', 'admin/roles.php', $data);
     }
 
+		public function save_campaign_permissions(){
+			$form = $this->input->post();
+			$campaign = $this->input->post("campaign_id");
+			$permissions = array();
+			unset($form['campaign']);
+			foreach($form['permission'] as $id => $val){
+				if($val=="1"){
+					$permissions[] = array("permission_id"=>$id,"permission_state"=>"1");
+				} else if ($val=="0"){
+					$permissions[] = array("permission_id"=>$id,"permission_state"=>"0");
+				}
+			}
+			if($this->Admin_model->save_campaign_permissions($campaign,$permissions)){
+			echo json_encode(array("success"=>true));	
+			}
+			
+		}
+
+	    public function campaign_permissions()
+    {
+        check_page_permissions('campaign setup');
+        $campaigns = $this->Form_model->get_campaigns();
+        $permissions_data = $this->Admin_model->get_permissions();
+        foreach ($permissions_data as $row) {
+            $permissions[$row['permission_group']][$row['permission_id']] = $row['permission_name'];
+        }
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'Admin',
+            'title' => 'Admin',
+            'page' => 'campaign_permissions'
+        ,
+            'javascript' => array(
+                'admin/campaign_permissions.js?v' . $this->project_version,
+				'plugins/bootstrap-checkbox-x-master/js/checkbox-x.min.js'
+            ),
+            'campaigns' => $campaigns,
+            'permissions' => $permissions,
+            'css' => array(
+                'dashboard.css',
+				'plugins/bootstrap-checkbox-x-master/css/checkbox-x.min.css'
+            )
+        );
+        $this->template->load('default', 'admin/campaign_permissions.php', $data);
+    }
+
+
     public function get_roles()
     {
         $roles = $this->Form_model->get_roles();
@@ -609,6 +657,15 @@ class Admin extends CI_Controller
     {
         $id = $this->input->post('id');
         $result = $this->Admin_model->role_permissions($id);
+        echo json_encode(array(
+            "data" => $result
+        ));
+    }
+	
+	    public function get_campaign_permissions()
+    {
+        $id = $this->input->post('id');
+        $result = $this->Admin_model->campaign_permissions($id);
         echo json_encode(array(
             "data" => $result
         ));

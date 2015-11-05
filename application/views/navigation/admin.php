@@ -131,6 +131,11 @@
                                                     <a
                                                         href="<?php echo base_url() ?>admin/campaigns">Campaign
                                                         Setup</a></li>
+                                                        <li <?php echo @($page == 'campaign_permissions' ? "class='Selected'" : "") ?>>
+                                                    <a
+                                                        href="<?php echo base_url() ?>admin/campaign_permissions">Campaign Permissions
+                                                        </a></li>
+                                                        
                                                             <li <?php echo @($page == 'copy_campaign' ? "class='Selected'" : "") ?>>
                                                     <a href="<?php echo base_url() ?>admin/copy_campaign">Clone Campaign</a></li>
                                                 <li <?php echo @($page == 'custom_fields' ? "class='Selected'" : "") ?>>

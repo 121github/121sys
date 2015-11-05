@@ -343,6 +343,17 @@ class Admin_model extends CI_Model
         $this->db->where("user_id", $id);
         return $this->db->delete("users");
     }
+	
+	public function save_campaign_permissions($campaign,$permissions){
+		$this->db->where("campaign_id",$campaign);
+		$this->db->delete("campaign_permissions");
+		foreach($permissions as $permission){
+				$permission['campaign_id'] = $campaign;
+				$this->db->insert("campaign_permissions",$permission);
+		}
+		return true;
+	}
+	
     //functions for roles page
     public function get_roles()
     {
@@ -365,6 +376,11 @@ class Admin_model extends CI_Model
     {
         $this->db->where("role_id", $id);
         return $this->db->get("role_permissions")->result_array();
+    }
+	  public function campaign_permissions($id)
+    {
+        $this->db->where("campaign_id", $id);
+        return $this->db->get("campaign_permissions")->result_array();
     }
     public function update_role($form)
     {

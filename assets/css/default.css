@@ -3,7 +3,7 @@
 .panel-heading .pull-right button {
 margin-top:2px !important;	
 }
-.list-group-item div { width:100% } 
+/*.list-group-item div { width:100% } */
 
 @-moz-document url-prefix() {
   fieldset { display: table-cell; }
