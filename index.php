@@ -32,8 +32,8 @@ $domain = explode("/",$full_url[0]);
 $domain = $domain[0];
 
 $ukfast_url = explode('one2one.leadcontrol.co.uk', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-$domain_ukfast = explode("/", $full_url[0]);
-$domain_ukfast = $domain[0];
+$domain_ukfast = explode("/", $ukfast_url[0]);
+$domain_ukfast = $domain_ukfast[0];
 
 $theme = "default";
 $timeout = 1800; //30min timeout
