@@ -1,7 +1,13 @@
 <?php
+
 $full_url = explode('121system.com', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 $domain = explode("/",$full_url[0]);
 $domain = $domain[0];
+
+$ukfast_url = explode('one2one.leadcontrol.co.uk', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+$domain_ukfast = explode("/", $full_url[0]);
+$domain_ukfast = $domain[0];
+
 switch ($domain) {
 	case 'www.':
 		define('ENVIRONMENT', 'production');
@@ -54,9 +60,16 @@ switch ($domain) {
 		break;
 
 	default:
-		define('ENVIRONMENT', 'development');
-		$session_name = '121sys_dev';
-		break;
+        switch ($domain_ukfast) {
+            case 'prosales.':
+                define('ENVIRONMENT', 'production');
+                $session_name = '121sys_prosales_ukfast';
+                break;
+            default:
+                define('ENVIRONMENT', 'development');
+                $session_name = '121sys_dev';
+                break;
+        }
 }
 
 session_name($session_name);
