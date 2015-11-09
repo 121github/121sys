@@ -12,6 +12,7 @@
 !/datafiles/uploadprogress.txt
 /upload/attachments/*
 /upload/templates/*
+!/flexi_cart/*
 
 
 # Files created by IDEs like Eclipse, Zend Studio, Netbeans, PHPStorm and TextMate2, Intellij
