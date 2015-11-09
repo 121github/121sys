@@ -1,6 +1,6 @@
-application/config/*
+/application/config/*
 !application/config/migration.php
-application/config/database.php
+/application/config/database.php
 !application/config/database.php.*
 */logs/log-*.php
 */logs/!index.html
