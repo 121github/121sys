@@ -184,6 +184,9 @@
 		<?php if(in_array(18,$features)){ ?>
         record.tasks.init();
         <?php } ?>
+		<?php if(in_array(19,$features)){ ?>
+        record.order_panel.init(); 
+        <?php } ?>
     });
 </script>
 <?php endif; ?>

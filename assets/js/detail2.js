@@ -1805,6 +1805,38 @@ var record = {
             });
         }
     },
+	//orders panel
+	order_panel:{
+	init:function(){
+		 $(document).on('click', '#create-order', function (e) {
+            e.preventDefault();
+            window.location.href=helper.baseUrl+'flexi_cart/lite_library/orders';
+        });
+		record.order_panel.load_panel()
+	},
+	load_panel:function(){
+		  $.ajax({
+                url: helper.baseUrl + 'orders/get_orders',
+                type: "POST",
+                data: {urn: record.urn},
+                dataType: "JSON"
+            }).done(function (response) {
+				if(response.data.length>0){
+					var contents = "<table class='table table-striped table-hover'><thead><tr><th>Order number</th><th>Order date</th><th>Order total (&pound;)</th><th>Status</th></tr></thead><tbody>";
+					$.each(response.data,function(k,row){
+					contents += "<tr class='pointer'><td>"+row.ord_order_number+"</td><td>"+row.order_date+"</td><td>"+row.ord_total+"</td><td>"+row.ord_status_description+"</td></tr>";
+					});
+						contents += "</tbody></table>";
+				} else {
+					var contents ="No orders were found";
+				}
+			$('#orders-panel .panel-content').html(contents);
+            }).fail(function(){
+				flashalert.danger("There was an error");
+			});
+		
+	}
+	},
     //surveys panel functions
     surveys_panel: {
         init: function () {

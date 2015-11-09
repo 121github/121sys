@@ -1,4 +1,5 @@
 application/config/*
+flexi_cart/*
 !application/config/migration.php
 application/config/database.php
 !application/config/database.php.*
