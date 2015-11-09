@@ -39,8 +39,8 @@ class Standard_library extends CI_Controller {
 		$this->load->library('flexi_cart');	
 
 		// Note: This is only included to create base urls for purposes of this demo only and are not necessarily considered as 'Best practice'.
-		$this->load->vars('base_url', 'http://localhost/121sys/flexi_cart/');
-		$this->load->vars('includes_dir', 'http://localhost/121sys/flexi_cart/includes/');
+		$this->load->vars('base_url', 'http://pro.121system.com/flexi_cart/');
+		$this->load->vars('includes_dir', 'http://pro.121system.com/flexi_cart/includes/');
 		$this->load->vars('current_url', $this->uri->uri_to_assoc(1));
 		
 		// Load cart data to be displayed via 'Mini Cart' menu.

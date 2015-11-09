@@ -308,6 +308,7 @@ if (is_dir($application_folder)) {
  * And away we go...
  *
  */
+
 require_once BASEPATH . 'core/CodeIgniter.php';
 
 /* End of file index.php */
