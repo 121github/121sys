@@ -1,5 +1,0 @@
-[18-Aug-2014 16:24:17 Europe/London] PHP Fatal error:  Call to undefined method Dashboard_model::get_users() in /home/devtest/public_html/121sys/application/controllers/dashboard.php on line 598
-[18-Aug-2014 16:27:42 Europe/London] PHP Fatal error:  Call to undefined method Dashboard_model::get_users() in /home/devtest/public_html/121sys/application/controllers/dashboard.php on line 598
-[20-Aug-2014 15:30:37 Europe/London] PHP Fatal error:  Call to undefined method Dashboard_model::get_users() in /home/devtest/public_html/121sys/application/controllers/dashboard.php on line 598
-[27-Aug-2014 11:14:23 Europe/London] PHP Fatal error:  Using $this when not in object context in /home/devtest/public_html/121sys/application/helpers/authentication_helper.php on line 14
-[27-Aug-2014 11:14:51 Europe/London] PHP Fatal error:  Using $this when not in object context in /home/devtest/public_html/121sys/application/helpers/authentication_helper.php on line 14
