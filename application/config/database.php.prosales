@@ -96,4 +96,21 @@ $db['uk_postcodes']['dbcollat'] = 'latin1_swedish_ci';
 $db['uk_postcodes']['swap_pre'] = '';
 $db['uk_postcodes']['autoinit'] = TRUE;
 $db['uk_postcodes']['stricton'] = FALSE;
+
+
+$db['flexicart']['hostname'] = 'localhost';
+$db['flexicart']['username'] = 'bradf';
+$db['flexicart']['password'] = 'brad123';
+$db['flexicart']['database'] = 'flexicart';
+$db['flexicart']['dbdriver'] = 'mysqli';
+$db['flexicart']['dbprefix'] = '';
+$db['flexicart']['pconnect'] = FALSE;
+$db['flexicart']['db_debug'] = TRUE;
+$db['flexicart']['cache_on'] = FALSE;
+$db['flexicart']['cachedir'] = '';
+//$db['121backup']['char_set'] = 'UTF-8';
+$db['flexicart']['dbcollat'] = 'latin1_swedish_ci';
+$db['flexicart']['swap_pre'] = '';
+$db['flexicart']['autoinit'] = TRUE;
+$db['flexicart']['stricton'] = FALSE;
 /* Location: ./application/config/database.php */
