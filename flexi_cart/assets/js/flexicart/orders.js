@@ -140,7 +140,7 @@ var orders = {
 			if(row.quantity>0){
 			 quantity += "<span class='glyphicon glyphicon-ok'></span> "+row.quantity+" added to cart";
 			}
-			contents += '<tr><td>'+row.item_name+'</td><td>'+row.item_price+'</td><td><input type="text" id="ex'+row.item_id+'_qty" name="quantity" value="1" style="width:70px; display:inline" class="width_50 input-sm validate_integer form-control"/><button class="add-item-btn btn btn-default btn-sm marl ">Add to cart</button></td><td><input type="hidden" name="item_id" value="'+row.item_id+'"/><input type="hidden" name="name" value="'+row.item_name+'"/><input type="hidden" name="price" value="18.25"/><span class="pull-left item-status text-success" id="status_'+row.item_id+'" style="width:200px">'+quantity+'</td></td></tr>'
+			contents += '<tr><td>'+row.item_name+'</td><td>'+row.item_price+'</td><td><input type="text" id="ex'+row.item_id+'_qty" name="quantity" value="1" style="width:70px; display:inline" class="width_50 input-sm validate_integer form-control"/><button class="add-item-btn btn btn-default btn-sm marl ">Add to cart</button></td><td><input type="hidden" name="item_id" value="'+row.item_id+'"/><input type="hidden" name="name" value="'+row.item_name+'"/><input type="hidden" name="price" value="'+row.item_price+'"/><span class="pull-left item-status text-success" id="status_'+row.item_id+'" style="width:200px">'+quantity+'</td></td></tr>'
 		});
 		contents += '</tbody></table>'
 		$('#confirm-order').prop('disabled',false);		
