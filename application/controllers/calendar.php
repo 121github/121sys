@@ -1,0 +1,356 @@
+<?php
+//require('upload.php');
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Calendar extends CI_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        user_auth_check(false);
+        check_page_permissions('full calendar');
+        $this->_campaigns = campaign_access_dropdown();
+        $this->project_version = $this->config->item('project_version');
+
+        $this->load->model('Calendar_model');
+        $this->load->model('Form_model');
+        $this->load->model('Appointments_model');
+    }
+
+    public function get_calendar_users()
+    {
+        if ($this->input->post('campaigns')) {
+            $campaigns = $this->input->post('campaigns');
+        } else {
+            $campaigns = array();
+        }
+        $users = $this->Form_model->get_calendar_users($campaigns);
+        echo json_encode(array("success" => true, "data" => $users));
+    }
+
+    //this loads the data management view
+    public function index()
+    {
+        if (!isset($_SESSION['calendar-filter'])) {
+            $_SESSION['calendar-filter']['distance'] = 1500;
+            if (isset($_COOKIE['current_postcode'])) {
+                $_SESSION['calendar-filter']['postcode'] = $_COOKIE['current_postcode'];
+            }
+        }
+
+        $users = array();
+        if (in_array("mix campaigns", $_SESSION['permissions'])) {
+            $campaigns = $this->Form_model->get_calendar_campaigns();
+            $users = isset($_SESSION['current_campaign']) ? $this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])) : "";
+            $disable_campaign_filter = false;
+        }
+        if (!in_array("mix campaigns", $_SESSION['permissions'])) {
+            $users = isset($_SESSION['current_campaign']) ? $this->Form_model->get_calendar_users(array($_SESSION['current_campaign'])) : "";
+            $campaigns = $this->Form_model->get_calendar_campaigns();
+            $disable_campaign_filter = true;
+        }
+        if ($disable_campaign_filter && !isset($_SESSION['current_campaign'])) {
+            redirect('error/calendar');
+        }
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'title' => 'Dashboard | Calendar',
+            'page' => 'data',
+            'javascript' => array(
+                'lib/underscore.js',
+                'plugins/calendar/js/calendar.js',
+                'calendar.js?v' . $this->project_version,
+                'location.js?v' . $this->project_version,
+                'plugins/jqfileupload/jquery.fileupload.js',
+                'plugins/jqfileupload/jquery.fileupload-process.js',
+                'plugins/jqfileupload/jquery.fileupload-validate.js'
+            ),
+            'disable_campaign' => $disable_campaign_filter,
+            'date' => date('Y-m-d'),
+            'campaigns' => $campaigns,
+            'users' => $users,
+            'css' => array(
+                'calendar.css',
+                'plugins/jqfileupload/jquery.fileupload.css'
+            )
+        );
+        $this->template->load('default', 'calendar/view.php', $data);
+    }
+
+    public function get_demo()
+    {
+        echo '{
+    "success": 1,
+    "result": [
+        {
+            "id": 293,
+            "title": "Event 1",
+            "url": "http://example.com",
+            "class": "event-important",
+            "start": 1415724392424,
+            "end": 1415724399424
+        }
+    ]
+}';
+
+
+    }
+
+    public function suggested_slots()
+    {
+        /* not using this its not complete
+        $postcode = $this->input->post('postcode');
+        if($this->input->post('urn')){
+        $postcode = $this->Calendar_model->get_postcode_from_urn($this->input->post('urn'));
+        }
+        $postcode = postcodeCheckFormat($postcode);
+        if($postcode==NULL){
+        $postcode = (isset($_SESSION['postcode'])?$_SESSION['postcode']:"");
+        }
+        */
+    }
+
+
+    public function get_events()
+    {
+        $postcode = $this->input->post('postcode');
+        if ($this->input->post('urn') && !$this->input->post('postcode')) {
+            $postcode = $this->Calendar_model->get_postcode_from_urn($this->input->post('urn'));
+        }
+        if (isset($_POST['startDate'])) {
+            $start = !empty($_POST['startDate']) ? date('Y-m-d h:i:s', ($_POST['startDate'] / 1000)) : date('Y-m-d h:i:s');
+            $end = !empty($_POST['endDate']) ? date('Y-m-d h:i:s', ($_POST['endDate'] / 1000)) : date('2040-m-d h:i:s');
+        } else {
+            $start = "";
+            $end = "";
+        }
+        if (isset($_POST['users'])) {
+            $users = $_POST['users'];
+        } else {
+            $users = (isset($_SESSION['calendar-filter']['users']) ? $_SESSION['calendar-filter']['users'] : "");
+        }
+
+        if (!empty($postcode) && !empty($_POST['distance'])) {
+            $postcode = postcodeCheckFormat($postcode);
+            if ($postcode == NULL && !empty($_POST['distance'])) {
+                echo json_encode(array("error" => "Postcode", "msg" => "Postcode is not valid"));
+                exit;
+            }
+        }
+        if (!empty($_POST['distance'])) {
+            $distance = $_POST['distance'];
+        } else {
+            $distance = (isset($_SESSION['calendar-filter']['distance']) ? $_SESSION['calendar-filter']['distance'] : "1500");
+        }
+        if (isset($_POST['campaigns'])) {
+            $campaigns = $_POST['campaigns'];
+        } else {
+            $campaigns = (isset($_SESSION['calendar-filter']['campaigns']) ? $_SESSION['calendar-filter']['campaigns'] : "");
+        }
+
+        $options = array("start" => $start, "end" => $end, "users" => $users, "campaigns" => $campaigns, "postcode" => $postcode, "distance" => $distance);
+        $_SESSION['calendar-filter'] = $options;
+        $result = array();
+        if (isset($_POST['modal'])) {
+            $options['modal'] = "list";
+        }
+        $events = $this->Calendar_model->get_events($options);
+        if (isset($_POST['modal'])) {
+            foreach ($events as $k => $row) {
+                $date = date('Y-m-d', strtotime($row['start']));
+                $result[$date]['dayEvents'][] = array("postcode" => $row['postcode'], "title" => $row['title'], 'endtime' => date('g:i a', strtotime($row['end'])), 'starttime' => date('g:i a', strtotime($row['start'])), 'distance' => isset($row['distance']) ? number_format($row['distance'], 1) : "", "attendees" => $row['attendeelist']);
+                $result[$date]['number'] = (isset($result[$date]['number']) ? $result[$date]['number'] + 1 : 1);
+            }
+
+        } else {
+            foreach ($events as $row) {
+                $result[] = array(
+                    'id' => $row['appointment_id'],
+                    'title' => $row['title'],
+                    'text' => (!empty($row['text']) ? $row['text'] : ""),
+                    'url' => base_url() . 'records/detail/' . $row['urn'],
+                    'class' => 'event-important',
+                    'postcode' => $row['postcode'],
+                    'distance_hover' => (isset($row['distance']) && !empty($row['distance']) ? "<br><span style='color:#7FFF00'>" . number_format($row['distance'], 2) . " Miles</span>" : ""),
+                    'distance' => (isset($row['distance']) && !empty($row['distance']) ? number_format($row['distance'], 1) . " Miles" : ""),
+                    'start' => strtotime($row['start']) . '000',
+                    'end' => strtotime($row['end']) . '000',
+                    'endtime' => date('g:i a', strtotime($row['end'])),
+                    'campaign' => $row['campaign_name'],
+                    'company' => (!empty($row['company']) ? "<br>Company: " . $row['company'] : ""),
+                    'contact' => (!empty($row['contact']) ? "<br>Contact: " . $row['contact'] : ""),
+                    'urn' => $row['urn'],
+                    'starttime' => date('g:i a', strtotime($row['start'])),
+                    'attendees' => (isset($row['attendeelist']) ? $row['attendeelist'] : "<span class='red'>No Attendee!</span>"),
+                    'status' => (!empty($row['status']) ? "<br>Status: <span class='red'>" . $row['status'] . "</span>" : ""),
+                    'statusinline' => (!empty($row['status']) ? "<span class='red'>" . $row['status'] . "</span>" : ""),
+                    'color' => $row['color'],
+                    'startDate' => date('d/m/Y', strtotime($row['start'])),
+                    'endDate' => date('d/m/Y', strtotime($row['end'])),
+                );
+            }
+        }
+
+        echo json_encode(array('success' => 1, 'result' => $result, 'postcode' => $postcode, 'date' => date('Y-m')));
+        exit;
+
+    }
+
+    /**
+     * Add new appointment rule
+     */
+    public function add_appointment_rule()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $form['block_day'] = to_mysql_datetime($form['block_day']);
+            $form['block_day_end'] = to_mysql_datetime($form['block_day_end']);
+
+            $days_diff = (strtotime($form['block_day_end']) - strtotime($form['block_day'])) / (60 * 60 * 24);
+            unset($form['block_day_end']);
+            $block_day_start = $form['block_day'];
+
+            if (isset($form['appointment_slot_id']) and $form['appointment_slot_id'] == '') {
+                $form['appointment_slot_id'] = NULL;
+            }
+
+            $rules_to_add = array();
+            for ($i = 0; $i <= $days_diff; $i++) {
+                $block_day = date("Y-m-d", strtotime($block_day_start . "+ " . $i . " days"));
+                $form['block_day'] = $block_day;
+
+                //Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
+                if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'], $form['appointment_slot_id'])) {
+                    echo json_encode(array(
+                        "success" => false,
+                        "msg" => "ERROR: The attendee has at least one appointment scheduled on the day selected. Reschedule the appointment and block the day after that."
+                    ));
+                    exit(0);
+                } else {
+                    //Check if already exist a rule for that day
+                    $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date_and_user($form['block_day'], $form['user_id']);
+                    foreach ($appointment_rules as $appointment_rule) {
+                        //If appointment_slot is set
+                        if ($form['appointment_slot_id']) {
+                            //If all day is already set, delete it to insert the new one with a slot
+                            if (!$appointment_rule['appointment_slot_id']) {
+                                $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
+                            } //If is the same appointment_slot, delete it to insert the new one on the same slot
+                            else if ($form['appointment_slot_id'] == $appointment_rule['appointment_slot_id']) {
+                                $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
+                            }
+                        } //If all day is set, delete all that are already set for this day to insert the new one for the whole day
+                        else {
+                            $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
+                        }
+                    }
+
+                    array_push($rules_to_add, $form);
+                }
+            }
+
+            if (!empty($rules_to_add)) {
+                //Add the appointment rules got
+                foreach ($rules_to_add as $rule) {
+                    $results = $this->Calendar_model->add_appointment_rule($rule);
+                }
+                echo json_encode(array(
+                    "success" => (!empty($results)),
+                    "msg" => (!empty($results)) ? "Appointment Rules added successfully" : "ERROR: Appointment Rules NOT added successfully!"
+                ));
+            }
+        }
+    }
+
+    /**
+     * Delete an appointment rule
+     */
+    public function delete_appointment_rule()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            $results = $this->Calendar_model->delete_appointment_rule($form['appointment_rules_id']);
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "msg" => (!empty($results)) ? "Appointment Rules removed successfully" : "ERROR: Appointment Rules NOT removed successfully!"
+            ));
+        }
+    }
+
+    /**
+     * Get appointment rules
+     */
+    public function get_appointment_rules()
+    {
+        if ($this->input->is_ajax_request()) {
+            $appointment_rules = $this->Calendar_model->get_appointment_rules();
+            $aux = array();
+            foreach ($appointment_rules as $rule) {
+                if (!isset($aux[$rule['block_day']])) {
+                    $aux[$rule['block_day']] = array();
+                }
+                array_push($aux[$rule['block_day']], $rule);
+            }
+            $appointment_rules = $aux;
+
+            echo json_encode(array(
+                "success" => (!empty($appointment_rules)),
+                "data" => $appointment_rules
+            ));
+        }
+
+    }
+
+    /**
+     * Get appointment rules by date
+     */
+    public function get_appointment_rules_by_date()
+    {
+        if ($this->input->is_ajax_request()) {
+            $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date(to_mysql_datetime($this->input->post('date')));
+
+            echo json_encode(array(
+                "success" => (!empty($appointment_rules)),
+                "data" => $appointment_rules
+            ));
+        }
+
+    }
+
+    /**
+     * Get appointment rule reasons
+     */
+    public function get_appointment_rule_reasons()
+    {
+        if ($this->input->is_ajax_request()) {
+            $appointment_rule_reasons = $this->Form_model->get_appointment_rule_reasons();
+
+            echo json_encode(array(
+                "data" => $appointment_rule_reasons
+            ));
+        }
+
+    }
+
+    /**
+     * Get appointment slots
+     */
+    public function get_appointment_slots()
+    {
+        if ($this->input->is_ajax_request()) {
+            $get_appointment_slots = $this->Form_model->get_appointment_slots();
+
+            echo json_encode(array(
+                "data" => $get_appointment_slots
+            ));
+        }
+
+    }
+
+}
+
+?>

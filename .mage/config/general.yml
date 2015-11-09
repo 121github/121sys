@@ -1,0 +1,7 @@
+# global settings
+name: 121SYS
+email: estebanc@121customerinsight.co.uk
+notifications: true
+logging: true
+maxlogs: 30
+ssh_needs_tty: false

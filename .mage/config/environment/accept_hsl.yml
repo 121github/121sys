@@ -1,0 +1,25 @@
+#accept
+deployment:
+  user: samba
+  from: /var/lib/jenkins/jobs/121Sys/workspace/
+  to: /var/www/accept_env
+  excludes:
+    - upload
+    - application/logs
+releases:
+  enabled: true
+  max: 4
+  symlink: 121sys_hsl
+  directory: releases/121sys_releases/121sys_hsl
+hosts:
+    - 10.10.1.13
+tasks:
+  pre-deploy:
+  on-deploy:
+    - uploadFolder
+    - logFolder
+    - prepareAcceptHslDeployment
+    - permissionsGroup
+  post-release:
+    - databaseBackup: {user: 121sys_accep_hsl, pass: WWHYHwATpUeUpM7L, host: localhost, database: 121sys_accep_hsl}
+  post-deploy:
