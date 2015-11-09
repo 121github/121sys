@@ -1,0 +1,119 @@
+/* CSS Document */
+
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 750px;
+    overflow: hidden;
+    margin-top: -20px;
+}
+
+.map-wrapper > i {
+    display: block;
+    position: absolute;
+}
+
+.map-wrapper > i.top {
+    top: 0;
+    border-top: 5px solid rgba(0, 0, 0, 0.15);
+}
+
+.map-wrapper > i.top:after {
+    top: -10px;
+    border-top: 5px solid white;
+}
+
+.map-wrapper > i.right {
+    right: 0;
+    border-right: 5px solid rgba(0, 0, 0, 0.15);
+}
+
+.map-wrapper > i.right:after {
+    right: -10px;
+    border-right: 5px solid white;
+}
+
+.map-wrapper > i.bottom {
+    bottom: 0;
+    border-bottom: 5px solid rgba(0, 0, 0, 0.15);
+}
+
+.map-wrapper > i.bottom:after {
+    bottom: -10px;
+    border-bottom: 5px solid white;
+}
+
+.map-wrapper > i.left {
+    left: 0;
+    border-left: 5px solid rgba(0, 0, 0, 0.15);
+}
+
+.map-wrapper > i.left:after {
+    left: -10px;
+    border-left: 5px solid white;
+}
+
+.map-wrapper > i.top:not(.right):not(.left), .map-wrapper > i.bottom:not(.right):not(.left) {
+    height: 5px;
+    left: 15px;
+    right: 15px;
+}
+
+.map-wrapper > i.left:not(.top):not(.bottom), .map-wrapper > i.right:not(.top):not(.bottom) {
+    width: 5px;
+    top: 15px;
+    bottom: 15px;
+}
+
+.map-wrapper > i.top.right, .map-wrapper > i.top.left, .map-wrapper > i.bottom.right, .map-wrapper > i.bottom.left {
+    width: 10px;
+    height: 10px;
+}
+
+.map-wrapper > i.top.right:after, .map-wrapper > i.top.left:after, .map-wrapper > i.bottom.right:after, .map-wrapper > i.bottom.left:after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+}
+
+.map-wrapper > i.top.right {
+    border-top-right-radius: 10px;
+}
+
+.map-wrapper > i.top.right:after {
+    border-top-right-radius: 15px;
+}
+
+.map-wrapper > i.top.left {
+    border-top-left-radius: 10px;
+}
+
+.map-wrapper > i.top.left:after {
+    border-top-left-radius: 15px;
+}
+
+.map-wrapper > i.bottom.right {
+    border-bottom-right-radius: 10px;
+}
+
+.map-wrapper > i.bottom.right:after {
+    border-bottom-right-radius: 15px;
+}
+
+.map-wrapper > i.bottom.left {
+    border-bottom-left-radius: 10px;
+}
+
+.map-wrapper > i.bottom.left:after {
+    border-bottom-left-radius: 15px;
+}
+
+#map-canvas {
+    width: inherit;
+    height: inherit;
+}
+
+#map-canvas .gmnoprint {
+    /*display: none;*/
+}

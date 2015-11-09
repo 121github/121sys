@@ -1824,7 +1824,7 @@ var record = {
 				if(response.data.length>0){
 					var contents = "<table class='table table-striped table-hover'><thead><tr><th>Order number</th><th>Order date</th><th>Order total (&pound;)</th><th>Status</th></tr></thead><tbody>";
 					$.each(response.data,function(k,row){
-					contents += "<tr class='pointer'><td>"+row.ord_order_number+"</td><td>"+row.order_date+"</td><td>"+row.ord_total+"</td><td>"+row.ord_status_description+"</td></tr>";
+					contents += "<tr onclick='alert(\"This is a demo system. The live system will show the order details\")' class='pointer'><td>"+row.ord_order_number+"</td><td>"+row.order_date+"</td><td>"+row.ord_total+"</td><td>"+row.ord_status_description+"</td></tr>";
 					});
 						contents += "</tbody></table>";
 				} else {
