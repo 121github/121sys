@@ -1,4 +1,4 @@
-application/config/*
+
 !application/config/migration.php
 application/config/database.php
 !application/config/database.php.*
