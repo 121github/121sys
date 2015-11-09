@@ -1,1 +1,0 @@
-<li><a href="<?php echo base_url() ?>files/manager" >File manager</a></li>
