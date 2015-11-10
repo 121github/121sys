@@ -41,6 +41,9 @@
 $route['default_controller'] = "dashboard/user_dash";
 $route['search'] = "search/search_form";
 $route['dashboard'] = "dashboard/user_dash";
+$route['lite_shop/(:any)'] = "flexicart_lite/$1";
+$route['shop/(:any)'] = "flexicart_standard/$1";
+$route['admin_shop/(:any)'] = "flexicart_admin/$1";
 $route['data'] = "data";
 $route['404_override'] = '';
 

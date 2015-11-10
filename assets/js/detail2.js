@@ -1810,7 +1810,7 @@ var record = {
 	init:function(){
 		 $(document).on('click', '#create-order', function (e) {
             e.preventDefault();
-            window.location.href=helper.baseUrl+'flexi_cart/lite_library/orders';
+            window.location.href=helper.baseUrl+'lite_shop/orders';
         });
 		record.order_panel.load_panel()
 	},

@@ -18,8 +18,7 @@ class Orders extends CI_Controller
 		$urn = $this->input->post('urn');
 		
 		//now get the orders
-		$this->db = $this->load->database('flexicart', TRUE); 
-		$qry = "select ord_order_number,date_format(ord_date,'%d/%m/%Y') order_date,ord_total,ord_status_description from order_summary join order_status on ord_status = ord_status_id where urn='$urn'";
+		$qry = "select ord_order_number,date_format(ord_date,'%d/%m/%Y') order_date,ord_total,ord_status_description from flexicart_order_summary join flexicart_order_status on ord_status = ord_status_id where urn='$urn'";
 		$data = $this->db->query($qry)->result_array();
 		echo json_encode(array("success"=>true,"data"=>$data));
 	}
