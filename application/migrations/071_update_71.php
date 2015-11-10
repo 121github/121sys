@@ -21,7 +21,7 @@ $this->db->query("CREATE TABLE IF NOT EXISTS  `ci_sessions` (
 	last_activity int(10) unsigned DEFAULT 0 NOT NULL,
 	user_data text NOT NULL,
 	PRIMARY KEY (session_id),
-	KEY `last_activity_idx` (`last_activity`)");
+	KEY `last_activity_idx` (`last_activity`))");
 
 $this->db->query("CREATE TABLE IF NOT EXISTS `flexicart_cart_config` (
   `config_id` tinyint(1) NOT NULL AUTO_INCREMENT,

@@ -84,8 +84,7 @@ class CI_Session {
 		// Are we using a database?  If so, load it
 		if ($this->sess_use_database === TRUE AND $this->sess_table_name != '')
 		{
-			//$this->CI->load->database();
-			$this->CI->load->database('flexicart', TRUE);
+			$this->CI->load->database();
 		}
 
 		// Set the "now" time.  Can either be GMT or server time, based on the
