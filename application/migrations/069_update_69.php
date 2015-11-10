@@ -16,10 +16,6 @@ class Migration_update_69 extends CI_Migration
 
 $this->db->query("update`campaigns` set campaign_group_id = null");
 
-$this->db->query("ALTER TABLE `campaigns` DROP FOREIGN KEY `campaigns_ibfk_1`");
-
- $this->db->query("ALTER TABLE `campaigns` ADD CONSTRAINT `campaigns_ibfk_1` FOREIGN KEY (`campaign_group_id`) REFERENCES `campaign_groups`(`campaign_group_id`) ON DELETE SET NULL ON UPDATE CASCADE");
-
 	}
 	
 }

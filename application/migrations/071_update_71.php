@@ -144,9 +144,9 @@ $this->db->query("CREATE TABLE IF NOT EXISTS `flexicart_discounts` (
 
 
 $this->db->query("INSERT IGNORE INTO `flexicart_discounts` (`disc_id`, `disc_type_fk`, `disc_method_fk`, `disc_tax_method_fk`, `disc_user_acc_fk`, `disc_item_fk`, `disc_group_fk`, `disc_location_fk`, `disc_zone_fk`, `disc_code`, `disc_description`, `disc_quantity_required`, `disc_quantity_discounted`, `disc_value_required`, `disc_value_discounted`, `disc_recursive`, `disc_non_combinable_discount`, `disc_void_reward_points`, `disc_force_ship_discount`, `disc_custom_status_1`, `disc_custom_status_2`, `disc_custom_status_3`, `disc_usage_limit`, `disc_valid_date`, `disc_expire_date`, `disc_status`, `disc_order_by`) VALUES
-(1, 1, 11, 1, 0, 0, 0, 1, 0, 'FREE-UK-SHIPPING', 'Discount Code "FREE-UK-SHIPPING" - Free UK shipping.', 0, 0, 0.00, 0.00, 0, 0, 1, 1, '', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
-(2, 2, 12, 1, 0, 0, 0, 0, 0, '10-PERCENT', 'Discount Code "10-PERCENT" - 10% off grand total.', 0, 0, 0.00, 10.00, 0, 0, 0, 0, '', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
-(3, 2, 13, 1, 0, 0, 0, 0, 0, '10-FIXED-RATE', 'Discount Code "10-FIXED-RATE" - &pound;10 off grand total.', 0, 0, 0.00, 10.00, 0, 0, 0, 0, '', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
+(1, 1, 11, 1, 0, 0, 0, 1, 0, 'FREE-UK-SHIPPING', 'Discount Code \"FREE-UK-SHIPPING\" - Free UK shipping.', 0, 0, 0.00, 0.00, 0, 0, 1, 1, '', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
+(2, 2, 12, 1, 0, 0, 0, 0, 0, '10-PERCENT', 'Discount Code \"10-PERCENT\" - 10% off grand total.', 0, 0, 0.00, 10.00, 0, 0, 0, 0, '', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
+(3, 2, 13, 1, 0, 0, 0, 0, 0, '10-FIXED-RATE', 'Discount Code \"10-FIXED-RATE\" - &pound;10 off grand total.', 0, 0, 0.00, 10.00, 0, 0, 0, 0, '', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
 (4, 2, 13, 1, 0, 0, 0, 0, 0, '', 'Discount Summary, Spend over &pound;1,000, get &pound;100 off.', 1, 1, 1000.00, 100.00, 0, 0, 0, 0, '', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
 (5, 2, 11, 1, 0, 0, 0, 0, 0, '', 'Discount Summary, Spend over &pound;500, get free worldwide shipping.', 0, 0, 500.00, 0.00, 0, 0, 0, 1, '', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
 (6, 2, 12, 1, 0, 0, 0, 0, 0, '', 'Discount Summary, Logged in users get 5% off total.', 0, 0, 0.00, 5.00, 0, 0, 0, 0, '1', '', '', 9999, '2015-11-04 11:56:09', '2016-01-06 11:56:09', 1, 1),
