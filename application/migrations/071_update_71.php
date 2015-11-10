@@ -720,10 +720,6 @@ $this->db->query("CREATE TABLE IF NOT EXISTS `flexicart_tax_item_rates` (
 
 $this->db->query("INSERT IGNORE INTO `flexicart_tax_item_rates` (`tax_item_id`, `tax_item_item_fk`, `tax_item_location_fk`, `tax_item_zone_fk`, `tax_item_rate`, `tax_item_status`) VALUES
 (1, 110, 0, 0, 0.0000, 1)");
-
-$this->db->query("ALTER TABLE `flexicart_item_subcategories`
-  ADD CONSTRAINT `item_subcategories_ibfk_1` FOREIGN KEY (`item_category_id`) REFERENCES `item_categories` (`item_category_id`) ON DELETE CASCADE ON UPDATE CASCADE");
-
 		
 	}
 	
