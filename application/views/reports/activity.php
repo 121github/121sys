@@ -15,8 +15,12 @@
             	  <input type="hidden" name="date_from" value="<?php echo date('Y-m-d') ?>">
                   <input type="hidden" name="date_to" value="<?php echo date('Y-m-d') ?>">
                   <input type="hidden" name="campaign">
+                   <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
                   <input type="hidden" name="team">
+                  <?php } ?>
+                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <input type="hidden" name="agent">
+                  <?php } ?>
                   <input type="hidden" name="source">
 			      <input type="hidden" name="colname">
 			      

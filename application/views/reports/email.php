@@ -16,8 +16,12 @@
 <input type="hidden" name="date_to" value="<?php echo date('Y-m-d') ?>">
                   <input type="hidden" name="template">
                   <input type="hidden" name="campaign">
+                  <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
                   <input type="hidden" name="team">
+                  <?php } ?>
+                  <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
                    <input type="hidden" name="agent">
+                   <?php } ?>
                   <input type="hidden" name="source">
                   <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "Today"; ?> </span></button></div>
                   <div class="btn-group">
