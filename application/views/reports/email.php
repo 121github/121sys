@@ -19,7 +19,7 @@
                   <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
                   <input type="hidden" name="team">
                   <?php } ?>
-                  <?php if(in_array("by team",$_SESSION['permissions'])){ ?>
+                  <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                    <input type="hidden" name="agent">
                    <?php } ?>
                   <input type="hidden" name="source">
