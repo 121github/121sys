@@ -7,8 +7,20 @@ $(document).ready(function () {
 
 var outcome = {
     init: function () {
+        outcome.current_campaign();
+        $('nav#filter-right').mmenu({
+            navbar: {
+                title: "Filters <span class='text-primary current-campaign'></span>"
+            },
+            extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
+            offCanvas: {
+                position: "right",
+                zposition: "front"
+            }
+        });
+
         $('.daterange').daterangepicker({
-                opens: "left",
+                opens: "right",
                 ranges: {
                     'Today': [moment(), moment()],
                     'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
@@ -28,60 +40,56 @@ var outcome = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                outcome.outcome_panel()
+                //outcome.outcome_panel();
             });
+
+        //optgroup
+        $('li.dropdown-header').on('click', function (e) {
+            setTimeout(function () {
+                outcome.get_outcomes_filter();
+            }, 500);
+        });
+
+        $(document).on("click", '#filter-submit', function (e) {
+            e.preventDefault();
+            outcome.outcome_panel();
+            $('#filter-right').data("mmenu").close();
+        });
+
         $(document).on("click", '.daterange', function (e) {
             e.preventDefault();
         });
 
-        $(document).on("click", ".campaign-filter", function (e) {
+        $(document).on("change", ".campaign-filter", function (e) {
             e.preventDefault();
-            $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            outcome.outcome_panel()
+            //Get outcomes by campaigns selected
+            outcome.get_outcomes_filter();
         });
-        $(document).on("click", ".outcome-filter", function (e) {
+
+        $(document).on("click", ".refresh-data", function (e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').siblings('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="outcome"]').val($(this).attr('id'));
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            outcome.outcome_panel()
+            outcome.outcome_panel();
         });
-        $(document).on("click", ".agent-filter", function (e) {
+
+        $(document).on("click", ".clear-filters", function (e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
-            $(this).closest('form').find('input[name="team"]').val('');
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            outcome.outcome_panel()
+            location.reload();
         });
-        $(document).on("click", ".team-filter", function (e) {
-            e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
-            $(this).closest('form').find('input[name="agent"]').val('');
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            outcome.outcome_panel()
-        });
-        $(document).on("click", ".source-filter", function (e) {
-            e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            outcome.outcome_panel()
-        });
+
         outcome.outcome_panel()
+    },
+    current_campaign: function () {
+        var current_campaign = '';
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_current_campaign',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            if (response.success) {
+                current_campaign = response.current_campaign;
+            }
+            $('.current-campaign').html(current_campaign);
+        });
     },
     outcome_panel: function (outcome) {
         $.ajax({
@@ -151,6 +159,89 @@ var outcome = {
                     .append("<tr><td colspan='6'>"
                     + response.msg
                     + "</td></tr>");
+            }
+
+            //Filters
+            var filters = "";
+
+            filters += "<span class='btn btn-default btn-xs clear-filters pull-right'>" +
+                "<span class='glyphicon glyphicon-remove' style='padding-left:3px; color:black;'></span> Clear" +
+                "</span>";
+
+            //Date
+            filters += "<h5><strong>Date </strong></h5>" +
+                "<ul>" +
+                "<li style='list-style-type:none'>" + $(".filter-form").find("input[name='date_from']").val() + "</li>" +
+                "<li style='list-style-type:none'>" + $(".filter-form").find("input[name='date_to']").val() + "</li>" +
+                "</ul>";
+
+            //Campaigns
+            var size = ($('.campaign-filter  option:selected').size() > 0 ? "(" + $('.campaign-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Campaigns</strong> " + size + "</h5><ul>";
+            $('.campaign-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+            //Outcomes
+            var size = ($('.outcome-filter  option:selected').size() > 0 ? "(" + $('.outcome-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Outcomes</strong> " + size + "</h5><ul>";
+            $('.outcome-filter option:selected').each(function (index) {
+                var color = "black";
+                if ($(this).parent().attr('label') === 'positive') {
+                    color = "green";
+                }
+                filters += "<li style='list-style-type:none'><span style='color: " + color + "'>" + $(this).text() + "</span></li>";
+            });
+            filters += "</ul>";
+
+            //Teams
+            var size = ($('.team-filter  option:selected').size() > 0 ? "(" + $('.team-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Teams</strong> " + size + "</h5><ul>";
+            $('.team-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+
+            //Agents
+            var size = ($('.agent-filter  option:selected').size() > 0 ? "(" + $('.agent-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Agents</strong> " + size + "</h5><ul>";
+            $('.agent-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+
+            //Sources
+            var size = ($('.source-filter  option:selected').size() > 0 ? "(" + $('.source-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Sources</strong> " + size + "</h5><ul>";
+            $('.source-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+            $('#filters').html(filters);
+        });
+    },
+    get_outcomes_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_outcomes_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_outcomes, function (type, data) {
+                    options += "<optgroup label=" + type + ">";
+                    $.each(data, function (i, val) {
+                        var selected = ((type === "positive") ? "Selected" : "");
+                        options += "<option value=" + val.id + " " + selected + ">" + val.name + "</option>";
+                    });
+                    options += "</optgroup>";
+                });
+                $('#outcome-filter').html(options).selectpicker('refresh');
             }
         });
     }

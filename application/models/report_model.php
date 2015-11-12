@@ -164,16 +164,17 @@ class Report_model extends CI_Model
             $hours = "hr.`campaign_id` = h.campaign_id";
         }
 
-        $outcome_id = $options['outcome'];
+        $outcome_ids = isset($options['outcomes']) ? $options['outcomes'] : array();
         $date_from = $options['date_from'];
-        $agent = $options['agent'];
+        $agents = isset($options['agents']) ? $options['agents'] : array();
         $date_to = $options['date_to'];
-        $campaign = $options['campaign'];
-        $team_manager = $options['team'];
-        $source = $options['source'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $team_managers = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
         $hours_where = "";
         $where = "";
         $crosswhere = "";
+        $outcomes_where = "";
         if (!empty($date_from)) {
             $where .= " and date(contact) >= '$date_from' ";
             $hours_where .= " and hr.date >= '$date_from' ";
@@ -182,21 +183,26 @@ class Report_model extends CI_Model
             $where .= " and date(contact) <= '$date_to' ";
             $hours_where .= " and hr.date <= '$date_to' ";
         }
-        if (!empty($campaign)) {
-            $where .= " and h.outcome_id <> 71 and h.campaign_id = '$campaign' ";
-            $crosswhere .= " and ct.campaign_id = '$campaign' ";
-            $hours_where .= " and hr.campaign_id = '$campaign' ";
+        if (!empty($campaigns)) {
+            $where .= " and h.outcome_id NOT IN (71) and h.campaign_id IN (" . implode(",", $campaigns) . ") ";
+            $crosswhere .= " and ct.campaign_id IN (" . implode(",", $campaigns) . ") ";
+            $hours_where .= " and hr.campaign_id IN (" . implode(",", $campaigns) . ") ";
         }
-        if (!empty($team_manager)) {
-            $where .= " and h.team_id = '$team_manager' ";
+        if (!empty($outcome_ids)) {
+            $outcomes_where .= " where h.outcome_id IN (" . implode(",", $outcome_ids) . ") ";
+        } else {
+            $outcomes_where = "where 1 ";
         }
-        if (!empty($agent)) {
-            $where .= " and h.user_id = '$agent' ";
-            $hours_where .= " and hr.user_id = '$agent' ";
-            $name = "u.name";
+        if (!empty($team_managers)) {
+            $where .= " and h.team_id IN (" . implode(",", $team_managers) . ") ";
         }
-        if (!empty($source)) {
-            $where .= " and r.source_id = '$source' ";
+        if (!empty($agents)) {
+            $where .= " and h.user_id IN (" . implode(",", $agents) . ") ";
+            $hours_where .= " and hr.user_id IN (" . implode(",", $agents) . ") ";
+            //$name = "u.name";
+        }
+        if (!empty($sources)) {
+            $where .= " and r.source_id IN (" . implode(",", $sources) . ") ";
         }
         $where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $joins = " left join users u using(user_id) left join records r using(urn) " . $joins;
@@ -208,7 +214,7 @@ class Report_model extends CI_Model
                     (select sum(hr.duration) from hours hr where $hours $hours_where) as duration
                 from history h
                 left join campaigns c using(campaign_id)  $joins
-                left join (select count(*) outcome_count,$group_by gb from history h $joins where h.outcome_id = $outcome_id $where group by $group_by) oc on oc.gb = $group_by
+                left join (select count(*) outcome_count,$group_by gb from history h $joins $outcomes_where $where group by $group_by) oc on oc.gb = $group_by
                 left join (select count(*) dials,$group_by dd from history h $joins where h.outcome_id is not null $where group by $group_by) d on d.dd = $group_by
         where 1 $where
 		group by $group_by ";

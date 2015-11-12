@@ -14,7 +14,7 @@
                                         <a href="<?php echo base_url() ?>reports/realtime">Realtime</a>
                                     </li>-->
                                 <li>
-                                    <a href="#reports-outcomes">Outcomes</a>
+                                    <a href="#reports-outcomes">Campaign Performance</a>
                                     <ul id="reports-outcomes">
                                         <li <?php echo @($page == 'outcome_report_campaign' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>reports/outcomes/campaign/1">By

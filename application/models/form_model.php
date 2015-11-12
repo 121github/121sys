@@ -187,6 +187,13 @@ class Form_model extends CI_Model
         $qry = "select campaign_id id,campaign_name name from campaigns where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 group by campaign_id order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
+
+    public function get_user_campaigns_ordered_by_group()
+    {
+        $qry = "select campaign_id id,campaign_name name, IF(campaign_group_name IS NOT NULL,campaign_group_name,'_OTHERS') group_name from campaigns left join campaign_groups using (campaign_group_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 group by campaign_id order by group_name, campaign_name";
+
+        return $this->db->query($qry)->result_array();
+    }
     
     public function get_user_email_campaigns()
     {
@@ -267,6 +274,18 @@ class Form_model extends CI_Model
         $qry = "select outcome_id id,outcome name from outcomes left join outcomes_to_campaigns using(outcome_id) where campaign_id in({$_SESSION['campaign_access']['list']}) group by outcome_id order by outcome ";
         return $this->db->query($qry)->result_array();
     }
+
+    public function get_outcomes_by_campaign_list($campaign_list)
+    {
+        $where = " campaign_id in({$_SESSION['campaign_access']['list']})";
+        if (isset($campaign_list) && !empty($campaign_list)) {
+            $where = " campaign_id IN (" . implode(",", $campaign_list) . ") ";
+        }
+        $qry = "select outcome_id id,outcome name, positive from outcomes left join outcomes_to_campaigns using(outcome_id) where " . $where . " group by outcome_id order by outcome ";
+
+        return $this->db->query($qry)->result_array();
+    }
+
 	   public function get_outcome_reasons($campaign_id,$outcome)
     {
         $qry = "select outcome_reason_id id,outcome_reason name from outcome_reasons join outcome_reason_campaigns using(outcome_reason_id) where outcome_id = '$outcome' and campaign_id = '$campaign_id' and campaign_id in({$_SESSION['campaign_access']['list']}) order by outcome_reason ";

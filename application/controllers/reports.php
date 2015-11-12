@@ -254,11 +254,38 @@ class Reports extends CI_Controller
         } else {
             $outcome_id = "70";
         }
+
         $campaigns = $this->Form_model->get_user_campaigns();
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
         $agents = $this->Form_model->get_agents();
         $outcomes = $this->Form_model->get_outcomes();
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -275,7 +302,9 @@ class Reports extends CI_Controller
             'group' => $group,
             'outcome_id' => $outcome_id,
             'outcomes' => $outcomes,
+            'campaign_outcomes' => $campaign_outcomes,
             'campaigns' => $campaigns,
+            'campaigns_by_group' => $campaigns_by_group,
             'sources' => $sources,
             'team_managers' => $teamManagers,
             'agents' => $agents,
@@ -285,6 +314,37 @@ class Reports extends CI_Controller
             )
         );
         $this->template->load('default', 'reports/outcomes.php', $data);
+    }
+
+    /**
+     * Get the outcomes for the filter by campaign list
+     */
+    public function get_outcomes_filter()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $campaigns = (isset($form['campaigns']) ? $form['campaigns'] : array());
+
+            $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($campaigns);
+
+            $aux = array(
+                "positive" => array(),
+                "No_positive" => array(),
+            );
+            foreach ($campaign_outcomes as $outcome) {
+                if ($outcome['positive']) {
+                    array_push($aux['positive'], $outcome);
+                } else {
+                    array_push($aux['No_positive'], $outcome);
+                }
+            }
+            $campaign_outcomes = $aux;
+
+            echo json_encode(array(
+                "success" => true,
+                "campaign_outcomes" => $campaign_outcomes
+            ));
+        }
     }
 
     //this controller sends the campaign appointment report data back the page in JSON format. It ran when the page loads and any time the filter is changed
@@ -298,19 +358,25 @@ class Reports extends CI_Controller
             $form["date_to"] = ($this->input->post("date_to")) ? $this->input->post("date_to") : date('Y-m-d');
             $results = $this->Report_model->get_outcome_data($form);
 
-            $date_from_search = $form["date_from"];
-            $date_to_search = $form["date_to"];
-            $agent_search = $form["agent"];
-            $campaign_search = $form["campaign"];
-            $team_search = $form["team"];
-            $source_search = $form["source"];
-            $outcome_id = $form["outcome"];
+//            $date_from_search = $form["date_from"];
+//            $date_to_search = $form["date_to"];
+//            $agent_search = $form["agents"];
+//            $campaign_search = $form["campaigns"];
+//            $team_search = $form["teams"];
+//            $source_search = $form["sources"];
+            $outcome_ids = isset($form["outcomes"]) ? $form["outcomes"] : array();
             $group = $form["group"];
 
-            $this->db->where("outcome_id", $outcome_id);
-            $query = $this->db->get("outcomes");
-            if ($query->num_rows() > 0) {
-                $outcome = $query->row()->outcome;
+
+            $outcome = "Outcomes";
+            if (!empty($outcome_ids)) {
+                $this->db->where_in("outcome_id", $outcome_ids);
+                $query = $this->db->get("outcomes");
+                if ($query->num_rows() > 0) {
+                    if ($query->num_rows() < 2) {
+                        $outcome = $query->row()->outcome;
+                    }
+                }
             }
 
 
@@ -332,12 +398,12 @@ class Reports extends CI_Controller
             $totalDials = 0;
             $totalDuration = 0;
             $url = base_url() . "search/custom/history";
-            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-            $url .= (!empty($campaign_search) ? "/hcampaign/$campaign_search" : "");
-            $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
-            $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
-            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/hsource/$source_search" : "");
+//            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
+//            $url .= (!empty($campaign_search) ? "/hcampaign/$campaign_search" : "");
+//            $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
+//            $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
+//            $url .= (!empty($team_search) ? "/team/$team_search" : "");
+//            $url .= (!empty($source_search) ? "/hsource/$source_search" : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -346,19 +412,24 @@ class Reports extends CI_Controller
                 //create the click through hyperlinks
                 if ($group == "contact") {
                     $allDialsUrl = $url . "/outcome/null:not/contact/" . $row['sql'];
-                    $outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                    //$outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                    $outcomesUrl = $url;
                 } else if ($group == "time") {
                     $allDialsUrl = $url . "/outcome/null:not/time/" . $row['sql'];
-                    $outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                    //$outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                    $outcomesUrl = $url;
                 } else if ($group == "agent") {
                     $allDialsUrl = $url . "/outcome/null:not/user/" . $id;
-                    $outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                    //$outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                    $outcomesUrl = $url;
                 } else if ($group == "reason") {
                     $allDialsUrl = $url . "/outcome/null:not/reason/" . $id;
-                    $outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                    //$outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
+                    $outcomesUrl = $url;
                 } else {
                     $allDialsUrl = $url . "/outcome/null:not/alldials/" . $id;
-                    $outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/" . $form['outcome'];
+                    //$outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/" . $form['outcome'];
+                    $outcomesUrl = $url;
                 }
 
                 $data[] = array(
@@ -381,7 +452,7 @@ class Reports extends CI_Controller
 
             $totalPercent = ($totalDials) ? number_format((($totalOutcomes) * 100) / $totalDials, 2) : 0;
 
-            $url .= (!empty($campaign_search) ? "/hcampaign/$campaign_search" : "");
+//            $url .= (!empty($campaign_search) ? "/hcampaign/$campaign_search" : "");
             $url .= ($group == "reason" ? "/reason/null:not" : "");
 
             array_push($data, array(
@@ -944,6 +1015,19 @@ class Reports extends CI_Controller
                 "data" => $data
             ));
         }
+    }
+
+    /**
+     * Get the current campaign on the session if it is selected
+     */
+    public function get_current_campaign()
+    {
+        $current_campaign = (isset($_SESSION['current_campaign_name']) ? $_SESSION['current_campaign_name'] : NULL);
+
+        echo json_encode(array(
+            "success" => ($current_campaign),
+            "current_campaign" => $current_campaign
+        ));
     }
 
 }
