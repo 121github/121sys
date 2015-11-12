@@ -13,13 +13,14 @@
       </div>
     </div>
   </div>
-  <div class="panel-body">
+  <div class="panel-body" style="padding:0">
     <div id="form-container">
       <?php $this->view('forms/edit_categories_form.php',$subcategories); ?>
     </div>
     <div id="table-container"> </div>
   </div>
 </div>
+  <script type="text/javascript" src="<?php echo base_url() ?>assets/flexicart/js/admin_global.js"></script>
 <script>
 $(document).ready(function(){
 	admin.init();

@@ -1,53 +1,7 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Update Order Details | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts update order details function."/> 
-	<meta name="keywords" content="update, order details, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="order_details">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Orders Details</h1>
-				<p>This page is an example of how content and data from a confirmed order can be reloaded into the browser session as a fully functional cart.</p>
-				<p>New and existing items can then be added, updated or removed from the cart, with sensitive fields like pricing also now being completely updatable in the security of the admin area.</p>
-				<p>When the reloaded cart is resaved, the revised data can be set to overwrite the original order.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-			
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<h1>Update Order Details</h1>
-			<?php $order_number = $current_order_data[$this->flexi_cart_admin->db_column('order_summary', 'order_number')];?>
-			<p><a href="<?php echo $base_url; ?>admin_library/orders">Manage Orders</a> | <a href="<?php echo $base_url; ?>admin_library/order_details/<?php echo $order_number; ?>">View Saved Order Details</a></p>
-						
-			<?php echo form_open(current_url());?>						
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>						
 				<fieldset>
 					<legend>Order</legend>
 					
@@ -77,9 +31,9 @@
 						This example allows an admin to add items from the custom item database table to the cart, without needing to browse the site.
 					</small><br/>
 
-					<input type="button" value="Show / Hide" class="link_button toggle"/>
+					<input type="button" value="Show / Hide" class="link_button btn btn-default toggle"/>
 					<div class="hide_toggle">
-						<table>
+						<table class="table" >
 							<thead>
 								<tr>
 									<th class="tooltip_trigger" 
@@ -133,13 +87,13 @@
 							<?php } ?>
 							</tbody>
 						</table>
-						<input type="submit" name="update_order[insert_items]" value="Add Items to Order" class="link_button large"/>
+						<input type="submit" name="update_order[insert_items]" value="Add Items to Order" class="link_button btn btn-default large"/>
 					</div>
 				</fieldset>
 
 				<fieldset>
 					<legend>Updated Order Details</legend>
-					<table id="cart_items">
+					<table class="table" id="cart_items">
 						<thead>
 							<tr>
 								<th>Item</th>
@@ -271,7 +225,7 @@
 							<tr class="discount">
 								<td colspan="6">
 									Discount: <?php echo $row['discount_description'];?>
-									: <a href="<?php echo $base_url; ?>admin_library/unset_discount/<?php echo $this->flexi_cart_admin->item_discount_id($row['row_id']).'/'.$order_number;?>">Remove</a>
+									: <a href="<?php echo $base_url; ?>admin/shop/unset_discount/<?php echo $this->flexi_cart_admin->item_discount_id($row['row_id']).'/'.$order_number;?>">Remove</a>
 								</td>
 							</tr>
 						<?php } } } else { ?>
@@ -299,7 +253,7 @@
 				
 				<fieldset>
 					<legend>Cart Summary</legend>
-					<table id="cart_summary">
+					<table class="table" id="cart_summary">
 						<tbody>
 							<tr>
 								<td>
@@ -383,7 +337,7 @@
 									<span class="pad_l_20">
 										&raquo; <?php echo $discount['description'];?>
 									<?php if (! empty($discount['id'])) { ?>
-										: <a href="<?php echo $base_url; ?>admin_library/unset_discount/<?php echo $discount['id'].'/'.$order_number; ?>">Remove</a>
+										: <a href="<?php echo $base_url; ?>admin/shop/unset_discount/<?php echo $discount['id'].'/'.$order_number; ?>">Remove</a>
 									<?php } ?>
 									</span>
 								</th>
@@ -413,7 +367,7 @@
 								<th>
 									<span class="pad_l_20">
 										&raquo; <?php echo $surcharge['description'];?>
-										: <a href="<?php echo $base_url; ?>admin_library/unset_surcharge/<?php echo $surcharge['id'].'/'.$order_number; ?>">Remove</a>
+										: <a href="<?php echo $base_url; ?>admin/shop/unset_surcharge/<?php echo $surcharge['id'].'/'.$order_number; ?>">Remove</a>
 									</span>
 								</th>
 								<td><?php echo $surcharge['value'];?></td>
@@ -437,7 +391,7 @@
 								<th>
 									<span class="pad_l_20">
 										&raquo; <?php echo $voucher['description'];?>
-										: <a href="<?php echo $base_url; ?>admin_library/unset_discount/<?php echo $voucher['id'].'/'.$order_number; ?>">Remove</a>
+										: <a href="<?php echo $base_url; ?>admin/shop/unset_discount/<?php echo $voucher['id'].'/'.$order_number; ?>">Remove</a>
 									</span>
 								</th>
 								<td><?php echo $voucher['value'];?></td>
@@ -470,8 +424,8 @@
 						</tfoot>
 					</table>
 					
-					<input type="submit" name="update_order[order]" value="Update Cart (Without Saving)" class="link_button large"/>
-					<input type="submit" name="update_order[save]" value="Re-Save Cart as Order" class="link_button red large"/>
+					<input type="submit" name="update_order[order]" value="Update Cart (Without Saving)" class="link_button btn btn-default large"/>
+					<input type="submit" name="update_order[save]" value="Re-Save Cart as Order" class="link_button btn btn-default red large"/>
 				</fieldset>
 
 				<fieldset>
@@ -480,7 +434,7 @@
 						This example allows an admin to add discounts, reward vouchers or surcharges to the order, either via codes or by setting them manually.
 					</small><br/>
 
-					<input type="button" value="Show / Hide" class="link_button toggle"/>
+					<input type="button" value="Show / Hide" class="link_button btn btn-default toggle"/>
 					<div class="hide_toggle">
 						<hr/>
 						<h3 class="caption">Discount / Reward Voucher Codes</h3>
@@ -492,8 +446,8 @@
 						?>
 							<li>
 								<input type="text" name="discount_code[<?php echo $discount_codes['code']; ?>]" value="<?php echo $discount_codes['code']; ?>"/> 
-								<input type="submit" name="update_discount" value="Update" class="link_button grey"/>
-								<input type="submit" name="remove_discount_code[<?php echo $discount_codes['code']; ?>]" value="Remove" class="link_button grey"/>
+								<input type="submit" name="update_discount" value="Update" class="link_button btn btn-default grey"/>
+								<input type="submit" name="remove_discount_code[<?php echo $discount_codes['code']; ?>]" value="Remove" class="link_button btn btn-default grey"/>
 								<small class="inline">* <?php echo $discount_codes['description'];?></small>
 							</li>
 						<?php
@@ -502,11 +456,11 @@
 						?>
 							<li>
 								<input type="text" name="discount_code[0]" value=""/> 
-								<input type="submit" name="update_order[discount_code]" value="Add Discount Code" class="link_button"/> 
+								<input type="submit" name="update_order[discount_code]" value="Add Discount Code" class="link_button btn btn-default"/> 
 							</li>
 						</ul>
 														
-						<table>
+						<table class="table" >
 							<caption>Apply New Discounts</caption>
 							<thead>
 								<tr>
@@ -559,8 +513,8 @@
 										</select>
 									</td>
 									<td class="align_ctr">
-										<input type="button" value="+" class="copy_row link_button"/>
-										<input type="button" value="x" disabled="disabled" class="remove_row link_button"/>
+										<input type="button" value="+" class="copy_row link_button btn btn-default"/>
+										<input type="button" value="x" disabled="disabled" class="remove_row link_button btn btn-default"/>
 									</td>
 								</tr>
 							</tbody>
@@ -575,7 +529,7 @@
 							</tfoot>
 						</table>
 						
-						<table>
+						<table class="table" >
 							<caption>Apply New Surcharges</caption>
 							<thead>
 								<tr>
@@ -621,8 +575,8 @@
 										</select>
 									</td>
 									<td class="align_ctr">
-										<input type="button" value="+" class="copy_row link_button"/>
-										<input type="button" value="x" disabled="disabled" class="remove_row link_button"/>
+										<input type="button" value="+" class="copy_row link_button btn btn-default"/>
+										<input type="button" value="x" disabled="disabled" class="remove_row link_button btn btn-default"/>
 									</td>
 								</tr>
 							</tbody>
@@ -642,11 +596,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

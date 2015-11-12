@@ -1,57 +1,14 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Insert Item Shipping Rules | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts insert item shipping rules function."/> 
-	<meta name="keywords" content="insert, item shipping rules, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="item_shipping_insert">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Item Shipping Rules</h1>
-				<p>Shipping rates and rules for individual items can be set that can either omit the item from being included in the cart shipping calculations, or add a shipping surcharge that will be applied on top of the standard shipping charge.</p>
-				<p>This allows specific items to have free shipping, whilst items with a higher insurance value could have a surcharge applied. These shipping rules can also be applied accordingly to a customers location</p>
-				<p>Items can also be set to be shipped separately from the rest of the cart items, this will then calculate the shipping charge for that specific item, and then recalculate the shipping charge for the rest of the cart items.</p>
-				<p>Additionally, items can be banned from being shipped to specific locations, by either 'whitelisting' or 'blacklisting' a location. <br/>Whitelisting means the item can ONLY be shipped to that location, whilst blacklisting means it CANNOT be shipped to that location.<br/> All sub-locations of a listed location will also be affected.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-				
-			<?php if (! empty($message)) { ?>
-				<div id="message">
-					<?php echo $message; ?>
-				</div>
-			<?php } ?>
-							
-			<?php echo form_open(current_url());?>						
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>						
 				<h1>Insert New Item Shipping Rule</h1>
 				<p>
-					<a href="<?php echo $base_url; ?>admin_library/items">Manage Items</a> | 
-					<a href="<?php echo $base_url; ?>admin_library/item_shipping/<?php echo $item_data['item_id']; ?>">Manage <?php echo $item_data['item_name']; ?> Shipping Rules</a>
+					<a href="<?php echo $base_url; ?>admin/shop/items">Manage Items</a> | 
+					<a href="<?php echo $base_url; ?>admin/shop/item_shipping/<?php echo $item_data['item_id']; ?>">Manage <?php echo $item_data['item_name']; ?> Shipping Rules</a>
 				</p>
 				
-				<table>
+				<table class="table" >
 					<caption><?php echo $item_data['item_name']; ?></caption>
 					<thead>
 						<tr>
@@ -126,15 +83,15 @@
 								<input type="checkbox" name="insert[0][status]" value="1" checked="checked"/>
 							</td>
 							<td class="align_ctr">
-								<input type="button" value="+" class="copy_row link_button"/>
-								<input type="button" value="x" disabled="disabled" class="remove_row link_button"/>
+								<input type="button" value="+" class="copy_row link_button btn btn-default"/>
+								<input type="button" value="x" disabled="disabled" class="remove_row link_button btn btn-default"/>
 							</td>
 						</tr>
 					</tbody>
 					<tfoot>
 						<tr>
 							<td colspan="7">
-								<input type="submit" name="insert_item_shipping" value="Insert New Item Shipping Rules" class="link_button large"/>
+								<input type="submit" name="insert_item_shipping" value="Insert New Item Shipping Rules" class="link_button btn btn-default large"/>
 							</td>
 						</tr>
 					</tbody>
@@ -145,11 +102,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

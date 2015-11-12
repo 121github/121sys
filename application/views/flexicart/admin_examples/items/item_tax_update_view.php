@@ -1,56 +1,14 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Update Item Tax Rate | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts update item tax rate function."/> 
-	<meta name="keywords" content="update, item tax rate, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="item_tax_update">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Item Tax Rates</h1>
-				<p>Tax rates for individual items can be set with a different tax rate than what is currently used be the cart.</p>
-				<p>This for example would allow specific items to be tax free, whilst all other items remain at the default cart tax rate.</p>
-				<p>The tax rate for each item can also be set accordingly to a customers location.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-			
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<?php echo form_open(current_url());?>						
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>						
 				<h1>Manage Item Tax Rates</h1>
 				<p>
-					<a href="<?php echo $base_url; ?>admin_library/items">Manage Items</a> | 
-					<a href="<?php echo $base_url; ?>admin_library/insert_item_tax/<?php echo $item_data['item_id']; ?>">Insert New Item Tax Rates</a>
+					<a href="<?php echo $base_url; ?>admin/shop/items">Manage Items</a> | 
+					<a href="<?php echo $base_url; ?>admin/shop/insert_item_tax/<?php echo $item_data['item_id']; ?>">Insert New Item Tax Rates</a>
 				</p>
 				
-				<table>
+				<table class="table" >
 					<caption><?php echo $item_data['item_name']; ?></caption>
 					<thead>
 						<tr>
@@ -131,7 +89,7 @@
 					<tfoot>
 						<tr>
 							<td colspan="5">
-								<input type="submit" name="update_item_tax" value="Update Item Tax" class="link_button large"/>
+								<input type="submit" name="update_item_tax" value="Update Item Tax" class="link_button btn btn-default large"/>
 							</td>
 						</tr>
 					</tfoot>
@@ -140,7 +98,7 @@
 						<tr>
 							<td colspan="5">
 								There are no taxes setup to view for this item.<br/>
-								<a href="<?php echo $base_url; ?>admin_library/insert_item_tax/<?php echo $item_data['item_id']; ?>">Insert New Item Tax Rates</a>
+								<a href="<?php echo $base_url; ?>admin/shop/insert_item_tax/<?php echo $item_data['item_id']; ?>">Insert New Item Tax Rates</a>
 							</td>
 						</tr>
 					</tbody>
@@ -152,11 +110,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

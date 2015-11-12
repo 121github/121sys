@@ -86,7 +86,7 @@ $('.dependent_menu').each(function(i){
 $(function() {
 
 	// Copy a table row and its data.
-	$('.copy_row').live('click',function()
+	$('.copy_row').on('click',function()
 	{
 		// To set a new unique field name for the 'to-be-cloned' row, we need to obtain the current highest index id from the existing field names.
 		var input_name = $(this).closest('tr').find('input, select, textarea').not('input:radio').first().attr('name');
@@ -161,7 +161,7 @@ $(function() {
 	//+++++++++++++++++++++++++//
 	
 	// Remove Row
-	$('.remove_row').live('click',function(){
+	$('.remove_row').on('click',function(){
 		$(this).closest('tr').fadeOut('medium',function(){
 			$(this).remove();
 		});
@@ -171,7 +171,7 @@ $(function() {
 
 	// User Guide : Ajax Cart Row Selector
 	// Select a row in the cart to update user guide function examples to correspond to that row.
-	$('#select_cart_row').live('change', function()
+	$('#select_cart_row').on('change', function()
 	{
 		var data = new Object();
 		data['row_id'] = $(this).val();

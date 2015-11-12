@@ -1,25 +1,16 @@
-
-							
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-		
-			<?php echo form_open(current_url());?>		
-            <div class="row">
-    <div class="col-lg-12">				
 				<div class="panel panel-primary">
-                <div class="panel-heading">Manage Item Data
+                <div class="panel-heading"><?php echo $title ?>
+
                 
                 
                 <div class="pull-right">
-				<a class="btn btn-xs btn-default" href="<?php echo $base_url; ?>admin_library/item_discounts">Manage Item Discounts</a>
-				<a class="btn btn-xs btn-default" href="<?php echo $base_url; ?>admin_library/discount_groups">Manage Discount Groups</a>
+				<a class="btn btn-xs btn-default" href="<?php echo $base_url; ?>admin/shop/item_discounts">Item Discounts</a>
+				<a class="btn btn-xs btn-default" href="<?php echo $base_url; ?>admin/shop/discount_groups">Discount Groups</a>
 </div>
 </div>
 <div class="panel-body">
-				<table class="table">
+<?php echo form_open(current_url());?>		
+				<table class="table" >
 					<thead>
 						<tr>
 							<th class="tooltip_trigger" 
@@ -92,10 +83,10 @@
 								<input type="checkbox" name="update[<?php echo $item_id; ?>][auto_allocate_status]" value="1" <?php echo set_checkbox('update[auto_allocate_status]','1', $auto_allocate_status); ?>/>
 							</td>
 							<td class="align_ctr">
-								<a href="<?php echo $base_url; ?>admin_library/item_shipping/<?php echo $row['item_id']; ?>">Manage</a>
+								<a href="<?php echo $base_url; ?>admin/shop/item_shipping/<?php echo $row['item_id']; ?>">Manage</a>
 							</td>
 							<td class="align_ctr">
-								<a href="<?php echo $base_url; ?>admin_library/item_tax/<?php echo $row['item_id']; ?>">Manage</a>
+								<a href="<?php echo $base_url; ?>admin/shop/item_tax/<?php echo $row['item_id']; ?>">Manage</a>
 							</td>
 						</tr>
 					<?php } ?>
@@ -103,7 +94,7 @@
 					<tfoot>
 						<tr>
 							<td colspan="8">
-								<input type="submit" name="update_items" value="Update Items" class="link_button btn btn-default"/>
+								<input type="submit" name="update_items" value="Update Items" class="link_button btn btn-default btn btn-default"/>
 							</td>
 						</tr>
 					</tfoot>
@@ -120,8 +111,7 @@
 			<?php echo form_close();?>						
 </div>
 </div>
-</div>
-</div>
+
 	
 <!-- Scripts -->  
 

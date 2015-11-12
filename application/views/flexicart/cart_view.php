@@ -1,8 +1,9 @@
 				
             <h4>Order summary</h4>
-				
-					<?php echo form_open(current_url());?>
-						<table class="table">
+            <div id="cart_content">
+				<div id="ajax_content">
+<?php echo form_open(current_url());?>
+						<table class="table" >
 							<thead>
 								<tr>
 									<th>Item</th>
@@ -33,7 +34,7 @@
 											To activate this example, add item #202 on the 'Add an item with options via a form' page.
 										-->
 										<label class="spacer_50"><?php echo $option_column; ?>:</label> 
-										<select name="items[<?php echo $i;?>][options][<?php echo $option_column; ?>]" class="selectpicker width_100">
+										<select class="selectpicker" name="items[<?php echo $i;?>][options][<?php echo $option_column; ?>]" class="selectpicker width_100">
 										<?php foreach($option_data as $data) { ?>
 											<option value="<?php echo $data; ?>" <?php echo set_select('items['.$i.'][options]['.$option_column.']', $data, ($data == $row['options'][$option_column]));?>>
 												<?php echo $data; ?>
@@ -218,7 +219,7 @@
 							To toggle shipping between database and manually set options, follow the instructions in the 'cart/view_cart' controller file.
 						-->
 					<?php if (isset($countries)) { ?>
-						<table id="cart_shipping" class="table">
+						<table class="table" id="cart_shipping">
 							<thead>
 								<tr>
 									<th>Shipping</th>
@@ -238,7 +239,7 @@
 									<td>
                                     <div class="form-group" style="float:left">
 										<label class="spacer_250">Country</label><br />
-											<select  name="shipping[country]" class="selectpicker">
+											<select  class="selectpicker" name="shipping[country]" >
 												<option value="0"> - Country - </option>
 											<?php foreach($countries as $country) { ?>
 												<option value="<?php echo $country['loc_id'];?>" <?php echo ($this->flexi_cart->match_shipping_location_id($country['loc_id'])) ? 'selected="selected"' : NULL;?>>
@@ -289,7 +290,7 @@
 						</table>
 					<?php } else { ?>					
 						<!-- Manually set shipping option example -->
-						<table id="cart_shipping" class="table">
+						<table class="table" id="cart_shipping">
 							<thead>
 								<tr>
 									<th>Shipping</th>
@@ -333,7 +334,7 @@
 						</table>
 					<?php } ?>
 					
-						<table id="cart_summary" class="table">
+						<table class="table" id="cart_summary">
 							<thead>
 								<tr>
 									<th colspan="2">Cart Summary</th>
@@ -537,7 +538,6 @@
 <div class="form-group">
 <p>
 						<fieldset>
-
 							<button id="update-order" class="btn btn-info">Update Order</button>
 							<button id="clear-order" class="btn btn-danger">Clear Order</button>
 							<button id="destroy-order" class="btn btn-danger">Destroy Order</button>
@@ -548,13 +548,15 @@
 					<?php echo form_close();?>
 		
 
-	
+	</div>
+    </div>
 
 <script>
 $(function() {
+	
 	// Ajax Cart Update Example
 	// Submit the cart form if a shipping option select or input element is changed.
-	$('select[name^="shipping"], input[name^="shipping"]').on('change', function()
+	$(document).on('change','select[name^="shipping"], input[name^="shipping"]', function()
 	{
 		// Loop through shipping select and input fields creating object of their names and values that will then be submitted via 'post'
 		var data = new Object();
@@ -569,8 +571,12 @@ $(function() {
 		// !IMPORTANT NOTE: As of CI 2.0, if csrf (cross-site request forgery) protection is enabled via CI's config, this must be included to submit the token.
 		data['csrf_test_name'] = $('input[name="csrf_test_name"]').val();
 
-		$('#cart_content').load('<?php echo current_url();?> #ajax_content', data);
+		$('#cart_content').load('<?php echo current_url();?> #ajax_content', data,function(){
+		$('#order-summary .selectpicker').selectpicker();	
+		});
+		
 	});
 	$('#order-summary .selectpicker').selectpicker();
+	
 });
 </script>

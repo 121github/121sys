@@ -5,6 +5,8 @@ class Flexicart_standard extends CI_Controller {
 	function __construct() 
 	{
 		parent::__construct();
+		        user_auth_check(false);
+        $this->_campaigns = campaign_access_dropdown();
 		// To load the CI benchmark and memory usage profiler - set 1==1.
 		if (1==2)
 		{
@@ -519,7 +521,7 @@ class Flexicart_standard extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 
-		$this->load->view('flexicart/checkout_view', $this->data);
+		$this->template->load('default','flexicart/checkout_view', $this->data);
 	}
 	
 	/**
@@ -554,7 +556,7 @@ class Flexicart_standard extends CI_Controller {
 		// now completed order is removed, rather than just removing the items in the cart.
 		$this->flexi_cart->destroy_cart();
 		
-		//$this->load->view('flexicart/checkout_complete_view', $this->data);
+		//$this->template->load('default','flexicart/checkout_complete_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -585,7 +587,7 @@ class Flexicart_standard extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
 		
-		$this->load->view('flexicart/feature_examples/features_save_load_cart_view', $this->data);
+		$this->template->load('default','flexicart/feature_examples/features_save_load_cart_view', $this->data);
 	}
 
 	/**
@@ -724,7 +726,7 @@ class Flexicart_standard extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');	
 	
-		$this->load->view('flexicart/feature_examples/features_misc_view', $this->data);
+		$this->template->load('default','flexicart/feature_examples/features_misc_view', $this->data);
 	}
 
 	/**

@@ -1,18 +1,10 @@
-
-	<!-- Main Content -->
-
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
 				<div class="panel panel-primary">
 		<div class="panel-heading">Manage Orders</div>
-        <div class="panel-body">
+        <div class="panel-body" style="padding:0">
 										
 			
 			
-			<table class="table">
+			<table class="table" >
 				<thead>
 					<tr>
 						<th class="spacer_125">Order Number</th>
@@ -31,7 +23,7 @@
 				?>
 					<tr>
 						<td>
-							<a href="<?php echo $base_url; ?>admin_library/order_details/<?php echo $order_number; ?>"><?php echo $order_number; ?></a>
+							<a href="<?php echo $base_url; ?>admin/shop/order_details/<?php echo $order_number; ?>"><?php echo $order_number; ?></a>
 						</td>
 						<td>
 							<?php echo $row['ord_demo_bill_name']; ?>

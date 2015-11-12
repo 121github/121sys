@@ -5,6 +5,8 @@ class Flexicart_lite extends CI_Controller {
 	function __construct() 
 	{
 		parent::__construct();
+		        user_auth_check(false);
+        $this->_campaigns = campaign_access_dropdown();
 		// To load the CI benchmark and memory usage profiler - set 1==1.
 		if (1==2) 
 		{
@@ -143,7 +145,7 @@ class Flexicart_lite extends CI_Controller {
 		$this->data['discounts'] = $this->flexi_cart->summary_discount_data();
 		$this->data['surcharges'] = $this->flexi_cart->surcharge_data();
 		
-		$this->load->view('flexicart/lite_library_view', $this->data);
+		$this->template->load('default','flexicart/lite_library_view', $this->data);
 	}
 	 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -157,7 +159,7 @@ class Flexicart_lite extends CI_Controller {
 	 */ 
 	function item_link_examples()
 	{
-		$this->load->view('flexicart/feature_examples/item_link_examples_view', $this->data);
+		$this->template->load('default','flexicart/feature_examples/item_link_examples_view', $this->data);
 	}
 	 
 	/**
@@ -167,7 +169,7 @@ class Flexicart_lite extends CI_Controller {
 	 */ 
 	function item_form_examples()
 	{
-		$this->load->view('flexicart/feature_examples/item_form_examples_view', $this->data);
+		$this->template->load('default','flexicart/feature_examples/item_form_examples_view', $this->data);
 	}
 
 	/**
@@ -177,7 +179,7 @@ class Flexicart_lite extends CI_Controller {
 	 */ 
 	function item_ajax_examples()
 	{
-		$this->load->view('flexicart/feature_examples/item_ajax_examples_view', $this->data);
+		$this->template->load('default','flexicart/feature_examples/item_ajax_examples_view', $this->data);
 	}
 	 
 	/**
@@ -187,7 +189,7 @@ class Flexicart_lite extends CI_Controller {
 	 */ 
 	function item_discount_examples()
 	{
-		$this->load->view('flexicart/feature_examples/item_discount_examples_view', $this->data);
+		$this->template->load('default','flexicart/feature_examples/item_discount_examples_view', $this->data);
 	}
 	 
 	/**
@@ -202,7 +204,7 @@ class Flexicart_lite extends CI_Controller {
 		// Load data from a custom demo table containing example item data.
 		$this->data['item_data'] = $this->orders_model->demo_get_item_data();
 	
-		$this->load->view('flexicart/feature_examples/item_database_examples_view', $this->data);
+		$this->template->load('default','flexicart/feature_examples/item_database_examples_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -216,7 +218,7 @@ class Flexicart_lite extends CI_Controller {
 	 */ 
 	function discount_surcharge_features() 
 	{
-		$this->load->view('flexicart/feature_examples/features_discount_surcharge_view', $this->data);
+		$this->template->load('default','flexicart/feature_examples/features_discount_surcharge_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	

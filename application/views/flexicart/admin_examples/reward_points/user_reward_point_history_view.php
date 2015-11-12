@@ -1,55 +1,14 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Manage User Reward Point History | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts user reward point management functions."/> 
-	<meta name="keywords" content="reward points, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="user_reward_history">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | User Reward Points and Vouchers</h1>
-				<p>Users can earn reward points when they purchase items. When they earn enough points, they can be converted to a voucher worth a monetary value.</p>
-				<p>The voucher is stored as a code in the database that when entered on their next purchase, will deduct the vouchers value from their cart total.</p>
-				<p>The conversion and monetary value of reward points and vouchers can all be set via the cart configuration.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-		
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
 										
-			<h1><?php echo $user_data['user_name'];?> : Earnt Reward Point History</h1>
+			<h3><?php echo $user_data['user_name'];?> : Earnt Reward Point History</h3>
 			<p>
-				<a href="<?php echo $base_url; ?>admin_library/user_reward_points">Manage Reward Points</a> |
-				<a href="<?php echo $base_url; ?>admin_library/convert_reward_points/<?php echo $user_data['user_id'];?>">Convert Reward Points</a>
+				<a href="<?php echo $base_url; ?>admin/shop/user_reward_points">Manage Reward Points</a> |
+				<a href="<?php echo $base_url; ?>admin/shop/convert_reward_points/<?php echo $user_data['user_id'];?>">Convert Reward Points</a>
 			</p>
 
-			<table>
+			<table class="table" >
 				<thead>
 					<tr>
 						<th class="spacer_100 tooltip_trigger"
@@ -84,7 +43,7 @@
 					<tr>
 						<td>
 							<?php $order_number = $row[$this->flexi_cart_admin->db_column('reward_points', 'order_number')]; ?>
-							<a href="<?php echo $base_url; ?>admin_library/order_details/<?php echo $order_number; ?>">
+							<a href="<?php echo $base_url; ?>admin/shop/order_details/<?php echo $order_number; ?>">
 								<?php echo $order_number; ?>
 							</a>
 						</td>
@@ -144,13 +103,13 @@
 			</table>	
 			
 			<br/>
-			<h1><?php echo $user_data['user_name'];?> : Converted Reward Point History</h1>
+			<h3><?php echo $user_data['user_name'];?> : Converted Reward Point History</h3>
 			<p>
-				<a href="<?php echo $base_url; ?>admin_library/user_reward_points">Manage Reward Points</a> |
-				<a href="<?php echo $base_url; ?>admin_library/convert_reward_points/<?php echo $user_data['user_id'];?>">Convert Reward Points</a>
+				<a href="<?php echo $base_url; ?>admin/shop/user_reward_points">Manage Reward Points</a> |
+				<a href="<?php echo $base_url; ?>admin/shop/convert_reward_points/<?php echo $user_data['user_id'];?>">Convert Reward Points</a>
 			</p>
 
-			<table>
+			<table class="table" >
 				<thead>
 					<tr>
 						<th class="spacer_150 tooltip_trigger"
@@ -189,7 +148,7 @@
 						</td>
 						<td>
 							<?php $order_number = $points_data[$this->flexi_cart_admin->db_column('reward_points', 'order_number')]; ?>
-							<a href="<?php echo $base_url; ?>admin_library/order_details/<?php echo $order_number; ?>">
+							<a href="<?php echo $base_url; ?>admin/shop/order_details/<?php echo $order_number; ?>">
 								<?php echo $order_number; ?>
 							</a>
 						</td>
@@ -221,11 +180,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

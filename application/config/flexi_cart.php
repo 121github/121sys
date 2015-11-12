@@ -590,7 +590,7 @@
 	 * 'item' column will become the primary key column.
 	 */
 	$config['database']['item_stock']['table'] = 'flexicart_item_stock';
-	$config['database']['item_stock']['columns']['id'] = 'stock_id'; // !IMPORTANT NOTE: See above warning when setting this column.
+	$config['database']['item_stock']['columns']['id'] = false; // !IMPORTANT NOTE: See above warning when setting this column.
 	$config['database']['item_stock']['columns']['item'] = 'stock_item_fk';
 	$config['database']['item_stock']['columns']['quantity'] = 'stock_quantity';
 	$config['database']['item_stock']['columns']['auto_allocate_status'] = 'stock_auto_allocate_status';
@@ -785,7 +785,7 @@
 	$config['database']['order_summary']['table'] = 'flexicart_order_summary';
 	$config['database']['order_summary']['columns']['order_number'] = 'ord_order_number';
 	$config['database']['order_summary']['columns']['cart_data'] = 'ord_cart_data_fk';
-	$config['database']['order_summary']['columns']['user'] = 'ord_user_fk';
+	$config['database']['order_summary']['columns']['user'] = 'user_id';
 	$config['database']['order_summary']['columns']['item_summary_total'] = 'ord_item_summary_total';
 	$config['database']['order_summary']['columns']['item_summary_savings_total'] = 'ord_item_summary_savings_total';
 	$config['database']['order_summary']['columns']['shipping_name'] = 'ord_shipping';

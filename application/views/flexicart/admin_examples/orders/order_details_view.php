@@ -1,12 +1,7 @@
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-				<div class="panel panel-primary">
-		<div class="panel-heading">Order Details <div class="pull-right"><a class="btn btn-default btn-xs" href="<?php echo $base_url; ?>admin_library/orders">Manage Orders</a></div></div>
-        <div class="panel-body">										
-			<?php echo form_open(current_url());?>			
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>			
             
                <ul class="nav nav-tabs" style=" background:#eee; width:100%;">
   <li class="status-tab active"><a href="#status" class="tab" data-toggle="tab">Status</a></li>
@@ -287,8 +282,8 @@
 						</li>
 					</ul>
 					
-					<input type="submit" name="update_order" value="Update Order Details" class="link_button btn-primary btn"/>
-					<a href="<?php echo $base_url; ?>admin_library/update_order_details/<?php echo $summary_data[$this->flexi_cart_admin->db_column('order_summary', 'order_number')]; ?>" class="link_button btn btn-primary">Edit Order</a>
+					<input type="submit" name="update_order" value="Update Order Details" class="link_button btn btn-default btn-primary btn"/>
+					<a href="<?php echo $base_url; ?>admin/shop/update_order_details/<?php echo $summary_data[$this->flexi_cart_admin->db_column('order_summary', 'order_number')]; ?>" class="link_button btn btn-default btn btn-primary">Edit Order</a>
 				</fieldset>
 </div>
           <div class="tab-pane" id="summary">	

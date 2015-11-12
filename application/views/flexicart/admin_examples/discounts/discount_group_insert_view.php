@@ -1,55 +1,13 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Insert Discount Item Group | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts insert discount item group function."/> 
-	<meta name="keywords" content="insert, discount item group, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="discount_group_insert">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Discount Item Groups</h1>
-				<p>As flexi cart leaves the design of the sites item and attribute database tables up to the developer, it is not possible to directly relate a discount to specific item categories or other attributes. To have done so would have restricted the flexibility of the sites database design.</p>
-				<p>Instead, flexi cart provides a feature that allows items to be grouped together, the discount can then be applied to all items within that group.</p>
-				<p>The method of grouping items together is again up to the developer, however, flexi cart provides a function than can create a complex SQL WHERE statement that can be applied to the developers custom SELECT statement, the returned items can then be added to the discount item group.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<?php echo form_open(current_url());?>						
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>						
 				<h1>Insert New Discount Items Group</h1>
 				<p>
-					<a href="<?php echo $base_url; ?>admin_library/discount_groups">Manage Discount Item Groups</a>
+					<a href="<?php echo $base_url; ?>admin/shop/discount_groups">Manage Discount Item Groups</a>
 				</p>	
 
-				<table>
+				<table class="table" >
 					<caption>Discount Item Group</caption>
 					<thead>
 						<tr>
@@ -76,12 +34,12 @@
 					</tbody>
 				</table>
 				
-				<table>
+				<table class="table" >
 					<caption>
 						Insert Items to Group
 						<small>
 							Note: The demo contains 5 demo items with the ids: 1, 2, 3, 4 and 5, with demo category ids of 1 and 2. 
-							<a href="<?php echo $base_url; ?>admin_library/items">See more item details</a>
+							<a href="<?php echo $base_url; ?>admin/shop/items">See more item details</a>
 						</small>
 					</caption>
 					<thead>
@@ -158,8 +116,8 @@
 								<input type="text" name="insert_item[<?php echo $row_id; ?>][value]" value="<?php echo set_value('insert_item['.$row_id.'][value]');?>" class="width_150"/>
 							</td>
 							<td class="align_ctr">
-								<input type="button" value="+" class="copy_row link_button"/>
-								<input type="button" value="x" <?php echo ($i == 0) ? 'disabled="disabled"' : NULL;?> class="remove_row link_button"/>
+								<input type="button" value="+" class="copy_row link_button btn btn-default"/>
+								<input type="button" value="x" <?php echo ($i == 0) ? 'disabled="disabled"' : NULL;?> class="remove_row link_button btn btn-default"/>
 							</td>
 						</tr>
 					<?php } ?>
@@ -167,7 +125,7 @@
 					<tfoot>
 						<tr>
 							<td colspan="5">
-								<input type="submit" name="insert_discount_group" value="Insert New Discount Item Group" class="link_button large"/>
+								<input type="submit" name="insert_discount_group" value="Insert New Discount Item Group" class="link_button btn btn-default large"/>
 							</td>
 						</tr>
 					</tbody>
@@ -178,11 +136,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

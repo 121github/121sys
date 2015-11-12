@@ -1,57 +1,11 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Insert Shipping Options | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts insert shipping options function."/> 
-	<meta name="keywords" content="insert, shipping options, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="shipping_insert">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Shipping Options</h1>
-				<p>Shipping Options can be setup to offer specific shipping options accordingly to a customers location.</p>
-				<p>When targeting a specific location, the shipping option can be either applied to a specific location, or a location zone. Shipping Options that are applied to a location, are then inherited by all children of that location.</p>
-				<p>Using the default setup of this cart demo as an example, any customer that specifies their location as 'United States' will be shown only options available for shipping to the 'United States'.</p>
-				<p>If the customer was then to specify their State as 'California', they will only be shown shipping options to 'California' - because there are options defined for 'California'. However, if they specify 'Florida' they will still be shown the 'United States' shipping as no options are defined for 'Florida'.</p>
-				<p>For added flexibility against complex tax rules, a specific tax rate can be applied to the shipping rate that will override the tax rate used by the cart.</p>
-				<p>Shipping options can be included/excluded from cart discounts.</p>
-				<p>Within each shipping option, a set of rate tiers can be defined to charge a different price depending on the carts total value and weight.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-		
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<?php echo form_open(current_url());?>
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>
 				<h1>Insert New Shipping Option</h1>
-				<p><a href="<?php echo $base_url; ?>admin_library/shipping">Manage Shipping Options</a></p>
+				<p><a href="<?php echo $base_url; ?>admin/shop/shipping">Manage Shipping Options</a></p>
 				
-				<table>
+				<table class="table" >
 					<caption>Shipping Option</caption>
 					<thead>
 						<tr>
@@ -140,7 +94,7 @@
 					</tbody>
 				</table>
 				
-				<table>
+				<table class="table" >
 					<caption>Shipping Rate Tiers</caption>
 					<thead>
 						<tr>
@@ -207,8 +161,8 @@
 								<input type="checkbox" name="insert_rate[<?php echo $row_id; ?>][status]" value="1" <?php echo set_checkbox('insert_rate['.$row_id.'][status]', '1', TRUE); ?>/>
 							</td>
 							<td class="align_ctr">
-								<input type="button" value="+" class="copy_row link_button"/>
-								<input type="button" value="x" <?php echo ($i == 0) ? 'disabled="disabled"' : NULL;?> class="remove_row link_button"/>
+								<input type="button" value="+" class="copy_row link_button btn btn-default"/>
+								<input type="button" value="x" <?php echo ($i == 0) ? 'disabled="disabled"' : NULL;?> class="remove_row link_button btn btn-default"/>
 							</td>
 						</tr>
 					<?php } ?>
@@ -216,7 +170,7 @@
 					<tfoot>
 						<tr>
 							<td colspan="8">
-								<input type="submit" name="insert_shipping" value="Insert Shipping Option" class="link_button large"/>
+								<input type="submit" name="insert_shipping" value="Insert Shipping Option" class="link_button btn btn-default large"/>
 							</td>
 						</tr>
 					</tbody>
@@ -226,12 +180,7 @@
 		</div>
 	</div>
 	
-	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
-
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
+	<!-- Footer -->  <script type="text/javascript" src="<?php echo base_url() ?>assets/flexicart/js/admin_global.js"></script>
 <script>
 $(function() {
 	// As this page is listing multiple tax options all on the same page, and therefore multiple location menus, use the jQuery 'each()' function to call the top level menu of each location type ('Country' in this example). 
@@ -247,5 +196,3 @@ $(function() {
 });
 </script>
 
-</body>
-</html>
