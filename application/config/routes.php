@@ -40,6 +40,8 @@
 
 $route['default_controller'] = "dashboard/user_dash";
 $route['search'] = "search/search_form";
+$route['admin/shop/(:any)'] = "flexicart_admin/$1";
+$route['admin/shop'] = "flexicart_admin";
 $route['dashboard'] = "dashboard/user_dash";
 $route['lite_shop/(:any)'] = "flexicart_lite/$1";
 $route['shop/(:any)'] = "flexicart_standard/$1";

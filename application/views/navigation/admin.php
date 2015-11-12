@@ -1,6 +1,6 @@
 <?php if (in_array("admin menu", $_SESSION['permissions'])) { ?>
-                        <li><a href="#admin">Admin</a>
-                            <ul id="admin">
+                        <li><a href="#mm-admin">Admin</a>
+                            <ul id="mm-admin">
                             
                             <?php if($_SESSION['session_name']=="121sys_prosales"){ ?>
 								   <li><a href="#" id="del-data">Delete demo data</a></li>
@@ -29,8 +29,8 @@
                                         <li <?php echo @($page == 'bulk-sms' ? "class='Selected'" : "") ?>>
                                             <a href="<?php echo base_url() ?>sms/bulk_sms">Bulk Sms Tool</a></li>
                                     <?php } ?>
-                                    <li><a href="#system">System Config</a>
-                                        <ul id="system">
+                                    <li><a href="#mm-system">System Config</a>
+                                        <ul id="mm-system">
                                             <?php if (in_array("database", $_SESSION['permissions'])) { ?>
                                                 <li <?php echo @($page == 'database' ? "class='Selected'" : "") ?>><a
                                                         href="<?php echo base_url() ?>database">Database</a></li>
@@ -72,8 +72,8 @@
                                 <?php } ?>
                                 <?php if (in_array("data menu", $_SESSION['permissions'])) { ?>
                                     <li>
-                                        <a href="#data">Data Management</a>
-                                        <ul id="data">
+                                        <a href="#mm-data">Data Management</a>
+                                        <ul id="mm-data">
                                             <?php if (in_array("import data", $_SESSION['permissions'])) { ?>
                                                 <li <?php echo @($page == 'import_data' ? "class='Selected'" : "") ?>>
                                                     <a href="<?php echo base_url() ?>import">Import Data</a>
@@ -118,8 +118,8 @@
                                 <?php } ?>
                                 <?php if (in_array("campaign menu", $_SESSION['permissions'])) { ?>
                                     <li>
-                                        <a href="#admin-campaigns">Campaign Setup</a>
-                                        <ul id="admin-campaigns">
+                                        <a href="#mm-admin-campaigns">Campaign Setup</a>
+                                        <ul id="mm-admin-campaigns">
                                             <?php if (in_array("campaign access", $_SESSION['permissions'])) { ?>
                                                 <li <?php echo @($page == 'campaign_access' ? "class='Selected'" : "") ?>>
                                                     <a href="<?php echo base_url() ?>admin/campaign_access">Campaign
@@ -196,8 +196,8 @@
                                 <?php } ?>
                                 <?php if (in_array("view logs", $_SESSION['permissions'])) { ?>
                                     <li>
-                                        <a href="#logs">Logs</a>
-                                        <ul id="logs">
+                                        <a href="#mm-logs">Logs</a>
+                                        <ul id="mm-logs">
                                             <li <?php echo @($page == 'logs' ? "class='Selected'" : "") ?>><a
                                                     href="<?php echo base_url() ?>admin/logs">Access Logs</a></li>
                                             <li <?php echo @($page == 'admin_audit' ? "class='Selected'" : "") ?>><a
@@ -205,6 +205,11 @@
                                         </ul>
                                     </li>
                                 <?php } ?>
+                                 <?php if (in_array("admin shop", $_SESSION['permissions'])) { ?>
+                                <?php $this->view('navigation/shop.php'); ?>
+                                <?php } ?>
                                    </ul>
                         </li>
 								   <?php } ?>
+								   
+                                  

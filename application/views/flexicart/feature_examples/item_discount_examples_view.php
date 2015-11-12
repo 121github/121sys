@@ -105,7 +105,7 @@
 				<div class="frame_note">
 					<small>
 						Two example summary discounts have been set in this demo.<br/>
-						Further discounts can be added live to this demo via the <a href="<?php echo $base_url; ?>admin_library">Admin Library</a>.<br/>
+						Further discounts can be added live to this demo via the <a href="<?php echo $base_url; ?>admin/shop">Admin Library</a>.<br/>
 						Summary discounts can be applied to the carts item summary total (Total of items only), the carts shipping rate and the carts grand total.<br/>
 						Go to the <a href="<?php echo $base_url; ?>lite_library/discount_surcharge_features">Discount / Surcharge Features</a> page to see examples of setting discounts and surcharges  without the use of a database.
 					</small>
@@ -183,11 +183,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

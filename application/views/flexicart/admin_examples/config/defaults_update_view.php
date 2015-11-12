@@ -1,52 +1,7 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Update Cart Defaults | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of updating flexi carts default settings."/> 
-	<meta name="keywords" content="update, cart defaults, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="defaults_update">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Cart Defaults</h1>
-				<p>The default shipping, tax and currency values that are initially displayed by the cart when first loaded can be set either via the hand coded configuration file located on the server, or via the configuration database table.</p>
-				<p>By defining default values via the database, they can be edited without requiring access to the server.</p>
-				<p>The default values selected will be the options and values that are defined when a user first visits the site.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-			
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<h1>Manage Cart Defaults</h1>
-			<p><a href="<?php echo $base_url; ?>admin_library/config">Manage Cart Configuration</a></p>
-
-			<?php echo form_open(current_url());?>	
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>	
 				<fieldset>
 					<legend>Currency</legend>
 					<small>Defines the default currency that prices are displayed in when a user first visits the site.</small>
@@ -155,7 +110,7 @@
 				
 				<fieldset>
 					<legend>Update Cart Defaults</legend>
-					<input type="submit" name="update_defaults" value="Update Cart Defaults" class="link_button large"/>
+					<input type="submit" name="update_defaults" value="Update Cart Defaults" class="link_button btn btn-default large"/>
 				</fieldset>
 			<?php echo form_close();?>						
 
@@ -163,11 +118,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

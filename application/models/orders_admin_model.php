@@ -13,7 +13,7 @@ class Orders_admin_model extends CI_Model {
 	public function subcategories_in_category($id){
 	$campaigns = array();
 	$this->db->where("item_category_id",$id);	
-	foreach($this->db->get("item_subcategories")->result_array() as $row){
+	foreach($this->db->get("flexicart_item_subcategories")->result_array() as $row){
 		$campaigns[] = $row['item_subcategory_id'];
 	}
 	return $campaigns;
@@ -114,11 +114,11 @@ class Orders_admin_model extends CI_Model {
 			
 			$this->flexi_cart->destroy_cart();
 			
-			redirect('admin_library/order_details/'.$order_number);
+			redirect('admin/shop/order_details/'.$order_number);
 		}
 		else
 		{
-			redirect('admin_library/update_order_details/'.$order_number);
+			redirect('admin/shop/update_order_details/'.$order_number);
 		}
 	}
 	
@@ -219,10 +219,10 @@ class Orders_admin_model extends CI_Model {
 	 */
 	function demo_get_item_data()
 	{	
-		return $this->db->from('items')
+		return $this->db->from('flexicart_items')
 			->join($this->flexi_cart_admin->db_table('item_stock'), 'item_id = '.$this->flexi_cart_admin->db_column('item_stock', 'item'))
-			->join('item_categories', 'item_categories.item_category_id=items.item_category_id','LEFT')
-			->join('item_subcategories', 'item_subcategories.item_subcategory_id=items.item_subcategory_id','LEFT')
+			->join('flexicart_item_categories', 'flexicart_item_categories.item_category_id=flexicart_items.item_category_id','LEFT')
+			->join('flexicart_item_subcategories', 'flexicart_item_subcategories.item_subcategory_id=flexicart_items.item_subcategory_id','LEFT')
 			->group_by('item_id')
 			->order_by('item_id')
 			->get()
@@ -312,7 +312,7 @@ class Orders_admin_model extends CI_Model {
 			
 			// Set a message to the CI flashdata so that it is available after the page redirect.
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/location_types');
+			redirect('admin/shop/location_types');
 		}
 		else
 		{
@@ -421,7 +421,7 @@ class Orders_admin_model extends CI_Model {
 			
 			// Set a message to the CI flashdata so that it is available after the page redirect.
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/locations/'.$location_type_id);
+			redirect('admin/shop/locations/'.$location_type_id);
 		}
 		else
 		{
@@ -521,7 +521,7 @@ class Orders_admin_model extends CI_Model {
 			
 			// Set a message to the CI flashdata so that it is available after the page redirect.
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/zones');
+			redirect('admin/shop/zones');
 		}
 		else
 		{
@@ -696,7 +696,7 @@ class Orders_admin_model extends CI_Model {
 			
 			// Set a message to the CI flashdata so that it is available after the page redirect.
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/shipping');
+			redirect('admin/shop/shipping');
 		}
 		else
 		{
@@ -813,7 +813,7 @@ class Orders_admin_model extends CI_Model {
 			
 			// Set a message to the CI flashdata so that it is available after the page redirect.
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/shipping_rates/'.$shipping_id);
+			redirect('admin/shop/shipping_rates/'.$shipping_id);
 		}
 		else
 		{
@@ -876,7 +876,7 @@ class Orders_admin_model extends CI_Model {
 		
 		// Set a message to the CI flashdata so that it is available after the page redirect.
 		$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-		redirect('admin_library/item_shipping/'.$item_id);
+		redirect('admin/shop/item_shipping/'.$item_id);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1001,7 +1001,7 @@ class Orders_admin_model extends CI_Model {
 			
 			// Set a message to the CI flashdata so that it is available after the page redirect.
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/tax/');
+			redirect('admin/shop/tax/');
 		}
 		else
 		{
@@ -1106,7 +1106,7 @@ class Orders_admin_model extends CI_Model {
 			
 			// Set a message to the CI flashdata so that it is available after the page redirect.
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/item_tax/'.$item_id);
+			redirect('admin/shop/item_tax/'.$item_id);
 		}
 		else
 		{
@@ -1126,6 +1126,7 @@ class Orders_admin_model extends CI_Model {
 	{
 		foreach($this->input->post('update') as $row)
 		{
+
 			// Update item stock levels.
 			$sql_update_stock = array(
 				$this->flexi_cart_admin->db_column('item_stock', 'quantity') => $row['stock_quantity'],
@@ -1146,7 +1147,7 @@ class Orders_admin_model extends CI_Model {
 			
 			$sql_where_price = array('item_id' => $row['id']);
 			
-			$this->db->update('items', $sql_update_price, $sql_where_price);
+			$this->db->update('flexicart_items', $sql_update_price, $sql_where_price);
 			
 			// Set a custom status message stating that data has been successfully updated.
 			$this->flexi_cart_admin->set_status_message('Data successfully updated.', 'public', TRUE);
@@ -1289,7 +1290,7 @@ class Orders_admin_model extends CI_Model {
 			}
 			
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/order_status');
+			redirect('admin/shop/order_status');
 		}
 		else
 		{
@@ -1405,7 +1406,7 @@ class Orders_admin_model extends CI_Model {
 			}
 			
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/currency');
+			redirect('admin/shop/currency');
 		}
 		else
 		{
@@ -1514,7 +1515,7 @@ class Orders_admin_model extends CI_Model {
 				$redirect_page = ($row['type'] == 1) ? 'item_discounts' : 'summary_discounts';
 				
 				$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-				redirect('admin_library/'.$redirect_page);
+				redirect('admin/shop/'.$redirect_page);
 			}
 			else
 			{
@@ -1604,7 +1605,7 @@ class Orders_admin_model extends CI_Model {
 			$redirect_page = ($row['type'] == 1) ? 'item_discounts' : 'summary_discounts';
 			
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/'.$redirect_page);
+			redirect('admin/shop/'.$redirect_page);
 		}
 		else
 		{
@@ -1786,7 +1787,7 @@ class Orders_admin_model extends CI_Model {
 				}
 				
 				$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-				redirect('admin_library/update_discount_group/'.$group_id);
+				redirect('admin/shop/update_discount_group/'.$group_id);
 			}
 			else
 			{
@@ -1873,7 +1874,7 @@ class Orders_admin_model extends CI_Model {
 			}
 			
 			$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-			redirect('admin_library/update_discount_group/'.$group_id);
+			redirect('admin/shop/update_discount_group/'.$group_id);
 		}
 		else
 		{
@@ -1918,7 +1919,7 @@ class Orders_admin_model extends CI_Model {
 		}
 	
 		$query = $this->db->select($sql_select)
-			->get('order_customers');
+			->get('flexicart_order_customers');
 			
 		if ($query->num_rows() > 0)
 		{
@@ -2016,7 +2017,7 @@ class Orders_admin_model extends CI_Model {
 		$this->flexi_cart_admin->insert_db_voucher($user_id, $points_to_convert);
 		
 		$this->session->set_flashdata('message', $this->flexi_cart_admin->get_messages('admin'));
-		redirect('admin_library/user_vouchers/'.$user_id);
+		redirect('admin/shop/user_vouchers/'.$user_id);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	

@@ -1,44 +1,5 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Lite Library Example | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of a flexi carts lite library."/> 
-	<meta name="keywords" content="lite library, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="lite_library">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h2>Lite Library</h2>			
-				<p>This page is an example of the flexi cart <em>'Lite'</em> library. The lite library only contains functions that read data from the cart session or database and can use up to 60% less memory than on pages using the standard or admin libraries.</p>
-				<p>Its lighter memory footprint means the library can display cart data on pages that do not need cart interaction with minimal effect to site performance.</p>
-				<p>Examples of its usage can be seen below displaying the entire contents of the cart or via the 'Mini Cart' tab on the navigation bar of each demo page.</p>
-			</div>		
-		</div>
-	</div>
-
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content main_content_bg clearfix">
-				
-			<?php echo form_open($base_url.'cart/view_cart/');?>						
-				<table id="cart_items">
+<?php echo form_open($base_url.'cart/view_cart/');?>						
+				<table class="table" id="cart_items">
 					<thead>
 						<tr>
 							<th class="spacer_75">Remove</th>
@@ -151,7 +112,7 @@
 									In this example, it is defined via the config file var $config['cart']['items']['columns']['item_quantity'] = 'quantity'
 								-->
 								<input type="text" name="items[<?php echo $i;?>][quantity]" value="<?php echo $row['quantity'];?>" maxlength="3" class="width_50 align_ctr validate_decimal"/>
-								<input type="submit" name="update" value="&plusmn;" title="Update Quantity" class="link_button grey"/>
+								<input type="submit" name="update" value="&plusmn;" title="Update Quantity" class="link_button btn btn-default grey"/>
 							</td>
 							<td class="align_ctr">
 							<?php 
@@ -237,7 +198,7 @@
 					</tfoot>
 				</table>
 										
-				<table id="cart_summary">
+				<table class="table" id="cart_summary">
 					<thead>
 						<tr>
 							<th colspan="2">Cart Summary</th>
@@ -396,10 +357,10 @@
 				
 				<fieldset>
 					<h4>Cart Controls</h4>
-					<input type="submit" name="update" value="Update Cart" class="link_button large"/>
-					<input type="submit" name="clear" value="Clear Cart" class="link_button large"/>
-					<input type="submit" name="destroy" value="Destroy Cart" class="link_button large grey tooltip_trigger" title="Destroy Cart will reset the cart to default values."/>
-					<input type="submit" name="checkout" value="Checkout" class="link_button large red"/>
+					<input type="submit" name="update" value="Update Cart" class="link_button btn btn-default large"/>
+					<input type="submit" name="clear" value="Clear Cart" class="link_button btn btn-default large"/>
+					<input type="submit" name="destroy" value="Destroy Cart" class="link_button btn btn-default large grey tooltip_trigger" title="Destroy Cart will reset the cart to default values."/>
+					<input type="submit" name="checkout" value="Checkout" class="link_button btn btn-default large red"/>
 				</fieldset>
 			<?php echo form_close();?>
 
@@ -407,11 +368,5 @@
 	</div>
 
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 	
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

@@ -1,50 +1,7 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Location Menu Demos | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts location menu demos."/> 
-	<meta name="keywords" content="location menu demos, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="location_menu_demo">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Location Menu Demos</h1>
-				<p>These two dependent select menu examples are different from the shipping location select menu on the example cart page as the data on the page should only be updated when the 'Update' button is pressed, rather than the method used on the shopping cart that uses ajax to reload the page when a shipping option is changed.</p>
-				<p>The two methods listed here have advantages over each other, the 'tiered' example is easier to read, but requires JavaScript and more page space, the 'inline' example does not require JavaScript and is smaller in size, but at the cost of readability.</p>
-				<p>This demo includes some example JavaScript functions to help with the functionality of the 'tiered' menu method.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-			
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<div class="w100 frame">							
-				<?php echo form_open(current_url());?>						
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>						
 					<ul>
 						<li>
 							<h5>Tiered Location Menus - JavaScript Required</h5>
@@ -97,12 +54,7 @@
 		</div>
 	</div>
 	
-	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
-
-<!-- Scripts -->
-<?php $this->load->view('includes/scripts'); ?> 
+	<!-- Footer -->  <script type="text/javascript" src="<?php echo base_url() ?>assets/flexicart/js/admin_global.js"></script>
 <script>
 $(function() {
 	// Initialise each of the pages dependent menus, starting with 'row_country' as the top level menu.
@@ -127,5 +79,3 @@ function initialise_dependent_menu(elem_id)
 }
 </script>
 
-</body>
-</html>

@@ -59,12 +59,5 @@
 		</div>
 	</div>
 	
-	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
+	<!-- Footer -->   
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
-
-</body>
-</html>

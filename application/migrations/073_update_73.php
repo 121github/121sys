@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Migration_update_72 extends CI_Migration
+class Migration_update_73 extends CI_Migration
 {
 
     public function __construct()
@@ -11,16 +11,12 @@ class Migration_update_72 extends CI_Migration
 
     public function up()
     {
-        $this->firephp->log("starting migration 72");
-		
-
+        $this->firephp->log("starting migration 73");
 $this->db->query("replace INTO `datatables_columns` (`column_id`, `column_title`, `column_alias`, `column_select`, `column_order`, `column_group`, `column_table`) VALUES
-(58, 'Last Comment', 'last_comments', 'last_comments.comments', 'last_comments.comments', 'Record', 'last_comments')
+(59, 'Contact Email', 'contact_email', 'con.email', 'con.email', 'Contact', 'contacts')
 ");
-$this->db->query("replace INTO `datatables_table_columns` (`table_id`, `column_id`) VALUES ('1', '58'), ('3', '58')");
+$this->db->query("replace INTO `datatables_table_columns` (`table_id`, `column_id`) VALUES ('1', '59'), ('3', '59')");
 	
 	}
 	
 }
-
-

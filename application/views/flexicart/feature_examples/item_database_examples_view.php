@@ -29,7 +29,7 @@
 				<h2>Add Item to Cart Examples</h2>
 				<p>Items can be added to the cart using either data <a href="<?php echo $base_url; ?>lite_library/item_link_examples">hard coded</a> into a model file or data retrieved from a <a href="<?php echo $base_url; ?>lite_library/item_form_examples">html form</a> or a database query.</p>
 				<p>This demo page uses a custom item table that is then linked to flexi cart, features like item shipping and tax rates, discounts and item stock can then be setup to interact with the custom item table and the shopping cart.</p>
-				<p>As the custom item table is setup in this demo, flexi carts features can be applied 'live' to these 5 demo items using functions in the <a href="<?php echo $base_url; ?>admin_library/">Admin Library</a>.</p>
+				<p>As the custom item table is setup in this demo, flexi carts features can be applied 'live' to these 5 demo items using functions in the <a href="<?php echo $base_url; ?>admin/shop/">Admin Library</a>.</p>
 			</div>		
 		</div>
 	</div>
@@ -68,7 +68,7 @@
 			<a name="item<?php echo $item['item_id']; ?>"></a>
 			<div class="w100 frame">
 				<h3 class="heading">Example <?php echo $item['item_name']; ?></h3>
-				<table>
+				<table class="table" >
 					<thead>
 						<tr>
 							<th class="spacer_25 tooltip_trigger" 
@@ -116,7 +116,7 @@
 					<tbody>
 						<tr>
 							<td>
-								<a href="<?php echo $base_url; ?>admin_library/items">
+								<a href="<?php echo $base_url; ?>admin/shop/items">
 									<img src="<?php echo $includes_dir; ?>images/edit_data.png"/>
 								</a>
 							</td>
@@ -145,16 +145,16 @@
 								<?php echo $this->flexi_cart->get_item_stock_quantity($item['item_id']); ?>
 							</td>
 							<td>
-								<a href="<?php echo $base_url; ?>standard_library/insert_database_item_to_cart/<?php echo $item['item_id']; ?>" class="link_button">Add Item</a>
+								<a href="<?php echo $base_url; ?>standard_library/insert_database_item_to_cart/<?php echo $item['item_id']; ?>" class="link_button btn btn-default">Add Item</a>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 				
 				<h6>Discounts Available for <?php echo $item['item_name']; ?></h6>
-				<p><a href="<?php echo $base_url; ?>admin_library/item_discounts">Insert a new item discount</a></p>
+				<p><a href="<?php echo $base_url; ?>admin/shop/item_discounts">Insert a new item discount</a></p>
 				<small>Note: If applying a discount to a category, <?php echo $item['item_name'].' is linked to '.$item['item_category_name']; ?></small>
-				<table>
+				<table class="table" >
 					<thead>
 						<tr>
 							<th class="spacer_25 tooltip_trigger" 
@@ -194,7 +194,7 @@
 					?>
 						<tr>
 							<td>
-								<a href="<?php echo $base_url; ?>admin_library/update_discount/<?php echo $discount_data[$this->flexi_cart->db_column('discounts', 'id')];?>">
+								<a href="<?php echo $base_url; ?>admin/shop/update_discount/<?php echo $discount_data[$this->flexi_cart->db_column('discounts', 'id')];?>">
 									<img src="<?php echo $includes_dir; ?>images/edit_data.png"/>
 								</a>
 							</td>
@@ -235,14 +235,7 @@
 		</div>
 	</div>
 	
-	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
-
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?>
-
-<!-- Discount countdown demo created using the jQuery Countdown plugin found @ http://keith-wood.name/countdown.html -->
+	<!-- Footer --><!-- Discount countdown demo created using the jQuery Countdown plugin found @ http://keith-wood.name/countdown.html -->
 <script src="<?php echo $includes_dir;?>js/jquery.countdown.min.js?v=1.5.9"></script>
 <script>
 $(function () {
@@ -256,5 +249,3 @@ $(function () {
 });
 </script>
 
-</body>
-</html>

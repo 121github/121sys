@@ -619,7 +619,7 @@ class Flexi_cart_admin extends Flexi_cart_lite
 			$this->CI->flexi->cart_database['item_stock']['columns']['id'] : $this->CI->flexi->cart_database['item_stock']['columns']['item'];
 		
 		return $this->CI->flexi_cart_admin_model
-			->get_table_data($this->CI->flexi->cart_database['item_stock']['table'], $sql_select, $sql_where, $default_pk, 'item_stock');
+			->get_table_data($this->CI->flexi->cart_database['item_stock']['table'], $sql_select, $sql_where, $default_pk, 'flexicart_item_stock');
 	}
 
 	###+++++++++++++++++++++++++###
@@ -652,7 +652,7 @@ class Flexi_cart_admin extends Flexi_cart_lite
 	 */
 	public function insert_db_item_stock($sql_insert = FALSE)
 	{		
-		return $this->CI->flexi_cart_admin_model->insert_table_data($this->CI->flexi->cart_database['item_stock']['table'], $sql_insert, 'item_stock');
+		return $this->CI->flexi_cart_admin_model->insert_table_data($this->CI->flexi->cart_database['item_stock']['table'], $sql_insert, 'flexicart_item_stock');
 	}
 
 	###+++++++++++++++++++++++++###
@@ -666,7 +666,7 @@ class Flexi_cart_admin extends Flexi_cart_lite
 		$default_pk = ($this->CI->flexi->cart_database['item_stock']['columns']['id']) ? 
 			$this->CI->flexi->cart_database['item_stock']['columns']['id'] : $this->CI->flexi->cart_database['item_stock']['columns']['item'];
 		
-		return $this->CI->flexi_cart_admin_model->update_table_data($this->CI->flexi->cart_database['item_stock']['table'], $sql_update, $sql_where, $default_pk, 'item_stock');
+		return $this->CI->flexi_cart_admin_model->update_table_data($this->CI->flexi->cart_database['item_stock']['table'], $sql_update, $sql_where, $default_pk, 'flexicart_item_stock');
 	}
 
 	###+++++++++++++++++++++++++###
@@ -680,7 +680,7 @@ class Flexi_cart_admin extends Flexi_cart_lite
 		$default_pk = ($this->CI->flexi->cart_database['item_stock']['columns']['id']) ? 
 			$this->CI->flexi->cart_database['item_stock']['columns']['id'] : $this->CI->flexi->cart_database['item_stock']['columns']['item'];
 
-		return $this->CI->flexi_cart_admin_model->delete_table_data($this->CI->flexi->cart_database['item_stock']['table'], $sql_where, $default_pk, 'item_stock');
+		return $this->CI->flexi_cart_admin_model->delete_table_data($this->CI->flexi->cart_database['item_stock']['table'], $sql_where, $default_pk, 'flexicart_item_stock');
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	

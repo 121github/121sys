@@ -1,57 +1,7 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Insert Discount | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts insert discount function."/> 
-	<meta name="keywords" content="insert, discount, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="discount_insert">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Discounts</h1>
-				<p>Discounts can be setup with a wide range of rule conditions that can then be applied to specific items, groups of items or across the entire cart.</p>
-				<p>Discount activation rules can be set to check the value and quantity of items in the cart, a customers location and up to three custom statuses within the cart. For example whether a customer has logged in, or is regarded as a new customer.</p>
-				<p>Other options include activation and expiry dates, usage limits, voiding of reward points and whether discounts can be combined with other discounts.</p>
-				<p>To comply with tax laws in different countries and states, the method of calculating tax on discounted items can be set using one of three methods.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-			
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<h1>Insert New Discount</h1>
-			<p>
-				<a href="<?php echo $base_url; ?>admin_library/item_discounts">Manage Item Discounts</a> | 
-				<a href="<?php echo $base_url; ?>admin_library/summary_discounts">Manage Summary Discounts</a> | 
-				<a href="<?php echo $base_url; ?>admin_library/discount_groups">Manage Item Discount Groups</a>
-			</p>
-						
-			<?php echo form_open(current_url());?>
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>
 				<fieldset>
 					<legend>Type / Location</legend>
 					<ul class="position_left">
@@ -335,24 +285,18 @@
 					
 				<fieldset>
 					<legend>Insert Discount</legend>
-					<input type="submit" name="insert_discount" value="Insert Discount" class="link_button large"/>
+					<input type="submit" name="insert_discount" value="Insert Discount" class="link_button btn btn-default large"/>
 				</fieldset>
 			<?php echo form_close();?>						
 
 		</div>
 	</div>
 	
-	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
-
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
+	<!-- Footer -->
+   <script type="text/javascript" src="<?php echo base_url() ?>assets/flexicart/js/admin_global.js"></script>
 <script>
 $(function() {
 	dependent_menu('discount_type', 'discount_method', false, true);
 });
 </script>
 
-</body>
-</html>

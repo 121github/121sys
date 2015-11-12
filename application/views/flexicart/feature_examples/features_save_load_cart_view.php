@@ -50,7 +50,7 @@
 						By clicking the button below, the current carts session data will be saved to the sites database. <br/>
 						This cart data will then be listed in the 'Load Saved Cart Data' table below and can be reloaded into the users browser to continue shopping.
 					</p>
-					<a href="<?php echo $base_url; ?>standard_library/save_cart_data" class="link_button">Save Cart Data</a>
+					<a href="<?php echo $base_url; ?>standard_library/save_cart_data" class="link_button btn btn-default">Save Cart Data</a>
 					<small>Note: Any cart data saved will be viewable by other users to this site until either deleted, or until the sites database is restored to default settings (Every few hours).</small>
 				</div>
 				
@@ -60,7 +60,7 @@
 						The table below lists all carts sessions that have been saved to the database.<br/>
 						To reload a cart session, click on the date and time that the cart was saved. Cart sessions can be permanently deleted by clicking 'Delete'.
 					</p>
-					<table>
+					<table class="table" >
 						<thead>
 							<tr>
 								<th>
@@ -106,11 +106,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

@@ -1,53 +1,11 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Manage Reward Vouchers | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts reward voucher management functions."/> 
-	<meta name="keywords" content="reward vouchers, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="vouchers">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | User Reward Vouchers</h1>
-				<p>Users can earn reward points when they purchase items. When they earn enough points, they can be converted to a voucher worth a monetary value.</p>
-				<p>The voucher is stored as a code in the database that when entered on their next purchase, will deduct the vouchers value from their cart total.</p>
-				<p>The conversion and monetary value of reward points and vouchers can all be set via the cart configuration.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-		
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<?php echo form_open(current_url());?>
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>
 				<h1>Reward Vouchers</h1>
-				<p><a href="<?php echo $base_url; ?>admin_library/user_reward_points">Manage Reward Points</a></p>
+				<p><a href="<?php echo $base_url; ?>admin/shop/user_reward_points">Manage Reward Points</a></p>
 				
-				<table>
+				<table class="table" >
 					<thead>
 						<tr>
 							<th class="tooltip_trigger"
@@ -114,7 +72,7 @@
 					<tfoot>
 						<tr>
 							<td colspan="6">
-								<input type="submit" name="update_vouchers" value="Update Vouchers" class="link_button large"/>
+								<input type="submit" name="update_vouchers" value="Update Vouchers" class="link_button btn btn-default large"/>
 							</td>
 						</tr>
 					</tfoot>
@@ -134,11 +92,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>

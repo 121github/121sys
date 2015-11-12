@@ -5,6 +5,8 @@ class Flexicart_admin extends CI_Controller {
 	function __construct() 
 	{
 		parent::__construct();
+		        user_auth_check(false);
+        $this->_campaigns = campaign_access_dropdown();
 		// To load the CI benchmark and memory usage profiler - set 1==1.
 		if (1==2) 
 		{
@@ -255,7 +257,7 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');	
 		
-		$this->load->view('flexicart/admin_examples/orders/order_details_update_view', $this->data);
+		$this->template->load('default','flexicart/admin_examples/orders/order_details_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -272,7 +274,7 @@ class Flexicart_admin extends CI_Controller {
 		// If a discount id is submitted, then only that specific discount will be unset, if submitted as FALSE, all discounts are unset.
 		$this->flexi_cart->unset_discount($discount_id);
 		
-		redirect('admin_library/update_order_details/'.$order_number);
+		redirect('admin/shop/update_order_details/'.$order_number);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -289,7 +291,7 @@ class Flexicart_admin extends CI_Controller {
 		// If a surcharge id is submitted, then only that specific surcharge will be unset, if submitted as FALSE, all surcharges will be unset.
 		$this->flexi_cart->unset_surcharge($surcharge_id);
 		
-		redirect('admin_library/update_order_details/'.$order_number);
+		redirect('admin/shop/update_order_details/'.$order_number);
 	}	
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -322,7 +324,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 
-		$this->load->view('flexicart/admin_examples/locations/location_type_update_view', $this->data);
+		$this->data['title'] = "Location types";
+$this->template->load('default','flexicart/admin_examples/locations/location_type_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -344,7 +347,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get an array of all location types.		
 		$this->data['location_type_data'] = $this->flexi_cart_admin->get_db_location_type_array();
 
-		$this->load->view('flexicart/admin_examples/locations/location_type_insert_view', $this->data);
+		$this->data['title'] = "Insert location type";
+$this->template->load('default','flexicart/admin_examples/locations/location_type_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -382,7 +386,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 		
-		$this->load->view('flexicart/admin_examples/locations/location_update_view', $this->data);
+		$this->data['title'] = "Locations";
+$this->template->load('default','flexicart/admin_examples/locations/location_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -413,7 +418,8 @@ class Flexicart_admin extends CI_Controller {
 		$sql_where = array($this->flexi_cart_admin->db_column('location_type', 'id') => $location_type_id);
 		$this->data['location_type_data'] = $this->flexi_cart_admin->get_db_location_type_row_array(FALSE, $sql_where);
 		
-		$this->load->view('flexicart/admin_examples/locations/location_insert_view', $this->data);
+		$this->data['title'] = "Insert location";
+$this->template->load('default','flexicart/admin_examples/locations/location_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -437,7 +443,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
-		$this->load->view('flexicart/admin_examples/locations/zone_update_view', $this->data);
+		$this->data['title'] = "";
+$this->template->load('default','flexicart/admin_examples/locations/zone_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -456,7 +463,8 @@ class Flexicart_admin extends CI_Controller {
 			$this->orders_admin_model->demo_insert_zones();
 		}
 
-		$this->load->view('flexicart/admin_examples/locations/zone_insert_view', $this->data);
+		$this->data['title'] = "";
+$this->template->load('default','flexicart/admin_examples/locations/zone_insert_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -494,7 +502,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 		
-		$this->load->view('flexicart/admin_examples/shipping/shipping_update_view', $this->data);
+		$this->data['title'] = "Shipping";
+$this->template->load('default','flexicart/admin_examples/shipping/shipping_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -520,7 +529,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get an array of all shipping zones.
 		$this->data['shipping_zones'] = $this->flexi_cart_admin->location_zones('shipping');
 	
-		$this->load->view('flexicart/admin_examples/shipping/shipping_insert_view', $this->data);
+		$this->data['title'] = "Insert shipping";
+$this->template->load('default','flexicart/admin_examples/shipping/shipping_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -550,7 +560,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
-		$this->load->view('flexicart/admin_examples/shipping/shipping_rate_update_view', $this->data);
+		$this->data['title'] = "Shipping rate";
+$this->template->load('default','flexicart/admin_examples/shipping/shipping_rate_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -573,7 +584,8 @@ class Flexicart_admin extends CI_Controller {
 		$sql_where = array($this->flexi_cart_admin->db_column('shipping_options', 'id') => $shipping_id);
 		$this->data['shipping_data'] = $this->flexi_cart_admin->get_db_shipping_row_array(FALSE, $sql_where);
 	
-		$this->load->view('flexicart/admin_examples/shipping/shipping_rate_insert_view', $this->data);
+		$this->data['title'] = "Insert shipping rate";
+$this->template->load('default','flexicart/admin_examples/shipping/shipping_rate_insert_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -601,7 +613,7 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get the row array of the demo item filtered by the id in the url.
 		$sql_where = array('item_id' => $item_id);
-		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('items', FALSE, $sql_where);
+		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('flexicart_items', FALSE, $sql_where);
 
 		// Get an array of all item shipping rules filtered by the id in the url.		
 		$sql_where = array($this->flexi_cart_admin->db_column('item_shipping', 'item') => $item_id);
@@ -610,7 +622,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
-		$this->load->view('flexicart/admin_examples/items/item_shipping_update_view', $this->data);
+		$this->data['title'] = "";
+$this->template->load('default','flexicart/admin_examples/items/item_shipping_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -639,9 +652,10 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get the row array of the demo item filtered by the id in the url.
 		$sql_where = array('item_id' => $item_id);
-		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('items', FALSE, $sql_where);
+		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('flexicart_items', FALSE, $sql_where);
 	
-		$this->load->view('flexicart/admin_examples/items/item_shipping_insert_view', $this->data);
+		$this->data['title'] = "";
+$this->template->load('default','flexicart/admin_examples/items/item_shipping_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -679,7 +693,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
-		$this->load->view('flexicart/admin_examples/tax/tax_update_view', $this->data);
+		$this->data['title'] = "Tax";
+$this->template->load('default','flexicart/admin_examples/tax/tax_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -705,7 +720,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get an array of all tax zones.
 		$this->data['tax_zones'] = $this->flexi_cart_admin->location_zones('tax');
 
-		$this->load->view('flexicart/admin_examples/tax/tax_insert_view', $this->data);
+		$this->data['title'] = "Insert tax";
+$this->template->load('default','flexicart/admin_examples/tax/tax_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -733,7 +749,7 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get the row array of the demo item filtered by the id in the url.
 		$sql_where = array('item_id' => $item_id);
-		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('items', FALSE, $sql_where);
+		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('flexicart_items', FALSE, $sql_where);
 
 		// Get an array of all the item tax rates filtered by the id in the url.
 		$sql_where = array($this->flexi_cart_admin->db_column('item_tax', 'item') => $item_id);
@@ -742,7 +758,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
 	
-		$this->load->view('flexicart/admin_examples/items/item_tax_update_view', $this->data);
+		$this->data['title'] = "Item tax";
+$this->template->load('default','flexicart/admin_examples/items/item_tax_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -770,9 +787,10 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get the row array of the demo item filtered by the id in the url.
 		$sql_where = array('item_id' => $item_id);
-		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('items', FALSE, $sql_where);
+		$this->data['item_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('flexicart_items', FALSE, $sql_where);
 	
-		$this->load->view('flexicart/admin_examples/items/item_tax_insert_view', $this->data);
+		$this->data['title'] = "Insert item tax";
+$this->template->load('default','flexicart/admin_examples/items/item_tax_insert_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -810,8 +828,8 @@ class Flexicart_admin extends CI_Controller {
 	
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
-
-		$this->load->view('flexicart/admin_examples/discounts/discounts_view', $this->data);
+		$this->data['title'] = "Discounts";
+$this->template->load('default','flexicart/admin_examples/discounts/discounts_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -839,7 +857,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
 
-		$this->load->view('flexicart/admin_examples/discounts/discounts_view', $this->data);
+		$this->data['title'] = "Summary Discounts";
+$this->template->load('default','flexicart/admin_examples/discounts/discounts_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -878,7 +897,7 @@ class Flexicart_admin extends CI_Controller {
 		$this->data['discount_groups'] = $this->flexi_cart_admin->get_db_discount_group_array();
 		
 		// Get an array of all demo items.		
-		$this->data['items'] = $this->flexi_cart_admin->get_db_table_data_array('items');
+		$this->data['items'] = $this->flexi_cart_admin->get_db_table_data_array('flexicart_items');
 
 		// Get the row array of the discount filtered by the id in the url.
 		$sql_where = array($this->flexi_cart_admin->db_column('discounts', 'id') => $discount_id);
@@ -886,8 +905,8 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
-		
-		$this->load->view('flexicart/admin_examples/discounts/discount_update_view', $this->data);
+		$this->data['title'] = "Discount Codes";
+		$this->template->load('default','flexicart/admin_examples/discounts/discount_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -926,9 +945,9 @@ class Flexicart_admin extends CI_Controller {
 		$this->data['discount_groups'] = $this->flexi_cart_admin->get_db_discount_group_array();
 		
 		// Get an array of all demo items.		
-		$this->data['items'] = $this->flexi_cart_admin->get_db_table_data_array('items');
-	
-		$this->load->view('flexicart/admin_examples/discounts/discount_insert_view', $this->data);
+		$this->data['items'] = $this->flexi_cart_admin->get_db_table_data_array('flexicart_items');
+		$this->data['title'] = "Insert Discount";
+		$this->template->load('default','flexicart/admin_examples/discounts/discount_insert_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -951,8 +970,8 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
-	
-		$this->load->view('flexicart/admin_examples/discounts/discount_groups_view', $this->data);
+	$this->data['title'] = "Discount Groups";
+		$this->template->load('default','flexicart/admin_examples/discounts/discount_groups_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -977,15 +996,15 @@ class Flexicart_admin extends CI_Controller {
 		
 		// Get an array of all the discount group items filtered by the id in the url.
 		// Using flexi cart SQL functions, join the demo item table with the discount group items and then order the data by item id.
-		$this->flexi_cart_admin->sql_join('items', 'item_id = '.$this->flexi_cart_admin->db_column('discount_group_items', 'item')); 
+		$this->flexi_cart_admin->sql_join('flexicart_items', 'item_id = '.$this->flexi_cart_admin->db_column('discount_group_items', 'item')); 
 		$this->flexi_cart_admin->sql_order_by('item_id');
 		$sql_where = array($this->flexi_cart_admin->db_column('discount_group_items', 'group') => $group_id);		
 		$this->data['group_item_data'] = $this->flexi_cart_admin->get_db_discount_group_item_array(FALSE, $sql_where);
 		
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
-		
-		$this->load->view('flexicart/admin_examples/discounts/discount_group_update_view', $this->data);
+		$this->data['title'] = "Update discount group";
+		$this->template->load('default','flexicart/admin_examples/discounts/discount_group_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1003,8 +1022,8 @@ class Flexicart_admin extends CI_Controller {
 			$this->load->model('orders_admin_model');
 			$this->orders_admin_model->demo_insert_discount_group();
 		}
-	
-		$this->load->view('flexicart/admin_examples/discounts/discount_group_insert_view', $this->data);
+	$this->data['title'] = "Insert discount group";
+		$this->template->load('default','flexicart/admin_examples/discounts/discount_group_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1026,8 +1045,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get the row array of the discount group filtered by the id in the url.
 		$sql_where = array($this->flexi_cart_admin->db_column('discount_groups', 'id') => $group_id);
 		$this->data['group_data'] = $this->flexi_cart_admin->get_db_discount_group_row_array(FALSE, $sql_where);
-				
-		$this->load->view('flexicart/admin_examples/discounts/discount_group_items_insert_view', $this->data);
+		$this->data['title'] = "Discount groups";		
+		$this->template->load('default','flexicart/admin_examples/discounts/discount_group_items_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1049,8 +1068,8 @@ class Flexicart_admin extends CI_Controller {
 		
 		// Get an array of all demo users and their related reward points from a custom demo model function.
 		$this->data['user_data'] = $this->orders_admin_model->demo_reward_point_summary();
-		
-		$this->load->view('flexicart/admin_examples/reward_points/user_reward_points_view', $this->data);
+		$this->data['title'] = "Reward points";
+		$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_points_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1066,7 +1085,7 @@ class Flexicart_admin extends CI_Controller {
 		
 		// Get the row array of the demo users filtered by the id in the url.
 		$sql_where = array('user_id' => $user_id);
-		$this->data['user_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('demo_users', FALSE, $sql_where);
+		$this->data['user_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('flexicart_customers', FALSE, $sql_where);
 	
 		// Get an array of all reward points for a user filtered by the id in the url.
 		// The 'get_user_reward_points()' function only returns the minimum required fields, therefore define the other required table fields via an SQL SELECT statement.
@@ -1080,8 +1099,8 @@ class Flexicart_admin extends CI_Controller {
 		
 		// Call a custom function that returns a nested array of reward voucher codes and the reward point data used to create the voucher.
 		$this->data['points_converted_data'] = $this->orders_admin_model->demo_converted_reward_point_history($user_id);
-		
-		$this->load->view('flexicart/admin_examples/reward_points/user_reward_point_history_view', $this->data);
+		$this->data['title'] = "Reward history";
+		$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_point_history_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1102,18 +1121,18 @@ class Flexicart_admin extends CI_Controller {
 	
 		// Get the row array of the demo user filtered by the id in the url.
 		$sql_where = array('user_id' => $user_id);
-		$this->data['user_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('demo_users', FALSE, $sql_where);
+		$this->data['user_data'] = $this->flexi_cart_admin->get_db_table_data_row_array('flexicart_customers', FALSE, $sql_where);
 
 		// Get an array of all the reward vouchers filtered by the id in the url.
 		// Using flexi cart SQL functions, join the demo user table with the discount table.
 		$sql_where = array($this->flexi_cart_admin->db_column('discounts', 'user') => $user_id);
-		$this->flexi_cart_admin->sql_join('demo_users', 'user_id = '.$this->flexi_cart_admin->db_column('discounts', 'user'));
+		$this->flexi_cart_admin->sql_join('flexicart_customers', 'user_id = '.$this->flexi_cart_admin->db_column('discounts', 'user'));
 		$this->data['voucher_data'] = $this->flexi_cart_admin->get_db_voucher_array(FALSE, $sql_where);
 		
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
-		
-		$this->load->view('flexicart/admin_examples/reward_points/user_vouchers_view', $this->data);
+		$this->data['title'] = "Reward vouchers";
+		$this->template->load('default','flexicart/admin_examples/reward_points/user_vouchers_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1133,13 +1152,13 @@ class Flexicart_admin extends CI_Controller {
 	
 		// Get an array of all reward vouchers.
 		// Using flexi cart SQL functions, join the demo users table with the discount table.
-		$this->flexi_cart_admin->sql_join('demo_users', 'user_id = '.$this->flexi_cart_admin->db_column('discounts', 'user'));
+		$this->flexi_cart_admin->sql_join('flexicart_customers', 'user_id = '.$this->flexi_cart_admin->db_column('discounts', 'user'));
 		$this->data['voucher_data'] = $this->flexi_cart_admin->get_db_voucher_array();
 
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
-		
-		$this->load->view('flexicart/admin_examples/reward_points/vouchers_view', $this->data);
+		$this->data['title'] = "Vouchers";
+		$this->template->load('default','flexicart/admin_examples/reward_points/vouchers_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1168,8 +1187,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get the conversion tier values for converting reward points to vouchers.
 		$conversion_tiers = $this->data['user_data'][$this->flexi_cart_admin->db_column('reward_points', 'total_points_active')];
 		$this->data['conversion_tiers'] = $this->flexi_cart_admin->get_reward_point_conversion_tiers($conversion_tiers);
-		
-		$this->load->view('flexicart/admin_examples/reward_points/user_reward_point_convert_view', $this->data);
+		$this->data['title'] = "Convert Rewards";
+		$this->template->load('default','flexicart/admin_examples/reward_points/user_reward_point_convert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1194,8 +1213,8 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
-		
-		$this->load->view('flexicart/admin_examples/currency/currency_update_view', $this->data);
+		$this->data['title']="Currency";
+		$this->template->load('default','flexicart/admin_examples/currency/currency_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1213,8 +1232,8 @@ class Flexicart_admin extends CI_Controller {
 			$this->load->model('orders_admin_model');
 			$this->orders_admin_model->demo_insert_currency();
 		}
-
-		$this->load->view('flexicart/admin_examples/currency/currency_insert_view', $this->data);
+$this->data['title']="Insert currency";
+		$this->template->load('default','flexicart/admin_examples/currency/currency_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1239,8 +1258,8 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get any status message that may have been set.
 		$this->data['message'] = (!isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];
-		
-		$this->load->view('flexicart/admin_examples/orders/order_status_update_view', $this->data);
+		$this->data['title']="Order Status";
+		$this->template->load('default','flexicart/admin_examples/orders/order_status_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###
@@ -1258,8 +1277,8 @@ class Flexicart_admin extends CI_Controller {
 			$this->load->model('orders_admin_model');
 			$this->orders_admin_model->demo_insert_order_status();
 		}
-
-		$this->load->view('flexicart/admin_examples/orders/order_status_insert_view', $this->data);
+		$this->data['title']="Insert order status";
+		$this->template->load('default','flexicart/admin_examples/orders/order_status_insert_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1284,8 +1303,8 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
-		
-		$this->load->view('flexicart/admin_examples/config/config_update_view', $this->data);
+		$this->data['title']="Config";
+		$this->template->load('default','flexicart/admin_examples/config/config_update_view', $this->data);
 	}
 
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1325,8 +1344,8 @@ class Flexicart_admin extends CI_Controller {
 
 		// Get any status message that may have been set.
 		$this->data['message'] = $this->session->flashdata('message');
-		
-		$this->load->view('flexicart/admin_examples/config/defaults_update_view', $this->data);
+		$this->data['title'] = "Default Options";
+		$this->template->load('default','flexicart/admin_examples/config/defaults_update_view', $this->data);
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	
@@ -1345,8 +1364,8 @@ class Flexicart_admin extends CI_Controller {
 		// Get an array of location data formatted with all sub-locations displayed 'tiered' into the location type groups, so locations can be listed 
 		// over multiple html select menus.
 		$this->data['locations_tiered'] = $this->flexi_cart_admin->locations_tiered();
-
-		$this->load->view('flexicart/admin_examples/locations/location_menu_demo_view', $this->data);		
+		$this->data['title'] = "Location menu demo";
+		$this->template->load('default','flexicart/admin_examples/locations/location_menu_demo_view', $this->data);		
 	}
 	
 	###++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++###	

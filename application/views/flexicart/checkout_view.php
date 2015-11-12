@@ -1,49 +1,7 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Cart Checkout | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of a cart checkout page."/> 
-	<meta name="keywords" content="checkout, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="checkout">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h2>Checkout</h2>
-				<p>The checkout process on e-commerce sites can vary from site to site. Some sites incorporate 1-page-checkouts, others collect user data over different pages and then redirect the user to a third party online payment processor.</p>
-				<p>Rather than flexi cart being an 'all-in-one' rigid store, that dictates how the flow of the site must run, it provides the tools that can be used to build whatever layout and flow that the client requests.</p>
-				<p>This page acts as a simple example of collecting the customers details and then saving them to the database along with their cart details.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-			
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<?php echo form_open(current_url());?>						
+			<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>						
 				<fieldset class="w100">
 					<legend>Billing Details</legend>
 					<ul class="position_left">
@@ -174,8 +132,8 @@
 								
 				<fieldset class="w100">
 					<legend>Complete Checkout</legend>
-					<a href="<?php echo $base_url; ?>standard_library/view_cart" class="link_button large"/>Edit Cart</a>
-					<input type="submit" name="save_order" value="Save Order to Database" class="link_button large red"/>
+					<a href="<?php echo $base_url; ?>standard_library/view_cart" class="link_button btn btn-default large"/>Edit Cart</a>
+					<input type="submit" name="save_order" value="Save Order to Database" class="link_button btn btn-default large red"/>
 					<small>Note: Any cart data saved will be viewable by other users to this site until the sites database is restored to default settings (Every few hours).</small>
 				</fieldset>
 			<?php echo form_close();?>
@@ -184,13 +142,7 @@
 		</div>
 	</div>
 	
-	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
-
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
-<script>
+	<!-- Footer --><script>
 $(function() 
 {
 	// Toggle show/hide cart session array
@@ -212,5 +164,3 @@ $(function()
 });
 </script>
 
-</body>
-</html>

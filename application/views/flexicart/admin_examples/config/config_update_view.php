@@ -1,52 +1,7 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
-<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	<title>Update Cart Configuration | flexi cart | A Shopping Cart Library for CodeIgniter</title>
-	<meta name="description" content="A live working demo of flexi carts update cart configuration function."/> 
-	<meta name="keywords" content="update, cart configuration, flexi cart, shopping cart, codeigniter"/>
-	<?php $this->load->view('includes/head'); ?> 
-</head>
-
-<body id="config_update">
-
-<div id="body_wrap">
-	<!-- Header -->  
-	<?php $this->load->view('includes/header'); ?> 
-
-	<!-- Demo Navigation -->
-	<?php $this->load->view('includes/demo_header'); ?> 
-	
-	<!-- Intro Content -->
-	<div class="content_wrap intro_bg">
-		<div class="content clearfix">
-			<div class="intro_text">
-				<h1>Admin Library | Cart Configuration</h1>
-				<p>Many of the features of flexi cart can be controlled via a series of configuration settings, that can define how specific internal functions perform automatic operations to data within the cart.</p>
-				<p>The configuration of the cart can be set either via the hand coded configuration file located on the server, or via the configuration database table.</p>
-				<p>By defining configuration settings via the database, they can be edited without requiring access to the server.</p>
-			</div>		
-		</div>
-	</div>
-	
-	<!-- Main Content -->
-	<div class="content_wrap main_content_bg">
-		<div class="content clearfix">
-			
-		<?php if (! empty($message)) { ?>
-			<div id="message">
-				<?php echo $message; ?>
-			</div>
-		<?php } ?>
-										
-			<h1>Manage Cart Configuration</h1>
-			<p><a href="<?php echo $base_url; ?>admin_library/defaults">Manage Cart Defaults</a></p>
-
-			<?php echo form_open(current_url());?>
+		<div class="panel panel-primary">
+            <div class="panel-heading"><?php echo $title ?></div>
+<div class="panel-body">
+<?php echo form_open(current_url());?>
 				<fieldset>
 					<legend>Orders</legend>
 					<p class="highlight_red">Note: Click the input labels for further information on each config setting.</p>
@@ -337,7 +292,7 @@
 						<strong class="highlight_red">Note: For the purposes of this demo, when the cart configuration is updated, the cart contents and all settings are destroyed, so that the new config settings can be set.</strong>
 					</p>
 
-					<input type="submit" name="update_config" value="Update Cart Configuration" class="link_button large"/>
+					<input type="submit" name="update_config" value="Update Cart Configuration" class="link_button btn btn-default large"/>
 				</fieldset>
 			<?php echo form_close();?>									
 
@@ -345,11 +300,5 @@
 	</div>
 	
 	<!-- Footer -->  
-	<?php $this->load->view('includes/footer'); ?> 
-</div>
 
-<!-- Scripts -->  
-<?php $this->load->view('includes/scripts'); ?> 
 
-</body>
-</html>
