@@ -91,7 +91,9 @@ var outcome = {
             $('.current-campaign').html(current_campaign);
         });
     },
-    outcome_panel: function (outcome) {
+    outcome_panel: function () {
+        var results = [];
+
         $.ajax({
             url: helper.baseUrl + 'reports/outcome_data',
             type: "POST",
@@ -102,6 +104,7 @@ var outcome = {
             $tbody = $('.outcome-data .ajax-table').find('tbody');
             $tbody.empty();
             if (response.success) {
+                results = response;
                 $('#outcome-name').text(response.outcome);
                 $.each(response.data, function (i, val) {
                     if (response.data.length) {
@@ -151,6 +154,8 @@ var outcome = {
                             + ((val.group != "time")&&(val.group != "reason") ? duration : "-")
                             + "</td><td class='rate' style='rate'>"
                             + ((val.group != "time")&&(val.group != "reason") ? val.rate : "-")
+                            + "</td><td>"
+                            + (val.id == 'TOTAL' || val.name.length == 0 || $.inArray(response.group, ['time', 'date', 'contact']) >= 0 ? "" : ("<span class='fa fa-circle' style='color:#" + val.colour + "'></span>"))
                             + "</td></tr>");
                     }
                 });
@@ -161,7 +166,9 @@ var outcome = {
                     + "</td></tr>");
             }
 
-            //Filters
+            //////////////////////////////////////////////////////////
+            //Filters/////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////
             var filters = "";
 
             filters += "<span class='btn btn-default btn-xs clear-filters pull-right'>" +
@@ -222,6 +229,12 @@ var outcome = {
             filters += "</ul>";
 
             $('#filters').html(filters);
+
+            //////////////////////////////////////////////////////////
+            //Graphics/////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////
+            outcome.get_graphs(response);
+
         });
     },
     get_outcomes_filter: function () {
@@ -242,6 +255,96 @@ var outcome = {
                     options += "</optgroup>";
                 });
                 $('#outcome-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+    get_graphs: function (response) {
+
+        google.load('visualization', '1', {
+            packages: ['corechart'], 'callback': function () {
+                // Create the data table.
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Topping');
+                data.addColumn('number', 'Slices');
+                var rows = [];
+                var colors = [];
+                var title = '';
+                switch (response.group) {
+                    case 'campaign':
+                        title = 'Outcomes by campaign';
+                        break;
+                    case 'agent':
+                        title = 'Outcomes by agent';
+                        break;
+                    case 'date':
+                        title = 'Outcomes by date';
+                        break;
+                    case 'contact':
+                        title = 'Outcomes by date';
+                        break;
+                    case 'time':
+                        title = 'Outcomes by time';
+                        break;
+                    case 'reason':
+                        title = 'Outcomes by reason';
+                        break;
+                }
+
+                // Set chart options
+                //var height = data.getNumberOfRows() * 21 + 30;
+                var options = {
+                    'legend': {position: 'none'},
+                    'title': title,
+                    'width': 300,
+                    'height': 300,
+                    'hAxis': {textPosition: 'none'},
+                    'colors': colors,
+                    curveType: 'function'
+                };
+
+
+                if ($.inArray(response.group, ['contact', 'campaign', 'agent', 'reason']) >= 0 && response.data.length > 1) {
+
+                    $.each(response.data, function (i, val) {
+                        if (response.data.length) {
+                            if (val.name.length > 0) {
+                                rows.push([val.name, parseInt(val.outcomes)]);
+                                colors.push('#' + val.colour);
+                            }
+                        }
+                    });
+                    data.addRows(rows);
+
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_1'));
+                    chart.draw(data, options);
+
+                    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_2'));
+                    chart.draw(data, options);
+                }
+                else if ($.inArray(response.group, ['time', 'date', 'contact']) >= 0 && response.data.length > 1) {
+                    $.each(response.data, function (i, val) {
+                        if (response.data.length) {
+                            if (val.name.length > 0) {
+                                rows.push([val.id, parseInt(val.outcomes)]);
+                                colors.push('#' + val.colour);
+                            }
+                        }
+                    });
+                    data.addRows(rows);
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div_1'));
+                    chart.draw(data, options);
+
+                    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_2'));
+                    chart.draw(data, options);
+
+
+                }
+                else {
+                    $('#chart_div_1').html("No data");
+                    $('#chart_div_2').html("");
+                }
             }
         });
     }

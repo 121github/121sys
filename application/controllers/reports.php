@@ -388,6 +388,7 @@ class Reports extends CI_Controller
                         $aux[$row['id']]['group'] = $group;
                     }
                     $aux[$row['id']]['name'] = $row['name'];
+                    $aux[$row['id']]['colour'] = substr(dechex(crc32($row['name'])), 0, 6);
                     $aux[$row['id']]['duration'] = $row['duration'];
                     $aux[$row['id']]['outcomes'] = $row['outcome_count'];
                     $aux[$row['id']]['total_dials'] = $row['total_dials'];
@@ -435,6 +436,7 @@ class Reports extends CI_Controller
                 $data[] = array(
                     "id" => $id,
                     "name" => $row['name'],
+                    "colour" => $row['colour'],
                     "outcomes" => $outcomes,
                     "outcomes_url" => $outcomesUrl,
                     "total_dials" => $row['total_dials'],
@@ -471,7 +473,8 @@ class Reports extends CI_Controller
             echo json_encode(array(
                 "success" => true,
                 "outcome" => $outcome,
-                "data" => $data
+                "data" => $data,
+                "group" => $group
             ));
         }
     }
