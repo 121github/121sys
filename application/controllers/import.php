@@ -649,7 +649,7 @@ $dirty = $this->db->query("SELECT *
 FROM company_telephone
 WHERE telephone_number REGEXP '[[.NUL.]-[.US.]]'")->result_array();
 foreach($dirty as $row){
-echo $query = "update company_telephone set telephone_number = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['telephone_number'])."', description = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['description'])."' where telephone_id = '".$row['telephone_id']."'";	
+$query = "update company_telephone set telephone_number = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['telephone_number'])."', description = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['description'])."' where telephone_id = '".$row['telephone_id']."'";	
 
 $this->db->query($query);
 }
@@ -658,7 +658,7 @@ $dirty = $this->db->query("SELECT *
 FROM contact_telephone
 WHERE telephone_number REGEXP '[[.NUL.]-[.US.]]'")->result_array();
 foreach($dirty as $row){
-echo $query = "update contact_telephone set telephone_number = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['telephone_number'])."', description = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['description'])."' where telephone_id = '".$row['telephone_id']."'";	
+$query = "update contact_telephone set telephone_number = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['telephone_number'])."', description = '".preg_replace("/[^A-Za-z0-9 ]/", '', $row['description'])."' where telephone_id = '".$row['telephone_id']."'";	
 
 $this->db->query($query);
 

@@ -370,6 +370,9 @@ class Admin_model extends CI_Model
 		if(empty($form['ext'])){
 		$form['ext'] = NULL;
 		}
+		if(empty($form['phone_un'])){
+		$form['phone_un'] = NULL;
+		}
 		$this->db->insert("users", $form);
         return $this->db->insert_id();
     }
@@ -380,6 +383,9 @@ class Admin_model extends CI_Model
 		}
 		if(empty($form['ext'])){
 		$form['ext'] = NULL;
+		}
+		if(empty($form['phone_un'])){
+		$form['phone_un'] = NULL;
 		}
         $this->db->where("user_id", $form['user_id']);
         $this->db->update("users", $form);

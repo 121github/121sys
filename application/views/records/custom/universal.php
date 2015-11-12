@@ -16,7 +16,11 @@
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
    <span class="glyphicon glyphicon-cog"></span> Options <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu" id="record-options">
+<ul class="dropdown-menu" id="record-options">
+  <?php if(in_array("planner",$_SESSION['permissions'])){ ?>
+       <li><a href="#" data-tab="tab-planner" data-modal="view-record" data-urn="<?php echo $details['record']['urn'] ?>">Add to planner</a></li>
+         <li role="separator" class="divider"></li>
+    <?php } ?>   
    <?php if(in_array("change color",$_SESSION['permissions'])){ ?>
     <li><a href="#" data-tab="color">Change Color</a></li>
       <?php } ?>
@@ -31,9 +35,9 @@
       <?php } ?>
      <?php if(in_array("change campaign",$_SESSION['permissions'])){ ?>
     <li><a href="#" data-tab="campaign">Change Camapign</a></li>
+          <li role="separator" class="divider"></li>
       <?php } ?>
     <?php if(in_array("park records",$_SESSION['permissions'])){ ?>
-      <li role="separator" class="divider"></li>
     <li><a href="#" data-tab="other">Remove Record</a></li>
     <?php } ?>
   </ul>
