@@ -13,7 +13,7 @@ $(document).ajaxStop(function () {
 
 var record = {
     init: function (urn, role, campaign) {
-		$(document).on('click','#record-options li a',function(e){
+		$(document).on('click','#record-options li a:not("[data-modal=\'view-record\']")',function(e){
 			 e.preventDefault();
 			 var tab = $(this).attr('data-tab');
 				modals.record_options(tab);

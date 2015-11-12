@@ -14,12 +14,22 @@
     }
 </style>
 <ul class="nav nav-tabs">
+ <?php if(in_array("change color",$_SESSION['permissions'])){ ?>
   <li class="color-tab"><a href="#color" class="tab" data-toggle="tab">Color</a></li>
+  <?php } ?>
+    <?php if(in_array("change icon",$_SESSION['permissions'])){ ?>
   <li class="icon-tab"><a href="#icon" class="tab" data-toggle="tab">Icon</a></li>
+   <?php } ?>
+        <?php if(in_array("change campaign",$_SESSION['permissions'])){ ?>
     <li class="campaign-tab"><a href="#campaign" class="tab" data-toggle="tab">Campaign</a></li>
+     <?php } ?>
+      <?php if(in_array("change pot",$_SESSION['permissions'])){ ?>
   <li class="pot-tab"><a href="#pot" class="tab" data-toggle="tab">Pot</a></li>
+  <?php } ?>
+  <?php if(in_array("change source",$_SESSION['permissions'])){ ?>
   <li class="source-tab"><a href="#source" class="tab" data-toggle="tab">Source</a></li>
-  <?php if(!in_array("park records",$_SESSION['permissions'])){ ?>
+   <?php } ?>
+  <?php if(in_array("park records",$_SESSION['permissions'])){ ?>
     <li class="other-tab"><a href="#other" class="tab" data-toggle="tab">Other</a></li>
     <?php } ?>
 </ul>

@@ -33,9 +33,10 @@ var modals = {
         });
         $(document).on('click', '[data-modal="view-record"]', function (e) {
             e.preventDefault();
+			var tab = $(this).attr('data-tab');
             var clicked_urn = $(this).attr('data-urn');
             setTimeout(function () {
-                modals.view_record(clicked_urn);
+                modals.view_record(clicked_urn,tab);
             }, 500);
         });
         $(document).on('dblclick', '[data-modal="view-record"],[data-modal="view-appointment"]', function (e) {
@@ -854,7 +855,7 @@ var modals = {
             modal.show_modal();
         }
     },
-    view_record: function (urn) {
+    view_record: function (urn,tab) {
         $.ajax({
             url: helper.baseUrl + 'modals/view_record',
             type: "POST",
@@ -863,7 +864,7 @@ var modals = {
                 urn: urn
             }
         }).done(function (response) {
-            modals.view_record_html(response.data);
+            modals.view_record_html(response.data,tab);
         });
     },
     default_buttons: function () {
@@ -875,12 +876,17 @@ var modals = {
         modal_footer.empty();
         modal_footer.html(content);
     },
-    view_record_html: function (data) {
+    view_record_html: function (data,tab) {
         var mheader = "View Record <small>URN: " + data.urn +"</small>";
-        var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li>';
-
+        var mbody = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li>';
+		if (helper.permissions['view history'] > 0) {
+		  mbody +=	'<li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li>';
+		}
+		if (helper.permissions['view appointments'] > 0) {
+		  mbody +=	'<li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li>';
+		}
         if (data.custom_info.length > 0) {
-            mbody += '<li><a role="tab" data-toggle="tab" href="#tab-custom">' + data.custom_panel_name + '</a></li>';
+           '<li><a role="tab" data-toggle="tab" href="#tab-custom">' + data.custom_panel_name + '</a></li>';
         }
         if (helper.permissions['planner'] > 0) {
             mbody += '<li><a role="tab" data-toggle="tab" href="#tab-planner">Planner</a></li>';
@@ -991,6 +997,7 @@ var modals = {
             mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?zoom=2&saddr=' + getCookie('current_postcode') + '&daddr=' + data.planner_postcode + '">Navigate</a>';
         }
         modals.load_modal(mheader, mbody, mfooter);
+		$('#modal .nav-tabs a[href="#'+tab+'"]').tab('show');
     },
     view_filter_options: function () {
         $.ajax({
