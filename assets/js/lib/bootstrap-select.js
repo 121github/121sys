@@ -311,6 +311,13 @@
         selectOnTab: false,
         dropdownAlignRight: false
     };
+//added by bradf
+
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+			Selectpicker.DEFAULTS['mobile'] = true;
+			alert(navigator.userAgent);
+			
+		}
 
     Selectpicker.prototype = {
 

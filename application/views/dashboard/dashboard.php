@@ -223,9 +223,7 @@
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
-                    <ul class="timeline">
                         <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
-                    </ul>
                 </div>
                 <!-- /.panel-body -->
 

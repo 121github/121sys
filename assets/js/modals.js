@@ -701,7 +701,9 @@ var modals = {
         if (!$('#modal').hasClass('in')) {
             modals.show_modal();
         }
+
         $('#modal').find('.selectpicker').selectpicker();
+
         $('#modal').find('.tt').tooltip();
         $('#modal').find('.datetime').datetimepicker({
             format: 'DD/MM/YYYY HH:mm',
