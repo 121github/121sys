@@ -46,6 +46,11 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
+
+                    <div class="form-group" id="other-sender">
+      
+                    </div>
+
                 </div>
             </div>
             <div class="row send_to">
@@ -103,6 +108,11 @@
                         $('form').find('textarea[name="text"]').val(response.data.template_text);
                         $('#chars').text(305-$('form').find('textarea[name="text"]').val().length);
                         $('form').find('textarea[name="text"]').prop('disabled', true);
+						if(response.data.sender_id=="0"){
+						             $('#other-sender').html('<input readonly type="text" value="'+response.data.custom_sender+'" class="form-control" style="width:50px" name="sender_field" />');	
+						} else {
+						 $('#other-sender').empty();	
+						}
                     }
                 });
             }

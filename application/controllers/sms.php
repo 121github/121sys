@@ -911,6 +911,7 @@ class Sms extends CI_Controller
             $template_id = intval($this->input->post('template_id'));
             $sender = $this->input->post('sender');
             $urns = $this->input->post('urns');
+			$sender_field = $this->input->post('sender_field');
 
             //Validate the urn list format (urn1. urn2, ..., urnN)
             if (preg_match('/^[,0-9]*$/', $urns)) {
@@ -964,6 +965,11 @@ class Sms extends CI_Controller
                                         }
                                     } else {
                                         $text = str_replace("[$key]", $val, $text);
+									                    if ($sender == "Automatic") {
+                        if ($sender_field == "$key" || $sender_field == "[$key]") {
+                            $sender = $val;
+                        }
+                    }
                                     }
                                 }
                             }
