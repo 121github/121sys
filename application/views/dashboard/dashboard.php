@@ -223,7 +223,9 @@
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
+                	<div id="system-stats">
                         <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
+                        </div>
                 </div>
                 <!-- /.panel-body -->
 
@@ -288,7 +290,7 @@
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
-                    <div class="email-stats">
+                    <div id="email-stats">
                         <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
                     </div>
                 </div>
@@ -324,7 +326,7 @@
                 </div>
                 <!-- /.panel-heading -->
                 <div class="panel-body">
-                    <div class="sms-stats">
+                    <div id="sms-stats">
                         <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
                     </div>
                 </div>

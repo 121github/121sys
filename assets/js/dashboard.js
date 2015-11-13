@@ -41,7 +41,7 @@ var dashboard = {
             dataType: "JSON",
             data: $('.emails-filter').serialize(),
         }).done(function (response) {
-            $('.email-stats').html("<ul><li><a href='" + response.data.new_url + "'>" + response.data.new + "</a> new emails read</li><li><a href='" + response.data.read_url + "'>" + response.data.read + "</a> emails read today " + "</li><li><a href='" + response.data.all_url + "'>" + response.data.all + "</a> emails sent today</li><li><a href='" + response.data.pending_url + "'>" + response.data.pending + "</a> emails pending today</li><li><a href='" + response.data.unsent_url + "'>" + response.data.unsent + "</a> failed emails today</li><li><a href='" + response.data.sentall_url + "'>" + response.data.sentall + "</a> emails sent anytime</li><li><a href='" + response.data.readall_url + "'>" + response.data.readall + "</a> emails read anytime</li></ul>");
+            $('#email-stats').html("<ul><li><a href='" + response.data.new_url + "'>" + response.data.new + "</a> new emails read</li><li><a href='" + response.data.read_url + "'>" + response.data.read + "</a> emails read today " + "</li><li><a href='" + response.data.all_url + "'>" + response.data.all + "</a> emails sent today</li><li><a href='" + response.data.pending_url + "'>" + response.data.pending + "</a> emails pending today</li><li><a href='" + response.data.unsent_url + "'>" + response.data.unsent + "</a> failed emails today</li><li><a href='" + response.data.sentall_url + "'>" + response.data.sentall + "</a> emails sent anytime</li><li><a href='" + response.data.readall_url + "'>" + response.data.readall + "</a> emails read anytime</li></ul>");
         });
     },
     sms_panel: function (filter) {
@@ -51,7 +51,7 @@ var dashboard = {
         dataType: "JSON",
         data: $('.sms-filter').serialize(),
     }).done(function (response) {
-        $('.sms-stats').html("<ul>" +
+        $('#sms-stats').html("<ul>" +
                 "<li><a href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today </li>" +
                 "<li><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "</li>" +
                 "<li><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "</li>" +
@@ -99,7 +99,7 @@ var dashboard = {
             dataType: "JSON",
             data: $('.stats-filter').serialize(),
         }).done(function (response) {
-            $('.timeline').empty();
+            $('#system-stats').empty();
             $timeline = '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Campaign Stats</h4></div><div class="timeline-body"><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div></div></li>';
             if (helper.permissions['set progress'] > 0) {
                 $timeline += '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Follow up Stats</h4></div><div class="timeline-body"><p><a href="' + response.data.pending_url + '">' + response.data.pending + '</a> records are pending.<br><a href="' + response.data.in_progress_url + '">' + response.data.in_progress + '</a> records are in progress<br><a href="' + response.data.completed_url + '">' + response.data.completed + '</a> records have been completed</div></div></li>';
@@ -107,7 +107,7 @@ var dashboard = {
             if (response.data.surveys > 0) {
                 $timeline += '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Survey Stats</h4></div><div class="timeline-body"><p>' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div></div></li>';
             }
-            $('.timeline').append($timeline);
+            $('#system-stats').append($timeline);
         });
     },
     /* the function for the comments panel on the main dashboard */
