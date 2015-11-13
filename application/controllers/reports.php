@@ -255,7 +255,6 @@ class Reports extends CI_Controller
             $outcome_id = "70";
         }
 
-        $campaigns = $this->Form_model->get_user_campaigns();
         $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
         $aux = array();
         foreach ($campaigns_by_group as $campaign) {
@@ -269,7 +268,6 @@ class Reports extends CI_Controller
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
         $agents = $this->Form_model->get_agents();
-        $outcomes = $this->Form_model->get_outcomes();
 
         $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
@@ -301,9 +299,7 @@ class Reports extends CI_Controller
             ),
             'group' => $group,
             'outcome_id' => $outcome_id,
-            'outcomes' => $outcomes,
             'campaign_outcomes' => $campaign_outcomes,
-            'campaigns' => $campaigns,
             'campaigns_by_group' => $campaigns_by_group,
             'sources' => $sources,
             'team_managers' => $teamManagers,
