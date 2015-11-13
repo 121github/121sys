@@ -303,7 +303,7 @@ var outcome = {
                 };
 
 
-                if ($.inArray(response.group, ['contact', 'campaign', 'agent', 'reason']) >= 0 && response.data.length > 1) {
+                if ($.inArray(response.group, ['campaign', 'agent', 'reason']) >= 0 && response.data.length > 1) {
 
                     $.each(response.data, function (i, val) {
                         if (response.data.length) {
