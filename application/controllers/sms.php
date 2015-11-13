@@ -965,7 +965,8 @@ class Sms extends CI_Controller
                                         }
                                     } else {
                                         $text = str_replace("[$key]", $val, $text);
-									                    if ($sender == "Automatic") {
+										
+						if ($sender == "") {
                         if ($sender_field == "$key" || $sender_field == "[$key]") {
                             $sender = $val;
                         }
