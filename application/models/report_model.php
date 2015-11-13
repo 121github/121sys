@@ -436,9 +436,10 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
     {
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
-        $user = isset($options['agent']) ? $options['agent'] : "";
-        $team = isset($options['team']) ? $options['team'] : "";
-        $outcome = isset($options['outcome']) ? $options['outcome'] : "";
+        $users = isset($options['agents']) ? $options['agents'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
 
         $where = "";
         $where_calls = "";
@@ -450,15 +451,19 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             $where .= " and date(contact) <= '$date_to' ";
             $where_calls .= " and date(call_log.call_date) <= '$date_to' ";
         }
-        if (!empty($user)) {
-            $where .= " and history.user_id = '$user' ";
+        if (!empty($users)) {
+            $where .= " and history.user_id IN (" . implode(",", $users) . ") ";
         }
-        if (!empty($team)) {
-            $where .= " and teams.team_id = '$team' ";
+        if (!empty($teams)) {
+            $where .= " and teams.team_id IN (" . implode(",", $teams) . ") ";
         }
 
-        if (!empty($outcome)) {
-            $where .= " and history.outcome_id = '$outcome' ";
+        if (!empty($outcomes)) {
+            $where .= " and history.outcome_id IN (" . implode(",", $outcomes) . ") ";
+        }
+
+        if (!empty($campaigns)) {
+            $where .= " and history.campaign_id IN (" . implode(",", $campaigns) . ") ";
         }
 
 

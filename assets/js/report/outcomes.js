@@ -40,7 +40,6 @@ var outcome = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                //outcome.outcome_panel();
             });
 
         //optgroup
@@ -303,7 +302,7 @@ var outcome = {
                 };
 
 
-                if ($.inArray(response.group, ['campaign', 'agent', 'reason']) >= 0 && response.data.length > 1) {
+                if ($.inArray(response.group, ['contact', 'campaign', 'agent', 'reason']) >= 0 && response.data.length > 1) {
 
                     $.each(response.data, function (i, val) {
                         if (response.data.length) {

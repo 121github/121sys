@@ -88,12 +88,12 @@
         <i class="fa fa-bar-chart-o fa-fw"></i>
         Campaign Performance Report
         <div class="pull-right" style="border:0px solid black;">
-                    <span class="btn btn-success btn-xs refresh-data">
-                        <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
-                    </span>
-                    <span class="btn btn-danger btn-xs clear-filters">
-                        <span class="glyphicon glyphicon-remove" style="padding-left:3px; color:black;"></span>
-                    </span>
+            <span class="btn btn-success btn-xs refresh-data">
+                <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
+            </span>
+            <span class="btn btn-danger btn-xs clear-filters">
+                <span class="glyphicon glyphicon-remove" style="padding-left:3px; color:black;"></span>
+            </span>
             <a href="#filter-right" class="btn btn-default btn-xs">
                 <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
             </a>

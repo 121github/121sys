@@ -312,37 +312,6 @@ class Reports extends CI_Controller
         $this->template->load('default', 'reports/outcomes.php', $data);
     }
 
-    /**
-     * Get the outcomes for the filter by campaign list
-     */
-    public function get_outcomes_filter()
-    {
-        if ($this->input->is_ajax_request()) {
-            $form = $this->input->post();
-            $campaigns = (isset($form['campaigns']) ? $form['campaigns'] : array());
-
-            $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($campaigns);
-
-            $aux = array(
-                "positive" => array(),
-                "No_positive" => array(),
-            );
-            foreach ($campaign_outcomes as $outcome) {
-                if ($outcome['positive']) {
-                    array_push($aux['positive'], $outcome);
-                } else {
-                    array_push($aux['No_positive'], $outcome);
-                }
-            }
-            $campaign_outcomes = $aux;
-
-            echo json_encode(array(
-                "success" => true,
-                "campaign_outcomes" => $campaign_outcomes
-            ));
-        }
-    }
-
     //this controller sends the campaign appointment report data back the page in JSON format. It ran when the page loads and any time the filter is changed
     public function outcome_data()
     {
@@ -471,6 +440,37 @@ class Reports extends CI_Controller
                 "outcome" => $outcome,
                 "data" => $data,
                 "group" => $group
+            ));
+        }
+    }
+
+    /**
+     * Get the outcomes for the filter by campaign list
+     */
+    public function get_outcomes_filter()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $campaigns = (isset($form['campaigns']) ? $form['campaigns'] : array());
+
+            $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($campaigns);
+
+            $aux = array(
+                "positive" => array(),
+                "No_positive" => array(),
+            );
+            foreach ($campaign_outcomes as $outcome) {
+                if ($outcome['positive']) {
+                    array_push($aux['positive'], $outcome);
+                } else {
+                    array_push($aux['No_positive'], $outcome);
+                }
+            }
+            $campaign_outcomes = $aux;
+
+            echo json_encode(array(
+                "success" => true,
+                "campaign_outcomes" => $campaign_outcomes
             ));
         }
     }
@@ -674,9 +674,35 @@ class Reports extends CI_Controller
     //this is the controller loads the initial view for the productivity report
     public function productivity()
     {
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
         $outcomes = $this->Form_model->get_outcomes();
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -692,7 +718,8 @@ class Reports extends CI_Controller
             ),
             'team_managers' => $teamManagers,
             'agents' => $agents,
-            'outcomes' => $outcomes,
+            'campaign_outcomes' => $campaign_outcomes,
+            'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
@@ -701,6 +728,45 @@ class Reports extends CI_Controller
         );
         $this->template->load('default', 'reports/productivity.php', $data);
     }
+
+
+    //this controller sends the productivity data back the page in JSON format. It ran when the page loads and any time the filter is changed
+    public function productivity_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $total = 0;
+            $results = $this->Report_model->get_productivity($this->input->post());
+
+            $aux = array();
+            foreach ($results as $row) {
+                $row['colour'] = substr(dechex(crc32($row['agent'])), 0, 6);
+                array_push($aux, $row);
+            }
+            $results = $aux;
+
+            $outcomes = $this->input->post('outcomes');
+
+            $outcome_colname = "Outcomes";
+            if (!empty($outcomes)) {
+                $this->db->where_in("outcome_id", $outcomes);
+                $query = $this->db->get("outcomes");
+                if ($query->num_rows() > 0) {
+                    if ($query->num_rows() < 2) {
+                        $outcome_colname = $query->row()->outcome;
+                    }
+                }
+            }
+
+            echo json_encode(array(
+                "success" => (!empty($results)),
+                "outcome_colname" => $outcome_colname,
+                "data" => $results,
+                "total" => $total,
+                "msg" => (empty($results) ? "No results found" : "")
+            ));
+        }
+    }
+
     //this is the controller loads the initial view for the realtime report
     public function realtime()
     {
@@ -798,30 +864,6 @@ class Reports extends CI_Controller
             "data" => $results,
             "msg" => "No results found"
         ));
-    }
-
-
-    //this controller sends the productivity data back the page in JSON format. It ran when the page loads and any time the filter is changed
-    public function productivity_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $data = array();
-            $data_array = array();
-            $total = 0;
-            $results = $this->Report_model->get_productivity($this->input->post());
-            $date_from = $this->input->post("date_from");
-            $date_to = $this->input->post("date_to");
-            $user = $this->input->post("agent");
-            $team = $this->input->post("team");
-
-
-            echo json_encode(array(
-                "success" => (!empty($results)),
-                "data" => $results,
-                "total" => $total,
-                "msg" => (empty($results) ? "No results found" : "")
-            ));
-        }
     }
 
     //this is the controller loads the initial view for the sms reports
