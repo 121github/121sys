@@ -110,8 +110,8 @@
                         <th>Name</th>
                         <th id="outcome-name"></th>
                         <th>Total Dials</th>
-                        <th>%</th>
-                        <th>Duration</th>
+                        <th>Conversion</th>
+                        <th>Time</th>
                         <th>Rate (per hour)</th>
                         <th></th>
                     </tr>
