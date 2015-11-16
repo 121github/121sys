@@ -113,6 +113,10 @@ switch ($domain) {
                 define('ENVIRONMENT', 'production');
                 $session_name = '121sys';
                 break;
+            case 'accept_env':
+                define('ENVIRONMENT', 'acceptance');
+                $session_name = '121sys_accept';
+                break;
             default:
                 $session_name = '121sys_dev';
                 define('ENVIRONMENT', 'development');
