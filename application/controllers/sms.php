@@ -311,6 +311,11 @@ class Sms extends CI_Controller
             $limit = $this->uri->segment(3);
         }
 
+        //TEST
+        if (intval($this->uri->segment(4)) >= 0) {
+            $test = $this->uri->segment(4);
+        }
+
         //Get the oldest 100 mails pending to be sent
         $pending_sms = $this->Sms_model->get_pending_sms($limit);
         if (!empty($pending_sms)) {
@@ -347,7 +352,9 @@ class Sms extends CI_Controller
             }
             if (!empty($messages)) {
                 if ($status != SMS_STATUS_PENDING) {
-                    $test = (ENVIRONMENT !== "production") ? "true" : "false";
+                    if (!isset($test)) {
+                        $test = (ENVIRONMENT !== "production") ? "true" : "false";
+                    }
                     $response = $this->sendBulkSms($messages, $test);
                     //Save the sms_history
                     if ($response == "OK") {
