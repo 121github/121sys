@@ -1,87 +1,5 @@
-$(document).ready(function () {
-    "use strict";
-    //Show appointment rules button
-    $(document).on('mouseenter', '.cal-month-day', function () {
-        var day = $(this).attr('item-day');
-        $(this).find('.block-day-btn.' + day).show();
-    });
-
-    //Hide appointment rules button
-    $(document).on('mouseleave', '.cal-month-day', function () {
-        var day = $(this).attr('item-day');
-        var has_rules = $(this).find('.block-day-btn').attr('item-rules');
-        if (!has_rules) {
-            $(this).find('.block-day-btn.' + day).hide();
-        }
-    });
-
-    //Add appointment rule
-    $(document).on('click', '.block-day-btn', function () {
-        modal.addAppointmentRule($(this).attr('item-day'));
-    });
-
-    //Remove appointment rule
-    $(document).on('click', '.del-rule-btn', function () {
-        appointment_rules.delAppointmentRules($(this).attr('item-id'), $(this).attr('item-date'));
-    });
-
-    var options = {
-        events_source: function (start, end) {
-            var events = [];
-            $.ajax({
-                url: helper.baseUrl + 'calendar/get_events',
-                dataType: 'JSON',
-                type: 'POST',
-                async: false,
-                data: {
-                    startDate: start.getTime(),
-                    endDate: end.getTime(),
-                    campaigns: $('#campaign-cal-select').selectpicker('val'),
-                    users: $('#user-select').selectpicker('val'),
-                    postcode: $('#dist-form').find('.current_postcode_input').val(),
-                    distance: $('#dist-form').find('.distance-select').val()
-                }
-            }).done(function (json) {
-                if (!json.success) {
-                    $.error(json.error);
-                }
-                if (json.result) {
-                    events = json.result;
-                }
-            });
-            return events;
-        },
-        //modal: "#events-modal",
-        view: 'month',
-        tmpl_path: helper.baseUrl + 'assets/tmpls/',
-        tmpl_cache: false,
-        day: 'now',
-        onAfterEventsLoad: function (events) {
-            if (!events) {
-                return;
-            }
-            var list = $('#eventlist');
-            list.html('');
-            $.each(events, function (key, val) {
-                $(document.createElement('li'))
-                    .html('<a href="' + val.url + '">' + val.title + '</a>')
-                    .appendTo(list);
-            });
-        },
-        onAfterViewLoad: function (view) {
-            $('.page-header h3').text(this.getTitle());
-            $('.btn-group button').removeClass('active');
-            $('button[data-calendar-view="' + view + '"]').addClass('active');
-            appointment_rules.loadAppointmentRules();
-        },
-        classes: {
-            months: {
-                general: 'label'
-            }
-        }
-    };
-
-    var appointment_rules = {
+ var calendar = "";
+  var appointment_rules = {
         loadAppointmentRules: function () {
             $.ajax({
                 url: helper.baseUrl + 'calendar/get_appointment_rules',
@@ -92,15 +10,19 @@ $(document).ready(function () {
                     $.each(response.data, function (key, value) {
                         var title = '<table>';
                         $.each(value, function (i, rule) {
+							var reason = "";
+							if(rule.reason.length>0){
+								var reason = ": "+rule.reason;
+							}
                             title += "<tr>" +
-                                "<td style='text-align: left;'>" + rule.name + "</td>" +
+                                "<td style='text-align: left;'>" + rule.name + reason +"</td>" +
                                 "</tr>";
                         });
                         title += '</table>';
 
-                        $('.cal-month-day').find('.block-day-btn.' + key).css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
-                        $('.cal-week-box').find('.block-day-btn.' + key).css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
-                        $('#cal-day-box').find('.block-day-btn.' + key).css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
+                        $('.cal-month-day').find('.rule-tooltip[data-cal-date="' + key + '"]').css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
+                        $('.cal-week-box').find('.rule-tooltip[data-cal-date="' + key + '"]').css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
+                        $('#cal-day-box').find('.rule-tooltip[data-cal-date="' + key + '"]').css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
                     });
                 }
             });
@@ -127,7 +49,7 @@ $(document).ready(function () {
                     $('#modal').find('.rules-per-day').html(rules);
                 }
                 else {
-                    $('#modal').find('.rules-per-day').html("No rules created...");
+                    $('#modal').find('.rules-per-day').html("No calendar rules have been created yet.");
                     $('#modal').find('.nav-tabs a[href="#addrule"]').tab('show');
                     $('.cal-month-day').find('.block-day-btn.' + block_day).css('color', 'black').attr('item-rules', '').attr('data-original-title', '').hide();
                     $('.cal-week-box').find('.block-day-btn.' + block_day).css('color', 'black').attr('item-rules', '').attr('data-original-title', '').show();
@@ -142,12 +64,12 @@ $(document).ready(function () {
                 type: "POST",
                 dataType: "JSON"
             }).done(function (response) {
-                $('#modal').find('.appointment-slot-select').empty();
+                $('#modal').find('#appointment-slot-select').empty();
                 var $options = '<option value="">All day</option>';
                 $.each(response.data, function (k, v) {
                     $options += "<option value='" + v.id + "'>" + v.name + "</options>";
                 });
-                $('#modal').find('.appointment-slot-select').html($options).selectpicker('refresh');
+                $('#modal').find('#appointment-slot-select').html($options).selectpicker('refresh');
             });
         },
         loadAppointmentRulesReasons: function () {
@@ -156,12 +78,12 @@ $(document).ready(function () {
                 type: "POST",
                 dataType: "JSON"
             }).done(function (response) {
-                $('#modal').find('.reason-select').empty();
+                $('#modal').find('#reason-select').empty();
                 var $options = '<option value="">Choose a reason...</option>';
                 $.each(response.data, function (k, v) {
                     $options += "<option value='" + v.id + "'>" + v.name + "</options>";
                 });
-                $('#modal').find('.reason-select').html($options).selectpicker('refresh');
+                $('#modal').find('#reason-select').html($options).selectpicker('refresh');
             });
         },
         loadAppointmentRulesAttendees: function () {
@@ -171,12 +93,12 @@ $(document).ready(function () {
                 dataType: "JSON",
                 data: {campaigns: $('#campaign-cal-select').val()}
             }).done(function (response) {
-                $('#modal').find('.attendee-select').empty();
+                $('#modal').find('#attendee-select').empty();
                 var $options = '<option value="">Choose an attendee...</option>';
                 $.each(response.data, function (k, v) {
                     $options += "<option value='" + v.id + "'>" + v.name + "</options>";
                 });
-                $('#modal').find('.attendee-select').html($options).selectpicker('refresh');
+                $('#modal').find('#attendee-select').html($options).selectpicker('refresh');
             });
         },
         delAppointmentRules: function (appointment_rules_id, date) {
@@ -198,88 +120,8 @@ $(document).ready(function () {
         }
     };
 
-    var calendar = $('#calendar').calendar(options);
 
-    //appointment_rules.loadAppointmentRules();
-
-    $('.btn-group button[data-calendar-nav]').each(function () {
-        var $this = $(this);
-        $this.click(function () {
-            $this.button('loading');
-            calendar.navigate($this.data('calendar-nav'));
-            $this.button('reset');
-        });
-    });
-
-    $('.btn-group button[data-calendar-view]').each(function () {
-        var $this = $(this);
-        $this.click(function () {
-            $this.button('loading');
-            calendar.view($this.data('calendar-view'));
-            $this.button('reset')
-        });
-    });
-
-    $('#first_day').change(function () {
-        var value = $(this).val();
-        value = value.length ? parseInt(value) : null;
-        calendar.setOptions({
-            first_day: value
-        });
-        calendar.view();
-    });
-
-    $('#language').change(function () {
-        calendar.setLanguage($(this).val());
-        calendar.view();
-    });
-
-    $('#events-in-modal').change(function () {
-        var val = $(this).is(':checked') ? $(this).val() : null;
-        calendar.setOptions({
-            modal: val
-        });
-    });
-
-    $(document).on('change', '#user-select', function (e) {
-        e.preventDefault();
-        calendar.view();
-    });
-
-
-    $(document).on('change', '#campaign-cal-select', function () {
-        $.ajax({
-            url: helper.baseUrl + 'calendar/get_calendar_users',
-            type: "POST",
-            dataType: "JSON",
-            data: {campaigns: $(this).val()}
-        }).done(function (response) {
-            $('#user-select').empty();
-            var $options = "";
-            $.each(response.data, function (k, v) {
-                $options += "<option value='" + v.id + "'>" + v.name + "</options>";
-            });
-            $('#user-select').html($options).selectpicker('refresh');
-            calendar.view();
-        })
-    });
-    //load the available attendee options when the page loads
-    $('#campaign-cal-select').trigger('change');
-
-    $(document).on('click', '#distance-cal-button', function (e) {
-        e.preventDefault();
-        modal.distance();
-        modal_body.css('overflow', 'visible');
-    });
-
-    $(document).on('click', '#import-appointment-btn', function (e) {
-        e.preventDefault();
-        modal.import_appointment();
-        modal_body.css('overflow', 'visible');
-    });
-
-
-    var modal = {
+    var calendar_modals = {
         distance: function () {
             modals.default_buttons();
             modal_header.text('Set maximum distance');
@@ -337,11 +179,11 @@ $(document).ready(function () {
                         '</div>' +
                 '</p>' +
                 '<p><label>Time Slot</label>' +
-                '<select name="appointment_slot_id" class="appointment-slot-select" title="All day" data-width="100%" required>' +
+                '<select name="appointment_slot_id" class="appointment-slot-select" id="appointment-slot-select" title="All day" data-width="100%" required>' +
                 '</select>' +
                 '</p>' +
                 '<p><label>Reason<span class="reason-error" style="color: red; display: none"> Select a reason</span></label>' +
-                '<select name="reason_id" class="reason-select" title="Choose the reason..." data-width="100%" required>' +
+                '<select name="reason_id" class="reason-select" id="reason-select" title="Choose the reason..." data-width="100%" required>' +
                 '</select>' +
                 '</p>' +
                 '<p class="other_reason"><label>Other Reason</label>' +
@@ -349,7 +191,7 @@ $(document).ready(function () {
                 '</p>' +
                 '<p>' +
                 '<label>Attendees<span class="attendee-error" style="color: red; display: none"> Select an agent</span></label>' +
-                '<select name="user_id" class="attendee-select" title="Select attendee" data-width="100%" required>' +
+                '<select name="user_id" class="attendee-select" id="attendee-select" title="Select attendee" data-width="100%" required>' +
                 '</select>' +
                 '</p>' +
                 '</form>' +
@@ -357,6 +199,7 @@ $(document).ready(function () {
                 '</div>'
             );
 			modal_body.css('overflow','visible');
+			modal_body.css('padding','0');
             //Add the rules
             appointment_rules.loadAppointmentRulesByDate(block_day);
 
@@ -443,4 +286,173 @@ $(document).ready(function () {
             });
         }
     }
+
+$(document).ready(function () {
+    "use strict";
+    //Show appointment rules button
+    $(document).on('mouseenter', '.cal-month-day', function () {
+        var day = $(this).attr('item-day');
+        $(this).find('.block-day-btn.' + day).show();
+    });
+
+    //Hide appointment rules button
+    $(document).on('mouseleave', '.cal-month-day', function () {
+        var day = $(this).attr('item-day');
+        var has_rules = $(this).find('.block-day-btn').attr('item-rules');
+        if (!has_rules) {
+            $(this).find('.block-day-btn.' + day).hide();
+        }
+    });
+
+    //Add appointment rule
+    $(document).on('click', '.block-day-btn', function () {
+        calendar_modals.addAppointmentRule($(this).attr('item-day'));
+    });
+
+    //Remove appointment rule
+    $(document).on('click', '.del-rule-btn', function () {
+        appointment_rules.delAppointmentRules($(this).attr('item-id'), $(this).attr('item-date'));
+    });
+	
+
+
+    var options = {
+        events_source: function (start, end) {
+            var events = [];
+            $.ajax({
+                url: helper.baseUrl + 'calendar/get_events',
+                dataType: 'JSON',
+                type: 'POST',
+                async: false,
+                data: {
+                    startDate: start.getTime(),
+                    endDate: end.getTime(),
+                    campaigns: $('#campaign-cal-select').selectpicker('val'),
+                    users: $('#user-select').selectpicker('val'),
+                    postcode: $('#dist-form').find('.current_postcode_input').val(),
+                    distance: $('#dist-form').find('.distance-select').val()
+                }
+            }).done(function (json) {
+                if (!json.success) {
+                    $.error(json.error);
+                }
+                if (json.result) {
+                    events = json.result;
+                }
+            });
+            return events;
+        },
+        //modal: "#events-modal",
+        view: 'month',
+        tmpl_path: helper.baseUrl + 'assets/tmpls/',
+        tmpl_cache: false,
+        day: 'now',
+        onAfterEventsLoad: function (events) {
+            if (!events) {
+                return;
+            }
+            var list = $('#eventlist');
+            list.html('');
+            $.each(events, function (key, val) {
+                $(document.createElement('li'))
+                    .html('<a href="' + val.url + '">' + val.title + '</a>')
+                    .appendTo(list);
+            });
+        },
+        onAfterViewLoad: function (view) {
+            $('.page-header h3').text(this.getTitle());
+            $('.btn-group button').removeClass('active');
+            $('button[data-calendar-view="' + view + '"]').addClass('active');
+            appointment_rules.loadAppointmentRules();
+        },
+        classes: {
+            months: {
+                general: 'label'
+            }
+        }
+    };
+
+  
+
+    calendar = $('#calendar').calendar(options);
+
+    //appointment_rules.loadAppointmentRules();
+
+    $('.btn-group button[data-calendar-nav]').each(function () {
+        var $this = $(this);
+        $this.click(function () {
+            $this.button('loading');
+            calendar.navigate($this.data('calendar-nav'));
+            $this.button('reset');
+        });
+    });
+
+    $('.btn-group button[data-calendar-view]').each(function () {
+        var $this = $(this);
+        $this.click(function () {
+            $this.button('loading');
+            calendar.view($this.data('calendar-view'));
+            $this.button('reset')
+        });
+    });
+
+    $('#first_day').change(function () {
+        var value = $(this).val();
+        value = value.length ? parseInt(value) : null;
+        calendar.setOptions({
+            first_day: value
+        });
+        calendar.view();
+    });
+
+    $('#language').change(function () {
+        calendar.setLanguage($(this).val());
+        calendar.view();
+    });
+
+    $('#events-in-modal').change(function () {
+        var val = $(this).is(':checked') ? $(this).val() : null;
+        calendar.setOptions({
+            modal: val
+        });
+    });
+
+    $(document).on('change', '#user-select', function (e) {
+        e.preventDefault();
+        calendar.view();
+    });
+
+
+    $(document).on('change', '#campaign-cal-select', function () {
+        $.ajax({
+            url: helper.baseUrl + 'calendar/get_calendar_users',
+            type: "POST",
+            dataType: "JSON",
+            data: {campaigns: $(this).val()}
+        }).done(function (response) {
+            $('#user-select').empty();
+            var $options = "";
+            $.each(response.data, function (k, v) {
+                $options += "<option value='" + v.id + "'>" + v.name + "</options>";
+            });
+            $('#user-select').html($options).selectpicker('refresh');
+            calendar.view();
+        })
+    });
+    //load the available attendee options when the page loads
+    $('#campaign-cal-select').trigger('change');
+
+    $(document).on('click', '#distance-cal-button', function (e) {
+        e.preventDefault();
+        calendar_modals.distance();
+        modal_body.css('overflow', 'visible');
+    });
+
+    $(document).on('click', '#import-appointment-btn', function (e) {
+        e.preventDefault();
+        calendar_modals.import_appointment();
+        modal_body.css('overflow', 'visible');
+    });
+
+
 });

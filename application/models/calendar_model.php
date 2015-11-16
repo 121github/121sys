@@ -77,8 +77,8 @@ class Calendar_model extends CI_Model
         if (isset($options['modal'])) {
             $query = "select appointments.postcode, if(companies.name,'',companies.name) as title, if(contacts.fullname,'',contacts.fullname) as contact, appointment_id,`start`,`end`,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
         } else {
-            $query = "select appointments.urn,appointment_id,campaign_name, appointments.title,text,`start`,`end`,postcode,if(appointments.`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company, if(contacts.fullname,'',contacts.fullname) as contact, users.name as user $select_distance from appointments $join where 1 and appointments.`status` = 1 $where $having $order_by";
-            //$this->firephp->log($query);
+            $query = "select appointments.urn,appointment_id,campaign_name,date(start) as `date`, appointments.title,text,`start`,`end`,postcode,if(appointments.`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company, if(contacts.fullname,'',contacts.fullname) as contact, users.name as user $select_distance from appointments $join where 1 and appointments.`status` = 1 $where $having $order_by";
+           $this->firephp->log($query);
         }
         $array = array();
         $users = array();

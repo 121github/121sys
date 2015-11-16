@@ -115,13 +115,16 @@ class Calendar extends CI_Controller
 
     public function get_events()
     {
+		$counts = array();
         $postcode = $this->input->post('postcode');
         if ($this->input->post('urn') && !$this->input->post('postcode')) {
             $postcode = $this->Calendar_model->get_postcode_from_urn($this->input->post('urn'));
         }
         if (isset($_POST['startDate'])) {
-            $start = !empty($_POST['startDate']) ? date('Y-m-d h:i:s', ($_POST['startDate'] / 1000)) : date('Y-m-d h:i:s');
-            $end = !empty($_POST['endDate']) ? date('Y-m-d h:i:s', ($_POST['endDate'] / 1000)) : date('2040-m-d h:i:s');
+            $start = !empty($_POST['startDate']) ? date('Y-m-d H:i:s', ($_POST['startDate'] / 1000)) : date('Y-m-d h:i:s');
+			$this->firephp->log($start);
+            $end = !empty($_POST['endDate']) ? date('Y-m-d H:i:s', ($_POST['endDate'] / 1000)) : date('2040-m-d h:i:s');
+			$this->firephp->log($end);
         } else {
             $start = "";
             $end = "";
@@ -166,10 +169,11 @@ class Calendar extends CI_Controller
 
         } else {
             foreach ($events as $row) {
+				$text  = explode("<br>",$row['text']);
                 $result[] = array(
                     'id' => $row['appointment_id'],
                     'title' => $row['title'],
-                    'text' => (!empty($row['text']) ? $row['text'] : ""),
+                    'text' => (!empty($text[0]) ? $text[0] : ""),
                     'url' => base_url() . 'records/detail/' . $row['urn'],
                     'class' => 'event-important',
                     'postcode' => $row['postcode'],
@@ -177,22 +181,30 @@ class Calendar extends CI_Controller
                     'distance' => (isset($row['distance']) && !empty($row['distance']) ? number_format($row['distance'], 1) . " Miles" : ""),
                     'start' => strtotime($row['start']) . '000',
                     'end' => strtotime($row['end']) . '000',
-                    'endtime' => date('g:i a', strtotime($row['end'])),
+					'starttime' => date('H:i', strtotime($row['start'])),
+                    'endtime' => date('H:i', strtotime($row['end'])),
                     'campaign' => $row['campaign_name'],
                     'company' => (!empty($row['company']) ? "<br>Company: " . $row['company'] : ""),
                     'contact' => (!empty($row['contact']) ? "<br>Contact: " . $row['contact'] : ""),
                     'urn' => $row['urn'],
-                    'starttime' => date('g:i a', strtotime($row['start'])),
                     'attendees' => (isset($row['attendeelist']) ? $row['attendeelist'] : "<span class='red'>No Attendee!</span>"),
                     'status' => (!empty($row['status']) ? "<br>Status: <span class='red'>" . $row['status'] . "</span>" : ""),
                     'statusinline' => (!empty($row['status']) ? "<span class='red'>" . $row['status'] . "</span>" : ""),
                     'color' => $row['color'],
                     'startDate' => date('d/m/Y', strtotime($row['start'])),
                     'endDate' => date('d/m/Y', strtotime($row['end'])),
+					'date' => $row['date']
                 );
+				  if(isset($counts[$row['date']]['apps'])){
+             $counts[$row['date']]['apps']++;    
+             } else {
+             $counts[$row['date']]['apps']= 1;
+             }
             }
         }
-
+  foreach($result as $k=>$v){
+            $result[$k]['app_count']=$counts[$v['date']]['apps'];
+  }
         echo json_encode(array('success' => 1, 'result' => $result, 'postcode' => $postcode, 'date' => date('Y-m')));
         exit;
 

@@ -948,6 +948,10 @@ if(!String.prototype.formatNum) {
 			self.view(view);
 		});
 
+		$('.rule-tooltip').click(function () {
+			$('.tooltip').remove();
+	 	});
+
 		this['_update_' + this.options.view]();
 
 		this._update_modal();
@@ -1142,17 +1146,22 @@ if(!String.prototype.formatNum) {
 		var tick_position = cell.data('cal-row');
 
 		that.fadeOut('fast');
-
 		slider.slideUp('fast', function() {
 			var event_list = $('.events-list', cell);
 			slider.html(self.options.templates['events-list']({
 				cal:    self,
+				date: event_list.data('cal-date'),
 				events: self.getEventsBetween(parseInt(event_list.data('cal-start')), parseInt(event_list.data('cal-end')))
 			}));
 			row.after(slider);
 			self.activecell = $('[data-cal-date]', cell).text();
 			$('#cal-slide-tick').addClass('tick' + tick_position).show();
 			slider.slideDown('fast', function() {
+				
+	$('#cal-slide-box').on('click', '.block-day-btn', function () {
+        calendar_modals.addAppointmentRule($(this).attr('item-day'));
+    });			
+				
 	$('#cal-slide-box').on('click','a.event-item',function(e){
 		e.preventDefault();
 		modals.view_appointment($(this).attr('data-event-id'));
