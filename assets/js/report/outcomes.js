@@ -75,6 +75,16 @@ var outcome = {
             location.reload();
         });
 
+        $(document).on("click", '.plots-tab', function(e) {
+            e.preventDefault();
+            $('.graph-color').show();
+        });
+
+        $(document).on("click", '.filters-tab,.searches-tab', function(e) {
+            e.preventDefault();
+            $('.graph-color').hide();
+        });
+
         outcome.outcome_panel()
     },
     current_campaign: function () {
@@ -154,7 +164,7 @@ var outcome = {
                             + "</td><td class='rate' style='rate'>"
                             + ((val.group != "time")&&(val.group != "reason") ? val.rate : "-")
                             + "</td><td>"
-                            + (val.id == 'TOTAL' || val.name.length == 0 || $.inArray(response.group, ['time', 'date', 'contact']) >= 0 ? "" : ("<span class='fa fa-circle' style='color:#" + val.colour + "'></span>"))
+                            + (val.id == 'TOTAL' || val.name.length == 0 || $.inArray(response.group, ['time', 'date', 'contact']) >= 0 ? "" : ("<span class='graph-color fa fa-circle' style='display:none; color:#" + val.colour + "'></span>"))
                             + "</td></tr>");
                     }
                 });
