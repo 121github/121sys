@@ -58,18 +58,17 @@ switch ($domain) {
         define('ENVIRONMENT', 'demo');
 		$session_name = '121sys_demo';
 		break;
-
-	default:
-        switch ($domain_ukfast) {
-            case 'prosales.':
-                define('ENVIRONMENT', 'production');
-                $session_name = '121sys_prosales_ukfast';
-                break;
-            default:
+    default:
+		switch ($domain_ukfast) {
+			case 'prosales.':
+				define('ENVIRONMENT', 'production');
+				$session_name = '121sys_prosales_ukfast';
+				break;
+			default:
                 define('ENVIRONMENT', 'development');
                 $session_name = '121sys_dev';
                 break;
-        }
+		}
 }
 
 session_name($session_name);

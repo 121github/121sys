@@ -312,7 +312,7 @@ class Sms extends CI_Controller
         }
 
         //TEST
-        if (intval($this->uri->segment(4)) >= 0) {
+        if (intval($this->uri->segment(4)) > 0) {
             $test = $this->uri->segment(4);
         }
 
