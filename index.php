@@ -29,6 +29,7 @@ $no_https = array("accept.", "demo.", "test.");
 
 $full_url = explode('121system.com', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 $domain = explode("/",$full_url[0]);
+$domain2 = $domain[1];
 $domain = $domain[0];
 
 $ukfast_url = explode('one2one.leadcontrol.co.uk', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -106,6 +107,17 @@ switch ($domain) {
         define('ENVIRONMENT', 'production');
         $session_name = '121sys_prosales';
         break;
+    case 'localhost':
+        switch ($domain2) {
+            case '121sys':
+                define('ENVIRONMENT', 'production');
+                $session_name = '121sys';
+                break;
+            default:
+                $session_name = '121sys_dev';
+                define('ENVIRONMENT', 'development');
+                break;
+        }
     default:
         switch ($domain_ukfast) {
             case 'prosales.':
@@ -113,9 +125,11 @@ switch ($domain) {
                 $session_name = '121sys_prosales_ukfast';
                 break;
             default:
-                define('ENVIRONMENT', 'development');
-                $session_name = '121sys_dev';
-                break;
+                if (!ENVIRONMENT) {
+                    define('ENVIRONMENT', 'development');
+                    $session_name = '121sys_dev';
+                    break;
+                }
         }
 }
 
