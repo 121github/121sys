@@ -95,6 +95,8 @@ var productivity = {
     },
     productivity_panel: function() {
 
+        var graph_color_display = (typeof $('.graph-color').css('display') != 'undefined'?($('.graph-color').css('display') == 'none'?'none':'inline-block'):'none');
+
         var thead = $('.productivity-table').find('thead');
         thead.empty();
         var tbody = $('.productivity-table').find('tbody');
@@ -144,7 +146,7 @@ var productivity = {
                                 + "<td>"+productivity.toHHMMSS(val.minutes)
                                 + "<td>"+productivity.toHHMMSS(val.exceptions)
                                 + "<td style='text-align: right'>"+(total_phone_time>0?productivity_val+"%":"ERROR")
-                                + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:none; color:#" + val.colour + "' ></span>"
+                                + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
                                 + "</tr>"
                     );
                 });
@@ -263,16 +265,22 @@ var productivity = {
                 // Create the data table.
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Slices');
+                data.addColumn('number', 'Outcomes');
+
+                var data2 = new google.visualization.DataTable();
+                data2.addColumn('string', 'Topping');
+                data2.addColumn('number', 'Productivity');
+
                 var rows = [];
+                var rows2 = [];
                 var colors = [];
-                var title = 'Productivity';
+                var colors2 = [];
 
                 // Set chart options
                 //var height = data.getNumberOfRows() * 21 + 30;
                 var options = {
                     'legend': {position: 'none'},
-                    'title': title,
+                    'title': 'Outcomes per agent',
                     'width': 300,
                     'height': 300,
                     'hAxis': {textPosition: 'none'},
@@ -280,23 +288,48 @@ var productivity = {
                     curveType: 'function'
                 };
 
+                var options2 = {
+                    'legend': {position: 'none'},
+                    'title': 'Productivity',
+                    'width': 300,
+                    'height': 300,
+                    'hAxis': {textPosition: 'none'},
+                    'vAxis': { minValue: 0, maxValue: 100, format: '#\'%\''} ,
+                    'colors': colors,
+                    curveType: 'function'
+                };
+
+                var total_phone_time = 0;
+                var total_duration = 0;
+                var productivity_val = "";
+
                 if (response.data.length > 1) {
                     $.each(response.data, function (i, val) {
+                        total_phone_time = ((parseFloat(val.duration)+parseFloat(val.ring_time))/3600);
+                        total_duration = ((parseFloat(val.minutes)-parseFloat(val.exceptions))/3600);
+                        productivity_val = ((total_phone_time*100)/total_duration);
+
                         if (response.data.length) {
                             if (val.agent.length > 0) {
                                 rows.push([val.agent, parseInt(val.count)]);
                                 colors.push('#' + val.colour);
                             }
+                            if (total_phone_time > 0) {
+                                console.log(productivity_val);
+                                rows2.push([val.agent, {v:productivity_val, f: productivity_val.toFixed(2)}]);
+                                colors2.push('#' + val.colour);
+                            }
                         }
                     });
                     data.addRows(rows);
+                    data2.addRows(rows2);
 
 
-                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_1'));
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_2'));
                     chart.draw(data, options);
 
-                    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_2'));
-                    chart.draw(data, options);
+                    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_1'));
+                    chart.draw(data2, options2);
                 }
                 else {
                     $('#chart_div_1').html("No data");
