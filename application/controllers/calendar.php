@@ -122,9 +122,7 @@ class Calendar extends CI_Controller
         }
         if (isset($_POST['startDate'])) {
             $start = !empty($_POST['startDate']) ? date('Y-m-d H:i:s', ($_POST['startDate'] / 1000)) : date('Y-m-d h:i:s');
-			$this->firephp->log($start);
             $end = !empty($_POST['endDate']) ? date('Y-m-d H:i:s', ($_POST['endDate'] / 1000)) : date('2040-m-d h:i:s');
-			$this->firephp->log($end);
         } else {
             $start = "";
             $end = "";

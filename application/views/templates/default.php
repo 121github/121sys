@@ -19,7 +19,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/datepicker3.css">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-select.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-select.css?v1.1">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/slider.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/default.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/css/jquery.mmenu.all.css">

@@ -41,7 +41,7 @@ var dashboard = {
             dataType: "JSON",
             data: $('.emails-filter').serialize(),
         }).done(function (response) {
-            $('#email-stats').html("<ul><li><a href='" + response.data.new_url + "'>" + response.data.new + "</a> new emails read</li><li><a href='" + response.data.read_url + "'>" + response.data.read + "</a> emails read today " + "</li><li><a href='" + response.data.all_url + "'>" + response.data.all + "</a> emails sent today</li><li><a href='" + response.data.pending_url + "'>" + response.data.pending + "</a> emails pending today</li><li><a href='" + response.data.unsent_url + "'>" + response.data.unsent + "</a> failed emails today</li><li><a href='" + response.data.sentall_url + "'>" + response.data.sentall + "</a> emails sent anytime</li><li><a href='" + response.data.readall_url + "'>" + response.data.readall + "</a> emails read anytime</li></ul>");
+            $('#email-stats').html("<div><a href='" + response.data.new_url + "'>" + response.data.new + "</a> new emails read<br><a href='" + response.data.read_url + "'>" + response.data.read + "</a> emails read today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all + "</a> emails sent today<br><a href='" + response.data.pending_url + "'>" + response.data.pending + "</a> emails pending today<br><a href='" + response.data.unsent_url + "'>" + response.data.unsent + "</a> failed emails today<br><a href='" + response.data.sentall_url + "'>" + response.data.sentall + "</a> emails sent anytime<br><a href='" + response.data.readall_url + "'>" + response.data.readall + "</a> emails read anytime</div>");
         });
     },
     sms_panel: function (filter) {
@@ -52,19 +52,7 @@ var dashboard = {
         data: $('.sms-filter').serialize(),
     }).done(function (response) {
         $('#sms-stats').html("<ul>" +
-                "<li><a href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today </li>" +
-                "<li><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "</li>" +
-                "<li><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "</li>" +
-                "<li><a href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> sms pending today " + "</li>" +
-                "<li><a href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> sms unknown today " + "</li>" +
-                "<li><a href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> sms error today " + "</li>" +
-                "<li><a href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> sms sent anytime " + "</li>" +
-                "<li><a href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> sms delivered anytime " + "</li>" +
-                "<li><a href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> sms undelivered anytime " + "</li>" +
-                "<li><a href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> sms pending anytime " + "</li>" +
-                "<li><a href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> sms unknown anytime " + "</li>" +
-                "<li><a href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> sms error anytime " + "</li>" +
-            "</ul>");
+                "<div><a href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today <br><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "<br><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "<br><a href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> sms pending today " + "<br><a href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> sms unknown today " + "<br><a href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> sms error today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> sms sent anytime " + "<br><a href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> sms delivered anytime " + "<br><a href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> sms undelivered anytime " + "<br><a href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> sms pending anytime " + "<br><a href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> sms unknown anytime " + "<br><a href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> sms error anytime " + "</div>");
     });
 },
     /* the function for the outcomes panel on the main dashboard */
@@ -100,14 +88,14 @@ var dashboard = {
             data: $('.stats-filter').serialize(),
         }).done(function (response) {
             $('#system-stats').empty();
-            $timeline = '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Campaign Stats</h4></div><div class="timeline-body"><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div></div></li>';
+            $contents = '<div><h4>Campaign Stats</h4><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
             if (helper.permissions['set progress'] > 0) {
-                $timeline += '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Follow up Stats</h4></div><div class="timeline-body"><p><a href="' + response.data.pending_url + '">' + response.data.pending + '</a> records are pending.<br><a href="' + response.data.in_progress_url + '">' + response.data.in_progress + '</a> records are in progress<br><a href="' + response.data.completed_url + '">' + response.data.completed + '</a> records have been completed</div></div></li>';
+                $contents += '<div><h4>Follow up Stats</h4></div><div><p><a href="' + response.data.pending_url + '">' + response.data.pending + '</a> records are pending.<br><a href="' + response.data.in_progress_url + '">' + response.data.in_progress + '</a> records are in progress<br><a href="' + response.data.completed_url + '">' + response.data.completed + '</a> records have been completed</div>';
             }
             if (response.data.surveys > 0) {
-                $timeline += '<li class="timeline-inverted"><div class="timeline-panel"><div class="timeline-heading"><h4 class="timeline-title">Survey Stats</h4></div><div class="timeline-body"><p>' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div></div></li>';
+                $contents += '<div><h4>Survey Stats</h4></div><div><p>' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div>';
             }
-            $('#system-stats').append($timeline);
+            $('#system-stats').append($contents);
         });
     },
     /* the function for the comments panel on the main dashboard */
@@ -118,10 +106,12 @@ var dashboard = {
             dataType: "JSON",
             data: $('.comments-filter').serialize(),
         }).done(function (response) {
-            $('.chat').empty();
+           $('#comment-panel').empty();
+		   var comments = "";
             $.each(response.data, function (i, val) {
-                $('.chat').append('<li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font"><a href="' + helper.baseUrl + 'records/detail/' + val.urn + '">' + val.name + '</a></strong><small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>' + val.date + '</small></div><p>' + val.comment + '</p></div></li>');
+               comments += '<li class="left clearfix"><div class="chat-body clearfix"><div class="header"><strong class="primary-font"><a href="' + helper.baseUrl + 'records/detail/' + val.urn + '">' + val.name + '</a></strong><small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>' + val.date + '</small></div><p>' + val.comment + '</p></div></li>';
             });
+			$('#comment-panel').html("<ul class='chat'>"+comments+'</ul>');
         });
     },
     /* the function for the urgent panel on the client dashboard */

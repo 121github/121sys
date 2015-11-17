@@ -154,10 +154,8 @@
                 </div>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body">
-                <ul class="chat">
+            <div class="panel-body" id="comment-panel">
                     <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
-                </ul>
             </div>
         </div>
     </div>

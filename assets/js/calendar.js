@@ -1,3 +1,54 @@
+function verifyConflictEvents(resize) {
+	var cal_width = $('#cal-day-box').width()-200;
+	var complete = [];
+	var box_width,boxes = 0;
+
+                    $(".pull-left.day-event.day-highlight").each(function () {
+						$(this).css('position','relative');
+						$(this).find('.event-counts').remove();
+                        var event = $(this);
+						box_width = event.width();
+
+                        var schedule = $(this).children("span").html();
+						var elements = [];
+						var resize = false;
+						var events = $('.day-event:contains("'+schedule+'")').length;
+						var boxes = $(".pull-left.day-event.day-highlight").not(':hidden').length;
+						if(complete.indexOf(schedule)==-1){
+							event.children("span").after('<div class="event-counts">x'+events+'</div>');
+                        $(this).siblings().each(function (i) {
+                            if ($(this).children("span").html() == schedule) {
+                                //event.css("position", "absolute");
+								$(this).hide();
+								complete.push(schedule);
+                            }
+                        });
+						}
+						 
+                    });
+					//numebr of boxes
+					
+					var boxes = $(".pull-left.day-event.day-highlight").not(':hidden').length;
+					//get the number of boxes possible ina row
+					var boxes_allowed = Math.floor(cal_width/box_width);
+					box_width = box_width+15;
+					var c=0;
+					$(".pull-left.day-event.day-highlight").not(':hidden').each(function(i){
+						if(i>=boxes_allowed){ 
+						
+						$(this).css('position','absolute');
+						$(this).css('margin-left',c*box_width+'px');
+						c++;
+						}
+						
+					});
+										
+                }
+				
+function resizeEvents(events){
+	
+}
+
  var calendar = "";
   var appointment_rules = {
         loadAppointmentRules: function () {
@@ -360,6 +411,7 @@ $(document).ready(function () {
             });
         },
         onAfterViewLoad: function (view) {
+			 if (view == 'day') { verifyConflictEvents();}
             $('.page-header h3').text(this.getTitle());
             $('.btn-group button').removeClass('active');
             $('button[data-calendar-view="' + view + '"]').addClass('active');

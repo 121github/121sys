@@ -49,12 +49,13 @@
 		</div>
 		
 		<% _.each(by_hour, function(event){ %>
-			<div class="pull-left day-event day-highlight dh-<%= event['class'] %>" style="background-color:<% event['color'] %>;margin-top: <%= (event
-.top * 30) %>px; height: <%= (event.lines * 30) %>px">
+			<div data-top="<%= event
+.top %>" class="pull-left day-event day-highlight dh-<%= event['class'] %>" style="position:relative; background-color:<% event['color'] %>;margin-top: <%= (event
+.top * 30) %>px; height: <%= (event.lines * 30) %>px;">
 				<span class="cal-hours"><%= event.start_hour %> - <%= event.end_hour %></span>
-				<a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
-				   data-event-class="<%= event['class'] %>" class="event-item">
-					<%= event.title %></a>
+				<!--<a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
+				   data-event-class="<%= event['class'] %>" class="event-item small" style="display:block">
+					<%= event.title %></a>-->
 			</div>
 		<% }); %>
 	</div>
@@ -64,9 +65,9 @@
 		<div class="span11 col-xs-9">
 			<% _.each(after_time, function(event){ %>
 			<div class="day-highlight dh-<%= event['class'] %>" style="background-color:<% event['color'] %>">
-				<span class="cal-hours"><%= event.start_hour %></span>
+				<span class="cal-hours"><%= event.start_hour %></span><br />
 				<a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>"
-				   data-event-class="<%= event['class'] %>" class="event-item">
+				   data-event-class="<%= event['class'] %>" class="event-item small">
 					<%= event.title %></a>
 			</div>
 			<% }); %>

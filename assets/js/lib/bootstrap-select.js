@@ -315,8 +315,6 @@
 
 		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
 			Selectpicker.DEFAULTS['mobile'] = true;
-			alert(navigator.userAgent);
-			
 		}
 
     Selectpicker.prototype = {

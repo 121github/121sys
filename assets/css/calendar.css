@@ -280,9 +280,8 @@
   overflow: hidden;
 }
 #cal-day-box .day-highlight {
-  line-height: 30px;
-  padding-left: 8px;
-  padding-right: 8px;
+	text-align:center;
+  padding:5px;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
