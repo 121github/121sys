@@ -72,10 +72,11 @@ class Report_model extends CI_Model
     {
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
-        $campaign = $options['campaign'];
-        $user = isset($options['agent']) ? $options['agent'] : "";
-        $team = isset($options['team']) ? $options['team'] : "";
-        $source = $options['source'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $users = isset($options['agents']) ? $options['agents'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
 
         $where = "";
         if (!empty($date_from)) {
@@ -84,17 +85,20 @@ class Report_model extends CI_Model
         if (!empty($date_to)) {
             $where .= " and date(contact) <= '$date_to' ";
         }
-        if (!empty($campaign)) {
-            $where .= " and history.campaign_id = '$campaign' ";
+        if (!empty($campaigs)) {
+            $where .= " and history.campaign_id IN (".implode(",",$campaigns).") ";
         }
-        if (!empty($user)) {
-            $where .= " and history.user_id = '$user' ";
+        if (!empty($outcomes)) {
+            $where .= " and history.outcome_id IN (".implode(",",$outcomes).") ";
         }
-        if (!empty($team)) {
-            $where .= " and teams.team_id = '$team' ";
+        if (!empty($users)) {
+            $where .= " and history.user_id IN (".implode(",",$users).") ";
         }
-        if (!empty($source)) {
-            $where .= " and history.source_id = '$source' ";
+        if (!empty($teams)) {
+            $where .= " and teams.team_id IN (".implode(",",$teams).") ";
+        }
+        if (!empty($sources)) {
+            $where .= " and history.source_id IN (".implode(",",$sources).") ";
         }
         //if the user does not have the agent reporting permission they can only see their own stats
         if (@!in_array("by agent", $_SESSION['permissions'])) {

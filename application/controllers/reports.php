@@ -139,7 +139,32 @@ class Reports extends CI_Controller
     //this is the controller loads the initial view for the activity dashboard
     public function activity()
     {
-        $campaigns = $this->Form_model->get_user_campaigns();
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
+
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
@@ -157,7 +182,8 @@ class Reports extends CI_Controller
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
-            'campaigns' => $campaigns,
+            'campaigns_by_group' => $campaigns_by_group,
+            'campaign_outcomes' => $campaign_outcomes,
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
@@ -180,18 +206,18 @@ class Reports extends CI_Controller
             $results = $this->Report_model->get_activity($this->input->post());
             $date_from = $this->input->post("date_from");
             $date_to = $this->input->post("date_to");
-            $user = $this->input->post("agent");
-            $campaign = $this->input->post("campaign");
-            $team = $this->input->post("team");
-            $source = $this->input->post("source");
+            $users = $this->input->post("agents");
+            $campaigns = $this->input->post("campaigns");
+            $teams = $this->input->post("teams");
+            $sources = $this->input->post("sources");
 
 
             $overall_array = array();
             $post = $this->input->post();
-            if ($this->input->post('team') || $this->input->post('agent')) {
+            if ($this->input->post('teams') || $this->input->post('agents')) {
                 $colname = $this->input->post('colname');
-                unset($post['team']);
-                unset($post['agent']);
+                unset($post['teams']);
+                unset($post['agents']);
                 $overall = $this->Report_model->get_activity($post);
                 $overall_array = array();
                 foreach ($overall as $k => $row) {
@@ -202,12 +228,12 @@ class Reports extends CI_Controller
 
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/history";
-                $url .= (!empty($campaign) ? "/hcampaign/$campaign" : "");
-                $url .= (!empty($user) ? "/user/$user" : "");
-                $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
-                $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
-                $url .= (!empty($team) ? "/team/$team" : "");
-                $url .= (!empty($source) ? "/hsource/$source" : "");
+//                $url .= (!empty($campaign) ? "/hcampaign/$campaign" : "");
+//                $url .= (!empty($user) ? "/user/$user" : "");
+//                $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
+//                $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
+//                $url .= (!empty($team) ? "/team/$team" : "");
+//                $url .= (!empty($source) ? "/hsource/$source" : "");
 
                 $total = $row['total'];
                 $pc = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
@@ -221,6 +247,7 @@ class Reports extends CI_Controller
                     $data["overall"] = $overall_array[$row['outcome']]["overall"];
                     $data["colname"] = $colname;
                 }
+                $data['colour'] = substr(dechex(crc32($row['outcome'])), 0, 6);
                 $data_array[] = $data;
             }
             echo json_encode(array(
