@@ -75,6 +75,16 @@ var outcome = {
             location.reload();
         });
 
+        $(document).on("click", '.plots-tab', function(e) {
+            e.preventDefault();
+            $('.graph-color').show();
+        });
+
+        $(document).on("click", '.filters-tab,.searches-tab', function(e) {
+            e.preventDefault();
+            $('.graph-color').hide();
+        });
+
         outcome.outcome_panel()
     },
     current_campaign: function () {
@@ -100,6 +110,7 @@ var outcome = {
             data: $('.filter-form').serialize()
         }).done(function (response) {
             var $row = "";
+            var graph_color_display = (typeof $('.graph-color').css('display') != 'undefined'?($('.graph-color').css('display') == 'none'?'none':'inline-block'):'none');
             $tbody = $('.outcome-data .ajax-table').find('tbody');
             $tbody.empty();
             if (response.success) {
@@ -154,7 +165,7 @@ var outcome = {
                             + "</td><td class='rate' style='rate'>"
                             + ((val.group != "time")&&(val.group != "reason") ? val.rate : "-")
                             + "</td><td>"
-                            + (val.id == 'TOTAL' || val.name.length == 0 || $.inArray(response.group, ['time', 'date', 'contact']) >= 0 ? "" : ("<span class='fa fa-circle' style='color:#" + val.colour + "'></span>"))
+                            + (val.id == 'TOTAL' || val.name.length == 0 || $.inArray(response.group, ['time', 'date', 'contact']) >= 0 ? "" : ("<span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "'></span>"))
                             + "</td></tr>");
                     }
                 });
@@ -264,7 +275,7 @@ var outcome = {
                 // Create the data table.
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Slices');
+                data.addColumn('number', 'Outcomes');
                 var rows = [];
                 var colors = [];
                 var title = '';

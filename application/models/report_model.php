@@ -72,10 +72,11 @@ class Report_model extends CI_Model
     {
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
-        $campaign = $options['campaign'];
-        $user = isset($options['agent']) ? $options['agent'] : "";
-        $team = isset($options['team']) ? $options['team'] : "";
-        $source = $options['source'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $users = isset($options['agents']) ? $options['agents'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
 
         $where = "";
         if (!empty($date_from)) {
@@ -84,17 +85,20 @@ class Report_model extends CI_Model
         if (!empty($date_to)) {
             $where .= " and date(contact) <= '$date_to' ";
         }
-        if (!empty($campaign)) {
-            $where .= " and history.campaign_id = '$campaign' ";
+        if (!empty($campaigs)) {
+            $where .= " and history.campaign_id IN (".implode(",",$campaigns).") ";
         }
-        if (!empty($user)) {
-            $where .= " and history.user_id = '$user' ";
+        if (!empty($outcomes)) {
+            $where .= " and history.outcome_id IN (".implode(",",$outcomes).") ";
         }
-        if (!empty($team)) {
-            $where .= " and teams.team_id = '$team' ";
+        if (!empty($users)) {
+            $where .= " and history.user_id IN (".implode(",",$users).") ";
         }
-        if (!empty($source)) {
-            $where .= " and history.source_id = '$source' ";
+        if (!empty($teams)) {
+            $where .= " and teams.team_id IN (".implode(",",$teams).") ";
+        }
+        if (!empty($sources)) {
+            $where .= " and history.source_id IN (".implode(",",$sources).") ";
         }
         //if the user does not have the agent reporting permission they can only see their own stats
         if (@!in_array("by agent", $_SESSION['permissions'])) {
@@ -440,19 +444,29 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $teams = isset($options['teams']) ? $options['teams'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $hours_where = "";
+        $hours = "hr.`user_id` = users.user_id ";
+        $exceptions = "t.`user_id` = users.user_id ";
+        $exceptions_where = "";
 
         $where = "";
         $where_calls = "";
         if (!empty($date_from)) {
             $where .= " and date(contact) >= '$date_from' ";
             $where_calls .= " and date(call_log.call_date) >= '$date_from' ";
+            $hours_where .= " and hr.date >= '$date_from' ";
+            $exceptions_where .= " and t.date >= '$date_from' ";
         }
         if (!empty($date_to)) {
             $where .= " and date(contact) <= '$date_to' ";
             $where_calls .= " and date(call_log.call_date) <= '$date_to' ";
+            $hours_where .= " and hr.date <= '$date_to' ";
+            $exceptions_where .= " and t.date <= '$date_to' ";
         }
         if (!empty($users)) {
             $where .= " and history.user_id IN (" . implode(",", $users) . ") ";
+            $hours_where .= " and hr.user_id IN (" . implode(",", $users) . ") ";
+            $exceptions_where .= " and t.user_id IN (" . implode(",", $users) . ") ";
         }
         if (!empty($teams)) {
             $where .= " and teams.team_id IN (" . implode(",", $teams) . ") ";
@@ -464,6 +478,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         if (!empty($campaigns)) {
             $where .= " and history.campaign_id IN (" . implode(",", $campaigns) . ") ";
+            $hours_where .= " and hr.campaign_id IN (" . implode(",", $campaigns) . ") ";
         }
 
 
@@ -474,7 +489,14 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $where .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
-        $qry = "select count(*) count, IF(duration,duration,0) as duration, IF(ring_time,ring_time,0) as ring_time, users.ext, users.name as agent, users.user_id as agent_id
+        $qry = "select
+                      count(*) count,
+                      IF(duration,duration,0) as duration,
+                      IF(ring_time,ring_time,0) as ring_time,
+                      users.ext, users.name as agent,
+                      users.user_id as agent_id,
+                      (select sum(hr.duration) from hours hr where $hours $hours_where) as minutes,
+                      (select IF(sum(te.duration),sum(te.duration),0) from time_exception te inner join time t using (time_id) where $exceptions $exceptions_where) as exceptions
                 from users
 				  left join history using(user_id)
                   join records using(urn)
@@ -491,7 +513,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $qry .= " GROUP BY users.user_id
                   ORDER BY users.user_id";
-		
+
         return $this->db->query($qry)->result_array();
     }
 

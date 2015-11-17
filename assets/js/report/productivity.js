@@ -81,9 +81,21 @@ var productivity = {
             location.reload();
         });
 
+        $(document).on("click", '.plots-tab', function(e) {
+            e.preventDefault();
+            $('.graph-color').show();
+        });
+
+        $(document).on("click", '.filters-tab,.searches-tab', function(e) {
+            e.preventDefault();
+            $('.graph-color').hide();
+        });
+
         productivity.productivity_panel();
     },
     productivity_panel: function() {
+
+        var graph_color_display = (typeof $('.graph-color').css('display') != 'undefined'?($('.graph-color').css('display') == 'none'?'none':'inline-block'):'none');
 
         var thead = $('.productivity-table').find('thead');
         thead.empty();
@@ -101,6 +113,7 @@ var productivity = {
         }).done(function(response) {
             tbody.empty();
             if (response.success) {
+                var total_phone_time = 0;
                 var total_duration = 0;
                 var productivity_val = "";
                 var search_url = "";
@@ -108,27 +121,32 @@ var productivity = {
                     + "<th>" + response.outcome_colname + "</th>"
                             + "<th>Talk Time</th>"
                             + "<th>Ring Time</th>"
-                            + "<th>Total Duration</th>"
-                    + "<th style='text-align: right'>Productivity (<span style='font-size: 10px'> " + response.outcome_colname + " per hour</span>)</th>"
+                            + "<th>Total Time Phone</th>"
+                            + "<th>Minutes</th>"
+                            + "<th>Exceptions</th>"
+                    + "<th style='text-align: right'>Productivity</th>"
                     + "<th></th>"
                 );
 
 				$.each(response.data, function(i, val) {
-                    total_duration = ((parseInt(val.duration)+parseInt(val.ring_time))/3600);
-                    productivity_val = ((val.count/total_duration).toFixed(2));
+                    total_phone_time = ((parseInt(val.duration)+parseInt(val.ring_time))/3600);
+                    total_duration = ((parseInt(val.minutes)-parseInt(val.exceptions))/3600);
+                    productivity_val = ((total_phone_time*100)/total_duration).toFixed(2);
                     search_url = helper.baseUrl + 'search/custom/history/'
                                                 +'contact-from/'+$('.filter-form').find('input[name="date_from"]').val()
                                                 +'/contact-to/'+$('.filter-form').find('input[name="date_to"]').val()
                                                 +'/outcome/'+$('.filter-form').find('input[name="outcome"]').val()
                                                 +'/user/'+val.agent_id;
 
-                    tbody.append("<tr class='"+(total_duration == 0?"danger":"success")+"'><td>"+val.agent
+                    tbody.append("<tr class='"+(total_phone_time == 0?"danger":"success")+"'><td>"+val.agent
                                 + "<td>"+"<a href='" + search_url + "'>" + val.count + "</a>"
                                 + "<td>"+productivity.toHHMMSS(val.duration)
                                 + "<td>"+productivity.toHHMMSS(val.ring_time)
                                 + "<td>"+productivity.toHHMMSS(parseInt(val.duration)+parseInt(val.ring_time))
-                                + "<td style='text-align: right'>"+(total_duration>0?productivity_val:"ERROR")
-                        + "<td style='text-align: right'><span class='fa fa-circle' style='color:#" + val.colour + "'></span>"
+                                + "<td>"+productivity.toHHMMSS(val.minutes)
+                                + "<td>"+productivity.toHHMMSS(val.exceptions)
+                                + "<td style='text-align: right'>"+(total_phone_time>0?productivity_val+"%":"ERROR")
+                                + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
                                 + "</tr>"
                     );
                 });
@@ -247,16 +265,22 @@ var productivity = {
                 // Create the data table.
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Slices');
+                data.addColumn('number', 'Outcomes');
+
+                var data2 = new google.visualization.DataTable();
+                data2.addColumn('string', 'Topping');
+                data2.addColumn('number', 'Productivity');
+
                 var rows = [];
+                var rows2 = [];
                 var colors = [];
-                var title = 'Productivity';
+                var colors2 = [];
 
                 // Set chart options
                 //var height = data.getNumberOfRows() * 21 + 30;
                 var options = {
                     'legend': {position: 'none'},
-                    'title': title,
+                    'title': 'Outcomes per agent',
                     'width': 300,
                     'height': 300,
                     'hAxis': {textPosition: 'none'},
@@ -264,23 +288,48 @@ var productivity = {
                     curveType: 'function'
                 };
 
+                var options2 = {
+                    'legend': {position: 'none'},
+                    'title': 'Productivity',
+                    'width': 300,
+                    'height': 300,
+                    'hAxis': {textPosition: 'none'},
+                    'vAxis': { minValue: 0, maxValue: 100, format: '#\'%\''} ,
+                    'colors': colors,
+                    curveType: 'function'
+                };
+
+                var total_phone_time = 0;
+                var total_duration = 0;
+                var productivity_val = "";
+
                 if (response.data.length > 1) {
                     $.each(response.data, function (i, val) {
+                        total_phone_time = ((parseFloat(val.duration)+parseFloat(val.ring_time))/3600);
+                        total_duration = ((parseFloat(val.minutes)-parseFloat(val.exceptions))/3600);
+                        productivity_val = ((total_phone_time*100)/total_duration);
+
                         if (response.data.length) {
                             if (val.agent.length > 0) {
                                 rows.push([val.agent, parseInt(val.count)]);
                                 colors.push('#' + val.colour);
                             }
+                            if (total_phone_time > 0) {
+                                console.log(productivity_val);
+                                rows2.push([val.agent, {v:productivity_val, f: productivity_val.toFixed(2)}]);
+                                colors2.push('#' + val.colour);
+                            }
                         }
                     });
                     data.addRows(rows);
+                    data2.addRows(rows2);
 
 
-                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_1'));
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_2'));
                     chart.draw(data, options);
 
-                    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_2'));
-                    chart.draw(data, options);
+                    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_1'));
+                    chart.draw(data2, options2);
                 }
                 else {
                     $('#chart_div_1').html("No data");

@@ -118,14 +118,14 @@
                     </div>
                     <div class="col-lg-4">
                         <ul class="nav nav-tabs" style=" background:#eee; width:100%;">
-                            <li class="active"><a href="#chart_div" class="tab" data-toggle="tab">Graphs</a></li>
-                            <li class="filters-tab"><a href="#filters" class="tab" data-toggle="tab">Filters</a></li>
+                            <li class="plots-tab"><a href="#chart_div" class="tab" data-toggle="tab">Graphs</a></li>
+                            <li class="filters-tab active"><a href="#filters" class="tab" data-toggle="tab">Filters</a></li>
                             <li class="searches-tab"><a href="#searches" class="tab" data-toggle="tab">Saved
                                     Searches</a></li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane" id="filters"></div>
-                            <div class="tab-pane active" id="chart_div">
+                            <div class="tab-pane active" id="filters"></div>
+                            <div class="tab-pane" id="chart_div">
                                 <div id="chart_div_1"></div>
                                 <div id="chart_div_2"></div>
                             </div>
