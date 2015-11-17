@@ -1,4 +1,4 @@
-<div style="padding:0 50px 50px">
+<div style="padding-bottom:50px">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <i class="fa fa-calendar-o fa-fw"></i> Calendar

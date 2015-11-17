@@ -1058,7 +1058,7 @@ if(!String.prototype.formatNum) {
 
 		var week = $(document.createElement('div')).attr('id', 'cal-week-box');
 		var start = this.options.position.start.getFullYear() + '-' + this.options.position.start.getMonthFormatted() + '-';
-		$('.cal-month-box .cal-row-fluid')
+	/*	$('.cal-month-box .cal-row-fluid')
 			.on('mouseenter', function() {
 				var p = new Date(self.options.position.start);
 				var child = $('.cal-cell1:first-child .cal-month-day', this);
@@ -1072,7 +1072,7 @@ if(!String.prototype.formatNum) {
 				week.hide();
 			})
 		;
-
+*/
 		week.click(function() {
 			self.options.day = $(this).data('cal-week');
 			self.view('week');

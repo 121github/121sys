@@ -10,8 +10,8 @@ line-height:40px;
 text-align:center;
 background:#F90;
 opacity: 0.8;
-float:left;
-cursor:default; 
+cursor:pointer;
+margin-top:15px;
 }
 .events-list {
 
@@ -22,6 +22,7 @@ span[data-cal-date]{ position:absolute; right:5px; top:5px; margin:0; }
 </style>
 <div class="cal-month-day <%= cls %>" item-day="<%= data_day %>">
 	<span class="rule-tooltip" data-cal-date="<%= data_day %>" data-cal-view="day" data-html="true" data-toggle="tooltip" title="<%= tooltip %>"><%= day %></span>
+    <div class="clearfix"></div>
 	<% if (events.length > 0) { %>
     <% if (events[0].app_count > 0) { %>
                     <span class="orange-circle"><%= events[0].app_count %></span>

@@ -12,7 +12,7 @@
         
     <div class="form-group input-group-sm">
         <p>Please choose the users that have READ access</p>
-        <select name="readusers[]" multiple class="selectpicker pull-left folder-read-users">
+        <select name="readusers[]" data-size="5" multiple class="selectpicker pull-left folder-read-users">
             <?php foreach ($users as $row): ?>
                 <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
             <?php endforeach ?>
@@ -21,7 +21,7 @@
     </div>
         <div class="form-group input-group-sm">
         <p>Please choose the users that have WRITE access</p>
-        <select name="writeusers[]" multiple class="selectpicker pull-left folder-write-users">
+        <select name="writeusers[]" data-size="5" multiple class="selectpicker pull-left folder-write-users">
             <?php foreach ($users as $row): ?>
                 <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
             <?php endforeach ?>
