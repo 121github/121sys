@@ -23,10 +23,10 @@ var record = {
             e.preventDefault();
             if ($('[name="call_direction"]').length > 0 && !$('[name="call_direction"]').is(':checked')) {
                 alert("You must set a call direction");
-            } else if ($('.outcomepicker').val().length > 0) {
-                if ($('.outcomepicker').val() == "4" && $('#history-panel').find('tbody tr').length > 0) {
+            } else if ($('#outcomes').val().length > 0) {
+                if ($('#outcomes').val() == "4" && $('#history-panel').find('tbody tr').length > 0) {
                     modal.dead_line($(this));
-                } else if ($('.outcomepicker').val() == "120" && $('#contact-panel').find('#map-link').length == 0) {
+                } else if ($('#outcomes').val() == "120" && $('#contact-panel').find('#map-link').length == 0) {
                     modal.desktop_prequal($(this));
                 } else {
                     record.update_panel.save($(this));
@@ -60,9 +60,9 @@ var record = {
             $('div.outcomepicker').find('.filter-option').text('Cross Transer: ' + xfer);
             record.update_panel.close_cross_transfer();
         });
-        var old_outcome = $('.outcomepicker option:selected').val();
+        var old_outcome = $('#outcomes option:selected').val();
         var current_outcome = old_outcome;
-        $(document).on('change', '.outcomepicker', function (e) {
+        $(document).on('change', '#outcomes', function (e) {
             record.update_panel.enable_outcome_reasons($(this).val());
             e.preventDefault();
             $val = $(this).val();
