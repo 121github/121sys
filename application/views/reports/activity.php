@@ -98,7 +98,7 @@
                 </div>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body productivity-panel  table-responsive">
+            <div class="panel-body productivity-panel  table-responsive" style="padding: 0px;">
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="panel-body activity-panel">
