@@ -16,7 +16,7 @@ class User_model extends CI_Model
      * @param string $password
      * @return boolean true if validation is successful.
      */
-    public function validate_login($username, $password, $user_id = false)
+    public function validate_login($username, $password, $user_id = false, $check_only=false)
     {
         if ($user_id) {
             $check_field = "user_id";
@@ -32,6 +32,11 @@ class User_model extends CI_Model
             $password
         ))->result_array();
         if (!empty($result)) {
+			if($check_only){
+			//if check only then just return the user_id, no need to load the full session
+			return $result[0]['user_id'];
+			}
+			
             $config_query            = "SELECT * from configuration";
             $config                  = $this->db->query($config_query)->row_array(0);
             $_SESSION['config']      = $config;

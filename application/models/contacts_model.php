@@ -93,7 +93,7 @@ class Contacts_model extends CI_Model
            // $use_fullname                            = ($this->name_field == "fullname" ? true : false);
 			 $use_fullname  = true;
             $contacts[$result['contact_id']]['name'] = array(
-                "fullname" => $result['fullname'],
+                "fullname" => !empty($result['fullname'])?$result['fullname']:"No Name",
                 "use_full" => $use_fullname
             );
 
