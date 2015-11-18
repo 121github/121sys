@@ -214,8 +214,7 @@ var activity = {
                 $.each(response.campaign_outcomes, function (type, data) {
                     options += "<optgroup label=" + type + ">";
                     $.each(data, function (i, val) {
-                        var selected = ((type === "positive") ? "Selected" : "");
-                        options += "<option value=" + val.id + " " + selected + ">" + val.name + "</option>";
+                        options += "<option value=" + val.id + ">" + val.name + "</option>";
                     });
                     options += "</optgroup>";
                 });
