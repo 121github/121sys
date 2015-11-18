@@ -123,7 +123,6 @@ class Report_model extends CI_Model
 
         $qry .= $where;
         $qry .= " group by history.outcome_id order by count desc ";
-        $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 
