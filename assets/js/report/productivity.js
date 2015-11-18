@@ -151,7 +151,7 @@ var productivity = {
                     );
                 });
             } else {
-                tbody.append('<p>' + response.msg + '</p>');
+                tbody.append('<p style="padding: 10px;">' + response.msg + '</p>');
             }
 
             //////////////////////////////////////////////////////////
