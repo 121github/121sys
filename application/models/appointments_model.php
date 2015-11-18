@@ -118,7 +118,7 @@ class Appointments_model extends CI_Model
 					}
             }
 
-            $slots[date("D jS M", strtotime('+' . $i . ' days'))] = $this_day;
+            $slots[date("D jS M y", strtotime('+' . $i . ' days'))] = $this_day;
         }
         /* now get the appointments in each slot for each day and push them into the array */
 
@@ -162,13 +162,13 @@ class Appointments_model extends CI_Model
             if ($app_type) {
                 $app_type_where = " and appointment_type_id = '$app_type' ";
             }
-            $qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where `status` = 1  and time(`start`) between '" . $timeslot['slot_start'] . "' and '" . $timeslot['slot_end'] . "' and date(`start`) between curdate() and  adddate(curdate(),interval 30 day) $where $app_type_where group by date(`start`) $distance_order";
+            $qry = "select date(`start`) start $distance_select, count(*) count from appointments $join_locations left join records using(urn) join appointment_attendees using(appointment_id) where `status` = 1  and time(`start`) between '" . $timeslot['slot_start'] . "' and '" . $timeslot['slot_end'] . "' and date(`start`) between curdate() and adddate(curdate(),interval 45 day) $where $app_type_where group by date(`start`) $distance_order";
 
             $results = $this->db->query($qry)->result_array();
 
             $i = 0;
             foreach ($results as $row) {
-                $date = date("D jS M", strtotime($row['start']));
+                $date = date("D jS M y", strtotime($row['start']));
                 @$slots[$date][$id]['sqldate'] = $row['start'];
                 @$slots[$date][$id]['apps'] = $row['count'];
                 //the smallest distance for this timeslot

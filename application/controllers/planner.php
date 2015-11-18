@@ -216,7 +216,7 @@ foreach($appointments['apps'] as $date => $day){
 		$max_apps += $row['max_apps'];
 		$apps += $row['apps'];
 		$reason  = isset($row['reason'])?$row['reason']:false;
-		$sql_date = DateTime::createFromFormat('D jS M', $date)->format('Y-m-d');
+		$sql_date = DateTime::createFromFormat('D jS M y', $date)->format('Y-m-d');
 		$slots[$sql_date] = array("apps"=>$apps,"max_apps"=>$max_apps,"reason"=>$reason);	
 		}
 	}
