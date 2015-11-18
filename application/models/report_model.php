@@ -85,7 +85,7 @@ class Report_model extends CI_Model
         if (!empty($date_to)) {
             $where .= " and date(contact) <= '$date_to' ";
         }
-        if (!empty($campaigs)) {
+        if (!empty($campaigns)) {
             $where .= " and history.campaign_id IN (".implode(",",$campaigns).") ";
         }
         if (!empty($outcomes)) {
@@ -123,7 +123,7 @@ class Report_model extends CI_Model
 
         $qry .= $where;
         $qry .= " group by history.outcome_id order by count desc ";
-        //$this->firephp->log($qry);
+        $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 
