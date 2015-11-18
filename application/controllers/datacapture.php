@@ -14,7 +14,7 @@ class Datacapture extends CI_Controller
 	
 public function index(){
 	if(!isset($_GET['id'])||!isset($_GET['key'])){
-		 $error = "You must include the username and password fields in the url";
+		 $error = "You must include the id and key fields in the url";
 		 echo json_encode(array("success"=>false,"error"=>$error));
 		 exit;
 	}
