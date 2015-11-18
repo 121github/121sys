@@ -204,8 +204,8 @@ var campaign_functions = {
                             default_distance = branch.distance;
                             option_color = 'green';
                         }
-						first_attendee = region.brus_attendees;
-						var first_attendee = first_attendee.substr(0, first_attendee.indexOf(','));
+						var first_attendee = region.brus_attendees;
+						first_attendee = first_attendee.substr(0, first_attendee.indexOf(','));
                         options += "<li><a href='#' class='branch-filter' id='" + branch.id + "' style='color: " + option_color + "' branch-name='" + branch.name + "' data-bus-attendees='" + first_attendee + "' data-region='" + region.id + "' data-distance='" + branch.distance + "'>" +
                             "<span class='branch_name'>" + branch.name + "</span>" +
                             "<span style='font-size: 10px;'>" + " - " + branch.distance + "</span>" +
