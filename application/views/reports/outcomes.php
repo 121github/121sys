@@ -100,7 +100,7 @@
         </div>
     </div>
     <!-- /.panel-heading -->
-    <div class="panel-body outcome-data table-responsive">
+    <div class="panel-body outcome-data table-responsive" style="padding: 0px;">
         <div class="row">
             <div class="col-lg-8">
                 <table class="table ajax-table">
