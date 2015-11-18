@@ -185,17 +185,18 @@ var campaign_functions = {
             data: {postcode: contact_postcode, branch_id: id}
         }).done(function (response) {
             if (response) {
-                var branch_info = "";
+                var branch_info,first_attendee = "";
                 branch_info += "<table class='table small table-condensed table-striped'>" +
                     "<thead><tr><th>Hub</th><th>Branch</th><th>Distance</th></tr><thead>" +
                     "<tbody>";
-
+	
                 $.each(response.branches, function (i, region) {
                     var options = "";
                     var default_branch_id = region.branches[0].id;
                     var default_branch_name = region.branches[0].name;
                     var default_distance = region.branches[0].distance;
-
+						first_attendee = region.brus_attendees;
+						first_attendee = first_attendee.substr(0, first_attendee.indexOf(','));
                     $.each(region.branches, function (i, branch) {
                         var option_color = 'black';
                         if (branch.id == region.default_branch_id) {
@@ -204,8 +205,6 @@ var campaign_functions = {
                             default_distance = branch.distance;
                             option_color = 'green';
                         }
-						var first_attendee = region.brus_attendees;
-						first_attendee = first_attendee.substr(0, first_attendee.indexOf(','));
                         options += "<li><a href='#' class='branch-filter' id='" + branch.id + "' style='color: " + option_color + "' branch-name='" + branch.name + "' data-bus-attendees='" + first_attendee + "' data-region='" + region.id + "' data-distance='" + branch.distance + "'>" +
                             "<span class='branch_name'>" + branch.name + "</span>" +
                             "<span style='font-size: 10px;'>" + " - " + branch.distance + "</span>" +
