@@ -60,7 +60,7 @@ class Calendar extends CI_Controller
             'page' => 'data',
             'javascript' => array(
                 'lib/underscore.js',
-                'plugins/calendar/js/calendar.js',
+                'plugins/calendar/js/calendar.js?v' . $this->project_version,
                 'calendar.js?v' . $this->project_version,
                 'location.js?v' . $this->project_version,
                 'plugins/jqfileupload/jquery.fileupload.js',
