@@ -204,7 +204,9 @@ var campaign_functions = {
                             default_distance = branch.distance;
                             option_color = 'green';
                         }
-                        options += "<li><a href='#' class='branch-filter' id='" + branch.id + "' style='color: " + option_color + "' branch-name='" + branch.name + "' data-bus-attendees='" + region.brus_attendees + "' data-region='" + region.id + "' data-distance='" + branch.distance + "'>" +
+						first_attendee = region.brus_attendees;
+						var first_attendee = first_attendee.substr(0, first_attendee.indexOf(','));
+                        options += "<li><a href='#' class='branch-filter' id='" + branch.id + "' style='color: " + option_color + "' branch-name='" + branch.name + "' data-bus-attendees='" + first_attendee + "' data-region='" + region.id + "' data-distance='" + branch.distance + "'>" +
                             "<span class='branch_name'>" + branch.name + "</span>" +
                             "<span style='font-size: 10px;'>" + " - " + branch.distance + "</span>" +
                             "</a></li>";
@@ -219,7 +221,7 @@ var campaign_functions = {
                         "<ul class='dropdown-menu'>" + options + "</ul>" +
                         "</td>" +
                         "<td class='branch-distance-" + region.id + "'>" + default_distance + "</td>" +
-                        "<td><input type='radio' name='hub-choice' data-branch='" + default_branch_id + "' data-branch-name='" + default_branch_name + "' data-region='" + region.id + "' value='" + region.brus_attendees + "'/></td></tr>";
+                        "<td><input type='radio' name='hub-choice' data-branch='" + default_branch_id + "' data-branch-name='" + default_branch_name + "' data-region='" + region.id + "' value='" + first_attendee + "'/></td></tr>";
                 });
                 branch_info += "</tbody></table>";
                 $('#branch-info').html(branch_info);
