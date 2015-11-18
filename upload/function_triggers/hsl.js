@@ -185,7 +185,7 @@ var campaign_functions = {
             data: {postcode: contact_postcode, branch_id: id}
         }).done(function (response) {
             if (response) {
-                var branch_info,first_attendee = "";
+                var branch_info = "";
                 branch_info += "<table class='table small table-condensed table-striped'>" +
                     "<thead><tr><th>Hub</th><th>Branch</th><th>Distance</th></tr><thead>" +
                     "<tbody>";
@@ -195,8 +195,10 @@ var campaign_functions = {
                     var default_branch_id = region.branches[0].id;
                     var default_branch_name = region.branches[0].name;
                     var default_distance = region.branches[0].distance;
-						first_attendee = region.brus_attendees;
-						first_attendee = first_attendee.substr(0, first_attendee.indexOf(','));
+					var first_attendee = region.brus_attendees;
+                    if (first_attendee.indexOf(',') >= 0) {
+                        first_attendee = first_attendee.substr(0, first_attendee.indexOf(','));
+                    }
                     $.each(region.branches, function (i, branch) {
                         var option_color = 'black';
                         if (branch.id == region.default_branch_id) {
