@@ -18,12 +18,12 @@ public function index(){
 		 echo json_encode(array("success"=>false,"error"=>$error));
 		 exit;
 	}
-		if(!isset($_GET['campaign'])){
+		if(!$this->input->get_post('campaign')){
 		 $error = "You must include the campaign id in the url";
 		 echo json_encode(array("success"=>false,"error"=>$error));
 		 exit;
 		} 
-		if(empty($_GET['campaign'])){
+		if($this->input->get_post('campaign')==""){
 		 $error = "The campaign field cannot be empty";
 		 echo json_encode(array("success"=>false,"error"=>$error));
 		 exit;
