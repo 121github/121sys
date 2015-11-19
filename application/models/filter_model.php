@@ -1232,6 +1232,9 @@ return $query->result_array();
                         $where_array[$key] = " and " . $key . " <> '" . $val . "'";
                     }
                 }
+                if ($operator == "in") {
+                    $where_array[$key] = " and " . $key . " IN (" . str_replace("_",",",$val) . ")";
+                }
             }
             if (empty($operator)) {
                 if ($val == "null") {

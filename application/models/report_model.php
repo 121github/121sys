@@ -441,6 +441,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $date_to = $options['date_to'];
         $users = isset($options['agents']) ? $options['agents'] : array();
         $teams = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
         $hours_where = "";
@@ -471,6 +472,10 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             $where .= " and teams.team_id IN (" . implode(",", $teams) . ") ";
         }
 
+        if (!empty($sources)) {
+            $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
+        }
+
         if (!empty($outcomes)) {
             $where .= " and history.outcome_id IN (" . implode(",", $outcomes) . ") ";
         }
@@ -499,6 +504,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
                 from users
 				  left join history using(user_id)
                   join records using(urn)
+                  join data_sources sources on records.source_id = sources.source_id
                   join teams on users.team_id = teams.team_id
                   left join (
                     select  SUM(TIME_TO_SEC(call_log.duration)) as duration, SUM(call_log.ring_time) as ring_time, users.ext as extension

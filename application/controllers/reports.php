@@ -228,12 +228,12 @@ class Reports extends CI_Controller
 
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/history";
-//                $url .= (!empty($campaign) ? "/hcampaign/$campaign" : "");
-//                $url .= (!empty($user) ? "/user/$user" : "");
-//                $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
-//                $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
-//                $url .= (!empty($team) ? "/team/$team" : "");
-//                $url .= (!empty($source) ? "/hsource/$source" : "");
+                $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).":in" : "");
+                $url .= (!empty($users) ? "/user/".implode("_",$users).":in" : "");
+                $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
+                $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
+                $url .= (!empty($teams) ? "/team/".implode("_",$teams).":in" : "");
+                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).":in" : "");
 
                 $total = $row['total'];
                 $pc = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
@@ -350,13 +350,13 @@ class Reports extends CI_Controller
             $form["date_to"] = ($this->input->post("date_to")) ? $this->input->post("date_to") : date('Y-m-d');
             $results = $this->Report_model->get_outcome_data($form);
 
-//            $date_from_search = $form["date_from"];
-//            $date_to_search = $form["date_to"];
-//            $agent_search = $form["agents"];
-//            $campaign_search = $form["campaigns"];
-//            $team_search = $form["teams"];
-//            $source_search = $form["sources"];
-            $outcome_ids = isset($form["outcomes"]) ? $form["outcomes"] : array();
+            $date_from_search = $form["date_from"];
+            $date_to_search = $form["date_to"];
+            $agent_search = (isset($form["agents"])?$form["agents"]:array());
+            $campaign_search = (isset($form["campaigns"])?$form["campaigns"]:array());
+            $team_search = (isset($form["teams"])?$form["teams"]:array());
+            $source_search = (isset($form["sources"])?$form["sources"]:array());
+            $outcome_ids = isset($form["outcomes"]) ? $form["outcomes"]:array();
             $group = $form["group"];
 
 
@@ -391,12 +391,12 @@ class Reports extends CI_Controller
             $totalDials = 0;
             $totalDuration = 0;
             $url = base_url() . "search/custom/history";
-//            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-//            $url .= (!empty($campaign_search) ? "/hcampaign/$campaign_search" : "");
-//            $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
-//            $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
-//            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-//            $url .= (!empty($source_search) ? "/hsource/$source_search" : "");
+            $url .= (!empty($agent_search) ? "/user/".implode("_",$agent_search).":in" : "");
+            $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).":in" : "");
+            $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
+            $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
+            $url .= (!empty($team_search) ? "/team/".implode("_",$team_search).":in" : "");
+            $url .= (!empty($source_search) ? "/hsource/".implode("_",$source_search).":in" : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -405,24 +405,19 @@ class Reports extends CI_Controller
                 //create the click through hyperlinks
                 if ($group == "contact") {
                     $allDialsUrl = $url . "/outcome/null:not/contact/" . $row['sql'];
-                    //$outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
-                    $outcomesUrl = $url;
+                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).":in";
                 } else if ($group == "time") {
                     $allDialsUrl = $url . "/outcome/null:not/time/" . $row['sql'];
-                    //$outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
-                    $outcomesUrl = $url;
+                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).":in";
                 } else if ($group == "agent") {
                     $allDialsUrl = $url . "/outcome/null:not/user/" . $id;
-                    //$outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
-                    $outcomesUrl = $url;
+                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).":in";
                 } else if ($group == "reason") {
                     $allDialsUrl = $url . "/outcome/null:not/reason/" . $id;
-                    //$outcomesUrl = $allDialsUrl . "/outcome/" . $form['outcome'];
-                    $outcomesUrl = $url;
+                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).":in";
                 } else {
                     $allDialsUrl = $url . "/outcome/null:not/alldials/" . $id;
-                    //$outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/" . $form['outcome'];
-                    $outcomesUrl = $url;
+                    $outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/".implode("_",$form['outcomes']).":in";
                 }
 
                 $data[] = array(
@@ -446,7 +441,7 @@ class Reports extends CI_Controller
 
             $totalPercent = ($totalDials) ? number_format((($totalOutcomes) * 100) / $totalDials, 2) : 0;
 
-//            $url .= (!empty($campaign_search) ? "/hcampaign/$campaign_search" : "");
+            $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).":in" : "");
             $url .= ($group == "reason" ? "/reason/null:not" : "");
 
             array_push($data, array(
@@ -731,6 +726,8 @@ class Reports extends CI_Controller
         }
         $campaign_outcomes = $aux;
 
+        $sources = $this->Form_model->get_sources();
+
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -745,6 +742,7 @@ class Reports extends CI_Controller
             ),
             'team_managers' => $teamManagers,
             'agents' => $agents,
+            'sources' => $sources,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
@@ -772,6 +770,16 @@ class Reports extends CI_Controller
             $results = $aux;
 
             $outcomes = $this->input->post('outcomes');
+            $campaigns = $this->input->post('campaigns');
+            $teams = $this->input->post('teams');
+            $sources = $this->input->post('sources');
+
+            $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).":in":"");
+            $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).":in":"");
+            $teams_url = (!empty($teams)?"/team/".implode("_",$teams).":in":"");
+            $sources_url = (!empty($sources)?"/source/".implode("_",$sources).":in":"");
+
+            $filter_url = $outcomes_url.$campaigns_url.$teams_url.$sources_url;
 
             $outcome_colname = "Outcomes";
             if (!empty($outcomes)) {
@@ -788,6 +796,7 @@ class Reports extends CI_Controller
                 "success" => (!empty($results)),
                 "outcome_colname" => $outcome_colname,
                 "data" => $results,
+                "filter_url" => $filter_url,
                 "total" => $total,
                 "msg" => (empty($results) ? "No results found" : "")
             ));

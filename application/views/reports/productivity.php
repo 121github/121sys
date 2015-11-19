@@ -1,6 +1,28 @@
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-8">
         <h1 class="page-header">Productivity Report</h1>
+    </div>
+    <div class="col-lg-4 page-header" style="text-align: right;">
+        <ul class="nav">
+            <li>
+                <div class="btn-group">
+                    <span class="btn btn-default btn show-charts" data-item="0" charts="chart_div" data="filters">
+                        <span class="fa fa-bar-chart-o fa-fw" style="color:black;"></span>
+                    </span>
+                    <span class="btn btn-default btn refresh-data">
+                        <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
+                    </span>
+                    <a href="#filter-right" class="btn btn-default btn">
+                        <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
+                    </a>
+                    <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a class='view-filters' href="#">View current filters</a></li>
+                        <li><a class='clear-filters' href="#">Set default filters</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
     </div>
     <!-- /.col-lg-12 -->
 </div>
@@ -90,12 +112,6 @@
                 <i class="fa fa-bar-chart-o fa-fw"></i>
                 Productivity Report
                 <div class="pull-right" style="border:0px solid black;">
-                    <span class="btn btn-success btn-xs refresh-data">
-                        <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
-                    </span>
-                    <span class="btn btn-danger btn-xs clear-filters">
-                        <span class="glyphicon glyphicon-remove" style="padding-left:3px; color:black;"></span>
-                    </span>
                     <a href="#filter-right" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
                     </a>

@@ -8,16 +8,7 @@ $(document).ready(function () {
 var outcome = {
     init: function () {
         outcome.current_campaign();
-        $('nav#filter-right').mmenu({
-            navbar: {
-                title: "Filters <span class='text-primary current-campaign'></span>"
-            },
-            extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
-            offCanvas: {
-                position: "right",
-                zposition: "front"
-            }
-        });
+        filters.init();
 
         $('.daterange').daterangepicker({
                 opens: "right",
@@ -68,21 +59,6 @@ var outcome = {
         $(document).on("click", ".refresh-data", function (e) {
             e.preventDefault();
             outcome.outcome_panel();
-        });
-
-        $(document).on("click", ".clear-filters", function (e) {
-            e.preventDefault();
-            location.reload();
-        });
-
-        $(document).on("click", '.plots-tab', function(e) {
-            e.preventDefault();
-            $('.graph-color').show();
-        });
-
-        $(document).on("click", '.filters-tab,.searches-tab', function(e) {
-            e.preventDefault();
-            $('.graph-color').hide();
         });
 
         outcome.outcome_panel()

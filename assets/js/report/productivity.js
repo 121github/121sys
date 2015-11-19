@@ -6,16 +6,7 @@ $(document).ready(function() {
 var productivity = {
     init: function() {
 
-        $('nav#filter-right').mmenu({
-            navbar: {
-                title: "Filters <span class='text-primary current-campaign'></span>"
-            },
-            extensions: ["pageshadow", "effect-menu-slide", "effect-listitems-slide", "pagedim-black"],
-            offCanvas: {
-                position: "right",
-                zposition: "front"
-            }
-        });
+        filters.init();
 
         if ($('.filter-form').find('input[name="outcome"]').val() == ""){
             $('.filter-form').find('input[name="outcome"]').val(70);
@@ -76,21 +67,6 @@ var productivity = {
             productivity.productivity_panel();
         });
 
-        $(document).on("click", ".clear-filters", function (e) {
-            e.preventDefault();
-            location.reload();
-        });
-
-        $(document).on("click", '.plots-tab', function(e) {
-            e.preventDefault();
-            $('.graph-color').show();
-        });
-
-        $(document).on("click", '.filters-tab,.searches-tab', function(e) {
-            e.preventDefault();
-            $('.graph-color').hide();
-        });
-
         productivity.productivity_panel();
     },
     productivity_panel: function() {
@@ -135,7 +111,7 @@ var productivity = {
                     search_url = helper.baseUrl + 'search/custom/history/'
                                                 +'contact-from/'+$('.filter-form').find('input[name="date_from"]').val()
                                                 +'/contact-to/'+$('.filter-form').find('input[name="date_to"]').val()
-                                                +'/outcome/'+$('.filter-form').find('input[name="outcome"]').val()
+                                                +response.filter_url
                                                 +'/user/'+val.agent_id;
 
                     tbody.append("<tr class='"+(total_phone_time == 0?"danger":"success")+"'><td>"+val.agent
