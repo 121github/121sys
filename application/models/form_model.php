@@ -259,9 +259,11 @@ class Form_model extends CI_Model
         if (in_array("all campaigns", $_SESSION['permissions'])) {
             $qry = "select pot_id id,pot_name name from data_pots";
         } else {
-            $qry = "select pot_id id,pot_name name from records left join data_pots using(pot_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by pot_name order by pot name";
+            $qry = "select pot_id id,pot_name name from records left join data_pots using(pot_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by pot_name order by pot_name";
         }
-        return $this->db->query($qry)->result_array();
+        $x =  $this->db->query($qry)->result_array();
+		$this->firephp->log($this->db->last_query());
+		return $x;
     }
 	
     public function get_categories()
