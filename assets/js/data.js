@@ -863,11 +863,13 @@ var add_record = {
 
     },
 	check_dupes: function(){
-        if ($('#postcode').val() == "" && $('#add1').val() == "" && $('#name').val() == "" || $('#company_add1').val() == "" && $('#company_postcode').val()) {
-            flashalert.danger("Please enter a postcode");
-		} else if($('#name').val()==""){
-			flashalert.danger("Please enter a name");
-		} else if($('#postcode').val()==""&&$('#add1').val()==""&&$('#name').val()=="") {
+        if($('#name').val()==""){
+            flashalert.danger("Please enter a name");
+        }
+        //else if ($('#postcode').val() == "" && $('#add1').val() == "" || $('#company_add1').val() == "" && $('#company_postcode').val()) {
+         //   flashalert.danger("Please enter a postcode");
+		//}
+        else if($('#postcode').val()==""&&$('#add1').val()==""&&$('#name').val()!="") {
 			$('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> Can not check for duplicates without a postcode. Click the create new button to add it anyway</p>");
 			$('#save-btn').show();
 		} else {

@@ -74,8 +74,9 @@ class Search extends CI_Controller
 		$type = "b2b";
 		$company = str_ireplace(array(" ltd"," plc"," limited"," uk","-","(uk)"," "),array("","","","","","",""),strtolower($this->input->post('company_name')));
 			$names = $this->Filter_model->get_companies_from_initial($company,$campaigns);
+            $all_company_names = array();
 			foreach($names as $row){
-			$all_company_names[$row['name']] = str_ireplace(array(" ltd"," plc"," limited"," uk","-","(uk)"," "),array("","","","","","",""),strtolower($row['name']));
+				$all_company_names[$row['name']] = str_ireplace(array(" ltd"," plc"," limited"," uk","-","(uk)"," "),array("","","","","","",""),strtolower($row['name']));
 			}
 			if(strlen($company)>6){
 				$tolerance=2; 
