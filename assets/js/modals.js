@@ -531,18 +531,19 @@ var modals = {
                 $mbody.find('[name="' + k + '"]').val(v);
                 if (k == "type") {
                     $mbody.find('[name="appointment_type_id"]').val(v);
+					$mbody.find('[name="appointment_type_id"] option[value="' + v + '"]').prop('selected', true).attr('selected','selected');
                 }
                 if (k == "attendees") {
                     $.each(v, function (i, user_id) {
-                        $mbody.find('#attendee-select option[value="' + user_id + '"]').prop('selected', true);
+                        $mbody.find('#attendee-select option[value="' + user_id + '"]').prop('selected', true).attr('selected','selected');
                     });
                 }
                 if (k == "branch_id") {
                     if (v) {
-                        $mbody.find('#branch-select option[value="' + v + '"]').prop('selected', true);
+                        $mbody.find('#branch-select option[value="' + v + '"]').prop('selected', true).attr('selected','selected');
                     }
                 }
-                $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true);
+                $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true).attr('selected','selected');
             });
             modals.load_modal(mheader, $mbody, mfooter);
             modals.appointment_contacts(data.urn, data.contact_id);

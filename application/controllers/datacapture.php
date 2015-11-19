@@ -43,11 +43,12 @@ public function index(){
 			  echo json_encode(array("success"=>false,"error"=>$error));
 		 	  exit;
   		}
-			//fields
+			//fields //these fields are being sent by the shade greener webform. for other webforms the fields might be different. Eventually we should make this database driven because different clients may have different field names. Alternatively we should specify the field names to the client!!!
 			$name = $this->input->get_post('name')==""?NULL:$this->input->get_post('name');
 			$email = $this->input->get_post('email')==""?NULL:$this->input->get_post('email');
 			$telephone = $this->input->get_post('tel')==""?NULL:$this->input->get_post('tel');
 			$postcode = $this->input->get_post('postcode')==""?NULL:$this->input->get_post('postcode');
+			$postcode = $this->input->get_post('source')==""?NULL:$this->input->get_post('source');
 			$callback_time = $this->input->get_post('callback_time')==""?NULL:$this->input->get_post('callback_time');
 			$campaign = intval($this->input->get_post('campaign'));
 			
@@ -77,7 +78,7 @@ public function index(){
 			$this->db->insert("records",$insert_record);
 			$urn = $this->db->insert_id();
 			//insert the record details
-			$insert_record_details = array("urn"=>$urn,"c1"=>$callback_time);
+			$insert_record_details = array("urn"=>$urn,"c1"=>$callback_time,"c2"=>$source);
 			$this->db->insert("record_details",$insert_record_details);
 			//insert the contact
 			$insert_contact = array("urn"=>$urn,"fullname"=>$name,"email"=>$email);
