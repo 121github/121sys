@@ -228,12 +228,12 @@ class Reports extends CI_Controller
 
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/history";
-                $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).":in" : "");
-                $url .= (!empty($users) ? "/user/".implode("_",$users).":in" : "");
+                $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
+                $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
                 $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
                 $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
-                $url .= (!empty($teams) ? "/team/".implode("_",$teams).":in" : "");
-                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).":in" : "");
+                $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
+                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
 
                 $total = $row['total'];
                 $pc = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
@@ -391,12 +391,12 @@ class Reports extends CI_Controller
             $totalDials = 0;
             $totalDuration = 0;
             $url = base_url() . "search/custom/history";
-            $url .= (!empty($agent_search) ? "/user/".implode("_",$agent_search).":in" : "");
-            $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).":in" : "");
+            $url .= (!empty($agent_search) ? "/user/".implode("_",$agent_search).(count($agent_search)>1?":in":"") : "");
+            $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).(count($campaign_search)>1?":in":"") : "");
             $url .= (!empty($date_from_search) ? "/contact-from/$date_from_search" : "");
             $url .= (!empty($date_to_search) ? "/contact-to/$date_to_search" : "");
-            $url .= (!empty($team_search) ? "/team/".implode("_",$team_search).":in" : "");
-            $url .= (!empty($source_search) ? "/hsource/".implode("_",$source_search).":in" : "");
+            $url .= (!empty($team_search) ? "/team/".implode("_",$team_search).(count($team_search)>1?":in":"") : "");
+            $url .= (!empty($source_search) ? "/hsource/".implode("_",$source_search).(count($source_search)>1?":in":"") : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -405,19 +405,19 @@ class Reports extends CI_Controller
                 //create the click through hyperlinks
                 if ($group == "contact") {
                     $allDialsUrl = $url . "/outcome/null:not/contact/" . $row['sql'];
-                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).":in";
+                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
                 } else if ($group == "time") {
                     $allDialsUrl = $url . "/outcome/null:not/time/" . $row['sql'];
-                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).":in";
+                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
                 } else if ($group == "agent") {
                     $allDialsUrl = $url . "/outcome/null:not/user/" . $id;
-                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).":in";
+                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
                 } else if ($group == "reason") {
                     $allDialsUrl = $url . "/outcome/null:not/reason/" . $id;
-                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).":in";
+                    $outcomesUrl = $allDialsUrl . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
                 } else {
                     $allDialsUrl = $url . "/outcome/null:not/alldials/" . $id;
-                    $outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/".implode("_",$form['outcomes']).":in";
+                    $outcomesUrl = $url . "/outcome/null:not/hcampaign/" . $id . "/outcome/".implode("_",$form['outcomes']).(count($form['outcomes'])>1?":in":"");
                 }
 
                 $data[] = array(
@@ -441,7 +441,7 @@ class Reports extends CI_Controller
 
             $totalPercent = ($totalDials) ? number_format((($totalOutcomes) * 100) / $totalDials, 2) : 0;
 
-            $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).":in" : "");
+            $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).(count($campaign_search)>1?":in":"") : "");
             $url .= ($group == "reason" ? "/reason/null:not" : "");
 
             array_push($data, array(
@@ -774,10 +774,10 @@ class Reports extends CI_Controller
             $teams = $this->input->post('teams');
             $sources = $this->input->post('sources');
 
-            $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).":in":"");
-            $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).":in":"");
-            $teams_url = (!empty($teams)?"/team/".implode("_",$teams).":in":"");
-            $sources_url = (!empty($sources)?"/source/".implode("_",$sources).":in":"");
+            $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
+            $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
+            $teams_url = (!empty($teams)?"/team/".implode("_",$teams).(count($teams)>1?":in":""):"");
+            $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
 
             $filter_url = $outcomes_url.$campaigns_url.$teams_url.$sources_url;
 

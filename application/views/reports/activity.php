@@ -46,7 +46,7 @@
                 <?php foreach ($campaigns_by_group as $type => $data) { ?>
                     <optgroup label="<?php echo $type ?>">
                         <?php foreach ($data as $row) { ?>
-                            <option <?php if (isset($_SESSION['current_campaign']) && $row['id'] == $_SESSION['current  _campaign']) {
+                            <option <?php if (isset($_SESSION['current_campaign']) && $row['id'] == $_SESSION['current_campaign']) {
                                 echo "Selected";
                             } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                         <?php } ?>

@@ -363,7 +363,7 @@ class Search extends CI_Controller
         
         //this turns the url into an key=>val array starting from the given segment (3) because thats after the search(1)/custom(2) part
         $uri   = $this->uri->uri_to_assoc(4);
-		if(isset($uri['campaign']) && @intval($uri['campaign']>0)){
+		if(isset($uri['campaign']) && !strpos($uri['campaign'],"_") && @intval($uri['campaign']>0)){
 			$_SESSION['current_campaign']=$uri['campaign'];
 		}
         //this gets the table we want to look at - typically the records table or the history table

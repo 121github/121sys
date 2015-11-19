@@ -806,9 +806,9 @@ return $query->result_array();
         if (!empty($where)) {
             $qry .= " where 1 " . $where;
         }
-        
+
         if (isset($filter['campaign_id'])) {
-            if (count($filter['campaign_id']) == "1") {
+            if (!strpos($filter['campaign_id'],"_") && count($filter['campaign_id']) == "1") {
                 $_SESSION['current_campaign'] = $filter['campaign_id'][0];
             } else if (count($filter['campaign_id']) > "1") {
                 unset($_SESSION['current_campaign']);
@@ -1270,7 +1270,7 @@ return $query->result_array();
 		//$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         $data = $this->db->query($qry)->result_array();
         return array(
             "count" => $count,
