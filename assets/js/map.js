@@ -188,7 +188,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
 
         var bounds_changer = debounce(function () {
             map_table_reload();
-        }, 500);
+        }, 1000);
 
         google.maps.event.addListener(map, 'zoom_changed', function () {
             google.maps.event.addListenerOnce(map, 'bounds_changed', bounds_changer);
@@ -928,6 +928,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
             maps.infowindow.close();
             maps.infowindow.setContent(marker.content);
             maps.infowindow.open(map, marker);
+			$('#map-canvas .gm-style-iw .selectpicker').selectpicker();
         });
 
         //Show in the table the appointment selected in the map
