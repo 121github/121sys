@@ -37,7 +37,7 @@ public function index(){
 		  	}
 			
 		//check the user has access to the selected campaign
-		  $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $user_id . "' and campaign_id = '".intval($_GET['campaign'])."'";
+		  $qry = "select campaign_id from campaigns left join `users_to_campaigns` using(campaign_id) where campaign_status = 1 and user_id = '" . $user_id . "' and campaign_id = '".intval($this->input->get_post('campaign'))."'";
   if($this->db->query($qry)->num_rows()==0){
 	   $error = "Invalid campaign id";  
 			  echo json_encode(array("success"=>false,"error"=>$error));
@@ -77,7 +77,6 @@ public function index(){
 			//insert the contact
 			$insert_contact = array("urn"=>$urn,"fullname"=>$name,"email"=>$email);
 			$this->db->insert("contacts",$insert_contact);
-			$this->firephp->log($this->db->last_query());
 			$id = $this->db->insert_id();
 			//insert the contact telephone
 			$insert_contact_telephone = array("contact_id"=>$id,"description"=>"Telephone","telephone_number"=>$telephone);
