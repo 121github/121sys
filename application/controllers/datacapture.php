@@ -68,7 +68,12 @@ public function index(){
 		 	  exit;
 			}
 			//insert the record
-			$insert_record = array("campaign_id"=>$campaign,"added_by"=>$user_id,"date_added"=>date('Y-m-d H:i:s'));
+			$insert_record = array("outcome_id"=>1,"campaign_id"=>$campaign,"added_by"=>$user_id,"date_added"=>date('Y-m-d H:i:s'));
+			if($callback_time=="am"){
+			$insert_record['nextcall'] = date('Y-m-d 09:00:00');
+			} else if($callback_time=="pm"){
+			$insert_record['nextcall'] = date('Y-m-d 13:00:00');
+			}
 			$this->db->insert("records",$insert_record);
 			$urn = $this->db->insert_id();
 			//insert the record details
