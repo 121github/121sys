@@ -44,11 +44,11 @@ public function index(){
 		 	  exit;
   		}
 			//fields
-			$name = $this->input->get('name')==""?NULL:$this->input->get_post('name');
-			$email = $this->input->get('email')==""?NULL:$this->input->get_post('email');
-			$telephone = $this->input->get('tel')==""?NULL:$this->input->get_post('tel');
-			$postcode = $this->input->get('postcode')==""?NULL:$this->input->get_post('postcode');
-			$callback_time = $this->input->get('callback_time')==""?NULL:$this->input->get_post('callback_time');
+			$name = $this->input->get_post('name')==""?NULL:$this->input->get_post('name');
+			$email = $this->input->get_post('email')==""?NULL:$this->input->get_post('email');
+			$telephone = $this->input->get_post('tel')==""?NULL:$this->input->get_post('tel');
+			$postcode = $this->input->get_post('postcode')==""?NULL:$this->input->get_post('postcode');
+			$callback_time = $this->input->get_post('callback_time')==""?NULL:$this->input->get_post('callback_time');
 			$campaign = intval($this->input->get_post('campaign'));
 			
 			if(empty($telephone)){
