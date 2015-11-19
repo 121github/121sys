@@ -28,7 +28,7 @@ public function index(){
 		 echo json_encode(array("success"=>false,"error"=>$error));
 		 exit;
 		}   
-			$user_id = $this->User_model->validate_login($this->input->get('id'), $this->input->get('key'),true,true);
+			$user_id = $this->User_model->validate_login($this->input->get_post('id'), $this->input->get_post('key'),true,true);
 
 		  if (!$user_id) {
 			 $error = "The id and key combination were invalid";  
