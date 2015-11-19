@@ -31,8 +31,17 @@ class Error extends CI_Controller
 
             'title' => 'Permission Denied',
 			'msg'=>'You do not have access to these files. Please contact the administrator if you believe you should have access');
-			 $this->template->load('default', 'errors/display.php', $data);
-		
+			 $this->template->load('default', 'errors/display.php', $data);	
+	}
+	
+		public function folder(){
+		        $data = array(
+			'page' => 'error-page',
+ 			'campaign_access' => $this->_campaigns,
+
+            'title' => 'Permission Denied',
+			'msg'=>'You have not been granted access to any folders. Please contact the administrator if you require this feature');
+			 $this->template->load('default', 'errors/display.php', $data);	
 	}
 	
 	public function ownership(){

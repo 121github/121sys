@@ -13,7 +13,7 @@ class Datacapture extends CI_Controller
 	
 	
 public function index(){
-	if(!isset($_GET['id'])||!isset($_GET['key'])){
+	if(!$this->input->get_post('id')||!$this->input->get_post('key')){
 		 $error = "You must include the id and key fields in the url";
 		 echo json_encode(array("success"=>false,"error"=>$error));
 		 exit;
@@ -44,12 +44,12 @@ public function index(){
 		 	  exit;
   		}
 			//fields
-			$name = $this->input->get('name')==""?NULL:$this->input->get('name');
-			$email = $this->input->get('email')==""?NULL:$this->input->get('email');
-			$telephone = $this->input->get('tel')==""?NULL:$this->input->get('tel');
-			$postcode = $this->input->get('postcode')==""?NULL:$this->input->get('postcode');
-			$callback_time = $this->input->get('callback_time')==""?NULL:$this->input->get('callback_time');
-			$campaign = intval($this->input->get('campaign'));
+			$name = $this->input->get('name')==""?NULL:$this->input->get_post('name');
+			$email = $this->input->get('email')==""?NULL:$this->input->get_post('email');
+			$telephone = $this->input->get('tel')==""?NULL:$this->input->get_post('tel');
+			$postcode = $this->input->get('postcode')==""?NULL:$this->input->get_post('postcode');
+			$callback_time = $this->input->get('callback_time')==""?NULL:$this->input->get_post('callback_time');
+			$campaign = intval($this->input->get_post('campaign'));
 			
 			if(empty($telephone)){
 			  $error = "No telephone number was provided";  

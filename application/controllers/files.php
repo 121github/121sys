@@ -34,6 +34,10 @@ class Files extends CI_Controller
         user_auth_check(false);
 		check_page_permissions("view files");
  $user_folders = $this->File_model->get_folders();
+ if(count($user_folders)==0){
+	redirect('error/folder'); 
+ }
+ 
 /*
         $folder_name  = $folder ? $user_folders[$folder]['folder_name'] : false;
         $filetypes    = $folder ? $user_folders[$folder]['accepted_filetypes'] : false;
