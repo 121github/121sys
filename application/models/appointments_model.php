@@ -34,16 +34,22 @@ class Appointments_model extends CI_Model
             return array("error" => "The selected user does not have appointment slots configured");
         }
         $thresholds = array();
+		 foreach ($days as $day_num => $day) {
+            foreach ($default as $row) {
+				 $max[$day_num][$row['slot_appointment_id']] += $row['max_apps'];
+			}
+		 }
+		
         foreach ($days as $day_num => $day) {
             foreach ($default as $row) {
                 $daycheck = "select slot_assignment_id from appointment_slot_assignment where appointment_slot_id = " . $row['appointment_slot_id'] . " and user_id = " . $row['user_id'] . " and day = " . $day_num;
 
                 if (!$this->db->query($daycheck)->num_rows()) {
                     $timeslots[$row['appointment_slot_id']] = array("slot_name" => $row['slot_name'], "slot_description" => $row['slot_description'], "slot_start" => $row['slot_start'], "slot_end" => $row['slot_end'], "reason" => "");
-                    $max[$day_num][$row['user_id']]['default'] = $row['max_apps'];
+                   
                     unset($row['max_apps']);
                     $thresholds[$day][$row['appointment_slot_id']] = $row;
-                    $thresholds[$day][$row['appointment_slot_id']]['max_apps'] = $max[$day_num][$row['user_id']]['default'];
+                    $thresholds[$day][$row['appointment_slot_id']]['max_apps'] = $max[$day_num][$row['slot_appointment_id']];
                     $thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
                 } else {
                     $thresholds[$day][$row['appointment_slot_id']] = $row;
@@ -52,6 +58,7 @@ class Appointments_model extends CI_Model
                 }
             }
         }
+
 
         //get any user specified days
         $defined_slots = array();

@@ -64,7 +64,22 @@ public function delete_campaign_group(){
 	}
 	
 	public function availability(){
-		
+	 $campaigns = $this->Form_model->get_all_campaigns();
+	  $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin',
+            'page' => 'copy_campaign',
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'admin/availability.js?v' . $this->project_version
+            ),
+            'options' => array("campaigns" => $campaigns)
+
+        );
+        $this->template->load('default', 'admin/availability.php', $data);
 	}
 	
 	public function rules(){
