@@ -7,6 +7,28 @@ class Admin_model extends CI_Model
     {
         parent::__construct();
     }
+		
+		public function get_all_slots(){
+			return $this->db->get("appointment_slots")->result_array();	
+		}
+		
+		public function get_slot($id){
+			$this->db->where("appointment_slot_id",$id);
+			return $this->db->get("appointment_slots")->row_array();	
+		}
+		
+		public function save_slot($data){
+			$this->db->where("appointment_slot_id",$data['appointment_slot_id']);
+			return $this->db->insert_update("appointment_slots",$data);
+		}
+
+
+		public function delete_slot($id){
+			$this->db->where("appointment_slot_id",$id);
+			return $this->db->delete("appointment_slots");
+		}
+
+
 	
 		public function delete_campaign_group($id){
 		$this->db->where("campaign_group_id",$id);

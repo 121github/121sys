@@ -808,7 +808,7 @@ return $query->result_array();
         }
 
         if (isset($filter['campaign_id'])) {
-            if (!strpos($filter['campaign_id'],"_") && count($filter['campaign_id']) == "1") {
+            if (!strpos($filter['campaign_id'][0],"_") && count($filter['campaign_id']) == "1") {
                 $_SESSION['current_campaign'] = $filter['campaign_id'][0];
             } else if (count($filter['campaign_id']) > "1") {
                 unset($_SESSION['current_campaign']);

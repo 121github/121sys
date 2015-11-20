@@ -257,6 +257,7 @@ class Ajax extends CI_Controller
                 $this->load->helper('misc');
                 $array['linkedin'] = linkedin_id_from_url($array['linkedin']);
             }
+			$array = array_map('trim', $array);
             $audit_id = $this->Audit_model->log_contact_update(array_filter($array), $array['urn']);
             $array["date_updated"] = date('Y-m-d H:i:s');
             $this->db->where("contact_id", intval($this->input->post('contact_id')));

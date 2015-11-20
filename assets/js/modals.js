@@ -581,7 +581,7 @@ var modals = {
             $('#contact-select').selectpicker();
 			} else {
 			$('.close-modal').trigger('click');
-			flashalert("You must add a contact before setting an appointment");	
+			flashalert.danger("You must add a contact before setting an appointment");	
 			}
         });
 

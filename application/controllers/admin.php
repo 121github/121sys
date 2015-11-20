@@ -24,6 +24,53 @@ public function delete_campaign_group(){
 	
 }
 	
+	public function save_slot(){
+		if($this->Admin_model->save_slot($this->input->post())){
+		echo json_encode(array("success"=>true));	
+		}
+	}
+	
+	public function delete_slot(){
+		if($this->Admin_model->delete_slot($this->input->post('id'))){
+		echo json_encode(array("success"=>true));		
+		}
+	}
+	
+	public function slots(){
+	
+		$data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin',
+            'page' => 'slots',
+            'css' => array(
+                'dashboard.css'
+            ),
+            'javascript' => array(
+                'admin/slots.js?v' . $this->project_version
+            )
+        );
+        $this->template->load('default', 'admin/slots.php', $data);
+	}
+	
+	public function get_all_slots(){
+	$slots = $this->Admin_model->get_all_slots();
+	echo json_encode($slots);	
+	}
+	
+		public function get_slot(){
+	$slots = $this->Admin_model->get_slot($this->input->post('id'));
+	echo json_encode(array("success"=>true,"data"=>$slots));	
+	}
+	
+	public function availability(){
+		
+	}
+	
+	public function rules(){
+		
+	}
+	
 	public function copy_campaign(){
 			 check_page_permissions('campaign setup');
 				

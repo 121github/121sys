@@ -22,7 +22,7 @@ var record = {
         $(document).on('click', '#update-record', function (e) {
             e.preventDefault();
             if ($('[name="call_direction"]').length > 0 && !$('[name="call_direction"]').is(':checked')) {
-                alert("You must set a call direction");
+                flashalert.danger("You must set a call direction");
             } else if ($('#outcomes').val().length > 0) {
                 if ($('#outcomes').val() == "4" && $('#history-panel').find('tbody tr').length > 0) {
                     modal.dead_line($(this));
@@ -1587,10 +1587,10 @@ var record = {
 				if(record.check_email_exists()){
                 record.email_panel.create();
 				} else {
-				alert("There are no contacts with an email address. Please add the email or create a new contact first");	
+				flashalert.danger("There are no contacts with an email address. Please add the email or create a new contact first");	
 				} 
 				} else {
-				alert("You must create a new contact and add the email address first");	
+				flashalert.danger("You must create a new contact and add the email address first");	
 				}
             });
             $(document).on('click', '#continue-email', function (e) {
