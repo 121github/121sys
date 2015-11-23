@@ -1,26 +1,140 @@
 // JavaScript Document
 var dashboard = {
     init: function () {
-        $(".filter").click(function (e) {
+
+        filters.init();
+
+        //$(".filter").click(function (e) {
+        //    e.preventDefault();
+        //    var input = $(this).attr('data-ref');
+        //    var func = $(this).closest('form').attr('data-func');
+        //    $icon = $(this).closest('ul').prev('button').find('span');
+        //    $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+        //    $(this).closest('form').find('input[name="' + input + '"]').val($(this).attr('id'));
+        //    $(this).closest('ul').find('a').css("color","black");
+        //    $(this).css("color","green");
+        //    //run the panel function specified in the data-func
+        //    eval("dashboard." + func + "()");
+        //});
+
+        $(document).on("click", ".comment-filter", function (e) {
             e.preventDefault();
-            var input = $(this).attr('data-ref');
-            var func = $(this).closest('form').attr('data-func');
             $icon = $(this).closest('ul').prev('button').find('span');
             $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="' + input + '"]').val($(this).attr('id'));
-            $(this).closest('ul').find('a').css("color","black");
-            $(this).css("color","green");
-            //run the panel function specified in the data-func
-            eval("dashboard." + func + "()");
+            $('.filter-form').find('input[name="comments"]').val($(this).attr('id'));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+            dashboard.comments_panel();
         });
+
+        //optgroup
+        $('li.dropdown-header').on('click', function (e) {
+            setTimeout(function () {
+                //Get outcomes by campaigns selected
+                dashboard.get_outcomes_filter();
+            }, 500);
+        });
+
+        $(document).on("click", '#filter-submit', function (e) {
+            e.preventDefault();
+            dashboard.refresh_panels();
+            $('#filter-right').data("mmenu").close();
+        });
+
+        $(document).on("click", '.daterange', function (e) {
+            e.preventDefault();
+        });
+
+        $(document).on("change", ".campaign-filter", function (e) {
+            e.preventDefault();
+            //Get outcomes by campaigns selected
+            dashboard.get_outcomes_filter();
+        });
+
+        $(document).on("click", ".refresh-data", function (e) {
+            e.preventDefault();
+            dashboard.refresh_panels();
+        });
+
+        dashboard.filter_panel();
+
+    },
+
+    refresh_panels: function() {
+        dashboard.filter_panel();
+        dashboard.history_panel();
+        dashboard.comments_panel();
+        dashboard.system_stats();
+        dashboard.emails_panel();
+        dashboard.sms_panel();
+        dashboard.outcomes_panel();
+    },
+
+    filter_panel: function() {
+        //////////////////////////////////////////////////////////
+        //Filters/////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////
+        var filters = "";
+
+        filters += "<span class='btn btn-default btn-xs clear-filters pull-right'>" +
+            "<span class='glyphicon glyphicon-remove' style='padding-left:3px; color:black;'></span> Clear" +
+            "</span>";
+
+        //Campaigns
+        var size = ($('.campaign-filter  option:selected').size() > 0 ? "(" + $('.campaign-filter  option:selected').size() + ")" : '');
+        filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Campaigns</strong> " + size + "</h5><ul>";
+        $('.campaign-filter  option:selected').each(function (index) {
+            filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+        });
+        filters += "</ul>";
+
+        //Outcomes
+        var size = ($('.outcome-filter  option:selected').size() > 0 ? "(" + $('.outcome-filter  option:selected').size() + ")" : '');
+        filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Outcomes</strong> " + size + "</h5><ul>";
+        $('.outcome-filter option:selected').each(function (index) {
+            var color = "black";
+            if ($(this).parent().attr('label') === 'positive') {
+                color = "green";
+            }
+            filters += "<li style='list-style-type:none'><span style='color: " + color + "'>" + $(this).text() + "</span></li>";
+        });
+        filters += "</ul>";
+
+        //Teams
+        var size = ($('.team-filter  option:selected').size() > 0 ? "(" + $('.team-filter  option:selected').size() + ")" : '');
+        filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Teams</strong> " + size + "</h5><ul>";
+        $('.team-filter  option:selected').each(function (index) {
+            filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+        });
+        filters += "</ul>";
+
+
+        //Agents
+        var size = ($('.agent-filter  option:selected').size() > 0 ? "(" + $('.agent-filter  option:selected').size() + ")" : '');
+        filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Agents</strong> " + size + "</h5><ul>";
+        $('.agent-filter  option:selected').each(function (index) {
+            filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+        });
+        filters += "</ul>";
+
+
+        //Sources
+        var size = ($('.source-filter  option:selected').size() > 0 ? "(" + $('.source-filter  option:selected').size() + ")" : '');
+        filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Sources</strong> " + size + "</h5><ul>";
+        $('.source-filter  option:selected').each(function (index) {
+            filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+        });
+        filters += "</ul>";
+
+        $('#filters').html(filters);
     },
     /* the function for the history panel on the main dashboard */
-    history_panel: function (filter) {
+    history_panel: function () {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_history',
             type: "POST",
             dataType: "JSON",
-            data: $('.history-filter').serialize(),
+            data: $('.filter-form').serialize(),
         }).done(function (response) {
             if (response.data.length > 0) {
                 var tbody = "";
@@ -34,25 +148,162 @@ var dashboard = {
             }
         });
     },
-    emails_panel: function (filter) {
+    emails_panel: function () {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_email_stats',
             type: "POST",
             dataType: "JSON",
-            data: $('.emails-filter').serialize(),
+            data: $('.filter-form').serialize(),
         }).done(function (response) {
             $('#email-stats').html("<div><a href='" + response.data.new_url + "'>" + response.data.new + "</a> new emails read<br><a href='" + response.data.read_url + "'>" + response.data.read + "</a> emails read today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all + "</a> emails sent today<br><a href='" + response.data.pending_url + "'>" + response.data.pending + "</a> emails pending today<br><a href='" + response.data.unsent_url + "'>" + response.data.unsent + "</a> failed emails today<br><a href='" + response.data.sentall_url + "'>" + response.data.sentall + "</a> emails sent anytime<br><a href='" + response.data.readall_url + "'>" + response.data.readall + "</a> emails read anytime</div>");
+
+            //GRAPHS
+            google.load('visualization', '1', {
+                packages: ['corechart'], 'callback': function () {
+
+                    //Today email stats
+                    if (response.data.all > 0) {
+                        var rows = [];
+                        var title = 'Today Email stats';
+
+                        // Set chart options
+                        var options = {
+                            'legend': {position: 'none'},
+                            'title': title,
+                            'width': 200,
+                            'height': 350,
+                            curveType: 'function',
+                            'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                        };
+
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Emails');
+                        rows.push(["failed today", parseInt(response.data.unsent)]);
+                        rows.push(["pending today", parseInt(response.data.pending)]);
+                        rows.push(["sent today", parseInt(response.data.all)]);
+                        rows.push(["read today", parseInt(response.data.read)]);
+                        rows.push(["new today", parseInt(response.data.new)]);
+                        data.addRows(rows);
+                        var chart = new google.visualization.ColumnChart(document.getElementById('email-today-chart'));
+                        chart.draw(data, options);
+                    }
+                    else {
+                        $('#email-today-chart').html("<span style='color:black;'>No emails sent today</span>");
+                    }
+
+
+                    //All email stats
+                    if (response.data.sentall>0){
+                        var rows = [];
+                        var title = 'All Email stats';
+
+                        // Set chart options
+                        var options = {
+                            'legend': {position: 'none'},
+                            'title': title,
+                            'width': 200,
+                            'height': 350,
+                            curveType: 'function',
+                            'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                        };
+
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Emails');
+                        rows.push(["read anytime", parseInt(response.data.readall)]);
+                        rows.push(["sent anytime", parseInt(response.data.sentall)]);
+                        data.addRows(rows);
+                        var chart = new google.visualization.ColumnChart(document.getElementById('email-all-chart'));
+                        chart.draw(data, options);
+                    }
+                    else {
+                        $('#email-all-chart').html("<span style='color:black;'>No emails sent</span>");
+                    }
+                }
+            });
         });
     },
-    sms_panel: function (filter) {
+    sms_panel: function () {
     $.ajax({
         url: helper.baseUrl + 'dashboard/get_sms_stats',
         type: "POST",
         dataType: "JSON",
-        data: $('.sms-filter').serialize(),
+        data: $('.filter-form').serialize(),
     }).done(function (response) {
         $('#sms-stats').html("<ul>" +
                 "<div><a href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today <br><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "<br><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "<br><a href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> sms pending today " + "<br><a href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> sms unknown today " + "<br><a href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> sms error today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> sms sent anytime " + "<br><a href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> sms delivered anytime " + "<br><a href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> sms undelivered anytime " + "<br><a href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> sms pending anytime " + "<br><a href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> sms unknown anytime " + "<br><a href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> sms error anytime " + "</div>");
+
+        //GRAPHS
+        google.load('visualization', '1', {
+            packages: ['corechart'], 'callback': function () {
+
+                //Today Sms stats
+                if (response.data.today_sms > 0) {
+                    var rows = [];
+                    var title = 'Today Sms stats';
+
+                    // Set chart options
+                    var options = {
+                        'legend': {position: 'none'},
+                        'title': title,
+                        'width': 230,
+                        'height': 350,
+                        curveType: 'function',
+                        'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                    };
+
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Topping');
+                    data.addColumn('number', 'Sms');
+                    rows.push(["error", parseInt(response.data.today_error_sms)]);
+                    rows.push(["unknown", parseInt(response.data.today_unknown_sms)]);
+                    rows.push(["pending", parseInt(response.data.today_pending_sms)]);
+                    rows.push(["undelivered", parseInt(response.data.today_undelivered_sms)]);
+                    rows.push(["delivered", parseInt(response.data.today_delivered_sms)]);
+                    rows.push(["sent", parseInt(response.data.today_sms)]);
+                    data.addRows(rows);
+                    var chart = new google.visualization.ColumnChart(document.getElementById('sms-today-chart'));
+                    chart.draw(data, options);
+                }
+                else {
+                    $('#sms-today-chart').html("<span style='color:black;'>No sms sent today</span>");
+                }
+
+
+                //All sms stats
+                if (response.data.all_sms>0) {
+                    var rows = [];
+                    var title = 'All Sms stats';
+
+                    // Set chart options
+                    var options = {
+                        'legend': {position: 'none'},
+                        'title': title,
+                        'width': 230,
+                        'height': 350,
+                        curveType: 'function',
+                        'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                    };
+
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Topping');
+                    data.addColumn('number', 'Sms');
+                    rows.push(["error", parseInt(response.data.all_error_sms)]);
+                    rows.push(["unknown", parseInt(response.data.all_unknown_sms)]);
+                    rows.push(["pending", parseInt(response.data.all_pending_sms)]);
+                    rows.push(["undelivered", parseInt(response.data.all_undelivered_sms)]);
+                    rows.push(["delivered", parseInt(response.data.all_delivered_sms)]);
+                    rows.push(["sent", parseInt(response.data.all_sms)]);
+                    data.addRows(rows);
+                    var chart = new google.visualization.ColumnChart(document.getElementById('sms-all-chart'));
+                    chart.draw(data, options);
+                }
+                else {
+                    $('#sms-all-chart').html("<span style='color:black;'>No sms sent</span>");
+                }
+            }
+        });
     });
 },
     /* the function for the outcomes panel on the main dashboard */
@@ -61,31 +312,59 @@ var dashboard = {
             url: helper.baseUrl + 'dashboard/get_outcomes',
             type: "POST",
             dataType: "JSON",
-            data: $('.outcomes-filter').serialize(),
+            data: $('.filter-form').serialize(),
         }).done(function (response) {
             $('.outcome-stats').empty();
             var $outcomes = "";
             var campaign = "";
-            if ($('.outcomes-filter').find('[name="campaign"]').val() != '') {
-                var campaign = "/campaign/" + $('.outcomes-filter').find('[name="campaign"]').val();
+            if ($('.outcomes-filter').find('[name="campaigns"]').val() != '') {
+                //var campaign = "/campaign/" + $('.outcomes-filter').find('[name="campaign"]').val();
             }
             if (response.data.length > 0) {
+                var rows = [];
                 $.each(response.data, function (i, val) {
                     $outcomes += '<a href="' + helper.baseUrl + 'search/custom/history/outcome/' + val.outcome + '/contact-from/' + response.date + campaign + '" class="list-group-item">' + val.outcome + '<span class="pull-right text-muted small"><em>' + val.count + '</em></span></a>';
+                    rows.push([val.outcome, parseInt(val.count)]);
                 });
                 $('.outcome-stats').append('<div class="list-group">' + $outcomes + '</div>');
+
+                //GRAPHS
+                google.load('visualization', '1', {
+                    packages: ['corechart'], 'callback': function () {
+
+                        //Today email stats
+                        var title = 'Today Outcomes';
+
+                        // Set chart options
+                        var options = {
+                            //'legend': {position: 'none'},
+                            'title': title,
+                            'width': 330,
+                            'height': 350,
+                            curveType: 'function',
+                        };
+
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Emails');
+                        data.addRows(rows);
+                        var chart = new google.visualization.PieChart(document.getElementById('outcome-chart'));
+                        chart.draw(data, options);
+                    }
+                });
             } else {
                 $('.outcome-stats').append('<div class="list-group">No calls made today</div>');
+                $('#outcome-chart').html("<span style='color:black;'>No calls made today</span>");
             }
         });
     },
     /* the function for the stats panel on the main dashboard */
-    system_stats: function (filter) {
+    system_stats: function () {
         $.ajax({
             url: helper.baseUrl + 'dashboard/system_stats',
             type: "POST",
             dataType: "JSON",
-            data: $('.stats-filter').serialize(),
+            data: $('.filter-form').serialize(),
         }).done(function (response) {
             $('#system-stats').empty();
             $contents = '<div><h4>Campaign Stats</h4><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
@@ -96,15 +375,76 @@ var dashboard = {
                 $contents += '<div><h4>Survey Stats</h4></div><div><p>' + response.data.surveys + ' surveys have been compeleted<br>' + response.data.failures + ' surveys scored less than 6 on the NPS question<br>' + response.data.average + ' is the average NPS score</p></div>';
             }
             $('#system-stats').append($contents);
+
+            //GRAPHS
+            google.load('visualization', '1', {
+                packages: ['corechart'], 'callback': function () {
+
+                    //Campaign stats
+                    var rows = [];
+                    var title = 'Campaign stats';
+
+                    // Set chart options
+                    var options = {
+                        'legend': {position: 'none'},
+                        'title': title,
+                        'width': 230,
+                        'height': 350,
+                        curveType: 'function',
+                        'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                    };
+
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Topping');
+                    data.addColumn('number', 'Count');
+                    rows.push(["dead", parseInt(response.data.dead)]);
+                    rows.push(["parked", parseInt(response.data.parked)]);
+                    rows.push(["in progress", parseInt(response.data.active)]);
+                    rows.push(["to be called", parseInt(response.data.virgin)]);
+                    data.addRows(rows);
+                    var chart = new google.visualization.ColumnChart(document.getElementById('campaign-stats-chart'));
+                    chart.draw(data, options);
+
+                    //Surveys stats
+                    if (response.data.surveys > 0) {
+                        var rows = [];
+                        var title = 'Survey stats';
+
+                        // Set chart options
+                        var options = {
+                            'legend': {position: 'none'},
+                            'title': title,
+                            'width': 230,
+                            'height': 350,
+                            curveType: 'function',
+                            'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                        };
+
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Count');
+                        rows.push(["completed", parseInt(response.data.average)]);
+                        rows.push(["< 6 NPS question", parseInt(response.data.failures)]);
+                        rows.push(["avg NPS score", parseInt(response.data.surveys)]);
+                        data.addRows(rows);
+                        var chart = new google.visualization.ColumnChart(document.getElementById('survey-stats-chart'));
+                        chart.draw(data, options);
+                    }
+                    else {
+                        $('#survey-stats-chart').html("<span style='color:black;'>No surveys stats</span>");
+                    }
+
+                }
+            });
         });
     },
     /* the function for the comments panel on the main dashboard */
-    comments_panel: function (filter) {
+    comments_panel: function () {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_comments',
             type: "POST",
             dataType: "JSON",
-            data: $('.comments-filter').serialize(),
+            data: $('.filter-form').serialize(),
         }).done(function (response) {
            $('#comment-panel').empty();
 		   var comments = "";
@@ -401,6 +741,27 @@ var dashboard = {
                 $('.agent-current-hours').append('<div class="table-responsive"><table class="table table-striped table-responsive"><thead><th>Agent</th><th>Campaign</th><th>Time on this campaign</th><th>Records worked</th><th>Transfers</th><th>Current Rate</th><th style="display:none;"></th></thead><tbody>' + $row + '</tbody></table></div>');
             } else {
                 $('.agent-current-hours').append('<p>' + response.msg + '</p>');
+            }
+        });
+    },
+
+    get_outcomes_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_outcomes_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_outcomes, function (type, data) {
+                    options += "<optgroup label=" + type + ">";
+                    $.each(data, function (i, val) {
+                        options += "<option value=" + val.id + ">" + val.name + "</option>";
+                    });
+                    options += "</optgroup>";
+                });
+                $('#outcome-filter').html(options).selectpicker('refresh');
             }
         });
     }
