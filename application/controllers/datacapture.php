@@ -28,6 +28,11 @@ public function index(){
 		 echo json_encode(array("success"=>false,"error"=>$error));
 		 exit;
 		}   
+		if($this->input->get_post('source')==""){
+		 $error = "The source field cannot be empty";
+		 echo json_encode(array("success"=>false,"error"=>$error));
+		 exit;
+		}   
 			$user_id = $this->User_model->validate_login($this->input->get_post('id'), $this->input->get_post('key'),true,true);
 
 		  if (!$user_id) {
@@ -43,6 +48,17 @@ public function index(){
 			  echo json_encode(array("success"=>false,"error"=>$error));
 		 	  exit;
   		}
+		
+		$source = $this->input->post('source');
+		$this->db->where("source_name",$source);
+		$get_source = $this->db->get("data_sources");
+		if($get_source->num_rows()>0){
+		$source_id = $get_source->row()->source_id;	
+		} else {
+			$this->db->insert("data_sources",array("source_name"=>$source));
+			$source_id = $this->db->insert_id();
+		}
+		
 			//fields //these fields are being sent by the shade greener webform. for other webforms the fields might be different. Eventually we should make this database driven because different clients may have different field names. Alternatively we should specify the field names to the client!!!
 			$name = $this->input->get_post('name')==""?NULL:$this->input->get_post('name');
 			$email = $this->input->get_post('email')==""?NULL:$this->input->get_post('email');
@@ -69,7 +85,7 @@ public function index(){
 		 	  exit;
 			}
 			//insert the record
-			$insert_record = array("outcome_id"=>1,"campaign_id"=>$campaign,"added_by"=>$user_id,"date_added"=>date('Y-m-d H:i:s'));
+			$insert_record = array("outcome_id"=>1,"campaign_id"=>$campaign,"added_by"=>$user_id,"date_added"=>date('Y-m-d H:i:s'),"source_id"=>$source_id);
 			if($callback_time=="am"){
 			$insert_record['nextcall'] = date('Y-m-d 09:00:00');
 			} else if($callback_time=="pm"){
