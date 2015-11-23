@@ -36,7 +36,11 @@ class Appointments_model extends CI_Model
         $thresholds = array();
 		 foreach ($days as $day_num => $day) {
             foreach ($default as $row) {
+				if(isset($max[$day_num][$row['appointment_slot_id']])){
 				 $max[$day_num][$row['appointment_slot_id']] += $row['max_apps'];
+				} else {
+				 $max[$day_num][$row['appointment_slot_id']] = $row['max_apps'];
+				}
 			}
 		 }
 		

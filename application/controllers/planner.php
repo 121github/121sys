@@ -26,6 +26,65 @@ class Planner extends CI_Controller
         }
     }
 
+	public function get_driver_availability($driver){
+		//$driver = $this->uri->segment('3');
+		for ($i = 0; $i < 45; $i++) {
+		$slots[date("Y-m-d", strtotime('+' . $i . ' days'))]=array();
+		$total_apps[date("Y-m-d", strtotime('+' . $i . ' days'))]=0;
+		}
+		//get all the available slots for all days (wildcard day = null)
+		$qry = "select * from appointment_slot_assignment join appointment_slots using(appointment_slot_id) where user_id = '$driver' and day is null";
+		$result = $this->db->query($qry)->result_array();
+		if(count($result)>0){
+		foreach($slots as $date=>$slot){
+			foreach($result as $row){
+			$slots[$date][$row['appointment_slot_id']] = array("start"=>$row['slot_start'],"end"=>$row['slot_end'],"max_apps"=>$row['max_slots'],"apps"=>0,"total"=>0);	
+			}
+			}
+		}
+		//overwrite the slots with available slots for this DAY
+		$qry = "select * from appointment_slot_assignment join appointment_slots using(appointment_slot_id) where user_id = '$driver' and day is not null";
+		$result = $this->db->query($qry)->result_array();
+	if(count($result)>0){
+		foreach($slots as $date => $slot){
+			foreach($result as $row){
+			if(date('N',strtotime($date))==$row['day']){
+				$slots[$date][$row['appointment_slot_id']] = array("start"=>$row['slot_start'],"end"=>$row['slot_end'],"max_apps"=>$row['max_slots'],"apps"=>0,"total"=>0);		
+			}
+			}
+			}
+		}
+		//overwrite the slots with available slots for this DATE
+		$qry = "select * from appointment_slot_override join appointment_slots using(appointment_slot_id) where user_id = '$driver'";
+		$result = $this->db->query($qry)->result_array();
+		if(count($result)>0){
+		foreach($result as $row){
+			$slots[$row['date']][$row['appointment_slot_id']] = array("start"=>$row['slot_start'],"end"=>$row['slot_end'],"max_apps"=>$row['max_slots'],"apps"=>0,"total"=>0);		
+			}
+		}
+		//now check how may apps have been booked on each day
+		$qry = "select *,date(`start`) `date` from appointments join appointment_attendees using(appointment_id) where date(`start`)>=curdate() and user_id = '$driver'";
+		$appointments = $this->db->query($qry)->result_array();
+		foreach($appointments as $row){
+			foreach($slots[$row['date']] as $id=>$slot){
+				
+			if(strtotime($row['start'])>=strtotime($row['date'] ." ". $slot['start'])&&strtotime($row['start'])<=strtotime($row['date'] ." ". $slot['end'])){
+				$total_apps[$row['date']]++;
+				if(isset($slots[$row['date']][$id]['apps'])){
+				$slots[$row['date']][$id]['apps'] += 1;
+				} else {
+				$slots[$row['date']][$id]['apps'] = 1;	
+				}
+			}
+			//add the total number of appointments for the day
+			foreach($slot as $k=>$v){
+			 $slots[$row['date']][$id]['total_apps']= $total_apps[$row['date']];		
+			}
+			}
+		}
+		return $slots;
+	}
+
 	public function get_journey_details($start,$end){
 
         $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" . urlencode($start) . ",uk&destinations=" . urlencode($end) . ",uk&mode=Driving&units=imperial&key=AIzaSyBARAzbeCEh9WjrZfxyxyH3DFeWGzvei3U";
@@ -37,7 +96,7 @@ class Planner extends CI_Controller
         return $response['rows'][0]['elements'][0];
 	}
 
-	public function simulate_hsl_planner(){
+public function simulate_hsl_planner(){
 	$campaign_id = $_SESSION['current_campaign'];
 	$customer_postcode = $this->input->post('postcode');	
 	$branch_id = $this->input->post('branch_id');
@@ -224,6 +283,11 @@ foreach($appointments['apps'] as $date => $day){
 echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,"slots"=>$slots,"user_id"=>$driver_id));
 
 	}
+
+
+	
+	
+	
 
     public function index()
     {
