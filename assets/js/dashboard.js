@@ -247,7 +247,7 @@ var dashboard = {
                     var options = {
                         'legend': {position: 'none'},
                         'title': title,
-                        'width': 230,
+                        'width': 200,
                         'height': 350,
                         curveType: 'function',
                         'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
@@ -280,7 +280,7 @@ var dashboard = {
                     var options = {
                         'legend': {position: 'none'},
                         'title': title,
-                        'width': 230,
+                        'width': 200,
                         'height': 350,
                         curveType: 'function',
                         'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
@@ -388,7 +388,7 @@ var dashboard = {
                     var options = {
                         'legend': {position: 'none'},
                         'title': title,
-                        'width': 230,
+                        'width': 200,
                         'height': 350,
                         curveType: 'function',
                         'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
@@ -414,7 +414,7 @@ var dashboard = {
                         var options = {
                             'legend': {position: 'none'},
                             'title': title,
-                            'width': 230,
+                            'width': 200,
                             'height': 350,
                             curveType: 'function',
                             'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
