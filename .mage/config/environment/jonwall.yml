@@ -8,7 +8,7 @@ deployment:
     - application/logs
 releases:
   enabled: true
-  max: 10
+  max: 4
   symlink: 121sys_jonwall
   directory: releases/121sys_releases/121sys_jonwall
 hosts:
