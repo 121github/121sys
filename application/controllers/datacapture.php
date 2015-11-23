@@ -49,7 +49,7 @@ public function index(){
 		 	  exit;
   		}
 		
-		$source = $this->input->post('source');
+		$source = $this->input->get_post('source');
 		$this->db->where("source_name",$source);
 		$get_source = $this->db->get("data_sources");
 		if($get_source->num_rows()>0){
@@ -85,7 +85,7 @@ public function index(){
 		 	  exit;
 			}
 			//insert the record
-			$insert_record = array("outcome_id"=>1,"campaign_id"=>$campaign,"added_by"=>$user_id,"date_added"=>date('Y-m-d H:i:s'),"source_id"=>$source_id);
+			$insert_record = array("outcome_id"=>1,"campaign_id"=>$campaign,"added_by"=>$user_id,"date_added"=>date('Y-m-d H:i:s'),"source_id"=>$source_id,"pot_id"=>65);
 			if($callback_time=="am"){
 			$insert_record['nextcall'] = date('Y-m-d 09:00:00');
 			} else if($callback_time=="pm"){
