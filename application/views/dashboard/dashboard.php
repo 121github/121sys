@@ -178,7 +178,7 @@
                                 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
                             </div>
                         </div>
-                        <div class="tab-pane" id="chart-div-system" style="margin: -40px">
+                        <div class="tab-pane" id="chart-div-system" style="margin: -15px">
                             <div id="carousel-system-generic" class="carousel slide" data-ride="carousel">
                                 <!-- Indicators -->
                                 <ol class="carousel-indicators">
@@ -239,7 +239,7 @@
                                 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
                             </div>
                         </div>
-                        <div class="tab-pane" id="chart-div-email" style="margin: -40px">
+                        <div class="tab-pane" id="chart-div-email" style="margin: -15px">
                             <div id="carousel-email-generic" class="carousel slide" data-ride="carousel">
                                 <!-- Indicators -->
                                 <ol class="carousel-indicators">
@@ -301,7 +301,7 @@
                                 <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
                             </div>
                         </div>
-                        <div class="tab-pane" id="chart-div-sms" style="margin: -40px">
+                        <div class="tab-pane" id="chart-div-sms" style="margin: -15px">
                             <div id="carousel-sms-generic" class="carousel slide" data-ride="carousel">
                                 <!-- Indicators -->
                                 <ol class="carousel-indicators">
