@@ -186,6 +186,33 @@ class Dashboard extends CI_Controller
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
 
+
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
+
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -204,6 +231,8 @@ class Dashboard extends CI_Controller
             'email_campaigns' => $email_campaigns,
             'sms_campaigns' => $sms_campaigns,
             'campaigns' => $campaigns,
+            'campaigns_by_group' => $campaigns_by_group,
+            'campaign_outcomes' => $campaign_outcomes,
             'surveys' => $surveys,
             'css' => array(
                 'dashboard.css',
@@ -429,9 +458,6 @@ class Dashboard extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $data = array();
             $filter = $this->input->post();
-            if (isset($_SESSION['current_campaign'])) {
-                $filter['campaign'] = $_SESSION['current_campaign'];
-            }
             $results = $this->Dashboard_model->get_outcomes($filter);
             foreach ($results as $k => $row) {
                 $data[] = array(
@@ -913,9 +939,6 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter = $this->input->post();
-            if (isset($_SESSION['current_campaign'])) {
-                $filter['campaign'] = $_SESSION['current_campaign'];
-            }
             $stats = $this->Dashboard_model->get_email_stats($filter);
             echo json_encode(array("success" => true, "data" => $stats));
             exit;
@@ -926,9 +949,6 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter = $this->input->post();
-            if (isset($_SESSION['current_campaign'])) {
-                $filter['campaign'] = $_SESSION['current_campaign'];
-            }
             $stats = $this->Dashboard_model->get_sms_stats($filter);
 
             //TODAY stats

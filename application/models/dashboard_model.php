@@ -91,14 +91,17 @@ class Dashboard_model extends CI_Model
     {
         $qry = "select contact, u.name, campaign_name, if(h.outcome_id is null,if(pd.description is null,'No Action Required',pd.description),outcome) as outcome, history_id,urn,if(com.name is null,fullname,com.name) cname from history h left join outcomes using(outcome_id) left join progress_description pd using(progress_id) left join campaigns using(campaign_id) left join users u using(user_id) left join contacts using(urn) left join companies com using(urn) where 1 ";
         //if a filter is selected then we just return history from that campaign, otehrwize get all the history
-        if (!empty($filter['campaign'])) {
-            $qry .= " and h.campaign_id = '{$filter['campaign']}'";
+        if (!empty($filter['campaigns'])) {
+            $qry .= " and h.campaign_id IN (".implode(",",$filter['campaigns']).")";
         }
-        if (!empty($filter['team'])) {
-            $qry .= " and h.team_id = '{$filter['team']}'";
+        if (!empty($filter['outcomes'])) {
+            $qry .= " and h.outcome_id IN (".implode(",",$filter['outcomes']).")";
         }
-        if (!empty($filter['agent'])) {
-            $qry .= " and h.user_id = '{$filter['agent']}'";
+        if (!empty($filter['teams'])) {
+            $qry .= " and h.team_id IN (".implode(",",$filter['teams']).")";
+        }
+        if (!empty($filter['agents'])) {
+            $qry .= " and h.user_id IN (".implode(",",$filter['agents']).")";
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $qry .= " and h.user_id = '" . $_SESSION['user_id'] . "'";
@@ -112,11 +115,14 @@ class Dashboard_model extends CI_Model
     public function get_outcomes($filter = array())
     {
         $qry = "select outcome,count(*) count from history h left join outcomes using(outcome_id) left join records using(urn) where 1 and h.outcome_id is not null and date(contact) = curdate() ";
-        if (!empty($filter['campaign'])) {
-            $qry .= " and h.campaign_id = '{$filter['campaign']}'";
+        if (!empty($filter['campaigns'])) {
+            $qry .= " and h.campaign_id IN (".implode(",",$filter['campaigns']).")";
         }
-        if (!empty($filter['team'])) {
-            $qry .= " and h.team_id = '" . $filter['team'] . "'";
+        if (!empty($filter['teams'])) {
+            $qry .= " and h.team_id IN (".implode(",",$filter['teams']).")";
+        }
+        if (!empty($filter['agents'])) {
+            $qry .= " and h.user_id IN (".implode(",",$filter['agents']).")";
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $qry .= " and h.user_id = '" . $_SESSION['user_id'] . "'";
@@ -133,16 +139,16 @@ class Dashboard_model extends CI_Model
     {
         $extra = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $extra_url = "";
-        if (!empty($filter['campaign'])) {
-            $extra = " and campaign_id = '" . intval($filter['campaign']) . "'";
-            $extra_url = "/campaign/" . $filter['campaign'];
+        if (!empty($filter['campaigns'])) {
+            $extra = " and campaign_id IN (" . implode(",",$filter['campaigns']) . ")";
+            $extra_url = "/campaign/".implode("_",$filter['campaigns']).(count($filter['campaigns'])>1?":in":"");
         }
         //data stats
         $virgin_qry = "select count(*) data from records where outcome_id is null and nextcall is null and record_status = 1 and progress_id is null $extra  ";
         $data['virgin'] = $this->db->query($virgin_qry)->row()->data;
         $data['virgin_url'] = base_url() . "search/custom/records/nextcall/null/outcome/null/status/live" . $extra_url;
         $active_qry = "select count(*) data from records where record_status = 1 and outcome_id is not null and progress_id is null $extra ";
-        //$this->firephp->log($active_qry);
+        $this->firephp->log($active_qry);
         $data['active'] = $this->db->query($active_qry)->row()->data;
         $data['active_url'] = base_url() . "search/custom/records/progress/null/outcome/null:not/status/live" . $extra_url;
         $dead_qry = "select count(*) data from records where record_status = 3 $extra";
@@ -197,20 +203,20 @@ class Dashboard_model extends CI_Model
         $comments_extra = "";
 
 
-        if (!empty($filter['campaign'])) {
-            $survey_extra .= " and surveys.user_id = '" . $filter['campaign'] . "' ";
-            $notes_extra .= " and s.updated_by = '" . $filter['campaign'] . "' ";
-            $comments_extra .= " and history.campaign_id = '" . $filter['campaign'] . "' ";
+        if (!empty($filter['campaigns'])) {
+            $survey_extra .= " and surveys.user_id IN (" . implode(",",$filter['campaigns']) . ") ";
+            $notes_extra .= " and s.updated_by IN (" . implode(",",$filter['campaigns']) . ") ";
+            $comments_extra .= " and history.campaign_id IN (" . implode(",",$filter['campaigns']) . ") ";
         }
-        if (!empty($filter['team'])) {
-            $survey_extra .= " and surveys.user_id in(select user_id from users where team_id = '" . $filter['team'] . "') ";
-            $notes_extra .= " and s.updated_by in(select user_id from users where team_id = '" . $filter['team'] . "') ";
-            $comments_extra .= " and history.user_id in(select user_id from users where team_id = '" . $filter['team'] . "') ";
+        if (!empty($filter['teams'])) {
+            $survey_extra .= " and surveys.user_id in(select user_id from users where team_id IN (" . implode(",",$filter['teams']) . ") ";
+            $notes_extra .= " and s.updated_by in(select user_id from users where team_id IN (" . implode(",",$filter['teams']) . ") ";
+            $comments_extra .= " and history.user_id in(select user_id from users where team_id IN (" . implode(",",$filter['teams']) . ") ";
         }
-        if (!empty($filter['agent'])) {
-            $survey_extra .= " and surveys.user_id = '" . $filter['agent'] . "' ";
-            $notes_extra .= " and s.updated_by = '" . $filter['agent'] . "' ";
-            $comments_extra .= " and history.user_id = '" . $filter['agent'] . "' ";
+        if (!empty($filter['agents'])) {
+            $survey_extra .= " and surveys.user_id IN (" . implode(",",$filter['agents']) . ") ";
+            $notes_extra .= " and s.updated_by IN (" . implode(",",$filter['agents']) . ") ";
+            $comments_extra .= " and history.user_id IN (" . implode(",",$filter['agents']) . ") ";
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $survey_extra .= " and surveys.user_id = '" . $_SESSION['user_id'] . "' ";
@@ -423,13 +429,17 @@ class Dashboard_model extends CI_Model
         $camp_url = "";
         $user_url = "";
         $where = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        if (!empty($filter['agents'])) {
+            $where .= " and email_history.user_id IN (".implode(",",$filter['agents']).")";
+            $user_url = "/user/".implode("_",$filter['agents']).(count($filter['agents'])>1?":in":"");
+        }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $where .= " and email_history.user_id = '{$_SESSION['user_id']}'";
             $user_url .= "/user/" . $_SESSION['user_id'];
         }
-        if (!empty($filter['campaign'])) {
-            $where .= " and records.campaign_id = '{$filter['campaign']}'";
-            $camp_url = "/campaign/{$filter['campaign']}";
+        if (!empty($filter['campaigns'])) {
+            $where .= " and records.campaign_id IN (".implode(",",$filter['campaigns']).")";
+            $camp_url = "/campaign/".implode("_",$filter['campaigns']).(count($filter['campaigns'])>1?":in":"");
         }
         $qry_all = "select count(distinct urn) num from email_history left join records using(urn) where date(sent_date) = curdate() and `status` =1 $where";
         $all = $this->db->query($qry_all)->row()->num;
@@ -467,13 +477,18 @@ class Dashboard_model extends CI_Model
         $camp_url = "";
         $user_url = "";
         $where = " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+
+        if (!empty($filter['agents'])) {
+            $where .= " and sms_history.user_id IN (".implode(",",$filter['agents']).")";
+            $user_url = "/user/".implode("_",$filter['agents']).(count($filter['agents'])>1?":in":"");
+        }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $where .= " and sms_history.user_id = '{$_SESSION['user_id']}'";
             $user_url .= "/user/" . $_SESSION['user_id'];
         }
-        if (!empty($filter['campaign'])) {
-            $where .= " and records.campaign_id = '{$filter['campaign']}'";
-            $camp_url = "/campaign/{$filter['campaign']}";
+        if (!empty($filter['campaigns'])) {
+            $where .= " and records.campaign_id IN (".implode(",",$filter['campaigns']).")";
+            $camp_url = "/campaign/".implode("_",$filter['campaigns']).(count($filter['campaigns'])>1?":in":"");
         }
 
         $qry_today = "select sms_history.* from sms_history left join records using(urn) where date(sent_date) = curdate() $where";

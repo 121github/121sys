@@ -8,7 +8,7 @@ deployment:
     - application/logs
 releases:
   enabled: true
-  max: 10
+  max: 6
   symlink: 121sys_eldon
   directory: releases/121sys_releases/121sys_eldon
 hosts:
