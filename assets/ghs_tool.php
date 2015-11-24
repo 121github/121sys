@@ -71,7 +71,7 @@
 <input class="form-control" id="tv" placeholder="Enter GHS URN" name="tv"/><button id="get-urn" class="btn btn-default">Get URN</button>
 </div>
 <div class="form-group">
-<button class="btn btn-primary" id="update">Update</button>
+<button class="btn btn-primary" id="update">Update</button> <button class="btn btn-primary" id="update-list">Update List</button>
 </div>
 </form>
 </div>
@@ -84,7 +84,6 @@
 </body>
 <script>
 $(document).ready(function(){
-$('.select-picker').selectpicker();
 
 $('#get-urn').click(function(e){
 	e.preventDefault();
@@ -115,6 +114,25 @@ $('#update').click(function(e){
 	data:{ urn:$('#urnval').val() }
 	}).done(function(response){
 		$('#response').html(response);
+	});
+	}
+});
+
+$('#update-list').click(function(e){
+	e.preventDefault();		
+	if($('#urnval').val()==""){
+		alert("Please enter a urn or press the ghs urn button first")
+	} else {
+	var array = $('#urnval').val().split(',');
+	$.each(array,function(k,v){
+	$.ajax({
+		url:"https://www.121system.com/"+$('#function').val(),
+	type:"POST",
+	dataType:"HTML",
+	data:{ urn:v }
+	}).done(function(response){
+		$('#response').html(response);
+	});
 	});
 	}
 });
