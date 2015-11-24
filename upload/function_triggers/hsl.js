@@ -8,11 +8,11 @@ var campaign_functions = {
             $('[name="title"]').val(title);
         });
 		
-        $(document).on('mouseover', '.show-apps', function (e) {
-            var target = $(this);
+        $(document).on('mouseover', '#quick-planner tbody tr', function (e) {
+            var target = $(this).find('.show-apps');
             if (target.attr('data-toggle') !== "tooltip") {
-                var user_id = $(this).attr('data-user');
-                var date = $(this).attr('data-date');
+                var user_id = target.attr('data-user');
+                var date = target.attr('data-date');
                 $.ajax({
                     url: helper.baseUrl + 'appointments/get_apps',
                     type: "POST",
@@ -24,7 +24,7 @@ var campaign_functions = {
                         $.each(response.data, function (i, row) {
                             apps += '<small>'+Number(i + 1) + '. ' + row.title + ': '+ row.postcode +'<br>' + row.start + ' until ' + row.end + '</small><br>';
                         });
-                        target.attr('data-toggle', 'tooltip').attr('data-placement', 'top').attr('title', apps).attr('data-html', 'true').tooltip().tooltip('show');
+                        target.attr('data-toggle', 'tooltip').attr('data-placement', 'top').attr('title', apps).attr('data-html', 'true').tooltip();
                     }
                 });
             }
@@ -276,7 +276,7 @@ var quick_planner = {
                     mbody += " <span class='red travel-time' style='display:none'>Time: " + waypoint.time + "</span>";
                 }
                 mbody += '</p></div>'
-                if (i < 5) {
+                if (waypoints.length-1>i) {
                     mbody += '<div style="text-align:center"><span>' + stats[i].duration.text + '</span> <span class="glyphicon glyphicon-arrow-down"></span> <span>' + stats[i].distance.text + '</span></div>';
                 } else {
                     mbody += '<div style="text-align:center">Total Duration: <strong>' + stats[i].duration.text + '</strong>  Total Distance: <strong>' + stats[i].distance.text + '</strong></div>';
@@ -311,12 +311,43 @@ var quick_planner = {
                 }
             }).done(function (response) {
                 //quick_planner.fill_width_planner(response);
-                quick_planner.planner_summary(response);
+                quick_planner.planner_summary_hsl(response);
             });
         }
     },
+ planner_summary: function (data) {
+        simulation = data;
+        var table = "";
+        table += "<div class='table-responsive' style='overflow:auto; max-height:215px'><table class='small table table-condensed'><thead><tr><th>Date</th><th>Slots</th><th>Total Distance</th><th>Total Duration</th><th>Route</th><tr></thead><tbody>";
+        $.each(data.waypoints, function (date, waypoint) {
+            var btn_text = "Simulate";
+            var slots = data.slots[date];
+            var stats = data.stats[date];
+            var force = "";
+			var time = "00:00:00";
+            if (slots.apps == slots.max_apps) {
+                var btn_text = "Show";
+            }
+			$.each(waypoint,function(i,v){
+			if (typeof v.datetime !== "undefined") {
+                time = v.datetime;
+            }
+			});
 
-    planner_summary: function (data) {
+            var empty_tooltip = slots.apps == "0" ? " data-toggle='tooltip' data-html='true' data-placement='top' title='No appointments booked'" : "";
+            var tooltip = slots.reason ? " data-toggle='tooltip' data-html='true' data-placement='top' title='Not available: " + slots.reason + "'" : empty_tooltip;
+            var holiday = slots.reason ? "class='purple'" : "";
+            color = slots.apps >= slots.max_apps && slots.max_apps > 0 ? "class='danger'" : holiday;
+            table += "<tr " + color + "><td>" + waypoint[0].uk_date + "</td><td><div class='pointer show-apps' data-date='" + date + "' data-user='" + simulation.user_id + "' " + tooltip + " >" + slots.apps + "/" + slots.max_apps + "</div></td><td>" + stats[stats.length-1].added_distance.text + "</td><td>" + stats[stats.length-1].added_duration.text + "</td><td><button class='btn btn-default btn-xs simulate' data-date='" + date + "' data-time='" + time + "' data-uk-date='" + waypoint[0].uk_date + "' " + force + " >Simulate</button></td></tr>";
+
+        });
+        table += "</tbody></table></div>";
+        $('#quick-planner').html(table);
+        $('#quick-planner .show-apps[data-toggle="tooltip"]').tooltip().tooltip('hide');
+
+    },
+	
+    planner_summary_hsl: function (data) {
         simulation = data;
         var table = "";
         table += "<div class='table-responsive' style='overflow:auto; max-height:215px'><table class='small table table-condensed'><thead><tr><th>Date</th><th>Slots</th><th>Total Distance</th><th>Total Duration</th><th>Route</th><tr></thead><tbody>";
@@ -346,6 +377,7 @@ var quick_planner = {
         $('#quick-planner .show-apps[data-toggle="tooltip"]').tooltip();
 
     },
+	
     fill_width_planner: function (data) {
 
         var table = "";
