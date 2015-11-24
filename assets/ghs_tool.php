@@ -47,7 +47,7 @@
 <div class="col-lg-12">
 <form id="form" style="padding:20px">
 <div class="form-group">
-<select class="selectpicker" id="function">
+<select class="select-picker" id="function">
 <option value="trackvia/review_required">Send for desktop check</option>
 <option value="trackvia/survey_refused">Refused survey</option>
 <option value="trackvia/add_appointment">Add appointment</option>
@@ -83,6 +83,9 @@
 </div>
 </body>
 <script>
+$(document).ready(function(){
+$('.select-picker').selectpicker();
+
 $('#get-urn').click(function(e){
 	e.preventDefault();
 	if($('#tv').val()==""){
@@ -116,6 +119,7 @@ $('#update').click(function(e){
 	}
 });
 
+});
 </script>
 
 </html>
