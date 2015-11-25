@@ -135,6 +135,9 @@ var dashboard = {
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('#latest-history').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
         }).done(function (response) {
             if (response.data.length > 0) {
                 var tbody = "";
@@ -154,6 +157,9 @@ var dashboard = {
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('#email-stats').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
         }).done(function (response) {
             $('#email-stats').html("<div><a href='" + response.data.new_url + "'>" + response.data.new + "</a> new emails read<br><a href='" + response.data.read_url + "'>" + response.data.read + "</a> emails read today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all + "</a> emails sent today<br><a href='" + response.data.pending_url + "'>" + response.data.pending + "</a> emails pending today<br><a href='" + response.data.unsent_url + "'>" + response.data.unsent + "</a> failed emails today<br><a href='" + response.data.sentall_url + "'>" + response.data.sentall + "</a> emails sent anytime<br><a href='" + response.data.readall_url + "'>" + response.data.readall + "</a> emails read anytime</div>");
 
@@ -230,6 +236,9 @@ var dashboard = {
         type: "POST",
         dataType: "JSON",
         data: $('.filter-form').serialize(),
+        beforeSend: function () {
+            $('#sms-stats').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+        }
     }).done(function (response) {
         $('#sms-stats').html("<ul>" +
                 "<div><a href='" + response.data.today_url + "'>" + response.data.today_sms + "</a> sms sent today <br><a href='" + response.data.today_delivered_url + "'>" + response.data.today_delivered_sms + "</a> sms delivered today " + "<br><a href='" + response.data.today_undelivered_url + "'>" + response.data.today_undelivered_sms + "</a> sms undelivered today " + "<br><a href='" + response.data.today_pending_url + "'>" + response.data.today_pending_sms + "</a> sms pending today " + "<br><a href='" + response.data.today_unknown_url + "'>" + response.data.today_unknown_sms + "</a> sms unknown today " + "<br><a href='" + response.data.today_error_url + "'>" + response.data.today_error_sms + "</a> sms error today " + "<br><a href='" + response.data.all_url + "'>" + response.data.all_sms + "</a> sms sent anytime " + "<br><a href='" + response.data.all_delivered_url + "'>" + response.data.all_delivered_sms + "</a> sms delivered anytime " + "<br><a href='" + response.data.all_undelivered_url + "'>" + response.data.all_undelivered_sms + "</a> sms undelivered anytime " + "<br><a href='" + response.data.all_pending_url + "'>" + response.data.all_pending_sms + "</a> sms pending anytime " + "<br><a href='" + response.data.all_unknown_url + "'>" + response.data.all_unknown_sms + "</a> sms unknown anytime " + "<br><a href='" + response.data.all_error_url + "'>" + response.data.all_error_sms + "</a> sms error anytime " + "</div>");
@@ -313,6 +322,9 @@ var dashboard = {
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('#outcome-stats').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
         }).done(function (response) {
             $('.outcome-stats').empty();
             var $outcomes = "";
@@ -365,6 +377,9 @@ var dashboard = {
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('#system-stats').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
         }).done(function (response) {
             $('#system-stats').empty();
             $contents = '<div><h4>Campaign Stats</h4><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
@@ -445,6 +460,9 @@ var dashboard = {
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('#comment-panel').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
         }).done(function (response) {
            $('#comment-panel').empty();
 		   var comments = "";
