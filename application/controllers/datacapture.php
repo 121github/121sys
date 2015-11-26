@@ -48,7 +48,7 @@ public function index(){
 			  echo json_encode(array("success"=>false,"error"=>$error));
 		 	  exit;
   		}
-		
+
 		$source = $this->input->get_post('source');
 		$this->db->where("source_name",$source);
 		$get_source = $this->db->get("data_sources");
@@ -64,7 +64,7 @@ public function index(){
 			$email = $this->input->get_post('email')==""?NULL:$this->input->get_post('email');
 			$telephone = $this->input->get_post('tel')==""?NULL:$this->input->get_post('tel');
 			$postcode = $this->input->get_post('postcode')==""?NULL:$this->input->get_post('postcode');
-			$postcode = $this->input->get_post('source')==""?NULL:$this->input->get_post('source');
+			$source = $this->input->get_post('source')==""?NULL:$this->input->get_post('source');
 			$callback_time = $this->input->get_post('callback_time')==""?NULL:$this->input->get_post('callback_time');
 			$campaign = intval($this->input->get_post('campaign'));
 			
@@ -106,7 +106,7 @@ public function index(){
 			
 			//insert the contact address
 			if(!empty($postcode)){
-			$insert_contact_address = array("contact_id"=>$id,"postcode"=>$postcode);
+			$insert_contact_address = array("contact_id"=>$id,"postcode"=>$postcode, "primary" => 1);
 			$this->db->insert("contact_addresses",$insert_contact_address);
 			$this->firephp->log($this->db->last_query());
 			}
