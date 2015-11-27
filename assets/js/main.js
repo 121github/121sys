@@ -375,6 +375,7 @@ var browser = {
  ========================================================================== */
 var filters = {
     init: function() {
+		$('.dropdown-menu ul').addClass('mm-nolistview');
         $('nav#filter-right').mmenu({
             navbar: {
                 title: "Filters <span class='text-primary current-campaign'></span>"

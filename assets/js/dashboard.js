@@ -1,7 +1,6 @@
 // JavaScript Document
 var dashboard = {
     init: function () {
-
         filters.init();
 
         //$(".filter").click(function (e) {
