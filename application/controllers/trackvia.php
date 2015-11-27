@@ -692,13 +692,13 @@ public function check_darlington(){
 			 $this->db->query("update
             `records` 
             JOIN contacts using(urn) join contact_addresses using(contact_id)
-            set source_code = 68
+            set source_id = 68
             WHERE campaign_id =29
             and postcode like 'CA%'");
 			 $this->db->query("update
             `records` 
             JOIN contacts using(urn) join contact_addresses using(contact_id)
-            set source_code = 41
+            set source_id = 41
             WHERE campaign_id =29
             and postcode like 'PE%'");
 			
