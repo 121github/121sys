@@ -39,6 +39,7 @@ init:function(){
 },
 appointment_setup:function(){
 	console.log("Setting up appointment from ghs.js");
+	campaign_functions.set_appointment_start($('[name="slot-choice"]:checked').attr('data-date')+' '+$('[name="slot-choice"]:checked').attr('data-time'));
 	if($('#slot-pot-id').val()=="51"||$('#slot-pot-id').val()=="52"){
 		//if southway install
 		$('.attendeepicker').selectpicker('val',[139]);
@@ -53,8 +54,12 @@ appointment_setup:function(){
 	} else if($('#slot-pot-id').val()=="49"||$('#slot-pot-id').val()=="46"||$('#slot-pot-id').val()=="47"||$('#slot-pot-id').val()=="48"){	//citywest surveys
 		$('.attendeepicker').selectpicker('val',[137]);
 		$('.typepicker').selectpicker('val',[3])
-	} else if($('#slot-pot-id').val()=="36"||$('#slot-pot-id').val()=="38"||$('#slot-pot-id').val()=="39"||$('#slot-pot-id').val()=="40"){	//private surveys
+	} else if($('#slot-pot-id').val()=="41"||$('#slot-pot-id').val()=="36"||$('#slot-pot-id').val()=="38"||$('#slot-pot-id').val()=="39"||$('#slot-pot-id').val()=="40"){	//private surveys
+	if($('#slot-source-id').val()=="41"){
 		$('.attendeepicker').selectpicker('val',[121]);
+	} else {
+		$('.attendeepicker').selectpicker('val',[178]);
+	}
 		$('.typepicker').selectpicker('val',[3])
 	} else {
 		alert("*Confirm that loft access will be required during the survey. (head and shoulder inspection usually sufficient)\n*Confirm access also required to main electric meter and fuse board required - it helps if obstacles are removed prior to survey.");
@@ -62,6 +67,14 @@ appointment_setup:function(){
 		$('.typepicker').selectpicker('val',[3]);
 	}
 },
+set_appointment_attendee: function (attendee) {
+        $('.attendeepicker').selectpicker('val', [attendee]);
+    },
+    set_appointment_start: function (start) {
+        var m = moment(start, "YYYY-MM-DD HH:mm");
+        $('.startpicker').data("DateTimePicker").date(m);
+        $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
+    },
 contact_form_setup:function(){
 	
 },

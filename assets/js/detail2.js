@@ -1546,7 +1546,7 @@ var record = {
 						} else {
 						var	apps = v.apps + '/'+v.max_apps
 						}
-						 day_row += '<td class="' + slot_color + '" ><input type="radio" name="slot-choice"/> '+apps+'</td>';
+						 day_row += '<td class="' + slot_color + '" ><input data-time="'+v.slot_start+'" data-date="' + v.sqldate + '" type="radio" name="slot-choice"/> '+apps+'</td>';
 						});
                         table += '<tr>'+day_row+'</tr>'
                     });
