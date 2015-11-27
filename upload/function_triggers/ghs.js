@@ -15,21 +15,21 @@ init:function(){
 	$('#save-sticky').hide();
 	$('#sticky-notes').addClass('red').prop('readonly',true);
 
-	if($('#pot-id').val()=="51"||$('#pot-id').val()=="52"){
+	if($('#slot-pot-id').val()=="51"||$('#slot-pot-id').val()=="52"){
 		$('#slot-attendee').val('139');
-	} else if ($('#pot-id').val()=="34"||$('#pot-id').val()=="35"||$('#pot-id').val()=="37"||$('#pot-id').val()=="38"){
+	} else if ($('#slot-pot-id').val()=="34"||$('#slot-pot-id').val()=="35"||$('#slot-pot-id').val()=="37"||$('#slot-pot-id').val()=="38"){
 		$('#slot-attendee').val('122');
-	} else if ($('#pot-id').val()=="49"||$('#pot-id').val()=="48"||$('#pot-id').val()=="47"||$('#pot-id').val()=="46"){
+	} else if ($('#slot-pot-id').val()=="49"||$('#slot-pot-id').val()=="48"||$('#slot-pot-id').val()=="47"||$('#slot-pot-id').val()=="46"){
 		$('#slot-attendee').val('137');
-	}  else if ($('#pot-id').val()=="57"||$('#pot-id').val()=="58"||$('#pot-id').val()=="59"||$('#pot-id').val()=="60"){ 
+	}  else if ($('#slot-pot-id').val()=="57"||$('#slot-pot-id').val()=="58"||$('#slot-pot-id').val()=="59"||$('#slot-pot-id').val()=="60"){ 
 	$('#slot-attendee').val('143');
-	}  else if ($('#pot-id').val()=="61"||$('#pot-id').val()=="62"){ 
+	}  else if ($('#slot-pot-id').val()=="61"||$('#slot-pot-id').val()=="62"){ 
 	$('#slot-attendee').val('142');
 	}  else {
-		if($('#pot-id').val()=="41"&&$('#source-id').val()=="41"){
+		if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="41"){
 			//peterborough
 		$('#slot-attendee').val('121');
-		} else if($('#pot-id').val()=="41"&&$('#source-id').val()=="68"){
+		} else if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="68"){
 			//cumbria
 		$('#slot-attendee').val('178');	
 		}
@@ -39,21 +39,21 @@ init:function(){
 },
 appointment_setup:function(){
 	console.log("Setting up appointment from ghs.js");
-	if($('#pot-id').val()=="51"||$('#pot-id').val()=="52"){
+	if($('#slot-pot-id').val()=="51"||$('#slot-pot-id').val()=="52"){
 		//if southway install
 		$('.attendeepicker').selectpicker('val',[139]);
 		$('.typepicker').selectpicker('val',[4])
-	} else if($('#pot-id').val()=="61"||$('#pot-id').val()=="62"){
+	} else if($('#slot-pot-id').val()=="61"||$('#slot-pot-id').val()=="62"){
 		//darlington install
 		$('.attendeepicker').selectpicker('val',[142]);
 		$('.typepicker').selectpicker('val',[4])
-	} else if($('#pot-id').val()=="57"||$('#pot-id').val()=="58"||$('#pot-id').val()=="59"||$('#pot-id').val()=="60"){	//darlington surveys
+	} else if($('#slot-pot-id').val()=="57"||$('#slot-pot-id').val()=="58"||$('#slot-pot-id').val()=="59"||$('#slot-pot-id').val()=="60"){	//darlington surveys
 		$('.attendeepicker').selectpicker('val',[143]);
 		$('.typepicker').selectpicker('val',[3])
-	} else if($('#pot-id').val()=="49"||$('#pot-id').val()=="46"||$('#pot-id').val()=="47"||$('#pot-id').val()=="48"){	//citywest surveys
+	} else if($('#slot-pot-id').val()=="49"||$('#slot-pot-id').val()=="46"||$('#slot-pot-id').val()=="47"||$('#slot-pot-id').val()=="48"){	//citywest surveys
 		$('.attendeepicker').selectpicker('val',[137]);
 		$('.typepicker').selectpicker('val',[3])
-	} else if($('#pot-id').val()=="36"||$('#pot-id').val()=="38"||$('#pot-id').val()=="39"||$('#pot-id').val()=="40"){	//private surveys
+	} else if($('#slot-pot-id').val()=="36"||$('#slot-pot-id').val()=="38"||$('#slot-pot-id').val()=="39"||$('#slot-pot-id').val()=="40"){	//private surveys
 		$('.attendeepicker').selectpicker('val',[121]);
 		$('.typepicker').selectpicker('val',[3])
 	} else {
