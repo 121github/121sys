@@ -16,6 +16,7 @@ class Email extends CI_Controller
         $this->load->model('Contacts_model');
         $this->load->model('Email_model');
         $this->load->model('Appointments_model');
+        $this->load->model('File_model');
     }
 
 
@@ -601,6 +602,9 @@ class Email extends CI_Controller
                 $this->email->cc("");
                 $this->email->bcc("");
             } else {
+                $this->email->to("");
+                $this->email->cc("");
+                $this->email->bcc("");
                 $this->email->clear(TRUE);
                 return true;
             }
@@ -855,7 +859,7 @@ class Email extends CI_Controller
                     "send_from" => "appointments@121system.com",
                     "send_to" => $appointment_ics['send_to'],
                     "cc" => null,
-                    "bcc" => 'estebanc@121customerinsight.co.uk',
+                    "bcc" => 'estebanc@121customerinsight.co.uk, bradf@121customerinsight.co.uk',
                     "subject" => $appointment_ics['title'],
                     "body" => $description,
                     "template_attachments" => $attachments
@@ -1033,7 +1037,7 @@ class Email extends CI_Controller
                     "send_from" => "appointments@121system.com",
                     "send_to" => $appointment_ics['send_to'],
                     "cc" => null,
-                    "bcc" => 'estebanc@121customerinsight.co.uk',
+                    "bcc" => 'estebanc@121customerinsight.co.uk, bradf@121customerinsight.co.uk',
                     "subject" => $appointment_ics['title'],
                     "body" => $appointment_ics['description'],
                     "template_attachments" => $attachments
@@ -1199,7 +1203,7 @@ class Email extends CI_Controller
                 "send_from" => "appointments@121system.com",
                 "send_to" => $appointment_ics['send_to'],
                 "cc" => null,
-                "bcc" => 'estebanc@121customerinsight.co.uk',
+                "bcc" => 'estebanc@121customerinsight.co.uk, bradf@121customerinsight.co.uk',
                 "subject" => $appointment_ics['title'],
                 "body" => $appointment_ics['description'],
                 "template_attachments" => $attachments
@@ -1325,16 +1329,19 @@ END:VCALENDAR';
 
             $today_date = new \DateTime('now');
             $today = $today_date->format("YmdHis");
+                    $today_folder = $today_date->format("Y-m-d");
 
-            $path = 'upload/attachments/cover_letter';
-            $filename = "HSL_Appointment_" . $today."_".$appointment->appointment_id;
+            //$path = 'upload/attachments/cover_letter';
+            $folder_name = 'Cover Letters';
+            $path = 'upload/files/'.$folder_name.'/'.$today_folder;
+            $filename = "HSL.Appointment." . $today.".".$appointment->appointment_id;
 
             $created_by_user = $this->User_model->get_user_by_id($appointment->created_by);
             $reference = (isset($created_by_user[0]['custom'])?'Our Ref '.$created_by_user[0]['custom']:'');
 
             //Create the hsl cover_letter
             //$complete_path = $this->create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $title, $name, $surname, $address, $postcode);
-            $complete_path = $this->create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $fullname, $address);
+            $complete_path = $this->create_hsl_cover_letter($path, $folder_name, $filename, $reference, $start_date, $end_date, $fullname, $address);
 
             $start_date = new \DateTime($start_date);
             $end_date = new \DateTime($end_date);
@@ -1365,7 +1372,7 @@ END:VCALENDAR';
                 "send_from" => "noreply@121system.com",
                 "send_to" => $send_to,
                 "cc" => null,
-                "bcc" => 'estebanc@121customerinsight.co.uk',
+                "bcc" => 'estebanc@121customerinsight.co.uk, bradf@121customerinsight.co.uk',
                 "subject" => $subject." - ".$appointment->title,
                 "body" => $body,
                 "template_attachments" => $attachments
@@ -1384,7 +1391,7 @@ END:VCALENDAR';
         }
     }
 
-    private function create_hsl_cover_letter($path, $filename, $reference, $start_date, $end_date, $fullname, $address) {
+    private function create_hsl_cover_letter($path, $folder_name, $filename, $reference, $start_date, $end_date, $fullname, $address) {
         require_once(APPPATH . 'libraries/PhpWord/Autoloader.php');
 
         $start_date = new \DateTime($start_date);
@@ -1503,9 +1510,16 @@ END:VCALENDAR';
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($path."/".$filename);
 
+        $filesize = filesize($path."/".$filename);
+        $folder_id = $this->File_model->get_folder_by_name($folder_name);
+
+        //Save on the files table for the cover letter
+        $this->File_model->add_file($filename, $folder_id, $filesize);
+
         $complete_path = array(
             'path' => $path."/".$filename,
-            'name' => $filename
+            'name' => $filename,
+            'size' => $filesize
         );
 
         return $complete_path;

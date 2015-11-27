@@ -294,6 +294,18 @@ class File_model extends CI_Model
         }
         return $files;
     }
+
+
+    public function get_folder_by_name($folder_name)
+    {
+        $this->db->where(array(
+            "folder_name" => $folder_name
+        ));
+        $query = $this->db->get('folders');
+        if ($query->num_rows()) {
+            return $query->row()->folder_id;
+        }
+    }
     
 }
 ?>
