@@ -26,12 +26,12 @@ init:function(){
 	}  else if ($('#slot-pot-id').val()=="61"||$('#slot-pot-id').val()=="62"){ 
 	$('#slot-attendee').val('142');
 	}  else {
-		if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="41"){ 
-			//peterborough
-		$('#slot-attendee').val('121');
-		} else if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="68"){
+		 if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="68"){
 			//cumbria
 		$('#slot-attendee').val('178');	
+		} else {
+			//peterborough
+		$('#slot-attendee').val('121');	
 		}
 	}
 
