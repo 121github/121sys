@@ -221,12 +221,14 @@ var modals = {
 			 var mbody = "<form id='column-picker-form' ><input type='hidden' name='table' value='"+table_id+"' />";
 			 var mfooter = '<button type="submit" class="btn btn-primary pull-right" id="save-columns">Save</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 			 $.each(response,function(group,row){
+			    var subtext ="";
 				mbody += "<h4>"+group+"</h4>";
 				var colpicker = "<select class='selectpicker' name='columns[]' multiple data-width='100%'>";
 				 $.each(row,function(i,column){
 					var selected = "";
 				if(column.selected[column.columns.column_id]){ selected="selected" }
-					colpicker += "<option "+selected+" value='"+column.columns.column_id+"'>"+column.columns.column_title+"</option>";
+				if(column.columns.column_title=="Last Comment"){ subtext = 'data-subtext="May run slow on large data sets"'; }
+					colpicker += "<option "+subtext+" "+selected+" value='"+column.columns.column_id+"'>"+column.columns.column_title+"</option>";
 				 })
 				 colpicker += "</select>";
 				 mbody += colpicker;

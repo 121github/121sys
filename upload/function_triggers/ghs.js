@@ -26,8 +26,13 @@ init:function(){
 	}  else if ($('#pot-id').val()=="61"||$('#pot-id').val()=="62"){ 
 	$('#slot-attendee').val('142');
 	}  else {
-		//private
+		if($('#pot-id').val()=="41"&&$('#source-id').val()=="41"){
+			//peterborough
 		$('#slot-attendee').val('121');
+		} else if($('#pot-id').val()=="41"&&$('#source-id').val()=="68"){
+			//cumbria
+		$('#slot-attendee').val('178');	
+		}
 	}
 
 
