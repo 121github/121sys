@@ -691,13 +691,13 @@ public function check_darlington(){
 			//there are currently 2 area in private so they seperating into the respective sources using the postcode
 			 $this->db->query("update
             `records` 
-            JOIN contacts using(urn) join contact_details using(contact_id)
+            JOIN contacts using(urn) join contact_addresses using(contact_id)
             set source_code = 68
             WHERE campaign_id =29
             and postcode like 'CA%'");
 			 $this->db->query("update
             `records` 
-            JOIN contacts using(urn) join contact_details using(contact_id)
+            JOIN contacts using(urn) join contact_addresses using(contact_id)
             set source_code = 41
             WHERE campaign_id =29
             and postcode like 'PE%'");
