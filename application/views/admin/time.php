@@ -1,6 +1,6 @@
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Time</h1>
+					<h1 class="page-header">Time <a class="btn btn-default pull-right marl" href="<?php echo base_url() ?>hour/default_hours">Set Default Hours</a> <a class="btn btn-default pull-right" href="<?php echo base_url() ?>time/default_time">Set Default Time</a></h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>

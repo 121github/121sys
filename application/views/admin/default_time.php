@@ -1,7 +1,7 @@
 
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Default Time</h1>
+					<h1 class="page-header">Default  <a class="btn btn-default pull-right marl" href="<?php echo base_url() ?>hour/hours">Manage Hours</a> <a class="btn btn-default pull-right" href="<?php echo base_url() ?>time/agent_time">Manage Time</a></h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
