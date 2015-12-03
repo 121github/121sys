@@ -4,6 +4,7 @@
     <form>
     <input type="hidden" id="slot-pot-id" value="<?php echo $record['pot_id'] ?>" />
      <input type="hidden" id="slot-source-id" value="<?php echo $record['source_id'] ?>" />
+        <input type="hidden" id="slot-campaign-id" value="<?php echo $record['campaign_id'] ?>" />
     <input type="hidden" id="slot-distance" name="distance" value="" />
       <input type="hidden" id="slot-attendee"  name="attendee" value="" />
       <input type="hidden" id="slot-closest" value="<?php echo $attendees[0]['user_id'] ?>" />
