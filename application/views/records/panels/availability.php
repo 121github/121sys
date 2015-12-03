@@ -6,6 +6,7 @@
      <input type="hidden" id="slot-source-id" value="<?php echo $record['source_id'] ?>" />
     <input type="hidden" id="slot-distance" name="distance" value="" />
       <input type="hidden" id="slot-attendee"  name="attendee" value="" />
+      <input type="hidden" id="slot-closest" value="<?php echo $attendees[0]['user_id'] ?>" />
           <input type="hidden" id="app-type" value="" />
             <!--<div class="input-group"  style="width:280px">
           <div class="input-group-btn">
@@ -43,7 +44,7 @@
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span> <span id="slot-attendee-text">Attendee</span> </button>
         <ul class="dropdown-menu pull-right" role="menu">
          <?php foreach($attendees as $attendee): ?>
-          <li><a href="#" class="filter" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><?php echo $attendee['name'] ?></a> </li>
+          <li><a href="#" class="filter" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><span class='filter-text'><?php echo $attendee['name'] ?></span> <small><?php echo (!empty($attendee['distance'])?$attendee['distance']." miles":"") ?> </small></a> </li>
           <?php endforeach ?>
           <li class="divider"></li>
           <li><a class="filter" ref="#" style="color: green;" data-ref="attendee">Show all</a> </li>
@@ -62,7 +63,7 @@ $(document).on('blur','#slot-postcode',function(){
 
 $(document).on('click','#slot-availability li a',function(e){
 e.preventDefault();
-	var type = $(this).attr('data-ref'),value = $(this).attr('data-val'),txt=$(this).text();
+	var type = $(this).attr('data-ref'),value = $(this).attr('data-val'),txt=$(this).find('span.filter-text').text();
 	$(this).closest('form').find('input[name="'+type+'"]').val(value);
 	
 	$(this).closest('ul').find('a').css("color","black");

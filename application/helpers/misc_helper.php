@@ -13,6 +13,9 @@ function convertToHoursMins($time, $format = '%d:%d') {
     return sprintf($format, $hours, $minutes);
 }
 
+function arraySort($a, $b) {
+    return $b['distance'] - $a['distance'];
+}
 
 function closest_strings($str,$array,$tolerance=3){
 $minStr = "";

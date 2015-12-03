@@ -1505,8 +1505,14 @@ var record = {
     },
     appointment_slots_panel: {
         init: function () {
-            //record.appointment_slots_panel.load_panel();
+			
         },
+		find_closest_attendee:function(){
+			if($('#slot-closest').val()!==""){
+				$('#slot-attendee').val($('#slot-closest').val());
+            record.appointment_slots_panel.load_panel();
+			}
+		},
         load_panel: function () {
             $.ajax({
                 url: helper.baseUrl + "appointments/slot_availability",
@@ -1535,7 +1541,7 @@ var record = {
 						var day_row = "<td>"+k+"</td>";
 						$.each(day,function(i,v){
 						var slot_color="",priority="";  
-						if(v.best_distance&& v.apps<v.max_apps){
+						if(v.best_distance&& v.apps<v.max_apps&&v.min_distance<10){
 							var slot_color = 'text-success';
 							priority = '<span class="text-success fa fa-check-circle"></span>'
 						}

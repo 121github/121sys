@@ -888,17 +888,30 @@ class Records_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
-    public function get_attendees($urn = "", $campaign_id = "")
+    public function get_attendees($urn = false, $campaign_id = false, $postcode = false)
     {
-        if (!empty($urn)):
-            $qry = "select user_id,name,user_email,user_telephone from users_to_campaigns left join records using(campaign_id) where urn='$urn' and attendee=1 and user_status=1 and campaign_id in({$_SESSION['campaign_access']['list']})";
-        elseif (!empty($campaign_id)):
-            $qry = "select user_id,name,user_email,user_telephone from users left join users_to_campaigns using(user_id) where user_status = 1 and  attendee = 1 and  campaign_id = '$campaign_id'";
+        if ($urn):
+            $qry = "select user_id,name,user_email,user_telephone,home_postcode from users_to_campaigns left join records using(campaign_id) where urn='$urn' and attendee=1 and user_status=1 and campaign_id in({$_SESSION['campaign_access']['list']})";
+        elseif ($campaign_id):
+            $qry = "select user_id,name,user_email,user_telephone,home_postcode from users left join users_to_campaigns using(user_id) where user_status = 1 and  attendee = 1 and  campaign_id = '$campaign_id'";
         else:
-            $qry = "select user_id,name,user_email,user_telephone from users where user_status = 1 and attendee = 1 and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
+            $qry = "select user_id,name,user_email,user_telephone,home_postcode from users where user_status = 1 and attendee = 1 and user_id in(select user_id from users_to_campaigns where campaign_id in({$_SESSION['campaign_access']['list']})) ";
         endif;
 		$qry .= " order by name";
-        return $this->db->query($qry)->result_array();
+        $attendees = $this->db->query($qry)->result_array();
+		if($postcode){
+		foreach($attendees as $k=>$row){
+			$attendees[$k]['distance'] = "";
+		if(!empty($row['home_postcode'])){
+			$attendee_postcode = get_postcode_data($row['home_postcode']);
+			$contact_postcode = get_postcode_data($postcode);
+			$distance_between = distance($attendee_postcode['latitude'], $attendee_postcode['longitude'], $contact_postcode['latitude'], $contact_postcode['longitude'], "N");
+		$attendees[$k]['distance'] = number_format($distance_between,1);
+		}
+		}
+		}
+		usort($attendees,'arraySort');
+		return $attendees;
     }
 
     public function get_addresses($urn = "")

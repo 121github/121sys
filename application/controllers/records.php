@@ -367,7 +367,8 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         if (in_array(10, $features)) {
             $addresses         = $this->Records_model->get_addresses($urn);
             $data['addresses'] = $addresses;
-            $attendees         = $this->Records_model->get_attendees(false, $campaign_id);
+			$postcode = isset($addresses[0]['postcode'])?$addresses[0]['postcode']:false;
+            $attendees         = $this->Records_model->get_attendees(false, $campaign_id, $postcode);
             $data['attendees'] = $attendees;
 			$types         = $this->Records_model->get_appointment_types(false, $campaign_id);
             $data['types'] = $types;
