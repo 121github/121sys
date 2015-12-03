@@ -105,11 +105,6 @@
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading clearfix"><i class="fa fa-bar-chart-o fa-fw"></i> Data Report
-                <div class="pull-right" style="border:0px solid black;">
-                    <a href="#filter-right" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
-                    </a>
-                </div>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body productivity-panel  table-responsive" style="padding: 0px;">

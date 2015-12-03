@@ -1237,6 +1237,7 @@ class Reports extends CI_Controller
                 $data = array(
                     "name" => $row['name'],
 					"id" => $row['id'],
+					"status" => $row['campaign_status'],
                     "tr" => empty($row['tr'])?0:$row['tr'],
 					"ta" => empty($row['ta'])?0:$row['ta'],
 					"tp" => empty($row['tp'])?0:$row['tp'],
@@ -1311,6 +1312,7 @@ class Reports extends CI_Controller
                 $data = array(
                     "name" => $row['name'],
 					"id" => $row['id'],
+					"status" => $row['campaign_status'],
                     "tr" => empty($row['tr'])?0:$row['tr'],
 					"ta" => empty($row['ta'])?0:$row['ta'],
 					"tp" => empty($row['tp'])?0:$row['tp'],

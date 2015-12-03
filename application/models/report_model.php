@@ -669,7 +669,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             //$where .= " and history.team_id = '{$_SESSION['team']}' ";
         }
 
-        $qry = "select campaign_name name,campaign_id id,tr,ta,tp,va,vp,wa,wp,fd,fc from 
+        $qry = "select campaign_status,campaign_name name,campaign_id id,tr,ta,tp,va,vp,wa,wp,fd,fc from 
 		(select campaign_id,count(distinct urn) tr from records left join ownership using(urn) left join users using(user_id) $where and campaign_id in({$_SESSION['campaign_access']['list']}) group by campaign_id) total_r join
 		(select campaign_id,count(distinct urn) ta from records left join ownership using(urn) left join users using(user_id) $where and record_status = 1 and parked_code is null group by campaign_id) total_a using(campaign_id) left join
 		(select campaign_id,count(distinct urn) tp from records left join ownership using(urn) left join users using(user_id) $where and record_status = 1 and parked_code is not null group by campaign_id) total_p using(campaign_id) left join
@@ -678,7 +678,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 		(select campaign_id,count(distinct urn) wa from records left join ownership using(urn) left join users using(user_id) $where and (dials > 0) and record_status = 1 and parked_code is null group by campaign_id) working_a using(campaign_id) left join
 		(select campaign_id,count(distinct urn) wp from records left join ownership using(urn) left join users using(user_id) $where and (dials > 0) and record_status = 1 and parked_code is not null group by campaign_id) working_p using(campaign_id) left join
 		(select campaign_id,count(distinct urn) fd from records left join ownership using(urn) left join users using(user_id) $where and record_status = 3 group by campaign_id) finished_d using(campaign_id) left join
-		(select campaign_id,count(distinct urn) fc from records left join ownership using(urn) left join users using(user_id) $where and record_status = 4 group by campaign_id) finished_c using(campaign_id) left join campaigns using(campaign_id)";
+		(select campaign_id,count(distinct urn) fc from records left join ownership using(urn) left join users using(user_id) $where and record_status = 4 group by campaign_id) finished_c using(campaign_id) left join campaigns using(campaign_id) order by campaign_status desc,campaign_name";
         return $this->db->query($qry)->result_array();
     }
 	
@@ -733,7 +733,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             //$where .= " and history.team_id = '{$_SESSION['team']}' ";
         }
 
-        $qry = "select campaign_name,campaigns.campaign_id,pot_id id,pot_name name,tr,ta,tp,va,vp,wa,wp,fd,fc from 
+        $qry = "select campaign_status,campaign_name,campaigns.campaign_id,pot_id id,pot_name name,tr,ta,tp,va,vp,wa,wp,fd,fc from 
 		(select pot_id,campaign_id,count(distinct urn) tr from records left join ownership using(urn) left join users using(user_id) $where and campaign_id in({$_SESSION['campaign_access']['list']}) group by pot_id) total_r join
 		(select pot_id,campaign_id,count(distinct urn) ta from records left join ownership using(urn) left join users using(user_id) $where and record_status = 1 and parked_code is null group by pot_id) total_a using(pot_id) left join
 		(select pot_id,campaign_id,count(distinct urn) tp from records left join ownership using(urn) left join users using(user_id) $where and record_status = 1 and parked_code is not null group by pot_id) total_p using(pot_id) left join
@@ -742,7 +742,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 		(select pot_id,campaign_id,count(distinct urn) wa from records left join ownership using(urn) left join users using(user_id) $where and (dials > 0) and record_status = 1 and parked_code is null group by pot_id) working_a using(pot_id) left join
 		(select pot_id,campaign_id,count(distinct urn) wp from records left join ownership using(urn) left join users using(user_id) $where and (dials > 0) and record_status = 1 and parked_code is not null group by pot_id) working_p using(pot_id) left join
 		(select pot_id,campaign_id,count(distinct urn) fd from records left join ownership using(urn) left join users using(user_id) $where and record_status = 3 group by pot_id) finished_d using(pot_id) left join
-		(select pot_id,campaign_id,count(distinct urn) fc from records left join ownership using(urn) left join users using(user_id) $where and record_status = 4 group by pot_id) finished_c using(pot_id) left join campaigns on campaigns.campaign_id = total_r.campaign_id left join data_pots using(pot_id)";
+		(select pot_id,campaign_id,count(distinct urn) fc from records left join ownership using(urn) left join users using(user_id) $where and record_status = 4 group by pot_id) finished_c using(pot_id) left join campaigns on campaigns.campaign_id = total_r.campaign_id left join data_pots using(pot_id) order by campaign_status desc,pot_name";
         return $this->db->query($qry)->result_array();
     }
 }
