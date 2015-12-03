@@ -404,4 +404,9 @@ class User_model extends CI_Model
 		}
 		}
 		
+		public function get_user_details($id){
+		$this->db->where("user_id",$id);
+		return $this->db->get("users")->row_array();	
+		}
+		
 }

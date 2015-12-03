@@ -351,7 +351,10 @@ $(document).ready(function () {
         $(this).find('.block-day-btn.' + day).show();
     });
 
-    //Hide appointment rules button
+ $(document).on('click','a[href="#addrule"]',function(){
+	 modal_body.css('overflow','visible');
+ });
+ //Hide appointment rules button
     $(document).on('mouseleave', '.cal-month-day', function () {
         var day = $(this).attr('item-day');
         var has_rules = $(this).find('.block-day-btn').attr('item-rules');

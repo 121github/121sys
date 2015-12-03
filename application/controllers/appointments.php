@@ -31,11 +31,47 @@ class Appointments extends CI_Controller
 	echo json_encode(array("success"=>true,"data"=>$result));	
 	}
 
+
+	public function show_slot(){
+	$id = $this->uri->segment(3);
+	$slot = $this->Appointments_model->get_slot_id('2015-11-30 09:00:00',157);
+	$this->firephp->log($slot);	
+	}
+
+	public function get_available_attendees(){
+		$urn = $this->input->post('urn');
+		$datetime = $this->input->post('datetime');
+		$campaign = $this->Record_model->get_campaign_from_urn($urn);
+		$user_slots=array();
+		//get the number of slots available per user by day
+		$day = date('l',strtotime($datetime));
+		$qry = "select *,user_id from appointment_slot_assignment join appointment_slots using(appointment_slot_id) where day is null or day = '$day' and time($datetime) between slot_start and slot_end order by day desc"; 
+		foreach($this->db->query($qry)->result_array() as $row){
+		$user_slots[$row['appointment_slot_id']][$row['user_id']]=$row;
+		}
+		//get the number of slots available per user by date (override)
+		$qry = "select * from appointment_slot_override join appointment_slots using(appointment_slot_id)				where `date` is null or `date` = date('$datetime') and time($datetime) between slot_start and slot_end group by user_id order by day desc";
+		$query = $this->db->query($qry);
+		foreach($this->db->query($qry)->result_array() as $row){
+		$user_slots[$row['appointment_slot_id']][$row['user_id']]=$row;
+		}
+		//get the slots taken per user in this slot
+		foreach($user_slots as $slot => $user){
+
+		}
+		
+		//if slots taken < slots available return the users
+	}
+
 	public function slot_availability(){
 		$urn = $this->input->post('urn');
 		$app_type = $this->input->post('app_type');
+		/* we are setting slots by user, the campaign/source isn't in use at the moment. If you need different slots for a campaign or source just create a different user and use js to set the user based on the campaign/source
 		$campaign_id = $this->Records_model->get_campaign_from_urn($urn);
-		$source =  false; //$this->Records_model->get_source($urn);
+		$source = $this->Records_model->get_source($urn);
+		*/
+		$campaign_id = false;
+		$source =  false; 
 		$user_id = intval($this->input->post('user_id'));
 		$postcode = $this->input->post('postcode');
 		if(!empty($postcode)){

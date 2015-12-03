@@ -19,6 +19,7 @@ class Modals extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 
+
     public function new_email_form()
     {
         if ($this->input->is_ajax_request()) {

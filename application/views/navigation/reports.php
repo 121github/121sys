@@ -10,6 +10,11 @@
                                         <a href="<?php echo base_url() ?>reports/activity">Activity</a>
                                     </li>
                                 <?php } ?>
+                                  <?php if (in_array("data counts", $_SESSION['permissions'])) { ?>
+                                    <li <?php echo @($page == 'data' ? "class='Selected'" : "") ?>>
+                                        <a href="<?php echo base_url() ?>reports/data">Data Counts</a>
+                                    </li>
+                                <?php } ?>
                                  <!--<li <?php echo @($page == 'realtime' ? "class='Selected'" : "") ?>>
                                         <a href="<?php echo base_url() ?>reports/realtime">Realtime</a>
                                     </li>-->

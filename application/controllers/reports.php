@@ -19,6 +19,93 @@ class Reports extends CI_Controller
 
     }
 
+    public function data()
+     {
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
+
+        $agents = $this->Form_model->get_agents();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources = $this->Form_model->get_sources();
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'Reports',
+            'title' => 'Reports | Data',
+            'page' => 'data'
+        ,
+            'javascript' => array(
+                'charts.js?v' . $this->project_version,
+                'report/data.js?v' . $this->project_version,
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'campaigns_by_group' => $campaigns_by_group,
+            'campaign_outcomes' => $campaign_outcomes,
+            'team_managers' => $teamManagers,
+            'agents' => $agents,
+            'sources' => $sources,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/data.php', $data);
+    }
+	
+	
+    //this controller loads the view for the targets page on the dashboard
+    public function reports()
+    {
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'Reports',
+            'title' => 'Reports | Targets',
+            'page' => 'targets'
+        ,
+            'javascript' => array(
+                'charts.js?v' . $this->project_version,
+                'report/targets.js?v' . $this->project_version,
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+
+            ),
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/targets.php', $data);
+    }
+
     //this controller loads the view for the capture page on the reports
     public function capture()
     {
@@ -1105,6 +1192,153 @@ class Reports extends CI_Controller
             "success" => ($current_campaign),
             "current_campaign" => $current_campaign
         ));
+    }
+
+	/* data counts for the data report */
+    public function data_counts()
+    {
+        if ($this->input->is_ajax_request()) {
+            $data = array();
+            $data_array = array();
+            $total = 0;
+            $results = $this->Report_model->get_data_counts($this->input->post());
+            $date_from = $this->input->post("date_from");
+            $date_to = $this->input->post("date_to");
+            $users = $this->input->post("agents");
+            $campaigns = $this->input->post("campaigns");
+            $teams = $this->input->post("teams");
+            $sources = $this->input->post("sources");
+
+
+            $overall_array = array();
+            $post = $this->input->post();
+            if ($this->input->post('teams') || $this->input->post('agents')) {
+                $colname = $this->input->post('colname');
+                unset($post['teams']);
+                unset($post['agents']);
+                $overall = $this->Report_model->get_data_counts($post);
+                $overall_array = array();
+                foreach ($overall as $k => $row) {
+                    $overall_array[$row['name']]["overall_total"] = $row['total'];
+                    $overall_array[$row['name']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
+                }
+            }
+
+            foreach ($results as $k => $row) {
+                $url = base_url() . "search/custom/records";
+                $url .= (!empty($campaigns) ? "/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
+                $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
+                $url .= (!empty($date_from) ? "/updated-from/$date_from" : "");
+                $url .= (!empty($date_to) ? "/updated-to/$date_to" : "");
+                $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
+                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
+//tr,ta,tp,va,vp,wa,wp,fd,fc
+                $total = $row['tr'];
+                $data = array(
+                    "name" => $row['name'],
+					"id" => $row['id'],
+                    "tr" => empty($row['tr'])?0:$row['tr'],
+					"ta" => empty($row['ta'])?0:$row['ta'],
+					"tp" => empty($row['tp'])?0:$row['tp'],
+					"va" => empty($row['va'])?0:$row['va'],
+					"vp" => empty($row['vp'])?0:$row['vp'],
+					"wa" => empty($row['wa'])?0:$row['wa'],
+					"wp" => empty($row['wp'])?0:$row['wp'],
+					"fd" => empty($row['fd'])?0:$row['fd'],
+					"fc" => empty($row['fc'])?0:$row['fc'],
+                    "url_tr" => $url . "/campaign/" . $row['id'],
+					"url_ta" => $url . "/campaign/" . $row['id']."/status/1/parked-code/null",
+					"url_tp" => $url . "/campaign/" . $row['id']."/status/1/parked-code/null:not",
+					"url_va" => $url . "/campaign/" . $row['id']."/dials/0/status/1/parked-code/null",
+					"url_vp" => $url . "/campaign/" . $row['id']."/dials/0/status/1/parked-code/null:not",
+					"url_wa" => $url . "/campaign/" . $row['id']."/dials/0:more/parked-code/null/status/1",
+					"url_wp" => $url . "/campaign/" . $row['id']."/dials/0:more/parked-code/null:not/status/1",
+					"url_fd" => $url . "/campaign/" . $row['id']."/status/3",
+					"url_fc" => $url . "/campaign/" . $row['id']."/status/4",
+                );
+                $data['colour'] = substr(dechex(crc32($row['name'])), 0, 6);
+                $data_array[] = $data;
+            }
+            echo json_encode(array(
+                "success" => true,
+                "data" => $data_array,
+                "total" => $total
+            ));
+        }
+    }
+
+
+	/* data counts for the data report */
+    public function data_counts_by_pot()
+    {
+        if ($this->input->is_ajax_request()) {
+            $data = array();
+            $data_array = array();
+            $total = 0;
+            $results = $this->Report_model->get_data_counts_by_pot($this->input->post());
+            $date_from = $this->input->post("date_from");
+            $date_to = $this->input->post("date_to");
+            $users = $this->input->post("agents");
+            $campaigns = $this->input->post("campaigns");
+            $teams = $this->input->post("teams");
+            $sources = $this->input->post("sources");
+			$campaign = $this->input->post("campaign");
+
+            $overall_array = array();
+            $post = $this->input->post();
+            if ($this->input->post('teams') || $this->input->post('agents')) {
+                $colname = $this->input->post('colname');
+                unset($post['teams']);
+                unset($post['agents']);
+                $overall = $this->Report_model->get_data_counts($post);
+                $overall_array = array();
+                foreach ($overall as $k => $row) {
+                    $overall_array[$row['name']]["overall_total"] = $row['total'];
+                    $overall_array[$row['name']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
+                }
+            }
+
+            foreach ($results as $k => $row) {
+                $url = base_url() . "search/custom/records";
+                $url .= (!empty($campaigns) ? "/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
+                $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
+                $url .= (!empty($date_from) ? "/updated-from/$date_from" : "");
+                $url .= (!empty($date_to) ? "/updated-to/$date_to" : "");
+                $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
+                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
+//tr,ta,tp,va,vp,wa,wp,fd,fc
+                $total = $row['tr'];
+                $data = array(
+                    "name" => $row['name'],
+					"id" => $row['id'],
+                    "tr" => empty($row['tr'])?0:$row['tr'],
+					"ta" => empty($row['ta'])?0:$row['ta'],
+					"tp" => empty($row['tp'])?0:$row['tp'],
+					"va" => empty($row['va'])?0:$row['va'],
+					"vp" => empty($row['vp'])?0:$row['vp'],
+					"wa" => empty($row['wa'])?0:$row['wa'],
+					"wp" => empty($row['wp'])?0:$row['wp'],
+					"fd" => empty($row['fd'])?0:$row['fd'],
+					"fc" => empty($row['fc'])?0:$row['fc'],
+                    "url_tr" => $url . "/pot/" . $row['id']."/campaign/".$campaign,
+					"url_ta" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/status/1/parked-code/null",
+					"url_tp" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/status/1/parked-code/null:not",
+					"url_va" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/dials/0/status/1/parked-code/null",
+					"url_vp" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/dials/0/status/1/parked-code/null:not",
+					"url_wa" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/dials/0:more/parked-code/null/status/1",
+					"url_wp" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/dials/0:more/parked-code/null:not/status/1",
+					"url_fd" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/status/3",
+					"url_fc" => $url . "/pot/" . $row['id']."/campaign/".$campaign."/status/4",
+                );
+                $data['colour'] = substr(dechex(crc32($row['name'])), 0, 6);
+                $data_array[] = $data;
+            }
+            echo json_encode(array(
+                "success" => true,
+                "data" => $data_array,
+                "total" => $total
+            ));
+        }
     }
 
 }

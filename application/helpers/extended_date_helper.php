@@ -241,6 +241,20 @@ function validateDate($date)
     return $date == date('Y-m-d',$d);
 }
 
+
+function date_range($first, $last, $step = '+1 day', $output_format = 'd/m/Y' ) {
+
+    $dates = array();
+    $current = strtotime($first);
+    $last = strtotime($last);
+
+    while( $current <= $last ) {
+        $dates[] = date($output_format, $current);
+        $current = strtotime($step, $current);
+    }
+    return $dates;
+}
+
 }
 /* End of file extended_date_helper.php */
 /* Location: ./application/helpers/extended_date_helper.php */

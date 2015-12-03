@@ -1,6 +1,6 @@
  <div class="row">
         <div class="col-lg-12">
-          <h1 class="page-header">Slots</h1>
+          <h1 class="page-header">Slots <a class="pull-right btn btn-default" href="availability">Edit Availability</a></h1>
         </div>
         <!-- /.col-lg-12 --> 
       </div>
@@ -14,7 +14,7 @@
             </div>
  <div class="panel-body">
 <div id="form-container">
-<?php $this->view('forms/edit_slots.php'); ?>
+<?php $this->view('forms/edit_slots.php',$options); ?>
 </div>
 <div id="table-container">
 </div>

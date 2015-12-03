@@ -721,14 +721,30 @@ var modals = {
             format: 'DD/MM/YYYY'
         });
         //this function automatically sets the end date for the appointment 1 hour ahead of the start date
+		$(".startpicker").on("dp.show", function (e) {
+			$('#attendee-select').prop('disabled',true).html('<option value="loading">Please wait</option>').selectpicker('refresh').selectpicker('val','loading');
+		});
+		
         $(".startpicker").on("dp.hide", function (e) {
             var m = moment(e.date, "DD\MM\YYYY HH:mm");
+			var sql = (m.format("YYYY-MM-DD HH:mm"));
             $('.endpicker').data("DateTimePicker").date(e.date);
             $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
+			modals.get_available_attendees(sql);		
         });
         $("#modal").find("#tabs").tab();
 		modals.set_size();
     },
+	get_available_attendees:function(sql){
+		$.ajax({
+			url:helper.baseUrl+'appointments/get_available_attendees',
+			type:"POST",
+			dataType:"JSON",
+			data: { datetime:sql,urn:record.urn }
+		}).done(function(){
+			
+		});
+	},
     set_size: function () {
 		//there is a slight delay while the modal fades in which is fixed with the 500ms timeout function
 		setTimeout(function() {

@@ -1267,7 +1267,7 @@ return $query->result_array();
         
         $qry .= $group_by;
         $qry .= " order by CASE WHEN " . $order_columns[$options['order'][0]['column']] . " IS NULL THEN 1 ELSE 0 END," . $order_columns[$options['order'][0]['column']] . " " . $options['order'][0]['dir'];
-		//$this->firephp->log($qry);
+		$this->firephp->log($qry);
         $count = $this->db->query($qry)->num_rows();
         $qry .= " limit " . $options['length'] . " offset " . $options['start'];
 		//$this->firephp->log($qry);

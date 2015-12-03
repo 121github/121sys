@@ -85,7 +85,7 @@ public function index(){
 		 	  exit;
 			}
 			//insert the record
-			$insert_record = array("outcome_id"=>1,"campaign_id"=>$campaign,"added_by"=>$user_id,"date_added"=>date('Y-m-d H:i:s'),"source_id"=>$source_id,"pot_id"=>65);
+			$insert_record = array("campaign_id"=>$campaign,"added_by"=>$user_id,"date_added"=>date('Y-m-d H:i:s'),"source_id"=>$source_id,"pot_id"=>65);
 			if(strtolower($callback_time)=="am"){
 			$insert_record['nextcall'] = date('Y-m-d 09:00:00');
 			} else if(strtolower($callback_time)=="pm"){

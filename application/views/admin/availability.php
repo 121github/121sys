@@ -1,23 +1,24 @@
   <div class="row">
         <div class="col-lg-12">
-          <h1 class="page-header">Availability</h1>
+          <h1 class="page-header">Availability <a class="pull-right btn btn-default" href="slots">Edit Slots</a></h1>
         </div>
         <!-- /.col-lg-12 --> 
       </div>
+      <form id="slot-form">
         <div class="row">
         <div class="col-lg-12">
-       <div class="panel panel-primary" id="campaign-slots-panel">
-            <div class="panel-heading">Assign slots to a campaign</div>
+       <div class="panel panel-primary" id="slot-options-panel">
+            <div class="panel-heading">User booking slot configuration</div>
              <div class="panel-body">
-             	<form>
+             	
                 <div class="form-group">
-                <label>Select the campaign to configure slots on</label><br>
+                <label>Search users by campaign</label><br>
                 <select id="slot-campaign-select" class="selectpicker" data-width="230px">
                 <option value="">Select campaign</option>
-            <?php foreach ($campaign_access as $client => $camp_array) { ?>
-                <optgroup label="<?php echo $client ?>">
+            <?php foreach ($options['campaigns'] as $group => $camp_array) { ?>
+                <optgroup label="<?php echo $group ?>">
                     <?php foreach ($camp_array as $camp) { ?>
-                        <option value="<?php echo $camp['id'] ?>"><?php echo $camp['name'] ?></option>
+                        <option value="<?php echo $camp['campaign_id'] ?>"><?php echo $camp['campaign_name'] ?></option>
                     <?php } ?>
                 </optgroup>
             <?php } ?>
@@ -27,79 +28,80 @@
                 
                   <div class="form-group">
                 <label>Select the user</label><br>
-                <select id="slot-user-select" disabled class="selectpicker"><option value="">Select user</option>
+                <select name="user_id" id="slot-user-select" disabled class="selectpicker"><option value="">Select user</option>
                 </select>
                 </div>
                 
                  <div class="form-group">
-                <label>Select the slots available to this user on this campaign</label><br>
-                <select name="slots" disabled multiple class="selectpicker"><option value="">Select slots</option>
+                <label>Select the booking slots used by this attendee</label><br>
+                <select id="slot-select" disabled class="selectpicker"><option value="">Select slot group</option>
+                <?php foreach($options['slots'] as $row){ ?>
+					<option value="<?php echo $row['slot_group_id'] ?>"><?php echo $row['slot_group_name'] ?></option>
+					<?php } ?>
                 </select>
-                </div>            
-      </form>
+                </div>          
+     
       </div>
       </div>
       </div>
       </div>          
                  <div class="row">
         <div class="col-lg-12">
-       <div class="panel panel-primary" id="campaign-slots-panel">
-            <div class="panel-heading">Setup a users availability by day</div>
+       <div class="panel panel-primary" id="slot-day-panel">
+            <div class="panel-heading">Configure max appointments per slot for this user <span class="slot-rule-user"></span></div>
              <div class="panel-body">
-                <form>
-                  <div class="form-group">
-                <label>Select the campaign to configure slots on</label><br>
-                <select name="slot_campaign" class="selectpicker"><option value="">Select campaign</option>
-                </select>
-                </div>
-                
-                <div class="form-group">
-                <label>Select the user</label><br>
-                <select name="slot_user" class="selectpicker"><option value="">Select user</option>
-                </select>
-                </div>
-                
-               
-                </form>
+             <p>Select the user you want to configure using the options above</p>
             </div>
       </div>
       
       </div>
       </div>
-      
+      </form> 
       
            <div class="row">
-        <div class="col-lg-12">
-       <div class="panel panel-primary" id="campaign-slots-panel">
-            <div class="panel-heading">Setup a users availability by date <div class="pull-right"><button class="btn btn-default btn-xs">View all</button></div></div>
+        <div class="col-lg-6">
+       <div class="panel panel-primary" id="slot-date-panel">
+            <div class="panel-heading">View slot thresholds by date <span class="slot-rule-user"></span></div>
              <div class="panel-body">
-                <form>
-                  <div class="form-group">
-                <label>Select the campaign to configure slots on</label><br>
-                <select name="slot_campaign" class="selectpicker"><option value="">Select campaign</option>
-                </select>
-                </div>
-                
-                <div class="form-group">
-                <label>Select the user</label><br>
-                <select name="slot_user" class="selectpicker"><option value="">Select user</option>
-                </select>
-                </div>
-                 <div class="form-group">
-                <label>Select the date</label><br>
-                <input class="form-control datepicker" name="date" type="text"/>
-                </select>
-                </div>
-                
-                </form>
+             <p>Select the user you want to configure using the options above</p>
             </div>
       </div>
-      
+      </div>
+        <div class="col-lg-6">
+      <div class="panel panel-primary">
+            <div class="panel-heading">Create a new appointment threshold on a specified date </div>
+             <div class="panel-body">
+              <p id="date-slots-form-notice">Select the user you want to configure using the options above</p>
+
+            <form id="slot-date-form" style="display:none">
+            <p>Add new threshold for <b><span class="slot-rule-user"></span></b></p>
+            <div class="form-group col-sm-12">
+            <label>Slot</label><br />
+            <select name="slot_id[]"  multiple class="selectpicker" id="slot-date-rule-select"></select>
+            </div>
+            <div class="form-group col-sm-6">
+            <label>Date From</label><br />
+            <input type="text" id="date-from" name="date_from" class="form-control date" />
+            </div> 
+            <div class="form-group col-sm-6">
+            <label>Date To</label><br />
+            <input type="text" id="date-to" name="date_to" class="form-control date" />
+            </div> 
+             <div class="form-group col-sm-12">
+             <label>Maximum appointments allowed in this slot</label><br />
+            <input type="text" name="max_apps" class="form-control" />
+            </div> 
+             <div class="form-group col-sm-12">
+             <button class="btn btn-primary" id="add-date-rule">Add</button>
+             </div>
+            </form>
+            </div>
+      </div>
+
       </div>
       </div>
 <script>
 $(document).ready(function(){
-	alert("In progress");
 	admin.init();
 	admin.slots.init();
 });

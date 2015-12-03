@@ -1646,8 +1646,7 @@ if(!empty($record['client_ref'])){
             $add1 = trim(preg_replace('/[0-9]/', '', $row['add1']));
             $house_number = trim(preg_replace('/[a-zA-Z]/', '', $row['add1']));
         }
-        $data = array("UPRN Pre-fix" => "PR",
-            "Date of Enquiry" => date('Y-m-d') . "T12:00:00-0600");
+        $data = array("Date of Enquiry" => date('Y-m-d') . "T12:00:00-0600");
         $data['client_ref'] = $details['client_ref'];
         if (!empty($alt_mob)) {
             $data["Alternative Contact (Mobile)"] = $alt_mob;

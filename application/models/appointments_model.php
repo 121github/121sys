@@ -11,7 +11,11 @@ class Appointments_model extends CI_Model
         parent::__construct();
     }
 
-    public function slot_availability($campaign_id, $user_id = false, $postcode = false, $distance = false, $source = false, $app_type = false)
+	public function get_appointment_slot($user_id,$datetime){
+	//find the appointment slot number(s) that this falls into
+	}
+
+    public function slot_availability($campaign_id=false, $user_id = false, $postcode = false, $distance = false, $source = false, $app_type = false)
     {
         $days = array(1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday", 7 => "Sunday");
         $timeslots = array();
@@ -109,6 +113,13 @@ class Appointments_model extends CI_Model
 
         for ($i = 0; $i < 45; $i++) {
             $date = date("Y-m-d", strtotime('+' . $i . ' days'));
+			//insert the date into each slot -  this is used in the js to add data-date to the radio inputs in the slots so we can prepopulate the appointment form
+			foreach($thresholds as $d=>$s){
+				foreach($s as $k=>$v){
+			$thresholds[$d][$k]["sqldate"] =  $date;
+				}
+			}
+			//take each day and insert all the slot data
             $this_day = $thresholds[date("l", strtotime('+' . $i . ' days'))];
             if (array_key_exists($date, $defined_slots)) {
                 foreach ($this_day as $slot => $details) {
@@ -117,6 +128,7 @@ class Appointments_model extends CI_Model
                     }
                 }
             }
+			//now set the slots as 0 where a holiday exists on that day
             if (array_key_exists($date, $holidays)) {
 					if($holidays[$date]["slot"]=="0"){
                 foreach ($this_day as $slot => $details) {

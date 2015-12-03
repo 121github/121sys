@@ -274,7 +274,7 @@ class Records_model extends CI_Model
             $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $data_filter and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and (user_id = '$user_id') order by date_updated,dials";
             //next any other record with a nextcall date in order of lowest dials (any user)
             if (in_array("view unassigned", $_SESSION['permissions']) || in_array("search unassigned", $_SESSION['permissions'])) {
-                $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $data_filter and record_status = 1 and parked_code is null and progress_id is null and nextcall<now() and user_id is null order by date_updated,dials";
+                $priority[] = "select urn,user_id from records left join ownership using(urn) where 1 $data_filter and record_status = 1 and parked_code is null and progress_id is null and (nextcall<now() or nextcall is null) and user_id is null order by date_updated,dials";
             }
             foreach ($priority as $k => $qry) {
                 $query = $this->db->query($qry." limit 1");

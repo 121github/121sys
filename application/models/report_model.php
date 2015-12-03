@@ -620,4 +620,129 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
+	
+	  public function get_data_counts($options)
+    {
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $users = isset($options['agents']) ? $options['agents'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+
+        $where = "where 1 ";
+        if (!empty($date_from)) {
+            $where .= " and date(date_updated) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(date_updated) <= '$date_to' ";
+        }
+        if (!empty($campaigns)) {
+            $where .= " and records.campaign_id IN (".implode(",",$campaigns).") ";
+        }
+        if (!empty($outcomes)) {
+            $where .= " and records.outcome_id IN (".implode(",",$outcomes).") ";
+        }
+        if (!empty($users)) {
+            $where .= " and records.user_id IN (".implode(",",$users).") ";
+        }
+        if (!empty($teams)) {
+            $where .= " and teams.team_id IN (".implode(",",$teams).") ";
+        }
+        if (!empty($sources)) {
+            $where .= " and records.source_id IN (".implode(",",$sources).") ";
+        }
+        //if the user does not have the agent reporting permission they can only see their own stats
+        if (@!in_array("by agent", $_SESSION['permissions'])) {
+            $where .= " and ownership.user_id = '{$_SESSION['user_id']}' ";
+        }
+
+        //if the user does not have the group reporting permission they can only see their own stats
+        if (@!in_array("by group", $_SESSION['permissions'])) {
+            //$where .= " and history.group_id = '{$_SESSION['group']}' ";
+        }
+
+        //if the user does not have the group reporting permission they can only see their own stats
+        if (@!in_array("by team", $_SESSION['permissions'])) {
+            //this doesnt work because some people dont have a team such as clients
+            //$where .= " and history.team_id = '{$_SESSION['team']}' ";
+        }
+
+        $qry = "select campaign_name name,campaign_id id,tr,ta,tp,va,vp,wa,wp,fd,fc from 
+		(select campaign_id,count(distinct urn) tr from records left join ownership using(urn) left join users using(user_id) $where and campaign_id in({$_SESSION['campaign_access']['list']}) group by campaign_id) total_r join
+		(select campaign_id,count(distinct urn) ta from records left join ownership using(urn) left join users using(user_id) $where and record_status = 1 and parked_code is null group by campaign_id) total_a using(campaign_id) left join
+		(select campaign_id,count(distinct urn) tp from records left join ownership using(urn) left join users using(user_id) $where and record_status = 1 and parked_code is not null group by campaign_id) total_p using(campaign_id) left join
+		(select campaign_id,count(distinct urn) va from records left join ownership using(urn) left join users using(user_id) $where and (dials = 0) and record_status = 1 and parked_code is null group by campaign_id) virgin_a using(campaign_id) left join
+		(select campaign_id,count(distinct urn) vp from records left join ownership using(urn) left join users using(user_id) $where and (dials = 0) and record_status = 1 and parked_code is not null group by campaign_id) virgin_p using(campaign_id) left join
+		(select campaign_id,count(distinct urn) wa from records left join ownership using(urn) left join users using(user_id) $where and (dials > 0) and record_status = 1 and parked_code is null group by campaign_id) working_a using(campaign_id) left join
+		(select campaign_id,count(distinct urn) wp from records left join ownership using(urn) left join users using(user_id) $where and (dials > 0) and record_status = 1 and parked_code is not null group by campaign_id) working_p using(campaign_id) left join
+		(select campaign_id,count(distinct urn) fd from records left join ownership using(urn) left join users using(user_id) $where and record_status = 3 group by campaign_id) finished_d using(campaign_id) left join
+		(select campaign_id,count(distinct urn) fc from records left join ownership using(urn) left join users using(user_id) $where and record_status = 4 group by campaign_id) finished_c using(campaign_id) left join campaigns using(campaign_id)";
+        return $this->db->query($qry)->result_array();
+    }
+	
+	 public function get_data_counts_by_pot($options)
+    {
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $users = isset($options['agents']) ? $options['agents'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+		$campaign = isset($options['campaign']) ? $options['campaign'] : array();
+        $where = "where 1 ";
+        if (!empty($date_from)) {
+            $where .= " and date(date_updated) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(date_updated) <= '$date_to' ";
+        }
+        if (!empty($campaigns)) {
+            $where .= " and campaign_id IN (".implode(",",$campaigns).") ";
+        }
+		if (!empty($campaign)) {
+            $where .= " and campaign_id =  '".$campaign ."'";
+        }
+        if (!empty($outcomes)) {
+            $where .= " and outcome_id IN (".implode(",",$outcomes).") ";
+        }
+        if (!empty($users)) {
+            $where .= " and users.user_id IN (".implode(",",$users).") ";
+        }
+        if (!empty($teams)) {
+            $where .= " and users.team_id IN (".implode(",",$teams).") ";
+        }
+        if (!empty($sources)) {
+            $where .= " and source_id IN (".implode(",",$sources).") ";
+        }
+        //if the user does not have the agent reporting permission they can only see their own stats
+        if (@!in_array("by agent", $_SESSION['permissions'])) {
+            $where .= " and users.user_id = '{$_SESSION['user_id']}' ";
+        }
+
+        //if the user does not have the group reporting permission they can only see their own stats
+        if (@!in_array("by group", $_SESSION['permissions'])) {
+            //$where .= " and history.group_id = '{$_SESSION['group']}' ";
+        }
+
+        //if the user does not have the group reporting permission they can only see their own stats
+        if (@!in_array("by team", $_SESSION['permissions'])) {
+            //this doesnt work because some people dont have a team such as clients
+            //$where .= " and history.team_id = '{$_SESSION['team']}' ";
+        }
+
+        $qry = "select campaign_name,campaigns.campaign_id,pot_id id,pot_name name,tr,ta,tp,va,vp,wa,wp,fd,fc from 
+		(select pot_id,campaign_id,count(distinct urn) tr from records left join ownership using(urn) left join users using(user_id) $where and campaign_id in({$_SESSION['campaign_access']['list']}) group by pot_id) total_r join
+		(select pot_id,campaign_id,count(distinct urn) ta from records left join ownership using(urn) left join users using(user_id) $where and record_status = 1 and parked_code is null group by pot_id) total_a using(pot_id) left join
+		(select pot_id,campaign_id,count(distinct urn) tp from records left join ownership using(urn) left join users using(user_id) $where and record_status = 1 and parked_code is not null group by pot_id) total_p using(pot_id) left join
+		(select pot_id,campaign_id,count(distinct urn) va from records left join ownership using(urn) left join users using(user_id) $where and (dials = 0) and record_status = 1 and parked_code is null group by pot_id) virgin_a using(pot_id) left join
+		(select pot_id,campaign_id,count(distinct urn) vp from records left join ownership using(urn) left join users using(user_id) $where and (dials = 0) and record_status = 1 and parked_code is not null group by pot_id) virgin_p using(pot_id) left join
+		(select pot_id,campaign_id,count(distinct urn) wa from records left join ownership using(urn) left join users using(user_id) $where and (dials > 0) and record_status = 1 and parked_code is null group by pot_id) working_a using(pot_id) left join
+		(select pot_id,campaign_id,count(distinct urn) wp from records left join ownership using(urn) left join users using(user_id) $where and (dials > 0) and record_status = 1 and parked_code is not null group by pot_id) working_p using(pot_id) left join
+		(select pot_id,campaign_id,count(distinct urn) fd from records left join ownership using(urn) left join users using(user_id) $where and record_status = 3 group by pot_id) finished_d using(pot_id) left join
+		(select pot_id,campaign_id,count(distinct urn) fc from records left join ownership using(urn) left join users using(user_id) $where and record_status = 4 group by pot_id) finished_c using(pot_id) left join campaigns on campaigns.campaign_id = total_r.campaign_id left join data_pots using(pot_id)";
+        return $this->db->query($qry)->result_array();
+    }
 }

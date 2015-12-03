@@ -21,7 +21,18 @@ var admin = {
 	 slots: {
         //initalize the group specific buttons 
         init: function() {
-			
+			 admin.panel.on('change', '#slot-group-select', function() {
+                if($(this).val()=="other"){
+					$('#other-slot-group').show();
+					$('.save-btn').prop('disabled',true);
+				} else {
+				$('.save-btn').prop('disabled',false);
+				$('#other-slot-group').hide();
+				}
+            });
+			 admin.panel.on('click', '#add-slot-group', function() {
+				  admin.slots.add_slot_group();
+			 });
             admin.panel.on('click', '.add-btn', function() {
                 admin.slots.create();
             });
@@ -41,6 +52,24 @@ var admin = {
             //start the function to load the groups into the table
             admin.slots.load_slots();
         },
+		add_slot_group:function(){
+			 $.ajax({
+                url: helper.baseUrl + 'admin/add_slot_group',
+                type: "POST",
+                dataType: "JSON",
+				data:{name:$('#new-slot-group').val() }
+            }).done(function(response){
+				if(response.success){
+					$('#other-slot-group').hide();
+					$('#slot-group-select').prepend('<option value="'+response.id+'">'+response.name+'</option>').selectpicker('refresh').selectpicker('val',response.id);
+					$('.save-btn').prop('disabled',false);
+				} else {
+				flashalert.danger(response.error);	
+				}
+			}).fail(function(){
+				flashalert.danger("Slot group already exists with this name");	
+			});
+		},
         //this function reloads the groups into the table body
         load_slots: function() {
             $.ajax({
@@ -52,10 +81,10 @@ var admin = {
 				$('#table-container').html('<img src="'+helper.baseUrl+'assets/img/ajax-loader-bar.gif" />').show();	
 				}
             }).done(function(response) {
-				var table = '<table class="table"><thead><tr><th>ID</th><th>Name</th><th>Start</th><th>End</th><th>Description</th><th>Options</th></tr></thead><tbody>';
+				var table = '<table class="table"><thead><tr><th>Group</th><th>ID</th><th>Name</th><th>Start</th><th>End</th><th>Description</th><th>Options</th></tr></thead><tbody>';
 				if(response.length>0){
                 $.each(response, function(i, val) {
-                        table += "<tr><td>" + val.appointment_slot_id + "</td><td>" + val.slot_name + "</td><td>" + val.slot_start + "</td><td>" + val.slot_end + "</td><td>" + val.slot_description + "</td><td><button data-id='"+val.appointment_slot_id+"' class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn' data-id='" + val.appointment_slot_id + "'>Delete</button></td></tr>";
+                        table += "<tr><td>" + val.slot_group_name + "</td><td>" + val.appointment_slot_id + "</td><td>" + val.slot_name + "</td><td>" + val.slot_start + "</td><td>" + val.slot_end + "</td><td>" + val.slot_description + "</td><td><button data-id='"+val.appointment_slot_id+"' class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn' data-id='" + val.appointment_slot_id + "'>Delete</button></td></tr>";
                 });
 				 table += '</body></table>';
 				 $('#table-container').html(table);
@@ -78,6 +107,7 @@ var admin = {
 			$('#form-container').find('[name="slot_description"]').val(response.data.slot_description);	
 			$('#form-container').find('[name="slot_start"]').val(response.data.slot_start);	
 			$('#form-container').find('[name="slot_end"]').val(response.data.slot_end);	
+			$('#form-container').find('[name="slot_group_id"]').val(response.data.slode_group_id);	
 		
 			 $('#table-container').fadeOut(1000, function() {
                 $('#form-container').fadeIn();
@@ -86,6 +116,7 @@ var admin = {
         },
         //add a new group
         create: function() {
+			$('#form-container').find('[name="slot_group_id"]').val('');	
 			$('#form-container').find('[name="appointment_slot_id"]').val('');	
 			$('#form-container').find('[name="slot_name"]').val('');	
 			$('#form-container').find('[name="slot_description"]').val('');	

@@ -423,7 +423,8 @@ class Search extends CI_Controller
             "template-sms" => "template-sms",
             "start-date-appointment-from" => "start-date-appointment-from",
             "start-date-appointment-to" => "start-date-appointment-to",
-            "branch-region" => "branch-region"
+            "branch-region" => "branch-region",
+			"pot"=>"records.pot_id"
         );
         
         $search_fields_2 = array(
@@ -435,6 +436,7 @@ class Search extends CI_Controller
             "nextcall" => "records.nextcall",
             "progress" => "progress_description.description",
 			"contact-from" => "date(contact)",
+			"dials" => "dials",
 			"contact-to" => "date(contact)",
 			"contact" => "date(contact)",
 			"team" => "team_name",
@@ -445,6 +447,7 @@ class Search extends CI_Controller
 			"template" => "template",
 			"parked-code" => "parked_code",
             "parked" => "parked",
+			"pot"=>"records.pot_id",
             "postcode" => "postcode",
             "fullname" => "fullname",
             "coname" => "coname",

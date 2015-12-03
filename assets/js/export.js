@@ -2,8 +2,15 @@
 
 var export_data = {
     init: function() {
-
-
+/*table filter */
+  $(document).on('keyup','#filter',function () {
+            var rex = new RegExp($(this).val(), 'i');
+            $('.searchable tr').hide();
+            $('.searchable tr').filter(function () {
+                return rex.test($(this).text());
+            }).show();
+        })
+		
         $(document).on("click", ".campaign-available-filter", function(e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');

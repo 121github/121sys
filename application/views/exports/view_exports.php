@@ -103,6 +103,9 @@
                             </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body export-data">
+                                                        <div class="input-group"> <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> Filter</span>
+    <input id="filter" type="text" class="form-control" placeholder="Type here...">
+</div>
                                 <table class="table ajax-table">
                                     <thead>
                                         <tr>
@@ -113,7 +116,7 @@
                                             <th style="text-align: right">Options</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="searchable">
                                         <tr>
                                             <td colspan="3"><img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /></td>
                                         </tr>

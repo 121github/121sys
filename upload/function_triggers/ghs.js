@@ -29,9 +29,13 @@ init:function(){
 		 if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="68"){
 			//cumbria
 		$('#slot-attendee').val('178');	
-		} else {
+		} else if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="59"||$('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="41"){
 			//peterborough
 		$('#slot-attendee').val('121');	
+		} else if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="58"){
+			//manchester
+			$('#slot-attendee').val('179');	
+			
 		}
 	}
 
@@ -66,6 +70,8 @@ appointment_setup:function(){
 		$('.attendeepicker').selectpicker('val',[122]);
 		$('.typepicker').selectpicker('val',[3]);
 	}
+	var attendee = $('#slot-attendee').val();
+	campaign_functions.set_appointment_attendee(attendee);
 },
 set_appointment_attendee: function (attendee) {
         $('.attendeepicker').selectpicker('val', [attendee]);
