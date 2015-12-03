@@ -91,7 +91,7 @@ var data_counts = {
                 var $header = "";
                 var $header_extra = "";
                 var $colours = "";
-                $('.data-counts-panel').append('<p>Total Dials:' + response.total + '</p>');
+                $('.data-counts-panel').append('<p>Total Records: ' + response.total + '</p>');
 				//tr,ta,tp,va,vp,wa,wp,fd,fc
                 $header += '<table id="data-counts-table" class="table small table-striped"><thead><tr><th>Campaign</th><th>Total Records</th><th>Total Available</th><th>Total Parked</th><th>Virgin Available</th><th>Virgin Parked</th><th>Working Available</th><th>Working Parked</th><th>Dead</th><th>Complete</th>';
 

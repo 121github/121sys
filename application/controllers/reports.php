@@ -1223,7 +1223,6 @@ class Reports extends CI_Controller
                     $overall_array[$row['name']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
                 }
             }
-
             foreach ($results as $k => $row) {
                 $url = base_url() . "search/custom/records";
                 $url .= (!empty($campaigns) ? "/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
@@ -1233,7 +1232,7 @@ class Reports extends CI_Controller
                 $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
                 $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
 //tr,ta,tp,va,vp,wa,wp,fd,fc
-                $total = $row['tr'];
+                $total += $row['tr'];
                 $data = array(
                     "name" => $row['name'],
 					"id" => $row['id'],
@@ -1263,7 +1262,7 @@ class Reports extends CI_Controller
             echo json_encode(array(
                 "success" => true,
                 "data" => $data_array,
-                "total" => $total
+                "total" =>  number_format($total,0)
             ));
         }
     }
@@ -1308,7 +1307,7 @@ class Reports extends CI_Controller
                 $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
                 $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
 //tr,ta,tp,va,vp,wa,wp,fd,fc
-                $total = $row['tr'];
+                $total += $row['tr'];
                 $data = array(
                     "name" => $row['name'],
 					"id" => $row['id'],
@@ -1338,7 +1337,7 @@ class Reports extends CI_Controller
             echo json_encode(array(
                 "success" => true,
                 "data" => $data_array,
-                "total" => $total
+                "total" => number_format($total,0)
             ));
         }
     }
