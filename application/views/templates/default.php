@@ -112,9 +112,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <nav id="menu-right" class="mm-menu mm--horizontal mm-offcanvas">
         <div style="padding:30px 20px 3px">
             <form id="global-filter-form">
+            <div class="form-group">
                 <label>Data Pot <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
-                                      data-placement="right" data-title="A group of specific records within a campaign"
-                                      data-html="true"></span></label>
+                                      data-placement="right" data-title="A group of specific records within a campaign" data-html="true"></span></label>
                 <select name="data_pot" class="selectpicker" data-width="100%">
                     <option value="">-- Any data pot --</option>
                     <?php foreach ($campaign_pots as $campaign => $pot_data) { ?>
@@ -127,6 +127,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         </optgroup>
                     <?php } ?>
                 </select>
+                </div>
+                <div class="form-group">
                 <label>Data Source <span class="glyphicon glyphicon-info-sign pointer tt" data-toggle="tooltip"
                                          data-placement="right" data-title="The source of the data"
                                          data-html="true"></span></label>
@@ -142,7 +144,10 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                         </optgroup>
                     <?php } ?>
                 </select>
+                </div>
+                <div class="form-group">
                 <button id="global-filter-submit" class="btn btn-primary pull-right">Submit</button>
+                </div>
             </form>
         </div>
     </nav>
