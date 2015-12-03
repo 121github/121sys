@@ -37,11 +37,11 @@ class Appointments extends CI_Controller
 	$slot = $this->Appointments_model->get_slot_id('2015-11-30 09:00:00',157);
 	$this->firephp->log($slot);	
 	}
-
+//TODO - need to get the available attendees for a specified date
 	public function get_available_attendees(){
 		$urn = $this->input->post('urn');
 		$datetime = $this->input->post('datetime');
-		$campaign = $this->Record_model->get_campaign_from_urn($urn);
+		$campaign = $this->Records_model->get_campaign_from_urn($urn);
 		$user_slots=array();
 		//get the number of slots available per user by day
 		$day = date('l',strtotime($datetime));

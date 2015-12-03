@@ -34,9 +34,7 @@ class Appointments_model extends CI_Model
         $qry = "select appointment_slot_id,slot_name,slot_description,slot_start,slot_end,user_id, max_slots max_apps,`day` from appointment_slots join appointment_slot_assignment using(appointment_slot_id) where `day` is null  $where ";
         $max = array();
         $default = $this->db->query($qry)->result_array();
-        if (count($default) == "0") {
-            return array("error" => "The selected user does not have appointment slots configured");
-        }
+
         $thresholds = array();
 		 foreach ($days as $day_num => $day) {
             foreach ($default as $row) {
@@ -51,7 +49,6 @@ class Appointments_model extends CI_Model
         foreach ($days as $day_num => $day) {
             foreach ($default as $row) {
                 $daycheck = "select slot_assignment_id from appointment_slot_assignment where appointment_slot_id = " . $row['appointment_slot_id'] . " and user_id = " . $row['user_id'] . " and day = " . $day_num;
-
                 if (!$this->db->query($daycheck)->num_rows()) {
                     $timeslots[$row['appointment_slot_id']] = array("slot_name" => $row['slot_name'], "slot_description" => $row['slot_description'], "slot_start" => $row['slot_start'], "slot_end" => $row['slot_end'], "reason" => "");
                    
@@ -66,7 +63,9 @@ class Appointments_model extends CI_Model
                 }
             }
         }
-
+        if (count($thresholds) == "0") {
+            return array("error" => "The selected user does not have appointment slots configured");
+        }
 
         //get any user specified days
         $defined_slots = array();
@@ -143,6 +142,7 @@ class Appointments_model extends CI_Model
 
             $slots[date("D jS M y", strtotime('+' . $i . ' days'))] = $this_day;
         }
+		
         /* now get the appointments in each slot for each day and push them into the array */
 
         $join_locations = "";

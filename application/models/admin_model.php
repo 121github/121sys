@@ -15,10 +15,18 @@ class Admin_model extends CI_Model
         $this->db->where("user_id", $user_id);
         $this->db->delete("appointment_slot_assignment");
         $insert = array();
+		$default = array();
         foreach ($data as $date => $slots) {
             $day = date('N', strtotime($date));
             
             foreach ($slots as $slot_id => $max_apps) {
+				 $default[] = array(
+                    "user_id" => $user_id,
+                    "max_slots" => 0,
+                    "day" => NULL,
+                    "appointment_slot_id" => $slot_id
+                );
+				
                 $insert[] = array(
                     "user_id" => $user_id,
                     "max_slots" => $max_apps,
@@ -27,6 +35,7 @@ class Admin_model extends CI_Model
                 );
             }
         }
+		$this->db->insert_batch("appointment_slot_assignment", $default);
         $this->db->insert_batch("appointment_slot_assignment", $insert);
         
     }
