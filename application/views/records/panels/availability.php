@@ -7,8 +7,8 @@
     <input type="hidden" id="slot-distance" name="distance" value="" />
       <input type="hidden" id="slot-attendee"  name="attendee" value="" />
           <input type="hidden" id="app-type" value="" />
-          <div class="input-group"  style="width:280px">
-            <!--<div class="input-group-btn">
+            <!--<div class="input-group"  style="width:280px">
+          <div class="input-group-btn">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span id="slot-type-text">Type</span> <span class="caret"></span></button>
         <ul class="dropdown-menu pull-right" role="menu">
          <?php foreach($types as $type): ?>
@@ -19,7 +19,7 @@
         </ul>
       </div>-->
           
-          
+          <!--
              <div class="input-group-btn">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="slot-distance-text">Distance</span> <span class="caret"></span></button>
         <ul class="dropdown-menu">
@@ -36,10 +36,11 @@
           <li><a class="filter" data-ref="distance" href="#" style="color: green;">Any Distance</a></li>
         </ul>
       </div>
+    >
     <input class="form-control input-xs" style="min-width:100px;margin-top:2px" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
-
+  -->
       <div class="input-group-btn">
-        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span> <span id="slot-attendee-text">Filter</span> </button>
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span> <span id="slot-attendee-text">Attendee</span> </button>
         <ul class="dropdown-menu pull-right" role="menu">
          <?php foreach($attendees as $attendee): ?>
           <li><a href="#" class="filter" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><?php echo $attendee['name'] ?></a> </li>
@@ -48,11 +49,11 @@
           <li><a class="filter" ref="#" style="color: green;" data-ref="attendee">Show all</a> </li>
         </ul>
       </div>
-    </div>
+
      </form>
     </div>
   </div>
-  <div class="panel-body" id="slots-panel"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
+  <div class="panel-body" id="slots-panel"><p>Please choose an attendee to view their availability</p></div>
 </div>
 <script type="text/javascript">
 $(document).on('blur','#slot-postcode',function(){

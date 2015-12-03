@@ -203,8 +203,8 @@ class Appointments_model extends CI_Model
                 $i++;
             }
         }
-
-        return array("timeslots" => $timeslots, "apps" => $slots);
+		$name = $this->db->where("user_id",$user_id)->get("users")->row()->name;
+        return array("timeslots" => $timeslots, "apps" => $slots,"name"=>$name);
 
 
     }

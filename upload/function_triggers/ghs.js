@@ -14,7 +14,6 @@ init:function(){
 						})
 	$('#save-sticky').hide();
 	$('#sticky-notes').addClass('red').prop('readonly',true);
-
 	if($('#slot-pot-id').val()=="51"||$('#slot-pot-id').val()=="52"){
 		$('#slot-attendee').val('139');
 	} else if ($('#slot-pot-id').val()=="34"||$('#slot-pot-id').val()=="35"||$('#slot-pot-id').val()=="37"||$('#slot-pot-id').val()=="38"){
@@ -35,10 +34,9 @@ init:function(){
 		} else if($('#slot-pot-id').val()=="41"&&$('#slot-source-id').val()=="58"){
 			//manchester
 			$('#slot-attendee').val('179');	
-			
 		}
 	}
-
+record.appointment_slots_panel.load_panel();
 
 },
 appointment_setup:function(){

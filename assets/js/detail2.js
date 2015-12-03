@@ -1505,7 +1505,7 @@ var record = {
     },
     appointment_slots_panel: {
         init: function () {
-            record.appointment_slots_panel.load_panel();
+            //record.appointment_slots_panel.load_panel();
         },
         load_panel: function () {
             $.ajax({
@@ -1524,6 +1524,7 @@ var record = {
 			}).done(function (response) {
                 $('#slots-panel').empty();
                 if (response.success) {
+					var title = "<p>Showing "+response.data.name+" availability</p>";
 					var slots = "";
 					 $.each(response.data.timeslots,function(slot_id, slot){
 						slots += '<th><span class="glyphicon glyphicon-info-sign tt" data-toggle="tooltip" data-placement="right" title="'+slot.slot_description+'" ></span> '+slot.slot_name+'</th>'
@@ -1551,7 +1552,7 @@ var record = {
                         table += '<tr>'+day_row+'</tr>'
                     });
                     table += '</tbody></table></div>';
-                    $('#slots-panel').html(table);
+                    $('#slots-panel').html(title+table);
                 } else {
                     $('#slots-panel').html(response.error);
                 }
