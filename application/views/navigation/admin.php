@@ -205,6 +205,19 @@
                                         </ul>
                                     </li>
                                 <?php } ?>
+                                
+                                                                <?php if (in_array("slot config", $_SESSION['permissions'])) { ?>
+                                    <li>
+                                        <a href="#mm-slots">Appointment Config</a>
+                                        <ul id="mm-slots">
+                                            <li <?php echo @($page == 'slots' ? "class='Selected'" : "") ?>><a
+                                                    href="<?php echo base_url() ?>admin/slots">Slot setup</a></li>
+                                            <li <?php echo @($page == 'availability' ? "class='Selected'" : "") ?>><a
+                                                    href="<?php echo base_url() ?>admin/availability">Availabilty</a></li>
+                                        </ul>
+                                    </li>
+                                <?php } ?>
+                                
                                  <?php if (in_array("admin shop", $_SESSION['permissions'])) { ?>
                                 <?php $this->view('navigation/shop.php'); ?>
                                 <?php } ?>
