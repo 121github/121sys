@@ -516,8 +516,10 @@ class Sms_model extends CI_Model
                   c.fullname as contact,
                   r.urn,
                   a.start,
+				  uat.name as attendee,
                   DATE_FORMAT(start,'%d/%m/%Y') as appointment_date,
                   if(time(start)<'12:30:00','08:30 and 12:30','12:30 and 20:00') time_slot,
+				  if(time(start)<'12:30:00','am','pm') ampm,
                   telephone_number as sms_number,
                   template_id,
                   t.template_text as sms_text,
@@ -536,7 +538,7 @@ class Sms_model extends CI_Model
                     and template_id = ".$template_id."
                     " . $where_app_type . "
                     and a.status = 1
-                    and date(start) BETWEEN (CURDATE() + INTERVAL 1 DAY) AND (CURDATE() + INTERVAL 2 DAY)
+                    and date(start) = (CURDATE() + INTERVAL 1 DAY)
                     and r.source_id NOT IN (28, 41, 49)";
 
         $result = $this->db->query($qry)->result_array();
