@@ -982,6 +982,7 @@ class Records_model extends CI_Model
     //updates a record
     public function update_record($post)
     {
+		
         //if no nextcall is set then we just use the current timestamp else we convert the uk date to mysql
         if (empty($post['nextcall']) || !isset($post['nextcall'])) {
             $post['nextcall'] = date('Y-m-d H:i:s');

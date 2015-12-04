@@ -1505,7 +1505,6 @@ var record = {
     },
     appointment_slots_panel: {
         init: function () {
-			
         },
 		find_closest_attendee:function(){
 			if($('#slot-closest').val()!==""){

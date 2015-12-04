@@ -624,9 +624,17 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $last_survey_id    = false;
             $campaign_id       = $this->Records_model->get_campaign_from_urn($update_array['urn']);
             $original_nextcall = $update_array['original_nextcall'];
+			$token = md5(serialize($update_array));
             unset($update_array['original_nextcall']);
             //by default we add an entry to the history table unless the outcome has a no_history flag in the outcomes table, in which case we dont want to add an entry
             $no_history = false;
+			if(isset($_SESSION['token'])){
+			if($_SESSION['token']==$token){
+				//if the post data is identical to the previous post then exit because its a dupe
+				exit;
+			}
+			}
+			$_SESSION['token']=$token;
             if (!$this->input->post('pending_manager')) {
                 $update_array['pending_manager'] = "";
             }
