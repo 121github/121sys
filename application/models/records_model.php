@@ -909,8 +909,8 @@ class Records_model extends CI_Model
 		$attendees[$k]['distance'] = number_format($distance_between,1);
 		}
 		}
-		}
 		usort($attendees,'arraySort');
+		}
 		return $attendees;
     }
 

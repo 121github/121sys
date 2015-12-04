@@ -19,7 +19,7 @@ class Admin extends CI_Controller
     }
     public function save_day_slots()
     {
-        check_page_permissions('campaign setup');
+        check_page_permissions('slot_config');
         $this->Admin_model->save_day_slots($this->input->post());
         echo json_encode(array(
             "success" => true
@@ -28,7 +28,7 @@ class Admin extends CI_Controller
     
     public function delete_date_slots()
     {
-        check_page_permissions('campaign setup');
+        check_page_permissions('slot_config');
         $this->Admin_model->delete_date_slots($this->input->post('id'));
         echo json_encode(array(
             "success" => true
@@ -37,7 +37,7 @@ class Admin extends CI_Controller
     
     public function save_date_slots()
     {
-        check_page_permissions('campaign setup');
+        check_page_permissions('slot_config');
 		$max_apps = $this->input->post('max_apps');
 		$date_to = to_mysql_datetime($this->input->post('date_to'));
 		$date_from = to_mysql_datetime($this->input->post('date_from'));
@@ -91,6 +91,7 @@ class Admin extends CI_Controller
     }
     public function save_slot()
     {
+		check_page_permissions('slot_config');
         if ($this->Admin_model->save_slot($this->input->post())) {
             echo json_encode(array(
                 "success" => true
@@ -100,6 +101,7 @@ class Admin extends CI_Controller
     
     public function delete_slot()
     {
+		check_page_permissions('slot_config');
         if ($this->Admin_model->delete_slot($this->input->post('id'))) {
             echo json_encode(array(
                 "success" => true
@@ -107,6 +109,7 @@ class Admin extends CI_Controller
         }
     }
     public function add_slot_group(){
+		check_page_permissions('slot_config');
 		$new_id = $this->Admin_model->add_slot_group($this->input->post('name'));
 		  if ($new_id) {
             echo json_encode(array(

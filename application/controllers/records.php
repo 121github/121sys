@@ -1237,10 +1237,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $urnsShown = array_pop($urnList);
 
             $visible_columns = $this->Datatables_model->get_visible_columns(1);
-
-
-
-            $this->firephp->log($visible_columns);
+            //$this->firephp->log($visible_columns);
 
             echo json_encode(array(
                 "success" => true,
