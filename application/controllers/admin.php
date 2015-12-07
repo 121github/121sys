@@ -887,7 +887,7 @@ class Admin extends CI_Controller
         $roles            = $this->Admin_model->get_roles();
         $permissions_data = $this->Admin_model->get_permissions();
         foreach ($permissions_data as $row) {
-            $permissions[$row['permission_group']][$row['permission_id']] = $row['permission_name'];
+            $permissions[$row['permission_group']][$row['permission_id']] = array("name"=>$row['permission_name'],"description"=>$row['description']);
         }
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -940,7 +940,7 @@ class Admin extends CI_Controller
         $campaigns        = $this->Form_model->get_campaigns();
         $permissions_data = $this->Admin_model->get_permissions();
         foreach ($permissions_data as $row) {
-            $permissions[$row['permission_group']][$row['permission_id']] = $row['permission_name'];
+            $permissions[$row['permission_group']][$row['permission_id']] = array("name"=>$row['permission_name'],"description"=>$row['description']);
         }
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -1136,7 +1136,25 @@ class Admin extends CI_Controller
                 //unset($form[$k]);
             }
         }
-        
+        if(empty($form['name'])){
+			echo json_encode(array("success"=>false,"error"=>"Please enter the name"));
+			exit;
+		}
+		if(empty($form['username'])){
+			echo json_encode(array("success"=>false,"error"=>"Please enter a username"));
+			exit;
+		}
+		 if(empty($form['name'])){
+			echo json_encode(array("success"=>false,"error"=>"Please enter the name"));
+			exit;
+		}
+		if(empty($form['role_id'])){
+			echo json_encode(array("success"=>false,"error"=>"Please set the user role"));
+			exit;
+		}
+		if(empty($form['user_status'])){
+			$form['user_status'] = 1;
+		}
         if (empty($form['user_id'])) {
             $user_id = $this->Admin_model->add_new_user($form);
             $this->load->model('Datatables_model');

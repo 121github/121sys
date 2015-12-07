@@ -402,4 +402,4 @@ $config['email'] = array(
 |
 |
 */
-$config['project_version'] = '1.5.5';
+$config['project_version'] = '1.5.6';

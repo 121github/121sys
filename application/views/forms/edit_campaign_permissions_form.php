@@ -6,7 +6,7 @@
     <?php foreach($group_permissions as $id=>$name){ ?>
     <div class="checkbox-group" style="display:inline-block; width:170px">
     <input id="pm_<?php echo $id ?>" type="hidden" name="permission[<?php echo $id ?>]" />
-    <input id="cb_<?php echo $id ?>" type="checkbox" ><label class="cbx-label"><?php echo $name ?></label></div ><?php } ?>
+    <input id="cb_<?php echo $id ?>" type="checkbox" ><label class="cbx-label"><span data-toggle="tooltip" class="tt" title="<?php echo $name['description'] ?>"><?php echo $name['name'] ?></span></label></div ><?php } ?>
 </span>
 <div class="clearfix"></div>
     </li>

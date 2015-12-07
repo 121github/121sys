@@ -79,7 +79,7 @@ var admin = {
         create: function() {
             $('form').trigger('reset');
             $('form').find('input[type="hidden"]').val('');
-
+			$('form').find('select').selectpicker('val','');
             $('.ajax-table').fadeOut(1000, function() {
                 $('form').fadeIn();
             });
@@ -92,9 +92,13 @@ var admin = {
                 dataType: "JSON",
                 data: $btn.closest('form').serialize()
             }).done(function(response) {
+				if(response.success){
                 admin.users.load_users();
                 admin.hide_edit_form();
                 flashalert.success("User saved");
+				} else {
+				flashalert.warning(response.error);	
+				}
             });
         },
         remove: function(id) {

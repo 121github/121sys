@@ -1,7 +1,7 @@
 
     <div class="row">
       <div class="col-lg-12">
-        <h1 class="page-header">Campaign Permissions <small>Override role permissions for a campaign</small></h1>
+        <h1 class="page-header">Campaign Permissions <small>Override role permissions for a campaign</small> <a href="<?php echo base_url() ?>admin/roles" class="btn btn-default pull-right">Role Permissions</a></h1>
       </div>
       <!-- /.col-lg-12 --> 
     </div>
@@ -9,7 +9,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="panel panel-primary" id="campaign-permissions-panel">
-          <div class="panel-heading">Campaign Permissions
+          <div class="panel-heading">Campaign Permissions 
           </div>
           <!-- /.panel-heading -->
           <div class="panel-body campaign-permissions-data">

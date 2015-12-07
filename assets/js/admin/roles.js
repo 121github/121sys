@@ -5,12 +5,12 @@ var admin = {
             e.preventDefault();
             admin.hide_edit_form();
         });
-
     },
 	    hide_edit_form: function() {
         $('form').fadeOut(1000, function() {
             $('.ajax-table').fadeIn();
         });
+		$('.tt').tooltip();
     },
 	roles: {
         //initalize the role specific buttons 
