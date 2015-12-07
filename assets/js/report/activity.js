@@ -85,7 +85,7 @@ var activity = {
                 var $header = "";
                 var $header_extra = "";
                 var $colours = "";
-                $('.activity-panel').append('<p>Total Dials:' + response.total + '</p>');
+                $('.activity-panel').append('<p>Total Dials:<a href="'+response.total_url+'">' + response.total + '</a></p>');
                 $header += '<table class="table actvity-table"><thead><tr><th>Outcome</th><th>Count</th>';
                 var $colname = '<th>Call center %</th>';
                 $.each(response.data, function (i, val) {

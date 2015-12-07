@@ -312,16 +312,15 @@ class Reports extends CI_Controller
                     $overall_array[$row['outcome']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
                 }
             }
-
-            foreach ($results as $k => $row) {
-                $url = base_url() . "search/custom/history";
-                $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
+			 $url = base_url() . "search/custom/history";
+			 $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
                 $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
                 $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
                 $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
                 $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
                 $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
-
+				$total_url = $url;
+            foreach ($results as $k => $row) {
                 $total = $row['total'];
                 $pc = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
                 $data = array(
@@ -340,7 +339,8 @@ class Reports extends CI_Controller
             echo json_encode(array(
                 "success" => true,
                 "data" => $data_array,
-                "total" => $total
+                "total" => $total,
+				  "total_url" => $total_url
             ));
         }
     }
