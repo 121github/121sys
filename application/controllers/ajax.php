@@ -10,7 +10,6 @@ class Ajax extends CI_Controller
         parent::__construct();
         user_auth_check();
         $this->_campaigns = campaign_access_dropdown();
-
         $this->load->model('Company_model');
         $this->load->model('Contacts_model');
         $this->load->model('Records_model');
@@ -22,6 +21,13 @@ class Ajax extends CI_Controller
         $this->load->helper('misc');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
+	public function change_theme(){
+	if($this->input->post('theme')){
+	$_SESSION['theme_color']=$this->input->post('theme');
+	$this->db->where("user_id",$_SESSION['user_id']);
+	$this->db->update("users",array("theme_color"=>$this->input->post('theme')));
+	}
+	}
 
 	public function suppress_by_urn(){
 		if ($this->input->is_ajax_request()) {

@@ -121,10 +121,16 @@ class User_model extends CI_Model
         $_SESSION['email'] = $result['user_email'];
         $_SESSION['ext']   = $result['ext'];
         $_SESSION['team']  = $result['team_id'];
-        $theme_folder      = $this->db->query("select theme_folder from user_groups where group_id = '" . $_SESSION['group'] . "'")->row()->theme_folder;
+        $theme      = $this->db->query("select theme_images,theme_color from user_groups where group_id = '" . $_SESSION['group'] . "'")->row();
         if (!empty($theme_folder)) {
-            $_SESSION['theme_folder'] = $theme_folder;
+            $_SESSION['theme_images'] = $theme->theme_images;
+			$_SESSION['theme_color'] = $theme->theme_color;
         }
+		//check if the user has picked a color and override the default
+		$user_color      = $this->db->query("select theme_color from users where user_id = '" . $_SESSION['user_id'] . "' and theme_color <> ''");
+		if($user_color->num_rows()){
+		$_SESSION['theme_color'] = $user_color->row()->theme_color;	
+		}
         
         $this->set_permissions();
         

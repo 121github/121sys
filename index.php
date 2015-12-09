@@ -125,8 +125,9 @@ session_name($session_name);
 session_start();
 $_SESSION['session_name'] = session_name();
 $_SESSION['environment'] = ENVIRONMENT;
-if(!isset($_SESSION['theme_folder'])){
-$_SESSION['theme_folder'] = $theme;
+if(!isset($_SESSION['theme_color'])){
+$_SESSION['theme_images'] = $theme;
+$_SESSION['theme_color'] = $theme;
 }
 if(!isset($_SESSION['timeout'])){
 $_SESSION['timeout'] = $timeout;

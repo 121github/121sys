@@ -124,7 +124,7 @@ class Admin_model extends CI_Model
     
     public function get_slots_in_group($group_id)
     {
-        $qry = "select appointment_slot_id,slot_name,slot_start,slot_end from appointment_slots left join appointment_slot_assignment asa using(appointment_slot_id) where slot_group_id = '$group_id' group by appointment_slot_id";
+        $qry = "select appointment_slot_id,slot_name,slot_start,slot_end,slot_description from appointment_slots left join appointment_slot_assignment asa using(appointment_slot_id) where slot_group_id = '$group_id' group by appointment_slot_id";
         return $this->db->query($qry)->result_array();
     }
     

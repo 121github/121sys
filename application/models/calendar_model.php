@@ -137,41 +137,56 @@ class Calendar_model extends CI_Model
     /**
      * Get appointment rules
      */
-    public function get_appointment_rules() {
+    public function get_appointment_rules($distinct_user=false) {
         $qry = "select appointment_rules_id, reason_id, block_day, other_reason, users.name, reason
                 from appointment_rules
-                inner join appointment_rule_reasons using (reason_id)
-                inner join users using (user_id)";
-
+                join appointment_rule_reasons using (reason_id)
+                join users using (user_id) join users_to_campaigns using(user_id)
+                where campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		if($distinct_user){
+		$qry .= " group by block_day,user_id";	
+		}
         return $this->db->query($qry)->result_array();
     }
 
     /**
      * Get appointment rules by date
      */
-    public function get_appointment_rules_by_date($block_day) {
-        $qry = "select appointment_rules_id, reason_id, block_day, other_reason, users.name, reason, appointment_slot_id, CONCAT(slot_name,' (',TIME_FORMAT(slot_start, '%H:%i'),'-',TIME_FORMAT(slot_end, '%H:%i'),')') as slot_name
+    public function get_appointment_rules_by_date($block_day=false) {
+        $qry = "select appointment_rules_id, reason_id, date_format(block_day,'%d/%m/%Y') uk_date,block_day, other_reason, users.name, reason, appointment_slot_id, CONCAT(slot_name,' (',TIME_FORMAT(slot_start, '%H:%i'),'-',TIME_FORMAT(slot_end, '%H:%i'),')') as slot_name
                 from appointment_rules
                 inner join appointment_rule_reasons using (reason_id)
                 inner join users using (user_id)
                 left join appointment_slots using (appointment_slot_id)
-                where block_day = '".$block_day."'";
-
+				join users_to_campaigns using(user_id)
+                where campaign_id in({$_SESSION['campaign_access']['list']}) and block_day>=curdate() ";
+				if($block_day){
+				$qry .= " and block_day = '" . $block_day . "'"; 
+				}
+				$qry .= " order by block_day";
+				$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 
     /**
      * Get appointment rules by date
      */
-    public function get_appointment_rules_by_date_and_user($block_day, $user_id)
+    public function get_appointment_rules_by_date_and_user($block_day=false, $user_id=false)
     {
-        $qry = "select appointment_rules_id, reason_id, block_day, other_reason, users.name, reason, appointment_slot_id, CONCAT(slot_name,' (',TIME_FORMAT(slot_start, '%H:%i'),'-',TIME_FORMAT(slot_end, '%H:%i'),')') as slot_name
+        $qry = "select appointment_rules_id, reason_id, date_format(block_day,'%d/%m/%Y') uk_date,block_day, other_reason, users.name, reason, appointment_slot_id, CONCAT(slot_name,' (',TIME_FORMAT(slot_start, '%H:%i'),'-',TIME_FORMAT(slot_end, '%H:%i'),')') as slot_name
                 from appointment_rules
                 inner join appointment_rule_reasons using (reason_id)
                 inner join users using (user_id)
                 left join appointment_slots using (appointment_slot_id)
-                where block_day = '" . $block_day . "' and user_id = " . $user_id;
-
+				join users_to_campaigns using(user_id) where campaign_id in({$_SESSION['campaign_access']['list']})
+                and block_day>=curdate()";
+				if($block_day){
+				$qry .= " and block_day = '" . $block_day . "'"; 
+				}
+				if($user_id){
+				$qry .= " and user_id = '" . $user_id . "'";
+				}
+				$qry .= " order by block_day,slot_start";
         return $this->db->query($qry)->result_array();
     }
 

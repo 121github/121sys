@@ -13,6 +13,12 @@
                             array_push($options,'<li><a href="#" class="group-filter" id="export-appointment-btn">Export appointments</a></li>');
                         }
                     ?>
+                     <div class="btn-group">
+                     <button id="set-rules" type="button" class="btn btn-default btn-xs">
+                                <span class="glyphicon glyphicon-user"></span> Set Rules
+                            </button>
+                     </div>
+                    
                     <?php if (!empty($options)): ?>
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">

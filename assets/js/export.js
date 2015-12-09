@@ -67,6 +67,15 @@ var export_data = {
             $(this).closest('ul').find('a').css("color", "black");
             $(this).css("color", "green");
         });
+		 $(document).on("click", ".pot-filter", function (e) {
+            e.preventDefault();
+            $icon = $(this).closest('ul').prev('button').find('span');
+            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
+            $('.filter-form').find('input[name="pot"]').val($(this).attr('id'));
+            $('.filter-form').find('input[name="pot_name"]').val(($(this).html()));
+            $(this).closest('ul').find('a').css("color", "black");
+            $(this).css("color", "green");
+        });
 
         $(document).on("click", '.new-export-btn', function(e) {
             e.preventDefault();
@@ -137,6 +146,7 @@ var export_data = {
                                 + "<span class='date_filter' style='display: none'>"+(val.date_filter?val.date_filter:'')+"</span>"
                                 + "<span class='campaign_filter' style='display: none'>"+(val.campaign_filter?val.campaign_filter:'')+"</span>"
                             + "<span class='source_filter' style='display: none'>" + (val.source_filter ? val.source_filter : '') + "</span>"
+							  + "<span class='pot_filter' style='display: none'>" + (val.pot_filter ? val.pot_filter : '') + "</span>"
                             + "</td><td class='name'>"
                             + val.name
                             + "</td><td class='description'>"
@@ -184,6 +194,7 @@ var export_data = {
         var date_filter = row.find('.date_filter').text();
         var campaign_filter = row.find('.campaign_filter').text();
         var source_filter = row.find('.source_filter').text();
+		 var pot_filter = row.find('.pot_filter').text();
 
         $('.edit-export-form').find('input[name="export_forms_id"]').val(export_forms_id);
         $('.edit-export-form').find('input[name="name"]').val(name);
@@ -195,7 +206,7 @@ var export_data = {
         $('.edit-export-form').find('input[name="date_filter"]').val(date_filter);
         $('.edit-export-form').find('input[name="campaign_filter"]').val(campaign_filter);
         $('.edit-export-form').find('input[name="source_filter"]').val(source_filter);
-
+ $('.edit-export-form').find('input[name="pot_filter"]').val(pot_filter);
 
         $.ajax({
             url: helper.baseUrl + 'exports/get_export_users',
@@ -279,15 +290,13 @@ var export_data = {
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function(response) {
-            if (response.header) {
-                $.each(response.header, function(i, val) {
+            if (response.success&&response.header) {
+				  $.each(response.header, function(i, val) {
                     if (response.header.length) {
                         $thead
                             .append("<th style='padding: 5px;'>"+val+"</th>");
                     }
                 });
-            }
-            if (response.success) {
                 $.each(response.data, function(i, data) {
                     if (response.data.length) {
                         $tbody
@@ -299,13 +308,16 @@ var export_data = {
                         $tbody
                             .append("</tr>");
                     }
-                });
+                })
             }
             else {
                 $tbody
-                    .append("<tr><td>"+data+"</td></tr>");
+                    .append("<tr><td>"+response.data+"</td></tr>");
             }
-        });
+        }).fail(function(){
+					 $tbody.append("<tr><td>There is something wrong with export</td></tr>");
+					
+				});
 
         export_data.show_export_report(export_forms_id, name);
     },

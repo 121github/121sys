@@ -702,6 +702,8 @@ public function check_darlington(){
             WHERE campaign_id =29
             and postcode like 'PE%'");
 			
+			$this->db->query("update records join campaigns using(campaign_id) join contacts using(records) join contact_telephone using(contact_id) set parked_code=2 where client_id = 12 and (telephone_number is null or telephone_number='')");
+			
     }
 
 
@@ -1756,5 +1758,67 @@ HAVING count( concat( $fields ) ) >1";
         }
     }
 
-
+public function update_contact_names(){
+	//get all contacts without phone numbers or with no names
+	$qry = "SELECT urn,client_ref,contact_id
+FROM client_refs
+JOIN records
+USING ( urn )
+JOIN campaigns
+USING ( campaign_id )
+LEFT JOIN contacts
+USING ( urn )
+WHERE fullname = ''
+and client_id = 12
+";
+	
+	//loop through each record and get the updated trackvia info
+	foreach($this->db->query($qry)->result_array() as $row){
+			if(!in_array($row['urn'],$_SESSION['checked_names'])){
+		$response = $this->tv->getRecord($row['client_ref']);
+		$fields = $response['fields'];
+		$name = addslashes($fields['Owner / Tenant Name 1']);
+		if(!empty($name)){
+		$this->db->where("contact_id",$row['contact_id']);
+		$this->db->update("contacts",array("fullname"=>$name));
+		}
+		$_SESSON['checked_names'][]=$row['urn'];
+			}
+			
+	}
 }
+
+public function update_contact_telephone(){
+	//get all contacts without phone numbers or with no names
+	$qry = "SELECT urn,client_ref,contact_id
+FROM client_refs
+JOIN records
+USING ( urn )
+JOIN campaigns
+USING ( campaign_id )
+LEFT JOIN contacts
+USING ( urn )
+left join contact_telephone ct using(contact_id)
+where client_id = 12 group by ct.contact_id having count(ct.contact_id) = 1 limit 100
+";
+	
+	//loop through each record and get the updated trackvia info
+	foreach($this->db->query($qry)->result_array() as $row){
+		
+		if(!in_array($row['urn'],$_SESSION['checked_nums'])){
+		$response = $this->tv->getRecord($row['client_ref']);
+		$fields = $response['fields'];
+		$landline = preg_replace("/[^0-9]/", "", $fields['Primary Contact (Landline)']);
+		$mobile = preg_replace("/[^0-9]/", "", $fields['Primary Contact (Mobile)']);
+		if(!empty($landline)){
+		$this->db->insert("contact_telephone",array("contact_id"=>$row['contact_id'],"telephone_number"=>$landline,"description"=>"Landline"));
+		}
+			if(!empty($mobile)){
+		$this->db->insert("contact_telephone",array("contact_id"=>$row['contact_id'],"telephone_number"=>$mobile,"description"=>"Mobile"));
+		}
+		$_SESSON['checked_nums'][]=$row['urn'];
+		}
+	}
+}
+}
+

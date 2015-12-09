@@ -70,6 +70,8 @@
                                         <input type="hidden" name="campaign_name">
                                         <input type="hidden" name="source">
                                         <input type="hidden" name="source_name">
+                                          <input type="hidden" name="pot">
+                                        <input type="hidden" name="pot_name">
                                         <input type="hidden" name="export_forms_id">
 
                                         <button type="button" class="daterange btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span> <span class="date-text"> <?php echo "2nd Jul - Today"; ?> </span></button>
@@ -96,6 +98,21 @@
                                             <?php endforeach ?>
                                             <li class="divider"></li>
                                             <li><a class="source-filter" ref="#" style="color: green;">All Sources</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                       <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span>
+                                            Data Pot
+                                        </button>
+                                        <ul class="dropdown-menu pull-right" role="menu">
+                                            <?php foreach ($pots as $row): ?>
+                                                <li><a href="#" class="pot-filter"
+                                                       id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a></li>
+                                            <?php endforeach ?>
+                                            <li class="divider"></li>
+                                            <li><a class="pot-filter" ref="#" style="color: green;">All Pots</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -204,29 +221,38 @@
                                 </div>
                                 <div style="border-bottom: 1px solid grey; margin-bottom: 20px; font-weight: bold">FITLERS</div>
                                 <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="btn-group">
+                                    <div class="col-lg-3">
+                                  
                                             <div class="form-group input-group-sm">
                                                 <p>Date Filter</p>
                                                 <input type="text" class="form-control" name="date_filter" placeholder="Enter the field if you need to filter by date" />
                                             </div>
-                                        </div>
+                                   
                                     </div>
-                                    <div class="col-lg-4">
-                                        <div class="btn-group">
+                                    <div class="col-lg-3">
+                                      
                                             <div class="form-group input-group-sm">
                                                 <p>Campaign Filter</p>
-                                                <input type="text" class="form-control" name="campaign_filter" placeholder="Enter the field if you need to filter by campaign" />
-                                            </div>
+                                                <input type="text" class="form-control" name="campaign_filter" placeholder="Enter the field if you need to filter by campaign. Eg. campaign_id" />
+                                         
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
-                                        <div class="btn-group">
+                                    <div class="col-lg-3">
+                
                                             <div class="form-group input-group-sm">
                                                 <p>Source Filter</p>
                                                 <input type="text" class="form-control" name="source_filter"
-                                                       placeholder="Enter the field if you need to filter by source"/>
-                                            </div>
+                                                       placeholder="Enter the field if you need to filter by source. Eg. source_id"/>
+             
+                                        </div>
+                                    </div>
+                                     <div class="col-lg-3">
+   
+                                            <div class="form-group input-group-sm">
+                                                <p>Pot Filter</p>
+                                                <input type="text" class="form-control" name="pot_filter"
+                                                       placeholder="Enter the field if you need to filter by pot. Eg. pot_id"/>
+ 
                                         </div>
                                     </div>
                                 </div>

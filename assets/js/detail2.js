@@ -850,6 +850,7 @@ var record = {
                         }
 
                     });
+					if(typeof val.telephone!=="undefined"){
                     $.each(val.telephone, function (dt, tel) {
                             var tps = "";
                             if (tel.tel_tps == null) {
@@ -870,6 +871,7 @@ var record = {
                             $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "'>" + tel.tel_num + "</a> " + tps + "</dd>";
 							}
                     });
+					}
 					if(typeof val.transfer!=="undefined"){
 					 $.each(val.transfer, function (dt, tel) {
 					$transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num + '" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';

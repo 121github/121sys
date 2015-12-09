@@ -12,8 +12,10 @@ class Migration_update_76 extends CI_Migration
     public function up()
     {
         $this->firephp->log("starting migration 76");
+		$check = $this->db->query("SHOW COLUMNS FROM `permissions` LIKE 'description'");
+		if(!$check->num_rows()){
 		$this->db->query("ALTER TABLE `permissions` ADD `description` VARCHAR(255) NOT NULL");
-		
+		}
 		$this->db->query("update permissions set description = 'The user can create and edit appointment attendee slots and availability' where permission_name = 'slot config'");
 $this->db->query("update permissions set description = 'The user can view the data counts report' where permission_name = 'data counts'");
 $this->db->query("update permissions set description = 'The user can manage the shop/cart/order configuration' where permission_name = 'admin shop'");
@@ -26,13 +28,13 @@ $this->db->query("update permissions set description = 'The user can park, unpar
 $this->db->query("update permissions set description = 'The user can find a full address by using just a postcode. This feature uses a 3rd party API and may cost credits' where permission_name = 'get address'");
 $this->db->query("update permissions set description = 'The user can edit the history of a record' where permission_name = 'edit outcome'");
 $this->db->query("update permissions set description = 'The user can add multiple entries to the additional info panel' where permission_name = 'add custom items'");
-$this->db->query("update permissions set description = 'The user will be displayed in reports. Managers probably don't need this options' where permission_name = 'report on'");
+$this->db->query("update permissions set description = 'The user will be displayed in reports. Managers probably don\'t need this options' where permission_name = 'report on'");
 $this->db->query("update permissions set description = 'The user can export appointments to an ICS file used to import to other calendars such as google/outlook' where permission_name = 'export ics'");
 $this->db->query("update permissions set description = 'The user can import a google/outlook ICS file into the system' where permission_name = 'import ics'");
 $this->db->query("update permissions set description = 'Records are automatically added to the attendees planner when an appointment is made for them' where permission_name = 'apps to planner'");
-$this->db->query("update permissions set description = 'The user must set a call direction (inbound/outbound) when they $this->db->query("update a record' where permission_name = 'set call direction'");
+$this->db->query("update permissions set description = 'The user must set a call direction (inbound/outbound) when they update a record' where permission_name = 'set call direction'");
 $this->db->query("update permissions set description = 'The user can view and amend the planner of other users' where permission_name = 'admin planner'");
-$this->db->query("update permissions set description = 'The user will automatically take ownership of a record when they $this->db->query("update it' where permission_name = 'take ownership'");
+$this->db->query("update permissions set description = 'The user will automatically take ownership of a record when they update it' where permission_name = 'take ownership'");
 $this->db->query("update permissions set description = 'The user only has access to complete a survey' where permission_name = 'survey only'");
 $this->db->query("update permissions set description = 'The user only has access to the files and folders feature. Can be used for client accounts that need to send and retrieve files' where permission_name = 'files only'");
 $this->db->query("update permissions set description = 'The user has access to the SMS report' where permission_name = 'sms'");
@@ -71,7 +73,7 @@ $this->db->query("update permissions set description = 'Completed records will b
 $this->db->query("update permissions set description = 'Dead records will be included in the list view by default' where permission_name = 'view dead'");
 $this->db->query("update permissions set description = 'Parked records will be included in the list view by default' where permission_name = 'view parked'");
 $this->db->query("update permissions set description = 'Unassigned records will be included in the list view by default' where permission_name = 'view unassigned'");
-$this->db->query("update permissions set description = 'The user has access to the "Start dialling" feature' where permission_name = 'use callpot'");
+$this->db->query("update permissions set description = 'The user has access to the \"Start dialling\" feature' where permission_name = 'use callpot'");
 $this->db->query("update permissions set description = 'The user can manage the daily data rations' where permission_name = 'ration data'");
 $this->db->query("update permissions set description = 'The user has access to the data archiving features' where permission_name = 'archive data'");
 $this->db->query("update permissions set description = 'The user has access to the data export page' where permission_name = 'export data'");
@@ -79,8 +81,8 @@ $this->db->query("update permissions set description = 'The user can import reco
 $this->db->query("update permissions set description = 'The user has access to the data submenu' where permission_name = 'data menu'");
 $this->db->query("update permissions set description = 'The user has access to the reports submenu' where permission_name = 'reports menu'");
 $this->db->query("update permissions set description = 'The user has access to the recordings panel within a campaign' where permission_name = 'search recordings'");
-$this->db->query("update permissions set description = 'The user can see the urgent dropdown menu on the record $this->db->query("update panel' where permission_name = 'urgent dropdown'");
-$this->db->query("update permissions set description = 'The user can set a record as urgent by clicking the flag on the record $this->db->query("update panel' where permission_name = 'urgent flag'");
+$this->db->query("update permissions set description = 'The user can see the urgent dropdown menu on the record update panel' where permission_name = 'urgent dropdown'");
+$this->db->query("update permissions set description = 'The user can set a record as urgent by clicking the flag on the record update panel' where permission_name = 'urgent flag'");
 $this->db->query("update permissions set description = 'The user has access to the survey answers report' where permission_name = 'survey answers'");
 $this->db->query("update permissions set description = 'The user has access to the transfer reports' where permission_name = 'Transfers'");
 $this->db->query("update permissions set description = 'The user has access to the activity reports' where permission_name = 'activity'");

@@ -29,6 +29,16 @@ class Calendar extends CI_Controller
         echo json_encode(array("success" => true, "data" => $users));
     }
 
+	public function get_slots_for_attendee(){
+		$this->load->model('Admin_model');
+		$slots = array();
+		$slot_group = $this->Admin_model->get_user_slot_group($this->input->post('id'));
+		if(count($slot_group)){
+		$slots = $this->Admin_model->get_slots_in_group($slot_group[0]['slot_group_id']);
+		}
+		echo json_encode($slots);
+	}
+
     //this loads the data management view
     public function index()
     {
@@ -222,17 +232,18 @@ class Calendar extends CI_Controller
             unset($form['block_day_end']);
             $block_day_start = $form['block_day'];
 
-            if (isset($form['appointment_slot_id']) and $form['appointment_slot_id'] == '') {
-                $form['appointment_slot_id'] = NULL;
-            }
-
             $rules_to_add = array();
             for ($i = 0; $i <= $days_diff; $i++) {
                 $block_day = date("Y-m-d", strtotime($block_day_start . "+ " . $i . " days"));
                 $form['block_day'] = $block_day;
 
                 //Check if the attendee already has an appointment where the block day is between the start and the end date schedulled
-                if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'], $form['appointment_slot_id'])) {
+				if(count($form['appointment_slot_id'])==0){
+					$form['appointment_slot_id'][] = 0;
+				}
+					foreach($form['appointment_slot_id'] as $slot_id){
+						if($slot_id==0){ $slot_id = NULL; }
+                if ($this->Appointments_model->checkNoAppointmentForTheDayBlocked($form['user_id'], $form['block_day'], $slot_id)) {
                     echo json_encode(array(
                         "success" => false,
                         "msg" => "ERROR: The attendee has at least one appointment scheduled on the day selected. Reschedule the appointment and block the day after that."
@@ -243,12 +254,12 @@ class Calendar extends CI_Controller
                     $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date_and_user($form['block_day'], $form['user_id']);
                     foreach ($appointment_rules as $appointment_rule) {
                         //If appointment_slot is set
-                        if ($form['appointment_slot_id']) {
+                        if ($slot_id) {
                             //If all day is already set, delete it to insert the new one with a slot
                             if (!$appointment_rule['appointment_slot_id']) {
                                 $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
                             } //If is the same appointment_slot, delete it to insert the new one on the same slot
-                            else if ($form['appointment_slot_id'] == $appointment_rule['appointment_slot_id']) {
+                            else if ($slot_id == $appointment_rule['appointment_slot_id']) {
                                 $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
                             }
                         } //If all day is set, delete all that are already set for this day to insert the new one for the whole day
@@ -256,11 +267,11 @@ class Calendar extends CI_Controller
                             $this->Calendar_model->delete_appointment_rule($appointment_rule['appointment_rules_id']);
                         }
                     }
-
-                    array_push($rules_to_add, $form);
-                }
+					$array = array("block_day"=>$form['block_day'],"user_id"=>$form['user_id'],"appointment_slot_id"=>$slot_id,"reason_id"=>$form['reason_id'],"other_reason"=>$form['other_reason']);
+                    array_push($rules_to_add, $array);
             }
-
+				}
+			}
             if (!empty($rules_to_add)) {
                 //Add the appointment rules got
                 foreach ($rules_to_add as $rule) {
@@ -297,7 +308,12 @@ class Calendar extends CI_Controller
     public function get_appointment_rules()
     {
         if ($this->input->is_ajax_request()) {
-            $appointment_rules = $this->Calendar_model->get_appointment_rules();
+						if($this->uri->segment(3)=="by_user"){
+				$distinct_user = true;
+			} else {
+				$distinct_user = false;
+			}
+            $appointment_rules = $this->Calendar_model->get_appointment_rules($distinct_user);
             $aux = array();
             foreach ($appointment_rules as $rule) {
                 if (!isset($aux[$rule['block_day']])) {
@@ -321,7 +337,12 @@ class Calendar extends CI_Controller
     public function get_appointment_rules_by_date()
     {
         if ($this->input->is_ajax_request()) {
-            $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date(to_mysql_datetime($this->input->post('date')));
+			if($this->input->post('date')&&$this->input->post('date')!=="false"){
+			$date = to_mysql_datetime($this->input->post('date'));	
+			} else {
+			$date = false;	
+			}
+            $appointment_rules = $this->Calendar_model->get_appointment_rules_by_date($date);
 
             echo json_encode(array(
                 "success" => (!empty($appointment_rules)),

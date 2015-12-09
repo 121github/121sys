@@ -64,13 +64,16 @@ class Export_model extends CI_Model
         if ($export_form['source_filter'] && isset($options['source']) && !empty($options['source'])) {
             $qry .= " and " . $export_form['source_filter'] . " = '" . $options['source'] . "' ";
         }
+		 if ($export_form['pot_filter'] && isset($options['pot']) && !empty($options['pot'])) {
+            $qry .= " and " . $export_form['pot_filter'] . " = '" . $options['pot'] . "' ";
+        }
         if ($export_form['group_by']) {
             $qry .= " group by ".$export_form['group_by'];
         }
         if ($export_form['order_by']) {
             $qry .= " order by ".$export_form['order_by'];
         }
-
+		$this->firephp->log($qry);
         $result = $this->db->query($qry)->result_array();
 
         return $result;
@@ -96,7 +99,7 @@ class Export_model extends CI_Model
     public function update_export_form($form)
     {
         $this->db->where("export_forms_id", $form['export_forms_id']);
-        return $this->db->update("export_forms", $form);
+         return $this->db->update("export_forms", $form);
     }
 
     /**

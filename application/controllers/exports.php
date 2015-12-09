@@ -19,7 +19,7 @@ class Exports extends CI_Controller
 		$campaigns = $this->Form_model->get_user_campaigns();
         $sources = $this->Form_model->get_sources();
         $users = $this->Form_model->get_users_with_email();
-
+$pots = $this->Form_model->get_pots();
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -37,6 +37,7 @@ class Exports extends CI_Controller
             ),
 			'campaigns' => $campaigns,
             'sources' => $sources,
+			'pots' => $pots,
             'users' => $users
         );
         $this->template->load('default', 'exports/view_exports.php', $data);
@@ -111,6 +112,8 @@ class Exports extends CI_Controller
             $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
             $options['source'] = ($this->input->post('source') ? $this->input->post('source') : "");
             $options['source_name'] = ($this->input->post('source_name') ? str_replace(" ", "", $this->input->post('source_name')) : "");
+			 $options['pot'] = ($this->input->post('pot') ? $this->input->post('pot') : "");
+            $options['pot_name'] = ($this->input->post('pot_name') ? str_replace(" ", "", $this->input->post('pot_name')) : "");
             $options['export_forms_id'] = ($this->input->post('export_forms_id') ? $this->input->post('export_forms_id') : "");
 
 
@@ -118,9 +121,10 @@ class Exports extends CI_Controller
 
             if (!empty($export_form)) {
                 $results = $this->Export_model->get_data($export_form, $options);
-
+			}
+			if(count($results)){
                 echo json_encode(array(
-                    "success" => ($results),
+                    "success" => true,
                     "data" => ($results?$results:"No export forms were created yet!"),
                     "header" => explode(";",$export_form['header'])
                 ));
@@ -128,7 +132,7 @@ class Exports extends CI_Controller
             else {
                 echo json_encode(array(
                     "success" => false,
-                    "data" => ("ERROR: Please contact with your administrator!")
+                    "data" => "No results found"
                 ));
             }
         }

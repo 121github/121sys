@@ -56,9 +56,32 @@ function resizeEvents(events){
 
  var calendar = "";
   var appointment_rules = {
+	              get_slots_in_group: function(id) {
+                var slot_select = $('#appointment-slot-select');
+                slot_select.prop('disabled', true).selectpicker('refresh');
+                $.ajax({
+                    url: helper.baseUrl + 'calendar/get_slots_for_attendee',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        id: id
+                    }
+                }).done(function(response) {
+                    if (response.length > 0) {
+                        slot_select.html('')
+                        $.each(response, function(i, row) {
+                            slot_select.append('<option data-subtext="'+row.slot_description+'" value="' + row.appointment_slot_id + '">' + row.slot_name + '</option>');
+                        });
+                      
+                    } else {
+						 slot_select.append('<option value="">All day</option>');
+					}
+					  slot_select.prop('disabled', false).selectpicker('refresh');
+                });
+            },
         loadAppointmentRules: function () {
             $.ajax({
-                url: helper.baseUrl + 'calendar/get_appointment_rules',
+                url: helper.baseUrl + 'calendar/get_appointment_rules/by_user',
                 type: "POST",
                 dataType: "JSON"
             }).done(function (response) {
@@ -84,6 +107,9 @@ function resizeEvents(events){
             });
         },
         loadAppointmentRulesByDate: function (block_day) {
+			if(block_day=="0"){
+			var block_day = false;	
+			}
             $.ajax({
                 url: helper.baseUrl + 'calendar/get_appointment_rules_by_date',
                 type: "POST",
@@ -91,18 +117,30 @@ function resizeEvents(events){
                 data: {date: block_day}
             }).done(function (response) {
                 if (response.success) {
-                    var rules = '<div><h4>' + block_day + '</h4></div><table class="table ajax-table"><thead><tr><th>Attendee</th><th>Reason</th><th>Slot</th><th>Remove</th></tr></thead><tbody>';
+					var rules="",date_col = "";scroller_class="";
+					if(block_day){
+						rules += '<div><h4>' + block_day + '</h4></div>';
+					} else {
+					date_col +=  '<th>Date</th>';
+					}
+                   rules += '<div id="scroller-div"><table class="table ajax-table small"><thead><tr>'+date_col+'<th>Attendee</th><th>Reason</th><th>Slot</th><th>Remove</th></tr></thead><tbody>';
                     $.each(response.data, function (key, value) {
+						var date_val = "";
+						if(!block_day){
+						var date_val = '<td>' + value.uk_date + '</td>';
+						}
                         rules +=
-                            '<tr>' +
+                            '<tr>' + 
+							date_val +
                             '<td>' + value.name + '</td>' +
                             '<td>' + value.reason + '<div style="font-size: 10px;">' + value.other_reason + '</div></td>' +
                             '<td>' + (value.slot_name ? value.slot_name : 'All day') + '</td>' +
                             '<td><span class="glyphicon glyphicon-remove del-rule-btn pointer" item-id="' + value.appointment_rules_id + '" item-date="' + block_day + '"></span></td>' +
                             '</tr>';
                     });
-                    rules += '</tbody></table>';
+                    rules += '</tbody></table></div>';
                     $('#modal').find('.rules-per-day').html(rules);
+					  $('#scroller-div').css('overflow','auto').css('max-height','350px');
                 }
                 else {
                     $('#modal').find('.rules-per-day').html("No calendar rules have been created yet.");
@@ -222,7 +260,7 @@ function resizeEvents(events){
                 '</div>' +
                 '<div role="tabpanel" class="tab-pane" id="addrule">' +
                 '<form class="appointment-rule-form form-horizontal">' +
-                '<p><label>Block Day<span class="block-day-error" style="color: red; display: none"> Select a block day</span></label>' +
+                '<p><label>Block Slots<span class="block-day-error" style="color: red; display: none"> Select a block day</span></label>' +
                 '<div class="row">' +
                 '<div class="col-md-6">' +
                 '<label>Start Date</label>' +
@@ -234,8 +272,13 @@ function resizeEvents(events){
                 '</div>' +
                         '</div>' +
                 '</p>' +
+				 '<p>' +
+                '<label>Attendee<span class="attendee-error" style="color: red; display: none"> Select a user</span></label>' +
+                '<select name="user_id" class="attendee-select" id="attendee-select" title="Select attendee" data-width="100%" required>' +
+                '</select>' +
+                '</p>' +
                 '<p><label>Time Slot</label>' +
-                '<select name="appointment_slot_id" class="appointment-slot-select" id="appointment-slot-select" title="All day" data-width="100%" required>' +
+                '<select name="appointment_slot_id[]" multiple disabled class="appointment-slot-select" id="appointment-slot-select" title="Select the slot to restrict" data-width="100%" required>' +
                 '</select>' +
                 '</p>' +
                 '<p><label>Reason<span class="reason-error" style="color: red; display: none"> Select a reason</span></label>' +
@@ -244,11 +287,6 @@ function resizeEvents(events){
                 '</p>' +
                 '<p class="other_reason"><label>Other Reason</label>' +
                 '<input name="other_reason" placeholder="Other reason..." value="" class="form-control"/>' +
-                '</p>' +
-                '<p>' +
-                '<label>Attendees<span class="attendee-error" style="color: red; display: none"> Select an agent</span></label>' +
-                '<select name="user_id" class="attendee-select" id="attendee-select" title="Select attendee" data-width="100%" required>' +
-                '</select>' +
                 '</p>' +
                 '</form>' +
                 '</div>' +
@@ -259,29 +297,35 @@ function resizeEvents(events){
             //Add the rules
             appointment_rules.loadAppointmentRulesByDate(block_day);
 
+
             //Get the reasons options
             appointment_rules.loadAppointmentRulesReasons();
 
             //Get the slots options
-            appointment_rules.loadAppointmentSlots();
+            //appointment_rules.loadAppointmentSlots();
+			$('#appointment-slot-select').selectpicker();
 
             //Get the attendees options
             appointment_rules.loadAppointmentRulesAttendees();
-
+			
+			$(document).on('change','#attendee-select',function(){
+				appointment_rules.get_slots_in_group($(this).val());	
+			});
+			
             $('#modal').find('.block-day').datetimepicker({
                 format: 'DD/MM/YYYY'
-            }).on("dp.change", function (e) {
+            }).on("dp.hide", function (e) {
                 $('#modal').find('.block-day-end').data("DateTimePicker").minDate(e.date);
             });
             $('#modal').find('.block-day-end').datetimepicker({
                 format: 'DD/MM/YYYY'
-            }).on("dp.change", function (e) {
+            }).on("dp.hide", function (e) {
                 $('#modal').find('.block-day').data("DateTimePicker").maxDate(e.date);
             });
-
+			if(block_day){
             $('#modal').find('input[name="block_day"]').val(timestamp_to_uk(new Date(block_day)));
             $('#modal').find('input[name="block_day_end"]').val(timestamp_to_uk(new Date(block_day)));
-
+			}
             $('#modal').find('.other_reason').hide();
 
             $('#modal').find('.reason-select').on('change', function () {
@@ -330,7 +374,7 @@ function resizeEvents(events){
                         if (response.success) {
                             flashalert.success(response.msg);
                             //$('#modal').modal('toggle');
-                            appointment_rules.loadAppointmentRules();
+                            appointment_rules.loadAppointmentRules(block_day);
                             appointment_rules.loadAppointmentRulesByDate(block_day);
                             $('#modal').find('.nav-tabs a[href="#apprules"]').tab('show');
                         }
@@ -346,14 +390,14 @@ function resizeEvents(events){
 $(document).ready(function () {
     "use strict";
     //Show appointment rules button
+	/*
     $(document).on('mouseenter', '.cal-month-day', function () {
         var day = $(this).attr('item-day');
         $(this).find('.block-day-btn.' + day).show();
     });
+	
 
- $(document).on('click','a[href="#addrule"]',function(){
-	 modal_body.css('overflow','visible');
- });
+ 
  //Hide appointment rules button
     $(document).on('mouseleave', '.cal-month-day', function () {
         var day = $(this).attr('item-day');
@@ -362,7 +406,7 @@ $(document).ready(function () {
             $(this).find('.block-day-btn.' + day).hide();
         }
     });
-
+*/
     //Add appointment rule
     $(document).on('click', '.block-day-btn', function () {
         calendar_modals.addAppointmentRule($(this).attr('item-day'));
@@ -373,8 +417,12 @@ $(document).ready(function () {
         appointment_rules.delAppointmentRules($(this).attr('item-id'), $(this).attr('item-date'));
     });
 	
-
-
+$(document).on('click','a[href="#addrule"]',function(){
+	 modal_body.css('overflow','visible');
+ });
+    $(document).on('click', '#set-rules', function () {
+calendar_modals.addAppointmentRule(0)
+	})
     var options = {
         events_source: function (start, end) {
             var events = [];

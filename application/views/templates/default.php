@@ -13,8 +13,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
     <!-- Optional theme -->
-    <link rel="stylesheet"
-          href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : $theme); ?>/bootstrap-theme.css">
+    <link id="theme-css" rel="stylesheet"
+          href="<?php echo base_url(); ?>assets/themes/colors/<?php echo(isset($_SESSION['theme_color']) ? $_SESSION['theme_color'] : $theme); ?>/bootstrap-theme.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/datatables.min.css">
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
@@ -42,7 +42,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php endforeach;
     endif; ?>
     <link rel="shortcut icon"
-          href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/icon.png">
+          href="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/icon.png">
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery-ui-1.9.2.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
@@ -102,9 +102,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <span style="color: red; margin-left: 10%; background-color: yellow">This is a demo system. The data added could be deleted at any time!! </span>
     <?php } ?>
     <a href="#" class="navbar-brand pull-right"><img id="small-logo" style="margin-top:-10px;margin-right:5px;"
-                                                     src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png"><img
+                                                     src="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/small-logo.png"><img
             id="big-logo" style="margin-top:-5px; width:100%"
-            src="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
+            src="<?php echo base_url(); ?>assets/themes/images/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/logo.png"></a>
 </div>
 <?php } ?>
 </div>
@@ -414,6 +414,43 @@ endif; ?>
     <script
         type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false<?php echo $callback ?>"></script>
+<?php } ?>
+<?php if(isset($_SESSION['user_id'])) {?>
+<style>
+.color-box {position:absolute; right:0px; bottom:40px; padding:5px; border:1px solid #333; background:#fff}
+.color-box a{ text-decoration:none }
+.color-btn { display:block; width:100%; height:100%;  font-size:24px }
+</style>
+<div class="color-box Fixed">
+<a href="#"  ><span class="glyphicon glyphicon-cog color-btn" ></span></a>
+</div>
+<script>
+$(document).ready(function(){
+	$('.color-btn').click(function(){
+		var mheader= "Change Theme";
+		var mbody= "<p>Fancy something different? Pick a new colour!</p>";
+		 mbody+="<select id='color-changer' class='color-changer selectpicker'>"
+		  +"<option value='<?php echo $_SESSION['theme_color'] ?>'>--Change color--</option>"
+		 +"<option value='voice'>Bright Blue</option>"
+		  +"<option value='hsl'>Deep Blue</option>"
+		    +"<option value='coop'>Dark Blue</option>"
+		   +"<option value='smartprospector'>Green</option>"
+		    +"<option value='default'>Orange</option>"
+			 +"<option value='pelican'>Red</option>"
+			  +"<option value='eldon'>Purple</option>"
+		 +"</select>";
+		var mfooter='<button data-dismiss="modal" class="btn btn-primary close-modal pull-left">OK</button>'
+		modals.load_modal(mheader,mbody,mfooter);
+		modal_body.css('overflow','visible')
+		$('.color-changer').change(function(){
+		var value = $(this).val();
+		$('#theme-css').attr('href','http://localhost/121sys/assets/themes/colors/'+value+'/bootstrap-theme.css');
+		$.post(helper.baseUrl+'ajax/change_theme',{theme:value});
+	});
+	});
+	
+});
+</script>
 <?php } ?>
 </body>
 </html>
