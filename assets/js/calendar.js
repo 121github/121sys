@@ -67,16 +67,17 @@ function resizeEvents(events){
                         id: id
                     }
                 }).done(function(response) {
+					slot_select.html('')
                     if (response.length > 0) {
-                        slot_select.html('')
                         $.each(response, function(i, row) {
                             slot_select.append('<option data-subtext="'+row.slot_description+'" value="' + row.appointment_slot_id + '">' + row.slot_name + '</option>');
                         });
-                      
+                        slot_select.prop('disabled', false).selectpicker('refresh');
                     } else {
 						 slot_select.append('<option value="">All day</option>');
+						 slot_select.prop('disabled', false).selectpicker('refresh').selectpicker('selectAll');
 					}
-					  slot_select.prop('disabled', false).selectpicker('refresh');
+					
                 });
             },
         loadAppointmentRules: function () {
@@ -260,7 +261,7 @@ function resizeEvents(events){
                 '</div>' +
                 '<div role="tabpanel" class="tab-pane" id="addrule">' +
                 '<form class="appointment-rule-form form-horizontal">' +
-                '<p><label>Block Slots<span class="block-day-error" style="color: red; display: none"> Select a block day</span></label>' +
+                '<p><label>Block Slots<span class="block-day-error" style="color: red; display: none">Select the date(s) to block</span></label>' +
                 '<div class="row">' +
                 '<div class="col-md-6">' +
                 '<label>Start Date</label>' +
@@ -277,8 +278,8 @@ function resizeEvents(events){
                 '<select name="user_id" class="attendee-select" id="attendee-select" title="Select attendee" data-width="100%" required>' +
                 '</select>' +
                 '</p>' +
-                '<p><label>Time Slot</label>' +
-                '<select name="appointment_slot_id[]" multiple disabled class="appointment-slot-select" id="appointment-slot-select" title="Select the slot to restrict" data-width="100%" required>' +
+                '<p><label>Time Slot(s)</label>' +
+                '<select name="appointment_slot_id[]" data-actions-box="true" multiple disabled class="appointment-slot-select" id="appointment-slot-select" title="Select the slot to restrict" data-width="100%" required>' +
                 '</select>' +
                 '</p>' +
                 '<p><label>Reason<span class="reason-error" style="color: red; display: none"> Select a reason</span></label>' +

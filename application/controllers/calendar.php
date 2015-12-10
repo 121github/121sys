@@ -224,6 +224,15 @@ class Calendar extends CI_Controller
     public function add_appointment_rule()
     {
         if ($this->input->is_ajax_request()) {
+			if(!$this->input->post('appointment_slot_id')){
+				echo json_encode(array(
+                        "success" => false,
+                        "msg" => "Select the slots to block"
+                    ));
+                    exit(0);
+			}
+			
+			
             $form = $this->input->post();
             $form['block_day'] = to_mysql_datetime($form['block_day']);
             $form['block_day_end'] = to_mysql_datetime($form['block_day_end']);
