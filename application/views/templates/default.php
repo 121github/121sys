@@ -446,6 +446,9 @@ $(document).ready(function(){
 		var value = $(this).val();
 		$('#theme-css').attr('href','http://localhost/121sys/assets/themes/colors/'+value+'/bootstrap-theme.css');
 		$.post(helper.baseUrl+'ajax/change_theme',{theme:value});
+		if(device_type!=="default"){
+		window.location.reload();	
+		}
 	});
 	});
 	
