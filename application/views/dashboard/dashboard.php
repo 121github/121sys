@@ -12,7 +12,7 @@
                     <span class="btn btn-default btn show-charts" data-item="0" charts="chart-div-system,chart-div-email,chart-div-sms,chart-div-outcome" data="data-system,data-email,data-sms,data-outcome">
                         <span class="fa fa-bar-chart-o fa-fw" style="color:black;"></span>
                     </span>
-                    <span class="btn btn-default btn refresh-data">
+                    <span class="btn btn-default btn refresh-overview-data">
                         <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
                     </span>
                     <a href="#filter-right" class="btn btn-default btn">
@@ -91,7 +91,7 @@
                 <?php } ?>
             </select>
 
-            <button id="filter-submit" class="btn btn-primary pull-right" style="margin-top: 5%;">Submit</button>
+            <button id="filter-overview-submit" class="btn btn-primary pull-right" style="margin-top: 5%;">Submit</button>
         </form>
     </div>
 </nav>

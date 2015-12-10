@@ -34,9 +34,16 @@ var dashboard = {
             }, 500);
         });
 
-        $(document).on("click", '#filter-submit', function (e) {
+        $(document).on("click", '#filter-overview-submit', function (e) {
             e.preventDefault();
             dashboard.refresh_panels();
+            $('#filter-right').data("mmenu").close();
+        });
+
+        $(document).on("click", '#filter-favorite-submit', function (e) {
+            e.preventDefault();
+            dashboard.filter_panel();
+            dashboard.favorites_panel();
             $('#filter-right').data("mmenu").close();
         });
 
@@ -50,9 +57,15 @@ var dashboard = {
             dashboard.get_outcomes_filter();
         });
 
-        $(document).on("click", ".refresh-data", function (e) {
+        $(document).on("click", ".refresh-overview-data", function (e) {
             e.preventDefault();
             dashboard.refresh_panels();
+        });
+
+        $(document).on("click", ".refresh-favorites-data", function (e) {
+            e.preventDefault();
+            dashboard.filter_panel();
+            dashboard.favorites_panel();
         });
 
         dashboard.filter_panel();
@@ -541,7 +554,10 @@ var dashboard = {
             url: helper.baseUrl + 'dashboard/get_favorites',
             type: "POST",
             dataType: "JSON",
-            data: $('.favorites-filter').serialize(),
+            data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('.favorites-panel').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
         }).done(function (response) {
             $('.favorites-panel').empty();
             var $table = "";
