@@ -417,7 +417,7 @@ endif; ?>
 <?php } ?>
 <?php if(isset($_SESSION['user_id'])) {?>
 <style>
-.color-box {position:absolute; right:0px; bottom:40px; padding:5px; border:1px solid #333; background:#fff}
+.color-box {position:fixed; right:0px; bottom:40px; padding:5px; border:1px solid #333; background:#fff}
 .color-box a{ text-decoration:none }
 .color-btn { display:block; width:100%; height:100%;  font-size:24px }
 </style>
