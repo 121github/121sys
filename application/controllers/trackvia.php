@@ -1799,7 +1799,7 @@ USING ( campaign_id )
 LEFT JOIN contacts
 USING ( urn )
 left join contact_telephone ct using(contact_id)
-where client_id = 12 group by ct.contact_id having count(ct.contact_id) = 1 limit 100
+where client_id = 12 group by ct.contact_id having count(ct.contact_id) = 1 limit 25
 ";
 	
 	//loop through each record and get the updated trackvia info
