@@ -517,6 +517,7 @@ class Reports extends CI_Controller
                     "total_dials_url" => $allDialsUrl,
                     "duration" => ($row['duration']) ? $row['duration'] : 0,
                     "rate" => ($row['duration'] > 0) ? round(($outcomes) / ($row['duration'] / 3600), 3) : 0,
+                    "dials_rate" => ($row['duration'] > 0) ? round(($row['total_dials']) / ($row['duration'] / 3600), 2) : 0,
                     "group" => $group
                 );
                 $totalOutcomes += $outcomes;
@@ -541,6 +542,7 @@ class Reports extends CI_Controller
                 "total_dials_url" => $url,
                 "duration" => $totalDuration,
                 "rate" => ($totalDuration > 0) ? round(($totalOutcomes) / ($totalDuration / 3600), 3) : 0,
+                "dials_rate" => ($totalDuration > 0) ? round(($totalDials) / ($totalDuration / 3600), 2) : 0,
                 "group" => $group
             ));
 
