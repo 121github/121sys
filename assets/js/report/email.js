@@ -7,6 +7,9 @@ $(document).ready(function () {
 
 var email = {
     init: function () {
+
+        filters.init();
+
         $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
@@ -28,60 +31,40 @@ var email = {
                 $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
                 $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
                 $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-                email.email_panel()
             });
         $(document).on("click", '.daterange', function (e) {
             e.preventDefault();
         });
 
-        $(document).on("click", ".template-filter", function (e) {
-            e.preventDefault();
-            $(this).closest('form').find('input[name="template"]').val($(this).attr('id'));
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            email.email_panel()
+        //optgroup
+        $('li.dropdown-header').on('click', function (e) {
+            setTimeout(function () {
+                //Get outcomes by campaigns selected
+                email.get_outcomes_filter();
+            }, 500);
         });
 
-        $(document).on("click", ".campaign-filter", function (e) {
+        $(document).on("click", '#filter-submit', function (e) {
             e.preventDefault();
-            $(this).closest('form').find('input[name="campaign"]').val($(this).attr('id'));
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            email.email_panel()
+            email.email_panel();
+            $('#filter-right').data("mmenu").close();
         });
-        $(document).on("click", ".agent-filter", function (e) {
+
+        $(document).on("click", '.daterange', function (e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="agent"]').val($(this).attr('id'));
-            $(this).closest('form').find('input[name="team"]').val('');
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            email.email_panel()
         });
-        $(document).on("click", ".team-filter", function (e) {
+
+        $(document).on("change", ".campaign-filter", function (e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="team"]').val($(this).attr('id'));
-            $(this).closest('form').find('input[name="agent"]').val('');
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            email.email_panel()
+            //Get outcomes by campaigns selected
+            email.get_outcomes_filter();
         });
-        $(document).on("click", ".source-filter", function (e) {
+
+        $(document).on("click", ".refresh-data", function (e) {
             e.preventDefault();
-            $icon = $(this).closest('ul').prev('button').find('span');
-            $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-            $(this).closest('form').find('input[name="source"]').val($(this).attr('id'));
-            $(this).closest('ul').find('a').css("color", "black");
-            $(this).css("color", "green");
-            email.email_panel()
+            email.email_panel();
         });
+
         $(document).on('click', '.show-emails-btn', function (e) {
             e.preventDefault();
             email.show_emails($(this), $(this).attr('email-sent'), $(this).attr('email-read'), $(this).attr('email-pending'));
@@ -90,14 +73,17 @@ var email = {
             e.preventDefault();
             email.view_email($(this).attr('item-id'));
         });
-        email.email_panel()
+        email.email_panel();
     },
-    email_panel: function (email) {
+    email_panel: function () {
         $.ajax({
             url: helper.baseUrl + 'reports/email_data',
             type: "POST",
             dataType: "JSON",
-            data: $('.filter-form').serialize()
+            data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('.email-panel').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
         }).done(function (response) {
             var $row = "";
             $tbody = $('.email-data .ajax-table').find('tbody');
@@ -151,6 +137,75 @@ var email = {
                     + response.msg
                     + "</td></tr>");
             }
+
+            //////////////////////////////////////////////////////////
+            //Filters/////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////
+            var filters = "";
+
+            filters += "<span class='btn btn-default btn-xs clear-filters pull-right'>" +
+                "<span class='glyphicon glyphicon-remove' style='padding-left:3px; color:black;'></span> Clear" +
+                "</span>";
+
+            //Date
+            filters += "<h5><strong>Date </strong></h5>" +
+                "<ul>" +
+                "<li style='list-style-type:none'>" + $(".filter-form").find("input[name='date_from']").val() + "</li>" +
+                "<li style='list-style-type:none'>" + $(".filter-form").find("input[name='date_to']").val() + "</li>" +
+                "</ul>";
+
+            //Campaigns
+            var size = ($('.campaign-filter  option:selected').size() > 0 ? "(" + $('.campaign-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Campaigns</strong> " + size + "</h5><ul>";
+            $('.campaign-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+            //Templates
+            var size = ($('.template-filter  option:selected').size() > 0 ? "(" + $('.template-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Templates</strong> " + size + "</h5><ul>";
+            $('.template-filter option:selected').each(function (index) {
+                var color = "black";
+                if ($(this).parent().attr('label') === 'positive') {
+                    color = "green";
+                }
+                filters += "<li style='list-style-type:none'><span style='color: " + color + "'>" + $(this).text() + "</span></li>";
+            });
+            filters += "</ul>";
+
+            //Teams
+            var size = ($('.team-filter  option:selected').size() > 0 ? "(" + $('.team-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Teams</strong> " + size + "</h5><ul>";
+            $('.team-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+
+            //Agents
+            var size = ($('.agent-filter  option:selected').size() > 0 ? "(" + $('.agent-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Agents</strong> " + size + "</h5><ul>";
+            $('.agent-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+
+            //Sources
+            var size = ($('.source-filter  option:selected').size() > 0 ? "(" + $('.source-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Sources</strong> " + size + "</h5><ul>";
+            $('.source-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+
+            $('#filters').html(filters);
+
+            //////////////////////////////////////////////////////////
+            //Graphics/////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////
+            email.get_graphs(response);
         });
     },
     show_emails: function (btn, sent, read, pending) {
@@ -270,6 +325,97 @@ var email = {
                 });
             }
             $('#email-view-table').html(tbody);
+        });
+    },
+    get_outcomes_filter: function () {
+        $.ajax({
+            url: helper.baseUrl + 'reports/get_outcomes_filter',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var options = "";
+                $.each(response.campaign_outcomes, function (type, data) {
+                    options += "<optgroup label=" + type + ">";
+                    $.each(data, function (i, val) {
+                        options += "<option value=" + val.id + ">" + val.name + "</option>";
+                    });
+                    options += "</optgroup>";
+                });
+                $('#outcome-filter').html(options).selectpicker('refresh');
+            }
+        });
+    },
+    get_graphs: function (response) {
+
+        google.load('visualization', '1', {
+            packages: ['corechart'], 'callback': function () {
+                // Create the data table.
+                var data_sent = new google.visualization.DataTable();
+                data_sent.addColumn('string', 'Topping');
+                data_sent.addColumn('number', 'Sent');
+
+                var data_read = new google.visualization.DataTable();
+                data_read.addColumn('string', 'Topping');
+                data_read.addColumn('number', 'Read');
+
+                var data_pending = new google.visualization.DataTable();
+                data_pending.addColumn('string', 'Topping');
+                data_pending.addColumn('number', 'Pending');
+
+                var data_unsent = new google.visualization.DataTable();
+                data_unsent.addColumn('string', 'Topping');
+                data_unsent.addColumn('number', 'Unsent');
+
+                var rows_sent = [];
+                var rows_read = [];
+                var rows_pending = [];
+                var rows_unsent = [];
+
+                if (response.data.length > 1) {
+                    $.each(response.data, function (i, val) {
+                        if (response.data.length && val.id != "TOTAL") {
+                            var name = ((val.name != "All")?val.name:val.id);
+                            if (parseInt(val.emails_sent) > 0) {
+                                rows_sent.push([name, parseInt(val.emails_sent)]);
+                            }
+                            if (parseInt(val.emails_read) > 0) {
+                                rows_read.push([name, parseInt(val.emails_read)]);
+                            }
+                            if (parseInt(val.emails_pending) > 0) {
+                                rows_pending.push([name, parseInt(val.emails_pending)]);
+                            }
+                            if (parseInt(val.emails_unsent) > 0) {
+                                rows_unsent.push([name, parseInt(val.emails_unsent)]);
+                            }
+                        }
+                    });
+                    data_sent.addRows(rows_sent);
+                    data_read.addRows(rows_read);
+                    data_pending.addRows(rows_pending);
+                    data_unsent.addRows(rows_unsent);
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_sent'));
+                    chart.draw(data_sent, {'legend': {position: 'none'},'title': "Emails Sent",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_read'));
+                    chart.draw(data_read, {'legend': {position: 'none'},'title': "Emails Read",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_pending'));
+                    chart.draw(data_pending, {'legend': {position: 'none'},'title': "Emails Pending",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div_unsent'));
+                    chart.draw(data_unsent, {'legend': {position: 'none'},'title': "Emails Unsent",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+
+                }
+                else {
+                    $('#chart_div_sent').html("No data");
+                    $('#chart_div_read').html("");
+                    $('#chart_div_pending').html("");
+                    $('#chart_div_unsent').html("");
+                }
+            }
         });
     }
 }

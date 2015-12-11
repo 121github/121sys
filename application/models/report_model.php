@@ -246,12 +246,12 @@ class Report_model extends CI_Model
         }
 
         $date_from = $options['date_from'];
-        $agent = $options['agent'];
         $date_to = $options['date_to'];
-        $template = $options['template'];
-        $campaign = $options['campaign'];
-        $team_manager = $options['team'];
-        $source = $options['source'];
+        $agents = isset($options['agents']) ? $options['agents'] : array();
+        $templates = isset($options['templates']) ? $options['templates'] : array();
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $team_managers = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
         $hours_where = "";
         $where = "";
         if (!empty($date_from)) {
@@ -260,21 +260,21 @@ class Report_model extends CI_Model
         if (!empty($date_to)) {
             $where .= " and date(eh.sent_date) <= '$date_to' ";
         }
-        if (!empty($template)) {
-            $where .= " and eh.template_id = '$template' ";
+        if (!empty($templates)) {
+            $where .= " and eh.template_id IN (".implode(",",$templates).") ";
         }
-        if (!empty($campaign)) {
-            $where .= " and c.campaign_id = '$campaign' ";
+        if (!empty($campaigns)) {
+            $where .= " and c.campaign_id IN (".implode(",",$campaigns).") ";
         }
-        if (!empty($team_manager)) {
-            $where .= " and u.team_id = '$team_manager' ";
+        if (!empty($team_managers)) {
+            $where .= " and u.team_id IN (".implode(",",$team_managers).") ";
         }
-        if (!empty($agent)) {
-            $where .= " and eh.user_id = '$agent' ";
+        if (!empty($agents)) {
+            $where .= " and eh.user_id IN (".implode(",",$agents).") ";
             $name = "u.name";
         }
-        if (!empty($source)) {
-            $where .= " and r.source_id = '$source' ";
+        if (!empty($sources)) {
+            $where .= " and r.source_id IN (".implode(",",$sources).") ";
         }
 
         //if the user does not have the agent reporting permission they can only see their own stats
@@ -310,7 +310,7 @@ class Report_model extends CI_Model
           left join (select count(*) email_unsent_count,$group_by gb_2 from email_history eh $joins where eh.status = 0 and pending = 0 $where group by $group_by) euc on euc.gb_2 = $group_by
         where eh.status=1 $where
 		group by $group_by ";
-        $this->firephp->log($qry);
+
         return $this->db->query($qry)->result_array();
     }
 

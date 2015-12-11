@@ -598,8 +598,27 @@ class Reports extends CI_Controller
         } else {
             $group = "campaign";
         }
-        $templates = $this->Form_model->get_templates();
-        $campaigns = $this->Form_model->get_user_campaigns();
+
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $templates_by_campaign_group = $this->Form_model->get_templates_ordered_by_campaign_group();
+        $aux = array();
+        foreach ($templates_by_campaign_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $templates_by_campaign_group = $aux;
+
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
         $agents = $this->Form_model->get_agents();
@@ -617,8 +636,8 @@ class Reports extends CI_Controller
                 'lib/daterangepicker.js'
             ),
             'group' => $group,
-            'templates' => $templates,
-            'campaigns' => $campaigns,
+            'templates_by_campaign_group' => $templates_by_campaign_group,
+            'campaigns_by_group' => $campaigns_by_group,
             'sources' => $sources,
             'team_managers' => $teamManagers,
             'agents' => $agents,
@@ -645,11 +664,11 @@ class Reports extends CI_Controller
 
             $date_from_search = $form["date_from"];
             $date_to_search = $form["date_to"];
-            $agent_search = $form["agent"];
-            $campaign_search = $form["campaign"];
-            $template_search = $form["template"];
-            $team_search = $form["team"];
-            $source_search = $form["source"];
+            $agent_search = (isset($form["agents"])?$form["agents"]:array());
+            $campaign_search = (isset($form["campaigns"])?$form["campaigns"]:array());
+            $template_search = (isset($form["templates"])?$form["templates"]:array());
+            $team_search = (isset($form["teams"])?$form["teams"]:array());
+            $source_search = (isset($form["sources"])?$form["sources"]:array());
             $group = $form["group"];
 
 
@@ -671,13 +690,13 @@ class Reports extends CI_Controller
             $totalEmailSent = 0;
             $emails_read = 0;
             $url = base_url() . "search/custom/records";
-            $url .= (!empty($agent_search) ? "/user/$agent_search" : "");
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
-            $url .= (!empty($template_search) ? "/template/$template_search" : "");
+            $url .= (!empty($agent_search) ? "/user/".implode("_",$agent_search).(count($agent_search)>1?":in":"") : "");
+            $url .= (!empty($template_search) ? "/template/".implode("_",$template_search).(count($template_search)>1?":in":"") : "");
+            $url .= (!empty($campaign_search) ? "/campaign/".implode("_",$campaign_search).(count($campaign_search)>1?":in":"") : "");
             $url .= (!empty($date_from_search) ? "/sent-email-from/$date_from_search" : "");
             $url .= (!empty($date_to_search) ? "/sent-email-to/$date_to_search" : "");
-            $url .= (!empty($team_search) ? "/team/$team_search" : "");
-            $url .= (!empty($source_search) ? "/source/$source_search" : "");
+            $url .= (!empty($team_search) ? "/team/".implode("_",$team_search).(count($team_search)>1?":in":"") : "");
+            $url .= (!empty($source_search) ? "/source/".implode("_",$source_search).(count($source_search)>1?":in":"") : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -726,7 +745,7 @@ class Reports extends CI_Controller
             $totalEmailsUnsentPercent = ($totalEmailSent) ? number_format(($totalEmailUnsent * 100) / $totalEmailSent, 2) : 0;
 
 
-            $url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
+            //$url .= (!empty($campaign_search) ? "/campaign/$campaign_search" : "");
 
             array_push($data, array(
                 "id" => "TOTAL",

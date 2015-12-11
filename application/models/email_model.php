@@ -343,12 +343,20 @@ $qry .= " group by urn";
     {
 
         $date_from = $options['date_from'];
-        $agent = $options['agent'];
         $date_to = $options['date_to'];
-        $template = $options['template'];
-        $campaign = $options['campaign'];
-        $team_manager = $options['team'];
-        $source = $options['source'];
+
+        $agent = isset($options['agent']) ? $options['agent'] : array();
+        $template = isset($options['template']) ? $options['template'] : array();
+        $campaign = isset($options['campaign']) ? $options['campaign'] : array();
+        $team_manager = isset($options['team']) ? $options['team'] : array();
+        $source = isset($options['source']) ? $options['source'] : array();
+
+        $agents = isset($options['agents']) ? $options['agents'] : array();
+        $templates = isset($options['templates']) ? $options['templates'] : array();
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $team_managers = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+
         $id = $options['id'];
         $group = $options['group'];
         $sent = $options['sent'];
@@ -380,6 +388,7 @@ $qry .= " group by urn";
         if (isset($hour)) {
             $where .= " and hour(eh.sent_date) = '$hour' ";
         }
+
         if (!empty($template)) {
             $where .= " and eh.template_id = '$template' ";
         }
@@ -396,6 +405,24 @@ $qry .= " group by urn";
         if (!empty($source)) {
             $where .= " and r.source_id = '$source' ";
         }
+
+        if (!empty($templates)) {
+            $where .= " and eh.template_id IN (".implode(",",$templates).") ";
+        }
+        if (!empty($campaigns)) {
+            $where .= " and c.campaign_id IN (".implode(",",$campaigns).") ";
+        }
+        if (!empty($team_managers)) {
+            $where .= " and u.team_id IN (".implode(",",$team_managers).") ";
+        }
+        if (!empty($agents)) {
+            $where .= " and eh.user_id IN (".implode(",",$agents).") ";
+            $name = "u.name";
+        }
+        if (!empty($sources)) {
+            $where .= " and r.source_id IN (".implode(",",$sources).") ";
+        }
+
         if ($sent == 0 || $sent == 1) {
             $where .= " and eh.status = '$sent' ";
         }
