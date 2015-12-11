@@ -721,6 +721,7 @@ class Reports extends CI_Controller
                     "id" => $id,
                     "sql" => $row['sql'],
                     "name" => $row['name'],
+                    "colour" => substr(dechex(crc32($row['name'])), 0, 6),
                     "emails_read" => $emails_read,
                     "emails_read_url" => $emailUrl . "/emails/read",
                     "emails_pending" => $emails_pending,

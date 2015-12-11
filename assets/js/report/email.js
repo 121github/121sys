@@ -76,6 +76,8 @@ var email = {
         email.email_panel();
     },
     email_panel: function () {
+        var graph_color_display = (typeof $('.graph-color').css('display') != 'undefined' ? ($('.graph-color').css('display') == 'none' ? 'none' : 'inline-block') : 'none');
+
         $.ajax({
             url: helper.baseUrl + 'reports/email_data',
             type: "POST",
@@ -105,6 +107,8 @@ var email = {
                             success = "warning";
                         }
 
+                        var colour = ((val.id != 'TOTAL')?"</td><td style='text-align: right'><span class='graph-color fa fa-circle' style='display:" + graph_color_display + "; color:#" + val.colour + "'> </span>":"");
+
                         $tbody
                             .append("<tr class='" + success + "' style='" + style + "'><td class='id'>"
                             + val.id + "<span class='sql' style='display:none'>" + val.sql + "</span>"
@@ -128,6 +132,7 @@ var email = {
                             "<a href='" + val.emails_unsent_url + "' style='font-size:10px; color:black;'> (See records...)</a>"
                             + "</td><td class='percent_unsent' style='color:red;'>"
                             + val.percent_unsent
+                            + colour
                             + "</td></tr>");
                     }
                 });
@@ -373,10 +378,13 @@ var email = {
                 var rows_pending = [];
                 var rows_unsent = [];
 
+                var colors = [];
+
                 if (response.data.length > 1) {
                     $.each(response.data, function (i, val) {
                         if (response.data.length && val.id != "TOTAL") {
                             var name = ((val.name != "All")?val.name:val.id);
+                            colors.push('#' + val.colour);
                             if (parseInt(val.emails_sent) > 0) {
                                 rows_sent.push([name, parseInt(val.emails_sent)]);
                             }
@@ -397,16 +405,16 @@ var email = {
                     data_unsent.addRows(rows_unsent);
 
                     var chart = new google.visualization.PieChart(document.getElementById('chart_div_sent'));
-                    chart.draw(data_sent, {'legend': {position: 'none'},'title': "Emails Sent",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+                    chart.draw(data_sent, {'legend': {position: 'none'},'colors': colors,'title': "Emails Sent",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
 
                     var chart = new google.visualization.PieChart(document.getElementById('chart_div_read'));
-                    chart.draw(data_read, {'legend': {position: 'none'},'title': "Emails Read",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+                    chart.draw(data_read, {'legend': {position: 'none'},'colors': colors,'title': "Emails Read",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
 
                     var chart = new google.visualization.PieChart(document.getElementById('chart_div_pending'));
-                    chart.draw(data_pending, {'legend': {position: 'none'},'title': "Emails Pending",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+                    chart.draw(data_pending, {'legend': {position: 'none'},'colors': colors,'title': "Emails Pending",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
 
                     var chart = new google.visualization.PieChart(document.getElementById('chart_div_unsent'));
-                    chart.draw(data_unsent, {'legend': {position: 'none'},'title': "Emails Unsent",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
+                    chart.draw(data_unsent, {'legend': {position: 'none'},'colors': colors,'title': "Emails Unsent",'width': 300,'height': 300,'hAxis': {textPosition: 'none'},curveType: 'function'});
 
                 }
                 else {

@@ -128,6 +128,7 @@
                                 <th class="warning">Pending(%)</th>
                                 <th class="danger">Unsent</th>
                                 <th class="danger">Unsent(%)</th>
+                                <th class="danger"></th>
 
                             </tr>
                             </thead>
