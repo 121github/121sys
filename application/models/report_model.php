@@ -523,6 +523,117 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
     }
 
     /**
+     * Get the data for the last outcomes report
+     *
+     * @param $options
+     * @return array
+     */
+    public function get_last_outcomes($options)
+    {
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+
+        $where = "";
+        if (!empty($date_from)) {
+            $where .= " and (date(r.date_updated) >= '".$date_from."' or (r.date_updated is null and date(r.date_added) >=  '".$date_from."')) ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and (date(r.date_updated) <= '".$date_to."' or (r.date_updated is null and date(r.date_added) <=  '".$date_to."')) ";
+        }
+
+        if (!empty($sources)) {
+            $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
+        }
+
+        if (!empty($outcomes)) {
+            $where .= " and r.outcome_id IN (" . implode(",", $outcomes) . ") ";
+        }
+
+        if (!empty($campaigns)) {
+            $where .= " and r.campaign_id IN (" . implode(",", $campaigns) . ") ";
+        }
+
+        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+
+        $qry = "SELECT
+                  if (o.outcome is not NULL, o.outcome, '- No Outcome Set -') as outcome,
+                  r.outcome_id,
+                  count(*) as num,
+                  IF (s.status_name = 'Completed' OR s.status_name = 'Dead','completed','in_progress') as status
+                FROM records r
+                  LEFT JOIN outcomes o USING (outcome_id)
+                  LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
+                  LEFT JOIN data_sources using (source_id)";
+
+        $qry .= " where 1 " . $where;
+
+        $qry .= " GROUP BY status, o.outcome_id
+                  ORDER BY num desc";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Get total records for the last outcomes report
+     *
+     * @param $options
+     * @return array
+     */
+    public function get_total_records($options)
+    {
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+
+        $where = "";
+        if (!empty($date_from)) {
+            $where .= " and (date(r.date_updated) >= '".$date_from."' or (r.date_updated is null and date(r.date_added) >=  '".$date_from."')) ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and (date(r.date_updated) <= '".$date_to."' or (r.date_updated is null and date(r.date_added) <=  '".$date_to."')) ";
+        }
+
+        if (!empty($sources)) {
+            $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
+        }
+
+        if (!empty($outcomes)) {
+            $where .= " and r.outcome_id IN (" . implode(",", $outcomes) . ") ";
+        }
+
+        if (!empty($campaigns)) {
+            $where .= " and r.campaign_id IN (" . implode(",", $campaigns) . ") ";
+        }
+
+
+        //if the user does not have the agent reporting permission they can only see their own stats
+        if (@!in_array("by agent", $_SESSION['permissions'])) {
+            $where .= " and r.user_id = '{$_SESSION['user_id']}' ";
+        }
+
+        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+
+        $qry = "SELECT
+                  count(*) as num,
+                  IF (r.dials > 0, 'Called Records', 'Virgin Records') as num_dials
+                FROM records r
+                  LEFT JOIN outcomes o USING (outcome_id)
+                  LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
+                  LEFT JOIN data_sources using (source_id)";
+
+        $qry .= " where 1 " . $where;
+
+        $qry .= " GROUP BY num_dials";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
      * Get sms data
      */
     public function get_sms_data($options)

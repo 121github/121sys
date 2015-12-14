@@ -1011,6 +1011,125 @@ class Reports extends CI_Controller
         ));
     }
 
+
+    //this is the controller loads the initial view for the last outcomes report
+    public function last_outcomes()
+    {
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $agents = $this->Form_model->get_agents();
+        $teamManagers = $this->Form_model->get_teams();
+        $outcomes = $this->Form_model->get_outcomes();
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
+
+        $sources = $this->Form_model->get_sources();
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'Reports',
+            'title' => 'Reports | Last Outcomes',
+            'page' => 'client_report_outcomes',
+            'javascript' => array(
+                'charts.js?v' . $this->project_version,
+                'report/last_outcomes.js?v' . $this->project_version,
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'team_managers' => $teamManagers,
+            'agents' => $agents,
+            'sources' => $sources,
+            'campaign_outcomes' => $campaign_outcomes,
+            'campaigns_by_group' => $campaigns_by_group,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/last_outcomes.php', $data);
+    }
+
+
+    //this controller sends the last outcomes data back the page in JSON format. It ran when the page loads and any time the filter is changed
+    public function last_outcomes_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $total_records = $this->Report_model->get_total_records($this->input->post());
+            $aux = array();
+            foreach ($total_records as $row) {
+                if (!isset($aux['total'])) {
+                    $aux['total'] = 0;
+                }
+                $row['colour'] = substr(dechex(crc32($row['num_dials'])), 0, 6);
+                array_push($aux, $row);
+                $aux['total'] += $row['num'];
+            }
+            $total_records = $aux;
+
+            $last_outcomes = $this->Report_model->get_last_outcomes($this->input->post());
+            $aux = array();
+            foreach ($last_outcomes as $row) {
+                if (!isset($aux[$row['status']])) {
+                    $aux[$row['status']] = array();
+                    $aux[$row['status']]['total'] = 0;
+                }
+                $data = array(
+                    'outcome' => $row['outcome'],
+                    'outcome_id' => $row['outcome_id'],
+                    'num' => $row['num'],
+                    'colour' => substr(dechex(crc32($row['outcome'])), 0, 6)
+                );
+                array_push($aux[$row['status']], $data);
+                $aux[$row['status']]['total'] += $row['num'];
+            }
+            $last_outcomes = $aux;
+
+            $outcomes = $this->input->post('outcomes');
+            $campaigns = $this->input->post('campaigns');
+            $teams = $this->input->post('teams');
+            $sources = $this->input->post('sources');
+
+            $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
+            $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
+            $teams_url = (!empty($teams)?"/team/".implode("_",$teams).(count($teams)>1?":in":""):"");
+            $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
+
+            $filter_url = $outcomes_url.$campaigns_url.$teams_url.$sources_url;
+
+            echo json_encode(array(
+                "success" => (!empty($total_records) || !empty($last_outcomes)),
+                "total_records" => $total_records,
+                "last_outcomes" => $last_outcomes,
+                "filter_url" => $filter_url,
+                "msg" => (empty($results) ? "No results found" : "")
+            ));
+        }
+    }
+
     //this is the controller loads the initial view for the sms reports
     public function sms()
     {
