@@ -128,7 +128,8 @@
                         <th>Total Dials</th>
                         <th>Conversion</th>
                         <th>Time</th>
-                        <th>Rate (per hour)</th>
+                        <th>Rate  (per hour)</th>
+                        <th>Dials (per hour)</th>
                         <th></th>
                     </tr>
                     </thead>

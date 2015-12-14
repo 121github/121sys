@@ -141,6 +141,8 @@ var outcome = {
                             + "</td><td class='rate' style='rate'>"
                             + ((val.group != "time")&&(val.group != "reason") ? val.rate : "-")
                             + "</td><td>"
+                            + ((val.group != "time")&&(val.group != "reason") ? val.dials_rate : "-")
+                            + "</td><td>"
                             + (val.id == 'TOTAL' || val.name.length == 0 || $.inArray(response.group, ['time', 'date', 'contact']) >= 0 ? "" : ("<span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "'></span>"))
                             + "</td></tr>");
                     }

@@ -178,7 +178,6 @@ class Dashboard extends CI_Controller
     //this laods the user dashboard view  
     public function user_dash()
     {
-        $campaigns = $this->Form_model->get_user_campaigns();
         $email_campaigns = $this->Form_model->get_user_email_campaigns();
         $sms_campaigns = $this->Form_model->get_user_sms_campaigns();
         $surveys = $this->Form_model->get_surveys();
@@ -230,7 +229,6 @@ class Dashboard extends CI_Controller
             'sources' => $sources,
             'email_campaigns' => $email_campaigns,
             'sms_campaigns' => $sms_campaigns,
-            'campaigns' => $campaigns,
             'campaigns_by_group' => $campaigns_by_group,
             'campaign_outcomes' => $campaign_outcomes,
             'surveys' => $surveys,
@@ -298,7 +296,33 @@ class Dashboard extends CI_Controller
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
-        $campaigns = $this->Form_model->get_user_campaigns();
+
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
+
         $type = $this->uri->segment(3);
         if ($type == "missed") {
             $date_from = date('2014-07-02');
@@ -328,7 +352,8 @@ class Dashboard extends CI_Controller
             'date_from' => $date_from,
             'date_to' => $date_to,
             'btntext' => $btntext,
-            'campaigns' => $campaigns,
+            'campaigns_by_group' => $campaigns_by_group,
+            'campaign_outcomes' => $campaign_outcomes,
             'sources' => $sources,
             'agents' => $agents,
             'team_managers' => $teamManagers,
@@ -478,9 +503,6 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter = $this->input->post();
-            if (isset($_SESSION['current_campaign'])) {
-                $filter['campaign'] = $_SESSION['current_campaign'];
-            }
             $data = $this->Dashboard_model->system_stats($filter);
             echo json_encode(array(
                 "success" => true,
@@ -495,9 +517,6 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter = $this->input->post();
-            if (isset($_SESSION['current_campaign'])) {
-                $filter['campaign'] = $_SESSION['current_campaign'];
-            }
             $data = $this->Dashboard_model->get_comments($filter);
             echo json_encode(array(
                 "success" => true,
@@ -667,9 +686,6 @@ class Dashboard extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $filter = $this->input->post();
-            if (isset($_SESSION['current_campaign'])) {
-                $filter['campaign'] = $_SESSION['current_campaign'];
-            }
             $data = $this->Dashboard_model->get_favorites($filter);
             echo json_encode(array(
                 "success" => true,

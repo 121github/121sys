@@ -66,16 +66,16 @@ class Dashboard_model extends CI_Model
 
     public function get_favorites($filter = array())
     {
-        $fav_user = (!empty($filter['agent']) ? $filter['agent'] : $_SESSION['user_id']);
         $qry = "select urn,if(companies.name is null,fullname,name) as fullname,campaign_name,if(records.date_updated is null,'-',date_format(records.date_updated,'%d/%m/%y %H:%i')) date_updated,if(records.nextcall is null,'-',date_format(records.nextcall,'%d/%m/%y %H:%i')) nextcall,comments,if(outcome is null,'-',outcome) outcome from favorites left join records using(urn) left join outcomes using(outcome_id) left join (select urn,max(history_id) mhid from history group by urn) mh using(urn) left join (select comments,history_id from history where comments <> '') h on h.history_id = mhid left join campaigns using(campaign_id) left join companies using(urn) left join contacts using(urn) where 1 ";
-        if (!empty($filter['campaign'])) {
-            $qry .= " and campaign_id = '{$filter['campaign']}'";
+
+        if (!empty($filter['campaigns'])) {
+            $qry .= " and campaign_id IN (".implode(",",$filter['campaigns']).")";
         }
-        if (!empty($filter['team'])) {
-            $qry .= " and team_id = '{$filter['team']}'";
+        if (!empty($filter['teams'])) {
+            $qry .= " and team_id IN (".implode(",",$filter['teams']).")";
         }
-        if (!empty($filter['agent'])) {
-            $qry .= " and user_id = '{$filter['agent']}'";
+        if (!empty($filter['agents'])) {
+            $qry .= " and user_id IN (".implode(",",$filter['agents']).")";
         }
         if (!in_array("by agent", $_SESSION['permissions'])) {
             $qry .= " and user_id = '" . $_SESSION['user_id'] . "'";
@@ -83,7 +83,6 @@ class Dashboard_model extends CI_Model
 
         $qry .= " and records.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= "  group by urn order by records.date_updated asc";
-        //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 

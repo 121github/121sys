@@ -406,6 +406,29 @@ class Form_model extends CI_Model
         return $this->db->get()->result_array();
     }
 
+    /**
+     * Get templates ordered by campaign group
+     *
+     */
+    public function get_templates_ordered_by_campaign_group()
+    {
+        $qry = "select
+                  template_id id,
+                  template_name name,
+                  IF(campaign_group_name IS NOT NULL,campaign_group_name,'_OTHERS') group_name
+            from email_templates
+            left join email_template_to_campaigns using (template_id)
+            left join campaigns using (campaign_id)
+            left join campaign_groups using (campaign_group_id)
+            where
+                campaign_id in({$_SESSION['campaign_access']['list']})
+                and campaign_status = 1
+            group by campaign_id
+            order by group_name, campaign_name";
+
+        return $this->db->query($qry)->result_array();
+    }
+
 
     /**
      * Get a sms template by campaign_id
