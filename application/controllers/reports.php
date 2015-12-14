@@ -1025,10 +1025,6 @@ class Reports extends CI_Controller
         }
         $campaigns_by_group = $aux;
 
-        $agents = $this->Form_model->get_agents();
-        $teamManagers = $this->Form_model->get_teams();
-        $outcomes = $this->Form_model->get_outcomes();
-
         $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
@@ -1059,8 +1055,6 @@ class Reports extends CI_Controller
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
-            'team_managers' => $teamManagers,
-            'agents' => $agents,
             'sources' => $sources,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
@@ -1110,15 +1104,13 @@ class Reports extends CI_Controller
 
             $outcomes = $this->input->post('outcomes');
             $campaigns = $this->input->post('campaigns');
-            $teams = $this->input->post('teams');
             $sources = $this->input->post('sources');
 
             $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
             $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
-            $teams_url = (!empty($teams)?"/team/".implode("_",$teams).(count($teams)>1?":in":""):"");
             $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
 
-            $filter_url = $outcomes_url.$campaigns_url.$teams_url.$sources_url;
+            $filter_url = $outcomes_url.$campaigns_url.$sources_url;
 
             echo json_encode(array(
                 "success" => (!empty($total_records) || !empty($last_outcomes)),
