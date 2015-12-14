@@ -191,6 +191,9 @@
 		<?php if(in_array(19,$features)){ ?>
         record.order_panel.init(); 
         <?php } ?>
+		<?php if(in_array(20,$features)){ ?>
+		quick_planner.init();
+		<?php } ?>
     });
 </script>
 <?php endif; ?>

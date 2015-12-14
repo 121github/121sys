@@ -168,11 +168,13 @@ class Calendar extends CI_Controller
             $options['modal'] = "list";
         }
         $events = $this->Calendar_model->get_events($options);
+	
         if (isset($_POST['modal'])) {
             foreach ($events as $k => $row) {
                 $date = date('Y-m-d', strtotime($row['start']));
                 $result[$date]['dayEvents'][] = array("postcode" => $row['postcode'], "title" => $row['title'], 'endtime' => date('g:i a', strtotime($row['end'])), 'starttime' => date('g:i a', strtotime($row['start'])), 'distance' => isset($row['distance']) ? number_format($row['distance'], 1) : "", "attendees" => $row['attendeelist']);
                 $result[$date]['number'] = (isset($result[$date]['number']) ? $result[$date]['number'] + 1 : 1);
+				$result[$date]['app_count'] = $result[$date]['number'];
             }
 
         } else {
@@ -211,7 +213,9 @@ class Calendar extends CI_Controller
             }
         }
   foreach($result as $k=>$v){
+	  if(isset($v['date'])&&in_array($v['date'],$counts)){
             $result[$k]['app_count']=$counts[$v['date']]['apps'];
+	  }
   }
         echo json_encode(array('success' => 1, 'result' => $result, 'postcode' => $postcode, 'date' => date('Y-m')));
         exit;

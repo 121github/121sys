@@ -880,6 +880,7 @@ var record = {
 					}
 					$panel.find('.contacts-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.name.fullname+'</a><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact"><span class="glyphicon glyphicon-trash"></span> Delete</span> <span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact"><span class="glyphicon glyphicon-pencil"></span> Edit</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal contact-detail-list">'+$contact_detail_list_items+$contact_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="contact_postcode" value="'+$postcode+'" /></div></li>');
                 });
+				quick_planner.contact_postcode = $('input[name="contact_postcode"]').val();
 				} else {
 					$panel.find('.contacts-list').html('<li class="list-group-item">This record has no contacts</li>');
 				}

@@ -325,6 +325,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             "campaign_triggers" => $campaign_triggers,
             "javascript" => array(
                 "detail2.js?v" . $this->project_version,
+				"availability.js?v" . $this->project_version,
 				'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',

@@ -103,12 +103,21 @@ class Planner extends CI_Controller
 public function simulate_121_planner(){
 		$customer_postcode = $this->input->post('postcode');	
 		$driver_id = $this->input->post('driver_id');
+		$branch_id = $this->input->post('branch_id');
 		$driver_postcode = $this->Planner_model->get_user_postcode($driver_id);
 		$position = $this->input->post('position');	
 		$availability = $this->get_driver_availability($driver_id);
-		$default_journey = $this->get_journey_details($driver_postcode,$customer_postcode);
+		if($branch_id==""||$branch_id=="false"){
+			$branch_id=false;
+		}
 		
-		
+		if($branch_id){
+		$branch_postcode = $this->Planner_model->get_branch_postcode($branch_id);
+		$default_journey = $this->get_journey_details($driver_postcode,$branch_postcode);
+		$default_journey2 = $this->get_journey_details($branch_postcode,$customer_postcode);
+		} else {
+		$default_journey = $this->get_journey_details($driver_postcode,$customer_postcode);	
+		}
 		//first create the days to populate
 	 for ($i = 0; $i < 45; $i++) {
 	if(date("D", strtotime('+'. $i .' days'))<>"Sun"){
@@ -143,33 +152,52 @@ public function simulate_121_planner(){
 	$position = $this->input->post('position');	
 	}
 	
-	$qry = "select date(start) `app_date`,postcode,TIME_TO_SEC(TIMEDIFF(`end`,`start`)) app_duration from appointments join appointment_attendees using(appointment_id) join users using(user_id) where user_id = '$driver_id' and date(`start`) = '$day' and `status` = 1 and postcode is not null order by `end` asc";
+	$qry = "select date(start) `app_date`,postcode,TIME_TO_SEC(TIMEDIFF(`end`,`start`)) app_duration from appointments join appointment_attendees using(appointment_id) join users using(user_id) where user_id = '$driver_id' and date(`start`) = '$day' and `status` = 1 and postcode is not null group by appointment_id order by `end` asc";
+	//$this->firephp->log($qry);
 	$result = $this->db->query($qry)->result_array();
 	if(isset($result[0])){
 		 //could set a default appointment duration to simulate here if we wanted
 		$customer_data = array("postcode"=>$customer_postcode,"app_duration"=>3600);
 		$driver_data = array("postcode"=>$driver_postcode);
-	array_splice($result, $position, 0, array($customer_data));
+	//add driver postcode to waypoints
 	array_splice($result, 0, 0, array($driver_data));
 	$result[] = array("postcode"=>$driver_postcode);
-	
+	//add customer postcode to waypoints
+	array_splice($result, $position, 0, array($customer_data));
+
+	if($branch_id){
+		$branch_postcode = $this->Planner_model->get_branch_postcode($branch_id);
+		$branch_data = array("postcode"=>$branch_postcode);
+		array_splice($result, 1, 0, array($branch_data));
+		array_splice($result, count($result)-1, 0, array($branch_data));
+	}
+		
 	$travel_info[$day]=array();
 	foreach($result as $k=>$row){
+		if($branch_id){
+		$app_num = $k-1;	
+		} else {
+		$app_num = $k;		
+		}
 	if(isset($result[$k+1])){
 	$travel_info[$day][$k] = $this->get_journey_details($result[$k]['postcode'],$result[$k+1]['postcode']);
 	if($k==0){
 	$title = "Start";
 	$app_duration = false;
-	} else if($k==$position){
+	} else if($app_num==$position){
 	$title = "This appointment";	
 	} else {
-	$title = "Appointment $k";	
+	$title = "Appointment $app_num";	
 	}
 	} else {
 	$title = "End";	
 	$app_duration = false;
 	}
-	$data[$day][$k] = array("title"=>$title,"postcode"=>$row['postcode'],"app_duration_val"=>500);
+	if($branch_id&&$k==1||$branch_id&&(count($result)-2)==$k){
+		$title = "Branch";
+		$app_duration = false;
+	}
+	$data[$day][$k] = array("title"=>$title,"postcode"=>$row['postcode'],"app_duration_val"=>3600);
 	if(isset($result[$k]['app_duration'])){ 
 	$data[$day][$k]['app_duration_val'] = $result[$k]['app_duration']; 
 	$data[$day][$k]['app_duration'] = convertToHoursMins($result[$k]['app_duration']/60, '%2dh %2dm');
@@ -177,12 +205,22 @@ public function simulate_121_planner(){
 
 	}
 	
+	} else if($branch_id){
+		$travel_info[$day][0] = $default_journey;
+	$travel_info[$day][1] = $default_journey2;
+	$travel_info[$day][2] = $default_journey2;
+	$travel_info[$day][3] = $default_journey;
+	$data[$day][0] = array("title"=>"Start","postcode"=>$driver_postcode,"app_duration_val"=>0,"app_duration"=>"");
+	$data[$day][1] = array("title"=>"Branch","postcode"=>$branch_postcode,"app_duration_val"=>0,"app_duration"=>"");
+	$data[$day][2] = array("title"=>"This appointment","postcode"=>$customer_postcode,"app_duration_val"=>3600,"app_duration"=>convertToHoursMins(3600/60, '%2dh %2dm'));
+	$data[$day][3] = array("title"=>"Branch","postcode"=>$branch_postcode,"app_duration_val"=>0,"app_duration"=>"");
+	$data[$day][4] = array("title"=>"End","postcode"=>$driver_postcode,"app_duration_val"=>0,"app_duration"=>"");	
 	} else {
 	$travel_info[$day][0] = $default_journey;
 	$travel_info[$day][1] = $default_journey;
-	$data[$day][0] = array("title"=>"Start","postcode"=>$driver_postcode,"app_duration_val"=>500,"app_duration"=>0);
-	$data[$day][1] = array("title"=>"This appointment","postcode"=>$customer_postcode,"app_duration_val"=>500,"app_duration"=>convertToHoursMins(3600/60, '%2dh %2dm'));
-	$data[$day][2] = array("title"=>"End","postcode"=>$driver_postcode,"app_duration_val"=>500,"app_duration"=>0);	
+	$data[$day][0] = array("title"=>"Start","postcode"=>$driver_postcode,"app_duration_val"=>0,"app_duration"=>"");
+	$data[$day][1] = array("title"=>"This appointment","postcode"=>$customer_postcode,"app_duration_val"=>3600,"app_duration"=>convertToHoursMins(3600/60, '%2dh %2dm'));
+	$data[$day][2] = array("title"=>"End","postcode"=>$driver_postcode,"app_duration_val"=>0,"app_duration"=>"");	
 	}
 	}
 	
@@ -199,6 +237,7 @@ $total_duration += $data[$day][$k]['app_duration_val'];
 $data[$day][0]['time'] = "09:00 am";
 $data[$day][0]['uk_date'] = date('D jS M Y',strtotime($day));
 $data[$day][0]['datetime'] = date('H:i',strtotime("9am"));
+$data[$day][0]['sqldate'] = $day;
 if($k>0){
 $data[$day][$k]['time'] = date('H:i a',strtotime("9am + ".$v['duration']['value']. " seconds"));
 $data[$day][$k]['datetime'] = date('H:i',strtotime("9am + ".$v['duration']['value'] . " seconds"));
@@ -223,7 +262,7 @@ $travel_info[$day][$new_key]['added_duration'] = $travel_info[$day][$new_key]['d
 //also add the slots to the data to show in the panel
 $this->load->model('Appointments_model');
 $slots = array();
-$appointments = $this->Appointments_model->slot_availability(1,$driver_id);
+$appointments = $this->Appointments_model->slot_availability(false,$driver_id);
 foreach($appointments['apps'] as $date => $day){
 	$max_apps = 0;
 	$apps = 0;
@@ -410,7 +449,7 @@ $travel_info[$day][5]['added_duration'] = $travel_info[$day][5]['duration'];
 //also add the slots to the data to show in the panel
 $this->load->model('Appointments_model');
 $slots = array();
-$appointments = $this->Appointments_model->slot_availability(1,$driver_id);
+$appointments = $this->Appointments_model->slot_availability(false,$driver_id);
 
 foreach($appointments['apps'] as $date => $day){
 	$max_apps = 0;

@@ -20,7 +20,7 @@ class Admin_model extends CI_Model
             $day = date('N', strtotime($date));
             
             foreach ($slots as $slot_id => $max_apps) {
-				 $default[] = array(
+				 $default[$slot_id] = array(
                     "user_id" => $user_id,
                     "max_slots" => 0,
                     "day" => NULL,
@@ -84,7 +84,7 @@ class Admin_model extends CI_Model
     }
     
     public function save_slot($data)
-    {
+    {	unset($data['new_group']);
         $this->db->where("appointment_slot_id", $data['appointment_slot_id']);
         return $this->db->insert_update("appointment_slots", $data);
     }

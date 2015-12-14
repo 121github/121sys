@@ -182,6 +182,9 @@
 		<?php if(in_array(18,$features)){ ?>
         record.tasks.init();
         <?php } ?>
+		<?php if(in_array(20,$features)){ ?>
+		quick_planner.init();
+		<?php } ?>
     });
 </script>
 <?php endif; ?>

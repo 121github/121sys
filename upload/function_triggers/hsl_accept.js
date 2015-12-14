@@ -299,7 +299,7 @@ var quick_planner = {
         $('.panel-heading').find(".branch-name").text(branch_name);
         if (quick_planner.check_selections(driver, branch)) {
             $.ajax({
-                url: helper.baseUrl + 'planner/simulate_hsl_planner',
+                url: helper.baseUrl + 'planner/simulate_121_planner',
                 type: "POST",
                 dataType: "JSON",
                 data: {postcode: contact_postcode, driver_id: driver, branch_id: branch, slot: slot},

@@ -26,6 +26,7 @@ class Migration_update_78 extends CI_Migration
 			$this->db->query("ALTER TABLE `users` ADD `theme_color` VARCHAR( 50 ) NOT NULL");
 			
 			}
+			$this->db->query("INSERT IGNORE INTO `campaign_features` (`feature_id`, `feature_name`, `panel_path`, `permission_id`) VALUES (NULL, 'Journey Simulator', 'quick_planner.php', NULL)");
 
 	}
 	

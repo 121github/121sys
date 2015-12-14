@@ -1799,7 +1799,7 @@ USING ( campaign_id )
 LEFT JOIN contacts
 USING ( urn )
 left join contact_telephone ct using(contact_id)
-where client_id = 12 group by ct.contact_id having count(ct.contact_id) = 1 limit 100
+where pot_id = 46 and client_id = 12 group by ct.contact_id having count(ct.contact_id) = 1 limit 25
 ";
 	
 	//loop through each record and get the updated trackvia info
@@ -1810,13 +1810,18 @@ where client_id = 12 group by ct.contact_id having count(ct.contact_id) = 1 limi
 		$fields = $response['fields'];
 		$landline = preg_replace("/[^0-9]/", "", $fields['Primary Contact (Landline)']);
 		$mobile = preg_replace("/[^0-9]/", "", $fields['Primary Contact (Mobile)']);
+		$alt = preg_replace("/[^0-9]/", "", $fields['Alternative Contact (Mobile)']);
+		if(!empty($alt)){
+		$this->db->insert("contact_telephone",array("contact_id"=>$row['contact_id'],"telephone_number"=>$landline,"description"=>"Other"));
+		}
+		
 		if(!empty($landline)){
 		$this->db->insert("contact_telephone",array("contact_id"=>$row['contact_id'],"telephone_number"=>$landline,"description"=>"Landline"));
 		}
 			if(!empty($mobile)){
 		$this->db->insert("contact_telephone",array("contact_id"=>$row['contact_id'],"telephone_number"=>$mobile,"description"=>"Mobile"));
 		}
-		$_SESSON['checked_nums'][]=$row['urn'];
+		$_SESSION['checked_nums'][]=$row['urn'];
 		}
 	}
 }

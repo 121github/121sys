@@ -904,9 +904,11 @@ class Records_model extends CI_Model
 			$attendees[$k]['distance'] = "";
 		if(!empty($row['home_postcode'])){
 			$attendee_postcode = get_postcode_data($row['home_postcode']);
+			if(isset($attendee_postcode['latitude'])){
 			$contact_postcode = get_postcode_data($postcode);
 			$distance_between = distance($attendee_postcode['latitude'], $attendee_postcode['longitude'], $contact_postcode['latitude'], $contact_postcode['longitude'], "N");
 		$attendees[$k]['distance'] = number_format($distance_between,1);
+		}
 		}
 		}
 		usort($attendees,'arraySort');
