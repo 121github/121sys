@@ -1,9 +1,9 @@
 // JavaScript Document
 $(document).ready(function() {
-    last_outcomes.init()
+    dials_report.init();
 });
 
-var last_outcomes = {
+var dials_report = {
     init: function() {
 
         filters.init();
@@ -43,13 +43,13 @@ var last_outcomes = {
         $('li.dropdown-header').on('click', function (e) {
             setTimeout(function () {
                 //Get outcomes by campaigns selected
-                last_outcomes.get_outcomes_filter();
+                dials_report.get_outcomes_filter();
             }, 500);
         });
 
         $(document).on("click", '#filter-submit', function (e) {
             e.preventDefault();
-            last_outcomes.last_outcomes_panel();
+            dials_report.dials_panel();
             $('#filter-right').data("mmenu").close();
         });
 
@@ -60,55 +60,55 @@ var last_outcomes = {
         $(document).on("change", ".campaign-filter", function (e) {
             e.preventDefault();
             //Get outcomes by campaigns selected
-            last_outcomes.get_outcomes_filter();
+            dials_report.get_outcomes_filter();
         });
 
         $(document).on("click", ".refresh-data", function (e) {
             e.preventDefault();
-            last_outcomes.last_outcomes_panel();
+            dials_report.dials_panel();
         });
 
-        last_outcomes.last_outcomes_panel();
+        dials_report.dials_panel();
     },
-    last_outcomes_panel: function() {
+    dials_panel: function() {
 
         var graph_color_display = (typeof $('.graph-color').css('display') != 'undefined'?($('.graph-color').css('display') == 'none'?'none':'inline-block'):'none');
 
-        var table = $('.last-outcomes-table');
+        var table = $('.dials-table');
         table.empty();
 
         $.ajax({
-            url: helper.baseUrl + 'reports/last_outcomes_data',
+            url: helper.baseUrl + 'reports/dials_data',
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize(),
             beforeSend: function() {
-                $('.last-outcomes-table').find('tbody').append('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+                $('.dials-table').find('tbody').append('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
             }
         }).done(function(response) {
             table.empty();
             if (response.success) {
                 var search_url = "";
 
-                var thead = ("<tr class='info'><th>Total Records</th>"
-                    + "<th>" + response.total_records.total + "</th>"
+                var thead = ("<tr class='info'><th>Total Dials</th>"
+                    + "<th>" + response.total_dials.total + "</th>"
                     + "<th></th>"
                     + "<th></th></tr>"
                 );
 
                 tbody = '';
-                $.each(response.total_records, function(i, val) {
+                $.each(response.total_dials, function(i, val) {
                     if (i != 'total') {
                         search_url = helper.baseUrl + 'search/custom/records/'
                             + 'update-date-from/'+$('.filter-form').find('input[name="date_from"]').val()
                             + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
                             + response.filter_url
-                            + '/dials/' + ((val.num_dials == 'Virgin Records')?'0':'0:more');
+                            + '/contact-made/' + ((val.contact == 'Total Contact')?'1':'0');
 
                         tbody += ("<tr>"
-                        + "<td>"+val.num_dials+"</td>"
+                        + "<td>"+val.contact+"</td>"
                         + "<td>"+"<a href='" + search_url + "'>"+val.num+"</a>"
-                        + "<td>"+((val.num*100)/response.total_records.total).toFixed(2)+"%</td>"
+                        + "<td>"+((val.num*100)/response.total_dials.total).toFixed(2)+"%</td>"
                         + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
                         + "</tr>");
                     }
@@ -117,27 +117,27 @@ var last_outcomes = {
                 table.append(thead+tbody);
 
                 tbody = '';
-                if (typeof response.last_outcomes.in_progress != 'undefined') {
-                    thead = ("<tr class='success'><th>In Progress</th>"
-                        + "<th>" + response.last_outcomes.in_progress.total + "</th>"
+                if (typeof response.dials_by_outcome.contact != 'undefined') {
+                    thead = ("<tr class='success'><th>Contact Outcome</th>"
+                        + "<th>" + response.dials_by_outcome.contact.total + "</th>"
                         + "<th></th>"
                         + "<th></th></tr>"
                     );
 
-                    if (response.last_outcomes.in_progress.total > 0) {
-                        $.each(response.last_outcomes.in_progress, function(i, val) {
+                    if (response.dials_by_outcome.contact.total > 0) {
+                        $.each(response.dials_by_outcome.contact, function(i, val) {
                             if (i != 'total') {
                                 search_url = helper.baseUrl + 'search/custom/records/'
                                     + 'update-date-from/'+$('.filter-form').find('input[name="date_from"]').val()
                                     + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
                                     + response.filter_url
                                     + '/outcome/'+val.outcome_id
-                                    + '/status/1_2_null:in';;
+                                    + '/contact-made/1';
 
                                 tbody += ("<tr>"
                                 + "<td>"+val.outcome+"</td>"
                                 + "<td>"+"<a href='" + search_url + "'>"+val.num+"</a>"
-                                + "<td>"+((val.num*100)/response.last_outcomes.in_progress.total).toFixed(2)+"%</td>"
+                                + "<td>"+((val.num*100)/response.dials_by_outcome.contact.total).toFixed(2)+"%</td>"
                                 + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
                                 + "</tr>");
                             }
@@ -145,64 +145,69 @@ var last_outcomes = {
                     }
                     else {
                         tbody += ("<tr>"
-                        + "<td colspan='3' style='color: red'>No records In Progress currently with these filters</td>"
+                        + "<td colspan='3' style='color: red'>No records with Contact Outcomes currently with these filters</td>"
                         + "</tr>");
                     }
                 }
                 else {
-                    thead = ("<tr class='success'><th>In Progress</th>"
+                    thead = ("<tr class='success'><th>Contact Outcome</th>"
                         + "<th>0</th>"
                         + "<th></th>"
                         + "<th></th></tr>"
                     );
 
                     tbody += ("<tr>"
-                    + "<td colspan='3' style='color: red'>No records In Progress currently with these filters</td>"
+                    + "<td colspan='3' style='color: red'>No records with Contact Outcomes currently with these filters</td>"
                     + "</tr>");
                 }
+
 
                 table.append(thead+tbody);
 
                 tbody = '';
-                if (typeof response.last_outcomes.completed != 'undefined') {
-                    thead = ("<tr class='success'><th>Completed</th>"
-                        + "<th>" + response.last_outcomes.completed.total + "</th>"
+                if (typeof response.dials_by_outcome.no_contact != 'undefined') {
+                    thead = ("<tr class='success'><th>No Contact Outcome</th>"
+                        + "<th>" + response.dials_by_outcome.no_contact.total + "</th>"
                         + "<th></th>"
                         + "<th></th></tr>"
                     );
 
-                    if (response.last_outcomes.completed.total > 0) {
-                        $.each(response.last_outcomes.completed, function(i, val) {
+                    if (response.dials_by_outcome.no_contact.total > 0) {
+                        $.each(response.dials_by_outcome.no_contact, function(i, val) {
                             if (i != 'total') {
                                 search_url = helper.baseUrl + 'search/custom/records/'
                                     + 'update-date-from/'+$('.filter-form').find('input[name="date_from"]').val()
                                     + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
                                     + response.filter_url
                                     + '/outcome/'+val.outcome_id
-                                    + '/status/3_4:in';
+                                    + '/contact-made/0';
 
                                 tbody += ("<tr>"
                                 + "<td>"+val.outcome+"</td>"
                                 + "<td>"+"<a href='" + search_url + "'>"+val.num+"</a>"
-                                + "<td>"+((val.num*100)/response.last_outcomes.completed.total).toFixed(2)+"%</td>"
+                                + "<td>"+((val.num*100)/response.dials_by_outcome.no_contact.total).toFixed(2)+"%</td>"
                                 + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
                                 + "</tr>");
                             }
                         });
                     }
                     else {
-                        thead = ("<tr class='success'><th>Completed</th>"
-                            + "<th>0</th>"
-                            + "<th></th>"
-                            + "<th></th></tr>"
-                        );
-
                         tbody += ("<tr>"
-                        + "<td colspan='3' style='color: red'>No records Completed currently with these filters</td>"
+                        + "<td colspan='3' style='color: red'>No records With No Contact Outcomes currently with these filters</td>"
                         + "</tr>");
                     }
                 }
+                else {
+                    thead = ("<tr class='success'><th>No Contact Outcome</th>"
+                        + "<th>0</th>"
+                        + "<th></th>"
+                        + "<th></th></tr>"
+                    );
 
+                    tbody += ("<tr>"
+                    + "<td colspan='3' style='color: red'>No records With No Contact Outcomes currently with these filters</td>"
+                    + "</tr>");
+                }
 
                 table.append(thead+tbody);
 
@@ -259,7 +264,7 @@ var last_outcomes = {
             //////////////////////////////////////////////////////////
             //Graphics/////////////////////////////////////////////////
             //////////////////////////////////////////////////////////
-            last_outcomes.get_graphs(response);
+            dials_report.get_graphs(response);
 
         });
     },
@@ -302,15 +307,15 @@ var last_outcomes = {
                 // Create the data table.
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Records');
+                data.addColumn('number', 'Dials');
 
                 var data2 = new google.visualization.DataTable();
                 data2.addColumn('string', 'Topping');
-                data2.addColumn('number', 'Records');
+                data2.addColumn('number', 'Dials');
 
                 var data3 = new google.visualization.DataTable();
                 data3.addColumn('string', 'Topping');
-                data3.addColumn('number', 'Records');
+                data3.addColumn('number', 'Dials');
 
                 var rows = [];
                 var rows2 = [];
@@ -333,7 +338,7 @@ var last_outcomes = {
 
                 var options2 = {
                     'legend': {position: 'none'},
-                    'title': 'In Progress',
+                    'title': 'Contact Outcome',
                     'width': 300,
                     'height': 300,
                     'hAxis': {textPosition: 'none'},
@@ -343,7 +348,7 @@ var last_outcomes = {
 
                 var options3 = {
                     'legend': {position: 'none'},
-                    'title': 'Completed',
+                    'title': 'No Contact Outcome',
                     'width': 300,
                     'height': 300,
                     'hAxis': {textPosition: 'none'},
@@ -351,9 +356,10 @@ var last_outcomes = {
                     curveType: 'function'
                 };
 
-                if (response.total_records.total > 0) {
-                    if (typeof response.total_records != 'undefined') {
-                        $.each(response.total_records, function (i, val) {
+                if (response.total_dials.total > 0) {
+
+                    if (typeof response.total_dials != 'undefined') {
+                        $.each(response.total_dials, function (i, val) {
                             if (i != 'total') {
                                 rows.push([val.num_dials, parseInt(val.num)]);
                                 colors.push('#' + val.colour);
@@ -362,8 +368,8 @@ var last_outcomes = {
                     }
                     data.addRows(rows);
 
-                    if (typeof response.last_outcomes.in_progress != 'undefined') {
-                        $.each(response.last_outcomes.in_progress, function (i, val) {
+                    if (typeof response.dials_by_outcome.contact != 'undefined') {
+                        $.each(response.dials_by_outcome.contact, function (i, val) {
                             if (i != 'total') {
                                 rows2.push([val.outcome, parseInt(val.num)]);
                                 colors2.push('#' + val.colour);
@@ -372,8 +378,8 @@ var last_outcomes = {
                     }
                     data2.addRows(rows2);
 
-                    if (typeof response.last_outcomes.completed != 'undefined') {
-                        $.each(response.last_outcomes.completed, function (i, val) {
+                    if (typeof response.dials_by_outcome.no_contact != 'undefined') {
+                        $.each(response.dials_by_outcome.no_contact, function (i, val) {
                             if (i != 'total') {
                                 rows3.push([val.outcome, parseInt(val.num)]);
                                 colors3.push('#' + val.colour);

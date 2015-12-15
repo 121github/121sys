@@ -1025,10 +1025,6 @@ class Reports extends CI_Controller
         }
         $campaigns_by_group = $aux;
 
-        $agents = $this->Form_model->get_agents();
-        $teamManagers = $this->Form_model->get_teams();
-        $outcomes = $this->Form_model->get_outcomes();
-
         $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
         $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
 
@@ -1059,8 +1055,6 @@ class Reports extends CI_Controller
                 'lib/moment.js',
                 'lib/daterangepicker.js'
             ),
-            'team_managers' => $teamManagers,
-            'agents' => $agents,
             'sources' => $sources,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
@@ -1110,20 +1104,128 @@ class Reports extends CI_Controller
 
             $outcomes = $this->input->post('outcomes');
             $campaigns = $this->input->post('campaigns');
-            $teams = $this->input->post('teams');
             $sources = $this->input->post('sources');
 
             $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
             $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
-            $teams_url = (!empty($teams)?"/team/".implode("_",$teams).(count($teams)>1?":in":""):"");
             $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
 
-            $filter_url = $outcomes_url.$campaigns_url.$teams_url.$sources_url;
+            $filter_url = $outcomes_url.$campaigns_url.$sources_url;
 
             echo json_encode(array(
                 "success" => (!empty($total_records) || !empty($last_outcomes)),
                 "total_records" => $total_records,
                 "last_outcomes" => $last_outcomes,
+                "filter_url" => $filter_url,
+                "msg" => (empty($results) ? "No results found" : "")
+            ));
+        }
+    }
+
+    //this is the controller loads the initial view for the dials report
+    public function dials()
+    {
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
+
+        $sources = $this->Form_model->get_sources();
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'Reports',
+            'title' => 'Reports | Dials',
+            'page' => 'client_report_dials',
+            'javascript' => array(
+                'charts.js?v' . $this->project_version,
+                'report/dials_report.js?v' . $this->project_version,
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'sources' => $sources,
+            'campaign_outcomes' => $campaign_outcomes,
+            'campaigns_by_group' => $campaigns_by_group,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/dials.php', $data);
+    }
+
+
+    //this controller sends the dials data back the page in JSON format. It ran when the page loads and any time the filter is changed
+    public function dials_data()
+    {
+        if ($this->input->is_ajax_request()) {
+            $total_dials = $this->Report_model->get_total_dials($this->input->post());
+            $aux = array();
+            foreach ($total_dials as $row) {
+                if (!isset($aux['total'])) {
+                    $aux['total'] = 0;
+                }
+                $row['colour'] = substr(dechex(crc32($row['contact'])), 0, 6);
+                array_push($aux, $row);
+                $aux['total'] += $row['num'];
+            }
+            $total_dials = $aux;
+
+            $dials_by_outcome = $this->Report_model->get_dials_by_outcome($this->input->post());
+            $aux = array();
+            foreach ($dials_by_outcome as $row) {
+                if (!isset($aux[$row['contact']])) {
+                    $aux[$row['contact']] = array();
+                    $aux[$row['contact']]['total'] = 0;
+                }
+                $data = array(
+                    'outcome' => $row['outcome'],
+                    'outcome_id' => $row['outcome_id'],
+                    'num' => $row['num'],
+                    'colour' => substr(dechex(crc32($row['outcome'])), 0, 6)
+                );
+                array_push($aux[$row['contact']], $data);
+                $aux[$row['contact']]['total'] += $row['num'];
+            }
+            $dials_by_outcome = $aux;
+
+            $outcomes = $this->input->post('outcomes');
+            $campaigns = $this->input->post('campaigns');
+            $sources = $this->input->post('sources');
+
+            $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
+            $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
+            $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
+
+            $filter_url = $outcomes_url.$campaigns_url.$sources_url;
+
+            echo json_encode(array(
+                "success" => (!empty($total_dials) || !empty($dials_by_outcome)),
+                "total_dials" => $total_dials,
+                "dials_by_outcome" => $dials_by_outcome,
                 "filter_url" => $filter_url,
                 "msg" => (empty($results) ? "No results found" : "")
             ));
