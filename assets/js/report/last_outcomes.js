@@ -116,33 +116,46 @@ var last_outcomes = {
 
                 table.append(thead+tbody);
 
-                thead = ("<tr class='success'><th>In Progress</th>"
-                    + "<th>" + response.last_outcomes.in_progress.total + "</th>"
-                    + "<th></th>"
-                    + "<th></th></tr>"
-                );
-
                 tbody = '';
-                if (response.last_outcomes.in_progress.total > 0) {
-                    $.each(response.last_outcomes.in_progress, function(i, val) {
-                        if (i != 'total') {
-                            search_url = helper.baseUrl + 'search/custom/records/'
-                                + 'update-date-from/'+$('.filter-form').find('input[name="date_from"]').val()
-                                + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
-                                + response.filter_url
-                                + '/outcome/'+val.outcome_id
-                                + '/status/1_2_null:in';;
+                if (typeof response.last_outcomes.in_progress != 'undefined') {
+                    thead = ("<tr class='success'><th>In Progress</th>"
+                        + "<th>" + response.last_outcomes.in_progress.total + "</th>"
+                        + "<th></th>"
+                        + "<th></th></tr>"
+                    );
 
-                            tbody += ("<tr>"
-                            + "<td>"+val.outcome+"</td>"
-                            + "<td>"+"<a href='" + search_url + "'>"+val.num+"</a>"
-                            + "<td>"+((val.num*100)/response.last_outcomes.in_progress.total).toFixed(2)+"%</td>"
-                            + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
-                            + "</tr>");
-                        }
-                    });
+                    if (response.last_outcomes.in_progress.total > 0) {
+                        $.each(response.last_outcomes.in_progress, function(i, val) {
+                            if (i != 'total') {
+                                search_url = helper.baseUrl + 'search/custom/records/'
+                                    + 'update-date-from/'+$('.filter-form').find('input[name="date_from"]').val()
+                                    + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
+                                    + response.filter_url
+                                    + '/outcome/'+val.outcome_id
+                                    + '/status/1_2_null:in';;
+
+                                tbody += ("<tr>"
+                                + "<td>"+val.outcome+"</td>"
+                                + "<td>"+"<a href='" + search_url + "'>"+val.num+"</a>"
+                                + "<td>"+((val.num*100)/response.last_outcomes.in_progress.total).toFixed(2)+"%</td>"
+                                + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
+                                + "</tr>");
+                            }
+                        });
+                    }
+                    else {
+                        tbody += ("<tr>"
+                        + "<td colspan='3' style='color: red'>No records In Progress currently with these filters</td>"
+                        + "</tr>");
+                    }
                 }
                 else {
+                    thead = ("<tr class='success'><th>In Progress</th>"
+                        + "<th>0</th>"
+                        + "<th></th>"
+                        + "<th></th></tr>"
+                    );
+
                     tbody += ("<tr>"
                     + "<td colspan='3' style='color: red'>No records In Progress currently with these filters</td>"
                     + "</tr>");
@@ -150,37 +163,46 @@ var last_outcomes = {
 
                 table.append(thead+tbody);
 
-                thead = ("<tr class='success'><th>Completed</th>"
-                    + "<th>" + response.last_outcomes.completed.total + "</th>"
-                    + "<th></th>"
-                    + "<th></th></tr>"
-                );
-
                 tbody = '';
-                if (response.last_outcomes.completed.total > 0) {
-                    $.each(response.last_outcomes.completed, function(i, val) {
-                        if (i != 'total') {
-                            search_url = helper.baseUrl + 'search/custom/records/'
-                                + 'update-date-from/'+$('.filter-form').find('input[name="date_from"]').val()
-                                + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
-                                + response.filter_url
-                                + '/outcome/'+val.outcome_id
-                                + '/status/3_4:in';
+                if (typeof response.last_outcomes.completed != 'undefined') {
+                    thead = ("<tr class='success'><th>Completed</th>"
+                        + "<th>" + response.last_outcomes.completed.total + "</th>"
+                        + "<th></th>"
+                        + "<th></th></tr>"
+                    );
 
-                            tbody += ("<tr>"
-                            + "<td>"+val.outcome+"</td>"
-                            + "<td>"+"<a href='" + search_url + "'>"+val.num+"</a>"
-                            + "<td>"+((val.num*100)/response.last_outcomes.completed.total).toFixed(2)+"%</td>"
-                            + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
-                            + "</tr>");
-                        }
-                    });
+                    if (response.last_outcomes.completed.total > 0) {
+                        $.each(response.last_outcomes.completed, function(i, val) {
+                            if (i != 'total') {
+                                search_url = helper.baseUrl + 'search/custom/records/'
+                                    + 'update-date-from/'+$('.filter-form').find('input[name="date_from"]').val()
+                                    + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
+                                    + response.filter_url
+                                    + '/outcome/'+val.outcome_id
+                                    + '/status/3_4:in';
+
+                                tbody += ("<tr>"
+                                + "<td>"+val.outcome+"</td>"
+                                + "<td>"+"<a href='" + search_url + "'>"+val.num+"</a>"
+                                + "<td>"+((val.num*100)/response.last_outcomes.completed.total).toFixed(2)+"%</td>"
+                                + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
+                                + "</tr>");
+                            }
+                        });
+                    }
+                    else {
+                        thead = ("<tr class='success'><th>Completed</th>"
+                            + "<th>0</th>"
+                            + "<th></th>"
+                            + "<th></th></tr>"
+                        );
+
+                        tbody += ("<tr>"
+                        + "<td colspan='3' style='color: red'>No records Completed currently with these filters</td>"
+                        + "</tr>");
+                    }
                 }
-                else {
-                    tbody += ("<tr>"
-                    + "<td colspan='3' style='color: red'>No records Completed currently with these filters</td>"
-                    + "</tr>");
-                }
+
 
                 table.append(thead+tbody);
 
@@ -223,24 +245,6 @@ var last_outcomes = {
                 filters += "<li style='list-style-type:none'><span style='color: " + color + "'>" + $(this).text() + "</span></li>";
             });
             filters += "</ul>";
-
-            //Teams
-            var size = ($('.team-filter  option:selected').size() > 0 ? "(" + $('.team-filter  option:selected').size() + ")" : '');
-            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Teams</strong> " + size + "</h5><ul>";
-            $('.team-filter  option:selected').each(function (index) {
-                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
-            });
-            filters += "</ul>";
-
-
-            //Agents
-            var size = ($('.agent-filter  option:selected').size() > 0 ? "(" + $('.agent-filter  option:selected').size() + ")" : '');
-            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Agents</strong> " + size + "</h5><ul>";
-            $('.agent-filter  option:selected').each(function (index) {
-                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
-            });
-            filters += "</ul>";
-
 
             //Sources
             var size = ($('.source-filter  option:selected').size() > 0 ? "(" + $('.source-filter  option:selected').size() + ")" : '');
@@ -348,28 +352,34 @@ var last_outcomes = {
                 };
 
                 if (response.total_records.total > 0) {
-                    $.each(response.total_records, function (i, val) {
-                        if (i != 'total') {
-                            rows.push([val.num_dials, parseInt(val.num)]);
-                            colors.push('#' + val.colour);
-                        }
-                    });
+                    if (typeof response.total_records != 'undefined') {
+                        $.each(response.total_records, function (i, val) {
+                            if (i != 'total') {
+                                rows.push([val.num_dials, parseInt(val.num)]);
+                                colors.push('#' + val.colour);
+                            }
+                        });
+                    }
                     data.addRows(rows);
 
-                    $.each(response.last_outcomes.in_progress, function (i, val) {
-                        if (i != 'total') {
-                            rows2.push([val.outcome, parseInt(val.num)]);
-                            colors2.push('#' + val.colour);
-                        }
-                    });
+                    if (typeof response.last_outcomes.in_progress != 'undefined') {
+                        $.each(response.last_outcomes.in_progress, function (i, val) {
+                            if (i != 'total') {
+                                rows2.push([val.outcome, parseInt(val.num)]);
+                                colors2.push('#' + val.colour);
+                            }
+                        });
+                    }
                     data2.addRows(rows2);
 
-                    $.each(response.last_outcomes.completed, function (i, val) {
-                        if (i != 'total') {
-                            rows3.push([val.outcome, parseInt(val.num)]);
-                            colors3.push('#' + val.colour);
-                        }
-                    });
+                    if (typeof response.last_outcomes.completed != 'undefined') {
+                        $.each(response.last_outcomes.completed, function (i, val) {
+                            if (i != 'total') {
+                                rows3.push([val.outcome, parseInt(val.num)]);
+                                colors3.push('#' + val.colour);
+                            }
+                        });
+                    }
                     data3.addRows(rows3);
 
 
