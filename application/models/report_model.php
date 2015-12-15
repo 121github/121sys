@@ -634,6 +634,113 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
     }
 
     /**
+     * Get the data for the get_dials_by_outcome report
+     *
+     * @param $options
+     * @return array
+     */
+    public function get_dials_by_outcome($options)
+    {
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+
+        $where = "";
+        if (!empty($date_from)) {
+            $where .= " and (date(r.date_updated) >= '".$date_from."' or (r.date_updated is null and date(r.date_added) >=  '".$date_from."')) ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and (date(r.date_updated) <= '".$date_to."' or (r.date_updated is null and date(r.date_added) <=  '".$date_to."')) ";
+        }
+
+        if (!empty($sources)) {
+            $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
+        }
+
+        if (!empty($outcomes)) {
+            $where .= " and r.outcome_id IN (" . implode(",", $outcomes) . ") ";
+        }
+
+        if (!empty($campaigns)) {
+            $where .= " and r.campaign_id IN (" . implode(",", $campaigns) . ") ";
+        }
+
+        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+
+        $qry = "SELECT
+                  IF (o.outcome is not NULL, o.outcome, '- No Outcome Set -') as outcome,
+                  r.outcome_id,
+                  IF (c.contact_id is not null, 'contact', 'no_contact') as contact,
+                  count(r.dials) as num
+                FROM records r
+                  LEFT JOIN outcomes o USING (outcome_id)
+                  LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
+                  LEFT JOIN data_sources using (source_id)
+                  LEFT JOIN contacts c using (urn)";
+
+        $qry .= " where 1 " . $where;
+
+        $qry .= " GROUP BY contact, o.outcome_id
+                  ORDER BY num desc";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Get total dials for the last outcomes report
+     *
+     * @param $options
+     * @return array
+     */
+    public function get_total_dials($options)
+    {
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+
+        $where = "";
+        if (!empty($date_from)) {
+            $where .= " and (date(r.date_updated) >= '".$date_from."' or (r.date_updated is null and date(r.date_added) >=  '".$date_from."')) ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and (date(r.date_updated) <= '".$date_to."' or (r.date_updated is null and date(r.date_added) <=  '".$date_to."')) ";
+        }
+
+        if (!empty($sources)) {
+            $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
+        }
+
+        if (!empty($outcomes)) {
+            $where .= " and r.outcome_id IN (" . implode(",", $outcomes) . ") ";
+        }
+
+        if (!empty($campaigns)) {
+            $where .= " and r.campaign_id IN (" . implode(",", $campaigns) . ") ";
+        }
+
+        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+
+        $qry = "SELECT
+                  count(r.dials) as num,
+                  IF (c.contact_id is not null, 'Total Contact', 'Total No Contact') as contact
+                FROM records r
+                  LEFT JOIN outcomes o USING (outcome_id)
+                  LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
+                  LEFT JOIN data_sources using (source_id)
+                  LEFT JOIN contacts c using (urn)";
+
+        $qry .= " where 1 " . $where;
+
+        $qry .= " GROUP BY contact";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
      * Get sms data
      */
     public function get_sms_data($options)
