@@ -672,13 +672,12 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $qry = "SELECT
                   IF (o.outcome is not NULL, o.outcome, '- No Outcome Set -') as outcome,
                   r.outcome_id,
-                  IF (c.contact_id is not null, 'contact', 'no_contact') as contact,
+                  IF (o.contact_made, 'contact', 'no_contact') as contact,
                   count(r.dials) as num
                 FROM records r
                   LEFT JOIN outcomes o USING (outcome_id)
                   LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
-                  LEFT JOIN data_sources using (source_id)
-                  LEFT JOIN contacts c using (urn)";
+                  LEFT JOIN data_sources using (source_id)";
 
         $qry .= " where 1 " . $where;
 
@@ -726,12 +725,11 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $qry = "SELECT
                   count(r.dials) as num,
-                  IF (c.contact_id is not null, 'Total Contact', 'Total No Contact') as contact
+                  IF (o.contact_made, 'Total Contact', 'Total No Contact') as contact
                 FROM records r
                   LEFT JOIN outcomes o USING (outcome_id)
                   LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
-                  LEFT JOIN data_sources using (source_id)
-                  LEFT JOIN contacts c using (urn)";
+                  LEFT JOIN data_sources using (source_id)";
 
         $qry .= " where 1 " . $where;
 

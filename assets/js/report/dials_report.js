@@ -103,7 +103,7 @@ var dials_report = {
                             + 'update-date-from/'+$('.filter-form').find('input[name="date_from"]').val()
                             + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
                             + response.filter_url
-                            + '/contact-id/' + ((val.contact == 'Total Contact')?'null:not':'null');
+                            + '/contact-made/' + ((val.contact == 'Total Contact')?'1':'0');
 
                         tbody += ("<tr>"
                         + "<td>"+val.contact+"</td>"
@@ -132,7 +132,7 @@ var dials_report = {
                                     + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
                                     + response.filter_url
                                     + '/outcome/'+val.outcome_id
-                                    + '/contact-id/null:not';
+                                    + '/contact-made/1';
 
                                 tbody += ("<tr>"
                                 + "<td>"+val.outcome+"</td>"
@@ -145,7 +145,7 @@ var dials_report = {
                     }
                     else {
                         tbody += ("<tr>"
-                        + "<td colspan='3' style='color: red'>No records with Contacts currently with these filters</td>"
+                        + "<td colspan='3' style='color: red'>No records with Contact Outcomes currently with these filters</td>"
                         + "</tr>");
                     }
                 }
@@ -157,7 +157,7 @@ var dials_report = {
                     );
 
                     tbody += ("<tr>"
-                    + "<td colspan='3' style='color: red'>No records with Contacts currently with these filters</td>"
+                    + "<td colspan='3' style='color: red'>No records with Contact Outcomes currently with these filters</td>"
                     + "</tr>");
                 }
 
@@ -180,7 +180,7 @@ var dials_report = {
                                     + '/update-date-to/'+$('.filter-form').find('input[name="date_to"]').val()
                                     + response.filter_url
                                     + '/outcome/'+val.outcome_id
-                                    + '/contact-id/null';
+                                    + '/contact-made/0';
 
                                 tbody += ("<tr>"
                                 + "<td>"+val.outcome+"</td>"
@@ -193,7 +193,7 @@ var dials_report = {
                     }
                     else {
                         tbody += ("<tr>"
-                        + "<td colspan='3' style='color: red'>No records Without Contacts currently with these filters</td>"
+                        + "<td colspan='3' style='color: red'>No records With No Contact Outcomes currently with these filters</td>"
                         + "</tr>");
                     }
                 }
@@ -205,7 +205,7 @@ var dials_report = {
                     );
 
                     tbody += ("<tr>"
-                    + "<td colspan='3' style='color: red'>No records Without Contacts currently with these filters</td>"
+                    + "<td colspan='3' style='color: red'>No records With No Contact Outcomes currently with these filters</td>"
                     + "</tr>");
                 }
 
