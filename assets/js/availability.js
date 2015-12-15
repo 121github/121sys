@@ -13,7 +13,7 @@ var quick_planner = {
 //add listners
         $(document).on('mouseover', '#quick-planner tbody tr', function (e) {
             var target = $(this).find('.show-apps');
-            if (target.attr('data-toggle') !== "tooltip") {
+            if (target.length>0) {
                 var user_id = target.attr('data-user');
                 var date = target.attr('data-date');
                 $.ajax({
@@ -27,7 +27,7 @@ var quick_planner = {
                         $.each(response.data, function (i, row) {
                             apps += '<small>'+Number(i + 1) + '. ' + row.title + ': '+ row.postcode +'<br>' + row.start + ' until ' + row.end + '</small><br>';
                         });
-                        target.attr('data-toggle', 'tooltip').attr('data-placement', 'top').attr('data-title', apps).attr('data-html', 'true').tooltip();
+                        target.attr('data-toggle', 'tooltip').attr('data-placement', 'top').attr('data-original-title', apps).attr('data-html', 'true');
                     }
                 });
             }
@@ -128,12 +128,17 @@ var quick_planner = {
  planner_summary: function (data) {
         simulation = data;
         var table = "";
+		
         table += "<div class='table-responsive' style='overflow:auto; max-height:215px'><table class='small table table-condensed'><thead><tr><th>Date</th><th>Slots</th><th>Total Distance</th><th>Total Duration</th><th>Route</th><tr></thead><tbody>";
         $.each(data.waypoints, function (date, waypoint) {
+			var rule_tooltip="";
             var btn_text = "Simulate";
             var slots = data.slots[date];
             var stats = data.stats[date];
             var force = "";
+			var holiday = "";
+			var show_apps = "";
+			var tt = "data-toggle='tooltip' data-html='true' data-placement='top' title='No appointments booked'";
 			var time = "00:00:00";
             if (slots.apps == slots.max_apps) {
                 var btn_text = "Show";
@@ -143,17 +148,22 @@ var quick_planner = {
                 time = v.datetime;
             }
 			});
-
-            var empty_tooltip = slots.apps == "0" ? " data-toggle='tooltip' data-html='true' data-placement='top' title='No appointments booked'" : "";
-            var tooltip = slots.reason ? " data-toggle='tooltip' data-html='true' data-placement='top' title='Not available: " + slots.reason + "'" : empty_tooltip;
-            var holiday = slots.reason ? "class='purple'" : "";
+			console.log(slots);
+if(slots.reason.length>0){
+rule_tooltip = "<span class='fa fa-info-circle tt' data-toggle='tooltip' data-html='true' data-placement='top' title='"+slots.reason+"'></span>";
+console.log(rule_tooltip);
+holiday="class='purple'";
+}
+if(slots.apps>0){
+show_apps = "show-apps";
+}
             color = slots.apps >= slots.max_apps && slots.max_apps > 0 ? "class='danger'" : holiday;
-            table += "<tr " + color + "><td>" + waypoint[0].uk_date + "</td><td><div class='pointer show-apps' data-date='" + date + "' data-user='" + simulation.user_id + "' " + tooltip + " >" + slots.apps + "/" + slots.max_apps + "</div></td><td>" + stats[stats.length-1].added_distance.text + "</td><td>" + stats[stats.length-1].added_duration.text + "</td><td><button class='btn btn-default btn-xs simulate' data-date='" + date + "' data-time='" + time + "' data-uk-date='" + waypoint[0].uk_date + "' " + force + " >Simulate</button></td></tr>";
+            table += "<tr " + color + "><td>" + waypoint[0].uk_date + "</td><td><div "+tt+" class='pointer "+show_apps+"' data-date='" + date + "' data-user='" + simulation.user_id + "'>" + slots.apps + "/" + slots.max_apps + "</div> "+rule_tooltip+"</td><td>" + stats[stats.length-1].added_distance.text + "</td><td>" + stats[stats.length-1].added_duration.text + "</td><td><button class='btn btn-default btn-xs simulate' data-date='" + date + "' data-time='" + time + "' data-uk-date='" + waypoint[0].uk_date + "' " + force + " >Simulate</button></td></tr>";
 
         });
         table += "</tbody></table></div>";
         $('#quick-planner').html(table);
-        $('#quick-planner .show-apps[data-toggle="tooltip"]').tooltip().tooltip('hide');
+        $('#quick-planner [data-toggle="tooltip"]').tooltip().tooltip('hide');
 
     }
 	

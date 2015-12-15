@@ -48,7 +48,7 @@
                  <div class="row">
         <div class="col-lg-12">
        <div class="panel panel-primary" id="slot-day-panel">
-            <div class="panel-heading">Configure max appointments per slot for this user <span class="slot-rule-user"></span></div>
+            <div class="panel-heading">Default slot configuration - set the maximum allowed appointments per day/timeslot <span class="slot-rule-user"></span></div>
              <div class="panel-body">
              <p>Select the user you want to configure using the options above</p>
             </div>
@@ -59,17 +59,10 @@
       </form> 
       
            <div class="row">
-        <div class="col-lg-6">
-       <div class="panel panel-primary" id="slot-date-panel">
-            <div class="panel-heading">View slot thresholds by date <span class="slot-rule-user"></span></div>
-             <div class="panel-body">
-             <p>Select the user you want to configure using the options above</p>
-            </div>
-      </div>
-      </div>
-        <div class="col-lg-6">
+      
+        <div class="col-lg-4 col-sm-12">
       <div class="panel panel-primary">
-            <div class="panel-heading">Create a new appointment threshold on a specified date </div>
+            <div class="panel-heading">Create rules to override the default slot configuration</div>
              <div class="panel-body">
               <p id="date-slots-form-notice">Select the user you want to configure using the options above</p>
 
@@ -92,12 +85,24 @@
             <input type="text" name="max_apps" class="form-control" />
             </div> 
              <div class="form-group col-sm-12">
+             <label>Notes/Reason</label><br />
+            <input type="text" name="notes" class="form-control" placeholder="Eg: Do not book 9am-11am" />
+            </div> 
+             <div class="form-group col-sm-12">
              <button class="btn btn-primary" id="add-date-rule">Add</button>
              </div>
             </form>
             </div>
       </div>
 
+      </div>
+        <div class="col-lg-8 col-sm-12">
+       <div class="panel panel-primary" id="slot-date-panel">
+            <div class="panel-heading">Current rules <span class="slot-rule-user"></span></div>
+             <div class="panel-body">
+             <p>Select the user you want to configure using the options above</p>
+            </div>
+      </div>
       </div>
       </div>
 <script>

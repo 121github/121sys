@@ -1535,14 +1535,14 @@ var record = {
 					var title = "<p>Showing "+response.data.name+" availability</p>";
 					var slots = "";
 					 $.each(response.data.timeslots,function(slot_id, slot){
-						slots += '<th><span class="glyphicon glyphicon-info-sign tt" data-toggle="tooltip" data-placement="right" title="'+slot.slot_description+'" ></span> '+slot.slot_name+'</th>'
+						slots += '<th><span class="fa fa-info-circle tt" data-toggle="tooltip" data-placement="right" title="'+slot.slot_description+'" ></span> '+slot.slot_name+'</th>'
 					 });
 					
                     var table = '<div class="table-responsive" style="overflow:auto; max-height:250px"><table class="table table-condensed table-striped"><thead><th>Date</th>'+slots+'</thead><tbody>';
                     $.each(response.data.apps, function (k, day) {
 						var day_row = "<td>"+k+"</td>";
 						$.each(day,function(i,v){
-						var slot_color="",priority="";  
+						var slot_color="",priority="",reason = "";
 						if(v.best_distance&& v.apps<v.max_apps&&v.min_distance<10){
 							var slot_color = 'text-success';
 							priority = '<span class="text-success fa fa-check-circle"></span>'
@@ -1550,11 +1550,16 @@ var record = {
                         if (Number(v.apps) >= Number(v.max_apps)) {
                             var slot_color = 'text-danger';
                         }
+						if(v.reason.length>0){
+							reason = ' <span class="tt fa fa-info-circle" data-html="true" data-toggle="tooltip" data-placement="right" title="'+v.reason+'"></span>'
+						}
 						if(v.apps>0){
-						var apps = '<span class="tt pointer" data-html="true" data-toggle="tooltip" data-placement="right" title="Nearest appointment is:<br><b>'+v.min_distance+' miles</b>">' + v.apps + '/'+v.max_apps+' '+priority+'</span>';
+						var apps = '<span class="tt pointer" data-html="true" data-toggle="tooltip" data-placement="right" title="Nearest appointment is:<br><b>'+v.min_distance+' miles</b>">' + v.apps + '/'+v.max_apps+' '+priority+'</span> ';
 						} else {
 						var	apps = v.apps + '/'+v.max_apps
 						}
+						//add the reason tooltip if a rule is set on that slot
+						apps += reason;
 						 day_row += '<td class="' + slot_color + '" ><input data-time="'+v.slot_start+'" data-date="' + v.sqldate + '" type="radio" name="slot-choice"/> '+apps+'</td>';
 						});
                         table += '<tr>'+day_row+'</tr>'

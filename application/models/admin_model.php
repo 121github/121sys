@@ -42,6 +42,7 @@ class Admin_model extends CI_Model
     
     public function save_date_slots($data)
     {
+		$notes = $data['notes'];
         $date_from = to_mysql_datetime($data['date_from']);
         $date_to   = to_mysql_datetime($data['date_to']);
         $range     = date_range($date_from, $date_to, '+1 day', 'Y-m-d');
@@ -55,7 +56,8 @@ class Admin_model extends CI_Model
                 "user_id" => $data['user_id'],
                 "max_slots" => $data['max_apps'],
                 "date" => $date,
-                "appointment_slot_id" => $slot_id
+                "appointment_slot_id" => $slot_id,
+				"notes"=>$notes
             );
 			}
         }

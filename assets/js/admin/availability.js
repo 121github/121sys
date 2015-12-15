@@ -113,10 +113,10 @@ var admin = {
                         id: id
                     }
                 }).done(function(response) {
-                    var table = "<table class='table table-striped'><thead><th>Date</th><th>Slot</th><th>Times</th><th>Max Slots</th><th></th></thead><tbody>";
+                    var table = "<table class='table table-striped'><thead><th>Date</th><th>Slot</th><th>Times</th><th>Max Slots</th><th>Notes</th><th></th></thead><tbody>";
                     if (response.length > 0) {
                         $.each(response, function(i, row) {
-                            table += "<tr><td>" + row.date + "</td><td>" + row.slot_name + "</td><td>" + row.slot_start + " til " + row.slot_end + "</td><td>" + row.max_slots + "</td><td><button class='btn btn-default btn-xs delete-slot-override' data-id=" + row.slot_override_id + ">Delete</button></td></tr>";
+                            table += "<tr><td>" + row.date + "</td><td>" + row.slot_name + "</td><td>" + row.slot_start + " til " + row.slot_end + "</td><td>" + row.max_slots + "</td><td>" + row.notes + "</td><td><button class='btn btn-default btn-xs delete-slot-override' data-id=" + row.slot_override_id + ">Delete</button></td></tr>";
                         });
                         table += "</tbody></table>";
                     } else {

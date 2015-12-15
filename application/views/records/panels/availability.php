@@ -47,8 +47,6 @@
          <?php foreach($attendees as $attendee): ?>
           <li><a href="#" class="filter" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><span class='filter-text'><?php echo $attendee['name'] ?></span> <small><?php echo (!empty($attendee['distance'])?$attendee['distance']." miles":"") ?> </small></a> </li>
           <?php endforeach ?>
-          <li class="divider"></li>
-          <li><a class="filter" ref="#" style="color: green;" data-ref="attendee">Show all</a> </li>
         </ul>
       </div>
 

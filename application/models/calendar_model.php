@@ -148,7 +148,17 @@ class Calendar_model extends CI_Model
 		}
         return $this->db->query($qry)->result_array();
     }
-
+	
+    public function get_appointment_override($distinct_user=false) {
+        $qry = "select appointment_override_id, `date` block_day, max_slots, users.name, notes reason
+                from appointment_slot_override
+                join users using (user_id) join users_to_campaigns using(user_id)
+                where campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		if($distinct_user){
+		$qry .= " group by block_day,user_id";	
+		}
+        return $this->db->query($qry)->result_array();
+    }
     /**
      * Get appointment rules by date
      */

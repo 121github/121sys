@@ -62,6 +62,22 @@ class Admin extends CI_Controller
         ));
 		exit;
 		}
+		if(!$this->input->post('slot_id')){
+		echo json_encode(array(
+            "success" => false,
+			"error" => "You must choose the timeslot you are editing"
+        ));
+		exit;
+		}
+		/*
+		if(trim($this->input->post('notes'))==""){
+		echo json_encode(array(
+            "success" => false,
+			"error" => "Please add notes/reason for the change"
+        ));
+		exit;
+		}
+		*/
         $this->Admin_model->save_date_slots($this->input->post());
         echo json_encode(array(
             "success" => true

@@ -60,6 +60,7 @@ class Appointments_model extends CI_Model
                     $thresholds[$day][$row['appointment_slot_id']] = $row;
                     $thresholds[$day][$row['appointment_slot_id']]['max_apps'] = 0;
                     $thresholds[$day][$row['appointment_slot_id']]['apps'] = 0;
+					$thresholds[$day][$row['appointment_slot_id']]['reason'] = "";
                 }
             }
         }
@@ -69,10 +70,11 @@ class Appointments_model extends CI_Model
 
         //get any user specified days
         $defined_slots = array();
-        $get_slots = "select appointment_slot_id,`date`,max_slots from appointment_slot_override where `date` > curdate() $where ";
+        $get_slots = "select appointment_slot_id,`date`,max_slots,notes reason from appointment_slot_override where `date` > curdate() $where ";
         $get_slots_result = $this->db->query($get_slots)->result_array();
         foreach ($get_slots_result as $row) {
             $defined_slots[$row['date']][$row['appointment_slot_id']]["max_apps"] = $row['max_slots'];
+			$defined_slots[$row['date']][$row['appointment_slot_id']]["reason"] = $row['reason'];
         }
         //now find the specified daily slots and overwrite the default array
         $max = array();
@@ -94,6 +96,7 @@ class Appointments_model extends CI_Model
 
         /* get user holidays to remove from slots */
         $holidays = array();
+		/*
         if ($user_id) {
             $get_holidays = "select reason,reason_id,block_day,appointment_slot_id,other_reason from appointment_rules join appointment_rule_reasons using(reason_id) where 1 ";
             $get_holidays .= $holidays_where;
@@ -106,6 +109,7 @@ class Appointments_model extends CI_Model
 				}
             }
         }
+		*/
         /* end holidays */
 
         /* now push all the data into each day for the next 30 days and if there is a holiday for the day we remove the slots and add the reason */
@@ -118,12 +122,14 @@ class Appointments_model extends CI_Model
 			$thresholds[$d][$k]["sqldate"] =  $date;
 				}
 			}
+		
 			//take each day and insert all the slot data
             $this_day = $thresholds[date("l", strtotime('+' . $i . ' days'))];
             if (array_key_exists($date, $defined_slots)) {
                 foreach ($this_day as $slot => $details) {
                     if (isset($defined_slots[$date][$slot])) {
                         $this_day[$slot]['max_apps'] = $defined_slots[$date][$slot]["max_apps"];
+						 $this_day[$slot]['reason'] = $defined_slots[$date][$slot]["reason"];
                     }
                 }
             }
@@ -141,7 +147,7 @@ class Appointments_model extends CI_Model
             }
 
             $slots[date("D jS M y", strtotime('+' . $i . ' days'))] = $this_day;
-        }
+        }		
 		
         /* now get the appointments in each slot for each day and push them into the array */
 

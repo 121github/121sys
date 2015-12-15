@@ -262,15 +262,17 @@ $travel_info[$day][$new_key]['added_duration'] = $travel_info[$day][$new_key]['d
 //also add the slots to the data to show in the panel
 $this->load->model('Appointments_model');
 $slots = array();
+
 $appointments = $this->Appointments_model->slot_availability(false,$driver_id);
 foreach($appointments['apps'] as $date => $day){
 	$max_apps = 0;
 	$apps = 0;
+	$reason = false;
 	foreach($day as $k=>$row){
 		if(isset($row['max_apps'])){
 		$max_apps += $row['max_apps'];
 		$apps += $row['apps'];
-		$reason  = isset($row['reason'])?$row['reason']:false;
+		if(!empty($row['reason'])){ $reason  = $row['reason']; }
 		$sql_date = DateTime::createFromFormat('D jS M y', $date)->format('Y-m-d');
 		$slots[$sql_date] = array("apps"=>$apps,"max_apps"=>$max_apps,"reason"=>$reason);	
 		}

@@ -13,10 +13,11 @@
                             array_push($options,'<li><a href="#" class="group-filter" id="export-appointment-btn">Export appointments</a></li>');
                         }
                     ?>
+                    
                      <div class="btn-group">
-                     <button id="set-rules" type="button" class="btn btn-default btn-xs">
-                                <span class="glyphicon glyphicon-user"></span> Set Rules
-                            </button>
+                     <a class="btn btn-default btn-xs" href="<?php echo base_url() ?>admin/availability">
+                                <span class="glyphicon glyphicon-user"></span> Manage availability
+                            </a>
                      </div>
                     
                     <?php if (!empty($options)): ?>

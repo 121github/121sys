@@ -212,8 +212,8 @@ class Calendar extends CI_Controller
              }
             }
         }
+		 if (!isset($_POST['modal'])) {
   foreach($result as $k=>$v){
-	  if(isset($v['date'])&&in_array($v['date'],$counts)){
             $result[$k]['app_count']=$counts[$v['date']]['apps'];
 	  }
   }
@@ -326,7 +326,8 @@ class Calendar extends CI_Controller
 			} else {
 				$distinct_user = false;
 			}
-            $appointment_rules = $this->Calendar_model->get_appointment_rules($distinct_user);
+            //$appointment_rules = $this->Calendar_model->get_appointment_rules($distinct_user);
+			$appointment_rules = $this->Calendar_model->get_appointment_overrides($distinct_user);
             $aux = array();
             foreach ($appointment_rules as $rule) {
                 if (!isset($aux[$rule['block_day']])) {
