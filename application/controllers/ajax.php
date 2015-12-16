@@ -29,20 +29,22 @@ class Ajax extends CI_Controller
 	}
 	}
 
-	public function suppress_by_urn(){
-		if ($this->input->is_ajax_request()) {
-		$urn = $this->input->post('urn');
-		$numbers = $this->Contacts_model->get_numbers($urn);
-		$campaign = $this->Records_model->get_campaign_from_urn($urn);
-		$reason = "Suppressed by ".$_SESSION['name'];
-		$campaigns = array($campaign);
-		foreach($numbers as $number){
-		$suppression_id = $this->Data_model->insert_suppression($number, $reason);
-		$this->Data_model->save_suppression_by_campaign($suppression_id, $campaigns);
-		}
-		}
-		echo json_encode(array("success"=>true,"post"=>$form));
-	}
+	public function suppress_by_urn()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            $urn = $this->input->post('urn');
+            $numbers = $this->Contacts_model->get_numbers($urn);
+            $campaign = $this->Records_model->get_campaign_from_urn($urn);
+            $reason = "Suppressed by " . $_SESSION['name'];
+            $campaigns = array($campaign);
+            foreach ($numbers as $number) {
+                $suppression_id = $this->Data_model->insert_suppression($number, $reason);
+                $this->Data_model->save_suppression_by_campaign($suppression_id, $campaigns);
+            }
+        }
+        echo json_encode(array("success" => true, "post" => $form));
+    }
 	
 	public function get_campaigns()
     {
@@ -1017,7 +1019,9 @@ class Ajax extends CI_Controller
             if (isset($form['call_direction']) && $form['call_direction'] == '') {
                 $form['call_direction'] = NULL;
             }
-            $form['contact'] = to_mysql_datetime($form['contact']);
+            if (isset($form['contact'])) {
+                $form['contact'] = to_mysql_datetime($form['contact']);
+            }
             if ($this->Records_model->save_history($form)) {
                 echo json_encode(array(
                     "success" => true,
