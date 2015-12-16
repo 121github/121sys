@@ -1562,8 +1562,10 @@ var record = {
                              slot_color = 'text-danger';
 							 disabled = 'disabled';
                         }
-						if(v.reason.length>0){
+						if(typeof v.reason!=="undefined"){
+							if(v.reason.length){
 							reason = ' <span class="tt fa fa-info-circle" data-html="true" data-toggle="tooltip" data-placement="right" title="'+v.reason+'"></span>'
+							}
 						}
 						if(v.apps>0){
 						var apps = '<span class="tt pointer" data-html="true" data-toggle="tooltip" data-placement="right" title="Nearest appointment is:<br><b>'+v.min_distance+' miles</b>">' + v.apps + '/'+v.max_apps+' '+priority+'</span> ';

@@ -45,7 +45,7 @@ var admin = {
                 $tbody.empty();
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
-                        $tbody.append("<tr><td class='group_id'>" + val.id + "</td><td class='group_name'>" + val.name + "</td><td class='theme_folder'>" + val.theme_folder + "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn' item-id='" + val.id + "'>Delete</button></td></tr>");
+                        $tbody.append("<tr><td class='group_id'>" + val.id + "</td><td class='group_name'>" + val.name + "</td><td class='theme_color'>" + val.theme_color + "</td><td class='theme_images'>" + val.theme_images + "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn' item-id='" + val.id + "'>Delete</button></td></tr>");
                     }
                 });
             });
@@ -55,7 +55,8 @@ var admin = {
             var row = $btn.closest('tr');
             $('form').find('input[name="group_id"]').val(row.find('.group_id').text());
             $('form').find('input[name="group_name"]').val(row.find('.group_name').text());
-			$('form').find('input[name="theme_folder"]').val(row.find('.theme_folder').text());
+			$('form').find('input[name="theme_color"]').val(row.find('.theme_color').text());
+			$('form').find('input[name="theme_images"]').val(row.find('.theme_images').text());
             $('.ajax-table').fadeOut(1000, function() {
                 $('form').fadeIn();
             });

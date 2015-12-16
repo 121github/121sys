@@ -24,7 +24,8 @@
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
-                  <th>Theme Folder</th>
+                  <th>Theme Colour</th>
+                  <th>Theme Images</th>
                   <th>Options</th>
                 </tr>
               </thead>

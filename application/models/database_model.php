@@ -547,7 +547,7 @@ $this->firephp->log($delete);
 
         $this->firephp->log("inserting user_groups");
         //Dumpingdata for table `user_groups`
-        $this->db->query("INSERT INTO `user_groups` (`group_name`, `theme_folder`) VALUES
+        $this->db->query("INSERT INTO `user_groups` (`group_name`, `theme_color`, `theme_images`) VALUES
 		('121', '')");
 
         if ($this->db->_error_message()) {
