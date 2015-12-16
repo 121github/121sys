@@ -346,7 +346,7 @@ var record = {
     history_panel: {
         init: function () {
             record.history_panel.load_panel();
- $(document).on('change', '#selectpicker_outcome', function (e) {
+            $(document).on('change', '#selectpicker_outcome', function (e) {
                 e.preventDefault();
                 record.history_panel.load_outcome_reasons($(this).val());
             });
@@ -412,13 +412,16 @@ var record = {
                                 } else {
                                     var direction = '<span class="fa fa-ban"></span>';
                                 }
-							 call_direction = "<td>"+direction+"</td>";
-							}
-                            if (helper.permissions['edit history'] > 0) {
-                               edit_history = 'class="pointer" data-modal="edit-history" data-id="'+val.history_id+'"';
+                                call_direction = "<td>"+direction+"</td>";
+                            }
+                            if (helper.permissions['edit history'] > 0 || (helper.permissions['edit recent history'] > 0 && (val.user_id == helper.user_id))) {
+                                edit_history = 'class="pointer" data-modal="edit-history" data-id="'+val.history_id+'"';
+                            }
+                            else {
+                                edit_history="";
                             }
                             if (helper.permissions['delete history'] > 0) {
-                               
+
                             }
                             if (k <= record.limit - 1) {
                                 history_rows += '<tr '+edit_history+'><td>' + val.contact + '</td><td>' + val.outcome + '</td><td>' + val.client_name + '</td><td>' + val.outcome_reason + ' ' + val.comments + '</td>' + call_direction + '</tr>';
@@ -426,16 +429,16 @@ var record = {
                             k++;
                         });
                         if (k > record.limit - 1) {
-							 $history_panel.find('.panel-heading').html('History<span class="btn btn-info btn-xs pull-right" id="show-all-history-btn">Show All</span>');
-                       
+                            $history_panel.find('.panel-heading').html('History<span class="btn btn-info btn-xs pull-right" id="show-all-history-btn">Show All</span>');
+
                         }
-						if($history_panel.width()<400){
-							var small_class="small";
-						} else {
-							var small_class="";
-						}
-                       $history_panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-hover table-condensed '+small_class+'"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th>'+call_direction_header+'</tr></thead><tbody>' + history_rows + '</tbody></table></div>');
-						
+                        if($history_panel.width()<400){
+                            var small_class="small";
+                        } else {
+                            var small_class="";
+                        }
+                        $history_panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-hover table-condensed '+small_class+'"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th>'+call_direction_header+'</tr></thead><tbody>' + history_rows + '</tbody></table></div>');
+
                     } else {
                         $history_panel.find('.panel-body').append('<p>This record has no history information yet</p>');
                     }
@@ -491,11 +494,16 @@ var record = {
             var form = '<form>';
             form += "<input type='hidden' name='history_id' value='" + id + "'/>";
 
+            var edit_recent_history = 0;
+            if (helper.permissions['edit recent history'] > 0 && (data.contact).substr(0, 10) != $.datepicker.formatDate('dd/mm/yy', new Date())) {
+                edit_recent_history = 1;
+            }
+
             var select_outcome = "<option value=''>No action required</option>", select_progress = "<option value=''>No action required</option>";
-			  var disabled = ""
-  if (helper.permissions['edit outcome'] > 0) {
-          disabled = "disabled";
-  }
+            var disabled = "";
+            if (typeof helper.permissions['edit outcome'] == "undefined") {
+                disabled = "disabled";
+            }
             $.each(outcomes, function (key, outcome) {
                 var selected = "";
                 if (data.outcome == outcome['name']) {
@@ -503,7 +511,7 @@ var record = {
                 }
                 select_outcome += "<option " + selected + " value='" + outcome['id'] + "'>" + outcome['name'] + "</option>";
             });
-			
+
             $.each(progress_list, function (key, progress) {
                 var selected = "";
                 if (data.progress == progress['name']) {
@@ -512,48 +520,51 @@ var record = {
                 select_progress += "<option " + selected + " value='" + progress['id'] + "'>" + progress['name'] + "</option>";
             });
 
-            date_input = "<div class='form-group  input-group-sm relative'><label>Updated on</label><input type='text' value = '"+data.contact+"' name='contact' class='form-control datetime' /></div>";
+            date_input = "<div class='form-group  input-group-sm relative'><label>Updated on</label><input type='text' value = '"+data.contact+"' name='contact' class='form-control datetime' "+ ((helper.permissions['edit recent history'] > 0)?'disabled':'') +" /></div>";
             user_input = "<div class='form-group'><label>Updated by</label><p>" + data.name + "</p></div>";
             outcome_input = "<div class='form-group'><label>Outcome</label><br><select name='outcome_id' id='selectpicker_outcome' class='selectpicker_outcome'  " + disabled + ">" + select_outcome + "</select></div>";
-			outcome_reason_input ="<div class='form-group'><label>Outcome Reason</label><br><select name='outcome_reason_id' id='selectpicker_outcome_reason' class='selectpicker_outcome_reason' disabled><option value=''>Loading reasons...</option></select></div>";
-			   if (helper.permissions['set call direction'] > 0) {
-				   var outbound_selected = data.call_direction=="0"?"selected":""
-				   var inbound_selected = data.call_direction=="1"?"selected":""
-                   direction_input = "<div class='form-group'><label>Call direction</label><br><select name='call_direction' id='selectpicker_direction' class='selectpicker_call_direction'><option value=''>No direction</option><option value='1' " + inbound_selected + ">Inbound</option><option value='0' " + outbound_selected + ">Outbound</option></select></div>";
-			   } else {
-			  direction_input = ""; 
-			   }
+            outcome_reason_input ="<div class='form-group'><label>Outcome Reason</label><br><select name='outcome_reason_id' id='selectpicker_outcome_reason' class='selectpicker_outcome_reason' disabled><option value=''>Loading reasons...</option></select></div>";
+            if (helper.permissions['set call direction'] > 0) {
+                var outbound_selected = data.call_direction=="0"?"selected":""
+                var inbound_selected = data.call_direction=="1"?"selected":""
+                direction_input = "<div class='form-group'><label>Call direction</label><br><select name='call_direction' id='selectpicker_direction' class='selectpicker_call_direction'><option value=''>No direction</option><option value='1' " + inbound_selected + ">Inbound</option><option value='0' " + outbound_selected + ">Outbound</option></select></div>";
+            } else {
+                direction_input = "";
+            }
             progress_input = (data.progress_id) ? "<div class='form-group input-group-sm'><p>Progress</p><select name='progress_id' id='selectpicker_progress' class='selectpicker_progress'  " + disabled + ">" + select_progress + "</select></div>" : "";
             comments_input = "<div class='form-group input-group-sm'><label>Comments</label><textarea class='form-control ' placeholder='Enter the comments here' rows='3' name='comments'>" + data.comments + "</textarea></div>";
 
             form += date_input +
                 user_input +
                 outcome_input +
-				outcome_reason_input +
-				direction_input +
+                outcome_reason_input +
+                direction_input +
                 progress_input +
                 comments_input;
+
+            var msg = ((edit_recent_history)?"Sorry, you can not modify the history for a past day. Contact with the administrator":"");
+            form += "<span style='color:red;'>"+msg+"</span>";
 
             form += '</form>';
             $form = $(form);
             $form.find('#selectpicker_outcome,#selectpicker_direction').selectpicker();
-			$form.find('.datetime').datetimepicker({
-				format: 'DD/MM/YYYY HH:mm',
-				showClear:true,
-				sideBySide:true});
+            $form.find('.datetime').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm',
+                showClear:true,
+                sideBySide:true});
 
             if (!$('#modal').hasClass('in')) {
-                var mheader = "Edit History", mbody = "<div id='edit-history-container'></div><div id='all-history-container'></div>", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button> <button class="btn btn-danger pull-right marl" item-id="'+id+'" id="del-history-btn">Delete</button> ';
+                var mheader = "Edit History", mbody = "<div id='edit-history-container'></div><div id='all-history-container'></div>", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" '+ (edit_recent_history?"disabled":"") +' id="save-history-btn">Save</button> <button class="btn btn-danger pull-right marl" item-id="'+id+'" id="del-history-btn" '+ ((typeof helper.permissions['delete history'] == "undefined")?"disabled":"") +'>Delete</button> ';
                 modals.load_modal(mheader, mbody, mfooter);
             } else {
-                var mfooter = '<button class="btn btn-primary pull-right marl" id="save-history-btn">Save</button> <button class="btn btn-danger pull-right marl" item-id="'+id+'" id="del-history-btn">Delete</button> <button class="btn btn-default pull-left" id="edit-history-back">Back</button>';
+                var mfooter = '<button class="btn btn-primary pull-right marl" '+ (edit_recent_history?"disabled":"") +' id="save-history-btn">Save</button> <button class="btn btn-danger pull-right marl" item-id="'+id+'" id="del-history-btn" '+ ((typeof helper.permissions['delete history'] == "undefined")?"disabled":"") +'>Delete</button> <button class="btn btn-default pull-left" id="edit-history-back">Back</button>';
                 modals.update_footer(mfooter);
             }
             $('#all-history-container').fadeOut(function () {
                 $('#edit-history-container').html($form).fadeIn();
                 modal_body.css('overflow', 'visible');
-				
-				record.history_panel.load_outcome_reasons(data.outcome_id,data.outcome_reason_id);
+
+                record.history_panel.load_outcome_reasons(data.outcome_id,data.outcome_reason_id);
             });
 			
         },

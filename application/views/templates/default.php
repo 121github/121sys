@@ -265,6 +265,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url() . "assets/js/modals.js?v" . $this->config->item('project_version'); ?>"></script>
 <script src="<?php echo base_url() . "assets/js/main.js?v" . $this->config->item('project_version'); ?>"></script>
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
+    <?php if(isset($_SESSION['user_id'])){ ?>
+        helper.user_id = $.parseJSON('<?php echo $_SESSION['user_id'] ?>');
+    <?php } ?>
     <?php if(isset($_SESSION['permissions'])){ ?>
     helper.permissions = $.parseJSON('<?php echo json_encode(array_flip($_SESSION['permissions'])) ?>');
     helper.roles = $.parseJSON('<?php echo $_SESSION['role'] ?>');
