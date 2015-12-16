@@ -1542,13 +1542,14 @@ var record = {
                     $.each(response.data.apps, function (k, day) {
 						var day_row = "<td>"+k+"</td>";
 						$.each(day,function(i,v){
-						var slot_color="",priority="",reason = "";
+						var slot_color="",priority="",reason = "",disabled="";
 						if(v.best_distance&& v.apps<v.max_apps&&v.min_distance<10){
 							var slot_color = 'text-success';
 							priority = '<span class="text-success fa fa-check-circle"></span>'
 						}
                         if (Number(v.apps) >= Number(v.max_apps)) {
-                            var slot_color = 'text-danger';
+                             slot_color = 'text-danger';
+							 disabled = 'disabled';
                         }
 						if(v.reason.length>0){
 							reason = ' <span class="tt fa fa-info-circle" data-html="true" data-toggle="tooltip" data-placement="right" title="'+v.reason+'"></span>'
@@ -1560,7 +1561,7 @@ var record = {
 						}
 						//add the reason tooltip if a rule is set on that slot
 						apps += reason;
-						 day_row += '<td class="' + slot_color + '" ><input data-time="'+v.slot_start+'" data-date="' + v.sqldate + '" type="radio" name="slot-choice"/> '+apps+'</td>';
+						 day_row += '<td class="' + slot_color + '" ><input '+disabled+' data-time="'+v.slot_start+'" data-date="' + v.sqldate + '" type="radio" name="slot-choice"/> '+apps+'</td>';
 						});
                         table += '<tr>'+day_row+'</tr>'
                     });

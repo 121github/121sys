@@ -148,10 +148,8 @@ var quick_planner = {
                 time = v.datetime;
             }
 			});
-			console.log(slots);
 if(slots.reason.length>0){
 rule_tooltip = "<span class='fa fa-info-circle tt' data-toggle='tooltip' data-html='true' data-placement='top' title='"+slots.reason+"'></span>";
-console.log(rule_tooltip);
 holiday="class='purple'";
 }
 if(slots.apps>0){

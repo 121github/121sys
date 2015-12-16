@@ -327,7 +327,7 @@ class Calendar extends CI_Controller
 				$distinct_user = false;
 			}
             //$appointment_rules = $this->Calendar_model->get_appointment_rules($distinct_user);
-			$appointment_rules = $this->Calendar_model->get_appointment_overrides($distinct_user);
+			$appointment_rules = $this->Calendar_model->get_appointment_overrides($distinct_user,$this->input->post('users'));
             $aux = array();
             foreach ($appointment_rules as $rule) {
                 if (!isset($aux[$rule['block_day']])) {

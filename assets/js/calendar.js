@@ -84,7 +84,8 @@ function resizeEvents(events){
             $.ajax({
                 url: helper.baseUrl + 'calendar/get_appointment_rules/by_user',
                 type: "POST",
-                dataType: "JSON"
+                dataType: "JSON",
+				data:{ users:$('#user-select').val() }
             }).done(function (response) {
                 if (response.success) {
                     $.each(response.data, function (key, value) {
@@ -212,7 +213,25 @@ function resizeEvents(events){
                     flashalert.danger(response.msg);
                 }
             });
-        }
+        },
+		get_calendar_users:function(reload_cal){
+		$.ajax({
+            url: helper.baseUrl + 'calendar/get_calendar_users',
+            type: "POST",
+            dataType: "JSON",
+            data: { campaigns: $('#campaign-cal-select').val() }
+        }).done(function (response) {
+            $('#user-select').empty();
+            var $options = "";
+            $.each(response.data, function (k, v) {
+                $options += "<option value='" + v.id + "'>" + v.name + "</options>";
+            });
+            $('#user-select').html($options).selectpicker('refresh');
+			if(reload_cal){
+            calendar.view();
+			}
+        })
+		}
     };
 
 
@@ -408,6 +427,9 @@ $(document).ready(function () {
         }
     });
 */
+
+    	//load the available attendee options when the page loads
+	 	appointment_rules.get_calendar_users(false);
     //Add appointment rule
     $(document).on('click', '.block-day-btn', function () {
         calendar_modals.addAppointmentRule($(this).attr('item-day'));
@@ -533,23 +555,9 @@ calendar_modals.addAppointmentRule(0)
 
 
     $(document).on('change', '#campaign-cal-select', function () {
-        $.ajax({
-            url: helper.baseUrl + 'calendar/get_calendar_users',
-            type: "POST",
-            dataType: "JSON",
-            data: {campaigns: $(this).val()}
-        }).done(function (response) {
-            $('#user-select').empty();
-            var $options = "";
-            $.each(response.data, function (k, v) {
-                $options += "<option value='" + v.id + "'>" + v.name + "</options>";
-            });
-            $('#user-select').html($options).selectpicker('refresh');
-            calendar.view();
-        })
+        appointment_rules.get_calendar_users(true);
     });
-    //load the available attendee options when the page loads
-    $('#campaign-cal-select').trigger('change');
+
 
     $(document).on('click', '#distance-cal-button', function (e) {
         e.preventDefault();
