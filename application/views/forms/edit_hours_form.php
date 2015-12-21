@@ -2,6 +2,7 @@
 	<div class="row">
 		<div class="col-xs-2">
 			  <input type="hidden" name="hours_id">
+			  <input type="hidden" name="campaign_id">
               <input type="hidden" name="user_id">
 			  <div class="form-group input-duration-sm">
 			    <p>Duration (minutes)</p>
@@ -11,13 +12,6 @@
 		<div class="col-xs-4"></div>
 		<div class="col-xs-3">
             <p>Campaign</p>
-			<div class="form-group input-campaign-sm" style="display: none;">
-			    <select name="campaign_id" class="selectpicker" id="group-select">
-			      <?php foreach($campaigns as $campaign){ ?>
-			      <option value="<?php echo $campaign['id'] ?>"><?php echo $campaign['name'] ?></option>
-			      <?php } ?>
-			    </select>
-			</div>
             <div id="campaign_name"></div>
 		</div>
 		<div class="col-xs-1"></div>
@@ -45,5 +39,38 @@
    		    <button type="submit" class="marl btn btn-primary save-btn">Save</button>
    		    <button class="marl btn btn-default close-btn">Cancel</button>
 	  	</div>
+	</div>
+
+
+	<h3>Exceptions</h3>
+	<div class="form-group input-hour-sm">
+		<div class="row">
+			<div class="col-xs-2">
+				<select name="exception_id" class="selectpicker" id="exception-select">
+					<option value=0>Add an exception</option>
+					<?php foreach($exception_types as $exception_type){ ?>
+						<option value="<?php echo $exception_type['id'] ?>"><?php echo $exception_type['name'] ?></option>
+					<?php } ?>
+				</select>
+			</div>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-1">
+				<input type="integer" class="form-control" name="exception-duration" title="Enter the exception duration in minutes" required/>
+			</div>
+			<div class="col-xs-1">
+				<button type="button" class="marl btn btn-success btn-xs add-exception-hour-btn">Add</button>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-primary exceptions-hour-panel" style="border: 0px solid black;">
+		<div class="panel-body hour-panel">
+			<div class="row">
+				<div class="col-xs-5">
+					<table class="table exceptions-hour">
+						<tbody class="exceptions-hour-body"></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
 </form>

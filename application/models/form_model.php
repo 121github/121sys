@@ -479,6 +479,12 @@ class Form_model extends CI_Model
         $this->db->select('exception_type_id id,exception_name  name, paid');
         return $this->db->get('time_exception_type')->result_array();
     }
+
+    public function get_hour_exception_type()
+    {
+        $this->db->select('exception_type_id id,exception_name  name, paid');
+        return $this->db->get('hour_exception_type')->result_array();
+    }
     
     public function get_renewal_date_field($campaign_id)
     {

@@ -40,6 +40,7 @@ class Hour_model extends CI_Model
                       if(h.comment is null,'',h.comment) comment,
                       if(m.name is not null,m.name,'-') as updated_name,
                       if(h.updated_date is not null,h.updated_date,'-') as updated_date,
+                      (select sum(he.duration) from hour_exception he where h.hours_id = he.hours_id) as exceptions,
                       dh.duration as default_hours
 		    	from users u
 		    	inner join role_permissions rp ON (rp.role_id = u.role_id)
@@ -56,6 +57,37 @@ class Hour_model extends CI_Model
     	$qry .= "order by user_name asc";
 
     	return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Add a new Hour Exception
+     */
+    public function add_hour_exception($form)
+    {
+        $this->db->insert("hour_exception", $form);
+        return $this->db->insert_id();
+    }
+
+    /**
+     * Remove an Hour Exception
+     */
+    public function delete_hour_exception($id)
+    {
+        $this->db->where("exception_id", $id);
+        return $this->db->delete("hour_exception");
+    }
+
+    /**
+     * Get the Hour Exceptions for a particular hour
+     */
+    public function get_hour_exception($hours_id)
+    {
+        $qry    = "select *
+    			from hour_exception
+    			inner join hour_exception_type using(exception_type_id)
+    			where hours_id = " .$hours_id;
+
+        return $this->db->query($qry)->result_array();
     }
     
     /**
