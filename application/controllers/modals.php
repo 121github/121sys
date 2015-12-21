@@ -146,6 +146,13 @@ class Modals extends CI_Controller
         }
     }
 
+    public function load_export_form()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->view('forms/edit_export_form.php');
+        }
+    }
+
     public function view_record()
     {
         if ($this->input->is_ajax_request()) {
