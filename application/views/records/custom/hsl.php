@@ -91,11 +91,6 @@
 <?php  $this->view('records/panels/quick_planner.php', $details); ?>
 </div>
 </div>
-  <div class="row">
-<div class="col-lg-4 col-md-6 col-sm-12">
-<?php  $this->view('records/panels/availability.php', $details); ?>
-</div>
-</div> 
 </div>
 <!-- end row panel -->
 </div>
