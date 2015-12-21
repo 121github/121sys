@@ -64,11 +64,11 @@
                             </tr>
                         </table>
 
-                        <div style="border-bottom: 1px solid grey; margin-bottom: 10px; margin-top: 10px; font-weight: bold">
-                            CONTACT DETAILS:
-                            <div class="pull-right">
-                                <span class="btn btn-sm edit-details-btn">Edit</span>
-                            </div>
+                        <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
+                            CONTACT DETAILS 
+                  
+                                <span class="btn btn-xs btn-default" id="edit-details-btn" data-id="<?php echo $user_id ?>">Edit</span>
+                     
                         </div>
                         <table class="table ajax-table">
                             <tr>
@@ -82,6 +82,10 @@
                             <tr>
                                 <td style="font-weight: bold">Ext</td>
                                 <td class="ext"></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold">Home Postcode</td>
+                                <td class="home_postcode"></td>
                             </tr>
                         </table>
                     </div>
@@ -154,8 +158,8 @@
                         <td class="token"></td>
                     </tr>
                     <tr>
-                        <td style="font-weight: bold">Atendee</td>
-                        <td class="atendee"></td>
+                        <td style="font-weight: bold">Attendee</td>
+                        <td class="attendee"></td>
                     </tr>
                     <tr>
                         <td style="font-weight: bold">Pass changed</td>
@@ -173,40 +177,6 @@
 </div>
 <?php echo form_close(); ?>
 
-<div class="panel panel-primary details-container">
-    <div class="panel-heading">
-        <div style="font-size: 18px;">
-            Change Contact Details
-            <span class="glyphicon glyphicon-remove pull-right close-details-btn"></span>
-        </div>
-    </div>
-    <!-- /.panel-heading -->
-    <div class="panel-body details-panel">
-        <div class="details-content">
-            <form id="details-form">
-                <div class="form-group">
-                    <input type="hidden" name="user_id" value="<?php echo $user_id ?>">
-                    <div>
-                        <label>Email:</label>
-                        <input type="text" name="email_form" class="form-control"/>
-                    </div>
-                    <div>
-                        <label>Telephone:</label>
-                        <input type="text" name="telephone_form" class="form-control"/>
-                    </div>
-                    <div>
-                        <label>Ext:</label>
-                        <input type="text" name="ext_form" class="form-control"/>
-                    </div>
-                </div>
-                <div class="pull-right">
-                    <span class="marl btn btn-default close-details-btn">Cancel</span>
-                    <span class="marl btn btn-success save-details-btn">Save</span>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <script type="text/javascript">
 

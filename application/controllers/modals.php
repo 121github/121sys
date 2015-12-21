@@ -18,7 +18,18 @@ class Modals extends CI_Controller
         $this->load->model('Filter_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
-
+    public function user_account_details()
+    {
+        if ($this->input->is_ajax_request()) {
+			if($this->input->post('id')&&in_array("edit users",$_SESSION['permissions'])){
+			$id = intval($this->input->post('id'));
+			} else {
+			$id = $_SESSION['user_id'];	
+			}
+			  $this->load->view('forms/edit_user_details.php',array("id"=>$id));
+        }
+		 
+    }
 
     public function new_email_form()
     {

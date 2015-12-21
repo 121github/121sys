@@ -181,8 +181,12 @@ class User extends CI_Controller
             }
 
         }
-
+		
+		if($this->uri->segment(3)&&in_array("admin users",$_SESSION['permissions'])){
+		$user_id = intval($this->uri->segment(3));
+		} else {
         $user_id = $_SESSION['user_id'];
+		}
 
         $users = $this->Form_model->get_users();
         $roles = $this->Form_model->get_roles();
@@ -226,10 +230,21 @@ class User extends CI_Controller
     public function save_contact_details()
     {
         if ($this->input->post()) {
+			$this->load->helper('email');
             $form = array();
+			if(!valid_email($this->input->post("email_form"))){
+				echo json_encode(array("success"=>false,"msg"=>"email is not valid"));
+				exit;
+			}
+			if(!validate_postcode($this->input->post("home_postcode"))){
+				echo json_encode(array("success"=>false,"msg"=>"Postcode is not valid"));
+				exit;
+			}
+			$postcode = postcodeFormat($this->input->post("home_postcode"));
             $form['user_email'] = ($this->input->post("email_form") ? $this->input->post("email_form") : NULL);
             $form['user_telephone'] = ($this->input->post("telephone_form") ? $this->input->post("telephone_form") : NULL);
             $form['ext'] = ($this->input->post("ext_form") ? $this->input->post("ext_form") : NULL);
+			$form['home_postcode'] = ($this->input->post("home_postcode") ? $postcode : NULL);
             $user_id = $this->input->post("user_id");
 
 

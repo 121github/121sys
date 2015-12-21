@@ -12,11 +12,11 @@ var details = {
             $(this).closest('ul').find('a').css("color","black");
             $(this).css("color","green");
 
-            $('#details-form').find('input[name="user_id"]').val($(this).attr('id'));
+            $('#edit-details-btn').attr('data-id',$(this).attr('id'));
             details.load_details();
         });
 
-        $(document).on("click", '.edit-details-btn', function(e) {
+        $(document).on("click", '#edit-details-btn', function(e) {
             e.preventDefault();
             details.edit_details($(this));
         });
@@ -39,7 +39,7 @@ var details = {
         details.load_details();
     },
     load_details: function() {
-        var user_id = $('#details-form').find('input[name="user_id"]').val();
+        var user_id = $('#edit-details-btn').attr('data-id')
 
         $.ajax({
             url: helper.baseUrl + 'user/get_user_by_id',
@@ -58,7 +58,7 @@ var details = {
                 $('.email').html(response.data[0].user_email);
                 $('.telephone').html(response.data[0].user_telephone);
                 $('.ext').html(response.data[0].ext);
-
+				$('.home_postcode').html(response.data[0].home_postcode);
                 $('.user_status').html(response.data[0].user_status);
                 $('.login_mode').html(response.data[0].login_mode);
                 $('.last_login').html(response.data[0].last_login);
@@ -68,36 +68,36 @@ var details = {
                 $('.reload_session').html(response.data[0].reload_session);
                 $('.token').html(response.data[0].token);
                 $('.pass_changed').html(response.data[0].pass_changed);
-                $('.atendee').html(response.data[0].atendee);
+                $('.attendee').html(response.data[0].attendee);
                 $('.reset_pass_token').html((response.data[0].reset_pass_token?"Yes":""));
-            }
+            } else {
+			flashalert.danger(response.error);	
+			}
         });
     },
     edit_details: function(btn) {
-        $(".save-details-btn").attr('disabled',false);
         $('#details-form').find('input[name="telephone_form"]').numeric();
         $('#details-form').find('input[name="ext_form"]').numeric();
-
-        var pagewidth = $(window).width() / 2;
-        var moveto = pagewidth - 250;
-
-        $('<div class="modal-backdrop details in"></div>').appendTo(document.body).hide().fadeIn();
-        $('.details-container').find('.details-panel').show();
-        $('.details-content').show();
-        $('.details-container').fadeIn()
-        $('.details-container').animate({
-            width: '500px',
-            left: moveto,
-            top: '10%'
-        }, 1000);
-
-        var email = $('.email').html();
+		$.ajax({ url:helper.baseUrl+'modals/user_account_details',
+		type:"POST",
+		data:{id:btn.attr('data-id') },
+		dataType:"HTML"
+	}).done(function(response){
+		var mheader = "Edit User Details";
+		var mbody = response;
+		var mfooter = '<span class="marl btn btn-success pull-right save-details-btn">Save</span> <button data-dismiss="modal" class="btn btn-default close-modal pull-left">Cancel</button>';
+		modals.load_modal(mheader,mbody,mfooter);
+		var email = $('.email').html();
         var telephone = $('.telephone').html();
         var ext = $('.ext').html();
-
+ 		var home_postcode = $('.home_postcode').html();
         $('#details-form').find('input[name="email_form"]').val(email);
         $('#details-form').find('input[name="telephone_form"]').val(telephone);
         $('#details-form').find('input[name="ext_form"]').val(ext);
+		 $('#details-form').find('input[name="home_postcode"]').val(home_postcode);
+	});
+
+       
 
     },
     close_details: function() {
@@ -110,7 +110,6 @@ var details = {
     },
 
     save_details: function() {
-        $(".save-details-btn").attr('disabled','disabled');
         $.ajax({
             url: helper.baseUrl + 'user/save_contact_details',
             type: "POST",
@@ -120,9 +119,7 @@ var details = {
             if (response.success) {
                 //Reload details table
                 details.load_details();
-                //Close edit form
-                details.close_details();
-
+				 $('.close-modal').trigger('click');
                 flashalert.success(response.msg);
             }
             else {
@@ -131,7 +128,7 @@ var details = {
         });
     },
     reset_failed_logins: function(){
-        var user_id = $('#details-form').find('input[name="user_id"]').val();
+        var user_id = $('#edit-details-btn').attr('data-id')
         $.ajax({
             url: helper.baseUrl + 'user/reset_failed_logins',
             type: "POST",
