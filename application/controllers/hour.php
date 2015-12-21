@@ -24,26 +24,27 @@ class Hour extends CI_Controller
 		$teams = $this->Form_model->get_teams();
     	$campaigns = $this->Form_model->get_campaigns();
     	$agents = $this->Form_model->get_agents();
+        $exception_types = $this->Form_model->get_hour_exception_type();
     	$this->Cron_model->update_hours($agents);
-    	$data     = array(
-    			'campaign_access' => $this->_campaigns,
-
-    			'pageId' => 'Admin',
-    			'title' => 'Admin | Hours',
-    			'page' =>  'agent_hours',
-    			'javascript' => array(
-                    'admin/hours.js?v' . $this->project_version,
-    					'lib/moment.js',
-    					'lib/jquery.numeric.min.js',
-    					'lib/daterangepicker.js',
-    			),
-    			'css' => array(
-    					'dashboard.css',
-                		'daterangepicker-bs3.css'
-    			),
-    			'campaigns' => $campaigns,
-          		'agents' => $agents,
-				'team_managers'=>$teams
+    	$data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Admin',
+            'title' => 'Admin | Hours',
+            'page' =>  'agent_hours',
+            'javascript' => array(
+                'admin/hours.js?v' . $this->project_version,
+                    'lib/moment.js',
+                    'lib/jquery.numeric.min.js',
+                    'lib/daterangepicker.js',
+            ),
+            'css' => array(
+                    'dashboard.css',
+                    'daterangepicker-bs3.css'
+            ),
+            'campaigns' => $campaigns,
+            'agents' => $agents,
+            'team_managers'=>$teams,
+            'exception_types'=>$exception_types
     	);
     	$this->template->load('default', 'admin/hours.php', $data);
     }
@@ -94,6 +95,88 @@ class Hour extends CI_Controller
     		));
     	}
     }
+
+    /**
+     * Add a new Hour Exception
+     */
+    public function add_hour_exception() {
+        $form = $this->input->post();
+
+        $exception_id = $this->Hour_model->add_hour_exception($form);
+        if ($exception_id) {
+            $hour_form = array();
+            $hour_form['hours_id'] = $form['hours_id'];
+            $hour_form['updated_date'] = date('Y-m-d H:i:s');
+            $hour_form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+
+            $response = $this->Hour_model->update_hour($hour_form);
+            if ($response) {
+                echo json_encode(array(
+                    "success" => true,
+                    "exception_id" => $exception_id
+                ));
+            } else {
+                echo json_encode(array(
+                    "success" => false
+                ));
+            }
+        } else {
+            echo json_encode(array(
+                "success" => false
+            ));
+        }
+    }
+
+    /**
+     * Remove an Hour Exception
+     */
+    public function remove_hour_exception() {
+        $form = $this->input->post();
+
+        $response = $this->Hour_model->delete_hour_exception($form['exception_id']);
+        if ($response) {
+            $hour_form = array();
+            $hour_form['hours_id'] = $form['hours_id'];
+            $hour_form['updated_date'] = date('Y-m-d H:i:s');
+            $hour_form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
+
+            $response_hour = $this->Hour_model->update_hour($hour_form);
+            if ($response_hour) {
+                echo json_encode(array(
+                    "success" => true,
+                    "data" => $response
+                ));
+            } else {
+                echo json_encode(array(
+                    "success" => false
+                ));
+            }
+        } else {
+            echo json_encode(array(
+                "success" => false
+            ));
+        }
+    }
+
+    /**
+     * Get the Hour Exceptions for a particular Hour
+     */
+    public function get_hour_exception() {
+        $form = $this->input->post();
+
+        $response = $this->Hour_model->get_hour_exception($form['hours_id']);
+        if ($response) {
+            echo json_encode(array(
+                "success" => true,
+                "data" => $response
+            ));
+        } else {
+            echo json_encode(array(
+                "success" => false,
+                "message" => "No results"
+            ));
+        }
+    }
     
     /**
      * Save an Hour for an agent and campaing in a particular date
@@ -115,6 +198,13 @@ class Hour extends CI_Controller
         $isExceeded = $this->isDurationExceeded($form['date'], $form['user_id'], $form['duration'],$form['campaign_id']);
 
         if (!$isExceeded['success']) {
+            if (isset($form['exception_id'])) {
+                unset($form['exception_id']);
+            }
+            if (isset($form['exception-duration'])) {
+                unset($form['exception-duration']);
+            }
+
             $form['duration'] = $form['duration']*60;
             $form['updated_date'] = date('Y-m-d H:i:s');
             $form['updated_id'] = (isset($_SESSION['user_id']))?$_SESSION['user_id']:NULL;
