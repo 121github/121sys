@@ -11,13 +11,16 @@ class Webform_model extends CI_Model
 	
 	
 	public function get_webform_answers($webform_id,$urn){
-	$qry = "select * from webform_answers where urn = '$urn' and webform_id = '$webform_id'";
+	$qry = "select * from webform_answers where urn = '".intval($urn)."' ";
+	if($webform_id){
+	$qry .= " and webform_id = '".intval($webform_id)."' ";	
+	}
 	return $this->db->query($qry)->row_array();	
 	}
 	
 	public function check_form_permission($email_id,$urn,$campaign_id){
 		//check the email id matches the urn so custoemrs can only see their own form
-		$qry = "select * from records left join email_history using(urn) where email_history.urn = '$urn' and email_id = '$email_id' and campaign_id = '$campaign_id'";
+		$qry = "select * from records left join email_history using(urn) where email_history.urn = '".intval($urn)."' and email_id = '".intval($email_id)."' and campaign_id = '".intval($campaign_id)."'";
 		//$this->firephp->log($qry);
 		if($this->db->query($qry)->num_rows()>0){
 		return true;	
@@ -33,10 +36,10 @@ class Webform_model extends CI_Model
     {
 		
 		$data = array();
-		$qry = "select * from webform_answers where webform_id = '$form' and urn = '$urn'";
+		$qry = "select * from webform_answers where webform_id = '".intval($form)."' and urn = '".intval($urn)."'";
 				
 		$data['values'] = $this->db->query($qry)->row_array();
-		$qry = "select company_id,c.contact_id,co.name, co.website,cot.telephone_number cophone,ct.telephone_number cphone,coa.add1,coa.add2,coa.add3,coa.county,coa.postcode,co.email,c.fullname,date_format(c.dob,'%d/%m/%Y') dob,coa.country,c.email,c1 from records left join record_details using(urn) left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join companies co using(urn) left join company_telephone cot using(company_id) left join contact_addresses ca using(contact_id) left join company_addresses coa using(company_id) left join email_history eh using(urn) where urn ='$urn' and campaign_id ='$campaign_id' group by contact_id";
+		$qry = "select company_id,c.contact_id,co.name, co.website,cot.telephone_number cophone,ct.telephone_number cphone,coa.add1,coa.add2,coa.add3,coa.county,coa.postcode,co.email,c.fullname,date_format(c.dob,'%d/%m/%Y') dob,coa.country,c.email,c1 from records left join record_details using(urn) left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join companies co using(urn) left join company_telephone cot using(company_id) left join contact_addresses ca using(contact_id) left join company_addresses coa using(company_id) left join email_history eh using(urn) where urn ='".intval($urn)."' and campaign_id ='".intval($campaign_id)."' group by contact_id";
 		//$this->firephp->log($qry);
 		$result = $this->db->query($qry)->result_array();
 		foreach($result as $row){

@@ -8,7 +8,8 @@ var quick_planner = {
 		this.region_id = false;
 		this.region_name = false;
 		this.slot_id = false;
-		this.contact_postcode = $('input[name="contact_postcode"]').val();
+		this.contact_postcode = $('input[name="contact_postcode"]').length?$('input[name="contact_postcode"]').val():false;
+		this.company_postcode = $('input[name="company_postcode"]').length?$('input[name="company_postcode"]').val():false;
 		
 //add listners
         $(document).on('mouseover', '#quick-planner tbody tr', function (e) {
@@ -39,7 +40,7 @@ var quick_planner = {
 			quick_planner.branch_name = $(this).attr('data-branch-name');
 			quick_planner.region_id = $(this).attr('data-region');
             //$('a.filter[data-val="' + driver_id + '"]').trigger('click');
-            quick_planner.load_planner();
+            //quick_planner.load_planner();
         })
 		        $(document).on('click', '#closest-branch', function (e) {
             e.preventDefault();
@@ -53,6 +54,7 @@ var quick_planner = {
                 campaign_functions.get_branch_info();
             }
         });
+
         $(document).on('click', 'a.region-select', function (e) {
             e.preventDefault();
             quick_planner.branch_id = $(this).attr('data-branch-id');
@@ -70,12 +72,34 @@ var quick_planner = {
             modals.create_appointment(record.urn, start)
         });
 	},
+	appointment_setup: function (start) {
+		if(typeof start == "undefined"){
+			start = $('#slots-panel').find('input:checked').attr('data-date') +' '+ $('#slots-panel').find('input:checked').attr('data-time');	;	
+		}
+        quick_planner.set_appointment_start(start);
+        quick_planner.set_appointment_attendee(quick_planner.driver_id);
+	},
+	set_appointment_attendee: function () {
+        $('.attendeepicker').selectpicker('val', [quick_planner.driver_id]);
+    },
+    set_appointment_start: function (start) {
+        var m = moment(start, "YYYY-MM-DD HH:mm");
+        $('.startpicker').data("DateTimePicker").date(m);
+        $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
+    },
 	check_selections: function () {
+		if(typeof quick_planner !== "undefined"){
+		if(!quick_planner.contact_postcode.length>0&&!quick_planner.company_postcode.length>0){
+		return false;	
+		}
         if (quick_planner.driver_id > 0) {
             return true
         } else {
             flashalert.danger("Please select a hub/branch");
         }
+		} else {
+		 return true;	
+		}
     },
     popup_simulation: function (date, sqldate, time, waypoints, stats, slots) {
         var mheader = "Journey simulation for " + date;
@@ -113,7 +137,7 @@ var quick_planner = {
                 url: helper.baseUrl + 'planner/simulate_121_planner',
                 type: "POST",
                 dataType: "JSON",
-                data: {postcode: quick_planner.contact_postcode, 
+                data: {postcode: quick_planner.company_postcode.length>0?quick_planner.company_postcode:quick_planner.contact_postcode, 
 				driver_id: quick_planner.driver_id, 
 				branch_id: quick_planner.branch_id, 
 				slot: quick_planner.slot},
@@ -123,7 +147,9 @@ var quick_planner = {
             }).done(function (response) {
                 quick_planner.planner_summary(response);
             });
-        }
+        } else {
+			 $('#quick-planner').html("<p>You must add an address to the record before you can plan the journey</p>");
+		}
     },
  planner_summary: function (data) {
         simulation = data;

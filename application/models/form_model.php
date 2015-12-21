@@ -109,7 +109,7 @@ class Form_model extends CI_Model
         $qry .= " group by campaign_type_id order by campaign_type_desc";
         return $this->db->query($qry)->result_array();
     }
-    public function get_campaign_features($campaign = false)
+    public function get_campaign_features($campaign = false,$order="feature_id")
     {
         $exclude = "";
         //before we get features in this campaign we need to check the user has permissions on these features
@@ -140,7 +140,7 @@ class Form_model extends CI_Model
         }
         $qry = "select feature_id id,feature_name name,panel_path path from campaign_features left join campaigns_to_features using(feature_id) where 1 $exclude ";
         $qry .= ($campaign ? " and campaign_id = $campaign " : "");
-        $qry .= " group by feature_id order by feature_id";
+        $qry .= " group by feature_id order by $order";
         return $this->db->query($qry)->result_array();
     }
     public function get_all_campaigns()

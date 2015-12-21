@@ -605,6 +605,8 @@ var modals = {
             modals.appointment_contacts(urn);
 			if(typeof campaign_functions !== "undefined"){
 				campaign_functions.appointment_setup(start);
+			} else if (quick_planner !== "undefined") {
+				quick_planner.appointment_setup(start);
 			}
         });
     },

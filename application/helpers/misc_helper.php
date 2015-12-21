@@ -13,7 +13,7 @@ function convertToHoursMins($time, $format = '%d:%d') {
     return sprintf($format, $hours, $minutes);
 }
 
-function arraySort($a, $b) {
+function arraySort_distance($a, $b) {
     return $a['distance'] - $b['distance'];
 }
 

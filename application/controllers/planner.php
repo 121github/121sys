@@ -171,7 +171,7 @@ public function simulate_121_planner(){
 		array_splice($result, 1, 0, array($branch_data));
 		array_splice($result, count($result)-1, 0, array($branch_data));
 	}
-		
+	$this->firephp->log($result);
 	$travel_info[$day]=array();
 	foreach($result as $k=>$row){
 		if($branch_id){

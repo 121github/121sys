@@ -29,7 +29,7 @@
     </div>
     <div class="form-group input-group-sm">
         <p>Which panels are required on the details page?</p>
-        <select name="features[]" multiple class="selectpicker pull-left campaign-features">
+        <select name="features[]" data-size="12" multiple class="selectpicker pull-left campaign-features">
             <?php foreach ($features as $row): ?>
                 <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
             <?php endforeach ?>

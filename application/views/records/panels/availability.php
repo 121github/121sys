@@ -43,7 +43,7 @@
   -->
       <div class="input-group-btn">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span> <span id="slot-attendee-text">Attendee</span> </button>
-        <ul class="dropdown-menu pull-right" role="menu">
+        <ul class="dropdown-menu pull-right" id="availability-attendee-filter" role="menu">
          <?php foreach($attendees as $attendee): ?>
           <li><a href="#" class="filter" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><span class='filter-text'><?php echo $attendee['name'] ?></span> <small><?php echo (!empty($attendee['distance'])?$attendee['distance']." miles":"") ?> </small></a> </li>
           <?php endforeach ?>
@@ -62,19 +62,17 @@ $(document).on('blur','#slot-postcode',function(){
 
 $(document).on('click','#slot-availability li a',function(e){
 e.preventDefault();
-	var type = $(this).attr('data-ref'),value = $(this).attr('data-val'),txt=$(this).find('span.filter-text').text();
-	$(this).closest('form').find('input[name="'+type+'"]').val(value);
-	
-	$(this).closest('ul').find('a').css("color","black");
-    $(this).css("color","green");
-	if(type=="distance"){
-	$(this).closest('form').find('#slot-'+type+'-text').text(txt);	
-	} else if(type=="attendee"){
-		$(this).closest('form').find('#slot-'+type+'-text').text(txt);	
-	} else if(type=="type"){
-		$(this).closest('form').find('#slot-'+type+'-text').text(txt);	
+	var type = $(this).attr('data-ref'),value = $(this).attr('data-val'),txt=$(this).find('span.filter-text').text();		quick_planner.driver_id = value;
+	$('#slot-attendee-text').text(txt);
+	$('#slot-attendee').val(value);
+	record.appointment_slots_panel.load_panel();	
+	if(typeof quick_planner.contact_postcode !== "undefined"){
+	$('#planner-attendee-text').text(txt);
+	$('#quick-planner-panel').find('[name="driver_id"]').val(value);
+	if($('#quick-planner-panel').length>0){
+	quick_planner.load_planner();
 	}
-	record.appointment_slots_panel.load_panel();
-	
+	}
+
 });
 </script>

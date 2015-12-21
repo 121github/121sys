@@ -65,9 +65,9 @@ var campaign_functions = {
     },
     appointment_setup: function (start) {
         campaign_functions.hsl_coverletter_address();
-        campaign_functions.set_appointment_start(start);
-        campaign_functions.set_appointment_attendee(quick_planner.driver_id);
-        campaign_functions.set_appointment_contact();
+        quick_planner.set_appointment_start(start);
+        quick_planner.set_appointment_attendee(quick_planner.driver_id);
+        quick_planner.set_appointment_contact();
         $('[name="title"]').val("Home Consultancy");
         $('.branches-selection').show();
         $('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
@@ -115,14 +115,6 @@ var campaign_functions = {
                 type: "POST"
             })
         });
-    },
-    set_appointment_attendee: function () {
-        $('.attendeepicker').selectpicker('val', [quick_planner.driver_id]);
-    },
-    set_appointment_start: function (start) {
-        var m = moment(start, "YYYY-MM-DD HH:mm");
-        $('.startpicker').data("DateTimePicker").date(m);
-        $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
     },
     get_branch_info: function () {
         $.ajax({

@@ -13,6 +13,8 @@ class Migration_update_82 extends CI_Migration
     {
         $this->firephp->log("starting migration 82");
 		
+		file_get_contents(base_url()."database/remove_dupes_now/appointment_slot_override/appointment_slot_id/user_id/date");
+		
 		$this->db->query("alter table `appointment_slot_override` add unique(appointment_slot_id,user_id,date)");
 		
 		$qry = "insert ignore into appointment_slot_override (appointment_slot_id,user_id,max_slots,`date`,notes) select appointment_slot_id,user_id,'0',block_day,if(reason_id=3,other_reason,reason) from appointment_rules left join appointment_rule_reasons using(reason_id) where appointment_slot_id is not null";
@@ -33,9 +35,7 @@ class Migration_update_82 extends CI_Migration
 		}
 		
 		$this->db->query("drop table if exists appointment_rules");
-$this->db->query("drop table if exists appointment_rule_reasons");
-		
-		
+$this->db->query("drop table if exists appointment_rule_reasons");		
 	}
 	 public function down()
     {

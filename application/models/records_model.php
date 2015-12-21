@@ -911,7 +911,6 @@ class Records_model extends CI_Model
 		}
 		}
 		}
-		usort($attendees,'arraySort');
 		}
 		return $attendees;
     }
@@ -1509,7 +1508,7 @@ class Records_model extends CI_Model
 
     public function get_webforms($urn)
     {
-        $qry = "select records.campaign_id,webforms.webform_id,webform_name,records.urn,users.name,date_format(completed_on,'%d/%m/%Y %H:%i') completed_on,completed_by,name from records left join campaigns using(campaign_id) left join webforms_to_campaigns using(campaign_id) left join webforms using(webform_id) left join webform_answers on records.urn = webform_answers.urn and webforms.webform_id = webform_answers.webform_id left join users on user_id = completed_by where records.urn = '$urn'";
+        $qry = "select records.campaign_id,webforms.webform_id,webform_name,records.urn,users.name,date_format(completed_on,'%d/%m/%Y %H:%i') completed_on,completed_by,name from records left join campaigns using(campaign_id) left join webforms_to_campaigns using(campaign_id) join webforms using(webform_id) left join webform_answers on records.urn = webform_answers.urn and webforms.webform_id = webform_answers.webform_id left join users on user_id = completed_by where records.urn = '$urn'";
         return $this->db->query($qry)->result_array();
     }
 

@@ -556,7 +556,7 @@ class Admin extends CI_Controller
     {
         check_page_permissions('campaign setup');
         $options['types']     = $this->Form_model->get_campaign_types(false);
-        $options['features']  = $this->Form_model->get_campaign_features();
+        $options['features']  = $this->Form_model->get_campaign_features(false,"feature_name");
         $options['clients']   = $this->Form_model->get_clients();
         $options['groups']    = $this->Form_model->get_all_groups();
         $options['campaigns'] = $this->Form_model->get_all_campaigns();
@@ -866,7 +866,7 @@ class Admin extends CI_Controller
     public function get_campaign_features()
     {
         if ($this->input->is_ajax_request()) {
-            $response = $this->Form_model->get_campaign_features($this->input->post('campaign'));
+            $response = $this->Form_model->get_campaign_features($this->input->post('campaign'),"feature_name");
             $data     = array();
             foreach ($response as $row) {
                 $data[] = $row['id'];

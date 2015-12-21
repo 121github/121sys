@@ -891,7 +891,9 @@ var record = {
 					}
 					$panel.find('.contacts-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.name.fullname+'</a><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact"><span class="glyphicon glyphicon-trash"></span> Delete</span> <span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact"><span class="glyphicon glyphicon-pencil"></span> Edit</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal contact-detail-list">'+$contact_detail_list_items+$contact_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="contact_postcode" value="'+$postcode+'" /></div></li>');
                 });
+				if(typeof quick_planner.contact_postcode !== "undefined"){
 				quick_planner.contact_postcode = $('input[name="contact_postcode"]').val();
+				}
 				} else {
 					$panel.find('.contacts-list').html('<li class="list-group-item">This record has no contacts</li>');
 				}
@@ -1040,6 +1042,9 @@ var record = {
 					}
 					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-company"><span class="glyphicon glyphicon-trash"></span> Delete</span> <span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+$company_detail_list_items+$company_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+$postcode+'" /></div></li>');
                 });
+				if(typeof quick_planner.company_postcode !== "undefined"){
+				quick_planner.company_postcode = $('input[name="company_postcode"]').val();
+				}
 				} else {
 					$panel.find('.companies-list').html('<li class="list-group-item">This record has no companies</li>');
 				}
@@ -1537,7 +1542,10 @@ var record = {
 					postcode:$('#slot-postcode').val(),
 					user_id:$('#slot-attendee').val(),
 					app_type:$('#app-type').val()
-                }
+                },
+				beforeSend:function(){
+					$('#slots-panel').html("<p><img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></p>");
+				}
             }).fail(function(){
 				flashalert.danger("The appointment slots could not be loaded");
 			}).done(function (response) {

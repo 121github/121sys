@@ -39,8 +39,10 @@ $this->db->query($query);
 }
 
 }
-
-	public function remove_dupes(){
+	public function remove_dupes_now(){
+		$this->remove_dupes(true);
+	}
+	public function remove_dupes($now=false){
 		$table=$this->uri->segment(3);
 			$field1=$this->uri->segment(4);
 			$field2=$this->uri->segment(5);
@@ -66,6 +68,9 @@ foreach($result as $row){
 $remove = $row['count']-1;
 echo $delete = "delete from $table where concat($fields) = '".addslashes($row['ref'])."' limit $remove";	
 echo ";<br>";	
+if($now){
+$this->db->query($delete);	
+}
 }
 	}
 
