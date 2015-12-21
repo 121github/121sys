@@ -16,10 +16,34 @@ class Exports extends CI_Controller
     //view bonus report
     public function index()
     {
-		$campaigns = $this->Form_model->get_user_campaigns();
+		$campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
+
         $sources = $this->Form_model->get_sources();
-        $users = $this->Form_model->get_users_with_email();
-$pots = $this->Form_model->get_pots();
+        $pots = $this->Form_model->get_pots();
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -35,10 +59,10 @@ $pots = $this->Form_model->get_pots();
                 'dashboard.css',
                 'daterangepicker-bs3.css'
             ),
-			'campaigns' => $campaigns,
+			'campaigns_by_group' => $campaigns_by_group,
+            'campaign_outcomes' => $campaign_outcomes,
             'sources' => $sources,
-			'pots' => $pots,
-            'users' => $users
+			'pots' => $pots
         );
         $this->template->load('default', 'exports/view_exports.php', $data);
     }
@@ -56,18 +80,24 @@ $pots = $this->Form_model->get_pots();
     public function get_export_users() {
         if ($this->input->post()) {
             $export_forms_id = $this->input->post('export_forms_id');
+            $results = array();
 
-            $results = $this->Export_model->get_export_users_by_export_id($export_forms_id);
+            if ($export_forms_id) {
+                $results = $this->Export_model->get_export_users_by_export_id($export_forms_id);
 
-            $auxList = array();
-            foreach ($results as $user) {
-                array_push($auxList, $user["user_id"]);
+                $auxList = array();
+                foreach ($results as $user) {
+                    array_push($auxList, $user["user_id"]);
+                }
+                $results = $auxList;
             }
-            $results = $auxList;
+
+            $users = $this->Form_model->get_users_with_email();
 
             echo json_encode(array(
-                "success" => ($results),
-                "data" => $results
+                "success" => true,
+                "data" => $results,
+                "users" => $users
             ));
         }
     }
@@ -112,7 +142,7 @@ $pots = $this->Form_model->get_pots();
             $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
             $options['source'] = ($this->input->post('source') ? $this->input->post('source') : "");
             $options['source_name'] = ($this->input->post('source_name') ? str_replace(" ", "", $this->input->post('source_name')) : "");
-			 $options['pot'] = ($this->input->post('pot') ? $this->input->post('pot') : "");
+			$options['pot'] = ($this->input->post('pot') ? $this->input->post('pot') : "");
             $options['pot_name'] = ($this->input->post('pot_name') ? str_replace(" ", "", $this->input->post('pot_name')) : "");
             $options['export_forms_id'] = ($this->input->post('export_forms_id') ? $this->input->post('export_forms_id') : "");
 
@@ -145,9 +175,14 @@ $pots = $this->Form_model->get_pots();
     {
         if ($this->input->post()) {
             $options             = array();
-            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
-            $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
             $options['export_form_name'] = ($this->input->post('export_form_name') ? $this->input->post('export_form_name') : "");
+            $options['date_from'] = $this->input->post("date_from");
+            $options['campaigns'] = $this->input->post("campaigns");
+            $options['date_to'] = $this->input->post("date_to");
+            $options['users'] = $this->input->post("agents");
+            $options['teams'] = $this->input->post("teams");
+            $options['sources'] = $this->input->post("sources");
+            $options['pots'] = $this->input->post("pots");
 
             $result = $this->get_data_available_export($options);
 
@@ -267,21 +302,33 @@ $pots = $this->Form_model->get_pots();
     public function load_available_export_report_data() {
 
         if ($this->input->post()) {
-            $options             = array();
-            $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
-            $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+            $options = array();
+            $options['date_from'] = $this->input->post("date_from");
+            $options['campaigns'] = $this->input->post("campaigns");
+            $options['date_to'] = $this->input->post("date_to");
+            $options['users'] = $this->input->post("agents");
+            $options['teams'] = $this->input->post("teams");
+            $options['sources'] = $this->input->post("sources");
+            $options['pots'] = $this->input->post("pots");
+
             $options['export_form_name'] = ($this->input->post('export_form_name') ? $this->input->post('export_form_name') : "");
 
-            $result = $this->get_data_available_export($options);
+            if (empty($options['campaigns'])) {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "You should select at least one campaign on the filter"
+                ));
+            }
+            else {
+                $result = $this->get_data_available_export($options);
 
-            $this->firephp->log($result);
-
-
-            echo json_encode(array(
-                "success" => true,
-                "data" => $result['data'],
-                "header" => $result['headers']
-            ));
+                echo json_encode(array(
+                    "success" => !empty($result['data']),
+                    "data" => $result['data'],
+                    "header" => $result['headers'],
+                    "msg" => !empty($result['data'])?"":"No data"
+                ));
+            }
         }
     }
 

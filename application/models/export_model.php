@@ -73,7 +73,6 @@ class Export_model extends CI_Model
         if ($export_form['order_by']) {
             $qry .= " order by ".$export_form['order_by'];
         }
-		$this->firephp->log($qry);
         $result = $this->db->query($qry)->result_array();
 
         return $result;
@@ -147,14 +146,37 @@ class Export_model extends CI_Model
      * Get the contacts data
      *
      */
-    public function get_contacts_data($form) {
+    public function get_contacts_data($options) {
 
-        $where = " where contacts.contact_id is not null and companies.company_id is not null  ";
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
 
-        if (isset($form['campaign']) && !empty($form['campaign'])) {
-            $where .= " and records.campaign_id = '" . $form['campaign'] . "' ";
-            //$where .= " and records.campaign_id = 13";
+        $where = " where (contacts.contact_id IS NOT NULL OR companies.company_id IS NOT NULL)  ";
 
+        if (!empty($date_from)) {
+            $where .= " and (date(contacts.date_updated) >= '".$date_from."' or (contacts.date_updated is null and date(contacts.date_created) >=  '".$date_from."')) ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and (date(contacts.date_updated) <= '".$date_to."' or (contacts.date_updated is null and date(contacts.date_created) <=  '".$date_to."')) ";
+        }
+        if (!empty($campaigns)) {
+            $where .= " and records.campaign_id IN (".implode(",",$campaigns).") ";
+        }
+        if (!empty($outcomes)) {
+            $where .= " and records.outcome_id IN (".implode(",",$outcomes).") ";
+        }
+        if (!empty($teams)) {
+            $where .= " and teams.team_id IN (".implode(",",$teams).") ";
+        }
+        if (!empty($sources)) {
+            $where .= " and records.source_id IN (".implode(",",$sources).") ";
+        }
+        if (!empty($pots)) {
+            $where .= " and records.pot_id IN (".implode(",",$pots).") ";
         }
 
         $qry = "select
@@ -177,22 +199,22 @@ class Export_model extends CI_Model
                 from records
                   left join outcomes using(outcome_id)
                   inner join campaigns using (campaign_id)
-                  inner join companies using (urn)
+                  left join companies using (urn)
                   left join company_addresses using (company_id)
                   left join company_telephone using (company_id)
                   left join contacts using (urn)
                   left join contact_addresses ca ON (ca.contact_id = contacts.contact_id)
-                  left join contact_telephone ct ON (ct.contact_id = contacts.contact_id) ";
+                  left join contact_telephone ct ON (ct.contact_id = contacts.contact_id)
+                  left join data_sources sources on records.source_id = sources.source_id
+                  left join data_pots pots on records.pot_id = pots.pot_id ";
 
         $qry .= $where;
 
         $qry .= " group by contacts.contact_id
                   order by records.urn";
 
-        $this->firephp->log($qry);
         $result = $this->db->query($qry)->result_array();
-        $this->firephp->log($result);
-        exit(0);
+
 
         return $result;
     }
