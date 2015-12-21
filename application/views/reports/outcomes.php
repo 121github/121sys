@@ -119,18 +119,18 @@
     <div class="panel-body outcome-data table-responsive" style="padding: 0px;">
         <div class="row">
             <div class="col-lg-8">
-                <table class="table ajax-table">
+                <table class="table ajax-table" style="text-align: center;">
                     <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th id="outcome-name"></th>
-                        <th>Total Dials</th>
-                        <th>Conversion</th>
-                        <th>Time</th>
-                        <th>Rate  (per hour)</th>
-                        <th>Dials (per hour)</th>
-                        <th></th>
+                        <th style="text-align: left;">#</th>
+                        <th style="text-align: left;">Name</th>
+                        <th id="outcome-name" style="text-align: center;"></th>
+                        <th style="text-align: center;">Total Dials</th>
+                        <th style="text-align: center;">Conversion</th>
+                        <th style="text-align: center;">Time</th>
+                        <th style="text-align: center;">Rate p/h</th>
+                        <th style="text-align: center;">Dials p/h</th>
+                        <th style="text-align: center;"></th>
                     </tr>
                     </thead>
                     <tbody>

@@ -126,9 +126,9 @@ var outcome = {
                         }
 
                         $tbody
-                            .append("<tr class='" + success + "' style='" + style + "'><td class='outcome'>"
+                            .append("<tr class='" + success + "' style='" + style + "'><td class='outcome' style='text-align: left;'>"
                             + val.id
-                            + "</td><td class='name'>"
+                            + "</td><td class='name' style='text-align: left;'>"
                             + val.name
                             + "</td><td class='outcomes'>"
                             + "<a href='" + val.outcomes_url + "'>" + val.outcomes + "</a>"
