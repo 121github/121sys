@@ -2824,10 +2824,16 @@ var modal = {
         $('#modal').find('.submit-cal').on('click', function () {
             modal.configure_calendar(urn, $('#modal').find('.cal-range').val(), $('#cal-postcode').val(), true);
         });
-        modal.configure_calendar(urn, 10);
+		if($('input[name="company_postcode"]').length>0&&$('input[name="company_postcode"]').val()!==""){
+        modal.configure_calendar(urn, 10,$('input[name="company_postcode"]').val());
+		} else if ($('input[name="contact_postcode"]').length>0&&$('input[name="contact_postcode"]').val()!==""){
+		modal.configure_calendar(urn, 10,$('input[name="contact_postcode"]').val());	
+		} else {
+		modal.configure_calendar(urn, 10);	
+		}
     },
     configure_calendar: function (urn, distance, postcode, renew) {
-        if (distance) {
+        if (distance && typeof postcode !== "undefined") {
             modal_header.text('Scheduled appointments within ' + distance + ' miles of ' + postcode)
         } else {
             modal_header.text('Scheduled appointments')

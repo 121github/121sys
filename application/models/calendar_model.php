@@ -20,13 +20,11 @@ class Calendar_model extends CI_Model
         $start = $options['start'];
         $end = $options['end'];
         $order_by = "";
-        if (isset($options['modal']) && !empty($options['distance'])) {
-            $order_by = " order by distance";
-        }
 
         $join .= " left join companies using(urn) left join contacts using(contact_id) left join campaigns using(campaign_id) left join campaign_types using(campaign_type_id) left join appointment_attendees using(appointment_id) left join users using(user_id) ";
         if (!empty($options['postcode']) && !empty($options['distance'])) {
             $distance = intval($options['distance']) * 1.1515;
+			 $order_by = " order by distance";
             $postcode_qry =  "select postcode,latitude lat, longitude lng from uk_postcodes.PostcodeIo where postcode = '".$options['postcode']."'";
             $geodata = $this->db2->query($postcode_qry);
             if ($geodata->num_rows() > 0) {

@@ -354,10 +354,10 @@ class Appointments_model extends CI_Model
     {
 
         $qry = "SELECT *
-                    FROM appointment_rules apr
+                    FROM appointment_slot_override apr
                       LEFT JOIN appointment_slots aps USING (appointment_slot_id)
-                    WHERE user_id = " . $attendee_id . "
-                          AND (block_day >= DATE('" . to_mysql_datetime($startDate) . "') AND block_day <= DATE('" . to_mysql_datetime($endDate) . "'))
+                    WHERE max_slots = 0 and user_id = " . $attendee_id . "
+                          AND (`date` >= DATE('" . to_mysql_datetime($startDate) . "') AND `date` <= DATE('" . to_mysql_datetime($endDate) . "'))
                           AND (
                             (
                                 (TIME('" . to_mysql_datetime($startDate) . "') >= aps.slot_start AND TIME('" . to_mysql_datetime($startDate) . "') <= aps.slot_end)

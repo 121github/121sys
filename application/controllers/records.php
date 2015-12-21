@@ -946,7 +946,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 				if(strtotime($data['start'])<strtotime('now')||strtotime($data['end'])<strtotime('now')){
 					echo json_encode(array(
                     "success" => false,
-                    "msg" => "Appointment date is not valid"
+                    "msg" => "Appointment date must be in the future"
                 ));
 				exit;
 				}
