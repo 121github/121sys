@@ -305,6 +305,24 @@ class User_model extends CI_Model
         return $results;
     }
 
+    public function get_user_addresses_by_id($user_id) {
+        $qry = "SELECT *
+                FROM user_address
+                WHERE user_id='".intval($user_id)."'";
+        $results = $this->db->query($qry)->result_array();
+
+        return $results;
+    }
+
+    public function get_user_address($address_id) {
+        $qry = "SELECT *
+                FROM user_address
+                WHERE address_id='".intval($address_id)."'";
+        $results = $this->db->query($qry)->result_array();
+
+        return $results;
+    }
+
     public function get_user_by_reset_pass_token($reset_pass_token) {
 		$this->db->where('reset_pass_token',$reset_pass_token);
 		return $this->db->get('users')->result_array();
@@ -414,5 +432,28 @@ class User_model extends CI_Model
 		$this->db->where("user_id",$id);
 		return $this->db->get("users")->row_array();	
 		}
+
+    public function save_user_address($form)
+    {
+        return $this->db->insert("user_address", $form);
+    }
+
+    public function update_user_address($form)
+    {
+        $this->db->where('address_id', $form['address_id']);
+        return $this->db->update("user_address", $form);
+    }
+
+    public function set_no_primary_user_address($user_id)
+    {
+        $this->db->where('user_id', $user_id);
+        return $this->db->update("user_address", array('primary' => 0));
+    }
+
+    public function delete_user_address($address_id)
+    {
+        $this->db->where('address_id', $address_id);
+        return $this->db->delete("user_address");
+    }
 		
 }

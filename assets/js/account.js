@@ -13,6 +13,7 @@ var details = {
             $(this).css("color","green");
 
             $('#edit-details-btn').attr('data-id',$(this).attr('id'));
+            $('#add-user-address').attr('data-user-id',$(this).attr('id'));
             details.load_details();
         });
 
@@ -26,7 +27,7 @@ var details = {
             details.close_details();
         });
 
-        $(document).on('click', '.save-details-btn', function(e) {
+        $(document).on('click', '.edit-details-btn', function(e) {
             e.preventDefault();
             details.save_details();
         });
@@ -34,6 +35,31 @@ var details = {
         $(document).on('click', '.reset-failed-logins-btn', function(e) {
             e.preventDefault();
             details.reset_failed_logins();
+        });
+
+        $(document).on('click', '[data-modal="add-user-address"]', function (e) {
+            e.preventDefault();
+            details.add_user_address($(this).attr('data-user-id'), $(this).attr('data-address-id'));
+        });
+
+        $(document).on('click', '[data-modal="remove-user-address"]', function (e) {
+            e.preventDefault();
+            details.remove_user_address($(this).attr('data-user-id'), $(this).attr('data-address-id'), $(this).attr('data-primary'));
+        });
+
+        $(document).on('click', '#get-address', function (e) {
+            e.preventDefault();
+            details.get_addresses();
+        });
+
+        $(document).on('click', '#save-address-user-btn', function(e) {
+            e.preventDefault();
+            details.save_address_user();
+        });
+
+        $(document).on('click', '#delete-address-user-btn', function(e) {
+            e.preventDefault();
+            details.delete_address_user($(this).attr('data-user-id'), $(this).attr('data-address-id'),$(this).attr('data-primary'));
         });
 
         details.load_details();
@@ -70,8 +96,31 @@ var details = {
                 $('.pass_changed').html(response.data[0].pass_changed);
                 $('.attendee').html(response.data[0].attendee);
                 $('.reset_pass_token').html((response.data[0].reset_pass_token?"Yes":""));
+
+                $.ajax({
+                    url: helper.baseUrl + 'user/get_user_addresses_by_id',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {'user_id': user_id}
+                }).done(function(add_response) {
+                    var addresses = '<table class="table ajax-table">'
+                    if (add_response.success) {
+                        $.each(add_response.data, function (index, value) {
+                            addresses += '<tr>'
+                                         + '<td>'+value.description+'</td>'
+                                         + '<td>'+(value.primary == 1?"<span class='glyphicon glyphicon-home pull-right'></span>":"")+'</td>'
+                                         + '<td>'+value.add1+' '+value.add2+'</td>'
+                                         + '<td>'+value.postcode+'</td>'
+                                         + '<td><span class="glyphicon glyphicon-edit pointer marl pull-right" id="edit-user-address" data-modal="add-user-address" data-user-id="'+value.user_id+'" data-address-id="'+value.address_id+'"></span></td>'
+                                         + '<td><span class="glyphicon glyphicon-remove pointer marl pull-right" id="edit-user-address" data-modal="remove-user-address" data-user-id="'+value.user_id+'" data-address-id="'+value.address_id+'" data-primary="'+value.primary+'"></span></td>'
+                                       + '</tr>'
+                        });
+                        addresses += '</table>'
+                        $('.user-addresses').html(addresses);
+                    }
+                });
             } else {
-			flashalert.danger(response.error);	
+			    flashalert.danger(response.error);
 			}
         });
     },
@@ -85,7 +134,8 @@ var details = {
 	}).done(function(response){
 		var mheader = "Edit User Details";
 		var mbody = response;
-		var mfooter = '<span class="marl btn btn-success pull-right save-details-btn">Save</span> <button data-dismiss="modal" class="btn btn-default close-modal pull-left">Cancel</button>';
+		var mfooter = '<span class="marl btn btn-success pull-right edit-details-btn">Save</span> ' +
+                      '<button data-dismiss="modal" class="btn btn-default close-modal pull-left">Cancel</button>';
 		modals.load_modal(mheader,mbody,mfooter);
 		var email = $('.email').html();
         var telephone = $('.telephone').html();
@@ -138,6 +188,200 @@ var details = {
             if (response.success) {
                 //Reload details table
                 details.load_details();
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    add_user_address: function (user_id, address_id) {
+        $.ajax({
+            url: helper.baseUrl + 'user/add_user_address',
+            type: 'POST',
+            dataType: 'html',
+            data: {
+                user_id: user_id,
+                address_id: address_id,
+            }
+        }).done(function (response) {
+            var mheader = "User Addresss";
+            var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
+                          '<button class="btn btn-primary pull-right" id="save-address-user-btn" type="button">Save</button>';
+            modals.load_modal(mheader, mbody, mfooter);
+            modal_body.css('overflow', 'visible');
+            modal_body.find('input[name="house-number"]').numeric();
+            if (address_id) {
+                modal_body.find('input[name="address_id"]').val(address_id);
+            }
+
+            $('#primary-toggle').bootstrapToggle({
+                onstyle: 'success',
+            }).show().change(function(){
+                if($('#primary-toggle').prop('checked')==true){
+                    $('#user-address-form').find('input[name="primary"]').val('1');
+                } else {
+                    $('#user-address-form').find('input[name="primary"]').val('0');
+                }
+            });
+
+            if (address_id) {
+                $.ajax({
+                    url: helper.baseUrl + 'user/get_user_address',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        address_id: address_id,
+                    }
+                }).done(function (add_response) {
+                    if (add_response.success) {
+                        $('#user-address-form').find('input[name="description"]').val(add_response.data[0].description);
+                        $('#user-address-form').find('input[name="primary"]').val(add_response.data[0].primary);
+                        $('#user-address-form').find('input[name="postcode"]').val(add_response.data[0].postcode);
+                        $('#user-address-form').find('input[name="add1"]').val(add_response.data[0].add1);
+                        $('#user-address-form').find('input[name="add2"]').val(add_response.data[0].add2);
+                        $('#user-address-form').find('input[name="add3"]').val(add_response.data[0].add3);
+                        $('#user-address-form').find('input[name="add4"]').val(add_response.data[0].add4);
+                        $('#user-address-form').find('input[name="locality"]').val(add_response.data[0].locality);
+                        $('#user-address-form').find('input[name="city"]').val(add_response.data[0].city);
+                        $('#user-address-form').find('input[name="county"]').val(add_response.data[0].county);
+                        $('#user-address-form').find('input[name="country"]').val(add_response.data[0].country);
+
+                        if (add_response.data[0].primary == 1) {
+                            $('#primary-toggle').bootstrapToggle('on');
+                        }
+                        else {
+                            $('#primary-toggle').bootstrapToggle('off');
+                        }
+                    }
+                });
+            }
+        });
+    },
+
+    remove_user_address: function (user_id, address_id, primary) {
+
+        var mheader = "User Addresss";
+        var mbody = '<div class="row"><div class="col-lg-12">Do you want to remove this address?</div></div>';
+        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
+            '<button class="btn btn-primary pull-right" id="delete-address-user-btn" data-user-id="'+user_id+'" data-address-id="'+address_id+'" data-primary="'+primary+'" type="button">Remove</button>';
+        modals.load_modal(mheader, mbody, mfooter);
+        modal_body.css('overflow', 'visible');
+    },
+
+    get_addresses: function () {
+        var addresses;
+        var postcode = $('#user-address-form').find('#postcode').val();
+        var house_number = $('#user-address-form').find('#house-number').val();
+        $('#user-address-form').find('#collapse input').val('');
+        $('#user-address-form').find('input[name="postcode"]').val(postcode);
+
+        $.ajax({
+            url: helper.baseUrl + 'ajax/get_addresses_by_postcode',
+            type: "POST",
+            dataType: "JSON",
+            data: {postcode: postcode, house_number: house_number}
+        }).done(function (response) {
+            if (response.success) {
+                $('#user-address-form').find('#postcode').val(response.postcode);
+                addresses = response.data;
+                flashalert.info("Please select the correct address");
+                var options = "<option value=''>Select one address...</option>";
+
+                $.each(response.data, function (i, val) {
+                    options += '<option value="' + i + '">' +
+                        (val.add1 ? val.add1 : '') +
+                        (val.add2 ? ", " + val.add2 : '') +
+                        (val.add3 ? ", " + val.add3 : '') +
+                        (val.add4 ? ", " + val.add4 : '') +
+                        (val.locality ? ", " + val.locality : '') +
+                        (val.city ? ", " + val.city : '') +
+                        (val.county ? ", " + val.county : '') +
+                        (typeof val.postcode_io.country != "undefined" ? ", " + val.postcode_io.country : '') +
+                        (val.postcode ? ", " + val.postcode : '') +
+                        '</option>';
+                });
+                $('#user-address-form').find('#addresspicker')
+                    .html(options)
+                    .selectpicker('refresh');
+
+                //If the house number is found set this option by default
+                if (response.address_selected !== null && response.address_selected !== undefined) {
+                    var address = addresses[response.address_selected];
+                    $('#user-address-form').find('#add1').val(address.add1);
+                    $('#user-address-form').find('#add2').val(address.add2);
+                    $('#user-address-form').find('#add3').val(address.add3);
+                    $('#user-address-form').find('#add4').val(address.add4);
+                    $('#user-address-form').find('#locality').val(address.locality);
+                    $('#user-address-form').find('#city').val(address.city);
+                    $('#user-address-form').find('#county').val(address.county);
+                    $('#user-address-form').find('#country').val(address.postcode_io.country);
+
+                    $('#user-address-form').find('#addresspicker')
+                        .val(response.address_selected)
+                        .selectpicker('refresh');
+                }
+                modal_body.css('overflow', 'visible');
+                $('#addresspicker-div').show();
+            }
+            else {
+                modal_body.css('overflow', 'auto');
+                $('#addresspicker-div').hide();
+                flashalert.danger("No address was found. Please enter manually");
+                $('#complete-address').trigger('click');
+            }
+        });
+
+        $('.addresspicker').change(function () {
+
+            var selectedId = $(this).val();
+            var address = addresses[selectedId];
+            $('#user-address-form').find('#postcode').val(address.postcode);
+            $('#user-address-form').find('#house_number').val(address.house_number);
+            $('#user-address-form').find('#add1').val(address.add1);
+            $('#user-address-form').find('#add2').val(address.add2);
+            $('#user-address-form').find('#add3').val(address.add3);
+            $('#user-address-form').find('#add4').val(address.add4);
+            $('#user-address-form').find('#locality').val(address.locality);
+            $('#user-address-form').find('#city').val(address.city);
+            $('#user-address-form').find('#county').val(address.county);
+            $('#user-address-form').find('#country').val(address.postcode_io.country);
+
+        });
+    },
+
+    save_address_user: function() {
+        $.ajax({
+            url: helper.baseUrl + 'user/save_address_user',
+            type: "POST",
+            dataType: "JSON",
+            data: $('#user-address-form').serialize()
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                details.load_details();
+                $('.close-modal').trigger('click');
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    delete_address_user: function(user_id, address_id, primary) {
+        $.ajax({
+            url: helper.baseUrl + 'user/delete_address_user',
+            type: "POST",
+            dataType: "JSON",
+            data: {user_id: user_id, address_id: address_id, primary: primary}
+        }).done(function(response) {
+            if (response.success) {
+                //Reload details table
+                details.load_details();
+                $('.close-modal').trigger('click');
                 flashalert.success(response.msg);
             }
             else {
