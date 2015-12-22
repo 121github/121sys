@@ -7,7 +7,12 @@ class Admin_model extends CI_Model
     {
         parent::__construct();
     }
-    
+    public function update_campaign_status($post){
+	  $id = intval($post['campaign']);
+	  $status = intval($post['status']);
+	  $this->db->where("campaign_id",$id);
+	  return $this->db->update("campaigns",array("campaign_status"=>$status));
+	}
     public function save_day_slots($data)
     {
         $user_id = $data['user_id'];

@@ -17,6 +17,12 @@ class Admin extends CI_Controller
         $this->load->model('User_model');
         $this->load->model('File_model');
     }
+	public function update_campaign_status(){
+		  if ($this->input->is_ajax_request()) {
+			$this->Admin_model->update_campaign_status($this->input->post());  
+		  }
+	}
+	
     public function save_day_slots()
     {
         check_page_permissions('slot config');

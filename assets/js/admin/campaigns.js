@@ -71,6 +71,10 @@ var admin = {
             $(document).on('change', '.group-select', function() {
                 admin.campaigns.populate_users($(this).val(), true);
             });
+			 $(document).on('change', '.camp-status', function() {
+                admin.campaigns.update_status($(this).val(),$(this).attr('data-id'));
+				$(this).siblings('span').text($(this).val());
+            });
             $(document).on('change', '.campaignlist-select', function() {
                 admin.campaigns.populate_outcomes($(this).val());
                 admin.campaigns.campaign_outcomes($(this).val());
@@ -102,6 +106,17 @@ var admin = {
             //start the function to load the campaigns into the table
             admin.campaigns.load_campaigns();
         },
+		update_status:function(status,id){
+			 $.ajax({
+                url: helper.baseUrl + 'admin/update_campaign_status',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    campaign: id,
+                    status: status
+                }
+            })
+		},
         add_access: function(camp, users) {
             $.ajax({
                 url: helper.baseUrl + 'admin/add_access',
@@ -254,7 +269,7 @@ var admin = {
                 var $options = '<option value="">Select a campaign</option>';
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
-                        $tbody.append("<tr>" +
+                        $tbody.append("<tr "+(val.campaign_status==0?"class='danger'":"")+">" +
                             "<td class='campaign_id'>" + val.campaign_id +
                             "</td><td class='campaign_name'>" + val.campaign_name +
                             "</td><td>" + val.campaign_type_desc +
@@ -274,8 +289,7 @@ var admin = {
                             "<span class='hidden map_icon'>" + (val.map_icon ? val.map_icon : 'empty') + "</span>" +
                             "</td><td>" + val.client_name +
                             "<span class='hidden client_id'>" + val.client_id + "</span>" +
-                            "</td><td>" + val.campaign_status_text +
-                            "<span class='hidden campaign_status'>" + val.campaign_status + "</span>" +
+                            "</td><td><select data-id='"+val.campaign_id+"' class='camp-status'><option " + (val.campaign_status==0?"selected":"") + " value='0'>Dead</option><option " + (val.campaign_status==1?"selected":"") + " value='1'>Live</option></select>                          <span class='hidden campaign_status'>"+val.campaign_status+"</span>" +
                             "</td><td class='start_date'>" + val.start_date +
                             "</td><td class='end_date'>" + val.end_date +
                             "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn'  item-id='" + val.campaign_id + "'>Delete</button>" +

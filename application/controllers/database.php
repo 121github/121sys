@@ -9,9 +9,10 @@ class Database extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+		if(isset($_SESSION['user_id'])){
         user_auth_check(false);
         $this->_campaigns = campaign_access_dropdown();
-
+		}
         $this->load->model('Database_model');
     }
 //misc db functions
