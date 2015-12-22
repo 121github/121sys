@@ -186,7 +186,7 @@
         record.appointment_slots_panel.init();
         <?php } ?>
 		<?php if(in_array(18,$features)){ ?>
-        record.tasks.init();
+        //hsl branches
         <?php } ?>
 		<?php if(in_array(19,$features)){ ?>
         record.order_panel.init(); 
@@ -194,6 +194,9 @@
 		<?php if(in_array(20,$features)){ ?>
 		quick_planner.init();
 		<?php } ?>
+		<?php if(in_array(21,$features)){ ?>
+        record.tasks.init();
+        <?php } ?>
     });
 </script>
 <?php endif; ?>

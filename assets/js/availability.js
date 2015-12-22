@@ -145,7 +145,11 @@ var quick_planner = {
                     $('#quick-planner').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
                 }
             }).done(function (response) {
+				if(response.success){
                 quick_planner.planner_summary(response);
+				} else {
+				 $('#quick-planner').html("<p>"+response.msg+"</p>");	
+				}
             });
         } else {
 			 $('#quick-planner').html("<p>You must add an address to the record before you can plan the journey</p>");

@@ -179,7 +179,7 @@
         record.appointment_slots_panel.init();
         <?php } ?>
 		<?php if(in_array(18,$features)){ ?>
-        record.tasks.init();
+        record.branches.init();
         <?php } ?>
 		quick_planner.init();
     });

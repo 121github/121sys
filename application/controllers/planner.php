@@ -264,6 +264,13 @@ $this->load->model('Appointments_model');
 $slots = array();
 
 $appointments = $this->Appointments_model->slot_availability(false,$driver_id);
+if(!isset($appointments['apps'])){
+	$error = "Availability has not been configured for this attendee";
+	if(in_array("slot config",$_SESSION['permissions'])){
+	$error .= "<br><a href='".base_url().'admin/availability'."'>Click here to configure the availability</a>";
+	}
+	echo json_encode(array("success"=>false,"msg"=>$error));  exit;
+};
 foreach($appointments['apps'] as $date => $day){
 	$max_apps = 0;
 	$apps = 0;
