@@ -912,6 +912,7 @@ class Records_model extends CI_Model
 		}
 		}
 		}
+		uasort($attendees,'arraySort_distance');
 		return $attendees;
     }
 
