@@ -229,7 +229,7 @@ $('#primary-toggle').bootstrapToggle({
 			if($('#primary-toggle').prop('checked')==true){
 			$tab.find('form input[name="primary"]').val('1');
 			} else {
-			$tab.find('form input[name="primary"]').val('0');	
+			$tab.find('form input[name="primary"]').val('0');
 			}
 		});
 		/*

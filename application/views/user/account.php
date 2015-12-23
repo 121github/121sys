@@ -66,8 +66,8 @@
 
                         <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
                             CONTACT DETAILS 
-                  
-                                <span class="btn btn-xs btn-default" id="edit-details-btn" data-id="<?php echo $user_id ?>">Edit</span>
+
+                                <span class="glyphicon glyphicon-edit pointer marl pull-right" id="edit-details-btn" data-id="<?php echo $user_id ?>"></span>
                      
                         </div>
                         <table class="table ajax-table">
@@ -84,10 +84,17 @@
                                 <td class="ext"></td>
                             </tr>
                             <tr>
-                                <td style="font-weight: bold">Home Postcode</td>
+                                <td style="font-weight: bold">Default Postcode</td>
                                 <td class="home_postcode"></td>
                             </tr>
                         </table>
+
+                        <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom:10px; margin-top: 10px; font-weight: bold">
+                            ADDRESSES
+                            <span class="glyphicon glyphicon-plus pointer marl pull-right" id="add-user-address" data-modal="add-user-address" data-user-id="<?php echo $user_id ?>" data-address-id=""></span>
+                        </div>
+                        <!-- Addresses -->
+                        <div class="user-addresses"></div>
                     </div>
                 </div>
             </div>

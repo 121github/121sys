@@ -204,10 +204,15 @@ class User extends CI_Controller
             'teams' => $teams,
             'users' => $users,
             'user_id' => $user_id,
+            'css' => array(
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+            ),
             'javascript' => array(
                 'account.js?v' . $this->project_version,
+                'modals.js?v' . $this->project_version,
                 'lib/jquery.numeric.min.js',
-            ),
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+            )
         );
         $this->template->load('default', 'user/account', $data);
     }
@@ -220,6 +225,30 @@ class User extends CI_Controller
             echo json_encode(array(
                 "success" => (!empty($user)),
                 "data" => $user
+            ));
+        }
+    }
+
+    public function get_user_addresses_by_id()
+    {
+        if ($this->input->post()) {
+            $user = $this->User_model->get_user_addresses_by_id($this->input->post("user_id"));
+
+            echo json_encode(array(
+                "success" => (!empty($user)),
+                "data" => $user
+            ));
+        }
+    }
+
+    public function get_user_address()
+    {
+        if ($this->input->post()) {
+            $result = $this->User_model->get_user_address($this->input->post("address_id"));
+
+            echo json_encode(array(
+                "success" => (!empty($result)),
+                "data" => $result
             ));
         }
     }
@@ -599,6 +628,88 @@ class User extends CI_Controller
                     "msg" => validation_errors()
                 ));
             }
+        }
+    }
+
+    /**
+     * Open address user modal
+     */
+    public function add_user_address()
+    {
+        if ($this->input->is_ajax_request()) {
+            $user_id = intval($this->input->post('user_id'));
+            $address_id = intval($this->input->post('address_id'));
+            $this->load->view('forms/edit_user_address_form.php', array("user_id" => $user_id, "address_id" => $address_id));
+        }
+    }
+
+    /**
+     * Save address user
+     */
+    public function save_address_user()
+    {
+        if ($this->input->post()) {
+            $form = $this->input->post();
+            $this->load->helper('email');
+
+            unset($form['house-number']);
+
+            if(!validate_postcode($form["postcode"])){
+                echo json_encode(array("success"=>false,"msg"=>"Postcode is not valid"));
+                exit;
+            }
+
+            if(!($form["description"])){
+                echo json_encode(array("success"=>false,"msg"=>"You need to add the description"));
+                exit;
+            }
+
+            if ($form['primary'] == 1) {
+                //Remove primary for the others
+                $this->User_model->set_no_primary_user_address($form['user_id']);
+
+                //Add as default user postcode
+                $this->User_model->update_user($form['user_id'], array('home_postcode' => $form['postcode']));
+            }
+
+            if ($form['address_id']) {
+                //Save user address
+                $results = $this->User_model->update_user_address($form);
+            }
+            else {
+                //Save user address
+                $results = $this->User_model->save_user_address($form);
+            }
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results ? "User address saved successfully" : "ERROR: The User address was not saved successfully!")
+            ));
+        }
+    }
+
+    /**
+     * Delete address user
+     */
+    public function delete_address_user()
+    {
+        if ($this->input->post()) {
+            $user_id = $this->input->post("user_id");
+            $address_id = $this->input->post("address_id");
+            $primary = $this->input->post("primary");
+
+            //Delete user address
+            $results = $this->User_model->delete_user_address($address_id);
+
+            if ($primary == 1) {
+                //Remove the default user postcode
+                $this->User_model->update_user($user_id, array('home_postcode' => NULL ));
+            }
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results ? "User address saved successfully" : "ERROR: The User address was not saved successfully!")
+            ));
         }
     }
 }
