@@ -13,7 +13,7 @@ class Migration_update_84 extends CI_Migration
     {
         $this->firephp->log("starting migration 84");
 		
-		$this->db->query("CREATE TABLE `121sys_accept`.user_address
+		$this->db->query("CREATE TABLE IF NOT EXISTS user_address
                             (
                                 address_id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
                                 user_id int NOT NULL,

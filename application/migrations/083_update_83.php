@@ -13,14 +13,14 @@ class Migration_update_83 extends CI_Migration
     {
         $this->firephp->log("starting migration 83");
 		
-		$this->db->query("CREATE TABLE hour_exception_type
+		$this->db->query("CREATE TABLE IF NOT EXISTS hour_exception_type
                         (
                             exception_type_id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
                             exception_name varchar(50),
                             paid tinyint DEFAULT 0
                         )");
 
-        $this->db->query("CREATE TABLE `121sys_accept`.hour_exception
+        $this->db->query("CREATE TABLE IF NOT EXISTS hour_exception
                         (
                             exception_id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
                             hour_id int NOT NULL,
