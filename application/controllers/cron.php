@@ -17,6 +17,7 @@ class Cron extends CI_Controller
 
     public function morning_crons()
     {
+		session_write_close();
 		//set all company/contact telephone numbers where
         $this->check_suppressed_records();
 		//delete all lapsed entries in the planner
@@ -36,7 +37,7 @@ class Cron extends CI_Controller
     }
   public function evening_crons()
     {
-		
+		session_write_close();
 		//archive calls older than 6 months
 		$this->Cron_model->archive_old_recordings();
 		//clear the time_logged table ready for tomorrow
@@ -44,21 +45,25 @@ class Cron extends CI_Controller
 	}
 	
 	public function unassign_records(){
+		session_write_close();
 		   $this->Cron_model->unassign_records();
 	}
 
     public function update_hours()
     {
+		session_write_close();
         $agents = $this->Form_model->get_users_logged();
         $this->Cron_model->update_hours($agents);
     }
     public function clear_hours()
     {
+		session_write_close();
         $this->Cron_model->clear_hours();
     }
 
     public function clear_planner()
     {
+		session_write_close();
         $this->Cron_model->clear_planner();
     }
 
@@ -71,6 +76,7 @@ class Cron extends CI_Controller
      */
     public function daily_ration()
     {
+		session_write_close();
         echo "\nDaily Ration...\n\n";
         $update_records = 0;
         $campaigns = $this->Form_model->get_campaigns();
@@ -107,6 +113,7 @@ class Cron extends CI_Controller
     /* The following functions can be used to format postcodes and update geocoordinates in the uk_postcodes/locations table */
     public function update_all_locations()
     {
+		session_write_close();
         $this->Cron_model->update_address_tables();
         $this->Cron_model->update_location_ids();
         $this->Cron_model->update_locations_from_api();
@@ -154,6 +161,7 @@ class Cron extends CI_Controller
      */
     public function send_exports_to_users()
     {
+		session_write_close();
         echo "\nSend exports to users...\n\n";
 
         $export_users = $this->Export_model->get_export_users();
@@ -241,6 +249,7 @@ class Cron extends CI_Controller
 
     public function add_hashes()
     {
+		session_write_close();
         $this->load->model('Docscanner_model');
         $this->load->helper('scan');
 
@@ -271,7 +280,7 @@ class Cron extends CI_Controller
 
     public function remove_dupe_files()
     {
-
+session_write_close();
         $qry = "SELECT doc_hash, count( * ) count
                 FROM `files` where folder_id = 1 and doc_hash is not null and doc_hash <> ''
                 GROUP BY doc_hash
@@ -297,6 +306,7 @@ class Cron extends CI_Controller
 
     public function tidy_files()
     {
+		session_write_close();
 		 //delete files that dont exist in the database
         $base = FCPATH . "upload/files";
         $base_folders = array_diff(scandir($base), array(
@@ -341,6 +351,7 @@ class Cron extends CI_Controller
      */
     public function check_contact_telephone_numbers()
     {
+		session_write_close();
         $output = "";
         $output .= "\nChecking and fixing wrong contact telephone numbers... \n\n";
 
@@ -428,6 +439,7 @@ $new_telephone_number = "0".ltrim($new_telephone_number,'44');
      */
     public function check_company_telephone_numbers()
     {
+		session_write_close();
         $output = "";
         $output .= "Checking and fixing wrong company telephone numbers... \n\n";
 

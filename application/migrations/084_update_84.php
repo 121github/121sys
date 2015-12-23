@@ -28,7 +28,7 @@ class Migration_update_84 extends CI_Migration
                                 county varchar(100),
                                 country varchar(100),
                                 description varchar(255),
-                                primary tinynt(1),
+                                `primary` tinynt(1),
                                 FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
                             )");
 
