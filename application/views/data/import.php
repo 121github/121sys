@@ -10,7 +10,7 @@
                 <div class="col-lg-12">
                     <form id="data-form">
                         <div class="panel panel-primary">
-                            <div class="panel-heading"> <i class="fa fa-files-o fa-fw"></i> Import Data
+                            <div class="panel-heading"> <i class="fa fa-files-o fa-fw"></i>Import Data
                             </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">
@@ -28,9 +28,10 @@
                                          <p id="ctype-text" class="green" style="display:none"></p>
                                     </div>
                                     <hr />
-                                    <p>Where is this data from? (Source)</p>
-                                    <div class="form-group input-group-sm">
-                                        <select class="selectpicker pull-left" id="source">
+                                   
+                                    <div class="form-group">
+                                     <p>Where is this data from? (Source)</p>
+                                        <select class="selectpicker" id="source">
                                             <option value="">Select the data source</option>
                                             <?php foreach($sources as $row){ ?>
                                             <option value="<?php echo $row['id'] ?>">
@@ -38,12 +39,12 @@
                                             </option>
                                             <?php } ?>
                                             <option value="other">Other</option>
-                                        </select>
-                                        <input type="text" name="new_source" id="new_source" class="form-control pull-left marl" style="width:200px; display:none" placeholder="Enter the name of the data source" />
+                                        </select><br />
+                                        <input type="text" name="new_source" id="new_source" class="form-control input-sm" style="width:220px; display:none; margin-top:10px" placeholder="Enter the name of the data source" />
                                     </div>
-                                      <div class="clearfix"></div>
+   
+                                      <div class="form-group">
                                     <p>Group this data within the campaign (Pot)</p>
-                                    <div class="form-group input-group-sm">
                                         <select class="selectpicker pull-left" id="pot">
                                             <option value="">Do not use a pot</option>
                                             <?php foreach($pots as $row){ ?>
@@ -52,19 +53,14 @@
                                             </option>
                                             <?php } ?>
                                             <option value="other">Other</option>
-                                        </select>
-                                        <input type="text" name="new_pot" id="new_pot" class="form-control pull-left marl" style="width:200px; display:none" placeholder="Enter the name of the data pot" />
+                                        </select><br />
+                                        <input type="text" name="new_pot" id="new_pot" class="input-sm form-control" style="width:220px; display:none; margin-top:25px" placeholder="Enter the name of the data pot" />
                                     </div>
                                     
-                                    <div class="clearfix"></div>
-                                    <button class="btn btn-success pull-right goto-step-2">Continue</button>
 
+                                    <button  style="margin-top:10px" p class="btn btn-success pull-left goto-step-2">Continue</button>
                                 </div>
-
-
-
-
-                                <div id="step-2" class="step-container" style="display:none">
+                           <div id="step-2" class="step-container" style="display:none">
                                     <p>
                                         Import your data from a CSV file</p>
 
@@ -152,6 +148,9 @@
                                          <p>Require telephone </p>
                                         <select style="display:none"  name="ignore_tel" class="selectpicker" data-width="150px"><option value="0" selected >Yes</option><option value="1">No</option></select>
                                         </div>
+                                        
+                                                           
+                                        
                                     <div class="form-group input-group-sm pull-left">
                                         <p class="marl" id='import-progress'>&nbsp;</p>
                                         <button class="btn btn-success pull-right pull-left marl" id="import">Import</button> <button class="btn btn-default pull-left goto-step-2 marl">Back</button>

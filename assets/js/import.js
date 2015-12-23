@@ -446,19 +446,16 @@ var importer = {
         });
     },
 	add_locations: function() {
-		 $('#import-progress').html("Calculating postcode co-ordinates...(this may take a while)");
+		 $('#import-progress').html("Calculating postcode co-ordinates...");
         $.ajax({
             url: helper.baseUrl + 'cron/update_all_locations'
-        }).done(function (response) {
+        })
 			importer.tidy_up();
-        }).fail(function(){
-			importer.tidy_up();
-		});;
     },
     check_contact_telephone_numbers: function() {
         $.ajax({
             url: helper.baseUrl + 'cron/check_contact_telephone_numbers'
-        }).done(function (response) {
+        }).done(function(response) {
         });
     },
     check_compnay_telephone_numbers: function() {
