@@ -44,7 +44,9 @@ class User extends CI_Controller
                     }
                     if (!empty($redirect)) {
                         redirect(base64_decode($redirect));
-                    } else {
+                    } else if($_SESSION['environment'] == 'demo'){
+						 redirect('dashboard');
+					} else {
                         if ($_SESSION['role'] == 5 || $_SESSION['role'] == 3) {
                             redirect('dashboard/agent');
                         }
