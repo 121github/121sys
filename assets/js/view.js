@@ -81,6 +81,7 @@ var view_records = {
 		
 	
     populate_table: function (table_name) {
+		var start_time = new Date().getTime();
         view_records.table = $('.data-table').DataTable({
         buttons: [
             'copy', 'csv', 'excel', 'print'
@@ -113,8 +114,10 @@ var view_records = {
                     d.group = $('.filter-form').find('input[name="group"]').val();
                 },
                 complete: function (d) {
-                    $('.dt_info').show();
+					request_time = new Date().getTime() - start_time;
+                    $('.dt_info').show().find('div').append(' <span class="tt" data-html="true" data-toggle="tooltip" title="Query time '+Number(d.responseJSON.process_time) +' seconds<br>Request time '+Number(request_time/1000) +' seconds"><span class="glyphicon glyphicon-info-sign"></span></span> ' );
                     $('.tt').tooltip();
+					
                     //Show the records in the map
                     maps.showItems();
                     maps.current_postcode = getCookie('current_postcode');

@@ -121,6 +121,8 @@ class Records extends CI_Controller
     public function process_view()
     {
         if ($this->input->is_ajax_request()) {
+			/* debug loading times */
+			$this->benchmark->mark('code_start');
             $options = $this->input->post();
 			$this->load->model('Datatables_model');
 			$visible_columns = $this->Datatables_model->get_visible_columns(1);
@@ -185,7 +187,9 @@ class Records extends CI_Controller
             }
 						
             $_SESSION['navigation'] = $nav;
+			$this->benchmark->mark('code_end');
             $data = array(
+				"process_time" => $this->benchmark->elapsed_time('code_start', 'code_end'),
                 "draw" => $this->input->post('draw'),
                 "recordsTotal" => $count,
                 "recordsFiltered" => $count,
