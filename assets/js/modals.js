@@ -574,7 +574,7 @@ var modals = {
             $('#contact-select').show();
             $.each(result, function (k, v) {
                 var selected = "";
-                if (v.id == contact_id) {
+                if (v.id == contact_id || result.length=="1") {
                     selected = "selected";
                 }
                 $('#contact-select').append('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');

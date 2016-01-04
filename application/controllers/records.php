@@ -893,14 +893,20 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $data             = $this->input->post();
 
 			//check the address
-			if(!isset($data['address'])||$data['address']=="Other"){
+			if(!isset($data['address'])||$data['address']=="Other"||empty($data['address'])){
 				echo json_encode(array(
                     "success" => false,
                     "msg" => "You must confirm the address"
                 ));
                 exit;
 			}
-			
+			if(empty($data['appointment_type_id'])){
+				echo json_encode(array(
+                    "success" => false,
+                    "msg" => "You must set appointment type"
+                ));
+                exit;
+			}
 			if(empty($data['contact_id'])){
 				echo json_encode(array(
                     "success" => false,

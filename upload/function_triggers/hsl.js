@@ -2,11 +2,7 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
-		
-        $(document).on('change', '.typepicker', function () {
-            var title = $(this).find('option:selected').text();
-            $('[name="title"]').val(title);
-        });        
+    
 
         $(document).on('click', '[data-modal="delete-appointment"]', function () {
             $('[name="cancellation_reason"]').text("Appointment cancelled").hide();
@@ -64,17 +60,18 @@ var campaign_functions = {
         $('input[name="linkedin"]').closest('.form-group').hide();
     },
     appointment_setup: function (start) {
-        campaign_functions.hsl_coverletter_address();
+ 		campaign_functions.hsl_coverletter_address();
         quick_planner.set_appointment_start(start);
         quick_planner.set_appointment_attendee(quick_planner.driver_id);
-        quick_planner.set_appointment_contact();
-        $('[name="title"]').val("Home Consultancy");
+        campaign_functions.set_appointment_contact();
+       
         $('.branches-selection').show();
         $('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
         $('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
         if (quick_planner.branch_id!==false) {
             $('.branchpicker').selectpicker('val', quick_planner.branch_id).selectpicker('refresh');
         }
+		 $('#modal .typepicker').trigger('change');
     },
     set_appointment_contact: function () {
         $.ajax({

@@ -10,7 +10,7 @@ class Webform_model extends CI_Model
     }
 	
 	
-	public function get_webform_answers($webform_id,$urn){
+	public function get_webform_answers($webform_id=false,$urn=false){
 	$qry = "select * from webform_answers where urn = '".intval($urn)."' ";
 	if($webform_id){
 	$qry .= " and webform_id = '".intval($webform_id)."' ";	

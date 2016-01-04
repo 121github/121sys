@@ -12,6 +12,11 @@ var quick_planner = {
 		this.company_postcode = $('input[name="company_postcode"]').length?$('input[name="company_postcode"]').val():false;
 		
 //add listners
+        $(document).on('change', '.typepicker', function () {
+            var type = $('.typepicker').val()!==""?$(this).find('option:selected').text():"Appointment";
+			var title = $('#contact-select option:selected').length>0?type+' with '+$('#contact-select option:selected').text():type;
+            $('[name="title"]').val(title);
+        }); 
         $(document).on('mouseover', '#quick-planner tbody tr', function (e) {
             var target = $(this).find('.show-apps');
             if (target.length>0) {
@@ -29,6 +34,7 @@ var quick_planner = {
                             apps += '<small>'+Number(i + 1) + '. ' + row.title + ': '+ row.postcode +'<br>' + row.start + ' until ' + row.end + '</small><br>';
                         });
                         target.attr('data-toggle', 'tooltip').attr('data-placement', 'top').attr('data-original-title', apps).attr('data-html', 'true');
+						target.removeClass('show-apps');
                     }
                 });
             }
