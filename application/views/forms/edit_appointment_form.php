@@ -112,7 +112,8 @@
                         $add = $add1 . $add2 . $add3 . $add4 . $locality . $city . $county . $country;
                         $add .= (!empty($address['postcode']) ? ", " . $address['postcode'] : " - This address has no postcode!");
                         ?>
-                        <option <?php if (empty($address['postcode'])) {
+                        <option <?php if (count($addresses)=="1"){ echo "selected"; }
+						if (empty($address['postcode'])) {
                             echo "disabled";
                         } ?> value="<?php echo $add . "|" . $address['postcode'] ?>"><?php echo $add ?></option>
                     <?php endforeach; ?>

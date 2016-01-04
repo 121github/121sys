@@ -1524,6 +1524,11 @@ var record = {
     },
     appointment_slots_panel: {
         init: function () {
+		$(document).on('change', '#modal .typepicker', function () {
+            var type = $('.typepicker').val()!==""?$(this).find('option:selected').text():"Appointment";
+			var title = $('#contact-select option:selected').length>0?type+' with '+$('#contact-select option:selected').text():type;
+            $('[name="title"]').val(title);
+        }); 
         },
 		find_closest_attendee:function(){
 			if($('#slot-closest').val()!==""){
