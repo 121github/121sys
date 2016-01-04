@@ -133,9 +133,10 @@ class Records extends CI_Controller
 					$options['columns'][$k]['search']['value']="";
 				}
 			}
-			
+			$this->benchmark->mark('query_start');
             $records = $this->Records_model->get_records($options);
 			$this->Records_model->get_nav($options);
+			$this->benchmark->mark('query_end');
 			$count = $records['count'];
 			unset($records['count']);
 			$nav     = array();
@@ -188,8 +189,10 @@ class Records extends CI_Controller
 						
             $_SESSION['navigation'] = $nav;
 			$this->benchmark->mark('code_end');
+			$query_time = $this->benchmark->elapsed_time('query_start', 'query_end');
             $data = array(
-				"process_time" => $this->benchmark->elapsed_time('code_start', 'code_end'),
+				"process_time" => number_format($this->benchmark->elapsed_time('code_start', 'code_end')-$query_time,3),
+				"query_time" => number_format($query_time,3),
                 "draw" => $this->input->post('draw'),
                 "recordsTotal" => $count,
                 "recordsFiltered" => $count,
