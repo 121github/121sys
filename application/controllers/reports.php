@@ -1165,6 +1165,8 @@ class Reports extends CI_Controller
 
         $sources = $this->Form_model->get_sources();
 
+        $data_pot = $this->Form_model->get_pots();
+
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -1178,6 +1180,7 @@ class Reports extends CI_Controller
                 'lib/daterangepicker.js'
             ),
             'sources' => $sources,
+            'data_pot' => $data_pot,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
