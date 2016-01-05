@@ -1230,12 +1230,14 @@ class Reports extends CI_Controller
             $outcomes = $this->input->post('outcomes');
             $campaigns = $this->input->post('campaigns');
             $sources = $this->input->post('sources');
+            $pots = $this->input->post('pots');
 
             $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
             $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
             $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
+            $pots_url = (!empty($pots)?"/pot/".implode("_",$pots).(count($pots)>1?":in":""):"");
 
-            $filter_url = $outcomes_url.$campaigns_url.$sources_url;
+            $filter_url = $outcomes_url.$campaigns_url.$sources_url.$pots_url;
 
             echo json_encode(array(
                 "success" => (!empty($total_records) || !empty($last_outcomes)),
@@ -1278,6 +1280,8 @@ class Reports extends CI_Controller
 
         $sources = $this->Form_model->get_sources();
 
+        $data_pot = $this->Form_model->get_pots();
+
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -1291,6 +1295,7 @@ class Reports extends CI_Controller
                 'lib/daterangepicker.js'
             ),
             'sources' => $sources,
+            'data_pot' => $data_pot,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
@@ -1340,12 +1345,14 @@ class Reports extends CI_Controller
             $outcomes = $this->input->post('outcomes');
             $campaigns = $this->input->post('campaigns');
             $sources = $this->input->post('sources');
+            $pots = $this->input->post('pots');
 
             $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
             $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
             $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
+            $pots_url = (!empty($pots)?"/pot/".implode("_",$pots).(count($pots)>1?":in":""):"");
 
-            $filter_url = $outcomes_url.$campaigns_url.$sources_url;
+            $filter_url = $outcomes_url.$campaigns_url.$sources_url.$pots_url;
 
             echo json_encode(array(
                 "success" => (!empty($total_dials) || !empty($dials_by_outcome)),

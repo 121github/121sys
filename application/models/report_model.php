@@ -714,6 +714,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $sources = isset($options['sources']) ? $options['sources'] : array();
+        $data_pot = isset($options['pots']) ? $options['pots'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
 
@@ -729,6 +730,10 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
         }
 
+        if (!empty($data_pot)) {
+            $where .= " and pots.pot_id IN (" . implode(",", $data_pot) . ") ";
+        }
+
         if (!empty($outcomes)) {
             $where .= " and r.outcome_id IN (" . implode(",", $outcomes) . ") ";
         }
@@ -740,16 +745,17 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         $qry = "SELECT
-                  IF (o.outcome is not NULL, o.outcome, '- No Outcome Set -') as outcome,
+                  o.outcome,
                   r.outcome_id,
                   IF (o.contact_made, 'contact', 'no_contact') as contact,
                   count(r.dials) as num
                 FROM records r
                   LEFT JOIN outcomes o USING (outcome_id)
                   LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
-                  LEFT JOIN data_sources using (source_id)";
+                  LEFT JOIN data_sources as sources using (source_id)
+                  LEFT JOIN data_pots as pots using (pot_id)";
 
-        $qry .= " where 1 " . $where;
+        $qry .= " where 1 and o.outcome is not NULL " . $where;
 
         $qry .= " GROUP BY contact, o.outcome_id
                   ORDER BY num desc";
@@ -768,6 +774,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $sources = isset($options['sources']) ? $options['sources'] : array();
+        $data_pot = isset($options['pots']) ? $options['pots'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
 
@@ -781,6 +788,10 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         if (!empty($sources)) {
             $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
+        }
+
+        if (!empty($data_pot)) {
+            $where .= " and pots.pot_id IN (" . implode(",", $data_pot) . ") ";
         }
 
         if (!empty($outcomes)) {
@@ -799,9 +810,10 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
                 FROM records r
                   LEFT JOIN outcomes o USING (outcome_id)
                   LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
-                  LEFT JOIN data_sources using (source_id)";
+                  LEFT JOIN data_sources as sources using (source_id)
+                  LEFT JOIN data_pots as pots using (pot_id)";
 
-        $qry .= " where 1 " . $where;
+        $qry .= " where 1 and o.outcome is not NULL " . $where;
 
         $qry .= " GROUP BY contact";
 
