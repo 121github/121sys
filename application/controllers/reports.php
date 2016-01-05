@@ -19,6 +19,128 @@ class Reports extends CI_Controller
 
     }
 
+	public function overview(){
+        $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+        $aux = array();
+        foreach ($campaigns_by_group as $campaign) {
+            if (!isset($aux[$campaign['group_name']])) {
+                $aux[$campaign['group_name']] = array();
+            }
+            array_push($aux[$campaign['group_name']], $campaign);
+        }
+        $campaigns_by_group = $aux;
+
+        $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+        $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+        $aux = array(
+            "positive" => array(),
+            "No_positive" => array(),
+        );
+        foreach ($campaign_outcomes as $outcome) {
+            if ($outcome['positive']) {
+                array_push($aux['positive'], $outcome);
+            } else {
+                array_push($aux['No_positive'], $outcome);
+            }
+        }
+        $campaign_outcomes = $aux;
+
+        $agents = $this->Form_model->get_agents();
+        $teamManagers = $this->Form_model->get_teams();
+        $sources = $this->Form_model->get_sources();
+
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'Reports',
+            'title' => 'Reports | Activity',
+            'page' => 'activity'
+        ,
+            'javascript' => array(
+                'charts.js?v' . $this->project_version,
+                'report/overview.js?v' . $this->project_version,
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            ),
+            'campaigns_by_group' => $campaigns_by_group,
+            'campaign_outcomes' => $campaign_outcomes,
+            'team_managers' => $teamManagers,
+            'agents' => $agents,
+            'sources' => $sources,
+            'css' => array(
+                'dashboard.css',
+                'plugins/morris/morris-0.4.3.min.css',
+                'daterangepicker-bs3.css'
+            )
+        );
+        $this->template->load('default', 'reports/overview.php', $data);
+    
+		
+	}
+
+	public function overview_data(){
+        if ($this->input->is_ajax_request()) {
+            $data = array();
+            $data_array = array();
+            $total = 0;
+            $results = $this->Report_model->get_overview($this->input->post());
+            $date_from = $this->input->post("date_from");
+            $date_to = $this->input->post("date_to");
+            $users = $this->input->post("agents");
+            $campaigns = $this->input->post("campaigns");
+            $teams = $this->input->post("teams");
+            $sources = $this->input->post("sources");
+
+
+            $overall_array = array();
+            $post = $this->input->post();
+            if ($this->input->post('teams') || $this->input->post('agents')) {
+                $colname = $this->input->post('colname');
+                unset($post['teams']);
+                unset($post['agents']);
+                $overall = $this->Report_model->get_overview($post);
+                $overall_array = array();
+                foreach ($overall as $k => $row) {
+                    $overall_array[$row['outcome']]["overall_total"] = $row['total'];
+                    $overall_array[$row['outcome']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
+                }
+            }
+			 $url = base_url() . "search/custom/history";
+			 $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
+                $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
+                $url .= (!empty($date_from) ? "/contact-from/$date_from" : "");
+                $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
+                $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
+                $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
+				$total_url = $url;
+            foreach ($results as $k => $row) {
+                $total = $row['total'];
+                $pc = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
+                $data[$row['user_id']] = array(
+                    "campaign" => $row['campaign_name'],
+					"user" => $row['name'],
+                    "count" => $row['count'],
+                    "pc" => $pc,
+                    "url" => $url . "/user/" . $row['user_id']
+                );
+                if (isset($overall_array[$row['campaign_name']]["overall"])) {
+                    $data["overall"] = $overall_array[$row['campaign_name']]["overall"];
+                    $data["colname"] = $colname;
+                }
+                $data['colour'] = substr(dechex(crc32($row['campaign_name'])), 0, 6);
+                $data_array[] = $data;
+            }
+            echo json_encode(array(
+                "success" => true,
+                "data" => $data_array,
+                "total" => $total,
+				  "total_url" => $total_url
+            ));
+        }
+		
+	}
+
     public function data()
      {
         $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();

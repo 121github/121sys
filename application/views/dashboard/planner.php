@@ -102,15 +102,29 @@
                         </ul>-->
                         
                         
-                        
+                        <?php if(!empty($drivers)){ ?>
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            <span id="user-filter-name">Driver</span> <span class="caret"></span>
+                            <span id="user-filter-name">Drivers </span> <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                        <?php foreach($planner_users as $row){ ?>
-                         <li><a href="#" class="user-filter" data-id="<?php echo $row['user_id'] ?>"><?php echo $row['region_name'] ?>: <?php echo $row['name'] ?> </a>
+                            <li><a href="#" class="user-filter" data-id="<?php echo $_SESSION['user_id'] ?>">My Planner</a></li>      <li class="divider"></li>
+                        <?php foreach($drivers as $row){ ?>
+                      
+                         <li><a href="#" class="user-filter" data-id="<?php echo $row['user_id'] ?>"><?php echo $row['region_name'] ?>: <?php echo $row['name'] ?> </a></li>
                          <?php } ?>
+                                  
                         </ul>
+                        <?php } else { ?>
+                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            <span id="user-filter-name">Users </span> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                                 <li><a href="#" class="user-filter" data-id="<?php echo $_SESSION['user_id'] ?>">My Planner</a></li>    <li class="divider"></li>
+                        <?php foreach($attendees as $row){ ?>
+            
+                         <li><a href="#" class="user-filter" data-id="<?php echo $row['user_id'] ?>"><?php echo $row['name'] ?> </a></li><?php } ?>  
+                        </ul>
+                        <?php } ?>
                         
                         
                         

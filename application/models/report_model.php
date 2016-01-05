@@ -11,6 +11,64 @@ class Report_model extends CI_Model
     {
         parent::__construct();
     }
+	
+	public function get_overview($options){
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
+        $users = isset($options['agents']) ? $options['agents'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+
+        $where = "";
+        if (!empty($date_from)) {
+            $where .= " and date(contact) >= '$date_from' ";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(contact) <= '$date_to' ";
+        }
+        if (!empty($campaigns)) {
+            $where .= " and history.campaign_id IN (".implode(",",$campaigns).") ";
+        }
+        if (!empty($outcomes)) {
+            $where .= " and history.outcome_id IN (".implode(",",$outcomes).") ";
+        }
+        if (!empty($users)) {
+            $where .= " and history.user_id IN (".implode(",",$users).") ";
+        }
+        if (!empty($teams)) {
+            $where .= " and teams.team_id IN (".implode(",",$teams).") ";
+        }
+        if (!empty($sources)) {
+            $where .= " and history.source_id IN (".implode(",",$sources).") ";
+        }
+        //if the user does not have the agent reporting permission they can only see their own stats
+        if (@!in_array("by agent", $_SESSION['permissions'])) {
+            $where .= " and history.user_id = '{$_SESSION['user_id']}' ";
+        }
+
+        //if the user does not have the group reporting permission they can only see their own stats
+        if (@!in_array("by group", $_SESSION['permissions'])) {
+            //$where .= " and history.group_id = '{$_SESSION['group']}' ";
+        }
+
+        //if the user does not have the group reporting permission they can only see their own stats
+        if (@!in_array("by team", $_SESSION['permissions'])) {
+            //this doesnt work because some people dont have a team such as clients
+            //$where .= " and history.team_id = '{$_SESSION['team']}' ";
+        }
+
+        $qry = "select campaign_name,history.user_id,users.name,count(*) count,total from history join campaigns using(campaign_id) join records using(urn) join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history join campaigns using(campaign_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry .= $where;
+
+        $qry .= " ) t on history.campaign_id = campaigns.campaign_id where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+
+        $qry .= $where;
+        $qry .= " group by history.campaign_id,history.user_id order by count desc ";
+        return $this->db->query($qry)->result_array();
+    	
+	}
 
     public function get_audit_data($options)
     {

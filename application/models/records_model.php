@@ -891,7 +891,7 @@ class Records_model extends CI_Model
     public function get_attendees($urn = false, $campaign_id = false, $postcode = false)
     {
         if ($urn):
-            $qry = "select user_id,name,user_email,user_telephone,home_postcode from users_to_campaigns left join records using(campaign_id) where urn='$urn' and attendee=1 and user_status=1 and campaign_id in({$_SESSION['campaign_access']['list']})";
+            $qry = "select user_id,name,user_email,user_telephone,home_postcode from users join users_to_campaigns using(user_id) left join records using(campaign_id) where urn='$urn' and attendee=1 and user_status=1 and campaign_id in({$_SESSION['campaign_access']['list']})";
         elseif ($campaign_id):
             $qry = "select user_id,name,user_email,user_telephone,home_postcode from users left join users_to_campaigns using(user_id) where user_status = 1 and  attendee = 1 and  campaign_id = '$campaign_id'";
         else:

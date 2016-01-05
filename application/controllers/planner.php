@@ -488,7 +488,12 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
         $user_id = ($_SESSION['user_id'] ? $_SESSION['user_id'] : NULL);
 
         $campaign_branch_users = $this->getCampaignBranchUsers();
-		$planner_users = $this->Form_model->get_drivers();
+		$drivers = $this->Form_model->get_drivers();
+		$campaign = false;
+		if(isset($_SESSION['current_campaign'])){
+			$campaign = $_SESSION['current_campaign'];
+		}
+		$attendees = $this->Records_model->get_attendees(false,$campaign);
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -497,7 +502,8 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
             'page' => array('dashboard' => 'planner'),
             'campaign_branch_users' => $campaign_branch_users,
             'user_id' => $user_id,
-			'planner_users' => $planner_users,
+			'drivers' => $drivers,
+			'attendees' => $attendees,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
