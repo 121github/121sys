@@ -145,7 +145,7 @@ class Form_model extends CI_Model
     }
     public function get_all_campaigns()
     {
-        $qry = "select campaign_id id,campaign_name name,record_layout,campaign_type_desc type, daily_data, min_quote_days, max_quote_days, max_dials,virgin_order_1,virgin_order_2 from campaigns left join campaign_types using(campaign_type_id) order by campaign_name";
+        $qry = "select campaign_id id,campaign_name name,record_layout,campaign_type_desc type, daily_data, min_quote_days, max_quote_days, max_dials,virgin_order_1,virgin_order_2 from campaigns left join campaign_types using(campaign_type_id) order by campaign_status desc,campaign_name";
         return $this->db->query($qry)->result_array();
     }
 	   public function get_campaigns()
@@ -256,11 +256,8 @@ class Form_model extends CI_Model
     }
 	    public function get_pots()
     {
-        if (in_array("all campaigns", $_SESSION['permissions'])) {
-            $qry = "select pot_id id,pot_name name from data_pots";
-        } else {
             $qry = "select pot_id id,pot_name name from records left join data_pots using(pot_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by pot_name order by pot_name";
-        }
+
         $x =  $this->db->query($qry)->result_array();
 		$this->firephp->log($this->db->last_query());
 		return $x;

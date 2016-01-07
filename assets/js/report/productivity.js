@@ -184,10 +184,18 @@ var productivity = {
             filters += "</ul>";
 
 
-            //Sources
+                        //Sources
             var size = ($('.source-filter  option:selected').size() > 0 ? "(" + $('.source-filter  option:selected').size() + ")" : '');
             filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Sources</strong> " + size + "</h5><ul>";
             $('.source-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+			
+			//Pots
+            var size = ($('.pot-filter  option:selected').size() > 0 ? "(" + $('.pot-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Pots</strong> " + size + "</h5><ul>";
+            $('.pot-filter  option:selected').each(function (index) {
                 filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
             });
             filters += "</ul>";

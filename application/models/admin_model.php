@@ -11,7 +11,11 @@ class Admin_model extends CI_Model
 	  $id = intval($post['campaign']);
 	  $status = intval($post['status']);
 	  $this->db->where("campaign_id",$id);
-	  return $this->db->update("campaigns",array("campaign_status"=>$status));
+	  $this->db->update("campaigns",array("campaign_status"=>$status,"start_date"=>$start_date,"end_date"=>NULL));
+	  //set the end date as the last time it was dialled
+	  if($status==0){
+	  $this->db->query("update campaigns join (select max(contact) mc,campaign_id from history group by campaign_id) h using(campaign_id) set end_date = h.mc  where campaign_status = 0 and campaign_id = $id");
+	  }	  
 	}
     public function save_day_slots($data)
     {

@@ -66,11 +66,11 @@ var overview = {
         overview.overview_panel()
     },
     overview_panel: function (campaign) {
-
+		var pots = $('#by-pots').val()=="1"?"/pots":"";
         var graph_color_display = (typeof $('.graph-color').css('display') != 'undefined' ? ($('.graph-color').css('display') == 'none' ? 'none' : 'inline-block') : 'none');
 
         $.ajax({
-            url: helper.baseUrl + 'reports/overview_data',
+            url: helper.baseUrl + 'reports/overview_data'+pots,
             type: "POST",
             dataType: "JSON",
             data: $('.filter-form').serialize(),
@@ -104,7 +104,8 @@ var overview = {
 					user = "<td>"+val.user+"</td>";
 					}
 					if(val.count>0){
-					total_count = '<td><em><a href="' + val.total_url + '">'+response.totals[val.user_id]+'</a></td>';
+					
+					total_count = '<td><em><a href="' + (val.user_id==0&&val.user=="Total"?val.grand_total_url:val.total_url) + '">'+response.totals[val.user_id]+'</a></td>';
 					} else {
 					total_count = "<td>"+response.totals[val.user_id]+"</td>";	
 					}
@@ -180,10 +181,18 @@ var overview = {
             filters += "</ul>";
 
 
-            //Sources
+                        //Sources
             var size = ($('.source-filter  option:selected').size() > 0 ? "(" + $('.source-filter  option:selected').size() + ")" : '');
             filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Sources</strong> " + size + "</h5><ul>";
             $('.source-filter  option:selected').each(function (index) {
+                filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+            });
+            filters += "</ul>";
+			
+			//Pots
+            var size = ($('.pot-filter  option:selected').size() > 0 ? "(" + $('.pot-filter  option:selected').size() + ")" : '');
+            filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Pots</strong> " + size + "</h5><ul>";
+            $('.pot-filter  option:selected').each(function (index) {
                 filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
             });
             filters += "</ul>";

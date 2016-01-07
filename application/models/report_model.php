@@ -12,14 +12,14 @@ class Report_model extends CI_Model
         parent::__construct();
     }
 	
-	public function get_overview($options){
+	public function get_overview($options,$by_pots=false){
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $users = isset($options['agents']) ? $options['agents'] : array();
-        $teams = isset($options['teams']) ? $options['teams'] : array();
-        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
+ $pots= isset($options['pots']) ? $options['pots'] : array();
 
         $where = "";
         if (!empty($date_from)) {
@@ -43,6 +43,9 @@ class Report_model extends CI_Model
         if (!empty($sources)) {
             $where .= " and history.source_id IN (".implode(",",$sources).") ";
         }
+if (!empty($pots)) {
+            $where .= " and history.pot_id IN (".implode(",",$pots).") ";
+        }
         //if the user does not have the agent reporting permission they can only see their own stats
         if (@!in_array("by agent", $_SESSION['permissions'])) {
             $where .= " and history.user_id = '{$_SESSION['user_id']}' ";
@@ -58,15 +61,21 @@ class Report_model extends CI_Model
             //this doesnt work because some people dont have a team such as clients
             //$where .= " and history.team_id = '{$_SESSION['team']}' ";
         }
-
-        $qry = "select campaign_group_id,campaign_name,history.campaign_id,history.user_id,users.name,if(count(*) is null,0,count(*)) count,if(total is null,0,total) total from history join campaigns using(campaign_id) join records using(urn) join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history join campaigns using(campaign_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+		if($by_pots==true){
+		$fields = "if(pot_name is null,'No Pot',pot_name) campaign_name,history.pot_id campaign_id";
+		$group = "history.pot_id";
+		} else {
+		$fields = "campaign_name,history.campaign_id";
+		$group = "history.campaign_id";
+		}
+        $qry = "select campaign_group_id,$fields,history.user_id,users.name,if(count(*) is null,0,count(*)) count,if(total is null,0,total) total from history join campaigns using(campaign_id) join records using(urn) join users using(user_id) left join teams on users.team_id = teams.team_id left join data_pots on history.pot_id = data_pots.pot_id left join (select count(*) total,history.outcome_id from history join campaigns using(campaign_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join data_pots on history.pot_id = data_pots.pot_id left join records using(urn) where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= $where;
 
         $qry .= " ) t on history.campaign_id = campaigns.campaign_id where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         $qry .= $where;
-        $qry .= " group by history.campaign_id,history.user_id order by campaign_group_id,campaign_name,name,count desc ";
-		
+        $qry .= " group by $group,history.user_id order by campaign_group_id,campaign_name,name,count desc ";
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     	
 	}
@@ -134,8 +143,8 @@ class Report_model extends CI_Model
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $users = isset($options['agents']) ? $options['agents'] : array();
-        $teams = isset($options['teams']) ? $options['teams'] : array();
-        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
+ $pots= isset($options['pots']) ? $options['pots'] : array();
 
         $where = "";
         if (!empty($date_from)) {
@@ -158,6 +167,9 @@ class Report_model extends CI_Model
         }
         if (!empty($sources)) {
             $where .= " and history.source_id IN (".implode(",",$sources).") ";
+        }
+if (!empty($pots)) {
+            $where .= " and history.pot_id IN (".implode(",",$pots).") ";
         }
         //if the user does not have the agent reporting permission they can only see their own stats
         if (@!in_array("by agent", $_SESSION['permissions'])) {
@@ -231,8 +243,8 @@ class Report_model extends CI_Model
         $agents = isset($options['agents']) ? $options['agents'] : array();
         $date_to = $options['date_to'];
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
-        $team_managers = isset($options['teams']) ? $options['teams'] : array();
-        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $team_managers = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
+ $pots= isset($options['pots']) ? $options['pots'] : array();
         $hours_where = "";
         $where = "";
         $crosswhere = "";
@@ -264,7 +276,10 @@ class Report_model extends CI_Model
             //$name = "u.name";
         }
         if (!empty($sources)) {
-            $where .= " and r.source_id IN (" . implode(",", $sources) . ") ";
+            $where .= " and r.source_id IN (".implode(",",$sources).") ";
+        }
+if (!empty($pots)) {
+            $where .= " and r.pot_id IN (".implode(",",$pots).") ";
         }
         $where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $joins = " left join users u using(user_id) left join records r using(urn) " . $joins;
@@ -309,8 +324,8 @@ class Report_model extends CI_Model
         $agents = isset($options['agents']) ? $options['agents'] : array();
         $templates = isset($options['templates']) ? $options['templates'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
-        $team_managers = isset($options['teams']) ? $options['teams'] : array();
-        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $team_managers = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
+ $pots= isset($options['pots']) ? $options['pots'] : array();
         $hours_where = "";
         $where = "";
         if (!empty($date_from)) {
@@ -334,6 +349,9 @@ class Report_model extends CI_Model
         }
         if (!empty($sources)) {
             $where .= " and r.source_id IN (".implode(",",$sources).") ";
+        }
+if (!empty($pots)) {
+            $where .= " and r.pot_id IN (".implode(",",$pots).") ";
         }
 
         //if the user does not have the agent reporting permission they can only see their own stats
@@ -499,8 +517,8 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $users = isset($options['agents']) ? $options['agents'] : array();
-        $teams = isset($options['teams']) ? $options['teams'] : array();
-        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
+ $pots= isset($options['pots']) ? $options['pots'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
         $hours_where = "";
@@ -534,7 +552,9 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         if (!empty($sources)) {
             $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
         }
-
+		if (!empty($pots)) {
+            $where .= " and history.pot_id IN (" . implode(",", $pots) . ") ";
+        }
         if (!empty($outcomes)) {
             $where .= " and history.outcome_id IN (" . implode(",", $outcomes) . ") ";
         }
@@ -592,7 +612,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $sources = isset($options['sources']) ? $options['sources'] : array();
-        $data_pot = isset($options['pots']) ? $options['pots'] : array();
+        $pots = isset($options['pots']) ? $options['pots'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
 
@@ -608,8 +628,8 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
         }
 
-        if (!empty($data_pot)) {
-            $where .= " and pots.pot_id IN (" . implode(",", $data_pot) . ") ";
+        if (!empty($pots)) {
+            $where .= " and r.pot_id IN (" . implode(",", $pots) . ") ";
         }
 
         if (!empty($outcomes)) {
@@ -652,7 +672,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $sources = isset($options['sources']) ? $options['sources'] : array();
-        $data_pot = isset($options['pots']) ? $options['pots'] : array();
+        $pots = isset($options['pots']) ? $options['pots'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
 
@@ -668,8 +688,8 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
         }
 
-        if (!empty($data_pot)) {
-            $where .= " and pots.pot_id IN (" . implode(",", $data_pot) . ") ";
+        if (!empty($pots)) {
+            $where .= " and r..pot_id IN (" . implode(",", $pots) . ") ";
         }
 
         if (!empty($outcomes)) {
@@ -715,7 +735,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $sources = isset($options['sources']) ? $options['sources'] : array();
-        $data_pot = isset($options['pots']) ? $options['pots'] : array();
+        $pots = isset($options['pots']) ? $options['pots'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
 
@@ -731,8 +751,8 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
         }
 
-        if (!empty($data_pot)) {
-            $where .= " and pots.pot_id IN (" . implode(",", $data_pot) . ") ";
+        if (!empty($pots)) {
+            $where .= " and r.pot_id IN (" . implode(",", $data_pot) . ") ";
         }
 
         if (!empty($outcomes)) {
@@ -775,7 +795,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $date_from = $options['date_from'];
         $date_to = $options['date_to'];
         $sources = isset($options['sources']) ? $options['sources'] : array();
-        $data_pot = isset($options['pots']) ? $options['pots'] : array();
+        $pots = isset($options['pots']) ? $options['pots'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
 
@@ -791,8 +811,8 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             $where .= " and sources.source_id IN (" . implode(",", $sources) . ") ";
         }
 
-        if (!empty($data_pot)) {
-            $where .= " and pots.pot_id IN (" . implode(",", $data_pot) . ") ";
+        if (!empty($pots)) {
+            $where .= " and r.pot_id IN (" . implode(",", $pots) . ") ";
         }
 
         if (!empty($outcomes)) {
@@ -927,8 +947,8 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $users = isset($options['agents']) ? $options['agents'] : array();
-        $teams = isset($options['teams']) ? $options['teams'] : array();
-        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
+ $pots= isset($options['pots']) ? $options['pots'] : array();
 
         $where = "where 1 ";
         if (!empty($date_from)) {
@@ -951,6 +971,9 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         }
         if (!empty($sources)) {
             $where .= " and records.source_id IN (".implode(",",$sources).") ";
+        }
+if (!empty($pots)) {
+            $where .= " and records.pot_id IN (".implode(",",$pots).") ";
         }
         //if the user does not have the agent reporting permission they can only see their own stats
         if (@!in_array("by agent", $_SESSION['permissions'])) {
@@ -988,8 +1011,8 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $users = isset($options['agents']) ? $options['agents'] : array();
-        $teams = isset($options['teams']) ? $options['teams'] : array();
-        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array(); $sources = isset($options['sources']) ? $options['sources'] : array();
+ $pots= isset($options['pots']) ? $options['pots'] : array();
 		$campaign = isset($options['campaign']) ? $options['campaign'] : array();
         $where = "where 1 ";
         if (!empty($date_from)) {
@@ -1015,6 +1038,9 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         }
         if (!empty($sources)) {
             $where .= " and source_id IN (".implode(",",$sources).") ";
+        }
+if (!empty($pots)) {
+            $where .= " and pot_id IN (".implode(",",$pots).") ";
         }
         //if the user does not have the agent reporting permission they can only see their own stats
         if (@!in_array("by agent", $_SESSION['permissions'])) {

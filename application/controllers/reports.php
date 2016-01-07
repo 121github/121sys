@@ -49,6 +49,7 @@ class Reports extends CI_Controller
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
+$data_pot = $this->Form_model->get_pots();
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -68,7 +69,7 @@ class Reports extends CI_Controller
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
-            'css' => array(
+'data_pot' => $data_pot,'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
@@ -85,13 +86,17 @@ class Reports extends CI_Controller
             $data_array = array();
 			$totals = array();
             $total = 0;
-            $results = $this->Report_model->get_overview($this->input->post());
+			$by_pots=false;
+			if($this->uri->segment(3)=="pots"){
+			$by_pots=true;	
+			}
+            $results = $this->Report_model->get_overview($this->input->post(),$by_pots);
             $date_from = $this->input->post("date_from");
             $date_to = $this->input->post("date_to");
             $users = $this->input->post("agents");
             $campaigns = $this->input->post("campaigns");
             $teams = $this->input->post("teams");
-            $sources = $this->input->post("sources");
+            $pots = $this->input->post("pots");
 			$outcomes = $this->input->post("outcomes");
 /*
             $overall_array = array();
@@ -119,11 +124,13 @@ class Reports extends CI_Controller
 				$total_url = $url;
 				$campaign_results = array();
 				$campaign_total = array();
+				
+			if(!$by_pots){
 			foreach ($results as $k => $row) {
 				$campaign_total[$row['campaign_id']] = 0;
 			 $campaign_results[$row['campaign_id'].":".$row['campaign_group_id']] = array("campaign"=>$row['campaign_name'],"count"=>0,"color"=> get_color($row['campaign_group_id']));
 			 $totals[$row['user_id']] = 0;
-			};
+			}
 			foreach ($results as $k => $row) {
 			 $data[$row['user_id'].":".$row['name']] = $campaign_results;	
 			}		
@@ -154,6 +161,44 @@ class Reports extends CI_Controller
 				$totals[$row['user_id']] += $row['count'];
                 $data_array = $data;
             }
+			}
+					if($by_pots){
+						foreach ($results as $k => $row) {
+				$campaign_total[$row['campaign_id']] = 0;
+			 $campaign_results[$row['campaign_id'].":"] = array("campaign"=>$row['campaign_name'],"count"=>0,"color"=> get_color($row['campaign_group_id']));
+			 $totals[$row['user_id']] = 0;
+			};
+			foreach ($results as $k => $row) {
+			 $data[$row['user_id'].":".$row['name']] = $campaign_results;	
+			}		
+            foreach ($results as $k => $row) {
+                $total = $row['total'];
+                $data[$row['user_id'].":".$row['name']][$row['campaign_id'].":"] = array(
+                    "campaign" => $row['campaign_name'],
+					"user" => $row['name'],
+					"user_id" => $row['user_id'],
+                    "count" => $row['count'],
+                    "total_url" => $url . "/user/" . $row['user_id'],
+					"url" => $url . "/user/" . $row['user_id'].'/pot/'.(empty($row['campaign_id'])?"null":$row['campaign_id']),
+					"color"=> get_color($row['campaign_group_id'])
+                );
+					isset($campaign_total[$row['campaign_id']])?$campaign_total[$row['campaign_id']]+=$row['count']:0;
+				//this builds the campaign totals by creating a "user" called total and adding the counts
+				 $data["Totals"][$row['campaign_id'].":"] = array(
+                    "campaign" => $row['campaign_name'],
+					"user" => "Total",
+					"user_id" => 0,
+                    "count" =>  $campaign_total[$row['campaign_id']],
+                    "total_url" => $url . "/user/" . $row['user_id'],
+					"grand_total_url" =>$url,
+					"url" => $url . '/pot/'.(empty($row['campaign_id'])?"null":$row['campaign_id']),
+					"color"=> get_color($row['campaign_group_id'])
+                );
+				
+				$totals[$row['user_id']] += $row['count'];
+                $data_array = $data;
+            }
+			}
 			//the grand total
 			$totals[0] = $total;
 			
@@ -171,6 +216,7 @@ class Reports extends CI_Controller
 
     public function data()
      {
+		 
         $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
         $aux = array();
         foreach ($campaigns_by_group as $campaign) {
@@ -200,7 +246,7 @@ class Reports extends CI_Controller
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
-
+		$data_pot = $this->Form_model->get_pots();
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -219,6 +265,7 @@ class Reports extends CI_Controller
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
+			'data_pot' => $data_pot,
             'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
@@ -262,6 +309,7 @@ class Reports extends CI_Controller
         $campaigns = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
+$data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
         $outcomes = $this->Form_model->get_outcomes();
 
@@ -273,7 +321,8 @@ class Reports extends CI_Controller
             'page' => 'data_capture',
             'campaigns' => $campaigns,
             'sources' => $sources,
-            'team_managers' => $teamManagers,
+'data_pot' => $data_pot,
+'team_managers' => $teamManagers,
             'agents' => $agents,
             'javascript' => array(
                 'report/data_capture.js?v' . $this->project_version,
@@ -405,6 +454,7 @@ class Reports extends CI_Controller
         $agents = $this->Form_model->get_agents();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
+$data_pot = $this->Form_model->get_pots();
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -424,7 +474,7 @@ class Reports extends CI_Controller
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
-            'css' => array(
+'data_pot' => $data_pot,'css' => array(
                 'dashboard.css',
                 'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css'
@@ -446,7 +496,7 @@ class Reports extends CI_Controller
             $users = $this->input->post("agents");
             $campaigns = $this->input->post("campaigns");
             $teams = $this->input->post("teams");
-            $sources = $this->input->post("sources");
+            $pots = $this->input->post("pots");
 
 
             $overall_array = array();
@@ -531,6 +581,7 @@ class Reports extends CI_Controller
 
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
+$data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
 
         $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
@@ -566,7 +617,7 @@ class Reports extends CI_Controller
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'sources' => $sources,
-            'team_managers' => $teamManagers,
+'data_pot' => $data_pot,'team_managers' => $teamManagers,
             'agents' => $agents,
             'css' => array(
                 'dashboard.css',
@@ -773,6 +824,7 @@ class Reports extends CI_Controller
 
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
+$data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
 
         $data = array(
@@ -791,7 +843,7 @@ class Reports extends CI_Controller
             'templates_by_campaign_group' => $templates_by_campaign_group,
             'campaigns_by_group' => $campaigns_by_group,
             'sources' => $sources,
-            'team_managers' => $teamManagers,
+'data_pot' => $data_pot,'team_managers' => $teamManagers,
             'agents' => $agents,
             'css' => array(
                 'dashboard.css',
@@ -986,6 +1038,7 @@ class Reports extends CI_Controller
         $campaign_outcomes = $aux;
 
         $sources = $this->Form_model->get_sources();
+$data_pot = $this->Form_model->get_pots();
 
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -1002,7 +1055,7 @@ class Reports extends CI_Controller
             'team_managers' => $teamManagers,
             'agents' => $agents,
             'sources' => $sources,
-            'campaign_outcomes' => $campaign_outcomes,
+'data_pot' => $data_pot,'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
                 'dashboard.css',
@@ -1030,15 +1083,15 @@ class Reports extends CI_Controller
 
             $outcomes = $this->input->post('outcomes');
             $campaigns = $this->input->post('campaigns');
-            $teams = $this->input->post('teams');
-            $sources = $this->input->post('sources');
+            $teams = $this->input->post('teams');$sources = $this->input->post('sources');
+            $pots = $this->input->post('pots');
 
             $outcomes_url = (!empty($outcomes)?"/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":""):"");
             $campaigns_url = (!empty($campaigns)?"/campaign/".implode("_",$campaigns).(count($campaigns)>1?":in":""):"");
             $teams_url = (!empty($teams)?"/team/".implode("_",$teams).(count($teams)>1?":in":""):"");
             $sources_url = (!empty($sources)?"/source/".implode("_",$sources).(count($sources)>1?":in":""):"");
-
-            $filter_url = $outcomes_url.$campaigns_url.$teams_url.$sources_url;
+			$pots_url = (!empty($pots)?"/pot/".implode("_",$pots).(count($pots)>1?":in":""):"");
+            $filter_url = $outcomes_url.$campaigns_url.$teams_url.$sources_url.$pots_url;
 
             $outcome_colname = "Outcomes";
             if (!empty($outcomes)) {
@@ -1192,6 +1245,7 @@ class Reports extends CI_Controller
         $campaign_outcomes = $aux;
 
         $sources = $this->Form_model->get_sources();
+$data_pot = $this->Form_model->get_pots();
 
         $data_pot = $this->Form_model->get_pots();
 
@@ -1208,7 +1262,7 @@ class Reports extends CI_Controller
                 'lib/daterangepicker.js'
             ),
             'sources' => $sources,
-            'data_pot' => $data_pot,
+'data_pot' => $data_pot,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
@@ -1323,7 +1377,6 @@ class Reports extends CI_Controller
                 'lib/daterangepicker.js'
             ),
             'sources' => $sources,
-            'data_pot' => $data_pot,
             'campaign_outcomes' => $campaign_outcomes,
             'campaigns_by_group' => $campaigns_by_group,
             'css' => array(
@@ -1410,6 +1463,7 @@ class Reports extends CI_Controller
         $campaigns = $this->Form_model->get_user_campaigns();
         $teamManagers = $this->Form_model->get_teams();
         $sources = $this->Form_model->get_sources();
+$data_pot = $this->Form_model->get_pots();
         $agents = $this->Form_model->get_agents();
 
         $data = array(
@@ -1428,7 +1482,7 @@ class Reports extends CI_Controller
             'templates' => $templates,
             'campaigns' => $campaigns,
             'sources' => $sources,
-            'team_managers' => $teamManagers,
+'data_pot' => $data_pot,'team_managers' => $teamManagers,
             'agents' => $agents,
             'css' => array(
                 'dashboard.css',
@@ -1458,6 +1512,7 @@ class Reports extends CI_Controller
             $template_search = $form["template"];
             $team_search = $form["team"];
             $source_search = $form["source"];
+$pot_search = $form["pots"];
             $group = $form["group"];
 
 
@@ -1492,6 +1547,7 @@ class Reports extends CI_Controller
             $url .= (!empty($date_to_search) ? "/sent-sms-to/$date_to_search" : "");
             $url .= (!empty($team_search) ? "/team/$team_search" : "");
             $url .= (!empty($source_search) ? "/source/$source_search" : "");
+$url .= (!empty($pot_search) ? "/pot/$pot_search" : "");
             if ($group == "date") {
                 $group = "contact";
             }
@@ -1610,7 +1666,7 @@ class Reports extends CI_Controller
             $users = $this->input->post("agents");
             $campaigns = $this->input->post("campaigns");
             $teams = $this->input->post("teams");
-            $sources = $this->input->post("sources");
+            $pots = $this->input->post("pots");
 
 
             $overall_array = array();
@@ -1684,7 +1740,7 @@ class Reports extends CI_Controller
             $users = $this->input->post("agents");
             $campaigns = $this->input->post("campaigns");
             $teams = $this->input->post("teams");
-            $sources = $this->input->post("sources");
+            $pots = $this->input->post("pots");
 			$campaign = $this->input->post("campaign");
 
             $overall_array = array();

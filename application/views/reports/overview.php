@@ -30,6 +30,9 @@
 <nav id="filter-right" class="mm-menu mm--horizontal mm-offcanvas">
     <div style="padding:30px 20px 3px">
         <form class="filter-form">
+        <?php if($this->uri->segment(3)=="pots"){ ?>
+        <input type="hidden" id="by-pots" value="1">
+        <?php } ?>
             <input type="hidden" name="date_from" value="<?php echo date('Y-m-d') ?>">
             <input type="hidden" name="date_to" value="<?php echo date('Y-m-d') ?>">
 
@@ -87,9 +90,7 @@
                         <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                     <?php } ?>
                 </select>
-            <?php } ?>
-
-            <label style="margin-top: 5%;">Source</label>
+            <?php } ?>          <label style="margin-top: 5%;">Source</label>
             <select name="sources[]" class="selectpicker source-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
                 <?php foreach ($sources as $row) { ?>
@@ -97,6 +98,14 @@
                 <?php } ?>
             </select>
 
+            <label style="margin-top: 5%;">Data Pot</label>
+            <select name="pots[]" class="selectpicker pot-filter" multiple data-width="100%"
+                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+                <?php foreach ($data_pot as $row) { ?>
+                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                <?php } ?>
+            </select>
+			
             <button id="filter-submit" class="btn btn-primary pull-right" style="margin-top: 5%;">Submit</button>
         </form>
     </div>
@@ -111,6 +120,11 @@
                     <a href="#filter-right" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
                     </a>
+                    <?php if($this->uri->segment(3)=="pots"){ ?>
+					<a href="../overview" class="btn btn-default btn-xs">Show Campaigns</a>
+					<?php }	else { ?>
+                    <a href="overview/pots" class="btn btn-default btn-xs">Show Pots</a>	
+                     <?php } ?>
                 </div>
             </div>
             <!-- /.panel-heading -->
