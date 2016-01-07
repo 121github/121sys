@@ -23,10 +23,10 @@ class Migration_update_83 extends CI_Migration
         $this->db->query("CREATE TABLE IF NOT EXISTS hour_exception
                         (
                             exception_id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                            hour_id int NOT NULL,
+                            hours_id int NOT NULL,
                             exception_type_id int NOT NULL,
                             duration int DEFAULT 0 NOT NULL,
-                            FOREIGN KEY (hour_id) REFERENCES hours (hours_id),
+                            FOREIGN KEY (hours_id) REFERENCES hours (hours_id),
                             FOREIGN KEY (exception_type_id) REFERENCES hour_exception_type (exception_type_id)
                         )");
 
