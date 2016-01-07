@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-8">
-        <h1 class="page-header">Overview Report</h1>
+        <h1 class="page-header">Activity Overview</h1>
     </div>
     <div class="col-lg-4 page-header" style="text-align: right;">
         <ul class="nav">
@@ -115,7 +115,7 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
-            <div class="panel-heading clearfix"><i class="fa fa-bar-chart-o fa-fw"></i> Overview Report
+            <div class="panel-heading clearfix"><i class="fa fa-bar-chart-o fa-fw"></i> Activity Overview
                 <div class="pull-right" style="border:0px solid black;">
                     <a href="#filter-right" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter

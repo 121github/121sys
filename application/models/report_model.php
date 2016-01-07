@@ -75,7 +75,7 @@ if (!empty($pots)) {
 
         $qry .= $where;
         $qry .= " group by $group,history.user_id order by campaign_group_id,campaign_name,name,count desc ";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     	
 	}
@@ -427,7 +427,7 @@ public function get_realtime_history($options){
 
         $where .= " and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$qry = "select count(*) count,user_id,users.name from history join campaigns using(campaign_id) join role_permissions using(role_id) join permissions using(permission_id) join users using(user_id) where permission_name = 'log hours' $where group by user_id";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
 		return $this->db->query($qry)->result_array();
 	
 }
@@ -463,7 +463,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $where .= " and hours.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$qry = "select SUM(hours.time_logged) as duration,user_id,users.name from hours join campaigns using(campaign_id) join users using(user_id) join role_permissions using(role_id) join permissions using(permission_id)  where permission_name = 'log hours' $where group by user_id";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
 		return $this->db->query($qry)->result_array();
 	
 }
@@ -499,7 +499,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $where .= " and campaign_id in({$_SESSION['campaign_access']['list']}) ";
 		$qry = "select sum(TIME_TO_SEC(TIMEDIFF(if(end_time is null,now(),end_time),start_time))) duration,user_id,users.name from hours_logged join campaigns using(campaign_id) join users using(user_id) join role_permissions using(role_id) join permissions using(permission_id) where permission_name = 'log hours' $where group by user_id";
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
 		return $this->db->query($qry)->result_array();
 	
 }
@@ -936,7 +936,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
           left join (select SUM(IF(LENGTH(sh.text)<=160,1,IF(LENGTH(sh.text)<=306,2,IF(LENGTH(sh.text)<=459,3,IF(LENGTH(sh.text)<=612,4,5))))) as credits,$group_by gb from sms_history sh $joins where sh.status_id != " . SMS_STATUS_PENDING . " $where group by $group_by) cred on cred.gb = $group_by
         where 1 $where
 		group by $group_by ";
-        $this->firephp->log($qry);
+        //$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 	
