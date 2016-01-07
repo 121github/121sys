@@ -104,6 +104,7 @@ var view_records = {
                 url: helper.baseUrl + "records/process_view",
                 type: 'POST',
                 beforeSend: function () {
+					start_time = new Date().getTime();
                     $('.dt_info').hide();
                     maps.items = [];
                 },

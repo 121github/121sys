@@ -83,6 +83,7 @@ class Reports extends CI_Controller
         if ($this->input->is_ajax_request()) {
             $data = array();
             $data_array = array();
+			$totals = array();
             $total = 0;
             $results = $this->Report_model->get_overview($this->input->post());
             $date_from = $this->input->post("date_from");
@@ -91,8 +92,8 @@ class Reports extends CI_Controller
             $campaigns = $this->input->post("campaigns");
             $teams = $this->input->post("teams");
             $sources = $this->input->post("sources");
-
-
+			$outcomes = $this->input->post("outcomes");
+/*
             $overall_array = array();
             $post = $this->input->post();
             if ($this->input->post('teams') || $this->input->post('agents')) {
@@ -106,6 +107,7 @@ class Reports extends CI_Controller
                     $overall_array[$row['outcome']]["overall"] = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
                 }
             }
+			*/
 			 $url = base_url() . "search/custom/history";
 			 $url .= (!empty($campaigns) ? "/hcampaign/".implode("_",$campaigns).(count($campaigns)>1?":in":"") : "");
                 $url .= (!empty($users) ? "/user/".implode("_",$users).(count($users)>1?":in":"") : "");
@@ -113,28 +115,54 @@ class Reports extends CI_Controller
                 $url .= (!empty($date_to) ? "/contact-to/$date_to" : "");
                 $url .= (!empty($teams) ? "/team/".implode("_",$teams).(count($teams)>1?":in":"") : "");
                 $url .= (!empty($sources) ? "/hsource/".implode("_",$sources).(count($sources)>1?":in":"") : "");
+				$url .= (!empty($outcomes) ? "/outcome/".implode("_",$outcomes).(count($outcomes)>1?":in":"") : "");
 				$total_url = $url;
+				$campaign_results = array();
+				$campaign_total = array();
+			foreach ($results as $k => $row) {
+				$campaign_total[$row['campaign_id']] = 0;
+			 $campaign_results[$row['campaign_id'].":".$row['campaign_group_id']] = array("campaign"=>$row['campaign_name'],"count"=>0,"color"=> get_color($row['campaign_group_id']));
+			 $totals[$row['user_id']] = 0;
+			};
+			foreach ($results as $k => $row) {
+			 $data[$row['user_id'].":".$row['name']] = $campaign_results;	
+			}		
             foreach ($results as $k => $row) {
                 $total = $row['total'];
-                $pc = (isset($row['total']) ? number_format(($row['count'] / $row['total']) * 100, 1) : "-");
-                $data[$row['user_id']] = array(
+                $data[$row['user_id'].":".$row['name']][$row['campaign_id'].":".$row['campaign_group_id']] = array(
                     "campaign" => $row['campaign_name'],
 					"user" => $row['name'],
+					"user_id" => $row['user_id'],
                     "count" => $row['count'],
-                    "pc" => $pc,
-                    "url" => $url . "/user/" . $row['user_id']
+                    "total_url" => $url . "/user/" . $row['user_id'],
+					"url" => $url . "/user/" . $row['user_id'].'/campaign/'.$row['campaign_id'],
+					"color"=> get_color($row['campaign_group_id'])
                 );
-                if (isset($overall_array[$row['campaign_name']]["overall"])) {
-                    $data["overall"] = $overall_array[$row['campaign_name']]["overall"];
-                    $data["colname"] = $colname;
-                }
-                $data['colour'] = substr(dechex(crc32($row['campaign_name'])), 0, 6);
-                $data_array[] = $data;
+					isset($campaign_total[$row['campaign_id']])?$campaign_total[$row['campaign_id']]+=$row['count']:0;
+				//this builds the campaign totals by creating a "user" called total and adding the counts
+				 $data["Totals"][$row['campaign_id'].":".$row['campaign_group_id']] = array(
+                    "campaign" => $row['campaign_name'],
+					"user" => "Total",
+					"user_id" => 0,
+                    "count" =>  $campaign_total[$row['campaign_id']],
+                    "total_url" => $url . "/user/" . $row['user_id'],
+					"grand_total_url" =>$url,
+					"url" => $url . '/campaign/'.$row['campaign_id'],
+					"color"=> get_color($row['campaign_group_id'])
+                );
+				
+				$totals[$row['user_id']] += $row['count'];
+                $data_array = $data;
             }
+			//the grand total
+			$totals[0] = $total;
+			
+			//return the data
             echo json_encode(array(
                 "success" => true,
                 "data" => $data_array,
                 "total" => $total,
+				"totals"=>$totals,
 				  "total_url" => $total_url
             ));
         }

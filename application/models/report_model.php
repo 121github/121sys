@@ -59,13 +59,14 @@ class Report_model extends CI_Model
             //$where .= " and history.team_id = '{$_SESSION['team']}' ";
         }
 
-        $qry = "select campaign_name,history.user_id,users.name,count(*) count,total from history join campaigns using(campaign_id) join records using(urn) join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history join campaigns using(campaign_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $qry = "select campaign_group_id,campaign_name,history.campaign_id,history.user_id,users.name,if(count(*) is null,0,count(*)) count,if(total is null,0,total) total from history join campaigns using(campaign_id) join records using(urn) join users using(user_id) left join teams on users.team_id = teams.team_id left join (select count(*) total,history.outcome_id from history join campaigns using(campaign_id) left join users using(user_id) left join teams on users.team_id = teams.team_id left join records using(urn) where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
         $qry .= $where;
 
         $qry .= " ) t on history.campaign_id = campaigns.campaign_id where 1 and history.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         $qry .= $where;
-        $qry .= " group by history.campaign_id,history.user_id order by count desc ";
+        $qry .= " group by history.campaign_id,history.user_id order by campaign_group_id,campaign_name,name,count desc ";
+		
         return $this->db->query($qry)->result_array();
     	
 	}
