@@ -91,7 +91,7 @@ var view_records = {
                 "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
             },
             "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t><"col-lg-12"<"pull-left"l> <"pull-left marl" B>>><"clear">',
-			"lengthMenu": [[10, 25, 50,100, -1], [10, 25, 50,100, "All"]],
+			"lengthMenu": [[10, 25, 50,100, 1000], [10, 25, 50,100,1000]],
             "width": "100%",
             "scrollX": true,
             "processing": true,

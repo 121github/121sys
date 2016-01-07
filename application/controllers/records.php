@@ -135,14 +135,15 @@ class Records extends CI_Controller
 			}
 			$this->benchmark->mark('query_start');
             $records = $this->Records_model->get_records($options);
-			$this->Records_model->get_nav($options);
+			
+			//$this->Records_model->get_nav($options);
 			$this->benchmark->mark('query_end');
 			$count = $records['count'];
 			unset($records['count']);
 			$nav     = array();
 			
             foreach ($records as $k => $v) {
-				$nav[] = $v['urn'];
+				//$nav[] = $v['urn'];
                 //Location
                 if ($records[$k]["company_location"]) {
                     $location_ar = explode(',',$records[$k]["company_location"]);
