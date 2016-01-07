@@ -9,6 +9,9 @@
                 <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>>
                     <a href="<?php echo base_url() ?>reports/activity">Activity</a>
                 </li>
+                 <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>>
+                    <a href="<?php echo base_url() ?>reports/overview">Activity Summary</a>
+                </li>
             <?php } ?>
             <!--<li <?php echo @($page == 'realtime' ? "class='Selected'" : "") ?>>
                                         <a href="<?php echo base_url() ?>reports/realtime">Realtime</a>
