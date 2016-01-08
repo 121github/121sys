@@ -233,7 +233,6 @@ var modals = {
 				 $.each(row,function(i,column){
 					var selected = "";
 				if(column.selected[column.columns.column_id]){ selected="selected" }
-				if(column.columns.column_title=="Last Comment"){ subtext = 'data-subtext="May run slow on large data sets"'; }
 					colpicker += "<option "+subtext+" "+selected+" value='"+column.columns.column_id+"'>"+column.columns.column_title+"</option>";
 				 })
 				 colpicker += "</select>";

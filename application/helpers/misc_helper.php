@@ -61,7 +61,7 @@ function join_array(){
 	$array['appointment_users'] = array("appointments","appointment_users");
 	$array['appointment_attendees'] = array("appointments","appointment_attendees");
 	$array['appointment_types'] = array("appointments","appointment_types");
-	$array['last_comments'] = array("last_comments");
+	$array['record_comments'] = array("record_comments");
 	return $array;
 }
 
@@ -105,7 +105,7 @@ function table_joins(){
 		$join['appointment_attendees'] = " 	left join appointment_attendees aa on aa.appointment_id = a.appointment_id left join users au on au.user_id = aa.user_id ";
 		$join['appointment_locations'] = " left JOIN locations appointment_locations on a.location_id =  appointment_locations.location_id ";
 		$join['appointment_types'] = " left JOIN appointment_types using(appointment_type_id) ";
-		$join['last_comments'] = " left JOIN (select max(history_id) mhid,urn from history where comments <> '' group by urn) last_history on r.urn = last_history.urn left join history last_comments on last_history.mhid = last_comments.history_id ";
+		$join['record_comments'] = " left join record_comments on record_comments.urn = r.urn ";
 		return $join;
 }
 

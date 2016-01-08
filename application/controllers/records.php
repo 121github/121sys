@@ -127,6 +127,7 @@ class Records extends CI_Controller
 			$this->load->model('Datatables_model');
 			$visible_columns = $this->Datatables_model->get_visible_columns(1);
 			$options['visible_columns'] = $visible_columns;
+
 			//check the options
 			foreach($options['columns'] as $k=>$column){
 				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
@@ -140,10 +141,10 @@ class Records extends CI_Controller
 			$this->benchmark->mark('query_end');
 			$count = $records['count'];
 			unset($records['count']);
-			$nav     = array();
+			$urns     = array();
 			
             foreach ($records as $k => $v) {
-				//$nav[] = $v['urn'];
+				$urns[] = $v['urn'];
                 //Location
                 if ($records[$k]["company_location"]) {
                     $location_ar = explode(',',$records[$k]["company_location"]);
@@ -187,8 +188,9 @@ class Records extends CI_Controller
                     //$records[$k]["appointment_location_id"] => $records[$k]["appointment_postcode"]
                 );
             }
-						
-            $_SESSION['navigation'] = $nav;
+			
+		
+
 			$this->benchmark->mark('code_end');
 			$query_time = $this->benchmark->elapsed_time('query_start', 'query_end');
             $data = array(

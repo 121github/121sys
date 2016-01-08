@@ -415,9 +415,11 @@ class Records_model extends CI_Model
         }
         //turn the selection array into a list
         $selections = implode(",", $table_columns);
-
-        $qry = "select $selections
+		$qry = "";
+        $select = "select $selections
                 from records r ";
+		$numrows = "select count(distinct r.urn) numrows
+                from records r ";		
         //if any join is required we should apply it here
         if (isset($_SESSION['filter']['join'])) {
             $join = $_SESSION['filter']['join'];
@@ -440,12 +442,11 @@ class Records_model extends CI_Model
         foreach ($join as $join_query) {
             $qry .= $join_query;
         }
-
         $qry .= $this->get_where($options, $filter_columns);
-        $qry .= " group by r.urn";
-        //$this->firephp->log($qry);
-        $count = $this->db->query($qry)->num_rows();
-
+		//get the total number of records before any limits or pages are applied
+        $count = $this->db->query($numrows.$qry)->row()->numrows;
+		
+		$qry .= " group by r.urn";
         //if any order has been set then we should apply it here
         $start = $options['start'];
         $length = $options['length'];
@@ -461,12 +462,35 @@ class Records_model extends CI_Model
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}
-        $records = $this->db->query($qry)->result_array();
+        $records = $this->db->query($select.$qry)->result_array();
         $records['count'] = $count;
-        //$this->firephp->log($qry);
+        
         return $records;
     }
 
+	public function get_all_comments($urns=array()){
+		$comments = array();
+		if(empty($urns)){
+		return $comments;	
+		}
+		$qry = "SELECT lch.urn, lch.comments
+FROM (
+
+SELECT max( history_id ) mhid, urn
+FROM history
+WHERE comments <> ''";
+$qry .= "and urn in(0,".implode($urns,",").")";
+$qry .= "GROUP BY urn
+)last_history
+JOIN history lch ON last_history.mhid = lch.history_id join records r on r.urn = lch.urn where r.campaign_id in({$_SESSION['campaign_access']['list']})";
+		
+foreach($this->db->query($qry)->result_array() as $row){
+$comments[$row['urn']] = $row['comments'];	
+}
+
+return $comments;
+	}
+	
     public function get_nav($options)
     {
 
