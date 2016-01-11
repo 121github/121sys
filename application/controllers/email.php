@@ -731,6 +731,7 @@ class Email extends CI_Controller
 
         user_auth_check();
         if ($this->input->is_ajax_request()) {
+			session_write_close();
             $appointment_id = $this->input->post('appointment_id');
             $description = $this->input->post('description');
 
@@ -859,7 +860,7 @@ class Email extends CI_Controller
                     "send_from" => "appointments@121system.com",
                     "send_to" => $appointment_ics['send_to'],
                     "cc" => null,
-                    "bcc" => 'estebanc@121customerinsight.co.uk, bradf@121customerinsight.co.uk',
+                    "bcc" => 'estebanc@121customerinsight.co.uk',
                     "subject" => $appointment_ics['title'],
                     "body" => $description,
                     "template_attachments" => $attachments
@@ -1295,6 +1296,7 @@ END:VCALENDAR';
     public function send_appointment_confirmation() {
         user_auth_check();
         if ($this->input->is_ajax_request()) {
+			session_write_close();
             $appointment_id = $this->input->post('appointment_id');
             $branch_id = $this->input->post('branch_id');
             $state = $this->input->post('state');

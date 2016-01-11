@@ -79,6 +79,7 @@ class Records extends CI_Controller
                 "location.js?v" . $this->project_version,
                 'map.js?v' . $this->project_version,
                 'view.js?v' . $this->project_version,
+				'lib/jquery.doubleScroll.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/datatables.min.js',
@@ -121,6 +122,7 @@ class Records extends CI_Controller
     public function process_view()
     {
         if ($this->input->is_ajax_request()) {
+			session_write_close();
 			/* debug loading times */
 			$this->benchmark->mark('code_start');
             $options = $this->input->post();
@@ -881,6 +883,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
     public function load_appointments()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
+			session_write_close();
             $appts = $this->Records_model->get_appointments($this->input->post("urn"));
             foreach ($appts as $k => $row) {
                 $appts[$k]['time'] = date('g:i a', strtotime($row['start']));
@@ -900,6 +903,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
     public function save_appointment()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
+			session_write_close();
             $data             = $this->input->post();
 
 			//check the address

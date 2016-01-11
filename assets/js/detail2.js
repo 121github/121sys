@@ -879,7 +879,7 @@ var record = {
 								} else {
 								var timer = "";	
 								}
-                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "#"+record.campaign+"'>" + tel.tel_num + "</a> " + tps + "</dd>";
+                            $contact_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "+"+record.campaign+"'>" + tel.tel_num + "</a> " + tps + "</dd>";
 							}
                     });
 					}
@@ -1031,7 +1031,7 @@ var record = {
 								} else {
 								var timer = "";	
 								}
-                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "#"+record.campaign+"'>" + tel.tel_num + "</a> " + tps + "</dd>";
+                            $company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "+"+record.campaign+"'>" + tel.tel_num + "</a> " + tps + "</dd>";
 							}
                     });
 					if(typeof val.transfer!=="undefined"){

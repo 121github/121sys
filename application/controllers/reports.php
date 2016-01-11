@@ -16,7 +16,6 @@ class Reports extends CI_Controller
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Report_model');
-
     }
 
 	public function overview(){

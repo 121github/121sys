@@ -22,6 +22,10 @@ class Migration_update_86 extends CI_Migration
 		
 		$this->db->query("insert ignore into record_comments select lch.urn,lch.comments from (select max(history_id) mhid,urn from history where comments <> '' group by urn) last_history join history lch on last_history.mhid = lch.history_id");
 		
+		$this->db->query("replace into `datatables_columns` (`column_id`, `column_title`, `column_alias`, `column_select`, `column_order`, `column_group`, `column_table`) VALUES
+(58, 'Last Comment', 'last_comment', 'record_comments.last_comment', 'record_comments.last_comment', 'Record', 'record_comments')");
+
+		
     }
     public function down()
     {

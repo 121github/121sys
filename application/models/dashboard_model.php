@@ -147,7 +147,7 @@ class Dashboard_model extends CI_Model
         $data['virgin'] = $this->db->query($virgin_qry)->row()->data;
         $data['virgin_url'] = base_url() . "search/custom/records/nextcall/null/outcome/null/status/live" . $extra_url;
         $active_qry = "select count(*) data from records where record_status = 1 and outcome_id is not null and progress_id is null $extra ";
-        $this->firephp->log($active_qry);
+        //$this->firephp->log($active_qry);
         $data['active'] = $this->db->query($active_qry)->row()->data;
         $data['active_url'] = base_url() . "search/custom/records/progress/null/outcome/null:not/status/live" . $extra_url;
         $dead_qry = "select count(*) data from records where record_status = 3 $extra";
