@@ -583,8 +583,8 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
                 from users
 				  left join history using(user_id)
                   join records using(urn)
-                  join data_sources sources on records.source_id = sources.source_id
-                  join teams on users.team_id = teams.team_id
+                  left join data_sources sources on records.source_id = sources.source_id
+                  left join teams on users.team_id = teams.team_id
                   left join (
                     select  SUM(TIME_TO_SEC(call_log.duration)) as duration, SUM(call_log.ring_time) as ring_time, users.ext as extension
                       FROM call_log
@@ -597,7 +597,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $qry .= " GROUP BY users.user_id
                   ORDER BY users.user_id";
-
+		$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 

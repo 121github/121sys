@@ -121,10 +121,11 @@ var productivity = {
                                 + "<td>"+productivity.toHHMMSS(parseInt(val.duration)+parseInt(val.ring_time))
                                 + "<td>"+productivity.toHHMMSS(val.minutes)
                                 + "<td>"+productivity.toHHMMSS(val.exceptions)
-                                + "<td style='text-align: right'>"+(total_phone_time>0?productivity_val+"%":"ERROR")
+                                + "<td style='text-align: right'>"+(!isNaN(productivity_val)&&isFinite(productivity_val)?productivity_val+"%":"<span class='tt glyphicon glyphicon-exclamation-sign text-danger' data-toggle='tooltip' title='Hours not entered or user extention incorrectly configured'></span>")
                                 + "<td style='text-align: right'><span class='graph-color fa fa-circle' style='display:"+graph_color_display+"; color:#" + val.colour + "' ></span>"
                                 + "</tr>"
                     );
+			$('.tt').tooltip();		
                 });
             } else {
                 tbody.append('<p style="padding: 10px;">' + response.msg + '</p>');
@@ -210,6 +211,7 @@ var productivity = {
         });
     },
     toHHMMSS: function (secs) {
+		if(secs!==null){
         var sec_num = parseInt(secs, 10); // don't forget the second param
         var hours   = Math.floor(sec_num / 3600);
         var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
@@ -219,6 +221,9 @@ var productivity = {
         if (minutes < 10) {minutes = "0"+minutes;}
         if (seconds < 10) {seconds = "0"+seconds;}
         var time    = hours+':'+minutes+':'+seconds;
+		} else {
+		time = "00:00:00";	
+		}
         return time;
     },
     get_outcomes_filter: function () {
