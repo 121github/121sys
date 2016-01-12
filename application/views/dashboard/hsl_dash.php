@@ -67,7 +67,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-4">
-                        <div class="panel panel-warning">
+                        <div class="panel panel-primary">
                             <div class="panel-heading">
                                 Completed Webform
                             </div>
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="panel panel-warning">
+                        <div class="panel panel-primary">
                             <div class="panel-heading">
                                 Where did you hear about us?
                             </div>
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="panel panel-warning">
+                        <div class="panel panel-primary">
                             <div class="panel-heading">
                                 Origin/source of the lead
                             </div>
