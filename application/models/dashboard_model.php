@@ -537,13 +537,22 @@ class Dashboard_model extends CI_Model
     }
 
 
-    public function get_webform_data($webform_id)
+    public function get_webform_data($webform_id, $filter)
     {
+        $where = " ";
+
+        if (isset($filter['date_from'])) {
+            $where .= " and DATE(wa.`updated_on`) >= '" . $filter['date_from'] . "' ";
+        }
+        if (isset($filter['date_to'])) {
+            $where .= " and DATE(wa.`updated_on`) < '" . $filter['date_to'] . "' ";
+        }
+
         $qry = "SELECT *
                 from webforms w
                 inner join webform_answers wa using (webform_id)
                 inner join webform_questions wq using (webform_id)
-                where w.webform_id = " . $webform_id;
+                where w.webform_id = " . $webform_id .$where;
 
         return $this->db->query($qry)->result_array();
     }

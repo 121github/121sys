@@ -40,6 +40,43 @@ if ( !function_exists('to_mysql_datetime') )
         return $datetime;
     }   
 }
+
+if ( !function_exists('uk_to_mysql_datetime') )
+{
+    function uk_to_mysql_datetime($datetime)
+    {
+        $date = DateTime::createFromFormat('d/m/Y H:i:s', $datetime);
+        return $date->format('Y-m-d H:i:s');
+    }
+}
+
+if ( !function_exists('mysql_to_uk_datetime') )
+{
+    function mysql_to_uk_datetime($datetime)
+    {
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $datetime);
+        return $date->format('d/m/Y H:i:s');
+    }
+}
+
+if ( !function_exists('uk_to_mysql_date') )
+{
+    function uk_to_mysql_date($datetime)
+    {
+        $date = DateTime::createFromFormat('d/m/Y', $datetime);
+        return $date->format('Y-m-d');
+    }
+}
+
+if ( !function_exists('mysql_to_uk_date') )
+{
+    function mysql_to_uk_date($datetime)
+    {
+        $date = DateTime::createFromFormat('Y-m-d', $datetime);
+        return $date->format('d/m/Y');
+    }
+}
+
 if ( !function_exists('sql_date_check') )
 {
     /**
