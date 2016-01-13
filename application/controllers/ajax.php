@@ -112,6 +112,7 @@ class Ajax extends CI_Controller
 
     public function get_branch_info()
     {
+		session_write_close();
         $result = null;
         $this->load->model('Branches_model');
         if ($this->input->post('postcode') && !$this->input->post('region_id')) {

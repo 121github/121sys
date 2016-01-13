@@ -133,26 +133,32 @@ $(document).on('click','.reload-table',function(){
 
         //filterable columns
         // Setup - adds search input boxes to the footer row
-        $('.data-table tfoot th').each(function() {
+        $('.data-table tfoot th').each(function () {
             var title = $('.data-table thead th').eq($(this).index()).text();
+            var filter_attribute = 'placeholder="Filter..."';
+            if (title == "Icon") {
+                var filter_attribute = "disabled";
+            }
+
             if (title == "Options") {
                 $(this).html('');
-            } else {
+            }
+            else if (title == "Icon") {
+                $icon_btn = $('<button class="btn btn-default btn-sm iconpicker record-icon" role="iconpicker" data-icon="" data-index="' + $(this).index() + '" data-iconset="fontawesome" style="color:#0066"></button>');
+                $(this).html($icon_btn);
+                view_records.get_used_icons();
+            }
+            else {
                 var search_val = table.column($(this).index()).search();
-				//console.log(table.column($(this).index()).search());
-                $(this).html('<input class="dt-filter form-control" style="width:100%" placeholder="Filter..." value="' + search_val[0] + '" />');
+				if(typeof search_val[0]!=="undefined"){
+				var filter_val = search_val[0];	
+				} else {
+				var filter_val = "";	
+				}
+                $(this).html('<input class="dt-filter input-sm form-control" ' + filter_attribute + ' value="' + filter_val + '" />');
             }
         });
 
-        // Apply the search
-        table.columns().eq(0).each(function(colIdx) {
-            $('input', table.column(colIdx).footer()).on('keyup change', function() {
-                table
-                    .column(colIdx)
-                    .search(this.value)
-                    .draw();
-            });
-        });
         //this moves the search input boxes to the top of the table
 		
         var r = $('.data-table tfoot tr');

@@ -26,8 +26,7 @@ public function index(){
 
             'page' => 'audit',
             'title' => 'System Audit',
-			'javascript' => array('plugins/DataTables/js/jquery.dataTables.min.js',
-				'plugins/DataTables/js/dataTables.bootstrap.js')
+			'javascript' => array('plugins/DataTables/dataTables.min.js')
         );
         $this->template->load('default', 'audit/audit_list.php', $data);
 }
