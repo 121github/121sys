@@ -66,45 +66,36 @@
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-lg-4">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                Completed Webform
-                            </div>
-                            <div class="panel-body" id="completed-panel">
+                    <div class="col-lg-4" id="completed-panel">
+        
+                                <h4>Webform Stats</h4>
+         
                                 <table class='table table-striped table-condensed'>
                                     <thead>
                                     <tr>
-                                        <th>Completed</th>
-                                        <th>Uncompleted</th>
+                                        <th>Complete</th>
+                                        <th>Incomplete</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
-                            </div>
-                        </div>
+                        
                     </div>
-                    <div class="col-lg-4">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                Where did you hear about us?
-                            </div>
-                            <div class="panel-body" id="hear-panel">
-                                <table class='table table-striped table-condensed'></table>
-                            </div>
-                        </div>
+                    <div class="col-lg-4" >
+                       
+                               <h4>Marketing Stats</h4>
+                           
+                                <table class='table table-striped table-condensed' id="hear-panel"></table>
+                           
                     </div>
-                    <div class="col-lg-4">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                Origin/source of the lead
-                            </div>
-                            <div class="panel-body" id="source-panel">
+                    <div class="col-lg-4" id="source-panel">
+                       <h4>
+                                Lead Source Stats</h4>
+                       
                                 <table class='table table-striped table-condensed'>
                                     <tbody></tbody>
                                 </table>
-                            </div>
-                        </div>
+                     
                     </div>
                 </div>
             </div>
