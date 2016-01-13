@@ -923,7 +923,8 @@ return $comments;
         endif;
 		$qry .= " order by name";
         $attendees = $this->db->query($qry)->result_array();
-		if($postcode){
+		//TODO optimise this, its slow
+		if($postcode&&in_array(17,$_SESSION['campaign_features'])){
 		foreach($attendees as $k=>$row){
 			$attendees[$k]['distance'] = "";
 		if(!empty($row['home_postcode'])){
