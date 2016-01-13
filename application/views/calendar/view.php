@@ -13,13 +13,13 @@
                             array_push($options,'<li><a href="#" class="group-filter" id="export-appointment-btn">Export appointments</a></li>');
                         }
                     ?>
-                    
+                    <?php if(in_array("slot availability",$_SESSION['permissions'])){ ?>
                      <div class="btn-group">
                      <a class="btn btn-default btn-xs" href="<?php echo base_url() ?>admin/availability">
                                 <span class="glyphicon glyphicon-user"></span> Manage availability
                             </a>
                      </div>
-                    
+                    <?php } ?>
                     <?php if (!empty($options)): ?>
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">

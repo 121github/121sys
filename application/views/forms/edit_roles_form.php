@@ -2,7 +2,12 @@
       <input type="hidden" name="role_id">
         <div class="form-group input-group-sm">
           <p>Please set the role name</p>
-<input type="text" class="form-control" name="role_name" title="Enter the role name" required/>
+<input type="text" class="form-control" name="role_name" placeholder="Enter the role name" required/>
+        </div>
+        
+         <div class="form-group input-group-sm">
+          <p>Please set the landing page (default is dashboard)</p>
+<input type="text" class="form-control" name="landing_page" placeholder="eg. dashboard/management" required/>
         </div>
    
                 <h4>Permissions</h4>

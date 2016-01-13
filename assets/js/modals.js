@@ -494,8 +494,11 @@ var modals = {
         }
         mbody += "</tbody></table>";
         mbody += "This appointment was set by <b>" + data.created_by + "</b> on <b>" + data.date_added + "</b>";
-        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="' + data.appointment_id + '" >Edit Appointment</a> ';
-        if (data.urn != $('#urn').val()) {
+        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+		if(helper.permissions['edit appointments'] > 0){
+		mfooter += '<a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="' + data.appointment_id + '" >Edit Appointment</a> ';
+		}
+        if (data.urn != $('#urn').val()&&helper.permissions['view record'] > 0) {
             mfooter += ' <a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>';
         }
         if (getCookie('current_postcode')) {
@@ -521,7 +524,10 @@ var modals = {
         }).done(function (response) {
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button> <button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Cancel Appointment</button>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'
+			if(helper.permissions['delete appointments'] > 0){
+			mfooter += '<button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Cancel Appointment</button>';
+			}
             $mbody = $(mbody);
             //check if the appointment address is already in the dropdown and if not, add it.
             var option_exists = false;
@@ -1015,7 +1021,10 @@ var modals = {
         if (typeof record !== "undefined") {
             merge_btn = ' <button class="btn btn-info pull-right" data-modal="merge-record" data-urn="' + data.urn + '" data-merge-target="' + record.urn + '">Merge</button>';
         }
-        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>' + merge_btn;
+        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+		if(helper.permissions['view record'] > 0){
+		mfooter += '<a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>' } 
+		mfooter += merge_btn;
 		if (data.planner_postcode&&getCookie('current_postcode')) {
             mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?q=' + data.planner_postcode + '",+UK">View Map</a>';
         }

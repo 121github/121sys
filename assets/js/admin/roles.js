@@ -45,7 +45,7 @@ var admin = {
                 $tbody.empty();
                 $.each(response.data, function(i, val) {
                     if (response.data.length) {
-                        $tbody.append("<tr><td class='role_id'>" + val.id + "</td><td class='role_name'>" + val.name + "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn' item-id='" + val.id + "'>Delete</button></td></tr>");
+                        $tbody.append("<tr><td class='role_id'>" + val.id + "</td><td class='role_name'>" + val.name + "</td><td class='landing_page'>" + val.landing_page + "</td><td><button class='btn btn-default btn-xs edit-btn'>Edit</button> <button class='btn btn-default btn-xs del-btn' item-id='" + val.id + "'>Delete</button></td></tr>");
                     }
                 });
             });
@@ -56,6 +56,7 @@ var admin = {
             $('form').trigger('reset');
             $('form').find('input[name="role_id"]').val(row.find('.role_id').text());
             $('form').find('input[name="role_name"]').val(row.find('.role_name').text());
+			 $('form').find('input[name="landing_page"]').val(row.find('.landing_page').text());
             $.ajax({
                 url: helper.baseUrl + 'admin/get_role_permissions',
                 type: "POST",

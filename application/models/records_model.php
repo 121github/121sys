@@ -25,7 +25,7 @@ class Records_model extends CI_Model
     public function check_max_dials($urn)
     {
         //checks if a record has had too many non-contactable outcomes and removes it from the pot
-        $qry = "update records r join (select urn,max_dials,count(*) count from history left join outcomes using(outcome_id) left join campaigns using(campaign_id) where delay_hours is not null group by urn)md on md.urn = r.urn set r.outcome_id = 137, r.outcome_reason_id = null, r.record_status = 3 where r.urn = '$urn' and max_dials <= count and r.record_status = 1";
+        $qry = "update records r join (select urn,max_dials,count(*) count from history left join outcomes using(outcome_id) left join campaigns using(campaign_id) where delay_hours is not null group by urn)md on md.urn = r.urn set r.outcome_id = 137, r.outcome_reason_id = null, r.record_status = 3 where r.urn = '$urn' and max_dials <= count and r.record_status = 1 and max_dials <> 0";
         $this->db->query($qry);
         return $this->db->affected_rows();
     }

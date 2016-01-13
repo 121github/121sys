@@ -142,7 +142,9 @@ class Admin_model extends CI_Model
     public function campaigns_with_attendees()
     {
         $campaigns = array();
-        $qry       = "select * from campaigns join users_to_campaigns using(campaign_id) join users using(user_id) left join campaign_groups using(campaign_group_id) where attendee = 1 group by campaign_id order by campaign_group_name,campaign_name";
+        $qry       = "select * from campaigns join users_to_campaigns using(campaign_id) join users using(user_id) left join campaign_groups using(campaign_group_id) where attendee = 1 ";
+		$qry .= " and campaign_id in({$_SESSION['campaign_access']['list']}) "; 
+		$qry .= "group by campaign_id order by campaign_group_name,campaign_name";
         $result    = $this->db->query($qry)->result_array();
         foreach ($result as $row) {
             $campaigns[$row['campaign_group_name']][] = $row;
@@ -598,7 +600,8 @@ class Admin_model extends CI_Model
     {
         $this->db->where("role_id", $form['role_id']);
         $this->db->update("user_roles", array(
-            "role_name" => $form['role_name']
+            "role_name" => $form['role_name'],
+			"landing_page" => $form['landing_page']
         ));
         $this->db->where("role_id", $form['role_id']);
         $this->db->delete("role_permissions");

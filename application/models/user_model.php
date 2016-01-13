@@ -113,7 +113,7 @@ class User_model extends CI_Model
     }
     public function load_user_session()
     {
-        $result            = $this->db->query("select * from users where user_id = " . $_SESSION['user_id'])->row_array(0);
+        $result            = $this->db->query("select * from users left join user_roles using(role_id) where user_id = " . $_SESSION['user_id'])->row_array(0);
         //load all user details into the session
         $_SESSION['name']  = $result['name'];
         $_SESSION['role']  = $result['role_id'];
@@ -121,6 +121,9 @@ class User_model extends CI_Model
         $_SESSION['email'] = $result['user_email'];
         $_SESSION['ext']   = $result['ext'];
         $_SESSION['team']  = $result['team_id'];
+		if(!empty($result['landing_page'])){
+		$_SESSION['home']  = $result['landing_page'];
+		}
         $theme      = $this->db->query("select theme_images,theme_color from user_groups where group_id = '" . $_SESSION['group'] . "'")->row();
         if (!empty($theme_folder)) {
             $_SESSION['theme_images'] = $theme->theme_images;
@@ -145,7 +148,7 @@ class User_model extends CI_Model
         
         if (count($user_campaigns) < 1 && $_SESSION['role'] <> 1 && !in_array("view files",$_SESSION['permissions'])) {
             session_destroy();
-            $this->session->set_flashdata('error', 'You do not have access to any campaigns.');
+            $this->session->set_flashdata('info', 'You do not have access to any campaigns.');
             redirect('user/login');
         }
         $campaign_access                      = "0";

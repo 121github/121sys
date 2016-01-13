@@ -649,7 +649,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
             (planner_info ? '<p>' + planner_info + '</p>' : '') + '<p>' +
             (planner_postcode ? '<p>' + planner_postcode + '</p>' : '') + '<p>' +
             (navbtn ? navbtn : '') +
-            '<span class="pull-right"><a class="btn btn-primary btn-xs marl" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span> ' +
+            (helper.permissions['view record']>0?'<span class="pull-right"><a class="btn btn-primary btn-xs marl" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span> ':'') +
             '</p>' +
             '</div>' +
             '<div id="formContent_' + value.urn + '" style="display:none;">' +
@@ -752,7 +752,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
             (planner_info ? '<p>' + planner_info + '</p>' : '') + '<p>' +
             (planner_postcode ? '<p>' + planner_postcode + '</p>' : '') + '<p>' +
             (navbtn ? navbtn : '') +
-            '<span class="pull-right"><a class="btn btn-primary" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span>' +
+            (helper.permissions['view record']>0?'<span class="pull-right"><a class="btn btn-primary btn-xs marl" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span> ':'')
             '</p>' +
             '</div>' +
             '<div id="formContent_' + value.urn + '" style="display:none;">' +
@@ -808,7 +808,7 @@ $(this).closest('#content').find('.date').val(planner_date.length > 0 ? planner_
             '<p style="display: none;">' + value.location_id + '</p>' +
             '<p>' +
             '<span><a class="btn btn-success btn-sm record-btn" item-postcode="' + value.postcode + '" href="#"><span class="glyphicon glyphicon-road"></span> Navigate </a></span>' +
-            '<span class="pull-right"><a class="btn btn-primary btn-sm" href="' + helper.baseUrl + 'records/detail/' + value.urn + '"><span class="glyphicon glyphicon-eye-open"></span> View Record</a></span>' +
+            (helper.permissions['view record']>0?'<span class="pull-right"><a class="btn btn-primary btn-xs marl" href="' + helper.baseUrl + 'records/detail/' + value.urn + '">View Record</a></span> ':'')
             '</p>' +
             '</div>' +
             '<div id="formContent_' + value.urn + '" style="display:none;">' +

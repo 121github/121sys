@@ -206,14 +206,17 @@
                                     </li>
                                 <?php } ?>
                                 
-                                                                <?php if (in_array("slot config", $_SESSION['permissions'])) { ?>
+                                                                <?php if (in_array("slot config", $_SESSION['permissions'])||in_array("slot availability", $_SESSION['permissions'])) { ?>
                                     <li>
                                         <a href="#mm-slots">Appointment Config</a>
                                         <ul id="mm-slots">
+                                            <?php if (in_array("slot config", $_SESSION['permissions'])) { ?>
                                             <li <?php echo @($page == 'slots' ? "class='Selected'" : "") ?>><a
                                                     href="<?php echo base_url() ?>admin/slots">Slot setup</a></li>
+                                                    <?php } ?>
+                                                     <?php if (in_array("slot availability", $_SESSION['permissions'])) { ?>
                                             <li <?php echo @($page == 'availability' ? "class='Selected'" : "") ?>><a
-                                                    href="<?php echo base_url() ?>admin/availability">Availabilty</a></li>
+                                                    href="<?php echo base_url() ?>admin/availability">Availabilty</a></li><?php } ?>
                                         </ul>
                                     </li>
                                 <?php } ?>

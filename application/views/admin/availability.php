@@ -1,6 +1,10 @@
   <div class="row">
         <div class="col-lg-12">
-          <h1 class="page-header">Availability <a class="pull-right btn btn-default" href="slots">Edit Slots</a></h1>
+          <h1 class="page-header">Availability 
+          <?php if(in_array("slot config",$_SESSION['permissions'])){ ?>
+          <a class="pull-right btn btn-default" href="slots">Edit Slots</a>
+          <?php } ?>
+          </h1>
         </div>
         <!-- /.col-lg-12 --> 
       </div>

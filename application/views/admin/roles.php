@@ -24,6 +24,7 @@
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
+                   <th>Landing Page</th>
                   <th>Options</th>
                 </tr>
               </thead>

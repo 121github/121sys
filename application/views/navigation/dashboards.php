@@ -1,4 +1,4 @@
- <li><a href="#dashboards">Dashboard</a>
+<?php if(@in_array("view dashboard", $_SESSION['permissions'])){ ?>  <li><a href="#dashboards">Dashboard</a>
                         <ul id="dashboards">
                             <?php if ($_SESSION['sn'] == 'eldon.121system.com') { ?>
                                 <li <?php echo @($page == 'eldon_dash' ? "class=Selected'" : "") ?>><a
@@ -35,3 +35,4 @@
                             <?php } ?>
                         </ul>
                     </li>
+                    <?php } ?>

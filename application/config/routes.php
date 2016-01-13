@@ -37,8 +37,11 @@
 | in the URL cannot be matched to a valid route.
 |
 */
-
+if(isset($_SESSION['home'])){
+$route['default_controller'] = $_SESSION['home'];	
+} else {
 $route['default_controller'] = "dashboard/user_dash";
+}
 $route['search'] = "search/search_form";
 $route['admin/shop/(:any)'] = "flexicart_admin/$1";
 $route['admin/shop'] = "flexicart_admin";

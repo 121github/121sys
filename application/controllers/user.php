@@ -44,22 +44,10 @@ class User extends CI_Controller
                     }
                     if (!empty($redirect)) {
                         redirect(base64_decode($redirect));
-                    } else if($_SESSION['environment'] == 'demo'){
-						 redirect('dashboard');
+                    } else if(isset($_SESSION['home'])){
+						 redirect($_SESSION['home']);
 					} else {
-                        if ($_SESSION['role'] == 5 || $_SESSION['role'] == 3) {
-                            redirect('dashboard/agent');
-                        }
-                        if ($_SESSION['role'] == 2) {
-                            redirect('dashboard/management');
-                        }
-                        if ($_SESSION['role'] == 4) {
-                            redirect('dashboard');
-                        } else if ($_SESSION['role'] == 9) {
-                            redirect('records/detail/0');
-                        } else {
-                            redirect('dashboard');
-                        }
+                    		redirect('dashboard');
                     }
                 }
                 $this->session->set_flashdata('error', 'Invalid username or password.');
@@ -354,6 +342,7 @@ class User extends CI_Controller
     public function set_campaign_features()
     {
         $campaign_features = $this->Form_model->get_campaign_features($_SESSION['current_campaign']);
+		$this->firephp->log($campaign_features);
         $features = array();
         foreach ($campaign_features as $row) {
             $features[] = $row['name'];

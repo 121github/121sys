@@ -1014,6 +1014,11 @@ class Admin extends CI_Controller
     public function save_role()
     {
         $form = $this->input->post();
+			//default if nothing entered
+		   if (empty($form['landing_page'])) {
+			   $form['landing_page'] = "dashboard";
+		   }
+		
         if (empty($form['role_id'])) {
             $response        = $this->Admin_model->add_new_role($form);
             $form['role_id'] = $response;

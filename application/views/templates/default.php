@@ -357,15 +357,15 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 {
                     "position": "top",
                     "content": [
-                        "<a href='" + helper.baseUrl + "dashboard'><span class='fa fa-home'></span> Home</a>",
-                        "<a href='" + helper.baseUrl + "user/account'><span class='fa fa-user'></span> Account</a>",
-                        "<a class='mm-next' data-target='#searchnav' href='#searchnav'><span class='fa fa-search'></span> Search</a>"
+                        "<a href='" + helper.baseUrl + "<?php echo @$_SESSION['home'] ?>'><span class='fa fa-home'></span> Home</a>",
+                        "<a href='" + helper.baseUrl + "user/account'><span class='fa fa-user'></span> Account</a>"
+                        <?php if(@in_array('search records',$_SESSION['permissions'])){ ?>,"<a class='mm-next' data-target='#searchnav' href='#searchnav'><span class='fa fa-search'></span> Search</a>"<?php } ?>
                     ]
                 },
                 {
                     "position": "bottom",
                     "content": [
-                        "<a onclick=\"javascript:alert('121 Customer Insight. Version:'+<?php echo $this->config->item('project_version');?>)\" href='#'><span class='fa fa-book'></span> About</a>",
+                        "<a onclick=\"javascript:alert('121 Customer Insight. Version: <?php echo $this->config->item('project_version');?>')\" href='#'><span class='fa fa-book'></span> About</a>",
                         "<a data-modal='contact-us' href='#'><span class='fa fa-phone'></span> Contact</a>",
                         "<a href='" + helper.baseUrl + "user/logout'><span class='fa fa-sign-out'></span> Logout</a>"
                     ]
