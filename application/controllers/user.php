@@ -36,15 +36,15 @@ class User extends CI_Controller
                     $this->apply_default_filter();
                     if ($this->input->post('password') == md5("pass123") && ($_SESSION['environment'] != 'demo')) {
                         $this->session->set_flashdata('change_pass', '1');
-                        $redirect = base64_encode("user/account");
+                        $redirect = "user/account";
                     } else if ($this->input->post('redirect')) {
-						  $redirect = $this->input->post('redirect');
-                          redirect(base64_decode($redirect));
+						  $redirect = base64_decode($this->input->post('redirect'));
                     } else if(isset($_SESSION['home'])){
-						 redirect($_SESSION['home']);
+                        $redirect = $_SESSION['home'];
 					} else {
-                    		redirect('dashboard');
+                        $redirect = "dashboard";
                     }
+                    redirect($redirect);
                 }
                 $this->session->set_flashdata('error', 'Invalid username or password.');
                 $this->session->set_flashdata('username', $username);
