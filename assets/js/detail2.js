@@ -2180,6 +2180,16 @@ var record = {
                 });
             });
             $form.append(form + "<button class='btn btn-primary pull-right marl save-info'>Save</button> <button class='btn btn-default pull-right close-custom'>Cancel</button>");
+
+            //Set the number inputs as numeric
+            $.each(data, function (k, detail) {
+                $.each(detail, function (i, row) {
+                    if (row.type === "number") {
+                        $form.find('input[name="'+row.code+'"]').numeric();
+                    }
+                });
+            });
+
             $('.selectpicker').selectpicker();
             $('.date').datetimepicker({
                 format: 'DD/MM/YYYY',
