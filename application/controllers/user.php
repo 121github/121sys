@@ -37,13 +37,9 @@ class User extends CI_Controller
                     if ($this->input->post('password') == md5("pass123") && ($_SESSION['environment'] != 'demo')) {
                         $this->session->set_flashdata('change_pass', '1');
                         $redirect = base64_encode("user/account");
-                    } else if (in_array("files only", $_SESSION['permissions'])) {
-                        redirect('files/manager');
-                    } else {
-                        $redirect = $this->input->post('redirect');
-                    }
-                    if (!empty($redirect)) {
-                        redirect(base64_decode($redirect));
+                    } else if ($this->input->post('redirect')) {
+						  $redirect = $this->input->post('redirect');
+                          redirect(base64_decode($redirect));
                     } else if(isset($_SESSION['home'])){
 						 redirect($_SESSION['home']);
 					} else {

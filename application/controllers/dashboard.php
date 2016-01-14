@@ -20,7 +20,12 @@ class Dashboard extends CI_Controller
         $this->load->model('User_model');
         unset($_SESSION['navigation']);
     }
+	
 
+public function index(){
+  $this->user_dash();	
+}
+	
   public function pending_tasks()
     {
 		$tasks = $this->Dashboard_model->pending_tasks();

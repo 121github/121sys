@@ -38,7 +38,7 @@
 |
 */
 if(isset($_SESSION['home'])){
-$route['default_controller'] = $_SESSION['home'];	
+$route['default_controller'] = "user/account";	
 } else {
 $route['default_controller'] = "dashboard/user_dash";
 }

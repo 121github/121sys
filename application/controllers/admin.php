@@ -25,7 +25,7 @@ class Admin extends CI_Controller
 	
     public function save_day_slots()
     {
-        check_page_permissions('slot config');
+        check_page_permissions('slot availability');
         $this->Admin_model->save_day_slots($this->input->post());
         echo json_encode(array(
             "success" => true
@@ -34,7 +34,7 @@ class Admin extends CI_Controller
     
     public function delete_date_slots()
     {
-        check_page_permissions('slot config');
+        check_page_permissions('slot availability');
         $this->Admin_model->delete_date_slots($this->input->post('id'));
         echo json_encode(array(
             "success" => true
@@ -43,7 +43,7 @@ class Admin extends CI_Controller
     
     public function save_date_slots()
     {
-        check_page_permissions('slot config');
+        check_page_permissions('slot availability');
 		$max_apps = $this->input->post('max_apps');
 		$date_to = to_mysql_datetime($this->input->post('date_to'));
 		$date_from = to_mysql_datetime($this->input->post('date_from'));
@@ -242,6 +242,7 @@ class Admin extends CI_Controller
     
     public function availability()
     {
+		check_page_permissions('slot availability');
         $campaigns = $this->Admin_model->campaigns_with_attendees();
         $slots     = $this->Admin_model->get_all_slot_groups();
         $data      = array(
