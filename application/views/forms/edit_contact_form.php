@@ -317,7 +317,7 @@ $('#primary-toggle').bootstrapToggle({
     $('.address-select').hide();
     $('#contact-address-form').find('input[name="house_number"]').numeric();
 
-    $(document).on('click', '.get-contact-address', function (e) {
+    $(document).one('click', '.get-contact-address', function (e) {
         e.preventDefault();
         get_addresses();
     });
