@@ -122,13 +122,13 @@ var hsl = {
                     $('#hear-panel').append(
                         "<tr>" +
                         "<th>" +
-                        "<span data-toggle='collapse' data-target='#accordion_"+key.split(' ')+"' class='clickable pointer'>" +
+                        "<span data-toggle='collapse' data-target='#accordion_"+key.replace(/\s/g, '')+"' class='clickable pointer'>" +
                         (Object.keys(val.sub_hear).length>0?'+':'') +
                         "</span>" +
                         "</th>" +
                         "<th>" +
                         key +
-                        "<div id='accordion_"+key.split(' ')+"' class='collapse' style='width: 150%;'>" +
+                        "<div id='accordion_"+key.replace(/\s/g, '')+"' class='collapse' style='width: 150%;'>" +
                         "<table style='width: 100%; font-size: 10px; font-weight: normal'>" +
                         sub_hear +
                         "</table>" +
