@@ -43,7 +43,7 @@ public function sic_to_subsectors(){
             $response = $this->search($search, $num_per_page, $start_index);
 
             echo $response;
-			
+
         }
     }
 
@@ -137,8 +137,8 @@ public function sic_to_subsectors(){
 
     private function search($search, $num_per_page, $start_index) {
 
-        $num_per_page = ($num_per_page?'\&num='.$num_per_page:'');
-        $start_index = ($start_index?'\&startIndex='.$start_index:'');
+        $num_per_page = ($num_per_page?'\&items_per_page='.$num_per_page:'');
+        $start_index = ($start_index?'\&start_index='.$start_index:'');
 
         $response = exec('curl -XGET -u '.$this->api_key.': '.$this->url.'/search/companies?q='.$search.$num_per_page.$start_index);
 
