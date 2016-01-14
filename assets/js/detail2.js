@@ -1267,6 +1267,16 @@ var record = {
 				} 
             });
         },
+        close_get_company: function () {
+            var $panel = $('#modal');
+
+            $panel.find('.get-company-container').fadeOut(1000, function () {
+                $panel.find('.search-container').fadeIn(1000);
+            });
+
+            var mfooter = '<button class="btn btn-primary pull-right" id="search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+            modals.update_footer(mfooter);
+        },
         update_company: function (start_index) {
             $.ajax({
                 url: helper.baseUrl + "companyhouse/update_company",
