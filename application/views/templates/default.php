@@ -461,7 +461,7 @@ $(document).ready(function(){
 		modal_body.css('overflow','visible')
 		$('.color-changer').change(function(){
 		var value = $(this).val();
-		$('#theme-css').attr('href','http://localhost/121sys/assets/themes/colors/'+value+'/bootstrap-theme.css');
+		$('#theme-css').attr('href',helper.baseUrl+'assets/themes/colors/'+value+'/bootstrap-theme.css');
 		$.post(helper.baseUrl+'ajax/change_theme',{theme:value});
 		if(device_type!=="default"){
 		window.location.reload();	
