@@ -844,7 +844,24 @@ var record = {
                         show = "in";
                         collapse = ""
                     }
-                    var $contact_detail_telephone_items= "",$transfer_telephone_items="",$contact_detail_list_items="";
+                    var $contact_detail_links_items= "",$contact_detail_telephone_items= "",$transfer_telephone_items="",$contact_detail_list_items="";
+
+                    //Links
+                    $.each(val.links, function (k, v) {
+                        if (v && v != '' &&v!="null"&& v.length > 0) {
+                            if (k === 'Linkedin') {
+                                $contact_detail_links_items += "<span style='padding-left: 1%'><a target='_blank' href='"+v+"'><span class='fa fa-linkedin black tt pointer' data-toggle='tooltip' data-placement='right' title='"+v+"'></span></a></span>";
+                            }
+                            if (k === 'Facebook') {
+                                $contact_detail_links_items += "<span style='padding-left: 1%'><a target='_blank' href='"+v+"'><span class='fa fa-facebook black tt pointer' data-toggle='tooltip' data-placement='right' title='"+v+"'></span></a></span>";
+                            }
+                            if (k === 'Website') {
+                                $contact_detail_links_items += "<span style='padding-left: 1%'><a target='_blank' href='"+v+"'><span class='fa fa-globe black tt pointer' data-toggle='tooltip' data-placement='right' title='"+v+"'></span></a></span>";
+                            }
+                        }
+
+                    });
+
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function (dt, dd) {
@@ -889,7 +906,23 @@ var record = {
 					 });
 					 $transfer_telephone_items += '<div class="clearfix"></div>';
 					}
-					$panel.find('.contacts-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.name.fullname+'</a><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact"><span class="glyphicon glyphicon-trash"></span> Delete</span> <span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact"><span class="glyphicon glyphicon-pencil"></span> Edit</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal contact-detail-list">'+$contact_detail_list_items+$contact_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="contact_postcode" value="'+$postcode+'" /></div></li>');
+					$panel.find('.contacts-list').append('<li class="list-group-item" item-id="'+key+'">'+
+                                                            '<a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.name.fullname+'</a>'
+                                                            +'<span style="padding-left: 20px">'+$contact_detail_links_items+'</span>'+
+                                                            '<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-contact">'+
+                                                                '<span class="glyphicon glyphicon-trash"></span> ' +
+                                                                    'Delete' +
+                                                            '</span>'+
+                                                            '<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-contact">'+
+                                                                    '<span class="glyphicon glyphicon-pencil"></span>' +
+                                                                    ' Edit' +
+                                                            '</span>' +
+                                                            '<div class="clearfix"></div>' +
+                                                            '<div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'">' +
+                                                                '<dl class="dl-horizontal contact-detail-list">'+$contact_detail_list_items+$contact_detail_telephone_items+$transfer_telephone_items+'</dl>' +
+                                                                '<input type="hidden" name="contact_postcode" value="'+$postcode+'" />' +
+                                                            '</div>' +
+                                                        '</li>');
                 });
 				if(typeof quick_planner.contact_postcode !== "undefined"){
 				quick_planner.contact_postcode = $('input[name="contact_postcode"]').val();

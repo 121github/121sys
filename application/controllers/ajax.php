@@ -259,23 +259,25 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $array = $this->input->post();
-            if (@!empty($array["dob"])) {
-                $array["dob"] = to_mysql_datetime($array["dob"]);
-            }
-            if (@!empty($array['linkedin'])) {
-                $this->load->helper('misc');
-                $array['linkedin'] = linkedin_id_from_url($array['linkedin']);
-            }
-			$array = array_map('trim', $array);
+
+            $array["position"] = (@!empty($array["position"]) ? $array["position"] : NULL);
+            $array["dob"] = (@!empty($array["dob"]) ? to_mysql_datetime($array["dob"]) : NULL);
+            $array["email"] = (@!empty($array["email"]) ? $array["email"] : NULL);
+            $array["website"] = (@!empty($array["website"]) ? $array["website"] : NULL);
+            $array["facebook"] = (@!empty($array["facebook"]) ? $array["facebook"] : NULL);
+            $array["linkedin"] = (@!empty($array["linkedin"]) ? $array["linkedin"] : NULL);
+            $array["notes"] = (@!empty($array["notes"]) ? $array["notes"] : NULL);
+
+            $array = array_map('trim', $array);
             $audit_id = $this->Audit_model->log_contact_update(array_filter($array), $array['urn']);
             $array["date_updated"] = date('Y-m-d H:i:s');
             $this->db->where("contact_id", intval($this->input->post('contact_id')));
-            if ($this->db->update('contacts', array_filter($array))):
+            if ($this->db->update('contacts', $array)) {
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($this->input->post('contact_id'))
                 ));
-            endif;
+            }
         }
     }
 
@@ -306,10 +308,17 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $array = $this->input->post();
-            if (!empty($array["dob"])) {
-                $array["dob"] = to_mysql_datetime($array["dob"]);
-            }
-            if ($this->db->insert('contacts', array_filter($array))):
+
+            $array["position"] = (@!empty($array["position"]) ? $array["position"] : NULL);
+            $array["dob"] = (@!empty($array["dob"]) ? to_mysql_datetime($array["dob"]) : NULL);
+            $array["email"] = (@!empty($array["email"]) ? $array["email"] : NULL);
+            $array["website"] = (@!empty($array["website"]) ? $array["website"] : NULL);
+            $array["facebook"] = (@!empty($array["facebook"]) ? $array["facebook"] : NULL);
+            $array["linkedin"] = (@!empty($array["linkedin"]) ? $array["linkedin"] : NULL);
+            $array["notes"] = (@!empty($array["notes"]) ? $array["notes"] : NULL);
+
+
+            if ($this->db->insert('contacts', array_filter($array))) {
                 $id = $this->db->insert_id();
                 $array['contact_id'] = $id;
                 $this->Audit_model->log_contact_insert(array_filter($array), $array['urn']);
@@ -317,7 +326,7 @@ class Ajax extends CI_Controller
                     "success" => true,
                     "id" => $id
                 ));
-            endif;
+            }
         }
     }
 
