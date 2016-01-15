@@ -25,6 +25,7 @@
                   <th>ID</th>
                   <th>Name</th>
                    <th>Landing Page</th>
+                     <th>Timeout (mins)</th>
                   <th>Options</th>
                 </tr>
               </thead>

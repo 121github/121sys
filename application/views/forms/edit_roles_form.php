@@ -9,6 +9,11 @@
           <p>Please set the landing page (default is dashboard)</p>
 <input type="text" class="form-control" name="landing_page" placeholder="eg. dashboard/management" required/>
         </div>
+        
+          <div class="form-group input-group-sm">
+          <p>Please set the system timeout in mins (default is 30)</p>
+<input type="text" class="form-control" name="timeout" placeholder="eg. 30" required/>
+        </div>
    
                 <h4>Permissions</h4>
         <ul class="list-group">

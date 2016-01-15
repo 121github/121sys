@@ -36,7 +36,9 @@ $domain_ukfast = explode("/", $ukfast_url[0]);
 $domain_ukfast = $domain_ukfast[0];
 
 $theme = "default";
+if(!isset($_SESSION['timeout'])){
 $timeout = 1800; //30min timeout
+}
 //if the site has no certificate but they are trying to use https then we redirect to the non-https url
 if (in_array($domain, $no_https)) {
     if (isset($_SERVER['HTTPS']) || $_SERVER['SERVER_PORT'] == 443) {

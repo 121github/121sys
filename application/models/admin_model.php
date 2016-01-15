@@ -601,7 +601,8 @@ class Admin_model extends CI_Model
         $this->db->where("role_id", $form['role_id']);
         $this->db->update("user_roles", array(
             "role_name" => $form['role_name'],
-			"landing_page" => $form['landing_page']
+			"landing_page" => $form['landing_page'],
+			"timeout" => $form['timeout']
         ));
         $this->db->where("role_id", $form['role_id']);
         $this->db->delete("role_permissions");

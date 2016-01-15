@@ -1019,7 +1019,9 @@ class Admin extends CI_Controller
 		   if (empty($form['landing_page'])) {
 			   $form['landing_page'] = "dashboard";
 		   }
-		
+		 if (empty($form['timeout'])) {
+			   $form['timeout'] = "30";
+		   }
         if (empty($form['role_id'])) {
             $response        = $this->Admin_model->add_new_role($form);
             $form['role_id'] = $response;

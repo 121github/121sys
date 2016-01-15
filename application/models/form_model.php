@@ -337,7 +337,7 @@ class Form_model extends CI_Model
     }
     public function get_roles()
     {
-        $qry = "select role_id id,role_name name,landing_page from user_roles";
+        $qry = "select role_id id,role_name name,landing_page,timeout from user_roles";
         return $this->db->query($qry)->result_array();
     }
     public function get_managers()

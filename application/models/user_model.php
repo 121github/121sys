@@ -121,6 +121,7 @@ class User_model extends CI_Model
         $_SESSION['email'] = $result['user_email'];
         $_SESSION['ext']   = $result['ext'];
         $_SESSION['team']  = $result['team_id'];
+		$_SESSION['timeout']  = $result['timeout']*60;
 		if(!empty($result['landing_page'])){
 		$_SESSION['home']  = $result['landing_page'];
 		}
