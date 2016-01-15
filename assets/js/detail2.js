@@ -1030,7 +1030,18 @@ var record = {
                         show = "in";
                         collapse = ""
                     }
-                    var $company_detail_telephone_items= "",$transfer_telephone_items="",$company_detail_list_items="";
+                    var $company_detail_links_items= "",$company_detail_telephone_items= "",$transfer_telephone_items="",$company_detail_list_items="";
+
+                    //Links
+                    $.each(val.links, function (k, v) {
+                        if (v && v != '' &&v!="null"&& v.length > 0) {
+                            if (k === 'Website') {
+                                $company_detail_links_items += "<span style='padding-left: 1%'><a target='_blank' href='"+v+"'><span class='fa fa-globe black tt pointer' data-toggle='tooltip' data-placement='right' title='"+v+"'></span></a></span>";
+                            }
+                        }
+
+                    });
+
                     $address = "";
                     $postcode = "";
                     $.each(val.visible, function (dt, dd) {
@@ -1073,7 +1084,7 @@ var record = {
 					 });
 					 $transfer_telephone_items += '<div class="clearfix"></div>';
 					}
-					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+$company_detail_list_items+$company_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+$postcode+'" /></div></li>');
+					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span style="padding-left: 20px">'+$company_detail_links_items+'</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+$company_detail_list_items+$company_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+$postcode+'" /></div></li>');
                 });
 				if(typeof quick_planner.company_postcode !== "undefined"){
 				quick_planner.company_postcode = $('input[name="company_postcode"]').val();
@@ -1216,6 +1227,9 @@ var record = {
                 if (response.success) {
                     $.each(response.data.general, function (key, val) {
                         $panel.find('input[name="' + key + '"]').val(val);
+                        if (key === 'conumber') {
+                            $panel.find('input[name="' + key + '"]').numeric();
+                        }
                     });
                     $panel.find('#cosearchresult .table-container table').hide();
                     $panel.find('#cosearchresult .none-found').show();
@@ -1260,7 +1274,7 @@ var record = {
                 modals.update_footer(mfooter);
                 form.find('input[name="company_id"]').val($('.search-company-form').find('input[name="company_id"]').val());
                 form.find('input[name="company_name"]').val(response.company_name);
-                form.find('input[name="company_number"]').val(response.company_number);
+                form.find('input[name="company_number"]').val(response.company_number).numeric();
                 form.find('input[name="date_of_creation"]').val(response.date_of_creation);
                 form.find('input[name="company_status"]').val(response.company_status);
 

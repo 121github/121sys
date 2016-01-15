@@ -286,12 +286,20 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $array = $this->input->post();
+
             $audit_id = $this->Audit_model->log_company_update(array_filter($array), $array['urn']);
+
             $array["date_updated"] = date('Y-m-d H:i:s');
-            $array['turnover'] = ($array['turnover'] == '' ? NULL : $array['turnover']);
-            if (@!empty($array["date_of_creation"])) {
-                $array["date_of_creation"] = to_mysql_datetime($array["date_of_creation"]);
-            }
+
+            $array["name"] = (@!empty($array["name"]) ? $array["name"] : NULL);
+            $array["description"] = (@!empty($array["description"]) ? $array["description"] : NULL);
+            $array["conumber"] = (@!empty($array["conumber"]) ? $array["conumber"] : NULL);
+            $array["email"] = (@!empty($array["email"]) ? $array["email"] : NULL);
+            $array["website"] = (@!empty($array["website"]) ? $array["website"] : NULL);
+            $array["employees"] = (@($array["employees"]) != "null" && @($array["employees"]) != "" ? $array["employees"] : NULL);
+            $array["turnover"] = (@($array["turnover"]) != "null" && @($array["turnover"]) != "" ? $array["turnover"] : NULL);
+            $array["date_of_creation"] = (@!empty($array["date_of_creation"]) ? to_mysql_datetime($array["date_of_creation"]) : NULL);
+
             $this->db->where("company_id", intval($this->input->post('company_id')));
             if ($this->db->update('companies', $array)):
                 $this->firephp->log($this->db->last_query());
@@ -335,6 +343,15 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $array = $this->input->post();
+
+            $array["name"] = (@!empty($array["name"]) ? $array["name"] : NULL);
+            $array["description"] = (@!empty($array["description"]) ? $array["description"] : NULL);
+            $array["conumber"] = (@!empty($array["conumber"]) ? $array["conumber"] : NULL);
+            $array["email"] = (@!empty($array["email"]) ? $array["email"] : NULL);
+            $array["website"] = (@!empty($array["website"]) ? $array["website"] : NULL);
+            $array["employees"] = (@!empty($array["employees"]) ? $array["employees"] : NULL);
+            $array["date_of_creation"] = (@!empty($array["date_of_creation"]) ? to_mysql_datetime($array["date_of_creation"]) : NULL);
+
             if ($this->db->insert('companies', array_filter($array))):
                 $id = $this->db->insert_id();
                 $array['company_id'] = $id;
