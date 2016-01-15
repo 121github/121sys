@@ -35,7 +35,7 @@ class User extends CI_Controller
                     }
                     $this->apply_default_filter();
                     if ($this->input->post('password') == md5("pass123") && ($_SESSION['environment'] != 'demo')) {
-                        $this->session->set_flashdata('change_pass', '1');
+                        $this->session->set_flashdata('warning', 'Your password is insecure, please change it');
                         $redirect = "user/account";
                     } else if ($this->input->post('redirect')) {
 						  $redirect = base64_decode($this->input->post('redirect'));

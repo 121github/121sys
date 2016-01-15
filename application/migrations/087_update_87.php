@@ -43,6 +43,19 @@ $id2 = $this->db->insert_id();
 if($id2){
 $this->db->query("insert ignore into role_permissions select 1,$id2 from user_roles");
 }
+
+
+$this->db->query("INSERT IGNORE INTO role_permissions(
+SELECT role_id, (
+
+SELECT permission_id
+FROM permissions
+WHERE permission_name = 'view dashboard'
+)
+FROM user_roles
+WHERE role_name <> 'calendar only'
+AND role_name <> 'files only' ) ");
+
 	}
 	
 }

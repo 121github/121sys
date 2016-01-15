@@ -177,7 +177,7 @@ class Form_model extends CI_Model
     			from campaigns 
     			left join campaign_types using(campaign_type_id)
     			inner join users_to_campaigns using (campaign_id)
-    			where user_id = $user_id
+    			where user_id = $user_id and campaign_id in({$_SESSION['campaign_access']['list']}) 
     			order by campaign_name";
         return $this->db->query($qry)->result_array();
     }

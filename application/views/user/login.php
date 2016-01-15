@@ -1,19 +1,12 @@
 <?php echo validation_errors(); ?>
 
-<?php if($this->session->flashdata('error')||isset($_SESSION['logout_message'])): ?>
+<?php if(isset($_SESSION['logout_message'])): ?>
     <div class="alert alert-danger alert-dismissable" style="margin-top:10px">  
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>  
-  <?php echo ($this->session->flashdata('error')?$this->session->flashdata('error'):$_SESSION['logout_message']); ?>  
+    <span class="glyphicon glyphicon-alert"></span> <?php echo $_SESSION['logout_message']; ?>  
 	</div>  
 <?php endif; ?>
-
-<?php if($this->session->flashdata('success')): ?>
-    <div class="alert alert-success alert-dismissable" style="margin-top:10px">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <?php echo $this->session->flashdata('success'); ?>
-    </div>
-<?php endif; ?>
-    
+  
           <form class="form-signin" role="form" method="post">
     <?php if($redirect): ?>
     <input type="hidden" name="redirect" value="<?php echo $redirect; ?>">

@@ -13,7 +13,7 @@ class Dashboard extends CI_Controller
 		session_write_close();
         $this->_campaigns = campaign_access_dropdown();
         $this->project_version = $this->config->item('project_version');
-
+		check_page_permissions('view dashboard');
         $this->load->model('Form_model');
         $this->load->model('Filter_model');
         $this->load->model('Dashboard_model');

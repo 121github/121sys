@@ -68,7 +68,13 @@ if ( !function_exists('user_auth_check') )
 	
 	function check_page_permissions($required){
 	if(@!in_array($required,$_SESSION['permissions'])){
-		redirect(base_url() . "dashboard");
+		$CI =& get_instance();
+		 $CI->session->set_flashdata('warning', 'You do not have permission to access that');
+		if(isset($_SESSION['home'])){
+		redirect(base_url() . $_SESSION['home']);
+		} else {
+		redirect(base_url() . 'dashboard');	
+		}
 	}	
 	}
 	

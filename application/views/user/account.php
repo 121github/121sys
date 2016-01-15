@@ -24,11 +24,15 @@
 
 <div class="row">
     <div class="col-md-8 col-sm-12">
+    
         <div class="panel panel-primary" >
             <div class="panel-heading">
                 <i class="fa fa-user fa-fw"></i>
                 Details
             </div>
+            
+
+            
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <div class="row">
@@ -188,9 +192,6 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-		<?php if($this->session->flashdata('change_pass')){ ?>
-		flashalert.info("Please change your password");
-		<?php } ?>
         details.init();
         password.init();
         $('button[type="submit"]').on('click', function (e) {
