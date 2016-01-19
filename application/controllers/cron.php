@@ -212,8 +212,8 @@ class Cron extends CI_Controller
     //Combo file
     public function update_combo_data_file() {
 
-        define('EXPORT_DIR', "/var/www/html/tmp/");
-        //define('EXPORT_DIR', "/mnt/managementnew/Figures/Distribution Models/");
+        //define('EXPORT_DIR', "/var/www/html/tmp/");
+        define('EXPORT_DIR', "/mnt/managementnew/Figures/Distribution Models/");
         $result['filename'] = "121system_combo";
         $myFile = EXPORT_DIR . $result['filename'].".csv";
 

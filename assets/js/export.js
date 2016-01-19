@@ -274,7 +274,7 @@ var export_data = {
 
         var err = false;
         var msg = "";
-        if (export_form_name == 'contacts-data') {
+        if ($.inArray( export_form_name, [ 'contacts-data', 'combo-data'] ) >= 0) {
             if ($('.campaign-filter  option:selected').size() <= 0) {
                 err = true
                 msg = "You should select at least one campaign on the filter";
