@@ -498,6 +498,10 @@ var modals = {
 		if(helper.permissions['edit appointments'] > 0){
 		mfooter += '<a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="' + data.appointment_id + '" >Edit Appointment</a> ';
 		}
+		//should change this permission to "appointment webform"
+		if(helper.permissions['edit appointments'] > 0&&data.btn_text!==null){
+		mfooter += '<a class="btn btn-info pull-right" href="'+helper.baseUrl+'webforms/edit/'+record.campaign+'/'+record.urn+'/'+data.webform_id+'/'+data.appointment_id+'" >'+data.btn_text+'</a> ';
+		}
         if (data.urn != $('#urn').val()&&helper.permissions['view record'] > 0) {
             mfooter += ' <a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>';
         }
@@ -566,6 +570,7 @@ var modals = {
                 campaign_functions.appointment_edit_setup();
             }
 			}
+			
         });
     },
     appointment_contacts: function (urn, contact_id) {
@@ -592,6 +597,11 @@ var modals = {
             });
             //$('#contact-select').append('<option value="other">Other</option>');
             $('#contact-select').selectpicker();
+			$('#modal').on('change', '.typepicker', function () {
+            var type = $('#modal .typepicker').val()!==""?$(this).find('option:selected').text():"Appointment";
+			var title = $('#contact-select option:selected').length>0?type+' with '+$('#contact-select option:selected').text():type;
+            $('#modal [name="title"]').val(title);
+        }); 
 			} else {
 			$('.close-modal').trigger('click');
 			flashalert.danger("You must add a contact before setting an appointment");	

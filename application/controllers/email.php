@@ -1038,7 +1038,7 @@ class Email extends CI_Controller
                     "send_from" => "appointments@121system.com",
                     "send_to" => $appointment_ics['send_to'],
                     "cc" => null,
-                    "bcc" => 'estebanc@121customerinsight.co.uk, bradf@121customerinsight.co.uk',
+                    "bcc" => 'estebanc@121customerinsight.co.uk',
                     "subject" => $appointment_ics['title'],
                     "body" => $appointment_ics['description'],
                     "template_attachments" => $attachments
@@ -1204,7 +1204,7 @@ class Email extends CI_Controller
                 "send_from" => "appointments@121system.com",
                 "send_to" => $appointment_ics['send_to'],
                 "cc" => null,
-                "bcc" => 'estebanc@121customerinsight.co.uk, bradf@121customerinsight.co.uk',
+                "bcc" => 'estebanc@121customerinsight.co.uk',
                 "subject" => $appointment_ics['title'],
                 "body" => $appointment_ics['description'],
                 "template_attachments" => $attachments
@@ -1374,7 +1374,7 @@ END:VCALENDAR';
                 "send_from" => "noreply@121system.com",
                 "send_to" => $send_to,
                 "cc" => null,
-                "bcc" => 'estebanc@121customerinsight.co.uk, bradf@121customerinsight.co.uk',
+                "bcc" => 'estebanc@121customerinsight.co.uk',
                 "subject" => $subject." - ".$appointment->title,
                 "body" => $body,
                 "template_attachments" => $attachments

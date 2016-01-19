@@ -32,13 +32,14 @@ class Webform_model extends CI_Model
 	return $this->db->get('webforms')->row()->webform_path;
 	}
 	
-    public function get_all_data($urn,$campaign_id,$form)
+    public function get_all_data($urn,$campaign_id,$form,$appointment_id=false)
     {
 		
 		$data = array();
-		$qry = "select * from webform_answers where webform_id = '".intval($form)."' and urn = '".intval($urn)."'";
-				
+		$qry = "select *,date_format(appointments.start,'%d/%m/%Y %H:%i') start_datetime,date_format(appointments.start,'%d/%m/%Y') start_date,date_format(appointments.start,'%H:%i') start_time from webform_answers wa left join appointments using(appointment_id) where webform_id = '".intval($form)."' and wa.urn = '".intval($urn)."'";
+		$qry .= ($appointment_id?" and appointment_id = '".$appointment_id."' ":"");	
 		$data['values'] = $this->db->query($qry)->row_array();
+		$data['values']['appointment_id'] = $appointment_id;
 		$qry = "select company_id,c.contact_id,co.name, co.website,cot.telephone_number cophone,ct.telephone_number cphone,coa.add1,coa.add2,coa.add3,coa.county,coa.postcode,co.email,c.fullname,date_format(c.dob,'%d/%m/%Y') dob,coa.country,c.email,c1 from records left join record_details using(urn) left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join companies co using(urn) left join company_telephone cot using(company_id) left join contact_addresses ca using(contact_id) left join company_addresses coa using(company_id) left join email_history eh using(urn) where urn ='".intval($urn)."' and campaign_id ='".intval($campaign_id)."' group by contact_id";
 		//$this->firephp->log($qry);
 		$result = $this->db->query($qry)->result_array();

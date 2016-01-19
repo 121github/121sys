@@ -56,6 +56,17 @@ FROM user_roles
 WHERE role_name <> 'calendar only'
 AND role_name <> 'files only' ) ");
 
+$this->db->query("INSERT IGNORE INTO role_permissions(
+SELECT role_id, (
+
+SELECT permission_id
+FROM permissions
+WHERE permission_name = 'view record'
+)
+FROM user_roles
+WHERE role_name <> 'calendar only'
+AND role_name <> 'files only' ) ");
+
 	}
 	
 }

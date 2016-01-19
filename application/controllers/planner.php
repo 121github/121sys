@@ -107,6 +107,12 @@ public function simulate_121_planner(){
 		$driver_postcode = $this->Planner_model->get_user_postcode($driver_id);
 		$position = $this->input->post('position');	
 		$availability = $this->get_driver_availability($driver_id);
+		$plannerdate =  $this->input->post('date');
+		if($plannerdate){
+		$uk_date = DateTime::createFromFormat('Y-m-d', $plannerdate)->format('D jS M Y');	
+		} else {
+		$uk_date = false;	
+		}
 		if($branch_id==""||$branch_id=="false"){
 			$branch_id=false;
 		}
@@ -121,7 +127,10 @@ public function simulate_121_planner(){
 		//first create the days to populate
 	 for ($i = 0; $i < 45; $i++) {
 	if(date("D", strtotime('+'. $i .' days'))<>"Sun"){
-	$days[] = date("Y-m-d", strtotime('+'. $i .' days'));
+		$thisdate = date("Y-m-d", strtotime('+'. $i .' days'));
+	if($thisdate==$plannerdate||$plannerdate==false){
+	$days[] = $thisdate;
+	}
 	}
 	}
 	$data = array();
@@ -171,7 +180,6 @@ public function simulate_121_planner(){
 		array_splice($result, 1, 0, array($branch_data));
 		array_splice($result, count($result)-1, 0, array($branch_data));
 	}
-	$this->firephp->log($result);
 	$travel_info[$day]=array();
 	foreach($result as $k=>$row){
 		if($branch_id){
@@ -271,7 +279,12 @@ if(!isset($appointments['apps'])){
 	}
 	echo json_encode(array("success"=>false,"msg"=>$error));  exit;
 };
+
 foreach($appointments['apps'] as $date => $day){
+	$sql_date = DateTime::createFromFormat('D jS M y', $date)->format('Y-m-d');
+	if($plannerdate&&$plannerdate<>$sql_date){
+	continue;	
+	}
 	$max_apps = 0;
 	$apps = 0;
 	$reason = false;
@@ -280,12 +293,12 @@ foreach($appointments['apps'] as $date => $day){
 		$max_apps += $row['max_apps'];
 		$apps += $row['apps'];
 		if(!empty($row['reason'])){ $reason  = $row['reason']; }
-		$sql_date = DateTime::createFromFormat('D jS M y', $date)->format('Y-m-d');
+		
 		$slots[$sql_date] = array("apps"=>$apps,"max_apps"=>$max_apps,"reason"=>$reason);	
 		}
 	}
 }
-echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,"slots"=>$slots,"user_id"=>$driver_id)); exit;
+echo json_encode(array("success"=>true,"uk_date"=>$uk_date,"date"=>$plannerdate,"waypoints"=>$data,"stats"=>$travel_info,"slots"=>$slots,"user_id"=>$driver_id)); exit;
 }
 
 

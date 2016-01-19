@@ -8,6 +8,7 @@ var quick_planner = {
 		this.region_id = false;
 		this.region_name = false;
 		this.slot_id = false;
+		this.position = 1;
 		this.contact_postcode = $('input[name="contact_postcode"]').length?$('input[name="contact_postcode"]').val():false;
 		this.company_postcode = $('input[name="company_postcode"]').length?$('input[name="company_postcode"]').val():false;
 		
@@ -72,6 +73,12 @@ var quick_planner = {
             var start = $(this).attr('data-date');
             modals.create_appointment(record.urn, start)
         });
+		$(document).on('change', '#planner-position', function (e) {
+            e.preventDefault();
+            quick_planner.position = $(this).val();
+            quick_planner.load_planner($('#modal #planner-date').val());
+        });
+		
 	},
 	appointment_setup: function (start) {
 		if(typeof start == "undefined"){
@@ -106,6 +113,10 @@ var quick_planner = {
         var mheader = "Journey simulation for " + date;
         var mbody = "";
         var i = 0;
+		mbody += '<input id="planner-date" type="hidden" value="'+sqldate+'" />';
+		if(slots.apps >= slots.max_apps){
+		mbody += '<div class="alert-danger">This user is has no more slots available on '+date+'</div><div class="clearfix"></div>';	
+		}
         $.each(waypoints, function (name, waypoint) {
             if (waypoint.postcode.length > 0) {
                 mbody += '<div style="height:30px; padding:5px; margin:5px; background:#80D6FF;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px; text-align:center"><p><strong>' + waypoint.title + '</strong> [' + waypoint.postcode + ']';
@@ -125,14 +136,16 @@ var quick_planner = {
 
             i++;
         });
-        var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+        var mfooter = '';
         if (slots.apps < slots.max_apps) {
-            mfooter += '<button type="submit" data-date="' + sqldate + ' ' + time + '" class="btn btn-primary pull-right continue-simulation">Continue</button>';
+            mfooter += '<button type="submit" data-date="' + sqldate + ' ' + time + '" class="btn btn-primary pull-right continue-simulation marl">Continue</button>';
         }
+		mfooter += '<select class="selectpicker pull-right marl" id="planner-position" '+(slots.apps=="0"?"disabled":"")+'><option '+(quick_planner.position=="1"?"selected":"")+' value="1">1st Slot Position</option><option value="2" '+(quick_planner.position=="2"?"selected":"")+'>2nd Slot Position</option><option value="3" '+(slots.apps<2?"disabled":"")+' '+(quick_planner.position=="3"?"selected":"")+'>3rd Slot Position</option></select>';
+		mfooter += '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>'
         modals.load_modal(mheader, mbody, mfooter);
     },
 
-    load_planner: function () {
+    load_planner: function (date) {
         if (quick_planner.check_selections()) {
             $.ajax({
                 url: helper.baseUrl + 'planner/simulate_121_planner',
@@ -141,13 +154,20 @@ var quick_planner = {
                 data: {postcode: quick_planner.company_postcode.length>0?quick_planner.company_postcode:quick_planner.contact_postcode, 
 				driver_id: quick_planner.driver_id, 
 				branch_id: quick_planner.branch_id, 
-				slot: quick_planner.slot},
+				slot: quick_planner.slot,
+				position: quick_planner.position,
+				date:date },
                 beforeSend: function () {
+					if(!date){
                     $('#quick-planner').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+					}
                 }
             }).done(function (response) {
-				if(response.success){
+				if(response.success&&response.date==false){
                 quick_planner.planner_summary(response);
+				} else if(response.success&&response.date){
+					var time = "";
+				 quick_planner.popup_simulation(response.uk_date, date, time, response.waypoints[date], response.stats[date], response.slots[date]); 
 				} else {
 				 $('#quick-planner').html("<p>"+response.msg+"</p>");	
 				}

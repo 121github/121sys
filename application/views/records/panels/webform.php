@@ -4,7 +4,13 @@
         <div class="panel-content"> 
         <?php if(count($webforms)>0){ ?>
           <?php $x=0; foreach($webforms as $webform){ $x++; ?>
-          <?php if($x>1){ echo "<br />"; } ?><a href="<?php echo base_url()."webforms/edit/".$webform['campaign_id']."/".$details['record']['urn']."/".$webform['webform_id']; ?>"><?php echo $webform['webform_name'] ?></a> <?php if(!empty($webform['completed_on'])){ ?><small class="text-success"><span class="fa fa-check-circle"></span>  Completed: <?php echo $webform['completed_on']; ?> by <?php echo $webform['name']; ?> </small><?php } else { ?><small class="text-danger"><span class="fa fa-exclamation-circle"></span> Incomplete</small><?php } ?>
+          <?php if($x>1){ echo "<br />"; } ?><a href="<?php echo base_url()."webforms/edit/".$webform['campaign_id']."/".$details['record']['urn']."/".$webform['webform_id'].(!empty($webform['appointment_id'])?"/".$webform['appointment_id']:""); ?>"><?php echo $webform['webform_name'] ?></a> 
+		  
+		  <?php if(!empty($webform['completed_on'])){ ?><small class="text-success"><span class="fa fa-check-circle"></span>  Completed: <?php echo $webform['completed_on']; ?> by <?php echo $webform['name']; ?> </small>
+		  <?php } else if(empty($webform['updated_on'])){ ?><small class="text-warning"><span class="fa fa-exclamation-circle"></span> Not started</small>
+		  <?php } else if(!empty($webform['updated_on'])&&empty($webform['completed_on'])){ ?><small class="text-danger"><span class="fa fa-exclamation-circle"></span> Incomplete: <?php echo $webform['updated_on']; ?> by <?php echo $webform['updated_by_name']; ?></small>
+		  <?php } ?>
+          
           <?php } ?>  <?php } else { ?> 
           <p>No Webforms have been created for this campaign</p>
           <?php } ?>

@@ -57,6 +57,7 @@ class Webforms extends CI_Controller
 		$campaign_id =  intval($this->uri->segment(3));
 		$urn = intval($this->uri->segment(4));
 		$form = intval($this->uri->segment(5));
+		$appointment_id = $this->uri->segment(6)?intval($this->uri->segment(6)):false;
 		$path = $this->Webform_model->get_path($form);
 		if(intval($campaign_id)&&intval($urn)&&intval($form)){
 		if($this->input->post('save')=="1"){
@@ -80,13 +81,14 @@ class Webforms extends CI_Controller
 			$data['answers'] = $answers;
 			$data['urn'] = $urn;
 			$data['id'] = $form;
+			$data['appointment_id'] = $appointment_id;
 			$data['complete'] = $this->input->post('complete');	
 			$this->Webform_model->save_answer($data);
 			echo "Saved";
 			exit;
 		}
 			
-			$all_data = $this->Webform_model->get_all_data($urn,$campaign_id,$form);
+			$all_data = $this->Webform_model->get_all_data($urn,$campaign_id,$form,$appointment_id);
 			//$this->firephp->log($all_data);
 				//if the customer is viewing the form we can make some fields read only
 	if($remote=="remote"){

@@ -14,7 +14,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.css">
     <!-- Optional theme -->
     <link rel="stylesheet"
-          href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/bootstrap-theme.css">
+          href="<?php echo base_url(); ?>assets/themes/colors/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/bootstrap-theme.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/dataTables.bootstrap.css">
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap-datetimepicker.css">
@@ -30,7 +30,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         <?php endforeach;
     endif; ?>
     <link rel="shortcut icon"
-          href="<?php echo base_url(); ?>assets/themes/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/icon.png">
+          href="<?php echo base_url(); ?>assets/themes/colors/<?php echo(isset($_SESSION['theme_folder']) ? $_SESSION['theme_folder'] : "default"); ?>/icon.png">
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/jquery-ui-1.9.2.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>

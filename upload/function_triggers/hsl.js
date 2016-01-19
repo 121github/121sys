@@ -180,7 +180,8 @@ var campaign_functions = {
                 appointment_id: appointment_id,
                 branch_id: branch_id,
                 state: state,
-                send_to: 'HCletters@hslchairs.com'
+				 send_to: 'bradf@121customerinsight.co.uk'
+                //send_to: 'HCletters@hslchairs.com'
             },
             type: "POST",
             dataType: "JSON"

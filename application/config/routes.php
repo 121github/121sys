@@ -37,7 +37,7 @@
 | in the URL cannot be matched to a valid route.
 |
 */
-if(isset($_SESSION['home'])){
+if(isset($_SESSION['permissions'])&&!in_array('view dashboard',$_SESSION['permissions'])){
 $route['default_controller'] = "user/account";	
 } else {
 $route['default_controller'] = "dashboard/user_dash";
