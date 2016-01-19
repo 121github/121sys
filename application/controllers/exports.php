@@ -293,6 +293,23 @@ class Exports extends CI_Controller
                 $result['headers'] = explode(";",$result['headers']);
 
                 break;
+            case "combo-data":
+                $result['filename'] = $this->get_filename(str_replace(" ", "","combo_data"), $options);
+
+                $campaigns = $this->Export_model->get_campaigns_by_id_list($options['campaigns']);
+
+                $result['data'] = $this->Export_model->get_combo_data($options, $campaigns);
+
+                $aux = array();
+                foreach($campaigns as $campaign) {
+                    array_push($aux, $campaign." [hours]");
+                    array_push($aux, $campaign." [positive]");
+                }
+                $campaigns = $aux;
+                $result['headers'] = ("login;name;date;".implode(';',$campaigns));
+                $result['headers'] = explode(";",$result['headers']);
+
+                break;
         }
 
         return $result;

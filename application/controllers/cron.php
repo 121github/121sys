@@ -207,6 +207,134 @@ class Cron extends CI_Controller
     }
 
 
+    //Update export files reporting
+
+    //Combo file
+    public function update_combo_data_file() {
+
+        define('EXPORT_DIR', "/var/www/html/tmp/");
+        //define('EXPORT_DIR', "/mnt/managementnew/Figures/Distribution Models/");
+        $result['filename'] = "121system_combo";
+        $myFile = EXPORT_DIR . $result['filename'].".csv";
+
+
+        $days = ($this->uri->segment(3) && is_numeric($this->uri->segment(3)) && ($this->uri->segment(3)) <= 60?$this->uri->segment(3):7);
+        //$days = 7;
+        $options = array(
+            "date_from" => date('Y-m-d', strtotime('-' . $days . ' day')),
+            "date_to" => date('Y-m-d')
+        );
+
+
+        $campaigns = $this->Form_model->get_all_campaigns();
+
+        $aux = array();
+        foreach($campaigns as $campaign) {
+            array_push($aux, $campaign['name']);
+        }
+        $campaigns = $aux;
+
+
+        //Get the data
+        $result['data'] = $this->Export_model->get_combo_data($options, $campaigns);
+
+        $aux = array();
+        foreach($campaigns as $campaign) {
+            array_push($aux, $campaign." [hours]");
+            array_push($aux, $campaign." [positive]");
+        }
+        $campaigns = $aux;
+
+        $result['headers'] = ("login;name;date;".implode(';',$campaigns));
+        $result['headers'] = explode(";",$result['headers']);
+
+
+        //Update the file
+
+
+        //If the file exist
+        if (file_exists($myFile)) {
+            //Search if there is any line for those days and truncate them
+            $found = false;
+            for ($day = $days; $day >= 0; $day--) {
+                if ($found == false) {
+                    $starttime = strtotime('-' . $day . ' day'); // What happens if it can't be found?
+                    $rundate = date('d/m/Y', $starttime);
+
+                    $fh = fopen($myFile, 'r') or die("Can't open file " . $myFile);
+                    echo "Finding " . $rundate;
+                    $lineNo = 0;
+                    while (!feof($fh)) {
+                        $line = fgets($fh);
+
+                        if (substr_count($line, $rundate) == 1) {
+                            echo ">> Found on line $lineNo<br>";
+                            echo "<pre>$line</pre><br>";
+                            $found = true;
+                            break;
+                        }
+                        $lineNo++;
+                    }
+
+                    // If date has still yet to be found, we increment the date
+                    if ($found == false) echo ">> Not found <br>";
+
+                    fclose($fh);
+                }
+            }
+
+
+            // ====================================
+            // Truncate file from line number found above $lineNo
+            // ------------------------------------
+            if ($found == true) {
+
+                echo "<h4>Truncate file ".$myFile."</h4>";
+                echo "Found on line " . $lineNo;
+
+                // Truncate file to update values
+                $truncateFrom = $lineNo - 1; // zero-based line numbers, hence line 19 is line 20
+
+
+                $file = new SplFileObject($myFile, 'a+');
+                $file->seek($truncateFrom);
+                $file->ftruncate($file->ftell());
+
+                //Create the header
+                if ($lineNo == 1) {
+                    $fh = fopen($myFile, 'w');
+
+                    fputcsv($fh, $result['headers']);
+
+                    fclose($fh);
+                }
+            }
+        }
+        //If the file doesn't exist, just create a new one
+        else {
+            echo "<h4>Create file on " . $myFile."</h4>";
+
+            $fh = fopen($myFile, 'w');
+
+            fputcsv($fh, $result['headers']);
+
+            fclose($fh);
+        }
+
+
+        //Add the new data
+        $fh = fopen($myFile, 'a+') or die("Can't open file " . $myFile);
+        echo "<h4>Update data</h4>";
+        foreach ($result['data'] as $val) {
+            fputcsv($fh, $val);
+            echo "<pre>".implode(",",$val)."</pre>";
+        }
+        if (empty($result['data'])) {
+            echo "<pre>Nothing to update</pre>";
+        }
+        fclose($fh);
+    }
+
     //################################################################################################
     //################################### MATRIX CV functions ########################################
     //################################################################################################
