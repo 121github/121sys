@@ -1756,6 +1756,9 @@ var modals = {
                 if (response.success) {
                     $.each(response.data.general, function (key, val) {
                         $panel.find('#general [name="' + key + '"]').val(val);
+                        if (jQuery.inArray( key, ["conumber", "employees", "turnover"] ) >= 0) {
+                            $panel.find('input[name="' + key + '"]').numeric();
+                        }
                     });
 
                     if (response.data.telephone) {

@@ -328,11 +328,11 @@ var email = {
                 "<td class='read_confirmed'>" + read_confirmed + "</td>" +
                 "</tr>"
             if (response.attachments.length > 0) {
-                body += "<tr>" +
+                tbody += "<tr>" +
                     "<th colspan=2>Attachments</th>" +
                     "</tr>";
                 $.each(response.attachments, function (key, val) {
-                    body += "<tr>" +
+                    tbody += "<tr>" +
                         "<td colspan='2' class='attachments'><a target='_blank' href='" + val.path + "'>" + val.name + "</td>" +
                         "</tr>";
                 });

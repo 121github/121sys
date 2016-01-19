@@ -18,7 +18,7 @@ class Contacts_model extends CI_Model
     
     public function get_contact($id)
     {
-        $qry     = "select * from contacts left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) where contact_id = '$id'";
+        $qry     = "select *, IF (dob,date_format(dob,'%d/%m/%Y'),null) dob from contacts left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) where contact_id = '$id'";
         $results = $this->db->query($qry)->result_array();
         foreach ($results as $result):
             $contact['general'] = array(
@@ -34,11 +34,10 @@ class Contacts_model extends CI_Model
                 "facebook" => $result['facebook'],
                 "notes" => $result['notes'],
                 "email" => $result['email'],
-                "optout" => $result['email_optout']
+                "optout" => $result['email_optout'],
+                "dob" => $result['dob']
             );
-			if(!empty($result['dob'])){
-			 $contact['general']["dob"] = date('d/m/Y',strtotime($result['dob']));
-			}
+
             if ($result['telephone_id']) {
                 $contact['telephone'][$result['telephone_id']] = array(
                     "tel_name" => $result['description'],
@@ -81,7 +80,22 @@ class Contacts_model extends CI_Model
     public function get_contacts($urn)
     {
 
-        $qry = "select camp.telephone_prefix,camp.telephone_protocol,c.urn,c.contact_id,fullname,a.primary is_primary,c.email,c.linkedin,c.position,date_format(dob,'%d/%m/%Y') dob, c.notes,email_optout,website,ct.telephone_id, ct.description as tel_name,ct.telephone_number,ct.tps,address_id, add1,add2,add3,city,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) join records using(urn) join campaigns camp using(campaign_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
+        $qry = "select
+                  camp.telephone_prefix,
+                  camp.telephone_protocol,
+                  c.urn,
+                  c.contact_id,
+                  fullname,
+                  a.primary is_primary,
+                  c.email,
+                  c.linkedin,
+                  c.facebook,
+                  c.position,
+                  IF (dob,date_format(dob,'%d/%m/%Y'),'') dob,
+                  c.notes,email_optout,website,
+                  ct.telephone_id, ct.description as tel_name,
+                  ct.telephone_number,
+                  ct.tps,address_id, add1,add2,add3,city,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) join records using(urn) join campaigns camp using(campaign_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
 		$query = $this->db->query($qry);
         $results = $query->result_array();
         //put the contact details into array
@@ -102,10 +116,15 @@ class Contacts_model extends CI_Model
                     "Job" => $result['position'],
                     "DOB" => $result['dob'],
                     "Email address" => $result['email'],
-                    "Linkedin" => $result['linkedin'],
                     "Email Optout" => $result['email_optout'],
-                    "Website" => $result['website'],
                     "Notes" => $result['notes']
+                );
+            }
+            if (!isset($contacts[$result['contact_id']]['links'])) {
+                $contacts[$result['contact_id']]['links'] = array(
+                    "Linkedin" => $result['linkedin'],
+                    "Facebook" => $result['facebook'],
+                    "Website" => $result['website']
                 );
             }
 			if(strpos($result['tel_name'],"Transfer")!==false){
