@@ -131,6 +131,21 @@
                                     </div>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>Combo Data</td>
+                                <td>Hours + Positive outcomes</td>
+                                <td class="report-available-export-prog-<?php echo "combo-data"; ?>">
+                                <td style="text-align: right">
+                                    <div class="btn-group">
+                                        <button title='Export to csv' type='submit' class='btn btn-default btn-sm export-available-file-btn'
+                                                item-name='combo-data'><span
+                                                class='glyphicon glyphicon-export pointer'></span></button>
+                                        <span title='View the data before export'
+                                              class='btn btn-default btn-sm export-available-data-btn' item-name='combo-data'><span
+                                                class='glyphicon glyphicon-eye-open pointer'></span></span>
+                                    </div>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

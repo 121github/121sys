@@ -154,6 +154,7 @@ class Export_model extends CI_Model
         $outcomes = isset($options['outcomes']) ? $options['outcomes'] : array();
         $teams = isset($options['teams']) ? $options['teams'] : array();
         $sources = isset($options['sources']) ? $options['sources'] : array();
+        $pots = isset($options['pots']) ? $options['pots'] : array();
 
         $where = " where (contacts.contact_id IS NOT NULL OR companies.company_id IS NOT NULL)  ";
 
@@ -218,4 +219,196 @@ class Export_model extends CI_Model
 
         return $result;
     }
+
+    /**
+     *
+     * Get the hours data
+     *
+     */
+    public function get_hours_data($options) {
+
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $agents = isset($options['agents']) ? $options['agents'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+
+        $where = " where 1 ";
+
+        if (!empty($date_from)) {
+            $where .= " and h.date >= '".$date_from."'";
+        }
+        if (!empty($date_to)) {
+            $where .= " and h.date <= '".$date_to."'";
+        }
+        if (!empty($campaigns)) {
+            $where .= " and h.campaign_id IN (".implode(",",$campaigns).") ";
+        }
+        if (!empty($agents)) {
+            $where .= " and h.user_id IN (".implode(",",$agents).") ";
+        }
+        if (!empty($teams)) {
+            $where .= " and u.team_id IN (".implode(",",$teams).") ";
+        }
+
+        $qry = "SELECT u.user_id, u.ext, u.name, DATE_FORMAT(h.date, '%d/%m/%Y') as date, c.campaign_name, TRUNCATE(h.duration/3600,1) as duration
+                  FROM hours h
+                  INNER JOIN campaigns c using (campaign_id)
+                  INNER JOIN users u using (user_id) ";
+
+        $qry .= $where;
+
+        $qry .= " GROUP BY h.date, u.ext, c.campaign_name
+                  ORDER BY h.date, u.user_id asc";
+
+        $result = $this->db->query($qry)->result_array();
+
+
+        return $result;
+    }
+
+    /**
+     *
+     * Get the positive outcomes data
+     *
+     */
+    public function get_positive_outcomes_data($options) {
+
+        $date_from = $options['date_from'];
+        $date_to = $options['date_to'];
+        $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
+        $agents = isset($options['agents']) ? $options['agents'] : array();
+        $teams = isset($options['teams']) ? $options['teams'] : array();
+        $sources = isset($options['sources']) ? $options['sources'] : array();
+        $pots = isset($options['pots']) ? $options['pots'] : array();
+
+        $where = " where 1 ";
+
+        if (!empty($date_from)) {
+            $where .= " and date(h.contact) >= '".$date_from."'";
+        }
+        if (!empty($date_to)) {
+            $where .= " and date(h.contact) <= '".$date_to."'";
+        }
+        if (!empty($campaigns)) {
+            $where .= " and h.campaign_id IN (".implode(",",$campaigns).") ";
+        }
+        if (!empty($agents)) {
+            $where .= " and h.user_id IN (".implode(",",$agents).") ";
+        }
+        if (!empty($teams)) {
+            $where .= " and u.team_id IN (".implode(",",$teams).") ";
+        }
+        if (!empty($sources)) {
+            $where .= " and h.source_id IN (".implode(",",$sources).") ";
+        }
+        if (!empty($pots)) {
+            $where .= " and h.pot_id IN (".implode(",",$pots).") ";
+        }
+
+        $qry = "SELECT u.user_id, u.ext, u.name, DATE_FORMAT(h.contact, '%d/%m/%Y') as date, c.campaign_name, count(*) as num
+                  FROM history h
+                  INNER JOIN campaigns c using (campaign_id)
+                  INNER JOIN users u using (user_id)
+                  INNER JOIN outcomes o using (outcome_id)
+                  LEFT JOIN data_sources sources on h.source_id = sources.source_id
+                  LEFT JOIN data_pots pots on h.pot_id = pots.pot_id ";
+
+        $qry .= $where;
+
+        $qry .= " GROUP BY date(h.contact), u.ext, c.campaign_name
+                  ORDER BY date(h.contact) asc";
+
+        $result = $this->db->query($qry)->result_array();
+
+
+        return $result;
+    }
+
+    /**
+     *
+     * Get the combo data (hours + positive outcomes)
+     *
+     */
+    public function get_combo_data($options, $campaigns) {
+
+        $result['data'] = array();
+
+        //Get the hours
+        $result['hours'] = $this->get_hours_data($options);
+
+        foreach ($result['hours'] as $hours) {
+            if (!isset($result['data'][$hours['date']][$hours['ext']][$hours['campaign_name']])) {
+                $result['data'][$hours['date']][$hours['user_id']]['name'] = $hours['name'];
+                $result['data'][$hours['date']][$hours['user_id']]['ext'] = $hours['ext'];
+                $result['data'][$hours['date']][$hours['user_id']][$hours['campaign_name']] = array();
+            }
+            $result['data'][$hours['date']][$hours['user_id']][$hours['campaign_name']]['duration'] = $hours['duration'];
+            $result['data'][$hours['date']][$hours['user_id']][$hours['campaign_name']]['positive'] = 0;
+        }
+
+        //Get the positive outcomes
+        $result['positive_outcomes'] = $this->get_positive_outcomes_data($options);
+
+        foreach ($result['positive_outcomes'] as $outcomes) {
+            if (!isset($result['data'][$outcomes['date']][$outcomes['user_id']][$outcomes['campaign_name']])) {
+                $result['data'][$outcomes['date']][$outcomes['user_id']]['name'] = $outcomes['name'];
+                $result['data'][$outcomes['date']][$outcomes['user_id']]['ext'] = $outcomes['ext'];
+                $result['data'][$outcomes['date']][$outcomes['user_id']][$outcomes['campaign_name']] = array();
+            }
+            if (!isset($result['data'][$outcomes['date']][$outcomes['user_id']][$outcomes['campaign_name']]['duration'])) {
+                $result['data'][$outcomes['date']][$outcomes['user_id']][$outcomes['campaign_name']]['duration'] = 0;
+            }
+            $result['data'][$outcomes['date']][$outcomes['user_id']][$outcomes['campaign_name']]['positive'] = $outcomes['num'];
+        }
+
+        unset($result['hours']);
+        unset($result['positive_outcomes']);
+        ksort($result['data']);
+
+        array_unique($campaigns);
+        $aux = array ();
+
+        foreach ($result['data'] as $date => $user) {
+            foreach ($user as $ext => $val) {
+                $data = array(
+                    'login' => $ext,
+                    'name' => $val['name'],
+                    'date' => $date,
+                );
+                foreach ($campaigns as $campaign) {
+                    $data[$campaign." [hours]"] = (isset($val[$campaign]['duration'])?$val[$campaign]['duration']:'');
+                    $data[$campaign." [positive]"] = (isset($val[$campaign]['positive'])?$val[$campaign]['positive']:'');
+                }
+                array_push($aux,$data);
+            }
+        }
+        $result['data'] = $aux;
+
+        return $result['data'];
+    }
+
+    /**
+     *
+     * Get campaigns by id list
+     *
+     */
+    public function get_campaigns_by_id_list($campaign_list) {
+
+        $qry = "SELECT c.campaign_name
+                  FROM campaigns c
+                  WHERE c.campaign_id IN (".implode(',',$campaign_list).")";
+
+        $result = $this->db->query($qry)->result_array();
+
+        $aux = array();
+        foreach($result as $val) {
+            array_push($aux, $val['campaign_name']);
+        }
+        $result = $aux;
+
+        return $result;
+    }
+
+
 }
