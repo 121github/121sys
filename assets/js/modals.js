@@ -1029,7 +1029,7 @@ var modals = {
 
         mbody += '</div>';
         merge_btn = "";
-        if (typeof record !== "undefined") {
+        if (typeof record !== "undefined"&&record.urn!==data.urn) {
             merge_btn = ' <button class="btn btn-info pull-right" data-modal="merge-record" data-urn="' + data.urn + '" data-merge-target="' + record.urn + '">Merge</button>';
         }
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';

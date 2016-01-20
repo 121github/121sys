@@ -2509,7 +2509,7 @@ var record = {
                     $panel.find('.panel-body').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
                 }
             }).fail(function () {
-                $panel.html($('<p/>').text("Call recordings could not be found"));
+                $panel.find('.panel-body').html($('<p/>').text("Call recordings could not be found"));
             }).done(function (response) {
                 $panel.find('.panel-body').empty();
                 $body = "";
@@ -2521,7 +2521,7 @@ var record = {
                         }
                         $body += '<tr><td>' + val.calldate + '</td><td>' + val.duration + '</td><td>' + val.servicename + ' ' + icon + '</td><td width="180"><a href="#" class="listen" data-id="' + val.id + '" data-path="' + val.filepath + '"><span class="speaker glyphicon glyphicon-play"></span> Listen</a> <span class="player-loading hidden">Please wait  <img src="' + helper.baseUrl + 'assets/img/ajax-load-black.gif"/></span></td></tr>';
                     });
-                    $panel.html('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                    $panel.find('.panel-body').html('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
                     $panel.find('.panel-body').html($('<p/>').text(response.msg));
                 }
