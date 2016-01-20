@@ -52,6 +52,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <p>Please complete the following questions and click save</p>
 
     <form id="form" style="padding-bottom:50px;">
+      <input type="hidden" name="id" value="<?php echo @$values['id'] ?>" />
         <div id="q8-container">
       <label>Where did you hear about us?</label><br>
 <select name="answers[a8]" class="selectpicker q8-question" data-width="100%"

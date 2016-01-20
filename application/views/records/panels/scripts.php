@@ -1,4 +1,4 @@
-    <div class="panel panel-primary">
+    <div id="script-panel" class="panel panel-primary">
       <div class="panel-heading clearfix">Script Notes</div>
       <div class="panel-body">
         <?php

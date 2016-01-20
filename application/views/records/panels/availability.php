@@ -6,7 +6,7 @@
      <input type="hidden" id="slot-source-id" value="<?php echo $record['source_id'] ?>" />
         <input type="hidden" id="slot-campaign-id" value="<?php echo $record['campaign_id'] ?>" />
     <input type="hidden" id="slot-distance" name="distance" value="" />
-      <input type="hidden" id="slot-attendee"  name="attendee" value="" />
+      <input type="hidden" id="slot-attendee"  name="attendee" value="<?php echo (count($attendees)=="1"?$attendees[0]['user_id']:"") ?>" />
       <input type="hidden" id="slot-closest" value="<?php echo $attendees[0]['user_id'] ?>" />
           <input type="hidden" id="app-type" value="" />
             <!--<div class="input-group"  style="width:280px">
@@ -56,6 +56,13 @@
   <div class="panel-body" id="slots-panel"><p>Please choose an attendee to view their availability</p></div>
 </div>
 <script type="text/javascript">
+$(document).ready(function(){
+	if($('#slot-attendee').val()!==""){
+		record.appointment_slots_panel.load_panel();	
+	}
+});
+
+
 $(document).on('blur','#slot-postcode',function(){
 	record.appointment_slots_panel.load_panel();
 });

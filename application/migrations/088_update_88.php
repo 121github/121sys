@@ -29,6 +29,16 @@ ADD INDEX ( `appointment_type_id` )");
         if(!$check->num_rows()){
 		$this->db->query("ALTER TABLE `webforms` ADD `btn_text` VARCHAR( 50 ) NOT NULL");
 		}
+		$check = $this->db->query("SHOW COLUMNS FROM `attachments` LIKE 'webform'");
+		 if(!$check->num_rows()){
+		$this->db->query("ALTER TABLE `attachments` ADD `webform` INT NULL DEFAULT NULL ,
+ADD INDEX ( `webform` )") ;
+		 }
+		 $this->db->query("alter table webform_answers add unique(webform_id,urn,appointment_id)");
+		 
 	}
-	
+	 public function down()
+    {
+		$this->db->query("ALTER TABLE `attachments` DROP `webform`");
+	}
 }

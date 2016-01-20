@@ -54,10 +54,10 @@ class Webforms extends CI_Controller
     public function edit($remote=false)
     { 
 		
-		$campaign_id =  intval($this->uri->segment(3));
-		$urn = intval($this->uri->segment(4));
-		$form = intval($this->uri->segment(5));
-		$appointment_id = $this->uri->segment(6)?intval($this->uri->segment(6)):false;
+		$campaign_id =  $this->uri->segment(3);
+		$urn = $this->uri->segment(4);
+		$form = $this->uri->segment(5);
+		$appointment_id = $this->uri->segment(6);
 		$path = $this->Webform_model->get_path($form);
 		if(intval($campaign_id)&&intval($urn)&&intval($form)){
 		if($this->input->post('save')=="1"){
@@ -80,11 +80,12 @@ class Webforms extends CI_Controller
 			}
 			$data['answers'] = $answers;
 			$data['urn'] = $urn;
-			$data['id'] = $form;
+			$data['webform_id'] = $form;
+			$data['id'] = $this->input->post('id');
 			$data['appointment_id'] = $appointment_id;
 			$data['complete'] = $this->input->post('complete');	
-			$this->Webform_model->save_answer($data);
-			echo "Saved";
+			$id = $this->Webform_model->save_answer($data);
+			echo json_encode(array("id"=>$id));
 			exit;
 		}
 			

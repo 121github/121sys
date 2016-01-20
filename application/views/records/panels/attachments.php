@@ -1,4 +1,4 @@
- <div class="panel panel-primary attachment-panel">
+ <div id="attachment-panel" class="panel panel-primary">
       <div class="panel-heading clearfix">
         <h4 class="panel-title"> Attachments<?php if(in_array("add attachment",$_SESSION['permissions'])){ ?>
                 <span class="glyphicon glyphicon-plus fileinput-button pull-right">
@@ -11,12 +11,12 @@
                 </div>
                 <!-- The container for the uploaded files -->
                 <div id="files" class="files pull-right" style="display: none; margin-right: 10px;">
-                    <span id="file-status">sd</span>
+                    <span id="file-status"></span>
                 </div>
         <?php } ?></h4>
       </div>
 
-      <div class="attachment-list panel-body">
+      <div class="attachment-list panel-body" style="overflow-x:auto">
        <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> 
       </div>
 

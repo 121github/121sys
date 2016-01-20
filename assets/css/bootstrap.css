@@ -4440,7 +4440,7 @@ a.thumbnail.active {
   border: 1px solid transparent;
   border-radius: 4px;
 }
-.page-success,.page-danger,.page-info,.page-warning {
+#page-success,#page-danger,#page-info,#page-warning {
 position:fixed;
 bottom:0;
 z-index:9999;

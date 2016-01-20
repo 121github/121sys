@@ -84,6 +84,7 @@
 <div class="col-lg-4 col-md-6 col-sm-12">
 <?php  $this->view('records/panels/webform.php', $details); ?>
 <?php  $this->view('records/panels/record_update.php', $details); ?>
+<?php  $this->view('records/panels/attachments.php', $details); ?>
 </div>
 <div class="col-lg-4 col-md-6 col-sm-12">
 <?php  $this->view('records/panels/appointments.php', $details); ?>

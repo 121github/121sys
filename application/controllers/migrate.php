@@ -14,7 +14,8 @@ $this->load->library('migration');
 }
 
 public function index(){
-if ( !$this->migration->current())
+	$this->migration->version(88);
+	if ( !$this->migration->current())
 {
 	$this->firephp->log($this->migration->error_string());
 } else {
@@ -23,13 +24,14 @@ if ( !$this->migration->current())
 }
 
 public function force_version(){
+	
 	$version = $this->uri->segment(3);
 	$this->migration->version($version);
 	$this->firephp->log($this->migration->error_string());
 }
 
 public function rollback(){
-	$rollback = $this->Database_model->current();
+	$rollback = $this->Database_model->get_version()-1;
 if ( !$this->migration->version($rollback))
 {
 	$this->firephp->log($this->migration->error_string());

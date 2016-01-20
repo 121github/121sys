@@ -203,20 +203,20 @@ $(document).ajaxComplete(function (event, xhr, settings) {
 var flashalert = {
 
     success: function (text) {
-        $('.page-success .alert-text').html(text);
-        $('.page-success').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
+        $('#page-success .alert-text').html(text);
+        $('#page-success').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
     },
     info: function (text) {
-        $('.page-info .alert-text').html(text);
-        $('.page-info').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
+        $('#page-info .alert-text').html(text);
+        $('#page-info').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
     },
     danger: function (text) {
-        $('.page-danger .alert-text').html(text);
-        $('.page-danger').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
+        $('#page-danger .alert-text').html(text);
+        $('#page-danger').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
     },
     warning: function (text) {
-        $('.page-warning .alert-text').html(text);
-        $('.page-warning').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
+        $('#page-warning .alert-text').html(text);
+        $('#page-warning').removeClass('hidden').fadeIn(1000).delay(2000).fadeOut(1000);
     }
 
 }

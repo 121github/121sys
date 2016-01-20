@@ -462,6 +462,7 @@ class Records_model extends CI_Model
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}
+		$this->firephp->log($select.$qry);
         $records = $this->db->query($select.$qry)->result_array();
         $records['count'] = $count;
         
@@ -1108,7 +1109,12 @@ return $comments;
             "source_id",
 			"pot_id"
         ), $hist, NULL));
-        return $this->db->insert_id();
+       	$history_id = $this->db->insert_id();
+		//add last comment
+		if(!empty($hist['comments'])){
+		$this->db->replace("record_comments",array("urn"=>$hist['urn'],"last_comment"=>$hist["comments"]));
+		}
+		return $history_id;
     }
 
 
@@ -1132,10 +1138,7 @@ return $comments;
         $urn = intval($urn);
         $comment = "";
         $qry = "select comments from history where urn = '$urn' and comments <> '' and comments is not null order by history_id desc limit 1";
-        $comments = $this->db->query($qry)->result_array();
-        foreach ($comments as $row) {
-            $comment = $row['comments'];
-        }
+        $comment = $this->db->query($qry)->row()->comments;
         return $comment;
     }
 
@@ -1498,15 +1501,18 @@ return $comments;
     /**
      * Get attachments
      */
-    public function get_attachments($urn, $limit, $offset)
+    public function get_attachments($urn, $limit, $offset,$webform=false)
     {
         $limit_ = ($limit) ? "limit " . $offset . "," . $limit : '';
 
         $qry = "select a.attachment_id, a.name, a.type, a.path, DATE_FORMAT(a.date,'%d/%m/%Y %H:%i:%s') as date, u.name as user
 		    	from attachments a
 		    	inner join users u ON (u.user_id = a.user_id)
-		    	where urn = " . $urn . "
-		    	order by a.date desc
+		    	where urn = " . $urn;
+				if($webform){
+				$qry .= " and webform = $webform "; 	
+				}
+		    	$qry .= " order by a.date desc
 		    	" . $limit_;
 
         return $this->db->query($qry)->result_array();
@@ -1534,7 +1540,7 @@ return $comments;
 
     public function get_webforms($urn)
     {
-        $qry = "select webform_answers.id,date_format(webform_answers.updated_on,'%d/%m/%Y %H:%i') updated_on, id,records.campaign_id,webforms.webform_id,webform_name,records.urn,users.name,u.name updated_by_name,date_format(completed_on,'%d/%m/%Y %H:%i') completed_on,completed_by,appointment_id from records left join campaigns using(campaign_id) left join webforms_to_campaigns using(campaign_id) join webforms using(webform_id) left join webform_answers on records.urn = webform_answers.urn and webforms.webform_id = webform_answers.webform_id left join users on user_id = completed_by left join users u on webform_answers.updated_by = u.user_id where records.urn = '$urn' and (appointment_id is null or completed_on is not null)";
+        $qry = "select webform_answers.id,date_format(webform_answers.updated_on,'%d/%m/%Y %H:%i') updated_on, id,records.campaign_id,webforms.webform_id,webform_name,records.urn,users.name,u.name updated_by_name,date_format(completed_on,'%d/%m/%Y %H:%i') completed_on,completed_by,appointment_id from records left join campaigns using(campaign_id) left join webforms_to_campaigns using(campaign_id) join webforms using(webform_id) left join webform_answers on records.urn = webform_answers.urn and webforms.webform_id = webform_answers.webform_id left join users on user_id = completed_by left join users u on webform_answers.updated_by = u.user_id where records.urn = '$urn' and (appointment_type_id is null or updated_on is not null)";
         return $this->db->query($qry)->result_array();
     }
 

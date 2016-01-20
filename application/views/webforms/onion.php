@@ -52,6 +52,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <p>Please complete the following questions and click save</p>
 
     <form id="form" style="padding-bottom:50px;">
+      <input type="hidden" name="id" value="<?php echo @$values['id'] ?>" />
         <label>Temporary or permanant contracts? <span class="glyphicon glyphicon-question-sign tt"
                                                        data-toggle="tooltip" data-placement="right"
                                                        title="Whether or not the recruitment company places `temps` i.e. Contracts for a fixed duration rather than placing permenant employees, some business will do both!"></span></label>

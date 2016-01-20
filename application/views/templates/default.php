@@ -274,13 +274,13 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         </div>
     </div>
 </div>
-<div class="page-success alert alert-success hidden alert-dismissable"><span class="alert-text"></span><span
+<div id="page-success" class="alert alert-success hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
-<div class="page-info alert alert-info hidden alert-dismissable"><span class="alert-text"></span><span
+<div id="page-info" class="alert alert-info hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
-<div class="page-warning alert alert-warning hidden alert-dismissable"><span class="alert-text"></span><span
+<div id="page-warning" class="alert alert-warning hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
-<div class="page-danger alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
+<div id="page-danger" class="alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>

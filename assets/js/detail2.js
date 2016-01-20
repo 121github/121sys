@@ -13,13 +13,15 @@ $(document).ajaxStop(function () {
 
 var record = {
     init: function (urn, role, campaign) {
-		$(document).on('click','#record-options li a:not("[data-modal=\'view-record\']")',function(e){
+		this.record_panel = '#record-panel';
+		var $record_panel = $(record.record_panel);
+		$('#record-options').on('click','li a:not("[data-modal=\'view-record\']")',function(e){
 			 e.preventDefault();
 			 var tab = $(this).attr('data-tab');
 				modals.record_options(tab);
 		})
 		
-        $(document).on('click', '#update-record', function (e) {
+       $record_panel.on('click', '#update-record', function (e) {
             e.preventDefault();
             if ($('[name="call_direction"]').length > 0 && !$('[name="call_direction"]').is(':checked')) {
                 flashalert.danger("You must set a call direction");
@@ -35,25 +37,25 @@ var record = {
                 flashalert.danger("You must select a call outcome first");
             }
         });
-        $(document).on('click', '#reset-record', function (e) {
+        $record_panel.on('click', '#reset-record', function (e) {
             e.preventDefault();
             record.update_panel.reset_record($(this));
         });
-        $(document).on('click', '#unpark-record,#record-unpark', function (e) {
+        $record_panel.on('click', '#unpark-record,#record-unpark', function (e) {
             e.preventDefault();
             record.update_panel.unpark_record($(this));
         });
-        $(document).on('click', '#favorite-btn', function (e) {
+        $record_panel.on('click', '#favorite-btn', function (e) {
             record.update_panel.set_favorite($(this));
         });
-        $(document).on('click', '#urgent-btn', function (e) {
+        $record_panel.on('click', '#urgent-btn', function (e) {
             record.update_panel.set_urgent($(this));
         });
-        $(document).on('click', '.close-xfer', function (e) {
+        $record_panel.on('click', '.close-xfer', function (e) {
             e.preventDefault();
             record.update_panel.close_cross_transfer();
         });
-        $(document).on('click', '.set-xfer', function (e) {
+        $record_panel.on('click', '.set-xfer', function (e) {
             e.preventDefault();
             var xfer = $('select[name="campaign"]').find('option:selected').text()
             $('#record-update-form').append($('<input name="xfer_campaign" type="hidden"/>').val($('select[name="campaign"]').val()));
@@ -62,7 +64,7 @@ var record = {
         });
         var old_outcome = $('#outcomes option:selected').val();
         var current_outcome = old_outcome;
-        $(document).on('change', '#outcomes', function (e) {
+        $record_panel.on('change', '#outcomes', function (e) {
             record.update_panel.enable_outcome_reasons($(this).val());
             e.preventDefault();
             $val = $(this).val();
@@ -71,7 +73,7 @@ var record = {
             } else {
                 $('input[name="xfer_campaign"]').remove();
             }
-            $delay = $('#outcomes').find("option[value='" + $val + "']").attr('delay');
+            $delay = $record_panel.find("#outcomes option[value='" + $val + "']").attr('delay');
             //if the selected option has a delay attribute we disable the nextcall and set it as now+the amount of delay. This is for outcomes such as answer machine to give us more control over when agents should try again
             if ($delay > 0) {
                 var today = new Date();
@@ -128,11 +130,12 @@ var record = {
             var comments = $('textarea[name="comments"]').val();
             record.update_panel.disabled_btn(old_outcome, outcome, old_nextcall, new_nextcall, old_comments, comments);
         });
-
+/* // Not using workboooks now. BF 20/01/2016
         $(document).on('click', 'td a span.view-workbooks-data', function (e) {
             e.preventDefault();
             workbooks.view_workbooks_data($(this).attr('item-id'));
         });
+*/
         /* Initialize all the jquery widgets */
         $("span.close-alert").click(function () {
             $(this).closest('.alert').addClass('hidden');
@@ -215,14 +218,16 @@ var record = {
     },
     tasks: {
         init: function () {
+			this.panel = '#tasks-panel';
+			var $panel = $(record.tasks.panel);
             record.tasks.load_panel();
-            $(document).on('change', 'select.task_status', function () {
+           $panel.on('change', 'select.task_status', function () {
                 record.tasks.save('select',$(this));
             });
-			$(document).on('change', 'input.task_status', function () {
+			$panel.on('change', 'input.task_status', function () {
                 record.tasks.save('toggle',$(this));
             });
-			$(document).on('click', '#task-history', function () {
+			$panel.on('click', '#task-history', function () {
                 record.tasks.history();
             });
         },
@@ -247,6 +252,7 @@ var record = {
 			});
 		},
         load_panel: function () {
+			var $panel = $(record.tasks.panel);
             $.ajax({
                 url: helper.baseUrl + 'records/get_campaign_tasks',
                 type: "POST",
@@ -255,7 +261,7 @@ var record = {
                     'urn': record.urn
                 },
                 fail: function () {
-                    $('#tasks-panel').html('<p>Cannot load tasks</p>');
+                    $('#tasks-panel .panel-body').html('<p>Cannot load tasks</p>');
                 }
             }).done(function (response) {
                 if (response.success) {
@@ -286,11 +292,11 @@ var record = {
 						  tasks += '<div class="col-sm-4"><label>' + row.task_name + '</label><br><input '+selected+' '+size+' id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
 						}
                     });
-                    $('#tasks-panel').html(tasks);
-					$('#tasks-panel input[type="checkbox"]').bootstrapToggle({
+                    $panel.find('.panel-body').html(tasks);
+					$panel.find('input[type="checkbox"]').bootstrapToggle({
             onstyle: 'warning'
         });
-		$('#tasks-panel select').selectpicker();
+		$panel.find('select').selectpicker();
                 } else {
                     flashalert.danger(response.msg);
                 }
@@ -316,19 +322,23 @@ var record = {
     },
     sticky_note: {
         init: function () {
+			this.panel = '#sticky-panel';
+			var $panel = $(record.sticky_note.panel);
             /*initialize the save notes button*/
-            $(document).on('click', '#save-sticky', function (e) {
+            $panel.on('click', '#save-sticky', function (e) {
                 e.preventDefault();
                 record.sticky_note.save($(this).prev('span'));
             });
         },
-        save: function ($alert) {
+        save: function ($alert) 
+		{
+			var $panel = $(record.sticky.panel);
             $.ajax({
                 url: helper.baseUrl + 'records/save_notes',
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    'notes': $('#sticky-notes').val(),
+                    'notes': $panel.val(),
                     'urn': record.urn
                 }
             }).done(function (response) {
@@ -345,28 +355,30 @@ var record = {
     //history panel functions
     history_panel: {
         init: function () {
+			this.panel = '#history-panel';
+			var $panel = $(record.history_panel.panel);
             record.history_panel.load_panel();
-            $(document).on('change', '#selectpicker_outcome', function (e) {
+            $panel.on('change', '#selectpicker_outcome', function (e) {
                 e.preventDefault();
                 record.history_panel.load_outcome_reasons($(this).val());
             });
-            $(document).on('click', '#show-all-history-btn', function (e) {
+            $panel.on('click', '#show-all-history-btn', function (e) {
                 e.preventDefault();
                 record.history_panel.load_all_history_panel();
             });
-            $(document).on('click', '#close-history-all', function (e) {
+            $panel.on('click', '#close-history-all', function (e) {
                 e.preventDefault();
                 record.history_panel.close_all_history($(this));
             });
-            $(document).on('click', '[data-modal="edit-history"]', function (e) {
+            $panel.on('click', '[data-modal="edit-history"]', function (e) {
                 e.preventDefault();
                 record.history_panel.edit_history($(this).attr('data-id'), $(this).attr('item-modal'));
             });
-            $(document).on("click", "#save-history-btn", function (e) {
+           $panel.on("click", "#save-history-btn", function (e) {
                 e.preventDefault();
                 record.history_panel.update_history($(this).attr('data-modal'));
             });
-            $(document).on("click", "#edit-history-back", function (e) {
+            $panel.on("click", "#edit-history-back", function (e) {
                 e.preventDefault();
                 $('#edit-history-container').fadeOut(function () {
                     $('#all-history-container').fadeIn();
@@ -374,13 +386,13 @@ var record = {
                 });
             });
 
-            $(document).on('click', '#del-history-btn', function (e) {
+            $panel.on('click', '#del-history-btn', function (e) {
                 e.preventDefault();
                 modal.delete_history($(this).attr('item-id'), $(this).attr('item-modal'));
             });
         },
         load_panel: function () {
-			$history_panel = $('#history-panel');
+			var $panel = $(record.history_panel.panel);
             $.ajax({
                 url: helper.baseUrl + 'ajax/get_history',
                 type: "POST",
@@ -391,7 +403,7 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    $history_panel.find('.panel-body').empty();
+                    $panel.find('.panel-body').empty();
                     var history_rows = "";
                     if (response.data.length) {
                         //if any outcomes in the history have the "keep" flag the user will keep ownership. This stops answermachines from being taken out of the users pot when they have had a call back Dm previously
@@ -429,18 +441,18 @@ var record = {
                             k++;
                         });
                         if (k > record.limit - 1) {
-                            $history_panel.find('.panel-heading').html('History<span class="btn btn-info btn-xs pull-right" id="show-all-history-btn">Show All</span>');
+                            $panel.find('.panel-heading').html('History<span class="btn btn-info btn-xs pull-right" id="show-all-history-btn">Show All</span>');
 
                         }
-                        if($history_panel.width()<400){
+                        if($panel.width()<400){
                             var small_class="small";
                         } else {
                             var small_class="";
                         }
-                        $history_panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-hover table-condensed '+small_class+'"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th>'+call_direction_header+'</tr></thead><tbody>' + history_rows + '</tbody></table></div>');
+                        $panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-hover table-condensed '+small_class+'"><thead><tr><th>Date</th><th>Outcome</th><th>User</th><th>Notes</th>'+call_direction_header+'</tr></thead><tbody>' + history_rows + '</tbody></table></div>');
 
                     } else {
-                        $history_panel.find('.panel-body').append('<p>This record has no history information yet</p>');
+                        $panel.find('.panel-body').append('<p>This record has no history information yet</p>');
                     }
                 }
                 ;
@@ -553,7 +565,7 @@ var record = {
                 showClear:true,
                 sideBySide:true});
 
-            if (!$('#modal').hasClass('in')) {
+            if (!$modal.hasClass('in')) {
                 var mheader = "Edit History", mbody = "<div id='edit-history-container'></div><div id='all-history-container'></div>", mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right marl" '+ (edit_recent_history?"disabled":"") +' id="save-history-btn">Save</button> <button class="btn btn-danger pull-right marl" item-id="'+id+'" id="del-history-btn" '+ ((typeof helper.permissions['delete history'] == "undefined")?"disabled":"") +'>Delete</button> ';
                 modals.load_modal(mheader, mbody, mfooter);
             } else {
@@ -596,9 +608,9 @@ var record = {
                 url: helper.baseUrl + "ajax/update_history",
                 type: "POST",
                 dataType: "JSON",
-                data: $('#modal').find('form').serialize()
+                data: $modal.find('form').serialize()
             }).done(function (response) {
-                $('#modal').modal('hide');
+                $modal.modal('hide');
                 record.history_panel.load_panel();
                 flashalert.success(response.msg);
 
@@ -625,7 +637,7 @@ var record = {
     //update panel functions
     update_panel: {
         init: function () {
-
+			
         },
         disabled_btn: function (old_outcome, outcome, old_nextcall, nextcall, old_comments, comments) {
             if (((outcome.length != 0) && (outcome != old_outcome)) || ((nextcall.length != 0) && (nextcall != old_nextcall)) || ((comments.length != 0) && (comments != old_comments))) {
@@ -813,9 +825,7 @@ var record = {
     //contact_panel_functions
     contact_panel: {
         init: function () {
-            this.config = {
-                panel: '#contact-panel'
-            };
+                this.panel = '#contact-panel';
             /*check tps */
             $(document).on('click', 'span.tps-btn', function (e) {
                 e.preventDefault();
@@ -824,7 +834,7 @@ var record = {
 			record.contact_panel.load_panel();
         },
         load_panel: function (urn, id) {
-            var $panel = $(record.contact_panel.config.panel);
+            var $panel = $(record.contact_panel.panel);
             $.ajax({
                 url: helper.baseUrl + 'ajax/get_contacts',
                 type: "POST",
@@ -871,10 +881,10 @@ var record = {
                             $.each(dd, function (key, val) {
                                 if (val) {
                                     $address += val + "</br>";
-                                    $postcode = dd.postcode;
+                                    $postcode = dd.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + dd.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
                                 }
                             });
-                            $contact_detail_list_items += "<dt>" + dt + "</dt><dd><a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + $postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>" + $address + "</dd>";
+                            $contact_detail_list_items += "<dt>" + dt + "</dt><dd>"+ $postcode + $address + "</dd>";
                         }
 
                     });
@@ -924,6 +934,7 @@ var record = {
                                                             '</div>' +
                                                         '</li>');
                 });
+				$('#contact-panel .tt').tooltip();
 				if(typeof quick_planner.contact_postcode !== "undefined"){
 				quick_planner.contact_postcode = $('input[name="contact_postcode"]').val();
 				}
@@ -953,6 +964,7 @@ var record = {
             });
         },
         remove: function (id) {
+			  var $panel = $(record.contact_panel.panel);
             $.ajax({
                 url: helper.baseUrl + 'ajax/delete_contact',
                 type: "POST",
@@ -962,7 +974,7 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    $('.contacts-list').find('li[item-id="' + id + '"]').remove();
+                    $panel.find('.contacts-list li[item-id="' + id + '"]').remove();
                     flashalert.success("Contact was deleted");
                 }
                 ;
@@ -972,45 +984,43 @@ var record = {
     //contact_panel_functions
     company_panel: {
         init: function () {
-            this.config = {
-                panel: '#company-panel'
-            };
-
-            $(document).on('click', '[data-modal="search-company"]', function (e) {
+            this.panel = '#company-panel';
+			var $panel = $(record.company_panel.panel);
+            $panel.on('click', '[data-modal="search-company"]', function (e) {
                 e.preventDefault();
                 var id = $(this).attr('data-id');
                 var urn = $(this).attr('data-urn');
                 record.company_panel.search_form(id, urn);
             });
-            $(document).on('click', '#search-company-action', function (e) {
+            $modal.on('click', '#search-company-action', function (e) {
                 e.preventDefault();
                 record.company_panel.search_company();
             });
-            $(document).on('click', 'li.search-next-company-action', function (e) {
+            $modal.on('click', 'li.search-next-company-action', function (e) {
                 e.preventDefault();
                 record.company_panel.search_company($(this).attr('item-start-index'));
             });
-            $(document).on('click', '#search-table tr', function (e) {
+            $modal.on('click', '#search-table tr', function (e) {
                 e.preventDefault();
                 record.company_panel.get_company($(this).attr('item-number'));
             });
-            $(document).on('click', '#back-company-btn', function (e) {
+            $modal.on('click', '#back-company-btn', function (e) {
                 e.preventDefault();
                 record.company_panel.close_get_company();
             });
-            $(document).on('click', '#update-company-action', function (e) {
+            $modal.on('click', '#update-company-action', function (e) {
                 e.preventDefault();
                 record.company_panel.update_company();
             });
 			record.company_panel.load_panel();
             /*check ctps */
-            $(document).on('click', 'span.ctps-btn', function (e) {
+            $panel.on('click', 'span.ctps-btn', function (e) {
                 e.preventDefault();
                 record.company_panel.check_ctps($(this).attr('item-number'), $(this).attr('item-company-id'), $(this).attr('item-number-id'));
             });
         },
         load_panel: function (urn, id) {
-            var $panel = $(record.company_panel.config.panel);
+            var $panel = $(record.company_panel.panel);
           $.ajax({
                 url: helper.baseUrl + 'ajax/get_companies',
                 type: "POST",
@@ -1051,10 +1061,10 @@ var record = {
                             $.each(dd, function (key, val) {
                                 if (val) {
                                     $address += val + "</br>";
-                                    $postcode = dd.postcode;
+                                    $postcode = dd.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + dd.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
                                 }
                             });
-                            $company_detail_list_items += "<dt>" + dt + "</dt><dd><a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + $postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>" + $address + "</dd>";
+                            $company_detail_list_items += "<dt>" + dt + "</dt><dd>"+$postcode + $address + "</dd>";
                         }
 
                     });
@@ -1084,7 +1094,8 @@ var record = {
 					 });
 					 $transfer_telephone_items += '<div class="clearfix"></div>';
 					}
-					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span style="padding-left: 20px">'+$company_detail_links_items+'</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+$company_detail_list_items+$company_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+$postcode+'" /></div></li>');
+					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#com-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span style="padding-left: 20px">'+$company_detail_links_items+'</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="com-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+$company_detail_list_items+$company_detail_telephone_items+$transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+$postcode+'" /></div></li>');
+					$('#company-panel .tt').tooltip();
                 });
 				if(typeof quick_planner.company_postcode !== "undefined"){
 				quick_planner.company_postcode = $('input[name="company_postcode"]').val();
@@ -1115,6 +1126,7 @@ var record = {
             });
         },
         remove: function (id) {
+			var $panel = $(record.company_panel.panel);
             $.ajax({
                 url: helper.baseUrl + 'ajax/delete_company',
                 type: "POST",
@@ -1124,7 +1136,7 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    $('.company-list').find('li[item-id="' + id + '"]').remove();
+                    $panel.find('.company-list li[item-id="' + id + '"]').remove();
                     flashalert.success("company was deleted");
                 }
                 ;
@@ -1139,10 +1151,10 @@ var record = {
                 var $panel = $(response);
                 var mfooter = '<button class="btn btn-primary pull-right" id="search-company-action">Search</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 
-                $('.result-pagination').empty();
-                $('.searchresult-tab').find('.num-results').html("");
-                $('.nav-tabs a[href="#cosearch"]').tab('show');
-                $('.tab[href="#search"]').tab('show');
+                $modal.find('.result-pagination').empty();
+                $modal.find('.searchresult-tab').find('.num-results').html("");
+                $modal.find('.nav-tabs a[href="#cosearch"]').tab('show');
+                $modal.find('.tab[href="#search"]').tab('show');
                 $panel.find('.tab-alert').hide();
                 $panel.find('tbody').empty();
                 $panel.find('#cosearchresult .table-container table').hide();
@@ -1155,7 +1167,7 @@ var record = {
 
         },
         search_company: function (start_index) {
-            var $panel = $('#modal');
+            var $panel = $modal;
             var $form = $panel.find('.search-company-form');
             var name = $form.find('input[name="name"]').val();
             var conumber = $form.find('input[name="conumber"]').val();
@@ -1165,21 +1177,23 @@ var record = {
             }
             var num_results = 5;
             start_index = (start_index ? start_index : 0);
-            $('.result-pagination').empty();
+            $('#modal .result-pagination').empty();
 
             $.ajax({
                 url: helper.baseUrl + "companyhouse/search_companies",
                 type: "POST",
                 dataType: "JSON",
                 data: {'search': search, 'num_per_page': num_results, 'start_index': start_index}
-            }).done(function (response) {
-                $('.searchresult-tab').find('.num-results').html((response.total_results < 200 ? response.total_results : '> 200'));
-                $('.nav-tabs a[href="#cosearchresult"]').tab('show');
-                var tbody = $('#modal').find('#cosearchresult .table-container table tbody');
+            }).fail(function(){
+				flashalert.warning("This feature is not enabled on your account");
+			}).done(function (response) {
+                $('#modal .searchresult-tab').find('.num-results').html((response.total_results < 200 ? response.total_results : '> 200'));
+                $('#modal .nav-tabs a[href="#cosearchresult"]').tab('show');
+                var tbody = $modal.find('#cosearchresult .table-container table tbody');
                 tbody.empty();
                 if (response.total_results > 0) {
                     response.total_results = (response.total_results < 200 ? response.total_results : 199);
-                    $('#modal').find('#cosearchresult .table-container table').show();
+                    $modal.find('#cosearchresult .table-container table').show();
                     $.each(response.items, function (key, val) {
                         tbody.append("<tr class='pointer' item-number='" + val.company_number.replace('<strong>', '').replace('</strong>', '') + "'>" +
                             "<td>" + val.title + "</td>" +
@@ -1208,16 +1222,16 @@ var record = {
                         pagination += '<li class="' + next + '" item-start-index="' + Math.ceil((response.page_number) * num_results) + '"><a href="#">' + ">" + '</a></li>';
                         pagination += '<li class="' + next + '" item-start-index="' + Math.ceil((num_pages - 1) * num_results) + '"><a href="#">' + ">>" + '</a></li>';
                         pagination += '</ul>';
-                        $('.result-pagination').append(pagination);
+                        $('#modal .result-pagination').append(pagination);
                     }
                 }
                 else {
-                    $('#modal').find('#cosearchresult .table-container table').hide();
+                    $modal.find('#cosearchresult .table-container table').hide();
                 }
             });
         },
         load_search_tabs: function (company) {
-            var $panel = $('#modal');
+            var $panel = $modal;
             $.ajax({
                 url: helper.baseUrl + "ajax/get_company",
                 type: "POST",
@@ -1234,12 +1248,12 @@ var record = {
                     $panel.find('#cosearchresult .table-container table').hide();
                     $panel.find('#cosearchresult .none-found').show();
                 }
-                $('.tt').tooltip();
+                $('#modal .tt').tooltip();
             });
         },
         get_company: function (company_no) {
-            var $panel = $('#modal');
-            var form = $('.update-company-form');
+            var $panel = $modal;
+            var $form = $panel.find('.update-company-form');
 
             $panel.find('.search-container').fadeOut(1000, function () {
                 $panel.find('.get-company-container').fadeIn(1000);
@@ -1264,25 +1278,25 @@ var record = {
                         });
 
                     });
-                    $('#sic_codes').append(sic_options);
-                    $('#sic_codes').selectpicker();
+                    $panel.find('#sic_codes').append(sic_options);
+                    $panel.find('#sic_codes').selectpicker();
                 });
-                $('.sic_codes').change(function () {
-                    $('.sic_codes').selectpicker('selectAll');
+                $panel.find('.sic_codes').change(function () {
+                    $panel.find('.sic_codes').selectpicker('selectAll');
                 });
                 var mfooter = '<button class="btn btn-default pull-left" id="back-company-btn">Back</button> <button class="btn btn-primary pull-right" id="update-company-action">Update</button>';
                 modals.update_footer(mfooter);
-                form.find('input[name="company_id"]').val($('.search-company-form').find('input[name="company_id"]').val());
-                form.find('input[name="company_name"]').val(response.company_name);
-                form.find('input[name="company_number"]').val(response.company_number).numeric();
-                form.find('input[name="date_of_creation"]').val(response.date_of_creation);
-                form.find('input[name="company_status"]').val(response.company_status);
+                $form.find('input[name="company_id"]').val($('.search-company-form').find('input[name="company_id"]').val());
+                $form.find('input[name="company_name"]').val(response.company_name);
+                $form.find('input[name="company_number"]').val(response.company_number).numeric();
+                $form.find('input[name="date_of_creation"]').val(response.date_of_creation);
+                $form.find('input[name="company_status"]').val(response.company_status);
 
                 if (response.registered_office_address) {
-                    form.find('input[name="postal_code"]').val(response.registered_office_address.postal_code);
-                    form.find('input[name="address_line_1"]').val(response.registered_office_address.address_line_1);
-                    form.find('input[name="address_line_2"]').val(response.registered_office_address.address_line_2);
-                    form.find('input[name="locality"]').val(response.registered_office_address.locality);
+                    $form.find('input[name="postal_code"]').val(response.registered_office_address.postal_code);
+                    $form.find('input[name="address_line_1"]').val(response.registered_office_address.address_line_1);
+                    $form.find('input[name="address_line_2"]').val(response.registered_office_address.address_line_2);
+                    $form.find('input[name="locality"]').val(response.registered_office_address.locality);
                 }
                 $('#company-officers').empty();
                 var i = 1;
@@ -1315,7 +1329,7 @@ var record = {
             });
         },
         close_get_company: function () {
-            var $panel = $('#modal');
+            var $panel = $modal;
 
             $panel.find('.get-company-container').fadeOut(1000, function () {
                 $panel.find('.search-container').fadeIn(1000);
@@ -1330,12 +1344,12 @@ var record = {
                 type: "POST",
                 dataType: "JSON",
                 global: false,
-                data: $('.update-company-form').serialize()
+                data: $('#modal .update-company-form').serialize()
             }).done(function (response) {
                 if (response.success) {
-                    record.company_panel.load_panel(record.urn, $('.search-company-form').find('input[name="company_id"]').val());
-                    record.contact_panel.load_panel(record.urn, $('.search-company-form').find('input[name="company_id"]').val());
-                   $('#modal').modal('hide')
+                    record.company_panel.load_panel(record.urn, $('#modal .search-company-form').find('input[name="company_id"]').val());
+                    record.contact_panel.load_panel(record.urn, $('#modal .search-company-form').find('input[name="company_id"]').val());
+                   $modal.modal('hide')
                     flashalert.success(response.msg);
                 }
                 else {
@@ -1649,13 +1663,13 @@ var record = {
                 } else {
                     $('#slots-panel').html(response.error);
                 }
-				$('.tt').tooltip();
+				$('#slots-panel .tt').tooltip();
             })
         }
     },
     //emails panel functions
 		check_email_exists:function(){
-		if($('.contacts-list:contains("Email address")').length||$('.companies-list:contains("Email address")').length){
+		if($('#contact-panel .contacts-list:contains("Email address")').length||$('#contact-panel .companies-list:contains("Email address")').length){
 		return true;	
 		} else {
 		return false;	
@@ -1663,7 +1677,7 @@ var record = {
 	},
 	  //emails panel functions
 		check_contact_exists:function(){
-		if($('.contacts-list li').length){
+		if($('#contact-panel .contacts-list li').length){
 		return true;	
 		} else {
 		return false;	
@@ -1671,11 +1685,10 @@ var record = {
 	},
     email_panel: {
         init: function () {
-            this.config = {
-                panel: '.email-panel'
-            };
+                this.panel =  '#email-panel';
+				var $panel = $(record.email_panel.panel);
             record.email_panel.load_panel();
-            $(document).on('click', '#new-email-btn', function (e) {
+           $panel.on('click', '#new-email-btn', function (e) {
                 e.preventDefault();
 				if(record.check_contact_exists()){
 				if(record.check_email_exists()){
@@ -1687,20 +1700,20 @@ var record = {
 				flashalert.danger("You must create a new contact and add the email address first");	
 				}
             });
-            $(document).on('click', '#continue-email', function (e) {
+            $modal.on('click', '#continue-email', function (e) {
                 e.preventDefault();
                 var template = $('#emailtemplatespicker').val();
                 window.location.href = helper.baseUrl + 'email/create/' + template + '/' + record.urn;
             });
-            $(document).on('click', 'span.del-email-btn', function (e) {
+            $panel.on('click', 'span.del-email-btn', function (e) {
                 e.preventDefault();
                 modal.delete_email($(this).attr('item-id'), $(this).attr('item-modal'));
             });
-            $(document).on('click', '#show-all-email-btn', function (e) {
+            $panel.on('click', '#show-all-email-btn', function (e) {
                 e.preventDefault();
                 record.email_panel.show_all_email();
             });
-            $(document).on('click', 'span.view-email-btn', function (e) {
+            $panel.on('click', 'span.view-email-btn', function (e) {
                 e.preventDefault();
                 record.email_panel.view_email($(this).attr('item-id'));
             });
@@ -1859,6 +1872,7 @@ var record = {
             });
         },
         load_panel: function () {
+			var $panel = $(record.email_panel.panel);
             $.ajax({
                 url: helper.baseUrl + "email/get_emails",
                 type: "POST",
@@ -1868,7 +1882,7 @@ var record = {
                     limit: record.limit
                 }
             }).done(function (response) {
-                $('.email-panel').empty();
+                $panel.find('.panel-body').empty();
                 var $body = "";
                 if (response.data.length > 0) {
                     //Use the k var only to know if there are more than x records
@@ -1891,9 +1905,9 @@ var record = {
                     if (k > record.limit - 1) {
                         $body += '<tr><td colspan="6"><a href="#"><span class="btn btn-info btn-sm pull-right" id="show-all-email-btn">Show All</span></a></td></tr>';
                     }
-                    $('.email-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                     $panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
-                    $('.email-panel').append('<p>No emails have been sent for this record</p>');
+                    $panel.find('.panel-body').append('<p>No emails have been sent for this record</p>');
                 }
                 ;
             });
@@ -1902,13 +1916,16 @@ var record = {
 	//orders panel
 	order_panel:{
 	init:function(){
-		 $(document).on('click', '#create-order', function (e) {
+		this.panel = '#orders-panel'
+		var $panel = $(record.order_panel.panel);
+		 $panel.on('click', '#create-order', function (e) {
             e.preventDefault();
             window.location.href=helper.baseUrl+'lite_shop/orders';
         });
 		record.order_panel.load_panel()
 	},
 	load_panel:function(){
+		var $panel = $(record.order_panel.panel);
 		  $.ajax({
                 url: helper.baseUrl + 'orders/get_orders',
                 type: "POST",
@@ -1924,7 +1941,7 @@ var record = {
 				} else {
 					var contents ="No orders were found";
 				}
-			$('#orders-panel .panel-content').html(contents);
+			$panel.find('.panel-content').html(contents);
             }).fail(function(){
 				flashalert.danger("There was an error");
 			});
@@ -1934,33 +1951,32 @@ var record = {
     //surveys panel functions
     surveys_panel: {
         init: function () {
-            this.config = {
-                panel: '.surveys-panel'
-            };
+            this.panel = '#surveys-panel'
+           var $panel = $(record.surveys_panel.panel);
             record.surveys_panel.load_panel();
-            $(document).on('click', '#new-survey', function (e) {
+            $panel.on('click', '#new-survey', function (e) {
                 e.preventDefault();
                 record.surveys_panel.create();
             });
-            $(document).on('click', '#continue-survey', function (e) {
+           $modal.on('click', '#continue-survey', function (e) {
                 e.preventDefault();
                 var survey = modal_body.find('#surveypicker').val();
                 var contact = modal_body.find('#contactpicker').val();
                 window.location.href = helper.baseUrl + 'survey/create/' + survey + '/' + record.urn + '/' + contact;
                 //record.surveys_panel.new_survey(); we dont use the popup any more
             });
-            $(document).on('change', '#contactpicker', function (e) {
+            $modal.on('change', '#contactpicker', function (e) {
                 record.surveys_panel.check_contact($(this));
             });
-            $(document).on('click', 'span.edit-survey-btn', function (e) {
+            $panel.on('click', 'span.edit-survey-btn', function (e) {
                 e.preventDefault();
                 window.location.href = helper.baseUrl + "survey/edit/" + $(this).attr('item-id');
             });
-            $(document).on('click', 'span.eye-survey-btn', function (e) {
+            $panel.on('click', 'span.eye-survey-btn', function (e) {
                 e.preventDefault();
                 window.location.href = helper.baseUrl + "survey/edit/" + $(this).attr('item-id');
             });
-            $(document).on('click', 'span.del-survey-btn', function (e) {
+            $panel.on('click', 'span.del-survey-btn', function (e) {
                 e.preventDefault();
                 modal.delete_survey($(this).attr('item-id'));
             });
@@ -1984,11 +2000,11 @@ var record = {
         check_contact: function ($btn) {
             if ($('#contactpicker').val() == "") {
                 $('#continue-survey').prop('disabled', true);
-                $('.page-danger .alert-text').text('You must add the contact to the record before you can start a survey');
-                $('.page-danger').removeClass('hidden').fadeIn(1000);
+                $('#page-danger .alert-text').text('You must add the contact to the record before you can start a survey');
+                $('#page-danger').removeClass('hidden').fadeIn(1000);
             } else {
                 $('#continue-survey').prop('disabled', false);
-                $('.page-danger').fadeOut(1000).addClass('hidden');
+                $('#page-danger').fadeOut(1000).addClass('hidden');
             }
         },
         remove: function (id) {
@@ -2008,6 +2024,7 @@ var record = {
             });
         },
         load_panel: function () {
+			var $panel = $(record.surveys_panel.panel);
             $.ajax({
                 url: helper.baseUrl + "ajax/get_surveys",
                 type: "POST",
@@ -2016,7 +2033,7 @@ var record = {
                     urn: record.urn
                 }
             }).done(function (response) {
-                $('#surveys-panel').empty();
+               $panel.find('.panel-body').empty();
                 var $body = "";
                 if (response.data) {
                     $.each(response.data, function (key, val) {
@@ -2035,11 +2052,11 @@ var record = {
 
                         $body += '<tr><td>' + val.date_created + '</td><td>' + val.contact_name + '</td><td>' + val.client_name + '</td><td>' + val.answer + '</td><td>' + val.is_completed + '</td><td>' + $options + '</td></tr>';
                     });
-                    $('#surveys-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Date</th><th>Contact</th><th>User</th><th>NPS</th><th>Status</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                   $panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Date</th><th>Contact</th><th>User</th><th>NPS</th><th>Status</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
 
                     //alert("show surveys");
                 } else {
-                    $('#surveys-panel').append('<p>No surveys have been created for this record</p>');
+                   $panel.find('.panel-body').append('<p>No surveys have been created for this record</p>');
                     //alert("no surveys");
                 }
 
@@ -2049,7 +2066,9 @@ var record = {
     //get additional info
     additional_info: {
         init: function () {
-            $(document).on("click", "span.add-detail-btn", function () {
+			this.panel = '#custom-panel';
+			var $panel = $(record.additional_info.panel);
+            $panel.on("click", "span.add-detail-btn", function () {
                 $(this).removeClass('glyphicon-pencil pointer add-detail-btn').addClass('glyphicon-remove close-custom');
                 $('#custom-panel').find('.panel-content').fadeOut(function () {
                     $('#custom-panel').find('form')[0].reset();
@@ -2057,14 +2076,14 @@ var record = {
                     $('#custom-panel').find('form').fadeIn();
                 });
             });
-            $(document).on("click", ".del-detail-btn", function () {
+            $panel.on("click", ".del-detail-btn", function () {
                 modal.delete_additional_item($(this).attr('item-id'));
             });
-            $(document).on("click", ".edit-detail-btn", function () {
+            $panel.on("click", ".edit-detail-btn", function () {
                 $('#custom-panel').find('.panel-body').css('overflow-x', 'visible');
                 record.additional_info.edit($(this).attr('item-id'));
             });
-            $(document).on("click", ".close-custom", function (e) {
+            $panel.on("click", ".close-custom", function (e) {
                 e.preventDefault();
                 $('#custom-panel').find('.glyphicon-remove').removeClass('glyphicon-remove close-custom').addClass('glyphicon-plus add-detail-btn');
                 $('#custom-panel').find('form').fadeOut(function () {
@@ -2072,7 +2091,7 @@ var record = {
                     $('#custom-panel').find('.panel-content').fadeIn()
                 });
             });
-            $(document).on("click", ".save-info", function (e) {
+            $panel.on("click", ".save-info", function (e) {
                 e.preventDefault();
                 record.additional_info.save();
             })
@@ -2092,7 +2111,8 @@ var record = {
             });
         },
         edit: function (id) {
-            $('#custom-panel').find('.panel-content').fadeOut(function () {
+			var $panel = $(record.additional_info.panel);
+            $panel.find('.panel-content').fadeOut(function () {
                 $.ajax({
                     url: helper.baseUrl + "ajax/get_details_from_id",
                     type: "POST",
@@ -2104,26 +2124,28 @@ var record = {
                     }
                 }).done(function (response) {
                     record.additional_info.load_form(response.data, id);
-                    $('#custom-panel').find('form').fadeIn();
+                    $panel.find('form').fadeIn();
                 });
             });
         },
         save: function () {
+			var $panel = $(record.additional_info.panel);
             $.ajax({
                 url: helper.baseUrl + "ajax/save_additional_info",
                 type: "POST",
                 dataType: "JSON",
-                data: $('#custom-panel').find('form').serialize()
+                data: $panel.find('form').serialize()
             }).done(function (response) {
                 record.additional_info.load_panel();
-                $('#custom-panel').find('form').fadeOut(function () {
-                    $('#custom-panel').find('.panel-body').css('overflow-x', 'auto');
-                    $('#custom-panel').find('.panel-content').fadeIn()
+                $panel.find('form').fadeOut(function () {
+                    $panel.find('.panel-body').css('overflow-x', 'auto');
+                    $panel.find('.panel-content').fadeIn()
                 });
                 flashalert.success(response.msg);
             });
         },
         load_panel: function () {
+			var $panel = $(record.additional_info.panel);
             $.ajax({
                 url: helper.baseUrl + "ajax/get_additional_info",
                 type: "POST",
@@ -2136,13 +2158,13 @@ var record = {
                     record.additional_info.load_table(response.data);
                     record.additional_info.load_form(response.data);
                 } else {
-                    $('#custom-panel').find('.panel-content').text("Nothing was found");
+                    $panel.find('.panel-content').text("Nothing was found");
                 }
             });
         },
         load_table: function (data) {
-            var $panel = $('#custom-panel').find('.panel-content');
-            $panel.empty();
+			var $panel = $(record.additional_info.panel);
+            $panel.find('.panel-content').empty();
 									if($panel.width()<400){
 							var small_class="small";
 						} else {
@@ -2167,10 +2189,10 @@ var record = {
                 tbody += '<td><span class="btn btn-default btn-xs pull-right edit-detail-btn"  item-id="' + detail_id + '"><span class="glyphicon glyphicon-pencil"></span> Edit</span></td><tr>';
             });
             table += thead + '</thead>' + tbody + '<tbody></table></div>';
-            $panel.append(table);
+            $panel.find('.panel-content').append(table);
         },
         load_form: function (data, id) {
-            var $form = $('#custom-panel').find('form');
+            var $form = $(record.additional_info.panel).find('form');
             $form.empty();
             $form.append("<input type='hidden' name='urn' value='" + record.urn + "'/>");
             $form.append("<input type='hidden' name='detail_id' value='" + id + "'/>");
@@ -2233,12 +2255,12 @@ var record = {
                 });
             });
 
-            $('.selectpicker').selectpicker();
-            $('.date').datetimepicker({
+            $('#custom-panel .selectpicker').selectpicker();
+            $('#custom-panel .date').datetimepicker({
                 format: 'DD/MM/YYYY',
 				showClear:true
             });
-            $('.datetime').datetimepicker({
+            $('#custom-panel .datetime').datetimepicker({
                 format: 'DD/MM/YYYY HH:mm',
 				showClear:true,
 				sideBySide:true
@@ -2248,23 +2270,25 @@ var record = {
     //ownership panel functions
     ownership_panel: {
         init: function () {
+			this.panel = '#ownership-panel';
+			var $panel = $(record.ownership_panel.panel);
             record.ownership_panel.load_panel(record.urn);
-            $(document).on('click', '.edit-owner', function (e) {
+            $panel.on('click', '.edit-owner', function (e) {
                 e.preventDefault();
                 record.ownership_panel.edit($(this));
             });
-            $(document).on('click', '.close-owner', function (e) {
+            $panel.on('click', '.close-owner', function (e) {
                 e.preventDefault();
                 record.ownership_panel.close_panel();
             });
-            $(document).on('click', '.save-ownership', function (e) {
+            $panel.on('click', '.save-ownership', function (e) {
                 e.preventDefault();
                 record.ownership_panel.save();
             });
         },
 
         close_panel: function () {
-            $panel = $('.ownership-panel');
+            var $panel = $(record.ownership_panel.panel);
             record.ownership_panel.load_panel();
             $panel.find('.edit-panel').fadeOut(1000, function () {
                 $panel.find('.panel-content').fadeIn(1000, function () {
@@ -2275,7 +2299,7 @@ var record = {
             });
         },
         save: function () {
-            $panel = $('.ownership-panel');
+            var $panel = $(record.ownership_panel.panel);
             var owners = $panel.find('.owners').val();
             $.ajax({
                 url: helper.baseUrl + "ajax/save_ownership",
@@ -2291,7 +2315,7 @@ var record = {
             });
         },
         load_panel: function () {
-            $panel = $('.ownership-panel');
+           var $panel = $(record.ownership_panel.panel);
             $.ajax({
                 url: helper.baseUrl + "ajax/get_users",
                 type: "POST",
@@ -2320,7 +2344,7 @@ var record = {
             });
         },
         edit: function ($btn) {
-            $panel = $('.ownership-panel');
+            var $panel = $(record.ownership_panel.panel);
 
             $btn.removeClass('glyphicon-pencil edit-owner').addClass('glyphicon-remove close-owner');
             $panel.find('.panel-content').fadeOut(1000, function () {
@@ -2340,7 +2364,9 @@ var record = {
     },
     //script panel functions
     script_panel: function () {
-        $(document).on("click", ".view-script", function (e) {
+		this.panel = '#script-panel';
+		var $panel = $(record.script_panel.panel);
+        $panel.on("click", ".view-script", function (e) {
             e.preventDefault();
             $.ajax({
                 url: helper.baseUrl + "ajax/get_script",
@@ -2360,11 +2386,13 @@ var record = {
     appointment_panel: {
         //initalize the group specific buttons 
         init: function () {
-            $(document).on('click', '.close-appointment', function (e) {
+			this.panel = '#appointment-panel';
+			var $panel = $(record.appointment_panel.panel);
+          $panel.on('click', '.close-appointment', function (e) {
                 e.preventDefault();
                 record.appointment_panel.hide_edit_form();
             });
-            $(document).on('click', '.view-calendar', function (e) {
+            $panel.on('click', '.view-calendar', function (e) {
                 e.preventDefault();
                 modal.show_calendar(record.urn);
             });
@@ -2373,34 +2401,35 @@ var record = {
         },
         //this function reloads the groups into the table body
         load_appointments: function () {
+				var $panel = $(record.appointment_panel.panel);
+				var $record_panel = $(record.record_panel);
             $.ajax({
                 url: helper.baseUrl + 'records/load_appointments',
                 type: "POST",
                 dataType: "JSON",
                 data: {urn: record.urn}
             }).done(function (response) {
-                var $panel = $('.appointment-panel').find('.panel-content');
-                $panel.empty();
+                $panel.find('.panel-content').empty();
                 if (response.success) {
                     if (response.data.length > 0) {
                         record.appointment_panel.load_table(response.data);
-                        $('.record-panel').find('.outcomepicker').find('li.disabled').each(function () {
+                        $record_panel.find('.outcomepicker').find('li.disabled').each(function () {
                             $(this).removeClass('disabled');
                         });
-                        $('.record-panel').find('.outcomepicker').find('option:disabled').each(function () {
+                        $record_panel.find('.outcomepicker').find('option:disabled').each(function () {
                             $(this).prop('disabled', false);
                         });
                     } else {
-                        $panel.append('<p>No appointments have been created</p>');
+                        $panel.find('.panel-content').append('<p>No appointments have been created</p>');
                     }
                 } else {
-                    $panel.append('<p>' + response.msg + '</p>');
+                    $panel.find('.panel-content').append('<p>' + response.msg + '</p>');
                 }
             });
         },
         load_table: function (data) {
-            var $panel = $('.appointment-panel').find('.panel-content');
-            $panel.empty();
+           var $panel = $(record.appointment_panel.panel);
+            $panel.find('.panel-content').empty();
 
             var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
@@ -2418,14 +2447,16 @@ var record = {
     },
     related_panel: {
         init: function () {
+			this.panel = '#related-panel';
+			var $panel = $(record.related_panel.panel);
             record.related_panel.load_panel();
-            $(document).on('change', '.related-campaigns', function (e) {
+            $panel.on('change', '.related-campaigns', function (e) {
                 e.preventDefault();
                 record.recordings_panel.load_panel($(this).val())
             })
         },
         load_panel: function (campaign) {
-            var $panel = $('.related-panel');
+			var $panel = $(record.related_panel.panel);
             $.ajax({
                 url: helper.baseUrl + "records/related_records",
                 type: "POST",
@@ -2435,21 +2466,21 @@ var record = {
                     campaign: campaign
                 },
                 beforeSend: function () {
-                    $panel.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+                           $panel.find('.panel-body').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
                 }
             }).fail(function () {
-                $panel.html($('<p/>').text("No similar records could be found"));
+                     $panel.find('.panel-body').html($('<p/>').text("No similar records could be found"));
             }).done(function (response) {
-                $panel.empty();
+                $panel.find('.panel-body').empty();
                 $body = "";
                 if (response.data.length > 0) {
                     $.each(response.data, function (i, val) {
 
                         $body += '<tr class="pointer" data-modal="view-record" data-urn=' + val.urn + '><td>' + val.campaign_name + '</td><td>' + val.name + '</td><td>' + val.status_name + '</td><td>' + val.matched_on + '</td></tr>';
                     });
-                    $panel.html('<div class="table-responsive"><table class="table table-hover table-striped table-condensed"><thead><tr><th>Campaign</th><th>Company</th><th>Status</th><th>Matched on</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
+                    $panel.find('.panel-body').html('<div class="table-responsive"><table class="table table-hover table-striped table-condensed"><thead><tr><th>Campaign</th><th>Company</th><th>Status</th><th>Matched on</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
-                    $panel.html($('<p/>').text(response.msg));
+                    $panel.find('.panel-body').html($('<p/>').text(response.msg));
                 }
 
             });
@@ -2457,14 +2488,16 @@ var record = {
     },
     recordings_panel: {
         init: function () {
+			this.panel = '#recordings-panel';
+			var $panel = $(record.recordings_panel.panel);
             record.recordings_panel.load_panel();
-            $(document).on('click', '.listen', function (e) {
+            $panel.on('click', '.listen', function (e) {
                 e.preventDefault();
                 record.recordings_panel.convert_recording($(this), $(this).attr('data-id'), $(this).attr('data-path'))
             })
         },
         load_panel: function () {
-            var $panel = $('.recordings-panel');
+			var $panel = $(record.recordings_panel.panel);
             $.ajax({
                 url: helper.baseUrl + "recordings/find_calls",
                 type: "POST",
@@ -2473,12 +2506,12 @@ var record = {
                     urn: record.urn
                 },
                 beforeSend: function () {
-                    $panel.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+                    $panel.find('.panel-body').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
                 }
             }).fail(function () {
                 $panel.html($('<p/>').text("Call recordings could not be found"));
             }).done(function (response) {
-                $panel.empty();
+                $panel.find('.panel-body').empty();
                 $body = "";
                 if (response.data.length > 0) {
                     $.each(response.data, function (i, val) {
@@ -2490,7 +2523,7 @@ var record = {
                     });
                     $panel.html('<div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Call Date</th><th>Duration</th><th>Number</th><th>Options</th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
-                    $panel.html($('<p/>').text(response.msg));
+                    $panel.find('.panel-body').html($('<p/>').text(response.msg));
                 }
 
             });
@@ -2514,28 +2547,27 @@ var record = {
     //attachment_panel_functions
     attachment_panel: {
         init: function () {
-            this.config = {
-                panel: '.attachment-panel'
-            };
+            this.panel = '#attachment-panel'
+           	var $panel = $(record.attachment_panel.panel);
             record.attachment_panel.load_panel();
 
             /* initialize the delete attachment buttons */
-            $(document).on('click', '.del-attachment-btn', function (e) {
+            $panel.on('click', '.del-attachment-btn', function (e) {
                 e.preventDefault();
                 modal.delete_attachment($(this).attr('item-id'));
             });
 
-            $(document).on('click', '.show-all-attachments-btn', function (e) {
+            $panel.on('click', '.show-all-attachments-btn', function (e) {
                 e.preventDefault();
                 record.attachment_panel.show_all_attachments($(this));
             });
-            $(document).on('click', '.close-attachment-all', function (e) {
+            $panel.on('click', '.close-attachment-all', function (e) {
                 e.preventDefault();
                 record.attachment_panel.close_all_attachments($(this));
             });
         },
         load_panel: function (attachment_id) {
-            var $panel = $(record.attachment_panel.config.panel);
+            var $panel = $(record.attachment_panel.panel);
             $.ajax({
                 url: helper.baseUrl + 'records/get_attachments',
                 type: "POST",
@@ -2552,8 +2584,8 @@ var record = {
                     var k = 0;
                     $.each(response.data, function (key, val) {
                         if (k <= record.limit - 1) {
-                            var remove_btn = '<span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="' + val.attachment_id + '" title="Delete attachment"></span>';
-                            var download_btn = '<a style="color:black;" href="' + val.path + '"><span class="glyphicon glyphicon-download-alt"></span></a>';
+                            var remove_btn = '<button class="btn btn-default btn-xs marl del-attachment-btn" data-target="#modal" item-id="' + val.attachment_id + '"><span class="glyphicon glyphicon-trash"></span> Delete</button>';
+                            var download_btn = '<a class="btn btn-default btn-xs" target="_blank" href="' + val.path + '"><span class="glyphicon glyphicon-download-alt"></span></a>';
                             body += '<tr class="' + val.attachment_id + '">' +
                                 '<td>' + val.name +
                                 '</td><td>' + val.date +
@@ -2565,32 +2597,22 @@ var record = {
                         k++;
                     });
                     if (k > record.limit - 1) {
-                        body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right marl" id="show-all-attachments-btn" >Show All</span></a></td></tr>';
+                        body += '<tr><td colspan="6"><a href="#"><span class="btn pull-right" id="show-all-attachments-btn" >Show All</span></a></td></tr>';
                     }
-                    $('.attachment-list').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table></div>');
+                    $('.attachment-list').append('<div class="table-responsive"><table class="table table-striped table-condensed small"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>' + body + '</tbody></table></div>');
 
                     if (attachment_id) {
                         $panel.find('.attachment-list').find('.' + attachment_id).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500).delay(250).fadeOut(500).fadeIn(500);
                     }
                 }
                 else {
-                    $('.attachment-list').append('<p>This record has no attachments</p>');
+                    $panel.find('.attachment-list').append('<p>This record has no attachments</p>');
                 }
 
             });
         },
         show_all_attachments: function (btn) {
-            var pagewidth = $(window).width() / 2;
-            var moveto = pagewidth - 250;
-            $('<div class="modal-backdrop all-attachments in"></div>').appendTo(document.body).hide().fadeIn();
-            $('.attachment-all-container').find('.attachment-all-panel').show();
-            $('.attachment-all-content').show();
-            $('.attachment-all-container').fadeIn()
-            $('.attachment-all-container').animate({
-                width: '600px',
-                left: moveto,
-                top: '10%'
-            }, 1000);
+          
             //Get attachment data
             $.ajax({
                 url: helper.baseUrl + "records/get_attachments",
@@ -2600,18 +2622,14 @@ var record = {
                     urn: record.urn
                 }
             }).done(function (response) {
-                var $thead = $('.attachment-all-table').find('thead');
-                $thead.empty();
-
-                var $tbody = $('.attachment-all-table').find('tbody');
-                $tbody.empty();
-                var body = "";
-
+                var mbody = '<p>This record has no attachments</p>';
+				var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>'
                 if (response.data.length > 0) {
+					 mbody = '<table class="table"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>';
                     $.each(response.data, function (key, val) {
                         var remove_btn = '<span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="' + val.attachment_id + '" title="Delete attachment"></span>';
                         var download_btn = '<a style="color:black;" href="' + val.path + '"><span class="glyphicon glyphicon-download-alt"></span></a>';
-                        body += '<tr class="' + val.attachment_id + '">' +
+                        mbody += '<tr class="' + val.attachment_id + '">' +
                             '<td>' + val.name +
                             '</td><td>' + val.date +
                             '</td><td>' + val.user +
@@ -2619,22 +2637,10 @@ var record = {
                             '</td><td>' + remove_btn +
                             '</td></tr>';
                     });
-                    $thead.append('<tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr>');
-                    $tbody.append(body);
-                } else {
-                    $tbody.append('<p>This record has no attachments</p>');
-                }
-            });
-        },
-        close_all_attachments: function () {
-            $('.modal-backdrop.all-attachments').fadeOut();
-            $('.attachment-container').fadeOut(500, function () {
-                $('.attachment-content').show();
-                $('.attachment-select-form')[0].reset();
-                $('.alert').addClass('hidden');
-            });
-            $('.attachment-all-container').fadeOut(500, function () {
-                $('.attachment-all-content').show();
+                   
+                    mbody += "</tbody></table>";
+                } 
+				modals.load_modal("Attachments",mbody,mfooter);
             });
         },
         delete_attachment: function (id) {
@@ -2679,7 +2685,7 @@ var record = {
     }
 }
 
-$(document).on('click', '.nav-btn', function (e) {
+$('#container-fluid').on('click', '.nav-btn', function (e) {
     e.preventDefault();
     //modal.confirm_move($(this).attr('href'));
     flashalert.danger("You must update the record first");
@@ -2694,9 +2700,9 @@ var modal = {
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
         modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        $modal.find('.confirm-modal').on('click', function (e) {
             window.location.href = moveUrl
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
 
     },
@@ -2705,10 +2711,9 @@ var modal = {
         var mbody = 'Are you sure you want to delete this contact?';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
             record.contact_panel.remove(id);
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
     },
     delete_additional_item: function (id) {
@@ -2716,10 +2721,9 @@ var modal = {
         var mbody = 'Are you sure you want to delete this?';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
             record.additional_info.remove(id);
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
     },
     delete_company: function (id) {
@@ -2727,10 +2731,9 @@ var modal = {
         var mbody = 'Are you sure you want to delete this company?';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
             record.company_panel.remove(id);
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
     },
     delete_email: function (email_id, modal) {
@@ -2738,10 +2741,9 @@ var modal = {
         var mbody = 'Are you sure you want to delete this email?';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
             record.email_panel.remove_email(email_id, modal);
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
     },
     delete_attachment: function (attachment_id) {
@@ -2749,10 +2751,9 @@ var modal = {
         var mbody = 'Are you sure you want to delete this attachment?';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
             record.attachment_panel.delete_attachment(attachment_id);
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
     },
     delete_survey: function (id) {
@@ -2760,10 +2761,9 @@ var modal = {
         var mbody = 'Are you sure you want to delete this survey and all the answers?';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
             record.surveys_panel.remove(id);
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
     },
     call_player: function (url, filetype) {
@@ -2771,12 +2771,12 @@ var modal = {
         var mbody = '<div id="waveform"></div><div class="controls"><button class="btn btn-primary" id="playpause"><i class="glyphicon glyphicon-pause"></i>Pause</button> <button class="btn btn-primary" id="slowplay"><i class="glyphicon glyphicon-left"></i>Slower</button> <button class="btn btn-primary" id="speedplay"><i class="glyphicon glyphicon-right"></i>Faster</button> <a target="blank" class="btn btn-info" href="' + url.replace("ogg", "mp3") + '">Download</a> <span class="pull-right" id="duration"></span> <span id="audiorate" class="hidden">1</span></div>';
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
         modals.load_modal(mheader, mbody, mfooter);
-        $(document).one("click", ".close-modal,.close", function () {
+        $modal.one("click", ".close-modal,.close", function () {
             wavesurfer.destroy();
             modal_body.empty();
         });
 
-        $(document).one("click", ".close-modal,.close", function () {
+        $modal.one("click", ".close-modal,.close", function () {
             wavesurfer.destroy();
             modal_body.empty();
         });
@@ -2827,15 +2827,15 @@ var modal = {
             console.log('Finished playing');
         });
 
-          $(document).on('click','#speedplay',function () {
+          $modal.on('click','#speedplay',function () {
             wavesurfer.setPlaybackRate(Number($('#audiorate').text()) + 0.2);
             $('#audiorate').text(Number($('#audiorate').text()) + 0.2);
         });
-         $(document).on('click','#slowplay',function () {
+         $modal.on('click','#slowplay',function () {
             wavesurfer.setPlaybackRate(Number($('#audiorate').text()) - 0.2);
             $('#audiorate').text(Number($('#audiorate').text()) - 0.2);
         });
-        $(document).on('click','#playpause',function () {
+        $modal.on('click','#playpause',function () {
             if ($('#playpause i').hasClass('glyphicon-pause')) {
                 $('#playpause').html('<i class="glyphicon glyphicon-play"></i> Play');
                 wavesurfer.pause();
@@ -2852,10 +2852,9 @@ var modal = {
         var mbody = 'Are you sure you want to delete this history record?';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
             record.history_panel.remove_history(history_id, modal);
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
     },
     dead_line: function ($btn) {
@@ -2863,10 +2862,9 @@ var modal = {
         var mbody = '<p>You have set this record as a dead line but the history shows it has been dialed previously. There may be a telephony issue or we could be at full dialing capacity. Please try to dial again and confirm it\'s an actual dead line. If this is a B2B record please search for the company telephone number online and update the record with the correct number<p><p>Click confirm if you are sure this is a dead line otherwise click cancel</p>';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
             record.update_panel.save($btn);
-            $('#modal').modal('toggle');
+            $modal.modal('toggle');
         });
     },
     desktop_prequal: function ($btn) {
@@ -2874,9 +2872,8 @@ var modal = {
         var mbody = '<p>You can not send a record to GHS unless you have captured an address!</p>';
         var mfooter = '';
         modals.load_modal(mheader, mbody, mfooter);
-        modals.default_buttons();
-        $('.confirm-modal').on('click', function (e) {
-            $('#modal').modal('toggle');
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
+            $modal.modal('toggle');
         });
     },
     show_calendar: function (urn) {
@@ -2888,9 +2885,9 @@ var modal = {
         var d = new Date();
         var time = d.getTime();
 
-        $('#modal').find('.cal-range').selectpicker();
-        $('#modal').find('.submit-cal').on('click', function () {
-            modal.configure_calendar(urn, $('#modal').find('.cal-range').val(), $('#cal-postcode').val(), true);
+        $modal.find('.cal-range').selectpicker();
+        $modal.find('.submit-cal').on('click', function () {
+            modal.configure_calendar(urn, $modal.find('.cal-range').val(), $('#cal-postcode').val(), true);
         });
 		if($('input[name="company_postcode"]').length>0&&$('input[name="company_postcode"]').val()!==""){
         modal.configure_calendar(urn, 10,$('input[name="company_postcode"]').val());
@@ -2923,15 +2920,15 @@ var modal = {
                 $('#cal-postcode').val(response.postcode);
             }
             if (renew) {
-                $('.responsive-calendar').responsiveCalendar('clearAll').responsiveCalendar('edit', response.result);
+                $('#modal .responsive-calendar').responsiveCalendar('clearAll').responsiveCalendar('edit', response.result);
             } else {
-                $('.responsive-calendar').responsiveCalendar({
+                $('#modal .responsive-calendar').responsiveCalendar({
                     time: response.date,
                     events: response.result
                 })
             }
             $('#modal-loading').hide();
-            $('.responsive-calendar').slideDown();
+            $('#modal .responsive-calendar').slideDown();
         });
     }
 
@@ -2940,6 +2937,7 @@ var modal = {
 /* ==========================================================================
  WORKBOOKS INTEGRATION WITH THE RECORD
  ========================================================================== */
+ /*
 var workbooks = {
 
     view_workbooks_data: function (lead_id) {
@@ -3002,9 +3000,11 @@ var workbooks = {
             }
             modals.load_modal(mheader, mbody, mfooter);
         });
+		
     }
+	
 }
-
+*/
 
 
 

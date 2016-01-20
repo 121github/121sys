@@ -301,17 +301,17 @@ $('#primary-toggle').bootstrapToggle({
         });
     }
 */
-    $(".dropdown-menu li a").click(function () {
+    $modal.find(".dropdown-menu li a").click(function () {
         $('#company-phone-form').find('input[name="description"]').val($(this).text());
     });
 
     //Get address
 
     var addresses;
-    $('.address-select').hide();
+    $modal.find('.address-select').hide();
     $('#company-address-form').find('input[name="house_number"]').numeric();
 
-    $(document).on('click', '.get-company-address', function (e) {
+    $modal.find('.get-company-address').click(function (e) {
         e.preventDefault();
         get_addresses();
     });
@@ -368,16 +368,16 @@ $('#primary-toggle').bootstrapToggle({
                 }
 
                 modal_body.css('overflow', 'visible');
-                $('.address-select').show();
+                $modal.find('.address-select').show();
             }
             else {
                 modal_body.css('overflow', 'auto');
-                $('.address-select').hide();
+                $modal.find('.address-select').hide();
                 flashalert.danger("No address found");
             }
         });
 
-        $('.address-select .selectpicker').change(function () {
+       $modal.find('.address-select .selectpicker').change(function () {
 
             var selectedId = $(this).val();
             var address = addresses[selectedId];

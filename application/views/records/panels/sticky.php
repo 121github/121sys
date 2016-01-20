@@ -1,4 +1,4 @@
-  <div class="panel panel-primary">
+  <div id="sticky-panel" class="panel panel-primary">
       <div class="panel-heading clearfix">Record Notes</div>
       <div class="panel-body">
         <p>

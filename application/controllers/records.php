@@ -1129,9 +1129,10 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         
         if ($this->input->is_ajax_request()) {
             $record_urn = intval($this->input->post('urn'));
+			$webform = intval($this->input->post('webform'));
             $limit      = (intval($this->input->post('limit'))) ? intval($this->input->post('limit')) : NULL;
             
-            $attachments = $this->Records_model->get_attachments($record_urn, $limit, 0);
+            $attachments = $this->Records_model->get_attachments($record_urn, $limit, 0, $webform);
             
             echo json_encode(array(
                 "success" => true,

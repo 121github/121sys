@@ -4146,6 +4146,7 @@ ul
 <p class=ReplyForwardHeaders><span style='font-size:9.0pt'><o:p>&nbsp;</o:p></span></p>
 
 </div>
+  <input type="hidden" name="id" value="<?php echo @$values['id'] ?>" />
 </form>
 </body>
 
