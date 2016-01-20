@@ -212,21 +212,15 @@ class Cron extends CI_Controller
     //Combo file
     public function update_combo_data_file() {
 
-        //define('EXPORT_DIR', "/var/www/html/tmp/");
-        define('EXPORT_DIR', "/mnt/managementnew/Figures/Distribution Models/");
-        $result['filename'] = "121system_combo";
-        $myFile = EXPORT_DIR . $result['filename'].".csv";
-
+        $data['filename'] = "121system_combo";
 
         $days = ($this->uri->segment(3) && is_numeric($this->uri->segment(3)) && ($this->uri->segment(3)) <= 60?$this->uri->segment(3):7);
-        //$days = 7;
+
         $options = array(
             "date_from" => date('Y-m-d', strtotime('-' . $days . ' day')),
             "date_to" => date('Y-m-d')
         );
-
-
-        $campaigns = $this->Form_model->get_all_campaigns();
+        $campaigns = $this->Form_model->get_campaigns_by_date('2016-01-01');
 
         $aux = array();
         foreach($campaigns as $campaign) {
@@ -234,9 +228,18 @@ class Cron extends CI_Controller
         }
         $campaigns = $aux;
 
+        //Check if we need to update the header
+//        $new_header = $this->update_file_export_header($data);
+//        unset($new_header[0]);
+//        unset($new_header[1]);
+//        unset($new_header[2]);
+//        $campaigns = $new_header;
+
+        $data['headers'] = ("login;name;date;".implode(';',$campaigns));
+        $data['headers'] = explode(";",$data['headers']);
 
         //Get the data
-        $result['data'] = $this->Export_model->get_combo_data($options, $campaigns);
+        $data['data'] = $this->Export_model->get_combo_export_data($options, $campaigns);
 
         $aux = array();
         foreach($campaigns as $campaign) {
@@ -245,12 +248,48 @@ class Cron extends CI_Controller
         }
         $campaigns = $aux;
 
-        $result['headers'] = ("login;name;date;".implode(';',$campaigns));
-        $result['headers'] = explode(";",$result['headers']);
-
+        $data['headers'] = ("login;name;date;".implode(';',$campaigns));
+        $data['headers'] = explode(";",$data['headers']);
 
         //Update the file
+        $this->update_export_file($data,$days);
 
+    }
+
+    //Dials file
+    public function update_dials_data_file() {
+
+        $data['filename'] = "121system_dials";
+
+        $days = ($this->uri->segment(3) && is_numeric($this->uri->segment(3)) && ($this->uri->segment(3)) <= 60?$this->uri->segment(3):7);
+
+        $options = array(
+            "date_from" => date('Y-m-d', strtotime('-' . $days . ' day')),
+            "date_to" => date('Y-m-d')
+        );
+        $campaigns = $this->Form_model->get_campaigns_by_date('2016-01-01');
+
+        $aux = array();
+        foreach($campaigns as $campaign) {
+            array_push($aux, $campaign['name']);
+        }
+        $campaigns = $aux;
+
+        //Get the data
+        $data['data'] = $this->Export_model->get_dials_export_data($options, $campaigns);
+
+        $data['headers'] = ("date;".implode(';',$campaigns));
+        $data['headers'] = explode(";",$data['headers']);
+
+        //Update the file
+        $this->update_export_file($data,$days);
+
+    }
+
+    private function update_export_file ($data, $days) {
+        //$path =  "/var/www/html/tmp/";
+        $path =  "/mnt/managementnew/Figures/Distribution Models/";
+        $myFile = $path . $data['filename'].".csv";
 
         //If the file exist
         if (file_exists($myFile)) {
@@ -304,7 +343,7 @@ class Cron extends CI_Controller
                 if ($lineNo == 1) {
                     $fh = fopen($myFile, 'w');
 
-                    fputcsv($fh, $result['headers']);
+                    fputcsv($fh, $data['headers']);
 
                     fclose($fh);
                 }
@@ -316,7 +355,7 @@ class Cron extends CI_Controller
 
             $fh = fopen($myFile, 'w');
 
-            fputcsv($fh, $result['headers']);
+            fputcsv($fh, $data['headers']);
 
             fclose($fh);
         }
@@ -325,7 +364,7 @@ class Cron extends CI_Controller
         //Add the new data
         $fh = fopen($myFile, 'a+') or die("Can't open file " . $myFile);
         echo "<h4>Update data</h4>";
-        foreach ($result['data'] as $val) {
+        foreach ($data['data'] as $val) {
             fputcsv($fh, $val);
             echo "<pre>".implode(",",$val)."</pre>";
         }
@@ -333,6 +372,49 @@ class Cron extends CI_Controller
             echo "<pre>Nothing to update</pre>";
         }
         fclose($fh);
+    }
+
+
+    public function update_file_export_header($data) {
+
+        //$path =  "/var/www/html/tmp/";
+        $path =  "/mnt/managementnew/Figures/Distribution Models/";
+        $myFile = $path . $data['filename'].".csv";
+
+        //Check if the header is the same or there are new campaigns
+        $fh = fopen($myFile, 'r');
+        $row = 0;
+        $new_columns = array();
+        $aux = array();
+        while (($d = fgetcsv($fh, 1000, ",")) !== FALSE) {
+            $row++;
+            if ($row == 1) {
+                $current_header = $d;
+                $new_columns = array_diff($data['headers'],$current_header);
+                $new_header = array_merge($current_header,$new_columns);
+                array_push($aux,$new_header);
+                continue;
+            }
+            else {
+                $i = 1;
+                while ($i<= count($new_columns)) {
+                    array_push($d,'');
+                    $i++;
+                }
+                array_push($aux,$d);
+            }
+        }
+        fclose($fh);
+
+        if (!empty($new_columns)) {
+            $fh = fopen($myFile, 'w');
+            foreach ($aux as $value) {
+                fputcsv($fh,$value);
+            }
+            fclose($fh);
+        }
+
+        return $new_header;
     }
 
     //################################################################################################

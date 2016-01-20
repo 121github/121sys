@@ -153,6 +153,11 @@ class Form_model extends CI_Model
         $qry = "select campaign_id id,campaign_name name,record_layout,campaign_type_desc type, daily_data, min_quote_days, max_quote_days, max_dials,virgin_order_1,virgin_order_2 from campaigns left join campaign_types using(campaign_type_id) where campaign_status = 1 order by campaign_name";
         return $this->db->query($qry)->result_array();
     }
+    public function get_campaigns_by_date($date)
+    {
+        $qry = "select campaign_id id,campaign_name name,record_layout,campaign_type_desc type, daily_data, min_quote_days, max_quote_days, max_dials,virgin_order_1,virgin_order_2 from campaigns left join campaign_types using(campaign_type_id) where start_date >= '".$date."' order by campaign_status desc,campaign_name";
+        return $this->db->query($qry)->result_array();
+    }
     public function get_calendar_campaigns()
     {
         $qry = "select campaign_id id,campaign_name name from campaigns left join campaigns_to_features using(campaign_id) left join campaign_features using(feature_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_status = 1 and feature_name = 'Appointment Setting' group by campaign_id order by campaign_name";

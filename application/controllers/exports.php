@@ -298,7 +298,7 @@ class Exports extends CI_Controller
 
                 $campaigns = $this->Export_model->get_campaigns_by_id_list($options['campaigns']);
 
-                $result['data'] = $this->Export_model->get_combo_data($options, $campaigns);
+                $result['data'] = $this->Export_model->get_combo_export_data($options, $campaigns);
 
                 $aux = array();
                 foreach($campaigns as $campaign) {
@@ -307,6 +307,17 @@ class Exports extends CI_Controller
                 }
                 $campaigns = $aux;
                 $result['headers'] = ("login;name;date;".implode(';',$campaigns));
+                $result['headers'] = explode(";",$result['headers']);
+
+                break;
+            case "dials-data":
+                $result['filename'] = $this->get_filename(str_replace(" ", "","dials_data"), $options);
+
+                $campaigns = $this->Export_model->get_campaigns_by_id_list($options['campaigns']);
+
+                $result['data'] = $this->Export_model->get_dials_export_data($options, $campaigns);
+
+                $result['headers'] = ("date;".implode(';',$campaigns));
                 $result['headers'] = explode(";",$result['headers']);
 
                 break;
