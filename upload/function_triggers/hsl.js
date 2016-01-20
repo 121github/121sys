@@ -44,7 +44,7 @@ var campaign_functions = {
         })
 
         //Find closest branches on new address
-        $(document).on("click", ".save-contact-address", function (e) {
+        $modal.on("click", ".save-contact-address", function (e) {
             var interval = setInterval(function () {
                 campaign_functions.get_branch_info();
                 clearInterval(interval);
@@ -65,13 +65,13 @@ var campaign_functions = {
         quick_planner.set_appointment_attendee(quick_planner.driver_id);
         campaign_functions.set_appointment_contact();
        
-        $('.branches-selection').show();
-        $('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
-        $('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
+        $modal.find('.branches-selection').show();
+        $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
+        $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
         if (quick_planner.branch_id!==false) {
-            $('.branchpicker').selectpicker('val', quick_planner.branch_id).selectpicker('refresh');
+            $modal.find('.branchpicker').selectpicker('val', quick_planner.branch_id).selectpicker('refresh');
         }
-		 $('#modal .typepicker').trigger('change');
+		 $modal.find('.typepicker').trigger('change');
     },
     set_appointment_contact: function () {
         $.ajax({
@@ -81,7 +81,7 @@ var campaign_functions = {
             type: "POST"
         }).done(function (response) {
             if (response.success) {
-                $('.contactpicker').selectpicker('val', [response.answers.a1]);
+                $modal.find('.contactpicker').selectpicker('val', [response.answers.a1]);
             } else {
                 alert("You have not completed the webform yet!");
             }
@@ -92,9 +92,9 @@ var campaign_functions = {
     },
     appointment_edit_setup: function () {
         campaign_functions.hsl_coverletter_address();
-        $('.branches-selection').show();
-        $('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
-        $('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
+        $modal.find('.branches-selection').show();
+        $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
+        $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
     },
     hsl_coverletter_address: function () {
         $options = $('#addresspicker').html();
@@ -104,7 +104,7 @@ var campaign_functions = {
         $cover_letter_address.insertBefore($('#select-appointment-address'));
         $('#cl_addresspicker').selectpicker();
 
-        $(document).on('change', '#cl_addresspicker', function () {
+        $modal.on('change', '#cl_addresspicker', function () {
             $.ajax({
                 url: helper.baseUrl + 'ajax/add_cover_letter_address',
                 data: {coverletter_address: $(this).val()},
@@ -114,6 +114,7 @@ var campaign_functions = {
         });
     },
     get_branch_info: function () {
+		var $panel =  $('#branch-info');
         $.ajax({
             url: helper.baseUrl + 'ajax/get_branch_info',
             type: "POST",
@@ -161,12 +162,12 @@ var campaign_functions = {
                         "<td><input type='radio' name='hub-choice' data-branch='" + default_branch_id + "' data-branch-name='" + default_branch_name + "' data-region='" + region.id + "' value='" + first_attendee + "'/></td></tr>";
                 });
                 branch_info += "</tbody></table>";
-                $('#branch-info').html(branch_info);
+               $panel.find('.panel-body').html(branch_info);
             } else {
-                $('#branch-info').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
+                $panel.find('.panel-body').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
             }
         }).fail(function () {
-            $('#branch-info').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
+            $panel.find('.panel-body').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
         });
 
 
@@ -180,8 +181,7 @@ var campaign_functions = {
                 appointment_id: appointment_id,
                 branch_id: branch_id,
                 state: state,
-				 send_to: 'bradf@121customerinsight.co.uk'
-                //send_to: 'HCletters@hslchairs.com'
+                send_to: 'HCletters@hslchairs.com'
             },
             type: "POST",
             dataType: "JSON"
@@ -230,10 +230,10 @@ var quick_planner = {
 $(document).ready(function () {
     campaign_functions.init();
     //hsl requests
-    $(".record-panel .panel-heading").html($(".record-panel .panel-heading").html().replace("Record Details", "Progress Summary"));
+     $(record.record_panel).html($(record.record_panel).html().replace("Record Details", "Progress Summary"));
 
 if(helper.role>2){
-	$(".outcomepicker .dropdown-menu ul li:contains('Remove from records')").remove();
+	 $(record.record_panel).find(".outcomepicker .dropdown-menu ul li:contains('Remove from records')").remove();
 }
 
 });

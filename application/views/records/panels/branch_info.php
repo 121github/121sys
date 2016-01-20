@@ -1,4 +1,4 @@
-<div class="panel panel-primary">
+<div class="panel panel-primary" id="branch-info">
     <div class="panel-heading clearfix">Branch Info
         <div class="pull-right">
             <div class="btn-group">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    <div class="panel-body table-responsive" id="branch-info"><img
+    <div class="panel-body table-responsive" ><img
             src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/></div>
 
 </div>
