@@ -119,7 +119,7 @@ var quick_planner = {
 		}
         $.each(waypoints, function (name, waypoint) {
             if (waypoint.postcode.length > 0) {
-                mbody += '<div style="height:30px; padding:5px; margin:5px; background:#80D6FF;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px; text-align:center"><p><strong>' + waypoint.title + '</strong> [' + waypoint.postcode + ']';
+                mbody += '<div style="height:30px; padding:5px; margin:5px; background:#80D6FF;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px; text-align:center"><p><strong>' + (waypoint.title=="This appointment"?'<span style="color:red">'+waypoint.title+'</span>':waypoint.title) + '</strong> [' + waypoint.postcode + ']';
                 if (typeof waypoint.app_duration !== "undefined") {
                     mbody += waypoint.app_duration
                 }
@@ -140,7 +140,7 @@ var quick_planner = {
         if (slots.apps < slots.max_apps) {
             mfooter += '<button type="submit" data-date="' + sqldate + ' ' + time + '" class="btn btn-primary pull-right continue-simulation marl">Continue</button>';
         }
-		mfooter += '<select class="selectpicker pull-right marl" id="planner-position" '+(slots.apps=="0"?"disabled":"")+'><option '+(quick_planner.position=="1"?"selected":"")+' value="1">1st Slot Position</option><option value="2" '+(quick_planner.position=="2"?"selected":"")+'>2nd Slot Position</option><option value="3" '+(slots.apps<2?"disabled":"")+' '+(quick_planner.position=="3"?"selected":"")+'>3rd Slot Position</option></select>';
+		mfooter += '<select class="selectpicker pull-right marl" id="planner-position" '+(slots.apps=="0"?"disabled":"")+'><option '+(quick_planner.position=="1"?"selected":"")+' value="1">1st Slot Position</option><option value="2" '+(quick_planner.position=="2"?"selected":"")+'>2nd Slot Position</option><option value="3" '+(slots.apps<2?"disabled":"")+' '+(quick_planner.position=="3"?"selected":"")+'>3rd Slot Position</option><option value="4" '+(slots.apps<3?"disabled":"")+' '+(quick_planner.position=="4"?"selected":"")+'>4th Slot Position</option></select>';
 		mfooter += '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>'
         modals.load_modal(mheader, mbody, mfooter);
     },

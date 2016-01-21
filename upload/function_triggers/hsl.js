@@ -2,8 +2,11 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
-    
+		 $(record.record_panel).html($(record.record_panel).html().replace("Record Details", "Progress Summary"));
 
+		if(helper.role>2){
+	 	$(record.record_panel).find(".outcomepicker .dropdown-menu ul li:contains('Remove from records')").remove();
+		}
         $(document).on('click', '[data-modal="delete-appointment"]', function () {
             $('[name="cancellation_reason"]').text("Appointment cancelled").hide();
         });
@@ -225,15 +228,3 @@ var quick_planner = {
 }
 */
 //add function to add to planner when an appointment is added/updated
-
-
-$(document).ready(function () {
-    campaign_functions.init();
-    //hsl requests
-     $(record.record_panel).html($(record.record_panel).html().replace("Record Details", "Progress Summary"));
-
-if(helper.role>2){
-	 $(record.record_panel).find(".outcomepicker .dropdown-menu ul li:contains('Remove from records')").remove();
-}
-
-});

@@ -399,7 +399,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             }
         });
         <?php } ?>
-        $(document).on('click', '#global-filter-submit', function (e) {
+        $('nav#menu-right').on('click', '#global-filter-submit', function (e) {
             e.preventDefault();
             $.ajax({
                 url: helper.baseUrl + 'user/set_data',
@@ -434,16 +434,16 @@ endif; ?>
 <?php } ?>
 <?php if(isset($_SESSION['user_id'])) {?>
 <style>
-.color-box {position:fixed; right:0px; bottom:40px; padding:5px; border:1px solid #333; background:#fff}
-.color-box a{ text-decoration:none }
-.color-btn { display:block; width:100%; height:100%;  font-size:24px }
+#color-box {position:fixed; right:0px; bottom:40px; padding:5px; border:1px solid #333; background:#fff}
+#color-box a{ text-decoration:none }
+#color-box .color-btn { display:block; width:100%; height:100%;  font-size:24px }
 </style>
-<div class="color-box Fixed">
+<div id="color-box" class="Fixed">
 <a href="#"  ><span class="glyphicon glyphicon-cog color-btn" ></span></a>
 </div>
 <script>
 $(document).ready(function(){
-	$('.color-btn').click(function(){
+	$('#color-box').on('click','.color-btn',function(){
 		var mheader= "Change Theme";
 		var mbody= "<p>Fancy something different? Pick a new colour!</p>";
 		 mbody+="<select id='color-changer' class='color-changer selectpicker'>"
@@ -459,7 +459,7 @@ $(document).ready(function(){
 		var mfooter='<button data-dismiss="modal" class="btn btn-primary close-modal pull-left">OK</button>'
 		modals.load_modal(mheader,mbody,mfooter);
 		modal_body.css('overflow','visible')
-		$('.color-changer').change(function(){
+		$modal.find('.color-changer').change(function(){
 		var value = $(this).val();
 		$('#theme-css').attr('href',helper.baseUrl+'assets/themes/colors/'+value+'/bootstrap-theme.css');
 		$.post(helper.baseUrl+'ajax/change_theme',{theme:value});
