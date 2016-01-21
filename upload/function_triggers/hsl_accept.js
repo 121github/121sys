@@ -187,7 +187,7 @@ var campaign_functions = {
             dataType: "JSON"
         }).done(function (response) {
 
-        });
+        }); 
     }
 }
 /*
