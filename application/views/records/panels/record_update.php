@@ -33,7 +33,7 @@
 
 			?>
                <div class="form-group input-group">
-            <select <?php if($details['record']['record_status']=="3"||$details['record']['record_status']=="4"){ echo "disabled"; } ?> name="outcome_id" id="outcomes" class="selectpicker outcomepicker">
+            <select <?php if($details['record']['record_status']=="3"||$details['record']['record_status']=="4"){ echo "disabled"; } ?> name="outcome_id" id="outcomes" data-size="12" class="selectpicker outcomepicker">
               <option value="">--Select a call outcome--</option>
               <?php foreach($outcomes as $outcome): ?>
               <option <?php if($outcome['disabled']=="1"){ ?> disabled <?php } ?> <?php if(($details['record']['record_status']=="3"||$details['record']['record_status']=="4")&&$outcome['outcome_id']==$details['record']['outcome_id']){ echo "selected"; } ?> value="<?php echo $outcome['outcome_id'] ?>" <?php echo ($outcome['delay_hours']?"delay='".$outcome['delay_hours']."'":"") ?>><?php echo $outcome['outcome'] ?></option>
@@ -42,7 +42,7 @@
                </div>
                <?php if(count($outcome_reasons)>0){ ?>
                    <div class="form-group input-group"> 
-            <select disabled name="outcome_reason_id" id="outcome-reasons" class="selectpicker outcomereasonpicker">
+            <select disabled name="outcome_reason_id" data-size="12" id="outcome-reasons" class="selectpicker outcomereasonpicker">
               <option value="">--Select a reason--</option>
               <?php foreach($outcome_reasons as $reason): ?>
               <option  <?php if(($details['record']['record_status']=="3"||$details['record']['record_status']=="4")&&$reason['outcome_reason_id']==$details['record']['outcome_reason_id']){ echo "selected"; } ?> value="<?php echo $reason['outcome_reason_id'] ?>" outcome-id="<?php echo $reason['outcome_id']; ?>"><?php echo $reason['outcome_reason'] ?></option>

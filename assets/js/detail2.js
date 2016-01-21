@@ -652,6 +652,7 @@ var record = {
             }
         },
         enable_outcome_reasons: function (outcome) {
+			console.log("Modify outcome reasons");
             //unset the reason if the call outcome is changed
             $('#outcome-reasons').val('');
             if ($('#outcome-reasons option[outcome-id="' + outcome + '"]').length > 0) {
@@ -2200,7 +2201,8 @@ var record = {
             $panel.find('.panel-content').append(table);
         },
         load_form: function (data, id) {
-            var $form = $(record.additional_info.panel).find('form');
+			var $panel = $(record.additional_info.panel);
+            var $form = $panel.find('form');
             $form.empty();
             $form.append("<input type='hidden' name='urn' value='" + record.urn + "'/>");
             $form.append("<input type='hidden' name='detail_id' value='" + id + "'/>");
@@ -2214,27 +2216,27 @@ var record = {
                         is_disabled = "";
                     }
                     if (row.options && row.is_select) {
-                        $select = "<div class='form-group input-group-sm'>" + row.name;
-                        $select += '<br><select ' + is_disabled + ' name="' + row.code + '" class="selectpicker"><option value="">Please select</option>';
+                        var selects = "<div class='form-group input-group-sm'>" + row.name;
+                        selects += '<br><select ' + is_disabled + ' name="' + row.code + '" class="selectpicker"><option value="">Please select</option>';
                         $.each(row.options, function (o, option) {
                             if (row.value == option.option) {
                                 var selected = "selected";
                             }
-                            $select += "<option " + selected + " value='" + option.id + "'>" + option.option + "</option>";
+                            selects += "<option " + selected + " value='" + option.id + "'>" + option.option + "</option>";
                         });
-                        $select += "</select></div>";
-                        form += $select;
+                        selects += "</select></div>";
+                        form += selects;
                     } else if (row.options && row.is_radio) {
-                        $radio = "<div class='form-group input-group-sm'>" + row.name;
-                        $radio += '<br>';
+                        var radios = "<div class='form-group input-group-sm'>" + row.name;
+                        radios += '<br>';
                         $.each(row.options, function (o, option) {
                             if (row.value == option.option) {
                                 var selected = "checked";
                             }
-                            $radio += "<label class='padl' >" + option.option + " <input " + is_disabled + " name='" + row.code + "' " + selected + " type='radio' value='" + option.option + "' /></label>";
+                            radios += "<label class='padl' >" + option.option + " <input " + is_disabled + " name='" + row.code + "' " + selected + " type='radio' value='" + option.option + "' /></label>";
                         });
-                        $radio += "</div>";
-                        form += $radio;
+                        radios += "</div>";
+                        form += radios;
                     } else {
                         if (row.type !== "varchar" && row.type !== "number") {
                             inputclass = row.type;
@@ -2263,12 +2265,12 @@ var record = {
                 });
             });
 
-            $('#custom-panel .selectpicker').selectpicker();
-            $('#custom-panel .date').datetimepicker({
+            $panel.find('.selectpicker').selectpicker();
+            $panel.find('.date').datetimepicker({
                 format: 'DD/MM/YYYY',
 				showClear:true
             });
-            $('#custom-panel .datetime').datetimepicker({
+            $panel.find('.datetime').datetimepicker({
                 format: 'DD/MM/YYYY HH:mm',
 				showClear:true,
 				sideBySide:true
@@ -2366,7 +2368,7 @@ var record = {
                     urn: record.urn
                 }
             }).done(function (response) {
-                $('.owners').selectpicker('val', response.data).selectpicker('render');
+                $panel.find('.owners').selectpicker('val', response.data).selectpicker('render');
             });
         }
     },
@@ -2449,7 +2451,7 @@ var record = {
                     table += '<tr class="' + cancel_class + '" data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
                 }
             });
-            $panel.append(table + "</tbody></table></div>");
+            $panel.find('.panel-content').append(table + "</tbody></table></div>");
 
         }
     },
