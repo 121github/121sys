@@ -13,7 +13,7 @@ var quick_planner = {
 		this.company_postcode = $('input[name="company_postcode"]').length?$('input[name="company_postcode"]').val():false;
 		
 //add listners
-        $(document).on('mouseover', '#quick-planner tbody tr', function (e) {
+        $('#quick-planner').on('mouseover', 'tbody tr', function (e) {
             var target = $(this).find('.show-apps');
             if (target.length>0) {
                 var user_id = target.attr('data-user');
@@ -62,18 +62,18 @@ var quick_planner = {
             quick_planner.branch_id = $(this).attr('data-branch-id');
             campaign_functions.get_branch_info(quick_planner.branch_id);
         });
-        $(document).on('click', 'button.simulate', function (e) {
+        $('#quick-planner').on('click', 'button.simulate', function (e) {
             var date = $(this).attr('data-date');
             var uk_date = $(this).attr('data-uk-date');
             var time = $(this).attr('data-time');
             quick_planner.popup_simulation(uk_date, date, time, simulation.waypoints[date], simulation.stats[date], simulation.slots[date]);
         });
-        $(document).on('click', '.continue-simulation', function (e) {
+        $modal.on('click', '.continue-simulation', function (e) {
             e.preventDefault();
             var start = $(this).attr('data-date');
             modals.create_appointment(record.urn, start)
         });
-		$(document).on('change', '#planner-position', function (e) {
+		$modal.on('change', '#planner-position', function (e) {
             e.preventDefault();
             quick_planner.position = $(this).val();
             quick_planner.load_planner($('#modal #planner-date').val());
@@ -88,12 +88,12 @@ var quick_planner = {
         quick_planner.set_appointment_attendee(quick_planner.driver_id);
 	},
 	set_appointment_attendee: function () {
-        $('.attendeepicker').selectpicker('val', [quick_planner.driver_id]);
+        $modal.find('.attendeepicker').selectpicker('val', [quick_planner.driver_id]);
     },
     set_appointment_start: function (start) {
         var m = moment(start, "YYYY-MM-DD HH:mm");
-        $('.startpicker').data("DateTimePicker").date(m);
-        $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
+       $modal.find('.startpicker').data("DateTimePicker").date(m);
+        $modal.find('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
     },
 	check_selections: function () {
 		if(typeof quick_planner !== "undefined"){
