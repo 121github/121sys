@@ -21,7 +21,7 @@ class PrepareHslDeployment extends AbstractTask
             'find . -type f -exec chmod 664 {} \;',
             'find . -type d -exec chmod 775 {} \;',
             'chmod -R 777 importcsv.sh',
-            'cp /var/lib/jenkins/jobs/121Sys/workspace/upload/function_triggers/hsl.js upload/function_triggers/hsl.js'
+            'scp jenkins@10.10.1.15:/var/lib/jenkins/jobs/121Sys/workspace/upload/function_triggers/hsl.js upload/function_triggers/hsl.js'
         );
 
         $command = implode(" && ", $commandList);
