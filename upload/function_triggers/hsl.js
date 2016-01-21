@@ -72,7 +72,7 @@ var campaign_functions = {
         $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
         $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
         if (quick_planner.branch_id!==false) {
-            //$modal.find('.branchpicker').selectpicker('val', quick_planner.branch_id).selectpicker('refresh');
+            $modal.find('.branchpicker').selectpicker('val', quick_planner.branch_id).selectpicker('refresh');
         }
 		 $modal.find('.typepicker').trigger('change');
     },
@@ -84,7 +84,7 @@ var campaign_functions = {
             type: "POST"
         }).done(function (response) {
             if (response.success) {
-               // $modal.find('.contactpicker').selectpicker('val', [response.answers.a1]);
+               $modal.find('.contactpicker').selectpicker('val', [response.answers.a1]);
             } else {
                 alert("You have not completed the webform yet!");
             }
@@ -105,7 +105,7 @@ var campaign_functions = {
         $cover_letter_address.find('option[value="Other"]').remove();
 
         $cover_letter_address.insertBefore($('#select-appointment-address'));
-       // $('#cl_addresspicker').selectpicker();
+       $('#cl_addresspicker').selectpicker();
 
         $modal.on('change', '#cl_addresspicker', function () {
             $.ajax({

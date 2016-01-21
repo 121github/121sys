@@ -2637,8 +2637,8 @@ var record = {
                 if (response.data.length > 0) {
 					 mbody = '<table class="table"><thead><tr><th>Name</th><th>Date</th><th>Added by</th><th colspan="2">Options</th></tr></thead><tbody>';
                     $.each(response.data, function (key, val) {
-                        var remove_btn = '<span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="' + val.attachment_id + '" title="Delete attachment"></span>';
-                        var download_btn = '<a style="color:black;" href="' + val.path + '"><span class="glyphicon glyphicon-download-alt"></span></a>';
+                        var remove_btn = '<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash del-attachment-btn marl" data-target="#modal" item-id="' + val.attachment_id + '"></span> Delete</button>';
+                        var download_btn = '<a href="' + val.path + '" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span></a>';
                         mbody += '<tr class="' + val.attachment_id + '">' +
                             '<td>' + val.name +
                             '</td><td>' + val.date +
@@ -2663,8 +2663,6 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.success) {
-                    record.attachment_panel.close_all_attachments();
-                    record.attachment_panel.show_all_attachments();
                     record.attachment_panel.load_panel();
                     flashalert.success("Attachment was deleted");
                 }

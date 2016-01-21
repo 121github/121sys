@@ -2,12 +2,11 @@ var simulation = "";
 
 var campaign_functions = {
     init: function () {
-		 $(record.record_panel).html($(record.record_panel).html().replace("Record Details", "Progress Summary"));
+		$(record.record_panel).find('.panel-heading').html($(record.record_panel).find('.panel-heading').html().replace("Record Details", "Progress Summary"));
 
 		if(helper.role>2){
 	 	$(record.record_panel).find(".outcomepicker .dropdown-menu ul li:contains('Remove from records')").remove();
 		}
-		
         $(document).on('click', '[data-modal="delete-appointment"]', function () {
             $('[name="cancellation_reason"]').text("Appointment cancelled").hide();
         });
@@ -85,7 +84,7 @@ var campaign_functions = {
             type: "POST"
         }).done(function (response) {
             if (response.success) {
-                $modal.find('.contactpicker').selectpicker('val', [response.answers.a1]);
+               $modal.find('.contactpicker').selectpicker('val', [response.answers.a1]);
             } else {
                 alert("You have not completed the webform yet!");
             }
@@ -106,7 +105,7 @@ var campaign_functions = {
         $cover_letter_address.find('option[value="Other"]').remove();
 
         $cover_letter_address.insertBefore($('#select-appointment-address'));
-        $('#cl_addresspicker').selectpicker();
+       $('#cl_addresspicker').selectpicker();
 
         $modal.on('change', '#cl_addresspicker', function () {
             $.ajax({
@@ -191,7 +190,7 @@ var campaign_functions = {
             dataType: "JSON"
         }).done(function (response) {
 
-        }); 
+        });
     }
 }
 /*

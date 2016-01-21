@@ -220,13 +220,13 @@ th{ width:200px; }
        </div>
        
        
-       <div class="page-success alert alert-success hidden alert-dismissable"><span class="alert-text"></span><span
+       <div id="page-success" class="alert alert-success hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
-<div class="page-info alert alert-info hidden alert-dismissable"><span class="alert-text"></span><span
+<div id="page-info"  class=" alert alert-info hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
-<div class="page-warning alert alert-warning hidden alert-dismissable"><span class="alert-text"></span><span
+<div id="page-warning"  class=" alert alert-warning hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
-<div class="page-danger alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
+<div id="page-danger"  class=" alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
     </div>
     
@@ -266,8 +266,8 @@ th{ width:200px; }
 	 
 	 var uploads = {
 		 init:function(){
-			 $(document).on('click','.fileinput-button',function(e){
-				 console.log("test");
+			 uploads.load_images();
+			 $(document).on('click','.fileinput-button',function(e){;
 				e.preventDefault();
 				 $('#fileupload').trigger('click');
 			 });
@@ -286,12 +286,18 @@ th{ width:200px; }
 				   
 				   $(document).on('click', '#complete-form', function (e) {
             e.preventDefault();
-			 if (check_form()) {
+			 if (uploads.check_form()) {
            uploads.save_form(1);
 			} else {
                 flashalert.danger("Please answer all questions");
 				$('.panel-collapse').removeClass('in');
+				$('.val-text').each(function(){
+					   $(this).find('span').hide();
+					  $(this).find('input,textarea,select').show();
+				  });
 				   $('#collapseFour,#collapseThree').addClass('in');
+				    $('#save-form').show();
+				  $('#edit-report').hide();
             }	
         });
 		
@@ -395,14 +401,17 @@ save_attachment:function (name, type, path) {
                     data: $('#form').serialize() + '&save=1&complete='+complete,
 					dataType:"JSON"
                 }).done(function (response) {
+					$(this).removeAttr('style');
 					uploads.webform = response.id;
 					  $('.val-text').each(function(){
 					  $(this).find('span').text($(this).find('input,textarea,select').val()).show();
 					  $(this).find('input,textarea,select').hide();
+					    flashalert.success("Form was saved");
+						 $('#save-form').hide();
+				  $('#edit-report').show();
 				  });
-					 $('#save-form').show();
-				  $('#edit-report').hide();
-                    flashalert.success("Form was saved");
+					
+                  
                 });
             
 			
