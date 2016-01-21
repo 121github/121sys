@@ -135,7 +135,7 @@ var outcome = {
                             + "</td><td class='total_dials'>"
                             + "<a href='" + val.total_dials_url + "'>" + val.total_dials + "</a>"
                             + "</td><td>" +
-                            (val.outcomes > 0?(Math.round((val.outcomes / val.total_dials) * 100)):0) + '%'
+                            (val.outcomes > 0?(Math.round((val.outcomes / val.total_dials) * 100).toFixed(2)):(0).toFixed(2)) + '%'
                             + "</td><td class='duration' style='duration'>"
                             + ((val.group != "time")&&(val.group != "reason") ? duration : "-")
                             + "</td><td class='rate' style='rate'>"
