@@ -1101,8 +1101,11 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 
             $.ajax({
                 type: "POST",
-                data: $('#form').serialize() + '&save=1'
-            })
+                data: $('#form').serialize() + '&save=1',
+				dataType: "JSON"
+            }).done(function(response){
+				$('input[name="id"]').val(response.id);
+			});
         });
         $(document).on('click', '#save-form', function (e) {
             e.preventDefault();
@@ -1113,6 +1116,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 					dataType:"JSON",
                 }).done(function (response) {
                     flashalert.success("Form was saved");
+					$('input[name="id"]').val(response.id);
                 }).fail(function(){
 					flashalert.danger("There was an error saving the form");
 				});
