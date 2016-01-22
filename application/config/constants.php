@@ -74,3 +74,6 @@ define('APPOINTMENT_TYPE_FACE_TO_FACE', 1);
 define('APPOINTMENT_TYPE_TELEPHONE', 2);
 define('APPOINTMENT_TYPE_SURVEY', 3);
 define('APPOINTMENT_TYPE_INSTALLATION', 4);
+
+//define('EXPORT_PATH', '/var/www/html/tmp/');
+define('EXPORT_PATH', '/mnt/managementnew/Figures/Distribution Models/');

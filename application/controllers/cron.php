@@ -228,19 +228,6 @@ class Cron extends CI_Controller
         }
         $campaigns = $aux;
 
-        //Check if we need to update the header
-//        $new_header = $this->update_file_export_header($data);
-//        unset($new_header[0]);
-//        unset($new_header[1]);
-//        unset($new_header[2]);
-//        $campaigns = $new_header;
-
-        $data['headers'] = ("login;name;date;".implode(';',$campaigns));
-        $data['headers'] = explode(";",$data['headers']);
-
-        //Get the data
-        $data['data'] = $this->Export_model->get_combo_export_data($options, $campaigns);
-
         $aux = array();
         foreach($campaigns as $campaign) {
             array_push($aux, $campaign." [hours]");
@@ -250,6 +237,25 @@ class Cron extends CI_Controller
 
         $data['headers'] = ("login;name;date;".implode(';',$campaigns));
         $data['headers'] = explode(";",$data['headers']);
+
+        //Check if we need to update the header
+        $new_header = $this->update_file_export_header($data);
+        unset($new_header[0]);
+        unset($new_header[1]);
+        unset($new_header[2]);
+        $aux = array();
+        foreach($new_header as $value) {
+            if (strpos($value," [hours]")) {
+                array_push($aux,str_replace(" [hours]","",$value));
+            }
+        }
+        $campaigns = $aux;
+
+        $data['headers'] = ("login;name;date;".implode(';',$new_header));
+        $data['headers'] = explode(";",$data['headers']);
+
+        //Get the data
+        $data['data'] = $this->Export_model->get_combo_export_data($options, $campaigns);
 
         //Update the file
         $this->update_export_file($data,$days);
@@ -275,11 +281,19 @@ class Cron extends CI_Controller
         }
         $campaigns = $aux;
 
-        //Get the data
-        $data['data'] = $this->Export_model->get_dials_export_data($options, $campaigns);
-
         $data['headers'] = ("date;".implode(';',$campaigns));
         $data['headers'] = explode(";",$data['headers']);
+
+        //Check if we need to update the header
+        $new_header = $this->update_file_export_header($data);
+        unset($new_header[0]);
+        $campaigns = $new_header;
+
+        $data['headers'] = ("date;".implode(';',$new_header));
+        $data['headers'] = explode(";",$data['headers']);
+
+        //Get the data
+        $data['data'] = $this->Export_model->get_dials_export_data($options, $campaigns);
 
         //Update the file
         $this->update_export_file($data,$days);
@@ -287,9 +301,7 @@ class Cron extends CI_Controller
     }
 
     private function update_export_file ($data, $days) {
-        //$path =  "/var/www/html/tmp/";
-        $path =  "/mnt/managementnew/Figures/Distribution Models/";
-        $myFile = $path . $data['filename'].".csv";
+        $myFile = EXPORT_PATH . $data['filename'].".csv";
 
         //If the file exist
         if (file_exists($myFile)) {
@@ -377,41 +389,43 @@ class Cron extends CI_Controller
 
     public function update_file_export_header($data) {
 
-        //$path =  "/var/www/html/tmp/";
-        $path =  "/mnt/managementnew/Figures/Distribution Models/";
-        $myFile = $path . $data['filename'].".csv";
+        $myFile = EXPORT_PATH . $data['filename'].".csv";
 
-        //Check if the header is the same or there are new campaigns
-        $fh = fopen($myFile, 'r');
-        $row = 0;
-        $new_columns = array();
-        $aux = array();
-        while (($d = fgetcsv($fh, 1000, ",")) !== FALSE) {
-            $row++;
-            if ($row == 1) {
-                $current_header = $d;
-                $new_columns = array_diff($data['headers'],$current_header);
-                $new_header = array_merge($current_header,$new_columns);
-                array_push($aux,$new_header);
-                continue;
-            }
-            else {
-                $i = 1;
-                while ($i<= count($new_columns)) {
-                    array_push($d,'');
-                    $i++;
+        $new_header = $data['headers'];
+
+        if (file_exists($myFile)) {
+            //Check if the header is the same or there are new campaigns
+            $fh = fopen($myFile, 'r');
+            $row = 0;
+            $new_columns = array();
+            $aux = array();
+            while (($d = fgetcsv($fh, 1000, ",")) !== FALSE) {
+                $row++;
+                if ($row == 1) {
+                    $current_header = $d;
+                    $new_columns = array_diff($data['headers'],$current_header);
+                    $new_header = array_merge($current_header,$new_columns);
+                    array_push($aux,$new_header);
+                    continue;
                 }
-                array_push($aux,$d);
-            }
-        }
-        fclose($fh);
-
-        if (!empty($new_columns)) {
-            $fh = fopen($myFile, 'w');
-            foreach ($aux as $value) {
-                fputcsv($fh,$value);
+                else {
+                    $i = 1;
+                    while ($i<= count($new_columns)) {
+                        array_push($d,'');
+                        $i++;
+                    }
+                    array_push($aux,$d);
+                }
             }
             fclose($fh);
+
+            if (!empty($new_columns)) {
+                $fh = fopen($myFile, 'w');
+                foreach ($aux as $value) {
+                    fputcsv($fh,$value);
+                }
+                fclose($fh);
+            }
         }
 
         return $new_header;
