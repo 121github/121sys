@@ -1126,7 +1126,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 if ($(this).find('input[type="radio"]:checked').length < 1) {
                     $(this).css('border', '1px solid red');
                     completed = false;
-                }
+                } else {
+					$(this).removeAttr('style');
+				}
             });
             return completed;
 
