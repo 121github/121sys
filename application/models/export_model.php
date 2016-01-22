@@ -251,7 +251,7 @@ class Export_model extends CI_Model
             $where .= " and u.team_id IN (".implode(",",$teams).") ";
         }
 
-        $qry = "SELECT u.user_id, u.ext, u.name, DATE_FORMAT(h.date, '%d/%m/%Y') as date, c.campaign_name, TRUNCATE(h.duration/3600,2) as duration
+        $qry = "SELECT u.user_id, u.ext, u.name, date(h.date) as date, c.campaign_name, TRUNCATE(h.duration/3600,2) as duration
                   FROM hours h
                   INNER JOIN campaigns c using (campaign_id)
                   INNER JOIN users u using (user_id) ";
@@ -306,7 +306,7 @@ class Export_model extends CI_Model
             $where .= " and h.pot_id IN (".implode(",",$pots).") ";
         }
 
-        $qry = "SELECT u.user_id, u.ext, u.name, DATE_FORMAT(h.contact, '%d/%m/%Y') as date, c.campaign_name, count(*) as num
+        $qry = "SELECT u.user_id, u.ext, u.name, date(h.contact) as date, c.campaign_name, count(*) as num
                   FROM history h
                   INNER JOIN campaigns c using (campaign_id)
                   INNER JOIN users u using (user_id)
@@ -364,7 +364,7 @@ class Export_model extends CI_Model
 
         unset($result['hours']);
         unset($result['positive_outcomes']);
-        //ksort($result['data']);
+        ksort($result['data']);
 
         array_unique($campaigns);
         $aux = array ();
@@ -431,7 +431,7 @@ class Export_model extends CI_Model
             $where .= " and h.pot_id IN (".implode(",",$pots).") ";
         }
 
-        $qry = "SELECT DATE_FORMAT(h.contact, '%d/%m/%Y') as date, c.campaign_name, count(*) as dials
+        $qry = "SELECT date(h.contact) as date, c.campaign_name, count(*) as dials
                   FROM history h
                   INNER JOIN campaigns c using (campaign_id)
                   INNER JOIN users u using (user_id)
@@ -467,7 +467,7 @@ class Export_model extends CI_Model
         }
 
         unset($result['dials']);
-        //ksort($result['data']);
+        ksort($result['data']);
 
         array_unique($campaigns);
         $aux = array ();

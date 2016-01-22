@@ -299,6 +299,12 @@ class Exports extends CI_Controller
                 $campaigns = $this->Export_model->get_campaigns_by_id_list($options['campaigns']);
 
                 $result['data'] = $this->Export_model->get_combo_export_data($options, $campaigns);
+                $aux = array();
+                foreach ($result['data'] as $val) {
+                    $val['date'] = mysql_to_uk_date($val['date']);
+                    array_push($aux, $val);
+                }
+                $result['data'] = $aux;
 
                 $aux = array();
                 foreach($campaigns as $campaign) {
@@ -316,6 +322,12 @@ class Exports extends CI_Controller
                 $campaigns = $this->Export_model->get_campaigns_by_id_list($options['campaigns']);
 
                 $result['data'] = $this->Export_model->get_dials_export_data($options, $campaigns);
+                $aux = array();
+                foreach ($result['data'] as $val) {
+                    $val['date'] = mysql_to_uk_date($val['date']);
+                    array_push($aux, $val);
+                }
+                $result['data'] = $aux;
 
                 $result['headers'] = ("date;".implode(';',$campaigns));
                 $result['headers'] = explode(";",$result['headers']);

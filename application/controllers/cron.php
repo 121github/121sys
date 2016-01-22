@@ -377,6 +377,7 @@ class Cron extends CI_Controller
         $fh = fopen($myFile, 'a+') or die("Can't open file " . $myFile);
         echo "<h4>Update data</h4>";
         foreach ($data['data'] as $val) {
+            $val['date'] = mysql_to_uk_date($val['date']);
             fputcsv($fh, $val);
             echo "<pre>".implode(",",$val)."</pre>";
         }
