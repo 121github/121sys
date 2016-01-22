@@ -71,7 +71,6 @@ class Webform_model extends CI_Model
 		$webform_id = intval($data['webform_id']);
 		$user_id = $_SESSION['user_id'];
 		$answers = "";
-		$id = intval($data['id']);
 		foreach($data['answers'] as $column => $answer){
 	    $a = $this->db->escape($answer);
 		if(!empty($a)){
@@ -85,10 +84,11 @@ class Webform_model extends CI_Model
 		$qry_end .= ",completed_on=now(),completed_by=".$_SESSION['user_id'];	
 		}
 		$qry = $qry_start.$qry_end;
-		if(empty($data['id'])){
+		if(!$data['id']){
 		$result = $this->db->query($qry);
 		$id = $this->db->insert_id();
 		} else {
+			$id = intval($data['id']);
 			$qry_start = "update ";
 			$qry_where = " where id='".$id."'";
 			$qry = $qry_start.$qry_end.$qry_where;

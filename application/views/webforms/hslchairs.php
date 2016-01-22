@@ -1109,10 +1109,13 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             if (check_form()) {
                 $.ajax({
                     type: "POST",
-                    data: $('#form').serialize() + '&save=1'
+                    data: $('#form').serialize() + '&save=1',
+					dataType:"JSON",
                 }).done(function (response) {
                     flashalert.success("Form was saved");
-                });
+                }).fail(function(){
+					flashalert.danger("There was an error saving the form");
+				});
             } else {
                 flashalert.danger("Please answer all questions");
             }
