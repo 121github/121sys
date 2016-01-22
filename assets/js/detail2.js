@@ -710,7 +710,7 @@ var record = {
                     record.history_panel.load_panel();
                     record.ownership_panel.load_panel();
                     check_session();
-                    $(document).off('click', '.nav-btn');
+                    $('#container-fluid').off('click', '.nav-btn');
                     flashalert.success(response.msg);
                     if (response.email_trigger) {
                         $.ajax({
