@@ -370,9 +370,9 @@ class Export_model extends CI_Model
         $aux = array ();
 
         foreach ($result['data'] as $date => $user) {
-            foreach ($user as $ext => $val) {
+            foreach ($user as $id => $val) {
                 $data = array(
-                    'login' => $ext,
+                    'login' => ($val['ext']?$val['ext']:'-'),
                     'name' => $val['name'],
                     'date' => $date,
                 );
