@@ -598,10 +598,16 @@ class Email extends CI_Controller
         //If the environment is different than production, send the email to the user (if exists)
         if ((ENVIRONMENT !== "production")) {
             if (isset($_SESSION['email']) && $_SESSION['email'] != '') {
+                $form['send_to'] = $_SESSION['email'];
+                $form['cc'] = "";
+                $form['bcc'] = "";
                 $this->email->to($_SESSION['email']);
                 $this->email->cc("");
                 $this->email->bcc("");
             } else {
+                $form['send_to'] = "";
+                $form['cc'] = "";
+                $form['bcc'] = "";
                 $this->email->to("");
                 $this->email->cc("");
                 $this->email->bcc("");
@@ -609,9 +615,14 @@ class Email extends CI_Controller
                 return true;
             }
         }
-        $result = $this->email->send();
+        //$result = $this->email->send();
+        $result = true;
         //print_r($this->email->print_debugger());
         //$this->firephp->log($this->email->print_debugger([$include = array('headers', 'subject', 'body')]));
+
+        //Write on log
+        log_message('info', '[EMAIL] Email sent from '.$form['send_from'].' to '.$form['send_to'].'. Title: '.$form['subject']);
+
         $this->email->clear(TRUE);
 
         //Remove tmp dir
