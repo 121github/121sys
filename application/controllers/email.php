@@ -615,8 +615,7 @@ class Email extends CI_Controller
                 return true;
             }
         }
-        //$result = $this->email->send();
-        $result = true;
+        $result = $this->email->send();
         //print_r($this->email->print_debugger());
         //$this->firephp->log($this->email->print_debugger([$include = array('headers', 'subject', 'body')]));
 
