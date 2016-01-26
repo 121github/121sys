@@ -44,15 +44,22 @@ class User extends CI_Controller
 					} else {
                         $redirect = "dashboard";
                     }
+                    //Write on log
+                    log_message('info', '[LOGIN][ACCESS] The user '.$_SESSION['name'].' (user_id: '.$_SESSION['user_id'].', client_ip: '.$this->input->ip_address().') has been connected');
+
                     redirect($redirect);
                 }
                 $this->session->set_flashdata('error', 'Invalid username or password.');
                 $this->session->set_flashdata('username', $username);
+
+                //Write on log
+                log_message('info', '[LOGIN][FAIL] The user '.$username.' (client_ip: '.$this->input->ip_address().') failed. Invalid username or password.');
+
                 redirect('user/login'); //Need to redirect to show the flash error.
             }
         }
 		if(isset($_SESSION['user_id'])){
-		$this->User_model->log_logout($_SESSION['user_id']);
+		    $this->User_model->log_logout($_SESSION['user_id']);
 		}
         session_destroy();
 
@@ -75,6 +82,10 @@ class User extends CI_Controller
             $this->User_model->close_hours();
         }
 		$this->User_model->log_logout($_SESSION['user_id']);
+
+        //Write on log
+        log_message('info', '[LOGIN][OUT] The user '.$_SESSION['name'].' (user_id: '.$_SESSION['user_id'].', client_ip: '.$this->input->ip_address().') has been disconected');
+
         session_destroy();
         redirect('user/login');
     }
