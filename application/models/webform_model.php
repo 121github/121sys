@@ -49,13 +49,19 @@ class Webform_model extends CI_Model
 		$qry .= ($appointment_id?" and appointment_id = '".$appointment_id."' ":"");	
 		$data['values'] = $this->db->query($qry)->row_array();
 		$data['values']['appointment_id'] = $appointment_id;
-		$qry = "select company_id,c.contact_id,co.name, co.website,cot.telephone_number cophone,ct.telephone_number cphone,coa.add1,coa.add2,coa.add3,coa.county,coa.postcode,co.email,c.fullname,date_format(c.dob,'%d/%m/%Y') dob,coa.country,c.email,c1,c2,c3,c4,c5,c6,n1,n2,n3,date_format(d1,'%d/%m/%Y') d1,date_format(d2,'%d/%m/%Y') d2,dt1,dt2 from records left join record_details using(urn) left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join companies co using(urn) left join company_telephone cot using(company_id) left join contact_addresses ca using(contact_id) left join company_addresses coa using(company_id) left join email_history eh using(urn) where urn ='".intval($urn)."' and campaign_id ='".intval($campaign_id)."' group by contact_id";
+		$custom_strings = custom_fields("strings");
+		$custom_numbers = custom_fields("numbers");
+		$custom_field_list = implode(",",$custom_strings).",".implode(",",$custom_numbers);
+		$qry = "select company_id,c.contact_id,co.name, co.website,cot.telephone_number cophone,ct.telephone_number cphone,coa.add1,coa.add2,coa.add3,coa.county,coa.postcode,co.email,c.fullname,date_format(c.dob,'%d/%m/%Y') dob,coa.country,c.email,$custom_field_list,date_format(d1,'%d/%m/%Y') d1,date_format(d2,'%d/%m/%Y') d2,date_format(d3,'%d/%m/%Y') d3,date_format(d4,'%d/%m/%Y') d4,date_format(d5,'%d/%m/%Y') d5,date_format(d6,'%d/%m/%Y') d6,date_format(d7,'%d/%m/%Y') d7,date_format(d8,'%d/%m/%Y') d8,date_format(d9,'%d/%m/%Y') d9,date_format(d10,'%d/%m/%Y') d10,dt1,dt2,dt3,dt4,dt5,dt6,dt7,dt8,dt9,dt10 from records left join record_details using(urn) left join contacts c using(urn) left join contact_telephone ct using(contact_id) left join companies co using(urn) left join company_telephone cot using(company_id) left join contact_addresses ca using(contact_id) left join company_addresses coa using(company_id) left join email_history eh using(urn) where urn ='".intval($urn)."' and campaign_id ='".intval($campaign_id)."' group by contact_id";
 		//$this->firephp->log($qry);
 		$result = $this->db->query($qry)->result_array();
 		foreach($result as $row){
 			$data['company'][$row['company_id']] = array("name"=>$row['name'],"website"=>$row['website'],"phone"=>$row['cophone'],"add1"=>$row['add1'],"add2"=>$row['add2'],"add3"=>$row['add3'],"county"=>$row['county'],"country"=>$row['country'],"postcode"=>$row['postcode'],"email"=>$row['email']);
 			$data['contacts'][$row['contact_id']] = array("contact_id"=>$row['contact_id'],"name"=>$row['fullname'],"email"=>$row['email'],"website"=>$row['website'],"phone"=>$row['cphone'],"add1"=>$row['add1'],"add2"=>$row['add2'],"add3"=>$row['add3'],"county"=>$row['county'],"country"=>$row['country'],"postcode"=>$row['postcode'],"email"=>$row['email'],"dob"=>$row['dob']);
-			$data['custom'] = array("c1"=>$row['c1'],"c2"=>$row['c2'],"c3"=>$row['c3'],"c4"=>$row['c4'],"c5"=>$row['c5'],"c6"=>$row['c6'],"d1"=>$row['d1'],"d2"=>$row['d2'],"n1"=>$row['n1'],"n2"=>$row['n2'],"n3"=>$row['n3']);
+			$custom_fields = custom_fields();
+			foreach($custom_fields as $custom){
+			$data['custom'][$custom] = $row[$custom];
+			}
 		}
 		$data['urn'] = $urn;
 		return $data;

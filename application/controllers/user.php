@@ -459,7 +459,8 @@ class User extends CI_Controller
 		if($field == "client_ref"){
 		$joins .= " left join client_refs using(urn) ";	
 		}
-		if($field == "c1" || $field == "c2" || $field == "c3" || $field == "c4" || $field == "c5" || $field == "c6" || $field == "d1" || $field == "d2" || $field == "dt1" || $field == "dt2" || $field == "n1" || $field == "n2" || $field == "n3"){
+		$custom_fields = custom_fields();
+		if(in_array($field,$custom_fields)){
 		$joins .= " left join record_details using(urn) ";	
 		}
 		if($field == "distance"){

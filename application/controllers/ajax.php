@@ -1100,8 +1100,8 @@ class Ajax extends CI_Controller
             $urn = $this->input->post('urn');
 
             $info = $this->input->post();
-            $custom_fields = array("c1", "c2", "c3", "c4", "c5", "c6");
-            $date_fields = array("d1", "d2", "d3", "dt1", "dt2", "d3");
+            $custom_fields = array("c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "10");
+            $date_fields = array("d1", "d2", "d3", "d4", "d5", "d6","d7", "d8", "d9", "d10", "dt1", "dt2","dt3", "dt4", "dt5", "dt6", "dt7", "dt8","dt9","dt10");
             foreach ($info as $k => $v) {
                 if (in_array($k, $date_fields)) {
                     if ($v == "") {

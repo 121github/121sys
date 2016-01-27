@@ -109,6 +109,7 @@ class Search extends CI_Controller
 			$options = 	$this->Filter_model->get_custom_options($v['field'],$campaign);
 			$fields[$k]['options'] = $options;
 		}
+		
 			if (strpos($v['field'], "c") !== false) {
                        $fields[$k]["type"] = "varchar";
                     } else if (substr($v['field'], 1, 1) == "t") {

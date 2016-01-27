@@ -3,6 +3,22 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+function custom_fields($type=false){
+if($type=="strings"){
+return array("c1","c2","c3","c4","c5","c6","c7","c8","c9","c10");
+}
+if($type=="dates"){
+return array("d1","d2","d3","d4","d5","d6","d7","d8","d9","d10");	
+}
+if($type=="datetimes"){
+return array("dt1","dt2","dt3","dt4","dt5","dt6","dt7","dt8","dt9","dt10");	
+}
+if($type=="numbers"){
+return array("n1","n2","n3","n4","n5","n6","n7","n8","n9","n10");	
+}	
+return array("c1","c2","c3","c4","c5","c6","c7","c8","c9","c10","d1","d2","d3","d4","d5","d6","d7","d8","d9","d10","dt1","dt2","dt3","dt4","dt5","dt6","dt7","dt8","dt9","dt10","n1","n2","n3","n4","n5","n6","n7","n8","n9","n10");	
+}
+
 function get_color($name) {
 	$hash = md5($name);
 

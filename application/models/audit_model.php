@@ -37,7 +37,7 @@ class Audit_model extends CI_Model
         );
         $this->db->insert('audit', $details);
         $audit_id = $this->db->insert_id();
-        $log_fields = array("c1", "c2", "c3", "c3", "c5", "c6", "d1", "d2", "dt1", "dt2", "n1", "n2", "n3");
+        $log_fields = custom_fields();
 
         //get the custom field names
         $field_names = array();

@@ -394,76 +394,28 @@ return $query->result_array();
             "type" => "",
             "alias" => "comt.telephone_number"
         );
-		$filter_options["c1"]              = array(
+		$custom_fields = custom_fields();
+		foreach($custom_fields as $custom){
+			if(strpos($custom,'d')!==false){
+			$filter_options[$custom]              = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "date_format(rd.$custom,'%d/%m/%Y')"
+        );	
+			} else if(strpos($custom,'n')!==false){
+				$filter_options[$custom]  = array(
+            "table" => "record_details",
+            "type" => "range",
+            "alias" => "rd.$custom"
+        );
+			} else {
+			$filter_options[$custom]  = array(
             "table" => "record_details",
             "type" => "like",
-            "alias" => "rd.c1"
-        );
-		$filter_options["c2"]              = array(
-            "table" => "record_details",
-            "type" => "like",
-            "alias" => "rd.c2"
-        );
-		$filter_options["c3"]              = array(
-            "table" => "record_details",
-            "type" => "like",
-            "alias" => "rd.c3"
-        );
-		$filter_options["c4"]              = array(
-            "table" => "record_details",
-            "type" => "like",
-            "alias" => "rd.c4"
-        );
-		$filter_options["c5"]              = array(
-            "table" => "record_details",
-            "type" => "like",
-            "alias" => "rd.c5"
-        );
-        $filter_options["c6"]              = array(
-            "table" => "record_details",
-            "type" => "like",
-            "alias" => "rd.c6"
-        );
-		$filter_options["d1"]              = array(
-            "table" => "record_details",
-            "type" => "range",
-            "alias" => "date_format(rd.d1,'%d/%m/%Y')"
-        );
-		$filter_options["d2"]              = array(
-            "table" => "record_details",
-            "type" => "range",
-            "alias" => "date_format(rd.d2,'%d/%m/%Y')"
-        );
-		$filter_options["d3"]              = array(
-            "table" => "record_details",
-            "type" => "range",
-            "alias" => "date_format(rd.d3,'%d/%m/%Y')"
-        );
-		$filter_options["dt1"]              = array(
-            "table" => "record_details",
-            "type" => "range",
-            "alias" => "date_format(rd.dt1,'%d/%m/%Y %H:%i')"
-        );
-		$filter_options["dt2"]              = array(
-            "table" => "record_details",
-            "type" => "range",
-            "alias" => "date_format(rd.dt2,'%d/%m/%Y %H:%i')"
-        );
-		$filter_options["n1"]              = array(
-            "table" => "record_details",
-            "type" => "range",
-            "alias" => "rd.n1"
-        );
-		$filter_options["n2"]              = array(
-            "table" => "record_details",
-            "type" => "range",
-            "alias" => "rd.n2"
-        );
-		$filter_options["n3"]              = array(
-            "table" => "record_details",
-            "type" => "range",
-            "alias" => "rd.n3"
-        );
+            "alias" => "rd.$custom"
+        ); 
+			}
+		}
 		$filter_options["start"]              = array(
             "table" => "appointments",
             "type" => "range",

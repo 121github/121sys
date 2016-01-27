@@ -231,7 +231,7 @@ class Admin_model extends CI_Model
         }
         if (in_array("extra_fields", $tables)) {
             //add campaign features
-            $qry = "insert into record_details_fields select '',$new_id,field,field_name,is_select,is_radio,sort,is_visible,is_renewal,`format`,editable,is_color,is_owner,is_client_ref from record_details_fields where campaign_id = $id";
+            $qry = "insert into record_details_fields select '',$new_id,field,field_name,is_select,is_decimal,is_radio,sort,is_visible,is_renewal,`format`,editable,is_color,is_owner,is_client_ref from record_details_fields where campaign_id = $id";
             $this->db->query($qry);
             $qry2 = "insert into record_details_options select '',$new_id,field,`option` from record_details_options where campaign_id = $id";
             $this->db->query($qry2);
@@ -634,7 +634,7 @@ class Admin_model extends CI_Model
     
     public function get_custom_fields($campaign = array())
     {
-        $this->db->select("record_details_fields.id,record_details_fields.field,field_name,is_select,is_visible,is_renewal,editable,sort,is_color,is_client_ref,is_owner");
+        $this->db->select("record_details_fields.id,record_details_fields.field,field_name,is_select,is_decimal,is_visible,is_renewal,editable,sort,is_color,is_client_ref,is_owner");
         $this->db->where_in("record_details_fields.campaign_id", $campaign);
         $this->db->join("record_details_options", 'record_details_options.id=record_details_fields.id', 'LEFT');
         $query = $this->db->get("record_details_fields");
@@ -664,6 +664,9 @@ class Admin_model extends CI_Model
                 }
                 if (isset($v['is_select'])) {
                     $insert["is_select"] = 1;
+                }
+				if (isset($v['is_decimal'])) {
+                    $insert["is_decimal"] = 1;
                 }
                 if (isset($v['is_radio'])) {
                     $insert["is_radio"] = 1;
