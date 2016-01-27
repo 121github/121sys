@@ -59,6 +59,11 @@ var admin = {
 					} else {
 					$('.fields_container').find('#'+row.field+'_ref').prop('checked',false);	
 					}
+						if(row.is_decimal=="1"){
+					$('.fields_container').find('#'+row.field+'_dec').prop('checked',true);
+					} else {
+					$('.fields_container').find('#'+row.field+'_dec').prop('checked',false);	
+					}
 				});
 				
 			}

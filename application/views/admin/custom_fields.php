@@ -327,6 +327,7 @@
                         <td><input class="form-control" value="" name="n2[name]" id="n2"/></td>
                         <td><input type="checkbox" class="form-control" name="n2[visible]" id="n2_vis"/></td>
                             <td><input type="checkbox" class="form-control" name="n2[editable]" id="n2_edi"/></td>
+                                           <td><input type="checkbox" class="form-control" name="n2[is_select]" id="n2_sel"/></td>
                          <td><input type="checkbox" class="form-control" name="n2[is_decimal]" id="n2_dec"/></td>
                       </tr>
                         <tr>
