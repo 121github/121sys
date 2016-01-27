@@ -216,15 +216,13 @@ class Cron extends CI_Controller
 
         $days = ($this->uri->segment(3) && is_numeric($this->uri->segment(3)) && ($this->uri->segment(3)) <= 60?$this->uri->segment(3):7);
 
-        $options = array(
-            "date_from" => date('Y-m-d', strtotime('-' . $days . ' day')),
-            "date_to" => date('Y-m-d')
-        );
         $campaigns = $this->Form_model->get_campaigns_by_date('2016-01-01');
 
         $aux = array();
+        $campaign_id_list = array();
         foreach($campaigns as $campaign) {
             array_push($aux, $campaign['name']);
+            array_push($campaign_id_list,$campaign['id']);
         }
         $campaigns = $aux;
 
@@ -255,6 +253,11 @@ class Cron extends CI_Controller
         $data['headers'] = explode(";",$data['headers']);
 
         //Get the data
+        $options = array(
+            "date_from" => date('Y-m-d', strtotime('-' . $days . ' day')),
+            "date_to" => date('Y-m-d'),
+            "campaigns" => $campaign_id_list
+        );
         $data['data'] = $this->Export_model->get_combo_export_data($options, $campaigns);
 
         //Update the file
@@ -269,15 +272,13 @@ class Cron extends CI_Controller
 
         $days = ($this->uri->segment(3) && is_numeric($this->uri->segment(3)) && ($this->uri->segment(3)) <= 60?$this->uri->segment(3):7);
 
-        $options = array(
-            "date_from" => date('Y-m-d', strtotime('-' . $days . ' day')),
-            "date_to" => date('Y-m-d')
-        );
         $campaigns = $this->Form_model->get_campaigns_by_date('2016-01-01');
 
         $aux = array();
+        $campaign_id_list = array();
         foreach($campaigns as $campaign) {
             array_push($aux, $campaign['name']);
+            array_push($campaign_id_list,$campaign['id']);
         }
         $campaigns = $aux;
 
@@ -293,6 +294,11 @@ class Cron extends CI_Controller
         $data['headers'] = explode(";",$data['headers']);
 
         //Get the data
+        $options = array(
+            "date_from" => date('Y-m-d', strtotime('-' . $days . ' day')),
+            "date_to" => date('Y-m-d'),
+            "campaigns" => $campaign_id_list
+        );
         $data['data'] = $this->Export_model->get_dials_export_data($options, $campaigns);
 
         //Update the file
@@ -377,6 +383,7 @@ class Cron extends CI_Controller
         $fh = fopen($myFile, 'a+') or die("Can't open file " . $myFile);
         echo "<h4>Update data</h4>";
         foreach ($data['data'] as $val) {
+            $val['date'] = mysql_to_uk_date($val['date']);
             fputcsv($fh, $val);
             echo "<pre>".implode(",",$val)."</pre>";
         }

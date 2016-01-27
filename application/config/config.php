@@ -188,7 +188,14 @@ $config['directory_trigger']	= 'd'; // experimental not currently in use
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 1;
+// pass an array containing the threshold values you want to log
+$config['log_threshold'] = array(1, 3);
+
+// this will log only informational messages
+//$config['log_threshold'] = array(3);
+
+// If you wish to retain the original functionality of the $config['log_threshold'] variable, simply pass an integer as the value:
+//$config['log_threshold'] = 3;
 
 /*
 |--------------------------------------------------------------------------
