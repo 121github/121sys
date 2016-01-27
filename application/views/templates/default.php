@@ -430,7 +430,7 @@ endif; ?>
     } ?>
     <script
         type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false<?php echo $callback ?>"></script>
+        src="https://maps.googleapis.com/maps/api/js?v=3<?php echo $callback ?>"></script>
 <?php } ?>
 <?php if(isset($_SESSION['user_id'])) {?>
 <style>

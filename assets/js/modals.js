@@ -8,7 +8,7 @@ var modals = {
 		$(document).on('click','[data-toggle="tab"]',function(e){
 			$('#company-address-form,#company-phone-form,#contact-address-form,#contact-phone-form').hide();
 			var tab = $(this).attr('href');
-			if(tab=="#tab-planner"||tab=="#phone"||tab=="#pot"||tab=="#source"||tab=="#campaign"||tab=="#other"){
+			if(tab=="#tab-planner"||tab=="#phone"||tab=="#pot"||tab=="#source"||tab=="#campaign"||tab=="#other"||"#create-view"){
 			modal_body.css('overflow','visible');
 			} else {
 			modal_body.css('overflow','auto');	
@@ -100,7 +100,7 @@ var modals = {
         });
 		$(document).on('click', '[data-modal="choose-columns"]', function (e) {
             e.preventDefault();
-             modals.column_picker($(this).attr('data-table-id'));
+             modals.show_table_views($(this).attr('data-table-id'));
         });
 		   $modal.on('click', '#save-columns', function (e) {
             e.preventDefault();
@@ -164,7 +164,7 @@ var modals = {
             }
         });
 
-        $modal.on('click', '.modal-show-filter-options', function (e) {
+        $(document).on('click', '.modal-show-filter-options', function (e) {
             e.preventDefault();
             modals.view_filter_options();
         });
@@ -187,7 +187,43 @@ var modals = {
                 var map_icon = ((e.icon.length > 0 && e.icon != "empty") ? e.icon : '');
                 $('form').find('input[name="map_icon"]').val(map_icon);
             });
-    },
+			$modal.on('click','#load-view-btn', function(e) {
+              modals.set_user_view();
+            });
+			$modal.on('click','#edit-view-btn', function(e) {
+              modals.edit_user_view();
+            });
+			$modal.on('click','#save-view-btn',function(e){
+				modals.save_columns();
+				$('#view-back-btn').trigger('click');
+			});
+			$modal.on('click','.create-view-tab .tab',function(e){
+				 var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-view-btn">Save</button> <button id="view-back-btn" class="btn btn-default pull-left" type="button">Back</button>';
+				 modal_footer.html(mfooter);
+				 //reset all the fields
+				 $('#create-view .selectpicker').selectpicker('val',[]);
+				 $('#create-view input[name="view_id"]').val('');
+			});
+			$modal.on('click','#view-back-btn',function(e){
+				$modal.find('#load-view').addClass('active');
+				$modal.find('#create-view').removeClass('active');
+				 var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+				modal_footer.html(mfooter);
+			}); 
+			},
+	set_user_view:function(id){
+		$.ajax({
+            url: helper.baseUrl + 'datatables/set_user_view',
+			data: { id:$('#load-view select').val(),table:table_id },
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+			table_columns = response.columns;
+			full_table_reload()
+			$modal.modal('toggle');
+		});
+	},
+	
 	save_record_options:function(){
 		$.ajax({
             url: helper.baseUrl + 'ajax/save_record_options',
@@ -214,48 +250,79 @@ var modals = {
 			 var mfooter = '<button class="btn btn-primary pull-right" id="save-record-options">Save</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left">Cancel</button>';
 			 modals.load_modal(mheader,mbody,mfooter);
 			 modal_body.css('overflow', 'visible');
-			  $('#modal .nav-tabs a[href="#'+tab+'"]').tab('show');
+			  $modal.find('.nav-tabs a[href="#'+tab+'"]').tab('show');
 		});
 	},
-	column_picker:function(table_id){
-		  $.ajax({
-            url: helper.baseUrl + 'datatables/get_columns',
+	show_table_views:function(table_id){
+		 $.ajax({
+            url: helper.baseUrl + 'datatables/get_user_views',
 			data: { table:table_id },
             type: "POST",
             dataType: "JSON"
         }).done(function (response) {
-			 var mheader = "Choose the columns to display";
-			 var mbody = "<form id='column-picker-form' ><input type='hidden' name='table' value='"+table_id+"' />";
-			 var mfooter = '<button type="submit" class="btn btn-primary pull-right" id="save-columns">Save</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
-			 $.each(response,function(group,row){
+			 var mheader = "View Editor";
+			 var create_view = "<form id='column-picker-form' ><input type='hidden' name='table' value='"+table_id+"' /><input type='hidden' name='view_id' value='' />";
+			 var select_views = "<div class='form-group'><h4>Select a view</h4><select class='selectpicker'>";
+			$.each(response.views,function(i,row){
+			 select_views += "<option value='"+row.view_id+"'>"+row.view_name+"</option>";
+		});
+			 select_views += "</select></div>";
+			 create_view += "<div class='form-group'><h4>View Name</h4><input class='form-control' name='view_name' placeholder='Enter the view name' /></div><hr/>";
+			 var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+			 create_view += "<div class='row'><div class='col-xs-6'>";
+			 var i=0; $.each(response.columns,function(group,row){ i++;
 			    var subtext ="";
-				mbody += "<h4>"+group+"</h4>";
-				var colpicker = "<select class='selectpicker' name='columns[]' multiple data-width='100%'>";
+				create_view += i==4?"</div><div class='col-xs-6'>":"";
+				create_view += "<h4>"+group+"</h4>";
+				var colpicker = "<select class='selectpicker column-select' name='columns[]' multiple data-width='100%'>";
 				 $.each(row,function(i,column){
-					var selected = "";
-				if(column.selected[column.columns.column_id]){ selected="selected" }
-					colpicker += "<option "+subtext+" "+selected+" value='"+column.columns.column_id+"'>"+column.columns.column_title+"</option>";
+					colpicker += "<option "+subtext+" value='"+column.columns.column_id+"'>"+column.columns.column_title+"</option>";
 				 })
 				 colpicker += "</select>";
-				 mbody += colpicker;
+				 create_view += colpicker;
 				 })
-			 mbody += "</form>";
+			 create_view += "</div></form>";
+			 
+			 var mbody = '<ul class="nav nav-tabs"><li class="load-view-tab active"><a href="#load-view" class="tab" data-toggle="tab">My Views</a></li><li class="create-view-tab"><a href="#create-view" class="tab" data-toggle="tab">Create View</a></li></ul><div class="tab-content"><div class="tab-pane active" id="load-view">'+select_views+'</div><div class="tab-pane" id="create-view">'+create_view+'</div></div>'
 			 modals.load_modal(mheader, mbody, mfooter, true);
 			 modal_body.css('overflow', 'visible');
             });
 		
 	},
-	save_columns:function(table_id){
+	edit_user_view:function(){
+		  $.ajax({
+            url: helper.baseUrl + 'datatables/get_columns',
+			data: { id:$('#load-view select').val() },
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+					$('#create-view .column-select').selectpicker('val',response);
+			$('form#column-picker-form input[name="view_name"]').val($('#load-view select option:selected').text());
+			$('form#column-picker-form input[name="view_id"]').val($('#load-view select').val());
+			$('#load-view').removeClass('active');
+			$('#create-view').addClass('active');
+			 var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-view-btn">Save</button> <button id="view-back-btn" class="btn btn-default pull-left" type="button">Back</button>';
+			modal_footer.html(mfooter);
+            });
+		
+	},
+	save_columns:function(){
 		 $.ajax({
             url: helper.baseUrl + 'datatables/save_columns',
             data: $('#column-picker-form').serialize(),
             type: "POST",
             dataType: "JSON"
         }).done(function(response) {
-			$modal.modal('toggle');
 			table_columns = response.columns;
-			flashalert.success("Columns were updated");
-			full_table_reload();
+			if(response.action == "create"){
+			$('#load-view select').children().prop('selected',false)
+			$('#load-view select').append('<option value="'+response.id+'" selected>'+response.name+'</option>').selectpicker('refresh');
+			} 
+			if(response.action == "update"){
+			$('#load-view select option[value="'+response.id+'"]').text(response.name).closest('select').selectpicker('refresh');
+			}
+			$('#create-view form')[0].reset();
+			$('#view-back-btn').trigger('click');
 		});
 	},
     merge_record: function (urn, target) {
@@ -756,7 +823,7 @@ var modals = {
             $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
 			//modals.get_available_attendees(sql);		
         });
-        $("#modal").find("#tabs").tab();
+        $modal.find("#tabs").tab();
 		modals.set_size();
     },
 	get_available_attendees:function(sql){
@@ -1043,7 +1110,7 @@ var modals = {
             mfooter += '<a target="_blank" class="btn btn-info pull-right" href="' + mapLink + '?zoom=2&saddr=' + getCookie('current_postcode') + '&daddr=' + data.planner_postcode + '">Navigate</a>';
         }
         modals.load_modal(mheader, mbody, mfooter);
-		$('#modal .nav-tabs a[href="#'+tab+'"]').tab('show');
+		$modal.find('.nav-tabs a[href="#'+tab+'"]').tab('show');
     },
     view_filter_options: function () {
         $.ajax({
@@ -1324,7 +1391,7 @@ var modals = {
                 url: helper.baseUrl + 'ajax/' + action,
                 type: "POST",
                 dataType: "JSON",
-                data: $('#modal .tab-content .tab-pane.active').find('form').serialize()
+                data: $modal.find('.tab-content .tab-pane.active').find('form').serialize()
             }).done(function (response) {
                 if (response.success) {
                     modals.contacts.load_tabs(response.id, response.type);
@@ -1685,7 +1752,7 @@ var modals = {
                 url: helper.baseUrl + 'ajax/' + action,
                 type: "POST",
                 dataType: "JSON",
-                data: $('#modal .tab-content .tab-pane.active').find('form').serialize()
+                data: $modal.find('.tab-content .tab-pane.active').find('form').serialize()
             }).done(function (response) {
                 if (response.success) {
                     modals.companies.load_tabs(response.id, response.type);

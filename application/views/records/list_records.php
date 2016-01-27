@@ -132,8 +132,8 @@
 </style>
 
 <script type="text/javascript">
-    table_columns = <?php echo json_encode($columns) ?>;
-
+	var table_id = 1; //the records table
+	var table_columns = <?php echo json_encode($columns) ?>; //the columns in this view
     $(document).ready(function () {
         view_records.init();
         view_records.has_filter = "<?php echo ((isset($_SESSION['filter']['values']) && !empty($_SESSION['filter']['values']))?true:false) ?>";

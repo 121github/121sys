@@ -33,8 +33,9 @@ ADD INDEX ( `appointment_type_id` )");
 		 if(!$check->num_rows()){
 		$this->db->query("ALTER TABLE `attachments` ADD `webform` INT NULL DEFAULT NULL ,
 ADD INDEX ( `webform` )") ;
+	 $this->db->query("alter table webform_answers add unique(webform_id,urn,appointment_id)");
 		 }
-		 $this->db->query("alter table webform_answers add unique(webform_id,urn,appointment_id)");
+	
 		 
 	}
 	 public function down()

@@ -1,19 +1,18 @@
-$(window).resize(function(){
-	$('#DataTables_Table_0_wrapper .dataTables_scrollBody').doubleScroll('refresh');
+var resizeDelay = (function(){
+  var timer = 0;
+  return function(callback, ms){
+    clearTimeout (timer);
+    timer = setTimeout(callback, ms);
+  };
+})();
+
+
+$(window).resize(function() {
+    resizeDelay(function(){
+      	full_table_reload();
+    }, 500);
 });
 	
-//automated scrolling for large tables     
-function scrollRight() {
-    $('.dataTables_scrollBody').animate({
-        'scrollLeft': '+=60px'
-    }, '250');
-}
-function scrollLeft() {
-    $('.dataTables_scrollBody').animate({
-        'scrollLeft': '-=60px'
-    }, '250');
-}
-
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
 function initializemaps(){
    		maps.initialize("records");
@@ -35,20 +34,6 @@ var view_records = {
     init: function () {
         this.table;
 			
-	$(document).on('mouseover','#scroll-right',function() {
-       if(timeoutID == null) {
-            timeoutID = window.setInterval(scrollRight, 300); 
-       }
-   });
-   $(document).on('mouseover','#scroll-left',function() {
-       if(timeoutID == null) {
-            timeoutID = window.setInterval(scrollLeft, 300); 
-       }
-   });
-   $(document).on('mouseout','#scroll-left,#scroll-right',function() {
-       window.clearInterval(timeoutID);
-       timeoutID = null; 
-   });
 		$('#map-view-toggle').bootstrapToggle({
             onstyle: 'success',
             size: 'mini',
@@ -152,7 +137,7 @@ var view_records = {
 },
                 complete: function (d) {
 					if($('.dataTables_scrollBody table').width()-$('.dataTables_scrollBody').width()>5){
-					$('#DataTables_Table_0_wrapper .dataTables_scrollBody').doubleScroll();
+					$('#scrollcontainer').fadeIn();
 					}
 					request_time = (new Date().getTime() - start_time)/1000;
                     $('.dt_info').show().find('div').append(' <span class="tt" data-html="true" data-toggle="tooltip" title="Process time '+Number(d.responseJSON.process_time) +' seconds<br>Query time '+Number(d.responseJSON.query_time) +' seconds<br>Request time '+request_time +' seconds"><span class="glyphicon glyphicon-info-sign"></span></span> ' );
@@ -163,7 +148,8 @@ var view_records = {
                     maps.current_postcode = getCookie('current_postcode');
                     planner_permission = d.responseJSON.planner_permission;
                     maps.temp_bounds = false;
-
+					$('#containercontent').css('width',$('.dataTables_scrollBody table').width());
+	
                     //Show search options if some filter exist
                     if (view_records.has_filter) {
                         $('.dataTables_info').append("<span class='glyphicon glyphicon-filter red modal-show-filter-options pointer'></span>");
@@ -192,22 +178,26 @@ var view_records = {
             }
         });
 
-
-if(device_type=="default"){
-	console.log("test");
-		$('body').append('<div id="scroll-right" style="display:none;cursor:all-scroll;position:fixed; right:30px; bottom:100px; width:80px; height:80px; border-radius:50%; border:2px solid #333"><div style="positon:absolute; width:100%; height:100%; background:#fff; opacity:0.5;border-radius:50%;"></div><span style="position:absolute; left:20px; top:15px; font-size:40px;" class="glyphicon glyphicon-arrow-right"></span></div>');
+		$('body').append('<div id="scrollcontainer" style="position:fixed; left:50%; overflow:auto; bottom:0px; height:17px; z-index:100"><div id="containercontent">&nbsp;</div></div>');
 		
-			$('body').append('<div id="scroll-left" style="display:none;cursor:all-scroll;position:fixed; left:30px; bottom:100px; width:80px; height:80px; border-radius:50%; border:2px solid #333"><div style="positon:absolute; width:100%; height:100%; background:#fff; opacity:0.5;border-radius:50%;"></div><span style="position:absolute; left:20px; top:15px; font-size:40px;" class="glyphicon glyphicon-arrow-left"></span></div>');
+		$('#scrollcontainer').css('margin-left',-$('.dataTables_scrollBody').width()/2);
+		$('#scrollcontainer').css('width',$('.dataTables_scrollBody').width());
+	$('#scrollcontainer').on('scroll', function () {
+    $('.dataTables_scrollBody').scrollLeft($(this).scrollLeft());
+});
+		if(device_type!=="default"){
+		$('#scrollcontainer').hide();	
+		}
 
 
 $(document).scroll(function(){
-   if($(document).scrollTop()>350&&$('.dataTables_scrollBody').height()-$(document).scrollTop()>700){
-	   $('#scroll-right,#scroll-left').fadeIn();
+   if($('.dataTables_scrollBody').height()-$(document).scrollTop()>670){
+	  $('#scrollcontainer').fadeIn();
    } else {
-	 $('#scroll-right,#scroll-left').fadeOut();   
+	 $('#scrollcontainer').fadeOut();   
    }
 });
-}
+
 
 
         //filterable columns
@@ -259,7 +249,7 @@ $(document).scroll(function(){
    	$.ajax({url:helper.baseUrl+'datatables/save_order',
 	type:"POST",
 	dataType:"JSON",
-	data:{ columns:view_records.table.colReorder.order(),table:1 }
+	data:{ columns:view_records.table.colReorder.order(),view:table_columns.view_id }
 	})
 });
 
