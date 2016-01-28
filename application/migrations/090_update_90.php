@@ -27,8 +27,10 @@ class Migration_update_90 extends CI_Migration
 			
 			$this->db->query("ALTER TABLE `record_details` CHANGE `n1` `n1` DECIMAL(20,2) NULL DEFAULT NULL, CHANGE `n2` `n2` DECIMAL(20,2) NULL DEFAULT NULL, CHANGE `n3` `n3` DECIMAL(20,2) NULL DEFAULT NULL");
 		}
+		 $check = $this->db->query("SHOW COLUMNS FROM `record_details_fields` LIKE 'is_decimal'");
+		  if(!$check->num_rows()){
 		$this->db->query("ALTER TABLE `record_details_fields` ADD `is_decimal` BOOLEAN NULL DEFAULT NULL") ;
-		
+		  }
 	}
 	    public function down(){
 			
