@@ -47,6 +47,10 @@
         <p>Custom panel title (if applicable)</p>
         <input type="text" class="form-control" name="custom_panel_name" placeholder="Eg. Policy information" required/>
     </div>
+     <div class="form-group input-group-sm">
+        <p>Custom panel display format (default is table)</p>
+        <select class="selectpicker" name="custom_panel_format"><option value="1">Table</option><option value="2">List</option></select>
+    </div>
     <div class="form-group input-group-sm">
         <p>Please set the campaign status</p>
         <select name="campaign_status" class="selectpicker" required>

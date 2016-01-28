@@ -221,7 +221,7 @@ class Admin_model extends CI_Model
         if ($this->db->get("campaigns")->num_rows()) {
             return false;
         }
-        $qry = "insert into campaigns (campaign_id,campaign_group_id,campaign_name,record_layout,logo,campaign_type_id,client_id,campaign_status,email_recipients,reassign_to,custom_panel_name,min_quote_days,daily_data,map_icon,virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix,timeout) select '',campaign_group_id,'$new_name',record_layout,logo,campaign_type_id,client_id,campaign_status,email_recipients,reassign_to,custom_panel_name,min_quote_days,daily_data,map_icon,virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix,timeout from campaigns where campaign_id = '$id'";
+        $qry = "insert into campaigns (campaign_id,campaign_group_id,campaign_name,record_layout,logo,campaign_type_id,client_id,campaign_status,email_recipients,reassign_to,custom_panel_name,custom_panel_format,min_quote_days,daily_data,map_icon,virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix,timeout) select '',campaign_group_id,'$new_name',record_layout,logo,campaign_type_id,client_id,campaign_status,email_recipients,reassign_to,custom_panel_name,min_quote_days,daily_data,map_icon,virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix,timeout from campaigns where campaign_id = '$id'";
         $this->db->query($qry);
         $new_id = $this->db->insert_id();
         if (in_array("features", $tables)) {
@@ -330,7 +330,7 @@ class Admin_model extends CI_Model
     /* functions for the admin campaigns page */
     public function get_campaign_details($campaign = "")
     {
-        $qry = "select campaign_id,campaign_name,campaign_type_desc,record_layout,client_name,IF(campaign_status=1,'Live','Dead') campaign_status_text,campaign_type_id,custom_panel_name, campaign_status, client_id, IF(start_date is null,'-',date_format(start_date,'%d/%m/%Y')) start_date,IF(end_date is null,'-',date_format(end_date,'%d/%m/%Y')) end_date, min_quote_days, max_quote_days, bc.months_ago, bc.months_num, map_icon, max_dials, virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix  from campaigns left join campaign_types using(campaign_type_id) left join clients using(client_id) left join backup_by_campaign bc using (campaign_id) where 1";
+        $qry = "select campaign_id,campaign_name,campaign_type_desc,record_layout,client_name,IF(campaign_status=1,'Live','Dead') campaign_status_text,campaign_type_id,custom_panel_name,custom_panel_format,campaign_status, client_id, IF(start_date is null,'-',date_format(start_date,'%d/%m/%Y')) start_date,IF(end_date is null,'-',date_format(end_date,'%d/%m/%Y')) end_date, min_quote_days, max_quote_days, bc.months_ago, bc.months_num, map_icon, max_dials, virgin_order_1,virgin_order_2,virgin_order_string,virgin_order_join,telephone_protocol,telephone_prefix  from campaigns left join campaign_types using(campaign_type_id) left join clients using(client_id) left join backup_by_campaign bc using (campaign_id) where 1";
         if (!empty($urn)) {
             $qry .= " and camapign_id = '$campaign'";
         }

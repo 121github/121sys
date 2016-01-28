@@ -274,6 +274,7 @@ var admin = {
                             "</td><td class='campaign_name'>" + val.campaign_name +
                             "</td><td>" + val.campaign_type_desc +
                             "<span class='hidden custom_panel_name'>" + val.custom_panel_name + "</span>" + "<span class='hidden max_dials'>" + val.max_dials + "</span>" +
+							"<span class='hidden custom_panel_format'>" + val.custom_panel_format + "</span>" +
                             "<span class='hidden virgin_order_join'>" + val.virgin_order_join + "</span>" +
                             "<span class='hidden virgin_order_string'>" + val.virgin_order_string + "</span>" + "<span class='hidden telephone_protocol'>" + val.telephone_protocol + "</span>" +
                             "<span class='hidden telephone_prefix'>" + val.telephone_prefix + "</span>" +
@@ -318,6 +319,7 @@ var admin = {
             $('form').find('select[name="virgin_order_2"]').val(row.find('.virgin_order_2').text());
             $('form').find('input[name="campaign_id"]').val(row.find('.campaign_id').text());
             $('form').find('input[name="custom_panel_name"]').val(row.find('.custom_panel_name').text());
+			$('form').find('select[name="custom_panel_format"]').selectpicker('val', row.find('.custom_panel_format').text());
             $('form').find('select[name="campaign_type_id"]').selectpicker('val', row.find('.campaign_type_id').text());
             $('form').find('input[name="campaign_name"]').val(row.find('.campaign_name').text());
             $('form').find('select[name="client_id"]').selectpicker('val', row.find('.client_id').text());
@@ -361,7 +363,7 @@ var admin = {
             $('form').find('input[name="months_ago"]').keyup(function() {
                 admin.campaigns.check_backup_months(parseInt($('form').find('input[name="months_ago"]').val()), parseInt($('form').find('input[name="months_num"]').val()));
             });
-
+			$(window).scrollTop(0);
         },
 
         check_quote_days: function(min_quote_days, max_quote_days) {

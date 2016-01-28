@@ -14,7 +14,6 @@ $this->load->library('migration');
 }
 
 public function index(){
-	$this->migration->version(88);
 	if ( !$this->migration->current())
 {
 	$this->firephp->log($this->migration->error_string());

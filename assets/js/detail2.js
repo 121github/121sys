@@ -2165,11 +2165,10 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.data.length > 0) {
-					console.log(record.additional_info.format);
 					if(record.additional_info.format=="table"){
                     record.additional_info.load_table(response.data);
 					} else if(record.additional_info.format=="list"){
-					record.additional_info.load_table(response.data);	
+					record.additional_info.load_list(response.data);	
 					}
                     record.additional_info.load_form(response.data);
                 } else {
@@ -2207,6 +2206,7 @@ var record = {
             $panel.find('.panel-content').append(table);
         },
 		load_list: function (data) {
+			console.log("test");
 			var $panel = $(record.additional_info.panel);
             $panel.find('.panel-content').empty();
 									if($panel.width()<400){
@@ -2214,25 +2214,27 @@ var record = {
 						} else {
 							var small_class="";
 						}
-            var table = "<div class='table-responsive'><table class='table table-striped table-condensed "+small_class+"'>";
-            var thead, detail_id;
-            var tbody = "<tbody>";
+            
+            var detail_id;
             var contents = "";
             $.each(data, function (k, detail) {
-                tbody += "<tr>";
-                thead = "<thead><tr>";
                 $.each(detail, function (i, row) {
-                    thead += "<th>" + row.name + "</th>";
+					contents += "<tr>";
+                    contents += "<th>" + row.name + "</th>";
                     if (row.formatted) {
-                        tbody += "<td class='" + row.code + "'>" + row.formatted + "</td>";
+                        contents += "<td class='" + row.code + "'>" + row.formatted + "</td>";
                     } else {
-                        tbody += "<td class='" + row.code + "'>" + row.value + "</td>";
+                        contents += "<td class='" + row.code + "'>" + row.value + "</td>";
                     }
                     detail_id = row.id;
+					contents += '</tr>';
                 });
-                tbody += '<td><span class="btn btn-default btn-xs pull-right edit-detail-btn"  item-id="' + detail_id + '"><span class="glyphicon glyphicon-pencil"></span> Edit</span></td><tr>';
+                contents += '</hr>';
             });
-            table += thead + '</thead>' + tbody + '<tbody></table></div>';
+			var edit_btn = '<span class="btn btn-default btn-xs pull-right edit-detail-btn"  item-id="' + detail_id + '"><span class="glyphicon glyphicon-pencil"></span> Edit</span>';
+			$panel.find('.panel-heading .btn').remove();
+			$panel.find('.panel-heading').append(edit_btn);
+            var table = "<div class='table-responsive'><table class='table table-striped table-condensed "+small_class+"'>"+contents+"</table></div>";
             $panel.find('.panel-content').append(table);
         },
         load_form: function (data, id) {
