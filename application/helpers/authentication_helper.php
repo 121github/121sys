@@ -10,7 +10,7 @@ if (!function_exists('user_auth_check')) {
         if (isset($_SESSION['last_action']) && $_SESSION['last_action'] + $_SESSION['timeout'] < time()) {
             $CI->User_model->log_timeout($_SESSION['user_id']);
             //Write on log
-            log_message('info', '[LOGIN][TIMEOUT] The user ' . $_SESSION['name'] . ' (user_id: '.$_SESSION['user_id'].', client_ip: '.$this->input->ip_address().') has been disconected due inactivity.');
+            log_message('info', '[LOGIN][TIMEOUT] The user ' . $_SESSION['name'] . ' (user_id: '.$_SESSION['user_id'].', client_ip: '.$CI->input->ip_address().') has been disconected due inactivity.');
             session_destroy();
             session_start(); //start the session again just so we can add an error message
             $inactivity = true;
