@@ -11,6 +11,7 @@ class Migration_update_90 extends CI_Migration
 
     public function up()
     {
+		$this->firephp->log("starting migration 90");
 		 $check = $this->db->query("SHOW COLUMNS FROM `record_details` LIKE 'c7'");
         if(!$check->num_rows()){
 		$this->db->query("ALTER TABLE `record_details` ADD `c7` VARCHAR(255) NULL AFTER `c6`, ADD `c8` VARCHAR(255) NULL AFTER `c7`, ADD `c9` VARCHAR(255) NULL AFTER `c8`, ADD `c10` VARCHAR(255) NULL AFTER `c9`");

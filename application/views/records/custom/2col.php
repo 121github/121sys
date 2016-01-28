@@ -157,7 +157,7 @@
         <?php } ?>
         <?php if(in_array(8,$features)){ ?>
 		<?php $formats = custom_formats(); ?>
-        record.additional_info.init('<?php echo $details['record']['custom_format'] ?>');
+        record.additional_info.init('<?php echo $formats[$details['record']['custom_format']] ?>');
         <?php } ?>
         <?php if(in_array(9,$features)){ ?>
         record.email_panel.init();
