@@ -3,6 +3,10 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+ function custom_formats(){
+return array("table","table","list");	
+}
+
 function custom_fields($type=false){
 if($type=="strings"){
 return array("c1","c2","c3","c4","c5","c6","c7","c8","c9","c10");

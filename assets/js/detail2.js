@@ -2074,7 +2074,8 @@ var record = {
     },
     //get additional info
     additional_info: {
-        init: function () {
+        init: function (format) {
+			this.format = format;
 			this.panel = '#custom-panel';
 			var $panel = $(record.additional_info.panel);
             $panel.on("click", "span.add-detail-btn", function () {
@@ -2164,7 +2165,12 @@ var record = {
                 }
             }).done(function (response) {
                 if (response.data.length > 0) {
+					console.log(record.additional_info.format);
+					if(record.additional_info.format=="table"){
                     record.additional_info.load_table(response.data);
+					} else if(record.additional_info.format=="list"){
+					record.additional_info.load_table(response.data);	
+					}
                     record.additional_info.load_form(response.data);
                 } else {
                     $panel.find('.panel-content').text("Nothing was found");
@@ -2172,6 +2178,35 @@ var record = {
             });
         },
         load_table: function (data) {
+			var $panel = $(record.additional_info.panel);
+            $panel.find('.panel-content').empty();
+									if($panel.width()<400){
+							var small_class="small";
+						} else {
+							var small_class="";
+						}
+            var table = "<div class='table-responsive'><table class='table table-striped table-condensed "+small_class+"'>";
+            var thead, detail_id;
+            var tbody = "<tbody>";
+            var contents = "";
+            $.each(data, function (k, detail) {
+                tbody += "<tr>";
+                thead = "<thead><tr>";
+                $.each(detail, function (i, row) {
+                    thead += "<th>" + row.name + "</th>";
+                    if (row.formatted) {
+                        tbody += "<td class='" + row.code + "'>" + row.formatted + "</td>";
+                    } else {
+                        tbody += "<td class='" + row.code + "'>" + row.value + "</td>";
+                    }
+                    detail_id = row.id;
+                });
+                tbody += '<td><span class="btn btn-default btn-xs pull-right edit-detail-btn"  item-id="' + detail_id + '"><span class="glyphicon glyphicon-pencil"></span> Edit</span></td><tr>';
+            });
+            table += thead + '</thead>' + tbody + '<tbody></table></div>';
+            $panel.find('.panel-content').append(table);
+        },
+		load_list: function (data) {
 			var $panel = $(record.additional_info.panel);
             $panel.find('.panel-content').empty();
 									if($panel.width()<400){
@@ -2373,7 +2408,8 @@ var record = {
         }
     },
     //script panel functions
-    script_panel: function () {
+    script_panel: {
+	init:function () {
 		this.panel = '#script-panel';
 		var $panel = $(record.script_panel.panel);
         $panel.on("click", ".view-script", function (e) {
@@ -2392,6 +2428,7 @@ var record = {
                 modals.load_modal(mheader, mbody, mfooter);
             });
         });
+	}
     },
     appointment_panel: {
         //initalize the group specific buttons 

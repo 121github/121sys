@@ -116,13 +116,13 @@ $this->view('forms/cross_transfer_form.php',$xfer_campaigns); ?>
         record.ownership_panel.init();
 		<?php } ?>
 		<?php if(in_array(6,$features)){ ?>
-		record.script_panel();
+		record.script_panel.init();
 		<?php } ?>
 		<?php if(in_array(7,$features)){ ?>
         record.history_panel.init();
 		<?php } ?>
 		<?php if(in_array(8,$features)){ ?>
-		record.additional_info.init();
+		record.additional_info.init('<?php echo $details['record']['custom_format'] ?>');
 		<?php } ?>
 		<?php if(in_array(9,$features)){ ?>
         record.email_panel.init();

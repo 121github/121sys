@@ -247,6 +247,7 @@ class Ajax extends CI_Controller
             $id = intval($this->input->post('id'));
             $this->db->where("script_id", intval($this->input->post('id')));
             $result = $this->db->get("scripts")->row_array();
+			$result['script'] = nl2br($result['script']);
             echo json_encode(array(
                 "success" => true,
                 "data" => $result
