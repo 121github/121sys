@@ -669,6 +669,8 @@ $data_pot = $this->Form_model->get_pots();
                     $aux[$row['id']]['name'] = $row['name'];
                     $aux[$row['id']]['colour'] = substr(dechex(crc32($row['name'])), 0, 6);
                     $aux[$row['id']]['duration'] = $row['duration'];
+                    $aux[$row['id']]['exceptions'] = $row['exceptions'];
+                    $aux[$row['id']]['rate_duration'] = $row['duration'] - $row['exceptions'];
                     $aux[$row['id']]['outcomes'] = $row['outcome_count'];
                     $aux[$row['id']]['total_dials'] = $row['total_dials'];
                 }
@@ -677,6 +679,7 @@ $data_pot = $this->Form_model->get_pots();
             $totalOutcomes = 0;
             $totalDials = 0;
             $totalDuration = 0;
+            $totalExceptions = 0;
             $url = base_url() . "search/custom/history";
             $url .= (!empty($agent_search) ? "/user/".implode("_",$agent_search).(count($agent_search)>1?":in":"") : "");
             $url .= (!empty($campaign_search) ? "/hcampaign/".implode("_",$campaign_search).(count($campaign_search)>1?":in":"") : "");
@@ -716,13 +719,15 @@ $data_pot = $this->Form_model->get_pots();
                     "total_dials" => $row['total_dials'],
                     "total_dials_url" => $allDialsUrl,
                     "duration" => ($row['duration']) ? $row['duration'] : 0,
-                    "rate" => ($row['duration'] > 0) ? round(($outcomes) / ($row['duration'] / 3600), 3) : 0,
-                    "dials_rate" => ($row['duration'] > 0) ? round(($row['total_dials']) / ($row['duration'] / 3600), 2) : 0,
+                    "exceptions" => ($row['exceptions']) ? $row['exceptions'] : 0,
+                    "rate" => ($row['rate_duration'] > 0) ? round(($outcomes) / ($row['rate_duration'] / 3600), 3) : 0,
+                    "dials_rate" => ($row['rate_duration'] > 0) ? round(($row['total_dials']) / ($row['rate_duration'] / 3600), 2) : 0,
                     "group" => $group
                 );
                 $totalOutcomes += $outcomes;
                 $totalDials += ($row['total_dials'] ? $row['total_dials'] : "0");
                 $totalDuration += ($row['duration'] ? $row['duration'] : "0");
+                $totalExceptions += ($row['exceptions'] ? $row['exceptions'] : "0");
             }
 
             $totalOutcomesPercent = ($totalDials) ? number_format(($totalOutcomes * 100) / $totalDials, 2) : 0;
@@ -741,8 +746,9 @@ $data_pot = $this->Form_model->get_pots();
                 "total_dials" => $totalDials,
                 "total_dials_url" => $url,
                 "duration" => $totalDuration,
-                "rate" => ($totalDuration > 0) ? round(($totalOutcomes) / ($totalDuration / 3600), 3) : 0,
-                "dials_rate" => ($totalDuration > 0) ? round(($totalDials) / ($totalDuration / 3600), 2) : 0,
+                "exceptions" => $totalExceptions,
+                "rate" => (($totalDuration-$totalExceptions) > 0) ? round(($totalOutcomes) / (($totalDuration-$totalExceptions) / 3600), 3) : 0,
+                "dials_rate" => (($totalDuration-$totalExceptions) > 0) ? round(($totalDials) / (($totalDuration-$totalExceptions) / 3600), 2) : 0,
                 "group" => $group
             ));
 

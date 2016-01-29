@@ -288,7 +288,8 @@ if (!empty($pots)) {
                     $name name,
                     if(outcome_count is null,0,outcome_count) outcome_count,
                     if(d.dials is null,'0',d.dials) as total_dials,
-                    (select sum(hr.duration) from hours hr where $hours $hours_where) as duration
+                    (select sum(hr.duration) from hours hr where $hours $hours_where) as duration,
+                    (select IF(sum(he.duration),sum(he.duration),0) from hour_exception he inner join hours hr using (hours_id) where $hours $hours_where) as exceptions
                 from history h
                 left join campaigns c using(campaign_id)  $joins
                 left join (select count(*) outcome_count,$group_by gb from history h $joins $outcomes_where $where group by $group_by) oc on oc.gb = $group_by
@@ -523,8 +524,6 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         $campaigns = isset($options['campaigns']) ? $options['campaigns'] : array();
         $hours_where = "";
         $hours = "hr.`user_id` = users.user_id ";
-        $exceptions = "t.`user_id` = users.user_id ";
-        $exceptions_where = "";
 
         $where = "";
         $where_calls = "";
@@ -532,18 +531,15 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
             $where .= " and date(contact) >= '$date_from' ";
             $where_calls .= " and date(call_log.call_date) >= '$date_from' ";
             $hours_where .= " and hr.date >= '$date_from' ";
-            $exceptions_where .= " and t.date >= '$date_from' ";
         }
         if (!empty($date_to)) {
             $where .= " and date(contact) <= '$date_to' ";
             $where_calls .= " and date(call_log.call_date) <= '$date_to' ";
             $hours_where .= " and hr.date <= '$date_to' ";
-            $exceptions_where .= " and t.date <= '$date_to' ";
         }
         if (!empty($users)) {
             $where .= " and history.user_id IN (" . implode(",", $users) . ") ";
             $hours_where .= " and hr.user_id IN (" . implode(",", $users) . ") ";
-            $exceptions_where .= " and t.user_id IN (" . implode(",", $users) . ") ";
         }
         if (!empty($teams)) {
             $where .= " and teams.team_id IN (" . implode(",", $teams) . ") ";
@@ -579,7 +575,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
                       users.ext, users.name as agent,
                       users.user_id as agent_id,
                       (select sum(hr.duration) from hours hr where $hours $hours_where) as minutes,
-                      (select IF(sum(te.duration),sum(te.duration),0) from time_exception te inner join time t using (time_id) where $exceptions $exceptions_where) as exceptions
+                      (select IF(sum(he.duration),sum(he.duration),0) from hour_exception he inner join hours hr using (hours_id) where $hours $hours_where) as exceptions
                 from users
 				  left join history using(user_id)
                   join records using(urn)
@@ -597,7 +593,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $qry .= " GROUP BY users.user_id
                   ORDER BY users.user_id";
-		$this->firephp->log($qry);
+
         return $this->db->query($qry)->result_array();
     }
 
@@ -752,7 +748,7 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         }
 
         if (!empty($pots)) {
-            $where .= " and r.pot_id IN (" . implode(",", $data_pot) . ") ";
+            $where .= " and r.pot_id IN (" . implode(",", $pots) . ") ";
         }
 
         if (!empty($outcomes)) {

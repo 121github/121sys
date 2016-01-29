@@ -134,6 +134,7 @@
                         <th style="text-align: center;">Total Dials</th>
                         <th style="text-align: center;">Conversion</th>
                         <th style="text-align: center;">Time</th>
+                        <th style="text-align: center;">Exceptions</th>
                         <th style="text-align: center;">Rate p/h</th>
                         <th style="text-align: center;">Dials p/h</th>
                         <th style="text-align: center;"></th>
