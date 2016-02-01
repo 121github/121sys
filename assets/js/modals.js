@@ -219,7 +219,8 @@ var modals = {
             dataType: "JSON"
         }).done(function(response) {
 			table_columns = response.columns;
-			full_table_reload()
+			view.view_id = response.view_id;
+			full_table_reload();
 			$modal.modal('toggle');
 		});
 	},

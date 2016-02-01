@@ -280,7 +280,7 @@ class Records_model extends CI_Model
                 $query = $this->db->query($qry." limit 1");
 				$_SESSION['last_query'] = $this->db->last_query();
                 if ($query->num_rows() > 0) {
-					$this->firephp->log($this->db->last_query());
+					//$this->firephp->log($this->db->last_query());
                     $urn = $query->row(0)->urn;
                     $owner = $query->row(0)->user_id;
                     break;
@@ -462,7 +462,7 @@ class Records_model extends CI_Model
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}
-		$this->firephp->log($select.$qry);
+		//$this->firephp->log($select.$qry);
         $records = $this->db->query($select.$qry)->result_array();
         $records['count'] = $count;
         
@@ -1139,7 +1139,9 @@ return $comments;
         $urn = intval($urn);
         $comment = "";
         $qry = "select comments from history where urn = '$urn' and comments <> '' and comments is not null order by history_id desc limit 1";
+		if($this->db->query($qry)->num_rows()){
         $comment = $this->db->query($qry)->row()->comments;
+		}
         return $comment;
     }
 

@@ -112,8 +112,6 @@ class Appointments extends CI_Controller
             'page' => 'appointments',
 			'columns' => $visible_columns,
             'css' => array(
-                'dashboard.css',
-                'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
                 'map.css',
@@ -121,10 +119,7 @@ class Appointments extends CI_Controller
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
             'javascript' => array(
-                "modals.js?v" . $this->project_version,
-                "location.js?v" . $this->project_version,
-                "appointment.js?v" . $this->project_version,
-                "map.js?v" . $this->project_version,
+                'view.js?v' . $this->project_version,
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/datatables.min.js',
@@ -135,6 +130,48 @@ class Appointments extends CI_Controller
             )
         );
         $this->template->load('default', 'dashboard/appointments.php', $data);
+    }
+
+	    public function mapview()
+    {
+		 //this array contains data for the visible columns in the table on the view page
+		$this->load->model('Datatables_model');
+		$visible_columns = $this->Datatables_model->get_visible_columns(3);
+		if(!$visible_columns){
+		 $this->load->model('Admin_model');
+		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
+		$visible_columns = $this->Datatables_model->get_visible_columns(3);
+		}
+		
+		
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'System appointment',
+            'title' => 'Appointments',
+            'page' => 'appointments',
+			'columns' => $visible_columns,
+            'css' => array(
+                'daterangepicker-bs3.css',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+                'map.css',
+                'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
+            ),
+            'javascript' => array(
+				'location.js?v' . $this->project_version,
+                'map.js?v' . $this->project_version,
+                'view-map.js?v' . $this->project_version,
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+                'plugins/fontawesome-markers/fontawesome-markers.min.js',
+				'plugins/DataTables/datatables.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js',
+                'lib/moment.js',
+                'lib/daterangepicker.js'
+            )
+        );
+        $this->template->load('default', 'dashboard/appointments_with_map.php', $data);
     }
 
     public function appointment_data()

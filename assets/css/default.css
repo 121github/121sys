@@ -1,5 +1,7 @@
 .nav-tabs { background:#eee; width:100%; }
-
+#color-box {position:fixed; right:0px; bottom:40px; padding:5px; border:1px solid #333; background:#fff; z-index:100}
+#color-box a{ text-decoration:none }
+#color-box .color-btn { display:block; width:100%; height:100%;  font-size:24px }
 .panel-heading .pull-right button {
 margin-top:2px !important;	
 }

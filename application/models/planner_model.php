@@ -147,7 +147,6 @@ class Planner_model extends CI_Model
             $user_id = $_SESSION['user_id'];
         }
         $location_id = $this->get_location_id($postcode);
-		$this->firephp->log($location_id);
         //add the location to the planner table
         $data = array("urn" => $urn, "user_id" => $user_id, "start_date" => $date, "postcode" => $postcode, "location_id" => $location_id, "planner_status" => 1, "planner_type" => $type, "order_num" => $order);
         $this->db->insert("record_planner", $data);
@@ -260,6 +259,7 @@ class Planner_model extends CI_Model
                 //if its the destination address then add it in the planner
                 $planner_id = $this->add_record(NULL, $date, $dest, $user_id, $type = 3, $order = 100);
             }
+			$this->firephp->log($record);
             array_push($data, array(
                 'record_planner_id' => $planner_id,
                 'start_add' => $record['start_add'],

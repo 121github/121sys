@@ -206,7 +206,6 @@ class User extends CI_Controller
             ),
             'javascript' => array(
                 'account.js?v' . $this->project_version,
-                'modals.js?v' . $this->project_version,
                 'lib/jquery.numeric.min.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
             )

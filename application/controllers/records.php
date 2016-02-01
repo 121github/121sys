@@ -76,10 +76,8 @@ class Records extends CI_Controller
                 'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
             ),
             'javascript' => array(
-                "location.js?v" . $this->project_version,
-                'map.js?v' . $this->project_version,
                 'view.js?v' . $this->project_version,
-				'lib/jquery.doubleScroll.js',
+				'location.js?v' . $this->project_version,
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js',
 				'plugins/DataTables/datatables.min.js',
@@ -89,6 +87,43 @@ class Records extends CI_Controller
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
+        
+    }
+	
+	    public function mapview()
+    {
+        //this array contains data for the visible columns in the table on the view page
+		$this->load->model('Datatables_model');
+		$visible_columns = $this->Datatables_model->get_visible_columns(1);
+		if(!$visible_columns){
+		 $this->load->model('Admin_model');
+		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
+		$visible_columns = $this->Datatables_model->get_visible_columns(1);	
+			
+		}
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'page' => 'list_records',
+            'title' => 'List Records',
+            'columns' => $visible_columns,
+            'css' => array(
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+				'map.css',
+                'plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css'
+            ),
+            'javascript' => array(
+				'location.js?v' . $this->project_version,
+                'map.js?v' . $this->project_version,
+                'view-map.js?v' . $this->project_version,
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+                'plugins/fontawesome-markers/fontawesome-markers.min.js',
+				'plugins/DataTables/datatables.min.js',
+		'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.2.0.min.js',
+                'plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js'
+            )
+        );
+        $this->template->load('default', 'records/list_records_and_map.php', $data);
         
     }
 
@@ -128,6 +163,8 @@ class Records extends CI_Controller
             $options = $this->input->post();
 			$this->load->model('Datatables_model');
 			$visible_columns = $this->Datatables_model->get_visible_columns(1);
+			$this->firephp->log($visible_columns);
+			$this->firephp->log($options['columns']);
 			$options['visible_columns'] = $visible_columns;
 
 			//check the options

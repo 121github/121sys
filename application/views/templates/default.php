@@ -48,7 +48,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <script src="<?php echo base_url(); ?>assets/js/lib/wavsurfer.js"></script>
     <script type="text/javascript"
             src="<?php echo base_url() ?>assets/js/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <!--<script type="text/javascript" src="https://www.google.com/jsapi"></script>-->
     <!--Need to make a new icon for this
           <link rel="apple-touch-icon" href="<?php echo base_url(); ?>assets/img/apple-touch-icon.png" />-->
 </head>
@@ -433,11 +433,6 @@ endif; ?>
         src="https://maps.googleapis.com/maps/api/js?v=3<?php echo $callback ?>"></script>
 <?php } ?>
 <?php if(isset($_SESSION['user_id'])) {?>
-<style>
-#color-box {position:fixed; right:0px; bottom:40px; padding:5px; border:1px solid #333; background:#fff}
-#color-box a{ text-decoration:none }
-#color-box .color-btn { display:block; width:100%; height:100%;  font-size:24px }
-</style>
 <div id="color-box" class="Fixed">
 <a href="#"  ><span class="glyphicon glyphicon-cog color-btn" ></span></a>
 </div>

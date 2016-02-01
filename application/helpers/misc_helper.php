@@ -65,7 +65,7 @@ foreach($array as $curStr) {
 
 function join_array(){
 	$array = array();
-
+	$array['companies'] = array("companies");
 	$array['company_addresses'] = array("companies","company_addresses");
 	$array['contact_addresses'] = array("contacts","contact_addresses");
 	$array['contact_locations'] = array("contacts","contact_addresses","contact_locations");

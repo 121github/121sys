@@ -518,8 +518,6 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
 			'drivers' => $drivers,
 			'attendees' => $attendees,
             'css' => array(
-                'dashboard.css',
-                'plugins/morris/morris-0.4.3.min.css',
                 'daterangepicker-bs3.css',
                 //'../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
@@ -527,13 +525,12 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
                 'daterangepicker-bs3.css'
             ),
             'javascript' => array(
-                'modals.js?v' . $this->project_version,
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-
+                'location.js?v' . $this->project_version,
                 'map.js?v' . $this->project_version,
                 'planner/planner.js?v' . $this->project_version,
-                'location.js?v' . $this->project_version,
+
 			    'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
 				 'plugins/touch-punch/jquery-ui-touch-punch.js',
                 'plugins/fontawesome-markers/fontawesome-markers.min.js'
@@ -541,6 +538,50 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
         );
         $this->template->load('default', 'dashboard/planner.php', $data);
     }
+	
+	    public function mapview()
+    {
+
+        $user_id = ($_SESSION['user_id'] ? $_SESSION['user_id'] : NULL);
+
+        $campaign_branch_users = $this->getCampaignBranchUsers();
+		$drivers = $this->Form_model->get_drivers();
+		$campaign = false;
+		if(isset($_SESSION['current_campaign'])){
+			$campaign = $_SESSION['current_campaign'];
+		}
+		$attendees = $this->Records_model->get_attendees(false,$campaign);
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+
+            'pageId' => 'System planner',
+            'title' => 'Planner',
+            'page' => array('dashboard' => 'planner'),
+            'campaign_branch_users' => $campaign_branch_users,
+            'user_id' => $user_id,
+			'drivers' => $drivers,
+			'attendees' => $attendees,
+            'css' => array(
+                'daterangepicker-bs3.css',
+                //'../js/plugins/DataTables/extensions/Scroller/css/dataTables.scroller.min.css',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
+                'map.css',
+                'daterangepicker-bs3.css'
+            ),
+            'javascript' => array(
+                'lib/moment.js',
+                'lib/daterangepicker.js',
+				'location.js?v' . $this->project_version,
+                'map.js?v' . $this->project_version,
+                'planner/planner.js?v' . $this->project_version,
+			    'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
+				 'plugins/touch-punch/jquery-ui-touch-punch.js',
+                'plugins/fontawesome-markers/fontawesome-markers.min.js'
+           )
+        );
+        $this->template->load('default', 'dashboard/planner_with_map.php', $data);
+    }
+
 
     public function getCampaignBranchUsers()
     {

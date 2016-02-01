@@ -1,50 +1,15 @@
-var resizeDelay = (function(){
-  var timer = 0;
-  return function(callback, ms){
-    clearTimeout (timer);
-    timer = setTimeout(callback, ms);
-  };
-})();
-
-
-$(window).resize(function() {
-    resizeDelay(function(){
-      	full_table_reload();
-    }, 500);
-});
-	
-//allow the map.js file to call a generic function to redraw the table specified here (appointment)
-function initializemaps(){
-   		maps.initialize("records");
-}
-
-
-function map_table_reload() {
-    view_records.table.columns.adjust().draw();
-	 view_records.table.columns.adjust();
-}
-
 function full_table_reload() {
-    view_records.table.destroy();
-    view_records.table.destroy();
-    view_records.reload_table();
+    view.table.destroy();
+    view.table.destroy();
+    view.reload_table();
 }
- var timeoutID = null;
-var view_records = {
-    init: function () {
-        this.table;
-			
-		$('#map-view-toggle').bootstrapToggle({
-            onstyle: 'success',
-            size: 'mini',
-        }).show().bootstrapToggle('off');
 
-	   $(document).on('change','#map-view-toggle',function(){
-	       maps.showMap($(this));
-            map_table_reload();
-	   });
-			
-        $(document).on("click", ".group-filter", function (e) {
+var view = {
+    init: function() {
+        this.table;
+		this.planner_permission = false;
+
+        $(document).on("click", ".group-filter", function(e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
             $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
@@ -52,157 +17,120 @@ var view_records = {
             $(this).closest('ul').find('a').css("color", "black");
             $(this).css("color", "green");
             maps.colour_by = $('.filter-form').find('input[name="group"]').val();
-            view_records.table.columns.adjust().draw();
+            view.table.columns.adjust().draw();
         });
-
-        $(document).on("click", ".export-btn", function (e) {
-            e.preventDefault();
-            view_records.export_data();
-        });
-
-
-        view_records.reload_table();
+		view.reload_table();
     },
-    get_used_icons: function () {
+    get_used_icons: function() {
         $.ajax({
             url: helper.baseUrl + 'records/get_used_icons',
             type: "POST",
             dataType: "JSON"
-        }).done(function (response) {
+        }).done(function(response) {
             $('.record-icon').iconpicker();
             $('.record-icon').iconpicker('setIconset', {
                 iconClass: 'fa',
                 iconClassFix: '',
                 icons: response.icons
-            }).change(function (e) {
+            }).change(function(e) {
                 var icon = (e.icon == 'empty' ? 'Icon' : e.icon);
-                view_records.table.column($(this).attr('data-index')).search(icon).draw();
+                view.table.column($(this).attr('data-index')).search(icon).draw();
             });
         });
     },
-    reload_table: function () {
+    reload_table: function() {
         var headings = "";
         column_count = new Array();
-        $.each(table_columns.headings, function (i, header) {
+        $.each(table_columns.headings, function(i, header) {
             headings += "<th>" + header + "</th>";
             column_count[i] = i;
         });
         var table = "<table width='100%' class='table small table-striped table-bordered table-hover data-table'><thead><tr>" + headings + "</tr></thead>";
         table += "<tfoot><tr>" + headings + "</tr></tfoot></table>";
 
-        $('#table-wrapper').html(table);
-        view_records.populate_table();
+        $('#view-container').html(table);
+        view.populate_table();
     },
-
-		
-	
-    populate_table: function (table_name) {
-		var start_time = new Date().getTime();
-        view_records.table = $('.data-table').DataTable({
-        buttons: [
-            'copy', 'csv', 'excel', 'print'
-        ],
-		colReorder: true,
+    populate_table: function(table_name) {
+        var start_time = new Date().getTime();
+        view.table = $('.data-table').DataTable({
+            buttons: [
+                'copy', 'csv', 'excel', 'print'
+            ],
+            colReorder: true,
             "oLanguage": {
                 "sProcessing": "<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif'>"
             },
-            "dom": '<"row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t><"col-lg-12"<"pull-left"l> <"pull-left marl" B>>><"clear">',
-			"lengthMenu": [[10, 25, 50,100, 1000], [10, 25, 50,100,1000]],
+            "dom": '<"row top-row"<"col-xs-12 col-sm-5"<"dt_info"i>r><"col-xs-12 col-sm-7"p>><"row"<"col-lg-12"t>><"row bottom-row"<"col-lg-12"<"pull-left"l> <"pull-right marl" B>>><"clear">',
+            "lengthMenu": [
+                [10, 25, 50, 100, 1000],
+                [10, 25, 50, 100, 1000]
+            ],
             "width": "100%",
             "scrollX": true,
             "processing": true,
             "serverSide": true,
             "pagingType": "full",
-            "iDisplayLength": 50,
+            "iDisplayLength": 100,
             responsive: true,
-            order: [[0, "desc"]],
+            order: [
+                [0, "desc"]
+            ],
             "ajax": {
-                url: helper.baseUrl + "records/process_view",
+                url: helper.baseUrl + process_url,
                 type: 'POST',
-                beforeSend: function () {
-					start_time = new Date().getTime();
-                    $('.dt_info').hide();
-                    maps.items = [];
+                beforeSend: function() {
+                    $('.dt_info div').empty()
+                    start_time = new Date().getTime();
+					$('.loading-overlay').fadeIn();
                 },
-                data: function (d) {
+                data: function(d) {
                     d.extra_field = false;
-                    d.bounds =(typeof map=="undefined"?null:maps.getBounds()),
-                    d.map = $('#map-view-toggle').prop('checked');
                     d.group = $('.filter-form').find('input[name="group"]').val();
+					d.bounds = false;
+					d.map = false;
                 },
-				error: function (xhr, error, thrown) {
-    if ( error == "parsererror" ) {
-        alert("You have been logged out");
-    }
-},
-                complete: function (d) {
-					if($('.dataTables_scrollBody table').width()-$('.dataTables_scrollBody').width()>5){
-					$('#scrollcontainer').fadeIn();
-					}
-					request_time = (new Date().getTime() - start_time)/1000;
-                    $('.dt_info').show().find('div').append(' <span class="tt" data-html="true" data-toggle="tooltip" title="Process time '+Number(d.responseJSON.process_time) +' seconds<br>Query time '+Number(d.responseJSON.query_time) +' seconds<br>Request time '+request_time +' seconds"><span class="glyphicon glyphicon-info-sign"></span></span> ' );
+                error: function(xhr, error, thrown) {
+                    if (error == "parsererror") {
+                        alert("Oops! There was an error parsing the data.");
+                    }
+                },
+                complete: function(d) {
+                    request_time = (new Date().getTime() - start_time) / 1000;
+                    $('.dt_info').show().find('div').append(' <span class="tt" data-html="true" data-toggle="tooltip" data-placement="bottom" title="Process time ' + Number(d.responseJSON.process_time) + ' seconds<br>Query time ' + Number(d.responseJSON.query_time) + ' seconds<br>Request time ' + request_time + ' seconds"><span class="glyphicon glyphicon-info-sign"></span></span>');
                     $('.tt').tooltip();
-					  
-           //Show the records in the map
-                    maps.showItems();
-                    maps.current_postcode = getCookie('current_postcode');
-                    planner_permission = d.responseJSON.planner_permission;
-                    maps.temp_bounds = false;
-					$('#containercontent').css('width',$('.dataTables_scrollBody table').width());
-	
+					$('.loading-overlay').fadeOut();
                     //Show search options if some filter exist
-                    if (view_records.has_filter) {
+                    if (view.has_filter) {
                         $('.dataTables_info').append("<span class='glyphicon glyphicon-filter red modal-show-filter-options pointer'></span>");
                     }
                 }
             },
             "deferRender": true,
             "columns": table_columns.columns,
-            "columnDefs": [
-                {
-                    "targets": column_count,
-                    "data": null,
-                    "defaultContent": "-"
-                }],
-            "createdRow": function (row, data, dataIndex) {
+            "columnDefs": [{
+                "targets": column_count,
+                "data": null,
+                "defaultContent": "-"
+            }],
+            "createdRow": function(row, data, dataIndex) {
                 $(row).attr('data-urn', data.urn);
-                $(row).attr('data-id', data.urn);
+                $(row).attr('data-id', data.marker_id);
+				if(page_name=="records"){
                 $(row).attr('data-modal', 'view-record');
+				} else if(page_name=="appointment"){
+				$(row).attr('data-modal', 'view-appointment');	
+				}
                 $(row).attr('postcode', data['postcode']);
                 $(row).addClass('pointer');
                 if (data['change_type'] == "delete") {
                     $(row).addClass('danger');
                 }
-                maps.items.push(data);
-                //$(row).attr('data-id', records.length - 1);
             }
         });
 
-		$('body').append('<div id="scrollcontainer" style="position:fixed; left:50%; overflow:auto; bottom:0px; height:17px; z-index:100"><div id="containercontent">&nbsp;</div></div>');
-		
-		$('#scrollcontainer').css('margin-left',-$('.dataTables_scrollBody').width()/2);
-		$('#scrollcontainer').css('width',$('.dataTables_scrollBody').width());
-	$('#scrollcontainer').on('scroll', function () {
-    $('.dataTables_scrollBody').scrollLeft($(this).scrollLeft());
-});
-		if(device_type!=="default"){
-		$('#scrollcontainer').hide();	
-		}
-
-
-$(document).scroll(function(){
-   if($('.dataTables_scrollBody').height()-$(document).scrollTop()>670){
-	  $('#scrollcontainer').fadeIn();
-   } else {
-	 $('#scrollcontainer').fadeOut();   
-   }
-});
-
-
-
         //filterable columns
-        // Setup - adds search input boxes to the footer row
-        $('.data-table tfoot th').each(function () {
+        $('.data-table tfoot th').each(function() {
             var title = $('.data-table thead th').eq($(this).index()).text();
             var filter_attribute = 'placeholder="Filter..."';
             if (title == "Icon") {
@@ -210,59 +138,48 @@ $(document).scroll(function(){
             }
 
             if (title == "Options") {
+                vbp
                 $(this).html('');
-            }
-            else if (title == "Icon") {
+            } else if (title == "Icon") {
                 $icon_btn = $('<button class="btn btn-default btn-sm iconpicker record-icon" role="iconpicker" data-icon="" data-index="' + $(this).index() + '" data-iconset="fontawesome" style="color:#0066"></button>');
                 $(this).html($icon_btn);
-                view_records.get_used_icons();
-            }
-            else {
-                var search_val = view_records.table.column($(this).index()).search();
-				if(typeof search_val[0]!=="undefined"){
-				var filter_val = search_val[0];	
-				} else {
-				var filter_val = "";	
-				}
+                view.get_used_icons();
+            } else {
+                var search_val = view.table.column($(this).index()).search();
+                if (typeof search_val[0] !== "undefined") {
+                    var filter_val = search_val[0];
+                } else {
+                    var filter_val = "";
+                }
                 $(this).html('<input class="dt-filter input-sm form-control" ' + filter_attribute + ' value="' + filter_val + '" />');
             }
         });
 
         // Apply the search
-        view_records.table.columns().eq(0).each(function (colIdx) {
-
-
-            var run_filter = debounce(function () {
-                view_records.table.column(colIdx).search(this.value).draw();
+        view.table.columns().eq(0).each(function(colIdx) {
+            var run_filter = debounce(function() {
+				var order = view.table.colReorder.order();
+                view.table.column(order[colIdx]).search(this.value).draw();
             }, 1000);
-
-            $('input', view_records.table.column(colIdx).footer()).on('keyup change', run_filter);
-
+            $('input', view.table.column(colIdx).footer()).on('keyup change', run_filter);
         });
 
 
         $("div.dataTables_scrollFootInner table tfoot tr").appendTo('div.dataTables_scrollHeadInner table thead');
 
         $('#search_0').css('text-align', 'center');
-		
-		view_records.table.on('column-reorder',function(e, settings, details){
-   	$.ajax({url:helper.baseUrl+'datatables/save_order',
-	type:"POST",
-	dataType:"JSON",
-	data:{ columns:view_records.table.colReorder.order(),view:table_columns.view_id }
-	})
-});
 
-    },
-    export_data: function() {
-        $.ajax({
-            url: helper.baseUrl + 'records/export_data',
-            type: "POST",
-            dataType: "JSON"
-        }).done(function (response) {
-            console.log(response);
+        view.table.on('column-reorder', function(e, settings, details) {
+            $.ajax({
+                url: helper.baseUrl + 'datatables/save_order',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    columns: view.table.colReorder.order(),
+                    view: table_columns.view_id
+                }
+            })
         });
-    }
-
+    },
 
 }

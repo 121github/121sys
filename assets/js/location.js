@@ -3,12 +3,14 @@
  ========================================================================== */
 //getLocation();
 function getLocation() {
+	if(typeof google !== "undefined"){
 	if (navigator.geolocation) {
         return navigator.geolocation.getCurrentPosition(getLocationSuccess, getLocationError,{timeout:10000});
     }
     alert('Geolocation is not enabled on this device. Some features will not work');
 	flashalert.danger('Geolocation is not enabled on this device. Some features will not work');
     return false;
+	} 
 }
 
 
@@ -21,7 +23,6 @@ function getLocationSuccess(position) {
         locality = null,
         exit     = 0,
         geocoder;
-    
     geocoder = new google.maps.Geocoder();
     geocoder.geocode({
         location: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),

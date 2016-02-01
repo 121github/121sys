@@ -1,33 +1,14 @@
-$(document).ready(function () {
-    planner.init();
-});
-
 function initializemaps(){
-   		maps.initialize("planner");
+   maps.initialize();
 }
 
 //allow the map.js file to call a generic function to redraw the table specified here (appointment)
 function planner_reload() {
-    //reload the planner
-    planner.populate_table();
+    view.populate_table();
 }
-function map_table_reload() {
-    //do nothing - the planner does not need to change when the map does.
-}
-var planner = {
+
+var view = {
     init: function () {
-        planner.reload_table();
-
-		$('#map-view-toggle').bootstrapToggle({
-            onstyle: 'success',
-            size: 'mini',
-        }).show().bootstrapToggle('off');
-
-	   $(document).on('change','#map-view-toggle',function(){
-	       maps.showMap($(this));
-            map_table_reload();
-	   });
-
         $('.daterange').daterangepicker({
                 opens: "left",
                 singleDatePicker: true,
@@ -64,7 +45,7 @@ var planner = {
             $(this).closest('li').insertBefore($(this).closest('li').prev());
             $(this).closest('.record-planner-item').find('.route').empty();
             $('.route').empty();
-            planner.fix_order_buttons();
+            view.fix_order_buttons();
             maps.updateRecordPlannerList();
         });
 
@@ -73,7 +54,7 @@ var planner = {
             $(this).parents('li').insertAfter($(this).parents('li').next());
             $(this).closest('.record-planner-item').find('.route').empty();
             $('.route').empty();
-            planner.fix_order_buttons();
+            view.fix_order_buttons();
             maps.updateRecordPlannerList();
         });
 
@@ -104,7 +85,7 @@ var planner = {
 
 
         $(document).on('click', '.remove-from-planner,.save-planner', function () {
-            planner.reload_table();
+            view.reload_table();
         });
         $('.filter-form').find('input[name="date"]').change(function () {
             console.log("pooP");
@@ -127,10 +108,9 @@ var planner = {
             $('.map-form').find('input[name="travel-mode"]').val($(this).attr('item-mode'));
             maps.calcRoute();
         });
-
     },
     reload_table: function () {
-        planner.populate_table();
+        view.populate_table();
     },
     fix_order_buttons: function () {
         $planner_items = $('ul .record-planner-item');
@@ -147,7 +127,7 @@ var planner = {
         });
     },
     populate_table: function () {
-
+		console.log("Start pop table");
         /*******************************************************************/
         /********************** GET and PRINT THE RECORDS *************/
         /*******************************************************************/
@@ -155,20 +135,20 @@ var planner = {
         $('.dt_info').hide();
 
         $.ajax({
-            url: helper.baseUrl + "planner/planner_data",
+            url: helper.baseUrl + process_url,
             type: "POST",
             dataType: "JSON",
             data: {
-                bounds:(typeof map=="undefined"?null:maps.getBounds()),
-                map: $('#map-view-toggle').prop('checked'),
+                bounds:maps.getBounds(),
+                map: true,
                 date: $('.filter-form').find('input[name="date"]').val(),
                 user_id: $('.filter-form').find('input[name="user"]').val()
             }
         }).done(function (response) {
             var button_size = "btn-lg";
-            if (device_type == "mobile") {
+            if (device_type == "mobile"||device_type=="mobile2") {
                 button_size = "btn-sm";
-            } else if (device_type == "tablet" || device_type == "tablet2" || device_type == "mobile2") {
+            } else if (device_type == "tablet" || device_type == "tablet2") {
                 button_size = "";
             }
 			if(response.use_home){
@@ -207,7 +187,7 @@ var planner = {
                         }
                         route =
                             '<span class="route" style=" vertical-align:top"><span style="opacity: 0.4; filter: alpha(opacity=40); padding:5px 5px 0">' +
-                            '<img width="15px;" src="assets/img/icons/' + travelIcon + '.png"/>' +
+                            '<img width="15px;" src="'+helper.baseUrl+'assets/img/icons/' + travelIcon + '.png"/>' +
                             '</span>' +
                             '<span class="small">' +
                             (Math.ceil((val.distance / 1000) / 1.2)) + ' miles - ' +
@@ -256,12 +236,12 @@ var planner = {
                             '</button>' +
                             '</div></div>'
                     } else {
-                        planner_item = '<li class="list-unstyled" style="margin:0; padding:0" ><div class="row record-planner-item" style="margin:10px 0" data-postcode="' + val.postcode + '" data-planner-id="' + val.record_planner_id + '" >' +
-                            (k > 0 ? '<div style="text-align:center"><span style="font-size:30px; padding-bottom:5px; cursor:grab" class="fa fa-arrow-down drag"></span>' + route + '</div>' : '') +
+                        planner_item = '<li class="list-unstyled" style="margin:0; padding:0" ><div class="row record-planner-item" data-postcode="' + val.postcode + '" data-planner-id="' + val.record_planner_id + '" >' +
+                            (k > 0 ? '<div style="text-align:center"><span class="fa fa-arrow-down drag" style="font-size:30px; padding-bottom:15px; cursor:grab"></span>' + route + '</div>' : '') +
                             '<div class="col-lg-12 col-sm-12" style="padding:0px;margin:0px">' +
                             '<div class="btn-group" style="width:100%;display:table;">' +
                             '<button type="button" style="display:table-cell;width:10%;" class="btn ' + button_size + ' btn-success expand-planner"><span class="fa fa-plus"></span></button>' +
-                            '<button type="button" style="display:table-cell; width:60%" class="btn ' + button_size + ' btn-success planner-title" data-modal="view-record" data-marker=' + val.planner_id + ' data-urn="' + val.urn + '" ><span class="pull-left">' + title + '</span>' +
+                            '<button type="button" class="btn ' + button_size + ' btn-success planner-title" data-modal="view-record" data-marker=' + val.planner_id + ' data-urn="' + val.urn + '" ><span class="pull-left">' + title + '</span>' +
                             '</button>' +
                             '<button type="button" data-pos="' + k + '" style="display:table-cell;width:10%" ' +
                             ' class="btn ' + button_style + ' ' + button_size + ' godown-btn">' +
@@ -298,7 +278,7 @@ var planner = {
                     '</div>';
             }
             $('#draggablePanelList').html(pbody);
-            planner.fix_order_buttons();
+            view.fix_order_buttons();
             maps.showItems();
             $('#draggable-items').sortable({
                 // Only make the .panel-heading child elements support dragging.
@@ -309,12 +289,25 @@ var planner = {
                     maps.updateRecordPlannerList();
                 }
             });
-
-        });
-        //Show the branches if those exist
-        planner.showBranches();
+				view.render_display();
+        });        //Show the branches if those exist
+        view.showBranches();
     },
-
+	render_display:function(){
+        if (device_type == "mobile2") {
+			$('#map-canvas').css('height', $('#view-container').height());
+        } else if(device_type == "mobile"){
+			$('#map-canvas').css('height', $('#view-container').height());
+		} else {
+			$('#map-canvas').css('height', $('.panel-body').height());
+        }
+		
+		if(typeof map!=="undefined"){
+		google.maps.event.trigger(map,'resize')
+		}
+		getLocation();
+		console.log("rendering");
+	},
     showBranches: function () {
         maps.branches = [];
         var user_id = $('form').find('input[name="user"]').val();

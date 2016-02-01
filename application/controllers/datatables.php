@@ -35,9 +35,10 @@ class Datatables extends CI_Controller
 
 	$selected_columns = $this->Datatables_model->selected_columns($view_id);
 	foreach($selected_columns as $k=>$column){
+	$key  = array_search($k, $columns);
 	$this->db->where(array("column_id"=>$column['column_id'],"view_id"=>$view_id));
 	$this->db->join("datatables_views","datatables_view_columns.view_id=datatables_views.view_id");
-	$this->db->update("datatables_view_columns",array("sort"=>$columns[$k]));
+	$this->db->update("datatables_view_columns",array("sort"=>$key));
 	}
 	}
 

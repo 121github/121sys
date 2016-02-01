@@ -15,6 +15,7 @@ class Datatables_model extends CI_Model
 	//now select the one they specified	
 	$this->db->where(array("view_id"=>$id,"user_id"=>$_SESSION['user_id']));	
 	$this->db->update("datatables_views",array("selected"=>1));
+			$this->firephp->log($this->db->last_query());
 	}
 	
 	public function get_user_views($table_id){
