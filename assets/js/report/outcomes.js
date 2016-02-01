@@ -94,22 +94,6 @@ var outcome = {
                 $('#outcome-name').text(response.outcome);
                 $.each(response.data, function (i, val) {
                     if (response.data.length) {
-                        var hours = Math.floor(val.duration / 3600);
-                        var minutes = Math.floor((val.duration - (hours * 3600)) / 60);
-                        var seconds = val.duration - (hours * 3600) - (minutes * 60);
-
-                        if (hours < 10) {
-                            hours = "0" + hours;
-                        }
-                        if (minutes < 10) {
-                            minutes = "0" + minutes;
-                        }
-                        if (seconds < 10) {
-                            seconds = "0" + seconds;
-                        }
-
-                        var duration = hours + ' h ' + minutes + ' m';
-
                         var style = "";
                         var success = "";
                         if (val.outcomes > 0 && val.duration > 0) {
@@ -137,7 +121,9 @@ var outcome = {
                             + "</td><td>" +
                             (val.outcomes > 0?((val.outcomes / val.total_dials) * 100).toFixed(2):(0).toFixed(2)) + '%'
                             + "</td><td class='duration' style='duration'>"
-                            + ((val.group != "time")&&(val.group != "reason") ? duration : "-")
+                            + ((val.group != "time")&&(val.group != "reason") ? outcome.toHHMMSS(val.duration) : "-")
+                            + "</td><td class='exceptions' style='exceptions'>"
+                            + ((val.group != "time")&&(val.group != "reason") ? outcome.toHHMMSS(val.exceptions*60) : "-")
                             + "</td><td class='rate' style='rate'>"
                             + ((val.group != "time")&&(val.group != "reason") ? val.rate : "-")
                             + "</td><td>"
@@ -343,5 +329,21 @@ var outcome = {
                 }
             }
         });
+    },
+    toHHMMSS: function (secs) {
+        if(secs!==null){
+            var sec_num = parseInt(secs, 10); // don't forget the second param
+            var hours   = Math.floor(sec_num / 3600);
+            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+            var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+            var time    = hours+':'+minutes+':'+seconds;
+        } else {
+            time = "00:00:00";
+        }
+        return time;
     }
 }

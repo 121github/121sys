@@ -264,7 +264,7 @@ class Form_model extends CI_Model
             $qry = "select pot_id id,pot_name name from records left join data_pots using(pot_id) where campaign_id in ({$_SESSION['campaign_access']['list']}) group by pot_name order by pot_name";
 
         $x =  $this->db->query($qry)->result_array();
-		$this->firephp->log($this->db->last_query());
+		//$this->firephp->log($this->db->last_query());
 		return $x;
     }
 	
