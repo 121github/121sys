@@ -122,7 +122,7 @@ switch ($domain) {
 }
 
 //sets the expirey time of the cookie
-ini_set('session.gc_maxlifetime', 2 * 60 * 60);
+//ini_set('session.gc_maxlifetime', 2 * 60 * 60);
 session_name($session_name);
 session_start();
 $_SESSION['session_name'] = session_name();

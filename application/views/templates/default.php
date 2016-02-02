@@ -24,16 +24,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/default.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/js/plugins/mmenu2/core/css/jquery.mmenu.all.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/plugins/dataTables/css/font-awesome.css">
-    <style>
-        .navbar-toggle {
-            display: block;
-        }
-
-        .navbar-toggle {
-            float: left;
-            margin-left: 15px;
-        }
-    </style>
     <!-- Set the baseUrl in the JavaScript helper -->
     <?php //load specific javascript files set in the controller
     if (isset($css)):
@@ -290,6 +280,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url(); ?>assets/js/plugins/browser/jquery.browser.min.js"></script>
 <script src="<?php echo base_url() . "assets/js/modals.js?v" . $this->config->item('project_version'); ?>"></script>
 <script src="<?php echo base_url() . "assets/js/main.js?v" . $this->config->item('project_version'); ?>"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['user_id'])){ ?>
         helper.user_id = $.parseJSON('<?php echo $_SESSION['user_id'] ?>');
