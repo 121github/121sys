@@ -225,20 +225,24 @@ var maps = {
         if (device_type == "mobile2") {
             $('.top-row').hide();
             $('.bottom-row').hide();
-            $('.panel-body').css('height', 500);
-            $('.dataTables_scrollBody').css('height', $('.panel-body').height() - 30);
-            $('body').css('overflow', 'auto');
+  			$('.panel-body').css('height', 'auto');
+			$('body').css('overflow', 'auto');
         } else if(device_type == "mobile"){
 			$('.top-row').show();
             $('.bottom-row').show();
-            $('.panel-body').css('height', 500);
+            $('.panel-body').css('height', 'auto');
+			$('body').css('overflow', 'auto');
 		} else {
             $('.top-row').show();
             $('.bottom-row').show();
             $('.panel-body').css('height', $(window).height() - 150);
             $('.dataTables_scrollBody').css('height', $('.panel-body').height() - 210);
+			$('#map-canvas').css('height', $('.panel-body').height());
+			$('body').css('overflow', 'hidden');
         }
-		$('#map-canvas').css('height', $('.panel-body').height());
+		if(typeof view.table !== "undefined"){
+		 view.table.columns.adjust()
+		}
 		if(typeof map!=="undefined"){
 		google.maps.event.trigger(map,'resize')
 		}

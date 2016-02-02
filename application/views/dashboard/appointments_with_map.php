@@ -21,12 +21,12 @@
 <div class="panel-body" style="padding:0; margin:0; position:relative">
   <div class="loading-overlay"></div>
         <div class="row" style="padding:0; margin:0;">
-        <div class="col-xs-6">
+        <div class="col-xs-12 col-sm-6 col-md-6">
         <div id="view-container">                <img class="table-loading"
                      src='<?php echo base_url() ?>assets/img/ajax-loader-bar.gif'>
             </div>
             </div>
-            <div class="col-xs-6" id="map-view">
+            <div class="col-xs-12 col-sm-6 col-md-6" id="map-view">
           
                         <div id="map-canvas"></div>
                     <div class="directions-btn">
@@ -90,13 +90,13 @@ body { }
 .panel-body { overflow:hidden }
 #view-container { overflow-y:auto; height:100%; overflow-x:hidden; }
 #map-view { padding:0 !important; height:100%; }
-/*
+
 .dataTables_scrollBody { overflow-y:auto;overflow-x:hidden; height:100%; }
-*/
+
 	.dataTables_scroll table { margin:0 !important; padding:0 !important; background:#fff }
 	.dataTables_scroll { border-left:1px solid #ddd;border-right:1px solid #ddd; background:#eee; margin-bottom:10px  }
 
-	.dataTables_scrollHeadInner {  padding-right:17px; }
+	/*.dataTables_scrollHeadInner {  padding-right:17px; } */
 .planner-travel-mode {opacity: 0.4; filter: alpha(opacity=40);}
     #map-canvas {
 		position: relative; 
