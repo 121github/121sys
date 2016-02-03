@@ -919,7 +919,7 @@ var record = {
 					}
 					if(typeof val.transfer!=="undefined"){
 					 $.each(val.transfer, function (dt, tel) {
-					transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num + '#'+record.campaign+'" target="_blank" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';
+					transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num + '+'+record.campaign+'" target="_blank" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';
 					 });
 					 transfer_telephone_items += '<div class="clearfix"></div>';
 					}
@@ -1099,7 +1099,7 @@ var record = {
                     });
 					if(typeof val.transfer!=="undefined"){
 					 $.each(val.transfer, function (dt, tel) {
-					transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ '#'+record.campaign+'" target="_blank" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';
+					transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ '+'+record.campaign+'" target="_blank" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';
 					 });
 					 transfer_telephone_items += '<div class="clearfix"></div>';
 					}
