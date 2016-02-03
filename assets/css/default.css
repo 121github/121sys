@@ -440,17 +440,18 @@ pre {
 }
 
 #threecol-dropzone {
-	height: 300px;
+	height: 100%;
 	padding: 10px;
 }
 
 #onecol-dropzone {
-	height: 80px;
+	height: 100%;
+	min-height: 100px;
 
 }
 
 .dropzone {
-	background-color: #ccc;
+	background-color: transparent;
 	border: dashed 4px transparent;
 	border-radius: 4px;
 	/*margin: 10px auto 30px;*/

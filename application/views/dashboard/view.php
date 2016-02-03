@@ -124,7 +124,15 @@
 <div id="yes-drop" class="draggable drag-drop"> #yes-drop </div>
 
 <div id="threecol-dropzone" class="dropzone">
-    <div class="row">
+<!--    <div class="row">-->
+<!--        <div class="col-lg-6" style="position: absolute; left: 10px">-->
+<!--            <div id="onecol-dropzone" class="dropzone"></div>-->
+<!--        </div>-->
+<!--        <div class="col-lg-6" style="position: absolute; right: 10px">-->
+<!--            <div id="onecol-dropzone" class="dropzone"></div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="row" style="margin-top: 10px;">
         <div class="col-lg-4">
             <div id="onecol-dropzone" class="dropzone one"></div>
         </div>
@@ -135,15 +143,20 @@
             <div id="onecol-dropzone" class="dropzone"></div>
         </div>
     </div>
+</div>
+
+<div id="threecol-dropzone" class="dropzone">
     <div class="row" style="margin-top: 10px;">
-        <div class="col-lg-6">
-            <div id="onecol-dropzone" class="dropzone"></div>
+        <div class="col-lg-4">
+            <div id="onecol-dropzone" class="dropzone one"></div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
+            <div id="onecol-dropzone" class="dropzone two"></div>
+        </div>
+        <div class="col-lg-4">
             <div id="onecol-dropzone" class="dropzone"></div>
         </div>
     </div>
-
 </div>
 
 
@@ -237,10 +250,11 @@
                 event.relatedTarget.removeAttribute('data-x');
                 event.relatedTarget.removeAttribute('data-y');
 
-                event.relatedTarget.style.width =  rect.width + 'px';
+                event.relatedTarget.style.width =  (rect.width-20) + 'px';
 
-                event.target.appendChild(event.relatedTarget);
+                //event.target.appendChild(event.relatedTarget);
                 event.target.insertBefore(event.relatedTarget, event.target.firstChild);
+                event.relatedTarget.style.margin = '10px';
 
             },
             ondropdeactivate: function (event) {
