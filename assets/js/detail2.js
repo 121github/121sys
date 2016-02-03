@@ -183,7 +183,7 @@ var record = {
         var counter = 0;
         setInterval(function () {
             ++counter;
-            if ($('#defaultCountdown').text() >= '00:20') {
+            if ($('#defaultCountdown').text() >= '00:35') {
                 $('#timeropened').css({"color": "#F00"});
                 $('#timerclosed').css({"color": "#F00"});
             }
