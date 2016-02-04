@@ -1,0 +1,18 @@
+<style>
+span.attendee-text { background:#FFF; padding:2px 5px; font-weight:bold }
+</style>
+
+<span id="cal-slide-tick" style="display: none"></span>
+<div id="cal-slide-content" class="cal-event-list">
+<!--<button item-day="<%= date %>" class="pull-right block-day-btn btn btn-info">Add Rule</button>-->
+	<ul class="unstyled list-unstyled">
+		<% _.each(events, function(event) { %>
+			<li>
+				<span style="background-color:<%= event['color'] %>"  class="pull-left event"></span>&nbsp;
+				<a href="#" data-modal='view-appointment' data-id="<%= event.id %>" data-event-id="<%= event.id %>"
+					 class="event-item">
+					<%= event.starttime %> - <%= event.endtime %> <span style="color:<%= event.color %>" class="attendee-text"><%= event.attendees %></span> <%= event.tooltip %><%= event.statusinline %></a>
+			</li>
+		<% }) %>
+	</ul>
+</div>

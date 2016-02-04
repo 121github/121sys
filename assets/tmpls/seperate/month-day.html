@@ -1,0 +1,17 @@
+<style>
+.tooltip-inner { max-width:350px;font-size:1em !important }
+.distance-text { color:#0F0 }
+</style>
+
+<div class="cal-month-day <%= cls %>">
+	<span class="pull-right rule-tooltip" data-html="true" data-cal-date="<%= data_day %>" data-cal-view="day" data-toggle="tooltip" title="<%= tooltip %>"><%= day %></span>
+	<% if (events.length > 0) { %>
+		<div class="events-list" data-cal-start="<%= start %>" data-cal-end="<%= end %>">
+			<% _.each(events, function(event) { %>
+				<a href="#" data-modal='view-appointment' data-id="<%= event.id %>" data-event-id="<%= event.id %>" data-event-class="<%= event['class'] %>"
+					class="pull-left" data-toggle="tooltip" data-html="true"
+					title="<%= event.tooltip %> <span class='distance-text'><%= event.distance %></span>"><span style="color:<%= event['color'] %>" class="<%= event.icon %>"></span></a>
+			<% }); %>
+		</div>
+	<% } %>
+</div>

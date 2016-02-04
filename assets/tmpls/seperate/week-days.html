@@ -1,0 +1,31 @@
+<style>
+.tooltip-inner {text-align:left; max-width:350px; font-size:12px !important }
+.cal-week-box [data-event-class] {
+    line-height:normal;
+    white-space: normal;
+	font-size:12px;
+	padding:5px; 
+	height:auto
+}
+</style>
+<% _.each(events, function(event){ %>
+<div class="cal-row-fluid">
+	<div class="cal-cell<%= event.days%> cal-offset<%= event.start_day %> day-highlight dh-<%= event['class'] %>"
+		 data-event-class="<%= event['class'] %>" style="background-color:<%= event.color %>">
+		<a data-modal='view-appointment' data-id="<%= event.id %>" href="#" data-event-id="<%= event.id %>"
+		   class="cal-event-week event<%= event.id %>" style="font-size: 12px;width:60px" data-toggle="tooltip" data-html="true"
+		   title="Time: <%= event.starttime %> - <%= event.endtime %>
+							<br>Postcode: <%= event.postcode %>
+							<br>Campaign: <%= event.campaign %>
+							<br>Type: <%= event.appointment_type %>
+							<%= event.company %>
+							<%= event.contact %>
+							<br>Attendee: <%= event.attendees %>
+							<%= event.status %>
+							<%= event.distance_hover %> from specified postcode">
+			<%= event.title %>
+			<%= event.starttime %> - <%= event.endtime %> <%= event.tooltip %>
+		</a>
+	</div>
+</div>
+<% }); %>
