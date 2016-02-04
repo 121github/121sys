@@ -21,7 +21,7 @@ class Calendar_model extends CI_Model
         $end = $options['end'];
         $order_by = "";
 
-        $join .= " left join companies using(urn) left join contacts using(contact_id) left join campaigns using(campaign_id) left join campaign_types using(campaign_type_id) left join appointment_attendees using(appointment_id) left join users using(user_id) ";
+        $join .= " left join companies using(urn) left join contacts using(contact_id) left join campaigns using(campaign_id) left join campaign_types using(campaign_type_id) left join appointment_attendees using(appointment_id) join appointment_types using(appointment_type_id) left join users using(user_id) ";
         if (!empty($options['postcode']) && !empty($options['distance'])) {
             $distance = intval($options['distance']) * 1.1515;
 			 $order_by = " order by distance";
@@ -75,7 +75,7 @@ class Calendar_model extends CI_Model
         if (isset($options['modal'])) {
             $query = "select appointments.postcode, if(companies.name,'',companies.name) as title, if(contacts.fullname,'',contacts.fullname) as contact, appointment_id,`start`,`end`,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
         } else {
-            $query = "select appointments.urn,appointment_id,campaign_name,date(start) as `date`, appointments.title,text,`start`,`end`,postcode,if(appointments.`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company, if(contacts.fullname,'',contacts.fullname) as contact, users.name as user $select_distance from appointments $join where 1 and appointments.`status` = 1 $where $having $order_by";
+            $query = "select appointments.urn,appointment_id,icon,appointment_type,appointment_type_id,campaign_name,date(start) as `date`, appointments.title,text,`start`,`end`,postcode,if(appointments.`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company, if(contacts.fullname,'',contacts.fullname) as contact, users.name as user $select_distance from appointments $join where 1 and appointments.`status` = 1 $where $having order by users.name";
            
         }
         $array = array();

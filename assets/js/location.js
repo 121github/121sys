@@ -62,6 +62,7 @@ function getLocationSuccess(position) {
                     }
                 }
             }
+			console.log(postcode);
             if(postcode !== null){
 				document.cookie = "current_postcode="+postcode;
 				document.cookie = "location_error==;expires=Thu, 01 Jan 1970 00:00:00 UTC";
@@ -154,13 +155,8 @@ function getAddressByPostcode(postcode){
     });
   }
 }
-
-
-$(document).on('blur', '.current_postcode_input', function(e) {
-    e.preventDefault();
-    var postcode = $('.current_postcode_input')[0].value; 
-	if (postcode) {
-		//getAddressByPostcode(postcode);
-	}
+$(document).on('click', '.locate-postcode', function(e) {
+getLocation();
+$('.current_postcode_input').val(getCookie('current_postcode'));
 });
 

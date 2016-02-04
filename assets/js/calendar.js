@@ -2,6 +2,17 @@ window.onresize = function(event) {
    verifyConflictEvents();
 };
 
+$(document).on('click','#switch-cal-view',function(e){
+	e.preventDefault();
+	$.ajax({ url: helper.baseUrl +'calendar/switch_view',
+	type:"POST",
+	data:{ view:$('#switch-cal-view').attr('data-cal-view') }
+	}).done(function(){
+		location.reload();
+	});
+
+});
+
 function verifyConflictEvents(resize) {
 	var cal_width = $('#cal-day-box').width()-60;
 	var complete = [];
@@ -16,10 +27,18 @@ function verifyConflictEvents(resize) {
                         var schedule = $(this).children("span").html();
 						var elements = [];
 						var resize = false;
-						var events = $('.day-event:contains("'+schedule+'")').length;
+						var events = $('.day-event:contains("'+schedule+'")');
+						var events_count = events.length;
+						var hover_dots ='';
+							$.each(events,function (i,row) {
+								
+		hover_dots += '<a href="#" data-modal="view-appointment" data-id="'+$(this).attr('data-id')+'" data-event-id="" data-event-class="" class="pull-left pointer" data-toggle="tooltip" data-html="true" title="'+$(this).attr('data-tt')+'" data-title-original="'+$(this).attr('data-tt')+'" ><span style="background-color:'+$(this).attr('data-color')+'" class="event"></span></a>';
+	});
+						
 						var boxes = $(".pull-left.day-event.day-highlight").not(':hidden').length;
 						if(complete.indexOf(schedule)==-1){
-							event.children("span").after('<div class="day-text event-counts">x'+events+'</div>');
+							event.children("span").after('<div class="day-text event-counts">'+hover_dots+'</div>');
+							
                         $(this).siblings().each(function (i) {
                             if ($(this).children("span").html() == schedule) {
                                 //event.css("position", "absolute");
@@ -27,9 +46,10 @@ function verifyConflictEvents(resize) {
 								complete.push(schedule);
                             }
                         });
+						
 						}
-						 
                     });
+					$('[data-toggle="tooltip"]').tooltip(); 
 					//number of boxes
 					
 					var boxes = $(".pull-left.day-event.day-highlight").not(':hidden').length;
@@ -54,7 +74,7 @@ function resizeEvents(events){
 	
 }
 
- var calendar = "";
+
   var appointment_rules = {
 	              get_slots_in_group: function(id) {
                 var slot_select = $('#appointment-slot-select');
@@ -95,13 +115,11 @@ function resizeEvents(events){
 							if(rule.reason.length>0){
 								var reason = ": "+rule.reason;
 							}
-                            title += "<tr>" +
-                                "<td style='text-align: left;'>" + rule.name + reason +"</td>" +
-                                "</tr>";
+                            title += "<tr><td style='text-align: left;'>" + rule.name +": </td><td>"+ rule.reason +"</td></tr>";
                         });
                         title += '</table>';
+                        $('.cal-month-day').find('[data-cal-date="' + key + '"]').css('border-radius','10px').css('padding','3px 5px').css('color', '#fff').css('background-color','red').attr('data-html','true').attr('data-original-title', title).tooltip();
 
-                        $('.cal-month-day').find('.rule-tooltip[data-cal-date="' + key + '"]').css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
                         $('.cal-week-box').find('.rule-tooltip[data-cal-date="' + key + '"]').css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
                         $('#cal-day-box').find('.rule-tooltip[data-cal-date="' + key + '"]').css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
                     });
@@ -406,7 +424,7 @@ function resizeEvents(events){
             });
         }
     }
-
+var 	rules = [];
 $(document).ready(function () {
     "use strict";
     //Show appointment rules button
@@ -427,6 +445,9 @@ $(document).ready(function () {
         }
     });
 */
+$(document).on('click','.events-list a',function(e){
+	e.preventDefault();
+});
 
     	//load the available attendee options when the page loads
 	 	appointment_rules.get_calendar_users(false);
@@ -446,6 +467,7 @@ $(document).on('click','a[href="#addrule"]',function(){
     $(document).on('click', '#set-rules', function () {
 calendar_modals.addAppointmentRule(0)
 	})
+
     var options = {
         events_source: function (start, end) {
             var events = [];
@@ -468,13 +490,14 @@ calendar_modals.addAppointmentRule(0)
                 }
                 if (json.result) {
                     events = json.result;
+					rules = json.rules;
                 }
             });
             return events;
         },
         //modal: "#events-modal",
         view: 'month',
-        tmpl_path: helper.baseUrl + 'assets/tmpls/',
+        tmpl_path: helper.baseUrl + 'assets/tmpls/'+calendar_view+'/',
         tmpl_cache: false,
         day: 'now',
         onAfterEventsLoad: function (events) {
@@ -490,6 +513,7 @@ calendar_modals.addAppointmentRule(0)
             });
         },
         onAfterViewLoad: function (view) {
+			console.log(rules);
 			 if (view == 'day') { verifyConflictEvents();}
             $('.page-header h3').text(this.getTitle());
             $('.btn-group button').removeClass('active');

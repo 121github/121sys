@@ -737,10 +737,10 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $where = "";
         if (!empty($date_from)) {
-            $where .= " and (date(r.date_updated) >= '".$date_from."' or (r.date_updated is null and date(r.date_added) >=  '".$date_from."')) ";
+            $where .= " and (date(h.contact) >= '".$date_from."' or (h.contact is null and date(h.contact) >=  '".$date_from."')) ";
         }
         if (!empty($date_to)) {
-            $where .= " and (date(r.date_updated) <= '".$date_to."' or (r.date_updated is null and date(r.date_added) <=  '".$date_to."')) ";
+            $where .= " and (date(h.contact) <= '".$date_to."' or (h.contact is null and date(r.date_added) <=  '".$date_to."')) ";
         }
 
         if (!empty($sources)) {
@@ -748,33 +748,35 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         }
 
         if (!empty($pots)) {
-            $where .= " and r.pot_id IN (" . implode(",", $pots) . ") ";
+            $where .= " and h.pot_id IN (" . implode(",", $pots) . ") ";
         }
 
         if (!empty($outcomes)) {
-            $where .= " and r.outcome_id IN (" . implode(",", $outcomes) . ") ";
+            $where .= " and h.outcome_id IN (" . implode(",", $outcomes) . ") ";
         }
 
         if (!empty($campaigns)) {
-            $where .= " and r.campaign_id IN (" . implode(",", $campaigns) . ") ";
+            $where .= " and h.campaign_id IN (" . implode(",", $campaigns) . ") ";
         }
 
-        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         $qry = "SELECT
                   o.outcome,
-                  r.outcome_id,
+                  h.outcome_id,
                   IF (o.contact_made, 'contact', 'no_contact') as contact,
                   count(r.dials) as num
-                FROM records r
+                FROM history h
                   LEFT JOIN outcomes o USING (outcome_id)
-                  LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
+                 
                   LEFT JOIN data_sources as sources using (source_id)
-                  LEFT JOIN data_pots as pots using (pot_id)";
+                  LEFT JOIN data_pots as pots using (pot_id) join records r using(urn) 
+				   LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
+				  ";
 
         $qry .= " where 1 and o.outcome is not NULL " . $where;
 
-        $qry .= " GROUP BY contact, o.outcome_id
+        $qry .= " GROUP BY o.contact_made, o.outcome_id
                   ORDER BY num desc";
 
         return $this->db->query($qry)->result_array();
@@ -797,10 +799,10 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
 
         $where = "";
         if (!empty($date_from)) {
-            $where .= " and (date(r.date_updated) >= '".$date_from."' or (r.date_updated is null and date(r.date_added) >=  '".$date_from."')) ";
+            $where .= " and (date(h.contact) >= '".$date_from."' or (h.contact is null and date(h.contact) >=  '".$date_from."')) ";
         }
         if (!empty($date_to)) {
-            $where .= " and (date(r.date_updated) <= '".$date_to."' or (r.date_updated is null and date(r.date_added) <=  '".$date_to."')) ";
+            $where .= " and (date(h.contact) <= '".$date_to."' or (h.contact is null and date(r.date_added) <=  '".$date_to."')) ";
         }
 
         if (!empty($sources)) {
@@ -808,32 +810,33 @@ $campaign = isset($options['campaign']) ? $options['campaign'] : "";
         }
 
         if (!empty($pots)) {
-            $where .= " and r.pot_id IN (" . implode(",", $pots) . ") ";
+            $where .= " and h.pot_id IN (" . implode(",", $pots) . ") ";
         }
 
         if (!empty($outcomes)) {
-            $where .= " and r.outcome_id IN (" . implode(",", $outcomes) . ") ";
+            $where .= " and h.outcome_id IN (" . implode(",", $outcomes) . ") ";
         }
 
         if (!empty($campaigns)) {
-            $where .= " and r.campaign_id IN (" . implode(",", $campaigns) . ") ";
+            $where .= " and h.campaign_id IN (" . implode(",", $campaigns) . ") ";
         }
 
-        $where .= " and r.campaign_id in({$_SESSION['campaign_access']['list']}) ";
+        $where .= " and h.campaign_id in({$_SESSION['campaign_access']['list']}) ";
 
         $qry = "SELECT
-                  count(r.dials) as num,
+                  count(*) as num,
                   IF (o.contact_made, 'Total Contact', 'Total No Contact') as contact
-                FROM records r
+                FROM history h 
                   LEFT JOIN outcomes o USING (outcome_id)
-                  LEFT JOIN status_list s ON (s.record_status_id = r.record_status)
                   LEFT JOIN data_sources as sources using (source_id)
-                  LEFT JOIN data_pots as pots using (pot_id)";
+                  LEFT JOIN data_pots as pots using (pot_id)
+				  join records r using(urn) 
+				  LEFT JOIN status_list s ON (s.record_status_id = r.record_status)";
 
         $qry .= " where 1 and o.outcome is not NULL " . $where;
 
-        $qry .= " GROUP BY contact";
-
+        $qry .= " GROUP BY o.contact_made";
+$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 

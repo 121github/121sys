@@ -18,6 +18,12 @@ class Calendar extends CI_Controller
         $this->load->model('Appointments_model');
     }
 
+	public function switch_view(){
+		$view = $this->input->post('view');
+		$this->db->where("user_id",$_SESSION['user_id']);
+		$this->db->update("users",array("calendar"=>$view));	
+	}
+
     public function get_calendar_users()
     {
         if ($this->input->post('campaigns')) {
@@ -63,17 +69,21 @@ class Calendar extends CI_Controller
         if ($disable_campaign_filter && !isset($_SESSION['current_campaign'])) {
             redirect('error/calendar');
         }
+		//get the calendar view preference
+		$calendar_view = $this->db->get_where("users",array("user_id"=>$_SESSION['user_id']))->row()->calendar;
         $data = array(
             'campaign_access' => $this->_campaigns,
 
             'title' => 'Dashboard | Calendar',
             'page' => 'data',
+			'calendar_view' => $calendar_view=="1"?"combined":"seperate",
             'javascript' => array(
                 'lib/underscore.js',
                 'plugins/calendar/js/calendar.js?v' . $this->project_version,
                 'calendar.js?v' . $this->project_version,
                 'location.js?v' . $this->project_version,
-                'plugins/jqfileupload/jquery.fileupload.js',
+        		 'import.js?v' . $this->project_version,           
+		      'plugins/jqfileupload/jquery.fileupload.js',
                 'plugins/jqfileupload/jquery.fileupload-process.js',
                 'plugins/jqfileupload/jquery.fileupload-validate.js'
             ),
@@ -168,7 +178,17 @@ class Calendar extends CI_Controller
             $options['modal'] = "list";
         }
         $events = $this->Calendar_model->get_events($options);
-	
+
+		$appointment_rules = $this->Calendar_model->get_appointment_overrides(false,$users);
+            $aux = array();
+            foreach ($appointment_rules as $rule) {
+                if (!isset($aux[$rule['block_day']])) {
+                    $aux[$rule['block_day']] = array();
+                }
+                array_push($aux[$rule['block_day']], $rule);
+            }
+            $appointment_rules = $aux;
+		
         if (isset($_POST['modal'])) {
             foreach ($events as $k => $row) {
                 $date = date('Y-m-d', strtotime($row['start']));
@@ -179,16 +199,19 @@ class Calendar extends CI_Controller
 
         } else {
             foreach ($events as $row) {
+				$tooltip = $row['appointment_type'].($row['appointment_type']=="Telephone"?" appointment":"")." with ".$row['contact']. ($row['company']?" from ".$row['company']:"");
+				
 				$text  = explode("<br>",$row['text']);
                 $result[] = array(
                     'id' => $row['appointment_id'],
-                    'title' => $row['title'],
-                    'text' => (!empty($text[0]) ? $text[0] : ""),
+                    //'title' => $row['title'],
+					'tooltip' => $tooltip,
+                    //'text' => (!empty($text[0]) ? $text[0] : ""),
                     'url' => base_url() . 'records/detail/' . $row['urn'],
                     'class' => 'event-important',
                     'postcode' => $row['postcode'],
                     'distance_hover' => (isset($row['distance']) && !empty($row['distance']) ? "<br><span style='color:#7FFF00'>" . number_format($row['distance'], 2) . " Miles</span>" : ""),
-                    'distance' => (isset($row['distance']) && !empty($row['distance']) ? number_format($row['distance'], 1) . " Miles" : ""),
+                    'distance' => (isset($row['distance'])&&$row['appointment_type_id']!=="2" && !empty($row['distance']) ? number_format($row['distance'], 1) . " Miles" : ""),
                     'start' => strtotime($row['start']) . '000',
                     'end' => strtotime($row['end']) . '000',
 					'starttime' => date('H:i', strtotime($row['start'])),
@@ -198,12 +221,14 @@ class Calendar extends CI_Controller
                     'contact' => (!empty($row['contact']) ? "<br>Contact: " . $row['contact'] : ""),
                     'urn' => $row['urn'],
                     'attendees' => (isset($row['attendeelist']) ? $row['attendeelist'] : "<span class='red'>No Attendee!</span>"),
-                    'status' => (!empty($row['status']) ? "<br>Status: <span class='red'>" . $row['status'] . "</span>" : ""),
-                    'statusinline' => (!empty($row['status']) ? "<span class='red'>" . $row['status'] . "</span>" : ""),
+					'appointment_type' => $row['appointment_type'],
+                    //'status' => (!empty($row['status']) ? "<br>Status: <span class='red'>" . $row['status'] . "</span>" : ""),
+                    //'statusinline' => (!empty($row['status']) ? "<span class='red'>" . $row['status'] . "</span>" : ""),
                     'color' => $row['color'],
                     'startDate' => date('d/m/Y', strtotime($row['start'])),
                     'endDate' => date('d/m/Y', strtotime($row['end'])),
-					'date' => $row['date']
+					'date' => $row['date'],
+					'icon' => $row['icon']
                 );
 				  if(isset($counts[$row['date']]['apps'])){
              $counts[$row['date']]['apps']++;    
@@ -217,7 +242,7 @@ class Calendar extends CI_Controller
             $result[$k]['app_count']=$counts[$v['date']]['apps'];
 	  }
   }
-        echo json_encode(array('success' => 1, 'result' => $result, 'postcode' => $postcode, 'date' => date('Y-m')));
+        echo json_encode(array('success' => 1, 'result' => $result, 'postcode' => $postcode, 'date' => date('Y-m'),'rules'=>$appointment_rules));
         exit;
 
     }
@@ -326,8 +351,10 @@ class Calendar extends CI_Controller
 			} else {
 				$distinct_user = false;
 			}
+			$users = $this->input->post('users');
+		
             //$appointment_rules = $this->Calendar_model->get_appointment_rules($distinct_user);
-			$appointment_rules = $this->Calendar_model->get_appointment_overrides($distinct_user,$this->input->post('users'));
+			$appointment_rules = $this->Calendar_model->get_appointment_overrides($distinct_user,$users);
             $aux = array();
             foreach ($appointment_rules as $rule) {
                 if (!isset($aux[$rule['block_day']])) {
@@ -336,12 +363,14 @@ class Calendar extends CI_Controller
                 array_push($aux[$rule['block_day']], $rule);
             }
             $appointment_rules = $aux;
-
             echo json_encode(array(
                 "success" => (!empty($appointment_rules)),
                 "data" => $appointment_rules
             ));
-        }
+  } 
+  
+  
+
 
     }
 

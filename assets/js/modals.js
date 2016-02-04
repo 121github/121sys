@@ -884,7 +884,7 @@ var modals = {
                         '<span class="btn btn-default fileinput-button">' +
                             '<i class="glyphicon glyphicon-plus"></i>' +
                             '<span>Select file...</span>' +
-                            '<input id="fileupload" type="file" name="files[]" data-url="import/import_file">' +
+                            '<input id="fileupload" type="file" name="files[]" data-url="import/import_ical">' +
                         '</span>' +
                         '<br>' +
                         '<br>' +

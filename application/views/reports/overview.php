@@ -115,27 +115,22 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
-            <div class="panel-heading clearfix"><i class="fa fa-bar-chart-o fa-fw"></i> Activity Overview
+            <div class="panel-heading clearfix"><i class="fa fa-bar-chart-o fa-fw"></i> Activity Report
                 <div class="pull-right" style="border:0px solid black;">
                     <a href="#filter-right" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
                     </a>
-                    <?php if($this->uri->segment(3)=="pots"){ ?>
-					<a href="../overview" class="btn btn-default btn-xs">Show Campaigns</a>
-					<?php }	else { ?>
-                    <a href="overview/pots" class="btn btn-default btn-xs">Show Pots</a>	
-                     <?php } ?>
                 </div>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body table-responsive" style="padding: 0px;">
                 <div class="row">
-                    <div class="col-lg-8" style="padding-right:0">
-                        <div class="panel-body overview-panel small" style="overflow-x:auto">
+                    <div class="col-lg-8">
+                        <div class="panel-body overview-panel">
                             <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif"/>
                         </div>
                     </div>
-                    <div class="col-lg-4" style="padding-left:0">
+                    <div class="col-lg-4">
                         <ul class="nav nav-tabs" style=" background:#eee; width:100%;">
                             <li class="plots-tab"><a href="#chart_div" class="tab" data-toggle="tab">Graphs</a></li>
                             <li class="filters-tab active"><a href="#filters" class="tab" data-toggle="tab">Filters</a></li>

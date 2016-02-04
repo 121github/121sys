@@ -7,10 +7,10 @@
                     <?php
                         $options = array();
                         if(in_array("import ics", $_SESSION['permissions'])) {
-                            array_push($options,'<li><a href="#" class="group-filter" data-modal="import-appointment-btn" id="">Import appointments</a></li>');
+                            //array_push($options,'<li><a href="#" data-modal="import-appointment-btn" id="">Import appointments</a></li>');
                         }
                         if(in_array("export ics", $_SESSION['permissions'])) {
-                            array_push($options,'<li><a href="#" class="group-filter" id="export-appointment-btn">Export appointments</a></li>');
+                            //array_push($options,'<li><a href="#" id="export-appointment-btn">Export appointments</a></li>');
                         }
                     ?>
                     <?php if(in_array("slot availability",$_SESSION['permissions'])){ ?>
@@ -20,18 +20,21 @@
                             </a>
                      </div>
                     <?php } ?>
-                    <?php if (!empty($options)): ?>
+
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                 <span class="glyphicon glyphicon-filter"></span> Options
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
+                            <li>
+<a id="switch-cal-view" data-cal-view="<?php echo $calendar_view=="combined"?"2":"1" ?>" href="#"><?php echo ($calendar_view=="combined"?"Seperate Appts":"Combine Apps") ?></a>
+</li>
                                 <?php foreach ($options as $option): ?>
                                     <?php echo $option; ?>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
-                    <?php endif; ?>
+
                 </form>
             </div>
         </div>
@@ -78,11 +81,7 @@
                             </button>
                             <div style="display:none" id="dist-form">
                                 <p><label>Postcode</label>
-                                    <input name="postcode" value="<?php echo @$_SESSION['calendar-filter']['postcode'] ?>"
-                                           class="form-control current_postcode_input"/>
-                                    <a id="use-my-location" href="#" class="locate-postcode" type="button" data-icon="location"
-                                       data-iconpos="right">Find my location</a>
-
+                                <div class="input-group"><input type="text" class="form-control current_postcode_input" placeholder="Enter a postcode..." name="postcode" value="<?php echo @$_SESSION['calendar-filter']['postcode'] ?>"><div class="input-group-addon pointer btn locate-postcode"><span class="glyphicon glyphicon-map-marker"></span> Use my location</div></div>
                                 <div class="error geolocation-error"></div>
                                 </p>
                                 <p>
@@ -171,3 +170,10 @@
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function(){
+	importer.init();
+	calendar_view = "<?php echo ($calendar_view?$calendar_view:"combined") ?>";
+});
+	
+</script>

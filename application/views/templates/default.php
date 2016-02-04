@@ -57,7 +57,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <?php } ?>
 <div class="navbar navbar-default navbar-fixed-top">
     <?php if (isset($_SESSION['permissions'])) { ?>
-        <a href="#menu" class="navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+        <a href="#menu" class="btn btn-default navbar-toggle"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
                 class="icon-bar"></span></a>
         <?php if (isset($_SESSION['current_campaign']) && isset($campaign_pots) && count($campaign_pots) > 0 && isset($global_filter)) { ?>
             <?php if (isset($_SESSION['current_pot'])) {
