@@ -16,6 +16,39 @@ var dashboard = {
         //    eval("dashboard." + func + "()");
         //});
 
+        $('.daterange').daterangepicker({
+                opens: "left",
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                format: 'DD/MM/YYYY',
+                minDate: "02/07/2014",
+                maxDate: moment(),
+                startDate: moment(),
+                endDate: moment()
+            },
+            function (start, end, element) {
+                var $btn = this.element;
+                $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
+                $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+        });
+
+        $(document).on("click", '#filter-submit', function (e) {
+            e.preventDefault();
+            dashboard.load_dash($(this).attr('item-id'));
+            $('#filter-right').data("mmenu").close();
+        });
+
+        $(document).on("click", '.daterange', function (e) {
+            e.preventDefault();
+        });
+
         $(document).on("click", ".comment-filter", function (e) {
             e.preventDefault();
             $icon = $(this).closest('ul').prev('button').find('span');
@@ -88,13 +121,17 @@ var dashboard = {
             window.location.replace(helper.baseUrl + 'dashboard/view/'+$(this).attr('item-id'));
         });
 
-        $(document).on("click", ".new-panel", function (e) {
+        $(document).on("click", ".new-report", function (e) {
             e.preventDefault();
-            dashboard.add_panel($(this).attr('data-item'));
+            dashboard.select_report($(this).attr('data-item'));
+        });
+
+        $(document).on("click", "#add-report-btn", function (e) {
+            e.preventDefault();
+            dashboard.add_report();
         });
 
         dashboard.filter_panel();
-
     },
 
     refresh_panels: function() {
@@ -971,72 +1008,187 @@ var dashboard = {
         });
     },
 
-    add_panel: function(dashboard_id) {
-        //$.ajax({
-        //    url: helper.baseUrl + 'panels/get_panels',
-        //    type: "POST",
-        //    dataType: "JSON"
-        //}).done(function (response) {
-        //    var options = "";
-        //    if (response.success) {
-        //        $.each(response.panels, function (i, val) {
-        //            var selected = "";
-        //            if (jQuery.inArray(val.id[0], dashboard_viewers) >= 0) {
-        //                selected = "selected";
-        //            }
-        //            options += "<option value='"+val.id+"' "+selected+">"+val.name+"</option>";
-        //        });
-        //    }
-        //});
+    select_report: function(dashboard_id) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_export_forms',
+            type: "POST",
+            dataType: "JSON",
+            data: {'dashboard_id': dashboard_id}
+        }).done(function (response) {
+            var options = "";
+            if (response.success) {
+                options += "<option value=''> Select one report </option>";
+                $.each(response.data, function (i, val) {
+                    options += "<option data-subtext='"+val.description+"' value='"+val.export_forms_id+"'>"+val.name+"</option>";
+                });
 
-         var select_panel =
-            "<select name='panel_id' class='selectpicker' id='panel_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
-                //options +
-            "</select>";
+                var select_report =
+                    "<select name='report_id' class='selectpicker' id='report_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
+                        options +
+                    "</select>";
 
-        var select_report =
-            "<select name='report_id' class='selectpicker' id='report_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
-                //options +
-            "</select>";
+                var mheader = "Add report panel";
 
-        var mheader = "Add panel/report";
-
-        var navtabs = '<ul id="appearance-tabs" class="nav nav-tabs" role="tablist">' +
-                        '<li role="presentation" class="active"><a href="#panels" aria-controls="panels" role="tab" data-toggle="tab">Panels</a></li>' +
-                        '<li role="presentation"><a href="#reports" aria-controls="reports" role="tab" data-toggle="tab">Reports</a></li>' +
-                      '</ul>';
-        var tabpanels = '<div class="tab-content">' +
-                            '<div id="panels" role="tabpanel" class="tab-pane active">' +
-                                '<p>Select the panel</p>' +
-                                select_panel +
-                            '</div>' +
-                            '<div id="reports" role="tabpanel" class="tab-pane">' +
-                                '<p>Select the report</p>' +
+                var navtabs = '<ul id="appearance-tabs" class="nav nav-tabs" role="tablist">' +
+                    '<li role="presentation" class="active"><a href="#reports" aria-controls="reports" role="tab" data-toggle="tab">Reports</a></li>' +
+                    '</ul>';
+                var mbody = "<form id='add-report-form' >" +
+                    "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
+                    "<div class='form-group input-group-sm'>" +
+                        '<div class="row">' +
+                            '<div class="col-lg-6">' +
+                                '<p>Select the report panel</p>' +
                                 select_report +
                             '</div>' +
-                        '</div>';
-        var mbody = "<form id='add-panel-form' >" +
-                        "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
-                        navtabs +
-                        "<div class='form-group input-group-sm'>" +
-                            tabpanels +
-                        "</div>" +
+                            '<div class="col-lg-6">' +
+                                '<div class=""form-group input-group-sm">' +
+                                    '<p>Select the panel size</p>' +
+                                    '<select name="column_size" class="selectpicker" id="report_select" data-size="3">' +
+                                        '<option value="1">1 Column</option>' +
+                                        '<option value="2" Selected>2 Column</option>' +
+                                        '<option value="3">3 Column</option>' +
+                                    '</select>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    "</div>" +
                     "</form>";
 
-        var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="add-panel-btn">Add</button>' +
-            '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+                var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="add-report-btn">Add</button>' +
+                    '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 
-        modals.load_modal(mheader, mbody, mfooter);
+                modals.load_modal(mheader, mbody, mfooter);
+                modal_body.css('overflow','visible');
 
-        $('#modal').on("click",".modal-body li a",function()
-        {
-            tab = $(this).attr("href");
-            $(".modal-body .tab-content div").each(function(){
-                $(this).removeClass("active");
-            });
-            $(".modal-body .tab-content "+tab).addClass("active");
+                $('#modal').on("click",".modal-body li a",function()
+                {
+                    tab = $(this).attr("href");
+                    $(".modal-body .tab-content div").each(function(){
+                        $(this).removeClass("active");
+                    });
+                    $(".modal-body .tab-content "+tab).addClass("active");
+                });
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+
         });
+    },
 
+    add_report: function() {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/add_report',
+            data: $('#add-report-form').serialize(),
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                flashalert.success(response.msg);
+                $('.close-modal').trigger('click');
+                dashboard.load_dash(response.dashboard_id);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
 
+    load_dash: function(dashboard_id) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_dashboard_reports_by_id',
+            data: {'dashboard_id': dashboard_id},
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                $('.dashboard-area').empty();
+                var panels = "";
+                //Build the panels
+                $.each(response.reports, function (i, report) {
+                    var columns = "col-lg-"+report.column_size*4;
+                    panels += '<div class="'+columns+'">' +
+                                '<div class="panel panel-primary">' +
+                                    '<div class="panel-heading clearfix">' + report.name +
+                                        '<div class="pull-right">' +
+                                            '<div class="btn-group">' +
+                                                '<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                                    '<i class="fa fa-gears fa-fw"></i>'+
+                                                '</button>'+
+                                                '<ul class="dropdown-menu slidedown">' +
+                                                    '<li><a href="#" id="1" class="panel-options" data-ref="comments">Remove </a></li>' +
+                                                '</ul>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 400px; overflow: hidden">' +
+                                        '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
+                                    '</div>' +
+                                  '</div>' +
+                              '</div>';
+                });
+                $('.dashboard-area').append(panels);
+
+                //Get the data content of the panels
+                $.each(response.reports, function (i, report) {
+                    $('.filter-form').find('input[name="export_forms_id"]').val(report.report_id);
+                    $.ajax({
+                        url: helper.baseUrl + 'exports/load_export_report_data',
+                        data: $('.filter-form').serialize(),
+                        type: "POST",
+                        dataType: "JSON"
+                    }).done(function(resp) {
+                        if (resp.success && resp.header) {
+                            var body = "<div class='table-responsive'><table class='table table-bordered table-hover table-striped'>";
+                            $('#'+report.report_id+'-panel').empty();
+
+                            body += "<thead><tr>";
+                            $.each(resp.header, function (i, val) {
+                                if (resp.header.length) {
+                                    body += "<th style='padding: 5px;'>" + val + "</th>";
+                                }
+                            });
+                            body += "</tr></thead><tbody>";
+                            $.each(resp.data, function (i, data) {
+                                if (resp.data.length) {
+                                    body += "<tr>";
+                                    $.each(data, function (k, val) {
+                                        body += "<td style='padding: 5px;'>" + val + "</td>";
+                                    });
+                                    body += "</tr>";
+                                }
+                            });
+                            body += "</tbody></table></div>";
+
+                            $('#'+report.report_id+'-panel').append(body);
+
+                            // Change the selector if needed
+                            var $table = $('table.scroll'),
+                                $bodyCells = $table.find('tbody tr:first').children(),
+                                colWidth;
+
+// Adjust the width of thead cells when window resizes
+                            $(window).resize(function() {
+                                // Get the tbody columns width array
+                                colWidth = $bodyCells.map(function() {
+                                    return $(this).width();
+                                }).get();
+
+                                // Set the width of thead columns
+                                $table.find('thead tr').children().each(function(i, v) {
+                                    $(v).width(colWidth[i]);
+                                });
+                            }).resize(); // Trigger resize handler
+                        }
+                        else {
+                            $('#'+report.report_id+'-panel').html("No results found!");
+                        }
+                    });
+                });
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
     }
 }

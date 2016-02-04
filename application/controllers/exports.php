@@ -48,7 +48,7 @@ class Exports extends CI_Controller
             'campaign_access' => $this->_campaigns,
 
 			'pageId' => 'export',
-            'title' => 'Admin | Exporter',
+            'title' => 'Admin | Report Settings',
             'javascript' => array(
                 'lib/moment.js',
                 'lib/daterangepicker.js',

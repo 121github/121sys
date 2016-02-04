@@ -663,4 +663,24 @@ class Dashboard_model extends CI_Model
 
         return $this->db->query($qry)->result_array();
     }
+
+
+    /**
+     * Add report to the Dashboard
+     */
+    public function add_report($form) {
+        return $this->db->insert("dashboard_reports", $form);
+    }
+
+    //Get Dashboard Reports by id
+
+    public function get_dashboard_reports_by_id($dashboard_id) {
+        $qry = "SELECT
+                  *
+                FROM dashboard_reports dr
+                INNER JOIN export_forms e ON (e.export_forms_id = dr.report_id)
+                  WHERE dr.dashboard_id = ".$dashboard_id;
+
+        return $this->db->query($qry)->result_array();
+    }
 }

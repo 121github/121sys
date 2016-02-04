@@ -9,7 +9,7 @@
         <ul class="nav">
             <li>
                 <div class="btn-group">
-                    <span class="btn btn-default btn new-panel" data-item="<?php $dashboard['dashboard_id'] ?>">
+                    <span class="btn btn-default btn new-report" data-item="<?php echo $dashboard['dashboard_id'] ?>">
                         <span class="fa fa-plus fa-fw" style="color:black;"></span>
                     </span>
                     <span class="btn btn-default btn show-charts" data-item="0" charts="chart-div-system,chart-div-email,chart-div-sms,chart-div-outcome" data="data-system,data-email,data-sms,data-outcome">
@@ -36,7 +36,17 @@
 <nav id="filter-right" class="mm-menu mm--horizontal mm-offcanvas">
     <div style="padding:30px 20px 3px">
         <form class="filter-form">
-            <input type="hidden" name="comments">
+            <input type="hidden" name="export_forms_id">
+            <input type="hidden" name="date_from" value="<?php echo date('Y-m-d') ?>">
+            <input type="hidden" name="date_to" value="<?php echo date('Y-m-d') ?>">
+
+            <div style="margin-bottom: 5%;">
+                <button type="button" class="daterange btn btn-default" data-width="100%">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    <span class="date-text"> <?php echo "Today"; ?> </span>
+                </button>
+            </div>
+
             <label style="margin-top: 5%;">Campaign</label>
             <select name="campaigns[]" class="selectpicker campaign-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
@@ -94,7 +104,7 @@
                 <?php } ?>
             </select>
 
-            <button id="filter-overview-submit" class="btn btn-primary pull-right" style="margin-top: 5%;">Submit</button>
+            <button id="filter-submit" class="btn btn-primary pull-right" item-id="<?php echo $dashboard['dashboard_id']; ?>" style="margin-top: 5%;">Submit</button>
         </form>
     </div>
 </nav>
@@ -103,61 +113,51 @@
     <div id="filters"></div>
 </nav>
 
-<!-- /.row -->
 <!--<div class="row">-->
-<!--    <div class="box">-->
-<!--        <div class="boxheader">Header</div>-->
-<!--        <div class="boxbody">-->
-<!--            Resize me-->
+
+<div class="row dashboard-area">
+
+</div>
+
+<!--    <div class="col-lg-12">-->
+<!--        <div style="position: absolute; width: 100%;">-->
+<!--            <div id="threecol-dropzone" class="dropzone">-->
+<!--                <div class="row" style="margin-top: 10px;">-->
+<!--                    <div class="col-lg-4">-->
+<!--                        <div id="onecol-dropzone" class="dropzone one"></div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-4">-->
+<!--                        <div id="onecol-dropzone" class="dropzone two"></div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-4">-->
+<!--                        <div id="onecol-dropzone" class="dropzone"></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div id="threecol-dropzone" class="dropzone">-->
+<!--                <div class="row" style="margin-top: 10px;">-->
+<!--                    <div class="col-lg-4">-->
+<!--                        <div id="onecol-dropzone" class="dropzone one"></div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-4">-->
+<!--                        <div id="onecol-dropzone" class="dropzone two"></div>-->
+<!--                    </div>-->
+<!--                    <div class="col-lg-4">-->
+<!--                        <div id="onecol-dropzone" class="dropzone"></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 <!--        </div>-->
-<!--        <div class="win-size-grip"></div>-->
 <!--    </div>-->
 <!--</div>-->
+<!---->
+<!--<div id="yes-drop" class="draggable drag-drop"> 1 </div>-->
+<!--<div id="yes-drop" class="draggable drag-drop"> 2 </div>-->
+<!--<div id="yes-drop" class="draggable drag-drop"> 3 </div>-->
+<!--<div id="yes-drop" class="draggable drag-drop"> 4 </div>-->
+<!--<div id="yes-drop" class="draggable drag-drop"> 5 </div>-->
 
 
-
-
-<div id="yes-drop" class="draggable drag-drop"> #yes-drop </div>
-<div id="yes-drop" class="draggable drag-drop"> #yes-drop </div>
-<div id="yes-drop" class="draggable drag-drop"> #yes-drop </div>
-<div id="yes-drop" class="draggable drag-drop"> #yes-drop </div>
-<div id="yes-drop" class="draggable drag-drop"> #yes-drop </div>
-
-<div id="threecol-dropzone" class="dropzone">
-<!--    <div class="row">-->
-<!--        <div class="col-lg-6" style="position: absolute; left: 10px">-->
-<!--            <div id="onecol-dropzone" class="dropzone"></div>-->
-<!--        </div>-->
-<!--        <div class="col-lg-6" style="position: absolute; right: 10px">-->
-<!--            <div id="onecol-dropzone" class="dropzone"></div>-->
-<!--        </div>-->
-<!--    </div>-->
-    <div class="row" style="margin-top: 10px;">
-        <div class="col-lg-4">
-            <div id="onecol-dropzone" class="dropzone one"></div>
-        </div>
-        <div class="col-lg-4">
-            <div id="onecol-dropzone" class="dropzone two"></div>
-        </div>
-        <div class="col-lg-4">
-            <div id="onecol-dropzone" class="dropzone"></div>
-        </div>
-    </div>
-</div>
-
-<div id="threecol-dropzone" class="dropzone">
-    <div class="row" style="margin-top: 10px;">
-        <div class="col-lg-4">
-            <div id="onecol-dropzone" class="dropzone one"></div>
-        </div>
-        <div class="col-lg-4">
-            <div id="onecol-dropzone" class="dropzone two"></div>
-        </div>
-        <div class="col-lg-4">
-            <div id="onecol-dropzone" class="dropzone"></div>
-        </div>
-    </div>
-</div>
 
 
 
@@ -165,106 +165,102 @@
 
 <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
 <!--<script src="--><?php //echo base_url(); ?><!--assets/js/plugins/jquery-resizable/jquery-resizable.min.js"></script>-->
-<!--<script>-->
-<!--    $(document).ready(function () {-->
-<!--        dashboard.init();-->
-<!--        //dashboard.load_dash(--><?php //$dashboard_id ?><!--);-->
-<!---->
-<!--        $(".box").resizable({-->
-<!--            handleSelector: ".win-size-grip"-->
-<!--        });-->
-<!--    });-->
-<!--</script> -->
-
-
-<!--<script src="--><?php //echo base_url(); ?><!--assets/js/plugins/interact/interact.min.js"></script>-->
-<!--<script src="//cdn.jsdelivr.net/interact.js/1.2.6/interact.min.js"></script>-->
-<script src="//cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.6/interact.min.js"></script>
 <script>
     $(document).ready(function () {
-
-
-        /* The dragging code for '.draggable' from the demo above
-         * applies to this demo as well so it doesn't have to be repeated. */
-        // Initialize Interact.js Drag & Drop
-        interact('.draggable').draggable({
-            inertia: true,
-            restrict: {
-                restriction: "#visualize",
-                endOnly: true,
-                elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-            },
-            onmove: function (event) {
-                event.target.style.width =  '30%';
-                var target = event.target,
-                // keep the dragged position in the data-x/data-y attributes
-                    x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-                    y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-                // translate the element
-                target.style.webkitTransform =
-                    target.style.transform =
-                        'translate(' + x + 'px, ' + y + 'px)';
-
-                // update the posiion attributes
-                target.setAttribute('data-x', x);
-                target.setAttribute('data-y', y);
-            },
-            onend: function(event) {
-                //console.log(event);
-            }
-        });
-
-// enable draggables to be dropped into this
-        interact('.dropzone').dropzone({
-            // only accept elements matching this CSS selector
-            accept: '#yes-drop',
-            // Require a 75% element overlap for a drop to be possible
-            overlap: 0.75,
-
-            // listen for drop related events:
-
-            ondropactivate: function (event) {
-                // add active dropzone feedback
-                event.target.classList.add('drop-active');
-            },
-            ondragenter: function (event) {
-                var draggableElement = event.relatedTarget,
-                    dropzoneElement = event.target;
-
-                // feedback the possibility of a drop
-                dropzoneElement.classList.add('drop-target');
-                draggableElement.classList.add('can-drop');
-                draggableElement.textContent = 'Dragged in';
-            },
-            ondragleave: function (event) {
-                // remove the drop feedback style
-                event.target.classList.remove('drop-target');
-                event.relatedTarget.classList.remove('can-drop');
-                event.relatedTarget.textContent = 'Dragged out';
-            },
-            ondrop: function (event) {
-                event.relatedTarget.textContent = 'Dropped';
-                var rect = event.target.getBoundingClientRect();
-                event.relatedTarget.removeAttribute('style');
-                event.relatedTarget.removeAttribute('data-x');
-                event.relatedTarget.removeAttribute('data-y');
-
-                event.relatedTarget.style.width =  (rect.width-20) + 'px';
-
-                //event.target.appendChild(event.relatedTarget);
-                event.target.insertBefore(event.relatedTarget, event.target.firstChild);
-                event.relatedTarget.style.margin = '10px';
-
-            },
-            ondropdeactivate: function (event) {
-                // remove active dropzone feedback
-                event.target.classList.remove('drop-active');
-                event.target.classList.remove('drop-target');
-            }
-        });
-
-
+        dashboard.init();
+        dashboard.load_dash(<?php echo $dashboard['dashboard_id']; ?>);
     });
 </script>
+
+
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.6/interact.min.js"></script>-->
+<!--<script>-->
+<!--    $(document).ready(function () {-->
+<!---->
+<!---->
+<!--        /* The dragging code for '.draggable' from the demo above-->
+<!--         * applies to this demo as well so it doesn't have to be repeated. */-->
+<!--        // Initialize Interact.js Drag & Drop-->
+<!--        interact('.draggable').draggable({-->
+<!--            inertia: true,-->
+<!--            restrict: {-->
+<!--                restriction: "#visualize",-->
+<!--                endOnly: true,-->
+<!--                elementRect: { top: 0, left: 0, bottom: 1, right: 1 }-->
+<!--            },-->
+<!--            onmove: function (event) {-->
+<!--                event.target.style.width =  '30%';-->
+<!--                var target = event.target,-->
+<!--                // keep the dragged position in the data-x/data-y attributes-->
+<!--                    x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,-->
+<!--                    y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;-->
+<!---->
+<!--                // translate the element-->
+<!--                target.style.webkitTransform =-->
+<!--                    target.style.transform =-->
+<!--                        'translate(' + x + 'px, ' + y + 'px)';-->
+<!---->
+<!--                // update the posiion attributes-->
+<!--                target.setAttribute('data-x', x);-->
+<!--                target.setAttribute('data-y', y);-->
+<!--            },-->
+<!--            onend: function(event) {-->
+<!--                //console.log(event);-->
+<!--            }-->
+<!--        });-->
+<!---->
+<!--// enable draggables to be dropped into this-->
+<!--        interact('.dropzone').dropzone({-->
+<!--            // only accept elements matching this CSS selector-->
+<!--            accept: '#yes-drop',-->
+<!--            // Require a 75% element overlap for a drop to be possible-->
+<!--            overlap: 0.75,-->
+<!---->
+<!--            // listen for drop related events:-->
+<!---->
+<!--            ondropactivate: function (event) {-->
+<!--                // add active dropzone feedback-->
+<!--                event.target.classList.add('drop-active');-->
+<!--            },-->
+<!--            ondragenter: function (event) {-->
+<!--                var draggableElement = event.relatedTarget,-->
+<!--                    dropzoneElement = event.target;-->
+<!---->
+<!--                // feedback the possibility of a drop-->
+<!--                dropzoneElement.classList.add('drop-target');-->
+<!--                draggableElement.classList.add('can-drop');-->
+<!--                //draggableElement.textContent = 'Dragged in';-->
+<!--            },-->
+<!--            ondragleave: function (event) {-->
+<!--                // remove the drop feedback style-->
+<!--                event.target.classList.remove('drop-target');-->
+<!--                event.relatedTarget.classList.remove('can-drop');-->
+<!--                //event.relatedTarget.textContent = 'Dragged out';-->
+<!--            },-->
+<!--            ondrop: function (event) {-->
+<!--                //event.relatedTarget.textContent = 'Dropped';-->
+<!--                var rect = event.target.getBoundingClientRect();-->
+<!--                event.relatedTarget.removeAttribute('style');-->
+<!--                event.relatedTarget.removeAttribute('data-x');-->
+<!--                event.relatedTarget.removeAttribute('data-y');-->
+<!---->
+<!--                event.relatedTarget.style.width =  (rect.width-20) + 'px';-->
+<!---->
+<!--                //event.target.appendChild(event.relatedTarget);-->
+<!--                event.target.insertBefore(event.relatedTarget, event.target.firstChild);-->
+<!--                //$('#dash-panels').insertBefore(event.relatedTarget, $('#dash-panels').lastChild);-->
+<!--                //$('#dash-panels').appendChild(event.relatedTarget);-->
+<!--                event.relatedTarget.style.margin = '10px';-->
+<!---->
+<!--            },-->
+<!--            ondropdeactivate: function (event) {-->
+<!--                // remove active dropzone feedback-->
+<!--                event.target.classList.remove('drop-active');-->
+<!--                event.target.classList.remove('drop-target');-->
+<!--            }-->
+<!--        });-->
+<!---->
+<!---->
+<!--    });-->
+<!--</script>-->
 
