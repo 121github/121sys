@@ -23,7 +23,7 @@ class Dashboard extends CI_Controller
 	
 
 public function index(){
-  $this->user_dash();	
+  $this->user_dash();
 }
 	
   public function pending_tasks()
@@ -1103,6 +1103,230 @@ public function index(){
             }
             echo json_encode(array("success" => true, "data" => $data));
         }
+    }
+
+    //the dashboards settings
+    public function settings()
+    {
+        $data = array(
+            'campaign_access' => $this->_campaigns,
+            'pageId' => 'Dashboard',
+            'title' => 'Dashboard-Settings',
+            'page' => 'dash_settings',
+            'javascript' => array(
+                'dashboard.js?v' . $this->project_version
+            ),
+            'css' => array(
+                'dashboard.css'
+            )
+        );
+        $this->template->load('default', 'dashboard/settings.php', $data);
+    }
+
+
+    /**
+     * Get the custom dashboards
+     */
+    public function get_dashboards() {
+        $dashboards = $this->Dashboard_model->get_dashboards();
+
+        echo json_encode(array(
+            "success" => (!empty($dashboards)),
+            "dashboards" => $dashboards)
+        );
+    }
+
+    /**
+     * Get the dashboard viewers
+     */
+    public function get_dash_viewers() {
+        $viewers = $this->Dashboard_model->get_viewers();
+        $aux = array();
+        foreach ($viewers as $viewer) {
+            if (!isset($aux[$viewer['role_name']])) {
+                $aux[$viewer['role_name']] = array();
+            }
+            array_push($aux[$viewer['role_name']],array(
+                "id" => [$viewer['id']],
+                "name" => $viewer['name']
+            ));
+        }
+        $viewers = $aux;
+
+        echo json_encode(array(
+                "success" => (!empty($viewers)),
+                "viewers" => $viewers
+        ));
+    }
+
+    /**
+     * Save a dashboard
+     */
+    public function save_dashboard() {
+
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            if (isset($form['name']) && $form['name']!= "" && isset($form['description']) && $form['description'] != "") {
+                $viewers = (isset($form['viewers'])?$form['viewers']:array());
+
+                if (!in_array($_SESSION['user_id'],$viewers)) {
+                    array_push($viewers, $_SESSION['user_id']);
+                }
+
+                if (isset($form['viewers'])) {
+                    unset($form['viewers']);
+                }
+                $dashboard_id = $this->Dashboard_model->save_dashboard($form);
+
+                if ($dashboard_id) {
+                    //Save the viewers
+                    $viewers_result = $this->Dashboard_model->save_dashboard_viewers($dashboard_id, $viewers);
+
+                    if (!$viewers_result) {
+                        echo json_encode(array(
+                                "success" => false,
+                                "msg" => "ERROR: Error saving the user dashboards!"
+                            )
+                        );
+                    }
+                }
+
+                echo json_encode(array(
+                        "success" => (!$dashboard_id?false:true),
+                        "dashboard_id" => $dashboard_id,
+                        "msg" => "Dashboard saved successfully!"
+                    )
+                );
+            }
+            else {
+                echo json_encode(array(
+                        "success" => false,
+                        "msg" => "ERROR: Please set the name and the description!"
+                    )
+                );
+            }
+        }
+        else {
+            echo json_encode(array(
+                    "success" => false,
+                    "msg" => "ERROR: It's not an ajax request!"
+                )
+            );
+        }
+    }
+
+
+    /**
+     * View custom dashboard
+     */
+    public function view() {
+        $dashboard_id = $this->uri->segment(3);
+
+        if ($dashboard_id !== FALSE && is_numeric($dashboard_id))
+        {
+            $agents = $this->Form_model->get_agents();
+            $teamManagers = $this->Form_model->get_teams();
+            $sources = $this->Form_model->get_sources();
+            $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+            $aux = array();
+            foreach ($campaigns_by_group as $campaign) {
+                if (!isset($aux[$campaign['group_name']])) {
+                    $aux[$campaign['group_name']] = array();
+                }
+                array_push($aux[$campaign['group_name']], $campaign);
+            }
+            $campaigns_by_group = $aux;
+
+            $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+            $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+            $aux = array(
+                "positive" => array(),
+                "No_positive" => array(),
+            );
+            foreach ($campaign_outcomes as $outcome) {
+                if ($outcome['positive']) {
+                    array_push($aux['positive'], $outcome);
+                } else {
+                    array_push($aux['No_positive'], $outcome);
+                }
+            }
+            $campaign_outcomes = $aux;
+
+            //Get the dashboard details
+            $dashboard = $this->Dashboard_model->get_dashboard_by_id($dashboard_id);
+            if (!empty($dashboard)) {
+
+                $dashboard = $dashboard[0];
+                $data = array(
+                    'campaign_access' => $this->_campaigns,
+                    'pageId' => 'Dashboard',
+                    'title' => 'Dashboard - '.$dashboard['name'],
+                    'page' => $dashboard['name'],
+                    'dashboard' => $dashboard,
+                    'agents' => $agents,
+                    'team_managers' => $teamManagers,
+                    'sources' => $sources,
+                    'campaigns_by_group' => $campaigns_by_group,
+                    'campaign_outcomes' => $campaign_outcomes,
+                    'javascript' => array(
+                        'charts.js?v' . $this->project_version,
+                        'dashboard.js?v' . $this->project_version,
+                        'lib/moment.js',
+                        'lib/daterangepicker.js',
+                        'dashboards/ghs.js?v' . $this->project_version,
+                    ),
+                    'css' => array(
+                        'dashboard.css',
+                        'plugins/morris/morris-0.4.3.min.css',
+                        'daterangepicker-bs3.css'
+                    )
+                );
+
+                $this->template->load('default', 'dashboard/view.php', $data);
+            }
+            else {
+                $data = array(
+                    'campaign_access' => $this->_campaigns,
+                    'pageId' => 'Dashboard',
+                    'title' => 'Dashboard - ERROR',
+                    'page' => 'dashboard-error',
+                    'error' => "ERROR => There is no dashboard with this id or you don't have permissions to access!",
+                    'javascript' => array(
+                        'dashboard.js?v' . $this->project_version
+                    ),
+                    'css' => array(
+                        'dashboard.css'
+                    )
+                );
+
+                $this->template->load('default', 'dashboard/view_err.php', $data);
+            }
+        }
+        else
+        {
+
+            $data = array(
+                'campaign_access' => $this->_campaigns,
+                'pageId' => 'Dashboard',
+                'title' => 'Dashboard - ERROR',
+                'page' => 'dashboard-error',
+                'error' => "ERROR => There is an error on the url!",
+                'javascript' => array(
+                    'dashboard.js?v' . $this->project_version
+                ),
+                'css' => array(
+                    'dashboard.css'
+                )
+            );
+
+            $this->template->load('default', 'dashboard/view_err.php', $data);
+
+        }
+
+
+
     }
 
 }

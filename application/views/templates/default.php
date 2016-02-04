@@ -424,40 +424,87 @@ endif; ?>
         type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?v=3<?php echo $callback ?>"></script>
 <?php } ?>
-<?php if(isset($_SESSION['user_id'])) {?>
-<div id="color-box" class="Fixed">
-<a href="#"  ><span class="glyphicon glyphicon-cog color-btn" ></span></a>
-</div>
-<script>
-$(document).ready(function(){
-	$('#color-box').on('click','.color-btn',function(){
-		var mheader= "Change Theme";
-		var mbody= "<p>Fancy something different? Pick a new colour!</p>";
-		 mbody+="<select id='color-changer' class='color-changer selectpicker'>"
-		  +"<option value='<?php echo $_SESSION['theme_color'] ?>'>--Change color--</option>"
-		 +"<option value='voice'>Bright Blue</option>"
-		  +"<option value='hsl'>Deep Blue</option>"
-		    +"<option value='coop'>Dark Blue</option>"
-		   +"<option value='smartprospector'>Green</option>"
-		    +"<option value='default'>Orange</option>"
-			 +"<option value='pelican'>Red</option>"
-			  +"<option value='eldon'>Purple</option>"
-		 +"</select>";
-		var mfooter='<button data-dismiss="modal" class="btn btn-primary close-modal pull-left">OK</button>'
-		modals.load_modal(mheader,mbody,mfooter);
-		modal_body.css('overflow','visible')
-		$modal.find('.color-changer').change(function(){
-		var value = $(this).val();
-		$('#theme-css').attr('href',helper.baseUrl+'assets/themes/colors/'+value+'/bootstrap-theme.css');
-		$.post(helper.baseUrl+'ajax/change_theme',{theme:value});
-		if(device_type!=="default"){
-		window.location.reload();	
-		}
-	});
-	});
-	
-});
-</script>
+<?php if (isset($_SESSION['user_id'])) { ?>
+    <div id="color-box" class="Fixed">
+        <a href="#"><span class="glyphicon glyphicon-cog color-btn"></span></a>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#color-box').on('click', '.color-btn', function () {
+                var mheader = "Appearance";
+                var navtabs = '<ul id="appearance-tabs" class="nav nav-tabs" role="tablist">' +
+                                    '<li role="presentation" class="active"><a href="#theme" aria-controls="theme" role="tab" data-toggle="tab">Theme</a></li>' +
+                                    '<li role="presentation"><a href="#dashboards" aria-controls="dashboards" role="tab" data-toggle="tab">Dashboards</a></li>' +
+                                '</ul>';
+                var tabpanels = '<div class="tab-content">' +
+                                    '<div id="theme" role="tabpanel" class="tab-pane active">' +
+                                        '<p>Fancy something different? Pick a new colour!</p>' +
+                                        '<select id="color-changer" class="color-changer selectpicker">' +
+                                            '<option value="<?php echo $_SESSION["theme_color"] ?>">--Change color--</option>' +
+                                            '<option value="voice">Bright Blue</option>' +
+                                            '<option value="hsl">Deep Blue</option>' +
+                                            '<option value="coop">Dark Blue</option>' +
+                                            '<option value="smartprospector">Green</option>' +
+                                            '<option value="default">Orange</option>' +
+                                            '<option value="pelican">Red</option>' +
+                                            '<option value="eldon">Purple</option>' +
+                                        '</select>' +
+                                    '</div>' +
+                                    '<div id="dashboards" role="tabpanel" class="tab-pane">' +
+                                        '<span type="button" class="btn btn-default dashboard-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
+                                            '<p>Dashboard Settings</p>' +
+                                            '<span class="fa fa-dashboard fa-3x"></span>' +
+                                        '</span>' +
+                                        '<span type="button" class="btn btn-default panel-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
+                                            '<p>Panel Settings</p>' +
+                                            '<span class="fa fa-square-o fa-3x"></span>' +
+                                        '</span>' +
+                                        '<span type="button" class="btn btn-default report-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
+                                            '<p>Report Settings</p>' +
+                                            '<span class="fa fa-area-chart fa-3x"></span>' +
+                                        '</span>' +
+                                    '</div>' +
+                                '</div>';
+                var mbody = navtabs+tabpanels;
+                var mfooter = '<button data-dismiss="modal" class="btn btn-primary close-modal pull-left">OK</button>'
+                modals.load_modal(mheader, mbody, mfooter);
+                modal_body.css('overflow', 'visible')
+                $modal.find('.color-changer').change(function () {
+                    var value = $(this).val();
+                    $('#theme-css').attr('href', helper.baseUrl + 'assets/themes/colors/' + value + '/bootstrap-theme.css');
+                    $.post(helper.baseUrl + 'ajax/change_theme', {theme: value});
+                    if (device_type !== "default") {
+                        window.location.reload();
+                    }
+                });
+            });
+
+            $('#modal').on("click",".modal-body li a",function()
+            {
+                tab = $(this).attr("href");
+                $(".modal-body .tab-content div").each(function(){
+                    $(this).removeClass("active");
+                });
+                $(".modal-body .tab-content "+tab).addClass("active");
+            });
+
+            $('#modal').on("click",".dashboard-settings-btn",function()
+            {
+                window.location = helper.baseUrl + 'dashboard/settings';
+            });
+
+            $('#modal').on("click",".panel-settings-btn",function()
+            {
+                window.location = helper.baseUrl + 'panels/settings';
+            });
+
+            $('#modal').on("click",".report-settings-btn",function()
+            {
+                window.location = helper.baseUrl + 'reports/settings';
+            });
+
+        });
+    </script>
 <?php } ?>
 </body>
 </html>

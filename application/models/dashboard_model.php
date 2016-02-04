@@ -556,4 +556,111 @@ class Dashboard_model extends CI_Model
 
         return $this->db->query($qry)->result_array();
     }
+
+    //Get Dashboards
+    public function get_dashboards() {
+        $where = "1 ";
+
+        if ($_SESSION['role'] != 1) {
+            $where .= " AND du.user_id = ".$_SESSION['user_id'];
+        }
+        $qry = "SELECT
+                  d.*,
+                  IF(du.user_id is not null,GROUP_CONCAT(DISTINCT du.user_id SEPARATOR ','),'') as viewers,
+                  IF(dc.campaign_id is not null,GROUP_CONCAT(DISTINCT dc.campaign_id SEPARATOR ','),'')  as campaigns
+                FROM dashboards d
+                  LEFT JOIN dashboard_by_campaign dc USING (dashboard_id)
+                  LEFT JOIN dashboard_by_user du USING (dashboard_id)
+                  WHERE ".$where."
+                GROUP BY d.dashboard_id";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    //Get Dashboard by id
+    public function get_dashboard_by_id($dashboard_id) {
+        $where = "d.dashboard_id = ".$dashboard_id;
+
+        if ($_SESSION['role'] != 1) {
+            $where .= " AND du.user_id = ".$_SESSION['user_id'];
+        }
+        $qry = "SELECT
+                  d.*,
+                  IF(du.user_id is not null,GROUP_CONCAT(DISTINCT du.user_id SEPARATOR ','),'') as viewers,
+                  IF(dc.campaign_id is not null,GROUP_CONCAT(DISTINCT dc.campaign_id SEPARATOR ','),'')  as campaigns
+                FROM dashboards d
+                  LEFT JOIN dashboard_by_campaign dc USING (dashboard_id)
+                  LEFT JOIN dashboard_by_user du USING (dashboard_id)
+                  WHERE ".$where."
+                GROUP BY d.dashboard_id";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
+     * Save Dashboard
+     */
+    public function save_dashboard($form) {
+
+        if ($form['dashboard_id']) {
+            $form['updated_by'] = $_SESSION['user_id'];
+            $form['updated_date'] = to_mysql_datetime(date('now'));
+            $this->db->where('dashboard_id', $form['dashboard_id']);
+            $this->db->update("dashboards", $form);
+            return $form['dashboard_id'];
+
+        }
+        else {
+            $form['created_by'] = $_SESSION['user_id'];
+            $this->db->insert("dashboards", $form);
+            return $this->db->insert_id();
+        }
+
+    }
+
+    /**
+     * Save Dashboard Viewers
+     */
+    public function save_dashboard_viewers($dashboard_id, $viewers) {
+
+        // Start SQL transaction.
+        $this->db->trans_start();
+
+        //Delete the current viewers for this dashboards
+        $this->db->where('dashboard_id', $dashboard_id);
+        $result = $this->db->delete("dashboard_by_user");
+
+        if (!$result) {
+            return false;
+        }
+
+        foreach ($viewers as $viewer) {
+            $result = $this->db->insert("dashboard_by_user", array(
+                "dashboard_id" => $dashboard_id,
+                "user_id" => $viewer
+            ));
+
+            if (!$result) {
+                return false;
+            }
+        }
+
+        // Complete SQL transaction.
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
+
+    }
+
+
+    /**
+     * Get viewers
+     */
+    public function get_viewers () {
+
+        $qry = "SELECT ur.role_name, u.user_id id,u.name
+                FROM users u INNER JOIN user_roles ur  USING (role_id) WHERE u.user_status = 1 ORDER BY ur.role_name, u.name ";
+
+        return $this->db->query($qry)->result_array();
+    }
 }

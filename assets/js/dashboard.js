@@ -68,6 +68,31 @@ var dashboard = {
             dashboard.favorites_panel();
         });
 
+        $(document).on("click", ".new-dashboard-btn", function (e) {
+            e.preventDefault();
+            dashboard.new_dashboard();
+        });
+
+        $(document).on("click", ".edit-dashboard-btn", function (e) {
+            e.preventDefault();
+            dashboard.new_dashboard($(this));
+        });
+
+        $(document).on("click", "#save-dashboard-btn", function (e) {
+            e.preventDefault();
+            dashboard.save_dashboard();
+        });
+
+        $(document).on("click", ".view-dashboard-btn", function (e) {
+            e.preventDefault();
+            window.location.replace(helper.baseUrl + 'dashboard/view/'+$(this).attr('item-id'));
+        });
+
+        $(document).on("click", ".new-panel", function (e) {
+            e.preventDefault();
+            dashboard.add_panel($(this).attr('data-item'));
+        });
+
         dashboard.filter_panel();
 
     },
@@ -797,6 +822,221 @@ var dashboard = {
                 $('#outcome-filter').html(options).selectpicker('refresh');
             }
         });
-    }
+    },
 
+    /* Show the custom dashboards */
+    custom_dash_panel: function () {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_dashboards',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.filter-form').serialize(),
+            beforeSend: function () {
+                $('#custom-dash').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+            }
+        }).done(function (response) {
+            $('#custom-dash').empty();
+            var dashboards = "";
+            if (response.success) {
+                $.each(response.dashboards, function (i, val) {
+                    dashboards += '<li class="left clearfix">' +
+                                    '<div class="chat-body clearfix">' +
+                                        '<div class="header">' +
+                                            '<strong class="primary-font">' +
+                                                '<a href="#" class="edit-dashboard-btn" ' +
+                                                    'item-id="'+val.dashboard_id+'"' +
+                                                    'item-name="'+val.name+'"' +
+                                                    'item-description="'+val.description+'"' +
+                                                    'item-viewers="'+val.viewers+'"' +
+                                                    'item-campaigns="'+val.campaigns+'"' +
+                                                '>' +
+                                                    val.name +
+                                                '</a>' +
+                                            '</strong>' +
+                                            '<small class="pull-right text-muted">' +
+                                                '<span class="btn btn-default btn-xs pull-right marl edit-dashboard-btn" ' +
+                                                'item-id="'+val.dashboard_id+'"' +
+                                                'item-name="'+val.name+'"' +
+                                                'item-description="'+val.description+'"' +
+                                                'item-viewers="'+val.viewers+'"' +
+                                                'item-campaigns="'+val.campaigns+'"' +
+                                                '>' +
+                                                '<span class="glyphicon glyphicon-pencil"></span>' +
+                                                ' Edit' +
+                                                '</span>' +
+                                                '<span class="btn btn-default btn-xs pull-right marl view-dashboard-btn" ' +
+                                                'item-id="'+val.dashboard_id+'"' +
+                                                '>' +
+                                                '<span class="glyphicon glyphicon-eye-open"></span>' +
+                                                ' View' +
+                                                '</span>' +
+                                            '</small>' +
+                                        '</div>' +
+                                        '<p>' + val.description + '</p>' +
+                                    '</div>' +
+                                   '</li>';
+                });
+            }
+            else {
+                dashboards = "No dashboards created yet";
+            }
+            $('#custom-dash').html("<ul class='chat'>"+dashboards+'</ul>');
+        });
+    },
+
+    //Create new dashboard
+    new_dashboard: function (btn) {
+        var dashboard_id, dashboard_name, dashboard_description, dashboard_viewers, dashboard_campaigns;
+        dashboard_id = dashboard_name = dashboard_description = dashboard_viewers = dashboard_campaigns = '';
+        if (typeof btn !== 'undefined') {
+            dashboard_id = (typeof btn.attr('item-id') === 'undefined') ? '' : btn.attr('item-id');
+            dashboard_name = (typeof btn.attr('item-name') === 'undefined') ? '' : btn.attr('item-name');
+            dashboard_description = (typeof btn.attr('item-description') === 'undefined') ? '' : btn.attr('item-description');
+            dashboard_viewers = (typeof btn.attr('item-viewers') === 'undefined') ? '' : btn.attr('item-viewers').split(",");
+            dashboard_campaigns = (typeof btn.attr('item-campaigns') === 'undefined') ? '' : btn.attr('item-campaigns').split(",");
+        }
+
+        //get the viewers
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_dash_viewers',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            var options = "";
+            if (response.success) {
+                $.each(response.viewers, function (role, users) {
+                    options += "<optgroup label='"+role+"'>";
+                    $.each(users, function (i, val) {
+                        var selected = "";
+                        if (jQuery.inArray(val.id[0], dashboard_viewers) >= 0) {
+                            selected = "selected";
+                        }
+                        options += "<option value='"+val.id+"' "+selected+">"+val.name+"</option>";
+                    });
+                    options += "</optgroup>";
+                });
+            }
+
+            var select = "";
+            if (helper.permissions['dashboard viewers'] > 0) {
+                select +=
+                    "<p>Viewers </p>" +
+                    "<select name='viewers[]' class='selectpicker' multiple id='viewer_select' data-width='100%' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
+                    options +
+                    "</select>";
+            }
+
+            var mheader = "Dashboard";
+            var mbody = "<form id='new-dashboard-form' >" +
+                            "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
+                            "<div class='form-group input-group-sm'>" +
+                                "<div class='row'>" +
+                                    "<div class='col-xs-6'>" +
+                                        "<p>Dashboard Name </p>" +
+                                        "<input type='text' name='name' value='"+dashboard_name+"' class=''form-control' style='min-width: 100%' required/>" +
+                                    "</div>" +
+                                    "<div class='col-xs-6'>" +
+                                        select +
+                                    "</div>" +
+                                "</div>" +
+                            "</div>" +
+                            "<div class='form-group input-group-sm'>" +
+                                "<p>Description </p>" +
+                                "<textarea name='description' class='form-control' style='min-width: 100%; min-height: 200px;'>"+dashboard_description+"</textarea>" +
+                            "</div>" +
+                "</form>";
+
+            var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-dashboard-btn">Save</button>' +
+                '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+
+            modals.load_modal(mheader, mbody, mfooter);
+        });
+    },
+
+    save_dashboard: function() {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/save_dashboard',
+            data: $('#new-dashboard-form').serialize(),
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                flashalert.success(response.msg);
+                $('.close-modal').trigger('click');
+                dashboard.custom_dash_panel();
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    add_panel: function(dashboard_id) {
+        //$.ajax({
+        //    url: helper.baseUrl + 'panels/get_panels',
+        //    type: "POST",
+        //    dataType: "JSON"
+        //}).done(function (response) {
+        //    var options = "";
+        //    if (response.success) {
+        //        $.each(response.panels, function (i, val) {
+        //            var selected = "";
+        //            if (jQuery.inArray(val.id[0], dashboard_viewers) >= 0) {
+        //                selected = "selected";
+        //            }
+        //            options += "<option value='"+val.id+"' "+selected+">"+val.name+"</option>";
+        //        });
+        //    }
+        //});
+
+         var select_panel =
+            "<select name='panel_id' class='selectpicker' id='panel_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
+                //options +
+            "</select>";
+
+        var select_report =
+            "<select name='report_id' class='selectpicker' id='report_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
+                //options +
+            "</select>";
+
+        var mheader = "Add panel/report";
+
+        var navtabs = '<ul id="appearance-tabs" class="nav nav-tabs" role="tablist">' +
+                        '<li role="presentation" class="active"><a href="#panels" aria-controls="panels" role="tab" data-toggle="tab">Panels</a></li>' +
+                        '<li role="presentation"><a href="#reports" aria-controls="reports" role="tab" data-toggle="tab">Reports</a></li>' +
+                      '</ul>';
+        var tabpanels = '<div class="tab-content">' +
+                            '<div id="panels" role="tabpanel" class="tab-pane active">' +
+                                '<p>Select the panel</p>' +
+                                select_panel +
+                            '</div>' +
+                            '<div id="reports" role="tabpanel" class="tab-pane">' +
+                                '<p>Select the report</p>' +
+                                select_report +
+                            '</div>' +
+                        '</div>';
+        var mbody = "<form id='add-panel-form' >" +
+                        "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
+                        navtabs +
+                        "<div class='form-group input-group-sm'>" +
+                            tabpanels +
+                        "</div>" +
+                    "</form>";
+
+        var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="add-panel-btn">Add</button>' +
+            '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+
+        modals.load_modal(mheader, mbody, mfooter);
+
+        $('#modal').on("click",".modal-body li a",function()
+        {
+            tab = $(this).attr("href");
+            $(".modal-body .tab-content div").each(function(){
+                $(this).removeClass("active");
+            });
+            $(".modal-body .tab-content "+tab).addClass("active");
+        });
+
+
+    }
 }
