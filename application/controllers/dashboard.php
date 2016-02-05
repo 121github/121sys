@@ -1276,7 +1276,7 @@ public function index(){
                         'dashboard.js?v' . $this->project_version,
                         'lib/moment.js',
                         'lib/daterangepicker.js',
-                        'dashboards/ghs.js?v' . $this->project_version,
+                        'export.js?v' . $this->project_version,
                     ),
                     'css' => array(
                         'dashboard.css',
@@ -1367,6 +1367,108 @@ public function index(){
         }
     }
 
+    /**
+     * Remove a report from the dashboard
+     */
+    public function remove_report() {
+
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            if (isset($form['dashboard_id']) && $form['dashboard_id']!= "" && isset($form['report_id']) && $form['report_id'] != "") {
+
+                $result = $this->Dashboard_model->remove_report($form['dashboard_id'],$form['report_id']);
+
+                //Reorder positions
+                $dash_reports = $this->Dashboard_model->get_dashboard_reports_by_id($form['dashboard_id']);
+                $aux = array();
+                $position = 0;
+                foreach ($dash_reports as $dash_report) {
+                    unset($dash_report['name']);
+                    $dash_report['position'] = $position;
+                    $position++;
+                    array_push($aux, $dash_report);
+                }
+                $dash_reports = $aux;
+
+                $result = $this->Dashboard_model->update_reports($dash_reports);
+
+                echo json_encode(array(
+                        "success" => (!$result?false:true),
+                        "dashboard_id" => $form['dashboard_id'],
+                        "msg" => (!$result?"ERROR: The report panel couldn't be removed!":"Report panel removed from the dashboard successfully!")
+                    )
+                );
+            }
+            else {
+                echo json_encode(array(
+                        "success" => false,
+                        "msg" => "ERROR: The dashboard or the report selected don't exist"
+                    )
+                );
+            }
+        }
+        else {
+            echo json_encode(array(
+                    "success" => false,
+                    "msg" => "ERROR: It's not an ajax request!"
+                )
+            );
+        }
+    }
+
+    /**
+     * Move a report on the dashboard, chane its position
+     */
+    public function move_report() {
+
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            if (isset($form['dashboard_id']) && $form['dashboard_id']!= "" && isset($form['report_id']) && $form['report_id'] != "" && isset($form['current_position']) && isset($form['next_position'])) {
+
+                $dash_reports = $this->Dashboard_model->get_dashboard_reports_by_id($form['dashboard_id']);
+                $aux = array();
+                foreach ($dash_reports as $dash_report) {
+                    unset($dash_report['name']);
+                    if (($dash_report['dasboard_id'] == $form['dashboard_id']) && ($dash_report['report_id'] == $form['report_id'])) {
+                        $dash_report['position'] = $form['next_position'];
+                    }
+                    else {
+                        if ($dash_report['position'] <= $form['current_position']) {
+
+                        }
+                    }
+                }
+                $dash_reports = $aux;
+
+                //Change report position
+                $result = $this->Dashboard_model->update_reports($dash_reports);
+
+                echo json_encode(array(
+                        "success" => (!$result?false:true),
+                        "dashboard_id" => $form['dashboard_id'],
+                        "msg" => (!$result?"ERROR: The report panel couldn't be moved!":"Report panel moved from the dashboard successfully!")
+                    )
+                );
+            }
+            else {
+                echo json_encode(array(
+                        "success" => false,
+                        "msg" => "ERROR: The dashboard or the report selected don't exist"
+                    )
+                );
+            }
+        }
+        else {
+            echo json_encode(array(
+                    "success" => false,
+                    "msg" => "ERROR: It's not an ajax request!"
+                )
+            );
+        }
+    }
+
     public function get_export_forms() {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
@@ -1391,6 +1493,7 @@ public function index(){
             echo json_encode(array(
                 "success" => (!empty($reports)),
                 "data" => (!empty($reports) ? $reports : "No export forms were created yet!"),
+                "position" => count($dash_reports),
                 "edit_permission" => (in_array("edit export", $_SESSION['permissions']))
             ));
         }

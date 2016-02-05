@@ -21,11 +21,14 @@ class Migration_update_94 extends CI_Migration
                     dashboard_id int NOT NULL,
                     report_id int NOT NULL,
                     column_size int DEFAULT 1 NOT NULL,
+                    position int NOT NULL,
                     PRIMARY KEY (dashboard_id,report_id),
                     FOREIGN KEY (dashboard_id) REFERENCES dashboards (dashboard_id) ON DELETE CASCADE ON UPDATE CASCADE,
                     FOREIGN KEY (report_id) REFERENCES export_forms (export_forms_id) ON DELETE CASCADE ON UPDATE CASCADE
                 )
 			");
+
+            $this->db->query("CREATE UNIQUE INDEX dashboard_reports_order_uindex ON dashboard_reports (`position`)");
         }
     }
     public function down(){

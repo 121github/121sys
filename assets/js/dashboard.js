@@ -3,19 +3,6 @@ var dashboard = {
     init: function () {
         filters.init();
 
-        //$(".filter").click(function (e) {
-        //    e.preventDefault();
-        //    var input = $(this).attr('data-ref');
-        //    var func = $(this).closest('form').attr('data-func');
-        //    $icon = $(this).closest('ul').prev('button').find('span');
-        //    $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-        //    $(this).closest('form').find('input[name="' + input + '"]').val($(this).attr('id'));
-        //    $(this).closest('ul').find('a').css("color","black");
-        //    $(this).css("color","green");
-        //    //run the panel function specified in the data-func
-        //    eval("dashboard." + func + "()");
-        //});
-
         $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
@@ -129,6 +116,21 @@ var dashboard = {
         $(document).on("click", "#add-report-btn", function (e) {
             e.preventDefault();
             dashboard.add_report();
+        });
+
+        $(document).on("click", ".remove-dashreport-btn", function (e) {
+            e.preventDefault();
+            dashboard.remove_report($(this).attr('data-dashboard-id'), $(this).attr('data-report-id'));
+        });
+
+        $(document).on('click', '.export-dashreport-btn', function (e) {
+            e.preventDefault();
+            export_data.export_file($(this).attr('data-report-id'));
+        });
+
+        $(document).on("click", ".move-dashreport-btn", function (e) {
+            e.preventDefault();
+            //dashboard.move_report($(this).attr('data-dashboard-id'), $(this).attr('data-report-id'), $(this).attr('current-position'), $(this).attr('next-position'));
         });
 
         dashboard.filter_panel();
@@ -1034,6 +1036,7 @@ var dashboard = {
                     '</ul>';
                 var mbody = "<form id='add-report-form' >" +
                     "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
+                    "<input type='hidden' name='position' value='"+response.position+"'/>" +
                     "<div class='form-group input-group-sm'>" +
                         '<div class="row">' +
                             '<div class="col-lg-6">' +
@@ -1043,10 +1046,12 @@ var dashboard = {
                             '<div class="col-lg-6">' +
                                 '<div class=""form-group input-group-sm">' +
                                     '<p>Select the panel size</p>' +
-                                    '<select name="column_size" class="selectpicker" id="report_select" data-size="3">' +
-                                        '<option value="1">1 Column</option>' +
-                                        '<option value="2" Selected>2 Column</option>' +
-                                        '<option value="3">3 Column</option>' +
+                                    '<select name="column_size" class="selectpicker" id="report_select" data-size="5">' +
+                                        '<option value="12">100%</option>' +
+                                        '<option value="9">75%</option>' +
+                                        '<option value="6" Selected>50%</option>' +
+                                        '<option value="4">33%</option>' +
+                                        '<option value="3">25%</option>' +
                                     '</select>' +
                                 '</div>' +
                             '</div>' +
@@ -1094,6 +1099,40 @@ var dashboard = {
         });
     },
 
+    remove_report: function(dashboard_id, report_id) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/remove_report',
+            data: {'dashboard_id': dashboard_id, 'report_id': report_id},
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                flashalert.success(response.msg);
+                dashboard.load_dash(response.dashboard_id);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    move_report: function(dashboard_id, report_id, direction, current_position) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/move_report',
+            data: {'dashboard_id': dashboard_id, 'report_id': report_id, 'current_position': current_position, 'next_position': next_position},
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                flashalert.success(response.msg);
+                dashboard.load_dash(response.dashboard_id);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
     load_dash: function(dashboard_id) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/get_dashboard_reports_by_id',
@@ -1106,7 +1145,7 @@ var dashboard = {
                 var panels = "";
                 //Build the panels
                 $.each(response.reports, function (i, report) {
-                    var columns = "col-lg-"+report.column_size*4;
+                    var columns = "col-lg-"+(report.column_size);
                     panels += '<div class="'+columns+'">' +
                                 '<div class="panel panel-primary">' +
                                     '<div class="panel-heading clearfix">' + report.name +
@@ -1115,13 +1154,19 @@ var dashboard = {
                                                 '<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
                                                     '<i class="fa fa-gears fa-fw"></i>'+
                                                 '</button>'+
-                                                '<ul class="dropdown-menu slidedown">' +
-                                                    '<li><a href="#" id="1" class="panel-options" data-ref="comments">Remove </a></li>' +
+                                                '<ul class="dropdown-menu slidedown pull-right">' +
+                                                    '<li><a href="#" id="1" class="remove-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" data-ref="remove"><i class="fa fa-trash pointer"></i> Remove</a></li>' +
+                                                    '<li><a href="#" id="1" class="export-dashreport-btn" data-report-id="'+report.report_id+'" data-ref="export"><i class="glyphicon glyphicon-floppy-save pointer"></i> Export </a></li>' +
+                                                    '<li class="divider"></li>' +
+                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(0)+'"><i class="glyphicon glyphicon-export pointer"></i> First </a></li>' +
+                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(report.position+1)+'"><i class="glyphicon glyphicon-arrow-left pointer"></i> Previous </a></li>' +
+                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(report.position-1)+'"><i class="glyphicon glyphicon-arrow-right pointer"></i> Posterior </a></li>' +
+                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(response.reports.length)+'"><i class="glyphicon glyphicon-import pointer"></i> Last </a></li>' +
                                                 '</ul>' +
                                             '</div>' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 400px; overflow: hidden">' +
+                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 400px; padding: 0px;">' +
                                         '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
                                     '</div>' +
                                   '</div>' +
@@ -1139,13 +1184,16 @@ var dashboard = {
                         dataType: "JSON"
                     }).done(function(resp) {
                         if (resp.success && resp.header) {
-                            var body = "<div class='table-responsive'><table class='table table-bordered table-hover table-striped'>";
+                            var body = "<div class='table-"+report.report_id+" scroll'><table class='table table-bordered table-hover table-striped small'></table></div>";
                             $('#'+report.report_id+'-panel').empty();
+                            $('#'+report.report_id+'-panel').append(body);
 
-                            body += "<thead><tr>";
+                            var width = ($('.table-'+report.report_id).find('table').width()/resp.header.length);
+
+                            body = "<thead><tr>";
                             $.each(resp.header, function (i, val) {
                                 if (resp.header.length) {
-                                    body += "<th style='padding: 5px;'>" + val + "</th>";
+                                    body += "<th style='padding: 5px; width: "+width+"px;'>" + val + "</th>";
                                 }
                             });
                             body += "</tr></thead><tbody>";
@@ -1153,32 +1201,21 @@ var dashboard = {
                                 if (resp.data.length) {
                                     body += "<tr>";
                                     $.each(data, function (k, val) {
-                                        body += "<td style='padding: 5px;'>" + val + "</td>";
+                                        body += "<td style='padding: 5px; width: "+width+"px;'>" + val + "</td>";
                                     });
                                     body += "</tr>";
                                 }
                             });
-                            body += "</tbody></table></div>";
+                            body += "</tbody>";
 
-                            $('#'+report.report_id+'-panel').append(body);
+                            $('.table-'+report.report_id).find('table').append(body);
 
-                            // Change the selector if needed
-                            var $table = $('table.scroll'),
-                                $bodyCells = $table.find('tbody tr:first').children(),
-                                colWidth;
+                            $('.table-'+report.report_id).find('table').on('scroll', function () {
+                                var table = $(this).find('table');
+                                $('.table-'+report.report_id).find("table > *").width($('.table-'+report.report_id).find('table').width() + $('.table-'+report.report_id).find('table').scrollLeft());
+                            });
 
-// Adjust the width of thead cells when window resizes
-                            $(window).resize(function() {
-                                // Get the tbody columns width array
-                                colWidth = $bodyCells.map(function() {
-                                    return $(this).width();
-                                }).get();
-
-                                // Set the width of thead columns
-                                $table.find('thead tr').children().each(function(i, v) {
-                                    $(v).width(colWidth[i]);
-                                });
-                            }).resize(); // Trigger resize handler
+                            //$('.table-'+report.report_id).find("td").width($('.table-'+report.report_id).find('table').width()/resp.data.length);
                         }
                         else {
                             $('#'+report.report_id+'-panel').html("No results found!");

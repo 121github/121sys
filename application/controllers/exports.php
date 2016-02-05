@@ -433,7 +433,7 @@ class Exports extends CI_Controller
 
         fputcsv($outputBuffer, $headers);
         foreach ($data as $val) {
-            fputcsv($outputBuffer, $val);
+            fputcsv($outputBuffer, preg_replace('/\r?\n|\r/','', $val));
         }
         fclose($outputBuffer);
     }
