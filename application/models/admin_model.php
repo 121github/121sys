@@ -549,7 +549,7 @@ class Admin_model extends CI_Model
             $form['phone_un'] = NULL;
         }
         $this->db->where("user_id", $form['user_id']);
-        $this->db->update("users", $form);
+        return $this->db->update("users", $form);
     }
     public function delete_user($id)
     {

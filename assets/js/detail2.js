@@ -362,7 +362,7 @@ var record = {
 			this.panel = '#history-panel';
 			var $panel = $(record.history_panel.panel);
             record.history_panel.load_panel();
-            $panel.on('change', '#selectpicker_outcome', function (e) {
+            $modal.on('change', '#selectpicker_outcome', function (e) {
                 e.preventDefault();
                 record.history_panel.load_outcome_reasons($(this).val());
             });
@@ -370,7 +370,7 @@ var record = {
                 e.preventDefault();
                 record.history_panel.load_all_history_panel();
             });
-            $panel.on('click', '#close-history-all', function (e) {
+            $('#close-history-all').on('click',function (e) {
                 e.preventDefault();
                 record.history_panel.close_all_history($(this));
             });
@@ -378,11 +378,11 @@ var record = {
                 e.preventDefault();
                 record.history_panel.edit_history($(this).attr('data-id'), $(this).attr('item-modal'));
             });
-           $panel.on("click", "#save-history-btn", function (e) {
+           $modal.on("click", "#save-history-btn", function (e) {
                 e.preventDefault();
                 record.history_panel.update_history($(this).attr('data-modal'));
             });
-            $panel.on("click", "#edit-history-back", function (e) {
+            $modal.on("click", "#edit-history-back", function (e) {
                 e.preventDefault();
                 $('#edit-history-container').fadeOut(function () {
                     $('#all-history-container').fadeIn();
@@ -390,7 +390,7 @@ var record = {
                 });
             });
 
-            $panel.on('click', '#del-history-btn', function (e) {
+            $modal.on('click', '#del-history-btn', function (e) {
                 e.preventDefault();
                 modal.delete_history($(this).attr('item-id'), $(this).attr('item-modal'));
             });
