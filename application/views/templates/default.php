@@ -432,12 +432,9 @@ endif; ?>
         $(document).ready(function () {
             $('#color-box').on('click', '.color-btn', function () {
                 var mheader = "Appearance";
-                var navtabs = '<ul id="appearance-tabs" class="nav nav-tabs" role="tablist">' +
-                                    '<li role="presentation" class="active"><a href="#theme" aria-controls="theme" role="tab" data-toggle="tab">Theme</a></li>' +
-                                    '<li role="presentation"><a href="#dashboards" aria-controls="dashboards" role="tab" data-toggle="tab">Dashboards</a></li>' +
-                                '</ul>';
+                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li></ul>';
                 var tabpanels = '<div class="tab-content">' +
-                                    '<div id="theme" role="tabpanel" class="tab-pane active">' +
+                                    '<div role="tabpanel" class="tab-pane active" id="theme-tab">' +
                                         '<p>Fancy something different? Pick a new colour!</p>' +
                                         '<select id="color-changer" class="color-changer selectpicker">' +
                                             '<option value="<?php echo $_SESSION["theme_color"] ?>">--Change color--</option>' +
@@ -450,7 +447,7 @@ endif; ?>
                                             '<option value="eldon">Purple</option>' +
                                         '</select>' +
                                     '</div>' +
-                                    '<div id="dashboards" role="tabpanel" class="tab-pane">' +
+                                    '<div role="tabpanel" class="tab-pane" id="dashboards-tab">' +
                                         '<span type="button" class="btn btn-default dashboard-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
                                             '<p>Dashboard Settings</p>' +
                                             '<span class="fa fa-dashboard fa-3x"></span>' +
@@ -463,6 +460,9 @@ endif; ?>
                                 '</div>';
                 var mbody = navtabs+tabpanels;
                 var mfooter = '<button data-dismiss="modal" class="btn btn-primary close-modal pull-left">OK</button>'
+
+test = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#tab-records">Record</a></li><li><a role="tab" data-toggle="tab" href="#tab-history">History</a></li><li><a role="tab" data-toggle="tab" href="#tab-apps">Appointments</a></li><li><a role="tab" data-toggle="tab" href="#tab-planner">Planner</a></li></ul><div class="tab-content"><div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table small"><tbody><tr><th>Campaign</th><td>Better Connected</td></tr><tr><th>Reference</th><td>-</td></tr><tr><th>Name</th><td>The Ham Manor Golf Club Ltd</td></tr><tr><th>Contact</th><td>Mr Paul Brodle</td></tr><tr><th>Ownership</th><td>-</td></tr><tr><th>Comments</th><td>n/a</td></tr></tbody></table></div><div class="col-sm-6"><h4>Status</h4><table class="table small"><tbody><tr><th>Record Status</th><td>Live</td></tr><tr><th>Parked Status</th><td>n/a</td></tr><tr><th>Last Outcome</th><td>Answer Machine</td></tr><tr><th>Last Action</th><td>5th February 16</td></tr><tr><th>Next Action</th><td>5th February 16</td></tr></tbody></table></div></div></div><div role="tabpanel" class="tab-pane" id="tab-history"><table class="table table-striped table-condensed"><thead><tr><th>Outcome</th><th>Date</th><th>User</th><th>Comments</th></tr></thead><tbody><tr class="small"><td>Answer Machine</td><td>5th February 2016 16:58</td><td>Liam McDowell</td><td></td></tr></tbody></table></div><div role="tabpanel" class="tab-pane" id="tab-apps"><p>No appointments have been set</p></div><div role="tabpanel" class="tab-pane" id="tab-custom"><div class="table-responsive"><table class="table table-striped table-condensed"><thead><tr><th>Industry</th><th>Current Supplier</th><th>Multiple Suppliers</th><th>Gas annual spend (£)</th><th>Electric annual spend (£)</th></tr></thead><tbody><tr><td class="c1">Member Clubs</td><td class="c2">-</td><td class="c3">-</td><td class="n1">0</td><td class="n2">0</td></tr></tbody><tbody></tbody></table></div></div><div role="tabpanel" class="tab-pane" id="tab-planner"><p id="planner_status">This record is not in your journey planner. You can add it below</p><div class="form-group"><label>Select Address</label><br><select class="selectpicker bs-select-hidden" data-width="100%" id="planner_address"><option value="BN16 4JE">The Ham Manor Golf Club Ltd, Ham Manor Golf Club, BN16 4JE</option></select><div style="width: 100%;" class="btn-group bootstrap-select"><button title="The Ham Manor Golf Club Ltd, Ham Manor Golf Club, BN16 4JE" data-id="planner_address" type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown"><span class="filter-option pull-left">The Ham Manor Golf Club Ltd, Ham Manor Golf Club, BN16 4JE</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner" role="menu"><li class="selected" data-original-index="0"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">The Ham Manor Golf Club Ltd, Ham Manor Golf Club, BN16 4JE</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div></div></div><div class="form-group relative"><label>Select Date</label><input value="" class="form-control dateonly" id="planner_date" placeholder="Choose date..."></div> <button class="marl btn btn-info pull-right" id="save-planner" data-urn="253971" href="#">Save to planner</button>  <button style="display:none" class="btn btn-danger pull-right" id="remove-from-planner" data-urn="253971" href="#">Remove from planner</button> <div class="clearfix"></div></div></div>'
+
                 modals.load_modal(mheader, mbody, mfooter);
                 modal_body.css('overflow', 'visible')
                 $modal.find('.color-changer').change(function () {
@@ -473,15 +473,6 @@ endif; ?>
                         window.location.reload();
                     }
                 });
-            });
-
-            $('#modal').on("click",".modal-body li a",function()
-            {
-                tab = $(this).attr("href");
-                $(".modal-body .tab-content div").each(function(){
-                    $(this).removeClass("active");
-                });
-                $(".modal-body .tab-content "+tab).addClass("active");
             });
 
             $('#modal').on("click",".dashboard-settings-btn",function()

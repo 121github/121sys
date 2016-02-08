@@ -464,7 +464,9 @@ var modals = {
                 }
                 //TODO send cover letter from hsl file
                 if (typeof campaign_functions !== "undefined") {
+					  if (typeof campaign_functions.appointment_saved !== "undefined") {
                     campaign_functions.appointment_saved(appointment_id, response.state);
+					  }
                 }
                 //Notice for set the outcome before leave the page
                 $(window).on('beforeunload', function () {
@@ -694,7 +696,9 @@ var modals = {
 			modal_body.css('overflow', 'visible');
             modals.appointment_contacts(urn);
 			if(typeof campaign_functions !== "undefined"){
+				if(typeof campaign_functions.appointment_setup !== "undefined"){
 				campaign_functions.appointment_setup(start);
+				}
 			} else if (quick_planner !== "undefined") {
 				quick_planner.appointment_setup(start);
 			}
@@ -1438,7 +1442,9 @@ var modals = {
                     modals.contacts.load_tabs(id, tab);
                 }
 				if(typeof campaign_functions !== "undefined"){
+					if(typeof campaign_functions.contact_form_setup !== "undefined"){
 					campaign_functions.contact_form_setup();
+					}
 				}
 				
             });
@@ -1936,3 +1942,4 @@ var modals = {
 		 modals.load_modal(mheader,mbody,mfooter);	
 	}
 }
+

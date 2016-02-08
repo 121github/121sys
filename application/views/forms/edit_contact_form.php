@@ -104,7 +104,7 @@
         <div class="input-group">
           <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Description <span class="caret"></span></button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu description-list">
               <li><a href="#">Home</a></li>
               <li><a href="#">Work</a></li>
               <li><a href="#">Mobile</a></li>
@@ -307,15 +307,15 @@ $('#primary-toggle').bootstrapToggle({
         });
     }
 */
-    $(".dropdown-menu li a").click(function () {
+    $modal.find("form .description-list li a").click(function () {
         $('#contact-phone-form').find('input[name="description"]').val($(this).text());
     });
 
     //Get address
 
     var addresses;
-    $('.address-select').hide();
-    $('#contact-address-form').find('input[name="house_number"]').numeric();
+    $modal.find('.address-select').hide();
+    $modal.find('#contact-address-form').find('input[name="house_number"]').numeric();
 
     $(document).one('click', '.get-contact-address', function (e) {
         e.preventDefault();
@@ -335,7 +335,7 @@ $('#primary-toggle').bootstrapToggle({
             data: {postcode: postcode, house_number: house_number}
         }).done(function (response) {
             if (response.success) {
-                $('#contact-address-form').find('input[name="postcode"]').val(response.postcode);
+                $modal.find('#contact-address-form').find('input[name="postcode"]').val(response.postcode);
                 addresses = response.data;
                 flashalert.info("Please select the correct address");
                 var options = "<option value=''>Select an address...</option>";
@@ -374,16 +374,16 @@ $('#primary-toggle').bootstrapToggle({
                 }
 
                 modal_body.css('overflow', 'visible');
-                $('.address-select').show();
+                $modal.find('.address-select').show();
             }
             else {
                 modal_body.css('overflow', 'auto');
-                $('.address-select').hide();
+                $modal.find('.address-select').hide();
                 flashalert.danger("No address found");
             }
         });
 
-        $('.address-select .selectpicker').change(function () {
+        $modal.find('.address-select .selectpicker').change(function () {
 
             var selectedId = $(this).val();
             var address = addresses[selectedId];

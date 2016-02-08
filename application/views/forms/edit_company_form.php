@@ -90,7 +90,7 @@
         <div class="input-group">
           <div class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Description <span class="caret"></span></button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu description-list">
               <li><a href="#">Reception</a></li>
               <li><a href="#">Head Quarters</a></li>
               <li><a href="#">Direct Line</a></li>
@@ -301,7 +301,7 @@ $('#primary-toggle').bootstrapToggle({
         });
     }
 */
-    $modal.find(".dropdown-menu li a").click(function () {
+   $modal.find("form .description-list li a").click(function () {
         $('#company-phone-form').find('input[name="description"]').val($(this).text());
     });
 

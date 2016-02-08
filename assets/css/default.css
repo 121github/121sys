@@ -1,7 +1,7 @@
 .navbar-toggle {
 	display: block;
-	float: left !important;
-	margin-left: 15px !important;
+	float: left;
+	margin-left: 15px;
 }
 .nav-tabs {
 	background:#eee;
