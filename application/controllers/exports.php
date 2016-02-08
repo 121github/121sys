@@ -48,7 +48,7 @@ class Exports extends CI_Controller
             'campaign_access' => $this->_campaigns,
 
 			'pageId' => 'export',
-            'title' => 'Admin | Exporter',
+            'title' => 'Admin | Report Settings',
             'javascript' => array(
                 'lib/moment.js',
                 'lib/daterangepicker.js',
@@ -433,7 +433,7 @@ class Exports extends CI_Controller
 
         fputcsv($outputBuffer, $headers);
         foreach ($data as $val) {
-            fputcsv($outputBuffer, $val);
+            fputcsv($outputBuffer, preg_replace('/\r?\n|\r/','', $val));
         }
         fclose($outputBuffer);
     }

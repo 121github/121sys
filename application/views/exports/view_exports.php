@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">Exports</h1>
+        <h1 class="page-header">Report settings</h1>
     </div>
     <!-- /.col-lg-12 -->
 </div>
@@ -94,7 +94,7 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-primary">
-            <div class="panel-heading"><i class="fa fa-table fa-fw"></i> Available Exports
+            <div class="panel-heading"><i class="fa fa-table fa-fw"></i> Available Reports
                 <div class="pull-right" style="border:0px solid black;">
                     <a href="#filter-right" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
@@ -184,7 +184,7 @@
 <div class="row" style="margin-bottom: 10px;">
     <div class="col-lg-12">
         <?php if (in_array("edit export", $_SESSION['permissions'])): ?>
-            <button class="btn btn-success new-export-btn">New Export Form</button>
+            <button class="btn btn-success new-export-btn">New Report</button>
         <?php endif ?>
     </div>
 </div>
@@ -193,7 +193,7 @@
     <div class="col-lg-12">
         <form name="myform" method="post" class="search-form" onsubmit="return export_data.onsubmitform();">
             <div class="panel panel-primary">
-                <div class="panel-heading"><i class="fa fa-table fa-fw"></i>Custom Exports
+                <div class="panel-heading"><i class="fa fa-table fa-fw"></i>Custom Reports
                     <div class="pull-right" style="border:0px solid black;">
                         <a href="#filter-right" class="btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter
@@ -244,7 +244,7 @@
 <div class="row" style="margin-bottom: 10px;">
     <div class="col-lg-12">
         <?php if (in_array("edit export", $_SESSION['permissions'])): ?>
-            <button class="btn btn-success new-export-btn">New Export Form</button>
+            <button class="btn btn-success new-export-btn">New Report</button>
         <?php endif ?>
     </div>
 </div>

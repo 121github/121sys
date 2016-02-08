@@ -455,10 +455,6 @@ endif; ?>
                                             '<p>Dashboard Settings</p>' +
                                             '<span class="fa fa-dashboard fa-3x"></span>' +
                                         '</span>' +
-                                        '<span type="button" class="btn btn-default panel-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
-                                            '<p>Panel Settings</p>' +
-                                            '<span class="fa fa-square-o fa-3x"></span>' +
-                                        '</span>' +
                                         '<span type="button" class="btn btn-default report-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
                                             '<p>Report Settings</p>' +
                                             '<span class="fa fa-area-chart fa-3x"></span>' +
@@ -493,14 +489,9 @@ endif; ?>
                 window.location = helper.baseUrl + 'dashboard/settings';
             });
 
-            $('#modal').on("click",".panel-settings-btn",function()
-            {
-                window.location = helper.baseUrl + 'panels/settings';
-            });
-
             $('#modal').on("click",".report-settings-btn",function()
             {
-                window.location = helper.baseUrl + 'reports/settings';
+                window.location = helper.baseUrl + 'exports';
             });
 
         });

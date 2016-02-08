@@ -663,4 +663,54 @@ class Dashboard_model extends CI_Model
 
         return $this->db->query($qry)->result_array();
     }
+
+
+    /**
+     * Add report to the Dashboard
+     */
+    public function add_report($form) {
+        return $this->db->insert("dashboard_reports", $form);
+    }
+
+    /**
+     * Remove report from the Dashboard
+     */
+    public function remove_report($dashboard_id, $report_id) {
+
+        $this->db->where('dashboard_id', $dashboard_id);
+        $this->db->where('report_id', $report_id);
+        return $this->db->delete("dashboard_reports");
+    }
+
+    /**
+     * Update reports on a dashboard
+     */
+    public function update_reports($dash_reports) {
+        // Start SQL transaction.
+        $this->db->trans_start();
+
+        foreach ($dash_reports as $report) {
+            $this->db->where('dashboard_id', $report['dashboard_id']);
+            $this->db->where('report_id', $report['report_id']);
+            $this->db->update("dashboard_reports", $report);
+        }
+
+        // Complete SQL transaction.
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
+    }
+
+    //Get Dashboard Reports by id
+
+    public function get_dashboard_reports_by_id($dashboard_id) {
+        $qry = "SELECT
+                  dr.*, e.name
+                FROM dashboard_reports dr
+                INNER JOIN export_forms e ON (e.export_forms_id = dr.report_id)
+                  WHERE dr.dashboard_id = ".$dashboard_id."
+                  ORDER BY dr.position asc";
+
+        return $this->db->query($qry)->result_array();
+    }
 }

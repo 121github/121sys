@@ -3,18 +3,38 @@ var dashboard = {
     init: function () {
         filters.init();
 
-        //$(".filter").click(function (e) {
-        //    e.preventDefault();
-        //    var input = $(this).attr('data-ref');
-        //    var func = $(this).closest('form').attr('data-func');
-        //    $icon = $(this).closest('ul').prev('button').find('span');
-        //    $(this).closest('ul').prev('button').text($(this).text()).prepend($icon);
-        //    $(this).closest('form').find('input[name="' + input + '"]').val($(this).attr('id'));
-        //    $(this).closest('ul').find('a').css("color","black");
-        //    $(this).css("color","green");
-        //    //run the panel function specified in the data-func
-        //    eval("dashboard." + func + "()");
-        //});
+        $('.daterange').daterangepicker({
+                opens: "left",
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                },
+                format: 'DD/MM/YYYY',
+                minDate: "02/07/2014",
+                maxDate: moment(),
+                startDate: moment(),
+                endDate: moment()
+            },
+            function (start, end, element) {
+                var $btn = this.element;
+                $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
+                $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
+                $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
+        });
+
+        $(document).on("click", '#filter-submit', function (e) {
+            e.preventDefault();
+            dashboard.load_dash($(this).attr('item-id'));
+            $('#filter-right').data("mmenu").close();
+        });
+
+        $(document).on("click", '.daterange', function (e) {
+            e.preventDefault();
+        });
 
         $(document).on("click", ".comment-filter", function (e) {
             e.preventDefault();
@@ -88,13 +108,32 @@ var dashboard = {
             window.location.replace(helper.baseUrl + 'dashboard/view/'+$(this).attr('item-id'));
         });
 
-        $(document).on("click", ".new-panel", function (e) {
+        $(document).on("click", ".new-report", function (e) {
             e.preventDefault();
-            dashboard.add_panel($(this).attr('data-item'));
+            dashboard.select_report($(this).attr('data-item'));
+        });
+
+        $(document).on("click", "#add-report-btn", function (e) {
+            e.preventDefault();
+            dashboard.add_report();
+        });
+
+        $(document).on("click", ".remove-dashreport-btn", function (e) {
+            e.preventDefault();
+            dashboard.remove_report($(this).attr('data-dashboard-id'), $(this).attr('data-report-id'));
+        });
+
+        $(document).on('click', '.export-dashreport-btn', function (e) {
+            e.preventDefault();
+            export_data.export_file($(this).attr('data-report-id'));
+        });
+
+        $(document).on("click", ".move-dashreport-btn", function (e) {
+            e.preventDefault();
+            //dashboard.move_report($(this).attr('data-dashboard-id'), $(this).attr('data-report-id'), $(this).attr('current-position'), $(this).attr('next-position'));
         });
 
         dashboard.filter_panel();
-
     },
 
     refresh_panels: function() {
@@ -971,72 +1010,222 @@ var dashboard = {
         });
     },
 
-    add_panel: function(dashboard_id) {
-        //$.ajax({
-        //    url: helper.baseUrl + 'panels/get_panels',
-        //    type: "POST",
-        //    dataType: "JSON"
-        //}).done(function (response) {
-        //    var options = "";
-        //    if (response.success) {
-        //        $.each(response.panels, function (i, val) {
-        //            var selected = "";
-        //            if (jQuery.inArray(val.id[0], dashboard_viewers) >= 0) {
-        //                selected = "selected";
-        //            }
-        //            options += "<option value='"+val.id+"' "+selected+">"+val.name+"</option>";
-        //        });
-        //    }
-        //});
+    select_report: function(dashboard_id) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_export_forms',
+            type: "POST",
+            dataType: "JSON",
+            data: {'dashboard_id': dashboard_id}
+        }).done(function (response) {
+            var options = "";
+            if (response.success) {
+                options += "<option value=''> Select one report </option>";
+                $.each(response.data, function (i, val) {
+                    options += "<option data-subtext='"+val.description+"' value='"+val.export_forms_id+"'>"+val.name+"</option>";
+                });
 
-         var select_panel =
-            "<select name='panel_id' class='selectpicker' id='panel_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
-                //options +
-            "</select>";
+                var select_report =
+                    "<select name='report_id' class='selectpicker' id='report_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
+                        options +
+                    "</select>";
 
-        var select_report =
-            "<select name='report_id' class='selectpicker' id='report_select' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
-                //options +
-            "</select>";
+                var mheader = "Add report panel";
 
-        var mheader = "Add panel/report";
-
-        var navtabs = '<ul id="appearance-tabs" class="nav nav-tabs" role="tablist">' +
-                        '<li role="presentation" class="active"><a href="#panels" aria-controls="panels" role="tab" data-toggle="tab">Panels</a></li>' +
-                        '<li role="presentation"><a href="#reports" aria-controls="reports" role="tab" data-toggle="tab">Reports</a></li>' +
-                      '</ul>';
-        var tabpanels = '<div class="tab-content">' +
-                            '<div id="panels" role="tabpanel" class="tab-pane active">' +
-                                '<p>Select the panel</p>' +
-                                select_panel +
-                            '</div>' +
-                            '<div id="reports" role="tabpanel" class="tab-pane">' +
-                                '<p>Select the report</p>' +
+                var navtabs = '<ul id="appearance-tabs" class="nav nav-tabs" role="tablist">' +
+                    '<li role="presentation" class="active"><a href="#reports" aria-controls="reports" role="tab" data-toggle="tab">Reports</a></li>' +
+                    '</ul>';
+                var mbody = "<form id='add-report-form' >" +
+                    "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
+                    "<input type='hidden' name='position' value='"+response.position+"'/>" +
+                    "<div class='form-group input-group-sm'>" +
+                        '<div class="row">' +
+                            '<div class="col-lg-6">' +
+                                '<p>Select the report panel</p>' +
                                 select_report +
                             '</div>' +
-                        '</div>';
-        var mbody = "<form id='add-panel-form' >" +
-                        "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
-                        navtabs +
-                        "<div class='form-group input-group-sm'>" +
-                            tabpanels +
-                        "</div>" +
+                            '<div class="col-lg-6">' +
+                                '<div class=""form-group input-group-sm">' +
+                                    '<p>Select the panel size</p>' +
+                                    '<select name="column_size" class="selectpicker" id="report_select" data-size="5">' +
+                                        '<option value="12">100%</option>' +
+                                        '<option value="9">75%</option>' +
+                                        '<option value="6" Selected>50%</option>' +
+                                        '<option value="4">33%</option>' +
+                                        '<option value="3">25%</option>' +
+                                    '</select>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    "</div>" +
                     "</form>";
 
-        var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="add-panel-btn">Add</button>' +
-            '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+                var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="add-report-btn">Add</button>' +
+                    '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 
-        modals.load_modal(mheader, mbody, mfooter);
+                modals.load_modal(mheader, mbody, mfooter);
+                modal_body.css('overflow','visible');
 
-        $('#modal').on("click",".modal-body li a",function()
-        {
-            tab = $(this).attr("href");
-            $(".modal-body .tab-content div").each(function(){
-                $(this).removeClass("active");
-            });
-            $(".modal-body .tab-content "+tab).addClass("active");
+                $('#modal').on("click",".modal-body li a",function()
+                {
+                    tab = $(this).attr("href");
+                    $(".modal-body .tab-content div").each(function(){
+                        $(this).removeClass("active");
+                    });
+                    $(".modal-body .tab-content "+tab).addClass("active");
+                });
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+
         });
+    },
 
+    add_report: function() {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/add_report',
+            data: $('#add-report-form').serialize(),
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                flashalert.success(response.msg);
+                $('.close-modal').trigger('click');
+                dashboard.load_dash(response.dashboard_id);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
 
+    remove_report: function(dashboard_id, report_id) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/remove_report',
+            data: {'dashboard_id': dashboard_id, 'report_id': report_id},
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                flashalert.success(response.msg);
+                dashboard.load_dash(response.dashboard_id);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    move_report: function(dashboard_id, report_id, direction, current_position) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/move_report',
+            data: {'dashboard_id': dashboard_id, 'report_id': report_id, 'current_position': current_position, 'next_position': next_position},
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                flashalert.success(response.msg);
+                dashboard.load_dash(response.dashboard_id);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    load_dash: function(dashboard_id) {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_dashboard_reports_by_id',
+            data: {'dashboard_id': dashboard_id},
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+            if(response.success){
+                $('.dashboard-area').empty();
+                var panels = "";
+                //Build the panels
+                $.each(response.reports, function (i, report) {
+                    var columns = "col-lg-"+(report.column_size);
+                    panels += '<div class="'+columns+'">' +
+                                '<div class="panel panel-primary">' +
+                                    '<div class="panel-heading clearfix">' + report.name +
+                                        '<div class="pull-right">' +
+                                            '<div class="btn-group">' +
+                                                '<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+                                                    '<i class="fa fa-gears fa-fw"></i>'+
+                                                '</button>'+
+                                                '<ul class="dropdown-menu slidedown pull-right">' +
+                                                    '<li><a href="#" id="1" class="remove-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" data-ref="remove"><i class="fa fa-trash pointer"></i> Remove</a></li>' +
+                                                    '<li><a href="#" id="1" class="export-dashreport-btn" data-report-id="'+report.report_id+'" data-ref="export"><i class="glyphicon glyphicon-floppy-save pointer"></i> Export </a></li>' +
+                                                    '<li class="divider"></li>' +
+                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(0)+'"><i class="glyphicon glyphicon-export pointer"></i> First </a></li>' +
+                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(report.position+1)+'"><i class="glyphicon glyphicon-arrow-left pointer"></i> Previous </a></li>' +
+                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(report.position-1)+'"><i class="glyphicon glyphicon-arrow-right pointer"></i> Posterior </a></li>' +
+                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(response.reports.length)+'"><i class="glyphicon glyphicon-import pointer"></i> Last </a></li>' +
+                                                '</ul>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 400px; padding: 0px;">' +
+                                        '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
+                                    '</div>' +
+                                  '</div>' +
+                              '</div>';
+                });
+                $('.dashboard-area').append(panels);
+
+                //Get the data content of the panels
+                $.each(response.reports, function (i, report) {
+                    $('.filter-form').find('input[name="export_forms_id"]').val(report.report_id);
+                    $.ajax({
+                        url: helper.baseUrl + 'exports/load_export_report_data',
+                        data: $('.filter-form').serialize(),
+                        type: "POST",
+                        dataType: "JSON"
+                    }).done(function(resp) {
+                        if (resp.success && resp.header) {
+                            var body = "<div class='table-"+report.report_id+" scroll'><table class='table table-bordered table-hover table-striped small'></table></div>";
+                            $('#'+report.report_id+'-panel').empty();
+                            $('#'+report.report_id+'-panel').append(body);
+
+                            var width = ($('.table-'+report.report_id).find('table').width()/resp.header.length);
+
+                            body = "<thead><tr>";
+                            $.each(resp.header, function (i, val) {
+                                if (resp.header.length) {
+                                    body += "<th style='padding: 5px; width: "+width+"px;'>" + val + "</th>";
+                                }
+                            });
+                            body += "</tr></thead><tbody>";
+                            $.each(resp.data, function (i, data) {
+                                if (resp.data.length) {
+                                    body += "<tr>";
+                                    $.each(data, function (k, val) {
+                                        body += "<td style='padding: 5px; width: "+width+"px;'>" + val + "</td>";
+                                    });
+                                    body += "</tr>";
+                                }
+                            });
+                            body += "</tbody>";
+
+                            $('.table-'+report.report_id).find('table').append(body);
+
+                            $('.table-'+report.report_id).find('table').on('scroll', function () {
+                                var table = $(this).find('table');
+                                $('.table-'+report.report_id).find("table > *").width($('.table-'+report.report_id).find('table').width() + $('.table-'+report.report_id).find('table').scrollLeft());
+                            });
+
+                            //$('.table-'+report.report_id).find("td").width($('.table-'+report.report_id).find('table').width()/resp.data.length);
+                        }
+                        else {
+                            $('#'+report.report_id+'-panel').html("No results found!");
+                        }
+                    });
+                });
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
     }
 }
