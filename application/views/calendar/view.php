@@ -27,7 +27,7 @@
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
                             <li>
-<a id="switch-cal-view" data-cal-view="<?php echo $calendar_view=="combined"?"2":"1" ?>" href="#"><?php echo ($calendar_view=="combined"?"Seperate Appts":"Combine Apps") ?></a>
+<a id="switch-cal-view" data-cal-view="<?php echo $calendar_view=="combined"?"2":"1" ?>" href="#"><?php echo ($calendar_view=="combined"?"Seperate Events":"Combine Events") ?></a>
 </li>
                                 <?php foreach ($options as $option): ?>
                                     <?php echo $option; ?>

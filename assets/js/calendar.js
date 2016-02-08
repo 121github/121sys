@@ -2,6 +2,8 @@ window.onresize = function(event) {
    verifyConflictEvents();
 };
 
+
+
 $(document).on('click','#switch-cal-view',function(e){
 	e.preventDefault();
 	$.ajax({ url: helper.baseUrl +'calendar/switch_view',

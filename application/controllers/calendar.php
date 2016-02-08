@@ -1,4 +1,7 @@
 <?php
+
+
+
 //require('upload.php');
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -44,6 +47,63 @@ class Calendar extends CI_Controller
 		}
 		echo json_encode($slots);
 	}
+
+public function google_logout(){
+	
+}
+
+public function check_token(){
+	$client = new Google_Client();
+
+if(isset($_SESSION['api']['google']['token'])){
+$access_token = $_SESSION['api']['google']['token']['access_token'];
+$token = $_SESSION['api']['google']['token'];
+$client->setAccessToken(json_encode($token));
+
+$response = file_get_contents("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=".$access_token);
+ $check_token  =  json_decode($response);
+
+    if(isset($check_token->issued_to))
+    {
+		$this->firephp->log("token valid");
+		return $client;
+    }
+    else if(isset($check_token->error))
+    {
+		$this->firephp->log("token invalid");
+        unset($_SESSION['api']['google']);
+    }
+
+}
+}
+
+public function import_google_calendar_events(){
+$client = $this->check_token();
+
+	
+}
+
+	public function google()
+    {
+if(isset($_SESSION['api']['google'])){
+$google_client = new Google_Client;
+$google_client->setAccessToken(json_encode($_SESSION['api']['google']['token']));
+
+$Oauth2 = new Google_Service_Oauth2($google_client);
+$google_email = $Oauth2->userinfo->get()->email;
+} else {
+$google_email = false;	
+}
+		 $data = array(
+            'campaign_access' => $this->_campaigns,
+            'title' => 'Dashboard | Calendar',
+            'page' => 'data',
+			'google' => $google_email);
+			
+		 $this->template->load('default', 'calendar/google_cal.php', $data);
+	}
+	
+
 
     //this loads the data management view
     public function index()

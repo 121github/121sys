@@ -1,0 +1,13 @@
+{
+    "name": "brad.foster/assets",
+    "description": "121system",
+    "authors": [
+        {
+            "name": "Brad Foster",
+            "email": "bradf@121customerinsight.co.uk"
+        }
+    ],
+    "require": {
+        "google/apiclient": "^1.1"
+    }
+}
