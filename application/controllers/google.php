@@ -11,10 +11,10 @@ class Google extends CI_Controller
 $this->client = new Google_Client();
 $this->client->setAccessType('offline');
 $this->client->setApplicationName('121 System');
-$this->client->setClientId('941364401612-76ishcpj4cld2kjk8f84uk6c1tgvn6vv.apps.googleusercontent.com');
-$this->client->setClientSecret('gBtxtvrN_KmFmEqZqpCrtrkb');
+$this->client->setClientId('941364401612-9rq1ik275hud323ehflvgrnhjndif460.apps.googleusercontent.com');
+$this->client->setClientSecret('UoIn585J2RvdPPafhFtEX6_5');
 $this->client->setScopes(array("https://www.googleapis.com/auth/calendar","https://www.googleapis.com/auth/userinfo.email"));
-$scriptUri = "http://".$_SERVER["HTTP_HOST"].'/121sys/google/authcode';
+$scriptUri = base_url().'google/authcode';
 $this->client->setRedirectUri($scriptUri);
 $this->client->setDeveloperKey('AIzaSyBimUzlpAP3mDdBVMlQLiG9K76rUU1ifKM'); 
 	}
