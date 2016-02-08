@@ -432,6 +432,13 @@ endif; ?>
         $(document).ready(function () {
             $('#color-box').on('click', '.color-btn', function () {
                 var mheader = "Appearance";
+                var report_btn= '' ;
+                if (helper.permissions['export data'] > 0) {
+                    report_btn = '<span type="button" class="btn btn-default report-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
+                                    '<p>Report Settings</p>' +
+                                    '<span class="fa fa-area-chart fa-3x"></span>' +
+                                 '</span>';
+                }
                 var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li></ul>';
                 var tabpanels = '<div class="tab-content">' +
                                     '<div role="tabpanel" class="tab-pane active" id="theme-tab">' +
@@ -452,10 +459,7 @@ endif; ?>
                                             '<p>Dashboard Settings</p>' +
                                             '<span class="fa fa-dashboard fa-3x"></span>' +
                                         '</span>' +
-                                        '<span type="button" class="btn btn-default report-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
-                                            '<p>Report Settings</p>' +
-                                            '<span class="fa fa-area-chart fa-3x"></span>' +
-                                        '</span>' +
+                                        report_btn +
                                     '</div>' +
                                 '</div>';
                 var mbody = navtabs+tabpanels;

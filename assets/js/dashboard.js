@@ -88,26 +88,6 @@ var dashboard = {
             dashboard.favorites_panel();
         });
 
-        $(document).on("click", ".new-dashboard-btn", function (e) {
-            e.preventDefault();
-            dashboard.new_dashboard();
-        });
-
-        $(document).on("click", ".edit-dashboard-btn", function (e) {
-            e.preventDefault();
-            dashboard.new_dashboard($(this));
-        });
-
-        $(document).on("click", "#save-dashboard-btn", function (e) {
-            e.preventDefault();
-            dashboard.save_dashboard();
-        });
-
-        $(document).on("click", ".view-dashboard-btn", function (e) {
-            e.preventDefault();
-            window.location.replace(helper.baseUrl + 'dashboard/view/'+$(this).attr('item-id'));
-        });
-
         $(document).on("click", ".new-report", function (e) {
             e.preventDefault();
             dashboard.select_report($(this).attr('data-item'));
@@ -134,6 +114,28 @@ var dashboard = {
         });
 
         dashboard.filter_panel();
+    },
+
+    settings: function() {
+        $(document).on("click", ".new-dashboard-btn", function (e) {
+            e.preventDefault();
+            dashboard.new_dashboard();
+        });
+
+        $(document).on("click", ".edit-dashboard-btn", function (e) {
+            e.preventDefault();
+            dashboard.new_dashboard($(this));
+        });
+
+        $(document).on("click", "#save-dashboard-btn", function (e) {
+            e.preventDefault();
+            dashboard.save_dashboard();
+        });
+
+        $(document).on("click", ".view-dashboard-btn", function (e) {
+            e.preventDefault();
+            window.location.replace(helper.baseUrl + 'dashboard/view/'+$(this).attr('item-id'));
+        });
     },
 
     refresh_panels: function() {

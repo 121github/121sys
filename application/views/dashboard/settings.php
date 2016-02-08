@@ -28,7 +28,7 @@
 
 <script>
     $(document).ready(function () {
-        dashboard.init();
+        dashboard.settings();
         dashboard.custom_dash_panel();
     });
 </script>
