@@ -6,7 +6,7 @@
     <property name="builddir" value="${workspace}/build"/>
 
     <target name="build"
-            depends="prepare,lint,phploc,pdepend,phpcpd,phpmd-ci,phpcs-ci"/>
+            depends="prepare,vendors,lint,phploc,pdepend,phpcpd,phpmd-ci,phpcs-ci"/>
     <!-- depends="prepare,vendors, database_schema, parameters,lint,phploc,pdepend,phpcpd,phpmd-ci,phpcs-ci,phpdoc,phpunit,phpcb"/> -->
 
     <target name="full-build"
@@ -235,6 +235,13 @@
             <arg path="${sourcedir}"/>
             <arg value="--output"/>
             <arg path="${builddir}/code-browser"/>
+        </exec>
+    </target>
+
+    <target name="vendors" description="Update vendors">
+        <exec executable="composer" failonerror="true">
+            <arg value="update" />
+            <arg value="--no-dev" />
         </exec>
     </target>
 

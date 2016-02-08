@@ -1,4 +1,8 @@
 {
+    "config": {
+        "vendor-dir": "assets/vendor"
+    },
+
     "name": "brad.foster/assets",
     "description": "121system",
     "authors": [
