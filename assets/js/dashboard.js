@@ -130,7 +130,7 @@ var dashboard = {
 
         $(document).on("click", ".move-dashreport-btn", function (e) {
             e.preventDefault();
-            //dashboard.move_report($(this).attr('data-dashboard-id'), $(this).attr('data-report-id'), $(this).attr('current-position'), $(this).attr('next-position'));
+            dashboard.move_report($(this).attr('data-dashboard-id'), $(this).attr('data-report-id'), $(this).attr('current-position'), $(this).attr('next-position'));
         });
 
         dashboard.filter_panel();
@@ -1031,9 +1031,6 @@ var dashboard = {
 
                 var mheader = "Add report panel";
 
-                var navtabs = '<ul id="appearance-tabs" class="nav nav-tabs" role="tablist">' +
-                    '<li role="presentation" class="active"><a href="#reports" aria-controls="reports" role="tab" data-toggle="tab">Reports</a></li>' +
-                    '</ul>';
                 var mbody = "<form id='add-report-form' >" +
                     "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
                     "<input type='hidden' name='position' value='"+response.position+"'/>" +
@@ -1064,15 +1061,6 @@ var dashboard = {
 
                 modals.load_modal(mheader, mbody, mfooter);
                 modal_body.css('overflow','visible');
-
-                $('#modal').on("click",".modal-body li a",function()
-                {
-                    tab = $(this).attr("href");
-                    $(".modal-body .tab-content div").each(function(){
-                        $(this).removeClass("active");
-                    });
-                    $(".modal-body .tab-content "+tab).addClass("active");
-                });
             }
             else {
                 flashalert.danger(response.msg);
@@ -1116,7 +1104,7 @@ var dashboard = {
         });
     },
 
-    move_report: function(dashboard_id, report_id, direction, current_position) {
+    move_report: function(dashboard_id, report_id, current_position, next_position) {
         $.ajax({
             url: helper.baseUrl + 'dashboard/move_report',
             data: {'dashboard_id': dashboard_id, 'report_id': report_id, 'current_position': current_position, 'next_position': next_position},
@@ -1150,24 +1138,39 @@ var dashboard = {
                                 '<div class="panel panel-primary">' +
                                     '<div class="panel-heading clearfix">' + report.name +
                                         '<div class="pull-right">' +
-                                            '<div class="btn-group">' +
-                                                '<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
-                                                    '<i class="fa fa-gears fa-fw"></i>'+
-                                                '</button>'+
-                                                '<ul class="dropdown-menu slidedown pull-right">' +
-                                                    '<li><a href="#" id="1" class="remove-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" data-ref="remove"><i class="fa fa-trash pointer"></i> Remove</a></li>' +
-                                                    '<li><a href="#" id="1" class="export-dashreport-btn" data-report-id="'+report.report_id+'" data-ref="export"><i class="glyphicon glyphicon-floppy-save pointer"></i> Export </a></li>' +
-                                                    '<li class="divider"></li>' +
-                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(0)+'"><i class="glyphicon glyphicon-export pointer"></i> First </a></li>' +
-                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(report.position+1)+'"><i class="glyphicon glyphicon-arrow-left pointer"></i> Previous </a></li>' +
-                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(report.position-1)+'"><i class="glyphicon glyphicon-arrow-right pointer"></i> Posterior </a></li>' +
-                                                    '<li><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(response.reports.length)+'"><i class="glyphicon glyphicon-import pointer"></i> Last </a></li>' +
-                                                '</ul>' +
-                                            '</div>' +
+                                            '<a href="#filter-right" class="btn btn-default btn-xs">' +
+                                                '<span class="glyphicon glyphicon-filter" style="padding-left:3px; color:black;"></span> Filter' +
+                                            '</a>' +
                                         '</div>' +
                                     '</div>' +
                                     '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 400px; padding: 0px;">' +
-                                        '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
+                                        '<ul class="nav nav-tabs" id="panel-tabs-'+report.report_id+'" style=" background:#eee; width:100%;">' +
+                                            '<li class="data-tab active"><a href="#data-system-'+report.report_id+'" class="tab" data-toggle="tab">Data</a></li>' +
+                                            '<li class="plots-tab"><a href="#chart-div-system-'+report.report_id+'" class="tab" data-toggle="tab">Graphs</a></li>' +
+                                            '<li class="dropdown pull-right">' +
+                                                '<a id="options-'+report.report_id+'" class="dropdown-toggle" aria-controls="options-contents-'+report.report_id+'" data-toggle="dropdown" href="#" aria-expanded="true">' +
+                                                    'Options' +
+                                                   '<span class="caret"></span>' +
+                                                '</a>' +
+                                                '<ul id="options-contents-'+report.report_id+'" class="dropdown-menu slidedown pull-right" aria-labelledby="options-'+report.report_id+'">' +
+                                                    '<li><a href="#" id="1" class="remove-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" data-ref="remove"><i class="fa fa-trash pointer"></i> Remove</a></li>' +
+                                                    '<li><a href="#" id="1" class="export-dashreport-btn" data-report-id="'+report.report_id+'" data-ref="export"><i class="glyphicon glyphicon-floppy-save pointer"></i> Export </a></li>' +
+                                                    '<li class="divider"></li>' +
+                                                    '<li class="'+(parseInt(report.position)<=0?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(0)+'"><i class="glyphicon glyphicon-export pointer"></i> Move First </a></li>' +
+                                                    '<li class="'+(parseInt(report.position)<=0?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(report.position)-1)+'"><i class="glyphicon glyphicon-arrow-left pointer"></i> Move Previous </a></li>' +
+                                                    '<li class="'+(parseInt(report.position)>=response.reports.length-1?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(report.position)+1)+'"><i class="glyphicon glyphicon-arrow-right pointer"></i> Move Posterior </a></li>' +
+                                                    '<li class="'+(parseInt(report.position)>=response.reports.length-1?"disabled":"")+'"><a href="#" id="1" class="move-dashreport-btn" data-report-id="'+report.report_id+'" data-dashboard-id="'+dashboard_id+'" current-position="'+report.position+'" next-position="'+(parseInt(response.reports.length)-1)+'"><i class="glyphicon glyphicon-import pointer"></i> Move Last </a></li>' +
+                                                '</ul>' +
+                                            '</li>' +
+                                        '</ul>' +
+                                        '<div class="tab-content" style="padding: 0px;">' +
+                                            '<div class="tab-pane active" id="data-system-'+report.report_id+'"  style="padding: 0px;">' +
+                                                '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
+                                            '</div>' +
+                                            '<div class="tab-pane" id="chart-div-system-'+report.report_id+'" style="margin: -15px; padding: 0px;">' +
+
+                                            '</div>' +
+                                        '</div>' +
                                     '</div>' +
                                   '</div>' +
                               '</div>';
@@ -1185,8 +1188,8 @@ var dashboard = {
                     }).done(function(resp) {
                         if (resp.success && resp.header) {
                             var body = "<div class='table-"+report.report_id+" scroll'><table class='table table-bordered table-hover table-striped small'></table></div>";
-                            $('#'+report.report_id+'-panel').empty();
-                            $('#'+report.report_id+'-panel').append(body);
+                            $('#data-system-'+report.report_id).empty();
+                            $('#data-system-'+report.report_id).append(body);
 
                             var width = ($('.table-'+report.report_id).find('table').width()/resp.header.length);
 
@@ -1218,7 +1221,7 @@ var dashboard = {
                             //$('.table-'+report.report_id).find("td").width($('.table-'+report.report_id).find('table').width()/resp.data.length);
                         }
                         else {
-                            $('#'+report.report_id+'-panel').html("No results found!");
+                            $('#data-system-'+report.report_id).html("<div style='padding:20px;'>No results found!</div>");
                         }
                     });
                 });
