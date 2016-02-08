@@ -15,7 +15,7 @@
 
             </div>
             <?php if($google){ ?>
-            <iframe src="https://calendar.google.com/calendar/embed?src=<?php echo $google ?>&ctz=Europe/London" style="border: 0; width:100%; min-height:700px; height:100%; <?php if(!$google_token){ echo 'display:none'; } ?>" id="cal-iframe" frameborder="0" scrolling="no"></iframe>
+            <iframe src="https://calendar.google.com/calendar/embed?src=<?php echo $google ?>&ctz=Europe/London" style="border: 0; width:100%; min-height:700px; height:100%; <?php if(!$google){ echo 'display:none'; } ?>" id="cal-iframe" frameborder="0" scrolling="no"></iframe>
             <?php } ?>
             </div>
             </div>
