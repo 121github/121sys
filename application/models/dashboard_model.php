@@ -701,6 +701,41 @@ class Dashboard_model extends CI_Model
         return $this->db->trans_status();
     }
 
+
+    /**
+     * Remove reports by Dashboard Id
+     */
+    public function remove_reports_by_dashboard_id($dashboard_id) {
+
+        $this->db->where('dashboard_id', $dashboard_id);
+        return $this->db->delete("dashboard_reports");
+    }
+
+    /**
+     * Insert reports on a particular dashboard
+     */
+    public function insert_reports($dash_reports) {
+        return $this->db->insert_batch('dashboard_reports', $dash_reports);
+    }
+
+    /**
+     * Reorder reports
+     */
+    public function reorder_reports($dashboard_id, $dash_reports) {
+        // Start SQL transaction.
+        $this->db->trans_start();
+
+        $this->remove_reports_by_dashboard_id($dashboard_id);
+        $this->insert_reports($dash_reports);
+
+        // Complete SQL transaction.
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
+    }
+
+
+
     //Get Dashboard Reports by id
 
     public function get_dashboard_reports_by_id($dashboard_id) {

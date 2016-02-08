@@ -1431,19 +1431,35 @@ public function index(){
                 $aux = array();
                 foreach ($dash_reports as $dash_report) {
                     unset($dash_report['name']);
-                    if (($dash_report['dasboard_id'] == $form['dashboard_id']) && ($dash_report['report_id'] == $form['report_id'])) {
+                    if (($dash_report['dashboard_id'] == $form['dashboard_id']) && ($dash_report['report_id'] == $form['report_id'])) {
                         $dash_report['position'] = $form['next_position'];
                     }
                     else {
-                        if ($dash_report['position'] <= $form['current_position']) {
-
+//                        if ($dash_report['position'] == $form['next_position']) {
+//                            if ($dash_report['position'] < $form['current_position']) {
+//                                $dash_report['position'] = $dash_report['position']+1;
+//                            }
+//                            else if ($dash_report['position'] > $form['current_position']) {
+//                                $dash_report['position'] = $dash_report['position']-1;
+//                            }
+//                        }
+                        if ($dash_report['position'] < $form['current_position']) {
+                            if ($dash_report['position'] >= $form['next_position']) {
+                                $dash_report['position'] = $dash_report['position']+1;
+                            }
+                        }
+                        else if ($dash_report['position'] > $form['current_position']) {
+                            if ($dash_report['position'] <= $form['next_position']) {
+                                $dash_report['position'] = $dash_report['position']-1;
+                            }
                         }
                     }
+                    array_push($aux, $dash_report);
                 }
                 $dash_reports = $aux;
 
                 //Change report position
-                $result = $this->Dashboard_model->update_reports($dash_reports);
+                $result = $this->Dashboard_model->reorder_reports($form['dashboard_id'], $dash_reports);
 
                 echo json_encode(array(
                         "success" => (!$result?false:true),
