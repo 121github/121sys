@@ -884,13 +884,7 @@ var dashboard = {
                                     '<div class="chat-body clearfix">' +
                                         '<div class="header">' +
                                             '<strong class="primary-font">' +
-                                                '<a href="#" class="edit-dashboard-btn" ' +
-                                                    'item-id="'+val.dashboard_id+'"' +
-                                                    'item-name="'+val.name+'"' +
-                                                    'item-description="'+val.description+'"' +
-                                                    'item-viewers="'+val.viewers+'"' +
-                                                    'item-campaigns="'+val.campaigns+'"' +
-                                                '>' +
+                                                '<a href="#" class="view-dashboard-btn" item-id="'+val.dashboard_id+'" >' +
                                                     val.name +
                                                 '</a>' +
                                             '</strong>' +
