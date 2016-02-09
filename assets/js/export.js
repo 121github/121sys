@@ -136,6 +136,15 @@ var export_data = {
             export_data.close_export_report($(this));
         });
 
+        $(document).on('change', 'textarea[name="query"], input[name="order_by"], input[name="group_by"]', function (e) {
+            e.preventDefault();
+            var query = $('.edit-export-form').find('textarea[name="query"]').val();
+            var order_by = $('.edit-export-form').find('input[name="order_by"]').val();
+            var group_by = $('.edit-export-form').find('input[name="group_by"]').val();
+
+            $('.preview-qry').html(query+(order_by.length>""?" ORDER BY "+order_by:"")+(group_by.length>""?" GROUP BY "+group_by:""));
+        });
+
         export_data.load_export_forms();
         export_data.load_filters();
     },
@@ -326,7 +335,7 @@ var export_data = {
         });
     },
     edit_export_form: function (btn) {
-        var mheader = "Edit Custom Export";
+        var mheader = "Edit Custom Report";
         var mbody = "";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
             ' <button class="btn btn-primary pull-right marl" id="save-edit-btn">Save</button> ';
@@ -364,38 +373,63 @@ var export_data = {
             mbody.find('input[name="source_filter"]').val(source_filter);
             mbody.find('input[name="pot_filter"]').val(pot_filter);
 
+            mbody.find('.preview-qry').html(query+(order_by.length>""?" ORDER BY "+order_by:"")+(group_by.length>""?" GROUP BY "+group_by:""));
 
-
+            //Get the graphs
             $.ajax({
-                url: helper.baseUrl + 'exports/get_export_users',
+                url: helper.baseUrl + 'exports/get_export_graphs',
                 type: "POST",
                 dataType: "JSON",
                 data: {'export_forms_id': export_forms_id}
             }).done(function (response) {
                 if (response.success) {
-                    modals.load_modal(mheader, mbody, mfooter);
-                    //modal_body.css('overflow','visible');
-                    //Load users
-                    $.each(response.users, function (k, v) {
-                        var selected = "";
-                        if (inArray(v.id, response.data) && response.data) {
-                            selected = "selected";
-                        }
-                        $('#user_select').prepend('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
+                    mbody.find('#export-graph-list').empty();
+                    var graphs = "<table class='table table-bordered table-hover table-striped small'>";
+                    graphs += "<thead><tr><th>Name</th><th>Type</th><th>X Axis</th><th>Y Axis</th></tr></thead><tbody>";
+                    $.each(response.graphs, function (k, v) {
+                        graphs += "<tr>" +
+                                    "<td>"+v.name+"</td>" +
+                                    "<td>"+v.type+"</td>" +
+                                    "<td>"+v.x_value+"</td>" +
+                                    "<td>"+v.y_value+"</td>" +
+                                  "</tr>";
                     });
-                    $('#user_select').selectpicker('refresh');
+                    graphs += "</tbody></table>";
+
+                    mbody.find('#export-graph-list').html(graphs);
                 }
-                else {
+                //Get the export users
+                $.ajax({
+                    url: helper.baseUrl + 'exports/get_export_users',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {'export_forms_id': export_forms_id}
+                }).done(function (response) {
+                    if (response.success) {
+                        modals.load_modal(mheader, mbody, mfooter);
+                        //modal_body.css('overflow','visible');
+                        //Load users
+                        $.each(response.users, function (k, v) {
+                            var selected = "";
+                            if (inArray(v.id, response.data) && response.data) {
+                                selected = "selected";
+                            }
+                            $('#user_select').prepend('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
+                        });
+                        $('#user_select').selectpicker('refresh');
+                    }
+                    else {
+                        mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
+                        mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                        modals.load_modal(mheader, mbody, mfooter);
+                    }
+
+                }).fail(function () {
                     mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
                     mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+
                     modals.load_modal(mheader, mbody, mfooter);
-                }
-
-            }).fail(function () {
-                mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
-                mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-
-                modals.load_modal(mheader, mbody, mfooter);
+                });
             });
         });
 
@@ -458,7 +492,7 @@ var export_data = {
         $('.filter-form').find('input[name="export_forms_id"]').val(export_forms_id);
 
         var mheader = name;
-        var mbody = "<table>";
+        var mbody = "";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
             ' <span class="btn btn-primary pull-right marl modal-export-file-btn" item-id="'+export_forms_id+'">Export</span> ';
 
@@ -469,11 +503,14 @@ var export_data = {
             data: $('.filter-form').serialize()
         }).done(function (response) {
             if (response.success && response.header) {
+                mbody += "<div class='table-"+export_forms_id+" scroll'><table class='table table-bordered table-hover table-striped small'>";
+                mbody += "<thead><tr>";
                 $.each(response.header, function (i, val) {
                     if (response.header.length) {
                         mbody += "<th style='padding: 5px;'>" + val + "</th>";
                     }
                 });
+                mbody += "</tr></thead><tbody>";
                 $.each(response.data, function (i, data) {
                     if (response.data.length) {
                         mbody += "<tr>";
@@ -483,19 +520,17 @@ var export_data = {
                         mbody += "</tr>";
                     }
                 });
-                mbody += "</table>";
+                mbody += "</tbody></table></div>";
                 export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
             }
             else {
-                mbody += "<tr><td>" + response.data + "</td></tr>";
-                mbody += "</table>";
+                mbody += "<div style='padding: 20px;'>" + response.data + "</div>";
                 export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
                 $(".modal-export-file-btn").attr('disabled', true);
             }
 
         }).fail(function () {
-            mbody += "<tr><td>There is something wrong with export</td></tr>";
-            mbody += "</table>";
+            mbody += "<div style='padding: 20px;'>There is something wrong with export</div>";
             export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
             $(".modal-export-file-btn").attr('disabled', true);
 
@@ -509,7 +544,7 @@ var export_data = {
         $('.filter-form').find('input[name="export_form_name"]').val(export_form_name);
 
         var mheader = export_form_name;
-        var mbody = "<table>";
+        var mbody = "";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
             ' <span class="btn btn-primary pull-right marl modal-export-available-file-btn" item-name="'+export_form_name+'">Export</span> ';
 
@@ -520,11 +555,14 @@ var export_data = {
             data: $('.filter-form').serialize()
         }).done(function (response) {
             if (response.success && response.header) {
+                mbody += "<div class='table-"+export_form_name+" scroll'><table class='table table-bordered table-hover table-striped small'>";
+                mbody += "<thead><tr>";
                 $.each(response.header, function (i, val) {
                     if (response.header.length) {
                         mbody += "<th style='padding: 5px;'>" + val + "</th>";
                     }
                 });
+                mbody += "</tr></thead><tbody>";
                 $.each(response.data, function (i, data) {
                     if (response.data.length) {
                         mbody += "<tr>";
@@ -534,20 +572,17 @@ var export_data = {
                         mbody += "</tr>";
                     }
                 });
-                mbody += "</table>";
+                mbody += "</tbody></table></div>";
                 export_data.show_export_report(export_form_name, mheader, mbody, mfooter);
             }
             else {
-                mbody += "<tr><td>" + response.msg + "</td></tr>";
-                mbody += "</table>";
+                mbody += "<div style='padding: 20px;'>" + response.msg + "</div>";
                 export_data.show_export_report(export_form_name, mheader, mbody, mfooter);
                 $(".modal-export-available-file-btn").attr('disabled', true);
             }
 
         }).fail(function () {
-
-            mbody += "<tr><td>No data</td></tr>";
-            mbody += "</table>";
+            mbody += "<div style='padding: 20px;'> No Data </div>";
             export_data.show_export_report(export_form_name, mheader, mbody, mfooter);
             $(".modal-export-available-file-btn").attr('disabled', true);
 
@@ -557,6 +592,12 @@ var export_data = {
     show_export_report: function (export_forms_id, mheader, mbody, mfooter) {
 
         modals.load_modal(mheader, mbody, mfooter);
+
+        $('.modal-body').css('padding', '0px');
+
+        $('#modal .table-'+export_forms_id).find('table').on('scroll', function () {
+            $('#modal .table-'+export_forms_id).find("table > *").width($('#modal .table-'+export_forms_id).find('table').width() + $('#modal .table-'+export_forms_id).find('table').scrollLeft());
+        });
 
         $('.report-available-export-prog-' + export_forms_id).html("");
         $('.report-export-prog-' + export_forms_id).html("");

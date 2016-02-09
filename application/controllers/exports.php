@@ -102,6 +102,22 @@ class Exports extends CI_Controller
         }
     }
 
+    public function get_export_graphs() {
+        if ($this->input->post()) {
+            $export_forms_id = $this->input->post('export_forms_id');
+            $results = array();
+
+            if ($export_forms_id) {
+                $results = $this->Export_model->get_export_graphs_by_export_id($export_forms_id);
+            }
+
+            echo json_encode(array(
+                "success" => !empty($results),
+                "graphs" => $results
+            ));
+        }
+    }
+
     /*
     Data for custom export
     */
@@ -383,9 +399,24 @@ class Exports extends CI_Controller
             $users = (isset($form['user_id'])?$form['user_id']:array());
             unset($form['user_id']);
 
+            $graph = array();
+            if ($form['graph_name'] != "" && $form['graph_type'] != "" && $form['x_value'] != "") {
+                $graph = array(
+                    "export_forms_id" => $form['export_forms_id'],
+                    "name" => $form['graph_name'],
+                    "type" => $form['graph_type'],
+                    "x_value" => $form['x_value'],
+                    "y_value" => (isset($form['y_value'])?$form['y_value']:NULL)
+                );
+            }
+            unset($form['graph_name']);
+            unset($form['graph_type']);
+            unset($form['x_value']);
+            unset($form['y_value']);
+
 
             if (!empty($form['export_forms_id'])) {
-                $results = $this->Export_model->update_export_form($form);
+                $this->Export_model->update_export_form($form);
                 $export_forms_id = $form['export_forms_id'];
             }
             else {
@@ -393,7 +424,13 @@ class Exports extends CI_Controller
             }
 
             if ($export_forms_id) {
-                $results = $this->Export_model->update_export_user($users, $export_forms_id);
+
+                $this->Export_model->update_export_user($users, $export_forms_id);
+
+                if (!empty($graph)) {
+                    $this->firephp->log($graph);
+                    $this->Export_model->insert_export_graph($graph);
+                }
             }
 
             echo json_encode(array(

@@ -158,6 +158,13 @@ var dashboard = {
             "<span class='glyphicon glyphicon-remove' style='padding-left:3px; color:black;'></span> Clear" +
             "</span>";
 
+        //Date
+        filters += "<h5><strong>Date </strong></h5>" +
+            "<ul>" +
+            "<li style='list-style-type:none'>" + $(".filter-form").find("input[name='date_from']").val() + "</li>" +
+            "<li style='list-style-type:none'>" + $(".filter-form").find("input[name='date_to']").val() + "</li>" +
+            "</ul>";
+
         //Campaigns
         var size = ($('.campaign-filter  option:selected').size() > 0 ? "(" + $('.campaign-filter  option:selected').size() + ")" : '');
         filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Campaigns</strong> " + size + "</h5><ul>";

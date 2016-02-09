@@ -41,6 +41,14 @@ class Export_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
+    public function get_export_graphs_by_export_id($export_forms_id) {
+        $qry = "select * from export_graphs where export_forms_id = ".$export_forms_id;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+
+
     public function get_data($export_form, $options) {
 
         $qry = $export_form['query'];
@@ -138,6 +146,17 @@ class Export_model extends CI_Model
         }
 
         return $results;
+
+    }
+
+    /**
+     * Add a new export graph
+     *
+     */
+    public function insert_export_graph($graph)
+    {
+        $this->db->insert("export_graphs", $graph);
+        return $this->db->insert_id();
 
     }
 
