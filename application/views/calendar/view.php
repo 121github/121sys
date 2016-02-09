@@ -26,6 +26,9 @@
                                 <span class="glyphicon glyphicon-filter"></span> Options
                             </button>
                             <ul class="dropdown-menu pull-right" role="menu">
+                                                        <li>
+<a href="<?php echo base_url() ?>calendar/google">Google Calendar</a>
+</li>
                             <li>
 <a id="switch-cal-view" data-cal-view="<?php echo $calendar_view=="combined"?"2":"1" ?>" href="#"><?php echo ($calendar_view=="combined"?"Seperate Events":"Combine Events") ?></a>
 </li>
