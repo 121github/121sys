@@ -8,7 +8,7 @@ class PrepareLhsDeployment extends AbstractTask
 {
     public function getName()
     {
-        return 'Preparing the Prospector Sales deployment on the production environment';
+        return 'Preparing the LH Surveying deployment on the production environment';
     }
 
     public function run()
