@@ -101,6 +101,16 @@ var export_data = {
             export_data.delete_export($(this).attr('item-id'));
         });
 
+        $(document).on('click', '.save-export-graph-btn', function (e) {
+            e.preventDefault();
+            export_data.save_export_graph();
+        });
+
+        $(document).on('click', '.remove-export-graph-btn', function (e) {
+            e.preventDefault();
+            export_data.delete_export_graph($(this).attr('item-id'));
+        });
+
         $(document).on('click', '.export-report-btn', function (e) {
             e.preventDefault();
             export_data.load_export_report_data($(this).attr('item-id'), $(this).attr('item-name'));
@@ -384,14 +394,27 @@ var export_data = {
             }).done(function (response) {
                 if (response.success) {
                     mbody.find('#export-graph-list').empty();
-                    var graphs = "<table class='table table-bordered table-hover table-striped small'>";
-                    graphs += "<thead><tr><th>Name</th><th>Type</th><th>X Axis</th><th>Y Axis</th></tr></thead><tbody>";
+                    var graphs = "<table class='table small'>";
+                    graphs += "<thead><tr><th>Name</th><th>Type</th><th>X Axis</th><th>Y Axis</th><th>Z Axis</th><th></th></tr></thead><tbody>";
                     $.each(response.graphs, function (k, v) {
+                        var type_graph = "";
+                        switch (v.type){
+                            case "bars":
+                                type_graph = ' <span class="fa fa-bar-chart"></span>';
+                                break;
+                            case "pie":
+                                type_graph = ' <span class="fa fa-pie-chart"></span>';
+                                break;
+                            default:
+                                break;
+                        }
                         graphs += "<tr>" +
                                     "<td>"+v.name+"</td>" +
-                                    "<td>"+v.type+"</td>" +
-                                    "<td>"+v.x_value+"</td>" +
-                                    "<td>"+v.y_value+"</td>" +
+                                    "<td>"+v.type+type_graph+"</td>" +
+                                    "<td>"+(v.x_value?v.x_value:'')+"</td>" +
+                                    "<td>"+(v.y_value?v.y_value:'')+"</td>" +
+                                    "<td>"+(v.z_value?v.z_value:'')+"</td>" +
+                                    "<td><span class='btn btn-danger btn-xs pull-right pointer remove-export-graph-btn' item-id='"+ v.graph_id+"'><span class='fa fa-remove'></span> Remove</span></td>" +
                                   "</tr>";
                     });
                     graphs += "</tbody></table>";
@@ -502,8 +525,15 @@ var export_data = {
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function (response) {
+            mbody += '<ul class="nav nav-tabs" id="panel-tabs-'+export_forms_id+'" style=" background:#eee; width:100%;">';
+            mbody += '<li class="data-tab active"><a href="#export-data-'+export_forms_id+'" class="tab" data-toggle="tab">Data</a></li>' +
+                     '<li class="plots-tab"><a href="#export-graph-'+export_forms_id+'" class="tab" data-toggle="tab">Graphs</a></li>';
+            mbody += '</ul>';
+            mbody += '<div class="tab-content" style="padding: 0px;">';
             if (response.success && response.header) {
-                mbody += "<div class='table-"+export_forms_id+" scroll'><table class='table table-bordered table-hover table-striped small'>";
+                //Data tab
+                mbody += '<div class="tab-pane active" id="export-data-'+export_forms_id+'"  style="padding: 0px;">';
+                mbody += "<div class='table-"+export_forms_id+" scroll'><table class='table table-bordered table-hover table-striped small' style='min-height: 400px;'>";
                 mbody += "<thead><tr>";
                 $.each(response.header, function (i, val) {
                     if (response.header.length) {
@@ -520,7 +550,95 @@ var export_data = {
                         mbody += "</tr>";
                     }
                 });
-                mbody += "</tbody></table></div>";
+                mbody += "</tbody></table></div></div>";
+
+                //Graph tab
+                mbody += '<div class="tab-pane" id="export-graph-'+export_forms_id+'"  style="padding: 0px; overflow-y: auto; overflow-x: hidden; max-height: 400px;">';
+                mbody += '<div class="row">';
+                if (response.graphs.length) {
+                    $.each(response.graphs, function (i, graph) {
+                        mbody += '<div class="col-lg-6"><div id="export-chart-'+graph.graph_id+'" style="text-shadow: none">' +
+                                    '<p>'+graph.name+'</p>' +
+                                    'No data' +
+                                 '</div></div>';
+                    });
+
+                    //LOAD google graphs
+                    google.load('visualization', '1', {
+                        packages: ['corechart'], 'callback': function () {
+                            $.each(response.graphs, function (i, graph) {
+                                var rows = [];
+                                var title = graph.name;
+
+                                // Set chart options
+                                var options = {
+                                    'legend': {position: 'none'},
+                                    'title': title,
+                                    'width': 250,
+                                    'height': 400,
+                                    curveType: 'function',
+                                    'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                                };
+
+                                //if (graph.z_value) {
+                                if (1) {
+                                    z_arr = [];
+                                    y_arr = [];
+                                    $.each(graph.data, function (y_value, z_value) {
+                                        z_arr.push(z_value);
+                                        var aux = [];
+                                        aux.push(y_value);
+                                        $.each(z_value, function (i, x_value) {
+                                            aux.push(x_value);
+                                        });
+                                        y_arr.push(aux.join());
+                                    });
+                                    var data_arr = [[z_arr.join()], y_arr];
+                                    var data = google.visualization.arrayToDataTable(data_arr);
+                                    //var data = google.visualization.arrayToDataTable([
+                                    //    ['Genre', 'Fantasy & Sci Fi', 'Romance', 'Mystery/Crime', 'General',
+                                    //        'Western', 'Literature', { role: 'annotation' } ],
+                                    //    ['2010', 10, 24, 20, 32, 18, 5, ''],
+                                    //    ['2020', 16, 22, 23, 30, 16, 9, ''],
+                                    //    ['2030', 28, 19, 29, 30, 12, 13, '']
+                                    //]);
+                                }
+                                else {
+                                    var data = new google.visualization.DataTable();
+                                    data.addColumn('string', 'Topping');
+                                    data.addColumn('number', 'Count');
+                                    $.each(graph.data, function (i, v) {
+                                        rows.push([i, parseInt(v)]);
+                                    });
+                                    data.addRows(rows);
+                                }
+
+
+
+
+                                //Draw the graph
+                                switch (graph.type){
+                                    case "bars":
+                                        var chart = new google.visualization.ColumnChart(document.getElementById('export-chart-'+graph.graph_id));
+                                        chart.draw(data, options);
+                                        break;
+                                    case "pie":
+                                        var chart = new google.visualization.PieChart(document.getElementById('export-chart-'+graph.graph_id));
+                                        chart.draw(data, options);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    mbody += "<div class='col-lg-12' style='margin: 20px;'>No Graphs Created!</div>"
+                }
+                mbody += "</div></div>";
+
+                //Open modal
                 export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
             }
             else {
@@ -555,7 +673,7 @@ var export_data = {
             data: $('.filter-form').serialize()
         }).done(function (response) {
             if (response.success && response.header) {
-                mbody += "<div class='table-"+export_form_name+" scroll'><table class='table table-bordered table-hover table-striped small'>";
+                mbody += "<div class='table-"+export_form_name+" scroll'><table class='table table-bordered table-hover table-striped small' style='min-height: 400px;'>";
                 mbody += "<thead><tr>";
                 $.each(response.header, function (i, val) {
                     if (response.header.length) {
@@ -635,4 +753,89 @@ var export_data = {
             }
         });
     },
+
+    save_export_graph: function () {
+        $.ajax({
+            url: helper.baseUrl + 'exports/save_export_graph',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.edit-export-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var export_forms_id = $('.edit-export-form').find('input[name="export_forms_id"]').val();
+                $('.edit-export-form').find('input[name="graph_name"]').val('');
+                $('.edit-export-form').find('input[name="x_value"]').val('');
+                $('.edit-export-form').find('input[name="y_value"]').val('');
+                $('.edit-export-form').find('input[name="z_value"]').val('');
+
+                export_data.load_export_graph(export_forms_id);
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    delete_export_graph: function (graph_id) {
+
+        $.ajax({
+            url: helper.baseUrl + 'exports/delete_export_graph',
+            type: "POST",
+            dataType: "JSON",
+            data: {'graph_id': graph_id}
+        }).done(function (response) {
+            if (response.success) {
+                var export_forms_id = $('.edit-export-form').find('input[name="export_forms_id"]').val();
+                export_data.load_export_graph(export_forms_id);
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    load_export_graph: function(export_forms_id) {
+        $.ajax({
+            url: helper.baseUrl + 'exports/get_export_graphs',
+            type: "POST",
+            dataType: "JSON",
+            data: {'export_forms_id': export_forms_id}
+        }).done(function (response) {
+            $('#export-graph-list').empty();
+            if (response.success) {
+                var graphs = "<table class='table small'>";
+                graphs += "<thead><tr><th>Name</th><th>Type</th><th>X Axis</th><th>Y Axis</th><th>Z Axis</th><th></th></tr></thead><tbody>";
+                $.each(response.graphs, function (k, v) {
+                    var type_graph = "";
+                    switch (v.type){
+                        case "bars":
+                            type_graph = ' <span class="fa fa-bar-chart"></span>';
+                            break;
+                        case "pie":
+                            type_graph = ' <span class="fa fa-pie-chart"></span>';
+                            break;
+                        default:
+                            break;
+                    }
+                    graphs += "<tr>" +
+                        "<td>"+v.name+"</td>" +
+                        "<td>"+v.type+type_graph+"</td>" +
+                        "<td>"+(v.x_value?v.x_value:'')+"</td>" +
+                        "<td>"+(v.y_value?v.y_value:'')+"</td>" +
+                        "<td>"+(v.z_value?v.z_value:'')+"</td>" +
+                        "<td><span class='btn btn-danger btn-xs pull-right pointer remove-export-graph-btn' item-id='"+ v.graph_id+"'><span class='fa fa-remove'></span> Remove</span></td>" +
+                        "</tr>";
+                });
+                graphs += "</tbody></table>";
+
+                $('#export-graph-list').html(graphs);
+            }
+            else {
+                $('#export-graph-list').html('<div class="col-lg-12" id="export-graph-list">No graphs added</div>');
+            }
+        });
+    }
+
 }

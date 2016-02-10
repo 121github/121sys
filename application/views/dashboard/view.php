@@ -12,10 +12,10 @@
                     <span class="btn btn-default btn new-report" data-item="<?php echo $dashboard['dashboard_id'] ?>">
                         <span class="fa fa-plus fa-fw" style="color:black;"></span>
                     </span>
-                    <span class="btn btn-default btn show-charts" data-item="0" charts="chart-div-system,chart-div-email,chart-div-sms,chart-div-outcome" data="data-system,data-email,data-sms,data-outcome">
+                    <span class="btn btn-default btn show-charts" data-item="0" charts="" data="">
                         <span class="fa fa-bar-chart-o fa-fw" style="color:black;"></span>
                     </span>
-                    <span class="btn btn-default btn refresh-overview-data">
+                    <span class="btn btn-default btn refresh-dashboard-data" dashboard-id="<?php echo $dashboard['dashboard_id'] ?>">
                         <span class="glyphicon glyphicon-refresh" style="padding-left:3px; color:black;"></span>
                     </span>
                     <a href="#filter-right" class="btn btn-default btn">

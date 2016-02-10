@@ -88,6 +88,13 @@ var dashboard = {
             dashboard.favorites_panel();
         });
 
+        $(document).on("click", ".refresh-dashboard-data", function (e) {
+            e.preventDefault();
+            dashboard.load_dash($(this).attr('dashboard-id'));
+            $('.show-charts').removeClass('btn-success').addClass('btn-default');
+            $('.show-charts').attr('data-item',0);
+        });
+
         $(document).on("click", ".new-report", function (e) {
             e.preventDefault();
             dashboard.select_report($(this).attr('data-item'));
@@ -427,7 +434,7 @@ var dashboard = {
 
                 //GRAPHS
                 google.load('visualization', '1', {
-                    packages: ['corechart'], 'callback': function () {
+                packages: ['corechart'], 'callback': function () {
 
                         //Today email stats
                         var title = 'Today Outcomes';
@@ -1134,6 +1141,8 @@ var dashboard = {
             if(response.success){
                 $('.dashboard-area').empty();
                 var panels = "";
+                var data_divs = [];
+                var charts_divs = [];
                 //Build the panels
                 $.each(response.reports, function (i, report) {
                     var columns = "col-lg-"+(report.column_size);
@@ -1146,7 +1155,7 @@ var dashboard = {
                                             '</a>' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 400px; padding: 0px;">' +
+                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 500px; padding: 0px;">' +
                                         '<ul class="nav nav-tabs" id="panel-tabs-'+report.report_id+'" style=" background:#eee; width:100%;">' +
                                             '<li class="data-tab active"><a href="#data-system-'+report.report_id+'" class="tab" data-toggle="tab">Data</a></li>' +
                                             '<li class="plots-tab"><a href="#chart-div-system-'+report.report_id+'" class="tab" data-toggle="tab">Graphs</a></li>' +
@@ -1170,15 +1179,23 @@ var dashboard = {
                                             '<div class="tab-pane active" id="data-system-'+report.report_id+'"  style="padding: 0px;">' +
                                                 '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
                                             '</div>' +
-                                            '<div class="tab-pane" id="chart-div-system-'+report.report_id+'" style="margin: -15px; padding: 0px;">' +
-
+                                            '<div class="tab-pane" id="chart-div-system-'+report.report_id+'" style="padding: 0px; overflow-y: auto; overflow-x: hidden; max-height: 400px;">' +
+                                                '<div style="padding: 10px;">No graphs added</div>' +
                                             '</div>' +
                                         '</div>' +
                                     '</div>' +
                                   '</div>' +
                               '</div>';
+
+                    data_divs.push('data-system-'+report.report_id);
+                    charts_divs.push('chart-div-system-'+report.report_id);
+
                 });
                 $('.dashboard-area').append(panels);
+
+                //Set the charts on the show-charts class in order to be shown when we click on this button
+                $('.show-charts').attr('data',data_divs.join());
+                $('.show-charts').attr('charts',charts_divs.join());
 
                 //Get the data content of the panels
                 $.each(response.reports, function (i, report) {
@@ -1190,7 +1207,7 @@ var dashboard = {
                         dataType: "JSON"
                     }).done(function(resp) {
                         if (resp.success && resp.header) {
-                            var body = "<div class='table-"+report.report_id+" scroll'><table class='table table-bordered table-hover table-striped small'></table></div>";
+                            var body = "<div class='table-"+report.report_id+" scroll'><table class='table table-bordered table-hover table-striped small' style='min-height: 400px;'></table></div>";
                             $('#data-system-'+report.report_id).empty();
                             $('#data-system-'+report.report_id).append(body);
 
@@ -1220,11 +1237,69 @@ var dashboard = {
                                 var table = $(this).find('table');
                                 $('.table-'+report.report_id).find("table > *").width($('.table-'+report.report_id).find('table').width() + $('.table-'+report.report_id).find('table').scrollLeft());
                             });
-
-                            //$('.table-'+report.report_id).find("td").width($('.table-'+report.report_id).find('table').width()/resp.data.length);
                         }
                         else {
                             $('#data-system-'+report.report_id).html("<div style='padding:20px;'>No results found!</div>");
+                        }
+
+                        if (resp.success && resp.graphs) {
+                            $('#chart-div-system-'+report.report_id).empty();
+                            var body = '<div class="row">';
+                            if (resp.graphs.length) {
+                                $.each(resp.graphs, function (i, graph) {
+                                    body += '<div class="col-lg-'+(12/Math.round(report.column_size/3))+'"><div id="export-chart-'+graph.graph_id+'" style="text-shadow: none">' +
+                                        '<p>'+graph.name+'</p>' +
+                                        'No data' +
+                                    '</div></div>';
+                                });
+
+                                //LOAD google graphs
+                                google.load('visualization', '1', {
+                                    packages: ['corechart'], 'callback': function () {
+                                        $.each(resp.graphs, function (i, graph) {
+                                            var rows = [];
+                                            var title = graph.name;
+
+                                            // Set chart options
+                                            var options = {
+                                                'legend': {position: 'none'},
+                                                'title': title,
+                                                'width': 250,
+                                                'height': 400,
+                                                curveType: 'function',
+                                                'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                                            };
+
+                                            var data = new google.visualization.DataTable();
+                                            data.addColumn('string', 'Topping');
+                                            data.addColumn('number', 'Count');
+                                            $.each(graph.data, function (i, v) {
+                                                rows.push([i, parseInt(v)]);
+                                            });
+                                            data.addRows(rows);
+
+                                            //Draw the graph
+                                            switch (graph.type){
+                                                case "bars":
+                                                    var chart = new google.visualization.ColumnChart(document.getElementById('export-chart-'+graph.graph_id));
+                                                    chart.draw(data, options);
+                                                    break;
+                                                case "pie":
+                                                    var chart = new google.visualization.PieChart(document.getElementById('export-chart-'+graph.graph_id));
+                                                    chart.draw(data, options);
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                            else {
+                                body += "<div class='col-lg-12' style='margin: 20px;'>No Graphs Created!</div>"
+                            }
+                            body += "</div></div>";
+                            $('#chart-div-system-'+report.report_id).html(body);
                         }
                     });
                 });

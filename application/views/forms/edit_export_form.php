@@ -136,33 +136,39 @@
                         </a>
                     </span>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12" id="export-graph-list">
-                        No graphs added
-                    </div>
-                </div>
                 <div class="collapse" id="collapseGraph" style="margin-top: 20px">
-                    <div style="border-bottom: 1px solid grey; margin-bottom: 20px; font-weight: bold">NEW GRAPH</div>
                     <div class="row">
-                        <div class="col-lg-4">
-                            <div class="btn-group">
-                                <div class="form-group input-group-sm">
-                                    <p>Type</p>
-                                    <input type="text" class="form-control" name="graph_type"
-                                           placeholder="Enter the graph type"/>
-                                </div>
+                        <div class="col-lg-12">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-default active">
+                                    <input type="radio" value="bars" checked="checked" aria-label="..." name="graph_type"> Bars <span class="fa fa-bar-chart"></span>
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" value="pie" aria-label="..." name="graph_type"> Pie Chart <span class="fa fa-pie-chart"></span>
+                                </label>
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
                             <div class="btn-group">
                                 <div class="form-group input-group-sm">
-                                    <p>Name</p>
+                                    <p>Name (*)</p>
                                     <input type="text" class="form-control" name="graph_name"
                                            placeholder="Enter the name for the graph"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
+                            <div class="btn-group">
+                                <div class="form-group input-group-sm">
+                                    <p>Y Axis (*)</p>
+                                    <input type="text" class="form-control" name="y_value"
+                                           placeholder="Enter the y axis"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
                             <div class="btn-group">
                                 <div class="form-group input-group-sm">
                                     <p>X Axis</p>
@@ -171,15 +177,29 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <div class="btn-group">
                                 <div class="form-group input-group-sm">
-                                    <p>Y Axis</p>
-                                    <input type="text" class="form-control" name="y_value"
-                                           placeholder="Enter the y axis"/>
+                                    <p>Z Axis</p>
+                                    <input type="text" class="form-control" name="z_value"
+                                           placeholder="Enter the z axis"/>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <span class="btn btn-success btn-xs save-export-graph-btn pull-right">
+                                <span class="fa fa-save"></span>
+                                Save
+                            </span>
+                        </div>
+                    </div>
+                    <div style="border-bottom: 1px solid grey; margin-top: 10px; margin-bottom: 20px; font-weight: bold"> </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12" id="export-graph-list">
+                        No graphs added
                     </div>
                 </div>
             </div>

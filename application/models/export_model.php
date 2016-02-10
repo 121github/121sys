@@ -161,6 +161,17 @@ class Export_model extends CI_Model
     }
 
     /**
+     * Remove an export graph
+     *
+     * @param integer $graph_id
+     */
+    public function delete_export_graph($graph_id)
+    {
+        $this->db->where("graph_id", $graph_id);
+        return $this->db->delete("export_graphs");
+    }
+
+    /**
      *
      * Get the contacts data
      *

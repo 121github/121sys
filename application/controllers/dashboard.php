@@ -1435,14 +1435,6 @@ public function index(){
                         $dash_report['position'] = $form['next_position'];
                     }
                     else {
-//                        if ($dash_report['position'] == $form['next_position']) {
-//                            if ($dash_report['position'] < $form['current_position']) {
-//                                $dash_report['position'] = $dash_report['position']+1;
-//                            }
-//                            else if ($dash_report['position'] > $form['current_position']) {
-//                                $dash_report['position'] = $dash_report['position']-1;
-//                            }
-//                        }
                         if ($dash_report['position'] < $form['current_position']) {
                             if ($dash_report['position'] >= $form['next_position']) {
                                 $dash_report['position'] = $dash_report['position']+1;
