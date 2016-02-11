@@ -1275,7 +1275,7 @@ var dashboard = {
                                                 var y_arr = [];
                                                 var z_arr = [];
                                                 $.each(graph.data, function (y_value, z_value) {
-                                                    z_arr = [];
+                                                    z_arr = [graph.z_value];
                                                     var aux = [];
                                                     aux.push(y_value);
                                                     $.each(z_value, function (i, x_value) {
@@ -1284,7 +1284,7 @@ var dashboard = {
                                                     });
                                                     y_arr.push(aux);
                                                 });
-                                                z_arr.push({ role: 'annotation' });
+
                                                 var data_arr = [z_arr];
                                                 $.each(y_arr, function (k, v) {
                                                     data_arr.push(v);
