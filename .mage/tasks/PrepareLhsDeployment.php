@@ -15,6 +15,7 @@ class PrepareLhsDeployment extends AbstractTask
     {
         $commandList = array(
             'mv application/config/database.php.lhsurveying application/config/database.php',
+            'mv .htacess_lhs .htacess',
             'rm -rf application/config/database.php.*',
             'setfacl -R -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
             'setfacl -dR -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
