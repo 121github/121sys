@@ -559,7 +559,7 @@ var export_data = {
                     $.each(response.graphs, function (i, graph) {
                         mbody += '<div class="col-lg-6"><div id="export-chart-'+graph.graph_id+'" style="text-shadow: none">' +
                                     '<p>'+graph.name+'</p>' +
-                                    'No data' +
+                                    '<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ' +
                                  '</div></div>';
                     });
 
@@ -577,31 +577,29 @@ var export_data = {
                                     'width': 250,
                                     'height': 400,
                                     curveType: 'function',
-                                    'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                                    'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 },
+                                    isStacked: (graph.z_value)?true:false
                                 };
 
-                                //if (graph.z_value) {
-                                if (1) {
-                                    z_arr = [];
-                                    y_arr = [];
+                                if (graph.z_value) {
+                                    var y_arr = [];
+                                    var z_arr = [];
                                     $.each(graph.data, function (y_value, z_value) {
-                                        z_arr.push(z_value);
+                                        z_arr = [];
                                         var aux = [];
                                         aux.push(y_value);
                                         $.each(z_value, function (i, x_value) {
+                                            z_arr.push(i);
                                             aux.push(x_value);
                                         });
-                                        y_arr.push(aux.join());
+                                        y_arr.push(aux);
                                     });
-                                    var data_arr = [[z_arr.join()], y_arr];
+                                    z_arr.push({ role: 'annotation' });
+                                    var data_arr = [z_arr];
+                                    $.each(y_arr, function (k, v) {
+                                        data_arr.push(v);
+                                    });
                                     var data = google.visualization.arrayToDataTable(data_arr);
-                                    //var data = google.visualization.arrayToDataTable([
-                                    //    ['Genre', 'Fantasy & Sci Fi', 'Romance', 'Mystery/Crime', 'General',
-                                    //        'Western', 'Literature', { role: 'annotation' } ],
-                                    //    ['2010', 10, 24, 20, 32, 18, 5, ''],
-                                    //    ['2020', 16, 22, 23, 30, 16, 9, ''],
-                                    //    ['2030', 28, 19, 29, 30, 12, 13, '']
-                                    //]);
                                 }
                                 else {
                                     var data = new google.visualization.DataTable();

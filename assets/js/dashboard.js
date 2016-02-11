@@ -1249,7 +1249,7 @@ var dashboard = {
                                 $.each(resp.graphs, function (i, graph) {
                                     body += '<div class="col-lg-'+(12/Math.round(report.column_size/3))+'"><div id="export-chart-'+graph.graph_id+'" style="text-shadow: none">' +
                                         '<p>'+graph.name+'</p>' +
-                                        'No data' +
+                                        '<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ' +
                                     '</div></div>';
                                 });
 
@@ -1267,16 +1267,39 @@ var dashboard = {
                                                 'width': 250,
                                                 'height': 400,
                                                 curveType: 'function',
-                                                'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 }
+                                                'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 },
+                                                isStacked: (graph.z_value)?true:false
                                             };
 
-                                            var data = new google.visualization.DataTable();
-                                            data.addColumn('string', 'Topping');
-                                            data.addColumn('number', 'Count');
-                                            $.each(graph.data, function (i, v) {
-                                                rows.push([i, parseInt(v)]);
-                                            });
-                                            data.addRows(rows);
+                                            if (graph.z_value) {
+                                                var y_arr = [];
+                                                var z_arr = [];
+                                                $.each(graph.data, function (y_value, z_value) {
+                                                    z_arr = [];
+                                                    var aux = [];
+                                                    aux.push(y_value);
+                                                    $.each(z_value, function (i, x_value) {
+                                                        z_arr.push(i);
+                                                        aux.push(x_value);
+                                                    });
+                                                    y_arr.push(aux);
+                                                });
+                                                z_arr.push({ role: 'annotation' });
+                                                var data_arr = [z_arr];
+                                                $.each(y_arr, function (k, v) {
+                                                    data_arr.push(v);
+                                                });
+                                                var data = google.visualization.arrayToDataTable(data_arr);
+                                            }
+                                            else {
+                                                var data = new google.visualization.DataTable();
+                                                data.addColumn('string', 'Topping');
+                                                data.addColumn('number', 'Count');
+                                                $.each(graph.data, function (i, v) {
+                                                    rows.push([i, parseInt(v)]);
+                                                });
+                                                data.addRows(rows);
+                                            }
 
                                             //Draw the graph
                                             switch (graph.type){

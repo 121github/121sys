@@ -175,19 +175,52 @@ class Exports extends CI_Controller
                 $aux = array();
                 foreach ($graphs as $graph) {
                     $graph['data'] = array();
-                    foreach ($results as $result) {
-                        if (!isset($graph['data'][$result[$graph['y_value']]])) {
-                            $graph['data'][$result[$graph['y_value']]] = 0;
-                        }
-                        if (isset($graph['x_value']) && $graph['x_value'] != "") {
-                            $graph['data'][$result[$graph['y_value']]] += $result[$graph['x_value']];
-                        }
-                        else {
-                            $graph['data'][$result[$graph['y_value']]]++;
+
+                    $z_values = array();
+                    if (isset($graph['z_value']) && $graph['z_value'] != "" && !empty($results)) {
+                        foreach ($results as $result) {
+                            if (!isset($graph['data'][$result[$graph['y_value']]])) {
+                                $graph['data'][$result[$graph['y_value']]] = array();
+                            }
+                            array_push($z_values, $result[$graph['z_value']]);
                         }
 
+                        $z_values = array_unique($z_values);
+                        sort($z_values);
+                        foreach($graph['data'] as $key => $value) {
+                            foreach ($z_values as $v) {
+                                if (!isset($graph['data'][$key][$v])) {
+                                    $graph['data'][$key][$v] = 0;
+                                }
+                            }
+                        }
+
+                        foreach ($results as $result) {
+                            if (isset($graph['x_value']) && $graph['x_value'] != "") {
+                                $graph['data'][$result[$graph['y_value']]][$result[$graph['z_value']]] += $result[$graph['x_value']];
+                            }
+                            else {
+                                $graph['data'][$result[$graph['y_value']]][$result[$graph['z_value']]]++;
+                            }
+                        }
+
+                        array_push($aux, $graph);
                     }
-                    array_push($aux, $graph);
+                    else {
+                        foreach ($results as $result) {
+
+                            if (!isset($graph['data'][$result[$graph['y_value']]])) {
+                                $graph['data'][$result[$graph['y_value']]] = 0;
+                            }
+                            if (isset($graph['x_value']) && $graph['x_value'] != "") {
+                                $graph['data'][$result[$graph['y_value']]] += $result[$graph['x_value']];
+                            }
+                            else {
+                                $graph['data'][$result[$graph['y_value']]]++;
+                            }
+                        }
+                        array_push($aux, $graph);
+                    }
                 }
                 $graphs = $aux;
             }
@@ -431,14 +464,16 @@ class Exports extends CI_Controller
                     "export_forms_id" => $form['export_forms_id'],
                     "name" => $form['graph_name'],
                     "type" => $form['graph_type'],
-                    "x_value" => $form['x_value'],
-                    "y_value" => (isset($form['y_value'])?$form['y_value']:NULL)
+                    "x_value" => (isset($form['x_value'])?$form['x_value']:NULL),
+                    "y_value" => $form['y_value'],
+                    "z_value" => (isset($form['z_value'])?$form['z_value']:NULL)
                 );
             }
             unset($form['graph_name']);
             unset($form['graph_type']);
             unset($form['x_value']);
             unset($form['y_value']);
+            unset($form['z_value']);
 
 
             if (!empty($form['export_forms_id'])) {
@@ -454,7 +489,6 @@ class Exports extends CI_Controller
                 $this->Export_model->update_export_user($users, $export_forms_id);
 
                 if (!empty($graph)) {
-                    $this->firephp->log($graph);
                     $this->Export_model->insert_export_graph($graph);
                 }
             }
