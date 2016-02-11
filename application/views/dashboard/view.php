@@ -1,11 +1,11 @@
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-8 col-sm-6">
         <h1 class="page-header">
             <?php echo $dashboard['name']; ?>
             <small><?php if (isset($_SESSION['current_campaign_name'])) { echo @$_SESSION['current_campaign_name']; } ?></small>
         </h1>
     </div>
-    <div class="col-lg-4 page-header" style="text-align: right;">
+    <div class="col-lg-4 col-sm-6 page-header" style="text-align: right;">
         <ul class="nav">
             <li>
                 <div class="btn-group">
