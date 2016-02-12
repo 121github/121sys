@@ -756,57 +756,224 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
             </div>
         </div>
 
-        <input id="contact-id" name="answers[a1]" value="<?php echo @$values['a1'] ?>" type="hidden"/>
-        <input id="contact-fullname" name="answers[a2]" value="<?php echo @$values['a2'] ?>" type="hidden"/>
+        <div class="row">
+            <div class="col-lg-6">
+                <div style="border-bottom: 1px solid grey; margin-top: 10px; margin-bottom: 20px; font-weight: bold">
+                    CUSTOMER 1
+                </div>
 
-        <div class="form-group">
-            <label>Customer Name</label>
-            <br>
-            <select id="contact-name">
-                <?php foreach ($contacts as $contact) { ?>
-                    <option <?php if ($contact['contact_id'] == @$values['a1']) {
-                        echo "selected";
-                    } ?> value="<?php echo $contact['contact_id'] ?>"><?php echo $contact['name'] ?></option>
-                <?php } ?>
-            </select>
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    $("#contact-name").selectpicker();
-                    $(document).on('change', '#contact-name', function () {
-                        $("#contact-id").val($(this).val());
-                        $('#contact-fullname').val($("#contact-name option:selected").text());
-                    });
-                    $("#contact-name").trigger("change");
-                });
-            </script>
+                <input id="contact-id" name="answers[a1]" value="<?php echo @$values['a1'] ?>" type="hidden"/>
+                <input id="contact-fullname" name="answers[a2]" value="<?php echo @$values['a2'] ?>" type="hidden"/>
+
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <br>
+                    <select id="contact-name">
+                        <?php foreach ($contacts as $contact) { ?>
+                            <option <?php if ($contact['contact_id'] == @$values['a1']) {
+                                echo "selected";
+                            } ?> value="<?php echo $contact['contact_id'] ?>"><?php echo $contact['name'] ?></option>
+                        <?php } ?>
+                    </select>
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $("#contact-name").selectpicker();
+                            $(document).on('change', '#contact-name', function () {
+                                $("#contact-id").val($(this).val());
+                                $('#contact-fullname').val($("#contact-name option:selected").text());
+                            });
+                            $("#contact-name").trigger("change");
+                        });
+                    </script>
+                </div>
+                <div class="form-group relative">
+                    <label>Customer age?</label>
+                    <br>
+                    <input type="text" name="answers[a3]" class="form-control" placeholder="Enter the age in years"
+                           value="<?php echo @$values['a3'] ?>"/>
+                </div>
+                <script type="text/javascript">
+                    /*$(document).ready(function(){
+                     $('.dob').datetimepicker({
+                     viewMode: 'years',
+                     format: 'DD/MM/YYYY',
+                     defaultDate: new Date(1979, 0, 1,1, 0, 0, 0),
+                     }).on('keypress paste', function (e) {
+                     e.preventDefault();
+                     return false;
+                     });
+                     });
+                     */
+                </script>
+                <div class="form-group">
+                    <label>Customer height?</label>
+                    <br>
+                    <input type="text" name="answers[a4]" class="form-control" style="width:50px; display:inline-block"
+                           value="<?php echo @$values['a4'] ?>"/> <span>Feet</span>
+                    <input type="text" name="answers[a5]" class="form-control" style="width:50px;display:inline-block"
+                           value="<?php echo @$values['a5'] ?>"/> <span>Inches</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Please enter the customer build</label>
+                    <br>
+                    <select name="answers[a28]" class="selectpicker" data-width="100%"
+                            data-size="5">
+                        <option value=''></option>
+                        <option <?php if (@strpos($values['a28'], "Small") !== false) {
+                            echo "selected";
+                        } ?> value='Small'>Small
+                        </option>
+                        <option <?php if (@strpos($values['a28'], "Medium") !== false) {
+                            echo "selected";
+                        } ?> value='Medium'>Medium
+                        </option>
+                        <option <?php if (@strpos($values['a28'], "Large") !== false) {
+                            echo "selected";
+                        } ?> value='Large'>Large
+                        </option>
+                    </select>
+                </div>
+
+                <div class="question">
+                    <label>Can the customer walk unaided?</label><br>
+
+                    <div class="radio" style="display:inline-block">
+                        <label>
+                            <input type="radio" name="answers[a9][]" id="optionsRadios1"
+                                   value="Yes" <?php if (@strpos($values['a9'], "Yes") !== false) {
+                                echo "checked";
+                            } ?> />
+                            Yes </label>
+                    </div>
+                    <div class="radio" style="display:inline-block; margin-left:20px">
+                        <label>
+                            <input type="radio" name="answers[a9][]" id="optionsRadios2" data-show-notes="true"
+                                   value="No" <?php if (@strpos($values['a9'], "No") !== false) {
+                                echo "checked";
+                            } ?>>
+                            No </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Enter notes here</label>
+                        <input type="text" name="answers[a10]" class="form-control"
+                               placeholder="Enter notes if they answered no above " value="<?php echo @$values['a10'] ?>"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+
+                <div style="border-bottom: 1px solid grey; margin-top: 10px; margin-bottom: 20px; font-weight: bold">
+                    CUSTOMER 2
+                </div>
+
+                <input id="contact2-id" name="answers[a29]" value="<?php echo @$values['a29'] ?>" type="hidden"/>
+                <input id="contact2-fullname" name="answers[a30]" value="<?php echo @$values['a30'] ?>" type="hidden"/>
+
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <br>
+                    <select id="contact2-name">
+                        <option value=""></option>
+                        <?php foreach ($contacts as $contact) { ?>
+                            <option <?php if ($contact['contact_id'] == @$values['a29']) {
+                                echo "selected";
+                            } ?> value="<?php echo $contact['contact_id'] ?>"><?php echo $contact['name'] ?></option>
+                        <?php } ?>
+                    </select>
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $("#contact2-name").selectpicker();
+                            $(document).on('change', '#contact2-name', function () {
+                                $("#contact2-id").val($(this).val());
+                                $('#contact2-fullname').val($("#contact2-name option:selected").text());
+                            });
+                            $("#contact2-name").trigger("change");
+                        });
+                    </script>
+                </div>
+                <div class="form-group relative">
+                    <label>Customer age?</label>
+                    <br>
+                    <input type="text" name="answers[a31]" class="form-control" placeholder="Enter the age in years"
+                           value="<?php echo @$values['a31'] ?>"/>
+                </div>
+                <script type="text/javascript">
+                    /*$(document).ready(function(){
+                     $('.dob').datetimepicker({
+                     viewMode: 'years',
+                     format: 'DD/MM/YYYY',
+                     defaultDate: new Date(1979, 0, 1,1, 0, 0, 0),
+                     }).on('keypress paste', function (e) {
+                     e.preventDefault();
+                     return false;
+                     });
+                     });
+                     */
+                </script>
+                <div class="form-group">
+                    <label>Customer height?</label>
+                    <br>
+                    <input type="text" name="answers[a32]" class="form-control" style="width:50px; display:inline-block"
+                           value="<?php echo @$values['a32'] ?>"/> <span>Feet</span>
+                    <input type="text" name="answers[a33]" class="form-control" style="width:50px;display:inline-block"
+                           value="<?php echo @$values['a33'] ?>"/> <span>Inches</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Please enter the customer build</label>
+                    <br>
+                    <select name="answers[a34]" class="selectpicker" data-width="100%"
+                            data-size="5">
+                        <option value=''></option>
+                        <option <?php if (@strpos($values['a34'], "Small") !== false) {
+                            echo "selected";
+                        } ?> value='Small'>Small
+                        </option>
+                        <option <?php if (@strpos($values['a34'], "Medium") !== false) {
+                            echo "selected";
+                        } ?> value='Medium'>Medium
+                        </option>
+                        <option <?php if (@strpos($values['a34'], "Large") !== false) {
+                            echo "selected";
+                        } ?> value='Large'>Large
+                        </option>
+                    </select>
+                </div>
+
+                <div class="question">
+                    <label>Can the customer walk unaided?</label><br>
+
+                    <div class="radio" style="display:inline-block">
+                        <label>
+                            <input type="radio" name="answers[a35][]" id="optionsRadios1"
+                                   value="Yes" <?php if (@strpos($values['a35'], "Yes") !== false) {
+                                echo "checked";
+                            } ?> />
+                            Yes </label>
+                    </div>
+                    <div class="radio" style="display:inline-block; margin-left:20px">
+                        <label>
+                            <input type="radio" name="answers[a35][]" id="optionsRadios2" data-show-notes="true"
+                                   value="No" <?php if (@strpos($values['a35'], "No") !== false) {
+                                echo "checked";
+                            } ?>>
+                            No </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Enter notes here</label>
+                        <input type="text" name="answers[a36]" class="form-control"
+                               placeholder="Enter notes if they answered no above " value="<?php echo @$values['a36'] ?>"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="border-bottom: 1px solid grey; margin-top: 10px; margin-bottom: 20px; font-weight: bold"></div>
         </div>
-        <div class="form-group relative">
-            <label>Customer age?</label>
-            <br>
-            <input type="text" name="answers[a3]" class="form-control" placeholder="Enter the age in years"
-                   value="<?php echo @$values['a3'] ?>"/>
-        </div>
-        <script type="text/javascript">
-            /*$(document).ready(function(){
-             $('.dob').datetimepicker({
-             viewMode: 'years',
-             format: 'DD/MM/YYYY',
-             defaultDate: new Date(1979, 0, 1,1, 0, 0, 0),
-             }).on('keypress paste', function (e) {
-             e.preventDefault();
-             return false;
-             });
-             });
-             */
-        </script>
-        <div class="form-group">
-            <label>Customer height?</label>
-            <br>
-            <input type="text" name="answers[a4]" class="form-control" style="width:50px; display:inline-block"
-                   value="<?php echo @$values['a4'] ?>"/> <span>Feet</span>
-            <input type="text" name="answers[a5]" class="form-control" style="width:50px;display:inline-block"
-                   value="<?php echo @$values['a5'] ?>"/> <span>Inches</span>
-        </div>
+
+
+        <br>
+
         <div class="form-group">
             <label>Reason home consultation required?</label>
             <br>
@@ -836,31 +1003,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <label>Enter notes here</label>
                 <input type="text" name="answers[a8]" class="form-control"
                        placeholder="Enter notes if they answered yes above " value="<?php echo @$values['a8'] ?>"/>
-            </div>
-        </div>
-        <div class="question">
-            <label>Can the customer walk unaided?</label><br>
-
-            <div class="radio" style="display:inline-block">
-                <label>
-                    <input type="radio" name="answers[a9][]" id="optionsRadios1"
-                           value="Yes" <?php if (@strpos($values['a9'], "Yes") !== false) {
-                        echo "checked";
-                    } ?> />
-                    Yes </label>
-            </div>
-            <div class="radio" style="display:inline-block; margin-left:20px">
-                <label>
-                    <input type="radio" name="answers[a9][]" id="optionsRadios2" data-show-notes="true"
-                           value="No" <?php if (@strpos($values['a9'], "No") !== false) {
-                        echo "checked";
-                    } ?>>
-                    No </label>
-            </div>
-            <div class="form-group">
-                <label>Enter notes here</label>
-                <input type="text" name="answers[a10]" class="form-control"
-                       placeholder="Enter notes if they answered no above " value="<?php echo @$values['a10'] ?>"/>
             </div>
         </div>
         <div class="question">
