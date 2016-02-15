@@ -1046,10 +1046,12 @@ var dashboard = {
                     "<input type='hidden' name='position' value='"+response.position+"'/>" +
                     "<div class='form-group input-group-sm'>" +
                         '<div class="row">' +
-                            '<div class="col-lg-6">' +
+                            '<div class="col-lg-12">' +
                                 '<p>Select the report panel</p>' +
                                 select_report +
                             '</div>' +
+                        '</div>' +
+                        '<div class="row">' +
                             '<div class="col-lg-6">' +
                                 '<div class=""form-group input-group-sm">' +
                                     '<p>Select the panel size</p>' +
@@ -1060,6 +1062,17 @@ var dashboard = {
                                         '<option value="4">33%</option>' +
                                         '<option value="3">25%</option>' +
                                     '</select>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="col-lg-6">' +
+                                '<div class="btn-group show-default-graphs" data-toggle="buttons">' +
+                                    '<p>What do you want to show by default?</p>' +
+                                    '<label class="btn btn-default active">' +
+                                        '<input type="radio" value="data" checked="checked" aria-label="..." name="show_default"> Data' +
+                                    '</label>' +
+                                    '<label class="btn btn-default">' +
+                                        '<input type="radio" value="graphs" aria-label="..." name="show_default"> Graphs' +
+                                    '</label>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
@@ -1157,8 +1170,8 @@ var dashboard = {
                                     '</div>' +
                                     '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 650px; padding: 0px;">' +
                                         '<ul class="nav nav-tabs" id="panel-tabs-'+report.report_id+'" style=" background:#eee; width:100%;">' +
-                                            '<li class="data-tab active"><a href="#data-system-'+report.report_id+'" class="tab" data-toggle="tab">Data</a></li>' +
-                                            '<li class="plots-tab"><a href="#chart-div-system-'+report.report_id+'" class="tab" data-toggle="tab">Graphs</a></li>' +
+                                            '<li class="data-tab '+(report.show_default === 'data'?'active':'')+'"><a href="#data-system-'+report.report_id+'" class="tab" data-toggle="tab">Data</a></li>' +
+                                            '<li class="plots-tab '+(report.show_default === 'graphs'?'active':'')+'"><a href="#chart-div-system-'+report.report_id+'" class="tab" data-toggle="tab">Graphs</a></li>' +
                                             '<li class="dropdown pull-right">' +
                                                 '<a id="options-'+report.report_id+'" class="dropdown-toggle" aria-controls="options-contents-'+report.report_id+'" data-toggle="dropdown" href="#" aria-expanded="true">' +
                                                     'Options' +
@@ -1176,10 +1189,10 @@ var dashboard = {
                                             '</li>' +
                                         '</ul>' +
                                         '<div class="tab-content" style="padding: 0px;">' +
-                                            '<div class="tab-pane active" id="data-system-'+report.report_id+'"  style="padding: 0px;">' +
+                                            '<div class="tab-pane '+(report.show_default === 'data'?'active':'')+'" id="data-system-'+report.report_id+'"  style="padding: 0px;">' +
                                                 '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
                                             '</div>' +
-                                            '<div class="tab-pane" id="chart-div-system-'+report.report_id+'" style="padding: 0px; overflow-y: auto; overflow-x: hidden; max-height: 400px;">' +
+                                            '<div class="tab-pane '+(report.show_default === 'graphs'?'active':'')+'" id="chart-div-system-'+report.report_id+'" style="padding: 0px; overflow-y: auto; overflow-x: hidden; max-height: 400px;">' +
                                                 '<div style="padding: 20px;">No graphs added</div>' +
                                             '</div>' +
                                         '</div>' +
