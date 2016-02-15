@@ -378,7 +378,7 @@ class Records_model extends CI_Model
     }
 
     //function to list all the records
-    public function get_records($options)
+    public function get_records($options,$urn=false)
     {
         $tables = $options['visible_columns']['tables'];
         //these tables must be joined to the query regardless of the selected columns to allow the map to function
@@ -443,6 +443,7 @@ class Records_model extends CI_Model
             $qry .= $join_query;
         }
         $qry .= $this->get_where($options, $filter_columns);
+	
 		//get the total number of records before any limits or pages are applied
         $count = $this->db->query($numrows.$qry)->row()->numrows;
 		
@@ -931,10 +932,15 @@ return $comments;
 			$attendees[$k]['distance'] = "";
 		if(!empty($row['home_postcode'])){
 			$attendee_postcode = get_postcode_data($row['home_postcode']);
+			
 			if(isset($attendee_postcode['latitude'])){
 			$contact_postcode = get_postcode_data($postcode);
+			if(isset($contact_postcode['latitude'])){
 			$distance_between = distance($attendee_postcode['latitude'], $attendee_postcode['longitude'], $contact_postcode['latitude'], $contact_postcode['longitude'], "N");
 		$attendees[$k]['distance'] = number_format($distance_between,1);
+			} else {
+			$attendees[$k]['distance'] = "";	
+			}
 		}
 		}
 		}

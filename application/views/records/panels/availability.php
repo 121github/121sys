@@ -1,7 +1,7 @@
 <div class="panel panel-primary" id="slot-availability">
   <div class="panel-heading clearfix">Slot Availability
     <div class="pull-right">
-    <form>
+    <form style="padding:0; margin:0">
     <input type="hidden" id="slot-pot-id" value="<?php echo $record['pot_id'] ?>" />
      <input type="hidden" id="slot-source-id" value="<?php echo $record['source_id'] ?>" />
         <input type="hidden" id="slot-campaign-id" value="<?php echo $record['campaign_id'] ?>" />

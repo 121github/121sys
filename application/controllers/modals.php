@@ -9,6 +9,7 @@ class Modals extends CI_Controller
     {
         parent::__construct();
         user_auth_check();
+		$this->custom_fields = custom_fields();
         $this->_campaigns = campaign_access_dropdown();
 
         $this->load->model('User_model');
@@ -157,21 +158,20 @@ class Modals extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $this->load->model('Records_model');
-            $data = array();
             $ownership = array();
             $urn = intval($this->input->post('urn'));
-            $record = $this->Modal_model->view_record($urn);
-            foreach ($record as $row) {
-                $data = $row;
-                if ($row['owner']) {
-                    $ownership[$row['owner']] = $row['owner'];
-                }
-            }
-            if (count($ownership)) {
-                $data['ownership'] = implode(", ", $ownership);
-            } else {
-                $data['ownership'] = "-";
-            }
+			$data = array("urn"=>$urn);
+			$modal_type = 1;
+			$options = $this->Modal_model->get_modal_fields($urn,$modal_type);		
+            $record = $this->Modal_model->get_record($options,$urn);	
+			$fields=array();
+			$modal = array();	
+			foreach($options['modal'] as $row){
+				$this->firephp->log($row);
+				$fields[$row['column_title']][$row['datafield_title']] = $record[$row['datafield_title']];
+				$modal[$row['column_title']] = array("display"=>$row['field_display'],"title"=>$row['column_title'],"list_icon"=>$row['list_icon'],"table_class"=>$row['table_class'],"fields"=>$fields[$row['column_title']]);
+			}
+			$data['record'] = $modal;
             $history = $this->Modal_model->view_history($urn);
             $data['history'] = $history;
             $appointments = $this->Modal_model->view_appointments($urn);
@@ -186,7 +186,7 @@ class Modals extends CI_Controller
             }
             $data['appointments'] = $appointments;
             //add in the custom fields
-            $additional_info = $this->Records_model->get_additional_info($urn, $data['campaign_id']);
+            $additional_info = $this->Records_model->get_additional_info($urn, $record['campaign_id']);
             $data['custom_info'] = $additional_info;
             $all_addresses = $this->Records_model->get_addresses($urn);
             $addresses = array();
@@ -203,31 +203,41 @@ class Modals extends CI_Controller
             echo json_encode(array("success" => true, "data" => $data));
         }
     }
-
-    public function view_appointment()
+	
+	 public function view_appointment()
     {
         if ($this->input->is_ajax_request()) {
-            $data = array();
+            $this->load->model('Records_model');
+            $ownership = array();
             $id = intval($this->input->post('id'));
+			$required = $this->get_appointment_meta($id);
+			$data = $required;
+			$modal_type = 2;
+			$options = $this->Modal_model->get_modal_fields($id,$modal_type);		
+            $record = $this->Modal_model->get_appointment($options,$id);	
+			$fields=array();
+			$modal = array();	
+			foreach($options['modal'] as $row){
+				$fields[$row['column_title']][$row['datafield_title']] = $record[$row['datafield_title']];
+				$modal[$row['column_title']] = array("display"=>$row['field_display'],"title"=>$row['column_title'],"list_icon"=>$row['list_icon'],"table_class"=>$row['table_class'],"fields"=>$fields[$row['column_title']]);
+			}
+			$data['appointment'] = $modal;
+            echo json_encode(array("success" => true, "data" => $data));
+        }
+    }
+	
+
+    public function get_appointment_meta($id)
+    {
+            $data = array();
             $postcode = false;
             if (isset($_COOKIE['current_postcode'])) {
                 $postcode = postcodeFormat($_COOKIE['current_postcode']);
             }
-            $result = $this->Modal_model->view_appointment($id, $postcode);
-            if ($result) {
-                foreach ($result as $row) {
-                    $attendee_names[] = $row['attendee'];
-                    $attendees[] = $row['user_id'];
-                    $data = $row;
-                    $data['attendee_names'] = $attendee_names;
-                    $data['attendees'] = $attendees;
-                }
-                $data['current_postcode'] = $postcode;
-                echo json_encode(array("success" => true, "data" => $data));
-            } else {
-                echo json_encode(array("success" => false, "msg" => "Appointment could not be loaded"));
-            }
-        }
+            $data = $this->Modal_model->view_appointment_meta($id, $postcode);
+			$data['id'] = $id;
+			$data['current_postcode'] = $postcode;
+            return $data;
     }
 
     public function edit_appointment()

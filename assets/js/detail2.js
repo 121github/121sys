@@ -2190,7 +2190,7 @@ var record = {
             var contents = "";
             $.each(data, function (k, detail) {
                 tbody += "<tr>";
-                thead = "<thead><tr>";
+                thead = "<thead><tr class='small'>";
                 $.each(detail, function (i, row) {
                     thead += "<th>" + row.name + "</th>";
                     if (row.formatted) {

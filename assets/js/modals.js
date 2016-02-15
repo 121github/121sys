@@ -11,7 +11,7 @@ var modals = {
 			if(tab=="#tab-planner"||tab=="#phone"||tab=="#pot"||tab=="#source"||tab=="#campaign"||tab=="#other"||"#create-view"){
 			modal_body.css('overflow','visible');
 			} else {
-			modal_body.css('overflow','auto');	
+			modal_body.css('overflow','auto');
 			}
 		});
 		$modal.on('click','#record-suppress',function(e){
@@ -277,7 +277,7 @@ var modals = {
 				create_view += "<h4>"+group+"</h4>";
 				var colpicker = "<select class='selectpicker column-select' name='columns[]' multiple data-width='100%'>";
 				 $.each(row,function(i,column){
-					colpicker += "<option "+subtext+" value='"+column.columns.column_id+"'>"+column.columns.column_title+"</option>";
+					colpicker += "<option "+subtext+" value='"+column.columns.datafield_id+"'>"+column.columns.datafield_title+"</option>";
 				 })
 				 colpicker += "</select>";
 				 create_view += colpicker;
@@ -549,29 +549,49 @@ var modals = {
         });
     },
     view_appointment_html: function (data) {
-        if (data.attendee_names.length > 0) {
-            var attendees = "";
-            $.each(data.attendee_names, function (i, val) {
-                if (i > 0) {
-                    attendees += ", "
-                }
-                attendees += val;
-            });
-        }
-        var mheader = "Appointment #" + data.appointment_id + " <small>" + data.campaign_name + "</small>";
-        var mbody = "<table class='table small'><tbody><tr><th>Company</th><td>" + data.coname + "</td></tr><tr><th>Date</th><td>" + data.starttext + "</td></tr><tr><th>Title</th><td>" + data.title + "</td></tr><tr><th>Notes</th><td>" + data.text + "</td></tr><tr><th>Attendees</th><td>" + attendees + "</td></tr><tr><th>Type</th><td>" + data.appointment_type + "</td></tr><tr><th>Location</th><td>" + data.address + "</td></tr>";
+		$.each(data.appointment,function(title,column){
+			
+		 mbody = '';	
+ 		 if(column.display=="table"){
+			 var list_icon = column.list_icon.length>0?"<i class='fa "+column.list_icon+"'></i> ":"";
+		var colbody = "<table class='"+column.table_class+"'>";	 
+		 $.each(column.fields,function(key,val){
+			 colbody += "<tr><td>"+list_icon+"</td><td><strong>"+key+"</strong></td><td>"+val+"</td></tr>";
+		 });
+		 colbody += "</table>";
+		 }
+		 if(column.display=="list"){
+		var list_icon = "";
+		var list_style = "";
+		if(column.list_icon.length>0){
+			 list_icon = "<span class='fa "+column.list_icon+"'></span>";
+			 list_style = "style='list-style:none'"
+		}
+		var colbody = "<ul "+list_style+">";	 
+		 $.each(column.fields,function(key,val){
+			 colbody += "<li>"+list_icon+" <strong>"+key+":</strong> "+val+"</li>";
+		 });
+		 colbody += "</ul>";
+		 }
+		 mbody += colbody;
+		 //mbody +=  "</div>";
+		});
+        var mheader = "Appointment #" + data.id;
+        /*var mbody = "<table class='table small'><tbody><tr><th>Company</th><td>" + data.coname + "</td></tr><tr><th>Date</th><td>" + data.starttext + "</td></tr><tr><th>Title</th><td>" + data.title + "</td></tr><tr><th>Notes</th><td>" + data.text + "</td></tr><tr><th>Attendees</th><td>" + attendees + "</td></tr><tr><th>Type</th><td>" + data.appointment_type + "</td></tr><tr><th>Location</th><td>" + data.address + "</td></tr>";
         if (data.distance && getCookie('current_postcode')) {
             mbody += "<tr><th>Distance</th><td>" + Number(data.distance).toFixed(2) + " Miles from " + getCookie('current_postcode') + "</td></tr>";
         }
         mbody += "</tbody></table>";
+		*/
+		
         mbody += "This appointment was set by <b>" + data.created_by + "</b> on <b>" + data.date_added + "</b>";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
 		if(helper.permissions['edit appointments'] > 0){
-		mfooter += '<a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="' + data.appointment_id + '" >Edit Appointment</a> ';
+		mfooter += '<a class="btn btn-primary pull-right" data-modal="edit-appointment" data-id="' + data.id + '" >Edit Appointment</a> ';
 		}
 		//should change this permission to "appointment webform"
 		if(helper.permissions['edit appointments'] > 0&&data.btn_text!==null){
-		mfooter += '<a class="btn btn-info pull-right" href="'+helper.baseUrl+'webforms/edit/'+record.campaign+'/'+record.urn+'/'+data.webform_id+'/'+data.appointment_id+'" >'+data.btn_text+'</a> ';
+		mfooter += '<a class="btn btn-info pull-right" href="'+helper.baseUrl+'webforms/edit/'+data.campaign_id+'/'+data.urn+'/'+data.webform_id+'/'+data.id+'" >'+data.btn_text+'</a> ';
 		}
         if (data.urn != $('#urn').val()&&helper.permissions['view record'] > 0) {
             mfooter += ' <a class="btn btn-primary pull-right" href="' + helper.baseUrl + 'records/detail/' + data.urn + '">View Record</a>';
@@ -1009,7 +1029,40 @@ var modals = {
 
         mbody += '</ul><div class="tab-content">';
         //records tab
-        mbody += '<div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row"><div class="col-sm-6"><h4>Details</h4><table class="table small"><tr><th>Campaign</th><td>' + data.campaign_name + '</td></tr><tr><th>Reference</th><td>' + data.client_ref + '</td></tr><tr><th>Name</th><td>' + data.name + '</td></tr><tr><th>Contact</th><td>' + data.fullname + '</td></tr><tr><th>Ownership</th><td>' + data.ownership + '</td></tr><tr><th>Comments</th><td>' + data.comments + '</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table small"><tr><th>Record Status</th><td>' + data.status_name + '</td></tr><tr><th>Parked Status</th><td>' + data.parked + '</td></tr><tr><th>Last Outcome</th><td>' + data.outcome + '</td></tr><tr><th>Last Action</th><td>' + data.lastcall + '</td></tr><tr><th>Next Action</th><td>' + data.nextcall + '</td></tr></table></div></div></div>';
+        mbody += '<div role="tabpanel" class="tab-pane active" id="tab-records"><div class="row">';
+		$.each(data.record,function(title,column){
+			
+		 mbody += '<div class="col-sm-6"><h4>'+title+'</h4>';	
+		 if(column.display=="table"){
+			 var list_icon = column.list_icon.length>0?"<i class='fa "+column.list_icon+"'></i> ":"";
+		var colbody = "<table class='"+column.table_class+"'>";	 
+		 $.each(column.fields,function(key,val){
+			 colbody += "<tr><td>"+list_icon+"</td><td><strong>"+key+"</strong></td><td>"+val+"</td></tr>";
+		 });
+		 colbody += "</table>";
+		 }
+		 if(column.display=="list"){
+		var list_icon = "";
+		var list_style = "";
+		if(column.list_icon.length>0){
+			 list_icon = "<span class='fa "+column.list_icon+"'></span>";
+			 list_style = "style='list-style:none'"
+		}
+		var colbody = "<ul "+list_style+">";	 
+		 $.each(column.fields,function(key,val){
+			 colbody += "<li>"+list_icon+" <strong>"+key+":</strong> "+val+"</li>";
+		 });
+		 colbody += "</ul>";
+		 }
+		 mbody += colbody;
+		 mbody +=  "</div>";
+		});
+
+		mbody += '</div></div>';
+		
+		
+		
+		/*<div class="col-sm-6"><h4>Details</h4><table class="table small"><tr><th>Campaign</th><td>' + data.campaign_name + '</td></tr><tr><th>Reference</th><td>' + data.client_ref + '</td></tr><tr><th>Name</th><td>' + data.name + '</td></tr><tr><th>Contact</th><td>' + data.fullname + '</td></tr><tr><th>Ownership</th><td>' + data.ownership + '</td></tr><tr><th>Comments</th><td>' + data.comments + '</td></tr></table></div><div class="col-sm-6"><h4>Status</h4><table class="table small"><tr><th>Record Status</th><td>' + data.status_name + '</td></tr><tr><th>Parked Status</th><td>' + data.parked + '</td></tr><tr><th>Last Outcome</th><td>' + data.outcome + '</td></tr><tr><th>Last Action</th><td>' + data.lastcall + '</td></tr><tr><th>Next Action</th><td>' + data.nextcall + '</td></tr></table></div></div></div>'; */
         //history tab
         mbody += '<div role="tabpanel" class="tab-pane" id="tab-history">'
         if (data.history.length > 0) {

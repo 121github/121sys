@@ -24,7 +24,7 @@ class Datatables extends CI_Controller
 		$views = $this->Datatables_model->get_user_views($this->input->post('table'));
 		$all_columns = $this->Datatables_model->all_columns($this->input->post('table'));
 		foreach($all_columns as $column){
-		$columns[$column['column_group']][]=array("columns"=>$column);
+		$columns[$column['datafield_group']][]=array("columns"=>$column);
 		}
 		echo json_encode(array("views"=>$views,"columns"=>$columns));
 	}
@@ -36,9 +36,9 @@ class Datatables extends CI_Controller
 	$selected_columns = $this->Datatables_model->selected_columns($view_id);
 	foreach($selected_columns as $k=>$column){
 	$key  = array_search($k, $columns);
-	$this->db->where(array("column_id"=>$column['column_id'],"view_id"=>$view_id));
-	$this->db->join("datatables_views","datatables_view_columns.view_id=datatables_views.view_id");
-	$this->db->update("datatables_view_columns",array("sort"=>$key));
+	$this->db->where(array("datafield_id"=>$column['datafield_id'],"view_id"=>$view_id));
+	$this->db->join("datatables_views","datatables_view_fields.view_id=datatables_views.view_id");
+	$this->db->update("datatables_view_fields",array("sort"=>$key));
 	}
 	}
 
@@ -66,7 +66,7 @@ class Datatables extends CI_Controller
 		$selected = array();
 		$selected_columns = $this->Datatables_model->selected_columns($this->input->post('id'));
 		foreach($selected_columns as $selected_column){
-		$selected[] = $selected_column['column_id'];
+		$selected[] = $selected_column['datafield_id'];
 		}
 		
 		echo json_encode($selected);

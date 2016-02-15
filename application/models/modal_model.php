@@ -9,6 +9,126 @@ class Modal_model extends CI_Model
         parent::__construct();
 
     }
+	
+	public function get_modal_fields($id,$modal_type){
+		if($modal_type=="1"){
+		$campaign = $this->db->query("select campaign_id from records where urn = '$id'")->row()->campaign_id;	
+		}
+		if($modal_type=="2"){
+		$campaign = $this->db->query("select campaign_id from appointments join records using(urn) where appointment_id = '$id'")->row()->campaign_id;
+		}
+		$get_modal_query = "select id from modal_config where modal_id = '$modal_type' and ((user_id is null or user_id = '".$_SESSION['user_id']."') and (campaign_id is null or campaign_id = '$campaign')) order by user_id desc, campaign_id desc limit 1";
+		$modal_config_id = $this->db->query($get_modal_query)->row()->id;
+		
+		
+		$query = "select * from modals join modal_config using(modal_id) join modal_columns on modal_config.id = modal_columns.modal_config_id join modal_datafields using(column_id) join datafields using(datafield_id) where modal_id = $modal_type and modal_config_id = '$modal_config_id' order by column_sort,modal_datafields.sort";
+
+		if($this->db->query($query)->num_rows()){
+		$fields = $this->db->query($query)->result_array();
+		}
+		
+		if(count($fields)==0){
+		return false;
+		}
+		$visible_fields = array();
+		foreach($fields as $field){
+		$visible_fields['modal'][] = $field; 
+		$visible_fields['fields'][] = array("data" => !empty($field['datafield_alias'])?$field['datafield_alias']:$field['datafield_select']);
+		$visible_fields['headings'][] = $field['datafield_title'];
+		$visible_fields['select'][] = "if(".$field['datafield_select']." is null,'-',".$field['datafield_select'].")" ." `".$field['datafield_title']."`";
+		$visible_fields['tables'][] = $field['datafield_table'];
+		}
+		
+		foreach($visible_fields['headings'] as $k => $heading){
+			if(in_array($heading,$this->custom_fields)){
+		$this->db->join('records','records.campaign_id=record_details_fields.campaign_id');
+		$this->db->where(array("records.urn"=>$id,"field"=>$heading));
+		$custom_fields = $this->db->get('record_details_fields')->row_array();
+		if(count($custom_fields)){
+		$visible_fields['headings'][$k] = $field['field_name'];
+		}
+			}
+		}
+		return $visible_fields;
+		
+	}
+	
+	public function get_record($options,$urn){
+	 $tables = $options['tables'];	
+	$table_columns = $options['select'];
+	   $required_select_columns = array("r.urn","r.campaign_id");
+	        foreach ($required_select_columns as $required) {
+            if (!in_array($required, $table_columns)) {
+                $table_columns[] = $required;
+            }
+        }
+	  $join = array();
+	  $selections = implode(",", $table_columns);
+        $qry = "select $selections
+                from records r ";	
+
+        //the joins for all the tables are stored in a helper
+        $table_joins = table_joins();
+        $join_array = join_array();
+
+        foreach ($tables as $table) {
+            if (array_key_exists($table, $join_array)) {
+                foreach ($join_array[$table] as $t) {
+                    $join[$t] = $table_joins[$t];
+                }
+            } else {
+                $join[$table] = $table_joins[$table];
+            }
+        }
+
+        foreach ($join as $join_query) {
+            $qry .= $join_query;
+        }
+		$qry .= " where r.urn = '$urn' ";
+		return $this->db->query($qry)->row_array();
+	}
+	
+	public function get_appointment($options,$id){
+		 $tables = $options['tables'];	
+		$required_tables = array("appointments","campaigns", "companies", "company_addresses", "contacts","contact_addresses","contact_locations", "company_locations","appointment_locations","ownership","record_planner","record_planner_user","ownership","outcomes","appointment_attendees","appointment_users","appointment_types");
+		  foreach ($required_tables as $rt) {
+            if (!in_array($rt, $tables)) {
+                $tables[] = $rt;
+            }
+        }
+	$table_columns = $options['select'];
+	   $required_select_columns = array("a.appointment_id","r.campaign_id");
+	        foreach ($required_select_columns as $required) {
+            if (!in_array($required, $table_columns)) {
+                $table_columns[] = $required;
+            }
+        }
+	  $join = array();
+	  $selections = implode(",", $table_columns);
+        $qry = "select $selections
+                from records r ";	
+
+        //the joins for all the tables are stored in a helper
+        $table_joins = table_joins();
+        $join_array = join_array();
+        foreach ($tables as $table) {
+            if (array_key_exists($table, $join_array)) {
+                foreach ($join_array[$table] as $t) {
+                    $join[$t] = $table_joins[$t];
+                }
+            } else {
+                $join[$table] = $table_joins[$table];
+            }
+        }
+		
+        foreach ($join as $join_query) {
+            $qry .= $join_query;
+        }
+		$qry .= " where a.appointment_id = '$id' group by a.appointment_id";
+		return $this->db->query($qry)->row_array();
+	}
+	
+	
 	public function get_record_options($urn){
 	$this->db->select("record_color,campaigns.map_icon campaign_icon,records.map_icon,park_reason, source_id,pot_id,records.campaign_id,records.parked_code",false);
 	$this->db->join("campaigns","records.campaign_id=campaigns.campaign_id");
@@ -79,7 +199,7 @@ class Modal_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
-    public function view_appointment($id, $postcode = false)
+    public function view_appointment_meta($id, $postcode = false)
     {
         $distance_query = "";
         if ($postcode) {
@@ -90,7 +210,7 @@ class Modal_model extends CI_Model
                 $coords['lng'] . "- lo.lng)*PI()/180))))*180/PI())*60*1.1515) distance";
         }
         $query = "select u.user_id,if(c.name is null,'n/a',c.name) coname,campaign_name,appointment_id,a.urn,title,text,date_format(start,'%d/%m/%Y %H:%i') start,date_format(start,'%W %D %M %Y %l:%i%p') starttext,date_format(end,'%d/%m/%Y %H:%i') end,postcode,a.status,(select name from users where user_id = a.created_by) created_by,date_format(a.date_added,'%d/%m/%Y %l:%i%p') date_added, u.name attendee, appointment_type,  cancellation_reason, appointment_type_id as `type`, address,contact_id  $distance_query, branch_id, webform_answers.id answers_id, webforms.webform_id,btn_text from appointments a left join records using(urn) left join campaigns using(campaign_id) left join appointment_types using(appointment_type_id) left join locations lo using(location_id) left join appointment_attendees aa using(appointment_id) left join users u on u.user_id = aa.user_id left join companies c using(urn) left join webforms using(appointment_type_id) left join webform_answers using(appointment_id) where appointment_id = '$id' ";
-        return $this->db->query($query)->result_array();
+        return $this->db->query($query)->row_array();
     }
 
     public function get_filter_values($name, $values) {
