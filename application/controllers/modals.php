@@ -243,6 +243,7 @@ class Modals extends CI_Controller
     public function edit_appointment()
     {
         if ($this->input->is_ajax_request()) {
+			if(isset($_SESSION['cover_letter_address'])){ unset($_SESSION['cover_letter_address']); }
             $urn = intval($this->input->post('urn'));
             $campaign_id = $this->Records_model->get_campaign_from_urn($urn);
             $addresses = $this->Records_model->get_addresses($urn);
