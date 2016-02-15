@@ -158,9 +158,10 @@ var quick_planner = {
 				position: quick_planner.position,
 				date:date },
                 beforeSend: function () {
-					if(!date){
+					
+					if(date){
+						modal_body.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />"); } else {
                     $('#quick-planner').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
-					modal_body.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
 					}
                 }
             }).done(function (response) {
