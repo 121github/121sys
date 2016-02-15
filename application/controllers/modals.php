@@ -167,7 +167,6 @@ class Modals extends CI_Controller
 			$fields=array();
 			$modal = array();	
 			foreach($options['modal'] as $row){
-				$this->firephp->log($row);
 				$fields[$row['column_title']][$row['datafield_title']] = $record[$row['datafield_title']];
 				$modal[$row['column_title']] = array("display"=>$row['field_display'],"title"=>$row['column_title'],"list_icon"=>$row['list_icon'],"table_class"=>$row['table_class'],"fields"=>$fields[$row['column_title']]);
 			}
