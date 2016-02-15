@@ -379,7 +379,7 @@ div.tooltip-inner {
 .scroll tbody {
 	overflow-y: auto;
 	overflow-x: hidden;
-	max-height: 400px;
+	max-height: 350px;
 }
 .scroll tr {
 	height: 25px;

@@ -1155,7 +1155,7 @@ var dashboard = {
                                             '</a>' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 500px; padding: 0px;">' +
+                                    '<div class="panel-body" id="'+report.report_id+'-panel" style="max-height: 650px; padding: 0px;">' +
                                         '<ul class="nav nav-tabs" id="panel-tabs-'+report.report_id+'" style=" background:#eee; width:100%;">' +
                                             '<li class="data-tab active"><a href="#data-system-'+report.report_id+'" class="tab" data-toggle="tab">Data</a></li>' +
                                             '<li class="plots-tab"><a href="#chart-div-system-'+report.report_id+'" class="tab" data-toggle="tab">Graphs</a></li>' +
@@ -1180,7 +1180,7 @@ var dashboard = {
                                                 '<img src="'+helper.baseUrl +"assets/img/ajax-loader-bar.gif"+'"/>' +
                                             '</div>' +
                                             '<div class="tab-pane" id="chart-div-system-'+report.report_id+'" style="padding: 0px; overflow-y: auto; overflow-x: hidden; max-height: 400px;">' +
-                                                '<div style="padding: 10px;">No graphs added</div>' +
+                                                '<div style="padding: 20px;">No graphs added</div>' +
                                             '</div>' +
                                         '</div>' +
                                     '</div>' +
@@ -1207,7 +1207,7 @@ var dashboard = {
                         dataType: "JSON"
                     }).done(function(resp) {
                         if (resp.success && resp.header) {
-                            var body = "<div class='table-"+report.report_id+" scroll'><table class='table table-bordered table-hover table-striped small' style='min-height: 400px;'></table></div>";
+                            var body = "<div class='table-"+report.report_id+" scroll'><table id='table-"+report.report_id+"' class='table table-bordered table-hover table-striped small' style='min-height: 400px;'></table></div>";
                             $('#data-system-'+report.report_id).empty();
                             $('#data-system-'+report.report_id).append(body);
 
@@ -1237,6 +1237,16 @@ var dashboard = {
                                 var table = $(this).find('table');
                                 $('.table-'+report.report_id).find("table > *").width($('.table-'+report.report_id).find('table').width() + $('.table-'+report.report_id).find('table').scrollLeft());
                             });
+
+                            var dom_size = (report.column_size < 6 ? 12 : 6);
+                            $('#table-'+report.report_id).DataTable({
+                                "dom": 'rt<"bottom-'+report.report_id+' small"<"col-lg-'+dom_size+'"l><"col-lg-'+dom_size+'"f><"col-lg-'+dom_size+'"i><"col-lg-'+dom_size+'"p>><"clear">',
+                                "pagingType": "full"
+                            });
+                            $(".bottom-"+report.report_id).css("min-height", "160px");
+                            if (dom_size == 12) {
+                                $(".bottom-"+report.report_id).css("text-align", "right");
+                            }
                         }
                         else {
                             $('#data-system-'+report.report_id).html("<div style='padding:20px;'>No results found!</div>");
@@ -1272,21 +1282,21 @@ var dashboard = {
                                             };
 
                                             if (graph.z_value) {
-                                                var y_arr = [];
+                                                var x_arr = [];
                                                 var z_arr = [];
-                                                $.each(graph.data, function (y_value, z_value) {
+                                                $.each(graph.data, function (x_value, z_value) {
                                                     z_arr = [graph.z_value];
                                                     var aux = [];
-                                                    aux.push(y_value);
-                                                    $.each(z_value, function (i, x_value) {
+                                                    aux.push(x_value);
+                                                    $.each(z_value, function (i, y_value) {
                                                         z_arr.push(i);
-                                                        aux.push(x_value);
+                                                        aux.push(y_value);
                                                     });
-                                                    y_arr.push(aux);
+                                                    x_arr.push(aux);
                                                 });
 
                                                 var data_arr = [z_arr];
-                                                $.each(y_arr, function (k, v) {
+                                                $.each(x_arr, function (k, v) {
                                                     data_arr.push(v);
                                                 });
                                                 var data = google.visualization.arrayToDataTable(data_arr);
@@ -1309,6 +1319,14 @@ var dashboard = {
                                                     break;
                                                 case "pie":
                                                     var chart = new google.visualization.PieChart(document.getElementById('export-chart-'+graph.graph_id));
+                                                    chart.draw(data, options);
+                                                    break;
+                                                case "line":
+                                                    var chart = new google.visualization.LineChart(document.getElementById('export-chart-'+graph.graph_id));
+                                                    chart.draw(data, options);
+                                                    break;
+                                                case "area":
+                                                    var chart = new google.visualization.AreaChart(document.getElementById('export-chart-'+graph.graph_id));
                                                     chart.draw(data, options);
                                                     break;
                                                 default:

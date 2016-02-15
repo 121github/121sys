@@ -53,7 +53,8 @@ class Exports extends CI_Controller
                 'lib/moment.js',
                 'lib/daterangepicker.js',
                 'export.js?v' . $this->project_version,
-                'charts.js?v' . $this->project_version
+                'charts.js?v' . $this->project_version,
+                'plugins/DataTables/datatables.min.js'
             ),
             'page' => 'export_data',
             'css' => array(
@@ -179,8 +180,8 @@ class Exports extends CI_Controller
                     $z_values = array();
                     if (isset($graph['z_value']) && $graph['z_value'] != "" && !empty($results)) {
                         foreach ($results as $result) {
-                            if (!isset($graph['data'][$result[$graph['y_value']]])) {
-                                $graph['data'][$result[$graph['y_value']]] = array();
+                            if (!isset($graph['data'][$result[$graph['x_value']]])) {
+                                $graph['data'][$result[$graph['x_value']]] = array();
                             }
                             array_push($z_values, $result[$graph['z_value']]);
                         }
@@ -196,11 +197,11 @@ class Exports extends CI_Controller
                         }
 
                         foreach ($results as $result) {
-                            if (isset($graph['x_value']) && $graph['x_value'] != "") {
-                                $graph['data'][$result[$graph['y_value']]][$result[$graph['z_value']]] += $result[$graph['x_value']];
+                            if (isset($graph['y_value']) && $graph['y_value'] != "") {
+                                $graph['data'][$result[$graph['x_value']]][$result[$graph['z_value']]] += $result[$graph['y_value']];
                             }
                             else {
-                                $graph['data'][$result[$graph['y_value']]][$result[$graph['z_value']]]++;
+                                $graph['data'][$result[$graph['x_value']]][$result[$graph['z_value']]]++;
                             }
                         }
 
@@ -209,14 +210,14 @@ class Exports extends CI_Controller
                     else {
                         foreach ($results as $result) {
 
-                            if (!isset($graph['data'][$result[$graph['y_value']]])) {
-                                $graph['data'][$result[$graph['y_value']]] = 0;
+                            if (!isset($graph['data'][$result[$graph['x_value']]])) {
+                                $graph['data'][$result[$graph['x_value']]] = 0;
                             }
-                            if (isset($graph['x_value']) && $graph['x_value'] != "") {
-                                $graph['data'][$result[$graph['y_value']]] += $result[$graph['x_value']];
+                            if (isset($graph['y_value']) && $graph['y_value'] != "") {
+                                $graph['data'][$result[$graph['x_value']]] += $result[$graph['y_value']];
                             }
                             else {
-                                $graph['data'][$result[$graph['y_value']]]++;
+                                $graph['data'][$result[$graph['x_value']]]++;
                             }
                         }
                         array_push($aux, $graph);
@@ -464,8 +465,8 @@ class Exports extends CI_Controller
                     "export_forms_id" => $form['export_forms_id'],
                     "name" => $form['graph_name'],
                     "type" => $form['graph_type'],
-                    "x_value" => (isset($form['x_value'])?$form['x_value']:NULL),
-                    "y_value" => $form['y_value'],
+                    "x_value" => $form['x_value'],
+                    "y_value" => (isset($form['y_value'])?$form['y_value']:NULL),
                     "z_value" => (isset($form['z_value'])?$form['z_value']:NULL)
                 );
             }
@@ -526,13 +527,13 @@ class Exports extends CI_Controller
             $form = $this->input->post();
 
             $graph = array();
-            if ($form['graph_name'] != "" && $form['graph_type'] != "" && $form['y_value'] != "") {
+            if ($form['graph_name'] != "" && $form['graph_type'] != "" && $form['x_value'] != "") {
                 $graph = array(
                     "export_forms_id" => $form['export_forms_id'],
                     "name" => $form['graph_name'],
                     "type" => $form['graph_type'],
-                    "x_value" => (isset($form['x_value'])?$form['x_value']:NULL),
-                    "y_value" => $form['y_value'],
+                    "x_value" => $form['x_value'],
+                    "y_value" => (isset($form['y_value'])?$form['y_value']:NULL),
                     "z_value" => (isset($form['z_value'])?$form['z_value']:NULL)
                 );
             }

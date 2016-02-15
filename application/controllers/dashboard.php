@@ -1277,6 +1277,7 @@ public function index(){
                         'lib/moment.js',
                         'lib/daterangepicker.js',
                         'export.js?v' . $this->project_version,
+                        'plugins/DataTables/datatables.min.js'
                     ),
                     'css' => array(
                         'dashboard.css',

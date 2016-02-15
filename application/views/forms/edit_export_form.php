@@ -141,15 +141,21 @@
                         <div class="col-lg-12">
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-default active">
-                                    <input type="radio" value="bars" checked="checked" aria-label="..." name="graph_type"> Bars <span class="fa fa-bar-chart"></span>
+                                    <input type="radio" value="bars" checked="checked" aria-label="..." name="graph_type"> Bars Chart <span class="fa fa-bar-chart"></span>
                                 </label>
                                 <label class="btn btn-default">
                                     <input type="radio" value="pie" aria-label="..." name="graph_type"> Pie Chart <span class="fa fa-pie-chart"></span>
                                 </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" value="line" aria-label="..." name="graph_type"> Line Chart <span class="fa fa-line-chart"></span>
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" value="area" aria-label="..." name="graph_type"> Line Chart <span class="fa fa-area-chart"></span>
+                                </label>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="margin-top: 10px">
                         <div class="col-lg-3">
                             <div class="btn-group">
                                 <div class="form-group input-group-sm">
@@ -162,18 +168,18 @@
                         <div class="col-lg-3">
                             <div class="btn-group">
                                 <div class="form-group input-group-sm">
-                                    <p>Y Axis (*)</p>
-                                    <input type="text" class="form-control" name="y_value"
-                                           placeholder="Enter the y axis"/>
+                                    <p>X Axis (*)</p>
+                                    <input type="text" class="form-control" name="x_value"
+                                           placeholder="Enter the x axis"/>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="btn-group">
                                 <div class="form-group input-group-sm">
-                                    <p>X Axis</p>
-                                    <input type="text" class="form-control" name="x_value"
-                                           placeholder="Enter the x axis"/>
+                                    <p>Y Axis</p>
+                                    <input type="text" class="form-control" name="y_value"
+                                           placeholder="Enter the y axis"/>
                                 </div>
                             </div>
                         </div>

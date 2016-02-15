@@ -405,6 +405,12 @@ var export_data = {
                             case "pie":
                                 type_graph = ' <span class="fa fa-pie-chart"></span>';
                                 break;
+                            case "line":
+                                type_graph = ' <span class="fa fa-line-chart"></span>';
+                                break;
+                            case "area":
+                                type_graph = ' <span class="fa fa-area-chart"></span>';
+                                break;
                             default:
                                 break;
                         }
@@ -533,7 +539,7 @@ var export_data = {
             if (response.success && response.header) {
                 //Data tab
                 mbody += '<div class="tab-pane active" id="export-data-'+export_forms_id+'"  style="padding: 0px;">';
-                mbody += "<div class='table-"+export_forms_id+" scroll'><table class='table table-bordered table-hover table-striped small' style='min-height: 400px;'>";
+                mbody += "<div class='table-"+export_forms_id+" scroll'><table id='table-"+export_forms_id+"' class='table table-bordered table-hover table-striped small' style='min-height: 400px;'>";
                 mbody += "<thead><tr>";
                 $.each(response.header, function (i, val) {
                     if (response.header.length) {
@@ -582,21 +588,21 @@ var export_data = {
                                 };
 
                                 if (graph.z_value) {
-                                    var y_arr = [];
+                                    var x_arr = [];
                                     var z_arr = [];
-                                    $.each(graph.data, function (y_value, z_value) {
+                                    $.each(graph.data, function (x_value, z_value) {
                                         z_arr = [graph.z_value];
                                         var aux = [];
-                                        aux.push(y_value);
-                                        $.each(z_value, function (i, x_value) {
+                                        aux.push(x_value);
+                                        $.each(z_value, function (i, y_value) {
                                             z_arr.push(i);
-                                            aux.push(x_value);
+                                            aux.push(y_value);
                                         });
-                                        y_arr.push(aux);
+                                        x_arr.push(aux);
                                     });
 
                                     var data_arr = [z_arr];
-                                    $.each(y_arr, function (k, v) {
+                                    $.each(x_arr, function (k, v) {
                                         data_arr.push(v);
                                     });
                                     var data = google.visualization.arrayToDataTable(data_arr);
@@ -622,6 +628,14 @@ var export_data = {
                                         break;
                                     case "pie":
                                         var chart = new google.visualization.PieChart(document.getElementById('export-chart-'+graph.graph_id));
+                                        chart.draw(data, options);
+                                        break;
+                                    case "line":
+                                        var chart = new google.visualization.LineChart(document.getElementById('export-chart-'+graph.graph_id));
+                                        chart.draw(data, options);
+                                        break;
+                                    case "area":
+                                        var chart = new google.visualization.AreaChart(document.getElementById('export-chart-'+graph.graph_id));
                                         chart.draw(data, options);
                                         break;
                                     default:
@@ -710,10 +724,21 @@ var export_data = {
         modals.load_modal(mheader, mbody, mfooter);
 
         $('.modal-body').css('padding', '0px');
+        $('.modal-body').css('max-height', '600px');
 
         $('#modal .table-'+export_forms_id).find('table').on('scroll', function () {
             $('#modal .table-'+export_forms_id).find("table > *").width($('#modal .table-'+export_forms_id).find('table').width() + $('#modal .table-'+export_forms_id).find('table').scrollLeft());
         });
+
+        var dom_size = 6;
+        $('#table-'+export_forms_id).DataTable({
+            "dom": 'rt<"bottom-'+export_forms_id+' small"<"col-lg-'+dom_size+'"l><"col-lg-'+dom_size+'"f><"col-lg-'+dom_size+'"i><"col-lg-'+dom_size+'"p>><"clear">',
+            "pagingType": "full"
+        });
+        $(".bottom-"+export_forms_id).css("min-height", "100px");
+        if (dom_size == 12) {
+            $(".bottom-"+export_forms_id).css("text-align", "right");
+        }
 
         $('.report-available-export-prog-' + export_forms_id).html("");
         $('.report-export-prog-' + export_forms_id).html("");
@@ -813,6 +838,12 @@ var export_data = {
                             break;
                         case "pie":
                             type_graph = ' <span class="fa fa-pie-chart"></span>';
+                            break;
+                        case "line":
+                            type_graph = ' <span class="fa fa-line-chart"></span>';
+                            break;
+                        case "area":
+                            type_graph = ' <span class="fa fa-area-chart"></span>';
                             break;
                         default:
                             break;
