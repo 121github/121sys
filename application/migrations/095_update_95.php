@@ -133,5 +133,4 @@ $this->db->query("ALTER TABLE `datatables_view_fields` CHANGE `column_id` `dataf
 		
 	}
 
-   
 }
