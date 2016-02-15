@@ -101,6 +101,16 @@ var export_data = {
             export_data.delete_export($(this).attr('item-id'));
         });
 
+        $(document).on('click', '.save-export-graph-btn', function (e) {
+            e.preventDefault();
+            export_data.save_export_graph();
+        });
+
+        $(document).on('click', '.remove-export-graph-btn', function (e) {
+            e.preventDefault();
+            export_data.delete_export_graph($(this).attr('item-id'));
+        });
+
         $(document).on('click', '.export-report-btn', function (e) {
             e.preventDefault();
             export_data.load_export_report_data($(this).attr('item-id'), $(this).attr('item-name'));
@@ -134,6 +144,15 @@ var export_data = {
         $(document).on('click', '.close-export-report', function (e) {
             e.preventDefault();
             export_data.close_export_report($(this));
+        });
+
+        $(document).on('change', 'textarea[name="query"], input[name="order_by"], input[name="group_by"]', function (e) {
+            e.preventDefault();
+            var query = $('.edit-export-form').find('textarea[name="query"]').val();
+            var order_by = $('.edit-export-form').find('input[name="order_by"]').val();
+            var group_by = $('.edit-export-form').find('input[name="group_by"]').val();
+
+            $('.preview-qry').html(query+(order_by.length>""?" ORDER BY "+order_by:"")+(group_by.length>""?" GROUP BY "+group_by:""));
         });
 
         export_data.load_export_forms();
@@ -326,7 +345,7 @@ var export_data = {
         });
     },
     edit_export_form: function (btn) {
-        var mheader = "Edit Custom Export";
+        var mheader = "Edit Custom Report";
         var mbody = "";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
             ' <button class="btn btn-primary pull-right marl" id="save-edit-btn">Save</button> ';
@@ -364,38 +383,82 @@ var export_data = {
             mbody.find('input[name="source_filter"]').val(source_filter);
             mbody.find('input[name="pot_filter"]').val(pot_filter);
 
+            mbody.find('.preview-qry').html(query+(order_by.length>""?" ORDER BY "+order_by:"")+(group_by.length>""?" GROUP BY "+group_by:""));
 
-
+            //Get the graphs
             $.ajax({
-                url: helper.baseUrl + 'exports/get_export_users',
+                url: helper.baseUrl + 'exports/get_export_graphs',
                 type: "POST",
                 dataType: "JSON",
                 data: {'export_forms_id': export_forms_id}
             }).done(function (response) {
                 if (response.success) {
-                    modals.load_modal(mheader, mbody, mfooter);
-                    //modal_body.css('overflow','visible');
-                    //Load users
-                    $.each(response.users, function (k, v) {
-                        var selected = "";
-                        if (inArray(v.id, response.data) && response.data) {
-                            selected = "selected";
+                    mbody.find('#export-graph-list').empty();
+                    var graphs = "<table class='table small'>";
+                    graphs += "<thead><tr><th>Name</th><th>Type</th><th>X Axis</th><th>Y Axis</th><th>Z Axis</th><th></th></tr></thead><tbody>";
+                    $.each(response.graphs, function (k, v) {
+                        var type_graph = "";
+                        switch (v.type){
+                            case "bars":
+                                type_graph = ' <span class="fa fa-bar-chart"></span>';
+                                break;
+                            case "pie":
+                                type_graph = ' <span class="fa fa-pie-chart"></span>';
+                                break;
+                            case "line":
+                                type_graph = ' <span class="fa fa-line-chart"></span>';
+                                break;
+                            case "area":
+                                type_graph = ' <span class="fa fa-area-chart"></span>';
+                                break;
+                            default:
+                                break;
                         }
-                        $('#user_select').prepend('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
+                        graphs += "<tr>" +
+                                    "<td>"+v.name+"</td>" +
+                                    "<td>"+v.type+type_graph+"</td>" +
+                                    "<td>"+(v.x_value?v.x_value:'')+"</td>" +
+                                    "<td>"+(v.y_value?v.y_value:'')+"</td>" +
+                                    "<td>"+(v.z_value?v.z_value:'')+"</td>" +
+                                    "<td><span class='btn btn-danger btn-xs pull-right pointer remove-export-graph-btn' item-id='"+ v.graph_id+"'><span class='fa fa-remove'></span> Remove</span></td>" +
+                                  "</tr>";
                     });
-                    $('#user_select').selectpicker('refresh');
+                    graphs += "</tbody></table>";
+
+                    mbody.find('#export-graph-list').html(graphs);
                 }
-                else {
+                //Get the export users
+                $.ajax({
+                    url: helper.baseUrl + 'exports/get_export_users',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {'export_forms_id': export_forms_id}
+                }).done(function (response) {
+                    if (response.success) {
+                        modals.load_modal(mheader, mbody, mfooter);
+                        //modal_body.css('overflow','visible');
+                        //Load users
+                        $.each(response.users, function (k, v) {
+                            var selected = "";
+                            if (inArray(v.id, response.data) && response.data) {
+                                selected = "selected";
+                            }
+                            $('#user_select').prepend('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
+                        });
+                        $('#user_select').selectpicker('refresh');
+                    }
+                    else {
+                        mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
+                        mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                        modals.load_modal(mheader, mbody, mfooter);
+                    }
+
+                }).fail(function () {
                     mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
                     mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+
                     modals.load_modal(mheader, mbody, mfooter);
-                }
-
-            }).fail(function () {
-                mbody = "<div>Error loading the custom export. Please contact with the administrator</div>";
-                mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
-
-                modals.load_modal(mheader, mbody, mfooter);
+                });
             });
         });
 
@@ -458,7 +521,7 @@ var export_data = {
         $('.filter-form').find('input[name="export_forms_id"]').val(export_forms_id);
 
         var mheader = name;
-        var mbody = "<table>";
+        var mbody = "";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
             ' <span class="btn btn-primary pull-right marl modal-export-file-btn" item-id="'+export_forms_id+'">Export</span> ';
 
@@ -468,12 +531,22 @@ var export_data = {
             dataType: "JSON",
             data: $('.filter-form').serialize()
         }).done(function (response) {
+            mbody += '<ul class="nav nav-tabs" id="panel-tabs-'+export_forms_id+'" style=" background:#eee; width:100%;">';
+            mbody += '<li class="data-tab active"><a href="#export-data-'+export_forms_id+'" class="tab" data-toggle="tab">Data</a></li>' +
+                     '<li class="plots-tab"><a href="#export-graph-'+export_forms_id+'" class="tab" data-toggle="tab">Graphs</a></li>';
+            mbody += '</ul>';
+            mbody += '<div class="tab-content" style="padding: 0px;">';
             if (response.success && response.header) {
+                //Data tab
+                mbody += '<div class="tab-pane active" id="export-data-'+export_forms_id+'"  style="padding: 0px;">';
+                mbody += "<div class='table-"+export_forms_id+" scroll'><table id='table-"+export_forms_id+"' class='table table-bordered table-hover table-striped small' style='min-height: 400px;'>";
+                mbody += "<thead><tr>";
                 $.each(response.header, function (i, val) {
                     if (response.header.length) {
                         mbody += "<th style='padding: 5px;'>" + val + "</th>";
                     }
                 });
+                mbody += "</tr></thead><tbody>";
                 $.each(response.data, function (i, data) {
                     if (response.data.length) {
                         mbody += "<tr>";
@@ -483,19 +556,111 @@ var export_data = {
                         mbody += "</tr>";
                     }
                 });
-                mbody += "</table>";
+                mbody += "</tbody></table></div></div>";
+
+                //Graph tab
+                mbody += '<div class="tab-pane" id="export-graph-'+export_forms_id+'"  style="padding: 0px; overflow-y: auto; overflow-x: hidden; max-height: 400px;">';
+                mbody += '<div class="row">';
+                if (response.graphs.length) {
+                    $.each(response.graphs, function (i, graph) {
+                        mbody += '<div class="col-lg-6"><div id="export-chart-'+graph.graph_id+'" style="text-shadow: none">' +
+                                    '<p>'+graph.name+'</p>' +
+                                    '<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ' +
+                                 '</div></div>';
+                    });
+
+                    //LOAD google graphs
+                    google.load('visualization', '1', {
+                        packages: ['corechart'], 'callback': function () {
+                            $.each(response.graphs, function (i, graph) {
+                                var rows = [];
+                                var title = graph.name;
+
+                                // Set chart options
+                                var options = {
+                                    'legend': {position: 'none'},
+                                    'title': title,
+                                    'width': 250,
+                                    'height': 400,
+                                    curveType: 'function',
+                                    'hAxis': {direction:-1, slantedText:true, slantedTextAngle:45 },
+                                    isStacked: (graph.z_value)?true:false
+                                };
+
+                                if (graph.z_value) {
+                                    var x_arr = [];
+                                    var z_arr = [];
+                                    $.each(graph.data, function (x_value, z_value) {
+                                        z_arr = [graph.z_value];
+                                        var aux = [];
+                                        aux.push(x_value);
+                                        $.each(z_value, function (i, y_value) {
+                                            z_arr.push(i);
+                                            aux.push(y_value);
+                                        });
+                                        x_arr.push(aux);
+                                    });
+
+                                    var data_arr = [z_arr];
+                                    $.each(x_arr, function (k, v) {
+                                        data_arr.push(v);
+                                    });
+                                    var data = google.visualization.arrayToDataTable(data_arr);
+                                }
+                                else {
+                                    var data = new google.visualization.DataTable();
+                                    data.addColumn('string', 'Topping');
+                                    data.addColumn('number', 'Count');
+                                    $.each(graph.data, function (i, v) {
+                                        rows.push([i, parseInt(v)]);
+                                    });
+                                    data.addRows(rows);
+                                }
+
+
+
+
+                                //Draw the graph
+                                switch (graph.type){
+                                    case "bars":
+                                        var chart = new google.visualization.ColumnChart(document.getElementById('export-chart-'+graph.graph_id));
+                                        chart.draw(data, options);
+                                        break;
+                                    case "pie":
+                                        var chart = new google.visualization.PieChart(document.getElementById('export-chart-'+graph.graph_id));
+                                        chart.draw(data, options);
+                                        break;
+                                    case "line":
+                                        var chart = new google.visualization.LineChart(document.getElementById('export-chart-'+graph.graph_id));
+                                        chart.draw(data, options);
+                                        break;
+                                    case "area":
+                                        var chart = new google.visualization.AreaChart(document.getElementById('export-chart-'+graph.graph_id));
+                                        chart.draw(data, options);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    mbody += "<div class='col-lg-12' style='margin: 20px;'>No Graphs Created!</div>"
+                }
+                mbody += "</div></div>";
+
+                //Open modal
                 export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
             }
             else {
-                mbody += "<tr><td>" + response.data + "</td></tr>";
-                mbody += "</table>";
+                mbody += "<div style='padding: 20px;'>" + response.data + "</div>";
                 export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
                 $(".modal-export-file-btn").attr('disabled', true);
             }
 
         }).fail(function () {
-            mbody += "<tr><td>There is something wrong with export</td></tr>";
-            mbody += "</table>";
+            mbody += "<div style='padding: 20px;'>There is something wrong with export</div>";
             export_data.show_export_report(export_forms_id, mheader, mbody, mfooter);
             $(".modal-export-file-btn").attr('disabled', true);
 
@@ -509,7 +674,7 @@ var export_data = {
         $('.filter-form').find('input[name="export_form_name"]').val(export_form_name);
 
         var mheader = export_form_name;
-        var mbody = "<table>";
+        var mbody = "";
         var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
             ' <span class="btn btn-primary pull-right marl modal-export-available-file-btn" item-name="'+export_form_name+'">Export</span> ';
 
@@ -520,11 +685,14 @@ var export_data = {
             data: $('.filter-form').serialize()
         }).done(function (response) {
             if (response.success && response.header) {
+                mbody += "<div class='table-"+export_form_name+" scroll'><table class='table table-bordered table-hover table-striped small' style='min-height: 400px;'>";
+                mbody += "<thead><tr>";
                 $.each(response.header, function (i, val) {
                     if (response.header.length) {
                         mbody += "<th style='padding: 5px;'>" + val + "</th>";
                     }
                 });
+                mbody += "</tr></thead><tbody>";
                 $.each(response.data, function (i, data) {
                     if (response.data.length) {
                         mbody += "<tr>";
@@ -534,20 +702,17 @@ var export_data = {
                         mbody += "</tr>";
                     }
                 });
-                mbody += "</table>";
+                mbody += "</tbody></table></div>";
                 export_data.show_export_report(export_form_name, mheader, mbody, mfooter);
             }
             else {
-                mbody += "<tr><td>" + response.msg + "</td></tr>";
-                mbody += "</table>";
+                mbody += "<div style='padding: 20px;'>" + response.msg + "</div>";
                 export_data.show_export_report(export_form_name, mheader, mbody, mfooter);
                 $(".modal-export-available-file-btn").attr('disabled', true);
             }
 
         }).fail(function () {
-
-            mbody += "<tr><td>No data</td></tr>";
-            mbody += "</table>";
+            mbody += "<div style='padding: 20px;'> No Data </div>";
             export_data.show_export_report(export_form_name, mheader, mbody, mfooter);
             $(".modal-export-available-file-btn").attr('disabled', true);
 
@@ -557,6 +722,23 @@ var export_data = {
     show_export_report: function (export_forms_id, mheader, mbody, mfooter) {
 
         modals.load_modal(mheader, mbody, mfooter);
+
+        $('.modal-body').css('padding', '0px');
+        $('.modal-body').css('max-height', '600px');
+
+        $('#modal .table-'+export_forms_id).find('table').on('scroll', function () {
+            $('#modal .table-'+export_forms_id).find("table > *").width($('#modal .table-'+export_forms_id).find('table').width() + $('#modal .table-'+export_forms_id).find('table').scrollLeft());
+        });
+
+        var dom_size = 6;
+        $('#table-'+export_forms_id).DataTable({
+            "dom": 'rt<"bottom-'+export_forms_id+' small"<"col-lg-'+dom_size+'"l><"col-lg-'+dom_size+'"f><"col-lg-'+dom_size+'"i><"col-lg-'+dom_size+'"p>><"clear">',
+            "pagingType": "full"
+        });
+        $(".bottom-"+export_forms_id).css("min-height", "100px");
+        if (dom_size == 12) {
+            $(".bottom-"+export_forms_id).css("text-align", "right");
+        }
 
         $('.report-available-export-prog-' + export_forms_id).html("");
         $('.report-export-prog-' + export_forms_id).html("");
@@ -594,4 +776,95 @@ var export_data = {
             }
         });
     },
+
+    save_export_graph: function () {
+        $.ajax({
+            url: helper.baseUrl + 'exports/save_export_graph',
+            type: "POST",
+            dataType: "JSON",
+            data: $('.edit-export-form').serialize()
+        }).done(function (response) {
+            if (response.success) {
+                var export_forms_id = $('.edit-export-form').find('input[name="export_forms_id"]').val();
+                $('.edit-export-form').find('input[name="graph_name"]').val('');
+                $('.edit-export-form').find('input[name="x_value"]').val('');
+                $('.edit-export-form').find('input[name="y_value"]').val('');
+                $('.edit-export-form').find('input[name="z_value"]').val('');
+
+                export_data.load_export_graph(export_forms_id);
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    delete_export_graph: function (graph_id) {
+
+        $.ajax({
+            url: helper.baseUrl + 'exports/delete_export_graph',
+            type: "POST",
+            dataType: "JSON",
+            data: {'graph_id': graph_id}
+        }).done(function (response) {
+            if (response.success) {
+                var export_forms_id = $('.edit-export-form').find('input[name="export_forms_id"]').val();
+                export_data.load_export_graph(export_forms_id);
+                flashalert.success(response.msg);
+            }
+            else {
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
+    load_export_graph: function(export_forms_id) {
+        $.ajax({
+            url: helper.baseUrl + 'exports/get_export_graphs',
+            type: "POST",
+            dataType: "JSON",
+            data: {'export_forms_id': export_forms_id}
+        }).done(function (response) {
+            $('#export-graph-list').empty();
+            if (response.success) {
+                var graphs = "<table class='table small'>";
+                graphs += "<thead><tr><th>Name</th><th>Type</th><th>X Axis</th><th>Y Axis</th><th>Z Axis</th><th></th></tr></thead><tbody>";
+                $.each(response.graphs, function (k, v) {
+                    var type_graph = "";
+                    switch (v.type){
+                        case "bars":
+                            type_graph = ' <span class="fa fa-bar-chart"></span>';
+                            break;
+                        case "pie":
+                            type_graph = ' <span class="fa fa-pie-chart"></span>';
+                            break;
+                        case "line":
+                            type_graph = ' <span class="fa fa-line-chart"></span>';
+                            break;
+                        case "area":
+                            type_graph = ' <span class="fa fa-area-chart"></span>';
+                            break;
+                        default:
+                            break;
+                    }
+                    graphs += "<tr>" +
+                        "<td>"+v.name+"</td>" +
+                        "<td>"+v.type+type_graph+"</td>" +
+                        "<td>"+(v.x_value?v.x_value:'')+"</td>" +
+                        "<td>"+(v.y_value?v.y_value:'')+"</td>" +
+                        "<td>"+(v.z_value?v.z_value:'')+"</td>" +
+                        "<td><span class='btn btn-danger btn-xs pull-right pointer remove-export-graph-btn' item-id='"+ v.graph_id+"'><span class='fa fa-remove'></span> Remove</span></td>" +
+                        "</tr>";
+                });
+                graphs += "</tbody></table>";
+
+                $('#export-graph-list').html(graphs);
+            }
+            else {
+                $('#export-graph-list').html('<div class="col-lg-12" id="export-graph-list">No graphs added</div>');
+            }
+        });
+    }
+
 }

@@ -64,7 +64,7 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
-$db['121backup']['hostname'] = '121system.com';
+$db['121backup']['hostname'] = 'www.121system.com';
 $db['121backup']['username'] = 'bradf';
 $db['121backup']['password'] = 'brad123';
 $db['121backup']['database'] = 'recordings';
@@ -81,7 +81,7 @@ $db['121backup']['autoinit'] = TRUE;
 $db['121backup']['stricton'] = FALSE;
 /* End of file database.php */
 
-$db['uk_postcodes']['hostname'] = '121system.com';
+$db['uk_postcodes']['hostname'] = 'www.121system.com';
 $db['uk_postcodes']['username'] = 'uk_postcodes';
 $db['uk_postcodes']['password'] = 'ZwWQKUc4Mjrcx3Z8';
 $db['uk_postcodes']['database'] = 'uk_postcodes';

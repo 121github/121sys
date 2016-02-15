@@ -9,6 +9,7 @@ class Migration_update_95 extends CI_Migration
         $this->load->model('Database_model');
     }
 
+
     public function up(){
 		$this->db->query("CREATE TABLE IF NOT EXISTS `modals` (
   `modal_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -110,6 +111,19 @@ CHANGE `column_table` `datafield_table` VARCHAR( 50 ) CHARACTER SET latin1 COLLA
 
 $this->db->query("ALTER TABLE `datatables_view_fields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL") ;
 
+            $this->db->query("
+                CREATE TABLE IF NOT EXISTS export_graphs
+                (
+                    graph_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                    export_forms_id INT NOT NULL,
+                    name VARCHAR(50) NOT NULL,
+                    type VARCHAR(25) NOT NULL,
+                    x_value VARCHAR(50) NOT NULL,
+                    y_value VARCHAR(50),
+                    z_value VARCHAR(50),
+                    CONSTRAINT export_graphs_fk_export_id FOREIGN KEY (export_forms_id) REFERENCES export_forms (export_forms_id) ON DELETE CASCADE ON UPDATE CASCADE
+                )
+			");
 
 
 	}
@@ -118,4 +132,6 @@ $this->db->query("ALTER TABLE `datatables_view_fields` CHANGE `column_id` `dataf
 	public function down(){
 		
 	}
+
+   
 }

@@ -100,6 +100,13 @@ switch ($domain) {
 		$theme = "hsl";
         break;
 
+    case 'lhs.':
+        define('ENVIRONMENT', 'production');
+        $session_name = '121sys_lhs';
+        //$theme = "hsl";
+        //$timeout = 6000; //100 minutes
+        break;
+
     case 'demo.':
         define('ENVIRONMENT', 'demo');
         $session_name = '121sys_demo';

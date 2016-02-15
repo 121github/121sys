@@ -160,9 +160,8 @@ if (($handle = fopen(FCPATH."datafiles/".$file, "r")) !== FALSE) {
         ));
 		exit;
 		}
-		
 		//run the bash script
-		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table . ' ' . $database;
+		$command ='bash importcsv.sh "datafiles/' . $csv_file . '" ' . $table . ' ' . $database. ' '.$this->db->username. ' '.$this->db->password;
         $output = shell_exec($command);
 		$this->firephp->log($output);
 		if($this->Import_model->check_import()){
@@ -428,7 +427,7 @@ $this->db->query($renewals);
 			$id = $this->db->query($select)->row()->sector_id;
 			}		
           	$insert = "insert ignore into subsectors set subsector_name = '{$row['subsector_name']}',sector_id = $id";
-            $this->db->query($insert_query);
+            $this->db->query($insert);
 			//match back the subsector_ids with the import table data
 			$update_import_table = "ALTER TABLE `importcsv` ADD `subsector_id` INT NULL ,ADD INDEX ( `subsector_id` )";
             $insert_sector_ids  = "update importcsv i left join subsectors s on i.subsector_name = s.subsector_name set i.subsector_id = s.subsector_id";

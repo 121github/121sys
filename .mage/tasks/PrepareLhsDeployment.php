@@ -8,13 +8,14 @@ class PrepareLhsDeployment extends AbstractTask
 {
     public function getName()
     {
-        return 'Preparing the Prospector Sales deployment on the production environment';
+        return 'Preparing the LH Surveying deployment on the production environment';
     }
 
     public function run()
     {
         $commandList = array(
             'mv application/config/database.php.lhsurveying application/config/database.php',
+            'mv .htaccess_lhs .htaccess',
             'rm -rf application/config/database.php.*',
             'setfacl -R -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
             'setfacl -dR -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',

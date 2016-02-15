@@ -34,19 +34,6 @@ class Migration_update_93 extends CI_Migration
 			");
         }
 
-        $check = $this->db->query("SHOW TABLES like 'dashboard_by_campaign';");
-        if(!$check->num_rows()){
-            $this->db->query("
-                CREATE TABLE dashboard_by_campaign
-                (
-                    dashboard_id int NOT NULL,
-                    campaign_id int NOT NULL,
-                    FOREIGN KEY (dashboard_id) REFERENCES dashboards (dashboard_id) ON DELETE CASCADE ON UPDATE CASCADE,
-                    FOREIGN KEY (campaign_id) REFERENCES campaigns (campaign_id) ON DELETE CASCADE ON UPDATE CASCADE
-                )
-			");
-        }
-
         $check = $this->db->query("SHOW TABLES like 'dashboard_by_user';");
         if(!$check->num_rows()){
             $this->db->query("

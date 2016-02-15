@@ -52,7 +52,9 @@ class Exports extends CI_Controller
             'javascript' => array(
                 'lib/moment.js',
                 'lib/daterangepicker.js',
-                'export.js?v' . $this->project_version
+                'export.js?v' . $this->project_version,
+                'charts.js?v' . $this->project_version,
+                'plugins/DataTables/datatables.min.js'
             ),
             'page' => 'export_data',
             'css' => array(
@@ -98,6 +100,22 @@ class Exports extends CI_Controller
                 "success" => true,
                 "data" => $results,
                 "users" => $users
+            ));
+        }
+    }
+
+    public function get_export_graphs() {
+        if ($this->input->post()) {
+            $export_forms_id = $this->input->post('export_forms_id');
+            $results = array();
+
+            if ($export_forms_id) {
+                $results = $this->Export_model->get_export_graphs_by_export_id($export_forms_id);
+            }
+
+            echo json_encode(array(
+                "success" => !empty($results),
+                "graphs" => $results
             ));
         }
     }
@@ -151,18 +169,76 @@ class Exports extends CI_Controller
 
             if (!empty($export_form)) {
                 $results = $this->Export_model->get_data($export_form, $options);
-			}
+
+                //Get graphs
+                $graphs = $this->Export_model->get_export_graphs_by_export_id($options['export_forms_id']);
+
+                $aux = array();
+                foreach ($graphs as $graph) {
+                    $graph['data'] = array();
+
+                    $z_values = array();
+                    if (isset($graph['z_value']) && $graph['z_value'] != "" && !empty($results)) {
+                        foreach ($results as $result) {
+                            if (!isset($graph['data'][$result[$graph['x_value']]])) {
+                                $graph['data'][$result[$graph['x_value']]] = array();
+                            }
+                            array_push($z_values, $result[$graph['z_value']]);
+                        }
+
+                        $z_values = array_unique($z_values);
+                        sort($z_values);
+                        foreach($graph['data'] as $key => $value) {
+                            foreach ($z_values as $v) {
+                                if (!isset($graph['data'][$key][$v])) {
+                                    $graph['data'][$key][$v] = 0;
+                                }
+                            }
+                        }
+
+                        foreach ($results as $result) {
+                            if (isset($graph['y_value']) && $graph['y_value'] != "") {
+                                $graph['data'][$result[$graph['x_value']]][$result[$graph['z_value']]] += $result[$graph['y_value']];
+                            }
+                            else {
+                                $graph['data'][$result[$graph['x_value']]][$result[$graph['z_value']]]++;
+                            }
+                        }
+
+                        array_push($aux, $graph);
+                    }
+                    else {
+                        foreach ($results as $result) {
+
+                            if (!isset($graph['data'][$result[$graph['x_value']]])) {
+                                $graph['data'][$result[$graph['x_value']]] = 0;
+                            }
+                            if (isset($graph['y_value']) && $graph['y_value'] != "") {
+                                $graph['data'][$result[$graph['x_value']]] += $result[$graph['y_value']];
+                            }
+                            else {
+                                $graph['data'][$result[$graph['x_value']]]++;
+                            }
+                        }
+                        array_push($aux, $graph);
+                    }
+                }
+                $graphs = $aux;
+            }
+
 			if(count($results)){
                 echo json_encode(array(
                     "success" => true,
                     "data" => ($results?$results:"No export forms were created yet!"),
-                    "header" => explode(";",$export_form['header'])
+                    "header" => explode(";",$export_form['header']),
+                    'graphs' => $graphs
                 ));
             }
             else {
                 echo json_encode(array(
                     "success" => false,
-                    "data" => "No results found"
+                    "data" => "No results found",
+                    'graphs' => array()
                 ));
             }
         }
@@ -383,9 +459,26 @@ class Exports extends CI_Controller
             $users = (isset($form['user_id'])?$form['user_id']:array());
             unset($form['user_id']);
 
+            $graph = array();
+            if ($form['graph_name'] != "" && $form['graph_type'] != "" && $form['x_value'] != "") {
+                $graph = array(
+                    "export_forms_id" => $form['export_forms_id'],
+                    "name" => $form['graph_name'],
+                    "type" => $form['graph_type'],
+                    "x_value" => $form['x_value'],
+                    "y_value" => (isset($form['y_value'])?$form['y_value']:NULL),
+                    "z_value" => (isset($form['z_value'])?$form['z_value']:NULL)
+                );
+            }
+            unset($form['graph_name']);
+            unset($form['graph_type']);
+            unset($form['x_value']);
+            unset($form['y_value']);
+            unset($form['z_value']);
+
 
             if (!empty($form['export_forms_id'])) {
-                $results = $this->Export_model->update_export_form($form);
+                $this->Export_model->update_export_form($form);
                 $export_forms_id = $form['export_forms_id'];
             }
             else {
@@ -393,7 +486,12 @@ class Exports extends CI_Controller
             }
 
             if ($export_forms_id) {
-                $results = $this->Export_model->update_export_user($users, $export_forms_id);
+
+                $this->Export_model->update_export_user($users, $export_forms_id);
+
+                if (!empty($graph)) {
+                    $this->Export_model->insert_export_graph($graph);
+                }
             }
 
             echo json_encode(array(
@@ -422,6 +520,59 @@ class Exports extends CI_Controller
             ));
         }
     }
+
+    //Save an export graph
+    public function save_export_graph(){
+        if ($this->input->post()) {
+            $form = $this->input->post();
+
+            $graph = array();
+            if ($form['graph_name'] != "" && $form['graph_type'] != "" && $form['x_value'] != "") {
+                $graph = array(
+                    "export_forms_id" => $form['export_forms_id'],
+                    "name" => $form['graph_name'],
+                    "type" => $form['graph_type'],
+                    "x_value" => $form['x_value'],
+                    "y_value" => (isset($form['y_value'])?$form['y_value']:NULL),
+                    "z_value" => (isset($form['z_value'])?$form['z_value']:NULL)
+                );
+            }
+
+
+            if (!empty($graph)) {
+                $graph_id = $this->Export_model->insert_export_graph($graph);
+
+                echo json_encode(array(
+                    "success" => ($graph_id),
+                    "msg" => ($graph_id?"Graph saved successfully":"ERROR: The graph was not saved successfully!")
+                ));
+            }
+            else {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "ERROR: The graph was not saved successfully! Please, fill all the fields."
+                ));
+            }
+
+
+
+        }
+    }
+
+    //Delete an export graph
+    public function delete_export_graph(){
+        if ($this->input->post()) {
+            $graph_id = $this->input->post("graph_id");
+
+            $results = $this->Export_model->delete_export_graph($graph_id);
+
+            echo json_encode(array(
+                "success" => ($results),
+                "msg" => ($results?"Graph deleted successfully":"ERROR: The graph was not deleted successfully!")
+            ));
+        }
+    }
+
 
     //Export data to csv
     private function export2csv($data, $filename, $headers) {

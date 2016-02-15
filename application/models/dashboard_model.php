@@ -566,10 +566,8 @@ class Dashboard_model extends CI_Model
         }
         $qry = "SELECT
                   d.*,
-                  IF(du.user_id is not null,GROUP_CONCAT(DISTINCT du.user_id SEPARATOR ','),'') as viewers,
-                  IF(dc.campaign_id is not null,GROUP_CONCAT(DISTINCT dc.campaign_id SEPARATOR ','),'')  as campaigns
-                FROM dashboards d
-                  LEFT JOIN dashboard_by_campaign dc USING (dashboard_id)
+                  IF(du.user_id is not null,GROUP_CONCAT(DISTINCT du.user_id SEPARATOR ','),'') as viewers
+                  FROM dashboards d
                   LEFT JOIN dashboard_by_user du USING (dashboard_id)
                   WHERE ".$where."
                 GROUP BY d.dashboard_id";
@@ -586,10 +584,8 @@ class Dashboard_model extends CI_Model
         }
         $qry = "SELECT
                   d.*,
-                  IF(du.user_id is not null,GROUP_CONCAT(DISTINCT du.user_id SEPARATOR ','),'') as viewers,
-                  IF(dc.campaign_id is not null,GROUP_CONCAT(DISTINCT dc.campaign_id SEPARATOR ','),'')  as campaigns
-                FROM dashboards d
-                  LEFT JOIN dashboard_by_campaign dc USING (dashboard_id)
+                  IF(du.user_id is not null,GROUP_CONCAT(DISTINCT du.user_id SEPARATOR ','),'') as viewers
+                  FROM dashboards d
                   LEFT JOIN dashboard_by_user du USING (dashboard_id)
                   WHERE ".$where."
                 GROUP BY d.dashboard_id";

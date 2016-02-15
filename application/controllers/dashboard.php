@@ -1277,6 +1277,7 @@ public function index(){
                         'lib/moment.js',
                         'lib/daterangepicker.js',
                         'export.js?v' . $this->project_version,
+                        'plugins/DataTables/datatables.min.js'
                     ),
                     'css' => array(
                         'dashboard.css',
@@ -1435,14 +1436,6 @@ public function index(){
                         $dash_report['position'] = $form['next_position'];
                     }
                     else {
-//                        if ($dash_report['position'] == $form['next_position']) {
-//                            if ($dash_report['position'] < $form['current_position']) {
-//                                $dash_report['position'] = $dash_report['position']+1;
-//                            }
-//                            else if ($dash_report['position'] > $form['current_position']) {
-//                                $dash_report['position'] = $dash_report['position']-1;
-//                            }
-//                        }
                         if ($dash_report['position'] < $form['current_position']) {
                             if ($dash_report['position'] >= $form['next_position']) {
                                 $dash_report['position'] = $dash_report['position']+1;
