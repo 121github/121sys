@@ -160,7 +160,7 @@ var quick_planner = {
                 beforeSend: function () {
 					if(!date){
                     $('#quick-planner').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
-					//modal_body.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+					modal_body.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
 					}
                 }
             }).done(function (response) {
