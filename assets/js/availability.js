@@ -113,7 +113,7 @@ var quick_planner = {
         var mheader = "Journey simulation for " + date;
         var mbody = "";
         var i = 0;
-		mbody += '<input id="planner-date" type="hidden" value="'+sqldate+'" />';
+		mheader += '<input id="planner-date" type="hidden" value="'+sqldate+'" />';
 		if(slots.apps >= slots.max_apps){
 		mbody += '<div class="alert-danger">This user is has no more slots available on '+date+'</div><div class="clearfix"></div>';	
 		}
@@ -160,6 +160,7 @@ var quick_planner = {
                 beforeSend: function () {
 					if(!date){
                     $('#quick-planner').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+					//modal_body.html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
 					}
                 }
             }).done(function (response) {
