@@ -44,7 +44,7 @@ class Migration_update_95 extends CI_Migration
                             (2, 1, 'Status', 'table', 'table small', '', 2),
                             (3, 2, 'Appointment Details', 'table', 'table small', '', 1)"
         );
-
+		$this->db->query("ALTER TABLE `modal_columns` ADD INDEX ( `modal_config_id` )");
 
         $this->db->query("CREATE TABLE IF NOT EXISTS `modal_config` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -63,12 +63,13 @@ class Migration_update_95 extends CI_Migration
         );
 
         $this->db->query("CREATE TABLE IF NOT EXISTS `modal_datafields` (
-                              `column_id` int(11) NOT NULL,
-                              `datafield_id` int(11) NOT NULL,
-                              `sort` int(11) DEFAULT NULL,
-                              UNIQUE KEY `column_id` (`column_id`,`datafield_id`),
-                              KEY `datafield_id` (`datafield_id`)
-                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1"
+  `column_id` int(11) NOT NULL,
+  `datafield_id` int(11) NOT NULL,
+  `sort` int(11) DEFAULT NULL,
+  UNIQUE KEY `column_id` (`column_id`,`datafield_id`),
+  KEY `datafield_id` (`datafield_id`),
+  KEY `column_id_2` (`column_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1"
         );
 
         $this->db->query("INSERT IGNORE INTO `modal_datafields` (`column_id`, `datafield_id`, `sort`) VALUES
@@ -93,9 +94,7 @@ class Migration_update_95 extends CI_Migration
                             (3, 86, 35)");
 
 
-        $this->db->query("ALTER TABLE `modal_datafields`
-                          ADD CONSTRAINT `modal_datafields_ibfk_2` FOREIGN KEY (`datafield_id`) REFERENCES `datafields` (`datafield_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                          ADD CONSTRAINT `modal_datafields_ibfk_1` FOREIGN KEY (`column_id`) REFERENCES `modal_columns` (`column_id`) ON DELETE CASCADE ON UPDATE CASCADE");
+     
 
 
         $this->db->query("DROP TABLE `datatables_user_columns`");
@@ -134,6 +133,11 @@ class Migration_update_95 extends CI_Migration
         if (!$check->num_rows()) {
             $this->db->query("ALTER TABLE dashboard_reports ADD show_default VARCHAR(25) NULL DEFAULT 'data'");
         }
+		
+
+		   $this->db->query("ALTER TABLE `modal_datafields`
+                          ADD CONSTRAINT `modal_datafields_ibfk_2` FOREIGN KEY (`datafield_id`) REFERENCES `datafields` (`datafield_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                          ADD CONSTRAINT `modal_datafields_ibfk_1` FOREIGN KEY (`column_id`) REFERENCES `modal_columns` (`column_id`) ON DELETE CASCADE ON UPDATE CASCADE");
     }
 
     public function down()
