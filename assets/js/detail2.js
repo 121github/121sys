@@ -2480,7 +2480,7 @@ var record = {
            var $panel = $(record.appointment_panel.panel);
             $panel.find('.panel-content').empty();
 
-            var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th></tr></thead><tbody>";
+            var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer small'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
                 if (data.length) {
                     var cancel_class = "";

@@ -97,7 +97,7 @@ class Migration_update_95 extends CI_Migration
      
 
 
-        $this->db->query("DROP TABLE `datatables_user_columns`");
+        $this->db->query("DROP TABLE IF EXISTS `datatables_user_columns`");
 
         $this->db->query("RENAME TABLE `datatables_columns` TO `datafields`");
         $this->db->query("RENAME TABLE `datatables_view_columns` TO `datatables_view_fields`");
