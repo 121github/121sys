@@ -7,7 +7,7 @@
         <input type="hidden" id="slot-campaign-id" value="<?php echo $record['campaign_id'] ?>" />
     <input type="hidden" id="slot-distance" name="distance" value="" />
       <input type="hidden" id="slot-attendee"  name="attendee" value="<?php echo (count($attendees)=="1"?$attendees[0]['user_id']:"") ?>" />
-      <input type="hidden" id="slot-closest" value="<?php echo $attendees[0]['user_id'] ?>" />
+      <input type="hidden" id="slot-closest" value="<?php echo !empty($attendees)?$attendees[0]['user_id']:"" ?>" />
           <input type="hidden" id="app-type" value="" />
             <!--<div class="input-group"  style="width:280px">
           <div class="input-group-btn">
@@ -41,6 +41,7 @@
     >
     <input class="form-control input-xs" style="min-width:100px;margin-top:2px" type="text" name="postcode" id="slot-postcode" value="<?php echo $details['record']['planner_postcode'] ?>" placeholder="Enter postcode" />
   -->
+  <?php if (!empty($attendees)){ ?>
       <div class="input-group-btn">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span> <span id="slot-attendee-text">Attendee</span> </button>
         <ul class="dropdown-menu pull-right" id="availability-attendee-filter" role="menu">
@@ -49,11 +50,11 @@
           <?php endforeach ?>
         </ul>
       </div>
-
+<?php } ?>
      </form>
     </div>
   </div>
-  <div class="panel-body" id="slots-panel"><p>Please choose an attendee to view their availability</p></div>
+  <div class="panel-body" id="slots-panel"><p><?php echo empty($attendees)?"No attendees have been configured":"Please choose an attendee to view their availability" ?></p></div>
 </div>
 <script type="text/javascript">
 $(document).ready(function(){

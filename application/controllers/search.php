@@ -105,10 +105,11 @@ class Search extends CI_Controller
 		$this->load->model('Admin_model');
 		$fields = $this->Admin_model->get_custom_fields($campaign);
 		foreach($fields as $k=>$v){
-		if($v['is_select']=="1"){
+		if($v['is_select']=="1"||$v['is_buttons']=="1"){
 			$options = 	$this->Filter_model->get_custom_options($v['field'],$campaign);
 			$fields[$k]['options'] = $options;
 		}
+		
 		
 			if (strpos($v['field'], "c") !== false) {
                        $fields[$k]["type"] = "varchar";

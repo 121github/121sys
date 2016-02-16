@@ -1168,7 +1168,7 @@ return $comments;
 
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
-        $fields_qry = "select `field`,`field_name`,`is_select`,is_decimal,is_radio,is_renewal,format,editable,is_owner from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
+        $fields_qry = "select `field`,`field_name`,`is_select`,is_buttons,is_decimal,is_radio,is_renewal,format,editable,is_owner from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
         $fields_result = $this->db->query($fields_qry)->result_array();
         $fields = "";
         foreach ($fields_result as $row) {
@@ -1177,9 +1177,10 @@ return $comments;
             $renewal[$row['field_name']] = $row['format'];
             $editable[$row['field_name']] = $row['editable'];
             $is_select[$row['field_name']] = $row['is_select'];
+			$is_buttons[$row['field_name']] = $row['is_buttons'];
             $is_radio[$row['field_name']] = $row['is_radio'];
 			$is_decimal[$row['field_name']] = $row['is_decimal'];
-            if ($row['is_select'] == 1 || $row['is_radio'] == 1) {
+            if ($row['is_select'] == 1 || $row['is_radio'] == 1|| $row['is_buttons'] == 1) {
                 if ($row['is_owner'] == "1") {
                     $is_select[$row['field_name']] = 1;
                     $users = $this->get_users(false, $campaign);
@@ -1228,6 +1229,7 @@ return $comments;
                     $info[$id][$k]["editable"] = $editable[$k];
                     $info[$id][$k]["is_radio"] = $is_radio[$k];
                     $info[$id][$k]["is_select"] = $is_select[$k];
+					$info[$id][$k]["is_buttons"] = $is_buttons[$k];
 					 $info[$id][$k]["is_decimal"] = $is_decimal[$k];
                     if (isset($renewal[$k])) {
                         $info[$id][$k]["formatted"] = (!empty($v) ? date($renewal[$k], strtotime($v)) : "-");
@@ -1241,7 +1243,7 @@ return $comments;
                     } else if (substr($stuff1[$k], 1, 1) == "t") {
                         $info[$id][$k]["type"] = "datetime";
                         $info[$id][$k]["value"] = (!empty($v) ? date("d/m/Y H:i", strtotime($v)) : "-");
-                    } else if (strpos($stuff1[$k], "n") !== false) {
+                    } else if (strpos($stuff1[$k], "n") !== false&&!empty($v)) {
                         $info[$id][$k]["type"] = "number";
 						if($info[$id][$k]["is_decimal"]=="1"){
 						$info[$id][$k]["value"] = number_format($v,2);

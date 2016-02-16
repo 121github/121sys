@@ -2079,7 +2079,6 @@ var record = {
 			this.panel = '#custom-panel';
 			var $panel = $(record.additional_info.panel);
             $panel.on("click", "span.add-detail-btn", function () {
-                $(this).removeClass('glyphicon-pencil pointer add-detail-btn').addClass('glyphicon-remove close-custom');
                 $('#custom-panel').find('.panel-content').fadeOut(function () {
                     $('#custom-panel').find('form')[0].reset();
                     $('#custom-panel').find('form input').not('input[name="urn"]').val('');
@@ -2131,10 +2130,12 @@ var record = {
                         urn: record.urn,
                         campaign: record.campaign,
                         id: id
-                    }
+                    },
+					beforeSend:function(){
+						$panel.find('form').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />").fadeIn();
+					}
                 }).done(function (response) {
                     record.additional_info.load_form(response.data, id);
-                    $panel.find('form').fadeIn();
                 });
             });
         },
@@ -2162,7 +2163,10 @@ var record = {
                 dataType: "JSON",
                 data: {
                     urn: record.urn
-                }
+                },
+				beforeSend:function(){
+ $panel.find('.panel-content').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+				}
             }).done(function (response) {
                 if (response.data.length > 0) {
 					if(record.additional_info.format=="table"){
@@ -2206,7 +2210,6 @@ var record = {
             $panel.find('.panel-content').append(table);
         },
 		load_list: function (data) {
-			console.log("test");
 			var $panel = $(record.additional_info.panel);
             $panel.find('.panel-content').empty();
 									if($panel.width()<400){
@@ -2232,7 +2235,7 @@ var record = {
                 contents += '</hr>';
             });
 			var edit_btn = '<span class="btn btn-default btn-xs pull-right edit-detail-btn"  item-id="' + detail_id + '"><span class="glyphicon glyphicon-pencil"></span> Edit</span>';
-			$panel.find('.panel-heading .btn').remove();
+			$panel.find('.panel-heading .edit-detail-btn').remove();
 			$panel.find('.panel-heading').append(edit_btn);
             var table = "<div class='table-responsive'><table class='table table-striped table-condensed "+small_class+"'>"+contents+"</table></div>";
             $panel.find('.panel-content').append(table);
@@ -2264,7 +2267,7 @@ var record = {
                         selects += "</select></div>";
                         form += selects;
                     } else if (row.options && row.is_radio) {
-                        var radios = "<div class='form-group input-group-sm'>" + row.name;
+                        var radios = "<div class='form-group'>" + row.name;
                         radios += '<br>';
                         $.each(row.options, function (o, option) {
                             if (row.value == option.option) {
@@ -2274,6 +2277,21 @@ var record = {
                         });
                         radios += "</div>";
                         form += radios;
+                    } else if (row.options && row.is_buttons) {
+					
+                        var buttons = "<div class='form-group'>" + row.name;
+                        buttons += '<br>';
+						buttons += '<div class="btn-group toggle-buttons" role="group" >';
+                        $.each(row.options, function (o, option) {
+							var selected = '';
+                            if (row.value == option.option) {
+                                 selected = "active";
+                            }
+							
+							buttons += '<button class="btn '+selected+' btn-default">'+option.option+'</button>';
+                        });
+                        buttons += '</div><input name="'+row.code+'" type="hidden" value="'+row.value+'" /></div>';
+                        form += buttons;
                     } else {
                         if (row.type !== "varchar" && row.type !== "number") {
                             inputclass = row.type;
@@ -2292,6 +2310,12 @@ var record = {
                 });
             });
             $form.append(form + "<button class='btn btn-primary pull-right marl save-info'>Save</button> <button class='btn btn-default pull-right close-custom'>Cancel</button>");
+			$form.on('click','.toggle-buttons button',function(e){
+				e.preventDefault();
+				$(this).closest('.toggle-buttons').children().removeClass('active').removeClass('btn-primary').addClass('btn-default');
+				$(this).addClass('active').addClass('btn-primary').removeClass('btn-default');
+				$(this).closest('.toggle-buttons').next('input').val($(this).text());
+			});
 
             //Set the number inputs as numeric
             $.each(data, function (k, detail) {

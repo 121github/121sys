@@ -100,9 +100,14 @@ if($check->num_rows()){
         $this->db->query("RENAME TABLE `datatables_columns` TO `datafields`");
         $this->db->query("RENAME TABLE `datatables_view_columns` TO `datatables_view_fields`");
         $this->db->query("RENAME TABLE `datatables_table_columns` TO `datatables_table_fields`");
+}
 
+    $check = $this->db->query("SHOW COLUMNS FROM `datatables_table_fields` LIKE 'column_id'");
+        if($check->num_rows()){
         $this->db->query("ALTER TABLE `datatables_table_fields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL");
-
+		}
+		 $check = $this->db->query("SHOW COLUMNS FROM `datafields` LIKE 'datafield_id'");
+        if(!$check->num_rows()){
         $this->db->query("ALTER TABLE `datafields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
                             CHANGE `column_title` `datafield_title` VARCHAR( 100 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                             CHANGE `column_alias` `datafield_alias` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
@@ -111,7 +116,7 @@ if($check->num_rows()){
                             CHANGE `column_group` `datafield_group` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                             CHANGE `column_table` `datafield_table` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL");
 
-        $this->db->query("ALTER TABLE `datatables_view_fields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL");
+       
 }
         $this->db->query("
                 CREATE TABLE IF NOT EXISTS export_graphs

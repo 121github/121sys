@@ -163,8 +163,6 @@ class Records extends CI_Controller
             $options = $this->input->post();
 			$this->load->model('Datatables_model');
 			$visible_columns = $this->Datatables_model->get_visible_columns(1);
-			$this->firephp->log($visible_columns);
-			$this->firephp->log($options['columns']);
 			$options['visible_columns'] = $visible_columns;
 
 			//check the options
@@ -414,7 +412,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         }
         
         //if appointment setting is on we need the available addresses
-        if (in_array(10, $features)) {
+        if (in_array(10, $features)||in_array(17, $features)||in_array(20, $features)) {
             $addresses         = $this->Records_model->get_addresses($urn);
             $data['addresses'] = $addresses;
 			$postcode = isset($addresses[0]['postcode'])?$addresses[0]['postcode']:false;
