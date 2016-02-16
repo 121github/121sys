@@ -93,12 +93,10 @@ class Migration_update_95 extends CI_Migration
                             (3, 53, 30),
                             (3, 86, 35)");
 
-
-     
-
-
-        $this->db->query("DROP TABLE IF EXISTS `datatables_user_columns`");
-
+$this->db->query("DROP TABLE IF EXISTS `datatables_user_columns`");
+     $db = $this->db->database;
+	$check = $this->db->query("show tables from `$db` where Tables_in_$db = 'datatables_columns'");
+if($check->num_rows()){
         $this->db->query("RENAME TABLE `datatables_columns` TO `datafields`");
         $this->db->query("RENAME TABLE `datatables_view_columns` TO `datatables_view_fields`");
         $this->db->query("RENAME TABLE `datatables_table_columns` TO `datatables_table_fields`");
@@ -114,7 +112,7 @@ class Migration_update_95 extends CI_Migration
                             CHANGE `column_table` `datafield_table` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL");
 
         $this->db->query("ALTER TABLE `datatables_view_fields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL");
-
+}
         $this->db->query("
                 CREATE TABLE IF NOT EXISTS export_graphs
                 (
