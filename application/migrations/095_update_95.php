@@ -105,7 +105,7 @@ class Migration_update_95 extends CI_Migration
 
         $this->db->query("ALTER TABLE `datatables_table_fields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL");
 
-        $this->db->query("ALTER TABLE `datafields` CHANGE `datafield_ids` `datafield_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+        $this->db->query("ALTER TABLE `datafields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
                             CHANGE `column_title` `datafield_title` VARCHAR( 100 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                             CHANGE `column_alias` `datafield_alias` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                             CHANGE `column_select` `datafield_select` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
@@ -135,9 +135,10 @@ class Migration_update_95 extends CI_Migration
         }
 		
 
-		   $this->db->query("ALTER TABLE `modal_datafields`
+		  /* $this->db->query("ALTER TABLE `modal_datafields`
                           ADD CONSTRAINT `modal_datafields_ibfk_2` FOREIGN KEY (`datafield_id`) REFERENCES `datafields` (`datafield_id`) ON DELETE CASCADE ON UPDATE CASCADE,
                           ADD CONSTRAINT `modal_datafields_ibfk_1` FOREIGN KEY (`column_id`) REFERENCES `modal_columns` (`column_id`) ON DELETE CASCADE ON UPDATE CASCADE");
+						  */
     }
 
     public function down()
