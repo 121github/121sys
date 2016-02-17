@@ -11,7 +11,7 @@
       <input type="hidden" name="driver_id" value="" />
       <div class="input-group-btn">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span> <span id="planner-attendee-text">Attendee</span> </button>
-        <ul class="dropdown-menu pull-right" role="menu" id="planner-attendee-filter">
+        <ul class="dropdown-menu" role="menu" id="planner-attendee-filter">
           <?php foreach($attendees as $attendee): ?>
           <li><a <?php if(empty($attendee['distance'])){ echo "class='disabled'"; } ?> href="#" data-val="<?php echo $attendee['user_id'] ?>" data-ref="attendee"><span class='filter-text'><?php echo $attendee['name'] ?> <?php if(empty($attendee['distance'])){ echo "<span class='small text-danger'>No postcode</span>"; } ?></span> <small><?php echo (!empty($attendee['distance'])?$attendee['distance']." miles":"") ?> </small></a> </li>
           <?php endforeach ?>

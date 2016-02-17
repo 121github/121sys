@@ -1129,8 +1129,8 @@ class Ajax extends CI_Controller
 
                     }
                 }
-
-                if ($v == "-") {
+				
+                if ($v == "-" ||empty($v) ) {
                     $info[$k] = NULL;
                 }
             }

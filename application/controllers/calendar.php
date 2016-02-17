@@ -135,7 +135,7 @@ $google_email = false;
             'campaign_access' => $this->_campaigns,
 
             'title' => 'Dashboard | Calendar',
-            'page' => 'data',
+            'page' => 'Calendar',
 			'calendar_view' => $calendar_view=="1"?"combined":"seperate",
             'javascript' => array(
                 'lib/underscore.js',
