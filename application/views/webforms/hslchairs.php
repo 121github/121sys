@@ -817,18 +817,18 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <div class="form-group">
                     <label>Please enter the customer build</label>
                     <br>
-                    <select name="answers[a28]" class="selectpicker" data-width="100%"
+                    <select name="answers[a29]" class="selectpicker" data-width="100%"
                             data-size="5">
                         <option value=''></option>
-                        <option <?php if (@strpos($values['a28'], "Small") !== false) {
+                        <option <?php if (@strpos($values['a29'], "Small") !== false) {
                             echo "selected";
                         } ?> value='Small'>Small
                         </option>
-                        <option <?php if (@strpos($values['a28'], "Medium") !== false) {
+                        <option <?php if (@strpos($values['a29'], "Medium") !== false) {
                             echo "selected";
                         } ?> value='Medium'>Medium
                         </option>
-                        <option <?php if (@strpos($values['a28'], "Large") !== false) {
+                        <option <?php if (@strpos($values['a29'], "Large") !== false) {
                             echo "selected";
                         } ?> value='Large'>Large
                         </option>
@@ -868,8 +868,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     CUSTOMER 2
                 </div>
 
-                <input id="contact2-id" name="answers[a29]" value="<?php echo @$values['a29'] ?>" type="hidden"/>
-                <input id="contact2-fullname" name="answers[a30]" value="<?php echo @$values['a30'] ?>" type="hidden"/>
+                <input id="contact2-id" name="answers[a30]" value="<?php echo @$values['a30'] ?>" type="hidden"/>
+                <input id="contact2-fullname" name="answers[a31]" value="<?php echo @$values['a31'] ?>" type="hidden"/>
 
                 <div class="form-group">
                     <label>Customer Name</label>
@@ -877,7 +877,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     <select id="contact2-name">
                         <option value=""></option>
                         <?php foreach ($contacts as $contact) { ?>
-                            <option <?php if ($contact['contact_id'] == @$values['a29']) {
+                            <option <?php if ($contact['contact_id'] == @$values['a30']) {
                                 echo "selected";
                             } ?> value="<?php echo $contact['contact_id'] ?>"><?php echo $contact['name'] ?></option>
                         <?php } ?>
@@ -896,8 +896,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <div class="form-group relative">
                     <label>Customer age?</label>
                     <br>
-                    <input type="text" name="answers[a31]" class="form-control" placeholder="Enter the age in years"
-                           value="<?php echo @$values['a31'] ?>"/>
+                    <input type="text" name="answers[a32]" class="form-control" placeholder="Enter the age in years"
+                           value="<?php echo @$values['a32'] ?>"/>
                 </div>
                 <script type="text/javascript">
                     /*$(document).ready(function(){
@@ -915,27 +915,27 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <div class="form-group">
                     <label>Customer height?</label>
                     <br>
-                    <input type="text" name="answers[a32]" class="form-control" style="width:50px; display:inline-block"
-                           value="<?php echo @$values['a32'] ?>"/> <span>Feet</span>
-                    <input type="text" name="answers[a33]" class="form-control" style="width:50px;display:inline-block"
-                           value="<?php echo @$values['a33'] ?>"/> <span>Inches</span>
+                    <input type="text" name="answers[a33]" class="form-control" style="width:50px; display:inline-block"
+                           value="<?php echo @$values['a33'] ?>"/> <span>Feet</span>
+                    <input type="text" name="answers[a34]" class="form-control" style="width:50px;display:inline-block"
+                           value="<?php echo @$values['a34'] ?>"/> <span>Inches</span>
                 </div>
 
                 <div class="form-group">
                     <label>Please enter the customer build</label>
                     <br>
-                    <select name="answers[a34]" class="selectpicker" data-width="100%"
+                    <select name="answers[a35]" class="selectpicker" data-width="100%"
                             data-size="5">
                         <option value=''></option>
-                        <option <?php if (@strpos($values['a34'], "Small") !== false) {
+                        <option <?php if (@strpos($values['a35'], "Small") !== false) {
                             echo "selected";
                         } ?> value='Small'>Small
                         </option>
-                        <option <?php if (@strpos($values['a34'], "Medium") !== false) {
+                        <option <?php if (@strpos($values['a35'], "Medium") !== false) {
                             echo "selected";
                         } ?> value='Medium'>Medium
                         </option>
-                        <option <?php if (@strpos($values['a34'], "Large") !== false) {
+                        <option <?php if (@strpos($values['a35'], "Large") !== false) {
                             echo "selected";
                         } ?> value='Large'>Large
                         </option>
@@ -948,23 +948,23 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     <div class="radio" style="display:inline-block">
                         <label>
                             <input type="radio" name="answers[a35][]" id="optionsRadios1"
-                                   value="Yes" <?php if (@strpos($values['a35'], "Yes") !== false) {
+                                   value="Yes" <?php if (@strpos($values['a36'], "Yes") !== false) {
                                 echo "checked";
                             } ?> />
                             Yes </label>
                     </div>
                     <div class="radio" style="display:inline-block; margin-left:20px">
                         <label>
-                            <input type="radio" name="answers[a35][]" id="optionsRadios2" data-show-notes="true"
-                                   value="No" <?php if (@strpos($values['a35'], "No") !== false) {
+                            <input type="radio" name="answers[a36][]" id="optionsRadios2" data-show-notes="true"
+                                   value="No" <?php if (@strpos($values['a36'], "No") !== false) {
                                 echo "checked";
                             } ?>>
                             No </label>
                     </div>
                     <div class="form-group">
                         <label>Enter notes here</label>
-                        <input type="text" name="answers[a36]" class="form-control"
-                               placeholder="Enter notes if they answered no above " value="<?php echo @$values['a36'] ?>"/>
+                        <input type="text" name="answers[a37]" class="form-control"
+                               placeholder="Enter notes if they answered no above " value="<?php echo @$values['a37'] ?>"/>
                     </div>
                 </div>
             </div>
