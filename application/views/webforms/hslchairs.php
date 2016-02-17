@@ -915,8 +915,8 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <div class="form-group">
                     <label>Customer height?</label>
                     <br>
-                    <input type="text" name="answers[a32]" class="form-control" style="width:50px; display:inline-block"
-                           value="<?php echo @$values['a32'] ?>"/> <span>Feet</span>
+                    <input type="text" name="answers[a33]" class="form-control" style="width:50px; display:inline-block"
+                           value="<?php echo @$values['a33'] ?>"/> <span>Feet</span>
                     <input type="text" name="answers[a34]" class="form-control" style="width:50px;display:inline-block"
                            value="<?php echo @$values['a34'] ?>"/> <span>Inches</span>
                 </div>
