@@ -1199,7 +1199,7 @@ class Admin extends CI_Controller
         
         
         echo json_encode(array(
-            "data" => $response
+            "success"=>true,"data" => $response
         ));
     }
     
