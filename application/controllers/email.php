@@ -814,7 +814,7 @@ class Email extends CI_Controller
                     $answers .= "<tr><td>".$webform['q28']."</td><td>".$webform['a28']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q26']."</td><td>".$webform['a26']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q27']."</td><td>".$webform['a27']."</td></tr>";
-                    $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a1']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a2']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q3']."</td><td>".$webform['a3']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q4']."</td><td>".$webform['a4']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q5']."</td><td>".$webform['a5']."</td></tr>";
@@ -1031,7 +1031,7 @@ class Email extends CI_Controller
                     $answers .= "<tr><td>".$webform['q28']."</td><td>".$webform['a28']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q26']."</td><td>".$webform['a26']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q27']."</td><td>".$webform['a27']."</td></tr>";
-                    $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a1']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a2']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q3']."</td><td>".$webform['a3']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q4']."</td><td>".$webform['a4']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q5']."</td><td>".$webform['a5']."</td></tr>";
@@ -1233,7 +1233,7 @@ class Email extends CI_Controller
                 $answers .= "<tr><td>".$webform['q28']."</td><td>".$webform['a28']."</td></tr>";
                 $answers .= "<tr><td>".$webform['q26']."</td><td>".$webform['a26']."</td></tr>";
                 $answers .= "<tr><td>".$webform['q27']."</td><td>".$webform['a27']."</td></tr>";
-                $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a1']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a2']."</td></tr>";
                 $answers .= "<tr><td>".$webform['q3']."</td><td>".$webform['a3']."</td></tr>";
                 $answers .= "<tr><td>".$webform['q4']."</td><td>".$webform['a4']."</td></tr>";
                 $answers .= "<tr><td>".$webform['q5']."</td><td>".$webform['a5']."</td></tr>";
