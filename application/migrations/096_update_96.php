@@ -37,6 +37,10 @@ class Migration_update_96 extends CI_Migration
         if(!$check->num_rows()){
             $this->db->query("ALTER TABLE webform_questions ADD q36 VARCHAR(255) NULL");
         }
+        $check = $this->db->query("SHOW COLUMNS FROM `webform_questions` LIKE 'q37'");
+        if(!$check->num_rows()){
+            $this->db->query("ALTER TABLE webform_questions ADD q37 VARCHAR(255) NULL");
+        }
 
 
         $check = $this->db->query("SHOW COLUMNS FROM `webform_answers` LIKE 'a31'");
@@ -62,6 +66,10 @@ class Migration_update_96 extends CI_Migration
         $check = $this->db->query("SHOW COLUMNS FROM `webform_answers` LIKE 'a36'");
         if(!$check->num_rows()){
             $this->db->query("ALTER TABLE webform_answers ADD a36 VARCHAR(255) NULL");
+        }
+        $check = $this->db->query("SHOW COLUMNS FROM `webform_answers` LIKE 'a37'");
+        if(!$check->num_rows()){
+            $this->db->query("ALTER TABLE webform_answers ADD a37 VARCHAR(255) NULL");
         }
     }
     public function down(){
