@@ -33,13 +33,14 @@ class Datatables extends CI_Controller
 	$columns = $this->input->post('columns');
 	$view_id = $this->input->post('view');
 
-	$selected_columns = $this->Datatables_model->selected_columns($view_id);
+	$selected_columns = $_SESSION['col_order'];	
 	foreach($selected_columns as $k=>$column){
 	$key  = array_search($k, $columns);
 	$this->db->where(array("datafield_id"=>$column['datafield_id'],"view_id"=>$view_id));
 	$this->db->join("datatables_views","datatables_view_fields.view_id=datatables_views.view_id");
 	$this->db->update("datatables_view_fields",array("sort"=>$key));
 	}
+	echo json_encode(array("success"=>true));
 	}
 
 	public function save_columns(){

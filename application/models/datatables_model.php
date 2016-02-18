@@ -15,7 +15,7 @@ class Datatables_model extends CI_Model
 	//now select the one they specified	
 	$this->db->where(array("view_id"=>$id,"user_id"=>$_SESSION['user_id']));	
 	$this->db->update("datatables_views",array("selected"=>1));
-			$this->firephp->log($this->db->last_query());
+			//$this->firephp->log($this->db->last_query());
 	}
 	
 	public function get_user_views($table_id){
@@ -24,11 +24,16 @@ class Datatables_model extends CI_Model
 	return $views;
 	}
 	public function get_visible_columns($table_id){
-		$this->db->where(array("user_id"=>$_SESSION['user_id'],"table_id"=>$table_id,"selected"=>1));
-		$this->db->join("datatables_view_fields","datatables_views.view_id=datatables_view_fields.view_id");
-		$this->db->join("datafields","datatables_view_fields.datafield_id=datafields.datafield_id");
-		$this->db->order_by("sort");
-		$columns = $this->db->get("datatables_views")->result_array();
+		$query = "SELECT *
+FROM (`datatables_views`)
+JOIN `datatables_view_fields` ON `datatables_views`.`view_id`=`datatables_view_fields`.`view_id`
+JOIN `datafields` ON `datatables_view_fields`.`datafield_id`=`datafields`.`datafield_id`
+WHERE `user_id` =  '".$_SESSION['user_id']."'
+AND `table_id` =  '".$table_id."'
+AND `selected` =  1
+ORDER BY `sort`";
+
+		$columns = $this->db->query($query)->result_array();
 		if(count($columns)==0){
 		return false;
 		}
@@ -111,9 +116,13 @@ $this->db->query("insert ignore into datatables_views set view_name = 'Default v
 	 return $result;
 	}
 	
-		public function selected_columns($view_id){
+		public function selected_columns($view_id=false,$table_id=false){
 	$this->db->select("datafield_id");
+	if($view_id){
 	$this->db->where(array("datatables_view_fields.view_id"=>$view_id,"user_id"=>$_SESSION['user_id']));
+	} else {
+	$this->db->where(array("datatables_views.table_id"=>$table_id,"user_id"=>$_SESSION['user_id']));	
+	}
 	$this->db->join("datatables_views","datatables_views.view_id=datatables_view_fields.view_id");
 	$this->db->order_by("sort");
 	return $this->db->get("datatables_view_fields")->result_array();

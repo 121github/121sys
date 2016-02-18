@@ -7,7 +7,7 @@
                 <div class="btn-group">
                     <a type="button" class="btn btn-default btn-xs" data-modal="choose-columns"
                             data-table-id="3"><span
-                            class="fa fa-table"></span> Columns
+                            class="fa fa-table"></span> Views
                     </a>
                 </div>
                 <div class="btn-group">

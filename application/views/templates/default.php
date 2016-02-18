@@ -422,7 +422,7 @@ endif; ?>
     } ?>
     <script
         type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?v=3<?php echo $callback ?>"></script>
+        src="https://maps.googleapis.com/maps/api/js?v=3<?php echo isset($callback)?$callback:"" ?>"></script>
 <?php } ?>
 <?php if (isset($_SESSION['user_id'])) { ?>
     <div id="color-box" class="Fixed">

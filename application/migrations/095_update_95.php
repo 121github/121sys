@@ -96,6 +96,7 @@ class Migration_update_95 extends CI_Migration
 $this->db->query("DROP TABLE IF EXISTS `datatables_user_columns`");
      $db = $this->db->database;
 	$check = $this->db->query("show tables from `$db` where Tables_in_$db = 'datatables_columns'");
+	$this->firephp->log($db);
 if($check->num_rows()){
         $this->db->query("RENAME TABLE `datatables_columns` TO `datafields`");
         $this->db->query("RENAME TABLE `datatables_view_columns` TO `datatables_view_fields`");
@@ -106,6 +107,11 @@ if($check->num_rows()){
         if($check->num_rows()){
         $this->db->query("ALTER TABLE `datatables_table_fields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL");
 		}
+		
+		$check = $this->db->query("SHOW COLUMNS FROM `datatables_view_fields` LIKE 'column_id'");
+        if($check->num_rows()){
+        $this->db->query("ALTER TABLE `datatables_view_fields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL");
+		}
 		 $check = $this->db->query("SHOW COLUMNS FROM `datafields` LIKE 'datafield_id'");
         if(!$check->num_rows()){
         $this->db->query("ALTER TABLE `datafields` CHANGE `column_id` `datafield_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
@@ -115,7 +121,7 @@ if($check->num_rows()){
                             CHANGE `column_order` `datafield_order` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                             CHANGE `column_group` `datafield_group` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                             CHANGE `column_table` `datafield_table` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL");
-
+$this->db->query("alter table datatables_views add unique(table_id,user_id,selected)");
        
 }
         $this->db->query("

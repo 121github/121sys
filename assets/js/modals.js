@@ -617,12 +617,14 @@ var modals = {
                 urn: data.urn
             }
         }).done(function (response) {
+			var cancel_btn = "";
+			if(helper.permissions['delete appointments'] > 0){
+			cancel_btn += '<button class="btn btn-danger" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Cancel Appointment</button>';
+			}
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'
-			if(helper.permissions['delete appointments'] > 0){
-			mfooter += '<button class="btn btn-danger pull-right" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Cancel Appointment</button>';
-			}
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Closes</button> '+cancel_btn+' <input id="appointment-confirmed" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox"> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'
+			
             $mbody = $(mbody);
             //check if the appointment address is already in the dropdown and if not, add it.
             var option_exists = false;
@@ -635,6 +637,7 @@ var modals = {
                 $mbody.find('#addresspicker').prepend('<option value="' + data.address + '|' + data.postcode + '">' + data.address + '</option>');
             }
             //cycle through the rest of the fields and set them in the form
+			console.log(data);
             $.each(data, function (k, v) {
                 $mbody.find('[name="' + k + '"]').val(v);
                 if (k == "type") {
@@ -656,6 +659,11 @@ var modals = {
             modals.load_modal(mheader, $mbody, mfooter);
             modals.appointment_contacts(data.urn, data.contact_id);
 			modal_body.css('overflow', 'visible');
+			modals.set_appointment_confirmation();
+			$modal.find('#appointment-confirmed').hide();	
+
+			
+			
             if(typeof campaign_functions !== "undefined"){
 				  if(typeof campaign_functions.appointment_edit_setup !== "undefined"){
                 campaign_functions.appointment_edit_setup();
@@ -711,9 +719,11 @@ var modals = {
         }).done(function (response) {
             var mheader = "Create Appointment";
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <input id="appointment-confirmed" style="display:none" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" data-width="130" type="checkbox" disabled data-onstyle="success"> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
             modals.load_modal(mheader, mbody, mfooter);
 			modal_body.css('overflow', 'visible');
+			$modal.find('#appointment-confirmed').bootstrapToggle();
+			modals.set_appointment_confirmation(start);
             modals.appointment_contacts(urn);
 			if(typeof campaign_functions !== "undefined"){
 				if(typeof campaign_functions.appointment_setup !== "undefined"){
@@ -724,6 +734,37 @@ var modals = {
 			}
         });
     },
+	set_appointment_confirmation:function(start){
+		if (helper.permissions['confirm appointment'] > 0) {
+			$modal.find('#appointment-confirmed').bootstrapToggle();
+			if($modal.find('input[name="appointment_confirmed"]').val()=="1"){
+			$('#appointment-confirmed').bootstrapToggle('on');
+		} else {
+			$('#appointment-confirmed').bootstrapToggle('off');
+		}
+				$('#appointment-confirmed').on('change',function(e){
+					if($(this).prop("checked")){
+						$modal.find('input[name="appointment_confirmed"]').val("1");	
+					} else {
+						$modal.find('input[name="appointment_confirmed"]').val("0");	
+					}
+				});
+			} else {
+				$modal.find('.toggle').hide();		
+			}
+		
+		var app = $('.startpicker').val()
+		var start_date = moment(app, 'DD/MM/YYYY HH:mm');
+		var m = moment();
+		var duration = moment.duration(start_date.diff(m)).days();
+		console.log(duration);
+		if(duration<3&&duration>=0){
+			$modal.find('#appointment-confirmed').bootstrapToggle('enable');
+				$modal.find('#appointment-confirmed').off('click');	
+		} else {
+			$modal.find('#appointment-confirmed').bootstrapToggle('disable');	
+		}
+	},
     appointment_outcome_html: function (id) {
         /*
          $.ajax({url:helper.baseUrl+'ajax/appointment_outcome_options',
@@ -842,10 +883,10 @@ var modals = {
 		});
 		
         $(".startpicker").on("dp.hide", function (e) {
-            var m = moment(e.date, "DD\MM\YYYY HH:mm");
+            var m = moment(e.date, "DD/MM/YYYY HH:mm");
 			var sql = (m.format("YYYY-MM-DD HH:mm"));
             $('.endpicker').data("DateTimePicker").date(e.date);
-            $('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
+            $('.endpicker').data("DateTimePicker").date(m.add( 1,'hours').format('DD/MM/YYYY HH:mm'));
 			//modals.get_available_attendees(sql);		
         });
         $modal.find("#tabs").tab();

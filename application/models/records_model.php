@@ -1532,7 +1532,7 @@ return $comments;
 				}
 		    	$qry .= " order by a.date desc
 		    	" . $limit_;
-		$this->firephp->log($qry);
+		//$this->firephp->log($qry);
         return $this->db->query($qry)->result_array();
     }
 

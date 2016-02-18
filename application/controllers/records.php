@@ -61,9 +61,9 @@ class Records extends CI_Controller
 		if(!$visible_columns){
 		 $this->load->model('Admin_model');
 		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
-		$visible_columns = $this->Datatables_model->get_visible_columns(1);	
-			
+		$visible_columns = $this->Datatables_model->get_visible_columns(1);		
 		}
+		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
         $data = array(
             'campaign_access' => $this->_campaigns,
             'page' => 'list_records',
@@ -164,7 +164,6 @@ class Records extends CI_Controller
 			$this->load->model('Datatables_model');
 			$visible_columns = $this->Datatables_model->get_visible_columns(1);
 			$options['visible_columns'] = $visible_columns;
-
 			//check the options
 			foreach($options['columns'] as $k=>$column){
 				if($column['data']=="color_icon"&&$column['search']['value']=="Icon"){
@@ -971,8 +970,9 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 			$data['address'] = $address_field[0];
 			$postcode = $address_field[1];
             $data['postcode'] = postcodeCheckFormat($postcode);
+			$this->firephp->log($data['attendees']);
 			//check the attendees
-            if (!isset($data['attendees'])) {
+            if (!isset($data['attendees'])||empty($data['attendees'][0])) {
                 echo json_encode(array(
                     "success" => false,
                     "msg" => "You must add an attendee"

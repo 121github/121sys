@@ -1,7 +1,9 @@
 <form style="padding:0 20px;" id="appointment-form" class="form-horizontal">
     <input type="hidden" name="appointment_id">
     <input type="hidden" name="urn" value="<?php echo $urn ?>">
-
+    <?php if(in_array("confirm appointment", $_SESSION['permissions'])){ ?>
+ <input type="hidden" name="appointment_confirmed" value="0">
+ <?php } ?>
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">

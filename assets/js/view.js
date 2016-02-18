@@ -51,6 +51,12 @@ var view = {
         $('#view-container').html(table);
         view.populate_table();
     },
+	clear_filters:function(){
+			view.table.columns().eq(0).each(function(colIdx) {
+			$('thead input').val('');
+			view.table.column(colIdx).search('');	
+			});
+		},
     populate_table: function(table_name) {
         var start_time = new Date().getTime();
         view.table = $('.data-table').DataTable({
@@ -129,6 +135,8 @@ var view = {
             }
         });
 
+			
+
         //filterable columns
         $('.data-table tfoot th').each(function() {
             var title = $('.data-table thead th').eq($(this).index()).text();
@@ -155,6 +163,8 @@ var view = {
             }
         });
 
+	
+
         // Apply the search
         view.table.columns().eq(0).each(function(colIdx) {
             var run_filter = debounce(function() {
@@ -178,7 +188,9 @@ var view = {
                     columns: view.table.colReorder.order(),
                     view: table_columns.view_id
                 }
-            })
+            }).done(function(response){
+				
+			});
         });
     },
 

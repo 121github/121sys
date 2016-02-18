@@ -233,7 +233,14 @@ class Modals extends CI_Controller
             if (isset($_COOKIE['current_postcode'])) {
                 $postcode = postcodeFormat($_COOKIE['current_postcode']);
             }
-            $data = $this->Modal_model->view_appointment_meta($id, $postcode);
+            $result = $this->Modal_model->view_appointment_meta($id, $postcode);
+			foreach ($result as $row) {
+                    $attendee_names[] = $row['attendee'];
+                    $attendees[] = $row['user_id'];
+                    $data = $row;
+                    $data['attendee_names'] = $attendee_names;
+                    $data['attendees'] = $attendees;
+                }
 			$data['id'] = $id;
 			$data['current_postcode'] = $postcode;
             return $data;
