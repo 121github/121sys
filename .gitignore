@@ -22,3 +22,7 @@ nbproject
 .idea
 .tm_properties
 *.iml
+
+### Vagrant template
+.vagrant/
+vagrant/logs/*
