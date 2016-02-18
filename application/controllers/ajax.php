@@ -699,6 +699,7 @@ class Ajax extends CI_Controller
 
             $this->db->where('address_id', intval($this->input->post('address_id')));
             if ($this->db->update('contact_addresses', elements(array(
+                "description",
                 "add1",
                 "add2",
                 "add3",
@@ -709,7 +710,8 @@ class Ajax extends CI_Controller
                 "country",
                 "postcode",
                 "contact_id",
-                "primary"
+                "primary",
+                "visible"
             ), $data))
             ):
 
@@ -756,6 +758,7 @@ class Ajax extends CI_Controller
 
             $this->db->where('address_id', $data['address_id']);
             if ($this->db->update('company_addresses', elements(array(
+                "description",
                 "add1",
                 "add2",
                 "add3",
@@ -766,7 +769,8 @@ class Ajax extends CI_Controller
                 "country",
                 "postcode",
                 "company_id",
-                "primary"
+                "primary",
+                "visible"
             ), $data))
             ):
 
@@ -802,6 +806,7 @@ class Ajax extends CI_Controller
             }
 
             if ($this->db->insert('contact_addresses', elements(array(
+                "description",
                 "add1",
                 "add2",
                 "add3",
@@ -812,7 +817,8 @@ class Ajax extends CI_Controller
                 "country",
                 "postcode",
                 "contact_id",
-                "primary"
+                "primary",
+                "visible"
             ), $data))
             ):
 
@@ -851,6 +857,7 @@ class Ajax extends CI_Controller
             }
 
             if ($this->db->insert('company_addresses', elements(array(
+                "description",
                 "add1",
                 "add2",
                 "add3",
@@ -861,7 +868,8 @@ class Ajax extends CI_Controller
                 "country",
                 "postcode",
                 "company_id",
-                "primary"
+                "primary",
+                "visible"
             ), $data))
             ):
                 $data['address_id'] = $this->db->insert_id();

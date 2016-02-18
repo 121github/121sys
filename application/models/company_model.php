@@ -29,7 +29,7 @@ class Company_model extends CI_Model
 	
     public function get_company($id)
     {
-        $qry     = "select *,IF(c.employees IS NOT NULL,c.employees,'') employees, IF(c.turnover IS NOT NULL,c.turnover,'') turnover, c.description as codescription,ct.description as ctdescription, IF(c.date_of_creation,date_format(c.date_of_creation,'%d/%m/%Y'),'') date_of_creation from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) left join locations using(location_id) where company_id = '$id'";
+        $qry     = "select *,IF(c.employees IS NOT NULL,c.employees,'') employees, IF(c.turnover IS NOT NULL,c.turnover,'') turnover, c.description as codescription,ct.description as ctdescription, IF(c.date_of_creation,date_format(c.date_of_creation,'%d/%m/%Y'),'') date_of_creation, ca.description as add_description from companies c left join company_addresses ca using(company_id) left join company_telephone ct using(company_id) left join locations using(location_id) where company_id = '$id'";
 
         $results = $this->db->query($qry)->result_array();
         foreach ($results as $result):
@@ -56,6 +56,7 @@ class Company_model extends CI_Model
             }
             if ($result['address_id']) {
                 $company['address'][$result['address_id']] = array(
+                    "description" => !empty($result['add_description'])?$result['add_description']:'',
                     "add1" => !empty($result['add1'])?$result['add1']:'',
                     "add2" => $result['add2'],
                     "add3" => $result['add3'],
@@ -64,6 +65,7 @@ class Company_model extends CI_Model
                     "country" => $result['country'],
                     "postcode" => !empty($result['postcode'])?$result['postcode']:'',
                     "primary" => $result['primary'],
+                    "visible" => $result['visible'],
                     "address_id" => $result['address_id']
                 );
             }
@@ -83,7 +85,7 @@ class Company_model extends CI_Model
     public function get_companies($urn)
     {
 
-        $qry = "select telephone_prefix,telephone_protocol,com.urn,com.company_id,com.name coname,com.description ,com.conumber,com.description codescription,sector_name,IF(employees IS NOT NULL,employees,'') employees,subsector_name,a.primary cois_primary,com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,city cocity,county cocounty,country cocountry,postcode copostcode,lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) join records using(urn) join campaigns using(campaign_id) where urn = '$urn' order by com.company_id";
+        $qry = "select telephone_prefix,telephone_protocol,com.urn,com.company_id,com.name coname,com.description ,com.conumber,com.description codescription,sector_name,IF(employees IS NOT NULL,employees,'') employees,subsector_name,a.primary cois_primary,a.visible cois_visible, com.website cowebsite,ct.telephone_id cotelephone_id, ct.description cotel_name,ct.telephone_number cotelephone_number,ctps,address_id coaddress_id, add1 coadd1,add2 coadd2,add3 coadd3,city cocity,county cocounty,country cocountry,postcode copostcode, a.description as add_description, lat latitude,lng longitude from companies com left join company_telephone ct using(company_id) left join company_addresses a using(company_id) left join locations using(location_id) left join company_subsectors using(company_id) left join subsectors using(subsector_id) left join sectors using(sector_id) join records using(urn) join campaigns using(campaign_id) where urn = '$urn' order by com.company_id";
         $results = $this->db->query($qry)->result_array();
 
         //put the contact details into array
@@ -113,16 +115,19 @@ class Company_model extends CI_Model
 				"tel_protocol" => $result['telephone_protocol']
             );
 			
-			 //we only want to display the primary address for the company
-            if ($result['cois_primary'] == "1") {
-                 $companies[$result['company_id']]['visible']['Address']['add1']     = $result['coadd1'];
-                 $companies[$result['company_id']]['visible']['Address']['add2']     = $result['coadd2'];
-                 $companies[$result['company_id']]['visible']['Address']['add3']     = $result['coadd3'];
-                $companies[$result['company_id']]['visible']['Address']['city'] = $result['cocity'];
-                 $companies[$result['company_id']]['visible']['Address']['county']   = $result['cocounty'];
-                 $companies[$result['company_id']]['visible']['Address']['country']  = $result['cocountry'];
-                 $companies[$result['company_id']]['visible']['Address']['postcode'] = $result['copostcode'];
-               array_filter($companies[$result['company_id']]['visible']['Address']);
+			 //we want to display the primary and/or visible address for the company
+            if (($result['cois_primary'] == "1") || ($result['cois_visible'] == "1")) {
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['description']     = $result['add_description'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['add1']     = $result['coadd1'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['add2']     = $result['coadd2'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['add3']     = $result['coadd3'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['city'] = $result['cocity'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['county']   = $result['cocounty'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['country']  = $result['cocountry'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['postcode'] = $result['copostcode'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['primary'] = $result['cois_primary'];
+                 $companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]['visible'] = $result['cois_visible'];
+               array_filter($companies[$result['company_id']]['visible']['Address'][$result['coaddress_id']]);
             }
         endforeach;
         return $companies;

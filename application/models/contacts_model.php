@@ -18,7 +18,7 @@ class Contacts_model extends CI_Model
     
     public function get_contact($id)
     {
-        $qry     = "select *, IF (dob,date_format(dob,'%d/%m/%Y'),null) dob from contacts left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) where contact_id = '$id'";
+        $qry     = "select *, IF (dob,date_format(dob,'%d/%m/%Y'),null) dob, contact_addresses.description as add_description from contacts left join contact_addresses using(contact_id) left join contact_telephone using(contact_id) where contact_id = '$id'";
         $results = $this->db->query($qry)->result_array();
         foreach ($results as $result):
             $contact['general'] = array(
@@ -48,6 +48,7 @@ class Contacts_model extends CI_Model
             }
             if ($result['address_id']) {
                 $contact['address'][$result['address_id']] = array(
+                    "description" => !empty($result['add_description'])?$result['add_description']:'',
                     "add1" => !empty($result['add1'])?$result['add1']:'',
                     "add2" => $result['add2'],
                     "add3" => $result['add3'],
@@ -56,6 +57,7 @@ class Contacts_model extends CI_Model
                     "country" => $result['country'],
                     "postcode" => !empty($result['postcode'])?$result['postcode']:'',
                     "primary" => $result['primary'],
+                    "visible" => $result['visible'],
                     "address_id" => $result['address_id']
                 );
             }
@@ -81,21 +83,23 @@ class Contacts_model extends CI_Model
     {
 
         $qry = "select
-                  camp.telephone_prefix,
-                  camp.telephone_protocol,
-                  c.urn,
-                  c.contact_id,
-                  fullname,
-                  a.primary is_primary,
-                  c.email,
-                  c.linkedin,
-                  c.facebook,
-                  c.position,
-                  IF (dob,date_format(dob,'%d/%m/%Y'),'') dob,
-                  c.notes,email_optout,website,
-                  ct.telephone_id, ct.description as tel_name,
-                  ct.telephone_number,
-                  ct.tps,address_id, add1,add2,add3,city,county,country,postcode,lat latitude,lng longitude from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) join records using(urn) join campaigns camp using(campaign_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
+                      camp.telephone_prefix,
+                      camp.telephone_protocol,
+                      c.urn,
+                      c.contact_id,
+                      fullname,
+                      c.email,
+                      c.linkedin,
+                      c.facebook,
+                      c.position,
+                      IF (dob,date_format(dob,'%d/%m/%Y'),'') dob,
+                      c.notes,email_optout,website,
+                      ct.telephone_id, ct.description as tel_name,
+                      ct.telephone_number,
+                      ct.tps,
+                      address_id,a.description codescription,add1,add2,add3,city,county,country,a.primary is_primary,a.visible is_visible,
+                      postcode,lat latitude,lng longitude
+                  from contacts c left join contact_telephone ct using(contact_id) left join contact_addresses a using(contact_id) left join locations using(location_id) join records using(urn) join campaigns camp using(campaign_id) where urn = '$urn' order by c.sort,c.contact_id,ct.description";
 		$query = $this->db->query($qry);
         $results = $query->result_array();
         //put the contact details into array
@@ -145,15 +149,18 @@ class Contacts_model extends CI_Model
             );
 			}
         //we only want to display the primary address for each contact
-            if ($result['is_primary'] == "1") {
-                $contacts[$result['contact_id']]['visible']['Address']['add1']     = $result['add1'];
-                $contacts[$result['contact_id']]['visible']['Address']['add2']     = $result['add2'];
-                $contacts[$result['contact_id']]['visible']['Address']['add3']     = $result['add3'];
-                $contacts[$result['contact_id']]['visible']['Address']['city'] = $result['city'];
-                $contacts[$result['contact_id']]['visible']['Address']['county']   = $result['county'];
-                $contacts[$result['contact_id']]['visible']['Address']['country']  = $result['country'];
-                $contacts[$result['contact_id']]['visible']['Address']['postcode'] = $result['postcode'];
-                array_filter($contacts[$result['contact_id']]['visible']['Address']);
+            if (($result['is_primary'] == "1") || ($result['is_visible'] == "1")) {
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['description']     = $result['codescription'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['add1']     = $result['add1'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['add2']     = $result['add2'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['add3']     = $result['add3'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['city'] = $result['city'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['county']   = $result['county'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['country']  = $result['country'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['postcode'] = $result['postcode'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['primary'] = $result['is_primary'];
+                $contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]['visible'] = $result['is_visible'];
+                array_filter($contacts[$result['contact_id']]['visible']['Address'][$result['address_id']]);
             }
         endforeach;
         return $contacts;
