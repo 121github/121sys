@@ -1364,6 +1364,7 @@ var modals = {
                     allow: '', // Specify characters to allow
                     disallow: ''  // Specify characters to disallow
                 });
+                $modal.find('.address-select').hide();
             } else if (action == "edit_phone") {
                 var page = "get_contact_number";
             }
@@ -1390,12 +1391,22 @@ var modals = {
 						if(key=="primary"){
 							if(val=="1"){
 							$tab.find('form input[name="primary"]').val('1');
-							$('#primary-toggle').bootstrapToggle('on')	
-						} else {
-							$tab.find('form input[name="primary"]').val('0');
-							$('#primary-toggle').bootstrapToggle('off')	
+							$('#primary-toggle').bootstrapToggle('on')
+                            } else {
+                                $tab.find('form input[name="primary"]').val('0');
+                                $('#primary-toggle').bootstrapToggle('off')
+                            }
 						}
-						}
+
+                        if(key=="visible"){
+                            if(val=="1"){
+                                $tab.find('form input[name="visible"]').val('1');
+                                $('#visible-toggle').bootstrapToggle('on')
+                            } else {
+                                $tab.find('form input[name="visible"]').val('0');
+                                $('#visible-toggle').bootstrapToggle('off')
+                            }
+                        }
                     });
                     $tab.find('.table-container').hide();
                     $tab.find('form').show();
@@ -1471,6 +1482,10 @@ var modals = {
             $tab.find('form').show();
             //reset the item id
             $tab.find('.item-id').val('');
+
+            $('#visible-toggle').bootstrapToggle('on');
+
+            $modal.find('.address-select').hide();
 
             //Set the telephone number input as a number
             $tab.find('form').find('input[name="telephone_number"]').numeric();
@@ -1593,12 +1608,15 @@ var modals = {
                         $modal.find('#address .table-container, #address .table-container table').show();
                         $modal.find('#address .none-found').hide();
                         $.each(response.data.address, function (key, val) {
+                            var $primary = "";
+                            var $visible = "<span class='glyphicon glyphicon-eye-close red'></span>";
                             if (val.primary == 1) {
                                 var $primary = "<span class='glyphicon glyphicon-ok-sign'></span>";
-                            } else {
-                                $primary = "";
                             }
-                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td style='width:140px'><span class='contact-item-btn btn btn-default btn-xs' data-action='edit_address' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span> <span class='marl del-item-btn btn btn-default btn-xs' data-modal='delete-contact-address' contact-id='" + response.data.general.contact_id + "' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-trash'></span> Delete</span></td></tr>"
+                            if (val.visible == 1) {
+                                var $visible = "<span class='glyphicon glyphicon-eye-open highlight_green'></span>";
+                            }
+                            $address = "<tr><td>" + $visible + "</td><td>" + val.description + "</td><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td style='width:140px'><span class='contact-item-btn btn btn-default btn-xs' data-action='edit_address' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span> <span class='marl del-item-btn btn btn-default btn-xs' data-modal='delete-contact-address' contact-id='" + response.data.general.contact_id + "' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-trash'></span> Delete</span></td></tr>"
                             $modal.find('#address tbody').append($address);
                         });
                     } else {
@@ -1728,6 +1746,7 @@ var modals = {
                     allow: '', // Specify characters to allow
                     disallow: ''  // Specify characters to disallow
                 });
+                $modal.find('.address-select').hide();
             } else if (action == "edit_cophone") {
                 var page = "get_company_number";
             }
@@ -1753,13 +1772,23 @@ var modals = {
                         $tab.find('select[name="' + key + '"]').selectpicker('val', val);
 						if(key=="primary"){
 							if(val=="1"){
-							$tab.find('form input[name="primary"]').val('1');
-							$('#primary-toggle').bootstrapToggle('on')	
-						} else {
-							$tab.find('form input[name="primary"]').val('0');
-							$('#primary-toggle').bootstrapToggle('off')	
+                                $tab.find('form input[name="primary"]').val('1');
+                                $('#primary-toggle').bootstrapToggle('on')
+                            } else {
+                                $tab.find('form input[name="primary"]').val('0');
+                                $('#primary-toggle').bootstrapToggle('off')
+                            }
 						}
-						}
+
+                        if(key=="visible"){
+                            if(val=="1"){
+                                $tab.find('form input[name="visible"]').val('1');
+                                $('#visible-toggle').bootstrapToggle('on')
+                            } else {
+                                $tab.find('form input[name="visible"]').val('0');
+                                $('#visible-toggle').bootstrapToggle('off')
+                            }
+                        }
                     });
                     $tab.find('.table-container').hide();
                     $tab.find('form').show();
@@ -1834,6 +1863,10 @@ var modals = {
             $tab.find('form').show();
             //reset the item id
             $tab.find('.item-id').val('');
+
+            $('#visible-toggle').bootstrapToggle('on');
+
+            $modal.find('.address-select').hide();
 
             //Set the telephone number input as a number
             $tab.find('form').find('input[name="telephone_number"]').numeric();
@@ -1952,12 +1985,16 @@ var modals = {
                         $modal.find('#address .table-container, #address .table-container table').show();
                         $modal.find('#address .none-found').hide();
                         $.each(response.data.address, function (key, val) {
+                            var $primary = "";
+                            var $visible = "<span class='glyphicon glyphicon-eye-close red'></span>";
                             if (val.primary == 1) {
                                 var $primary = "<span class='glyphicon glyphicon-ok-sign'></span>";
-                            } else {
-                                $primary = "";
                             }
-                            $address = "<tr><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td style='width:140px'><span class='btn btn-default btn-xs company-item-btn' data-action='edit_coaddress' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span> <span class='marl btn btn-default btn-xs del-item-btn' data-modal='delete-company-address' company-id='" + response.data.general.company_id + "' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-trash'></span> Delete</span></td></tr>"
+
+                            if (val.visible == 1) {
+                                var $visible = "<span class='glyphicon glyphicon-eye-open highlight_green'></span>";
+                            }
+                            $address = "<tr><td>" + $visible + "</td><td>" + val.description + "</td><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary  + "</td><td style='width:140px'><span class='btn btn-default btn-xs company-item-btn' data-action='edit_coaddress' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span> <span class='marl btn btn-default btn-xs del-item-btn' data-modal='delete-company-address' company-id='" + response.data.general.company_id + "' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-trash'></span> Delete</span></td></tr>"
                             $modal.find('#address tbody').append($address);
                         });
                     } else {

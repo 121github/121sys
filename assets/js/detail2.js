@@ -877,24 +877,41 @@ var record = {
 
                     });
 
-                    var address = "";
-                    var postcode = "";
-					var maplink = "";
+
+                    var primary_postcode = "";
                     $.each(val.visible, function (dt, dd) {
                         if (dd && dd != '' &&dd!="null"&& dd.length > 0 && dt != 'Address') {
                             contact_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
-                            $.each(dd, function (key, val) {
-                                if (val) { 
-                                    address += val + "</br>";
-									postcode = dd.postcode;
-                                    maplink = dd.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + dd.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
+                            var i = 1;
+                            $.each(dd, function (addr_id, addr) {
+                                var address = "";
+                                $.each(addr, function (key, val) {
+                                    if (val && key !== 'primary' && key !== 'visible' && key !== 'description') {
+                                        address += "<span>"+val + "</span></br>";
+                                    }
+                                });
+                                if (addr.primary == 1) {
+                                    primary_postcode = addr.postcode;
                                 }
+                                var postcode = addr.postcode;
+                                var maplink = addr.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
+
+                                contact_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='glyphicon glyphicon-ok-sign'></span> " : "") + dt + " " +i + "</dt>" +
+                                    "<dd>"+
+                                    "<div>" +
+                                    "<a data-toggle='collapse' href='#address_"+addr_id+"' class='pointer'>"+(addr.description != ''?addr.description:"No description") + "</a>" +
+                                    "</div>" +
+                                    "<div class='collapse "+(addr.primary == 1? "in" : "")+"' id='address_"+addr_id+"' style='border: 1px solid lightgrey; padding: 10px; margin-bottom: 5px'>" +
+                                    maplink + address +
+                                    "</div>" +
+                                    "</dd>";
+                                i++;
                             });
-                            contact_detail_list_items += "<dt>" + dt + "</dt><dd>"+ maplink + address + "</dd>";
                         }
 
                     });
+
 					if(typeof val.telephone!=="undefined"){
                     $.each(val.telephone, function (dt, tel) {
                             var tps = "";
@@ -937,7 +954,7 @@ var record = {
                                                             '<div class="clearfix"></div>' +
                                                             '<div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'">' +
                                                                 '<dl class="dl-horizontal contact-detail-list">'+contact_detail_list_items+contact_detail_telephone_items+transfer_telephone_items+'</dl>' +
-                                                                '<input type="hidden" name="contact_postcode" value="'+postcode+'" />' +
+                                                                '<input type="hidden" name="contact_postcode" value="'+primary_postcode+'" />' +
                                                             '</div>' +
                                                         '</li>');
                 });
@@ -1059,21 +1076,38 @@ var record = {
 
                     });
 
-                    var address = "";
-                    var maplink = "";
-					var postcode = "";
+                    var primary_postcode = "";
                     $.each(val.visible, function (dt, dd) {
                         if (dd && dd != '' &&dd!="null"&& dd.length > 0 && dt != 'Address') {
                             company_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
-                            $.each(dd, function (key, val) {
-                                if (val) {
-                                    address += val + "</br>";
-									postcode = dd.postcode;
-                                    maplink = dd.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + dd.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
+                            var i = 1;
+                            $.each(dd, function (addr_id, addr) {
+                                var maplink = "";
+                                var postcode = "";
+                                var address = "";
+                                $.each(addr, function (key, val) {
+                                    if (val && key !== 'primary' && key !== 'visible' && key !== 'description') {
+                                        address += "<span>"+val + "</span></br>";
+                                    }
+                                });
+                                if (addr.primary == 1) {
+                                    primary_postcode = addr.postcode;
                                 }
+                                postcode = addr.postcode;
+                                maplink = addr.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
+
+                                company_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='glyphicon glyphicon-ok-sign'></span> " : "") + dt + " " +i + "</dt>" +
+                                                             "<dd>"+
+                                                                "<div>" +
+                                                                    "<a data-toggle='collapse' href='#address_"+addr_id+"' class='pointer'>"+(addr.description != ''?addr.description:"No description") + "</a>" +
+                                                                "</div>" +
+                                                                "<div class='collapse "+(addr.primary == 1? "in" : "")+"' id='address_"+addr_id+"' style='border: 1px solid lightgrey; padding: 10px; margin-bottom: 5px'>" +
+                                                                    maplink + address +
+                                                                "</div>" +
+                                                             "</dd>";
+                                i++;
                             });
-                            company_detail_list_items += "<dt>" + dt + "</dt><dd>"+maplink + address + "</dd>";
                         }
 
                     });
@@ -1103,7 +1137,7 @@ var record = {
 					 });
 					 transfer_telephone_items += '<div class="clearfix"></div>';
 					}
-					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#com-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span style="padding-left: 20px">'+company_detail_links_items+'</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="com-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+company_detail_list_items+company_detail_telephone_items+transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+postcode+'" /></div></li>');
+					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#com-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span style="padding-left: 20px">'+company_detail_links_items+'</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="com-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+company_detail_list_items+company_detail_telephone_items+transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+primary_postcode+'" /></div></li>');
 					$('#company-panel .tt').tooltip();
                 });
 				if(typeof quick_planner.company_postcode !== "undefined"){

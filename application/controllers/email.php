@@ -814,7 +814,7 @@ class Email extends CI_Controller
                     $answers .= "<tr><td>".$webform['q28']."</td><td>".$webform['a28']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q26']."</td><td>".$webform['a26']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q27']."</td><td>".$webform['a27']."</td></tr>";
-                    $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a1']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a2']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q3']."</td><td>".$webform['a3']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q4']."</td><td>".$webform['a4']."</td></tr>";
                     $answers .= "<tr><td>".$webform['q5']."</td><td>".$webform['a5']."</td></tr>";
@@ -1022,9 +1022,46 @@ class Email extends CI_Controller
                 $webform = (isset($webform_answers[0]) ? $webform_answers[0] : array());
                 if (!empty($webform)) {
                     $answers = "";
-                    for ($i = 1; $i <= 30; $i++) {
-                        $answers .= "<tr><td>" . $webform['q' . $i] . "</td><td>" . $webform['a' . $i] . "</td></tr>";
-                    }
+//                    for ($i = 1; $i <= 30; $i++) {
+//                        $answers .= "<tr><td>" . $webform['q' . $i] . "</td><td>" . $webform['a' . $i] . "</td></tr>";
+//                    }
+                    //TODO Changes added only for HSL, we need to refactor this tables in order to add questions dinamically
+                    $answers .= "<tr><td>".$webform['q25']."</td><td>".$webform['a25']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q24']."</td><td>".$webform['a24']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q28']."</td><td>".$webform['a28']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q26']."</td><td>".$webform['a26']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q27']."</td><td>".$webform['a27']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a2']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q3']."</td><td>".$webform['a3']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q4']."</td><td>".$webform['a4']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q5']."</td><td>".$webform['a5']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q29']."</td><td>".$webform['a29']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q9']."</td><td>".$webform['a9']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q10']."</td><td>".$webform['a10']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q31']."</td><td>".$webform['a31']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q32']."</td><td>".$webform['a32']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q33']."</td><td>".$webform['a33']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q34']."</td><td>".$webform['a34']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q35']."</td><td>".$webform['a35']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q36']."</td><td>".$webform['a36']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q37']."</td><td>".$webform['a37']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q6']."</td><td>".$webform['a6']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q7']."</td><td>".$webform['a7']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q8']."</td><td>".$webform['a8']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q11']."</td><td>".$webform['a11']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q12']."</td><td>".$webform['a12']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q13']."</td><td>".$webform['a13']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q14']."</td><td>".$webform['a14']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q15']."</td><td>".$webform['a15']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q16']."</td><td>".$webform['a16']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q17']."</td><td>".$webform['a17']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q18']."</td><td>".$webform['a18']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q19']."</td><td>".$webform['a19']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q20']."</td><td>".$webform['a20']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q21']."</td><td>".$webform['a21']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q22']."</td><td>".$webform['a22']."</td></tr>";
+                    $answers .= "<tr><td>".$webform['q23']."</td><td>".$webform['a23']."</td></tr>";
+
                     $webform_table = "<table>
                         <thead style='margin-bottom: 2px;'><th colspan='2'><h3>" . $webform['webform_name'] . "</h3></th>
                         <tbody>" . $answers . "</tbody>
@@ -1187,9 +1224,46 @@ class Email extends CI_Controller
             $webform = (isset($webform_answers[0]) ? $webform_answers[0] : array());
             if (!empty($webform)) {
                 $answers = "";
-                for ($i = 1; $i <= 30; $i++) {
-                    $answers .= "<tr><td>" . $webform['q' . $i] . "</td><td>" . $webform['a' . $i] . "</td></tr>";
-                }
+//                for ($i = 1; $i <= 30; $i++) {
+//                    $answers .= "<tr><td>" . $webform['q' . $i] . "</td><td>" . $webform['a' . $i] . "</td></tr>";
+//                }
+                //TODO Changes added only for HSL, we need to refactor this tables in order to add questions dinamically
+                $answers .= "<tr><td>".$webform['q25']."</td><td>".$webform['a25']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q24']."</td><td>".$webform['a24']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q28']."</td><td>".$webform['a28']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q26']."</td><td>".$webform['a26']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q27']."</td><td>".$webform['a27']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q1']."</td><td>".$webform['a2']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q3']."</td><td>".$webform['a3']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q4']."</td><td>".$webform['a4']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q5']."</td><td>".$webform['a5']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q29']."</td><td>".$webform['a29']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q9']."</td><td>".$webform['a9']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q10']."</td><td>".$webform['a10']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q31']."</td><td>".$webform['a31']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q32']."</td><td>".$webform['a32']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q33']."</td><td>".$webform['a33']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q34']."</td><td>".$webform['a34']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q35']."</td><td>".$webform['a35']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q36']."</td><td>".$webform['a36']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q37']."</td><td>".$webform['a37']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q6']."</td><td>".$webform['a6']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q7']."</td><td>".$webform['a7']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q8']."</td><td>".$webform['a8']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q11']."</td><td>".$webform['a11']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q12']."</td><td>".$webform['a12']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q13']."</td><td>".$webform['a13']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q14']."</td><td>".$webform['a14']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q15']."</td><td>".$webform['a15']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q16']."</td><td>".$webform['a16']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q17']."</td><td>".$webform['a17']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q18']."</td><td>".$webform['a18']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q19']."</td><td>".$webform['a19']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q20']."</td><td>".$webform['a20']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q21']."</td><td>".$webform['a21']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q22']."</td><td>".$webform['a22']."</td></tr>";
+                $answers .= "<tr><td>".$webform['q23']."</td><td>".$webform['a23']."</td></tr>";
+
                 $webform_table = "<table>
                         <thead style='margin-bottom: 2px;'><th colspan='2'><h3>" . $webform['webform_name'] . "</h3></th>
                         <tbody>" . $answers . "</tbody>

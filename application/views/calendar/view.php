@@ -5,38 +5,45 @@
             <div class="pull-right">
                 <form class="filter-form">
                     <?php
-                        $options = array();
-                        if(in_array("import ics", $_SESSION['permissions'])) {
-                            //array_push($options,'<li><a href="#" data-modal="import-appointment-btn" id="">Import appointments</a></li>');
-                        }
-                        if(in_array("export ics", $_SESSION['permissions'])) {
-                            //array_push($options,'<li><a href="#" id="export-appointment-btn">Export appointments</a></li>');
-                        }
+                    $options = array();
+                    if (in_array("import ics", $_SESSION['permissions'])) {
+                        //array_push($options,'<li><a href="#" data-modal="import-appointment-btn" id="">Import appointments</a></li>');
+                    }
+                    if (in_array("export ics", $_SESSION['permissions'])) {
+                        //array_push($options,'<li><a href="#" id="export-appointment-btn">Export appointments</a></li>');
+                    }
                     ?>
-                    <?php if(in_array("slot availability",$_SESSION['permissions'])){ ?>
-                     <div class="btn-group">
-                     <a class="btn btn-default btn-xs" href="<?php echo base_url() ?>admin/availability">
+                    <?php if (in_array("slot availability", $_SESSION['permissions'])) { ?>
+                        <div class="btn-group">
+                            <a class="btn btn-default btn-xs" href="<?php echo base_url() ?>admin/availability">
                                 <span class="glyphicon glyphicon-user"></span> Manage availability
                             </a>
-                     </div>
+                        </div>
                     <?php } ?>
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-filter"></span> Options
-                            </button>
-                            <ul class="dropdown-menu pull-right" role="menu">
-                                                        <li>
-<a href="<?php echo base_url() ?>calendar/google">Google Calendar</a>
-</li>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-filter"></span> Options
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <?php if (in_array("add appointments", $_SESSION['permissions'])) { ?>
+                                <li class="pointer add-cal-appointment-btn">
+                                    <a>Add Appointment</a>
+                                </li>
+                            <?php } ?>
                             <li>
-<a id="switch-cal-view" data-cal-view="<?php echo $calendar_view=="combined"?"2":"1" ?>" href="#"><?php echo ($calendar_view=="combined"?"Seperate Events":"Combine Events") ?></a>
-</li>
-                                <?php foreach ($options as $option): ?>
-                                    <?php echo $option; ?>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
+                                <a href="<?php echo base_url() ?>calendar/google">Google Calendar</a>
+                            </li>
+                            <li>
+                                <a id="switch-cal-view"
+                                   data-cal-view="<?php echo $calendar_view == "combined" ? "2" : "1" ?>"
+                                   href="#"><?php echo($calendar_view == "combined" ? "Seperate Events" : "Combine Events") ?></a>
+                            </li>
+                            <?php foreach ($options as $option): ?>
+                                <?php echo $option; ?>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
 
                 </form>
             </div>
@@ -66,7 +73,7 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-						
+
                         <div class="form-group">
                             <select id="user-select" name="users[]" multiple class="selectpicker" data-width="100%"
                                     data-size="5" title="Select attendees">
@@ -77,14 +84,20 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                      
+
                         <div class="form-group location-form">
                             <button id="distance-cal-button" class="btn btn-default"><span
                                     class="glyphicon glyphicon-cog"></span> Distance
                             </button>
                             <div style="display:none" id="dist-form">
                                 <p><label>Postcode</label>
-                                <div class="input-group"><input type="text" class="form-control current_postcode_input" placeholder="Enter a postcode..." name="postcode" value="<?php echo @$_SESSION['calendar-filter']['postcode'] ?>"><div class="input-group-addon pointer btn locate-postcode"><span class="glyphicon glyphicon-map-marker"></span> Use my location</div></div>
+                                <div class="input-group"><input type="text" class="form-control current_postcode_input"
+                                                                placeholder="Enter a postcode..." name="postcode"
+                                                                value="<?php echo @$_SESSION['calendar-filter']['postcode'] ?>">
+                                    <div class="input-group-addon pointer btn locate-postcode"><span
+                                            class="glyphicon glyphicon-map-marker"></span> Use my location
+                                    </div>
+                                </div>
                                 <div class="error geolocation-error"></div>
                                 </p>
                                 <p>
@@ -118,15 +131,18 @@
                                             echo "selected";
                                         } ?>> 50 Mile
                                         </option>
-                                        <option value="100" <?php if (@$_SESSION['calendar-filter']['distance'] == 100) {
+                                        <option
+                                            value="100" <?php if (@$_SESSION['calendar-filter']['distance'] == 100) {
                                             echo "selected";
                                         } ?> >100 Mile
                                         </option>
-                                        <option value="200" <?php if (@$_SESSION['calendar-filter']['distance'] == 200) {
-                                                echo "selected";
+                                        <option
+                                            value="200" <?php if (@$_SESSION['calendar-filter']['distance'] == 200) {
+                                            echo "selected";
                                         } ?> >200 Mile
                                         </option>
-                                        <option value="1500" <?php if (@$_SESSION['calendar-filter']['distance'] == 1500) {
+                                        <option
+                                            value="1500" <?php if (@$_SESSION['calendar-filter']['distance'] == 1500) {
                                             echo "selected";
                                         } ?> >Any Distance
                                         </option>
@@ -138,16 +154,26 @@
                 </div>
                 <h3></h3>
                 <div class="btn-group">
-                    <button class="btn btn-success btn-xs" data-calendar-nav="prev" data-loading-text="Loading..."><< Prev</button>
-                    <button class="btn btn-success btn-xs" data-calendar-nav="today" data-loading-text="Loading...">Today</button>
-                    <button class="btn btn-success btn-xs" data-calendar-nav="next" data-loading-text="Loading...">Next >></button>
+                    <button class="btn btn-success btn-xs" data-calendar-nav="prev" data-loading-text="Loading..."><<
+                        Prev
+                    </button>
+                    <button class="btn btn-success btn-xs" data-calendar-nav="today" data-loading-text="Loading...">
+                        Today
+                    </button>
+                    <button class="btn btn-success btn-xs" data-calendar-nav="next" data-loading-text="Loading...">Next
+                        >>
+                    </button>
                 </div>
                 <div class="btn-group">
-                    <button class="btn btn-info btn-xs" data-calendar-view="year" data-loading-text="Loading...">Year</button>
-                    <button class="btn btn-info btn-xs active" data-calendar-view="month" data-loading-text="Loading...">Month
+                    <button class="btn btn-info btn-xs" data-calendar-view="year" data-loading-text="Loading...">Year
                     </button>
-                    <button class="btn btn-info btn-xs" data-calendar-view="week" data-loading-text="Loading...">Week</button>
-                    <button class="btn btn-info btn-xs" data-calendar-view="day" data-loading-text="Loading...">Day</button>
+                    <button class="btn btn-info btn-xs active" data-calendar-view="month"
+                            data-loading-text="Loading...">Month
+                    </button>
+                    <button class="btn btn-info btn-xs" data-calendar-view="week" data-loading-text="Loading...">Week
+                    </button>
+                    <button class="btn btn-info btn-xs" data-calendar-view="day" data-loading-text="Loading...">Day
+                    </button>
                 </div>
                 <small></small>
             </div>
@@ -174,9 +200,9 @@
     </div>
 </div>
 <script>
-$(document).ready(function(){
-	importer.init();
-	calendar_view = "<?php echo ($calendar_view?$calendar_view:"combined") ?>";
-});
-	
+    $(document).ready(function () {
+        importer.init();
+        calendar_view = "<?php echo($calendar_view ? $calendar_view : "combined") ?>";
+    });
+
 </script>
