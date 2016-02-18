@@ -260,6 +260,22 @@ class Modals extends CI_Controller
         }
     }
 
+    public function search_records()
+    {
+        if ($this->input->is_ajax_request()) {
+
+            if ($_SESSION['role'] == 1) {
+                $campaigns = $this->Form_model->get_campaigns();
+            } else {
+                $campaigns = $this->Form_model->get_campaigns_by_user($_SESSION['user_id']);
+            }
+
+            $this->load->view('forms/search_record_form.php', array(
+                'campaigns' => $campaigns
+            ));
+        }
+    }
+
     public function view_filter_options()
     {
         if ($this->input->is_ajax_request()) {

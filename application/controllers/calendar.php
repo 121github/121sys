@@ -145,7 +145,8 @@ $google_email = false;
         		 'import.js?v' . $this->project_version,           
 		      'plugins/jqfileupload/jquery.fileupload.js',
                 'plugins/jqfileupload/jquery.fileupload-process.js',
-                'plugins/jqfileupload/jquery.fileupload-validate.js'
+                'plugins/jqfileupload/jquery.fileupload-validate.js',
+                'lib/jquery.numeric.min.js'
             ),
             'disable_campaign' => $disable_campaign_filter,
             'date' => date('Y-m-d'),

@@ -834,7 +834,7 @@ var add_record = {
 		 $(document).on("click", "#continue-btn", function (e) {
 			  e.preventDefault();
 			  add_record.check_dupes();
-			   
+
 		 });
         $(document).on("click", "#save-btn", function (e) {
             e.preventDefault();
@@ -879,17 +879,17 @@ var add_record = {
             dataType: "JSON",
             data: $('#container-fluid form').serialize(),
 			beforeSend:function(){
-			  $('#dupes-found').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');	
+			  $('#dupes-found').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
 			}
         }).done(function (response) {
             if (response.success) {
 				if(response.data.length>0){
 				if($('#campaign').val()==""){
-				var camphead = "<th>Campaign</th>";	
-				var campbody = true;	
+				var camphead = "<th>Campaign</th>";
+				var campbody = true;
 				} else {
-				var camphead = "";	
-				var campbody = false;		
+				var camphead = "";
+				var campbody = false;
 				}
 				var table = "<div class='table-responsive'><table class='small table-condensed table table-striped'><thead>"+camphead+"<th>Data</th><th>Name</th><th>Address</th><th>Postcode</th><th>Status</th><th>Date Added<th></thead><tbody>";
 				$.each(response.data,function(i,row){
