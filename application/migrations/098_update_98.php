@@ -12,6 +12,14 @@ class Migration_update_98 extends CI_Migration
 
     public function up()
     {
+		 $check = $this->db->query("SHOW COLUMNS FROM `appointments` LIKE 'appointment_confirmed'");
+        if(!$check->num_rows()){
+		$this->db->query("ALTER TABLE `appointments` ADD `appointment_confirmed` TINYINT( 1 ) NOT NULL DEFAULT '0'");
+		$this->db->query("ALTER TABLE `campaigns` ADD `app_confirmation_days` TINYINT( 1 ) NULL DEFAULT NULL");
+		}
+		
+		$this->db->query("INSERT ignore into `permissions` (`permission_id`, `permission_name`, `permission_group`, `description`) VALUES (NULL, 'confirm appointment', 'Appointments', 'Appointments are unconfirmed until somebody manually ticks the confirmed box within an appointment')");
+		
         $check = $this->db->query("SHOW COLUMNS FROM `company_addresses` LIKE 'description'");
         if(!$check->num_rows()){
 		    $this->db->query("ALTER TABLE `company_addresses` ADD `description` VARCHAR(100) DEFAULT 'Address'");
