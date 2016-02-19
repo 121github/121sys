@@ -146,7 +146,8 @@ $google_email = false;
 		      'plugins/jqfileupload/jquery.fileupload.js',
                 'plugins/jqfileupload/jquery.fileupload-process.js',
                 'plugins/jqfileupload/jquery.fileupload-validate.js',
-                'lib/jquery.numeric.min.js'
+                'lib/jquery.numeric.min.js',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
             ),
             'disable_campaign' => $disable_campaign_filter,
             'date' => date('Y-m-d'),
@@ -154,7 +155,8 @@ $google_email = false;
             'users' => $users,
             'css' => array(
                 'calendar.css',
-                'plugins/jqfileupload/jquery.fileupload.css'
+                'plugins/jqfileupload/jquery.fileupload.css',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css',
             )
         );
         $this->template->load('default', 'calendar/view.php', $data);

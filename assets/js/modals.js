@@ -115,7 +115,7 @@ var modals = {
         });
         $(document).on('click', '[data-modal="add-appointment"]', function (e) {
             e.preventDefault();
-            modals.add_appointment_html($(this).attr('data-id'), true);
+            modals.add_appointment_html($(this).attr('data-urn'), true);
         });
         $(document).on('click', '[data-modal="delete-appointment"]', function (e) {
             e.preventDefault();
@@ -429,8 +429,10 @@ var modals = {
             if (response.success) {
                 var appointment_id = response.appointment_id;
                 flashalert.success('Appointment was saved');
+                if(typeof calendar !== "undefined"){
+                    calendar.view();
+                }
                 if (response.trackvia) {
-                    console.log("trackvia");
                     $.post(response.trackvia, {urn: response.urn});
                 }
                 $('.close-modal').trigger('click');
@@ -479,21 +481,23 @@ var modals = {
                 }
                 //TODO send cover letter from hsl file
                 if (typeof campaign_functions !== "undefined") {
-					  if (typeof campaign_functions.appointment_saved !== "undefined") {
-                    campaign_functions.appointment_saved(appointment_id, response.state);
-					  }
+                    if (typeof campaign_functions.appointment_saved !== "undefined") {
+                        campaign_functions.appointment_saved(appointment_id, response.state);
+					}
                 }
-                //Notice for set the outcome before leave the page
-                $(window).on('beforeunload', function () {
-                    return 'You need to set the outcome after create/reschedule an appointment. Are you sure you want to leave?';
-                });
+                //Notice for set the outcome before leave the page (only if we create the appointment from the record panel)
+                if(typeof record !== "undefined"){
+                    $(window).on('beforeunload', function () {
+                        return 'You need to set the outcome after create/reschedule an appointment. Are you sure you want to leave?';
+                    });
+                }
 
             } else {
                 flashalert.danger(response.msg);
             }
         }).fail(function(){
 				flashalert.danger("There was an error saving the appointment");
-			});
+        });
     },
     delete_appointment: function (id, cancellation_reason) {
         $.ajax({
@@ -688,22 +692,24 @@ var modals = {
         });
     },
     add_appointment_html: function (urn) {
-        //$.ajax({
-        //    url: helper.baseUrl + 'modals/add_appointment',
-        //    type: 'POST',
-        //    dataType: 'html',
-        //    data: {'urn': urn}
-        //}).done(function (response) {
-        //    var mheader = "Search Record";
-        //    var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-        //    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
-        //        '<button class="btn btn-primary pull-right" id="search-records-btn" data-action="'+data_action+'" type="button">Search</button>';
-        //    modals.load_modal(mheader, mbody, mfooter);
-        //    modal_body.css('overflow', 'visible');
-        //    modal_dialog.css('width', "90%");
-        //    modal_body.find('#addresspicker-div').hide();
-        //    modal_body.find('.record-form').find('input[name="house-number"]').numeric();
-        //});
+        $.ajax({
+            url: helper.baseUrl + 'modals/add_appointment',
+            type: 'POST',
+            dataType: 'html',
+            data: {'urn': urn}
+        }).done(function (response) {
+            var mheader = "Add Appintment (URN: #"+urn+")";
+            var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
+                          '<input id="appointment-confirmed" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox">' +
+                          '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
+            modals.load_modal(mheader, mbody, mfooter);
+            modal_body.css('overflow', 'visible');
+            modal_dialog.css('width', "50%");
+            modals.appointment_contacts(urn, null);
+            modals.set_appointment_confirmation();
+            $modal.find('#appointment-confirmed').hide();
+        });
     },
     appointment_contacts: function (urn, contact_id) {
         $.ajax({
@@ -768,23 +774,23 @@ var modals = {
         });
     },
 	set_appointment_confirmation:function(start){
-		if (helper.permissions['confirm appointment'] > 0) {
-			$modal.find('#appointment-confirmed').bootstrapToggle();
-			if($modal.find('input[name="appointment_confirmed"]').val()=="1"){
-			$('#appointment-confirmed').bootstrapToggle('on');
-		} else {
-			$('#appointment-confirmed').bootstrapToggle('off');
-		}
-				$('#appointment-confirmed').on('change',function(e){
-					if($(this).prop("checked")){
-						$modal.find('input[name="appointment_confirmed"]').val("1");	
-					} else {
-						$modal.find('input[name="appointment_confirmed"]').val("0");	
-					}
-				});
-			} else {
-				$modal.find('.toggle').hide();		
-			}
+        $modal.find('#appointment-confirmed').bootstrapToggle();
+        if (helper.permissions['confirm appointment'] > 0) {
+            if($modal.find('input[name="appointment_confirmed"]').val()=="1"){
+			    $('#appointment-confirmed').bootstrapToggle('on');
+            } else {
+                $('#appointment-confirmed').bootstrapToggle('off');
+            }
+            $('#appointment-confirmed').on('change',function(e){
+                if($(this).prop("checked")){
+                    $modal.find('input[name="appointment_confirmed"]').val("1");
+                } else {
+                    $modal.find('input[name="appointment_confirmed"]').val("0");
+                }
+            });
+        } else {
+            $modal.find('.toggle').hide();
+        }
 		
 		var app = $('.startpicker').val()
 		var start_date = moment(app, 'DD/MM/YYYY HH:mm');
@@ -1066,7 +1072,8 @@ var modals = {
 			var sql = (m.format("YYYY-MM-DD HH:mm"));
             $('.endpicker').data("DateTimePicker").date(e.date);
             $('.endpicker').data("DateTimePicker").date(m.add( 1,'hours').format('DD/MM/YYYY HH:mm'));
-			//modals.get_available_attendees(sql);		
+			//modals.get_available_attendees(sql);
+            modals.set_appointment_confirmation();
         });
         $modal.find("#tabs").tab();
 		modals.set_size();

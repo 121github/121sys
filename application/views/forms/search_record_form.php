@@ -21,7 +21,7 @@
                     <p>
                         <label id="name-label">Company Name</label>
                     </p>
-                    <input type="text" name="" id="name" class="form-control"  placeholder="Enter the name of the company"/>
+                    <input type="text" name="company_name" id="name" class="form-control"  placeholder="Enter the name of the company"/>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <div class="panel panel-default" style="overflow:visible">
