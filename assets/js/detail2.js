@@ -1097,14 +1097,14 @@ var record = {
                                 postcode = addr.postcode;
                                 maplink = addr.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
 
-                                company_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='glyphicon glyphicon-ok-sign'></span> " : "") + dt + " " +i + "</dt>" +
+                                company_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='fa fa-home pointer tt' data-toggle='tooltip' title='Primary Address' data-title='Primary Address'></span> " : "") + dt + " " +i + "</dt>" +
                                                              "<dd>"+
-                                                                "<div>" +
+                                                                "<div style='margin-bottom:5px'>" +
                                                                     "<a data-toggle='collapse' href='#address_"+addr_id+"' class='pointer'>"+(addr.description != ''?addr.description:"No description") + "</a>" +
                                                                 "</div>" +
-                                                                "<div class='collapse "+(addr.primary == 1? "in" : "")+"' id='address_"+addr_id+"' style='border: 1px solid lightgrey; padding: 10px; margin-bottom: 5px'>" +
+                                                                "<div class='collapse "+(addr.primary == 1? "in" : "")+"' id='address_"+addr_id+"'><div style='border: 1px solid lightgrey; padding:5px'>" +
                                                                     maplink + address +
-                                                                "</div>" +
+                                                                "</div></div>" +
                                                              "</dd>";
                                 i++;
                             });

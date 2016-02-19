@@ -102,6 +102,7 @@ $file = str_replace("/","\\",$file34);
 
 //unit34 path
 $conversion_path = $path."file_convert.aspx?id=$id&filename=$file";
+$this->firephp->log($conversion_path);
 //the old way was a bit slow
 //$context = stream_context_create(array('http' => array('header'=>'Connection: close')));
 //file_get_contents($conversion_path,false,$context);
