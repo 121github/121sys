@@ -428,7 +428,7 @@ var calendar_modals = {
     },
 
     add_appointment: function () {
-        modals.search_records("view-record");
+        modals.search_records("add-appointment");
 
     },
 }

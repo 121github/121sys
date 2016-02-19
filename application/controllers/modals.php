@@ -276,6 +276,21 @@ class Modals extends CI_Controller
         }
     }
 
+    public function add_appointment()
+    {
+        if ($this->input->is_ajax_request()) {
+
+            if(isset($_SESSION['cover_letter_address'])){ unset($_SESSION['cover_letter_address']); }
+            $urn = intval($this->input->post('urn'));
+            $campaign_id = $this->Records_model->get_campaign_from_urn($urn);
+            $addresses = $this->Records_model->get_addresses($urn);
+            $attendees = $this->Records_model->get_attendees($urn);
+            $types = $this->Records_model->get_appointment_types(false, $campaign_id);
+            $branches = $this->Form_model->get_campaign_branches($campaign_id);
+            $this->load->view('forms/edit_appointment_form.php', array("urn" => $urn, "attendees" => $attendees, "addresses" => $addresses, "types" => $types, "branches" => $branches));
+        }
+    }
+
     public function view_filter_options()
     {
         if ($this->input->is_ajax_request()) {
