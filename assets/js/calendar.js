@@ -428,13 +428,7 @@ var calendar_modals = {
     },
 
     add_appointment: function () {
-        modals.default_buttons();
-        modal_header.text('Add appointment');
-        $('#modal').modal({
-            backdrop: 'static',
-            keyboard: false
-        })
-        modal_body.empty().html();
+        modals.search_records("view-record");
 
     },
 }
@@ -615,6 +609,5 @@ $(document).ready(function () {
         calendar_modals.add_appointment();
         modal_body.css('overflow', 'visible');
     });
-
 
 });

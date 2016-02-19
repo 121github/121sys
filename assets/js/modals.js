@@ -5,6 +5,7 @@ var modals = {
         modal_footer = $modal.find('.modal-footer');
         modal_header = $modal.find('.modal-title');
         modal_body = $modal.find('.modal-body');
+        modal_dialog = $modal.find('.modal-dialog');
 		$(document).on('click','[data-toggle="tab"]',function(e){
 			$('#company-address-form,#company-phone-form,#contact-address-form,#contact-phone-form').hide();
 			var tab = $(this).attr('href');
@@ -112,6 +113,10 @@ var modals = {
             e.preventDefault();
             modals.view_appointment($(this).attr('data-id'), true);
         });
+        $(document).on('click', '[data-modal="add-appointment"]', function (e) {
+            e.preventDefault();
+            modals.add_appointment_html($(this).attr('data-id'), true);
+        });
         $(document).on('click', '[data-modal="delete-appointment"]', function (e) {
             e.preventDefault();
             modals.delete_appointment_html($(this).attr('data-id'), true);
@@ -186,31 +191,41 @@ var modals = {
 		  $modal.on('change','#map-icon', function(e) {
                 var map_icon = ((e.icon.length > 0 && e.icon != "empty") ? e.icon : '');
                 $('form').find('input[name="map_icon"]').val(map_icon);
-            });
-			$modal.on('click','#load-view-btn', function(e) {
-              modals.set_user_view();
-            });
-			$modal.on('click','#edit-view-btn', function(e) {
-              modals.edit_user_view();
-            });
-			$modal.on('click','#save-view-btn',function(e){
-				modals.save_columns();
-				$('#view-back-btn').trigger('click');
-			});
-			$modal.on('click','.create-view-tab .tab',function(e){
-				 var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-view-btn">Save</button> <button id="view-back-btn" class="btn btn-default pull-left" type="button">Back</button>';
-				 modal_footer.html(mfooter);
-				 //reset all the fields
-				 $('#create-view .selectpicker').selectpicker('val',[]);
-				 $('#create-view input[name="view_id"]').val('');
-			});
-			$modal.on('click','#view-back-btn',function(e){
-				$modal.find('#load-view').addClass('active');
-				$modal.find('#create-view').removeClass('active');
-				 var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
-				modal_footer.html(mfooter);
-			}); 
-			},
+        });
+        $modal.on('click','#load-view-btn', function(e) {
+          modals.set_user_view();
+        });
+        $modal.on('click','#edit-view-btn', function(e) {
+          modals.edit_user_view();
+        });
+        $modal.on('click','#save-view-btn',function(e){
+            modals.save_columns();
+            $('#view-back-btn').trigger('click');
+        });
+        $modal.on('click','.create-view-tab .tab',function(e){
+             var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-view-btn">Save</button> <button id="view-back-btn" class="btn btn-default pull-left" type="button">Back</button>';
+             modal_footer.html(mfooter);
+             //reset all the fields
+             $('#create-view .selectpicker').selectpicker('val',[]);
+             $('#create-view input[name="view_id"]').val('');
+        });
+        $modal.on('click','#view-back-btn',function(e){
+            $modal.find('#load-view').addClass('active');
+            $modal.find('#create-view').removeClass('active');
+             var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+            modal_footer.html(mfooter);
+        });
+
+        $modal.on('click','#search-records-btn',function(e){
+            e.preventDefault();
+            modals.search_records_func($(this).attr('data-action'));
+        });
+
+        $modal.on('click','#get-address',function(e){
+            e.preventDefault();
+            modals.get_addresses();
+        });
+    },
 	set_user_view:function(id){
 		$.ajax({
             url: helper.baseUrl + 'datatables/set_user_view',
@@ -672,6 +687,24 @@ var modals = {
 			
         });
     },
+    add_appointment_html: function (urn) {
+        //$.ajax({
+        //    url: helper.baseUrl + 'modals/add_appointment',
+        //    type: 'POST',
+        //    dataType: 'html',
+        //    data: {'urn': urn}
+        //}).done(function (response) {
+        //    var mheader = "Search Record";
+        //    var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
+        //    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
+        //        '<button class="btn btn-primary pull-right" id="search-records-btn" data-action="'+data_action+'" type="button">Search</button>';
+        //    modals.load_modal(mheader, mbody, mfooter);
+        //    modal_body.css('overflow', 'visible');
+        //    modal_dialog.css('width', "90%");
+        //    modal_body.find('#addresspicker-div').hide();
+        //    modal_body.find('.record-form').find('input[name="house-number"]').numeric();
+        //});
+    },
     appointment_contacts: function (urn, contact_id) {
         $.ajax({
             url: helper.baseUrl + 'appointments/get_contacts',
@@ -831,6 +864,152 @@ var modals = {
             }
         });
     },
+    search_records: function (data_action) {
+        $.ajax({
+            url: helper.baseUrl + 'modals/search_records',
+            type: 'POST',
+            dataType: 'html'
+        }).done(function (response) {
+            var mheader = "Search Record";
+            var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
+                          '<button class="btn btn-primary pull-right" id="search-records-btn" data-action="'+data_action+'" type="button">Search</button>';
+            modals.load_modal(mheader, mbody, mfooter);
+            modal_body.css('overflow', 'visible');
+            modal_dialog.css('width', "90%");
+            modal_body.find('#addresspicker-div').hide();
+            modal_body.find('.record-form').find('input[name="house-number"]').numeric();
+        });
+    },
+    search_records_func: function(data_action){
+        if(modal_body.find('#name').val()==""){
+            flashalert.danger("Please enter a name");
+        }
+        //else if ($('#postcode').val() == "" && $('#add1').val() == "" || $('#company_add1').val() == "" && $('#company_postcode').val()) {
+        //   flashalert.danger("Please enter a postcode");
+        //}
+        else if(modal_body.find('#postcode').val()==""&&modal_body.find('#add1').val()==""&&modal_body.find('#name').val()!="") {
+            modal_body.find('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> Can not check for duplicates without a postcode. Click the create new button to add it anyway</p>");
+            //$('#save-btn').show();
+        } else {
+            $.ajax({
+                url: helper.baseUrl + 'search/quicksearch',
+                type: "POST",
+                dataType: "JSON",
+                data: modal_body.find('.record-form').serialize(),
+                beforeSend:function(){
+                    modal_body.find('#dupes-found').html('<img src="' + helper.baseUrl + 'assets/img/ajax-loader-bar.gif" /> ');
+                }
+            }).done(function (response) {
+                if (response.success) {
+                    if(response.data.length>0){
+                        if(modal_body.find('#campaign').val()==""){
+                            var camphead = "<th>Campaign</th>";
+                            var campbody = true;
+                        } else {
+                            var camphead = "";
+                            var campbody = false;
+                        }
+                        var table = "<div class='table-responsive'><table class='small table-condensed table table-striped'><thead>"+camphead+"<th>Data</th><th>Name</th><th>Address</th><th>Postcode</th><th>Status</th><th>Date Added<th></thead><tbody>";
+                        $.each(response.data,function(i,row){
+                            table += "<tr class='pointer' data-modal='"+data_action+"' data-urn='"+row.urn+"'>";
+                            if(campbody){ table +=  "<td>"+row.campaign_name+"</td>" }
+                            table += "<td>"+row.source_name+"</td><td>"+row.name+"</td><td>"+row.add1+"</td><td>"+row.postcode+"</td><td>"+row.status_name+"</td><td>"+row.date_added+"</td></tr>";
+                        });
+                        table += "</tbody></table></div>";
+                        modal_body.find('#dupes-found').html(table);
+                        //$('#save-btn').show();
+                    } else {
+                        modal_body.find('#dupes-found').html("<p class='text-success'><span class='glyphicon glyphicon-ok'></span> No Records were found.</p>");
+                        //$('#save-btn').show();
+                    }
+                } else {
+                    flashalert.danger(response.error);
+                }
+            })
+        }
+    },
+    get_addresses: function() {
+        var addresses;
+        var postcode = modal_body.find('.record-form').find('#postcode').val();
+        var house_number = modal_body.find('.record-form').find('#house-number').val();
+        modal_body.find('.record-form').find('#collapse input').val('');
+        modal_body.find('.record-form').find('input[name="postcode"]').val(postcode);
+
+        $.ajax({
+            url: helper.baseUrl + 'ajax/get_addresses_by_postcode',
+            type: "POST",
+            dataType: "JSON",
+            data: {postcode: postcode, house_number: house_number}
+        }).done(function (response) {
+            if (response.success) {
+                modal_body.find('.record-form').find('#postcode').val(response.postcode);
+                addresses = response.data;
+                flashalert.info("Please select the correct address");
+                var options = "<option value=''>Select one address...</option>";
+
+                $.each(response.data, function (i, val) {
+                    options += '<option value="' + i + '">' +
+                        (val.add1 ? val.add1 : '') +
+                        (val.add2 ? ", " + val.add2 : '') +
+                        (val.add3 ? ", " + val.add3 : '') +
+                        (val.add4 ? ", " + val.add4 : '') +
+                        (val.locality ? ", " + val.locality : '') +
+                        (val.city ? ", " + val.city : '') +
+                        (val.county ? ", " + val.county : '') +
+                        (typeof val.postcode_io.country != "undefined" ? ", " + val.postcode_io.country : '') +
+                        (val.postcode ? ", " + val.postcode : '') +
+                        '</option>';
+                });
+                modal_body.find('.record-form').find('#addresspicker')
+                    .html(options)
+                    .selectpicker('refresh');
+
+                //If the house number is found set this option by default
+                if (response.address_selected !== null && response.address_selected !== undefined) {
+                    var address = addresses[response.address_selected];
+                    $('.record-form').find('#add1').val(address.add1);
+                    $('.record-form').find('#add2').val(address.add2);
+                    $('.record-form').find('#add3').val(address.add3);
+                    $('.record-form').find('#add4').val(address.add4);
+                    $('.record-form').find('#locality').val(address.locality);
+                    $('.record-form').find('#city').val(address.city);
+                    $('.record-form').find('#county').val(address.county);
+                    $('.record-form').find('#country').val(address.postcode_io.country);
+
+                    modal_body.find('.record-form').find('#addresspicker')
+                        .val(response.address_selected)
+                        .selectpicker('refresh');
+                }
+                modal_body.css('overflow', 'auto');
+                modal_body.find('#addresspicker-div').show();
+            }
+            else {
+                modal_body.css('overflow', 'auto');
+                modal_body.find('#addresspicker-div').hide();
+                flashalert.danger("No address was found. Please enter manually");
+                modal_body.find('#complete-address').trigger('click');
+            }
+        });
+
+        modal_body.find('.addresspicker').change(function () {
+
+            var selectedId = $(this).val();
+            var address = addresses[selectedId];
+            modal_body.find('.record-form').find('#postcode').val(address.postcode);
+            modal_body.find('.record-form').find('#house_number').val(address.house_number);
+            modal_body.find('.record-form').find('#add1').val(address.add1);
+            modal_body.find('.record-form').find('#add2').val(address.add2);
+            modal_body.find('.record-form').find('#add3').val(address.add3);
+            modal_body.find('.record-form').find('#add4').val(address.add4);
+            modal_body.find('.record-form').find('#locality').val(address.locality);
+            modal_body.find('.record-form').find('#city').val(address.city);
+            modal_body.find('.record-form').find('#county').val(address.county);
+            modal_body.find('.record-form').find('#country').val(address.postcode_io.country);
+
+        });
+    },
+
     show_modal: function () {
         $modal.modal({
             backdrop: 'static',

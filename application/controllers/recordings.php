@@ -91,7 +91,7 @@ $filename = base64_decode($this->uri->segment('4'));
 if(strpos($filename,"34recordings")!==false){
 $port = "8034";	
 $path = "https://recordings.121system.com:$port/";
-$remotepath = "https://121system.com:$port/";
+$remotepath = "https://www.121system.com:$port/";
 } else {
 $port = "8016";	
 $path = "http://recordings16.121system.com/";
