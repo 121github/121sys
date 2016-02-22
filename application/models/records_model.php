@@ -296,8 +296,34 @@ class Records_model extends CI_Model
     public function get_records_by_urn_list($urn_list)
     {
         $qry = "SELECT *
-				from records 
+				from records
 				WHERE urn IN " . $urn_list;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    public function get_complete_records_by_urn_list($urn_list)
+    {
+        $qry = "SELECT *,
+                  r.urn,
+                  IF(com.name IS NOT NULL, com.name, IF(con.fullname IS NOT NULL, con.fullname, ''))             AS name,
+                  data_sources.source_name,
+                  IF(coma.add1 IS NOT NULL, coma.add1, IF(cona.add1 IS NOT NULL, cona.add1, ''))                 AS add1,
+                  IF(coma.postcode IS NOT NULL, coma.postcode, IF(cona.postcode IS NOT NULL, cona.postcode, '')) AS postcode,
+                  status_list.status_name,
+                  r.date_added
+				from records r
+				  LEFT JOIN status_list ON r.record_status = status_list.record_status_id
+				  LEFT JOIN data_sources ON data_sources.source_id = r.source_id
+                  LEFT JOIN client_refs cref ON cref.urn = r.urn
+                  LEFT JOIN contacts con ON con.urn = r.urn
+                  LEFT JOIN contact_addresses cona ON con.contact_id = cona.contact_id
+                  LEFT JOIN companies com ON com.urn = r.urn
+                  LEFT JOIN company_addresses coma ON coma.company_id = com.company_id
+                  LEFT JOIN company_telephone comt ON comt.company_id = com.company_id
+                  LEFT JOIN contact_telephone cont ON cont.contact_id = con.contact_id
+                WHERE r.urn IN (" . implode(",",$urn_list).")
+                GROUP BY r.urn";
 
         return $this->db->query($qry)->result_array();
     }

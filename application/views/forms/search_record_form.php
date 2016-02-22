@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-sm-12 col-lg-4">
+    <div class="col-sm-12 col-lg-4" style="max-height:600px; overflow-y: auto">
         <form class="record-form" id="record-form">
             <div class="form-group input-group-sm" <?php if (count($campaigns) == "1") {
                 echo "style='display:none'";
@@ -7,7 +7,7 @@
                 <p>
                     <label>Campaign</label>
                 </p>
-                <select name="campaign_id" class="selectpicker" id="campaign">
+                <select name="campaign_id[]" class="selectpicker" id="campaign">
                     <option value="">Select the campaign</option>
                     <?php foreach ($campaigns as $row) { ?>
                         <option <?php if (isset($_SESSION['current_campaign']) && $_SESSION['current_campaign'] == $row['id']) { echo "selected";
@@ -16,16 +16,40 @@
                 </select>
                 <p id="ctype-text" class="green" style="display:none"></p>
             </div>
-            <div id="create-record">
+            <div id="search-record">
                 <div class="form-group input-group-sm">
                     <p>
-                        <label id="name-label">Company Name</label>
+                        <label id="name-label">URN</label>
                     </p>
-                    <input type="text" name="company_name" id="name" class="form-control"  placeholder="Enter the name of the company"/>
+                    <input type="text" name="urn" id="urn" class="form-control"  placeholder="Search by unique reference number"/>
+                </div>
+                <div class="form-group input-group-sm">
+                    <p>
+                        <label id="name-label">Reference Number</label>
+                    </p>
+                    <input type="text" name="client_ref" id="client_ref" class="form-control"  placeholder="Search by client reference number"/>
+                </div>
+                <div class="form-group input-group-sm">
+                    <p>
+                        <label id="name-label">Email Address</label>
+                    </p>
+                    <input type="text" name="contact_email" id="email" class="form-control"  placeholder="Enter the email address"/>
+                </div>
+                <div class="form-group input-group-sm">
+                    <p>
+                        <label id="name-label">Company/Contact Name</label>
+                    </p>
+                    <input type="text" name="all_names" id="name" class="form-control"  placeholder="Enter the name of the company/contact"/>
+                </div>
+                <div class="form-group">
+                    <p>
+                        <label>Telephone (optional)</label>
+                    </p>
+                    <input type="text" name="all_phone" id="telephone"  class="form-control" placeholder="Enter the telephone"/>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <div class="panel panel-default" style="overflow:visible">
-                        <div class="panel-heading" role="tab" id="headingOne">
+                        <div class="panel-body" role="tab" id="headingOne" style="background-color: #e9e9e9">
 
                             <div style="display:inline-block;width:30%">
                                 <label>Postcode</label>
@@ -44,7 +68,7 @@
                             </div>
                             <div class="form-group"  style="padding-top:10px">
                                 <div id="addresspicker-div" style="display:none">
-                                    <select class="form-control addresspicker" placeholder="Address" id="addresspicker">
+                                    <select class="form-control addresspicker" data-size="5" placeholder="Address" id="addresspicker">
                                     </select>
                                 </div>
                             </div>
@@ -80,14 +104,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <p>
-                        <label>Telephone (optional)</label>
-                    </p>
-                    <input type="text" name="" id="telephone"  class="form-control" placeholder="Enter the telephone"/>
-                </div>
             </div>
         </form>
     </div>
-    <div class="col-sm-12 col-lg-8" id="dupes-found" style="max-height: 450px; overflow: auto"></div>
+    <div class="col-sm-12 col-lg-8" id="dupes-found" style="max-height: 500px; overflow: auto"></div>
 </div>

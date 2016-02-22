@@ -885,21 +885,22 @@ var modals = {
             modal_dialog.css('width', "90%");
             modal_body.find('#addresspicker-div').hide();
             modal_body.find('.record-form').find('input[name="house-number"]').numeric();
+
+            $('.record-form').on("keyup keypress", function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
         });
     },
     search_records_func: function(data_action){
-        if(modal_body.find('#name').val()==""){
-            flashalert.danger("Please enter a name");
-        }
-        //else if ($('#postcode').val() == "" && $('#add1').val() == "" || $('#company_add1').val() == "" && $('#company_postcode').val()) {
-        //   flashalert.danger("Please enter a postcode");
-        //}
-        else if(modal_body.find('#postcode').val()==""&&modal_body.find('#add1').val()==""&&modal_body.find('#name').val()!="") {
-            modal_body.find('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-info-sign'></span> Can not check for duplicates without a postcode. Click the create new button to add it anyway</p>");
-            //$('#save-btn').show();
+        if(modal_body.find('#campaign').val()==""){
+            flashalert.danger("Please select a campaign");
         } else {
             $.ajax({
-                url: helper.baseUrl + 'search/quicksearch',
+                url: helper.baseUrl + 'search/search_records',
                 type: "POST",
                 dataType: "JSON",
                 data: modal_body.find('.record-form').serialize(),
@@ -924,13 +925,12 @@ var modals = {
                         });
                         table += "</tbody></table></div>";
                         modal_body.find('#dupes-found').html(table);
-                        //$('#save-btn').show();
                     } else {
                         modal_body.find('#dupes-found').html("<p class='text-success'><span class='glyphicon glyphicon-ok'></span> No Records were found.</p>");
-                        //$('#save-btn').show();
                     }
                 } else {
-                    flashalert.danger(response.error);
+                    flashalert.danger(response.msg);
+                    modal_body.find('#dupes-found').html("<p class='text-danger'><span class='glyphicon glyphicon-ok'></span> "+response.msg+"</p>");
                 }
             })
         }
@@ -955,7 +955,7 @@ var modals = {
                 var options = "<option value=''>Select one address...</option>";
 
                 $.each(response.data, function (i, val) {
-                    options += '<option value="' + i + '">' +
+                    var option =
                         (val.add1 ? val.add1 : '') +
                         (val.add2 ? ", " + val.add2 : '') +
                         (val.add3 ? ", " + val.add3 : '') +
@@ -964,7 +964,15 @@ var modals = {
                         (val.city ? ", " + val.city : '') +
                         (val.county ? ", " + val.county : '') +
                         (typeof val.postcode_io.country != "undefined" ? ", " + val.postcode_io.country : '') +
-                        (val.postcode ? ", " + val.postcode : '') +
+                        (val.postcode ? ", " + val.postcode : '');
+
+                    if(option.length>30)
+                    {
+                        option = option.substr(0,30)+'...';
+                    }
+
+                    options += '<option value="' + i + '">' +
+                            option +
                         '</option>';
                 });
                 modal_body.find('.record-form').find('#addresspicker')
@@ -987,11 +995,11 @@ var modals = {
                         .val(response.address_selected)
                         .selectpicker('refresh');
                 }
-                modal_body.css('overflow', 'auto');
+                //modal_body.css('overflow', 'auto');
                 modal_body.find('#addresspicker-div').show();
             }
             else {
-                modal_body.css('overflow', 'auto');
+                //modal_body.css('overflow', 'auto');
                 modal_body.find('#addresspicker-div').hide();
                 flashalert.danger("No address was found. Please enter manually");
                 modal_body.find('#complete-address').trigger('click');

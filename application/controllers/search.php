@@ -48,31 +48,31 @@ class Search extends CI_Controller
 		}  
 		if($this->input->post('contact_postcode')) {
 			$type = "b2c";
-		$postcode = str_replace(" ","",postcodeFormat($this->input->post('contact_postcode')));
+			$postcode = str_replace(" ","",postcodeFormat($this->input->post('contact_postcode')));
 		} 
 		if($this->input->post('contact_add1')){
 			$type = "b2c";
-		$add1 = trim(preg_replace('/[a-zA-Z]/', '', $this->input->post('contact_add1')));
+			$add1 = trim(preg_replace('/[a-zA-Z]/', '', $this->input->post('contact_add1')));
 		}
 		if($this->input->post('contact_telephone')) {
 			$type = "b2c";
-		$telephone = $this->input->post('contact_telephone');
+			$telephone = $this->input->post('contact_telephone');
 		}  
 		 if($this->input->post('company_postcode')) {
 			 $type = "b2b";
-		$postcode = str_replace(" ","",postcodeFormat($this->input->post('company_postcode')));
+			$postcode = str_replace(" ","",postcodeFormat($this->input->post('company_postcode')));
 		} 
 		if($this->input->post('company_add1')){
 			$type = "b2b";
-		$add1 = trim(preg_replace('/[a-zA-Z]/', '', $this->input->post('company_add1')));
+			$add1 = trim(preg_replace('/[a-zA-Z]/', '', $this->input->post('company_add1')));
 		}
 		if($this->input->post('company_telephone')) {
 			$type = "b2b";
 			$telephone=$this->input->post('company_telephone');
 		} 
 		if($this->input->post('company_name')) { 
-		$type = "b2b";
-		$company = str_ireplace(array(" ltd"," plc"," limited"," uk","-","(uk)"," "),array("","","","","","",""),strtolower($this->input->post('company_name')));
+			$type = "b2b";
+			$company = str_ireplace(array(" ltd"," plc"," limited"," uk","-","(uk)"," "),array("","","","","","",""),strtolower($this->input->post('company_name')));
 			$names = $this->Filter_model->get_companies_from_initial($company,$campaigns);
             $all_company_names = array();
 			foreach($names as $row){
@@ -87,7 +87,7 @@ class Search extends CI_Controller
 			if(count($company_names)==0){
 			$company_names=array($company);
 			} 
-		} 
+		}
 		$result = $this->Filter_model->quicksearch($type,$company_names,$postcode,$add1,$telephone,$campaigns,$ref);
 		echo json_encode(array("success"=>true,"data"=>$result));	
 
@@ -324,6 +324,39 @@ class Search extends CI_Controller
             ));
         }
     }
+
+	public function search_records()
+	{
+		if ($this->input->is_ajax_request()) {
+			$filter = $this->input->post();
+			$clean_filter = array_escape(array_filter($filter));
+            unset($clean_filter['campaign_id']);
+			if(count($clean_filter)==0){
+				echo json_encode(array(
+					"success" => false,
+					"msg" => "No search critera was entered"
+				));
+				exit;
+			}
+            $clean_filter['campaign_id'] = $this->input->post('campaign_id');
+
+			if(!in_array("search campaigns",$_SESSION['permissions'])){
+				$filter['campaign_id']=array($_SESSION['current_campaign']);
+			}
+
+			$urn_array   = $this->Filter_model->count_records($clean_filter);
+            $urn_ids = array();
+            foreach ($urn_array['data'] as $item) {
+                array_push($urn_ids, $item['urn']);
+            }
+			$data = (count($urn_ids) > 0 ? $this->Records_model->get_complete_records_by_urn_list($urn_ids):array());
+
+			echo json_encode(array(
+				"success" => true,
+				"data" => $data
+			));
+		}
+	}
 
     public function get_urn_list()
     {
