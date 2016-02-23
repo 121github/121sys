@@ -1089,6 +1089,17 @@ class Ajax extends CI_Controller
         }
     }
 
+    public function get_record_details() {
+        if ($this->input->is_ajax_request()) {
+            $urn = intval($this->input->post('urn'));
+            $record_details = $this->Records_model->get_record_details($urn);
+            echo json_encode(array(
+                "success" => true,
+                "record_details" => $record_details
+            ));
+        }
+    }
+
     public function get_additional_info()
     {
         if ($this->input->is_ajax_request()) {

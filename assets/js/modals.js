@@ -432,6 +432,9 @@ var modals = {
                 if(typeof calendar !== "undefined"){
                     calendar.view();
                 }
+                if(typeof campaign_functions !== "undefined"){
+                    campaign_functions.set_date_survey_delivery(response.data);
+                }
                 if (response.trackvia) {
                     $.post(response.trackvia, {urn: response.urn});
                 }
@@ -766,7 +769,7 @@ var modals = {
             modals.appointment_contacts(urn);
 			if(typeof campaign_functions !== "undefined"){
 				if(typeof campaign_functions.appointment_setup !== "undefined"){
-				campaign_functions.appointment_setup(start);
+				    campaign_functions.appointment_setup(start);
 				}
 			} else if (quick_planner !== "undefined") {
 				quick_planner.appointment_setup(start);

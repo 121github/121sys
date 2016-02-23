@@ -1192,6 +1192,13 @@ return $comments;
         return $this->db->query($qry)->result_array();
     }
 
+    public function get_record_details($urn)
+    {
+        $qry = "select * from record_details where urn = '$urn'";
+        $query = $this->db->query($qry);
+        return $query->result_array();
+    }
+
     public function get_additional_info($urn = false, $campaign, $id = false)
     {
         $fields_qry = "select `field`,`field_name`,`is_select`,is_buttons,is_decimal,is_radio,is_renewal,format,editable,is_owner from record_details_fields where campaign_id = '$campaign' and is_visible = 1 order by sort";
