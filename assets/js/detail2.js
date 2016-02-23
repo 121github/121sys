@@ -2170,6 +2170,9 @@ var record = {
 					}
                 }).done(function (response) {
                     record.additional_info.load_form(response.data, id);
+                    if(typeof campaign_functions !== "undefined"){
+                        campaign_functions.edit_custom_fields();
+                    }
                 });
             });
         },

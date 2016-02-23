@@ -433,7 +433,7 @@ var modals = {
                     calendar.view();
                 }
                 if(typeof campaign_functions !== "undefined"){
-                    campaign_functions.set_date_survey_delivery(response.data);
+                    campaign_functions.save_appointment(response.data);
                 }
                 if (response.trackvia) {
                     $.post(response.trackvia, {urn: response.urn});

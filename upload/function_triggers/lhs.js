@@ -20,7 +20,7 @@ var campaign_functions = {
             enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
         });
     },
-    set_date_survey_delivery: function(appointment) {
+    save_appointment: function(appointment) {
         //Get the additional info
         $.ajax({
             url: helper.baseUrl + 'ajax/get_record_details',
@@ -43,6 +43,7 @@ var campaign_functions = {
             //Create a new job reference (job status)
             if (!record_details) {
                 record_details = {
+                    'c2': 'Confirmed Appointment',
                     'c9': appointment.appointment_id,
                 };
             }
@@ -79,6 +80,7 @@ var campaign_functions = {
                     urn: appointment.urn,
                     d1: record_details.d1,
                     c1: record_details.c1,
+                    c2: record_details.c2,
                     c9: record_details.c9,
                     detail_id: record_details.detail_id
                 }
@@ -87,6 +89,16 @@ var campaign_functions = {
                 record.additional_info.load_panel();
             });
         });
+    },
+    edit_custom_fields: function() {
+        //Enable Job Status Dropdown since the job reference is set
+        var record_details_panel = $('#custom-panel');
+        if (record_details_panel.find('input[name="c1"]') &&
+            record_details_panel.find('input[name="c1"]').val() !== null &&
+            record_details_panel.find('input[name="c1"]').val().length>0)
+        {
+            $('#custom-panel').find('select[name="c2"]').attr('disabled',false).selectpicker('refresh');
+        }
     }
 
 }
