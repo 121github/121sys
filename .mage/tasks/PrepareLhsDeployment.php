@@ -22,7 +22,7 @@ class PrepareLhsDeployment extends AbstractTask
             'find . -type f -exec chmod 644 {} \;',
             'find . -type d -exec chmod 755 {} \;',
             'chmod -R 777 importcsv.sh',
-            'scp jenkins@10.10.1.15:/var/lib/jenkins/jobs/121Sys/workspace/upload/function_triggers/lhs.js upload/function_triggers/lhs.js'
+            'mkdir -p upload/function_triggers',
         );
 
         $command = implode(" && ", $commandList);
