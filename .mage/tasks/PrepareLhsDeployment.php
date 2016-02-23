@@ -21,7 +21,8 @@ class PrepareLhsDeployment extends AbstractTask
             'setfacl -dR -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
             'find . -type f -exec chmod 644 {} \;',
             'find . -type d -exec chmod 755 {} \;',
-            'chmod -R 777 importcsv.sh'
+            'chmod -R 777 importcsv.sh',
+            'scp jenkins@10.10.1.15:/var/lib/jenkins/jobs/121Sys/workspace/upload/function_triggers/lhs.js upload/function_triggers/lhs.js'
         );
 
         $command = implode(" && ", $commandList);
