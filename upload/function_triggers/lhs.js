@@ -28,7 +28,25 @@ var campaign_functions = {
             dataType: "JSON",
             data: {urn: appointment.urn}
         }).done(function (response) {
-            var record_details = response.record_details[0];
+            var record_details = null;
+            $.each(response.record_details, function (key, val) {
+                //If the job reference already exists or exists the job status with a null reference number
+                //We will use this record_detail
+                if (appointment.appointment_id == val.c1) {
+                    record_details = val;
+                }
+                else if (!val.c1 || val.c1 == '' || val.c1 === null){
+                    val.c1 = appointment.appointment_id;
+                    record_details = val;
+                }
+            });
+            //Create a new job reference (job status)
+            if (!record_details) {
+                record_details = {
+                    'c1': appointment.appointment_id,
+                };
+            }
+
             var start_date  = new Date(appointment.start.substr(0, 10));
             if (appointment.appointment_confirmed == "1") {
                 //If the ‘Express Report’ tick box is selected
@@ -45,12 +63,6 @@ var campaign_functions = {
                 record_details.d1 = ((''+day).length<2 ? '0' : '') + day + '/' +
                     ((''+month).length<2 ? '0' : '') + month + '/' +
                     start_date.getFullYear();
-
-
-                //If confirmed, set the job reference if it is already null
-                if (!record_details.c1) {
-                    record_details.c1 = appointment.appointment_id;
-                }
             }
             else {
                 //Set the date to null if the appointment is not confirmed
