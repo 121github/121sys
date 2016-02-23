@@ -182,7 +182,6 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <?php if (!isset($page)) {
                     $page = "";
                 }
-                $page = array("page" => $page);
                 $this->view('navigation/dashboards.php', $page);
                 $this->view('navigation/records.php', $page);
                 $this->view('navigation/files.php', $page);

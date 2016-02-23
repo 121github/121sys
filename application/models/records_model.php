@@ -1269,12 +1269,14 @@ return $comments;
                     } else if (substr($stuff1[$k], 1, 1) == "t") {
                         $info[$id][$k]["type"] = "datetime";
                         $info[$id][$k]["value"] = (!empty($v) ? date("d/m/Y H:i", strtotime($v)) : "-");
-                    } else if (strpos($stuff1[$k], "n") !== false&&!empty($v)) {
+                    } else if (strpos($stuff1[$k], "n") !== false) {
                         $info[$id][$k]["type"] = "number";
+						if(!empty($v)){
 						if($info[$id][$k]["is_decimal"]=="1"){
 						$info[$id][$k]["value"] = number_format($v,2);
 						} else {
 						$info[$id][$k]["value"] = number_format($v);
+						}
 						}
                     } else {
                         $info[$id][$k]["type"] = "date";

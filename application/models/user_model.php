@@ -125,10 +125,11 @@ class User_model extends CI_Model
 		if(!empty($result['landing_page'])){
 		$_SESSION['home']  = $result['landing_page'];
 		}
-        $theme      = $this->db->query("select theme_images,theme_color from user_groups where group_id = '" . $_SESSION['group'] . "'")->row();
-        if (!empty($theme_folder)) {
-            $_SESSION['theme_images'] = $theme->theme_images;
-			$_SESSION['theme_color'] = $theme->theme_color;
+		$theme_query = $this->db->query("select theme_images,theme_color from user_groups where group_id = '" . $_SESSION['group'] . "'");
+        if ($theme_query->num_rows()>0) {
+			 $theme      = $theme_query->row();
+           $_SESSION['theme_images'] = $theme->theme_images;
+		   $_SESSION['theme_color'] = $theme->theme_color;
         }
 		//check if the user has picked a color and override the default
 		$user_color      = $this->db->query("select theme_color from users where user_id = '" . $_SESSION['user_id'] . "' and theme_color <> ''");

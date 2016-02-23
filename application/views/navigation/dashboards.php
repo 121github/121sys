@@ -48,6 +48,7 @@
             var dashboards = "";
             if (response.success) {
                 $.each(response.dashboards, function (i, val) {
+					
                     var page = "<?php echo $page ?>";
                     dashboards += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
                 });
