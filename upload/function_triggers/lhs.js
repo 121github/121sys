@@ -45,6 +45,12 @@ var campaign_functions = {
                 record_details.d1 = ((''+day).length<2 ? '0' : '') + day + '/' +
                     ((''+month).length<2 ? '0' : '') + month + '/' +
                     start_date.getFullYear();
+
+
+                //If confirmed, set the job reference if it is already null
+                if (!record_details.c1) {
+                    record_details.c1 = appointment.appointment_id;
+                }
             }
             else {
                 //Set the date to null if the appointment is not confirmed
@@ -55,7 +61,12 @@ var campaign_functions = {
                 url: helper.baseUrl + 'ajax/save_additional_info',
                 type: "POST",
                 dataType: "JSON",
-                data: {urn: appointment.urn, d1: record_details.d1, detail_id: record_details.detail_id}
+                data: {
+                    urn: appointment.urn,
+                    d1: record_details.d1,
+                    c1: record_details.c1,
+                    detail_id: record_details.detail_id
+                }
             }).done(function (response) {
                 flashalert.success("Survey Delivery Date Updated");
                 record.additional_info.load_panel();
