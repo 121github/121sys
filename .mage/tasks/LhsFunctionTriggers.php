@@ -14,7 +14,7 @@ class LhsFunctionTriggers extends AbstractTask
     public function run()
     {
         $commandList = array(
-            'scp -P2020 upload/function_triggers/lhs.js one2one@www.leadcontrol.co.uk:/www/121sys_lhs/upload/function_triggers/lhs.js'
+            'scp -P2020 upload/function_triggers/lhs.js one2one@www.leadcontrol.co.uk:www/121sys_lhs/upload/function_triggers/lhs.js'
         );
 
         $command = implode(" && ", $commandList);
