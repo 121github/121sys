@@ -32,18 +32,18 @@ var campaign_functions = {
             $.each(response.record_details, function (key, val) {
                 //If the job reference already exists or exists the job status with a null reference number
                 //We will use this record_detail
-                if (appointment.appointment_id == val.c1) {
+                if (appointment.appointment_id == val.c9) {
                     record_details = val;
                 }
-                else if (!val.c1 || val.c1 == '' || val.c1 === null){
-                    val.c1 = appointment.appointment_id;
+                else if (!val.c9 || val.c9 == '' || val.c9 === null){
+                    val.c9 = appointment.appointment_id;
                     record_details = val;
                 }
             });
             //Create a new job reference (job status)
             if (!record_details) {
                 record_details = {
-                    'c1': appointment.appointment_id,
+                    'c9': appointment.appointment_id,
                 };
             }
 
@@ -63,6 +63,8 @@ var campaign_functions = {
                 record_details.d1 = ((''+day).length<2 ? '0' : '') + day + '/' +
                     ((''+month).length<2 ? '0' : '') + month + '/' +
                     start_date.getFullYear();
+
+                record_details.c1 = "#"+appointment.appointment_id;
             }
             else {
                 //Set the date to null if the appointment is not confirmed
@@ -77,6 +79,7 @@ var campaign_functions = {
                     urn: appointment.urn,
                     d1: record_details.d1,
                     c1: record_details.c1,
+                    c9: record_details.c9,
                     detail_id: record_details.detail_id
                 }
             }).done(function (response) {
