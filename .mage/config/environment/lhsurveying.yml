@@ -23,4 +23,3 @@ tasks:
   post-release:
     - databaseBackup: {user: one2one_lhs, pass: Og0ZnpvE2pus, host: localhost, database: one2one_lhs}
   post-deploy:
-    - lhsFunctionTriggers
