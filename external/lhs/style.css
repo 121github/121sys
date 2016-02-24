@@ -1,0 +1,35 @@
+/* CSS Document */
+
+/*   
+Theme Name: tbgd
+Theme URI: http://www.tbgd.co.uk
+Description: A minimalist theme by Thom Bennett. 
+Author: Thom Bennett
+Author URI: http://www.tbgd.co.uk
+Version: 0.1
+*/
+
+@import "style/css/reset.css";
+@import "style/css/typography.css";
+@import "style/css/layout.css";
+
+@import "style/css/lhs.css";
+
+html, body { height:auto;}
+#topTab {
+    margin: 0 auto 0 auto;
+    height: auto;
+}
+#container {
+    width: 940px;
+    height: auto;
+    margin: auto;
+    text-align: left;
+    position: relative;
+    clear: left;
+	margin-top: 20px;
+    margin-bottom: 20px;
+}
+#hometabs { margin-top:-40px; position:relative; z-index:1000;}
+#navContainerVert ul li.expand {font-size:15px; font-weight:bold; margin-bottom:5px; margin-top:5px;}
+#navContainerVert ul li.expand .collapse li {font-size:13px; font-weight:normal; margin-bottom:1px; margin-top:1px;}
