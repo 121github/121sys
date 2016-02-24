@@ -43,7 +43,7 @@ public function index(){
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-            'page' => array("dashboard"=>"overview"),
+            'page' => "overview",
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -73,7 +73,7 @@ public function index(){
 
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-            'page' => array("dashboard"=>"eldon"),
+            'page' => "eldon",
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -101,7 +101,7 @@ public function index(){
 
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-             'page' => array("dashboard"=>"hsl_dash"),
+             'page' => "hsl_dash",
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -161,7 +161,7 @@ public function index(){
 
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-             'page' => array("dashboard"=>"overview"),
+             'page' => "overview",
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -211,7 +211,7 @@ public function index(){
 
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-            'page' => array('dashboard'=>'callback_dash'),
+            'page' => 'callback_dash',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -286,7 +286,7 @@ public function index(){
 
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-               'page' => array('dashboard'=>'favorites_dash'),
+               'page' => 'favorites_dash',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -327,7 +327,7 @@ public function index(){
 
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-               'page' => array('dashboard'=>'client_dash'),
+               'page' => 'client_dash',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version
@@ -352,7 +352,7 @@ public function index(){
 
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-                'page' => array('dashboard'=>'nbf_dash'),
+                'page' =>'nbf_dash',
             'campaigns' => $campaigns,
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
@@ -379,7 +379,7 @@ public function index(){
 
             'pageId' => 'Dashboard',
             'title' => 'Dashboard',
-               'page' => array('dashboard'=>'management_dash'),
+               'page' => 'management_dash',
             'javascript' => array(
                 'charts.js?v' . $this->project_version,
                 'dashboard.js?v' . $this->project_version,
@@ -1113,7 +1113,7 @@ public function index(){
             'campaign_access' => $this->_campaigns,
             'pageId' => 'Dashboard',
             'title' => 'Dashboard-Settings',
-                'page' => array('dashboard'=>'dash_settings'),
+                'page' => 'dash_settings',
             'javascript' => array(
                 'dashboard.js?v' . $this->project_version
             ),
@@ -1264,7 +1264,7 @@ public function index(){
                     'campaign_access' => $this->_campaigns,
                     'pageId' => 'Dashboard',
                     'title' => 'Dashboard - '.$dashboard['name'],
-                   'page' => array('dashboard'=>$dashboard['name']),
+                   'page' => $dashboard['name'],
                     'dashboard' => $dashboard,
                     'agents' => $agents,
                     'team_managers' => $teamManagers,
@@ -1293,7 +1293,7 @@ public function index(){
                     'campaign_access' => $this->_campaigns,
                     'pageId' => 'Dashboard',
                     'title' => 'Dashboard - ERROR',
-                       'page' => array('dashboard'=>'dashboard-error'),
+                       'page' => 'dashboard-error',
                     'error' => "ERROR => There is no dashboard with this id or you don't have permissions to access!",
                     'javascript' => array(
                         'dashboard.js?v' . $this->project_version
@@ -1313,7 +1313,7 @@ public function index(){
                 'campaign_access' => $this->_campaigns,
                 'pageId' => 'Dashboard',
                 'title' => 'Dashboard - ERROR',
-                  'page' => array('dashboard'=>'dashboard-error'),
+                  'page' => 'dashboard-error',
                 'error' => "ERROR => There is an error on the url!",
                 'javascript' => array(
                     'dashboard.js?v' . $this->project_version

@@ -193,7 +193,7 @@ class User extends CI_Controller
         $data = array(
             'campaign_access' => $campaign_access,
             'pageId' => 'my-account',
-            'page' => array('records' => 'account'),
+            'page' => 'account',
             'pageClass' => 'my-account',
             'title' => 'My Account',
             'roles' => $roles,

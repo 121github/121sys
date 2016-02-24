@@ -507,7 +507,7 @@ echo json_encode(array("success"=>true,"waypoints"=>$data,"stats"=>$travel_info,
 
             'pageId' => 'System planner',
             'title' => 'Planner',
-            'page' => array('dashboard' => 'planner'),
+            'page' =>  'planner',
             'campaign_branch_users' => $campaign_branch_users,
             'user_id' => $user_id,
 			'drivers' => $drivers,
