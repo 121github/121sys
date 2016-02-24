@@ -6,12 +6,12 @@ var eldon = {
 		   $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
-                    'Over 1 Week': [moment().subtract('year', 5), moment().subtract('days', 7)],
-                    'Over 1 Month': [moment().subtract('year', 5), moment().subtract('month', 1)],
-                    'Over 3 Months': [moment().subtract('year', 5), moment().subtract('month', 3)],
-                    'Over 6 Month': [moment().subtract('year', 5),moment().subtract('month', 6)],
-                    'Over 1 Year': [moment().subtract('year', 5), moment().subtract('month', 12)],
-                    'Never': [moment().subtract('year', 5), moment().subtract('month', 1)]
+                    'Over 1 Week': [moment().subtract(5,'year'), moment().subtract(7,'days')],
+                    'Over 1 Month': [moment().subtract(5,'year'), moment().subtract(1,'month')],
+                    'Over 3 Months': [moment().subtract(5,'year'), moment().subtract(3,'month')],
+                    'Over 6 Month': [moment().subtract(5,'year'),moment().subtract(6,'month')],
+                    'Over 1 Year': [moment().subtract(5,'year'), moment().subtract(12,'month')],
+                    'Never': [moment().subtract(5,'year'), moment().subtract(1,'month')]
                 },
                 format: 'DD/MM/YYYY',
                 minDate: "01/01/2010",

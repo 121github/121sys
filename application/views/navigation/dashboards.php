@@ -49,7 +49,7 @@
             if (response.success) {
                 $.each(response.dashboards, function (i, val) {
 					
-                    var page = "<?php echo $page ?>";
+                    var page = "<?php echo reset($page) ?>";
                     dashboards += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
                 });
                 $('#dashboards ul').append(dashboards);

@@ -109,9 +109,9 @@
                 opens: "left",
                 ranges: {
                     'Todays': [moment(), moment()],
-                    'Tomorrow': [moment().add('days', 1), moment().add('days', 1)],
+                    'Tomorrow': [moment().add(1,'days'), moment().add('days', 1)],
                     'Missed': [moment('2014-01-01'), moment()],
-                    'Upcoming': [moment().subtract('hours', 1),moment('2020-01-01')]
+                    'Upcoming': [moment().subtract(1,'hours'),moment('2020-01-01')]
                 },
                 format: 'DD/MM/YYYY HH:mm',
                 minDate: "02/07/2014",
