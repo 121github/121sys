@@ -20,7 +20,7 @@ var campaign_functions = {
             enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
         });
     },
-    set_date_survey_delivery: function(appointment) {
+    save_appointment: function(appointment) {
         //Get the additional info
         $.ajax({
             url: helper.baseUrl + 'ajax/get_record_details',
@@ -28,7 +28,26 @@ var campaign_functions = {
             dataType: "JSON",
             data: {urn: appointment.urn}
         }).done(function (response) {
-            var record_details = response.record_details[0];
+            var record_details = null;
+            $.each(response.record_details, function (key, val) {
+                //If the job reference already exists or exists the job status with a null reference number
+                //We will use this record_detail
+                if (appointment.appointment_id == val.c9) {
+                    record_details = val;
+                }
+                else if (!val.c9 || val.c9 == '' || val.c9 === null){
+                    val.c9 = appointment.appointment_id;
+                    record_details = val;
+                }
+            });
+            //Create a new job reference (job status)
+            if (!record_details) {
+                record_details = {
+                    'c2': 'Confirmed Appointment',
+                    'c9': appointment.appointment_id,
+                };
+            }
+
             var start_date  = new Date(appointment.start.substr(0, 10));
             if (appointment.appointment_confirmed == "1") {
                 //If the ‘Express Report’ tick box is selected
@@ -46,11 +65,7 @@ var campaign_functions = {
                     ((''+month).length<2 ? '0' : '') + month + '/' +
                     start_date.getFullYear();
 
-
-                //If confirmed, set the job reference if it is already null
-                if (!record_details.c1) {
-                    record_details.c1 = appointment.appointment_id;
-                }
+                record_details.c1 = "#"+appointment.appointment_id;
             }
             else {
                 //Set the date to null if the appointment is not confirmed
@@ -65,6 +80,8 @@ var campaign_functions = {
                     urn: appointment.urn,
                     d1: record_details.d1,
                     c1: record_details.c1,
+                    c2: record_details.c2,
+                    c9: record_details.c9,
                     detail_id: record_details.detail_id
                 }
             }).done(function (response) {
@@ -72,6 +89,16 @@ var campaign_functions = {
                 record.additional_info.load_panel();
             });
         });
+    },
+    edit_custom_fields: function() {
+        //Enable Job Status Dropdown since the job reference is set
+        var record_details_panel = $('#custom-panel');
+        if (record_details_panel.find('input[name="c1"]') &&
+            record_details_panel.find('input[name="c1"]').val() !== null &&
+            record_details_panel.find('input[name="c1"]').val().length>0)
+        {
+            $('#custom-panel').find('select[name="c2"]').attr('disabled',false).selectpicker('refresh');
+        }
     }
 
 }
