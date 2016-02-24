@@ -474,7 +474,16 @@ var dashboard = {
             }
         }).done(function (response) {
             $('#system-stats').empty();
-            $contents = '<div><h4>Campaign Stats</h4><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
+            $contents = '<div><h4>Campaign Stats</h4><p><a href="' + response.data.virgin_url + '">' + response.data.virgin + '</a> records have yet to be called.'
+			  if (helper.permissions['view live'] > 0) {
+			 $contents += '<br><a href="' + response.data.active_url + '">' + response.data.active + '</a> records are in progress'
+			  }
+			 if (helper.permissions['view parked'] > 0) {
+			$contents += '<br><a href="' + response.data.parked_url + '">' + response.data.parked + '</a> records have been parked'
+			 }
+			 if (helper.permissions['view dead'] > 0) {
+			'<br><a href="' + response.data.dead_url + '">' + response.data.dead + '</a> records are dead</p></div>';
+			 }
             if (helper.permissions['set progress'] > 0) {
                 $contents += '<div><h4>Follow up Stats</h4></div><div><p><a href="' + response.data.pending_url + '">' + response.data.pending + '</a> records are pending.<br><a href="' + response.data.in_progress_url + '">' + response.data.in_progress + '</a> records are in progress<br><a href="' + response.data.completed_url + '">' + response.data.completed + '</a> records have been completed</div>';
             }

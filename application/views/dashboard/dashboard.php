@@ -155,9 +155,8 @@
     <!-- /.col-lg-8 -->
 
     <div class="col-lg-4">
-        <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
             <div class="panel panel-primary">
-                <div class="panel-heading clearfix"><i class="fa fa-list-alt fa-fw"></i> System Statistics
+                <div class="panel-heading clearfix"><i class="fa fa-list-alt fa-fw"></i>Statistics
                     <div class="pull-right">
                         <div class="pull-right" style="border:0px solid black;">
                             <a href="#filter-right" class="btn btn-default btn-xs">
@@ -217,7 +216,6 @@
                 </div>
                 <!-- /.panel-body -->
             </div>
-        <?php } ?>
         <?php if (in_array("email", $_SESSION['permissions'])) { ?>
             <div class="panel panel-primary">
                 <div class="panel-heading clearfix"><i class="fa fa-envelope-o fa-fw"></i> Email Statistics
@@ -387,7 +385,11 @@
         dashboard.outcomes_panel();
         dashboard.system_stats();
         dashboard.comments_panel();
+		 <?php if (in_array("email", $_SESSION['permissions'])) { ?>
         dashboard.emails_panel();
+		<?php } ?>
+		 <?php if (in_array("sms", $_SESSION['permissions'])) { ?>
         dashboard.sms_panel();
+		<?php } ?>
     });
 </script>
