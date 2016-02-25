@@ -1,15 +1,15 @@
 <form style="padding:0 20px;" id="appointment-form" class="form-horizontal">
     <input type="hidden" name="appointment_id">
     <input type="hidden" name="urn" value="<?php echo $urn ?>">
-    <?php if(in_array("confirm appointment", $_SESSION['permissions'])){ ?>
- <input type="hidden" name="appointment_confirmed" value="0">
- <?php } ?>
+    <?php if (in_array("confirm appointment", $_SESSION['permissions'])) { ?>
+        <input type="hidden" name="appointment_confirmed" value="0">
+    <?php } ?>
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">
                 <p>Please enter a title for the appointment <span class='tt glyphicon glyphicon-question-sign'
-                                                                 data-toggle="tooltip"
-                                                                 data-title="Try to include the company or contact name"></span>
+                                                                  data-toggle="tooltip"
+                                                                  data-title="Try to include the company or contact name"></span>
                 </p>
                 <input type="text" class="form-control" name="title" style="width:95%"
                        placeholder="Eg: Meeting with Joe Bloggs" required/>
@@ -55,8 +55,9 @@
     <div class="row">
         <div class="col-xs-12 col-xs-6 attendees-selection">
             <div class="form-group input-group-sm">
-                <p>Please choose the attendee(s) <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
-                                                    data-title="Whoever the appointment is set for will recieve an email notification containing all the details"></span>
+                <p>Please choose the attendee(s) <span class='tt glyphicon glyphicon-question-sign'
+                                                       data-toggle="tooltip"
+                                                       data-title="Whoever the appointment is set for will recieve an email notification containing all the details"></span>
                 </p>
                 <select name="attendees[]" id="attendee-select" class="selectpicker attendeepicker"
                         title="Choose the attendees" data-width="95%" required>
@@ -92,6 +93,8 @@
         </div>
 
     </div>
+
+    <!-- APPOINTMENT ADDRESS -->
     <div class="row" id="select-appointment-address" <?php if (count($addresses) == 0) {
         echo 'style="display:none"';
     } ?>>
@@ -99,78 +102,179 @@
         <div class="col-lg-12">
             <div class="form-group input-group-sm">
                 <p>Please select the address the appointment will take place</p>
-                <select name="address" class="selectpicker addresspicker" id="addresspicker" title="Choose the address"
-                        data-width="100%">
+                <select name="address" class="selectpicker addresspicker" id="addresspicker" title="Choose the address" data-width="100%">
                     <?php foreach ($addresses as $address):
                         $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
                         $add1 = (isset($address['add1']) && !empty($address['add1']) ? $address['add1'] : "");
-                        $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", ".$address['add2'] : "");
-                        $add3 = (isset($address['add3']) && !empty($address['add3']) ? ", ".$address['add3'] : "");
+                        $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", " . $address['add2'] : "");
+                        $add3 = (isset($address['add3']) && !empty($address['add3']) ? ", " . $address['add3'] : "");
                         $add4 = (isset($address['add4']) && !empty($address['add4']) ? ", " . $address['add4'] : "");
                         $locality = (isset($address['locality']) && !empty($address['locality']) ? ", " . $address['locality'] : "");
                         $city = (isset($address['city']) && !empty($address['city']) ? ", " . $address['city'] : "");
-                        $county = (isset($address['county']) && !empty($address['county']) ? ", ".$address['county']:"");
+                        $county = (isset($address['county']) && !empty($address['county']) ? ", " . $address['county'] : "");
                         $country = (isset($address['country']) && !empty($address['country']) ? ", " . $address['country'] : "");
                         $add = $add1 . $add2 . $add3 . $add4 . $locality . $city . $county . $country;
                         $add .= (!empty($address['postcode']) ? ", " . $address['postcode'] : " - This address has no postcode!");
                         ?>
-                        <option <?php if (count($addresses)=="1"){ echo "selected"; }
-						if (empty($address['postcode'])) {
-                            echo "disabled";
-                        } ?> value="<?php echo $add . "|" . $address['postcode'] ?>"><?php echo $add ?></option>
+                        <option
+                            <?php if (count($addresses) == "1") {
+                                echo "selected";
+                            }
+                            if (empty($address['postcode'])) {
+                                echo "disabled";
+                            } ?>
+                            value="<?php echo $add . "|" . $address['postcode'] ?>"
+                            data-title = "<?php echo $address['description'] ?>"
+                        >
+                            <?php echo $add ?>
+                        </option>
                     <?php endforeach; ?>
                     <option value="Other">Other</option>
                 </select>&nbsp;
             </div>
         </div>
     </div>
-</form>
-<div id="add-appointment-address" <?php if (count($addresses) > 0) {
-    echo 'style="display:none"';
-} ?> >
-    <p>Please enter the address that the appointment will take place</p>
+    <div id="add-appointment-address" <?php if (count($addresses) > 0) {
+        echo 'style="display:none"';
+    } ?> >
+        <p>Please enter the address that the appointment will take place</p>
 
-    <div class="col-sm-12">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group  input-group-sm">
-                    <input name="add1" class="form-control" type="text" style="width:95%"
-                           placeholder="First line of address"/>
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group  input-group-sm">
+                        <input name="add1" class="form-control" type="text" style="width:95%"
+                               placeholder="First line of address"/>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group  input-group-sm">
+                        <input name="add2" class="form-control" type="text" style="width:95%"
+                               placeholder="Second line of address"/>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <div class="form-group  input-group-sm">
-                    <input name="add2" class="form-control" type="text" style="width:95%"
-                           placeholder="Second line of address"/>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group  input-group-sm">
+                        <input name="add3" class="form-control" type="text" style="width:95%"
+                               placeholder="Third line of address"/>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group  input-group-sm">
+                        <input name="county" class="form-control" type="text" style="width:95%" placeholder="County"/>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group  input-group-sm">
-                    <input name="add3" class="form-control" type="text" style="width:95%"
-                           placeholder="Third line of address"/>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group  input-group-sm">
+                        <input name="new_postcode" class="form-control" type="text" style="width:95%"
+                               placeholder="Postcode"/>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group  input-group-sm">
-                    <input name="county" class="form-control" type="text" style="width:95%" placeholder="County"/>
+                <div class="col-sm-6">
+                    <button class="btn btn-default btn-sm" id="cancel-add-address">Cancel</button>
+                    <button class="btn btn-info btn-sm" id="confirm-add-address">Confirm</button>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group  input-group-sm">
-                    <input name="new_postcode" class="form-control" type="text" style="width:95%"
-                           placeholder="Postcode"/>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <button class="btn btn-default btn-sm" id="cancel-add-address">Cancel</button>
-                <button class="btn btn-info btn-sm" id="confirm-add-address">Confirm</button>
             </div>
         </div>
     </div>
-</div>
+
+
+
+    <!-- APPOINTMENT ACCESS ADDRESS -->
+    <div class="checkbox form-group input-group-sm">
+        <label>
+            <input id="access-add-check" data-toggle="toggle" data-width="200" data-onstyle="info" data-on="Access Address Details" data-off="Access Address Details"  name="access_add_check" type="checkbox">
+        </label>
+    </div>
+    <div class="access_addess" style="display: none; margin-top: 10px;">
+        <div class="row" id="select-appointment-access-address" <?php if (count($addresses) == 0) { echo 'style="display:none"';} ?>>
+
+            <div class="col-lg-12">
+                <div class="form-group input-group-sm">
+                    <p>Please select the access address for the appointment</p>
+                    <select name="access_address" class="selectpicker accessaddresspicker" id="accessaddresspicker" title="Choose the address"
+                            data-width="100%">
+                        <?php foreach ($addresses as $address):
+                            $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
+                            $add1 = (isset($address['add1']) && !empty($address['add1']) ? $address['add1'] : "");
+                            $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", " . $address['add2'] : "");
+                            $add3 = (isset($address['add3']) && !empty($address['add3']) ? ", " . $address['add3'] : "");
+                            $add4 = (isset($address['add4']) && !empty($address['add4']) ? ", " . $address['add4'] : "");
+                            $locality = (isset($address['locality']) && !empty($address['locality']) ? ", " . $address['locality'] : "");
+                            $city = (isset($address['city']) && !empty($address['city']) ? ", " . $address['city'] : "");
+                            $county = (isset($address['county']) && !empty($address['county']) ? ", " . $address['county'] : "");
+                            $country = (isset($address['country']) && !empty($address['country']) ? ", " . $address['country'] : "");
+                            $add = $add1 . $add2 . $add3 . $add4 . $locality . $city . $county . $country;
+                            $add .= (!empty($address['postcode']) ? ", " . $address['postcode'] : " - This address has no postcode!");
+                            ?>
+                            <option
+                                <?php if (count($addresses) == "1") {
+                                    echo "selected";
+                                }
+                                if (empty($address['postcode'])) {
+                                    echo "disabled";
+                                } ?>
+                                value="<?php echo $add . "|" . $address['postcode'] ?>"
+                                data-title = "<?php echo $address['description'] ?>"
+                            >
+                                <?php echo $add ?>
+                            </option>
+                        <?php endforeach; ?>
+                        <option value="Other">Other</option>
+                    </select>&nbsp;
+                </div>
+            </div>
+        </div>
+        <div id="add-appointment-access-address" <?php if (count($addresses) > 0) { echo 'style="display:none"'; } ?>>
+            <p>Please select the access address for the appointment</p>
+
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group  input-group-sm">
+                            <input name="access_add1" class="form-control" type="text" style="width:95%"
+                                   placeholder="First line of address"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group  input-group-sm">
+                            <input name="access_add2" class="form-control" type="text" style="width:95%"
+                                   placeholder="Second line of address"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group  input-group-sm">
+                            <input name="access_add3" class="form-control" type="text" style="width:95%"
+                                   placeholder="Third line of address"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group  input-group-sm">
+                            <input name="access_county" class="form-control" type="text" style="width:95%" placeholder="County"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group  input-group-sm">
+                            <input name="access_new_postcode" class="form-control" type="text" style="width:95%"
+                                   placeholder="Postcode"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <button class="btn btn-default btn-sm" id="cancel-add-access-address">Cancel</button>
+                        <button class="btn btn-info btn-sm" id="confirm-add-access-address">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
                              
      

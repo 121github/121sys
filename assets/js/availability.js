@@ -119,7 +119,35 @@ var quick_planner = {
 		}
         $.each(waypoints, function (name, waypoint) {
             if (waypoint.postcode.length > 0) {
-                mbody += '<div style="height:30px; padding:5px; margin:5px; background:#80D6FF;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px; text-align:center"><p><strong>' + (waypoint.title=="This appointment"?'<span style="color:red">'+waypoint.title+'</span>':waypoint.title) + '</strong> [' + waypoint.postcode + ']';
+                var background_color = "#80D6FF";
+                var color = "";
+                switch  (waypoint.type) {
+                    case "customer_postcode":
+                        background_color = "green";
+                        color = "white";
+                        break;
+                    case "access_postcode":
+                        background_color = "lightblue";
+                        color = "";
+                        break;
+                    case "appointment_postcode":
+                        background_color = "darkcyan";
+                        color = "white";
+                        break;
+                    case "start_postcode":
+                        background_color = "lightgrey";
+                        color = "";
+                        break;
+                    case "end_postcode":
+                        background_color = "lightgrey";
+                        color = "";
+                        break;
+                }
+                mbody += '<div style="height:30px; padding:5px; margin:5px; background:'+background_color+';border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px; text-align:center">' +
+                            '<p style="color:'+color+'">' +
+                                '<strong>' +
+                                    '<span>'+waypoint.title+'</span>' +
+                                '</strong> [' + waypoint.postcode + ']';
                 if (typeof waypoint.app_duration !== "undefined") {
                     mbody += waypoint.app_duration
                 }

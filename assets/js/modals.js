@@ -147,6 +147,32 @@ var modals = {
             e.preventDefault();
             modals.confirm_other_appointment_address();
         });
+
+        $modal.on('click', '#cancel-add-access-address', function (e) {
+            ;
+            e.preventDefault();
+            $('#add-appointment-access-address').hide();
+            $('#select-appointment-access-address').show();
+            $modal.find('.accessaddresspicker').selectpicker('val', $('#accessaddresspicker option:first').val());
+        });
+        $modal.on('change', '.accessaddresspicker', function (e) {
+            if ($(this).val() == "Other") {
+                $('#add-appointment-access-address').show();
+                $('#select-appointment-access-address').hide();
+                $modal.find('.accessaddresspicker').val('53');
+            } else {
+                $('#add-appointment-access-address').hide();
+                $('#select-appointment-access-address').show();
+            }
+        });
+        $(document).on('click', '#confirm-add-access-address', function (e) {
+            e.preventDefault();
+            modals.confirm_other_appointment_access_address();
+        });
+
+
+
+
         $(document).on('click', '#load-preview', function () {
             modals.preview_merge();
             modal_body.css('overflow', 'auto');
@@ -645,9 +671,10 @@ var modals = {
 			}
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Closes</button> '+cancel_btn+' <input id="appointment-confirmed" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox"> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Closes</button> '+cancel_btn+' <input id="appointment-confirmed" data-onstyle="success" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox"> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'
 			
             $mbody = $(mbody);
+
             //check if the appointment address is already in the dropdown and if not, add it.
             var option_exists = false;
             $.each($mbody.find('#addresspicker option'), function () {
@@ -658,8 +685,20 @@ var modals = {
             if (!option_exists) {
                 $mbody.find('#addresspicker').prepend('<option value="' + data.address + '|' + data.postcode + '">' + data.address + '</option>');
             }
+
+
+            //check if the appointment access address is already in the dropdown and if not, add it.
+            var option_exists = false;
+            $.each($mbody.find('#accessaddresspicker option'), function () {
+                if ($(this).val() == data.access_address + '|' + data.access_postcode) {
+                    option_exists = true;
+                }
+            });
+            if (!option_exists && data.access_address) {
+                $mbody.find('#accessaddresspicker').prepend('<option value="' + data.access_address + '|' + data.access_postcode + '">' + data.access_address + '</option>');
+            }
+
             //cycle through the rest of the fields and set them in the form
-			console.log(data);
             $.each(data, function (k, v) {
                 $mbody.find('[name="' + k + '"]').val(v);
                 if (k == "type") {
@@ -677,14 +716,15 @@ var modals = {
                     }
                 }
                 $mbody.find('#addresspicker option[value="' + data.address + '|' + data.postcode + '"]').prop('selected', true).attr('selected','selected');
+                $mbody.find('#accessaddresspicker option[value="' + data.access_address + '|' + data.access_postcode + '"]').prop('selected', true).attr('selected','selected');
             });
             modals.load_modal(mheader, $mbody, mfooter);
             modals.appointment_contacts(data.urn, data.contact_id);
 			modal_body.css('overflow', 'visible');
 			modals.set_appointment_confirmation();
-			$modal.find('#appointment-confirmed').hide();	
+			$modal.find('#appointment-confirmed').hide();
 
-			
+            modals.set_appointment_access_address(data.access_address);
 			
             if(typeof campaign_functions !== "undefined"){
 				  if(typeof campaign_functions.appointment_edit_setup !== "undefined"){
@@ -706,12 +746,16 @@ var modals = {
             var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
                           '<input id="appointment-confirmed" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox">' +
                           '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
+
             modals.load_modal(mheader, mbody, mfooter);
+
             modal_body.css('overflow', 'visible');
             modal_dialog.css('width', "50%");
             modals.appointment_contacts(urn, null);
             modals.set_appointment_confirmation();
             $modal.find('#appointment-confirmed').hide();
+
+            modals.set_appointment_access_address();
         });
     },
     appointment_contacts: function (urn, contact_id) {
@@ -774,6 +818,8 @@ var modals = {
 			} else if (quick_planner !== "undefined") {
 				quick_planner.appointment_setup(start);
 			}
+
+            modals.set_appointment_access_address();
         });
     },
 	set_appointment_confirmation:function(start){
@@ -807,6 +853,31 @@ var modals = {
 			$modal.find('#appointment-confirmed').bootstrapToggle('disable');	
 		}
 	},
+
+    set_appointment_access_address: function(access_address){
+        $modal.find('#access-add-check').bootstrapToggle();
+
+        if(access_address){
+            $('#access-add-check').bootstrapToggle('on');
+            $modal.find('.access_addess').show();
+        } else {
+            $('#access-add-check').bootstrapToggle('off');
+            $modal.find('.access_addess').hide();
+        }
+        $('#access-add-check').on('change',function(e){
+            if($(this).prop("checked")){
+                $modal.find('input[name="access_add_check"]').val("1");
+                $modal.find('.access_addess').show();
+            } else {
+                $modal.find('input[name="access_add_check"]').val("0");
+                $modal.find('.access_addess').hide();
+            }
+        });
+
+        if(typeof campaign_functions !== "undefined"){
+            campaign_functions.set_access_address();
+        }
+    },
     appointment_outcome_html: function (id) {
         /*
          $.ajax({url:helper.baseUrl+'ajax/appointment_outcome_options',
@@ -873,6 +944,48 @@ var modals = {
             }
         });
     },
+
+    confirm_other_appointment_access_address: function () {
+        var new_postcode = $modal.find('[name="access_new_postcode"]').val();
+        $.ajax({
+            url: helper.baseUrl + 'ajax/validate_postcode',
+            data: {
+                postcode: new_postcode
+            },
+            dataType: 'JSON',
+            type: 'POST'
+        }).done(function (response) {
+            //if postcode is valid
+            if (response.success) {
+                var new_address = "";
+                //if the first line of address is complete
+                if ($modal.find('[name="access_add1"]').val() != '') {
+                    new_address += $modal.find('[name="access_add1"]').val();
+                    if ($modal.find('[name="access_add2"]').val() != '') {
+                        new_address += ', ' + $modal.find('[name="access_add2"]').val();
+                    }
+                    if ($modal.find('[name="access_add3"]').val() != '') {
+                        new_address += ', ' + $modal.find('[name="access_add3"]').val();
+                    }
+                    if ($modal.find('[name="access_county"]').val() != '') {
+                        new_address += ', ' + $modal.find('[name="access_county"]').val();
+                    }
+                    if ($modal.find('[name="access_new_postcode"]').val() != '') {
+                        new_address += ', ' + response.postcode;
+                    }
+                    $('#accessaddresspicker').prepend('<option value="' + new_address + '|' + response.postcode + '">' + new_address + '</option>');
+                    $('.accessaddresspicker').selectpicker('refresh').selectpicker('val', $('#accessaddresspicker option:first').val());
+                } else {
+                    //first line not complete
+                    flashalert.danger("Please enter the first line of the address");
+                }
+            } else {
+                //postcode is not valid
+                flashalert.danger(response.msg);
+            }
+        });
+    },
+
     search_records: function (data_action) {
         $.ajax({
             url: helper.baseUrl + 'modals/search_records',
@@ -1086,6 +1199,7 @@ var modals = {
 			//modals.get_available_attendees(sql);
             modals.set_appointment_confirmation();
         });
+
         $modal.find("#tabs").tab();
 		modals.set_size();
     },

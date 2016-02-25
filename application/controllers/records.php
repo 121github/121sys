@@ -6,7 +6,7 @@ if (!defined('BASEPATH'))
 
 class Records extends CI_Controller
 {
-    
+
     public function __construct()
     {
         parent::__construct();
@@ -23,7 +23,7 @@ class Records extends CI_Controller
         $this->load->model('Datatables_model');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
-    
+
 	public function save_related_records(){
 		//$query = "select urn from records inner join companies using(urn) left join contacts using(urn) left join contact_telephone cont using(contact_id) left join company_telephone comt using(company_id) where cont.telephone_number is not null or comt.telephone_number is not null group by urn";
 		$query = "select urn from records where campaign_id = 18";
@@ -32,7 +32,7 @@ class Records extends CI_Controller
 			$this->Records_model->find_related_records($urn['urn']);
 		}
 	}
-	
+
 	public function related_records(){
 	  if ($this->input->is_ajax_request()) {
 		  //this function find duplicate or associated records. You can check against an array of fields (original) or you can check against a urn
@@ -48,11 +48,11 @@ class Records extends CI_Controller
 			$result = $this->Records_model->find_related_records($urn,$campaign,$original);
 			echo json_encode(array("success"=>true,"data"=>$result,"msg"=>"No matches were found"));
 	  }
-		
+
 	}
-	
+
     //list the records in the callpot
-    
+
     public function view()
     {
         //this array contains data for the visible columns in the table on the view page
@@ -60,8 +60,8 @@ class Records extends CI_Controller
 		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 		if(!$visible_columns){
 		 $this->load->model('Admin_model');
-		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
-		$visible_columns = $this->Datatables_model->get_visible_columns(1);		
+		$this->Datatables_model->set_default_columns($_SESSION['user_id']);
+		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 		}
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
         $data = array(
@@ -87,9 +87,9 @@ class Records extends CI_Controller
             )
         );
         $this->template->load('default', 'records/list_records.php', $data);
-        
+
     }
-	
+
 	    public function mapview()
     {
         //this array contains data for the visible columns in the table on the view page
@@ -97,9 +97,9 @@ class Records extends CI_Controller
 		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 		if(!$visible_columns){
 		 $this->load->model('Admin_model');
-		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
-		$visible_columns = $this->Datatables_model->get_visible_columns(1);	
-			
+		$this->Datatables_model->set_default_columns($_SESSION['user_id']);
+		$visible_columns = $this->Datatables_model->get_visible_columns(1);
+
 		}
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -124,10 +124,10 @@ class Records extends CI_Controller
             )
         );
         $this->template->load('default', 'records/list_records_and_map.php', $data);
-        
+
     }
 
-	
+
     public function get_used_icons() {
         //Get icons used so far
         $icons = $this->Records_model->get_used_icons();
@@ -153,7 +153,7 @@ class Records extends CI_Controller
             "icons" => $icons
         ));
     }
-    
+
     public function process_view()
     {
         if ($this->input->is_ajax_request()) {
@@ -172,13 +172,13 @@ class Records extends CI_Controller
 			}
 			$this->benchmark->mark('query_start');
             $records = $this->Records_model->get_records($options);
-			
+
 			//$this->Records_model->get_nav($options);
 			$this->benchmark->mark('query_end');
 			$count = $records['count'];
 			unset($records['count']);
 			$urns     = array();
-			
+
             foreach ($records as $k => $v) {
 				$urns[] = $v['urn'];
                 //Location
@@ -213,7 +213,7 @@ class Records extends CI_Controller
                 $records[$k]["color_icon"] = '<span class="fa '.$map_icon.'" style="font-size:20px; color: '.$records[$k]["record_color"].'">&nbsp;</span>';
 				// color dot
 				  $records[$k]["color_dot"] = '<span class="fa fa-circle" style="font-size:20px; color: '.$records[$k]["record_color"].'">&nbsp;</span>';
-				
+
                 //Map Icon
                 $records[$k]["map_icon"] = ($records[$k]['map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['map_icon']))):NULL);
                 $records[$k]["campaign_map_icon"] = ($records[$k]['campaign_map_icon']?str_replace("FA_","",str_replace("-","_",strtoupper($records[$k]['campaign_map_icon']))):NULL);
@@ -224,8 +224,8 @@ class Records extends CI_Controller
                     //$records[$k]["appointment_location_id"] => $records[$k]["appointment_postcode"]
                 );
             }
-			
-		
+
+
 
 			$this->benchmark->mark('code_end');
 			$query_time = $this->benchmark->elapsed_time('query_start', 'query_end');
@@ -241,7 +241,7 @@ class Records extends CI_Controller
             echo json_encode($data);
         }
     }
-	
+
     public function detail()
     {
         if (!intval($this->uri->segment(3))) {
@@ -260,12 +260,12 @@ class Records extends CI_Controller
             $automatic = false;
             $urn       = $this->uri->segment(3);
         }
-        		
+
         /* work out the previous and next urns */
         $previous = (isset($_SESSION['prev']) ? $_SESSION['prev'] : "");
         $current  = (isset($_SESSION['curr']) ? $_SESSION['curr'] : $urn);
         $next     = (isset($_SESSION['next']) ? $_SESSION['next'] : "0");
-        
+
         if ($urn == $previous) {
             $_SESSION['next'] = $current;
         } else if ($urn == $current) {
@@ -278,7 +278,7 @@ class Records extends CI_Controller
         }
         /* end nav config */
         $this->User_model->campaign_access_check($urn);
-		
+
 		//first time a record is loaded set the logging fields
 	if(!isset($_SESSION['record_urn'])||!isset($_SESSION['record_loaded'])){
 		$_SESSION['record_urn'] = $urn;
@@ -292,7 +292,7 @@ class Records extends CI_Controller
         $campaign                     = $this->Records_model->get_campaign($urn);
         $campaign_id                  = $campaign['campaign_id'];
         $campaign_layout              = $campaign['record_layout'];
-		
+
 if($campaign_id<>@$_SESSION['current_campaign']){
 	$this->User_model->set_permissions();
 	 foreach ($this->User_model->campaign_permissions($campaign_id) as $row) {
@@ -307,7 +307,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 $_SESSION['current_campaign_name'] = $campaign['campaign_name'];
                 $_SESSION['current_campaign'] = $campaign_id;
 }
-		
+
         //get the features for the campaign and put the ID's into an array
         $campaign_features            = $this->Form_model->get_campaign_features($campaign_id);
         //get the panels for the different features. These panels will be laoded in the view if they have been selected on the campaign
@@ -319,7 +319,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 $panels[$row['id']] = $row['path'];
             }
         }
-        
+
         //get the details of the record for the specified features eg appointment details etc. This saves us having to join every single table when they may not be needed
         $details                   = $this->Records_model->get_details($urn, $features);
         //add the logo file to the record details so we can load it in the view
@@ -330,10 +330,10 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $allow_skip = true;
         }
         $progress_options = $this->Form_model->get_progress_descriptions();
-        $outcomes         = $this->Records_model->get_outcomes($campaign_id);		
-		$outcome_reasons         = $this->Records_model->get_outcome_reasons($campaign_id);	
+        $outcomes         = $this->Records_model->get_outcomes($campaign_id);
+		$outcome_reasons         = $this->Records_model->get_outcome_reasons($campaign_id);
         $xfers            = $this->Records_model->get_xfers($campaign_id);
-        
+
         $prev = false;
         $next = false;
         if (isset($_SESSION['navigation'])) {
@@ -403,27 +403,27 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 'next' => $next
             )
         );
-        
+
         //if appointment setting is on we need the available addresses
         if (in_array(14, $features)) {
             $webforms         = $this->Records_model->get_webforms($urn);
             $data['webforms'] = $webforms;
         }
-        
+
         //if appointment setting is on we need the available addresses
         if (in_array(10, $features)||in_array(17, $features)||in_array(20, $features)) {
             $addresses         = $this->Records_model->get_addresses($urn);
             $data['addresses'] = $addresses;
 			$postcode = isset($addresses[0]['postcode'])?$addresses[0]['postcode']:false;
 			if(!in_array(17, $features)&&!in_array(20, $features)){
-			$postcode = false;	
+			$postcode = false;
 			}
             $attendees         = $this->Records_model->get_attendees(false, $campaign_id, $postcode);
             $data['attendees'] = $attendees;
 			$types         = $this->Records_model->get_appointment_types(false, $campaign_id);
             $data['types'] = $types;
         }
-        
+
         //get the users we need the ownership feature is on
         if (in_array(5, $features)) {
             $users         = $this->Records_model->get_users(false, $campaign_id);
@@ -434,29 +434,29 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $regions         = $this->Form_model->get_campaign_regions($campaign_id);
             $data['regions'] = $regions;
         }
-		
+
 			//take ownership of unassigned record if nobody else is on it
 			if(in_array('take ownership',$_SESSION['permissions'])){
 			$this->Records_model->take_ownership($urn);
 			}
-        
+
         $this->template->load('default', 'records/custom/' . (!empty($campaign_layout) ? $campaign_layout : "2col.php"), $data);
-        
+
     }
-    
+
 	public function update_record_task(){
 		if ($this->input->is_ajax_request() && $this->_access) {
-			$this->Records_model->save_task($this->input->post());		
+			$this->Records_model->save_task($this->input->post());
 		}
 	}
-	
+
 	public function get_task_history(){
 		if ($this->input->is_ajax_request() && $this->_access) {
 			$history = $this->Records_model->get_task_history($this->input->post('urn'));
 			echo json_encode(array("success"=>true,"data"=>$history));
 		}
 	}
-	
+
 	public function get_campaign_tasks(){
 		if ($this->input->is_ajax_request() && $this->_access) {
 			$campaign_id = $this->Records_model->get_campaign_from_urn($this->input->post('urn'));
@@ -486,16 +486,16 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 				$data[$row['task_id']]["statuses"] = $task_statuses[$row['task_id']];
 				}
 			 }
-			 
+
 				echo json_encode(array("success"=>true,"data"=>$data,"count"=>count($data)));
 		}
 	}
-	
+
 	public function get_tasks(){
 		if ($this->input->is_ajax_request() && $this->_access) {
 			 $result = $this->Records_model->get_tasks($this->input->post('urn'));
 			 echo json_encode(array("success"=>true,"data"=>$result));
-		}	
+		}
 	}
     /*save sticky note on the details page*/
     public function save_notes()
@@ -534,7 +534,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             exit;
         }
     }
-    
+
     /*add/remove record from user favorites list */
     public function set_favorites()
     {
@@ -563,14 +563,14 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 ));
                 exit;
             }
-            
+
         } else {
             echo "Denied";
             exit;
         }
     }
-    
-    
+
+
     /*set/unset record as urgent */
     public function set_urgent()
     {
@@ -598,15 +598,15 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 ));
                 exit;
             }
-            
+
         } else {
             echo "Denied";
             exit;
         }
     }
-    
-    
-    
+
+
+
     public function get_triggers($outcome_id = "")
     {
         $this->db->where("outcome_id", $outcome_id);
@@ -619,7 +619,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         }
         return $triggers;
     }
-    
+
     //this will reset a record - outcomes, progress and nextcall will be set to null and the status will be set to live again
     public function reset_record()
     {
@@ -640,8 +640,8 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             exit;
         }
     }
-    
-	
+
+
 	//unpark a record by urn
         public function unpark_record()
     {
@@ -688,7 +688,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             if (!$this->input->post('pending_manager')) {
                 $update_array['pending_manager'] = "";
             }
-            
+
             //check the outcome and execute any triggers
             if ($this->input->post('outcome_id')) {
                 if (isset($_POST['outcome_reason_id']) && $_POST['outcome_reason_id'] == "0" && ($this->input->post('comments') == '')) {
@@ -698,11 +698,11 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                     ));
                     exit;
 				}
-				
-				
+
+
                 //check if an sms should be sent for this outcome	
                 $sms_triggers = $this->Records_model->get_sms_triggers($campaign_id, intval($this->input->post('outcome_id')));
-				//check if an email should be sent for this outcome	
+				//check if an email should be sent for this outcome
                 $email_triggers = $this->Records_model->get_email_triggers($campaign_id, intval($this->input->post('outcome_id')));
 				//check if any other function should be called
 				 $function_triggers = $this->Records_model->get_function_triggers($campaign_id, intval($this->input->post('outcome_id')));
@@ -733,9 +733,9 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 }
 				 //the survey_complete ID is 60 on this system
                 if ($update_array['outcome_id'] == 60) {
-                    
+
                     $survey_outcome = true;
-                    
+
                     if ($this->Survey_model->find_survey_updates($update_array['urn'])) {
                         //if a survey complete outcome already exists in the history table for today
                         echo json_encode(array(
@@ -743,9 +743,9 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                             "msg" => "Survey complete outcome has already been set today"
                         ));
                         exit;
-                        
+
                     }
-                    
+
                     $last_survey_id = $this->Survey_model->get_last_survey($update_array['urn']);
                     if (!$last_survey_id) {
                         //if a survey has not been completed
@@ -755,7 +755,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                         ));
                         exit;
                     }
-                    
+
                 }
 				$trigger_updates = array();
                 if ($triggers["set_status"] && $update_array["pending_manager"] == "") {
@@ -774,7 +774,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 				if(!empty($trigger_updates)){
 				$this->Records_model->update($update_array['urn'],$trigger_updates);
 				}
-				
+
                 if (intval($triggers["delay_hours"]) > 0) {
                     if (!in_array("keep records", $_SESSION['permissions'])) {
                         //delete all owners so it can get called back by anyone (answer machines etc)
@@ -784,28 +784,28 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                     $delay                    = $triggers['delay_hours'];
                     $update_array['nextcall'] = date('Y-m-d H:i', strtotime("+$delay hours"));
                 }
-                
+
                 if ($triggers["no_history"] == "1") {
                     $no_history = true;
                 }
-               
-                
+
+
             }
             if (isset($update_array['xfer_campaign'])) {
                 $xfer_campaign = $update_array['xfer_campaign'];
                 unset($update_array['xfer_campaign']);
             }
-            
+
             $this->Records_model->update_record($update_array);
             $hist                = $update_array;
             $hist['campaign_id'] = $campaign_id;
-            
+
 			$new_owners = array();
-          
+
             if ($this->input->post('outcome_id')) {
                 //check if the outcome triggers an ownership update
                 $new_owners = $this->Records_model->get_owners_for_outcome($campaign_id, $update_array['outcome_id']);
-								
+
 			if(count($new_owners)==0){
 				//if a callback DM was previously set then keep the user on it
 				if($this->input->post('keep')){
@@ -819,7 +819,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 					}
                     }
 			}
-							
+
             }
 				//if the user has the keep record permission or the outcome is keeper then we keep the user on the record too
 				if ($_SESSION['permissions'] == "keep records" || @$triggers['keep_record'] == "1"){
@@ -828,7 +828,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
 					}
 				}
                     $this->Records_model->save_ownership(intval($this->input->post('urn')), $new_owners);
-         
+
             if ($survey_outcome) {
                 $hist['last_survey'] = $last_survey_id;
                 //get all the answer options and question trigger thresholds
@@ -851,7 +851,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                         );
                     }
                 }
-                
+
                 foreach ($option_answers as $q => $row) {
                     if (array_key_exists($row['option_id'], $option_triggers)) {
                         $pending             = true;
@@ -864,14 +864,14 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                         );
                     }
                 }
-                
+
                 if (count($survey_triggers) > 0) {
                     $this->Records_model->set_pending($update_array['urn']);
                     $this->survey_alert($last_survey_id, $survey_triggers);
                 }
             }
-            
-            
+
+
             //if a progress_id was sent we should add this to the history entry
             if ($this->input->post("progress_id")) {
                 $hist['progress_id'] = $this->input->post("progress_id");
@@ -895,7 +895,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 "success" => true,
                 "msg" => "Record was updated"
             );
-            
+
             if (isset($email_triggers) && count($email_triggers) > 0) {
                 $response['email_trigger'] = true;
             }
@@ -906,17 +906,17 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 $response['function_triggers'] = $function_triggers;
             }
             echo json_encode($response);
-            
+
         } else {
             echo "Denied";
             exit;
         }
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     public function load_appointments()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
@@ -936,43 +936,65 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             exit;
         }
     }
-    
+
     public function save_appointment()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
-			session_write_close();
-            $data             = $this->input->post();
+            session_write_close();
+            $data = $this->input->post();
+            unset($data['add1'], $data['add2'], $data['add3'], $data['county'], $data['new_postcode']);
+            unset($data['access_add1'], $data['access_add2'], $data['access_add3'], $data['access_county'], $data['access_new_postcode']);
 
-			//check the address
-			if(!isset($data['address'])||$data['address']=="Other"||empty($data['address'])){
-				echo json_encode(array(
+
+            //check the address
+            if (!isset($data['address']) || $data['address'] == "Other" || empty($data['address'])) {
+                echo json_encode(array(
                     "success" => false,
                     "msg" => "You must confirm the address"
                 ));
                 exit;
-			}
-			if(empty($data['appointment_type_id'])){
-				echo json_encode(array(
+            }
+            if (empty($data['appointment_type_id'])) {
+                echo json_encode(array(
                     "success" => false,
                     "msg" => "You must set appointment type"
                 ));
                 exit;
-			}
-			if(empty($data['contact_id'])){
-				echo json_encode(array(
+            }
+            if (empty($data['contact_id'])) {
+                echo json_encode(array(
                     "success" => false,
                     "msg" => "You must set the contact"
                 ));
                 exit;
-			}
-			
-			$address_field = explode('|',$data['address']);
-			$data['address'] = $address_field[0];
-			$postcode = $address_field[1];
+            }
+
+            $address_field = explode('|', $data['address']);
+            $data['address'] = $address_field[0];
+            $postcode = $address_field[1];
             $data['postcode'] = postcodeCheckFormat($postcode);
-			$this->firephp->log($data['attendees']);
-			//check the attendees
-            if (!isset($data['attendees'])||empty($data['attendees'][0])) {
+
+            if (isset($data['access_add_check']) && $data['access_add_check']) {
+                if (!isset($data['access_address']) || $data['access_address'] == "Other" || empty($data['access_address'])) {
+                    echo json_encode(array(
+                        "success" => false,
+                        "msg" => "You must confirm the access address"
+                    ));
+                    exit;
+                }
+                $access_address_field = explode('|', $data['access_address']);
+                $data['access_address'] = $access_address_field[0];
+                $access_postcode = $access_address_field[1];
+                $data['access_postcode'] = postcodeCheckFormat($access_postcode);
+                unset($data['access_add_check']);
+            }
+            else {
+                $data['access_address'] = "";
+                $data['access_postcode'] = "";
+            }
+
+            //check the attendees
+            if (!isset($data['attendees']) || empty($data['attendees'][0])) {
                 echo json_encode(array(
                     "success" => false,
                     "msg" => "You must add an attendee"
@@ -980,84 +1002,83 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 exit(0);
             }
             //Check if the attendee has a block_day between the start and the end date
-                if ($this->Appointments_model->checkDayBlocked($data['attendees'][0],$data['start'],$data['end'])) {
-                    echo json_encode(array(
-                        "success" => false,
-                        "msg" => "The attendee has one or more days blocked between the start and the end dates"
-                    ));
-                    exit(0);
-                }
-            
+            if ($this->Appointments_model->checkDayBlocked($data['attendees'][0], $data['start'], $data['end'])) {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "The attendee has one or more days blocked between the start and the end dates"
+                ));
+                exit(0);
+            }
+
             //check the postcode
             if ($data['postcode'] === NULL) {
                 echo json_encode(array(
                     "success" => false,
                     "msg" => "You must set a valid UK Postcode"
                 ));
-				exit;
-            } 
-			
-				$data['start'] = to_mysql_datetime($data['start']);
-        		$data['end']   = to_mysql_datetime($data['end']);
-				
-				//check the date
-				if(strtotime($data['start'])<strtotime('now')||strtotime($data['end'])<strtotime('now')){
-					echo json_encode(array(
+                exit;
+            }
+
+            $data['start'] = to_mysql_datetime($data['start']);
+            $data['end'] = to_mysql_datetime($data['end']);
+
+            //check the date
+            if (strtotime($data['start']) < strtotime('now') || strtotime($data['end']) < strtotime('now')) {
+                echo json_encode(array(
                     "success" => false,
                     "msg" => "Appointment date must be in the future"
                 ));
-				exit;
-				}
+                exit;
+            }
 
+            $state = false;
+            if (empty($data['appointment_id'])) {
+                $id = $this->Records_model->save_appointment($data);
+                $data['appointment_id'] = $id;
+                $this->Audit_model->log_appointment_insert($data);
+                $state = 'inserted';
+            } else {
+                $this->Audit_model->log_appointment_update($data);
+                $id = $this->Records_model->save_appointment($data);
+                $state = 'updated';
+            }
+            log_message('info', 'Appointment added to 121sys:' . $id . ":" . $state);
+            $response = array(
+                "success" => true,
+                "appointment_id" => $id,
+                "add_to_planner" => false,
+                "state" => $state,
+                "data" => $data
+            );
 
-                $state = false;
-                if(empty($data['appointment_id'])){
-					$id = $this->Records_model->save_appointment($data);
-					$data['appointment_id'] = $id;
-                    $this->Audit_model->log_appointment_insert($data);
-                    $state = 'inserted';
-				} else {
-                    $this->Audit_model->log_appointment_update($data);
-                    $id = $this->Records_model->save_appointment($data);
-                    $state = 'updated';
-				}
-				log_message('info', 'Appointment added to 121sys:'.$id.":".$state);
-				$response = array(
-                    "success" => true,
-                    "appointment_id"=>$id,
-                    "add_to_planner"=>false,
-                    "state"=>$state,
-                    "data" => $data
-                );
+            if (in_array("apps to planner", $_SESSION['permissions'])) {
+                $response['add_to_planner'] = true;
+            }
 
-				if(in_array("apps to planner",$_SESSION['permissions'])){
-					$response['add_to_planner'] = true;
-				}
-				
-				//if its a GHS campaign update trackvia
-				if(isset($_SESSION['current_client'])&&$_SESSION['current_client']=="GHS"){
-					$response["trackvia"] = base_url()."trackvia/add_appointment";
-					$response["urn"] = $data['urn'];
-					log_message('info', 'Appointment trigger was returned:'.$id.":".$state);
-				}
-                echo json_encode($response);
-				
-				$this->load->model('Locations_model');
-				//set the location id on the appointment
-				$this->Locations_model->set_location_id($data['postcode']);
+            //if its a GHS campaign update trackvia
+            if (isset($_SESSION['current_client']) && $_SESSION['current_client'] == "GHS") {
+                $response["trackvia"] = base_url() . "trackvia/add_appointment";
+                $response["urn"] = $data['urn'];
+                log_message('info', 'Appointment trigger was returned:' . $id . ":" . $state);
+            }
+            echo json_encode($response);
+
+            $this->load->model('Locations_model');
+            //set the location id on the appointment
+            $this->Locations_model->set_location_id($data['postcode']);
         } else {
             echo "Denied";
             exit;
         }
     }
-    
+
     public function delete_appointment()
     {
         if ($this->input->is_ajax_request() && $this->_access) {
             $data = $this->input->post();
             $this->Audit_model->log_appointment_delete($data['appointment_id']);
             $this->Records_model->delete_appointment($data);
-            
+
             //return success to page
             echo json_encode(array(
                 "success" => true,
@@ -1068,7 +1089,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             exit;
         }
     }
-    
+
     //this function is triggered during the update if the question trigger is below the answer or if an option on a multiple choise is set as a trigger. It sends the email with a list of all teh answers that triggered it. The email is sent to the recipients in the trigger_recipients table for the trigger with the survey outcome. If it does not exist then it does not get sent.
     public function survey_alert($survey, $survey_triggers)
     {
@@ -1091,11 +1112,11 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         $contact      = $this->Contacts_model->get_contact($contact_id);
         $contact_name = $contact['general']['fullname'];
         $comments     = $this->Records_model->get_last_comment($urn);
-        
+
         $this->load->library('email');
         $config['mailtype'] = 'html';
         $this->email->initialize($config);
-        
+
         $this->email->from("noreply@leadcontrol.co.uk", '121 Systems');
         $this->email->subject('Survey Response');
         $this->email->to($recipients['main']);
@@ -1113,11 +1134,11 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         $i       = 0;
         $bgColor = $i % 2 === 0 ? '#F3F3F3' : '#FFFFFF';
         $msg .= "<tr style='background-color: $bgColor'>" . "<td style='border-bottom: 1px solid #ddd;'>" . $urn . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . $survey_name . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . (!empty($nps) ? $nps : "-") . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . (!empty($notes) ? $notes : "-") . "</td>" . "<td style='border-bottom: 1px solid #ddd;" . (!empty($urgent) ? "color:red" : "") . "'>" . (!empty($urgent) ? "Yes" : "No") . "</td>" . "</tr>";
-        
+
         $msg .= "</table>";
         $msg .= "<h4>Answers that triggered this alert</h4>";
         $msg .= "<table width='100%' style='text-align: center;font-family: Arial, Helvetica, sans-serif; border-spacing: 0;border-collapse: collapse;'>" . "<tr>" . "<th style='border-bottom: 2px solid #ddd;'>Question</th>" . "<th style='border-bottom: 2px solid #ddd;'>Answer</th>" . "<th style='border-bottom: 2px solid #ddd;'>Notes</th>" . "</tr>";
-        
+
         foreach ($survey_triggers as $row) {
             $msg .= "<tr style='background-color: $bgColor'>" . "<td style='border-bottom: 1px solid #ddd;'>" . $row['question'] . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . $row['answer'] . "</td>" . "<td style='border-bottom: 1px solid #ddd;'>" . (!empty($row['notes']) ? $row['notes'] : "-") . "</td>" . "</tr>";
         }
@@ -1127,15 +1148,15 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         if (!empty($comments)) {
             $msg .= "<p>Comments<br>" . $comments . "</p>";
         }
-        
-        
-        
+
+
+
         $msg .= "</span><p style='font-family: Arial, Helvetica, sans-serif;font-size: 12px;'>Please click the link below to view the record details<br>
 					<a href='" . base_url() . "records/detail/$urn'>" . base_url() . "records/detail/$urn</a>
 					</p></body></html>";
-        
+
         $i++;
-        
+
         $this->email->message($msg);
 
         //If the environment is different than production, send the email to the user (if exists)
@@ -1152,30 +1173,30 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         $this->email->send();
         //$this->firephp->log($this->email->print_debugger());
         $this->email->clear();
-        
-        
+
+
     }
-    
+
     /**
      * Get the attachments
      */
     public function get_attachments()
     {
-        
+
         if ($this->input->is_ajax_request()) {
             $record_urn = intval($this->input->post('urn'));
 			$webform = intval($this->input->post('webform'));
             $limit      = (intval($this->input->post('limit'))) ? intval($this->input->post('limit')) : NULL;
-            
+
             $attachments = $this->Records_model->get_attachments($record_urn, $limit, 0, $webform);
-            
+
             echo json_encode(array(
                 "success" => true,
                 "data" => $attachments
             ));
         }
     }
-    
+
     /**
      * Upload new attachments
      */
@@ -1187,7 +1208,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         $options['image_versions'] = array();
         $upload_handler            = new Upload($options, true);
     }
-    
+
     /**
      * Get the upload attachment folder path
      */
@@ -1196,29 +1217,29 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         $file     = $this->input->post('file');
         $path     = base_url() . 'upload/attachments/';
         $fullpath = $path . $file;
-        
+
         $result = array(
             "path" => $fullpath
         );
-        
+
         $json = json_encode($result);
         echo $json;
     }
-    
-    
+
+
     /**
      * Save the upload attachment folder path
      */
     public function save_attachment()
     {
         $data = $this->input->post();
-        
+
         if ($this->input->is_ajax_request()) {
             $data['date']    = date('Y-m-d H:i:s');
             $data['user_id'] = (isset($_SESSION['user_id'])) ? $_SESSION['user_id'] : NULL;
-            
+
             $attachment_id = $this->Records_model->save_attachment($data);
-            
+
             //return success to page
             echo json_encode(array(
                 "success" => true,
@@ -1230,13 +1251,13 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             ));
         }
     }
-    
+
     public function delete_attachment()
     {
         $attachment = $this->Records_model->get_attachment_by_id($this->input->post('attachment_id'));
         if ($this->input->is_ajax_request()) {
             $this->Records_model->delete_attachment($this->input->post('attachment_id'));
-            
+
             //Delete the file from the server folder
             if (unlink(strstr('./' . $attachment['path'], 'upload'))) {
                 //return success to page

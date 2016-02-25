@@ -87,9 +87,9 @@ class Modal_model extends CI_Model
 		$qry .= " where r.urn = '$urn' ";
 		return $this->db->query($qry)->row_array();
 	}
-	
+
 	public function get_appointment($options,$id){
-		 $tables = $options['tables'];	
+		 $tables = $options['tables'];
 		$required_tables = array("appointments","campaigns", "companies", "company_addresses", "contacts","contact_addresses","contact_locations", "company_locations","appointment_locations","ownership","record_planner","record_planner_user","ownership","outcomes","appointment_attendees","appointment_users","appointment_types");
 		  foreach ($required_tables as $rt) {
             if (!in_array($rt, $tables)) {
@@ -106,7 +106,7 @@ class Modal_model extends CI_Model
 	  $join = array();
 	  $selections = implode(",", $table_columns);
         $qry = "select $selections
-                from records r ";	
+                from records r ";
 
         //the joins for all the tables are stored in a helper
         $table_joins = table_joins();
@@ -120,7 +120,7 @@ class Modal_model extends CI_Model
                 $join[$table] = $table_joins[$table];
             }
         }
-		
+
         foreach ($join as $join_query) {
             $qry .= $join_query;
         }
@@ -195,7 +195,7 @@ class Modal_model extends CI_Model
 
     public function view_appointments($urn)
     {
-        $qry = "select appointment_id, title, `text`, date_format(start,'%D %M %Y') `date`,start sqlstart, date_format(start,'%l:%i%p') `time`,address,if(u.name is null,'system',u.name) name,`status`,cancellation_reason from appointments a left join users u on u.user_id = a.created_by where urn = '$urn' order by start desc limit 5";
+        $qry = "select appointment_id, title, `text`, date_format(start,'%D %M %Y') `date`,start sqlstart, date_format(start,'%l:%i%p') `time`,address, access_address,if(u.name is null,'system',u.name) name,`status`,cancellation_reason from appointments a left join users u on u.user_id = a.created_by where urn = '$urn' order by start desc limit 5";
         return $this->db->query($qry)->result_array();
     }
 
@@ -209,7 +209,7 @@ class Modal_model extends CI_Model
                 $coords['lat'] . "*PI()/180)) * COS((lo.lat*PI()/180)) * COS(((" .
                 $coords['lng'] . "- lo.lng)*PI()/180))))*180/PI())*60*1.1515) distance";
         }
-        $query = "select u.user_id,if(c.name is null,'n/a',c.name) coname,campaign_name,appointment_id,a.appointment_confirmed,a.urn,title,text,date_format(start,'%d/%m/%Y %H:%i') start,date_format(start,'%W %D %M %Y %l:%i%p') starttext,date_format(end,'%d/%m/%Y %H:%i') end,postcode,a.status,(select name from users where user_id = a.created_by) created_by,date_format(a.date_added,'%d/%m/%Y %l:%i%p') date_added, u.name attendee,u.user_id attendee_id, appointment_type,  cancellation_reason, appointment_type_id as `type`, address,contact_id  $distance_query, branch_id, webform_answers.id answers_id, webforms.webform_id,btn_text from appointments a left join records using(urn) left join campaigns using(campaign_id) left join appointment_types using(appointment_type_id) left join locations lo using(location_id) left join appointment_attendees aa using(appointment_id) left join users u on u.user_id = aa.user_id left join companies c using(urn) left join webforms using(appointment_type_id) left join webform_answers using(appointment_id) where appointment_id = '$id' ";
+        $query = "select u.user_id,if(c.name is null,'n/a',c.name) coname,campaign_name,appointment_id,a.appointment_confirmed,a.urn,title,text,date_format(start,'%d/%m/%Y %H:%i') start,date_format(start,'%W %D %M %Y %l:%i%p') starttext,date_format(end,'%d/%m/%Y %H:%i') end,postcode,a.status,(select name from users where user_id = a.created_by) created_by,date_format(a.date_added,'%d/%m/%Y %l:%i%p') date_added, u.name attendee,u.user_id attendee_id, appointment_type,  cancellation_reason, appointment_type_id as `type`, address,access_address, access_postcode, contact_id  $distance_query, branch_id, webform_answers.id answers_id, webforms.webform_id,btn_text from appointments a left join records using(urn) left join campaigns using(campaign_id) left join appointment_types using(appointment_type_id) left join locations lo using(location_id) left join appointment_attendees aa using(appointment_id) left join users u on u.user_id = aa.user_id left join companies c using(urn) left join webforms using(appointment_type_id) left join webform_answers using(appointment_id) where appointment_id = '$id' ";
         return $this->db->query($query)->result_array();
     }
 
