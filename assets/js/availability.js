@@ -92,22 +92,22 @@ var quick_planner = {
     },
     set_appointment_start: function (start) {
         var m = moment(start, "YYYY-MM-DD HH:mm");
-       $modal.find('.startpicker').data("DateTimePicker").date(m);
+        $modal.find('.startpicker').data("DateTimePicker").date(m);
         $modal.find('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
     },
-	check_selections: function () {
-		if(typeof quick_planner !== "undefined"){
-		if(!quick_planner.contact_postcode.length>0&&!quick_planner.company_postcode.length>0){
-		return false;	
-		}
-        if (quick_planner.driver_id > 0) {
-            return true
+    check_selections: function () {
+        if (typeof quick_planner !== "undefined") {
+            if (!quick_planner.contact_postcode.length > 0 && !quick_planner.company_postcode.length > 0) {
+                return false;
+            }
+            if (quick_planner.driver_id > 0) {
+                return true
+            } else {
+                flashalert.danger("Please select a hub/branch in order to load the planner");
+            }
         } else {
-            flashalert.danger("Please select a hub/branch");
+            return true;
         }
-		} else {
-		 return true;	
-		}
     },
     popup_simulation: function (date, sqldate, time, waypoints, stats, slots) {
         var mheader = "Journey simulation for " + date;
@@ -171,6 +171,7 @@ var quick_planner = {
 		mfooter += '<select class="selectpicker pull-right marl" id="planner-position" '+(slots.apps=="0"?"disabled":"")+'><option '+(quick_planner.position=="1"?"selected":"")+' value="1">1st Slot Position</option><option value="2" '+(quick_planner.position=="2"?"selected":"")+'>2nd Slot Position</option><option value="3" '+(slots.apps<2?"disabled":"")+' '+(quick_planner.position=="3"?"selected":"")+'>3rd Slot Position</option><option value="4" '+(slots.apps<3?"disabled":"")+' '+(quick_planner.position=="4"?"selected":"")+'>4th Slot Position</option></select>';
 		mfooter += '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>'
         modals.load_modal(mheader, mbody, mfooter);
+        modal_body.css('overflow-y','auto');
     },
 
     load_planner: function (date) {

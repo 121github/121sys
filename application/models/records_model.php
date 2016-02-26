@@ -1354,6 +1354,16 @@ return $comments;
         $result = $this->db->get("appointments")->result_array();
         return $result;
     }
+
+    //get appointmnet data for a given id
+    public function get_appointment($appointment_id)
+    {
+        $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id,cancellation_reason", false);
+        $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
+        $this->db->where("appointments.appointment_id", $appointment_id);
+        $result = $this->db->get("appointments")->result_array();
+        return $result;
+    }
 	
 	public function get_branch_from_attendee($attendee){
 	$qry = "select branch_id from branch_region_users join branch using(region_id) where user_id = '$attendee'";

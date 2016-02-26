@@ -455,8 +455,20 @@ var modals = {
             if (response.success) {
                 var appointment_id = response.appointment_id;
                 flashalert.success('Appointment was saved');
+                //Refresh the calendar
                 if(typeof calendar !== "undefined"){
                     calendar.view();
+                }
+                //Refresh the quick planner
+                if(typeof quick_planner !== "undefined"){
+                    var attendee_id = response.data.attendees[0];
+                    var attendee_name = $('#planner-attendee-filter').find('[data-val="'+attendee_id+'"]').find('.filter-text').text()
+                    $('#slot-attendee').val(attendee_id);
+                    $('#quick-planner-panel').find('[name="driver_id"]').val(attendee_id);
+                    $('#planner-attendee-text').text(attendee_name);
+                    $('#slot-attendee-text').text(attendee_name);
+                    quick_planner.driver_id = attendee_id;
+                    quick_planner.load_planner();
                 }
                 if(typeof campaign_functions !== "undefined"){
                     campaign_functions.save_appointment(response.data);
@@ -541,6 +553,21 @@ var modals = {
         }).done(function (response) {
             record.appointment_panel.load_appointments();
             if (response.success) {
+                //Refresh the calendar
+                if(typeof calendar !== "undefined"){
+                    calendar.view();
+                }
+                //Refresh the quick planner
+                if(typeof quick_planner !== "undefined"){
+                    var attendee_id = response.appointment[0].user_id;
+                    var attendee_name = $('#planner-attendee-filter').find('[data-val="'+attendee_id+'"]').find('.filter-text').text()
+                    $('#slot-attendee').val(attendee_id);
+                    $('#quick-planner-panel').find('[name="driver_id"]').val(attendee_id);
+                    $('#planner-attendee-text').text(attendee_name);
+                    $('#slot-attendee-text').text(attendee_name);
+                    quick_planner.driver_id = attendee_id;
+                    quick_planner.load_planner();
+                }
                 //Delete from the planner if it is needed
                 if(response.add_to_planner){
                     $.ajax({url:helper.baseUrl+'planner/add_appointment_to_the_planner',
@@ -725,13 +752,12 @@ var modals = {
 			$modal.find('#appointment-confirmed').hide();
 
             modals.set_appointment_access_address(data.access_address);
-			
-            if(typeof campaign_functions !== "undefined"){
-				  if(typeof campaign_functions.appointment_edit_setup !== "undefined"){
-                campaign_functions.appointment_edit_setup();
+
+            if (typeof campaign_functions !== "undefined") {
+                if (typeof campaign_functions.appointment_edit_setup !== "undefined") {
+                    campaign_functions.appointment_edit_setup();
+                }
             }
-			}
-			
         });
     },
     add_appointment_html: function (urn) {

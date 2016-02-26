@@ -954,6 +954,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 ));
                 exit;
             }
+            //check the type
             if (empty($data['appointment_type_id'])) {
                 echo json_encode(array(
                     "success" => false,
@@ -961,6 +962,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 ));
                 exit;
             }
+            //check the contact
             if (empty($data['contact_id'])) {
                 echo json_encode(array(
                     "success" => false,
@@ -1006,6 +1008,15 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 echo json_encode(array(
                     "success" => false,
                     "msg" => "The attendee has one or more days blocked between the start and the end dates"
+                ));
+                exit(0);
+            }
+
+            //Check if the attendee has an slot available for the date selected between the start and the end date
+            if ($this->Appointments_model->checkSlotAvailable($data['attendees'][0], $data['start'], $data['end'])) {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "The attendee hasn't any slot available for the date selected between the start and the end dates"
                 ));
                 exit(0);
             }
@@ -1082,7 +1093,8 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             //return success to page
             echo json_encode(array(
                 "success" => true,
-                "add_to_planner"=>(in_array("apps to planner",$_SESSION['permissions']))
+                "add_to_planner"=>(in_array("apps to planner",$_SESSION['permissions'])),
+                "appointment" => $this->Records_model->get_appointment($data['appointment_id'])
             ));
         } else {
             echo "Denied";
