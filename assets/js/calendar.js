@@ -538,7 +538,7 @@ $(document).ready(function () {
     };
 
 
-    calendar = $('#calendar').calendar(options);
+    var calendar = $('#calendar').calendar(options);
 
     //appointment_rules.loadAppointmentRules();
 
