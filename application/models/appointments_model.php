@@ -411,6 +411,12 @@ class Appointments_model extends CI_Model
         return (!empty($results));
     }
 
+    public function checkSlotAvailable($attendee_id, $startDate, $endDate)
+    {
+
+        //TODO check if there is a slot available for this date
+    }
+
 
     /**
      * Get appointment by id
