@@ -73,9 +73,9 @@ class Calendar_model extends CI_Model
         }
 
         if (isset($options['modal'])) {
-            $query = "select appointments.postcode, if(companies.name,'',companies.name) as title, if(contacts.fullname,'',contacts.fullname) as contact, appointment_id,`start`,`end`,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
+            $query = "select appointments.postcode, appointments.address, appointments.access_address, appointments.access_postcode, if(companies.name,'',companies.name) as title, if(contacts.fullname,'',contacts.fullname) as contact, appointment_id,`start`,`end`,users.name as user $select_distance from appointments $join where 1 $where $having $order_by";
         } else {
-            $query = "select appointments.urn,appointment_id,icon,appointment_type,appointment_type_id,campaign_name,date(start) as `date`, appointments.title,text,`start`,`end`,postcode,if(appointments.`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company, if(contacts.fullname,'',contacts.fullname) as contact, users.name as user $select_distance from appointments $join where 1 and appointments.`status` = 1 $where $having order by users.name";
+            $query = "select appointments.urn, appointments.address, appointments.access_address, appointments.access_postcode,appointment_id,icon,appointment_type,appointment_type_id,campaign_name,date(start) as `date`, appointments.title,text,`start`,`end`,postcode,if(appointments.`status`='1','','Cancelled') as `status`,if(companies.name,'',companies.name) as company, if(contacts.fullname,'',contacts.fullname) as contact, users.name as user $select_distance from appointments $join where 1 and appointments.`status` = 1 $where $having order by users.name";
            
         }
         $array = array();

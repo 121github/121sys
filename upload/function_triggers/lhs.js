@@ -19,6 +19,8 @@ var campaign_functions = {
             sideBySide: true,
             enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
         });
+
+        quick_planner.set_appointment_start(start);
     },
     save_appointment: function(appointment) {
         //Get the additional info
@@ -98,6 +100,19 @@ var campaign_functions = {
             record_details_panel.find('input[name="c1"]').val().length>0)
         {
             $('#custom-panel').find('select[name="c2"]').attr('disabled',false).selectpicker('refresh');
+        }
+    },
+
+    set_access_address: function() {
+        if (typeof $('.accessaddresspicker option:selected').val() !== 'undefined') {
+            if ($('.accessaddresspicker option:selected').val().length <= 0) {
+                $.each($('#accessaddresspicker option'), function () {
+                    if ($(this).attr('data-title') == "Access Detail Address") {
+                        $('#access-add-check').bootstrapToggle('on');
+                        $('#accessaddresspicker').selectpicker('val',$(this).val()).selectpicker('refresh');
+                    }
+                });
+            }
         }
     }
 

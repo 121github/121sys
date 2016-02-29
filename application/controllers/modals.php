@@ -212,11 +212,11 @@ class Modals extends CI_Controller
 			$required = $this->get_appointment_meta($id);
 			$data = $required;
 			$modal_type = 2;
-			$options = $this->Modal_model->get_modal_fields($id,$modal_type);		
-            $record = $this->Modal_model->get_appointment($options,$id);	
+			$options = $this->Modal_model->get_modal_fields($id,$modal_type);
+            $record = $this->Modal_model->get_appointment($options,$id);
 			$fields=array();
-			$modal = array();	
-			foreach($options['modal'] as $row){
+			$modal = array();
+            foreach($options['modal'] as $row){
 				$fields[$row['column_title']][$row['datafield_title']] = $record[$row['datafield_title']];
 				$modal[$row['column_title']] = array("display"=>$row['field_display'],"title"=>$row['column_title'],"list_icon"=>$row['list_icon'],"table_class"=>$row['table_class'],"fields"=>$fields[$row['column_title']]);
 			}

@@ -977,9 +977,9 @@ return $comments;
 
     public function get_addresses($urn = "")
     {
-        $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode from contact_addresses inner join contacts using(contact_id) where urn = '$urn'";
+        $qry = "select 'contact' as `type`, fullname as name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode, contact_addresses.description from contact_addresses inner join contacts using(contact_id) where urn = '$urn'";
         $addresses = $this->db->query($qry)->result_array();
-        $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode from company_addresses inner join companies using(company_id) where urn = '$urn'";
+        $qry = "select 'company' as `type`,name,address_id id,add1,add2,add3,add4,locality,city,county,country,postcode, company_addresses.description from company_addresses inner join companies using(company_id) where urn = '$urn'";
         $companies = $this->db->query($qry)->result_array();
         foreach ($companies as $row) {
             $addresses[] = $row;
@@ -1351,6 +1351,16 @@ return $comments;
             $this->db->where("appointments.appointment_id", $id);
         }
         $this->db->group_by("appointment_id");
+        $result = $this->db->get("appointments")->result_array();
+        return $result;
+    }
+
+    //get appointmnet data for a given id
+    public function get_appointment($appointment_id)
+    {
+        $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id,cancellation_reason", false);
+        $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
+        $this->db->where("appointments.appointment_id", $appointment_id);
         $result = $this->db->get("appointments")->result_array();
         return $result;
     }

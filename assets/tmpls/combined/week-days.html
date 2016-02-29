@@ -1,31 +1,49 @@
 <style>
-.tooltip-inner {text-align:left; max-width:350px; font-size:12px !important }
-.cal-week-box [data-event-class] {
-    line-height:normal;
-    white-space: normal;
-	font-size:12px;
-	padding:5px; 
-	height:auto
-}
+    .tooltip-inner {text-align:left; max-width:350px; font-size:12px !important }
+    .cal-week-box [data-event-class] {
+        line-height:normal;
+        white-space: normal;
+        font-size:12px;
+        padding:5px;
+        height:auto
+    }
 </style>
 <% _.each(events, function(event){ %>
 <div class="cal-row-fluid">
-	<div class="cal-cell<%= event.days%> cal-offset<%= event.start_day %> day-highlight dh-<%= event['class'] %>"
-		 data-event-class="<%= event['class'] %>" style="background-color:<%= event.color %>">
-		<a data-modal='view-appointment' data-id="<%= event.id %>" href="#" data-event-id="<%= event.id %>"
-		   class="cal-event-week event<%= event.id %>" style="font-size: 12px;width:60px" data-toggle="tooltip" data-html="true"
-		   title="Time: <%= event.starttime %> - <%= event.endtime %>
-							<br>Postcode: <%= event.postcode %>
-							<br>Campaign: <%= event.campaign %>
-							<br>Type: <%= event.appointment_type %>
-							<%= event.company %>
-							<%= event.contact %>
-							<br>Attendee: <%= event.attendees %>
-							<%= event.status %>
-							<%= event.distance_hover %> from specified postcode">
-			<%= event.title %>
-			<%= event.starttime %> - <%= event.endtime %> <%= event.tooltip %>
-		</a>
-	</div>
+    <div class="cal-cell<%= event.days%> cal-offset<%= event.start_day %> day-highlight dh-<%= event['class'] %>"
+         data-event-class="<%= event['class'] %>" style="background-color:<%= event.color %>">
+        <a data-modal='view-appointment' data-id="<%= event.id %>" href="#" data-event-id="<%= event.id %>"
+           class="cal-event-week event<%= event.id %>" style="font-size: 12px;width:60px" data-toggle="tooltip" data-html="true"
+           title="
+		   			<div style='border-bottom: 1px solid white; padding-top: 15px; padding-bottom: 15px;'>
+		   				<strong>Postcode: <%= event.postcode %></strong>
+		   				<span class='pull-right'><strong>Time: <%= event.starttime %> - <%= event.endtime %></strong></span>
+					</div>
+					<div style='color:darkgrey; border-bottom: 1px solid white; padding-top: 15px; padding-bottom: 15px;'>
+					    <div><strong>Address: <%= event.address %></strong></div>
+					    <br />
+					    <div class='small'><%= event.access_address %></div>
+                    </div>
+                    <div style='color:darkgrey; padding-top: 15px; padding-bottom: 15px;'>
+                        <div>Campaign: <%= event.campaign %></div>
+                        <div>Type: <%= event.appointment_type %></div>
+                        <%= event.company %>
+                        <div><%= event.contact %></div>
+                        <div>Attendee: <%= event.attendees %><%= event.status %><%= event.distance_hover %> from specified postcode</div>
+                    </div>">
+            <%= event.title %>
+            <%= event.starttime %> - <%= event.endtime %> <%= event.tooltip %>
+        </a>
+        <a href="https://maps.google.com/maps?q=<%= event.postcode %>,+UK" target="_blank"
+           style="font-size: 12px;width:60px" data-toggle="tooltip" data-html="true"
+           title="Address: <%= event.address %>">
+            <%= event.address_icon %>
+        </a>
+        <a href="https://maps.google.com/maps?q=<%= event.access_postcode %>,+UK"
+           style="font-size: 12px;width:60px" data-toggle="tooltip" data-html="true"
+           title="<%= event.access_address %>">
+            <%= event.access_address_icon %>
+        </a>
+    </div>
 </div>
 <% }); %>

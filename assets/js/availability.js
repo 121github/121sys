@@ -92,22 +92,22 @@ var quick_planner = {
     },
     set_appointment_start: function (start) {
         var m = moment(start, "YYYY-MM-DD HH:mm");
-       $modal.find('.startpicker').data("DateTimePicker").date(m);
+        $modal.find('.startpicker').data("DateTimePicker").date(m);
         $modal.find('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
     },
-	check_selections: function () {
-		if(typeof quick_planner !== "undefined"){
-		if(!quick_planner.contact_postcode.length>0&&!quick_planner.company_postcode.length>0){
-		return false;	
-		}
-        if (quick_planner.driver_id > 0) {
-            return true
+    check_selections: function () {
+        if (typeof quick_planner !== "undefined") {
+            if (!quick_planner.contact_postcode.length > 0 && !quick_planner.company_postcode.length > 0) {
+                return false;
+            }
+            if (quick_planner.driver_id > 0) {
+                return true
+            } else {
+                flashalert.danger("Please select a hub/branch in order to load the planner");
+            }
         } else {
-            flashalert.danger("Please select a hub/branch");
+            return true;
         }
-		} else {
-		 return true;	
-		}
     },
     popup_simulation: function (date, sqldate, time, waypoints, stats, slots) {
         var mheader = "Journey simulation for " + date;
@@ -119,7 +119,35 @@ var quick_planner = {
 		}
         $.each(waypoints, function (name, waypoint) {
             if (waypoint.postcode.length > 0) {
-                mbody += '<div style="height:30px; padding:5px; margin:5px; background:#80D6FF;border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px; text-align:center"><p><strong>' + (waypoint.title=="This appointment"?'<span style="color:red">'+waypoint.title+'</span>':waypoint.title) + '</strong> [' + waypoint.postcode + ']';
+                var background_color = "#80D6FF";
+                var color = "";
+                switch  (waypoint.type) {
+                    case "customer_postcode":
+                        background_color = "green";
+                        color = "white";
+                        break;
+                    case "access_postcode":
+                        background_color = "lightblue";
+                        color = "";
+                        break;
+                    case "appointment_postcode":
+                        background_color = "darkcyan";
+                        color = "white";
+                        break;
+                    case "start_postcode":
+                        background_color = "lightgrey";
+                        color = "";
+                        break;
+                    case "end_postcode":
+                        background_color = "lightgrey";
+                        color = "";
+                        break;
+                }
+                mbody += '<div style="height:30px; padding:5px; margin:5px; background:'+background_color+';border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px; text-align:center">' +
+                            '<p style="color:'+color+'">' +
+                                '<strong>' +
+                                    '<span>'+waypoint.title+'</span>' +
+                                '</strong> [' + waypoint.postcode + ']';
                 if (typeof waypoint.app_duration !== "undefined") {
                     mbody += waypoint.app_duration
                 }
@@ -143,6 +171,7 @@ var quick_planner = {
 		mfooter += '<select class="selectpicker pull-right marl" id="planner-position" '+(slots.apps=="0"?"disabled":"")+'><option '+(quick_planner.position=="1"?"selected":"")+' value="1">1st Slot Position</option><option value="2" '+(quick_planner.position=="2"?"selected":"")+'>2nd Slot Position</option><option value="3" '+(slots.apps<2?"disabled":"")+' '+(quick_planner.position=="3"?"selected":"")+'>3rd Slot Position</option><option value="4" '+(slots.apps<3?"disabled":"")+' '+(quick_planner.position=="4"?"selected":"")+'>4th Slot Position</option></select>';
 		mfooter += '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>'
         modals.load_modal(mheader, mbody, mfooter);
+        modal_body.css('overflow-y','auto');
     },
 
     load_planner: function (date) {
