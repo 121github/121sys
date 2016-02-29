@@ -76,9 +76,29 @@ class Contacts_model extends CI_Model
 	public function add_address($data){
 	$this->db->insert("contact_addresses",$data);	
 	}
+
+    public function save_contact_address ($form) {
+        $this->db->insert_update("contact_addresses", $form);
+
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+
+        return $insert_id;
+    }
+
     public function add_telephone($data){
 	$this->db->insert("contact_telephone",$data);	
 	}
+
+    public function save_contact_telephone ($form) {
+        $this->db->insert_update("contact_telephone", $form);
+
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+
+        return $insert_id;
+    }
+
     public function get_contacts($urn)
     {
 
@@ -232,7 +252,17 @@ class Contacts_model extends CI_Model
 	
 		return $insert_id;
 	}
-	
+
+
+    public function update_contact ($form) {
+
+        $this->db->where("contact_id", $form['contact_id']);
+        $result = $this->db->update("contacts", $form);
+
+        $this->db->trans_complete();
+
+        return $result;
+    }
 	
 	
 }

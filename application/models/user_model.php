@@ -310,6 +310,23 @@ class User_model extends CI_Model
         return $results;
     }
 
+    public function get_users($limit) {
+        $limit_opt = "";
+        if (isset($limit) && $limit != '') {
+            $limit_opt = "LIMIT 0,".intval($limit);
+        }
+
+        $qry = "SELECT *
+                FROM users
+                LEFT JOIN user_roles using (role_id)
+                LEFT JOIN user_groups using (group_id)
+                LEFT JOIN teams using (team_id)
+                ".$limit_opt;
+        $results = $this->db->query($qry)->result_array();
+
+        return $results;
+    }
+
     public function get_user_addresses_by_id($user_id) {
         $qry = "SELECT *
                 FROM user_address
