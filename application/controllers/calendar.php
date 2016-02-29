@@ -263,7 +263,9 @@ $google_email = false;
         } else {
             foreach ($events as $row) {
 				$tooltip = $row['appointment_type'].($row['appointment_type']=="Telephone"?" appointment":"")." with ".$row['contact']. ($row['company']?" from ".$row['company']:"");
-				
+				if(empty($row['icon'])){
+					$row['icon'] = "fa fa-circle";
+				}
 				$text  = explode("<br>",$row['text']);
                 $result[] = array(
                     'id' => $row['appointment_id'],
