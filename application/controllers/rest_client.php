@@ -122,6 +122,7 @@ class Rest_client extends CI_Controller
                     $address = explode("/",$address);
                     $contact_address_data['add1'] = (isset($address[0])?$address[0]:"");
                     $contact_address_data['postcode'] = (isset($address[1])?$address[1]:"");
+                    $contact_address_data['description'] = (isset($address[2])?$address[2]:"");
                     $contact_address_data['contact_id'] = $record_contact['contact_id'];
                     $record_contact_address = $this->rest->post('contact_address', $contact_address_data);
 

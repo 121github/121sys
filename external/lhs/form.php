@@ -240,13 +240,13 @@
 
                                 var addresses = [];
                                 if (survey_address != '') {
-                                    addresses.push(survey_address+"/"+survey_address_postcode);
+                                    addresses.push(survey_address+"/"+survey_address_postcode+"/"+"Surveying Address");
                                 }
                                 if (correspondence_address != '') {
-                                    addresses.push(correspondence_address+"/"+correspondence_address_postcode);
+                                    addresses.push(correspondence_address+"/"+correspondence_address_postcode+"/"+"Correspondence Address");
                                 }
                                 if (access_address != '') {
-                                    addresses.push(access_address+"/"+access_address_postcode);
+                                    addresses.push(access_address+"/"+access_address_postcode+"/"+"Access Detail Address");
                                 }
 
                                 $.ajax({
