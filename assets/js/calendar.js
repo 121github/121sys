@@ -433,6 +433,7 @@ var calendar_modals = {
     },
 }
 var rules = [];
+var calendar;
 $(document).ready(function () {
     "use strict";
     //Show appointment rules button
@@ -474,7 +475,7 @@ $(document).ready(function () {
     });
     $(document).on('click', '#set-rules', function () {
         calendar_modals.addAppointmentRule(0)
-    })
+    });
 
     var options = {
         events_source: function (start, end) {
@@ -538,7 +539,7 @@ $(document).ready(function () {
     };
 
 
-    var calendar = $('#calendar').calendar(options);
+    calendar = $('#calendar').calendar(options);
 
     //appointment_rules.loadAppointmentRules();
 

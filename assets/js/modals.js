@@ -123,11 +123,11 @@ var modals = {
         });
         $(document).on('click', '[data-modal="add-appointment"]', function (e) {
             e.preventDefault();
-            modals.add_appointment_html($(this).attr('data-urn'), true);
+            modals.add_appointment_html($(this).attr('data-urn'));
         });
         $(document).on('click', '[data-modal="delete-appointment"]', function (e) {
             e.preventDefault();
-            modals.delete_appointment_html($(this).attr('data-id'), true);
+            modals.delete_appointment_html($(this).attr('data-id'), $(this).attr('data-urn'));
         });
 
         $(document).on('click', '[data-modal="create-appointment"]', function (e) {
@@ -195,10 +195,11 @@ var modals = {
         $(document).on('click', '.delete-appointment', function (e) {
             var cancellation_reason = $modal.find('.appointment-cancellation-form').find('textarea[name="cancellation_reason"]').val();
             var id = $modal.find('#appointment-id').val();
+            var urn = $modal.find('#urn').val();
             if (cancellation_reason.length < 5) {
                 flashalert.danger("You must enter a cancellation reason!");
             } else {
-                modals.delete_appointment(id, cancellation_reason);
+                modals.delete_appointment(id, cancellation_reason, urn);
                 $modal.modal('toggle');
             }
         });
@@ -548,7 +549,7 @@ var modals = {
 				flashalert.danger("There was an error saving the appointment");
         });
     },
-    delete_appointment: function (id, cancellation_reason) {
+    delete_appointment: function (id, cancellation_reason, urn) {
         $.ajax({
             url: helper.baseUrl + 'records/delete_appointment',
             type: "POST",
@@ -556,11 +557,14 @@ var modals = {
             data: {
                 appointment_id: id,
                 cancellation_reason: cancellation_reason,
-                urn: record.urn
+                urn: urn
             }
         }).done(function (response) {
-            record.appointment_panel.load_appointments();
             if (response.success) {
+                //Refresh the appointment_panel
+                if(typeof record !== "undefined"){
+                    record.appointment_panel.load_appointments();
+                }
                 //Refresh the calendar
                 if(typeof calendar !== "undefined"){
                     calendar.view();
@@ -702,7 +706,7 @@ var modals = {
         }).done(function (response) {
 			var cancel_btn = "";
 			if(helper.permissions['delete appointments'] > 0){
-			cancel_btn += '<button class="btn btn-danger" data-modal="delete-appointment" data-id="' + data.appointment_id + '" type="button">Cancel Appointment</button>';
+			cancel_btn += '<button class="btn btn-danger" data-modal="delete-appointment" data-id="' + data.appointment_id + '" data-urn="' + data.urn + '" type="button">Cancel Appointment</button>';
 			}
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
@@ -932,9 +936,9 @@ var modals = {
 
          });*/
     },
-    delete_appointment_html: function (id) {
+    delete_appointment_html: function (id, urn) {
         var mheader = 'Confirm Cancellation';
-        var mbody = '<form class="form-horizontal appointment-cancellation-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="' + id + '" /><div class="form-group"><label>Are you sure you want to cancel this appointment?</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="Please give a reason for the cancellation"/></textarea></div></div></form>';
+        var mbody = '<form class="form-horizontal appointment-cancellation-form" style="padding:0 20px"><div class="row"><div class="col-lg-12"><input type="hidden" id="appointment-id" value="' + id + '" /><input type="hidden" id="urn" value="' + urn + '" /><div class="form-group"><label>Are you sure you want to cancel this appointment?</label><textarea class="form-control" name="cancellation_reason" style="height:50px" placeholder="Please give a reason for the cancellation"/></textarea></div></div></form>';
         var mfooter = '<button data-modal="edit-appointment" data-id="' + id + '" class="btn btn-default pull-left"  type="button">Back</button> <button class="btn btn-primary pull-right delete-appointment" type="button">Confirm</button>';
         modals.load_modal(mheader, mbody, mfooter);
     },
