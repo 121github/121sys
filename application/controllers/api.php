@@ -155,6 +155,7 @@ class Api extends REST_Controller
             $message = array(
                 'success' => false,
                 'urn' => '',
+                'detail_id' => '',
                 'message' => "ERROR: The urn is undefined or it doesn't exists!"
             );
 
@@ -209,6 +210,7 @@ class Api extends REST_Controller
             $message = array(
                 'success' => false,
                 'urn' => '',
+                'contact_id' => '',
                 'message' => "ERROR: The urn is undefined or it doesn't exists!"
             );
 
@@ -253,6 +255,7 @@ class Api extends REST_Controller
             $message = array(
                 'success' => false,
                 'urn' => '',
+                'address_id' => '',
                 'message' => "ERROR: The contact_id is undefined or it doesn't exists!"
             );
 
@@ -284,6 +287,7 @@ class Api extends REST_Controller
             $message = array(
                 'success' => false,
                 'urn' => '',
+                'telephone_id' => '',
                 'message' => "ERROR: The contact_id is undefined or it doesn't exists!"
             );
 
@@ -296,7 +300,7 @@ class Api extends REST_Controller
             $message = array(
                 'success' => ($contact_telephone_id?true:false),
                 'contact_id' => $contact_telephone['contact_id'],
-                'address_id' => ($contact_telephone_id?$contact_telephone_id:''),
+                'telephone_id' => ($contact_telephone_id?$contact_telephone_id:''),
                 'message' => ($contact_telephone_id?'INSERTED!':'ERROR: The contact telephone was inserted successfully!')
             );
         }
@@ -342,6 +346,7 @@ class Api extends REST_Controller
             $message = array(
                 'success' => false,
                 'urn' => '',
+                'company_id' => '',
                 'message' => "ERROR: The urn is undefined or it doesn't exists!"
             );
 
@@ -385,7 +390,8 @@ class Api extends REST_Controller
         if (!isset($company_address['company_id']) || $company_address['company_id'] == '') {
             $message = array(
                 'success' => false,
-                'urn' => '',
+                'company_id' => '',
+                'address_id' => '',
                 'message' => "ERROR: The company_id is undefined or it doesn't exists!"
             );
 
@@ -416,7 +422,8 @@ class Api extends REST_Controller
         if (!isset($company_telephone['company_id']) || $company_telephone['company_id'] == '') {
             $message = array(
                 'success' => false,
-                'urn' => '',
+                'company_id' => '',
+                'telephone_id' => '',
                 'message' => "ERROR: The company_id is undefined or it doesn't exists!"
             );
 
@@ -429,7 +436,7 @@ class Api extends REST_Controller
             $message = array(
                 'success' => ($company_telephone_id?true:false),
                 'company_id' => $company_telephone['company_id'],
-                'address_id' => ($company_telephone_id?$company_telephone_id:''),
+                'telephone_id' => ($company_telephone_id?$company_telephone_id:''),
                 'message' => ($company_telephone_id?'SAVED!':'ERROR: The comapny telephone was saved successfully!')
             );
         }

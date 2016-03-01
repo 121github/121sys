@@ -50,7 +50,7 @@
                 src="http://www.leohorsfieldsurveying.co.uk/wp-content/themes/WP%20by%20tbgd/style/images/linkedin.jpg"
                 width="16" height="16" alt="LinkedIn"/></a></div>
     <div style="clear:both; padding:20px"><h3>Please enter the details below to arrange a survey</h3>
-        <form method="post" class="lhs-form">
+        <form method="post" class="lhs-form" id="lhs-form">
             <style>
                 input[type=text] {
                     background: #e9e9e9 none repeat scroll 0 0;
@@ -94,30 +94,42 @@
                             <option value="Mrs">Mrs</option>
                             <option value="Miss">Miss</option>
                         </select></td>
-                    <td><input type="text" name="firstname" placeholder="Enter Firstname"></td>
-                    <td><input type="text" value="" name="lastname" placeholder="Enter Lastname"></td>
+                    <td><input type="text" name="firstname" placeholder="Enter Firstname" required></td>
+                    <td><input type="text" value="" name="lastname" placeholder="Enter Lastname" required></td>
                 </tr>
                 <tr>
                     <td colspan="3" class="label">Survey Address</td>
                 </tr>
                 <tr>
-                    <td colspan="3"><input type="text" id="survey-address" name="survey_address"
-                                           placeholder="Enter the survey address"></td>
+                    <td colspan="2">
+                        <input type="text" id="survey-address" name="survey_address" placeholder="Enter the survey address" required>
+                    </td>
+                    <td colspan="1">
+                        <input type="text" id="survey-address-postcode" name="survey_address_postcode" placeholder="Enter the postcode" required>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="3" class="label">Corresponence Address <span class="checkbox"><input type="checkbox"/> Use above</span>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3"><input type="text" name="correspondence_address"
-                                           placeholder="Enter the correspondence address"></td>
+                    <td colspan="2">
+                        <input type="text" id="address" name="correspondence_address"placeholder="Enter the correspondence address">
+                    </td>
+                    <td colspan="1">
+                        <input type="text" id="postcode" name="correspondence_address_postcode" placeholder="Enter the postcode">
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="3" class="label">Access Address <span class="checkbox"><input type="checkbox"/> Use above</span>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3"><input type="text" name="access_address" placeholder="Enter the access address">
+                    <td colspan="2">
+                        <input type="text" id="address" name="access_address" placeholder="Enter the access address">
+                    </td>
+                    <td colspan="1">
+                        <input type="text" id="postcode" name="access_address_postcode" placeholder="Enter the postcode">
                     </td>
                 </tr>
                 <tr>
@@ -138,7 +150,7 @@
                     <td colspan="3" class="label">Survey Type</td>
                 </tr>
                 <tr>
-                    <td colspan="3"><select name="survey_type">
+                    <td colspan="3"><select name="survey_type" required>
                             <option value="">--Type of survey--</option>
                             <option value="Building Survey">Building Survey</option>
                             <option value="Home Buyer Report">Home Buyer Report</option>
@@ -171,10 +183,13 @@
                 $('.checkbox input').change(function () {
                     if ($(this).prop('checked')) {
                         var address = $('#survey-address').val();
+                        var postcode = $('#survey-address-postcode').val();
                     } else {
                         var address = "";
+                        var postcode = "";
                     }
-                    $(this).closest('tr').next().find('input').val(address);
+                    $(this).closest('tr').next().find('input[id="address"]').val(address);
+                    $(this).closest('tr').next().find('input[id="postcode"]').val(postcode);
                 });
             });
 
@@ -195,7 +210,6 @@
                         pot_id: "0",
                     }
                 }).done(function (response) {
-                    console.log(response);
                     if (response.success) {
                         //Insert record_details
                         var survey_type = $('.lhs-form').find('select[name="survey_type"]').val();
@@ -210,17 +224,31 @@
                                 c4: additional_info
                             }
                         }).done(function (response) {
-                            console.log(response);
                             if (response.success) {
                                 //Insert record contact
                                 var title = $('.lhs-form').find('select[name="title"]').val();
                                 var firstname = $('.lhs-form').find('input[name="firstname"]').val();
                                 var lastname = $('.lhs-form').find('input[name="lastname"]').val();
                                 var survey_address = $('.lhs-form').find('input[name="survey_address"]').val();
+                                var survey_address_postcode = $('.lhs-form').find('input[name="survey_address_postcode"]').val();
                                 var correspondence_address = $('.lhs-form').find('input[name="correspondence_address"]').val();
+                                var correspondence_address_postcode = $('.lhs-form').find('input[name="correspondence_address_postcode"]').val();
                                 var access_address = $('.lhs-form').find('input[name="access_address"]').val();
+                                var access_address_postcode = $('.lhs-form').find('input[name="access_address_postcode"]').val();
                                 var telephone_number = $('.lhs-form').find('input[name="telephone_number"]').val();
                                 var email_address = $('.lhs-form').find('input[name="email_address"]').val();
+
+                                var addresses = [];
+                                if (survey_address != '') {
+                                    addresses.push(survey_address+"/"+survey_address_postcode);
+                                }
+                                if (correspondence_address != '') {
+                                    addresses.push(correspondence_address+"/"+correspondence_address_postcode);
+                                }
+                                if (access_address != '') {
+                                    addresses.push(access_address+"/"+access_address_postcode);
+                                }
+
                                 $.ajax({
                                     url: baseUrl + 'rest_client/save_record_contact',
                                     type: "POST",
@@ -230,14 +258,13 @@
                                         title: title,
                                         firstname: firstname,
                                         lastname: lastname,
-                                        survey_address: survey_address,
-                                        correspondence_address: correspondence_address,
-                                        access_address: access_address,
+                                        addresses: addresses,
                                         telephone_number: telephone_number,
-                                        email_address: email_address
+                                        email: email_address
                                     }
                                 }).done(function (response) {
-                                    console.log(response);
+                                    alert("Record created!");
+                                    document.getElementById("lhs-form").reset();
                                 });
                             }
                         });

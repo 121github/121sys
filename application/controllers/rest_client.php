@@ -16,7 +16,7 @@ class Rest_client extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        user_auth_check(false);
+//        user_auth_check(true);
 
         $this->load->library('rest', array(
             'server' => base_url().'api/',
@@ -98,14 +98,48 @@ class Rest_client extends CI_Controller
         else {
             $record_contact_data = $this->input->post();
 
-//            $telephone = array();
-//            $address = array();
-//
-//            if (isset($record_contact_data['title'])) {
-//
-//            }
+            if (isset($record_contact_data['title']) && isset($record_contact_data['firstname']) && isset($record_contact_data['lastname'])) {
+                $record_contact_data['fullname'] = $record_contact_data['title']." ".$record_contact_data['firstname']." ".$record_contact_data['lastname'];
+            }
+            $addresses = array();
+            if (isset($record_contact_data['addresses'])) {
+                $addresses = $record_contact_data['addresses'];
+                unset($record_contact_data['addresses']);
+            }
+
+            $telephone_number = "";
+            if (isset($record_contact_data['telephone_number'])) {
+                $telephone_number = $record_contact_data['telephone_number'];
+                unset($record_contact_data['telephone_number']);
+            }
 
             $record_contact = $this->rest->post('record_contact', $record_contact_data);
+
+            if ($record_contact['contact_id']) {
+                $record_contact['success'] = $record_contact;
+                foreach($addresses as $address) {
+                    //Save address
+                    $address = explode("/",$address);
+                    $contact_address_data['add1'] = (isset($address[0])?$address[0]:"");
+                    $contact_address_data['postcode'] = (isset($address[1])?$address[1]:"");
+                    $contact_address_data['contact_id'] = $record_contact['contact_id'];
+                    $record_contact_address = $this->rest->post('contact_address', $contact_address_data);
+
+                    if (!isset($record_contact['addresses'])) {
+                        $record_contact['addresses'] = array();
+                    }
+                    array_push($record_contact['addresses'], $record_contact_address);
+                }
+
+                if ($telephone_number != "") {
+                    //Save telephone
+                    $contact_telephone_data['telephone_number'] = $telephone_number;
+                    $contact_telephone_data['contact_id'] = $record_contact['contact_id'];
+                    $record_contact_telephone = $this->rest->post('contact_telephone', $contact_telephone_data);
+
+                    $record_contact['telephone_number'] = $record_contact_telephone;
+                }
+            }
         }
 
         echo (json_encode($record_contact));
