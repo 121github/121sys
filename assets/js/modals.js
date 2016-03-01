@@ -7,7 +7,7 @@ var modals = {
         modal_body = $modal.find('.modal-body');
         modal_dialog = $modal.find('.modal-dialog');
 		$(document).on('click','[data-toggle="tab"]',function(e){
-			$('#company-address-form,#company-phone-form,#contact-address-form,#contact-phone-form').hide();
+			$('#company-address-form,#company-phone-form,#contact-address-form,#contact-phone-form,#referral-address-form').hide();
 			var tab = $(this).attr('href');
 			if(tab=="#tab-planner"||tab=="#phone"||tab=="#pot"||tab=="#source"||tab=="#campaign"||tab=="#other"||"#create-view"){
 			modal_body.css('overflow','visible');
@@ -58,6 +58,14 @@ var modals = {
         $(document).on('click', '[data-modal="add-contact"]', function (e) {
             e.preventDefault();
             modals.contacts.contact_form('add', $(this).attr('data-urn'), 'general');
+        });
+        $(document).on('click', '[data-modal="edit-referral"]', function (e) {
+            e.preventDefault();
+            modals.referrals.referral_form('edit', $(this).attr('data-id'), 'general');
+        });
+        $(document).on('click', '[data-modal="add-referral"]', function (e) {
+            e.preventDefault();
+            modals.referrals.referral_form('add', $(this).attr('data-urn'), 'general');
         });
         $(document).on('click', '[data-modal="edit-company"]', function (e) {
             e.preventDefault();
@@ -2004,6 +2012,320 @@ var modals = {
                 buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
                 $modal.find('.table-container').show();
                 $modal.find('#contact-phone-form,#contact-address-form').hide();
+                modals.update_footer(buttons);
+            }
+
+        }
+
+
+    },
+
+    referrals: {
+
+        init: function () {
+            $(document).on('click', '.save-referral-general', function (e) {
+                e.preventDefault();
+                modals.referrals.save_referral();
+            });
+            /* loads the form for a new address to be added*/
+            $(document).on('click', '.referral-add-item', function (e) {
+                e.preventDefault();
+                modals.referrals.new_item_form();
+            });
+            /*save the new address*/
+            $(document).on('click', '.save-referral-address', function (e) {
+                e.preventDefault();
+                var action = $(this).attr('data-action');
+                modals.referrals.save_item(action);
+            });
+            /*when a tab is changed we should reset the tab content*/
+            $(document).on('click', '#modal .nav-tabs .general-tab a, #modal .nav-tabs, #modal .nav-tabs .address-tab a', function (e) {
+                e.preventDefault();
+                var tabname = $(this).attr('href');
+                modals.referrals.change_tab(tabname);
+            });
+
+            $(document).on('click', '[data-modal="delete-referral"]', function (e) {
+                modal.delete_referral($(this).attr('data-id'));
+            });
+
+            /*initialize the delete item buttons for address*/
+            $(document).on('click', '[data-modal="delete-referral-address"]', function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-id');
+                var rid = $(this).attr('referral-id');
+                modals.referrals.confirm_delete_address(id, rid);
+            });
+
+            /* go back to the ddress for the referral if they cancel the delete action */
+            $(document).on('click', '.cancel-delete-address', function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-id');
+                modals.referrals.referral_form('edit', id, 'address');
+            });
+            $(document).on('click', '.referral-item-btn', function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-id');
+                var action = $(this).attr('data-action');
+                modals.referrals.edit_item_form(id, action);
+            });
+            /*initialize the cancel button on the add/edit referral address form*/
+            $(document).on('click', '.cancel-add-item', function (e) {
+                e.preventDefault();
+                $tab = $modal.find('.tab-pane.active');
+                $tab.find('form').hide();
+                $tab.find('.table-container').show();
+                //swap the buttons back
+                modals.update_footer('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>');
+            });
+        },
+        edit_item_form: function (id, action) {
+            $tab = $modal.find('.tab-pane.active');
+            $tab.find('.item-id').val(id);
+            if (action == "edit_referral_address") {
+                var page = "get_referral_address";
+                $tab.find('form').find('input').alphanum({
+                    allow: '', // Specify characters to allow
+                    disallow: ''  // Specify characters to disallow
+                });
+                $modal.find('.address-select').hide();
+            }
+            $.ajax({
+                url: helper.baseUrl + 'ajax/' + page,
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    id: id
+                }
+            }).done(function (response) {
+                var mfooter = '<button class="btn btn-default cancel-add-item pull-left" type="button">Cancel</button>';
+                if (action == "edit_referral_address") {
+                    mfooter += '<button type="submit" class="btn btn-primary save-referral-address" data-action="edit_referral_address">Save Address</button>';
+                }
+                modals.update_footer(mfooter);
+                if (response.success) {
+                    $.each(response, function (key, val) {
+                        $tab.find('form input[name="' + key + '"]').val(val);
+                        $tab.find('select[name="' + key + '"]').selectpicker('val', val);
+
+                        if(key=="primary"){
+                            if(val=="1"){
+                                $tab.find('form input[name="primary"]').val('1');
+                                $('#primary-toggle').bootstrapToggle('on')
+                            } else {
+                                $tab.find('form input[name="primary"]').val('0');
+                                $('#primary-toggle').bootstrapToggle('off')
+                            }
+                        }
+
+                        if(key=="visible"){
+                            if(val=="1"){
+                                $tab.find('form input[name="visible"]').val('1');
+                                $('#visible-toggle').bootstrapToggle('on')
+                            } else {
+                                $tab.find('form input[name="visible"]').val('0');
+                                $('#visible-toggle').bootstrapToggle('off')
+                            }
+                        }
+                    });
+                    $tab.find('.table-container').hide();
+                    $tab.find('form').show();
+
+                } else {
+                    flashalert.danger(response.msg);
+                }
+            });
+
+        },
+
+        confirm_delete_address: function (address_id, referral_id) {
+            var mheader = "Delete referral address";
+            var mbody = "Are you sure you want to delete this address?";
+            var mfooter = '<button class="btn btn-default pull-left cancel-delete-address" data-id="' + referral_id + '" type="button">Cancel</button> <button class="btn btn-danger confirm-delete" type="button">Delete</button>';
+
+            modals.load_modal(mheader, mbody, mfooter);
+            $('.confirm-delete').click(function () {
+                modals.referrals.delete_item(address_id, referral_id, 'delete_referral_address');
+            });
+        },
+        delete_item: function (id, referral_id, action) {
+            $.ajax({
+                url: helper.baseUrl + 'ajax/' + action,
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    id: id,
+                    referral: referral_id
+                }
+            }).done(function (response) {
+                modals.referrals.referral_form('edit', referral_id, response.type);
+                flashalert.success("Referral details were updated");
+                if (typeof record !== "undefined") {
+                    record.referral_panel.load_panel(record.urn, response.id);
+                }
+            });
+        },
+        new_item_form: function () {
+            $tab = $modal.find('.tab-pane.active');
+            var type = $tab.attr('id');
+            $tab.find('.table-container').hide();
+            $tab.find('form')[0].reset();
+            $tab.find('form').show();
+            //reset the item id
+            $tab.find('.item-id').val('');
+
+            $('#visible-toggle').bootstrapToggle('on');
+
+            $modal.find('.address-select').hide();
+
+            //this will need changing for a back button
+            var mfooter = '<button class="btn btn-default cancel-add-item pull-left" type="button">Cancel</button>';
+            if (type == "address") {
+                mfooter += '<button type="submit" class="btn btn-primary save-referral-address" data-action="add_referral_address">Add Address</button>';
+            }
+            modals.update_footer(mfooter);
+
+        },
+        save_item: function (action) {
+            $.ajax({
+                url: helper.baseUrl + 'ajax/' + action,
+                type: "POST",
+                dataType: "JSON",
+                data: $modal.find('.tab-content .tab-pane.active').find('form').serialize()
+            }).done(function (response) {
+                if (response.success) {
+                    modals.referrals.load_tabs(response.id, response.type);
+                    if (typeof record !== "undefined") {
+                        record.referral_panel.load_panel(record.urn, response.id);
+                    }
+                } else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        },
+        referral_form: function (type, id, tab) {
+            $.ajax({
+                url: helper.baseUrl + 'modals/load_referral_form',
+                type: "POST",
+                dataType: "HTML"
+            }).done(function (response) {
+                if (type == "edit") {
+                    var mheader = "Edit referral";
+                } else {
+                    var mheader = "Create referral";
+                }
+
+                $mbody = $(response);
+
+                if (type == "edit") {
+                    $mbody.find('.tab-alert').hide();
+                    $mbody.find('tbody').empty();
+                    $mbody.find('.address-tab').show();
+                    $mbody.find('input[name="referral_id"]').val(id);
+                    var mfooter = "";
+                } else {
+                    $mbody.find('input[name="urn"]').val(id);
+                    $mbody.find('.address-tab').hide();
+                    $mbody.find('.tab-alert').show();
+                    $mbody.find('.table-container').hide();
+                    var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-referral-general">Save changes</button>';
+                }
+
+                modals.load_modal(mheader, $mbody, mfooter);
+                //dont want padding with tabs
+                if (type == "edit") {
+                    modals.referrals.load_tabs(id, tab);
+                }
+
+            });
+        },
+        load_tabs: function (id, item_form) {
+            if (item_form !== "general") {
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                $modal.find('#' + item_form + ' form').hide();
+                $modal.find('#' + item_form + ' .table-container').show();
+            } else {
+                var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-referral-general">Save changes</button>';
+                $modal.find('#address form').hide();
+                $modal.find('#address .table-container').show();
+                $modal.find('.save-referral-general').remove();
+            }
+            modals.update_footer(mfooter);
+            $.ajax({
+                url: helper.baseUrl + "ajax/get_referral",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    id: id
+                }
+            }).done(function (response) {
+                if (response.success) {
+
+                    $.each(response.data.general, function (key, val) {
+                        $modal.find('#general [name="' + key + '"]').val(val);
+                    });
+
+                    if (response.data.address) {
+                        $modal.find('#address tbody').empty();
+                        $modal.find('#address .table-container, #address .table-container table').show();
+                        $modal.find('#address .none-found').hide();
+                        $.each(response.data.address, function (key, val) {
+                            var $primary = "";
+                            var $visible = "<span class='glyphicon glyphicon-eye-close red'></span>";
+                            if (val.primary == 1) {
+                                var $primary = "<span class='glyphicon glyphicon-ok-sign'></span>";
+                            }
+                            if (val.visible == 1) {
+                                var $visible = "<span class='glyphicon glyphicon-eye-open highlight_green'></span>";
+                            }
+                            $address = "<tr><td>" + $visible + "</td><td>" + val.description + "</td><td>" + val.add1 + "</td><td>" + val.postcode + "</td><td>" + $primary + "</td><td style='width:140px'><span class='referral-item-btn btn btn-default btn-xs' data-action='edit_referral_address' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span> <span class='marl del-item-btn btn btn-default btn-xs' data-modal='delete-referral-address' referral-id='" + response.data.general.referral_id + "' data-id='" + val.address_id + "'><span class='glyphicon glyphicon-trash'></span> Delete</span></td></tr>"
+                            $modal.find('#address tbody').append($address);
+                        });
+                    } else {
+                        $modal.find('#address .table-container table').hide();
+                        $modal.find('#address .none-found').show();
+                    }
+                }
+                $('.tt').tooltip();
+                $modal.find('.tab[href="#' + item_form + '"]').tab('show');
+            });
+
+        },
+        save_referral: function () {
+            var $form = $('#modal #general').find('form');
+            if ($form.find('input[name="referral_id"]').val() == "") {
+                var action = "add_referral";
+            } else {
+                var action = "save_referral";
+            }
+            $.ajax({
+                url: helper.baseUrl + "ajax/" + action,
+                type: "POST",
+                dataType: "JSON",
+                data: $form.serialize()
+            }).done(function (response) {
+                flashalert.success("Referral details saved");
+                //change the add box to an edit box
+                if (action == "add_referral") {
+                    $modal.find('input[name="referral_id"]').val(response.id);
+                    $('.address-tab').show();
+                    $('#address').find('.table-container table').hide();
+                    $('.tab-alert').hide();
+                }
+                record.referral_panel.load_panel(record.urn, response.id);
+            });
+
+        },
+        change_tab: function (tab) {
+            modals.clear_footer();
+            var buttons = "";
+            if (tab == "#general") {
+                buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button><button type="submit" class="btn btn-primary save-referral-general">Save changes</button>';
+                modals.update_footer(buttons);
+            } else {
+                buttons = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>';
+                $modal.find('.table-container').show();
+                $modal.find('#referral-address-form').hide();
                 modals.update_footer(buttons);
             }
 

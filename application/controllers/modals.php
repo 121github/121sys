@@ -140,6 +140,13 @@ class Modals extends CI_Controller
         }
     }
 
+    public function load_referral_form()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->view('forms/edit_referral_form.php');
+        }
+    }
+
     public function load_company_form()
     {
         if ($this->input->is_ajax_request()) {

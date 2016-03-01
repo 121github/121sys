@@ -157,6 +157,7 @@ var record = {
             record.start_call();
         });
         modals.contacts.init();
+        modals.referrals.init();
         modals.companies.init();
         /* Initialize all the panel functions for the record details page */
         this.urn = urn;
@@ -1000,6 +1001,112 @@ var record = {
                 if (response.success) {
                     $panel.find('.contacts-list li[item-id="' + id + '"]').remove();
                     flashalert.success("Contact was deleted");
+                }
+                ;
+            });
+        }
+    },
+    //referral_panel_functions
+    referral_panel: {
+        init: function () {
+            this.panel = '#referral-panel';
+            record.referral_panel.load_panel();
+        },
+        load_panel: function (urn, id) {
+            var $panel = $(record.referral_panel.panel);
+            $.ajax({
+                url: helper.baseUrl + 'ajax/get_referrals',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: record.urn
+                },
+                beforeSend: function(){
+                    $panel.find('.referral-list').html("<li class='list-group-item'><img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
+                }
+            }).done(function (response) {
+                $panel.find('.referral-list').empty();
+                if(response.data){
+                    $.each(response.data, function (key, val) {
+                        var show = "";
+                        var collapse = "collapsed"
+                        if (key == id||$panel.find('.referral-list').length=="1") {
+                            show = "in";
+                            collapse = ""
+                        }
+                        var referral_detail_list_items="";
+                        var primary_postcode = "";
+
+                        $.each(val.visible, function (dt, dd) {
+                            if (dd && dd != '' &&dd!="null"&& dd.length > 0 && dt != 'Address') {
+                                referral_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
+                            } else if (dd && dd != '' && dt == 'Address') {
+                                var i = 1;
+                                $.each(dd, function (addr_id, addr) {
+                                    var address = "";
+                                    $.each(addr, function (key, val) {
+                                        if (val && key !== 'primary' && key !== 'visible' && key !== 'description') {
+                                            address += "<span>"+val + "</span></br>";
+                                        }
+                                    });
+                                    if (addr.primary == 1) {
+                                        primary_postcode = addr.postcode;
+                                    }
+                                    var postcode = addr.postcode;
+                                    var maplink = addr.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
+
+                                    referral_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='glyphicon glyphicon-ok-sign'></span> " : "") + dt + " " +i + "</dt>" +
+                                        "<dd>"+
+                                        "<div>" +
+                                        "<a data-toggle='collapse' href='#address_"+addr_id+"' class='pointer'>"+(addr.description != ''?addr.description:"No description") + "</a>" +
+                                        "</div>" +
+                                        "<div class='collapse "+(addr.primary == 1? "in" : "")+"' id='address_"+addr_id+"' style='border: 1px solid lightgrey; padding: 10px; margin-bottom: 5px'>" +
+                                        maplink + address +
+                                        "</div>" +
+                                        "</dd>";
+                                    i++;
+                                });
+                            }
+
+                        });
+
+                        $panel.find('.referral-list').append('<li class="list-group-item" item-id="'+key+'">'+
+                            '<a href="#con-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Name+'</a>' +
+                            '<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="delete-referral">'+
+                            '<span class="glyphicon glyphicon-trash"></span> ' +
+                            'Delete' +
+                            '</span>'+
+                            '<span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-referral">'+
+                            '<span class="glyphicon glyphicon-pencil"></span>' +
+                            ' Edit' +
+                            '</span>' +
+                            '<div class="clearfix"></div>' +
+                            '<div id="con-collapse-'+key+'" class="panel-collapse collapse '+show+'">' +
+                            '<dl class="dl-horizontal referral-detail-list">'+referral_detail_list_items+'</dl>' +
+                            '<input type="hidden" name="referral_postcode" value="'+primary_postcode+'" />' +
+                            '</div>' +
+                            '</li>');
+                    });
+                    $('#referral-panel .tt').tooltip();
+                } else {
+                    $panel.find('.referral-list').html('<li class="list-group-item">This record has no referrals</li>');
+                }
+
+            });
+        },
+        remove: function (id) {
+            var $panel = $(record.referral_panel.panel);
+            $.ajax({
+                url: helper.baseUrl + 'ajax/delete_referral',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    referral: id
+                }
+            }).done(function (response) {
+                if (response.success) {
+                    $panel.find('.referral-list li[item-id="' + id + '"]').remove();
+                    flashalert.success("Referral was deleted");
                 }
                 ;
             });
@@ -2835,6 +2942,18 @@ var modal = {
             $modal.modal('toggle');
         });
     },
+
+    delete_referral: function (id) {
+        var mheader = 'Confirm Delete';
+        var mbody = 'Are you sure you want to delete this referral?';
+        var mfooter = '';
+        modals.load_modal(mheader, mbody, mfooter);
+        modals.default_buttons();$modal.find('.confirm-modal').on('click', function (e) {
+            record.referral_panel.remove(id);
+            $modal.modal('toggle');
+        });
+    },
+
     delete_company: function (id) {
         var mheader = 'Confirm Delete';
         var mbody = 'Are you sure you want to delete this company?';

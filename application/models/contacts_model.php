@@ -263,6 +263,97 @@ class Contacts_model extends CI_Model
 
         return $result;
     }
+
+    public function get_referrals($urn)
+    {
+
+        $qry = "select
+                      camp.telephone_prefix,
+                      camp.telephone_protocol,
+                      r.*,
+                      address_id,a.description r_description,add1,add2,add3,city,county,country,a.primary is_primary,a.visible is_visible,
+                      postcode,lat latitude,lng longitude
+                  from referral r
+                    left join referral_address a using(referral_id)
+                    left join locations using(location_id)
+                    join records using(urn)
+                    join campaigns camp using(campaign_id)
+                  where urn = '$urn'
+                  order by r.referral_id";
+
+        $query = $this->db->query($qry);
+        $results = $query->result_array();
+
+        //put the contact details into array
+        if (count($results) == 0) {
+            return false;
+        }
+        foreach ($results as $result) {
+
+            if (!isset($referrals[$result['referral_id']]['visible'])) {
+                $referrals[$result['referral_id']]['visible'] = array(
+                    "Name" => $result['title'] . " " . $result['firstname'] . " " . $result['lastname'],
+                    "Telephone Number" => $result['telephone_number'],
+                    "Mobile Number" => $result['mobile_number'],
+                    "Other Number" => $result['other_number'],
+                    "Email address" => $result['email']
+                );
+            }
+            //we only want to display the primary address for each referral
+            if (($result['is_primary'] == "1") || ($result['is_visible'] == "1")) {
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['description'] = $result['r_description'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['add1'] = $result['add1'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['add2'] = $result['add2'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['add3'] = $result['add3'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['city'] = $result['city'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['county'] = $result['county'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['country'] = $result['country'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['postcode'] = $result['postcode'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['primary'] = $result['is_primary'];
+                $referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]['visible'] = $result['is_visible'];
+                array_filter($referrals[$result['referral_id']]['visible']['Address'][$result['address_id']]);
+            }
+        }
+
+        return $referrals;
+    }
+
+    public function get_referral($id)
+    {
+        $qry     = "select *, referral_address.description as add_description from referral left join referral_address using(referral_id) where referral_id = '$id'";
+        $results = $this->db->query($qry)->result_array();
+        foreach ($results as $result):
+            $referral['general'] = array(
+                "referral_id" => $result['referral_id'],
+                "urn" => $result['urn'],
+                "title" => $result['title'],
+                "firstname" => $result['firstname'],
+                "lastname" => $result['lastname'],
+                "telephone_number" => $result['telephone_number'],
+                "mobile_number" => $result['mobile_number'],
+                "other_number" => $result['other_number'],
+                "email" => $result['email'],
+                "user_id" => $result['user_id'],
+            );
+            if ($result['address_id']) {
+                $referral['address'][$result['address_id']] = array(
+                    "description" => !empty($result['add_description'])?$result['add_description']:'',
+                    "add1" => !empty($result['add1'])?$result['add1']:'',
+                    "add2" => $result['add2'],
+                    "add3" => $result['add3'],
+                    "city" => $result['city'],
+                    "county" => $result['county'],
+                    "country" => $result['country'],
+                    "postcode" => !empty($result['postcode'])?$result['postcode']:'',
+                    "primary" => $result['primary'],
+                    "visible" => $result['visible'],
+                    "address_id" => $result['address_id']
+                );
+            }
+        endforeach;
+
+        return $referral;
+    }
 	
 	
 }
