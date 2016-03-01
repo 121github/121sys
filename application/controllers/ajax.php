@@ -235,7 +235,8 @@ class Ajax extends CI_Controller
             $companies = $this->Company_model->get_companies($urn);
             echo json_encode(array(
                 "success" => true,
-                "data" => $companies
+                "data" => $companies,
+                "count" => count($companies)
             ));
         }
     }

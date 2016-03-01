@@ -1045,73 +1045,74 @@ var record = {
         },
         load_panel: function (urn, id) {
             var $panel = $(record.company_panel.panel);
-          $.ajax({
+            $.ajax({
                 url: helper.baseUrl + 'ajax/get_companies',
                 type: "POST",
                 dataType: "JSON",
                 data: {
                     urn: record.urn
                 },
-				beforeSend: function(){ $panel.find('.companies-list').html("<li class='list-group-item'><img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
-				}
+                beforeSend: function () {
+                    $panel.find('.companies-list').html("<li class='list-group-item'><img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' /></li>");
+                }
             }).done(function (response) {
                 $panel.find('.companies-list').empty();
-				if(response.data){
-                $.each(response.data, function (key, val) {
-                    var show = "";
-                    var collapse = "collapsed"
-                    if (key == id||$panel.find('.companies-list').length=="1") {
-                        show = "in";
-                        collapse = ""
-                    }
-                    var company_detail_links_items= "",company_detail_telephone_items= "",transfer_telephone_items="",company_detail_list_items="";
-
-                    //Links
-                    $.each(val.links, function (k, v) {
-                        if (v && v != '' &&v!="null"&& v.length > 0) {
-                            if (k === 'Website') {
-                                company_detail_links_items += "<span style='padding-left: 1%'><a target='_blank' href='"+v+"'><span class='fa fa-globe black tt pointer' data-toggle='tooltip' data-placement='right' title='"+v+"'></span></a></span>";
-                            }
+                if (response.count > 0) {
+                    $.each(response.data, function (key, val) {
+                        var show = "";
+                        var collapse = "collapsed"
+                        if (key == id || $panel.find('.companies-list').length == "1") {
+                            show = "in";
+                            collapse = ""
                         }
+                        var company_detail_links_items = "", company_detail_telephone_items = "", transfer_telephone_items = "", company_detail_list_items = "";
 
-                    });
-
-                    var primary_postcode = "";
-                    $.each(val.visible, function (dt, dd) {
-                        if (dd && dd != '' &&dd!="null"&& dd.length > 0 && dt != 'Address') {
-                            company_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
-                        } else if (dd && dd != '' && dt == 'Address') {
-                            var i = 1;
-                            $.each(dd, function (addr_id, addr) {
-                                var maplink = "";
-                                var postcode = "";
-                                var address = "";
-                                $.each(addr, function (key, val) {
-                                    if (val && key !== 'primary' && key !== 'visible' && key !== 'description') {
-                                        address += "<span>"+val + "</span></br>";
-                                    }
-                                });
-                                if (addr.primary == 1) {
-                                    primary_postcode = addr.postcode;
+                        //Links
+                        $.each(val.links, function (k, v) {
+                            if (v && v != '' && v != "null" && v.length > 0) {
+                                if (k === 'Website') {
+                                    company_detail_links_items += "<span style='padding-left: 1%'><a target='_blank' href='" + v + "'><span class='fa fa-globe black tt pointer' data-toggle='tooltip' data-placement='right' title='" + v + "'></span></a></span>";
                                 }
-                                postcode = addr.postcode;
-                                maplink = addr.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
+                            }
 
-                                company_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='fa fa-home pointer tt' data-toggle='tooltip' title='Primary Address' data-title='Primary Address'></span> " : "") + dt + " " +i + "</dt>" +
-                                                             "<dd>"+
-                                                                "<div style='margin-bottom:5px'>" +
-                                                                    "<a data-toggle='collapse' href='#address_"+addr_id+"' class='pointer'>"+(addr.description != ''?addr.description:"No description") + "</a>" +
-                                                                "</div>" +
-                                                                "<div class='collapse "+(addr.primary == 1? "in" : "")+"' id='address_"+addr_id+"'><div style='border: 1px solid lightgrey; padding:5px'>" +
-                                                                    maplink + address +
-                                                                "</div></div>" +
-                                                             "</dd>";
-                                i++;
-                            });
-                        }
+                        });
 
-                    });
-                    $.each(val.telephone, function (dt, tel) {
+                        var primary_postcode = "";
+                        $.each(val.visible, function (dt, dd) {
+                            if (dd && dd != '' && dd != "null" && dd.length > 0 && dt != 'Address') {
+                                company_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
+                            } else if (dd && dd != '' && dt == 'Address') {
+                                var i = 1;
+                                $.each(dd, function (addr_id, addr) {
+                                    var maplink = "";
+                                    var postcode = "";
+                                    var address = "";
+                                    $.each(addr, function (key, val) {
+                                        if (val && key !== 'primary' && key !== 'visible' && key !== 'description') {
+                                            address += "<span>" + val + "</span></br>";
+                                        }
+                                    });
+                                    if (addr.primary == 1) {
+                                        primary_postcode = addr.postcode;
+                                    }
+                                    postcode = addr.postcode;
+                                    maplink = addr.postcode !== null ? "<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>" : "";
+
+                                    company_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='fa fa-home pointer tt' data-toggle='tooltip' title='Primary Address' data-title='Primary Address'></span> " : "") + dt + " " + i + "</dt>" +
+                                        "<dd>" +
+                                        "<div style='margin-bottom:5px'>" +
+                                        "<a data-toggle='collapse' href='#address_" + addr_id + "' class='pointer'>" + (addr.description != '' ? addr.description : "No description") + "</a>" +
+                                        "</div>" +
+                                        "<div class='collapse " + (addr.primary == 1 ? "in" : "") + "' id='address_" + addr_id + "'><div style='border: 1px solid lightgrey; padding:5px'>" +
+                                        maplink + address +
+                                        "</div></div>" +
+                                        "</dd>";
+                                    i++;
+                                });
+                            }
+
+                        });
+                        $.each(val.telephone, function (dt, tel) {
                             var tps = "";
                             if (tel.tel_tps == null) {
                                 tps = "<span class='glyphicon glyphicon-question-sign black tps-btn tt pointer' item-company-id='" + id + "' item-number-id='" + dt + "' item-number='" + tel.tel_num + "' data-toggle='tooltip' data-placement='right' title='CTPS Status is unknown. Click to check it'></span>";
@@ -1122,30 +1123,30 @@ var record = {
                             else {
                                 tps = "<span class='glyphicon glyphicon-ok-sign green tt' data-toggle='tooltip' data-placement='right' title='This number is NOT CTPS registerd'></span>";
                             }
-							if(tel.tel_num&&tel.tel_num!=""){
-								if(helper.permissions['use timer']>0){
-								var timer = "starttimer";	
-								} else {
-								var timer = "";	
-								}
-                            company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a target='_blank' href='#' class='startcall "+timer+"' item-url='"+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ "+"+record.campaign+"'>" + tel.tel_num + "</a> " + tps + "</dd>";
-							}
+                            if (tel.tel_num && tel.tel_num != "") {
+                                if (helper.permissions['use timer'] > 0) {
+                                    var timer = "starttimer";
+                                } else {
+                                    var timer = "";
+                                }
+                                company_detail_telephone_items += "<dt>" + tel.tel_name + "</dt><dd><a target='_blank' href='#' class='startcall " + timer + "' item-url='" + tel.tel_protocol + tel.tel_prefix + tel.tel_num + "+" + record.campaign + "'>" + tel.tel_num + "</a> " + tps + "</dd>";
+                            }
+                        });
+                        if (typeof val.transfer !== "undefined") {
+                            $.each(val.transfer, function (dt, tel) {
+                                transfer_telephone_items += '<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="' + tel.tel_protocol + tel.tel_prefix + tel.tel_num + '+' + record.campaign + '" target="_blank" href="#" style="margin:5px 5px 5px">' + tel.tel_name + ' </a></dd>';
+                            });
+                            transfer_telephone_items += '<div class="clearfix"></div>';
+                        }
+                        $panel.find('.companies-list').append('<li class="list-group-item" item-id="' + key + '"><a href="#com-collapse-' + key + '" data-parent="#accordian" data-toggle="collapse" class="' + collapse + '">' + val.visible.Company + '</a><span style="padding-left: 20px">' + company_detail_links_items + '</span><span class="btn btn-default btn-xs pull-right marl" data-id="' + key + '" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="' + key + '" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="com-collapse-' + key + '" class="panel-collapse collapse ' + show + '"><dl class="dl-horizontal company-detail-list">' + company_detail_list_items + company_detail_telephone_items + transfer_telephone_items + '</dl><input type="hidden" name="company_postcode" value="' + primary_postcode + '" /></div></li>');
+                        $('#company-panel .tt').tooltip();
                     });
-					if(typeof val.transfer!=="undefined"){
-					 $.each(val.transfer, function (dt, tel) {
-					transfer_telephone_items +=	'<dd><a class="marl startcall btn btn-info pull-right starttimer" item-url="'+tel.tel_protocol+ tel.tel_prefix+ tel.tel_num+ '+'+record.campaign+'" target="_blank" href="#" style="margin:5px 5px 5px">'+tel.tel_name+' </a></dd>';
-					 });
-					 transfer_telephone_items += '<div class="clearfix"></div>';
-					}
-					$panel.find('.companies-list').append('<li class="list-group-item" item-id="'+key+'"><a href="#com-collapse-'+key+'" data-parent="#accordian" data-toggle="collapse" class="'+collapse+'">'+val.visible.Company+'</a><span style="padding-left: 20px">'+company_detail_links_items+'</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="edit-company"><span class="glyphicon glyphicon-pencil"></span> Edit</span><span class="btn btn-default btn-xs pull-right marl" data-id="'+key+'" data-modal="search-company"><span class="glyphicon glyphicon-search"></span> Search</span><div class="clearfix"></div><div id="com-collapse-'+key+'" class="panel-collapse collapse '+show+'"><dl class="dl-horizontal company-detail-list">'+company_detail_list_items+company_detail_telephone_items+transfer_telephone_items+'</dl><input type="hidden" name="company_postcode" value="'+primary_postcode+'" /></div></li>');
-					$('#company-panel .tt').tooltip();
-                });
-				if(typeof quick_planner.company_postcode !== "undefined"){
-				quick_planner.company_postcode = $('input[name="company_postcode"]').val();
-				}
-				} else {
-					$panel.find('.companies-list').html('<li class="list-group-item">This record has no companies</li>');
-				}
+                    if (typeof quick_planner.company_postcode !== "undefined") {
+                        quick_planner.company_postcode = $('input[name="company_postcode"]').val();
+                    }
+                } else {
+                    $panel.find('.companies-list').html('<li class="list-group-item">This record has no companies</li>');
+                }
 
             });
         },
