@@ -54,9 +54,11 @@ var campaign_functions = {
             //If we select Confirmed, confirmedButton -> on
             if (selectedId == 3) {
                 $('#appointment-confirmed').bootstrapToggle('on');
+                $modal.find('input[name="appointment_confirmed"]').val("1");
             }
             else {
                 $('#appointment-confirmed').bootstrapToggle('off');
+                $modal.find('input[name="appointment_confirmed"]').val("0");
             }
         });
     },
