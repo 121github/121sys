@@ -30,8 +30,8 @@ class Migration_update_101 extends CI_Migration
   `format` VARCHAR( 20 ) NOT NULL DEFAULT 'd/m/y',
   `modal_column` INT NOT NULL DEFAULT '1',
    `tooltip` VARCHAR( 250 ) NOT NULL,
-  PRIMARY KEY (`custom_field_id`),
-  KEY `panel_id` (`panel_id`)
+  PRIMARY KEY (`field_id`),
+  KEY (`custom_panel_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
 
 $this->db->query("CREATE TABLE IF NOT EXISTS `custom_panel_options` (
@@ -40,7 +40,7 @@ $this->db->query("CREATE TABLE IF NOT EXISTS `custom_panel_options` (
   `name` varchar(100) NOT NULL,
   `subtext` varchar(100) NOT NULL,
   PRIMARY KEY (`option_id`),
-  KEY `custom_field_id` (`custom_field_id`)
+  KEY (`field_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1");
 		
 		
