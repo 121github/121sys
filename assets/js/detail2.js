@@ -899,14 +899,14 @@ var record = {
                                 var maplink = addr.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
 
                                 contact_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='glyphicon glyphicon-ok-sign'></span> " : "") + dt + " " +i + "</dt>" +
-                                    "<dd>"+
-                                    "<div>" +
-                                    "<a data-toggle='collapse' href='#address_"+addr_id+"' class='pointer'>"+(addr.description != ''?addr.description:"No description") + "</a>" +
-                                    "</div>" +
-                                    "<div class='collapse "+(addr.primary == 1? "in" : "")+"' id='address_"+addr_id+"' style='border: 1px solid lightgrey; padding: 10px; margin-bottom: 5px'>" +
-                                    maplink + address +
-                                    "</div>" +
-                                    "</dd>";
+                            "<dd>" +
+                                        "<div style='margin-bottom:5px'>" +
+                                        "<a data-toggle='collapse' href='#address_" + addr_id + "' class='pointer'>" + (addr.description != '' ? addr.description : "No description") + "</a>" +
+                                        "</div>" +
+                                        "<div class='collapse " + (addr.primary == 1 ? "in" : "") + "' id='address_" + addr_id + "'><div style='border: 1px solid lightgrey; padding:5px'>" +
+                                        maplink + address +
+                                        "</div></div>" +
+                                        "</dd>";
                                 i++;
                             });
                         }
