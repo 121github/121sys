@@ -271,6 +271,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         class="close close-alert">&times;</span></div>
 <div id="page-danger" class="alert alert-danger hidden alert-dismissable"><span class="alert-text"></span><span
         class="close close-alert">&times;</span></div>
+
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/moment.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/lib/bootstrap-datetimepicker.js"></script>
@@ -280,6 +281,14 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
 <script src="<?php echo base_url() . "assets/js/modals.js?v" . $this->config->item('project_version'); ?>"></script>
 <script src="<?php echo base_url() . "assets/js/main.js?v" . $this->config->item('project_version'); ?>"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<!-- Campaign triggers-->
+<?php if (!empty($campaign_triggers)) { ?>
+    <?php foreach($campaign_triggers as $trigger) { ?>
+        <script src="<?php echo base_url()."upload/function_triggers/".$trigger['path']."?v".$this->config->item('project_version'); ?>"></script>
+    <?php } ?>
+<?php } ?>
+<!-- End of campaign triggers-->
 
 <script type="text/javascript"> helper.baseUrl = '<?php echo base_url(); ?>' + '';
     <?php if(isset($_SESSION['user_id'])){ ?>

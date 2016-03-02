@@ -131,9 +131,16 @@ $google_email = false;
         }
 		//get the calendar view preference
 		$calendar_view = $this->db->get_where("users",array("user_id"=>$_SESSION['user_id']))->row()->calendar;
+
+        //Get the campaign_triggers if exists
+        $campaign_triggers = array();
+        if (isset($_SESSION['current_campaign'])) {
+            $campaign_triggers = $this->Form_model->get_campaign_triggers_by_campaign_id($_SESSION['current_campaign']);
+        }
+
         $data = array(
             'campaign_access' => $this->_campaigns,
-
+            'campaign_triggers' => $campaign_triggers,
             'title' => 'Dashboard | Calendar',
             'page' => 'Calendar',
 			'calendar_view' => $calendar_view=="1"?"combined":"seperate",

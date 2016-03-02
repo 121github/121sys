@@ -122,14 +122,6 @@
 <?php } ?>
 <!-- end attachment popup -->
 
-<!-- Campaign triggers-->
-<?php if (!empty($campaign_triggers)) { ?>
-    <?php foreach($campaign_triggers as $trigger) { ?>
-        <script src="<?php echo base_url()."upload/function_triggers/".$trigger['path']."?v".$this->config->item('project_version'); ?>"></script>
-    <?php } ?>
-<?php } ?>
-<!-- End of campaign triggers-->
-
 <script type="text/javascript">
     $(document).ready(function () {
         var urn = '<?php echo $details['record']['urn'] ?>';

@@ -796,6 +796,12 @@ var modals = {
             $modal.find('#appointment-confirmed').hide();
 
             modals.set_appointment_access_address();
+
+            if(typeof campaign_functions !== "undefined"){
+                if(typeof campaign_functions.appointment_setup !== "undefined"){
+                    campaign_functions.appointment_setup();
+                }
+            }
         });
     },
     appointment_contacts: function (urn, contact_id) {

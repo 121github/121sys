@@ -22,7 +22,17 @@ var campaign_functions = {
             daysOfWeekDisabled: [0,6]
         });
 
-        quick_planner.set_appointment_start(start);
+        if (typeof start != "undefined") {
+            quick_planner.set_appointment_start(start);
+        }
+    },
+
+    appointment_edit_setup: function () {
+        $modal.find('.startpicker').data("DateTimePicker").enabledHours([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+        $modal.find('.startpicker').data("DateTimePicker").daysOfWeekDisabled([0,6]);
+
+        $modal.find('.endpicker').data("DateTimePicker").enabledHours([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+        $modal.find('.endpicker').data("DateTimePicker").daysOfWeekDisabled([0,6]);
     },
     save_appointment: function(appointment) {
         //Get the additional info
