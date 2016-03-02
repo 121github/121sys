@@ -900,10 +900,13 @@ var dashboard = {
             }
         }).done(function (response) {
             $('#custom-dash').empty();
-            var dashboards = "";
+            var dash_ar = "";
             if (response.success) {
+                var dashboards = "";
+                var reports = "";
+                var others = "";
                 $.each(response.dashboards, function (i, val) {
-                    dashboards += '<li class="left clearfix">' +
+                    var element = '<li class="left clearfix">' +
                                     '<div class="chat-body clearfix">' +
                                         '<div class="header">' +
                                             '<strong class="primary-font">' +
@@ -918,6 +921,7 @@ var dashboard = {
                                                 'item-description="'+val.description+'"' +
                                                 'item-viewers="'+val.viewers+'"' +
                                                 'item-campaigns="'+val.campaigns+'"' +
+                                                'item-type="'+val.dash_type+'"' +
                                                 '>' +
                                                 '<span class="glyphicon glyphicon-pencil"></span>' +
                                                 ' Edit' +
@@ -933,23 +937,39 @@ var dashboard = {
                                         '<p>' + val.description + '</p>' +
                                     '</div>' +
                                    '</li>';
+
+                    switch (val.dash_type) {
+                        case "Dashboard":
+                            dashboards += element;
+                            break;
+                        case "Report":
+                            reports += element;
+                            break;
+                        default:
+                            others += element;
+                            break;
+                    }
                 });
+                dash_ar = (dashboards.length>0?"<h1>Dashboards</h1> <ul class='chat'>"+dashboards+"</ul>":"") +
+                          (reports.length>0?"<h1>Reports</h1> <ul class='chat'>"+reports+"</ul>":"") +
+                          (others.length>0?"<h1>Others</h1> <ul class='chat'>"+others+"</ul>":"");
             }
             else {
-                dashboards = "No dashboards created yet";
+                dash_ar = "No dashboards created yet";
             }
-            $('#custom-dash').html("<ul class='chat'>"+dashboards+'</ul>');
+            $('#custom-dash').html("<ul class='chat'>"+dash_ar+'</ul>');
         });
     },
 
     //Create new dashboard
     new_dashboard: function (btn) {
-        var dashboard_id, dashboard_name, dashboard_description, dashboard_viewers, dashboard_campaigns;
+        var dashboard_id, dashboard_name, dashboard_description, dashboard_type, dashboard_viewers, dashboard_campaigns;
         dashboard_id = dashboard_name = dashboard_description = dashboard_viewers = dashboard_campaigns = '';
         if (typeof btn !== 'undefined') {
             dashboard_id = (typeof btn.attr('item-id') === 'undefined') ? '' : btn.attr('item-id');
             dashboard_name = (typeof btn.attr('item-name') === 'undefined') ? '' : btn.attr('item-name');
             dashboard_description = (typeof btn.attr('item-description') === 'undefined') ? '' : btn.attr('item-description');
+            dashboard_type = (typeof btn.attr('item-type') === 'undefined') ? '' : btn.attr('item-type');
             dashboard_viewers = (typeof btn.attr('item-viewers') === 'undefined') ? '' : btn.attr('item-viewers').split(",");
             dashboard_campaigns = (typeof btn.attr('item-campaigns') === 'undefined') ? '' : btn.attr('item-campaigns').split(",");
         }
@@ -1002,12 +1022,40 @@ var dashboard = {
                                 "<p>Description </p>" +
                                 "<textarea name='description' class='form-control' style='min-width: 100%; min-height: 200px;'>"+dashboard_description+"</textarea>" +
                             "</div>" +
+                            "<div class='form-group input-group-sm'>" +
+                                "<input type='checkbox' id='dash-type' data-toggle='toggle' data-width='200' data-onstyle='success' data-offstyle='info' data-on='Dashboard' data-off='Report'>" +
+                                "<input type='hidden' name='dash_type' value='Dashboard'>" +
+                            "</div>" +
                 "</form>";
 
             var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-dashboard-btn">Save</button>' +
                 '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 
             modals.load_modal(mheader, mbody, mfooter);
+
+            dashboard.set_dashboard_type(dashboard_type);
+
+
+        });
+    },
+
+    set_dashboard_type: function(dash_type){
+        modal_body.find('#dash-type').bootstrapToggle();
+
+        if(dash_type === "Dashboard"){
+            $('#dash-type').bootstrapToggle('on');
+        } else if(dash_type === "Report"){
+            $('#dash-type').bootstrapToggle('off');
+        }
+        else {
+            $('#dash-type').bootstrapToggle('on');
+        }
+        $('#dash-type').on('change',function(e){
+            if($(this).prop("checked")){
+                modal_body.find('input[name="dash_type"]').val("Dashboard");
+            } else {
+                modal_body.find('input[name="dash_type"]').val("Report");
+            }
         });
     },
 

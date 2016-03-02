@@ -9,7 +9,7 @@
                 <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>>
                     <a href="<?php echo base_url() ?>reports/activity">Activity</a>
                 </li>
-                 <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>>
+                <li <?php echo @($page == 'activity' ? "class='Selected'" : "") ?>>
                     <a href="<?php echo base_url() ?>reports/overview">Activity Overview</a>
                 </li>
             <?php } ?>
@@ -110,3 +110,24 @@
         </ul>
     </li>
 <?php } ?>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: helper.baseUrl + 'dashboard/get_dashboards',
+            type: "POST",
+            dataType: "JSON"
+        }).done(function (response) {
+            var reports = "";
+            if (response.success) {
+                $.each(response.dashboards, function (i, val) {
+                    if (val.dash_type === "Report") {
+                        var page = "<?php echo @$page ?>";
+                        reports += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
+                    }
+                });
+                $('#reports ul').append(reports);
+            }
+        });
+    });
+</script>

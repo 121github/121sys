@@ -1115,10 +1115,12 @@ public function index(){
             'title' => 'Dashboard-Settings',
                 'page' => 'dash_settings',
             'javascript' => array(
-                'dashboard.js?v' . $this->project_version
+                'dashboard.js?v' . $this->project_version,
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
             ),
             'css' => array(
-                'dashboard.css'
+                'dashboard.css',
+                'plugins/bootstrap-toggle/bootstrap-toggle.min.css'
             )
         );
         $this->template->load('default', 'dashboard/settings.php', $data);
@@ -1178,6 +1180,7 @@ public function index(){
                 if (isset($form['viewers'])) {
                     unset($form['viewers']);
                 }
+                $this->firephp->log($form);
                 $dashboard_id = $this->Dashboard_model->save_dashboard($form);
 
                 if ($dashboard_id) {
@@ -1501,7 +1504,8 @@ public function index(){
 
             echo json_encode(array(
                 "success" => (!empty($reports)),
-                "data" => (!empty($reports) ? $reports : "No export forms were created yet!"),
+                "data" => $reports,
+                "msg" => (!empty($reports) ? $reports : "No export forms were created yet!"),
                 "position" => count($dash_reports),
                 "edit_permission" => (in_array("edit export", $_SESSION['permissions']))
             ));
@@ -1528,7 +1532,7 @@ public function index(){
             echo json_encode(array(
                 "success" => (!empty($reports)),
                 "reports" => $reports,
-                "msg" => (!empty($reports)?"":"There are no panels to be loaded on this dashboard!")
+                "msg" => (!empty($reports)?"":"There are no panels to be loaded on yet! Please start adding one from the butotn bar on the top")
             ));
         }
         else {
