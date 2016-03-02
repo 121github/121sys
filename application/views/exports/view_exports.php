@@ -53,7 +53,7 @@
                 <label style="margin-top: 5%;">Team</label>
                 <select name="teams[]" class="selectpicker team-filter" multiple data-width="100%"
                         data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                    <?php foreach ($team_managers as $row) { ?>
+                    <?php foreach ($teams as $row) { ?>
                         <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                     <?php } ?>
                 </select>
@@ -81,6 +81,14 @@
             <select name="sources[]" class="selectpicker pot-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
                 <?php foreach ($pots as $row) { ?>
+                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                <?php } ?>
+            </select>
+
+            <label style="margin-top: 5%;">User</label>
+            <select name="user[]" class="selectpicker user-filter" multiple data-width="100%"
+                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+                <?php foreach ($users as $row) { ?>
                     <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                 <?php } ?>
             </select>

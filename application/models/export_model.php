@@ -67,13 +67,25 @@ class Export_model extends CI_Model
             }
         }
         if ($export_form['campaign_filter'] && isset($options['campaign']) && !empty($options['campaign'])) {
-            $qry .= " and ".$export_form['campaign_filter']." = '" . $options['campaign'] . "' ";
+            $qry .= " and ".$export_form['campaign_filter'] . " IN (".implode(",",$options['campaign']).") ";
         }
-        if ($export_form['source_filter'] && isset($options['source']) && !empty($options['source'])) {
-            $qry .= " and " . $export_form['source_filter'] . " = '" . $options['source'] . "' ";
+        if ($export_form['outcome_filter'] && isset($options['outcome']) && !empty($options['outcome'])) {
+            $qry .= " and ".$export_form['outcome_filter'] . " IN (".implode(",",$options['outcome']).") ";
         }
-		 if ($export_form['pot_filter'] && isset($options['pot']) && !empty($options['pot'])) {
-            $qry .= " and " . $export_form['pot_filter'] . " = '" . $options['pot'] . "' ";
+        if ($export_form['source_filter'] && isset($options['sources']) && !empty($options['sources'])) {
+            $qry .= " and " . $export_form['source_filter'] . " IN (".implode(",",$options['sources']).") ";
+        }
+		if ($export_form['pot_filter'] && isset($options['pot']) && !empty($options['pot'])) {
+            $qry .= " and " . $export_form['pot_filter'] . " IN (".implode(",",$options['pot']).") ";
+        }
+        if ($export_form['team_filter'] && isset($options['team']) && !empty($options['team'])) {
+            $qry .= " and " . $export_form['team_filter'] . " IN (".implode(",",$options['team']).") ";
+        }
+        if ($export_form['agent_filter'] && isset($options['agent']) && !empty($options['agent'])) {
+            $qry .= " and " . $export_form['agent_filter'] . " IN (".implode(",",$options['agent']).") ";
+        }
+        if ($export_form['user_filter'] && isset($options['user']) && !empty($options['user'])) {
+            $qry .= " and " . $export_form['user_filter'] . " IN (".implode(",",$options['user']).") ";
         }
         if ($export_form['group_by']) {
             $qry .= " group by ".$export_form['group_by'];
@@ -82,6 +94,8 @@ class Export_model extends CI_Model
             $qry .= " order by ".$export_form['order_by'];
         }
         $result = $this->db->query($qry)->result_array();
+
+        $this->firephp->log($qry);
 
         return $result;
     }
