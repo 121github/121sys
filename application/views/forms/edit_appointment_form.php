@@ -185,7 +185,8 @@
 
 
     <!-- APPOINTMENT ACCESS ADDRESS -->
-    <div class="checkbox form-group input-group-sm">
+    <div class="checkbox form-group input-group-sm access-add-check"
+         style="display:<?php if (!in_array("access address", $_SESSION['permissions']))  echo "none";?>">
         <label>
             <input id="access-add-check" data-toggle="toggle" data-width="200" data-onstyle="info" data-on="Access Address Details" data-off="Access Address Details"  name="access_add_check" type="checkbox">
         </label>

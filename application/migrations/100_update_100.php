@@ -51,15 +51,19 @@ class Migration_update_100 extends CI_Migration
 
         $this->db->query("INSERT ignore INTO `campaign_features` (feature_id, feature_name, panel_path, permission_id) VALUES (NULL, 'Referral', 'referral.php', NULL)");
 
-        $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'add referral', 'Referrals')");
+        $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`, `description`) VALUES (NULL, 'add referral', 'Referrals', 'Add new referral user')");
         $id = $this->db->insert_id();
         $this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('1', $id)");
 
-        $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'delete referral', 'Referrals')");
+        $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`, `description`) VALUES (NULL, 'edit referral', 'Referrals', 'Edit a referral user')");
         $id = $this->db->insert_id();
         $this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('1', $id)");
 
-        $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`) VALUES (NULL, 'edit referral', 'Referrals')");
+        $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`, `description`) VALUES (NULL, 'delete referral', 'Referrals', 'Delete a referral user')");
+        $id = $this->db->insert_id();
+        $this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('1', $id)");
+
+        $this->db->query("INSERT ignore INTO `permissions` (`permission_id`, `permission_name`, `permission_group`, `description`) VALUES (NULL, 'access address', 'Appointments', 'Add Access Detail Address on the appointment')");
         $id = $this->db->insert_id();
         $this->db->query("INSERT ignore INTO `role_permissions` (`role_id`, `permission_id`) VALUES ('1', $id)");
 	

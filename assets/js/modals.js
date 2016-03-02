@@ -480,7 +480,9 @@ var modals = {
                     quick_planner.load_planner();
                 }
                 if(typeof campaign_functions !== "undefined"){
-                    campaign_functions.save_appointment(response.data);
+                    if(typeof campaign_functions.save_appointment !== "undefined"){
+                        campaign_functions.save_appointment(response.data);
+                    }
                 }
                 if (response.trackvia) {
                     $.post(response.trackvia, {urn: response.urn});
@@ -913,7 +915,9 @@ var modals = {
         });
 
         if(typeof campaign_functions !== "undefined"){
-            campaign_functions.set_access_address();
+            if(typeof campaign_functions.set_access_address !== "undefined"){
+                campaign_functions.set_access_address();
+            }
         }
     },
     appointment_outcome_html: function (id) {

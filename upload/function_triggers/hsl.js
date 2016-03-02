@@ -191,6 +191,18 @@ var campaign_functions = {
         }).done(function (response) {
 
         });
+    },
+    set_access_address: function() {
+        if (typeof $('.accessaddresspicker option:selected').val() !== 'undefined') {
+            if ($('.accessaddresspicker option:selected').val().length <= 0) {
+                $.each($('#accessaddresspicker option'), function () {
+                    if ($(this).attr('data-title') == "Access Detail Address") {
+                        $('#access-add-check').bootstrapToggle('on');
+                        $('#accessaddresspicker').selectpicker('val',$(this).val()).selectpicker('refresh');
+                    }
+                });
+            }
+        }
     }
 }
 /*
