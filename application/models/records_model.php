@@ -1671,7 +1671,25 @@ return $comments;
     {
         $this->db->insert_update("client_refs", array("urn" => $urn, "client_ref" => $client_ref));
     }
-
+  public function get_custom_panels($campaign){
+		$query = "select * from custom_panels join campaign_custom_panels using(custom_panel_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and campaign_id = ' $campaign' ";
+		return $this->db->query($query)->result_array();
+  }
+  
+   public function get_custom_panel($panel_id){
+		$query = "select * from custom_panels join campaign_custom_panels using(custom_panel_id) where campaign_id in({$_SESSION['campaign_access']['list']}) and custom_panel_id = '$panel_id' ";
+		return $this->db->query($query)->row_array();
+  }
+  
+    public function get_custom_panel_fields($id){
+		$panel_fields_query = "select custom_panel_fields.field_id,custom_panel_fields.name,modal_column,format,type,option_id,custom_panel_options.name option_name,subtext as option_subtext,tooltip,format from custom_panel_fields left join custom_panel_options using(field_id) where custom_panel_id = '$id'";
+	return $this->db->query($panel_fields_query)->result_array();
+  }
+     public function get_custom_panel_data($urn,$id){
+		$panel_data_query = "select id,data_id,field_id,value,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and custom_panel_id = '$id' order by created_on desc";
+	return $this->db->query($panel_data_query)->result_array();
+  }
+  
 }
 
 ?>

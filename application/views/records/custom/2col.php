@@ -80,13 +80,20 @@
 
 <div class="row">
     <div class="col-md-6 col-sm-12">
-        <?php foreach ($features as $k => $v) {
+        <?php  foreach ($features as $k => $v) {
             if (array_key_exists($v, $panels)) {
                 if ($k % 2 == 1) {
                     $this->view('records/panels/' . $panels[$v], $details);
                 }
             }
         } ?>
+           <?php if(isset($custom_panels)){ 
+		   foreach ($custom_panels as $k => $v) { 
+                if ($k % 2 == 0) {
+                    $this->view('records/panels/' . "custom_panels.php", $custom_panels[$k]);
+            }
+        }
+		   }?>
     </div>
     <div class="col-md-6 col-sm-12">
         <?php foreach ($features as $k => $v) {
@@ -96,6 +103,13 @@
                 }
             }
         } ?>
+                   <?php if(isset($custom_panels)){ 
+				   foreach ($custom_panels as $k => $v) {
+                if ($k % 2 == 1) { 
+                    $this->view('records/panels/' . "custom_panels.php", $custom_panels[$k]);
+            }
+        }
+				   } ?>
     </div>
 </div>
 <!-- end row panel -->
@@ -198,6 +212,9 @@
 		<?php if(in_array(21,$features)){ ?>
         record.tasks.init();
         <?php } ?>
+		 <?php if(isset($custom_panels)){ ?>
+		 custom_panels.init();
+		 <?php } ?>
     });
 </script>
 <?php endif; ?>

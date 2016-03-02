@@ -121,7 +121,6 @@ if($check->num_rows()){
                             CHANGE `column_order` `datafield_order` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                             CHANGE `column_group` `datafield_group` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
                             CHANGE `column_table` `datafield_table` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL");
-$this->db->query("alter table datatables_views add unique(table_id,user_id,selected)");
        
 }
         $this->db->query("

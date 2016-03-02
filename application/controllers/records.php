@@ -313,6 +313,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
         //get the panels for the different features. These panels will be laoded in the view if they have been selected on the campaign
         $features                     = array();
         $panels                       = array();
+				
         foreach ($campaign_features as $row) {
             $features[] = $row['id'];
             if (!empty($row['path'])) {
@@ -320,6 +321,8 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             }
         }
 
+		//add custom panels
+            $custom_panels         = $this->Records_model->get_custom_panels($campaign_id);
         //get the details of the record for the specified features eg appointment details etc. This saves us having to join every single table when they may not be needed
         $details                   = $this->Records_model->get_details($urn, $features);
         //add the logo file to the record details so we can load it in the view
@@ -372,6 +375,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             "javascript" => array(
                 "detail2.js?v" . $this->project_version,
 				"availability.js?v" . $this->project_version,
+				"custom_panels.js?v" . $this->project_version,
 				'plugins/bootstrap-toggle/bootstrap-toggle.min.js',
                 'plugins/jqfileupload/vendor/jquery.ui.widget.js',
                 'plugins/jqfileupload/jquery.iframe-transport.js',
@@ -403,6 +407,10 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 'next' => $next
             )
         );
+		
+		if(count($custom_panels)>0){
+		 $data['custom_panels'] = $custom_panels;	
+		}
 
         //if appointment setting is on we need the available addresses
         if (in_array(14, $features)) {
