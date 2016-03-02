@@ -898,7 +898,7 @@ var record = {
                                 var postcode = addr.postcode;
                                 var maplink = addr.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
 
-                                contact_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='glyphicon glyphicon-ok-sign'></span> " : "") + dt + " " +i + "</dt>" +
+                                contact_detail_list_items += "<dt>" + ((addr.primary == 1) ? " <span class='fa fa-home pointer tt' data-toggle='tooltip' title='Primary Address' data-title='Primary Address'></span> " : "") + dt + " " + i + "</dt>" +
                             "<dd>" +
                                         "<div style='margin-bottom:5px'>" +
                                         "<a data-toggle='collapse' href='#address_" + addr_id + "' class='pointer'>" + (addr.description != '' ? addr.description : "No description") + "</a>" +

@@ -118,9 +118,10 @@
                         <label>Is the number on the TPS list?</label>
                         <select class="form-control selectpicker" placeholder="Is this number CTPS registered?"
                                 name="ctps">
+                            <option value="">Unknown</option>
                             <option value="1">Yes</option>
                             <option value="0">No</option>
-                            <option value="">Unknown</option>
+                            
                         </select>
                     </div>
                     <div class="col-sm-3">
