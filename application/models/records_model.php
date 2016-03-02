@@ -337,6 +337,15 @@ class Records_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
+    public function get_record_details_by_urn($urn)
+    {
+        $qry = "SELECT *
+				from record_details
+				WHERE urn = " . $urn;
+
+        return $this->db->query($qry)->result_array();
+    }
+
     public function get_record_details_by_urn_list($urn_list)
     {
         $qry = "SELECT *

@@ -201,6 +201,19 @@ class Ajax extends CI_Controller
         }
     }
 
+    //this function returns a json array of referral data for a given referral id
+    public function get_referral()
+    {
+        if ($this->input->is_ajax_request()) {
+            $id = intval($this->input->post('id'));
+            $referral = $this->Contacts_model->get_referral($id);
+            echo json_encode(array(
+                "success" => true,
+                "data" => $referral
+            ));
+        }
+    }
+
     //this function returns a json array of company data for a given company id
     public function get_company()
     {
@@ -227,6 +240,19 @@ class Ajax extends CI_Controller
         }
     }
 
+    //this function returns a json array of all referrals for a given urn
+    public function get_referrals()
+    {
+        if ($this->input->is_ajax_request()) {
+            $urn = intval($this->input->post('urn'));
+            $referrals = $this->Contacts_model->get_referrals($urn);
+            echo json_encode(array(
+                "success" => true,
+                "data" => $referrals
+            ));
+        }
+    }
+
     //this function returns a json array of all contacts for a given contact urn
     public function get_companies()
     {
@@ -235,7 +261,8 @@ class Ajax extends CI_Controller
             $companies = $this->Company_model->get_companies($urn);
             echo json_encode(array(
                 "success" => true,
-                "data" => $companies
+                "data" => $companies,
+                "count" => count($companies)
             ));
         }
     }
@@ -277,6 +304,22 @@ class Ajax extends CI_Controller
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($this->input->post('contact_id'))
+                ));
+            }
+        }
+    }
+
+    //this function saves referral data to the database. The post names should match the database field names.
+    public function save_referral()
+    {
+        if ($this->input->is_ajax_request()) {
+            $array = $this->input->post();
+
+            $this->db->where("referral_id", intval($this->input->post('referral_id')));
+            if ($this->db->update('referral', $array)) {
+                echo json_encode(array(
+                    "success" => true,
+                    "id" => intval($this->input->post('referral_id'))
                 ));
             }
         }
@@ -331,6 +374,23 @@ class Ajax extends CI_Controller
                 $id = $this->db->insert_id();
                 $array['contact_id'] = $id;
                 $this->Audit_model->log_contact_insert(array_filter($array), $array['urn']);
+                echo json_encode(array(
+                    "success" => true,
+                    "id" => $id
+                ));
+            }
+        }
+    }
+
+    //this function saves referral data to the database. The post names should match the database field names.
+    public function add_referral()
+    {
+        if ($this->input->is_ajax_request()) {
+            $array = $this->input->post();
+
+            if ($this->db->insert('referral', array_filter($array))) {
+                $id = $this->db->insert_id();
+                $array['referral_id'] = $id;
                 echo json_encode(array(
                     "success" => true,
                     "id" => $id
@@ -407,6 +467,20 @@ class Ajax extends CI_Controller
         }
     }
 
+    //return a referral address from an id
+    public function get_referral_address()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->db->where('address_id', $this->input->post('id'));
+            $result = $this->db->get('referral_address')->row_array();
+            $result['type'] = "address";
+            $result['success'] = true;
+            if ($result):
+                echo json_encode($result);
+            endif;
+        }
+    }
+
     //return a company address from an id 
     public function get_company_address()
     {
@@ -434,6 +508,22 @@ class Ajax extends CI_Controller
                 //if the contact is deleted then remove the addresses
                 $this->db->where('contact_id', $this->input->post('contact'));
                 $this->db->delete('contact_addresses');
+                echo json_encode(array(
+                    "success" => true
+                ));
+            endif;
+        }
+    }
+
+    //this function delete referral and associated data for a given id
+    public function delete_referral()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->db->where('referral_id', $this->input->post('referral'));
+            if ($this->db->delete('referral')):
+                //if the contact is deleted then remove the addresses
+                $this->db->where('referral_id', $this->input->post('referral'));
+                $this->db->delete('referral_address');
                 echo json_encode(array(
                     "success" => true
                 ));
@@ -727,6 +817,62 @@ class Ajax extends CI_Controller
         $this->Locations_model->set_location_id($this->input->post('postcode'));
     }
 
+    //this function edits referral address
+    public function edit_referral_address()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->helper('location');
+            $data = $this->input->post();
+            $data['postcode'] = postcodeCheckFormat($data['postcode']);
+            if (!$data['postcode']) {
+                echo json_encode(array("success" => false, "msg" => "Please enter a valid postcode"));
+                exit;
+            }
+            if ($this->input->post("primary") == "1") {
+                $this->db->where("referral_id", intval($this->input->post('referral_id')));
+                $this->db->update("referral_address", array(
+                    "primary" => NULL
+                ));
+            }
+
+            $urn = $this->db->get_where("referral", array("referral_id" => $data['referral_id']))->row()->urn;
+
+            //delete the location id incase the postcode has changed
+            $this->db->where('address_id', intval($this->input->post('address_id')));
+            $this->db->update('referral_address', array(
+                "location_id" => NULL
+            ));
+
+            $this->db->where('address_id', intval($this->input->post('address_id')));
+            if ($this->db->update('referral_address', elements(array(
+                "description",
+                "add1",
+                "add2",
+                "add3",
+                "add4",
+                "locality",
+                "city",
+                "county",
+                "country",
+                "postcode",
+                "referral_id",
+                "primary",
+                "visible"
+            ), $data))
+            ):
+
+                echo json_encode(array(
+                    "success" => true,
+                    "id" => intval($this->input->post('referral_id')),
+                    "type" => "address"
+                ));
+            endif;
+        }
+        $this->load->model('Locations_model');
+        //set the location id on the appointment
+        $this->Locations_model->set_location_id($this->input->post('postcode'));
+    }
+
 
     //this function edits company address
     public function edit_coaddress()
@@ -837,6 +983,56 @@ class Ajax extends CI_Controller
         $this->Locations_model->set_location_id($this->input->post('postcode'));
     }
 
+    //this function updates referral address
+    public function add_referral_address()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->helper('location');
+            $data = $this->input->post();
+            $data['postcode'] = postcodeCheckFormat($data['postcode']);
+            if (!$data['postcode']) {
+                echo json_encode(array("success" => false, "msg" => "Please enter a valid postcode"));
+                exit;
+            }
+            if ($this->input->post("primary") == "1" || ($this->input->post("primary") == '')) {
+                $data['primary'] = "1";
+                $this->db->where("referral_id", $data['referral_id']);
+                $this->db->update("referral_address", array(
+                    "primary" => NULL
+                ));
+            }
+
+            if ($this->db->insert('referral_address', elements(array(
+                "description",
+                "add1",
+                "add2",
+                "add3",
+                "add4",
+                "locality",
+                "city",
+                "county",
+                "country",
+                "postcode",
+                "referral_id",
+                "primary",
+                "visible"
+            ), $data))
+            ):
+
+                $data['address_id'] = $this->db->insert_id();
+                $urn = $this->db->get_where("referral", array("referral_id" => $data['referral_id']))->row()->urn;
+                echo json_encode(array(
+                    "success" => true,
+                    "id" => intval($data['referral_id']),
+                    "type" => "address"
+                ));
+            endif;
+        }
+        $this->load->model('Locations_model');
+        //set the location id on the appointment
+        $this->Locations_model->set_location_id($this->input->post('postcode'));
+    }
+
     //this function updates company address
     public function add_coaddress()
     {
@@ -900,6 +1096,24 @@ class Ajax extends CI_Controller
                 echo json_encode(array(
                     "success" => true,
                     "id" => intval($this->input->post('contact')),
+                    "type" => "address"
+                ));
+            endif;
+        }
+    }
+
+    //this function deletes referral address
+    public function delete_referral_address()
+    {
+        if ($this->input->is_ajax_request()) {
+            $id = intval($this->input->post('id'));
+            $urn = $this->db->query("select urn from referral left join referral_address using(referral_id) where address_id = '$id'")->row()->urn;
+
+            $this->db->where(array('address_id' => $id));
+            if ($this->db->delete('referral_address')):
+                echo json_encode(array(
+                    "success" => true,
+                    "id" => intval($this->input->post('referral')),
                     "type" => "address"
                 ));
             endif;

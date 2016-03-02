@@ -11,13 +11,15 @@ var campaign_functions = {
             stepping: 30,
             format: 'DD/MM/YYYY HH:mm',
             sideBySide: true,
-            enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+            enabledHours: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+            daysOfWeekDisabled: [0,6]
         });
         $modal.find('.endpicker').datetimepicker({
             stepping: 30,
             format: 'DD/MM/YYYY HH:mm',
             sideBySide: true,
-            enabledHours: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+            enabledHours: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+            daysOfWeekDisabled: [0,6]
         });
 
         quick_planner.set_appointment_start(start);

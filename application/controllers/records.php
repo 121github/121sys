@@ -1020,6 +1020,7 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 exit(0);
             }
 
+            //TODO (Function pending to define) check if there is a slot available for this date
             //Check if the attendee has an slot available for the date selected between the start and the end date
             if ($this->Appointments_model->checkSlotAvailable($data['attendees'][0], $data['start'], $data['end'])) {
                 echo json_encode(array(

@@ -153,6 +153,7 @@
         //initializing the generic panels
         record.contact_panel.init();
         record.update_panel.init();
+        record.referral_panel.init();
         //initializing the panels for this campaign
         <?php if(in_array(2,$features)){ ?>
         record.company_panel.init();
