@@ -267,4 +267,12 @@ class Appointments extends CI_Controller
 		}
 	}
 
+	public function get_contact_appointment() {
+		if ($this->input->is_ajax_request()) {
+			$appointment_id = $this->input->post('appointment_id');
+			$result = $this->Appointments_model->get_contact_appointment($appointment_id);
+			echo json_encode($result);
+		}
+	}
+
 }

@@ -57,7 +57,7 @@
 			
 				if(in_array("set progress",$_SESSION['permissions'])) {  ?>
                    <div class="form-group input-group">
-            <select name="progress_id" id="progress" class="selectpicker outcomepicker">
+            <select name="progress_id" id="progress" class="selectpicker outcomepicker progress-outcome">
               <option value="">No action required</option>
               <?php foreach($progress_options as $row): ?>
               <option value="<?php echo $row['id'] ?>" <?php if($details['record']['progress_id']==$row['id']){ echo "selected"; } ?> ><?php echo $row['name'] ?></option>
@@ -121,3 +121,13 @@
         </form>
       </div>
     </div>
+
+  <script>
+      $(document).ready(function () {
+          if(typeof campaign_functions !== "undefined"){
+              if(typeof campaign_functions.record_setup_update !== "undefined"){
+                  campaign_functions.record_setup_update();
+              }
+          }
+      });
+  </script>

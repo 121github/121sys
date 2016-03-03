@@ -493,4 +493,21 @@ class Appointments_model extends CI_Model
 
     }
 
+    //Get the contact appointment by appointment_id
+    public function get_contact_appointment($appointment_id) {
+        $this->db->select('contacts.*');
+        $this->db->from('appointments');
+        $this->db->join('contacts', 'contacts.contact_id=appointments.contact_id', 'INNER');
+        $this->db->where('appointment_id', $appointment_id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            return $query->row();
+        } else {
+            return NULL;
+        }
+    }
+
+
+
 }

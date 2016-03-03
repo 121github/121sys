@@ -21,15 +21,17 @@ class Ajax extends CI_Controller
         $this->load->helper('misc');
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
-	public function change_theme(){
-	if($this->input->post('theme')){
-	$_SESSION['theme_color']=$this->input->post('theme');
-	$this->db->where("user_id",$_SESSION['user_id']);
-	$this->db->update("users",array("theme_color"=>$this->input->post('theme')));
-	}
-	}
 
-	public function suppress_by_urn()
+    public function change_theme()
+    {
+        if ($this->input->post('theme')) {
+            $_SESSION['theme_color'] = $this->input->post('theme');
+            $this->db->where("user_id", $_SESSION['user_id']);
+            $this->db->update("users", array("theme_color" => $this->input->post('theme')));
+        }
+    }
+
+    public function suppress_by_urn()
     {
         if ($this->input->is_ajax_request()) {
             $form = $this->input->post();
@@ -45,48 +47,50 @@ class Ajax extends CI_Controller
         }
         echo json_encode(array("success" => true, "post" => $form));
     }
-	
-	public function get_campaigns()
+
+    public function get_campaigns()
     {
         $campaigns = $this->Form_model->get_campaigns();
         echo json_encode(array(
             "data" => $campaigns
         ));
     }
-	
-	public function save_record_options(){
-		  if ($this->input->is_ajax_request()) {
-		$form = $this->input->post();
-		//checks
-		if(empty($form['campaign_id'])){
-			unset($form['campaign_id']);
-		}
-		if(empty($form['source_id'])){
-			unset($form['source_id']);
-		}
-		if(empty($form['pot_id'])&&isset($form['pot_id'])){
-			$form['pot_id']=NULL;
-		}
-		if(empty($form['parked_code'])&&isset($form['parked_code'])){
-			$form['parked_code']=NULL;
-		}
-		if(empty($form['record_color'])&&isset($form['record_color'])){
-			$form['record_color']=NULL;
-		}
-		if(empty($form['map_icon'])&&isset($form['map_icon'])){
-			$form['map_icon']=NULL;
-		}
-		$this->Records_model->save_record_options($form);
-		echo json_encode(array("success"=>true,"post"=>$form));
-		  }
-		  
-	}
 
-	public function pots_in_campaign(){
-	$campaign = $this->input->post("campaign");	
-	$pots = $this->Form_model->pots_in_campaign($campaign);
-	echo json_encode($pots);
-	}
+    public function save_record_options()
+    {
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+            //checks
+            if (empty($form['campaign_id'])) {
+                unset($form['campaign_id']);
+            }
+            if (empty($form['source_id'])) {
+                unset($form['source_id']);
+            }
+            if (empty($form['pot_id']) && isset($form['pot_id'])) {
+                $form['pot_id'] = NULL;
+            }
+            if (empty($form['parked_code']) && isset($form['parked_code'])) {
+                $form['parked_code'] = NULL;
+            }
+            if (empty($form['record_color']) && isset($form['record_color'])) {
+                $form['record_color'] = NULL;
+            }
+            if (empty($form['map_icon']) && isset($form['map_icon'])) {
+                $form['map_icon'] = NULL;
+            }
+            $this->Records_model->save_record_options($form);
+            echo json_encode(array("success" => true, "post" => $form));
+        }
+
+    }
+
+    public function pots_in_campaign()
+    {
+        $campaign = $this->input->post("campaign");
+        $pots = $this->Form_model->pots_in_campaign($campaign);
+        echo json_encode($pots);
+    }
 
 //this is only for hsl we should move it somewhere nice when we can
     public function add_cover_letter_address()
@@ -112,7 +116,7 @@ class Ajax extends CI_Controller
 
     public function get_branch_info()
     {
-		session_write_close();
+        session_write_close();
         $result = null;
         $this->load->model('Branches_model');
         if ($this->input->post('postcode') && !$this->input->post('region_id')) {
@@ -274,7 +278,7 @@ class Ajax extends CI_Controller
             $id = intval($this->input->post('id'));
             $this->db->where("script_id", intval($this->input->post('id')));
             $result = $this->db->get("scripts")->row_array();
-			$result['script'] = nl2br($result['script']);
+            $result['script'] = nl2br($result['script']);
             echo json_encode(array(
                 "success" => true,
                 "data" => $result
@@ -1303,7 +1307,8 @@ class Ajax extends CI_Controller
         }
     }
 
-    public function get_record_details() {
+    public function get_record_details()
+    {
         if ($this->input->is_ajax_request()) {
             $urn = intval($this->input->post('urn'));
             $record_details = $this->Records_model->get_record_details($urn);
@@ -1335,7 +1340,7 @@ class Ajax extends CI_Controller
 
             $info = $this->input->post();
             $custom_fields = array("c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "10");
-            $date_fields = array("d1", "d2", "d3", "d4", "d5", "d6","d7", "d8", "d9", "d10", "dt1", "dt2","dt3", "dt4", "dt5", "dt6", "dt7", "dt8","dt9","dt10");
+            $date_fields = array("d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10", "dt1", "dt2", "dt3", "dt4", "dt5", "dt6", "dt7", "dt8", "dt9", "dt10");
             foreach ($info as $k => $v) {
                 if (in_array($k, $date_fields)) {
                     if ($v == "") {
@@ -1362,8 +1367,8 @@ class Ajax extends CI_Controller
 
                     }
                 }
-				
-                if ($v == "-" ||empty($v) ) {
+
+                if ($v == "-" || empty($v)) {
                     $info[$k] = NULL;
                 }
             }
@@ -1376,9 +1381,12 @@ class Ajax extends CI_Controller
                 $this->Audit_model->log_custom_fields_insert($info, $info['urn']);
             }
 
+            $record_details = $this->Records_model->get_record_details_by_id($info['detail_id']);
+
             if ($id) {
                 echo json_encode(array(
                     "success" => true,
+                    "data" => $record_details,
                     "msg" => "The information has been updated"
                 ));
             } else {
@@ -1477,7 +1485,7 @@ class Ajax extends CI_Controller
                         unset($ar['latitude']);
                         unset($ar['longitude']);
                         unset($ar['created_date']);
-						unset($ar['postcode']);
+                        unset($ar['postcode']);
                         if (preg_grep("/{$house_number}/i", $ar)) {
                             $address_selected = $key;
                             break;
@@ -1495,125 +1503,141 @@ class Ajax extends CI_Controller
         }
     }
 
-public function get_custom_panels(){
-		$campaign = intval($this->input->post("campaign"));
-		$result = $this->Records_model->get_custom_panels($campaign);
-		echo json_encode(array("success"=>true,"data"=>$result));
+    public function get_custom_panels()
+    {
+        $campaign = intval($this->input->post("campaign"));
+        $result = $this->Records_model->get_custom_panels($campaign);
+        echo json_encode(array("success" => true, "data" => $result));
 
-}
+    }
 
-public function load_custom_panel(){
-	$id = intval($this->input->post("id"));
-	$urn = intval($this->input->post("urn"));
-	$panel_details = $this->Records_model->get_custom_panel($id);
-	$panel_fields = 	$this->Records_model->get_custom_panel_fields($id);
-	$fields = array();
-	$options = array();
-	foreach($panel_fields as $k => $row){
-	$options[$row['field_id']][] = array("option_id"=>$row['option_id'],"option_name"=>$row['option_name'],"option_subtext"=>$row['option_subtext']);
-	$fields[$row['field_id']] = $row;
-	$fields[$row['field_id']]['options'] = $options[$row['field_id']];
-	}
-	$panel_data = $this->Records_model->get_custom_panel_data($urn,$id);
-	$data = array();
-	foreach($panel_data as $k => $row){
-	if($fields[$row['field_id']]['type']=="date"){
-		$row['value'] == date($fields[$row['field_id']]['format'],strtotime($row['value']));	
-	}
-	if($fields[$row['field_id']]['type']=="decimal"){
-		$row['value'] == number_format(intval($row['value']),2);	
-	}
-	if($fields[$row['field_id']]['type']=="number"){
-		$row['value'] == number_format(intval($row['value']));	
-	}
-	if($fields[$row['field_id']]['type']=="string"){
-		$row['value'] == htmlentities($row['value']);
-	}
-	if($fields[$row['field_id']]['type']=="select"){
-	//get the actual values of the options
-		$value = $this->db->query("select name from custom_panel_options where option_id = '{$row['value']}'")->row_array();
-		$row['value'] = !empty($value)?$value['name']:"";
-	}
-	if($fields[$row['field_id']]['type']=="multiple"){
-		//get the actual values of the options
-		$name = $this->db->query("select group_concat(distinct name SEPARATOR ', ') name from custom_panel_options where option_id in({$row['value']}) group by field_id")->row()->name;
-		$row['value'] = $name;
-	}
-	$data[$row['data_id']][$row['field_id']] = $row;
-	$data[$row['data_id']][$row['field_id']]['name'] = $fields[$row['field_id']]['name'];
-	}
+    public function load_custom_panel()
+    {
+        $id = intval($this->input->post("id"));
+        $urn = intval($this->input->post("urn"));
+        $panel_details = $this->Records_model->get_custom_panel($id);
+        $panel_fields = $this->Records_model->get_custom_panel_fields($id);
+        $fields = array();
+        $options = array();
+        foreach ($panel_fields as $k => $row) {
+            $options[$row['field_id']][] = array("option_id" => $row['option_id'], "option_name" => $row['option_name'], "option_subtext" => $row['option_subtext']);
+            $fields[$row['field_id']] = $row;
+            $fields[$row['field_id']]['options'] = $options[$row['field_id']];
+        }
+        $panel_data = $this->Records_model->get_custom_panel_data($urn, $id);
+        $data = array();
+        foreach ($panel_data as $k => $row) {
+            if ($fields[$row['field_id']]['type'] == "date") {
+                $row['value'] == date($fields[$row['field_id']]['format'], strtotime($row['value']));
+            }
+            if ($fields[$row['field_id']]['type'] == "decimal") {
+                $row['value'] == number_format(intval($row['value']), 2);
+            }
+            if ($fields[$row['field_id']]['type'] == "number") {
+                $row['value'] == number_format(intval($row['value']));
+            }
+            if ($fields[$row['field_id']]['type'] == "string") {
+                $row['value'] == htmlentities($row['value']);
+            }
+            if ($fields[$row['field_id']]['type'] == "select") {
+                //get the actual values of the options
+                $value = $this->db->query("select name from custom_panel_options where option_id = '{$row['value']}'")->row_array();
+                $row['value'] = !empty($value) ? $value['name'] : "";
+            }
+            if ($fields[$row['field_id']]['type'] == "multiple") {
+                //get the actual values of the options
+                $name = $this->db->query("select group_concat(distinct name SEPARATOR ', ') name from custom_panel_options where option_id in({$row['value']}) group by field_id")->row()->name;
+                $row['value'] = $name;
+            }
+            $data[$row['data_id']][$row['field_id']] = $row;
+            $data[$row['data_id']][$row['field_id']]['name'] = $fields[$row['field_id']]['name'];
+        }
 
-		echo json_encode(array("success"=>true,"panel"=>$panel_details,"fields"=>$fields,"data"=>$data));
-	
-}
+        echo json_encode(array("success" => true, "panel" => $panel_details, "fields" => $fields, "data" => $data));
+
+    }
 
 //same as "load_custom_panel()" but we split the fields into 2 columns
-public function load_custom_form(){
-	$id = intval($this->input->post("id"));
-	$urn = intval($this->input->post("urn"));
-	$panel_details = $this->Records_model->get_custom_panel($id);
-	$panel_fields = 	$this->Records_model->get_custom_panel_fields($id);
-	$fields = array();
-	$options = array();
-	foreach($panel_fields as $k => $row){
-	$options[$row['field_id']][] = array("option_id"=>$row['option_id'],"option_name"=>$row['option_name'],"option_subtext"=>$row['option_subtext']);
-	$fields[$row['modal_column']][$row['field_id']] = $row;
-	$fields[$row['modal_column']][$row['field_id']]['options'] = $options[$row['field_id']];
-	}
-	$panel_data = $this->Records_model->get_custom_panel_data($urn,$id);
-	$data = array();
-	foreach($panel_data as $k => $row){
-	if($fields[$row['modal_column']][$row['field_id']]['type']=="date"||$fields[$row['modal_column']][$row['field_id']]['type']=="datetime"){
-		$row['value'] == date($fields[$row['modal_column']][$row['field_id']]['format'],strtotime($row['value']));	
-	}
-	if($fields[$row['modal_column']][$row['field_id']]['type']=="decimal"){
-		$row['value'] == $row['value'];	
-	}
-	if($fields[$row['modal_column']][$row['field_id']]['type']=="number"){
-		$row['value'] == $row['value'];	
-	}
-	if($fields[$row['modal_column']][$row['field_id']]['type']=="string"){
-		$row['value'] == htmlentities($row['value']);
-	}
-	$data[$row['data_id']][$row['modal_column']][$row['field_id']] = $row;
-	$data[$row['data_id']][$row['modal_column']][$row['field_id']]['name'] = $fields[$row['modal_column']][$row['field_id']]['name'];
-	}
+    public function load_custom_form()
+    {
+        $id = intval($this->input->post("id"));
+        $urn = intval($this->input->post("urn"));
+        $panel_details = $this->Records_model->get_custom_panel($id);
+        $panel_fields = $this->Records_model->get_custom_panel_fields($id);
+        $fields = array();
+        $options = array();
+        foreach ($panel_fields as $k => $row) {
+            $options[$row['field_id']][] = array("option_id" => $row['option_id'], "option_name" => $row['option_name'], "option_subtext" => $row['option_subtext']);
+            $fields[$row['modal_column']][$row['field_id']] = $row;
+            $fields[$row['modal_column']][$row['field_id']]['options'] = $options[$row['field_id']];
+        }
+        $panel_data = $this->Records_model->get_custom_panel_data($urn, $id);
+        $data = array();
+        foreach ($panel_data as $k => $row) {
+            if ($fields[$row['modal_column']][$row['field_id']]['type'] == "date" || $fields[$row['modal_column']][$row['field_id']]['type'] == "datetime") {
+                $row['value'] == date($fields[$row['modal_column']][$row['field_id']]['format'], strtotime($row['value']));
+            }
+            if ($fields[$row['modal_column']][$row['field_id']]['type'] == "decimal") {
+                $row['value'] == $row['value'];
+            }
+            if ($fields[$row['modal_column']][$row['field_id']]['type'] == "number") {
+                $row['value'] == $row['value'];
+            }
+            if ($fields[$row['modal_column']][$row['field_id']]['type'] == "string") {
+                $row['value'] == htmlentities($row['value']);
+            }
+            $data[$row['data_id']][$row['modal_column']][$row['field_id']] = $row;
+            $data[$row['data_id']][$row['modal_column']][$row['field_id']]['name'] = $fields[$row['modal_column']][$row['field_id']]['name'];
+        }
 
-		echo json_encode(array("success"=>true,"panel"=>$panel_details,"fields"=>$fields,"data"=>$data));
-	
-}
+        echo json_encode(array("success" => true, "panel" => $panel_details, "fields" => $fields, "data" => $data));
 
-public function save_custom_panel(){
-	$now = date('Y-m-d H:i:s');
-	$id = $this->input->post('data_id');
-	$urn = $this->input->post('urn');
-	if(empty($id)){
-	//create new data set	
-		$data = array("urn"=>$urn,"created_on"=>$now,"created_by"=>$_SESSION['user_id'],"updated_on"=>$now);
-		$this->db->insert("custom_panel_data",$data);
-		$id = $this->db->insert_id();
-	}
-	if(!empty($id)){
-	//update existing data set
-	$data = array("updated_on"=>$now);
-	$this->db->where(array("data_id"=>$id));
-	$this->db->update("custom_panel_data",$data);	
-	}
-	
-	//add in the values
-	foreach($this->input->post() as $field => $val){
-	if($field<>"urn"&&$field<>"data_id"){
-		if(is_array($val)){
-		$val = implode(",",$val);	
-		}
-		$values[] = array("data_id"=>$id,"field_id"=>$field,"value"=>$val);	
-	}
-	}
-	$this->db->where(array("data_id"=>$id));
-	$this->db->delete("custom_panel_values");
-	$this->db->insert_update_batch("custom_panel_values",$values);
-	echo json_encode(array("success"=>true,"data_id"=>$id));
-	
-}
+    }
+
+    public function save_custom_panel()
+    {
+        $now = date('Y-m-d H:i:s');
+        $id = $this->input->post('data_id');
+        $urn = $this->input->post('urn');
+        if (empty($id)) {
+            //create new data set
+            $data = array("urn" => $urn, "created_on" => $now, "created_by" => $_SESSION['user_id'], "updated_on" => $now);
+            $this->db->insert("custom_panel_data", $data);
+            $id = $this->db->insert_id();
+        }
+        if (!empty($id)) {
+            //update existing data set
+            $data = array("updated_on" => $now);
+            $this->db->where(array("data_id" => $id));
+            $this->db->update("custom_panel_data", $data);
+        }
+
+        //add in the values
+        foreach ($this->input->post() as $field => $val) {
+            if ($field <> "urn" && $field <> "data_id") {
+                if (is_array($val)) {
+                    $val = implode(",", $val);
+                }
+                $values[] = array("data_id" => $id, "field_id" => $field, "value" => $val);
+            }
+        }
+        $this->db->where(array("data_id" => $id));
+        $this->db->delete("custom_panel_values");
+        $this->db->insert_update_batch("custom_panel_values", $values);
+        echo json_encode(array("success" => true, "data_id" => $id));
+
+    }
+
+    //get user details for a given user_role
+    public function get_users_by_role()
+    {
+        if ($this->input->is_ajax_request()) {
+            $users = $this->User_model->get_users_by_role(intval($this->input->post("role_id")));
+            echo json_encode(array(
+                "success" => true,
+                "data" => $users
+            ));
+        }
+    }
 
 }
