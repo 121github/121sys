@@ -942,7 +942,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                     </select>
                 </div>
 
-                <div class="question">
+                <div class="question_opt">
                     <label>Can the customer walk unaided?</label><br>
 
                     <div class="radio" style="display:inline-block">
@@ -1217,7 +1217,7 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         $('[data-toggle="tooltip"]').tooltip()
         //hide all the notes
 
-        $.each($('.question'), function () {
+        $.each($('.question, .question_opt'), function () {
             $(this).find('.form-group').hide();
         });
 
@@ -1236,9 +1236,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
         $(document).on('change', 'select,input[type="radio"]', function () {
             console.log($(this).attr('data-show-notes'));
             if ($(this).attr('data-show-notes')) {
-                $(this).closest('.question').find('.form-group').show();
+                $(this).closest('.question, .question_opt').find('.form-group').show();
             } else {
-                $(this).closest('.question').find('.form-group').hide().find('input').val('');
+                $(this).closest('.question, .question_opt').find('.form-group').hide().find('input').val('');
             }
 
             $.ajax({
