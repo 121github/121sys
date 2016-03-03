@@ -82,7 +82,9 @@ var campaign_functions = {
             if($(this).prop("checked")){
                 modal_body.find('.typepicker').selectpicker('val',3).selectpicker('refresh');
             } else {
-                modal_body.find('.typepicker').selectpicker('val',2).selectpicker('refresh');
+                if (modal_body.find('.typepicker').selectpicker('val') == 3) {
+                    modal_body.find('.typepicker').selectpicker('val',2).selectpicker('refresh');
+                }
             }
         });
     },
