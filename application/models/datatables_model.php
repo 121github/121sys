@@ -94,14 +94,32 @@ $this->db->query("insert ignore into datatables_views set view_name = 'Default v
 ($view_id, 52, 1)");		
 	}
 	
-	public function all_columns($table_id){
+	public function dynamic_panel_fields($campaign){
+		$this->db->select('custom_panel_fields.name');
+		$this->db->where("campaign_id",$campaign);
+		$this->db->join("campaign_custom_panels","campaign_custom_panels.custom_panel_id","custom_panels.custom_panel_id");
+		$this->db->join("custom_panels","custom_panel_fields.custom_panel_id","custom_panels.custom_panel.id");
+		return $this->db->get("custom_panel_fields")->result_array();
+	}
+		public function dynamic_field_name($campaign,$field_id){
+		$this->db->select('custom_panel_fields.name');
+		$this->db->where("campaign_id",$campaign);
+		$this->db->join("campaign_custom_panels","campaign_custom_panels.custom_panel_id","custom_panels.custom_panel_id");
+		$this->db->join("custom_panels","custom_panel_fields.custom_panel_id","custom_panels.custom_panel.id");
+		return $this->db->get("custom_panel_fields")->result_array();
+	}
 	
-	$this->db->select("datafield_group,datafields.datafield_id,datafield_title");
-	$this->db->where("table_id",$table_id);
-	$this->db->join("datatables_table_fields","datatables_table_fields.datafield_id = datafields.datafield_id");
-	 $result = $this->db->get("datafields")->result_array();
+	
+	public function all_columns($table_id){
+		$campaign = "";
 	 if(@$_SESSION['current_campaign']>0){
-	 foreach($result as $k => $row){
+		$campaign = "or campaign = ". $_SESSION['current_campaign'];
+	 }
+	$query = "select datafield_group,datafields.datafield_id,datafield_title from datafields join datatables_table_fields using(datafield_id) where table_id = '$table_id' and (campaign is null $campaign)";
+
+	$result = $this->db->query($query)->result_array();
+	 if(@$_SESSION['current_campaign']>0){
+		  foreach($result as $k => $row){			    
 		if(in_array($row['datafield_title'],$this->custom_fields)){
 		$this->db->where(array("campaign_id"=>$_SESSION['current_campaign'],"field"=>$row['datafield_title']));
 		$field = $this->db->get('record_details_fields')->row_array();

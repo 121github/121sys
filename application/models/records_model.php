@@ -415,6 +415,7 @@ class Records_model extends CI_Model
     //function to list all the records
     public function get_records($options,$urn=false)
     {
+		$this->firephp->log($options);
         $tables = $options['visible_columns']['tables'];
         //these tables must be joined to the query regardless of the selected columns to allow the map to function
         $required_tables = array("record_planner", "record_planner_user", "ownership", "campaigns", "contact_locations", "company_locations");
@@ -424,8 +425,19 @@ class Records_model extends CI_Model
             }
         }
         $table_columns = $options['visible_columns']['select'];
+		$this->firephp->log($table_columns);
         $filter_columns = $options['visible_columns']['filter'];
         $order_columns = $options['visible_columns']['order'];
+			$datafield_ids = array();
+		foreach($table_columns as $k=>$col){
+				$datafield_ids[$k] = 0;	
+		if(strpos($col,"custom_")!==false){
+			$split = explode("_",$col);
+			$datafield_ids[$k] = intval($split[1]);
+			$table_columns[$k] = "t_".intval($split[1]).".value ";
+		}
+		}
+$this->firephp->log($table_columns);
 
         $join = array();
         //add mandatory column selections here
@@ -448,6 +460,9 @@ class Records_model extends CI_Model
                 $table_columns[] = $required;
             }
         }
+
+		
+
         //turn the selection array into a list
         $selections = implode(",", $table_columns);
 		$qry = "";
@@ -464,7 +479,15 @@ class Records_model extends CI_Model
         $table_joins = table_joins();
         $join_array = join_array();
 
-        foreach ($tables as $table) {
+		$tablenum=0;
+        foreach ($tables as $k=>$table) {
+			if($table=="custom_panels"){ $tablenum++;
+		
+			$field_id = $datafield_ids[$k];
+				$join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+			}
+			
+			if($table<>"custom_panels"){
             if (array_key_exists($table, $join_array)) {
                 foreach ($join_array[$table] as $t) {
                     $join[$t] = $table_joins[$t];
@@ -473,16 +496,20 @@ class Records_model extends CI_Model
                 $join[$table] = $table_joins[$table];
             }
         }
+		}
 
         foreach ($join as $join_query) {
             $qry .= $join_query;
         }
+		
+		
         $qry .= $this->get_where($options, $filter_columns);
 	
 		//get the total number of records before any limits or pages are applied
         $count = $this->db->query($numrows.$qry)->row()->numrows;
 		
 		$qry .= " group by r.urn";
+		
         //if any order has been set then we should apply it here
         $start = $options['start'];
         $length = $options['length'];
@@ -498,7 +525,7 @@ class Records_model extends CI_Model
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}
-		//$this->firephp->log($select.$qry);
+		$this->firephp->log($select.$qry);
         $records = $this->db->query($select.$qry)->result_array();
         $records['count'] = $count;
         

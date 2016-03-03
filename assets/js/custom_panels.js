@@ -57,7 +57,8 @@ var custom_panels = {
                 var html = custom_panels.load_table(response);
             } else {
                 var html = custom_panels.load_list(response,data_id);
-				 $('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.edit-custom-btn').show().attr('custom-data-id',Object.keys(response.data)[0]);
+				//set the visible one as the latest one added
+				 $('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.edit-custom-btn').show().attr('custom-data-id',Object.keys(response.data)[Object.keys(response.data).length-1]);
             }
             $('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.panel-body').html(html);
 			

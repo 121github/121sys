@@ -244,7 +244,7 @@ var modals = {
              $('#create-view .selectpicker').selectpicker('val',[]);
              $('#create-view input[name="view_id"]').val('');
         });
-        $modal.on('click','#view-back-btn',function(e){
+        $modal.on('click','#view-back-btn,.load-view-tab .tab',function(e){
             $modal.find('#load-view').addClass('active');
             $modal.find('#create-view').removeClass('active');
              var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
