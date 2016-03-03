@@ -761,8 +761,10 @@ var modals = {
             });
             modals.load_modal(mheader, $mbody, mfooter);
             modals.appointment_contacts(data.urn, data.contact_id);
-			modal_body.css('overflow', 'visible');
-			modals.set_appointment_confirmation();
+            modal_body.css('overflow', 'visible');
+            modal_body.css('max-height', '650px');
+
+            modals.set_appointment_confirmation();
 			$modal.find('#appointment-confirmed').hide();
 
             modals.set_appointment_access_address(data.access_address);

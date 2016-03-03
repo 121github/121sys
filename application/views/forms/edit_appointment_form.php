@@ -134,7 +134,7 @@
             </div>
         </div>
     </div>
-    <div id="add-appointment-address" <?php if (count($addresses) > 0) {
+    <div class="row" id="add-appointment-address" <?php if (count($addresses) > 0) {
         echo 'style="display:none"';
     } ?> >
         <p>Please enter the address that the appointment will take place</p>
