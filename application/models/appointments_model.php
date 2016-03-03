@@ -508,6 +508,28 @@ class Appointments_model extends CI_Model
         }
     }
 
+    public function check_overlap_appointments($urn, $appointment_id, $attendee_id, $start, $end) {
+        $qry = "SELECT *
+                FROM appointments a
+                  LEFT JOIN appointment_attendees at USING (appointment_id)
+                WHERE user_id = " . $attendee_id . "
+                      ".($appointment_id != '' ?(" AND appointment_id <> ".$appointment_id) : "")."
+                      AND urn = " . $urn . "
+                      AND status = 1
+                      AND (
+                            (`start` < '" . to_mysql_datetime($start) . "' AND `end` > '" . to_mysql_datetime($start) . "')
+                            OR
+                            (`start` < '" . to_mysql_datetime($end) . "' AND `end` > '" . to_mysql_datetime($end) . "')
+                        )
+               ";
+
+        $results = $this->db->query($qry)->result_array();
+
+        $this->firephp->log($qry);
+
+        return (!empty($results));
+    }
+
 
 
 }

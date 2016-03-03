@@ -93,7 +93,26 @@ var modals = {
         });
         $modal.on('click', '#save-appointment', function (e) {
             e.preventDefault();
-            modals.save_appointment($('#appointment-form').serialize());
+            if (helper.permissions['check overlap'] > 0) {
+                //Check overlap appointment
+                $.ajax({
+                    url: helper.baseUrl + 'appointments/check_overlap_appointments',
+                    data: $('#appointment-form').serialize(),
+                    type: "POST",
+                    dataType: "JSON"
+                }).done(function (response) {
+                    if (response) {
+                        //alert("Overlap");
+                        modals.save_appointment($('#appointment-form').serialize());
+                    }
+                    else {
+                        modals.save_appointment($('#appointment-form').serialize());
+                    }
+                });
+            }
+            else {
+                modals.save_appointment($('#appointment-form').serialize());
+            }
         });
         $('#cal-slide-box').on('click', 'a', function (e) {
             e.preventDefault();
