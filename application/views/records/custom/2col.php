@@ -207,7 +207,7 @@
         record.tasks.init();
         <?php } ?>
 		<?php if(in_array(22,$features)){ ?>
-		referral_panel.init();
+		record.referral_panel.init();
 		<?php } ?>
 		 <?php if(isset($custom_panels)){ ?>
 		 custom_panels.init();

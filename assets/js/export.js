@@ -258,8 +258,12 @@ var export_data = {
                                 + "<span class='group_by' style='display: none'>" + (val.group_by ? val.group_by : '') + "</span>"
                                 + "<span class='date_filter' style='display: none'>" + (val.date_filter ? val.date_filter : '') + "</span>"
                                 + "<span class='campaign_filter' style='display: none'>" + (val.campaign_filter ? val.campaign_filter : '') + "</span>"
+                                + "<span class='outcome_filter' style='display: none'>" + (val.outcome_filter ? val.outcome_filter : '') + "</span>"
                                 + "<span class='source_filter' style='display: none'>" + (val.source_filter ? val.source_filter : '') + "</span>"
                                 + "<span class='pot_filter' style='display: none'>" + (val.pot_filter ? val.pot_filter : '') + "</span>"
+                                + "<span class='team_filter' style='display: none'>" + (val.team_filter ? val.team_filter : '') + "</span>"
+                                + "<span class='agent_filter' style='display: none'>" + (val.agent_filter ? val.agent_filter : '') + "</span>"
+                                + "<span class='user_filter' style='display: none'>" + (val.user_filter ? val.user_filter : '') + "</span>"
                                 + "</td><td class='name'>"
                                 + val.name
                                 + "</td><td class='description'>"
@@ -361,8 +365,12 @@ var export_data = {
         var order_by = row.find('.order_by').text();
         var date_filter = row.find('.date_filter').text();
         var campaign_filter = row.find('.campaign_filter').text();
+        var outcome_filter = row.find('.outcome_filter').text();
         var source_filter = row.find('.source_filter').text();
         var pot_filter = row.find('.pot_filter').text();
+        var team_filter = row.find('.team_filter').text();
+        var agent_filter = row.find('.agent_filter').text();
+        var user_filter = row.find('.usder_filter').text();
 
         $.ajax({
             url: helper.baseUrl + 'modals/load_export_form',
@@ -380,8 +388,12 @@ var export_data = {
             mbody.find('input[name="order_by"]').val(order_by);
             mbody.find('input[name="date_filter"]').val(date_filter);
             mbody.find('input[name="campaign_filter"]').val(campaign_filter);
+            mbody.find('input[name="outcome_filter"]').val(outcome_filter);
             mbody.find('input[name="source_filter"]').val(source_filter);
             mbody.find('input[name="pot_filter"]').val(pot_filter);
+            mbody.find('input[name="team_filter"]').val(team_filter);
+            mbody.find('input[name="agent_filter"]').val(agent_filter);
+            mbody.find('input[name="user_filter"]').val(user_filter);
 
             mbody.find('.preview-qry').html(query+(order_by.length>""?" ORDER BY "+order_by:"")+(group_by.length>""?" GROUP BY "+group_by:""));
 

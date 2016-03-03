@@ -90,38 +90,66 @@
                 <div style="border-bottom: 1px solid grey; margin-bottom: 20px; font-weight: bold">FITLERS</div>
                 <div class="row">
                     <div class="col-lg-3">
-
                         <div class="form-group input-group-sm">
                             <p>Date Filter</p>
                             <input type="text" class="form-control" name="date_filter"
-                                   placeholder="Enter the field if you need to filter by date"/>
+                                   placeholder="Eg. date_added"/>
                         </div>
 
                     </div>
                     <div class="col-lg-3">
-
                         <div class="form-group input-group-sm">
                             <p>Campaign Filter</p>
                             <input type="text" class="form-control" name="campaign_filter"
-                                   placeholder="Enter the field if you need to filter by campaign. Eg. campaign_id"/>
+                                   placeholder="Eg. campaign_id"/>
 
                         </div>
                     </div>
                     <div class="col-lg-3">
+                        <div class="form-group input-group-sm">
+                            <p>Outcome Filter</p>
+                            <input type="text" class="form-control" name="outcome_filter"
+                                   placeholder="Eg. outcome_id"/>
 
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
                         <div class="form-group input-group-sm">
                             <p>Source Filter</p>
                             <input type="text" class="form-control" name="source_filter"
-                                   placeholder="Enter the field if you need to filter by source. Eg. source_id"/>
+                                   placeholder="Eg. source_id"/>
 
                         </div>
                     </div>
                     <div class="col-lg-3">
-
                         <div class="form-group input-group-sm">
                             <p>Pot Filter</p>
                             <input type="text" class="form-control" name="pot_filter"
-                                   placeholder="Enter the field if you need to filter by pot. Eg. pot_id"/>
+                                   placeholder="Eg. pot_id"/>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group input-group-sm">
+                            <p>Team Filter</p>
+                            <input type="text" class="form-control" name="team_filter"
+                                   placeholder="Eg. team_id"/>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group input-group-sm">
+                            <p>Agent Filter</p>
+                            <input type="text" class="form-control" name="agent_filter"
+                                   placeholder="Eg. agent_id"/>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group input-group-sm">
+                            <p>User Filter</p>
+                            <input type="text" class="form-control" name="user_filter"
+                                   placeholder="Eg. user_id"/>
 
                         </div>
                     </div>

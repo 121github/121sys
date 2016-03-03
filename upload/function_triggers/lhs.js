@@ -25,6 +25,19 @@ var campaign_functions = {
         if (typeof start != "undefined") {
             quick_planner.set_appointment_start(start);
         }
+
+        //When the type is changed
+        modal_body.find('.typepicker').change(function () {
+            var selectedId = $(this).val();
+
+            //If we select Confirmed, confirmedButton -> on
+            if (selectedId == 3) {
+                $('#appointment-confirmed').bootstrapToggle('on');
+            }
+            else {
+                $('#appointment-confirmed').bootstrapToggle('off');
+            }
+        });
     },
 
     appointment_edit_setup: function () {
@@ -33,6 +46,45 @@ var campaign_functions = {
 
         $modal.find('.endpicker').data("DateTimePicker").enabledHours([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
         $modal.find('.endpicker').data("DateTimePicker").daysOfWeekDisabled([0,6]);
+
+        //When the type is changed
+        modal_body.find('.typepicker').change(function () {
+            var selectedId = $(this).val();
+
+            //If we select Confirmed, confirmedButton -> on
+            if (selectedId == 3) {
+                $('#appointment-confirmed').bootstrapToggle('on');
+                $modal.find('input[name="appointment_confirmed"]').val("1");
+            }
+            else {
+                $('#appointment-confirmed').bootstrapToggle('off');
+                $modal.find('input[name="appointment_confirmed"]').val("0");
+            }
+        });
+    },
+
+    set_appointment_confirmation: function() {
+        var app = $('.startpicker').val()
+        var start_date = moment(app, 'DD/MM/YYYY HH:mm');
+        var m = moment();
+        var duration = moment.duration(start_date.diff(m)).days();
+        if(duration<3&&duration>=0){
+            $modal.find('#appointment-confirmed').bootstrapToggle('enable');
+            $modal.find('#appointment-confirmed').off('click');
+            modal_body.find('.typepicker').find('option[value="3"]').attr('disabled',false);
+        } else {
+            $modal.find('#appointment-confirmed').bootstrapToggle('disable');
+            modal_body.find('.typepicker').find('option[value="3"]').attr('disabled',true);
+        }
+        modal_body.find('.typepicker').selectpicker('refresh');
+
+        $('#appointment-confirmed').on('change',function(e){
+            if($(this).prop("checked")){
+                modal_body.find('.typepicker').selectpicker('val',3).selectpicker('refresh');
+            } else {
+                modal_body.find('.typepicker').selectpicker('val',2).selectpicker('refresh');
+            }
+        });
     },
     save_appointment: function(appointment) {
         //Get the additional info

@@ -879,6 +879,7 @@ var modals = {
             $('#appointment-confirmed').on('change',function(e){
                 if($(this).prop("checked")){
                     $modal.find('input[name="appointment_confirmed"]').val("1");
+                    modal_body.find('.typepicker').selectpicker('refresh');
                 } else {
                     $modal.find('input[name="appointment_confirmed"]').val("0");
                 }
@@ -886,18 +887,12 @@ var modals = {
         } else {
             $modal.find('.toggle').hide();
         }
-		
-		var app = $('.startpicker').val()
-		var start_date = moment(app, 'DD/MM/YYYY HH:mm');
-		var m = moment();
-		var duration = moment.duration(start_date.diff(m)).days();
-		console.log(duration);
-		if(duration<3&&duration>=0){
-			$modal.find('#appointment-confirmed').bootstrapToggle('enable');
-				$modal.find('#appointment-confirmed').off('click');	
-		} else {
-			$modal.find('#appointment-confirmed').bootstrapToggle('disable');	
-		}
+
+        if(typeof campaign_functions !== "undefined"){
+            if(typeof campaign_functions.set_appointment_confirmation !== "undefined"){
+                campaign_functions.set_appointment_confirmation();
+            }
+        }
 	},
 
     set_appointment_access_address: function(access_address){

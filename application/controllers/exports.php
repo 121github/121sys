@@ -44,6 +44,12 @@ class Exports extends CI_Controller
 
         $sources = $this->Form_model->get_sources();
         $pots = $this->Form_model->get_pots();
+
+        $teams = $this->Form_model->get_teams();
+        $agents = $this->Form_model->get_agents();
+
+        $users = $this->Form_model->get_users();
+
         $data = array(
             'campaign_access' => $this->_campaigns,
 
@@ -64,7 +70,10 @@ class Exports extends CI_Controller
 			'campaigns_by_group' => $campaigns_by_group,
             'campaign_outcomes' => $campaign_outcomes,
             'sources' => $sources,
-			'pots' => $pots
+			'pots' => $pots,
+            'teams' => $teams,
+            'agents' => $agents,
+            'users' => $users
         );
         $this->template->load('default', 'exports/view_exports.php', $data);
     }
@@ -158,10 +167,19 @@ class Exports extends CI_Controller
             $options['to']       = ($this->input->post('date_to') ? $this->input->post('date_to') : $nowDate->format('Y-m-d'));
             $options['campaign'] = ($this->input->post('campaign') ? $this->input->post('campaign') : "");
             $options['campaign_name'] = ($this->input->post('campaign_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
-            $options['source'] = ($this->input->post('source') ? $this->input->post('source') : "");
+            $options['outcome'] = ($this->input->post('outcome') ? $this->input->post('outcome') : "");
+            $options['outcome_name'] = ($this->input->post('outcome_name') ? str_replace(" ", "", $this->input->post('campaign_name')) : "");
+            $options['sources'] = ($this->input->post('sources') ? $this->input->post('sources') : "");
             $options['source_name'] = ($this->input->post('source_name') ? str_replace(" ", "", $this->input->post('source_name')) : "");
 			$options['pot'] = ($this->input->post('pot') ? $this->input->post('pot') : "");
             $options['pot_name'] = ($this->input->post('pot_name') ? str_replace(" ", "", $this->input->post('pot_name')) : "");
+            $options['team'] = ($this->input->post('team') ? $this->input->post('team') : "");
+            $options['team_name'] = ($this->input->post('team_name') ? str_replace(" ", "", $this->input->post('team_name')) : "");
+            $options['agent'] = ($this->input->post('agent') ? $this->input->post('agent') : "");
+            $options['agent_name'] = ($this->input->post('agent_name') ? str_replace(" ", "", $this->input->post('agent_name')) : "");
+            $options['user'] = ($this->input->post('user') ? $this->input->post('user') : "");
+            $options['user_name'] = ($this->input->post('user_name') ? str_replace(" ", "", $this->input->post('user_name')) : "");
+
             $options['export_forms_id'] = ($this->input->post('export_forms_id') ? $this->input->post('export_forms_id') : "");
 
 
@@ -456,49 +474,56 @@ class Exports extends CI_Controller
         if ($this->input->post()) {
             $form = $this->input->post();
 
-            $users = (isset($form['user_id'])?$form['user_id']:array());
-            unset($form['user_id']);
-
-            $graph = array();
-            if ($form['graph_name'] != "" && $form['graph_type'] != "" && $form['x_value'] != "") {
-                $graph = array(
-                    "export_forms_id" => $form['export_forms_id'],
-                    "name" => $form['graph_name'],
-                    "type" => $form['graph_type'],
-                    "x_value" => $form['x_value'],
-                    "y_value" => (isset($form['y_value'])?$form['y_value']:NULL),
-                    "z_value" => (isset($form['z_value'])?$form['z_value']:NULL)
-                );
-            }
-            unset($form['graph_name']);
-            unset($form['graph_type']);
-            unset($form['x_value']);
-            unset($form['y_value']);
-            unset($form['z_value']);
-
-
-            if (!empty($form['export_forms_id'])) {
-                $this->Export_model->update_export_form($form);
-                $export_forms_id = $form['export_forms_id'];
+            if ($form['name'] == '' || $form['header'] == '' || $form['query'] == '') {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "Please fill at least the name, header and query on the form"
+                ));
             }
             else {
-                $export_forms_id = $this->Export_model->insert_export_form($form);
-            }
+                $users = (isset($form['user_id'])?$form['user_id']:array());
+                unset($form['user_id']);
 
-            if ($export_forms_id) {
-
-                $this->Export_model->update_export_user($users, $export_forms_id);
-
-                if (!empty($graph)) {
-                    $this->Export_model->insert_export_graph($graph);
+                $graph = array();
+                if ($form['graph_name'] != "" && $form['graph_type'] != "" && $form['x_value'] != "") {
+                    $graph = array(
+                        "export_forms_id" => $form['export_forms_id'],
+                        "name" => $form['graph_name'],
+                        "type" => $form['graph_type'],
+                        "x_value" => $form['x_value'],
+                        "y_value" => (isset($form['y_value'])?$form['y_value']:NULL),
+                        "z_value" => (isset($form['z_value'])?$form['z_value']:NULL)
+                    );
                 }
+                unset($form['graph_name']);
+                unset($form['graph_type']);
+                unset($form['x_value']);
+                unset($form['y_value']);
+                unset($form['z_value']);
+
+
+                if (!empty($form['export_forms_id'])) {
+                    $this->Export_model->update_export_form($form);
+                    $export_forms_id = $form['export_forms_id'];
+                }
+                else {
+                    $export_forms_id = $this->Export_model->insert_export_form($form);
+                }
+
+                if ($export_forms_id) {
+
+                    $this->Export_model->update_export_user($users, $export_forms_id);
+
+                    if (!empty($graph)) {
+                        $this->Export_model->insert_export_graph($graph);
+                    }
+                }
+
+                echo json_encode(array(
+                    "success" => ($export_forms_id),
+                    "msg" => ($export_forms_id?"Export Form saved successfully":"ERROR: The export form was not saved successfully!")
+                ));
             }
-
-            echo json_encode(array(
-                "success" => ($export_forms_id),
-                "msg" => ($export_forms_id?"Export Form saved successfully":"ERROR: The export form was not saved successfully!")
-            ));
-
         }
     }
 
