@@ -291,26 +291,31 @@ var campaign_functions = {
 
 var lhs = {
     send_template_email: function(urn, template_id, recipients_to_name, recipients_to, recipients_cc, recipients_bcc, msg) {
-        $.ajax({
-            url: helper.baseUrl + 'email/send_template_email',
-            type: "POST",
-            dataType: "JSON",
-            data: {
-                urn: urn,
-                template_id: template_id,
-                recipients_to_name: recipients_to_name,
-                recipients_to: recipients_to,
-                recipients_cc: recipients_cc,
-                recipients_bcc: recipients_bcc,
-                msg: msg
-            }
-        }).done(function(response) {
-            if (response.success) {
-                flashalert.success(response.msg);
-            }
-            else {
-                flashalert.danger(response.msg);
-            }
-        });
+        if (recipients_to != "") {
+            $.ajax({
+                url: helper.baseUrl + 'email/send_template_email',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: urn,
+                    template_id: template_id,
+                    recipients_to_name: recipients_to_name,
+                    recipients_to: recipients_to,
+                    recipients_cc: recipients_cc,
+                    recipients_bcc: recipients_bcc,
+                    msg: msg
+                }
+            }).done(function(response) {
+                if (response.success) {
+                    flashalert.success(response.msg);
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        }
+        else {
+            flashalert.danger("ERROR: No email address on: "+msg);
+        }
     }
 }

@@ -436,58 +436,69 @@ class Email extends CI_Controller
         if ($template_id && $recipients_to && $urn) {
             //create the form structure to pass to the send function
             $form = $this->Email_model->template_to_form($template_id);
-            $form['send_to'] .= (strlen($form['send_to'])>0?",":"").$recipients_to;
-            $form['bcc'] .= (strlen($form['bcc'])>0?",":"").$recipients_bcc;
-            $form['cc'] .= (strlen($form['cc'])>0?",":"").$recipients_cc;
-            $form['urn'] = $urn;
+            if ($form) {
+                $form['send_to'] .= (strlen($form['send_to'])>0?",":"").$recipients_to;
+                $form['bcc'] .= (strlen($form['bcc'])>0?",":"").$recipients_bcc;
+                $form['cc'] .= (strlen($form['cc'])>0?",":"").$recipients_cc;
+                $form['urn'] = $urn;
 
-            $last_comment = $this->Records_model->get_last_comment($urn);
-            $placeholder_data = $this->Email_model->get_placeholder_data($urn);
-            $placeholder_data[0]['comments'] = $last_comment;
-            $placeholder_data['recipient_name'] = $recipients_to_name;
-            if (count($placeholder_data)) {
-                foreach ($placeholder_data[0] as $key => $val) {
-                    if ($key == "fullname") {
-                        $val = str_replace("Mr ", "", $val);
-                        $val = str_replace("Mrs ", "", $val);
-                        $val = str_replace("Mrs ", "", $val);
+                $last_comment = $this->Records_model->get_last_comment($urn);
+                $placeholder_data = $this->Email_model->get_placeholder_data($urn);
+                $placeholder_data[0]['comments'] = $last_comment;
+                $placeholder_data['recipient_name'] = $recipients_to_name;
+                if (count($placeholder_data)) {
+                    foreach ($placeholder_data[0] as $key => $val) {
+                        if ($key == "fullname") {
+                            $val = str_replace("Mr ", "", $val);
+                            $val = str_replace("Mrs ", "", $val);
+                            $val = str_replace("Mrs ", "", $val);
+                        }
+                        $form['body'] = str_replace("[$key]", $val, $form['body']);
                     }
-                    $form['body'] = str_replace("[$key]", $val, $form['body']);
                 }
-            }
-            if ($this->send($form)) {
-                $email_history = array(
-                    'body' => $form['body'],
-                    'subject' => $form['subject'],
-                    'send_from' => $form['send_from'],
-                    'send_to' => $form['send_to'],
-                    'cc' => $form['cc'],
-                    'bcc' => $form['bcc'],
-                    'user_id' => $_SESSION['user_id'],
-                    'urn' => $form['urn'],
-                    'template_id' => $form['template_id'],
-                    'template_unsubscribe' => $form['template_unsubscribe'],
-                    'status' => 1,
-                    'pending' => 0
-                );
-                $email_id = $this->Email_model->add_new_email_history($email_history);
+                if ($this->send($form)) {
+                    $email_history = array(
+                        'body' => $form['body'],
+                        'subject' => $form['subject'],
+                        'send_from' => $form['send_from'],
+                        'send_to' => $form['send_to'],
+                        'cc' => $form['cc'],
+                        'bcc' => $form['bcc'],
+                        'user_id' => $_SESSION['user_id'],
+                        'urn' => $form['urn'],
+                        'template_id' => $form['template_id'],
+                        'template_unsubscribe' => $form['template_unsubscribe'],
+                        'status' => 1,
+                        'pending' => 0
+                    );
+                    $email_id = $this->Email_model->add_new_email_history($email_history);
 
-                if ($this->input->is_ajax_request()) {
-                    echo json_encode(array(
-                        "success" => true,
-                        "msg" => $success_msg,
-                        "email_history_id" => $email_id
-                    ));
+                    if ($this->input->is_ajax_request()) {
+                        echo json_encode(array(
+                            "success" => true,
+                            "msg" => $success_msg,
+                            "email_history_id" => $email_id
+                        ));
+                    }
+                }
+                else{
+                    if ($this->input->is_ajax_request()) {
+                        echo json_encode(array(
+                            "success" => false,
+                            "msg" => "ERROR: Email not sent successfuly. Error during the sent process"
+                        ));
+                    }
                 }
             }
-            else{
+            else {
                 if ($this->input->is_ajax_request()) {
                     echo json_encode(array(
                         "success" => false,
-                        "msg" => "ERROR: Email not sent successfuly. Error during the send process"
+                        "msg" => "ERROR: Email not sent successfuly on ".$success_msg.". The template doesn't exist"
                     ));
                 }
             }
+
         }
         else {
             if ($this->input->is_ajax_request()) {
