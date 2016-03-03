@@ -415,7 +415,6 @@ class Records_model extends CI_Model
     //function to list all the records
     public function get_records($options,$urn=false)
     {
-		$this->firephp->log($options);
         $tables = $options['visible_columns']['tables'];
         //these tables must be joined to the query regardless of the selected columns to allow the map to function
         $required_tables = array("record_planner", "record_planner_user", "ownership", "campaigns", "contact_locations", "company_locations");
@@ -425,7 +424,6 @@ class Records_model extends CI_Model
             }
         }
         $table_columns = $options['visible_columns']['select'];
-		$this->firephp->log($table_columns);
         $filter_columns = $options['visible_columns']['filter'];
         $order_columns = $options['visible_columns']['order'];
 			$datafield_ids = array();
@@ -525,7 +523,7 @@ $this->firephp->log($table_columns);
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}
-		$this->firephp->log($select.$qry);
+		//$this->firephp->log($select.$qry);
         $records = $this->db->query($select.$qry)->result_array();
         $records['count'] = $count;
         

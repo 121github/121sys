@@ -95,6 +95,8 @@ var view = {
                     d.group = $('.filter-form').find('input[name="group"]').val();
 					d.bounds = false;
 					d.map = false;
+					d.date_from = $('.filter-form').find('input[name="date_from"]').val();
+                    d.date_to = $('.filter-form').find('input[name="date_to"]').val();
                 },
                 error: function(xhr, error, thrown) {
                     if (error == "parsererror") {

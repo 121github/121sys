@@ -154,6 +154,8 @@ var table_columns = <?php echo json_encode($columns) ?>; //the columns in this v
     $(document).ready(function () {
         view.init();
         view.has_filter = "<?php echo ((isset($_SESSION['filter']['values']) && !empty($_SESSION['filter']['values']))?true:false) ?>";
+		
+		
     });
 
 </script>

@@ -89,6 +89,8 @@ var view = {
                     d.bounds = maps.getBounds(),
                     d.map = true;
                     d.group = $('.filter-form').find('input[name="group"]').val();
+					d.date_from = $('.filter-form').find('input[name="date_from"]').val();
+                    d.date_to = $('.filter-form').find('input[name="date_to"]').val();
                 },
                 error: function(xhr, error, thrown) {
                     if (error == "parsererror") {

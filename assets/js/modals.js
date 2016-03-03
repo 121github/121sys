@@ -271,7 +271,6 @@ var modals = {
 			table_columns = response.columns;
 			view.view_id = response.view_id;
 			full_table_reload();
-			$modal.modal('toggle');
 		});
 	},
 	
