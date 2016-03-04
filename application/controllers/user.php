@@ -218,6 +218,13 @@ class User extends CI_Controller
         if ($this->input->post()) {
             $user = $this->User_model->get_user_by_id($this->input->post("user_id"));
 
+            $aux = array();
+            foreach ($user as $value) {
+                unset($value['password']);
+                array_push($aux, $value);
+            }
+            $user = $aux;
+
             echo json_encode(array(
                 "success" => (!empty($user)),
                 "data" => $user
@@ -229,6 +236,13 @@ class User extends CI_Controller
     {
         if ($this->input->post()) {
             $user = $this->User_model->get_user_addresses_by_id($this->input->post("user_id"));
+
+            $aux = array();
+            foreach ($user as $value) {
+                unset($value['password']);
+                array_push($aux, $value);
+            }
+            $user = $aux;
 
             echo json_encode(array(
                 "success" => (!empty($user)),

@@ -954,6 +954,15 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             unset($data['access_add1'], $data['access_add2'], $data['access_add3'], $data['access_county'], $data['access_new_postcode']);
 
 
+            //check the attendee
+            if (empty($data['attendees'])) {
+                echo json_encode(array(
+                    "success" => false,
+                    "msg" => "You must confirm the attendee"
+                ));
+                exit;
+            }
+
             //check the address
             if (!isset($data['address']) || $data['address'] == "Other" || empty($data['address'])) {
                 echo json_encode(array(

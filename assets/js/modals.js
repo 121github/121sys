@@ -5,6 +5,9 @@ var modals = {
         modal_footer = $modal.find('.modal-footer');
         modal_header = $modal.find('.modal-title');
         modal_body = $modal.find('.modal-body');
+
+        appointmentFormData = [];
+
         modal_dialog = $modal.find('.modal-dialog');
 		$(document).on('click','[data-toggle="tab"]',function(e){
 			$('#company-address-form,#company-phone-form,#contact-address-form,#contact-phone-form,#referral-address-form').hide();
@@ -95,20 +98,34 @@ var modals = {
             e.preventDefault();
             if (helper.permissions['check overlap'] > 0) {
                 //Check overlap appointment
-                $.ajax({
-                    url: helper.baseUrl + 'appointments/check_overlap_appointments',
-                    data: $('#appointment-form').serialize(),
-                    type: "POST",
-                    dataType: "JSON"
-                }).done(function (response) {
-                    if (response) {
-                        //alert("Overlap");
-                        modals.save_appointment($('#appointment-form').serialize());
-                    }
-                    else {
-                        modals.save_appointment($('#appointment-form').serialize());
-                    }
-                });
+                if ($('#appointment-form').find('.attendeepicker').selectpicker("val") != "") {
+                    $.ajax({
+                        url: helper.baseUrl + 'appointments/check_overlap_appointments',
+                        data: $('#appointment-form').serialize(),
+                        type: "POST",
+                        dataType: "JSON"
+                    }).done(function (response) {
+                        if (response) {
+                            if (helper.permissions['overlap appointment'] > 0) {
+                                var appointment_id = $('#appointment-form').find('input[name="appointment_id"]').val();
+                                var urn = $('#appointment-form').find('input[name="urn"]').val();
+                                modals.confirm_overlap_appointment(urn, appointment_id, $('#appointment-form').serialize());
+                            }
+                            else {
+                                var msg = "There are one or more appointments for this record on the same date for the same attendee. You are not alowed to overlap appointments!";
+                                alert(msg)
+                                flashalert.danger(msg)
+                            }
+                        }
+                        else {
+                            modals.save_appointment($('#appointment-form').serialize());
+                        }
+                    });
+                }
+                else {
+                    flashalert.danger("You must confirm the attendee");
+                }
+
             }
             else {
                 modals.save_appointment($('#appointment-form').serialize());
@@ -569,6 +586,30 @@ var modals = {
 				flashalert.danger("There was an error saving the appointment");
         });
     },
+    confirm_overlap_appointment: function (urn, appointment_id, data) {
+        var mheader = "Overlap appointments";
+        var mbody = "There is one or more appointments for this record on the same date and for the same attendee. Are you sure you want to continue saving this appointment?";
+        var mfooter = '<button class="btn btn-default pull-left cancel-overlap-appointment" data-urn="'+urn+'" data-id="'+appointment_id+'" type="button">Cancel</button> <button class="btn btn-danger confirm-overlap-appointment" type="button">Overlap</button>';
+
+        modals.load_modal(mheader, mbody, mfooter);
+        $('.confirm-overlap-appointment').click(function () {
+            modals.save_appointment(data);
+            $modal.modal('toggle');
+        });
+        /* go back to the appointment tab if they cancel the delete action */
+        $(document).one('click', '.cancel-overlap-appointment', function (e) {
+            e.preventDefault();
+            var appointment_id = $(this).attr('data-id');
+            if (appointment_id != '') {
+                modals.view_appointment(appointment_id, true);
+            }
+            else {
+                //Deserialize the form
+                appointmentFormData = deserializeForm(data);
+                modals.add_appointment_html(urn);
+            }
+        });
+    },
     delete_appointment: function (id, cancellation_reason, urn) {
         $.ajax({
             url: helper.baseUrl + 'records/delete_appointment',
@@ -822,7 +863,87 @@ var modals = {
                     campaign_functions.appointment_setup();
                 }
             }
+
+            modals.restore_appointment_form();
         });
+    },
+    restore_appointment_form: function() {
+
+        //Restore data if is defined
+
+        if (typeof appointmentFormData != "undefined" && appointmentFormData['urn'].length > 0) {
+
+            $('#appointment-form').find('input[name="urn"]').val(appointmentFormData['urn']);
+            $('#appointment-form').find('input[name="appointment_id"]').val(appointmentFormData['appointment_id']);
+            $('#appointment-form').find('input[name="branch_id"]').val(appointmentFormData['branch_id']);
+
+            $('#appointment-form').find('input[name="text"]').val(appointmentFormData['text']);
+
+
+            $('#appointment-form').find('input[name="title"]').val(appointmentFormData['title']);
+
+            $('#appointment-form').find('.typepicker').selectpicker("val",appointmentFormData['appointment_type_id']);
+            $('#appointment-form').find('.typepicker').selectpicker("refresh");
+
+            $('#appointment-form').find('.attendeepicker').selectpicker("val",appointmentFormData['attendees[]']);
+            $('#appointment-form').find('.attendeepicker').selectpicker("refresh");
+
+            $('#appointment-form').find('.startpicker').data("DateTimePicker").date(appointmentFormData['start']);
+            $('#appointment-form').find('.endpicker').data("DateTimePicker").date(appointmentFormData['end']);
+
+            $('#appointment-form').find('.addresspicker').selectpicker("val", appointmentFormData['address']);
+            $('#appointment-form').find('.addresspicker').selectpicker("refresh");
+
+            if (typeof appointmentFormData['address'] == "undefined" || $('#appointment-form').find('.addresspicker').selectpicker("val") == "") {
+                $('#appointment-form').find('#add-appointment-address').show();
+                $('#appointment-form').find('#select-appointment-address').hide();
+            } else {
+                $('#appointment-form').find('#add-appointment-address').hide();
+                $('#appointment-form').find('#select-appointment-address').show();
+            }
+            $('#appointment-form').find('input[name="add1"]').val(appointmentFormData['add1']);
+            $('#appointment-form').find('input[name="add2"]').val(appointmentFormData['add2']);
+            $('#appointment-form').find('input[name="add3"]').val(appointmentFormData['add3']);
+            $('#appointment-form').find('input[name="county"]').val(appointmentFormData['county']);
+            $('#appointment-form').find('input[name="new_postcode"]').val(appointmentFormData['new_postcode']);
+
+            $('#appointment-form').find('input[name="access_add_check"]').val(appointmentFormData['access_add_check']);
+            if (appointmentFormData['access_add_check']) {
+                $('#access-add-check').bootstrapToggle('on');
+            }
+            else {
+                $('#access-add-check').bootstrapToggle('off');
+            }
+
+            $('#appointment-form').find('.accessaddresspicker').selectpicker("val", appointmentFormData['access_address']);
+            $('#appointment-form').find('.accessaddresspicker').selectpicker("refresh");
+
+            if (typeof appointmentFormData['access_address'] == "undefined" || $('#appointment-form').find('.access_address').selectpicker("val") == "") {
+                $('#appointment-form').find('#add-appointment-access-address').show();
+                $('#appointment-form').find('#select-appointment-access-address').hide();
+            } else {
+                $('#appointment-form').find('#add-appointment-access-address').hide();
+                $('#appointment-form').find('#select-appointment-access-address').show();
+            }
+            $('#appointment-form').find('input[name="access_add1"]').val(appointmentFormData['access_add1']);
+            $('#appointment-form').find('input[name="access_add2"]').val(appointmentFormData['access_add2']);
+            $('#appointment-form').find('input[name="access_add3"]').val(appointmentFormData['access_add3']);
+            $('#appointment-form').find('input[name="access_county"]').val(appointmentFormData['access_county']);
+            $('#appointment-form').find('input[name="access_new_postcode"]').val(appointmentFormData['access_new_postcode']);
+
+            $('#appointment-form').find('input[name="appointment_confirmed"]').val(appointmentFormData['appointment_confirmed']);
+            if (appointmentFormData['appointment_confirmed'] === "1") {
+                $('#appointment-confirmed').bootstrapToggle('on');
+            }
+            else {
+                $('#appointment-confirmed').bootstrapToggle('off');
+            }
+
+            //$('#appointment-form').find('.contactpicker').selectpicker("val",appointmentFormData['contact_id']);
+            //$('#appointment-form').find('.contactpicker').selectpicker("refresh");
+
+            appointmentFormData = [];
+        }
     },
     appointment_contacts: function (urn, contact_id) {
         $.ajax({

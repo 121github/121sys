@@ -1204,6 +1204,14 @@ class Ajax extends CI_Controller
     {
         if ($this->input->is_ajax_request()) {
             $users = $this->Records_model->get_users(intval($this->input->post("urn")));
+
+            $aux = array();
+            foreach ($users as $value) {
+                unset($value['password']);
+                array_push($aux, $value);
+            }
+            $users = $aux;
+
             echo json_encode(array(
                 "success" => true,
                 "data" => $users

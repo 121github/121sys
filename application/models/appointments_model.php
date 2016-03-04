@@ -520,12 +520,14 @@ class Appointments_model extends CI_Model
                             (`start` < '" . to_mysql_datetime($start) . "' AND `end` > '" . to_mysql_datetime($start) . "')
                             OR
                             (`start` < '" . to_mysql_datetime($end) . "' AND `end` > '" . to_mysql_datetime($end) . "')
+                            OR
+                            (`start` = '" . to_mysql_datetime($start) . "')
+                            OR
+                            (`end` = '" . to_mysql_datetime($end) . "')
                         )
                ";
 
         $results = $this->db->query($qry)->result_array();
-
-        $this->firephp->log($qry);
 
         return (!empty($results));
     }

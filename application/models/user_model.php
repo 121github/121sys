@@ -347,7 +347,7 @@ class User_model extends CI_Model
 
     public function get_users_by_role($role_id)
     {
-        $qry = "SELECT *
+        $qry = "SELECT user_id, role_id, group_id, team_id, username, name, user_status, user_telephone, phone_un, ext, home_postcode, vehicle_reg, custom, ics
                 FROM users
                 WHERE role_id='" . intval($role_id) . "'";
         $results = $this->db->query($qry)->result_array();
