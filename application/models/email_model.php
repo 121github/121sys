@@ -338,6 +338,40 @@ $qry .= " group by urn";
     }
 
     /**
+     * Get emails history
+     */
+    public function get_emails_by_urn($urn, $limit, $offset)
+    {
+        $limit_ = ($limit) ? "limit " . $offset . "," . $limit : '';
+
+        $qry = "select e.email_id,
+                      DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
+                      e.subject,
+                      e.body,
+                      e.send_from,
+                      e.send_to,
+                      e.cc,
+                      e.bcc,
+                      e.user_id,
+                      e.urn,
+                      e.template_id,
+                      e.read_confirmed,
+                      e.read_confirmed_date,
+                      e.status,
+                      u.name,
+                      t.*,
+                      e.pending
+		    	from email_history e
+		    	inner join users u ON (u.user_id = e.user_id)
+		    	inner join email_templates t ON (t.template_id = e.template_id)
+		    	where e.urn = " . $urn . "
+		    	order by e.sent_date desc
+		    	" . $limit_;
+
+        return $this->db->query($qry)->result_array();
+    }
+
+    /**
      * Get emails history by filter data
      */
     public function get_emails_by_filter($options)

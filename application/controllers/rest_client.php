@@ -163,4 +163,24 @@ class Rest_client extends CI_Controller
 
         echo (json_encode($record_company));
     }
+
+    /**
+     * Send email by urn and template_id
+     */
+    function send_email() {
+        if (!$this->input->post()) {
+            $email = array(
+                "success" => false,
+                "msg" => "It is not a post request"
+            );
+        }
+        else {
+            $email_data = $this->input->post();
+            $email = $this->rest->post('send_email', $email_data);
+        }
+
+        echo (json_encode($email));
+    }
+
+
 }
