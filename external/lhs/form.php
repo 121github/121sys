@@ -265,6 +265,23 @@
                                 }).done(function (response) {
                                     alert("Record created!");
                                     document.getElementById("lhs-form").reset();
+                                    $.ajax({
+                                        url: baseUrl + 'rest_client/send_email',
+                                        type: "POST",
+                                        dataType: "JSON",
+                                        data: {
+                                            urn: response.urn,
+                                            'template_id': 1,
+                                            'recipients_to': 'estebanc@121customerinsight.co.uk',
+                                            'recipients_to_name': '',
+                                            'recipients_cc': '',
+                                            'recipients_bcc': ''
+                                        }
+                                    }).done(function (response) {
+                                        if (response.success) {
+
+                                        }
+                                    });
                                 });
                             }
                         });
