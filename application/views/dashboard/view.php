@@ -104,6 +104,22 @@
                 <?php } ?>
             </select>
 
+            <label style="margin-top: 5%;">Pot</label>
+            <select name="pot[]" class="selectpicker pot-filter" multiple data-width="100%"
+                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+                <?php foreach ($pots as $row) { ?>
+                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                <?php } ?>
+            </select>
+
+            <label style="margin-top: 5%;">User</label>
+            <select name="user[]" class="selectpicker user-filter" multiple data-width="100%"
+                    data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+                <?php foreach ($users as $row) { ?>
+                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                <?php } ?>
+            </select>
+
             <button id="filter-submit" class="btn btn-primary pull-right" item-id="<?php echo $dashboard['dashboard_id']; ?>" style="margin-top: 5%;">Submit</button>
         </form>
     </div>
