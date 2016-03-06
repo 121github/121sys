@@ -1044,11 +1044,14 @@ var dashboard = {
 
         if(dash_type === "Dashboard"){
             $('#dash-type').bootstrapToggle('on');
+            modal_body.find('input[name="dash_type"]').val("Dashboard");
         } else if(dash_type === "Report"){
             $('#dash-type').bootstrapToggle('off');
+            modal_body.find('input[name="dash_type"]').val("Report");
         }
         else {
             $('#dash-type').bootstrapToggle('on');
+            modal_body.find('input[name="dash_type"]').val("Dashboard");
         }
         $('#dash-type').on('change',function(e){
             if($(this).prop("checked")){
