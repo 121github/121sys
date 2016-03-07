@@ -22,6 +22,13 @@ class Ajax extends CI_Controller
         $this->_access = $this->User_model->campaign_access_check($this->input->post('urn'), true);
     }
 
+	public function delete_view(){
+	$id = $this->input->post('id');
+	$this->db->where(array("view_id"=>$id,"user_id"=>$_SESSION['user_id']));
+	$this->db->delete("datatables_views");
+	echo json_encode(array("success"=>true));	
+	}
+
     public function change_theme()
     {
         if ($this->input->post('theme')) {

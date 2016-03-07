@@ -45,7 +45,10 @@ class Datatables extends CI_Controller
 
 	public function save_columns(){
 		$data = $this->input->post();	
-		
+		if(!isset($data['columns'])){
+		echo json_encode(array("success"=>false,"msg"=>"No columns selected"));	
+		exit;
+		}
 		if(empty($data['view_id'])){
 			//create the view
 		$data['view_id'] = $this->Datatables_model->create_view($data);
@@ -60,7 +63,7 @@ class Datatables extends CI_Controller
 		foreach($data['columns'] as $k=>$v){
 		 $this->Datatables_model->save_view_columns($v,$data['view_id']);
 		}
-		echo json_encode(array("action"=>$action,"id"=>$data['view_id'],"name"=>$data['view_name']));
+		echo json_encode(array("success"=>true,"action"=>$action,"id"=>$data['view_id'],"name"=>$data['view_name']));
 	}
 
 	public function get_columns(){

@@ -271,20 +271,27 @@ var modals = {
           modals.edit_user_view();
         });
         $modal.on('click','#save-view-btn',function(e){
+			if($('#column-picker-form').find('[name="view_name"]').val()==""){
+			flashalert.danger("You must give the view a name");
+			return false;	
+			}
             modals.save_columns();
-            $('#view-back-btn').trigger('click');
+ 
         });
         $modal.on('click','.create-view-tab .tab',function(e){
              var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-view-btn">Save</button> <button id="view-back-btn" class="btn btn-default pull-left" type="button">Back</button>';
              modal_footer.html(mfooter);
              //reset all the fields
              $('#create-view .selectpicker').selectpicker('val',[]);
+			 $('#create-view input[name="view_name"]').val('');
              $('#create-view input[name="view_id"]').val('');
         });
         $modal.on('click','#view-back-btn,.load-view-tab .tab',function(e){
             $modal.find('#load-view').addClass('active');
             $modal.find('#create-view').removeClass('active');
-             var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+			 $modal.find('.load-view-tab').addClass('active');
+            $modal.find('.create-view-tab').removeClass('active');
+             var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button type="submit" class="btn btn-danger pull-right" id="delete-view-btn">Delete View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
             modal_footer.html(mfooter);
         });
 
@@ -297,7 +304,36 @@ var modals = {
             e.preventDefault();
             modals.get_addresses();
         });
+		    $modal.on('click','#delete-view-btn',function(e){
+            e.preventDefault();
+            modals.confirm_delete_view($('#load-view').find('select').val(),$modal.find('input[name="table"]').val());
+        });		
     },
+	 confirm_delete_view: function (view_id,table) {
+            var mheader = "Delete View";
+            var mbody = "Are you sure you want to delete this view?";
+            var mfooter = '<button class="btn btn-default pull-left cancel-delete-view" type="button">Back</button> <button class="btn btn-danger confirm-delete-view" type="button">Delete</button>';
+
+            modals.load_modal(mheader, mbody, mfooter);
+              $modal.find('.confirm-delete-view').click(function () {
+                modals.delete_view(view_id,table);
+            });
+			  $modal.find('.cancel-delete-view').click(function () {
+                 modals.show_table_views(table);
+            });
+        },
+	delete_view:function(view,table){
+		
+		 console.log(table);
+		$.ajax({
+            url: helper.baseUrl + 'ajax/delete_view',
+			data: { id:view },
+            type: "POST",
+            dataType: "JSON"
+        }).done(function(response) {
+			 modals.show_table_views(table);
+		});
+	},
 	set_user_view:function(id){
 		$.ajax({
             url: helper.baseUrl + 'datatables/set_user_view',
@@ -347,6 +383,10 @@ var modals = {
             type: "POST",
             dataType: "JSON"
         }).done(function (response) {
+			if(response.views.length==0){
+			location.reload();	
+			return false;
+			}
 			 var mheader = "View Editor";
 			 var create_view = "<form id='column-picker-form' ><input type='hidden' name='table' value='"+table_id+"' /><input type='hidden' name='view_id' value='' />";
 			 var select_views = "<div class='form-group'><h4>Select a view</h4><select class='selectpicker'>";
@@ -355,7 +395,7 @@ var modals = {
 		});
 			 select_views += "</select></div>";
 			 create_view += "<div class='form-group'><h4>View Name</h4><input class='form-control' name='view_name' placeholder='Enter the view name' /></div><hr/>";
-			 var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+			 var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="load-view-btn">Load View</button> <button type="submit" class="btn btn-primary pull-right" id="edit-view-btn">Edit View</button> <button type="submit" class="btn btn-danger pull-right"  id="delete-view-btn">Delete View</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 			 create_view += "<div class='row'><div class='col-xs-6'>";
 			 var i=0; $.each(response.columns,function(group,row){ i++;
 			    var subtext ="";
@@ -400,6 +440,7 @@ var modals = {
             type: "POST",
             dataType: "JSON"
         }).done(function(response) {
+			if(response.success){
 			table_columns = response.columns;
 			if(response.action == "create"){
 			$('#load-view select').children().prop('selected',false)
@@ -409,7 +450,10 @@ var modals = {
 			$('#load-view select option[value="'+response.id+'"]').text(response.name).closest('select').selectpicker('refresh');
 			}
 			$('#create-view form')[0].reset();
-			$('#view-back-btn').trigger('click');
+			$modal.find('.load-view-tab a').trigger('click');
+			} else {
+			flashalert.danger(response.msg);	
+			}
 		});
 	},
     merge_record: function (urn, target) {
