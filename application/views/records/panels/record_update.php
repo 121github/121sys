@@ -255,10 +255,7 @@
         </form>
       </div>
     </div>
-<<<<<<< HEAD
       <?php } ?>
-=======
-
   <script>
       $(document).ready(function () {
           if(typeof campaign_functions !== "undefined"){
@@ -268,4 +265,4 @@
           }
       });
   </script>
->>>>>>> 1ac52d2be3b39fc04ac46772cb9b2f937597bd8a
+
