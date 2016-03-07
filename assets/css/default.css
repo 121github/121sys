@@ -1,4 +1,11 @@
-.custom-panel[custom-panel-display] table { margin-top:25px }
+/* .panel-heading a { display:inline-block; width:90% } */
+
+.panel a.disabled {
+	color:#666;
+	cursor:not-allowed
+}
+
+.custom-panel[custom-panel-display="list"] table { margin-top:25px }
 .navbar-toggle {
 	display: block;
 	float: left;

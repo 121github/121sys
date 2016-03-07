@@ -67,16 +67,16 @@ var table_columns = <?php echo json_encode($columns) ?>; //the columns in this v
                 opens: "left",
                 ranges: {
                     'Today': [moment(), moment()],
-                    'Tomorrow': [moment().add('days', 1), moment().add('days', 1)],
-                    'Next 7 Days': [moment(), moment().add('days', 6)],
-                    'Next 30 Days': [moment(), moment().add('days', 29)],
+                    'Tomorrow': [moment().add( 1,'days'), moment().add(1,'days')],
+                    'Next 7 Days': [moment(), moment().add(6,'days')],
+                    'Next 30 Days': [moment(), moment().add(29,'days')],
                     'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Next Month': [moment().add('month', 1).startOf('month'), moment().add('month', 1).endOf('month')]
+                    'Next Month': [moment().add(1,'month').startOf('month'), moment().add(1,'month').endOf('month')]
                 },
                 format: 'DD/MM/YYYY',
                 minDate: "02/07/2014",
                 startDate: moment(),
-                endDate: moment().add('days', 29)
+                endDate: moment().add(29,'days')
             },
             function (start, end, element) {
                 var $btn = this.element;

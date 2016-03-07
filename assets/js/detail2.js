@@ -20,6 +20,11 @@ var record = {
 			 var tab = $(this).attr('data-tab');
 				modals.record_options(tab);
 		})
+		$('#detail-accordion').on('click','[data-toggle="collapse"] .btn',function(e){
+			e.preventDefault();
+			console.log($(this).closest('.panel').find('.panel-collapse:first'));
+			$(this).closest('.panel').find('.panel-collapse:first').collapse('show');
+		});
 		
        $record_panel.on('click', '#update-record', function (e) {
             e.preventDefault();
@@ -248,11 +253,16 @@ var record = {
                     flashalert.danger('Cannot load tasks history');
                 }
             }).done(function (response) {
+			
 				var mheader = "Task History",mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-right" type="button">Close</button>',mbody="<ul style='list-style:none'>";
+					if(response.data.length){
 				$.each(response.data,function(i,row){
 					mbody += "<li style='margin:0px 0px 5px'><small><b>"+row.date+': '+row.name+"</b></small><br>"+row.task+": "+ row.task_status +"</li>";
 				});
 				mbody += "</ul>";
+				} else {
+				mbody = "There is no task history";	
+				}
 				modals.load_modal(mheader, mbody, mfooter);
 			});
 		},
@@ -271,6 +281,7 @@ var record = {
             }).done(function (response) {
                 if (response.success) {
                     var tasks = "";
+					if(response.data.length>0){
                     $.each(response.data, function (k, row) {
 						if(row.statuses){
                         tasks += '<div class="col-sm-6"><label>' + row.task_name + '</label><br><select class="selectpicker task_status" id="' + row.task_id + '">';
@@ -297,6 +308,9 @@ var record = {
 						  tasks += '<div class="col-sm-4"><label>' + row.task_name + '</label><br><input '+selected+' '+size+' id="' + row.task_id + '" type="checkbox" class="task_status" data-on="Active" data-off="Off" data-toggle="toggle"></div>';	
 						}
                     });
+					} else {
+					tasks = "No tasks have been configured";	
+					}
                     $panel.find('.panel-body').html(tasks);
 					$panel.find('input[type="checkbox"]').bootstrapToggle({
             onstyle: 'warning'
@@ -2507,11 +2521,7 @@ var record = {
             var $panel = $(record.ownership_panel.panel);
             record.ownership_panel.load_panel();
             $panel.find('.edit-panel').fadeOut(1000, function () {
-                $panel.find('.panel-content').fadeIn(1000, function () {
-
-                    $panel.find('.glyphicon-remove').removeClass('glyphicon-remove close-owner').addClass('glyphicon-pencil pointer edit-owner');
-
-                });
+                $panel.find('.panel-content').fadeIn();
             });
         },
         save: function () {
@@ -2561,8 +2571,6 @@ var record = {
         },
         edit: function ($btn) {
             var $panel = $(record.ownership_panel.panel);
-
-            $btn.removeClass('glyphicon-pencil edit-owner').addClass('glyphicon-remove close-owner');
             $panel.find('.panel-content').fadeOut(1000, function () {
                 $panel.find('.edit-panel').fadeIn(1000);
             });

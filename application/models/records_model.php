@@ -416,13 +416,7 @@ class Records_model extends CI_Model
     public function get_records($options,$urn=false)
     {
         $tables = $options['visible_columns']['tables'];
-        //these tables must be joined to the query regardless of the selected columns to allow the map to function
-        $required_tables = array("record_planner", "record_planner_user", "ownership", "campaigns", "contact_locations", "company_locations");
-        foreach ($required_tables as $rt) {
-            if (!in_array($rt, $tables)) {
-                $tables[] = $rt;
-            }
-        }
+        
         $table_columns = $options['visible_columns']['select'];
         $filter_columns = $options['visible_columns']['filter'];
         $order_columns = $options['visible_columns']['order'];
@@ -435,7 +429,14 @@ class Records_model extends CI_Model
 			$table_columns[$k] = "t_".intval($split[1]).".value ";
 		}
 		}
-$this->firephp->log($table_columns);
+
+//these tables must be joined to the query regardless of the selected columns to allow the map to function
+        $required_tables = array("record_planner", "record_planner_user", "ownership", "campaigns", "contact_locations", "company_locations");
+        foreach ($required_tables as $rt) {
+            if (!in_array($rt, $tables)) {
+                $tables[] = $rt;
+            }
+        }
 
         $join = array();
         //add mandatory column selections here

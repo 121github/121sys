@@ -169,14 +169,16 @@ class Modals extends CI_Controller
             $urn = intval($this->input->post('urn'));
 			$data = array("urn"=>$urn);
 			$modal_type = 1;
-			$options = $this->Modal_model->get_modal_fields($urn,$modal_type);		
+			$options = $this->Modal_model->get_modal_fields($urn,$modal_type);
             $record = $this->Modal_model->get_record($options,$urn);	
 			$fields=array();
-			$modal = array();	
+			$modal = array();
 			foreach($options['modal'] as $row){
-				$fields[$row['column_title']][$row['datafield_title']] = $record[$row['datafield_title']];
+				$title = !empty($row['field_name'])?$row['field_name']:$row['datafield_title'];
+				$fields[$row['column_title']][$title] = $record[$row['datafield_title']];
 				$modal[$row['column_title']] = array("display"=>$row['field_display'],"title"=>$row['column_title'],"list_icon"=>$row['list_icon'],"table_class"=>$row['table_class'],"fields"=>$fields[$row['column_title']]);
 			}
+
 			$data['record'] = $modal;
             $history = $this->Modal_model->view_history($urn);
             $data['history'] = $history;

@@ -37,7 +37,7 @@ var modals = {
             e.preventDefault();
 			var that = $(this);
 			var tab = that.attr('data-tab');
-            var clicked_urn = that.attr('data-urn');
+            var clicked_urn = that.attr('data-urn');			
             setTimeout(function () {
 				$modal.one('hidden.bs.modal', function () {
     			that.attr('data-modal','view-record');
@@ -45,6 +45,7 @@ var modals = {
 				that.removeAttr('data-modal');
                 modals.view_record(clicked_urn,tab);
             }, 300);
+		
         });
         $(document).on('dblclick', '[data-modal="view-record"],[data-modal="view-appointment"]', function (e) {
             e.preventDefault();

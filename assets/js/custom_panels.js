@@ -57,8 +57,10 @@ var custom_panels = {
                 var html = custom_panels.load_table(response);
             } else {
                 var html = custom_panels.load_list(response,data_id);
+				  if(!$.isEmptyObject(response.data)) {
 				//set the visible one as the latest one added
 				 $('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.edit-custom-btn').show().attr('custom-data-id',Object.keys(response.data)[Object.keys(response.data).length-1]);
+				  }
             }
             $('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.panel-body').html(html);
 			
@@ -106,11 +108,13 @@ var custom_panels = {
 		var meta = "";
 		var list_counts = "<div class='pull-right'>";
         if ($.isEmptyObject(response.data)) {
-            table = "<table class='"+response.data.table_class+"'>";
+			console.log("empty");
+            table = "<table class='table "+response.panel.table_class+"'>";
             $.each(response.fields, function(id, field) {
                 table += "<tr><th>" + field.name + "</th><td>-</td></tr>";
             });
             table += "</table>";
+			html=table;
         } else {
 			var i=1; var last_set = Object.keys(response.data).length;
             $.each(response.data, function(data_id, row) {

@@ -1,3 +1,31 @@
+<?php if(isset($collapsable)){ ?> 
+ 
+ <div id="attachment-panel" class="panel panel-primary">
+      <div class="panel-heading clearfix" role="button" data-toggle="collapse" data-parent="#detail-accordion" href="#attach-panel-slide" aria-expanded="true" aria-controls="attach-panel-slide">
+ Attachments<?php if(in_array("add attachment",$_SESSION['permissions'])){ ?>
+                <span class="fileinput-button pull-right btn btn-xs btn-default">
+                    <!-- The file input field used as target for the file upload widget -->
+                    <input id="fileupload" type="file" name="files"  data-url="<?php echo base_url()."records/upload_attach"; ?>"> <span class="glyphicon glyphicon-file"></span> New
+                </span>
+                
+                <!-- The global progress bar -->
+                <div id="progress-files" class="progress pull-right" style="display: none; width: 200px; margin-right: 10px;">
+                    <div class="progress-bar progress-bar-success"></div>
+                </div>
+                <!-- The container for the uploaded files -->
+                <div id="files" class="files pull-right" style="display: none; margin-right: 10px;">
+                    <span id="file-status"></span>
+                </div>
+        <?php } ?>
+      </div>
+ <div id="attach-panel-slide" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+      <div class="attachment-list panel-body" style="overflow-x:auto">
+       <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> 
+      </div>
+    </div>
+    </div>
+    <?php } else { ?>
+
  <div id="attachment-panel" class="panel panel-primary">
       <div class="panel-heading clearfix">
         <h4 class="panel-title"> Attachments<?php if(in_array("add attachment",$_SESSION['permissions'])){ ?>
@@ -19,12 +47,9 @@
       <div class="attachment-list panel-body" style="overflow-x:auto">
        <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> 
       </div>
-
-
-
-
-
     </div>
+
+<?php }  ?>
 
  <script>
 

@@ -218,17 +218,26 @@ class Appointments_model extends CI_Model
     public function appointment_data($count = false, $options = false)
     {
 		 $tables = $options['visible_columns']['tables'];
-        //these tables must be joined to the query regardless of the selected columns to allow the map to function
+      
+        $table_columns = $options['visible_columns']['select'];
+        $filter_columns = $options['visible_columns']['filter'];
+        $order_columns = $options['visible_columns']['order'];	
+$datafield_ids = array();
+		foreach($table_columns as $k=>$col){
+				$datafield_ids[$k] = 0;	
+		if(strpos($col,"custom_")!==false){
+			$split = explode("_",$col);
+			$datafield_ids[$k] = intval($split[1]);
+			$table_columns[$k] = "t_".intval($split[1]).".value ";
+		}
+		}
+  //these tables must be joined to the query regardless of the selected columns to allow the map to function
         $required_tables = array("campaigns", "companies", "company_addresses", "contacts","contact_addresses","contact_locations", "company_locations","appointment_locations","ownership","record_planner","record_planner_user","ownership","outcomes","appointment_attendees","appointment_users","appointment_types");
         foreach ($required_tables as $rt) {
             if (!in_array($rt, $tables)) {
                 $tables[] = $rt;
             }
         }
-        $table_columns = $options['visible_columns']['select'];
-        $filter_columns = $options['visible_columns']['filter'];
-        $order_columns = $options['visible_columns']['order'];	
-
 		   $join = array();
         //add mandatory column selections here
            $required_select_columns = array(
@@ -267,15 +276,24 @@ class Appointments_model extends CI_Model
         $join_array = join_array();
 		unset($join_array['appointments']);
 
-        foreach ($tables as $table) {
+      $tablenum=0;
+        foreach ($tables as $k=>$table) {
+			if($table=="custom_panels"){ $tablenum++;
+		
+			$field_id = $datafield_ids[$k];
+				$join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+			}
+			
+			if($table<>"custom_panels"){
             if (array_key_exists($table, $join_array)) {
                 foreach ($join_array[$table] as $t) {
-                    @$join[$t] = $table_joins[$t];
+                    $join[$t] = @$table_joins[$t];
                 }
             } else {
-                @$join[$table] = $table_joins[$table];
+                $join[$table] = @$table_joins[$table];
             }
         }
+		}
 
         foreach ($join as $join_query) {
             $qry .= $join_query;
