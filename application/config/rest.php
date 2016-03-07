@@ -82,7 +82,7 @@ $config['rest_auth'] = 'digest';
 |	array('admin' => '1234')
 |
 */
-$config['rest_valid_logins'] = array('admin' => '1234');
+$config['rest_valid_logins'] = array('admin' => '382ae706f2');
 
 /*
 |--------------------------------------------------------------------------
