@@ -7,9 +7,7 @@
 </div>
     <?php } else { ?>
     <div class="panel panel-primary">
-	<div class="panel-heading clearfix">SMS History <?php if(in_array("send sms",$_SESSION['permissions'])){ ?><button class="btn btn-default btn-xs pull-right pointer" id="new-sms-btn"><span class="glyphicon glyphicon-phone" id="new-sms-btn"></span> New</button><?php } ?></div></div>
-	  
+	<div class="panel-heading clearfix">SMS History <?php if(in_array("send sms",$_SESSION['permissions'])){ ?><button class="btn btn-default btn-xs pull-right pointer" id="new-sms-btn"><span class="glyphicon glyphicon-phone" id="new-sms-btn"></span> New</button><?php } ?></div>
     <div class="panel-body" id="sms-panel"> <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" /> </div>
-
 </div>
  <?php } ?>
