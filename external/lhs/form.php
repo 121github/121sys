@@ -197,31 +197,36 @@
                 e.preventDefault();
 
                 var baseUrl = document.location.origin + '/121sys_dev/';
-
                 //Create record
                 $.ajax({
-                    url: baseUrl + 'rest_client/save_record',
+                    url: baseUrl + 'api/record',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:382ae706f2"));
+                    },
                     type: "POST",
                     dataType: "JSON",
                     data: {
-                        campaign_id: "7",
-                        record_status: "1",
-                        source_id: "1",
-                        pot_id: "0",
+                        "campaign_id": "7",
+                        "record_status": "1",
+                        "source_id": "1",
+                        "pot_id": "0",
                     }
                 }).done(function (response) {
                     if (response.success) {
-                        //Insert record_details
+                          //Insert record_details
                         var survey_type = $('.lhs-form').find('select[name="survey_type"]').val();
                         var additional_info = $('.lhs-form').find('textarea[name="additional_info"]').val();
                         $.ajax({
-                            url: baseUrl + 'rest_client/save_record_details',
+                            url: baseUrl + 'api/record_details',
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:382ae706f2"));
+                            },
                             type: "POST",
                             dataType: "JSON",
                             data: {
-                                urn: response.urn,
-                                c3: survey_type,
-                                c4: additional_info
+                                "urn": response.urn,
+                                "c3": survey_type,
+                                "c4": additional_info
                             }
                         }).done(function (response) {
                             if (response.success) {
@@ -238,50 +243,108 @@
                                 var telephone_number = $('.lhs-form').find('input[name="telephone_number"]').val();
                                 var email_address = $('.lhs-form').find('input[name="email_address"]').val();
 
-                                var addresses = [];
-                                if (survey_address != '') {
-                                    addresses.push(survey_address+"/"+survey_address_postcode+"/"+"Surveying Address");
-                                }
-                                if (correspondence_address != '') {
-                                    addresses.push(correspondence_address+"/"+correspondence_address_postcode+"/"+"Correspondence Address");
-                                }
-                                if (access_address != '') {
-                                    addresses.push(access_address+"/"+access_address_postcode+"/"+"Access Detail Address");
-                                }
-
                                 $.ajax({
-                                    url: baseUrl + 'rest_client/save_record_contact',
+                                    url: baseUrl + 'api/record_contact',
+                                    beforeSend: function(xhr) {
+                                        xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:382ae706f2"));
+                                    },
                                     type: "POST",
                                     dataType: "JSON",
                                     data: {
-                                        urn: response.urn,
-                                        title: title,
-                                        firstname: firstname,
-                                        lastname: lastname,
-                                        addresses: addresses,
-                                        telephone_number: telephone_number,
-                                        email: email_address
+                                        "urn": response.urn,
+                                        "title": title,
+                                        "firstname": firstname,
+                                        "lastname": lastname,
+                                        "fullname": title+" "+firstname+" "+lastname,
+                                        "email": email_address
                                     }
                                 }).done(function (response) {
-                                    alert("Record created!");
-                                    document.getElementById("lhs-form").reset();
+                                    //Insert addresses
+                                    if (survey_address != '') {
+                                        $.ajax({
+                                            url: baseUrl + 'api/contact_address',
+                                            beforeSend: function(xhr) {
+                                                xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:382ae706f2"));
+                                            },
+                                            type: "POST",
+                                            dataType: "JSON",
+                                            data: {
+                                                "contact_id": response.contact_id,
+                                                "add1": survey_address,
+                                                "postcode": survey_address_postcode,
+                                                "description": "Survey Address"
+                                            }
+                                        });
+                                    }
+                                    if (correspondence_address != '') {
+                                        $.ajax({
+                                            url: baseUrl + 'api/contact_address',
+                                            beforeSend: function(xhr) {
+                                                xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:382ae706f2"));
+                                            },
+                                            type: "POST",
+                                            dataType: "JSON",
+                                            data: {
+                                                "contact_id": response.contact_id,
+                                                "add1": correspondence_address,
+                                                "postcode": correspondence_address_postcode,
+                                                "description": "Correspondence Address"
+                                            }
+                                        });
+                                    }
+                                    if (access_address != '') {
+                                        $.ajax({
+                                            url: baseUrl + 'api/contact_address',
+                                            beforeSend: function(xhr) {
+                                                xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:382ae706f2"));
+                                            },
+                                            type: "POST",
+                                            dataType: "JSON",
+                                            data: {
+                                                "contact_id": response.contact_id,
+                                                "add1": access_address,
+                                                "postcode": access_address_postcode,
+                                                "description": "Access Detail Address"
+                                            }
+                                        });
+                                    }
+
+                                    //Insert contact telephone
                                     $.ajax({
-                                        url: baseUrl + 'rest_client/send_email',
+                                        url: baseUrl + 'api/contact_telephone',
+                                        beforeSend: function(xhr) {
+                                            xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:382ae706f2"));
+                                        },
                                         type: "POST",
                                         dataType: "JSON",
                                         data: {
-                                            urn: response.urn,
+                                            "contact_id": response.contact_id,
+                                            "telephone_number": telephone_number,
+                                        }
+                                    });
+
+                                    //Send confirmation Email
+                                    $.ajax({
+                                        url: baseUrl + 'api/send_email',
+                                        beforeSend: function(xhr) {
+                                            xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:382ae706f2"));
+                                        },
+                                        type: "POST",
+                                        dataType: "JSON",
+                                        data: {
+                                            'urn': response.urn,
                                             'template_id': 1,
                                             'recipients_to': 'estebanc@121customerinsight.co.uk',
                                             'recipients_to_name': '',
                                             'recipients_cc': '',
                                             'recipients_bcc': ''
                                         }
-                                    }).done(function (response) {
-                                        if (response.success) {
-
-                                        }
                                     });
+
+                                    alert("Record created! URN: "+response.urn);
+
+                                    //Reset form
+                                    document.getElementById("lhs-form").reset();
                                 });
                             }
                         });

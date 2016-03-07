@@ -16,7 +16,7 @@ class Rest_client extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-//        user_auth_check(true);
+        user_auth_check(true);
 
         $this->load->library('rest', array(
             'server' => base_url().'api/',

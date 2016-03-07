@@ -225,7 +225,7 @@ class Api extends REST_Controller
                     'success' => ($record_contact_id?true:false),
                     'urn' => $record_contact['urn'],
                     'contact_id' => ($record_contact_id?$record_contact_id:''),
-                    'message' => ($record_contact_id?'INSERTED!':'ERROR: The record contact was inserted successfully!')
+                    'message' => ($record_contact_id?'INSERTED!':'ERROR: The record contact was NOT inserted successfully!')
                 );
             }
             //Update record contact
@@ -236,7 +236,7 @@ class Api extends REST_Controller
                     'success' => ($result?true:false),
                     'urn' => $record_contact['urn'],
                     'contact_id' => $record_contact['contact_id'],
-                    'message' => ($result?'UPDATED!':'ERROR: The record contact was updated successfully!')
+                    'message' => ($result?'UPDATED!':'ERROR: The record contact was NOT updated successfully!')
                 );
             }
         }
@@ -269,7 +269,7 @@ class Api extends REST_Controller
                 'success' => ($contact_address_id?true:false),
                 'contact_id' => $contact_address['contact_id'],
                 'address_id' => ($contact_address_id?$contact_address_id:''),
-                'message' => ($contact_address_id?'INSERTED!':'ERROR: The contact address was inserted successfully!')
+                'message' => ($contact_address_id?'INSERTED!':'ERROR: The contact address was NOT inserted successfully!')
             );
         }
 
@@ -301,7 +301,7 @@ class Api extends REST_Controller
                 'success' => ($contact_telephone_id?true:false),
                 'contact_id' => $contact_telephone['contact_id'],
                 'telephone_id' => ($contact_telephone_id?$contact_telephone_id:''),
-                'message' => ($contact_telephone_id?'INSERTED!':'ERROR: The contact telephone was inserted successfully!')
+                'message' => ($contact_telephone_id?'INSERTED!':'ERROR: The contact telephone was NOT inserted successfully!')
             );
         }
 
@@ -543,6 +543,7 @@ class Api extends REST_Controller
 
                     $message = array(
                         'success' => true,
+                        "urn" => $form['urn'],
                         "email_history_id" => $email_id,
                         'message' => 'Email sent successfully!'
                     );
