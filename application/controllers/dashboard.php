@@ -1132,6 +1132,20 @@ public function index(){
     {
         if ($this->input->is_ajax_request()) {
 
+            $filters = $this->Dashboard_model->get_dash_filters($this->input->post('dashboard_id'));
+            $aux = array();
+            foreach ($filters as $filter) {
+                if (!isset($aux[$filter['filter_name']])) {
+                    $aux[$filter['filter_name']] = array();
+                }
+                $aux[$filter['filter_name']] = array(
+                    "values" => explode(",",$filter['filter_value']),
+                    "editable" => $filter['editable']
+                );
+            }
+            $filters = $aux;
+
+
             $agents = $this->Form_model->get_agents();
             $teamManagers = $this->Form_model->get_teams();
             $sources = $this->Form_model->get_sources();
@@ -1181,6 +1195,7 @@ public function index(){
                 'users' => $users,
                 'campaigns_by_group' => $campaigns_by_group,
                 'campaign_outcomes' => $campaign_outcomes,
+                'filters' => $filters
             ));
         }
     }
@@ -1288,7 +1303,75 @@ public function index(){
 
             if (isset($form['dashboard_id']) && $form['dashboard_id']!= "") {
 
-                $result = $this->Dashboard_model->save_dashboard_filters($form);
+                $dashboard_id = $form['dashboard_id'];
+                unset($form['dashboard_id']);
+
+                $filters = array();
+                if (isset($form['date_from'])) {
+                    array_push($filters, array(
+                        "filter_name" => "date_from",
+                        "filter_value" => $form['date_from'],
+                        "editable" => "1"
+                    ));
+                }
+                if (isset($form['date_to'])) {
+                    array_push($filters, array(
+                        "filter_name" => "date_to",
+                        "filter_value" => $form['date_to'],
+                        "editable" => "1"
+                    ));
+                }
+                if (isset($form['campaigns'])) {
+                    array_push($filters, array(
+                        "filter_name" => "campaigns",
+                        "filter_value" => implode(",",$form['campaigns']),
+                        "editable" => (isset($form['dash_campaigns_check'])?$form['dash_campaigns_check']:"0")
+                    ));
+                }
+                if (isset($form['outcomes'])) {
+                    array_push($filters, array(
+                        "filter_name" => "outcomes",
+                        "filter_value" => implode(",",$form['outcomes']),
+                        "editable" => (isset($form['dash_outcomes_check'])?$form['dash_outcomes_check']:"0")
+                    ));
+                }
+                if (isset($form['teams'])) {
+                    array_push($filters, array(
+                        "filter_name" => "teams",
+                        "filter_value" => implode(",",$form['teams']),
+                        "editable" => (isset($form['dash_teams_check'])?$form['dash_teams_check']:"0")
+                    ));
+                }
+                if (isset($form['agents'])) {
+                    array_push($filters, array(
+                        "filter_name" => "agents",
+                        "filter_value" => implode(",",$form['agents']),
+                        "editable" => (isset($form['dash_agents_check'])?$form['dash_agents_check']:"0")
+                    ));
+                }
+                if (isset($form['sources'])) {
+                    array_push($filters, array(
+                        "filter_name" => "sources",
+                        "filter_value" => implode(",",$form['sources']),
+                        "editable" => (isset($form['dash_sources_check'])?$form['dash_sources_check']:"0")
+                    ));
+                }
+                if (isset($form['pot'])) {
+                    array_push($filters, array(
+                        "filter_name" => "pot",
+                        "filter_value" => implode(",",$form['pot']),
+                        "editable" => (isset($form['dash_pot_check'])?$form['dash_pot_check']:"0")
+                    ));
+                }
+                if (isset($form['user'])) {
+                    array_push($filters, array(
+                        "filter_name" => "user",
+                        "filter_value" => implode(",",$form['user']),
+                        "editable" => (isset($form['dash_user_check'])?$form['dash_user_check']:"0")
+                    ));
+                }
+
+                $result = $this->Dashboard_model->save_dashboard_filters($dashboard_id, $filters);
 
                 if ($result) {
 

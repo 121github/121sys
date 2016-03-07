@@ -1057,7 +1057,6 @@ var dashboard = {
                 modals.load_modal(mheader, mbody, mfooter);
 
                 dashboard.set_dashboard_type(dashboard_type);
-                dashboard.init();
             });
         });
     },
