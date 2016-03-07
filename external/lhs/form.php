@@ -196,7 +196,7 @@
             $('.lhs-form').on('submit', function (e) {
                 e.preventDefault();
 
-                var baseUrl = document.location.origin + '/121sys_dev/';
+                var baseUrl = document.location.origin + '/121sys/';
                 //Create record
                 $.ajax({
                     url: baseUrl + 'api/record',
