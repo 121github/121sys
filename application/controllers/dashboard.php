@@ -1232,6 +1232,8 @@ public function index(){
             $agents = $this->Form_model->get_agents();
             $teamManagers = $this->Form_model->get_teams();
             $sources = $this->Form_model->get_sources();
+            $pots = $this->Form_model->get_pots();
+            $users = $this->Form_model->get_users();
             $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
             $aux = array();
             foreach ($campaigns_by_group as $campaign) {
@@ -1272,6 +1274,8 @@ public function index(){
                     'agents' => $agents,
                     'team_managers' => $teamManagers,
                     'sources' => $sources,
+                    'pots' => $pots,
+                    'users' => $users,
                     'campaigns_by_group' => $campaigns_by_group,
                     'campaign_outcomes' => $campaign_outcomes,
                     'javascript' => array(

@@ -286,6 +286,26 @@ function get_elapsed_time_string(total_seconds) {
     return currentTimeString;
 }
 
+function deserializeForm(dataForm) {
+    var objs = [], temp;
+    var temps = dataForm.split('&');
+
+    for(var i = 0; i < temps.length; i++){
+        temp = temps[i].split('=');
+        //objs.push(temp[0]);
+        var key = decodeURIComponent(temp[0]);
+        var value = (temp.length > 1) ? decodeURIComponent(temp[1]).replaceAll("+"," ") : undefined;
+        objs[key] = value;
+    }
+
+    return objs;
+}
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+}
+
 /* ==========================================================================
  MENU
  ========================================================================== */

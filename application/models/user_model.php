@@ -345,6 +345,16 @@ class User_model extends CI_Model
         return $results;
     }
 
+    public function get_users_by_role($role_id)
+    {
+        $qry = "SELECT user_id, role_id, group_id, team_id, username, name, user_status, user_telephone, phone_un, ext, home_postcode, vehicle_reg, custom, ics
+                FROM users
+                WHERE role_id='" . intval($role_id) . "'";
+        $results = $this->db->query($qry)->result_array();
+
+        return $results;
+    }
+
     public function get_user_by_reset_pass_token($reset_pass_token) {
 		$this->db->where('reset_pass_token',$reset_pass_token);
 		return $this->db->get('users')->result_array();

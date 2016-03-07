@@ -2293,7 +2293,9 @@ var record = {
                 }).done(function (response) {
                     record.additional_info.load_form(response.data, id);
                     if(typeof campaign_functions !== "undefined"){
-                        campaign_functions.edit_custom_fields();
+                        if(typeof campaign_functions.edit_custom_fields !== "undefined"){
+                            campaign_functions.edit_custom_fields();
+                        }
                     }
                 });
             });
@@ -2312,6 +2314,11 @@ var record = {
                     $panel.find('.panel-content').fadeIn()
                 });
                 flashalert.success(response.msg);
+                if(typeof campaign_functions !== "undefined"){
+                    if(typeof campaign_functions.save_custom_fields !== "undefined"){
+                        campaign_functions.save_custom_fields(response.data);
+                    }
+                }
             });
         },
         load_panel: function () {
@@ -2324,7 +2331,7 @@ var record = {
                     urn: record.urn
                 },
 				beforeSend:function(){
- $panel.find('.panel-content').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
+                    $panel.find('.panel-content').html("<img src='" + helper.baseUrl + "assets/img/ajax-loader-bar.gif' />");
 				}
             }).done(function (response) {
                 if (response.data.length > 0) {
@@ -2334,6 +2341,11 @@ var record = {
 					record.additional_info.load_list(response.data);	
 					}
                     record.additional_info.load_form(response.data);
+                    if(typeof campaign_functions !== "undefined"){
+                        if(typeof campaign_functions.load_custom_fields !== "undefined"){
+                            campaign_functions.load_custom_fields();
+                        }
+                    }
                 } else {
                     $panel.find('.panel-content').text("Nothing was found");
                 }

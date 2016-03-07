@@ -511,4 +511,45 @@ $datafield_ids = array();
 
     }
 
+    //Get the contact appointment by appointment_id
+    public function get_contact_appointment($appointment_id) {
+        $this->db->select('contacts.*');
+        $this->db->from('appointments');
+        $this->db->join('contacts', 'contacts.contact_id=appointments.contact_id', 'INNER');
+        $this->db->where('appointment_id', $appointment_id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            return $query->row();
+        } else {
+            return NULL;
+        }
+    }
+
+    public function check_overlap_appointments($urn, $appointment_id, $attendee_id, $start, $end) {
+        $qry = "SELECT *
+                FROM appointments a
+                  LEFT JOIN appointment_attendees at USING (appointment_id)
+                WHERE user_id = " . $attendee_id . "
+                      ".($appointment_id != '' ?(" AND appointment_id <> ".$appointment_id) : "")."
+                      AND urn = " . $urn . "
+                      AND status = 1
+                      AND (
+                            (`start` < '" . to_mysql_datetime($start) . "' AND `end` > '" . to_mysql_datetime($start) . "')
+                            OR
+                            (`start` < '" . to_mysql_datetime($end) . "' AND `end` > '" . to_mysql_datetime($end) . "')
+                            OR
+                            (`start` = '" . to_mysql_datetime($start) . "')
+                            OR
+                            (`end` = '" . to_mysql_datetime($end) . "')
+                        )
+               ";
+
+        $results = $this->db->query($qry)->result_array();
+
+        return (!empty($results));
+    }
+
+
+
 }

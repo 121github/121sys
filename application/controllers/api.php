@@ -443,4 +443,240 @@ class Api extends REST_Controller
 
         $this->response($message, 200); // 200 being the HTTP response code
     }
+
+
+    /*******************************************************************************************************/
+    /*******************************************************************************************************/
+    /***********************  EMAILS  **********************************************************************/
+    /*******************************************************************************************************/
+    /*******************************************************************************************************/
+
+    function email_get()
+    {
+        $this->load->model('Email_model');
+
+        $email = $this->Email_model->get_email_by_id( $this->get('id'));
+
+        if($email)
+        {
+            $this->response($email, 200); // 200 being the HTTP response code
+        }
+
+        else
+        {
+            $this->response(array('error' => 'Couldn\'t find an email with this id!'), 404);
+        }
+    }
+
+    function emails_get()
+    {
+        $this->load->model('Email_model');
+        $emails = $this->Email_model->get_emails_by_urn($this->get('urn'),$this->get('limit'),$this->get('offset'));
+
+        if($emails)
+        {
+            $this->response($emails, 200); // 200 being the HTTP response code
+        }
+
+        else
+        {
+            $this->response(array('error' => 'Couldn\'t find any email!'), 404);
+        }
+    }
+
+    function send_email_post()
+    {
+        $this->load->model('Email_model');
+        $this->load->model('Records_model');
+
+        $message = array(
+            'success' => false,
+            "message" => "ERROR: Email not sent successfuly"
+        );
+
+        $urn = intval($this->input->post('urn'));
+        $template_id = intval($this->input->post('template_id'));
+        $recipients_to = $this->input->post('recipients_to');
+        $recipients_to_name = $this->input->post('recipients_to_name');
+        $recipients_cc = $this->input->post('recipients_cc');
+        $recipients_bcc = $this->input->post('recipients_bcc');
+
+        if ($template_id && $recipients_to && $urn) {
+            //create the form structure to pass to the send function
+            $form = $this->Email_model->template_to_form($template_id);
+            if ($form) {
+                $form['send_to'] .= (strlen($form['send_to'])>0?",":"").$recipients_to;
+                $form['bcc'] .= (strlen($form['bcc'])>0?",":"").$recipients_bcc;
+                $form['cc'] .= (strlen($form['cc'])>0?",":"").$recipients_cc;
+                $form['urn'] = $urn;
+
+                $last_comment = $this->Records_model->get_last_comment($urn);
+                $placeholder_data = $this->Email_model->get_placeholder_data($urn);
+                $placeholder_data[0]['comments'] = $last_comment;
+                $placeholder_data['recipient_name'] = $recipients_to_name;
+                if (count($placeholder_data)) {
+                    foreach ($placeholder_data[0] as $key => $val) {
+                        if ($key == "fullname") {
+                            $val = str_replace("Mr ", "", $val);
+                            $val = str_replace("Mrs ", "", $val);
+                            $val = str_replace("Mrs ", "", $val);
+                        }
+                        $form['body'] = str_replace("[$key]", $val, $form['body']);
+                    }
+                }
+                if ($this->send($form)) {
+                    $email_history = array(
+                        'body' => $form['body'],
+                        'subject' => $form['subject'],
+                        'send_from' => $form['send_from'],
+                        'send_to' => $form['send_to'],
+                        'cc' => $form['cc'],
+                        'bcc' => $form['bcc'],
+                        'user_id' => $_SESSION['user_id'],
+                        'urn' => $form['urn'],
+                        'template_id' => $form['template_id'],
+                        'template_unsubscribe' => $form['template_unsubscribe'],
+                        'status' => 1,
+                        'pending' => 0
+                    );
+                    $email_id = $this->Email_model->add_new_email_history($email_history);
+
+                    $message = array(
+                        'success' => true,
+                        "email_history_id" => $email_id,
+                        'message' => 'Email sent successfully!'
+                    );
+                }
+                else {
+                    $message = array(
+                        'success' => false,
+                        "message" => "ERROR: Email not sent successfuly. Error during the sent process"
+                    );
+                }
+            }
+            else {
+                $message = array(
+                    'success' => false,
+                    "message" => "ERROR: Email not sent successfuly. The template doesn't exist"
+                );
+            }
+
+        }
+        else {
+            $message = array(
+                'success' => false,
+                "message" => "ERROR: Email not sent successfuly. URN, template or recipients not found"
+            );
+        }
+
+        //RESPONSE
+        if ($message['success']) {
+            $this->response($message, 200); // 200 being the HTTP response code
+        }
+        else {
+            $this->response($message, 404); // 404 being the HTTP response code
+        }
+    }
+
+    private function send($form)
+    {
+        $this->load->library('email');
+
+        //Get the server conf if exist
+        if (isset($form['template_id']) && $template = $this->Email_model->get_template($form['template_id'])) {
+            if ($template['template_hostname']) {
+                $config['smtp_host'] = $template['template_hostname'];
+            }
+            if ($template['template_port']) {
+                $config['smtp_port'] = $template['template_port'];
+            }
+            if ($template['template_username']) {
+                $config['smtp_user'] = $template['template_username'];
+            }
+            if ($template['template_password']) {
+                $config['smtp_pass'] = $template['template_password'];
+            }
+            if ($template['template_username']) {
+                $config['smtp_user'] = $template['template_username'];
+            }
+            //$encryption = $template['template_encryption'];
+        }
+
+        //unsubscribe link
+        if (isset($form['template_unsubscribe']) && @$form['template_unsubscribe'] == "1") {
+            $form['body'] .= "<hr><p style='font-family:calibri,arial;font-size:10px;color:#666'>If you no longer wish to recieve emails from us please click here to <a href='".base_url()."email/unsubscribe/" . base64_encode($form['template_id']) . "/" . base64_encode($form['urn']) . "'>unsubscribe</a></p>";
+        };
+        if (isset($form['email_id'])) {
+            $form['body'] .= "<br><img style='display:none;' src='".base_url()."email/image?id=" . $form['email_id'] . "'>";
+        }
+
+        $config = $this->config->item('email');
+        $this->email->initialize($config);
+        $this->email->from($form['send_from']);
+        $this->email->to($form['send_to']);
+        $this->email->cc($form['cc']);
+        $this->email->bcc($form['bcc']);
+        $this->email->subject($form['subject']);
+        $this->email->message($form['body']);
+
+        $tmp_path = '';
+        $user_id = (isset($_SESSION['user_id'])) ? $_SESSION['user_id'] : NULL;
+        if (isset($form['template_attachments']) && count($form['template_attachments']) > 0) {
+            foreach ($form['template_attachments'] as $attachment) {
+                if (strlen($attachment['path']) > 0) {
+                    $tmp_path = substr($attachment['path'], 0, strripos($attachment['path'], "/") + 1) . "tmp_" . $user_id . uniqid() . "/";
+                    $tmp_path = strstr('./' . $tmp_path, 'upload');
+                    $file_path = strstr('./' . $attachment['path'], 'upload');
+                    //Create tmp dir if it does not exist
+                    if (@!file_exists($tmp_path)) {
+                        mkdir($tmp_path, 0777, true);
+                    }
+
+                    if (@!copy($file_path, $tmp_path . $attachment['name'])) {
+                        return false;
+                    } else {
+                        $disposition = (isset($attachment['disposition'])?$attachment['disposition']:"attachment");
+                        $this->email->attach($tmp_path . $attachment['name'], $disposition);
+                    }
+                }
+            }
+        }
+
+        //If the environment is different than production, send the email to the user (if exists)
+        if ((ENVIRONMENT !== "production")) {
+            if (isset($_SESSION['email']) && $_SESSION['email'] != '') {
+                $form['send_to'] = $_SESSION['email'];
+                $form['cc'] = "";
+                $form['bcc'] = "";
+                $this->email->to($_SESSION['email']);
+                $this->email->cc("");
+                $this->email->bcc("");
+            } else {
+                $form['send_to'] = "";
+                $form['cc'] = "";
+                $form['bcc'] = "";
+                $this->email->to("");
+                $this->email->cc("");
+                $this->email->bcc("");
+                $this->email->clear(TRUE);
+                return true;
+            }
+        }
+        $result = $this->email->send();
+        //print_r($this->email->print_debugger());
+        //$this->firephp->log($this->email->print_debugger([$include = array('headers', 'subject', 'body')]));
+
+        //Write on log
+        log_message('info', '[EMAIL] Email sent from '.$form['send_from'].' to '.$form['send_to'].'. Title: '.$form['subject']);
+
+        $this->email->clear(TRUE);
+
+        //Remove tmp dir
+        if (file_exists($tmp_path)) {
+            $this->removeDirectory($tmp_path);
+        }
+
+        return $result;
+    }
+
 }

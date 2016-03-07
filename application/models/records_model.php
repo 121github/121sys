@@ -346,6 +346,19 @@ class Records_model extends CI_Model
         return $this->db->query($qry)->result_array();
     }
 
+    public function get_record_details_by_id($id)
+    {
+        $qry = "SELECT *
+				from record_details
+				WHERE detail_id = " . $id;
+
+        $result = $this->db->query($qry)->result_array();
+
+        return  (!empty($result)?$result[0]:array());
+
+
+    }
+
     public function get_record_details_by_urn_list($urn_list)
     {
         $qry = "SELECT *

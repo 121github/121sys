@@ -267,4 +267,26 @@ class Appointments extends CI_Controller
 		}
 	}
 
+	public function get_contact_appointment() {
+		if ($this->input->is_ajax_request()) {
+			$appointment_id = $this->input->post('appointment_id');
+			$result = $this->Appointments_model->get_contact_appointment($appointment_id);
+			echo json_encode($result);
+		}
+	}
+
+    public function check_overlap_appointments() {
+        if ($this->input->is_ajax_request()) {
+            $urn = $this->input->post('urn');
+            $appointment_id = $this->input->post('appointment_id');
+            $attendee = $this->input->post('attendees');
+            $start = $this->input->post('start');
+            $end = $this->input->post('end');
+
+            $result = $this->Appointments_model->check_overlap_appointments($urn, $appointment_id, $attendee[0], $start, $end);
+
+            echo json_encode($result);
+        }
+    }
+
 }

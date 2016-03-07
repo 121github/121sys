@@ -4,6 +4,10 @@ var campaign_functions = {
     init: function () {
 
     },
+    record_setup_update: function() {
+        $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
+        $('.progress-outcome').selectpicker('refresh');
+    },
     appointment_setup: function (start) {
         $modal.find('.startpicker').data("DateTimePicker").destroy();
         $modal.find('.endpicker').data("DateTimePicker").destroy();
@@ -133,7 +137,7 @@ var campaign_functions = {
                     ((''+month).length<2 ? '0' : '') + month + '/' +
                     start_date.getFullYear();
 
-                record_details.c1 = "#"+appointment.appointment_id;
+                record_details.c1 = appointment.appointment_id;
             }
             else {
                 //Set the date to null if the appointment is not confirmed
@@ -155,7 +159,16 @@ var campaign_functions = {
             }).done(function (response) {
                 flashalert.success("Survey Delivery Date Updated");
                 record.additional_info.load_panel();
+
+                campaign_functions.save_custom_fields(record_details);
             });
+        });
+    },
+    load_custom_fields: function() {
+        $.each($('#custom-panel').find('.c1'), function () {
+            if ($(this).html() != '' && $(this).html() != '-') {
+                $(this).prepend('#');
+            }
         });
     },
     edit_custom_fields: function() {
@@ -165,8 +178,100 @@ var campaign_functions = {
             record_details_panel.find('input[name="c1"]').val() !== null &&
             record_details_panel.find('input[name="c1"]').val().length>0)
         {
+            record_details_panel.find('input[name="c1"]').val("#"+record_details_panel.find('input[name="c1"]').val());
             $('#custom-panel').find('select[name="c2"]').attr('disabled',false).selectpicker('refresh');
         }
+    },
+    save_custom_fields: function(data) {
+
+
+
+        //Get the Client email address on the record (contact on the appointment)
+        var client_email = "";
+        //If it has an appointment associated get the contact appointment email
+        if (data.c1 && data.c1 != '') {
+            $.ajax({
+                url: helper.baseUrl + 'appointments/get_contact_appointment',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    appointment_id: data.c1
+                }
+            }).done(function (response) {
+                client_email = response.email;
+            });
+        }
+        //If it doesn't have an appointment associated, get the contact email(s)
+        else {
+            $.ajax({
+                url: helper.baseUrl + 'ajax/get_contacts',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: data.urn
+                }
+            }).done(function (response) {
+                var client_email_ar = [];
+                $.each(response.data, function (key, val) {
+                    client_email_ar.push(val.visible['Email address']);
+                });
+                client_email.split(",");
+            });
+        }
+
+        //Get the Account role group emails
+        var account_role_email = "";
+        var account_role_email_ar = [];
+        $.ajax({
+            url: helper.baseUrl + 'ajax/get_users_by_role',
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                role_id: 15
+            }
+        }).done(function (response) {
+            $.each(response.data, function (key, val) {
+                account_role_email_ar.push(val.user_email);
+            });
+        });
+
+        //TODO Fix this to avoid the timeset and call the functions asynchrony
+        //Send email templates if it is needed
+        setTimeout(function () {
+            account_role_email = account_role_email_ar.join(",");
+
+            //Job Status is Paid
+            if (data.c2 === "Paid") {
+                //Send email Referral Scheme Email to Account Role group email
+                lhs.send_template_email(data.urn, 2, "Role Group Account", account_role_email, "","","It was sent a Referral Scheme Email to the Account Role group");
+
+                //Send email Receipt of Payment Email to Client email address on the record
+                lhs.send_template_email(data.urn, 6, "Client", client_email, "","","It was sent a Receipt of Payment Email to the client");
+
+                //Hard Copy Required is Yes
+                if (data.c5 === "Yes") {
+                    //Send email Hard Copy Email to the Account Role group email
+                    lhs.send_template_email(data.urn, 5, "Role Group Account", client_email, "","","It was sent a Hard Copy Email to the Account Role group");
+
+                }
+
+            }
+            //Job Status is Paid & Issued
+            else if (data.c2 === "Paid & Issued") {
+                //Send email Feedback Email to Client email address on the record
+                lhs.send_template_email(data.urn, 8, "Client", client_email, "","","It was sent a Feedback Email to the client");
+
+            }
+            //Job Status is Confirmed Appointment
+            else if (data.c2 === "Confirmed Appointment") {
+                //Send email Appointment Confirmation Email to Client email
+                lhs.send_template_email(data.urn, 3, "Client", client_email, "","","It was sent an Appointment Confirmation Email to the client");
+
+            }
+
+            record.email_panel.load_panel();
+
+        }, 2000);
     },
 
     set_access_address: function() {
@@ -182,4 +287,35 @@ var campaign_functions = {
         }
     }
 
+}
+
+var lhs = {
+    send_template_email: function(urn, template_id, recipients_to_name, recipients_to, recipients_cc, recipients_bcc, msg) {
+        if (recipients_to != "") {
+            $.ajax({
+                url: helper.baseUrl + 'email/send_template_email',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: urn,
+                    template_id: template_id,
+                    recipients_to_name: recipients_to_name,
+                    recipients_to: recipients_to,
+                    recipients_cc: recipients_cc,
+                    recipients_bcc: recipients_bcc,
+                    msg: msg
+                }
+            }).done(function(response) {
+                if (response.success) {
+                    flashalert.success(response.msg);
+                }
+                else {
+                    flashalert.danger(response.msg);
+                }
+            });
+        }
+        else {
+            flashalert.danger("ERROR: No email address on: "+msg);
+        }
+    }
 }
