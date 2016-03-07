@@ -1116,14 +1116,73 @@ public function index(){
                 'page' => 'dash_settings',
             'javascript' => array(
                 'dashboard.js?v' . $this->project_version,
+                'lib/daterangepicker.js',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.js'
             ),
             'css' => array(
                 'dashboard.css',
+                'daterangepicker-bs3.css',
                 'plugins/bootstrap-toggle/bootstrap-toggle.min.css'
             )
         );
         $this->template->load('default', 'dashboard/settings.php', $data);
+    }
+
+    public function get_dash_filters()
+    {
+        if ($this->input->is_ajax_request()) {
+
+            $agents = $this->Form_model->get_agents();
+            $teamManagers = $this->Form_model->get_teams();
+            $sources = $this->Form_model->get_sources();
+            $pots = $this->Form_model->get_pots();
+
+            $users = $this->Form_model->get_users();
+            $aux = array();
+            foreach ($users as $user) {
+                if (!isset($aux[$user['role_name']])) {
+                    $aux[$user['role_name']] = array();
+                }
+                array_push($aux[$user['role_name']], $user);
+            }
+            $users = $aux;
+
+            $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
+            $aux = array();
+            foreach ($campaigns_by_group as $campaign) {
+                if (!isset($aux[$campaign['group_name']])) {
+                    $aux[$campaign['group_name']] = array();
+                }
+                array_push($aux[$campaign['group_name']], $campaign);
+            }
+            $campaigns_by_group = $aux;
+
+            $current_campaign = (isset($_SESSION['current_campaign']) ? array($_SESSION['current_campaign']) : array());
+            $campaign_outcomes = $this->Form_model->get_outcomes_by_campaign_list($current_campaign);
+
+            $aux = array(
+                "positive" => array(),
+                "No_positive" => array(),
+            );
+            foreach ($campaign_outcomes as $outcome) {
+                if ($outcome['positive']) {
+                    array_push($aux['positive'], $outcome);
+                } else {
+                    array_push($aux['No_positive'], $outcome);
+                }
+            }
+            $campaign_outcomes = $aux;
+
+            $this->load->view('forms/dashboard_filter_form.php', array(
+                'agents' => $agents,
+                'team_managers' => $teamManagers,
+                'sources' => $sources,
+                'pots' => $pots,
+                'users' => $users,
+                'campaigns_by_group' => $campaigns_by_group,
+                'campaign_outcomes' => $campaign_outcomes,
+            ));
+        }
     }
 
 
@@ -1180,7 +1239,6 @@ public function index(){
                 if (isset($form['viewers'])) {
                     unset($form['viewers']);
                 }
-                $this->firephp->log($form);
                 $dashboard_id = $this->Dashboard_model->save_dashboard($form);
 
                 if ($dashboard_id) {
@@ -1220,6 +1278,52 @@ public function index(){
         }
     }
 
+    /**
+     * Save a dashboard filters
+     */
+    public function save_dashboard_filters() {
+
+        if ($this->input->is_ajax_request()) {
+            $form = $this->input->post();
+
+            if (isset($form['dashboard_id']) && $form['dashboard_id']!= "") {
+
+                $result = $this->Dashboard_model->save_dashboard_filters($form);
+
+                if ($result) {
+
+                    echo json_encode(array(
+                            "success" => (!$result?false:true),
+                            "dashboard_id" => $result,
+                            "msg" => "Dashboard filters saved successfully!"
+                        )
+                    );
+                }
+                else {
+                    echo json_encode(array(
+                            "success" => false,
+                            "msg" => "ERROR: Dashboard filters was not saved successfully!"
+                        )
+                    );
+                }
+            }
+            else {
+                echo json_encode(array(
+                        "success" => false,
+                        "msg" => "ERROR: Please set the dashboard before!"
+                    )
+                );
+            }
+        }
+        else {
+            echo json_encode(array(
+                    "success" => false,
+                    "msg" => "ERROR: It's not an ajax request!"
+                )
+            );
+        }
+    }
+
 
     /**
      * View custom dashboard
@@ -1233,7 +1337,17 @@ public function index(){
             $teamManagers = $this->Form_model->get_teams();
             $sources = $this->Form_model->get_sources();
             $pots = $this->Form_model->get_pots();
+
             $users = $this->Form_model->get_users();
+            $aux = array();
+            foreach ($users as $user) {
+                if (!isset($aux[$user['role_name']])) {
+                    $aux[$user['role_name']] = array();
+                }
+                array_push($aux[$user['role_name']], $user);
+            }
+            $users = $aux;
+
             $campaigns_by_group = $this->Form_model->get_user_campaigns_ordered_by_group();
             $aux = array();
             foreach ($campaigns_by_group as $campaign) {
