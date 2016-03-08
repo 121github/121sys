@@ -16,7 +16,7 @@
     <?php } else { ?>
  
     <div id="appointment-panel" class="panel panel-primary">
-      <div class="panel-heading clearfix">Appointments  <?php if(in_array("add appointments",$_SESSION['permissions'])){ ?><span class="glyphicon glyphicon-plus pointer pull-right marl" data-modal="create-appointment" data-urn="<?php echo $record['urn'] ?>"></span><?php } ?> <span class="glyphicon glyphicon-calendar pull-right pointer view-calendar pointer"></span></div>
+      <div class="panel-heading clearfix">Appointments  <?php if(in_array("add appointments",$_SESSION['permissions'])){ ?><button class="btn btn-default btn-xs pointer pull-right marl" data-modal="create-appointment" data-urn="<?php echo $record['urn'] ?>"><span class="glyphicon glyphicon-plus"></span> New</button><?php } ?> <button class="btn btn-default btn-xs pull-right pointer view-calendar"><span class="glyphicon glyphicon-calendar"></span> Calendar</button></div>
       <div class="panel-body appointment-panel"> 
         <div class="panel-content"> 
           <img src="<?php echo base_url(); ?>assets/img/ajax-loader-bar.gif" />

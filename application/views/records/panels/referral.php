@@ -14,9 +14,10 @@
     <?php } else { ?>
 <div class="panel panel-primary" id="referral-panel">
     <div class="panel-heading clearfix">
-        <h4 class="panel-title"> Referral Details<?php if (in_array("add referral", $_SESSION['permissions'])) { ?><span
-                class="glyphicon glyphicon-plus pointer pull-right" data-modal="add-referral"
-                data-urn="<?php echo $details['record']["urn"] ?>"></span><?php } ?></h4>
+        <h4 class="panel-title"> Referral Details<?php if (in_array("add referral", $_SESSION['permissions'])) { ?><button
+                class="btn btn-default btn-xs pointer pull-right" data-modal="add-referral"
+                data-urn="<?php echo $details['record']["urn"] ?>"><span
+                class="glyphicon glyphicon-plus"></span> New</button><?php } ?></h4>
     </div>
 
     <ul class="list-group referral-list">

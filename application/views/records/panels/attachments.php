@@ -29,9 +29,9 @@
  <div id="attachment-panel" class="panel panel-primary">
       <div class="panel-heading clearfix">
         <h4 class="panel-title"> Attachments<?php if(in_array("add attachment",$_SESSION['permissions'])){ ?>
-                <span class="glyphicon glyphicon-plus fileinput-button pull-right">
+              <span class="fileinput-button pull-right btn btn-xs btn-default">
                     <!-- The file input field used as target for the file upload widget -->
-                    <input id="fileupload" type="file" name="files"  data-url="<?php echo base_url()."records/upload_attach"; ?>">
+                    <input id="fileupload" type="file" name="files"  data-url="<?php echo base_url()."records/upload_attach"; ?>"> <span class="glyphicon glyphicon-file"></span> New
                 </span>
                 <!-- The global progress bar -->
                 <div id="progress-files" class="progress pull-right" style="display: none; width: 200px; margin-right: 10px;">
