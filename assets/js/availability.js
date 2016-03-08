@@ -9,8 +9,8 @@ var quick_planner = {
 		this.region_name = false;
 		this.slot_id = false;
 		this.position = 1;
-		this.contact_postcode = $('input[name="contact_postcode"]').length?$('input[name="contact_postcode"]').val():false;
-		this.company_postcode = $('input[name="company_postcode"]').length?$('input[name="company_postcode"]').val():false;
+		this.contact_postcode = $('input[name="contact_postcode"]').length>0?$('input[name="contact_postcode"]').val():false;
+		this.company_postcode = $('input[name="company_postcode"]').length>0?$('input[name="company_postcode"]').val():false;
 		
 //add listners
         $('#quick-planner').on('mouseover', 'tbody tr', function (e) {

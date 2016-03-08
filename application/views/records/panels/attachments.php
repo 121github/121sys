@@ -54,6 +54,11 @@
  <script>
 
      $(function () {
+		 $('#attachments-panel').on('click','.fileinput-button',function(){
+			$(this).find('#fileupload').ttriger('click'); 
+		 });
+		 
+		 
          'use strict';
 
          var file;

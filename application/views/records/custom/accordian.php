@@ -202,6 +202,10 @@
         <?php } ?>
 		<?php if(in_array(20,$features)){ ?>
 		quick_planner.init();
+		<?php } else { ?>
+		if($('#branch-info').length>0){
+		quick_planner.init();	 
+		 }
 		<?php } ?>
 		<?php if(in_array(21,$features)){ ?>
         record.tasks.init();

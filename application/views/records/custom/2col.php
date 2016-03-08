@@ -134,9 +134,6 @@
 <?php } ?>
 <!-- end attachment popup -->
 
-
-
-
 <script type="text/javascript">
     $(document).ready(function () {
         var urn = '<?php echo $details['record']['urn'] ?>';
@@ -202,6 +199,10 @@
         <?php } ?>
 		<?php if(in_array(20,$features)){ ?>
 		quick_planner.init();
+		<?php } else { ?>
+		if($('#branch-info').length>0){
+		quick_planner.init();	 
+		 }
 		<?php } ?>
 		<?php if(in_array(21,$features)){ ?>
         record.tasks.init();
@@ -212,6 +213,7 @@
 		 <?php if(isset($custom_panels)){ ?>
 		 custom_panels.init();
 		 <?php } ?>
+
     });
 </script>
 <?php endif; ?>
