@@ -139,7 +139,7 @@ $this->db->query("insert ignore into datatables_views set view_name = 'Default v
 	if($view_id){
 	$this->db->where(array("datatables_view_fields.view_id"=>$view_id,"user_id"=>$_SESSION['user_id']));
 	} else {
-	$this->db->where(array("datatables_views.table_id"=>$table_id,"user_id"=>$_SESSION['user_id']));	
+	$this->db->where(array("datatables_views.table_id"=>$table_id,"user_id"=>$_SESSION['user_id'],"selected"=>1));	
 	}
 	$this->db->join("datatables_views","datatables_views.view_id=datatables_view_fields.view_id");
 	$this->db->order_by("sort");
