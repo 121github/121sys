@@ -103,8 +103,6 @@ class Export_model extends CI_Model
         }
         $result = $this->db->query($qry)->result_array();
 
-        $this->firephp->log($qry);
-
         return $result;
     }
 
@@ -534,8 +532,6 @@ class Export_model extends CI_Model
             array_push($aux,$data);
         }
         $result['data'] = $aux;
-
-        $this->firephp->log($result['data']);
 
         return $result['data'];
     }
