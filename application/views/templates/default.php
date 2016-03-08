@@ -442,12 +442,27 @@ endif; ?>
                 var mheader = "Appearance";
                 var report_btn= '' ;
                 if (helper.permissions['export data'] > 0) {
-                    report_btn = '<span type="button" class="btn btn-default report-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
+                    report_btn = '<span type="button" class="btn btn-default report-settings-btn">' +
                                     '<p>Report Settings</p>' +
                                     '<span class="fa fa-area-chart fa-3x"></span>' +
                                  '</span>';
                 }
-                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li></ul>';
+				<?php if(isset($_SESSION['current_campaign'])){ ?>
+				var layout_panel =   '<input type="hidden" name="current_camp" value="<?php echo $_SESSION['current_campaign'] ?>"><span type="button" class="btn btn-default layout-settings-btn" data-layout="2col.php">' +
+                                            '<p>Grid View</p>' +
+                                            '<span class="fa fa-th-large fa-3x"></span>' +
+                                        '</span>' +
+										 '<span type="button" class="btn btn-default layout-settings-btn" data-layout="accordian.php">' +
+                                            '<p>List View</p>' +
+                                            '<span class="fa fa-bars fa-3x"></span>' +
+                                        '</span>' +
+											 '<span type="button" class="btn btn-default layout-settings-btn" data-layout="default">' +                                            '<p>Default View</p>' +
+                                            '<span class="fa fa-th fa-3x"></span>' +
+                                        '</span>';
+										<?php } else { ?>
+					var layout_panel = "<p>You must select a campaign to set the layout</p>";
+										<?php } ?>
+                var navtabs = '<ul id="tabs" class="nav nav-tabs" role="tablist"><li class="active"><a role="tab" data-toggle="tab" href="#theme-tab">Theme</a></li><li><a role="tab" data-toggle="tab" href="#layout-tab"> Layout</a></li><li><a role="tab" data-toggle="tab" href="#dashboards-tab"> Dashboard</a></li></ul>';
                 var tabpanels = '<div class="tab-content">' +
                                     '<div role="tabpanel" class="tab-pane active" id="theme-tab">' +
                                         '<p>Fancy something different? Pick a new colour!</p>' +
@@ -462,8 +477,12 @@ endif; ?>
                                             '<option value="eldon">Purple</option>' +
                                         '</select>' +
                                     '</div>' +
+									         '<div role="tabpanel" class="tab-pane" id="layout-tab">' +
+                                      layout_panel +
+                                        
+                                    '</div>' +
                                     '<div role="tabpanel" class="tab-pane" id="dashboards-tab">' +
-                                        '<span type="button" class="btn btn-default dashboard-settings-btn" style="width:30%; height: 100px; margin-right: 5px;">' +
+                                        '<span type="button" class="btn btn-default dashboard-settings-btn">' +
                                             '<p>Dashboard Settings</p>' +
                                             '<span class="fa fa-dashboard fa-3x"></span>' +
                                         '</span>' +
@@ -485,16 +504,27 @@ endif; ?>
                 });
             });
 
-            $('#modal').on("click",".dashboard-settings-btn",function()
+            $modal.on("click",".dashboard-settings-btn",function()
             {
                 window.location = helper.baseUrl + 'dashboard/settings';
             });
 
-            $('#modal').on("click",".report-settings-btn",function()
+            $modal.on("click",".report-settings-btn",function()
             {
                 window.location = helper.baseUrl + 'exports';
             });
-
+			
+			  $modal.on("click",".layout-settings-btn",function()
+            {	var campaign = $modal.find('input[name="current_camp"]').val();
+				var layout = $(this).attr('data-layout');
+                $.ajax({ url: helper.baseUrl+'user/layout',
+				type:"POST",
+				dataType:"JSON",
+				data:{layout:layout,campaign:campaign }
+            }).done(function(response){
+				location.reload();
+			});
+  });
         });
     </script>
 <?php } ?>

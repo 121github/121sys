@@ -1,4 +1,7 @@
 /* .panel-heading a { display:inline-block; width:90% } */
+.layout-settings-btn, .dashboard-settings-btn, .report-settings-btn {
+width:30%; height: 100px; margin-right: 5px	
+}
 
 .panel a.disabled {
 	color:#666;

@@ -1203,12 +1203,8 @@ return $comments;
     public function get_campaign($urn = "")
     {
         if (intval($urn)) {
-            $this->db->select("records.campaign_id,campaign_name,campaign_type_id,record_layout,logo,campaign_name,client_name");
-            $this->db->from('records');
-            $this->db->join('campaigns', 'records.campaign_id = campaigns.campaign_id', 'left');
-			$this->db->join('clients', 'campaigns.client_id = clients.client_id', 'left');
-            $this->db->where("urn", $urn);
-            $rows = $this->db->get()->result_array();
+			$query = "select records.campaign_id,campaign_name,campaign_type_id,if(user_layouts.layout is not null,user_layouts.layout,record_layout) record_layout,logo,campaign_name,client_name from records left join campaigns using(campaign_id) left join clients using(client_id) left join user_layouts using(campaign_id) where urn = '$urn'";
+            $rows = $this->db->query($query)->result_array();
             return $rows[0];
         }
     }

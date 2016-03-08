@@ -16,6 +16,20 @@ class User extends CI_Controller
         $this->load->model('Filter_model');
     }
 
+	public function layout(){
+		//update user layout
+		$campaign = $this->input->post("campaign");
+		$layout = $this->input->post("layout");
+		//delete the old layout if it exists	
+		$this->db->where(array("user_id"=>$_SESSION['user_id'],"campaign_id"=>$campaign));
+		$this->db->delete("user_layouts");
+		if($layout!=="default"){
+		$this->db->insert("user_layouts",array("user_id"=>$_SESSION['user_id'],"campaign_id"=>$campaign,"layout"=>$layout));	
+		}
+		echo json_encode(array("success"=>true));
+		
+	}
+
     public function login()
     {
 
