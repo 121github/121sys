@@ -102,6 +102,29 @@
 
 <!-- /.row -->
 <div class="row">
+    <div class="col-lg-12">
+   <div class="panel panel-primary">
+            <div class="panel-heading clearfix" >
+               Quick Actions
+            </div>
+ <div class="panel-body">
+
+                <p>Hello <?php echo $_SESSION['name'] ?>, what do you want to do?</p>
+            <a type="button" class="btn btn-default" href="data/add_record<?php echo isset($_SESSION['current_campaign'])?"/".$_SESSION['current_campaign']:"" ?>" style="margin:0 3px 10px"><p>Create Record</p><span class="fa fa-plus fa-3x"></span></a>
+            
+                 <a type="button" class="btn btn-default" href="records/view" style="margin:0 3px 10px"><p>View Records</p><span class="fa fa-table fa-3x"></span></a>
+                 
+                      <a type="button" class="btn btn-default" href="appointments" style="margin:0 3px 10px"><p>View Appointments</p><span class="fa fa-clock-o fa-3x"></span></a>
+                      
+                        <a type="button" class="btn btn-default" href="calendar" style="margin:0 3px 10px"><p>View Calendar</p><span class="fa fa-calendar fa-3x"></span></a>
+                          <a type="button" class="btn btn-default" href="search" style="margin:0 3px 10px"><p>Search Records</p><span class="fa fa-search fa-3x"></span></a>
+            
+            </div>
+</div>
+</div>
+</div>
+
+<div class="row">
     <div class="col-lg-8">
 
         <!-- /.panel -->
