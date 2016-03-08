@@ -102,7 +102,7 @@ class Appointments extends CI_Controller
 		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
 		$visible_columns = $this->Datatables_model->get_visible_columns(3);
 		}
-		
+		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,3);
 		
         $data = array(
             'campaign_access' => $this->_campaigns,
@@ -142,7 +142,7 @@ class Appointments extends CI_Controller
 		$this->Datatables_model->set_default_columns($_SESSION['user_id']);	
 		$visible_columns = $this->Datatables_model->get_visible_columns(3);
 		}
-		
+		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,3);
 		
         $data = array(
             'campaign_access' => $this->_campaigns,

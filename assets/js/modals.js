@@ -620,7 +620,7 @@ var modals = {
                 //Notice for set the outcome before leave the page (only if we create the appointment from the record panel)
                 if(typeof record !== "undefined"){
                     $(window).on('beforeunload', function () {
-                        return 'You need to set the outcome after create/reschedule an appointment. Are you sure you want to leave?';
+                        return 'You need to set the outcome after setting an appointment. Are you sure you want to leave?';
                     });
                 }
 
@@ -633,8 +633,8 @@ var modals = {
     },
     confirm_overlap_appointment: function (urn, appointment_id, data) {
         var mheader = "Overlap appointments";
-        var mbody = "There is one or more appointments for this record on the same date and for the same attendee. Are you sure you want to continue saving this appointment?";
-        var mfooter = '<button class="btn btn-default pull-left cancel-overlap-appointment" data-urn="'+urn+'" data-id="'+appointment_id+'" type="button">Cancel</button> <button class="btn btn-danger confirm-overlap-appointment" type="button">Overlap</button>';
+        var mbody = "There are one or more appointments on the same date and for this attendee. Do you still want to book this appointment?";
+        var mfooter = '<button class="btn btn-default pull-left cancel-overlap-appointment" data-urn="'+urn+'" data-id="'+appointment_id+'" type="button">No, cancel it</button> <button class="btn btn-danger confirm-overlap-appointment" type="button">Yes, book it</button>';
 
         modals.load_modal(mheader, mbody, mfooter);
         $('.confirm-overlap-appointment').click(function () {

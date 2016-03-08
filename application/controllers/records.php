@@ -64,8 +64,6 @@ class Records extends CI_Controller
 		$visible_columns = $this->Datatables_model->get_visible_columns(1);
 		}
 		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
-		$this->firephp->log("selected columns");
-		$this->firephp->log($_SESSION['col_order']);
         $data = array(
             'campaign_access' => $this->_campaigns,
             'page' => 'list_records',
@@ -101,8 +99,8 @@ class Records extends CI_Controller
 		 $this->load->model('Admin_model');
 		$this->Datatables_model->set_default_columns($_SESSION['user_id']);
 		$visible_columns = $this->Datatables_model->get_visible_columns(1);
-
 		}
+		$_SESSION['col_order'] = $this->Datatables_model->selected_columns(false,1);
         $data = array(
             'campaign_access' => $this->_campaigns,
             'page' => 'list_records',
