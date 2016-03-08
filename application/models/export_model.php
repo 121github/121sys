@@ -85,6 +85,14 @@ class Export_model extends CI_Model
             $qry .= " and " . $export_form['agent_filter'] . " IN (".implode(",",$options['agent']).") ";
         }
         if ($export_form['user_filter'] && isset($options['user']) && !empty($options['user'])) {
+            if (in_array("user_id", $options['user']) && isset($_SESSION['user_id'])) {
+                $options['user'] = array_replace($options['user'],
+                    array_fill_keys(
+                        array_keys($options['user'], "user_id"),
+                        $_SESSION['user_id']
+                    )
+                );
+            }
             $qry .= " and " . $export_form['user_filter'] . " IN (".implode(",",$options['user']).") ";
         }
         if ($export_form['group_by']) {
