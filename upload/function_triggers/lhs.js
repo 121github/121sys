@@ -162,6 +162,17 @@ var campaign_functions = {
 
                 campaign_functions.save_custom_fields(record_details);
             });
+
+            //Add the attendee to the ownership record list
+            $.ajax({
+                url: helper.baseUrl + 'ajax/add_ownership',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    urn: appointment.urn,
+                    user_id: appointment.attendees[0]
+                }
+            });
         });
     },
     load_custom_fields: function() {

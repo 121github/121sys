@@ -18,7 +18,7 @@
         <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">
                 <p>Please choose the appointment type</p>
-                <select name="appointment_type_id" class="selectpicker typepicker" title="Choose a type"
+                <select name="appointment_type_id" id="typepicker" class="selectpicker typepicker" title="Choose a type"
                         data-width="95%" required>
                     <?php foreach ($types as $type): ?>
                         <option data-icon="<?php echo $type['icon'] ?>"
