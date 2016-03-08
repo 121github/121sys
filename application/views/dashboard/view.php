@@ -37,13 +37,13 @@
     <div style="padding:30px 20px 3px">
         <form class="filter-form" method="post">
             <input type="hidden" name="export_forms_id">
-            <input type="hidden" name="date_from" value="<?php echo date('Y-m-d') ?>">
+            <input type="hidden" name="date_from" value="<?php echo "2014-02-07" ?>">
             <input type="hidden" name="date_to" value="<?php echo date('Y-m-d') ?>">
 
             <div style="margin-bottom: 5%;">
                 <button type="button" class="daterange btn btn-default" data-width="100%">
                     <span class="glyphicon glyphicon-calendar"></span>
-                    <span class="date-text"> <?php echo "Today"; ?> </span>
+                    <span class="date-text"> <?php echo "Any Time"; ?> </span>
                 </button>
             </div>
 
@@ -115,8 +115,12 @@
             <label style="margin-top: 5%;">User</label>
             <select name="user[]" class="selectpicker user-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                <?php foreach ($users as $row) { ?>
-                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                <?php foreach ($users as $type => $data) { ?>
+                    <optgroup label="<?php echo $type ?>">
+                        <?php foreach ($data as $row) { ?>
+                            <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                        <?php } ?>
+                    </optgroup>
                 <?php } ?>
             </select>
 

@@ -28,7 +28,7 @@ class Migration_update_94 extends CI_Migration
                 )
 			");
 
-            $this->db->query("CREATE UNIQUE INDEX dashboard_reports_order_uindex ON dashboard_reports (`position`)");
+            //$this->db->query("CREATE UNIQUE INDEX dashboard_reports_order_uindex ON dashboard_reports (`position`)");
         }
 		
         $this->db->query("CREATE TABLE IF NOT EXISTS `apis` (

@@ -6,6 +6,7 @@ var dashboard = {
         $('.daterange').daterangepicker({
                 opens: "left",
                 ranges: {
+                    'Any Time': ["02/07/2014", moment()],
                     'Today': [moment(), moment()],
                     'Yesterday': [moment().subtract( 1,'days'), moment().subtract(1,'days')],
                     'Last 7 Days': [moment().subtract( 6,'days'), moment()],
@@ -16,7 +17,7 @@ var dashboard = {
                 format: 'DD/MM/YYYY',
                 minDate: "02/07/2014",
                 maxDate: moment(),
-                startDate: moment(),
+                startDate: "02/07/2014",
                 endDate: moment()
             },
             function (start, end, element) {
@@ -965,6 +966,9 @@ var dashboard = {
     new_dashboard: function (btn) {
         var dashboard_id, dashboard_name, dashboard_description, dashboard_type, dashboard_viewers, dashboard_campaigns;
         dashboard_id = dashboard_name = dashboard_description = dashboard_viewers = dashboard_campaigns = '';
+
+        var filter_form = '';
+
         if (typeof btn !== 'undefined') {
             dashboard_id = (typeof btn.attr('item-id') === 'undefined') ? '' : btn.attr('item-id');
             dashboard_name = (typeof btn.attr('item-name') === 'undefined') ? '' : btn.attr('item-name');
@@ -982,60 +986,78 @@ var dashboard = {
         }).done(function (response) {
             var options = "";
             if (response.success) {
+                //Viewers
                 $.each(response.viewers, function (role, users) {
-                    options += "<optgroup label='"+role+"'>";
+                    options += "<optgroup label='" + role + "'>";
                     $.each(users, function (i, val) {
                         var selected = "";
                         if (jQuery.inArray(val.id[0], dashboard_viewers) >= 0) {
                             selected = "selected";
                         }
-                        options += "<option value='"+val.id+"' "+selected+">"+val.name+"</option>";
+                        options += "<option value='" + val.id + "' " + selected + ">" + val.name + "</option>";
                     });
                     options += "</optgroup>";
                 });
             }
+            $.ajax({
+                url: helper.baseUrl + 'dashboard/get_dash_filters',
+                type: "POST",
+                dataType: "HTML",
+                data: {dashboard_id: dashboard_id}
+            }).done(function (response) {
+                filter_form = response;
 
-            var select = "";
-            if (helper.permissions['dashboard viewers'] > 0) {
-                select +=
-                    "<p>Viewers </p>" +
-                    "<select name='viewers[]' class='selectpicker' multiple id='viewer_select' data-width='100%' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
-                    options +
-                    "</select>";
-            }
+                var select = "";
+                if (helper.permissions['dashboard viewers'] > 0) {
+                    select +=
+                        "<p>Viewers </p>" +
+                        "<select name='viewers[]' class='selectpicker' multiple id='viewer_select' data-width='100%' data-size='5' data-live-search='true' data-live-search-placeholder='Search' data-actions-box='true'>" +
+                        options +
+                        "</select>";
+                }
 
-            var mheader = "Dashboard";
-            var mbody = "<form id='new-dashboard-form' >" +
-                            "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
-                            "<div class='form-group input-group-sm'>" +
-                                "<div class='row'>" +
-                                    "<div class='col-xs-6'>" +
-                                        "<p>Dashboard Name </p>" +
-                                        "<input type='text' name='name' value='"+dashboard_name+"' class=''form-control' style='min-width: 100%' required/>" +
-                                    "</div>" +
-                                    "<div class='col-xs-6'>" +
-                                        select +
-                                    "</div>" +
-                                "</div>" +
-                            "</div>" +
-                            "<div class='form-group input-group-sm'>" +
-                                "<p>Description </p>" +
-                                "<textarea name='description' class='form-control' style='min-width: 100%; min-height: 200px;'>"+dashboard_description+"</textarea>" +
-                            "</div>" +
-                            "<div class='form-group input-group-sm'>" +
-                                "<input type='checkbox' id='dash-type' data-toggle='toggle' data-width='200' data-onstyle='success' data-offstyle='info' data-on='Dashboard' data-off='Report'>" +
-                                "<input type='hidden' name='dash_type' value='Dashboard'>" +
-                            "</div>" +
-                "</form>";
+                var mheader = "Dashboard";
+                var mbody = "<ul class='nav nav-tabs' id='panel-tabs-"+dashboard_id+"' style='background:#eee; width:100%;'>" +
+                    "<li class='data-tab active'><a href='#dashboard-general-"+dashboard_id+"' class='tab' data-toggle='tab'>General</a></li>" +
+                    "<li class='data-tab'><a href='#dashboard-filters-"+dashboard_id+"' class='tab' data-toggle='tab'>Filters</a></li>" +
+                    "</ul>" +
+                    "<div class='tab-content'>" +
+                    "<div class='tab-pane active' id='dashboard-general-"+dashboard_id+"'>" +
+                    "<form id='new-dashboard-form' >" +
+                    "<input type='hidden' name='dashboard_id' value='"+dashboard_id+"'/>" +
+                    "<div class='form-group input-group-sm'>" +
+                    "<div class='row'>" +
+                    "<div class='col-xs-6'>" +
+                    "<p>Dashboard Name </p>" +
+                    "<input type='text' name='name' value='"+dashboard_name+"' class=''form-control' style='min-width: 100%' required/>" +
+                    "</div>" +
+                    "<div class='col-xs-6'>" +
+                    select +
+                    "</div>" +
+                    "</div>" +
+                    "</div>" +
+                    "<div class='form-group input-group-sm'>" +
+                    "<p>Description </p>" +
+                    "<textarea name='description' class='form-control' style='min-width: 100%; min-height: 200px;'>"+dashboard_description+"</textarea>" +
+                    "</div>" +
+                    "<div class='form-group input-group-sm'>" +
+                    "<input type='checkbox' id='dash-type' data-toggle='toggle' data-width='200' data-onstyle='success' data-offstyle='info' data-on='Dashboard' data-off='Report'>" +
+                    "<input type='hidden' name='dash_type' value='Dashboard'>" +
+                    "</div>" +
+                    "</form>" +
+                    "</div>" +
+                    "<div class='tab-pane' id='dashboard-filters-"+dashboard_id+"'>" +
+                    filter_form +
+                    "</div>" +
+                    "</div>";
 
-            var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-dashboard-btn">Save</button>' +
-                '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
+                var mfooter = '<button type="submit" class="btn btn-primary pull-right marl" id="save-dashboard-btn">Save</button>' +
+                    '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 
-            modals.load_modal(mheader, mbody, mfooter);
+                modals.load_modal(mheader, mbody, mfooter);
 
-            dashboard.set_dashboard_type(dashboard_type);
-
-
+                dashboard.set_dashboard_type(dashboard_type);
+            });
         });
     },
 
@@ -1071,6 +1093,21 @@ var dashboard = {
         }).done(function(response) {
             if(response.success){
                 flashalert.success(response.msg);
+                $('.dashboard-filter-form').find('input[name="dashboard_id"]').val(response.dashboard_id);
+                $.ajax({
+                    url: helper.baseUrl + 'dashboard/save_dashboard_filters',
+                    data: $('.dashboard-filter-form').serialize(),
+                    type: "POST",
+                    dataType: "JSON"
+                }).done(function(response) {
+                    if(response.success){
+                        flashalert.success(response.msg);
+                    }
+                    else {
+                        flashalert.danger(response.msg);
+                    }
+
+                });
                 $('.close-modal').trigger('click');
                 dashboard.custom_dash_panel();
             }

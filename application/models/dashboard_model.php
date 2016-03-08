@@ -648,6 +648,42 @@ class Dashboard_model extends CI_Model
 
     }
 
+    /**
+     * Save Dashboard Filters
+     */
+    public function save_dashboard_filters($dashboard_id, $filters) {
+
+        // Start SQL transaction.
+        $this->db->trans_start();
+
+        //Delete the current viewers for this dashboards
+        $this->db->where('dashboard_id', $dashboard_id);
+        $result = $this->db->delete("dashboard_filters");
+
+        if (!$result) {
+            return false;
+        }
+
+        foreach ($filters as $filter) {
+            $result = $this->db->insert("dashboard_filters", array(
+                "dashboard_id" => $dashboard_id,
+                "filter_name" => $filter['filter_name'],
+                "filter_value" => $filter['filter_value'],
+                "editable" => $filter['editable']
+            ));
+
+            if (!$result) {
+                return false;
+            }
+        }
+
+        // Complete SQL transaction.
+        $this->db->trans_complete();
+
+        return $this->db->trans_status();
+
+    }
+
 
     /**
      * Get viewers
@@ -741,6 +777,17 @@ class Dashboard_model extends CI_Model
                 INNER JOIN export_forms e ON (e.export_forms_id = dr.report_id)
                   WHERE dr.dashboard_id = ".$dashboard_id."
                   ORDER BY dr.position asc";
+
+        return $this->db->query($qry)->result_array();
+    }
+
+
+    //Get dashboard filters by dashboard_id
+    public function get_dash_filters($dashboard_id) {
+        $qry = "SELECT
+                  *
+                FROM dashboard_filters
+                WHERE dashboard_id = ".$dashboard_id;
 
         return $this->db->query($qry)->result_array();
     }
