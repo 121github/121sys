@@ -12,6 +12,10 @@ class Cron_model extends CI_Model
         $this->db2 = $this->load->database('uk_postcodes', true);
     }
 	
+	public function set_null_pots(){
+	$this->db->query("update records set pot_id = null where pot_id = 0");
+}
+	
 	public function archive_old_recordings(){
 	//move all recordings older than 6 months to the archive table
 	$db2 = $this->load->database('121backup',true);

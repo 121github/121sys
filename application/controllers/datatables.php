@@ -16,8 +16,9 @@ class Datatables extends CI_Controller
     }
 	public function set_user_view(){
 	$id = $this->input->post('id');
-	$this->Datatables_model->set_user_view($id);
-	$columns = $this->Datatables_model->get_visible_columns($this->input->post('table'));
+	$table = $this->input->post('table');
+	$this->Datatables_model->set_user_view($id,$table);
+	$columns = $this->Datatables_model->get_visible_columns($table);
 	echo json_encode(array("success"=>true,"columns"=>$columns));
 	}
 	public function get_user_views(){
@@ -39,7 +40,6 @@ class Datatables extends CI_Controller
 	$this->db->where(array("datafield_id"=>$column['datafield_id'],"view_id"=>$view_id));
 	$this->db->join("datatables_views","datatables_view_fields.view_id=datatables_views.view_id");
 	$this->db->update("datatables_view_fields",array("sort"=>$key));
-	$this->firephp->log($this->db->last_query());
 	}
 	echo json_encode(array("success"=>true));
 	}

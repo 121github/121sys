@@ -8,14 +8,13 @@ class Datatables_model extends CI_Model
         parent::__construct();
         $this->custom_fields = custom_fields();
     }
-	public function set_user_view($id){
+	public function set_user_view($id,$table){
 	//deselect all user views	
-	$this->db->where(array("user_id"=>$_SESSION['user_id']));	
+	$this->db->where(array("user_id"=>$_SESSION['user_id'],"table_id"=>$table));	
 	$this->db->update("datatables_views",array("selected"=>0));
 	//now select the one they specified	
 	$this->db->where(array("view_id"=>$id,"user_id"=>$_SESSION['user_id']));	
 	$this->db->update("datatables_views",array("selected"=>1));
-			//$this->firephp->log($this->db->last_query());
 	}
 	
 	public function get_user_views($table_id){
@@ -32,7 +31,6 @@ WHERE `user_id` =  '".$_SESSION['user_id']."'
 AND `table_id` =  '".$table_id."'
 AND `selected` =  1
 ORDER BY `sort`";
-
 		$columns = $this->db->query($query)->result_array();
 		if(count($columns)==0){
 		return false;

@@ -18,6 +18,8 @@ class Cron extends CI_Controller
     public function morning_crons()
     {
 		session_write_close();
+		//fix 0 pots - they should be null
+		$this->set_null_pots();
 		//set all company/contact telephone numbers where
         $this->check_suppressed_records();
 		//delete all lapsed entries in the planner
@@ -35,6 +37,9 @@ class Cron extends CI_Controller
 		//restrict any agents that have left //this uses the agent name so if we ever get 2 users with the same name it could cause problems
 		$this->remove_leavers();
     }
+public function set_null_pots(){
+		$this->Cron_model->set_null_pots();
+}
   public function evening_crons()
     {
 		session_write_close();
