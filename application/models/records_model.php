@@ -1088,6 +1088,14 @@ return $comments;
         return $this->db->query($qry)->result_array();
     }
 
+    public function add_ownership($urn, $user_id)
+    {
+        //insert ignore
+        $qry = "INSERT IGNORE INTO ownership (urn,user_id) VALUES ('$urn','$user_id')";
+        $query = $this->db->query($qry);
+        return $query->result_array();
+    }
+
     //updates a record
     public function update_record($post)
     {

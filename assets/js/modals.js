@@ -847,8 +847,8 @@ var modals = {
             $.each(data, function (k, v) {
                 $mbody.find('[name="' + k + '"]').val(v);
                 if (k == "type") {
+                    $mbody.find('#typepicker option[value="' + v + '"]').prop('selected', true).attr('selected','selected');
                     $mbody.find('[name="appointment_type_id"]').val(v);
-					$mbody.find('[name="appointment_type_id"] option[value="' + v + '"]').prop('selected', true).attr('selected','selected');
                 }
                 if (k == "attendees") {
                     $.each(v, function (i, user_id) {

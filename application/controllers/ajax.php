@@ -1206,6 +1206,16 @@ class Ajax extends CI_Controller
         }
     }
 
+    //Add ownership to a record if it doesn't exists
+    public function add_ownership() {
+        if ($this->input->is_ajax_request()) {
+            $this->Records_model->add_ownership(intval($this->input->post("urn")), $this->input->post("user_id"));
+            echo json_encode(array(
+                "success" => true
+            ));
+        }
+    }
+
     //get user details for a given urn
     public function get_users()
     {
