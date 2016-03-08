@@ -96,6 +96,7 @@ class Api extends REST_Controller
             $message = array(
                 'success' => ($record_urn?true:false),
                 'urn' => ($record_urn?$record_urn:''),
+				 'id' => ($record_urn?$record_urn:''),
                 'message' => ($record_urn?'INSERTED!':'ERROR: The records was not inserted successfully!')
             );
         }
@@ -168,6 +169,7 @@ class Api extends REST_Controller
                 'success' => ($record_details_id?true:false),
                 'urn' => $record_details['urn'],
                 'detail_id' => ($record_details_id?$record_details_id:''),
+			    'id' => ($record_details_id?$record_details_id:''),
                 'message' => ($record_details_id?'SAVED!':'ERROR: The record details were saved successfully!')
             );
         }
@@ -218,24 +220,26 @@ class Api extends REST_Controller
         else {
 
             //Insert record company
-            if (!isset($record_contact['company_id']) || $record_contact['company_id'] == '') {
+            if (!isset($record_contact['contact_id']) || $record_contact['contact_id'] == '') {
                 $record_contact_id = $this->Contacts_model->save_contact($record_contact);
 
                 $message = array(
                     'success' => ($record_contact_id?true:false),
                     'urn' => $record_contact['urn'],
                     'contact_id' => ($record_contact_id?$record_contact_id:''),
+					'id' => ($record_contact_id?$record_contact_id:''),
                     'message' => ($record_contact_id?'INSERTED!':'ERROR: The record contact was NOT inserted successfully!')
                 );
             }
             //Update record contact
             else {
-                $result = $this->Contacts_model->update_company($record_contact);
+                $result = $this->Contacts_model->update_contact($record_contact);
 
                 $message = array(
                     'success' => ($result?true:false),
                     'urn' => $record_contact['urn'],
                     'contact_id' => $record_contact['contact_id'],
+					  'id' => $record_contact['contact_id'],
                     'message' => ($result?'UPDATED!':'ERROR: The record contact was NOT updated successfully!')
                 );
             }
@@ -269,6 +273,7 @@ class Api extends REST_Controller
                 'success' => ($contact_address_id?true:false),
                 'contact_id' => $contact_address['contact_id'],
                 'address_id' => ($contact_address_id?$contact_address_id:''),
+				 'id' => ($contact_address_id?$contact_address_id:''),
                 'message' => ($contact_address_id?'INSERTED!':'ERROR: The contact address was NOT inserted successfully!')
             );
         }
@@ -361,6 +366,7 @@ class Api extends REST_Controller
                     'success' => ($record_company_id?true:false),
                     'urn' => $record_company['urn'],
                     'company_id' => ($record_company_id?$record_company_id:''),
+					 'id' => ($record_company_id?$record_company_id:''),
                     'message' => ($record_company_id?'INSERTED!':'ERROR: The record comapny was inserted successfully!')
                 );
             }
@@ -372,6 +378,7 @@ class Api extends REST_Controller
                     'success' => ($result?true:false),
                     'urn' => $record_company['urn'],
                     'company_id' => $record_company['company_id'],
+					'id' => $record_company['company_id'],
                     'message' => ($result?'UPDATED!':'ERROR: The record comapny was updated successfully!')
                 );
             }
@@ -405,6 +412,7 @@ class Api extends REST_Controller
                 'success' => ($company_address_id?true:false),
                 'company_id' => $company_address['company_id'],
                 'address_id' => ($company_address_id?$company_address_id:''),
+				'id' => ($company_address_id?$company_address_id:''),
                 'message' => ($company_address_id?'SAVED!':'ERROR: The comapny address was saved successfully!')
             );
         }
@@ -437,6 +445,7 @@ class Api extends REST_Controller
                 'success' => ($company_telephone_id?true:false),
                 'company_id' => $company_telephone['company_id'],
                 'telephone_id' => ($company_telephone_id?$company_telephone_id:''),
+				'id' => ($company_telephone_id?$company_telephone_id:''),
                 'message' => ($company_telephone_id?'SAVED!':'ERROR: The comapny telephone was saved successfully!')
             );
         }
