@@ -1132,18 +1132,21 @@ public function index(){
     {
         if ($this->input->is_ajax_request()) {
 
-            $filters = $this->Dashboard_model->get_dash_filters($this->input->post('dashboard_id'));
-            $aux = array();
-            foreach ($filters as $filter) {
-                if (!isset($aux[$filter['filter_name']])) {
-                    $aux[$filter['filter_name']] = array();
+            $filters = array();
+            if ($this->input->post('dashboard_id')) {
+                $filters = $this->Dashboard_model->get_dash_filters($this->input->post('dashboard_id'));
+                $aux = array();
+                foreach ($filters as $filter) {
+                    if (!isset($aux[$filter['filter_name']])) {
+                        $aux[$filter['filter_name']] = array();
+                    }
+                    $aux[$filter['filter_name']] = array(
+                        "values" => explode(",",$filter['filter_value']),
+                        "editable" => $filter['editable']
+                    );
                 }
-                $aux[$filter['filter_name']] = array(
-                    "values" => explode(",",$filter['filter_value']),
-                    "editable" => $filter['editable']
-                );
+                $filters = $aux;
             }
-            $filters = $aux;
 
 
             $agents = $this->Form_model->get_agents();
@@ -1153,6 +1156,12 @@ public function index(){
 
             $users = $this->Form_model->get_users();
             $aux = array();
+            if (isset($_SESSION['user_id'])) {
+                $aux["-"] = array(array(
+                    "name" => "User Logged in",
+                    "id" => "user_id"
+                ));
+            }
             foreach ($users as $user) {
                 if (!isset($aux[$user['role_name']])) {
                     $aux[$user['role_name']] = array();
@@ -1416,6 +1425,19 @@ public function index(){
 
         if ($dashboard_id !== FALSE && is_numeric($dashboard_id))
         {
+            $filters = $this->Dashboard_model->get_dash_filters($dashboard_id);
+            $aux = array();
+            foreach ($filters as $filter) {
+                if (!isset($aux[$filter['filter_name']])) {
+                    $aux[$filter['filter_name']] = array();
+                }
+                $aux[$filter['filter_name']] = array(
+                    "values" => explode(",",$filter['filter_value']),
+                    "editable" => $filter['editable']
+                );
+            }
+            $filters = $aux;
+
             $agents = $this->Form_model->get_agents();
             $teamManagers = $this->Form_model->get_teams();
             $sources = $this->Form_model->get_sources();
@@ -1423,6 +1445,12 @@ public function index(){
 
             $users = $this->Form_model->get_users();
             $aux = array();
+            if (isset($_SESSION['user_id'])) {
+                $aux["-"] = array(array(
+                    "name" => "User Logged in",
+                    "id" => "user_id"
+                ));
+            }
             foreach ($users as $user) {
                 if (!isset($aux[$user['role_name']])) {
                     $aux[$user['role_name']] = array();
@@ -1475,6 +1503,7 @@ public function index(){
                     'users' => $users,
                     'campaigns_by_group' => $campaigns_by_group,
                     'campaign_outcomes' => $campaign_outcomes,
+                    'filters' => $filters,
                     'javascript' => array(
                         'charts.js?v' . $this->project_version,
                         'dashboard.js?v' . $this->project_version,

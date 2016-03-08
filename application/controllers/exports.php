@@ -49,6 +49,20 @@ class Exports extends CI_Controller
         $agents = $this->Form_model->get_agents();
 
         $users = $this->Form_model->get_users();
+        $aux = array();
+        if (isset($_SESSION['user_id'])) {
+            $aux["-"] = array(array(
+                "name" => "User Logged in",
+                "id" => "user_id"
+            ));
+        }
+        foreach ($users as $user) {
+            if (!isset($aux[$user['role_name']])) {
+                $aux[$user['role_name']] = array();
+            }
+            array_push($aux[$user['role_name']], $user);
+        }
+        $users = $aux;
 
         $data = array(
             'campaign_access' => $this->_campaigns,

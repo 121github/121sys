@@ -180,6 +180,7 @@
 </div>
 
 <script>
+    dashboard.init();
     modal_body.find('#dash-campaigns-check, #dash-outcomes-check, #dash-teams-check, #dash-agents-check, #dash-sources-check, #dash-pot-check, #dash-user-check').bootstrapToggle();
 
     $('#dash-campaigns-check, #dash-outcomes-check, #dash-teams-check, #dash-agents-check, #dash-sources-check, #dash-pot-check, #dash-user-check').on('change',function(e){
@@ -190,29 +191,10 @@
         }
     });
 
-    $('.daterange').daterangepicker({
-            opens: "left",
-            ranges: {
-                'Any Time': ["02/07/2014", moment()],
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract( 1,'days'), moment().subtract(1,'days')],
-                'Last 7 Days': [moment().subtract( 6,'days'), moment()],
-                'Last 30 Days': [moment().subtract(29,'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1,'month').startOf('month'), moment().subtract(1,'month').endOf('month')]
-            },
-            format: 'DD/MM/YYYY',
-            minDate: "02/07/2014",
-            maxDate: moment(),
-            startDate: <?php echo ((isset($filters['date_from']))?mysql_to_uk_date($filters['date_from']['values'][0]):"07/02/2014"); ?>,
-            endDate: <?php if (isset($filters['date_to'])) { echo mysql_to_uk_date($filters['date_to']['values'][0]); } else { ?>moment()<?php } ?>
-        },
-        function (start, end, element) {
-            var $btn = this.element;
-            $btn.find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
-            $btn.closest('form').find('input[name="date_from"]').val(start.format('YYYY-MM-DD'));
-            $btn.closest('form').find('input[name="date_to"]').val(end.format('YYYY-MM-DD'));
-        });
+    var start = moment($('form').find('input[name="date_from"]').val(),"YYYY-MM-DD");
+    var end = moment($('form').find('input[name="date_to"]').val(),"YYYY-MM-DD");
+
+    $('.daterange').find('.date-text').html(start.format('MMMM D') + ' - ' + end.format('MMMM D'));
 
 
 </script>

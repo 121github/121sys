@@ -88,8 +88,12 @@
             <label style="margin-top: 5%;">User</label>
             <select name="user[]" class="selectpicker user-filter" multiple data-width="100%"
                     data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
-                <?php foreach ($users as $row) { ?>
-                    <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                <?php foreach ($users as $type => $data) { ?>
+                    <optgroup label="<?php echo $type ?>">
+                        <?php foreach ($data as $row) { ?>
+                            <option value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                        <?php } ?>
+                    </optgroup>
                 <?php } ?>
             </select>
 

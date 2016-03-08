@@ -230,6 +230,14 @@ var export_data = {
         });
         filters += "</ul>";
 
+        //User
+        var size = ($('.user-filter  option:selected').size() > 0 ? "(" + $('.user-filter  option:selected').size() + ")" : '');
+        filters += "<h5 style='border-bottom: 1px solid #e2e2e2; padding-bottom: 4px;'><strong>Users</strong> " + size + "</h5><ul>";
+        $('.user-filter  option:selected').each(function (index) {
+            filters += "<li style='list-style-type:none'>" + $(this).text() + "</li>";
+        });
+        filters += "</ul>";
+
         $('#filters').html(filters);
         $('#filters-custom').html(filters);
     },
@@ -370,7 +378,7 @@ var export_data = {
         var pot_filter = row.find('.pot_filter').text();
         var team_filter = row.find('.team_filter').text();
         var agent_filter = row.find('.agent_filter').text();
-        var user_filter = row.find('.usder_filter').text();
+        var user_filter = row.find('.user_filter').text();
 
         $.ajax({
             url: helper.baseUrl + 'modals/load_export_form',
