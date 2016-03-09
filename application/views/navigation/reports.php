@@ -1,6 +1,6 @@
 <?php if (in_array("reports menu", $_SESSION['permissions'])) { ?>
     <li><a href="#reports">Reports</a>
-        <ul id="reports">
+        <ul id="reports" class="reports-main-menu">
             <?php if (in_array("survey answers", $_SESSION['permissions'])) { ?>
                 <li <?php echo @($page == 'answers' ? "class='Selected'" : "") ?>>
                     <a href="<?php echo base_url() ?>reports/answers">Survey
@@ -126,7 +126,9 @@
                         reports += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
                     }
                 });
-                $('#reports ul').append(reports);
+
+                $('#menu').find('.reports-main-menu').append(reports);
+
             }
         });
     });

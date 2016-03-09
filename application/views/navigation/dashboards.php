@@ -1,6 +1,6 @@
 <?php if (@in_array("view dashboard", $_SESSION['permissions'])) { ?>
     <li><a href="#dashboards">Dashboard</a>
-        <ul id="dashboards">
+        <ul id="dashboards" class="dashboards-main-menu">
             <?php if ($_SESSION['sn'] == 'eldon.121system.com') { ?>
                 <li <?php echo @($page == 'eldon_dash' ? "class='Selected'" : "") ?>><a
                         href="<?php echo base_url() ?>dashboard/eldon">Eldon Dash</a></li>
@@ -53,7 +53,8 @@
                         dashboards += "<li "+(page == val.name?"class='Selected'":"")+"><a href='"+helper.baseUrl + "dashboard/view/"+val.dashboard_id+"'>"+val.name+"</a></li>";
                     }
                 });
-                $('#dashboards ul').append(dashboards);
+
+                $('#menu').find('.dashboards-main-menu').append(dashboards);
             }
         });
     });
