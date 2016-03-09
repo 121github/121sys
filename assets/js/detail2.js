@@ -391,6 +391,10 @@ var record = {
                 e.preventDefault();
                 record.history_panel.edit_history($(this).attr('data-id'), $(this).attr('item-modal'));
             });
+			$modal.on('click', '[data-modal="edit-history"]', function (e) {
+                e.preventDefault();
+                record.history_panel.edit_history($(this).attr('data-id'), $(this).attr('item-modal'));
+            });
            $modal.on("click", "#save-history-btn", function (e) {
                 e.preventDefault();
                 record.history_panel.update_history($(this).attr('data-modal'));
@@ -399,7 +403,8 @@ var record = {
                 e.preventDefault();
                 $('#edit-history-container').fadeOut(function () {
                     $('#all-history-container').fadeIn();
-                    modal_body.css('overflow', 'auto')
+                    modal_body.css('overflow', 'auto');
+					modal_footer.html('<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>');
                 });
             });
 
@@ -458,7 +463,7 @@ var record = {
                             k++;
                         });
                         if (k > record.limit - 1) {
-                            $panel.find('.panel-heading').html('History<span class="btn btn-info btn-xs pull-right" id="show-all-history-btn">Show All</span>');
+                            $panel.find('.panel-heading').html('History<span class="btn btn-default btn-xs pull-right" id="show-all-history-btn">Show All</span>');
 
                         }
                         if($panel.width()<400){
