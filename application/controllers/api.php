@@ -510,7 +510,7 @@ class Api extends REST_Controller
         $recipients_cc = $this->input->post('recipients_cc');
         $recipients_bcc = $this->input->post('recipients_bcc');
 
-        if ($template_id && $recipients_to && $urn) {
+        if ($template_id && $urn) {
             //create the form structure to pass to the send function
             $form = $this->Email_model->template_to_form($template_id);
             if ($form) {
@@ -533,6 +533,7 @@ class Api extends REST_Controller
                         $form['body'] = str_replace("[$key]", $val, $form['body']);
                     }
                 }
+                //TODO check if send_to is not empty
                 if ($this->send($form)) {
                     $email_history = array(
                         'body' => $form['body'],
@@ -575,7 +576,7 @@ class Api extends REST_Controller
         else {
             $message = array(
                 'success' => false,
-                "message" => "ERROR: Email not sent successfuly. URN, template or recipients not found"
+                "message" => "ERROR: Email not sent successfuly. URN, template not found"
             );
         }
 
