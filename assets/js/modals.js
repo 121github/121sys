@@ -323,14 +323,13 @@ var modals = {
             });
         },
 	delete_view:function(view,table){
-		
-		 console.log(table);
 		$.ajax({
             url: helper.baseUrl + 'ajax/delete_view',
 			data: { id:view },
             type: "POST",
             dataType: "JSON"
         }).done(function(response) {
+			flashalert.success("View was deleted");
 			 modals.show_table_views(table);
 		});
 	},
