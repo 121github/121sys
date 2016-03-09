@@ -25,7 +25,7 @@
                     <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                         <li <?php echo @($page == 'outcome_report_agent' ? "class='Selected'" : "") ?>>
                             <a href="<?php echo base_url() ?>reports/outcomes/agent/1">By
-                                Agent</a></li>
+                                User</a></li>
                     <?php } ?>
                     <li <?php echo @($page == 'outcome_report_date' ? "class='Selected'" : "") ?>>
                         <a href="<?php echo base_url() ?>reports/outcomes/date/1">By
@@ -72,7 +72,7 @@
                         <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                             <li <?php echo @($page == 'email_report_agent' ? "class='Selected'" : "") ?>>
                                 <a href="<?php echo base_url() ?>reports/email/agent/1">By
-                                    Agent</a></li>
+                                    User</a></li>
                         <?php } ?>
                         <li <?php echo @($page == 'email_report_date' ? "class='Selected'" : "") ?>>
                             <a href="<?php echo base_url() ?>reports/email/date/1">By
@@ -94,7 +94,7 @@
                         <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                             <li <?php echo @($page == 'sms_report_agent' ? "class='Selected'" : "") ?>>
                                 <a href="<?php echo base_url() ?>reports/sms/agent/1">By
-                                    Agent</a></li>
+                                    User</a></li>
                         <?php } ?>
                         <li <?php echo @($page == 'sms_report_date' ? "class='Selected'" : "") ?>>
                             <a href="<?php echo base_url() ?>reports/sms/date/1">By

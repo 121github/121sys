@@ -239,7 +239,7 @@ class Api extends REST_Controller
                     'success' => ($result?true:false),
                     'urn' => $record_contact['urn'],
                     'contact_id' => $record_contact['contact_id'],
-					  'id' => $record_contact['contact_id'],
+					'id' => $record_contact['contact_id'],
                     'message' => ($result?'UPDATED!':'ERROR: The record contact was NOT updated successfully!')
                 );
             }

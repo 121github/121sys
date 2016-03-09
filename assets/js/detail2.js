@@ -20,9 +20,7 @@ var record = {
 			 var tab = $(this).attr('data-tab');
 				modals.record_options(tab);
 		})
-		$('#detail-accordion').on('click','[data-toggle="collapse"] .btn',function(e){
-			e.preventDefault();
-			console.log($(this).closest('.panel').find('.panel-collapse:first'));
+		$('#detail-accordion').on('click','[data-toggle="collapse"] .btn',function(){
 			$(this).closest('.panel').find('.panel-collapse:first').collapse('show');
 		});
 		

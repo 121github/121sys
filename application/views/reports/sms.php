@@ -70,14 +70,14 @@
                         <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                        data-toggle="dropdown">Agent <span class="caret"></span></button>
+                                        data-toggle="dropdown">User <span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right" role="menu">
                                     <?php foreach ($agents as $row): ?>
                                         <li><a href="#" class="agent-filter"
                                                id="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a></li>
                                     <?php endforeach ?>
                                     <li class="divider"></li>
-                                    <li><a class="agent-filter" ref="#" style="color: green;">All Agents</a></li>
+                                    <li><a class="agent-filter" ref="#" style="color: green;">All Users</a></li>
                                 </ul>
                             </div>
                         <?php } ?>

@@ -9,7 +9,7 @@
       <div class="row">
         <div class="col-lg-12">
          <div class="panel panel-primary" id="a_activity">
-            <div class="panel-heading clearfix"> <i class="fa fa-history fa-fw"></i>Agent Activity
+            <div class="panel-heading clearfix"> <i class="fa fa-history fa-fw"></i>User Activity
               <div class="pull-right">
    <form class="agent-activity-filter" data-func="agent_activity">
             	<div class="btn-group">
@@ -33,13 +33,13 @@
                               <?php } ?>
                   <?php if(in_array("by agent",$_SESSION['permissions'])){ ?>
                   <div class="btn-group">
-	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> Agent <span class="caret"></span></button>
+	                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> User <span class="caret"></span></button>
 	                  <ul class="dropdown-menu pull-right" role="menu">
 	                    <?php foreach($agents as $row): ?>
 	                    <li><a href="#" class="filter" id="<?php echo $row['id'] ?>" data-ref="agent"><?php echo $row['name'] ?></a> </li>
 	                    <?php endforeach ?>
 	                    <li class="divider"></li>
-	                    <li><a class="filter" ref="#" style="color: green;" data-ref="agent">All Agents</a> </li>
+	                    <li><a class="filter" ref="#" style="color: green;" data-ref="agent">All Users</a> </li>
 	                  </ul>
                   </div>
                   <?php } ?>
@@ -76,7 +76,7 @@
           </div>
           
            <div class="panel panel-primary" id="a_success">
-            <div class="panel-heading clearfix"> <i class="fa fa-check fa-fw"></i>Agent Success Rates
+            <div class="panel-heading clearfix"> <i class="fa fa-check fa-fw"></i>User Success Rates
               <div class="pull-right">
                <form class="success-filter" data-func="agent_success">
             	<div class="btn-group">
@@ -147,7 +147,7 @@
           
 
         <div class="panel panel-primary" id="a_data">
-            <div class="panel-heading clearfix"> <i class="fa fa-table fa-fw"></i> Agent  Data
+            <div class="panel-heading clearfix"> <i class="fa fa-table fa-fw"></i> Agent Data
              <div class="pull-right">
                 <form class="agent-data-filter" data-func="agent_data">
             	<div class="btn-group">

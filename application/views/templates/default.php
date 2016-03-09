@@ -182,6 +182,9 @@ if (isset($_SESSION['current_campaign']) && in_array("show footer", $_SESSION['p
                 <?php if (!isset($page)) {
                     $page = "";
                 }
+				/* make the menu start on the first panel - ignore selected page BF march 2016*/
+				$page = "";
+				/* end */
                 $this->view('navigation/dashboards.php', $page);
                 $this->view('navigation/records.php', $page);
                 $this->view('navigation/files.php', $page);

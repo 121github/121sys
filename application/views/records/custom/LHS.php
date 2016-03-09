@@ -98,23 +98,22 @@
     <div class="col-sm-12">
         
  <div class="panel-group" id="detail-accordion" role="tablist" aria-multiselectable="true">
-        <?php 
-                    $this->view('records/panels/record_update.php', $details);
-									$this->view('records/panels/custom_info.php', $details);
-				 if(isset($custom_panels)){ 
+      
+           <?php $this->view('records/panels/record_update.php', $details); ?>
+           <?php $this->view('records/panels/contacts.php', $details); ?>
+           <?php $this->view('records/panels/company.php', $details); ?>
+            <?php $this->view('records/panels/referral.php', $details); ?>
+             <?php $this->view('records/panels/history.php', $details); ?>
+               <?php $this->view('records/panels/custom_info.php', $details); ?>
+           <?php if(isset($custom_panels)){ 
 		   foreach ($custom_panels as $k => $v) { 
                     $this->view('records/panels/' . "custom_panels.php", $custom_panels[$k]);
         }
-		   }
-				$this->view('records/panels/company.php', $details);
-				$this->view('records/panels/contacts.php', $details);
-				$this->view('records/panels/history.php', $details);
-				$this->view('records/panels/appointments.php', $details);
-				$this->view('records/panels/quick_planner.php', $details);
-				$this->view('records/panels/emails.php', $details);
-				$this->view('records/panels/referral.php', $details);
-
-?>
+		   }?>
+             <?php $this->view('records/panels/emails.php', $details); ?>
+              <?php $this->view('records/panels/attachments.php', $details); ?>
+               <?php $this->view('records/panels/appointments.php', $details); ?>
+                <?php $this->view('records/panels/quick_planner.php', $details); ?>
            </div>
     </div>
    
@@ -209,6 +208,10 @@
         <?php } ?>
 		<?php if(in_array(20,$features)){ ?>
 		quick_planner.init();
+		<?php } else { ?>
+		if($('#branch-info').length>0){
+		quick_planner.init();	 
+		 }
 		<?php } ?>
 		<?php if(in_array(21,$features)){ ?>
         record.tasks.init();

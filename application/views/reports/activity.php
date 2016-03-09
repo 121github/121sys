@@ -80,7 +80,7 @@
             <?php } ?>
 
             <?php if (in_array("by agent", $_SESSION['permissions'])) { ?>
-                <label style="margin-top: 5%;">Agent</label>
+                <label style="margin-top: 5%;">User</label>
                 <select name="agents[]" class="selectpicker agent-filter" multiple data-width="100%"
                         data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
                     <?php foreach ($agents as $row) { ?>
