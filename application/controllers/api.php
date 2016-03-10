@@ -512,12 +512,20 @@ class Api extends REST_Controller
 
         if ($template_id && $urn) {
             //create the form structure to pass to the send function
-            $form = $this->Email_model->template_to_form($template_id);
-            if ($form) {
-                $form['send_to'] .= (strlen($form['send_to'])>0?",":"").$recipients_to;
-                $form['bcc'] .= (strlen($form['bcc'])>0?",":"").$recipients_bcc;
-                $form['cc'] .= (strlen($form['cc'])>0?",":"").$recipients_cc;
+            $template = $this->Email_model->get_template($template_id);
+            if ($template) {
+                $form = array();
+                $form['template_id'] = $template['template_id'];
+                $form['subject'] = $template['template_subject'];
+                $form['body'] = $template['template_body'];
+                $form['send_from'] = $template['template_from'];
+                $form['template_unsubscribe'] = $template['template_unsubscribe'];
+                $form['send_to'] = $template['template_to'].(strlen($recipients_to)>0?",":"").$recipients_to;
+                $form['cc'] = $template['template_cc'].(strlen($recipients_cc)>0?",":"").$recipients_cc;
+                $form['bcc'] = $template['template_bcc'].(strlen($recipients_bcc)>0?",":"").$recipients_bcc;
                 $form['urn'] = $urn;
+
+
 
                 $last_comment = $this->Records_model->get_last_comment($urn);
                 $placeholder_data = $this->Email_model->get_placeholder_data($urn);
@@ -533,37 +541,45 @@ class Api extends REST_Controller
                         $form['body'] = str_replace("[$key]", $val, $form['body']);
                     }
                 }
-                //TODO check if send_to is not empty
-                if ($this->send($form)) {
-                    $email_history = array(
-                        'body' => $form['body'],
-                        'subject' => $form['subject'],
-                        'send_from' => $form['send_from'],
-                        'send_to' => $form['send_to'],
-                        'cc' => $form['cc'],
-                        'bcc' => $form['bcc'],
-                        'user_id' => $_SESSION['user_id'],
-                        'urn' => $form['urn'],
-                        'template_id' => $form['template_id'],
-                        'template_unsubscribe' => $form['template_unsubscribe'],
-                        'status' => 1,
-                        'pending' => 0
-                    );
-                    $email_id = $this->Email_model->add_new_email_history($email_history);
+                if ($form['send_to'] != '' && $form['cc'] != '' && $form['bcc'] != '') {
+                    if ($this->send($form)) {
+                        $email_history = array(
+                            'body' => $form['body'],
+                            'subject' => $form['subject'],
+                            'send_from' => $form['send_from'],
+                            'send_to' => $form['send_to'],
+                            'cc' => $form['cc'],
+                            'bcc' => $form['bcc'],
+                            'user_id' => $_SESSION['user_id'],
+                            'urn' => $form['urn'],
+                            'template_id' => $form['template_id'],
+                            'template_unsubscribe' => $form['template_unsubscribe'],
+                            'status' => 1,
+                            'pending' => 0
+                        );
+                        $email_id = $this->Email_model->add_new_email_history($email_history);
 
-                    $message = array(
-                        'success' => true,
-                        "urn" => $form['urn'],
-                        "email_history_id" => $email_id,
-                        'message' => 'Email sent successfully!'
-                    );
+                        $message = array(
+                            'success' => true,
+                            "urn" => $form['urn'],
+                            "email_history_id" => $email_id,
+                            'message' => 'Email sent successfully!'
+                        );
+                    }
+                    else {
+                        $message = array(
+                            'success' => false,
+                            "message" => "ERROR: Email not sent successfuly. Error during the sent process"
+                        );
+                    }
                 }
                 else {
                     $message = array(
                         'success' => false,
-                        "message" => "ERROR: Email not sent successfuly. Error during the sent process"
+                        "message" => "ERROR: Email not sent successfuly. The send_to field is empty"
                     );
                 }
+
             }
             else {
                 $message = array(
