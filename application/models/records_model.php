@@ -1092,8 +1092,8 @@ return $comments;
     {
         //insert ignore
         $qry = "INSERT IGNORE INTO ownership (urn,user_id) VALUES ('$urn','$user_id')";
-        $query = $this->db->query($qry);
-        return $query->result_array();
+        $this->db->query($qry);
+        return $this->db->insert_id();
     }
 
     //updates a record
