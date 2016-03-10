@@ -196,7 +196,7 @@
             $('.lhs-form').on('submit', function (e) {
                 e.preventDefault();
 
-                var baseUrl = document.location.origin + '/121sys/';
+                var baseUrl = document.location.origin + '/';
                 //Create record
                 $.ajax({
                     url: baseUrl + 'api/record',
@@ -334,7 +334,7 @@
                                         data: {
                                             'urn': response.urn,
                                             'template_id': 1,
-                                            'recipients_to': 'estebanc@121customerinsight.co.uk',
+                                            'recipients_to': '',
                                             'recipients_to_name': '',
                                             'recipients_cc': '',
                                             'recipients_bcc': ''
