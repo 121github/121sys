@@ -28,7 +28,7 @@ var record = {
             e.preventDefault();
             if ($('[name="call_direction"]').length > 0 && !$('[name="call_direction"]').is(':checked')) {
                 flashalert.danger("You must set a call direction");
-            } else if ($('#outcomes').val().length > 0) {
+            } else if ($('#outcomes').val().length > 0||$('[name="progress_id"]').val()>0) {
                 if ($('#outcomes').val() == "4" && $('#history-panel').find('tbody tr').length > 0) {
                     modal.dead_line($(this));
                 } else if ($('#outcomes').val() == "120" && $('#contact-panel').find('#map-link').length == 0) {
@@ -659,7 +659,9 @@ var record = {
     //update panel functions
     update_panel: {
         init: function () {
-			
+			$('#record-panel').on('change','[name="progress_id"]',function(){ 
+				$('#update-record').prop('disabled', false);
+			})
         },
         disabled_btn: function (old_outcome, outcome, old_nextcall, nextcall, old_comments, comments) {
             if (((outcome.length != 0) && (outcome != old_outcome)) || ((nextcall.length != 0) && (nextcall != old_nextcall)) || ((comments.length != 0) && (comments != old_comments))) {

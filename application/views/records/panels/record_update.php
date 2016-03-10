@@ -4,6 +4,7 @@
         </div>
       <div id="record-panel-slide" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
+      
         <p id="last-updated">Last Updated: <?php echo (!empty($details['record']['last_update'])?$details['record']['last_update']:"Never") ?>
         </p>
 
@@ -57,7 +58,7 @@
 				if(in_array("set progress",$_SESSION['permissions'])) {  ?>
                    <div class="form-group input-group">
             <select name="progress_id" id="progress" class="selectpicker outcomepicker">
-              <option value="">--No Status Set--</option>
+             
               <?php foreach($progress_options as $row): ?>
               <option value="<?php echo $row['id'] ?>" <?php if($details['record']['progress_id']==$row['id']){ echo "selected"; } ?> ><?php echo $row['name'] ?></option>
               <?php endforeach; ?>

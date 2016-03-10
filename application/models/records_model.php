@@ -915,7 +915,7 @@ return $comments;
     {
         $limit_ = ($limit) ? "limit " . $offset . "," . $limit : '';
 
-        $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null,if(pd.description is null,'No Action Required',pd.description),if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome)) as outcome,if(outcome_reason is null,'',outcome_reason) outcome_reason , history.history_id, if(comments is null,'',comments) comments, keep_record,u.user_id,if(call_direction=1,'Inbound',if(call_direction=0,'Outbound','')) call_direction from history left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) left join progress_description pd using(progress_id) left join users u using(user_id) left join cross_transfers on cross_transfers.history_id = history.history_id ";
+        $qry = "select date_format(contact,'%d/%m/%y %H:%i') contact, u.name client_name,if(outcome_id is null or outcome_id = 0,if(pd.description is null,'No Action Required',pd.description),if(cc.campaign_name is not null,concat('Cross transfer to ',cc.campaign_name),outcome)) as outcome,if(outcome_reason is null,'',outcome_reason) outcome_reason , history.history_id, if(comments is null,'',comments) comments, keep_record,u.user_id,if(call_direction=1,'Inbound',if(call_direction=0,'Outbound','')) call_direction from history left join outcomes using(outcome_id) left join outcome_reasons using(outcome_reason_id) left join progress_description pd using(progress_id) left join users u using(user_id) left join cross_transfers on cross_transfers.history_id = history.history_id ";
         $qry .= " left join campaigns cc on cc.campaign_id = cross_transfers.campaign_id where urn = '$urn' order by history_id desc " . $limit_;
         return $this->db->query($qry)->result_array();
     }
@@ -1131,7 +1131,7 @@ return $comments;
                 $update_array[] = "outcome_reason_id";
             }
             //only change the outcome and increase dial count if they are not just adding notes (outcome_id = 67)
-            if ($post['outcome_id'] <> "67" && $post['outcome_id'] <> "68") {
+            if ($post['outcome_id'] <> "67" && $post['outcome_id'] <> "68"&&!empty($post['outcome_id'])) {
                 $update_array[] = "outcome_id";
                 $qry = "update records set dials = dials+1 where urn = '" . intval($post['urn']) . "'";
                 $this->db->query($qry);
@@ -1143,10 +1143,12 @@ return $comments;
             $this->db->update("records", array(
                 "progress_id" => NULL
             ));
-            if (intval($post["progress_id"]) > 0) {
+            
+        }
+		if (intval($post["progress_id"]) > 0) {
                 $update_array[] = "progress_id";
             }
-        }
+		
         $this->db->where("urn", $post['urn']);
         $this->db->update("records", elements($update_array, $post));
     }
@@ -1169,7 +1171,10 @@ return $comments;
             $hist['pot_id'] = $record['pot_id'];
 			$hist['source_id'] = $record['source_id'];
         }
-
+		if(empty($hist['outcome_id'])){
+		unset($hist['outcome_id']);
+		}
+		
         $hist["contact"] = date('Y-m-d H:i:s');
         $hist["user_id"] = $_SESSION['user_id'];
         $hist["role_id"] = $_SESSION['role'];
