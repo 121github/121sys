@@ -1751,7 +1751,7 @@ var record = {
                         k++;
                     });
                     if (k > record.limit - 1) {
-                        $body += '<tr><td colspan="6"><a href="#"><span class="btn btn-info btn-sm pull-right" id="show-all-sms-btn">Show All</span></a></td></tr>';
+                        $body += '<tr><td colspan="6"><a href="#"><span class="btn btn-default btn-sm pull-right" id="show-all-sms-btn">Show All</span></a></td></tr>';
                     }
                     $('#sms-panel').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>From</th><th>To</th><th>Message</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
@@ -2071,7 +2071,7 @@ var record = {
                         k++;
                     });
                     if (k > record.limit - 1) {
-                        $body += '<tr><td colspan="6"><a href="#"><span class="btn btn-info btn-sm pull-right" id="show-all-email-btn">Show All</span></a></td></tr>';
+                        $body += '<tr><td colspan="6"><a href="#"><span class="btn btn-default btn-sm pull-right" id="show-all-email-btn">Show All</span></a></td></tr>';
                     }
                      $panel.find('.panel-body').append('<div class="table-responsive"><table class="table table-striped table-condensed table-responsive"><thead><tr><th>Date</th><th>User</th><th>To</th><th>Subject</th><th></th><th></th></tr></thead><tbody>' + $body + '</tbody></table></div>');
                 } else {
