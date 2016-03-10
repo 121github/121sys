@@ -1,6 +1,6 @@
 <?php if(isset($collapsable)){ ?> 
     <div class="panel panel-primary" id="slot-availability">
-  <div class="panel-heading clearfix" role="button" data-toggle="collapse" data-parent="#detail-accordion" href="#slots-panel-slide" aria-expanded="true" aria-controls="slots-panel-slide">Slot Availability
+  <div class="panel-heading clearfix" role="button" data-toggle="collapse"  data-target="#slots-panel-slide" aria-expanded="true" aria-controls="slots-panel-slide">Slot Availability
     <div class="pull-right">
     <form style="padding:0; margin:0">
     <input type="hidden" id="slot-pot-id" value="<?php echo $record['pot_id'] ?>" />

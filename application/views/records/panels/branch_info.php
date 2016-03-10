@@ -1,7 +1,7 @@
 <?php if(isset($collapsable)){ ?> 
 
     <div class="panel panel-primary" id="branch-info">
-    <div class="panel-heading clearfix" role="button" data-toggle="collapse" data-parent="#detail-accordion" href="#branch-panel-slide" aria-expanded="true" aria-controls="branch-panel-slide">Branch Info
+    <div class="panel-heading clearfix" role="button" data-toggle="collapse"  data-target="#branch-panel-slide" aria-expanded="true" aria-controls="branch-panel-slide">Branch Info
         <div class="pull-right">
             <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" style="display: none" data-toggle="dropdown"

@@ -1,7 +1,7 @@
 <?php if(isset($collapsable)){ ?> 
 
      <div class="panel panel-primary custom-panel" custom-panel-display="<?php echo $display ?>" custom-panel-id="<?php echo $custom_panel_id ?>">
-      <div class="panel-heading clearfix" role="button" data-toggle="collapse" data-parent="#detail-accordion" href="#dynamic-panel-slide" aria-expanded="true" aria-controls="dynamic-panel-slide">
+      <div class="panel-heading clearfix" role="button" data-toggle="collapse"  data-target="#dynamic-panel-slide" aria-expanded="true" aria-controls="dynamic-panel-slide">
      <?php echo $name ?>
       <span class='btn btn-default btn-xs pull-right edit-custom-btn marl' style="display:none" custom-data-id=''><span class='glyphicon glyphicon-pencil'></span> Edit</span>
 	  <span class="btn btn-default btn-xs pull-right add-custom-btn marl" custom-panel-id="<?php echo $custom_panel_id ?>"><span class="glyphicon glyphicon-plus"></span> New</span>

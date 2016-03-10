@@ -1,7 +1,7 @@
  <?php if(isset($collapsable)){ ?>  
     
      <div id="sticky-panel" class="panel panel-primary">
-      <div class="panel-heading clearfix" role="button" data-toggle="collapse" data-parent="#detail-accordion" href="#sticky-panel-slide" aria-expanded="true" aria-controls="sticky-panel-slide">Record Notes</div>
+      <div class="panel-heading clearfix" role="button" data-toggle="collapse"  data-target="#sticky-panel-slide" aria-expanded="true" aria-controls="sticky-panel-slide">Record Notes</div>
        <div id="sticky-panel-slide" class="panel-collapse collapse <?php if(!empty($details['record']['sticky_note'])){ echo "on"; } ?>" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
         <p>

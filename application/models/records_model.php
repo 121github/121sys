@@ -1394,8 +1394,9 @@ return $comments;
     //get appointmnet data for a given urn
     public function get_appointments($urn, $id = false)
     {
-        $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id,cancellation_reason", false);
+        $this->db->select("appointments.appointment_id,title,if(length(text)>60,concat(substr(text,1,60),'...'),text) text,start,end,urn,postcode,appointment_attendees.user_id,users.name,cancellation_reason", false);
         $this->db->join("appointment_attendees", "appointment_attendees.appointment_id=appointments.appointment_id", "LEFT");
+		$this->db->join("users", "appointment_attendees.user_id=users.user_id", "LEFT");
         $this->db->where(array(
             "urn" => $urn
         ));

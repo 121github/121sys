@@ -42,6 +42,10 @@ var campaign_functions = {
                 $('#appointment-confirmed').bootstrapToggle('off');
             }
         });
+		if(typeof quick_planner.driver_id !== "undefined"){
+			$modal.find('.attendeepicker').selectpicker('val',quick_planner.driver_id);
+		}
+		$('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
     },
 
     appointment_edit_setup: function () {
@@ -65,6 +69,7 @@ var campaign_functions = {
                 $modal.find('input[name="appointment_confirmed"]').val("0");
             }
         });
+		$('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
     },
 
     set_appointment_confirmation: function() {

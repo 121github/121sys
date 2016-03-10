@@ -1,7 +1,7 @@
 <?php if(isset($collapsable)){ ?> 
  
  <div id="attachment-panel" class="panel panel-primary">
-      <div class="panel-heading clearfix" role="button" data-toggle="collapse" data-parent="#detail-accordion" href="#attach-panel-slide" aria-expanded="true" aria-controls="attach-panel-slide">
+      <div class="panel-heading clearfix" role="button" data-toggle="collapse" data-target="#attach-panel-slide" aria-expanded="true" aria-controls="attach-panel-slide">
  Attachments<?php if(in_array("add attachment",$_SESSION['permissions'])){ ?>
                 <span class="fileinput-button pull-right btn btn-xs btn-default">
                     <!-- The file input field used as target for the file upload widget -->

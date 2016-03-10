@@ -1,6 +1,6 @@
  <?php if(isset($collapsable)){ ?>
 <div class="panel panel-primary" id="quick-planner-panel">
-  <div class="panel-heading clearfix" data-toggle="collapse" data-parent="#detail-accordion" href="#qp-panel-slide" >      
+  <div class="panel-heading clearfix" data-toggle="collapse"  data-target="#qp-panel-slide" >      
  Quick Planner
     <?php if(isset($attendees)&&!isset($regions)&&count($attendees)>0){ ?>
     <div class='pull-right'>

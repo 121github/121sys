@@ -1,7 +1,7 @@
  <?php if(isset($collapsable)){ ?>  
     
       <div class="panel panel-primary webforms-panel">
-      <div class="panel-heading clearfix"role="button" data-toggle="collapse" data-parent="#detail-accordion" href="#webform-panel-slide" aria-expanded="true" aria-controls="webform-panel-slide">Webforms</div>
+      <div class="panel-heading clearfix"role="button" data-toggle="collapse"  data-target="#webform-panel-slide" aria-expanded="true" aria-controls="webform-panel-slide">Webforms</div>
         <div id="webform-panel-slide" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
         <div class="panel-content"> 

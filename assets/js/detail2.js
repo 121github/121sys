@@ -2672,18 +2672,18 @@ var record = {
            var $panel = $(record.appointment_panel.panel);
             $panel.find('.panel-content').empty();
 
-            var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer small'><thead><tr><th>Title</th><th>Info</th><th>Date</th><th>Time</th></tr></thead><tbody>";
+            var table = "<div class='table-responsive'><table class='table table-striped table-condensed table-hover pointer small'><thead><tr><th>Title</th><th>Notes</th><th>Attendee</th><th>Date</th><th>Time</th></tr></thead><tbody>";
             $.each(data, function (i, val) {
                 if (data.length) {
                     var cancel_class = "";
                     if (val.cancellation_reason) {
                         cancel_class = 'danger'
                     }
-                    table += '<tr class="' + cancel_class + '" data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td>' + val.text + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
+                    table += '<tr class="' + cancel_class + '" data-modal="view-appointment" data-id="' + val.appointment_id + '"><td>' + val.title + '</td><td><span data-toggle="tooltip" title="'+ val.text +'"  class="glyphicon glyphicon-info-sign"></span></td><td>' + val.name + '</td><td>' + val.date + '</td><td>' + val.time + '</td></tr>';
                 }
             });
             $panel.find('.panel-content').append(table + "</tbody></table></div>");
-
+			$panel.find('[data-toggle="tooltip"]').tooltip();
         }
     },
     related_panel: {

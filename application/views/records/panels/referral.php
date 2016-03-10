@@ -1,6 +1,6 @@
  <?php if(isset($collapsable)){ ?>      
     <div class="panel panel-primary" id="referral-panel">
-    <div class="panel-heading clearfix" role="button" data-toggle="collapse" data-parent="#detail-accordion" href="#referral-panel-slide" aria-expanded="true" aria-controls="referral-panel-slide">Referral Details<?php if (in_array("add referral", $_SESSION['permissions'])) { ?><button
+    <div class="panel-heading clearfix" role="button" data-toggle="collapse"  data-target="#referral-panel-slide" aria-expanded="true" aria-controls="referral-panel-slide">Referral Details<?php if (in_array("add referral", $_SESSION['permissions'])) { ?><button
                 class="btn btn-default btn-xs pointer pull-right" data-modal="add-referral"
                 data-urn="<?php echo $details['record']["urn"] ?>"><span
                 class="glyphicon glyphicon-plus"></span> New</button><?php } ?>
