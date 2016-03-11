@@ -1,6 +1,7 @@
-quick_planner.init();
+
 var quick_planner = {
 	init:function(){
+		console.log("Initialising quick planner");
 		//set variables
 		this.driver_id = false;
 		this.driver_name = false;
@@ -249,3 +250,4 @@ show_apps = "show-apps";
     }
 	
 }
+quick_planner.init();
