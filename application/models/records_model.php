@@ -1216,7 +1216,7 @@ return $comments;
     public function get_campaign($urn = "")
     {
         if (intval($urn)) {
-			$query = "select records.campaign_id,campaign_name,campaign_type_id,if(user_layouts.layout is not null,user_layouts.layout,record_layout) record_layout,logo,campaign_name,client_name from records left join campaigns using(campaign_id) left join clients using(client_id) left join user_layouts using(campaign_id) where urn = '$urn'";
+			$query = "select records.campaign_id,campaign_name,campaign_type_id,if(user_layouts.layout is not null,user_layouts.layout,record_layout) record_layout,logo,campaign_name,client_name from records left join campaigns using(campaign_id) left join clients using(client_id) left join (select * from user_layouts where user_id = '".$_SESSION['user_id']."') user_layouts on user_layouts.campaign_id = records.campaign_id where urn = '$urn'";
             $rows = $this->db->query($query)->result_array();
             return $rows[0];
         }
