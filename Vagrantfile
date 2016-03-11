@@ -26,4 +26,8 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision "shell", path: "vagrant/provision.sh"
 
+  #Actions after mount (and provision.sh if is needed)
+  #note the run: "always", this will force vagrant to run the provisioner always
+  config.vm.provision "shell", path: "vagrant/after-boot.sh", run: "always"
+
 end
