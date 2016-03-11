@@ -1162,6 +1162,8 @@ var modals = {
                     }
                     $('#addresspicker').prepend('<option value="' + new_address + '|' + response.postcode + '">' + new_address + '</option>');
                     $('.addresspicker').selectpicker('refresh').selectpicker('val', $('#addresspicker option:first').val());
+					  $('#add-appointment-address').hide();
+					  $('#select-appointment-address').show();
                 } else {
                     //first line not complete
                     flashalert.danger("Please enter the first line of the address");

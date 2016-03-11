@@ -10,7 +10,6 @@ $(document).ajaxStop(function () {
         stretch();
     }
 });
-
 var record = {
     init: function (urn, role, campaign) {
 		this.record_panel = '#record-panel';

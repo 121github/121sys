@@ -1,3 +1,4 @@
+quick_planner.init();
 var quick_planner = {
 	init:function(){
 		//set variables
@@ -46,7 +47,7 @@ var quick_planner = {
         })
 		        $(document).on('click', '#closest-branch', function (e) {
             e.preventDefault();
-            if (quick_planner.contact_postcode == "") {
+            if (quick_planner.contact_postcode == ""&&quick_planner.customer_postcode == "") {
                 flashalert.danger("You must capture a valid customer postcode first");
             } else {
                 //Reset the quick planner

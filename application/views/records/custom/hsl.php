@@ -174,7 +174,6 @@
 		<?php if(in_array(17,$features)){ ?>
         record.appointment_slots_panel.init();
         <?php } ?>
-		quick_planner.init();
     });
 </script>
 <?php endif; ?>
