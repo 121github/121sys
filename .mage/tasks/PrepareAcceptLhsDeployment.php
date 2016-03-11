@@ -14,7 +14,7 @@ class PrepareAcceptLhsDeployment extends AbstractTask
     public function run()
     {
         $commandList = array(
-            'mv application/config/database.php.accept_lhs application/config/database.php',
+            'mv application/config/database.php.accept_lhsurveying application/config/database.php',
             'mv .htaccess_lhs .htaccess',
             'rm -rf application/config/database.php.*',
             'setfacl -R -m u:one2one:rwx -m u:\`whoami\`:rwx datafiles',
