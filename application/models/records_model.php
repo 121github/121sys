@@ -429,7 +429,7 @@ class Records_model extends CI_Model
     public function get_records($options,$urn=false)
     {
         $tables = $options['visible_columns']['tables'];
-        
+        $columns =  $options['visible_columns']['columns'];
         $table_columns = $options['visible_columns']['select'];
         $filter_columns = $options['visible_columns']['filter'];
         $order_columns = $options['visible_columns']['order'];
@@ -439,7 +439,9 @@ class Records_model extends CI_Model
 		if(strpos($col,"custom_")!==false){
 			$split = explode("_",$col);
 			$datafield_ids[$k] = intval($split[1]);
-			$table_columns[$k] = "t_".intval($split[1]).".value ";
+			$filter_columns[$k] = "t_".intval($split[1]).".value";
+			$order_columns[$k] = "t_".intval($split[1]).".value";
+			$table_columns[$k] = "t_".intval($split[1]).".value " .$columns[$k]['data'];
 		}
 		}
 
@@ -537,7 +539,7 @@ class Records_model extends CI_Model
 		if($length>0){
         $qry .= "  limit $start,$length";
 		}
-		//$this->firephp->log($select.$qry);
+		$this->firephp->log($select.$qry);
         $records = $this->db->query($select.$qry)->result_array();
         $records['count'] = $count;
         
@@ -1740,7 +1742,7 @@ return $comments;
   }
   
     public function get_custom_panel_fields($id){
-		$panel_fields_query = "select custom_panel_fields.field_id,custom_panel_fields.name,modal_column,format,type,option_id,custom_panel_options.name option_name,subtext as option_subtext,tooltip,format from custom_panel_fields left join custom_panel_options using(field_id) where custom_panel_id = '$id'";
+		$panel_fields_query = "select custom_panel_fields.field_id,custom_panel_fields.name,modal_column,format,type,read_only,hidden,option_id,custom_panel_options.name option_name,subtext as option_subtext,tooltip,format from custom_panel_fields left join custom_panel_options using(field_id) where custom_panel_id = '$id'";
 	return $this->db->query($panel_fields_query)->result_array();
   }
      public function get_custom_panel_data($urn,$id){

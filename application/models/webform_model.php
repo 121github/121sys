@@ -40,7 +40,7 @@ class Webform_model extends CI_Model
 		$data = array();
 		//get appointment details
 		if($appointment_id){
-		$qry = "select *,date_format(appointments.start,'%d/%m/%Y %H:%i') start_datetime,date_format(appointments.start,'%d/%m/%Y') start_date,date_format(appointments.start,'%H:%i') start_time from appointments join users on user_id = created_by join contacts using(contact_id) join contact_telephone using(contact_id) where appointment_id = '".$appointment_id."'";
+		$qry = "select *,date_format(appointments.start,'%d/%m/%Y %H:%i') start_datetime,date_format(appointments.start,'%d/%m/%Y') start_date,date_format(appointments.start,'%H:%i') start_time,appointment_type from appointments join appointment_types using(appointment_type_id) join users on user_id = created_by join contacts using(contact_id) join contact_telephone using(contact_id) where appointment_id = '".$appointment_id."'";
 		$data['appointment'] = $this->db->query($qry)->row_array();
 		}
 		

@@ -74,7 +74,9 @@ var custom_panels = {
             html += "<th>" + field.name + "</th>";
             blanks += "<td>-</td>";
         });
+		if (helper.permissions['edit custom data'] > 0) {
         html += "<th></th>";
+		}
         html += "</tr></thead><tbody>";
         if ($.isEmptyObject(response.data)) {
             html += "<tr>" + blanks + "</tr>";
@@ -92,7 +94,9 @@ var custom_panels = {
                     }
                     html += "<td>" + value + "</td>";
                 });
+				if (helper.permissions['edit custom data'] > 0) {
                 html += "<td><span class='btn btn-default btn-xs pull-right edit-custom-btn marl' custom-data-id='" + id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span></td>";
+				}
                 html += "</tr>";
             });
         }
@@ -169,7 +173,7 @@ var custom_panels = {
             $.each(response.fields, function(i, column) {
                 html += "<div class='col-sm-6'>";
                 $.each(column, function(field_id, field) {
-                    html += "<div class='form-group'>";
+                    html += "<div class='form-group' "+(field.hidden==1?"style='display:none'":"")+">";
                     html += "<label>" + field.name + "</label>"
                     if (field.tooltip.length > 0) {
                         html += "<span class='pointer glyphicon glyphicon-info-sign marl' data-toggle='tooltip' title='" + field.tooltip + "'></span>";
@@ -182,19 +186,19 @@ var custom_panels = {
                     }
 
                     if (field.type == "string") {
-                        html += "<input type='text' name='" + field.field_id + "' class='form-control input-sm' value='" + value + "'/>";
+                        html += "<input type='text' "+(field.read_only==1?"disabled":"")+" name='" + field.field_id + "' class='form-control input-sm' value='" + value + "'/>";
                     }
                     if (field.type == "number" || field.type == "decimal") {
-                        html += "<input type='text' name='" + field.field_id + "' class='number form-control input-sm' value='" + value + "'/>";
+                        html += "<input type='text' "+(field.read_only==1?"disabled":"")+" name='" + field.field_id + "' class='number form-control input-sm' value='" + value + "'/>";
                     }
                     if (field.type == "date") {
-                        html += "<input type='text' name='" + field.field_id + "' class='form-control date input-sm' value='" + value + "'/>";
+                        html += "<input type='text' "+(field.read_only==1?"disabled":"")+" name='" + field.field_id + "' class='form-control date input-sm' value='" + value + "'/>";
                     }
                     if (field.type == "datetime") {
-                        html += "<input type='text' name='" + field.field_id + "' class='form-control datetime input-sm' value='" + value + "'/>";
+                        html += "<input type='text' "+(field.read_only==1?"disabled":"")+" name='" + field.field_id + "' class='form-control datetime input-sm' value='" + value + "'/>";
                     }
                     if (field.type == "select") {
-                        html += "<select name='" + field.field_id + "' class='selectpicker'><option value=''>--Please select--</option>";
+                        html += "<select "+(field.read_only==1?"disabled":"")+" name='" + field.field_id + "' class='selectpicker'><option value=''>--Please select--</option>";
                         $.each(field.options, function(o, option) {
                             var selected = "";
                             if (value == option.option_id) {
@@ -205,7 +209,7 @@ var custom_panels = {
                         html += "</select>";
                     }
                     if (field.type == "multiple") {
-                        html += "<select name='" + field.field_id + "[]' multiple class='selectpicker'>";
+                        html += "<select "+(field.read_only==1?"disabled":"")+" name='" + field.field_id + "[]' multiple class='selectpicker'>";
                         $.each(field.options, function(o, option) {
                             var selected = "";
                             //dirty hack to check if the option value is in the comma seperated list
@@ -219,7 +223,7 @@ var custom_panels = {
                     if (field.type == "buttons") {
                         html += "<div class='btn-group toggle-buttons' role='group' >";
                         $.each(field.options, function(o, option) {
-                            html += '<button class="btn btn-default">' + option.option_name + '</button>';
+                            html += '<button "+(field.read_only==1?"disabled":"")+" class="btn btn-default">' + option.option_name + '</button>';
                         });
                         html += "</div>";
                     }
@@ -228,7 +232,7 @@ var custom_panels = {
                         if (value == "on") {
                             checked = "checked";
                         }
-                        html += "<input " + checked + " type='checkbox' name='" + field.field_id + "' class='input-sm'/>";
+                        html += "<input "+(field.read_only==1?"disabled":"")+" " + checked + " type='checkbox' name='" + field.field_id + "' class='input-sm'/>";
                     }
                     html += "</div>";
                 });

@@ -163,6 +163,7 @@ class Records extends CI_Controller
             $options = $this->input->post();
 			$this->load->model('Datatables_model');
 			$visible_columns = $this->Datatables_model->get_visible_columns(1);
+			$this->firephp->log($visible_columns);
 			$options['visible_columns'] = $visible_columns;
 			//check the options
 			foreach($options['columns'] as $k=>$column){

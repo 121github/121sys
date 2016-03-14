@@ -120,7 +120,7 @@ var appointment_rules = {
                         title += "<tr><td style='text-align: left;'>" + rule.name + ": </td><td>" + rule.reason + "</td></tr>";
                     });
                     title += '</table>';
-                    $('.cal-month-day').find('[data-cal-date="' + key + '"]').css('border-radius', '10px').css('padding', '3px 5px').css('color', '#fff').css('background-color', 'red').attr('data-html', 'true').attr('data-original-title', title).tooltip();
+                    $('.cal-month-day').find('[data-cal-date="' + key + '"].rule-tooltip').css('border-radius', '10px').css('padding', '3px 5px').css('color', '#fff').css('background-color', 'red').attr('data-html', 'true').attr('data-original-title', "<small>"+title+"</small>").tooltip();
 
                     $('.cal-week-box').find('.rule-tooltip[data-cal-date="' + key + '"]').css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
                     $('#cal-day-box').find('.rule-tooltip[data-cal-date="' + key + '"]').css('color', 'red').attr('item-rules', value.length).attr('data-original-title', title).show();
@@ -236,6 +236,7 @@ var appointment_rules = {
         });
     },
     get_calendar_users: function (reload_cal) {
+		console.log("Reloading attendees");
         $.ajax({
             url: helper.baseUrl + 'calendar/get_calendar_users',
             type: "POST",
@@ -459,7 +460,8 @@ $(document).ready(function () {
     });
 
     //load the available attendee options when the page loads
-    appointment_rules.get_calendar_users(false);
+    //appointment_rules.get_calendar_users(false);
+	
     //Add appointment rule
     $(document).on('click', '.block-day-btn', function () {
         calendar_modals.addAppointmentRule($(this).attr('item-day'));

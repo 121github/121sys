@@ -1,7 +1,7 @@
 var simulation = "";
 
 var campaign_functions = {
-    init: function () {
+    init: function () {	
 		$(record.record_panel).find('.panel-heading').html($(record.record_panel).find('.panel-heading').html().replace("Record Details", "Progress Summary"));
 
 		if(helper.role>2){
@@ -53,6 +53,14 @@ var campaign_functions = {
                 clearInterval(interval);
             }, 1000);
         });
+		
+			if(record.role=="11"){
+		$('#availability-attendee-filter').find('[data-val="47"]').trigger('click');
+		$('#custom-panel .collapse').collapse('show');
+		$('.custom-panel .collapse').collapse('show');
+		$('#appointment-panel .collapse').collapse('show');
+		$('#slot-availability .collapse').collapse('show');
+		}
 		
     },
     contact_form_setup: function () {

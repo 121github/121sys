@@ -218,7 +218,7 @@ class Appointments_model extends CI_Model
     public function appointment_data($count = false, $options = false)
     {
 		 $tables = $options['visible_columns']['tables'];
-      
+      $columns =  $options['visible_columns']['columns'];
         $table_columns = $options['visible_columns']['select'];
         $filter_columns = $options['visible_columns']['filter'];
         $order_columns = $options['visible_columns']['order'];	
@@ -228,7 +228,9 @@ $datafield_ids = array();
 		if(strpos($col,"custom_")!==false){
 			$split = explode("_",$col);
 			$datafield_ids[$k] = intval($split[1]);
-			$table_columns[$k] = "t_".intval($split[1]).".value ";
+			$filter_columns[$k] = "t_".intval($split[1]).".value";
+			$order_columns[$k] = "t_".intval($split[1]).".value";
+			$table_columns[$k] = "t_".intval($split[1]).".value " .$columns[$k]['data'];
 		}
 		}
   //these tables must be joined to the query regardless of the selected columns to allow the map to function
@@ -277,11 +279,15 @@ $datafield_ids = array();
 		unset($join_array['appointments']);
 
       $tablenum=0;
+	  $tableappnum=0;
         foreach ($tables as $k=>$table) {
 			if($table=="custom_panels"){ $tablenum++;
-		
 			$field_id = $datafield_ids[$k];
 				$join[] = " left join (select max(id) id,urn from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id' group by urn) mc_$field_id on mc_$field_id.urn =  r.urn left join  custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
+			}
+			if($table=="custom_panels_appointments"){ $tableappnum++;
+			$field_id = $datafield_ids[$k];
+				$join[] = " left join (select id,appointment_id from custom_panel_values join custom_panel_data using(data_id) where field_id = '$field_id') mc_$field_id on mc_$field_id.appointment_id =  a.appointment_id left join custom_panel_values t_$field_id on t_$field_id.id = mc_$field_id.id ";
 			}
 			
 			if($table<>"custom_panels"){

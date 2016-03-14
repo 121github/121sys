@@ -80,7 +80,12 @@
                                 <?php foreach ($users as $row): ?>
                                     <option <?php if (@in_array($row['id'], $_SESSION['calendar-filter']['users'])) {
                                         echo "selected";
-                                    } ?> value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
+                                    } ?>
+                                    <?php if (empty($_SESSION['calendar-filter']['users'])&&$row['id']==$_SESSION['user_id']) {
+                                        echo "selected";
+                                    } ?>
+                                    
+                                     value="<?php echo $row['id'] ?>"><?php echo $row['name'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
