@@ -1527,7 +1527,7 @@ public function index(){
                     'pageId' => 'Dashboard',
                     'title' => 'Dashboard - ERROR',
                        'page' => 'dashboard-error',
-                    'error' => "ERROR => There is no dashboard with this id or you don't have permissions to access!",
+                    'error' => "There is no dashboard with this id or you don't have permissions to access!",
                     'javascript' => array(
                         'dashboard.js?v' . $this->project_version
                     ),

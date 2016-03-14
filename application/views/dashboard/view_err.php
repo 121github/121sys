@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">
-            Dashboard |Error|
+            Dashboard | Error
             <small><?php if (isset($_SESSION['current_campaign_name'])) { echo @$_SESSION['current_campaign_name']; } ?></small>
         </h1>
     </div>
@@ -30,6 +30,6 @@
 
 <script>
     $(document).ready(function () {
-        dashboard.init();
+//        dashboard.init();
     });
 </script>
