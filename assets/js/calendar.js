@@ -460,7 +460,9 @@ $(document).ready(function () {
     });
 
     //load the available attendee options when the page loads
-    //appointment_rules.get_calendar_users(false);
+	if($('#user-select').val()==null){
+    appointment_rules.get_calendar_users(false);
+	}
 	
     //Add appointment rule
     $(document).on('click', '.block-day-btn', function () {

@@ -11,7 +11,9 @@ var campaign_functions = {
     record_setup_update: function() {
 		//this is ran when the update panel finished loading
 		$('#contact-panel').on('click','.startcall.btn',function(e){
-			$('#script-panel').find('.view-script').trigger('click');
+			setTimeout(function(){
+				$('#script-panel').find('.view-script').trigger('click');
+			},1000);
 		});
     },
     appointment_setup: function (start) {
