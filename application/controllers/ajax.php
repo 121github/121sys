@@ -1545,37 +1545,37 @@ class Ajax extends CI_Controller
         $fields = array();
         $options = array();
         foreach ($panel_fields as $k => $row) {
-            $options[$row['field_id']][] = array("option_id" => $row['option_id'], "option_name" => $row['option_name'], "option_subtext" => $row['option_subtext']);
-            $fields[$row['field_id']] = $row;
-            $fields[$row['field_id']]['options'] = $options[$row['field_id']];
+            $options[$row['name']][] = array("option_id" => $row['option_id'], "option_name" => $row['option_name'], "option_subtext" => $row['option_subtext']);
+            $fields[$row['name']] = $row;
+            $fields[$row['name']]['options'] = $options[$row['name']];
         }
         $panel_data = $this->Records_model->get_custom_panel_data($urn, $id);
         $data = array();
         foreach ($panel_data as $k => $row) {
-            if ($fields[$row['field_id']]['type'] == "date") {
+            if ($fields[$row['name']]['type'] == "date") {
                 $row['value'] == date($fields[$row['field_id']]['format'], strtotime($row['value']));
             }
-            if ($fields[$row['field_id']]['type'] == "decimal") {
+            if ($fields[$row['name']]['type'] == "decimal") {
                 $row['value'] == number_format(intval($row['value']), 2);
             }
-            if ($fields[$row['field_id']]['type'] == "number") {
+            if ($fields[$row['name']]['type'] == "number") {
                 $row['value'] == number_format(intval($row['value']));
             }
-            if ($fields[$row['field_id']]['type'] == "string") {
+            if ($fields[$row['name']]['type'] == "string") {
                 $row['value'] == htmlentities($row['value']);
             }
-            if ($fields[$row['field_id']]['type'] == "select") {
+            if ($fields[$row['name']]['type'] == "select") {
                 //get the actual values of the options
                 $value = $this->db->query("select name from custom_panel_options where option_id = '{$row['value']}'")->row_array();
                 $row['value'] = !empty($value) ? $value['name'] : "";
             }
-            if ($fields[$row['field_id']]['type'] == "multiple") {
+            if ($fields[$row['name']]['type'] == "multiple") {
                 //get the actual values of the options
                 $name = $this->db->query("select group_concat(distinct name SEPARATOR ', ') name from custom_panel_options where option_id in({$row['value']}) group by field_id")->row()->name;
                 $row['value'] = $name;
             }
-            $data[$row['data_id']][$row['field_id']] = $row;
-            $data[$row['data_id']][$row['field_id']]['name'] = $fields[$row['field_id']]['name'];
+            $data[$row['data_id']][$row['name']] = $row;
+            $data[$row['data_id']][$row['name']]['name'] = $fields[$row['name']]['name'];
         }
 
         echo json_encode(array("success" => true, "panel" => $panel_details, "fields" => $fields, "data" => $data));
@@ -1592,27 +1592,27 @@ class Ajax extends CI_Controller
         $fields = array();
         $options = array();
         foreach ($panel_fields as $k => $row) {
-            $options[$row['field_id']][] = array("option_id" => $row['option_id'], "option_name" => $row['option_name'], "option_subtext" => $row['option_subtext']);
-            $fields[$row['modal_column']][$row['field_id']] = $row;
-            $fields[$row['modal_column']][$row['field_id']]['options'] = $options[$row['field_id']];
+            $options[$row['name']][] = array("option_id" => $row['option_id'], "option_name" => $row['option_name'], "option_subtext" => $row['option_subtext']);
+            $fields[$row['modal_column']][$row['name']] = $row;
+            $fields[$row['modal_column']][$row['name']]['options'] = $options[$row['name']];
         }
         $panel_data = $this->Records_model->get_custom_panel_data($urn, $id);
         $data = array();
         foreach ($panel_data as $k => $row) {
-            if ($fields[$row['modal_column']][$row['field_id']]['type'] == "date" || $fields[$row['modal_column']][$row['field_id']]['type'] == "datetime") {
-                $row['value'] == date($fields[$row['modal_column']][$row['field_id']]['format'], strtotime($row['value']));
+            if ($fields[$row['modal_column']][$row['name']]['type'] == "date" || $fields[$row['modal_column']][$row['name']]['type'] == "datetime") {
+                $row['value'] == date($fields[$row['modal_column']][$row['name']]['format'], strtotime($row['value']));
             }
-            if ($fields[$row['modal_column']][$row['field_id']]['type'] == "decimal") {
+            if ($fields[$row['modal_column']][$row['name']]['type'] == "decimal") {
                 $row['value'] == $row['value'];
             }
-            if ($fields[$row['modal_column']][$row['field_id']]['type'] == "number") {
+            if ($fields[$row['modal_column']][$row['name']]['type'] == "number") {
                 $row['value'] == $row['value'];
             }
-            if ($fields[$row['modal_column']][$row['field_id']]['type'] == "string") {
+            if ($fields[$row['modal_column']][$row['name']]['type'] == "string") {
                 $row['value'] == htmlentities($row['value']);
             }
             $data[$row['data_id']][$row['modal_column']][$row['field_id']] = $row;
-            $data[$row['data_id']][$row['modal_column']][$row['field_id']]['name'] = $fields[$row['modal_column']][$row['field_id']]['name'];
+            $data[$row['data_id']][$row['modal_column']][$row['field_id']]['name'] = $fields[$row['modal_column']][$row['name']]['name'];
         }
 
         echo json_encode(array("success" => true, "panel" => $panel_details, "fields" => $fields, "data" => $data));

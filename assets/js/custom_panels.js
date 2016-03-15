@@ -172,7 +172,9 @@ var custom_panels = {
             }
             $.each(response.fields, function(i, column) {
                 html += "<div class='col-sm-6'>";
-                $.each(column, function(field_id, field) {
+                $.each(column, function(key, field) {
+					var field_id = field.field_id;
+					console.log(field_id);
                     html += "<div class='form-group' "+(field.hidden==1?"style='display:none'":"")+">";
                     html += "<label>" + field.name + "</label>"
                     if (field.tooltip.length > 0) {
@@ -184,7 +186,9 @@ var custom_panels = {
                     } else {
                         var value = "";
                     }
-
+					if(field.read_only==1){
+						html += "<input type='hidden' name='" + field.field_id + "' value='" + value + "' />";
+					}
                     if (field.type == "string") {
                         html += "<input type='text' "+(field.read_only==1?"disabled":"")+" name='" + field.field_id + "' class='form-control input-sm' value='" + value + "'/>";
                     }
@@ -239,7 +243,12 @@ var custom_panels = {
                 html += "</div>";
             });
             html += "</div></form>";
-            var mheader = $('.custom-panel[custom-panel-id="' + panel_id + '"]').find('span.title').text();
+            var mheader = $('.custom-panel[custom-panel-id="' + panel_id + '"] .panel-heading')
+    .clone()    //clone the element
+    .children() //select all the children
+    .remove()   //remove all the children
+    .end()  //again go back to selected element
+    .text();
             var mfooter = '<button type="submit" class="btn btn-primary pull-right" id="save-custom-panel" custom-panel-id="' + panel_id + '">Save</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 			//load the modal
             modals.load_modal(mheader, html, mfooter);

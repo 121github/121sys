@@ -184,6 +184,10 @@ var campaign_functions = {
 
     },
     appointment_saved: function (appointment_id, state) {
+if(record.role==11){
+	custom_panels.load_all_panels();
+}
+		
         //Send appointment_confirmation + cover_letter to hsl
         var branch_id = null;
         $.ajax({

@@ -1742,14 +1742,26 @@ return $comments;
   }
   
     public function get_custom_panel_fields($id){
-		$panel_fields_query = "select custom_panel_fields.field_id,custom_panel_fields.name,modal_column,format,type,read_only,hidden,option_id,custom_panel_options.name option_name,subtext as option_subtext,tooltip,format from custom_panel_fields left join custom_panel_options using(field_id) where custom_panel_id = '$id'";
+		$panel_fields_query = "select custom_panel_fields.field_id,custom_panel_fields.name,modal_column,format,type,read_only,hidden,option_id,custom_panel_options.name option_name,subtext as option_subtext,tooltip,format from custom_panel_fields left join custom_panel_options using(field_id) where custom_panel_id = '$id' order by sort";
 	return $this->db->query($panel_fields_query)->result_array();
   }
      public function get_custom_panel_data($urn,$id){
-		$panel_data_query = "select id,data_id,field_id,value,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and custom_panel_id = '$id' order by created_on desc";
+		$panel_data_query = "select id,data_id,field_id,value,name,modal_column,date_format(created_on, '%D %M %Y') created_on from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) where urn = '$urn' and custom_panel_id = '$id' order by created_on desc";
 	return $this->db->query($panel_data_query)->result_array();
   }
-  
+  public function create_custom_data_with_linked_appointments($appointment_id){
+	$query = "select custom_panel_id,appointment_type_id,linked_appointment_type_ids from custom_panels join campaign_custom_panels using(custom_panel_id) join records using(campaign_id) join appointments using(urn) where appointment_id = '$appointment_id' and linked_appointment_type_ids is not null";
+	 foreach($this->db->query($query)->result_array() as $row){
+		 $appointment_type_ids = explode(",",$row['linked_appointment_type_ids']);
+		 if(in_array($row['appointment_type_id'], $appointment_type_ids)){
+		$this->db->query("insert into custom_panel_data values('',(select urn from appointments where appointment_id = '$appointment_id'),$appointment_id,now(),".$_SESSION['user_id'].",now(),1)");
+		//
+		$data_id = $this->db->insert_id();
+		$this->db->query("insert into custom_panel_values (select '',$data_id,field_id,if(is_appointment_id=1,'$appointment_id','') from custom_panel_fields where custom_panel_id = '{$row['custom_panel_id']}' and is_appointment_id = 1)");
+		$this->firephp->log($this->db->last_query());
+		 }
+	 }
+  }
 }
 
 ?>

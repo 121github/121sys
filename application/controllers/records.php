@@ -1085,6 +1085,10 @@ if($campaign_id<>@$_SESSION['current_campaign']){
                 $response['add_to_planner'] = true;
             }
 
+			//check if a custom data panel items needs creating for this appointment
+			$this->Records_model->create_custom_data_with_linked_appointments($id);
+
+
             //if its a GHS campaign update trackvia
             if (isset($_SESSION['current_client']) && $_SESSION['current_client'] == "GHS") {
                 $response["trackvia"] = base_url() . "trackvia/add_appointment";
