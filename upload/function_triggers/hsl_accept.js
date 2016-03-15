@@ -1,7 +1,7 @@
 var simulation = "";
 
 var campaign_functions = {
-    init: function () {
+    init: function () {	
 		$(record.record_panel).find('.panel-heading').html($(record.record_panel).find('.panel-heading').html().replace("Record Details", "Progress Summary"));
 
 		if(helper.role>2){
@@ -54,6 +54,14 @@ var campaign_functions = {
             }, 1000);
         });
 		
+			if(record.role=="11"){
+		$('#availability-attendee-filter').find('[data-val="47"]').trigger('click');
+		$('#custom-panel .collapse').collapse('show');
+		$('.custom-panel .collapse').collapse('show');
+		$('#appointment-panel .collapse').collapse('show');
+		$('#slot-availability .collapse').collapse('show');
+		}
+		
     },
     contact_form_setup: function () {
         $('input[name="dob"]').closest('.form-group').hide();
@@ -94,10 +102,13 @@ var campaign_functions = {
         ;
     },
     appointment_edit_setup: function () {
+		if(record.role!=="11"){
         campaign_functions.hsl_coverletter_address();
         $modal.find('.branches-selection').show();
+		$modal.find('.branches-selection').prop('disabled',true);
         $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
         $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
+		}
     },
     hsl_coverletter_address: function () {
         $options = $('#addresspicker').html();
@@ -176,6 +187,10 @@ var campaign_functions = {
 
     },
     appointment_saved: function (appointment_id, state) {
+if(record.role==11){
+	custom_panels.load_all_panels();
+}
+		
         //Send appointment_confirmation + cover_letter to hsl
         var branch_id = null;
         $.ajax({

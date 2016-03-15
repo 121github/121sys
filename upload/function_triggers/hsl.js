@@ -102,10 +102,13 @@ var campaign_functions = {
         ;
     },
     appointment_edit_setup: function () {
+		if(record.role!=="11"){
         campaign_functions.hsl_coverletter_address();
         $modal.find('.branches-selection').show();
+		$modal.find('.branches-selection').prop('disabled',true);
         $modal.find('.attendees-selection').removeClass("col-xs-6").addClass("col-xs-4");
         $modal.find('.contacts-selection').removeClass("col-xs-6").addClass("col-xs-4");
+		}
     },
     hsl_coverletter_address: function () {
         $options = $('#addresspicker').html();
