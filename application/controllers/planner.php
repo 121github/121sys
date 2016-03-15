@@ -215,7 +215,7 @@ class Planner extends CI_Controller
                         } else if (isset($result[$k]['type']) && $result[$k]['type'] == 'access_postcode') {
                             $title = "Access Details for Appointment $app_num";
                         } else {
-                            $title = "Appointment $app_num [" . $result[$k]['time'] . "]";
+                            $title = "Appointment $app_num [" . @$result[$k]['time'] . "]";
                             $app_num++;
                         }
                     } else {

@@ -108,7 +108,7 @@
         }
 		   }?>
              <?php $this->view('records/panels/appointments.php', $details); ?>
-             <?php $this->view('records/panels/availability.php', $details); ?>
+             <?php  $this->view('records/panels/quick_planner.php', $details); ?>
            </div>
     </div>
    

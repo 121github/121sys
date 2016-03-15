@@ -1437,7 +1437,11 @@ return $comments;
 	
     public function save_appointment($post)
     {
-        $attendees = $post['attendees'];
+		if(isset($post['data_id'])){
+		$data_id = $post['data_id'];
+		unset($post['data_id']);
+		}
+		$attendees = $post['attendees'];
         unset($post['attendees']);
 		if(empty($post['branch_id'])){
 		 $post['branch_id'] = NULL;
@@ -1480,10 +1484,14 @@ return $comments;
             }
             return $insert;
         }
-
-
     }
-
+	
+	public function link_appointment_to_custom_data($data_id,$appointment_id){
+				$this->db->where("data_id",$data_id);
+				$this->db->update("custom_panel_data",array("appointment_id"=>$appointment_id));
+				$update = "update custom_panel_values join custom_panel_fields using(field_id) set `value` = '$appointment_id' where data_id = '$data_id' and is_appointment_id = 1";
+				$this->db->query($update);		
+	}
 
     //when a record is update this function is ran to see if an email should be sent to anyone
     public function get_email_triggers($campaign_id, $outcome_id)

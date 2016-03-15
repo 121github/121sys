@@ -1084,10 +1084,14 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             if (in_array("apps to planner", $_SESSION['permissions'])) {
                 $response['add_to_planner'] = true;
             }
-
+			if(!isset($data['data_id'])){
 			//check if a custom data panel items needs creating for this appointment
 			$this->Records_model->create_custom_data_with_linked_appointments($id);
-
+			$linked=false;
+			} else {
+			$this->Records_model->link_appointment_to_custom_data($data['data_id'],$id);
+			$linked=true;
+			}
 
             //if its a GHS campaign update trackvia
             if (isset($_SESSION['current_client']) && $_SESSION['current_client'] == "GHS") {
@@ -1310,6 +1314,15 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             ));
         }
     }
+
+	public function update_custom_data_field(){
+	$data_id = $this->input->post("data_id");
+	$field_id = $this->input->post("field_id");
+	$value = $this->input->post("value");
+	$query = "replace into custom_panel_values set data_id = '$data_id',field_id = '$field_id', `value`= '$value'";
+	$this->db->query($query);
+	echo json_encode(array("success"=>true));
+	}
 
     public function save_record_planner() {
         if ($this->input->is_ajax_request()) {

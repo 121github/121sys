@@ -43,9 +43,8 @@ var campaign_functions = {
                 quick_planner.region_id = $(this).attr('data-region');
                 $("#quick-planner-panel .branch-name-text").text(quick_planner.branch_name);
                 //$('a.filter[data-val="' + driver_id + '"]').trigger('click');
-                quick_planner.load_planner();
+               quick_planner.load_planner()
             })
-
             //Find closest branches on new address
             $modal.on("click", ".save-contact-address", function(e) {
                 var interval = setInterval(function() {
@@ -59,7 +58,9 @@ var campaign_functions = {
                 $('#custom-panel .collapse').collapse('show');
                 $('.custom-panel .collapse').collapse('show');
                 $('#appointment-panel .collapse').collapse('show');
-                $('#slot-availability .collapse').collapse('show');
+                $('#quick-planner-panel .collapse').collapse('show');
+				//quick_planner.branch_id = 4;
+				quick_planner.driver_id = 47;
             }
 
         },
@@ -77,8 +78,27 @@ var campaign_functions = {
                 $modal.find('.branches-selection').prop('disabled', true);
                 $modal.find('.typepicker option[value=3],.typepicker option[value=5]').prop('disabled', true);
                 $modal.find('.attendeepicker option[value=47]').prop('selected', true);
-
                 $modal.find('.typepicker,.attendeepicker').selectpicker('refresh');
+				$options = $('#addresspicker').html();
+				
+				$.ajax({ url: helper.baseUrl+'appointments/get_unlinked_data_items',
+				data:{urn:record.urn},
+				dataType:"JSON",
+				type:"POST"
+				}).done(function(response){
+				$options = "";
+				if(response.data.length>0){
+					data_options = "";
+					$.each(response.data,function(k,row){
+						data_options += "<option value='"+row.data_id+"'>Delivery #"+row.data_id+": Created on "+row.created_on+"</option>";
+					});
+            $data_items = $("<div class='form-group'><p>Which delivery is this appointment related to?</p><select data-width='100%' id='data-items' name='data_id'>" + data_options + "</select></div>");
+
+            $data_items.insertBefore($('#select-appointment-address'));
+            $('#data-items').selectpicker();
+				}
+			});
+				
             } else {
                 campaign_functions.hsl_coverletter_address();
                 quick_planner.set_appointment_start(start);
@@ -120,6 +140,7 @@ var campaign_functions = {
                 $modal.find('.typepicker option[value=3],.typepicker option[value=5]').prop('disabled', true);
                 $modal.find('.typepicker').selectpicker('refresh');
 
+		
             } else {
                 campaign_functions.hsl_coverletter_address();
                 $modal.find('.branches-selection').show();
@@ -199,6 +220,7 @@ var campaign_functions = {
                     });
                     branch_info += "</tbody></table>";
                     $panel.find('.panel-body').html(branch_info);
+
                 } else {
                     $panel.find('.panel-body').html("<p>Please enter a contact postcode to find the closest hub, or select a hub using the options above</p>");
                 }
@@ -210,7 +232,7 @@ var campaign_functions = {
         },
         appointment_saved: function(appointment_id, state) {
             if (record.role == 11) {
-                custom_panels.load_all_panels();
+				custom_panels.load_all_panels();	
             }
 
             //Send appointment_confirmation + cover_letter to hsl
@@ -221,7 +243,7 @@ var campaign_functions = {
                     appointment_id: appointment_id,
                     branch_id: branch_id,
                     state: state,
-                    send_to: 'bradf@121customerinsight.co.uk'
+                    send_to: 'bradf@121customerinsight.co.uk'//'HCletters@hslchairs.com'
                 },
                 type: "POST",
                 dataType: "JSON"
@@ -229,6 +251,13 @@ var campaign_functions = {
 
             });
         },
+		custom_items_loaded:function(){
+			    $('.custom-panel').find('.id-title').text("Delivery Number");
+		},
+		new_custom_item_setup:function(){
+			$modal.find('select[name=7] option[value=11]').prop('selected',true);
+			$modal.find('select[name=7]').selectpicker('refresh');
+		},
         set_access_address: function() {
             if (typeof $('.accessaddresspicker option:selected').val() !== 'undefined') {
                 if ($('.accessaddresspicker option:selected').val().length <= 0) {

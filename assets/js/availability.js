@@ -3,7 +3,7 @@ var quick_planner = {
 	init:function(){
 		console.log("Initialising quick planner");
 		//set variables
-		this.driver_id = false;
+		this.driver_id = helper.user_id;
 		this.driver_name = false;
 		this.branch_id = false;
 		this.branch_name = false;

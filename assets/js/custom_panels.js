@@ -63,7 +63,9 @@ var custom_panels = {
 				  }
             }
             $('.custom-panel[custom-panel-id="' + panel_id + '"]').find('.panel-body').html(html);
-			
+			if(typeof campaign_functions.custom_items_loaded !== "undefined"){
+			campaign_functions.custom_items_loaded();
+			}
         });
     },
     load_table: function(response) {
@@ -131,7 +133,7 @@ var custom_panels = {
 				wrapper = "<div class='table-wrapper' "+hidden+" data-list-id='"+data_id+"'>";
 				list_counts += "<span class='fa fa-circle pointer "+color+"' data-tab='"+data_id+"'></span> ";
                 table += "<table data-list-id='"+data_id+"' class='table "+response.panel.table_class+"'>";		
-				
+				   table += "<tr><th style='white-space:nowrap;padding-right:5px' class='id-title'>ID#</th><td style='width:100%'>" + data_id + "</td></tr>";
                 $.each(response.fields, function(id, field) {
                    if(typeof response.data[data_id][id] !== "undefined"){ var val=response.data[data_id][id].value
 				   meta = "<span style='padding-bottom:5px' class='pull-left small'>Added on "+response.data[data_id][id].created_on+"</span>";
@@ -265,6 +267,12 @@ var custom_panels = {
             });
 			//initialize any tooltips
             $modal.find('[data-toggle="tooltip"]').tooltip();
+			
+			if(!data_id&&typeof campaign_functions.new_custom_item_setup !== "undefined"){
+				campaign_functions.new_custom_item_setup();
+			} else if(data_id&&typeof campaign_functions.edit_custom_item_setup !== "undefined"){
+				campaign_functions.edit_custom_item_setup();
+			}
         });
     },
     save_form: function(panel_id) {

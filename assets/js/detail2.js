@@ -912,6 +912,10 @@ var record = {
                                 });
                                 if (addr.primary == 1) {
                                     primary_postcode = addr.postcode;
+									if(typeof quick_planner !== "undefined"&&quick_planner.contact_postcode!==primary_postcode){
+										quick_planner.contact_postcode = primary_postcode;
+										quick_planner.load_planner()
+									}
                                 }
                                 var postcode = addr.postcode;
                                 var maplink = addr.postcode!==null?"<a class='pull-right pointer' target='_blank' id='map-link' href='https://maps.google.com/maps?q=" + addr.postcode + ",+UK'><span class='glyphicon glyphicon-map-marker'></span> Map</a>":"";
