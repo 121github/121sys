@@ -317,6 +317,8 @@ class Email extends CI_Controller
 		
         //Save the email in the history table
         unset($form['template_attachments']);
+        $form['visible'] = $form['history_visible'];
+        unset($form['history_visible']);
         $email_id = $this->Email_model->add_new_email_history($form);
         $response = ($email_id) ? true : false;
         $form['email_id'] = $email_id;
