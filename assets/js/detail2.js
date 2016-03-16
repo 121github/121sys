@@ -170,7 +170,9 @@ var record = {
         window.history.pushState(data, "Record Details-" + record.urn, helper.baseUrl + 'records/detail/' + record.urn);	
 		//start campaign specific javascript on the record details page
 		if(typeof campaign_functions!=="undefined"){
-		campaign_functions.init();
+            if(typeof campaign_functions.init!=="undefined"){
+                campaign_functions.init();
+            }
 		}
     },
     start_call: function () {
