@@ -100,7 +100,7 @@
     } ?>>
 
         <div class="col-lg-12">
-            <div class="form-group input-group-sm">
+            <div class="row">
                 <p>Please select the address the appointment will take place</p>
                 <select name="address" class="selectpicker addresspicker" id="addresspicker" title="Choose the address" data-width="100%">
                     <?php foreach ($addresses as $address):
@@ -182,24 +182,17 @@
         </div>
     </div>
 
-
-
-    <!-- APPOINTMENT ACCESS ADDRESS -->
-    <div class="checkbox form-group input-group-sm access-add-check"
-         style="display:<?php if (!in_array("access address", $_SESSION['permissions']))  echo "none";?>">
-        <label>
-            <input id="access-add-check" data-toggle="toggle" data-width="200" data-onstyle="info" data-on="Access Address Details" data-off="Access Address Details"  name="access_add_check" type="checkbox">
-        </label>
-    </div>
-    <div class="access_addess" style="display: none; margin-top: 10px;">
+<?php if (in_array("access address", $_SESSION['permissions'])) { ?>
         <div class="row" id="select-appointment-access-address" <?php if (count($addresses) == 0) { echo 'style="display:none"';} ?>>
 
             <div class="col-lg-12">
                 <div class="form-group input-group-sm">
-                    <p>Please select the access address for the appointment</p>
-                    <select name="access_address" class="selectpicker accessaddresspicker" id="accessaddresspicker" title="Choose the address"
+                    <p>Please select the access address for the appointment <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" title="This is a location that must be visited prior to attending the appointment. For example, if you need to collect some keys to gain entry"></span></p>
+                    <select name="access_address" class="selectpicker accessaddresspicker" id="accessaddresspicker"
                             data-width="100%">
+                            <option value="">Not Required</option>
                         <?php foreach ($addresses as $address):
+						if($address['description']=="Access Detail Address"){
                             $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
                             $add1 = (isset($address['add1']) && !empty($address['add1']) ? $address['add1'] : "");
                             $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", " . $address['add2'] : "");
@@ -224,6 +217,7 @@
                             >
                                 <?php echo $add ?>
                             </option>
+                            <?php } ?>
                         <?php endforeach; ?>
                         <option value="Other">Other</option>
                     </select>&nbsp;
@@ -275,7 +269,7 @@
                 </div>
             </div>
         </div>
-    </div>
+         <?php } ?>
 </form>
                              
      

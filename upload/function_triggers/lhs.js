@@ -9,6 +9,25 @@ var campaign_functions = {
         $('.progress-outcome').selectpicker('refresh');
     },
     appointment_setup: function (start) {
+						$.ajax({ url: helper.baseUrl+'appointments/get_unlinked_data_items',
+				data:{urn:record.urn},
+				dataType:"JSON",
+				type:"POST"
+				}).done(function(response){
+				$options = "";
+				if(response.data.length>0){
+					data_options = "";
+					$.each(response.data,function(k,row){
+						data_options += "<option value='"+row.data_id+"'>Delivery #"+row.data_id+": Created on "+row.created_on+"</option>";
+					});
+            $data_items = $("<div class='form-group'><p>Which job is this appointment related to?</p><select data-width='100%' id='data-items' name='data_id'>" + data_options + "</select></div>");
+
+            $data_items.insertBefore($('#select-appointment-address'));
+            $('#data-items').selectpicker();
+				}
+			});
+		
+		
         $modal.find('.startpicker').data("DateTimePicker").destroy();
         $modal.find('.endpicker').data("DateTimePicker").destroy();
         $modal.find('.startpicker').datetimepicker({
@@ -30,25 +49,19 @@ var campaign_functions = {
             quick_planner.set_appointment_start(start);
         }
 
-        //When the type is changed
-        modal_body.find('.typepicker').change(function () {
-            var selectedId = $(this).val();
 
-            //If we select Confirmed, confirmedButton -> on
-            if (selectedId == 3) {
-                $('#appointment-confirmed').bootstrapToggle('on');
-            }
-            else {
-                $('#appointment-confirmed').bootstrapToggle('off');
-            }
-        });
 		if(typeof quick_planner.driver_id !== "undefined"){
 			$modal.find('.attendeepicker').selectpicker('val',quick_planner.driver_id);
 		}
 		$('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
+		
+		
     },
 
     appointment_edit_setup: function () {
+		$modal.find('.attendees-selection').html($modal.find('.attendees-selection').html().replace('Please choose the attendee(s) ','Please choose the surveyor '));
+		
+		
         $modal.find('.startpicker').data("DateTimePicker").enabledHours([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
         $modal.find('.startpicker').data("DateTimePicker").daysOfWeekDisabled([0,6]);
 
@@ -73,7 +86,7 @@ var campaign_functions = {
     },
 
     set_appointment_confirmation: function() {
-        var app = $('.startpicker').val()
+       /* var app = $('.startpicker').val()
         var start_date = moment(app, 'DD/MM/YYYY HH:mm');
         var m = moment();
         var duration = moment.duration(start_date.diff(m)).days();
@@ -96,39 +109,29 @@ var campaign_functions = {
                 }
             }
         });
+		*/
     },
-    save_appointment: function(appointment) {
+    save_appointment: function(appointment) {			
         //Get the additional info
         $.ajax({
-            url: helper.baseUrl + 'ajax/get_record_details',
+            url: helper.baseUrl + 'ajax/load_custom_panel',
             type: "POST",
             dataType: "JSON",
-            data: {urn: appointment.urn}
+            data: {id:"1",urn: appointment.urn}
         }).done(function (response) {
-            var record_details = null;
-            $.each(response.record_details, function (key, val) {
-                //If the job reference already exists or exists the job status with a null reference number
-                //We will use this record_detail
-                if (appointment.appointment_id == val.c9) {
-                    record_details = val;
-                }
-                else if (!val.c9 || val.c9 == '' || val.c9 === null){
-                    val.c9 = appointment.appointment_id;
-                    record_details = val;
-                }
-            });
-            //Create a new job reference (job status)
-            if (!record_details) {
-                record_details = {
-                    'c2': 'Confirmed Appointment',
-                    'c9': appointment.appointment_id,
-                };
-            }
-
+			console.log(response.data);
+			console.log(appointment);
             var start_date  = new Date(appointment.start.substr(0, 10));
-            if (appointment.appointment_confirmed == "1") {
+            if (appointment.appointment_type_id == "3") {
+				var express = false;
+				if(typeof response.data[appointment.job_id]['Express report'] !== "undefined"){
+				if(response.data[appointment.job_id]['Express report']['value']=="Yes"){
+				express = "Yes";	
+				}
+				}
+				console.log(express);
                 //If the ‘Express Report’ tick box is selected
-                if (record_details.c7 === 'Yes') {
+                if (express === 'Yes') {
                     //Survey Delivery Date should be populated with a date that is 2 working days post the start date
                     start_date.setDate(start_date.getDate() + 2);
                 }
@@ -138,34 +141,48 @@ var campaign_functions = {
                 }
                 var month = start_date.getMonth()+1;
                 var day = start_date.getDate();
-                record_details.d1 = ((''+day).length<2 ? '0' : '') + day + '/' +
+                survey_date = ((''+day).length<2 ? '0' : '') + day + '/' +
                     ((''+month).length<2 ? '0' : '') + month + '/' +
                     start_date.getFullYear();
-
-                record_details.c1 = appointment.appointment_id;
             }
             else {
                 //Set the date to null if the appointment is not confirmed
-                record_details.d1 = null;
+                survey_date = null;
             }
-            //Save the appointment additional info.
-            $.ajax({
-                url: helper.baseUrl + 'ajax/save_additional_info',
+			 var update_status = false;	
+			if(typeof response.data[appointment.job_id]['Job Status']=="undefined"){
+			 var update_status = true;	
+			}
+			if(response.data[appointment.job_id]['Job Status']['value']==""){
+			 var update_status = true;	
+			}
+			console.log(update_status);
+			if(update_status){
+		$.ajax({
+                url: helper.baseUrl + 'records/update_custom_data_field',
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    urn: appointment.urn,
-                    d1: record_details.d1,
-                    c1: record_details.c1,
-                    c2: record_details.c2,
-                    c9: record_details.c9,
-                    detail_id: record_details.detail_id
+					urn: record.urn,
+					data_id: appointment.job_id,
+					field_id:6,
+                    value: 2
+                }
+            })	
+			}
+            //Save the appointment additional info.
+            $.ajax({
+                url: helper.baseUrl + 'records/update_custom_data_field',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+					urn: record.urn,
+					data_id: appointment.job_id,
+					field_id:9,
+                    value: survey_date
                 }
             }).done(function (response) {
-                flashalert.success("Survey Delivery Date Updated");
-                record.additional_info.load_panel();
-
-                campaign_functions.save_custom_fields(record_details);
+					custom_panels.load_all_panels()
             });
 
             //Add the attendee to the ownership record list
@@ -179,6 +196,7 @@ var campaign_functions = {
                 }
             });
         });
+
     },
     load_custom_fields: function() {
         $.each($('#custom-panel').find('.c1'), function () {
@@ -289,7 +307,12 @@ var campaign_functions = {
 
         }, 2000);
     },
+		custom_items_loaded:function(){
+			    $('.custom-panel').find('.id-title').text("Job Number");
+		},
+		new_custom_item_setup:function(){
 
+		},
     set_access_address: function() {
         if (typeof $('.accessaddresspicker option:selected').val() !== 'undefined') {
             if ($('.accessaddresspicker option:selected').val().length <= 0) {

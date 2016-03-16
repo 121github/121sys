@@ -73,8 +73,8 @@ var custom_panels = {
         var blanks = "";
         html = "<table class='table "+response.panel.table_class+"'><thead><tr>";
         $.each(response.fields, function(id, field) {
-            html += "<th>" + field.name + "</th>";
-            blanks += "<td>-</td>";
+            html += "<th "+(field.hidden=="1"?"style='display:none'":"")+">" + field.name + "</th>";
+            blanks += "<td "+(field.hidden=="1"?"style='display:none'":"")+">-</td>";
         });
 		if (helper.permissions['edit custom data'] > 0) {
         html += "<th></th>";
@@ -91,10 +91,11 @@ var custom_panels = {
                     } else {
                         var value = "-";
                     }
-                    if (field.type == "checkbox" && value == "on") {
+                    if (field.type == "checkbox" && value == "on"||field.type == "buttons" && value == "Yes") {
                         value = "<span class='fa fa-check'></span>"
                     }
-                    html += "<td>" + value + "</td>";
+					
+                    html += "<td "+(field.hidden=="1"?"style='display:none'":"")+">" + value + "</td>";
                 });
 				if (helper.permissions['edit custom data'] > 0) {
                 html += "<td><span class='btn btn-default btn-xs pull-right edit-custom-btn marl' custom-data-id='" + id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span></td>";
@@ -117,7 +118,7 @@ var custom_panels = {
 			console.log("empty");
             table = "<table class='table "+response.panel.table_class+"'>";
             $.each(response.fields, function(id, field) {
-                table += "<tr><th>" + field.name + "</th><td>-</td></tr>";
+                table += "<tr  "+(field.hidden=="1"?"style='display:none'":"")+"><th>" + field.name + "</th><td>-</td></tr>";
             });
             table += "</table>";
 			html=table;
@@ -138,10 +139,10 @@ var custom_panels = {
                    if(typeof response.data[data_id][id] !== "undefined"){ var val=response.data[data_id][id].value
 				   meta = "<span style='padding-bottom:5px' class='pull-left small'>Added on "+response.data[data_id][id].created_on+"</span>";
 				    } else { var val= "-"; }
-                    if (field.type == "checkbox" && val == "on") {
+                    if (field.type == "checkbox" && val == "on"||field.type == "buttons" && val == "Yes") {
                         val = "<span class='fa fa-check'></span>"
                     }
-                    table += "<tr><th style='white-space:nowrap;padding-right:5px'>" + field.name + "</th><td style='width:100%'>" + val + "</td></tr>";
+                    table += "<tr "+(field.hidden=="1"?"style='display:none'":"")+"><th style='white-space:nowrap;padding-right:5px'>" + field.name + "</th><td style='width:100%'>" + val + "</td></tr>";
                 });
                 table += "</table>";
 				html += wrapper+meta+table+"</div>";
@@ -176,18 +177,18 @@ var custom_panels = {
                 html += "<div class='col-sm-6'>";
                 $.each(column, function(key, field) {
 					var field_id = field.field_id;
-					console.log(field_id);
                     html += "<div class='form-group' "+(field.hidden==1?"style='display:none'":"")+">";
                     html += "<label>" + field.name + "</label>"
                     if (field.tooltip.length > 0) {
                         html += "<span class='pointer glyphicon glyphicon-info-sign marl' data-toggle='tooltip' title='" + field.tooltip + "'></span>";
                     }
                     html += "<br>";
-                    if (data_id && typeof response.data[data_id][i][field_id] !== "undefined") {
+					var value = "";
+                    if (data_id && typeof response.data[data_id][i] !== "undefined") {
+						if(typeof response.data[data_id][i][field_id] !== "undefined"){
                         var value = response.data[data_id][i][field_id]['value']
-                    } else {
-                        var value = "";
                     }
+					} 
 					if(field.read_only==1){
 						html += "<input type='hidden' name='" + field.field_id + "' value='" + value + "' />";
 					}
@@ -229,9 +230,13 @@ var custom_panels = {
                     if (field.type == "buttons") {
                         html += "<div class='btn-group toggle-buttons' role='group' >";
                         $.each(field.options, function(o, option) {
-                            html += '<button "+(field.read_only==1?"disabled":"")+" class="btn btn-default">' + option.option_name + '</button>';
+							var selected = '';
+                            if (value == option.option_name) {
+                                 selected = "active";
+                            }
+                            html += '<button '+(field.read_only==1?"disabled":"")+' class="btn btn-default '+selected+'">' + option.option_name + '</button>';
                         });
-                        html += "</div>";
+                        html += "</div><input name='"+field.field_id+"' type='hidden' value='"+value+"' />";
                     }
                     if (field.type == "checkbox") {
                         var checked = "";
@@ -245,15 +250,11 @@ var custom_panels = {
                 html += "</div>";
             });
             html += "</div></form>";
-            var mheader = $('.custom-panel[custom-panel-id="' + panel_id + '"] .panel-heading')
-    .clone()    //clone the element
-    .children() //select all the children
-    .remove()   //remove all the children
-    .end()  //again go back to selected element
-    .text();
+            var mheader = $('.custom-panel[custom-panel-id="' + panel_id + '"] .panel-heading').find('.title').text();
             var mfooter = '<button type="submit" class="btn btn-primary pull-right" id="save-custom-panel" custom-panel-id="' + panel_id + '">Save</button> <button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Cancel</button>';
 			//load the modal
             modals.load_modal(mheader, html, mfooter);
+			
             modal_body.css('overflow', 'visible');
 			//initialise the datepickers
             $modal.find('.date').datetimepicker({
@@ -272,7 +273,7 @@ var custom_panels = {
 				campaign_functions.new_custom_item_setup();
 			} else if(data_id&&typeof campaign_functions.edit_custom_item_setup !== "undefined"){
 				campaign_functions.edit_custom_item_setup();
-			}
+			}		
         });
     },
     save_form: function(panel_id) {

@@ -30,6 +30,12 @@ var campaign_functions = {
     save_custom_fields: function(data) {
 		//this is ran when a custom fields panel is saved
     },
+	custom_items_loaded:function(){
+
+	},
+	new_custom_item_setup:function(){
+
+	},
     set_access_address: function() {
     	 //this sets the access address in the appointment dropdown if one has been added to the appointment
     }

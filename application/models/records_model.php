@@ -1758,15 +1758,19 @@ return $comments;
 	return $this->db->query($panel_data_query)->result_array();
   }
   public function create_custom_data_with_linked_appointments($appointment_id){
+	  $check = "select data_id from custom_panel_fields join custom_panel_values where is_appointment_id = 1 and `value` = '$appointment_id'";
+	  if($this->db->query($check)->num_rows()){
+		 return $this->db->query($check)->row()->data_id;
+	  }
 	$query = "select custom_panel_id,appointment_type_id,linked_appointment_type_ids from custom_panels join campaign_custom_panels using(custom_panel_id) join records using(campaign_id) join appointments using(urn) where appointment_id = '$appointment_id' and linked_appointment_type_ids is not null";
 	 foreach($this->db->query($query)->result_array() as $row){
 		 $appointment_type_ids = explode(",",$row['linked_appointment_type_ids']);
 		 if(in_array($row['appointment_type_id'], $appointment_type_ids)){
 		$this->db->query("insert into custom_panel_data values('',(select urn from appointments where appointment_id = '$appointment_id'),$appointment_id,now(),".$_SESSION['user_id'].",now(),1)");
-		//
+			
 		$data_id = $this->db->insert_id();
 		$this->db->query("insert into custom_panel_values (select '',$data_id,field_id,if(is_appointment_id=1,'$appointment_id','') from custom_panel_fields where custom_panel_id = '{$row['custom_panel_id']}' and is_appointment_id = 1)");
-		$this->firephp->log($this->db->last_query());
+		return $data_id;
 		 }
 	 }
   }

@@ -1553,7 +1553,7 @@ class Ajax extends CI_Controller
         $data = array();
         foreach ($panel_data as $k => $row) {
             if ($fields[$row['name']]['type'] == "date") {
-                $row['value'] == date($fields[$row['field_id']]['format'], strtotime($row['value']));
+                $row['value'] == date($fields[$row['name']]['format'], strtotime($row['value']));
             }
             if ($fields[$row['name']]['type'] == "decimal") {
                 $row['value'] == number_format(intval($row['value']), 2);

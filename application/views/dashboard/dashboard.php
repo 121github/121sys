@@ -117,7 +117,7 @@
             <a type="button" class="btn btn-default" href="data/add_record<?php echo isset($_SESSION['current_campaign'])?"/".$_SESSION['current_campaign']:"" ?>" style="margin:0 3px 10px"><p>Create Record</p><span class="fa fa-plus fa-3x"></span></a>
               <?php } ?>
                  <?php if(in_array("list records",$_SESSION['permissions'])){ ?>
-                 <a type="button" class="btn btn-default" href="records/view" style="margin:0 3px 10px"><p>View Records</p><span class="fa fa-table fa-3x"></span></a>
+                 <a type="button" class="btn btn-default" href="records/view" style="margin:0 3px 10px"><p>List Records</p><span class="fa fa-table fa-3x"></span></a>
                  <?php } ?>
                       <?php if(in_array("view appointments",$_SESSION['permissions'])){ ?>
                       <a type="button" class="btn btn-default" href="appointments" style="margin:0 3px 10px"><p>View Appointments</p><span class="fa fa-clock-o fa-3x"></span></a>

@@ -101,7 +101,6 @@
       
            <?php $this->view('records/panels/record_update.php', $details); ?>
            <?php $this->view('records/panels/contacts.php', $details); ?>
-           <?php $this->view('records/panels/company.php', $details); ?>
             <?php $this->view('records/panels/referral.php', $details); ?>
              <?php $this->view('records/panels/history.php', $details); ?>
                <?php $this->view('records/panels/custom_info.php', $details); ?>

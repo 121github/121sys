@@ -538,7 +538,6 @@ $datafield_ids = array();
                   LEFT JOIN appointment_attendees at USING (appointment_id)
                 WHERE user_id = " . $attendee_id . "
                       ".($appointment_id != '' ?(" AND appointment_id <> ".$appointment_id) : "")."
-                      AND urn = " . $urn . "
                       AND status = 1
                       AND (
                             (`start` < '" . to_mysql_datetime($start) . "' AND `end` > '" . to_mysql_datetime($start) . "')

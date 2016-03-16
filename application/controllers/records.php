@@ -994,8 +994,8 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             $postcode = $address_field[1];
             $data['postcode'] = postcodeCheckFormat($postcode);
 
-            if (isset($data['access_add_check']) && $data['access_add_check']) {
-                if (!isset($data['access_address']) || $data['access_address'] == "Other" || empty($data['access_address'])) {
+            if (isset($data['access_address']) && !empty($data['access_address'])) {
+                if ($data['access_address'] == "Other") {
                     echo json_encode(array(
                         "success" => false,
                         "msg" => "You must confirm the access address"
@@ -1086,11 +1086,13 @@ if($campaign_id<>@$_SESSION['current_campaign']){
             }
 			if(!isset($data['data_id'])){
 			//check if a custom data panel items needs creating for this appointment
-			$this->Records_model->create_custom_data_with_linked_appointments($id);
+			$data['data_id'] = $this->Records_model->create_custom_data_with_linked_appointments($id);
 			$linked=false;
+			$response['data']['job_id'] = $data['data_id'];
 			} else {
 			$this->Records_model->link_appointment_to_custom_data($data['data_id'],$id);
 			$linked=true;
+			$response['data']['job_id'] = $data['data_id'];
 			}
 
             //if its a GHS campaign update trackvia

@@ -755,8 +755,8 @@ class Planner extends CI_Controller
 
             $users = array_filter(array_unique(array_merge(
                 explode(',', $appointment_data['attendees']),
-                explode(',', $appointment_data['region_users']),
-                explode(',', $appointment_data['branch_users'])
+                explode(',', @$appointment_data['region_users']),
+                explode(',', @$appointment_data['branch_users'])
             )));
 
             //Create the planner data for every user

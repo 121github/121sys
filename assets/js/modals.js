@@ -97,36 +97,31 @@ var modals = {
         });
         $modal.on('click', '#save-appointment', function (e) {
             e.preventDefault();
+			var $form = $('#appointment-form');
             if (helper.permissions['check overlap'] > 0) {
-                //Check overlap appointment
-                if ($('#appointment-form').find('.attendeepicker').selectpicker("val") != "") {
                     $.ajax({
                         url: helper.baseUrl + 'appointments/check_overlap_appointments',
                         data: $('#appointment-form').serialize(),
                         type: "POST",
                         dataType: "JSON"
                     }).done(function (response) {
-                        if (response) {
-                            if (helper.permissions['overlap appointment'] > 0) {
-                                var appointment_id = $('#appointment-form').find('input[name="appointment_id"]').val();
-                                var urn = $('#appointment-form').find('input[name="urn"]').val();
-                                modals.confirm_overlap_appointment(urn, appointment_id, $('#appointment-form').serialize());
+                        if (response.success) {
+							 modals.save_appointment($form.serialize());
+						} else if(response.overlapped){
+							  if (helper.permissions['overlap appointment'] > 0) {
+                                var appointment_id = $form.find('input[name="appointment_id"]').val();
+                                var urn = $form.find('input[name="urn"]').val();
+                                modals.confirm_overlap_appointment(urn, appointment_id, $form.serialize());
                             }
                             else {
-                                var msg = "There are one or more appointments for this record on the same date for the same attendee. You are not alowed to overlap appointments!";
-                                alert(msg)
-                                flashalert.danger(msg)
+                              flashalert.danger(response.msg);
                             }
-                        }
-                        else {
-                            modals.save_appointment($('#appointment-form').serialize());
-                        }
-                    });
-                }
-                else {
-                    flashalert.danger("You must confirm the attendee");
-                }
+							
+						} else if(response.error){
+						flashalert.danger(response.msg);	
+						}
 
+                    });
             }
             else {
                 modals.save_appointment($('#appointment-form').serialize());
@@ -558,11 +553,9 @@ var modals = {
                     quick_planner.driver_id = attendee_id;
                     quick_planner.load_planner();
                 }
-                if(typeof campaign_functions !== "undefined"){
                     if(typeof campaign_functions.save_appointment !== "undefined"){
                         campaign_functions.save_appointment(response.data);
                     }
-                }
                 if (response.trackvia) {
                     $.post(response.trackvia, {urn: response.urn});
                 }
@@ -815,7 +808,11 @@ var modals = {
 			}
             var mheader = "Edit Appointment #" + data.appointment_id;
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Closes</button> '+cancel_btn+' <input id="appointment-confirmed" data-onstyle="success" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox"> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Closes</button> '+cancel_btn;
+			if(helper.permissions['confirm appointment'] > 0){ 
+			mfooter += '<input id="appointment-confirmed" data-onstyle="success" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox"> '
+			}
+			mfooter += '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>'
 			
             $mbody = $(mbody);
 
@@ -888,9 +885,11 @@ var modals = {
         }).done(function (response) {
             var mheader = "Add Appintment (URN: #"+urn+")";
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>' +
-                          '<input id="appointment-confirmed" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox">' +
-                          '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>'
+			if(helper.permissions['confirm appointment'] > 0){ 
+                     mfooter +=     '<input id="appointment-confirmed" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" type="checkbox">'
+			}
+                       mfooter +=       '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
 
             modals.load_modal(mheader, mbody, mfooter);
 
@@ -1036,7 +1035,11 @@ var modals = {
         }).done(function (response) {
             var mheader = "Create Appointment";
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
-            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button> <input id="appointment-confirmed" style="display:none" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" data-width="130" type="checkbox" disabled data-onstyle="success"> <button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
+            var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>'
+			 if (helper.permissions['confirm appointment'] > 0) {
+			 mfooter += '<input id="appointment-confirmed" style="display:none" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" data-width="130" type="checkbox" disabled data-onstyle="success">' 
+			 }
+			 mfooter += '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
             modals.load_modal(mheader, mbody, mfooter);
 			modal_body.css('overflow', 'visible');
 			$modal.find('#appointment-confirmed').bootstrapToggle();
@@ -1205,6 +1208,8 @@ var modals = {
                     }
                     $('#accessaddresspicker').prepend('<option value="' + new_address + '|' + response.postcode + '">' + new_address + '</option>');
                     $('.accessaddresspicker').selectpicker('refresh').selectpicker('val', $('#accessaddresspicker option:first').val());
+					$('#add-appointment-access-address').hide();
+					  $('#select-appointment-access-address').show();
                 } else {
                     //first line not complete
                     flashalert.danger("Please enter the first line of the address");
