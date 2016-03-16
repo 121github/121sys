@@ -31,7 +31,7 @@
                 </div>
             <?php endif ?>
             <div class="form-group input-group-sm">
-                <label class="col-sm-2 control-label">Position</label>
+                <label class="col-sm-2 control-label position-label">Position</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" placeholder="Job title" name="position" value="">
                 </div>
@@ -88,7 +88,7 @@
                     <thead>
                     <th>Description</th>
                     <th>Number</th>
-                    <th>TPS</th>
+                    <th class="tps-contact-label">TPS</th>
                     <th>Options</th>
                     </thead>
                     <tbody>
