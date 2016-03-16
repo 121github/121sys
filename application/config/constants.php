@@ -58,6 +58,11 @@ define('SMS_STATUS_ERROR', 5);
 define('ICAL_REQUEST', 'REQUEST');
 define('ICAL_CANCEL', 'CANCEL');
 
+//ICAL STATUS
+define('ICAL_STATUS_SENT', 1);
+define('ICAL_STATUS_PENDING', 2);
+define('ICAL_STATUS_ABORTED', 3);
+
 //PLANNER TYPE
 define('PLANNER_TYPE_WAYPOINT', 2);
 

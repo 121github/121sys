@@ -72,6 +72,7 @@ $qry .= " group by urn";
             $form['cc'] = $row['template_cc'];
             $form['bcc'] = $row['template_bcc'];
             $form['template_unsubscribe'] = $row['template_unsubscribe'];
+            $form['history_visible'] = $row['history_visible'];
         }
         return $form;
 
@@ -276,7 +277,8 @@ $qry .= " group by urn";
         $response = $this->db->insert("email_history_attachments", array(
             "email_id" => $email_id,
             "name" => $attachment['name'],
-            "path" => $attachment['path']
+            "path" => $attachment['path'],
+            "disposition" => (isset($attachment['disposition'])?$attachment['disposition']:'attachment')
         ));
 
         return $response;
@@ -310,6 +312,11 @@ $qry .= " group by urn";
     {
         $limit_ = ($limit) ? "limit " . $offset . "," . $limit : '';
 
+        $where_visible = '';
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != '1') {
+            $where_visible = ' and visible = 1 ';
+        }
+
         $qry = "select e.email_id,
                       DATE_FORMAT(e.sent_date,'%d/%m/%Y %H:%i:%s') as sent_date,
                       e.subject,
@@ -329,8 +336,8 @@ $qry .= " group by urn";
                       e.pending
 		    	from email_history e
 		    	inner join users u ON (u.user_id = e.user_id)
-		    	inner join email_templates t ON (t.template_id = e.template_id)
-		    	where e.urn = " . $urn . "
+		    	left join email_templates t ON (t.template_id = e.template_id)
+		    	where e.urn = " . $urn ." ".$where_visible . "
 		    	order by e.sent_date desc
 		    	" . $limit_;
 
@@ -520,7 +527,7 @@ $qry .= " group by urn";
                       e.pending
 		    	from email_history e
 		    	inner join users u ON (u.user_id = e.user_id)
-		    	inner join email_templates t ON (t.template_id = e.template_id)
+		    	left join email_templates t ON (t.template_id = e.template_id)
 		    	where e.email_id = " . $email_id;
 
         $results = $this->db->query($qry)->result_array();
@@ -641,9 +648,10 @@ $qry .= " group by urn";
                       urn,
                       user_id,
                       status,
-                      pending
+                      pending,
+                      history_visible
                     from email_history
-                    inner join email_templates using(template_id)
+                    left join email_templates using(template_id)
                     where pending=1";
         if ($cron_code) {
             $qry .= " and cron_code = '" . $cron_code . "'";

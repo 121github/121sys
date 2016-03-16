@@ -396,6 +396,9 @@ class Email extends CI_Controller
                             $form['body'] = str_replace("[$key]", $val, $form['body']);
                         }
                     }
+                    $history_visible = $form['history_visible'];
+                    unset($form['history_visible']);
+
                     if ($this->send($form)) {
                         $email_history = array(
                             'body' => $form['body'],
@@ -409,7 +412,8 @@ class Email extends CI_Controller
                             'template_id' => $form['template_id'],
                             'template_unsubscribe' => $form['template_unsubscribe'],
                             'status' => 1,
-                            'pending' => 0
+                            'pending' => 0,
+                            'visible' => $history_visible
                         );
                         $email_id = $this->Email_model->add_new_email_history($email_history);
 
@@ -456,6 +460,9 @@ class Email extends CI_Controller
                         $form['body'] = str_replace("[$key]", $val, $form['body']);
                     }
                 }
+                $history_visible = $form['history_visible'];
+                unset($form['history_visible']);
+
                 if ($this->send($form)) {
                     $email_history = array(
                         'body' => $form['body'],
@@ -469,7 +476,8 @@ class Email extends CI_Controller
                         'template_id' => $form['template_id'],
                         'template_unsubscribe' => $form['template_unsubscribe'],
                         'status' => 1,
-                        'pending' => 0
+                        'pending' => 0,
+                        'visible' => $history_visible
                     );
                     $email_id = $this->Email_model->add_new_email_history($email_history);
 
@@ -553,7 +561,13 @@ class Email extends CI_Controller
                 if (!empty($send_to_ar)) {
                     $email['send_to'] = implode(',', $send_to_ar);
 
-                    $attachments = $this->Email_model->get_attachments_by_template_id($email['template_id']);
+                    $attachments = array();
+                    if ($email['template_id']) {
+                        $attachments = $this->Email_model->get_attachments_by_template_id($email['template_id']);
+                    }
+                    else {
+                        $attachments = $this->Email_model->get_attachments_by_email_id($email['email_id']);
+                    }
                     $email['template_attachments'] = $attachments;
 
                     $result = $this->send($email);
@@ -573,7 +587,15 @@ class Email extends CI_Controller
                             $email_history['sent_date'] = $nowDate->format('Y-m-d H:i:s');
                         }
 
+                        //Update the email_history
                         $this->Email_model->update_email_history($email_history);
+
+                        //Update the appointment_ics related (PENDING to SENT)
+                        $this->Appointments_model->updateAppointmentIcs(array(
+                            'email_id' => $email_history['email_id'],
+                            'status_id' => ICAL_STATUS_SENT,
+                            'send_date' => $email_history['sent_date']
+                        ));
 
                         //If the status was 1, create a new email_history
                         if ($email['status']) {
@@ -589,15 +611,18 @@ class Email extends CI_Controller
                                 'template_id' => $email['template_id'],
                                 'template_unsubscribe' => $email['template_unsubscribe'],
                                 'status' => 1,
-                                'pending' => 0
+                                'pending' => 0,
+                                'visible' => $email['history_visible']
                             );
                             $email_id = $this->Email_model->add_new_email_history($email_history);
                         }
                         $this->Email_model->set_record_history($email);
                         $this->Email_model->set_email_outcome($email['urn']);
                         //Add the attachments to the email_history_attachments table
-                        foreach ($attachments as $attachment) {
-                            $this->Email_model->insert_attachment_by_email_id($email_id, $attachment);
+                        if ($email['template_id'] || $email['status']) {
+                            foreach ($attachments as $attachment) {
+                                $this->Email_model->insert_attachment_by_email_id($email_id, $attachment);
+                            }
                         }
                         $output .= "sent to " . $email['send_to'] . "\n\n";
                     } else {
@@ -607,7 +632,7 @@ class Email extends CI_Controller
                     //Update the email_history the pending field to 0. We did not send the email because is unsubscribed for this client
                     $email_history = array(
                         'email_id' => $email_id,
-                        'pending' => 0,
+                        'pending' => 0
                     );
                     $this->Email_model->update_email_history($email_history);
                     $output .= "not sent: email addresses unsubscribed \n\n";
@@ -967,8 +992,9 @@ class Email extends CI_Controller
 
                 //ATTACH the ics file
                 //Create tmp dir if it does not exist
-                $tmp_path = FCPATH . '/upload/attachments/ics';
-                $filename = $appointment_ics['uid'].".ics";
+                $path = '/upload/attachments/ics';
+                $tmp_path = FCPATH . $path;
+                $filename = $appointment_ics['uid']."_SEQUENCE_".$appointment_ics['sequence'].".ics";
 
                 if (@!file_exists($tmp_path)) {
                     mkdir($tmp_path, 0777, true);
@@ -983,7 +1009,7 @@ class Email extends CI_Controller
                     else {
                         $attachments = array(
                             array(
-                                "path" => $tmp_path."/".$filename,
+                                "path" => $path."/".$filename,
                                 "name" => $filename,
                                 "disposition" => 'inline'
                             )
@@ -1005,15 +1031,33 @@ class Email extends CI_Controller
 
                 $email_sent = $this->send($form_to_send);
 
-                //TODO save email_history or delete the attachment??
-                //$email_history_id = $this->Email_model->add_new_email_history($form);
+                //Save email history
+                $email_history = array(
+                    'user_id' => (isset($_SESSION['user_id'])?$_SESSION['user_id']:1),
+                    'urn' => $appointment->urn,
+                    'subject' => $form_to_send['subject'],
+                    'body' => $form_to_send['body'],
+                    'send_from' => $form_to_send['send_from'],
+                    'send_to' => $form_to_send['send_to'],
+                    'cc' => $form_to_send['cc'],
+                    'bcc' => $form_to_send['bcc'],
+                    'status' => ($email_sent?1:0),
+                    'pending' => ($email_sent?0:1),
+                    'visible' =>  0
+                );
+                $email_history_id = $this->Email_model->add_new_email_history($email_history);
 
-                //Save the appointment_ics sent
-                if ($email_sent) {
-                    $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
-                    $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
+                //Save attachments
+                if ($email_history_id && !empty($form_to_send['template_attachments'])) {
+                    //Save the new attachments in the email_history table
+                    $response = $this->save_attachment_by_email($form_to_send['template_attachments'], $email_history_id);
                 }
 
+                //Save the appointment_ics sent
+                $appointment_ics['email_id'] = ($email_history_id?$email_history_id:null);
+                $appointment_ics['status_id'] = ($email_sent?ICAL_STATUS_SENT:ICAL_STATUS_PENDING);
+                $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
+                $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
 
                 echo json_encode(array(
                     "success" => ($email_sent),
@@ -1027,7 +1071,6 @@ class Email extends CI_Controller
                 ));
             }
         }
-
     }
 
     public function update_appointment_ics() {
@@ -1184,8 +1227,9 @@ class Email extends CI_Controller
 
                 //ATTACH the ics file
                 //Create tmp dir if it does not exist
-                $tmp_path = FCPATH . '/upload/attachments/ics';
-                $filename = $appointment_ics['uid'] . ".ics";
+                $path = '/upload/attachments/ics';
+                $tmp_path = FCPATH . $path;
+                $filename = $appointment_ics['uid'] . "_SEQUENCE_".$appointment_ics['sequence'].".ics";
 
                 if (@!file_exists($tmp_path)) {
                     mkdir($tmp_path, 0777, true);
@@ -1198,7 +1242,7 @@ class Email extends CI_Controller
                     } else {
                         $attachments = array(
                             array(
-                                "path" => $tmp_path . "/" . $filename,
+                                "path" => $path . "/" . $filename,
                                 "name" => $filename,
                                 "disposition" => 'inline'
                             )
@@ -1220,14 +1264,35 @@ class Email extends CI_Controller
 
                 $email_sent = $this->send($form_to_send);
 
-                //TODO save email_history or delete the attachment??
-                //$email_history_id = $this->Email_model->add_new_email_history($form);
+                //Save email history
+                $email_history = array(
+                    'user_id' => (isset($_SESSION['user_id'])?$_SESSION['user_id']:1),
+                    'urn' => $appointment->urn,
+                    'subject' => $form_to_send['subject'],
+                    'body' => $form_to_send['body'],
+                    'send_from' => $form_to_send['send_from'],
+                    'send_to' => $form_to_send['send_to'],
+                    'cc' => $form_to_send['cc'],
+                    'bcc' => $form_to_send['bcc'],
+                    'status' => ($email_sent?1:0),
+                    'pending' => ($email_sent?0:1),
+                    'visible' =>  0
+                );
+                $email_history_id = $this->Email_model->add_new_email_history($email_history);
+
+
+                //Save attachments
+                if ($email_history_id && !empty($form_to_send['template_attachments'])) {
+                    //Save the new attachments in the email_history table
+                    $response = $this->save_attachment_by_email($form_to_send['template_attachments'], $email_history_id);
+                }
 
                 //Save the appointment_ics sent
-                if ($email_sent) {
-                    $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
-                    $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
-                }
+                $appointment_ics['email_id'] = ($email_history_id?$email_history_id:null);
+                $appointment_ics['status_id'] = ($email_sent?ICAL_STATUS_SENT:ICAL_STATUS_PENDING);
+                $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
+                $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
+
 
                 echo json_encode(array(
                     "success" => ($email_sent),
@@ -1387,8 +1452,9 @@ class Email extends CI_Controller
 
             //ATTACH the ics file
             //Create tmp dir if it does not exist
-            $tmp_path = FCPATH . '/upload/attachments/ics';
-            $filename = $appointment_ics['uid'] . ".ics";
+            $path = '/upload/attachments/ics';
+            $tmp_path = FCPATH . $path;
+            $filename = $appointment_ics['uid'] . "_SEQUENCE_".$appointment_ics['sequence'].".ics";
 
             if (@!file_exists($tmp_path)) {
                 mkdir($tmp_path, 0777, true);
@@ -1401,7 +1467,7 @@ class Email extends CI_Controller
                 } else {
                     $attachments = array(
                         array(
-                            "path" => $tmp_path . "/" . $filename,
+                            "path" => $path . "/" . $filename,
                             "name" => $filename,
                             "disposition" => 'inline'
                         )
@@ -1423,14 +1489,33 @@ class Email extends CI_Controller
 
             $email_sent = $this->send($form_to_send);
 
-            //TODO save email_history or delete the attachment??
-            //$email_history_id = $this->Email_model->add_new_email_history($form);
+            //Save email history
+            $email_history = array(
+                'user_id' => (isset($_SESSION['user_id'])?$_SESSION['user_id']:1),
+                'urn' => $appointment->urn,
+                'subject' => $form_to_send['subject'],
+                'body' => $form_to_send['body'],
+                'send_from' => $form_to_send['send_from'],
+                'send_to' => $form_to_send['send_to'],
+                'cc' => $form_to_send['cc'],
+                'bcc' => $form_to_send['bcc'],
+                'status' => ($email_sent?1:0),
+                'pending' => ($email_sent?0:1),
+                'visible' =>  0
+            );
+            $email_history_id = $this->Email_model->add_new_email_history($email_history);
+
+            //Save attachments
+            if ($email_history_id && !empty($form_to_send['template_attachments'])) {
+                //Save the new attachments in the email_history table
+                $response = $this->save_attachment_by_email($form_to_send['template_attachments'], $email_history_id);
+            }
 
             //Save the appointment_ics sent
-            if ($email_sent) {
-                $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
-                $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
-            }
+            $appointment_ics['email_id'] = ($email_history_id?$email_history_id:null);
+            $appointment_ics['status_id'] = ($email_sent?ICAL_STATUS_SENT:ICAL_STATUS_PENDING);
+            $appointment_ics_id = $this->Appointments_model->saveAppointmentIcs($appointment_ics);
+            $appointment_ics['appointment_ics_id'] = $appointment_ics_id;
 
             echo json_encode(array(
                 "success" => ($email_sent),
@@ -1594,8 +1679,28 @@ END:VCALENDAR';
             //Send email
             $email_sent = $this->send($form_to_send);
 
-            //TODO save email_history or delete the attachment??
-            //$email_history_id = $this->Email_model->add_new_email_history($form);
+
+            //Save email history
+            $email_history = array(
+                'user_id' => (isset($_SESSION['user_id'])?$_SESSION['user_id']:1),
+                'urn' => $appointment->urn,
+                'subject' => $form_to_send['subject'],
+                'body' => $form_to_send['body'],
+                'send_from' => $form_to_send['send_from'],
+                'send_to' => $form_to_send['send_to'],
+                'cc' => $form_to_send['cc'],
+                'bcc' => $form_to_send['bcc'],
+                'status' => ($email_sent?1:0),
+                'pending' => ($email_sent?0:1),
+                'visible' =>  0
+            );
+            $email_history_id = $this->Email_model->add_new_email_history($email_history);
+
+            //Save attachments
+            if ($email_history_id && !empty($form_to_send['template_attachments'])) {
+                //Save the new attachments in the email_history table
+                $response = $this->save_attachment_by_email($form_to_send['template_attachments'], $email_history_id);
+            }
 
             echo json_encode(array(
                 "success" => ($email_sent)
@@ -1730,7 +1835,7 @@ END:VCALENDAR';
         $this->File_model->add_file($filename, $folder_id, $filesize);
 
         $complete_path = array(
-            'path' => $path."/".$filename,
+            'path' => "/".$path."/".$filename,
             'name' => $filename,
             'size' => $filesize
         );

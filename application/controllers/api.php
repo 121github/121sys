@@ -555,7 +555,8 @@ class Api extends REST_Controller
                             'template_id' => $form['template_id'],
                             'template_unsubscribe' => $form['template_unsubscribe'],
                             'status' => 1,
-                            'pending' => 0
+                            'pending' => 0,
+                            'visible' => $template['history_visible']
                         );
                         $email_id = $this->Email_model->add_new_email_history($email_history);
 
