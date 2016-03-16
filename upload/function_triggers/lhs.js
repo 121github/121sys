@@ -8,6 +8,24 @@ var campaign_functions = {
         $('.progress-outcome').find('option[value=""]').text("-- Client Status --");
         $('.progress-outcome').selectpicker('refresh');
     },
+    contact_form_setup: function() {
+        $('input[name="dob"]').closest('.form-group').hide();
+        $('input[name="website"]').closest('.form-group').hide();
+        $('input[name="facebook"]').closest('.form-group').hide();
+        $('input[name="linkedin"]').closest('.form-group').hide();
+
+        $('.position-label').html("Company");
+        $('input[name="position"]').attr('placeholder', 'Company Name')
+
+        $('select[name="tps"]').closest('.form-group').hide();
+    },
+    contact_panel_setup: function() {
+        $('.Job-panel-label').html("Company");
+        $('.tps-btn').hide();
+    },
+    contact_tabs_setup: function() {
+        $('.tps-contact-label').hide();
+    },
     appointment_setup: function (start) {
 						$.ajax({ url: helper.baseUrl+'appointments/get_unlinked_data_items',
 				data:{urn:record.urn},

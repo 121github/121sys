@@ -505,7 +505,7 @@ $datafield_ids = array();
     }
 
     /**
-     * Get appointment by id
+     * Add appointment ics
      *
      */
     public function saveAppointmentIcs($appointment_ics)
@@ -515,6 +515,16 @@ $datafield_ids = array();
 
         return $this->db->insert_id();
 
+    }
+
+    /**
+     * Update appointment ics by email_id
+     *
+     */
+    public function updateAppointmentIcs($appointment_ics)
+    {
+        $this->db->where('email_id', $appointment_ics['email_id']);
+        return  $this->db->update('appointments_ics', $appointment_ics);
     }
 
     //Get the contact appointment by appointment_id

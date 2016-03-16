@@ -1,6 +1,7 @@
 #production
 deployment:
   user: one2one
+  owner: "one2one:one2one"
   from: /var/lib/jenkins/jobs/121Sys/workspace/
   to: www
   excludes:

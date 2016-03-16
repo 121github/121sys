@@ -17,6 +17,7 @@
 			<input type="hidden" name="urn" value="<?php echo $urn ?>" />
 			<input type="hidden" name="template_id" value="<?php echo $template_id ?>" />
 			<input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id'] ?>" />
+			<input type="hidden" name="history_visible" value="<?php echo $template['history_visible'] ?>" />
 			<div class="row">
             <div class="col-xs-8 col-sm-8">
 			<div class="form-group input-group-sm">		

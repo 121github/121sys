@@ -2142,7 +2142,7 @@ var modals = {
                             } else {
                                 var $tps = "<span class='glyphicon glyphicon-question-sign tt'  data-toggle='tooltip' data-placement='right' title='TPS Status is unknown'></span>"
                             }
-                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td>" + $tps + "</td><td style='width:140px'><span class='btn btn-default btn-xs contact-item-btn' data-action='edit_phone' data-id='" + val.tel_id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span> <span class='marl btn btn-default btn-xs' data-modal='delete-contact-phone' contact-id='" + response.data.general.contact_id + "' data-id='" + val.tel_id + "'><span class='glyphicon glyphicon-trash'></span> Delete </span> </td></tr>";
+                            $phone = "<tr><td>" + val.tel_name + "</td><td>" + val.tel_num + "</td><td class='tps-contact-label'>" + $tps + "</td><td style='width:140px'><span class='btn btn-default btn-xs contact-item-btn' data-action='edit_phone' data-id='" + val.tel_id + "'><span class='glyphicon glyphicon-pencil'></span> Edit</span> <span class='marl btn btn-default btn-xs' data-modal='delete-contact-phone' contact-id='" + response.data.general.contact_id + "' data-id='" + val.tel_id + "'><span class='glyphicon glyphicon-trash'></span> Delete </span> </td></tr>";
                             $modal.find('#phone tbody').append($phone);
                         });
                     } else {
@@ -2172,6 +2172,12 @@ var modals = {
                 }
                 $('.tt').tooltip();
                 $modal.find('.tab[href="#' + item_form + '"]').tab('show');
+
+                if(typeof campaign_functions !== "undefined"){
+                    if(typeof campaign_functions.contact_tabs_setup !== "undefined"){
+                        campaign_functions.contact_tabs_setup();
+                    }
+                }
             });
 
         },

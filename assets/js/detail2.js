@@ -170,7 +170,9 @@ var record = {
         window.history.pushState(data, "Record Details-" + record.urn, helper.baseUrl + 'records/detail/' + record.urn);	
 		//start campaign specific javascript on the record details page
 		if(typeof campaign_functions!=="undefined"){
-		campaign_functions.init();
+            if(typeof campaign_functions.init!=="undefined"){
+                campaign_functions.init();
+            }
 		}
     },
     start_call: function () {
@@ -900,7 +902,7 @@ var record = {
                     var primary_postcode = "";
                     $.each(val.visible, function (dt, dd) {
                         if (dd && dd != '' &&dd!="null"&& dd.length > 0 && dt != 'Address') {
-                            contact_detail_list_items += "<dt>" + dt + "</dt><dd>" + dd + "</dd>";
+                            contact_detail_list_items += "<dt class='"+dt+"-panel-label'>" + dt + "</dt><dd>" + dd + "</dd>";
                         } else if (dd && dd != '' && dt == 'Address') {
                             var i = 1;
                             $.each(dd, function (addr_id, addr) {
@@ -988,6 +990,12 @@ var record = {
 				} else {
 					$panel.find('.contacts-list').html('<li class="list-group-item">This record has no contacts</li>');
 				}
+
+                if(typeof campaign_functions !== "undefined"){
+                    if(typeof campaign_functions.contact_panel_setup !== "undefined"){
+                        campaign_functions.contact_panel_setup();
+                    }
+                }
 
             });
         },
