@@ -302,7 +302,7 @@ class Appointments extends CI_Controller
 		$urn = $this->input->post("urn");
 		$query = "select data_id,date_format(created_on,'%d/%m/%y') created_on from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) join custom_panels using(custom_panel_id) where urn = '$urn' and linked_appointment_type_ids is not null and data_id not in(select data_id from custom_panel_values join custom_panel_fields using(field_id) where is_appointment_id = 1) group by data_id";
 		$data = $this->db->query($query)->result_array();
-		echo json_encode(array("success"=>true,"data"=>$data));
+		echo json_encode(array("success"=>true,"data"=>$data)); 
 	}
 	
 	
