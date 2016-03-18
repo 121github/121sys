@@ -429,7 +429,7 @@ var calendar_modals = {
     },
 
     add_appointment: function () {
-        modals.search_records("add-appointment");
+        modals.search_records("create-appointment");
 
     },
 }

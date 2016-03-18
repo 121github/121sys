@@ -493,6 +493,13 @@ class Api extends REST_Controller
         }
     }
 
+	 function recieve_email_post(){
+		    $this->load->model('Email_model');
+		$email_history = $this->input->post();	
+		 $this->Email_model->add_new_email_history($email_history);
+		 
+	 }
+
     function send_email_post()
     {
         $this->load->model('Email_model');

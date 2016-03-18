@@ -71,7 +71,7 @@ var campaign_functions = {
             $('input[name="facebook"]').closest('.form-group').hide();
             $('input[name="linkedin"]').closest('.form-group').hide();
         },
-        appointment_setup: function(start) {
+        appointment_setup: function(start,attendee,urn) {
             if (record.role == "11") {
                 //set up the form for the delivery role
                 modal_header.text("Create Delivery");
@@ -82,7 +82,7 @@ var campaign_functions = {
 				$options = $('#addresspicker').html();
 				
 				$.ajax({ url: helper.baseUrl+'appointments/get_unlinked_data_items',
-				data:{urn:record.urn},
+				data:{urn:urn},
 				dataType:"JSON",
 				type:"POST"
 				}).done(function(response){
@@ -101,8 +101,12 @@ var campaign_functions = {
 				
             } else {
                 campaign_functions.hsl_coverletter_address();
-                quick_planner.set_appointment_start(start);
-                quick_planner.set_appointment_attendee(quick_planner.driver_id);
+				if(start){
+                modals.set_appointment_start(start);
+				}
+				if(attendee){
+                modals.set_appointment_attendee(attendee);
+				}
                 campaign_functions.set_appointment_contact();
 
                 $modal.find('.branches-selection').show();

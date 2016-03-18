@@ -127,10 +127,6 @@ var modals = {
                 modals.save_appointment($('#appointment-form').serialize());
             }
         });
-        $('#cal-slide-box').on('click', 'a', function (e) {
-            e.preventDefault();
-            modals.view_appointment($(this).attr('data-id'));
-        });
         $(document).on('click', '[data-modal="view-appointment"]', function (e) {
             e.preventDefault();
             var clicked_id = $(this).attr('data-id');
@@ -153,10 +149,12 @@ var modals = {
             e.preventDefault();
             modals.view_appointment($(this).attr('data-id'), true);
         });
+		/*
         $(document).on('click', '[data-modal="add-appointment"]', function (e) {
             e.preventDefault();
             modals.add_appointment_html($(this).attr('data-urn'));
         });
+		*/
         $(document).on('click', '[data-modal="delete-appointment"]', function (e) {
             e.preventDefault();
             modals.delete_appointment_html($(this).attr('data-id'), $(this).attr('data-urn'));
@@ -604,11 +602,9 @@ var modals = {
                     });
                 }
                 //TODO send cover letter from hsl file
-                if (typeof campaign_functions !== "undefined") {
                     if (typeof campaign_functions.appointment_saved !== "undefined") {
                         campaign_functions.appointment_saved(appointment_id, response.state);
 					}
-                }
                 //Notice for set the outcome before leave the page (only if we create the appointment from the record panel)
                 if(typeof record !== "undefined"){
                     $(window).on('beforeunload', function () {
@@ -643,7 +639,7 @@ var modals = {
             else {
                 //Deserialize the form
                 appointmentFormData = deserializeForm(data);
-                modals.add_appointment_html(urn);
+                modals.create_appointment(urn);
             }
         });
     },
@@ -869,13 +865,12 @@ var modals = {
 
             modals.set_appointment_access_address(data.access_address);
 
-            if (typeof campaign_functions !== "undefined") {
                 if (typeof campaign_functions.appointment_edit_setup !== "undefined") {
                     campaign_functions.appointment_edit_setup();
                 }
-            }
         });
     },
+	/* using create-appointment function now 
     add_appointment_html: function (urn) {
         $.ajax({
             url: helper.baseUrl + 'modals/add_appointment',
@@ -895,20 +890,38 @@ var modals = {
 
             modal_body.css('overflow', 'visible');
             modal_dialog.css('width', "50%");
-            modals.appointment_contacts(urn, null);
+            modals.appointment_contacts(urn, false);
             modals.set_appointment_confirmation();
             $modal.find('#appointment-confirmed').hide();
 
             modals.set_appointment_access_address();
 
-            if(typeof campaign_functions !== "undefined"){
                 if(typeof campaign_functions.appointment_setup !== "undefined"){
-                    campaign_functions.appointment_setup();
+                    campaign_functions.appointment_setup(false,false,urn);
                 }
-            }
 
             modals.restore_appointment_form();
         });
+    },
+	*/
+	appointment_setup: function (start,attendee,urn) {
+		if(typeof start == "undefined"){
+			start = $('#slots-panel').find('input:checked').attr('data-date') +' '+ $('#slots-panel').find('input:checked').attr('data-time');	;	
+		}
+		if(start){
+        modals.set_appointment_start(start);
+		}
+		if(attendee){
+        modals.set_appointment_attendee(attendee);
+		}
+	},
+	set_appointment_attendee: function (attendee) {
+        $modal.find('.attendeepicker').selectpicker('val', [attendee]);
+    },
+    set_appointment_start: function (start) {
+        var m = moment(start, "YYYY-MM-DD HH:mm");
+        $modal.find('.startpicker').data("DateTimePicker").date(m);
+        $modal.find('.endpicker').data("DateTimePicker").date(m.add(1,'hours').format('DD\MM\YYYY HH:mm'));
     },
     restore_appointment_form: function() {
 
@@ -1007,7 +1020,10 @@ var modals = {
                 var selected = "";
                 if (v.id == contact_id || result.length=="1") {
                     selected = "selected";
-                }
+                } else if (!contact_id&&k==0){
+					//select the first contact by default
+					  selected = "selected";
+				}
                 $('#contact-select').append('<option ' + selected + ' value="' + v.id + '">' + v.name + '</option>');
             });
             //$('#contact-select').append('<option value="other">Other</option>');
@@ -1025,6 +1041,7 @@ var modals = {
 
     },
     create_appointment: function (urn,start,attendee) {
+		console.log("Create appointment");
         $.ajax({
             url: helper.baseUrl + 'modals/edit_appointment',
             type: 'POST',
@@ -1037,21 +1054,22 @@ var modals = {
             var mbody = '<div class="row"><div class="col-lg-12">' + response + '</div></div>';
             var mfooter = '<button data-dismiss="modal" class="btn btn-default close-modal pull-left" type="button">Close</button>'
 			 if (helper.permissions['confirm appointment'] > 0) {
-			 mfooter += '<input id="appointment-confirmed" style="display:none" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" data-width="130" type="checkbox" disabled data-onstyle="success">' 
+			 mfooter += '<input id="appointment-confirmed" data-toggle="toggle" data-on="Confirmed" data-off="Unconfirmed" data-width="130" type="checkbox" data-onstyle="success">' 
 			 }
 			 mfooter += '<button class="btn btn-primary pull-right" id="save-appointment" type="button">Save</button>';
             modals.load_modal(mheader, mbody, mfooter);
 			modal_body.css('overflow', 'visible');
+			modal_dialog.css('width', "50%");
 			$modal.find('#appointment-confirmed').bootstrapToggle();
 			modals.set_appointment_confirmation(start);
-            modals.appointment_contacts(urn);
-			if(typeof campaign_functions !== "undefined"){
+            modals.appointment_contacts(urn,false);
+
+				modals.appointment_setup(start,attendee,false);
+
 				if(typeof campaign_functions.appointment_setup !== "undefined"){
-				    campaign_functions.appointment_setup(start);
+				    campaign_functions.appointment_setup(start,false,urn);
 				}
-			} else if (quick_planner !== "undefined") {
-				quick_planner.appointment_setup(start);
-			}
+				
 
             modals.set_appointment_access_address();
         });
@@ -1076,10 +1094,8 @@ var modals = {
             $modal.find('.toggle').hide();
         }
 
-        if(typeof campaign_functions !== "undefined"){
             if(typeof campaign_functions.set_appointment_confirmation !== "undefined"){
                 campaign_functions.set_appointment_confirmation();
-            }
         }
 	},
 
@@ -1103,10 +1119,8 @@ var modals = {
             }
         });
 
-        if(typeof campaign_functions !== "undefined"){
             if(typeof campaign_functions.set_access_address !== "undefined"){
                 campaign_functions.set_access_address();
-            }
         }
     },
     appointment_outcome_html: function (id) {
@@ -2096,10 +2110,8 @@ var modals = {
                 if (type == "edit") {
                     modals.contacts.load_tabs(id, tab);
                 }
-				if(typeof campaign_functions !== "undefined"){
 					if(typeof campaign_functions.contact_form_setup !== "undefined"){
 					campaign_functions.contact_form_setup();
-					}
 				}
 				
             });
@@ -2173,11 +2185,9 @@ var modals = {
                 $('.tt').tooltip();
                 $modal.find('.tab[href="#' + item_form + '"]').tab('show');
 
-                if(typeof campaign_functions !== "undefined"){
                     if(typeof campaign_functions.contact_tabs_setup !== "undefined"){
                         campaign_functions.contact_tabs_setup();
-                    }
-                }
+					 }
             });
 
         },

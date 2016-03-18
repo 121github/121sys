@@ -73,7 +73,7 @@ var quick_planner = {
         $modal.on('click', '.continue-simulation', function (e) {
             e.preventDefault();
             var start = $(this).attr('data-date');
-            modals.create_appointment(record.urn, start)
+            modals.create_appointment(record.urn, start, quick_planner.driver_id)
         });
 		$modal.on('change', '#planner-position', function (e) {
             e.preventDefault();
@@ -82,21 +82,6 @@ var quick_planner = {
         });
 		
 	},
-	appointment_setup: function (start) {
-		if(typeof start == "undefined"){
-			start = $('#slots-panel').find('input:checked').attr('data-date') +' '+ $('#slots-panel').find('input:checked').attr('data-time');	;	
-		}
-        quick_planner.set_appointment_start(start);
-        quick_planner.set_appointment_attendee(quick_planner.driver_id);
-	},
-	set_appointment_attendee: function () {
-        $modal.find('.attendeepicker').selectpicker('val', [quick_planner.driver_id]);
-    },
-    set_appointment_start: function (start) {
-        var m = moment(start, "YYYY-MM-DD HH:mm");
-        $modal.find('.startpicker').data("DateTimePicker").date(m);
-        $modal.find('.endpicker').data("DateTimePicker").date(m.add('hours', 1).format('DD\MM\YYYY HH:mm'));
-    },
     check_selections: function () {
         if (typeof quick_planner !== "undefined") {
             if (!quick_planner.contact_postcode.length > 0 && !quick_planner.company_postcode.length > 0) {

@@ -278,7 +278,9 @@ class Appointments extends CI_Controller
 
     public function check_overlap_appointments() {
         if ($this->input->is_ajax_request()) {
-			if(!$this->input->post('attendees')||empty($this->input->post('attendees'))){
+			$attendees = array_filter($this->input->post('attendees'));
+			$this->firephp->log($attendees);
+			if(empty($attendees)){
 				echo json_encode(array("success"=>false,"overlapped"=>false,"error"=>true,"msg"=>"You must select an attendee"));
 				exit;
 			}
@@ -300,8 +302,9 @@ class Appointments extends CI_Controller
 	//items in the custom_panel_data table that should be assoicated with an appointment ID but haven't been
 	public function get_unlinked_data_items(){
 		$urn = $this->input->post("urn");
-		$query = "select data_id,date_format(created_on,'%d/%m/%y') created_on from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) join custom_panels using(custom_panel_id) where urn = '$urn' and linked_appointment_type_ids is not null and data_id not in(select data_id from custom_panel_values join custom_panel_fields using(field_id) where is_appointment_id = 1) group by data_id";
+		$query = "select data_id,date_format(created_on,'%d/%m/%y') created_on from custom_panel_data join custom_panel_values using(data_id) join custom_panel_fields using(field_id) join custom_panels using(custom_panel_id) where urn = '$urn' and linked_appointment_type_ids is not null and data_id not in(select data_id from custom_panel_values join custom_panel_fields using(field_id) where is_appointment_id = 1 and `value` > 0) group by data_id";
 		$data = $this->db->query($query)->result_array();
+		$this->firephp->log($this->db->last_query());
 		echo json_encode(array("success"=>true,"data"=>$data)); 
 	}
 	

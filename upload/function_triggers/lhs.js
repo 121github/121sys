@@ -26,9 +26,9 @@ var campaign_functions = {
     contact_tabs_setup: function() {
         $('.tps-contact-label').hide();
     },
-    appointment_setup: function (start) {
-						$.ajax({ url: helper.baseUrl+'appointments/get_unlinked_data_items',
-				data:{urn:record.urn},
+    appointment_setup: function (start,attendee,urn) {
+			$.ajax({ url: helper.baseUrl+'appointments/get_unlinked_data_items',
+				data:{urn:urn},
 				dataType:"JSON",
 				type:"POST"
 				}).done(function(response){
@@ -63,15 +63,11 @@ var campaign_functions = {
             daysOfWeekDisabled: [0,6]
         });
 
-        if (typeof start != "undefined") {
-            quick_planner.set_appointment_start(start);
+        if (start) {
+            modals.set_appointment_start(start);
         }
 
-
-		if(typeof quick_planner.driver_id !== "undefined"){
-			$modal.find('.attendeepicker').selectpicker('val',quick_planner.driver_id);
-		}
-		$('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
+		$modal.find('#typepicker').closest('.form-group').find('p').text('Please choose the appointment status');
 		
 		
     },

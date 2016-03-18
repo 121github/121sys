@@ -1158,10 +1158,7 @@ if(!String.prototype.formatNum) {
 			$('#cal-slide-tick').addClass('tick' + tick_position).show();
 			slider.slideDown('fast', function() {
 				
-	$('#cal-slide-box').on('click', '.block-day-btn', function () {
-        calendar_modals.addAppointmentRule($(this).attr('item-day'));
-    });			
-				
+	$('#cal-slide-box').off('click','a.event-item');			
 	$('#cal-slide-box').on('click','a.event-item',function(e){
 		e.preventDefault();
 		modals.view_appointment($(this).attr('data-event-id'));

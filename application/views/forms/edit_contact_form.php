@@ -179,7 +179,7 @@
                                 <ul class="dropdown-menu description-list">
                                     <li><a href="#">Correspondence Address</a></li>
                                     <li><a href="#">Surveying Address</a></li>
-                                    <li><a href="#">Access Detail Address</a></li>
+                                    <li><a href="#">Access Address</a></li>
                                 </ul>
                             </div>
                             <!-- /btn-group -->

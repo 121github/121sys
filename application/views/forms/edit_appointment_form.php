@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">
-                <p>Please enter a title for the appointment <span class='tt glyphicon glyphicon-question-sign'
+                <p>Enter a title for the appointment <span class='tt glyphicon glyphicon-question-sign'
                                                                   data-toggle="tooltip"
                                                                   data-title="Try to include the company or contact name"></span>
                 </p>
@@ -17,7 +17,7 @@
         </div>
         <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">
-                <p>Please choose the appointment type</p>
+                <p>Choose the appointment type</p>
                 <select name="appointment_type_id" id="typepicker" class="selectpicker typepicker" title="Choose a type"
                         data-width="95%" required>
                     <?php foreach ($types as $type): ?>
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="form-group input-group-sm">
-        <p>Please add appointment notes here <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
+        <p>Add appointment notes here <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
                                                    data-title="These notes are sent to the attendee"></span></p>
         <input type="text" class="form-control" name="text"
                placeholder="Please note additional info or special requirements here" required/>
@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">
-                <p>Please set the start time</p>
+                <p>Set the start time</p>
                 <input type="text" style="width:95%" class="form-control datetime startpicker" name="start"
                        placeholder="Enter the start time" required/>
             </div>
@@ -46,7 +46,7 @@
 
         <div class="col-xs-12 col-sm-6">
             <div class="form-group input-group-sm">
-                <p>Please set the end time</p>
+                <p>Set the end time</p>
                 <input type="text" style="width:100%" class="form-control datetime endpicker" name="end"
                        placeholder="Enter the end time" required/>
             </div>
@@ -55,7 +55,7 @@
     <div class="row">
         <div class="col-xs-12 col-xs-6 attendees-selection">
             <div class="form-group input-group-sm">
-                <p>Please choose the attendee(s) <span class='tt glyphicon glyphicon-question-sign'
+                <p>Choose the attendee(s) <span class='tt glyphicon glyphicon-question-sign'
                                                        data-toggle="tooltip"
                                                        data-title="Whoever the appointment is set for will recieve an email notification containing all the details"></span>
                 </p>
@@ -69,7 +69,7 @@
         </div>
         <div class="col-xs-12 col-xs-4 branches-selection" style="display:none;">
             <div class="form-group input-group-sm">
-                <p>Please choose the branch <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
+                <p>Choose the branch <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
                                                   data-title="Whoever the appointment is set for the people related with this branch will recieve an email notification containing all the details"></span>
                 </p>
                 <select name="branch_id" id="branch-select" class="selectpicker branchpicker"
@@ -83,7 +83,7 @@
         </div>
         <div class="col-xs-12 col-xs-6 contacts-selection">
             <div class="form-group input-group-sm">
-                <p>Please choose the Contact <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
+                <p>Choose the Contact <span class='tt glyphicon glyphicon-question-sign' data-toggle="tooltip"
                                                    data-title="The contact the appointment is with. They must be sent an email or mail confirmation manually if required"></span>
                 </p>
                 <select name="contact_id" id="contact-select" class="contactpicker" title="Choose the contact"
@@ -101,7 +101,7 @@
 
         <div class="col-lg-12">
             <div class="row">
-                <p>Please select the address the appointment will take place</p>
+                <p>Select the address the appointment will take place</p>
                 <select name="address" class="selectpicker addresspicker" id="addresspicker" title="Choose the address" data-width="100%">
                     <?php foreach ($addresses as $address):
                         $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
@@ -137,7 +137,7 @@
     <div class="row" id="add-appointment-address" <?php if (count($addresses) > 0) {
         echo 'style="display:none"';
     } ?> >
-        <p>Please enter the address that the appointment will take place</p>
+        <p>Enter the address that the appointment will take place</p>
 
         <div class="col-sm-12">
             <div class="row">
@@ -187,12 +187,12 @@
 
             <div class="col-lg-12">
                 <div class="form-group input-group-sm">
-                    <p>Please select the access address for the appointment <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" title="This is a location that must be visited prior to attending the appointment. For example, if you need to collect some keys to gain entry"></span></p>
+                    <p>Select the access address for the appointment <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" title="This is a location that must be visited prior to attending the appointment. For example, if you need to collect some keys to gain entry"></span></p>
                     <select name="access_address" class="selectpicker accessaddresspicker" id="accessaddresspicker"
                             data-width="100%">
                             <option value="">Not Required</option>
                         <?php foreach ($addresses as $address):
-						if($address['description']=="Access Detail Address"){
+						if($address['description']=="Access Address"){
                             $add = ($address['type'] == "company" ? $address['name'] . ", " : "");
                             $add1 = (isset($address['add1']) && !empty($address['add1']) ? $address['add1'] : "");
                             $add2 = (isset($address['add2']) && !empty($address['add2']) ? ", " . $address['add2'] : "");
@@ -225,7 +225,7 @@
             </div>
         </div>
         <div id="add-appointment-access-address" <?php if (count($addresses) > 0) { echo 'style="display:none"'; } ?>>
-            <p>Please select the access address for the appointment</p>
+            <p>Select the access address for the appointment</p>
 
             <div class="col-sm-12">
                 <div class="row">
