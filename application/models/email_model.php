@@ -325,9 +325,9 @@ $qry .= " group by urn";
                       e.send_to,
                       e.cc,
                       e.bcc,
-                      e.user_id,
+                      if(e.user_id = 0 or e.user_id is null,'Auto') user_id,
                       e.urn,
-                      e.template_id,
+                       if(e.template_id = 0 or e.template_id is null,'Inbound Email') template_id,
                       e.read_confirmed,
                       e.read_confirmed_date,
                       e.status,
@@ -335,7 +335,7 @@ $qry .= " group by urn";
                       t.*,
                       e.pending
 		    	from email_history e
-		    	inner join users u ON (u.user_id = e.user_id)
+		    	left join users u ON (u.user_id = e.user_id)
 		    	left join email_templates t ON (t.template_id = e.template_id)
 		    	where e.urn = " . $urn ." ".$where_visible . "
 		    	order by e.sent_date desc
